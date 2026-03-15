@@ -1,0 +1,20 @@
+# D&D Campaign Session Prep — config
+# Paths can be absolute (/mnt/c/Users/...) or relative to where you run prep.py
+
+system_prompt: config/system_prompt.md
+
+log_dir: logs/
+
+# Agent prompts for --mode pipeline
+agents:
+  lore_oracle: config/agents/lore_oracle.md
+  encounter_architect: config/agents/encounter_architect.md
+  voice_keeper: config/agents/voice_keeper.md
+
+documents:
+  - label: world_state
+    path: docs/world_state.md
+  - label: mechanics
+    path: docs/mechanics.md
+  - label: planning
+    path: docs/planning.md
