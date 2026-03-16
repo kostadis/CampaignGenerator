@@ -14,39 +14,26 @@ Session flag:
 import argparse
 import re
 import sys
-from datetime import datetime
 from pathlib import Path
 
-# ── File helpers ──────────────────────────────────────────────────────────────
-
-def load_config(config_path: str) -> dict:
-    try:
-        import yaml
-    except ImportError:
-        print("Error: pyyaml not installed. Run: pip install pyyaml", file=sys.stderr)
-        sys.exit(1)
-    with open(config_path) as f:
-        return yaml.safe_load(f)
-
-
-def load_file(path: str) -> str:
-    p = Path(path).expanduser()
-    if not p.exists():
-        print(f"Error: file not found: {path}", file=sys.stderr)
-        sys.exit(1)
-    return p.read_text(encoding="utf-8")
+from campaignlib import (
+    assemble_docs,
+    copy_to_clipboard,
+    find_default_config,
+    load_config,
+    load_file,
+    make_client,
+    save_log,
+    stream_api,
+)
 
 
 # ── Prompt assembly ───────────────────────────────────────────────────────────
 
-def assemble_user_prompt(config: dict, beat: str) -> str:
-    parts = []
-    for doc in config.get("documents", []):
-        label = doc["label"]
-        content = load_file(doc["path"])
-        parts.append(f"## {label}\n\n{content.strip()}")
-    parts.append(f"## Session Beat\n\n{beat.strip()}")
-    return "\n\n---\n\n".join(parts)
+def assemble_user_prompt(config: dict, beat: str, base_dir: Path | None = None) -> str:
+    all_labels = [d["label"] for d in config.get("documents", []) if d.get("path")]
+    docs = assemble_docs(config, all_labels, base_dir)
+    return f"{docs}\n\n---\n\n## Session Beat\n\n{beat.strip()}"
 
 
 # ── Session outline parsing ───────────────────────────────────────────────────
@@ -75,9 +62,17 @@ def parse_session_beats(outline: str) -> list[str]:
     return [b for b in beats if b]
 
 
-def get_session_outline(arg_session: str | None) -> str:
-    if arg_session:
-        return arg_session
+def get_session_outline_from_file(path: str) -> str:
+    p = Path(path).expanduser()
+    if not p.exists():
+        print(f"Error: session file not found: {p}", file=sys.stderr)
+        sys.exit(1)
+    return p.read_text(encoding="utf-8")
+
+
+def get_session_outline_interactive(arg_text: str | None) -> str:
+    if arg_text:
+        return arg_text
     print("Enter the session outline (numbered list of beats).")
     print("Press Enter twice when done:\n")
     lines: list[str] = []
@@ -100,6 +95,9 @@ def get_session_outline(arg_session: str | None) -> str:
 
 def get_beat(arg_beat: str | None) -> str:
     if arg_beat:
+        p = Path(arg_beat).expanduser()
+        if p.exists():
+            return p.read_text(encoding="utf-8").strip()
         return arg_beat
     print("Enter the session beat (what happens this session):")
     beat = sys.stdin.readline().strip()
@@ -109,77 +107,10 @@ def get_beat(arg_beat: str | None) -> str:
     return beat
 
 
-# ── API ───────────────────────────────────────────────────────────────────────
-
-def _anthropic_client():
-    try:
-        import anthropic
-    except ImportError:
-        print("Error: anthropic not installed. Run: pip install anthropic", file=sys.stderr)
-        sys.exit(1)
-    return anthropic.Anthropic()
-
-
-def stream_api(client, system: str, user: str, model: str) -> str:
-    chunks = []
-    with client.messages.stream(
-        model=model,
-        max_tokens=8096,
-        system=system,
-        messages=[{"role": "user", "content": user}],
-    ) as stream:
-        for text in stream.text_stream:
-            print(text, end="", flush=True)
-            chunks.append(text)
-    print()
-    return "".join(chunks)
-
-
-# ── Clipboard ─────────────────────────────────────────────────────────────────
-
-def copy_to_clipboard(text: str) -> None:
-    try:
-        import pyperclip
-        pyperclip.copy(text)
-        print(f"Copied to clipboard ({len(text):,} chars).")
-    except ImportError:
-        print("pyperclip not installed. Run: pip install pyperclip", file=sys.stderr)
-        sys.exit(1)
-    except Exception as e:
-        print(f"Clipboard error: {e}", file=sys.stderr)
-        print("On WSL you may need: sudo apt install xclip", file=sys.stderr)
-        sys.exit(1)
-
-
-# ── Logging ───────────────────────────────────────────────────────────────────
-
-def save_log(log_dir: str, sections: list[tuple[str, str]], stem: str = "session") -> Path:
-    """Save a log file. sections is a list of (heading, content) tuples."""
-    log_path = Path(log_dir).expanduser()
-    log_path.mkdir(parents=True, exist_ok=True)
-
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-    log_file = log_path / f"{timestamp}_{stem}.md"
-
-    lines = [f"# Session Log — {datetime.now().strftime('%Y-%m-%d %H:%M')}"]
-    for heading, content in sections:
-        lines += ["", "---", "", f"## {heading}", "", content.strip()]
-
-    log_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return log_file
-
-
-# ── Single encounter ──────────────────────────────────────────────────────────
-
-def run_single_encounter(client, system: str, user: str, model: str) -> str:
-    """Run one API call and return the response text."""
-    return stream_api(client, system, user, model)
-
-
 # ── Pipeline encounter ────────────────────────────────────────────────────────
 
 def run_pipeline_encounter(
-    client, agents: dict, user: str, model: str
+    client, agents: dict, user: str, model: str, base_dir: Path | None = None
 ) -> tuple[str, str, str] | None:
     """Run one beat through the three-agent pipeline.
 
@@ -194,30 +125,34 @@ def run_pipeline_encounter(
     # Stage 1: Lore Oracle
     print("  [1/3 Lore Oracle]")
     print("  " + "─" * 56)
-    oracle_system = load_file(agents["lore_oracle"])
-    oracle_response = stream_api(client, oracle_system, user, model)
+    oracle_response = stream_api(client, load_file(agents["lore_oracle"], base_dir), user, model)
     print("  " + "─" * 56)
 
     if "FLAGS" in oracle_response:
         print("\n  Lore Oracle raised FLAGS. Continue to Encounter Architect? [y/N]: ", end="", flush=True)
-        answer = sys.stdin.readline().strip().lower()
-        if answer != "y":
+        if sys.stdin.readline().strip().lower() != "y":
             return None
 
     # Stage 2: Encounter Architect
     print("  [2/3 Encounter Architect]")
     print("  " + "─" * 56)
-    architect_system = load_file(agents["encounter_architect"])
-    architect_input = f"{user}\n\n---\n\n## Lore Oracle Report\n\n{oracle_response}"
-    architect_response = stream_api(client, architect_system, architect_input, model)
+    architect_response = stream_api(
+        client,
+        load_file(agents["encounter_architect"], base_dir),
+        f"{user}\n\n---\n\n## Lore Oracle Report\n\n{oracle_response}",
+        model,
+    )
     print("  " + "─" * 56)
 
     # Stage 3: Voice Keeper
     print("  [3/3 Voice Keeper]")
     print("  " + "─" * 56)
-    voice_system = load_file(agents["voice_keeper"])
-    voice_input = f"{user}\n\n---\n\n## Encounter Document\n\n{architect_response}"
-    voice_response = stream_api(client, voice_system, voice_input, model)
+    voice_response = stream_api(
+        client,
+        load_file(agents["voice_keeper"], base_dir),
+        f"{user}\n\n---\n\n## Encounter Document\n\n{architect_response}",
+        model,
+    )
     print("  " + "─" * 56)
 
     return oracle_response, architect_response, voice_response
@@ -225,38 +160,36 @@ def run_pipeline_encounter(
 
 # ── Top-level mode runners ────────────────────────────────────────────────────
 
-def run_single(client, config, system, user, model, clipboard, no_log):
+def run_single(client, config, system, user, model, clipboard, no_log, output=None):
     log_dir = config.get("log_dir", "logs/")
 
     if clipboard:
         full_prompt = f"{system.strip()}\n\n---\n\n{user}"
         copy_to_clipboard(full_prompt)
         if not no_log:
-            log_file = save_log(log_dir, [("Assembled Prompt", full_prompt)])
-            print(f"Prompt log saved to: {log_file}")
+            print(f"Prompt log saved to: {save_log(log_dir, [('Assembled Prompt', full_prompt)])}")
         return
 
     print(f"\n[Mode: single | Model: {model}]\n")
     print("=" * 60)
-    response = run_single_encounter(client, system, user, model)
+    response = stream_api(client, system, user, model)
     print("=" * 60)
 
+    if output:
+        Path(output).expanduser().write_text(response.strip() + "\n", encoding="utf-8")
+        print(f"\nOutput saved to: {output}")
+
     if not no_log:
-        log_file = save_log(log_dir, [
-            ("System Prompt", system),
-            ("User Prompt", user),
-            ("Response", response),
-        ])
-        print(f"\nLog saved to: {log_file}")
+        print(f"\nLog saved to: {save_log(log_dir, [('System Prompt', system), ('User Prompt', user), ('Response', response)])}")
 
 
-def run_pipeline(client, config, user, model, clipboard, no_log):
+def run_pipeline(client, config, user, model, clipboard, no_log, base_dir=None, output=None):
     log_dir = config.get("log_dir", "logs/")
     agents = config.get("agents", {})
 
     print(f"\n[Mode: pipeline | Model: {model}]\n")
     print("=" * 60)
-    result = run_pipeline_encounter(client, agents, user, model)
+    result = run_pipeline_encounter(client, agents, user, model, base_dir)
     print("=" * 60)
 
     if result is None:
@@ -265,24 +198,22 @@ def run_pipeline(client, config, user, model, clipboard, no_log):
 
     oracle_response, architect_response, voice_response = result
 
+    if output:
+        Path(output).expanduser().write_text(voice_response.strip() + "\n", encoding="utf-8")
+        print(f"\nOutput saved to: {output}")
+
     if clipboard:
         copy_to_clipboard(voice_response)
 
     if not no_log:
-        log_file = save_log(log_dir, [
-            ("User Prompt", user),
-            ("Lore Oracle", oracle_response),
-            ("Encounter Architect", architect_response),
-            ("Voice Keeper (Final)", voice_response),
-        ])
-        print(f"\nLog saved to: {log_file}")
+        print(f"\nLog saved to: {save_log(log_dir, [('User Prompt', user), ('Lore Oracle', oracle_response), ('Encounter Architect', architect_response), ('Voice Keeper (Final)', voice_response)])}")
 
 
-def run_session(client, config, outline: str, mode: str, model: str, clipboard: bool, no_log: bool):
+def run_session(client, config, outline: str, mode: str, model: str, clipboard: bool, no_log: bool, base_dir=None, output=None):
     """Run all beats in the session outline, one encounter document per beat."""
     log_dir = config.get("log_dir", "logs/")
     agents = config.get("agents", {})
-    system = load_file(config["system_prompt"]) if mode == "single" else None
+    system = load_file(config["system_prompt"], base_dir) if mode == "single" else None
 
     beats = parse_session_beats(outline)
     if not beats:
@@ -291,12 +222,11 @@ def run_session(client, config, outline: str, mode: str, model: str, clipboard: 
 
     call_count = len(beats) * (3 if mode == "pipeline" else 1)
     print(f"\n[Mode: session/{mode} | {len(beats)} beats | {call_count} API calls | Model: {model}]")
-    print(f"Beats detected:")
+    print("Beats detected:")
     for i, b in enumerate(beats, 1):
         print(f"  {i}. {b[:80]}{'…' if len(b) > 80 else ''}")
     print()
 
-    # Collect all sections for the combined log
     log_sections: list[tuple[str, str]] = [("Session Outline", outline)]
     all_final_outputs: list[str] = []
 
@@ -305,15 +235,14 @@ def run_session(client, config, outline: str, mode: str, model: str, clipboard: 
         print(f"  Encounter {i}/{len(beats)}: {beat}")
         print(f"{'=' * 60}\n")
 
-        user = assemble_user_prompt(config, beat)
+        user = assemble_user_prompt(config, beat, base_dir)
 
         if mode == "single":
-            response = run_single_encounter(client, system, user, model)
+            response = stream_api(client, system, user, model)
             log_sections.append((f"Encounter {i} — {beat[:60]}", response))
             all_final_outputs.append(response)
-
-        else:  # pipeline
-            result = run_pipeline_encounter(client, agents, user, model)
+        else:
+            result = run_pipeline_encounter(client, agents, user, model, base_dir)
             if result is None:
                 print(f"\n  Encounter {i} stopped at FLAGS. Skipping to next beat.")
                 log_sections.append((f"Encounter {i} — {beat[:60]} [STOPPED AT FLAGS]", "Stopped at Lore Oracle FLAGS."))
@@ -326,14 +255,16 @@ def run_session(client, config, outline: str, mode: str, model: str, clipboard: 
             ]
             all_final_outputs.append(voice)
 
-    # Clipboard: copy all final outputs joined together
-    if clipboard and all_final_outputs:
+    if output and all_final_outputs:
         combined = "\n\n---\n\n".join(all_final_outputs)
-        copy_to_clipboard(combined)
+        Path(output).expanduser().write_text(combined.strip() + "\n", encoding="utf-8")
+        print(f"\nOutput saved to: {output}")
+
+    if clipboard and all_final_outputs:
+        copy_to_clipboard("\n\n---\n\n".join(all_final_outputs))
 
     if not no_log:
-        log_file = save_log(log_dir, log_sections, stem="session_arc")
-        print(f"\nFull session log saved to: {log_file}")
+        print(f"\nFull session log saved to: {save_log(log_dir, log_sections, stem='session_arc')}")
 
 
 # ── CLI entry point ───────────────────────────────────────────────────────────
@@ -345,74 +276,57 @@ def main() -> None:
     )
 
     input_group = parser.add_mutually_exclusive_group()
-    input_group.add_argument("--beat", "-b", help="Single session beat")
+    input_group.add_argument("--beat", "-b", metavar="TEXT_OR_FILE",
+                             help="Single session beat (inline text or path to a .md file)")
+    input_group.add_argument("--session", "-s", metavar="FILE",
+                             help="Path to a file containing a numbered session outline")
     input_group.add_argument(
-        "--session", "-s",
+        "--session-text",
         nargs="?",
-        const="",           # signals interactive mode when flag is present but no value given
+        const="",
         metavar="OUTLINE",
-        help="Numbered session outline (e.g. '1. Travel 2. Climb 3. Boss'). "
-             "Omit the value to enter interactively.",
+        help="Numbered session outline as inline text "
+             "(e.g. '1. Travel 2. Climb 3. Boss'). Omit the value to enter interactively.",
     )
-
-    parser.add_argument(
-        "--mode", "-m",
-        choices=["single", "pipeline"],
-        default="single",
-        help="single (default): one call with main system prompt | "
-             "pipeline: Lore Oracle → Encounter Architect → Voice Keeper",
-    )
-    parser.add_argument(
-        "--clipboard", "-c",
-        action="store_true",
-        help="Copy final output to clipboard. "
-             "single/--beat: copies assembled prompt (no API call). "
-             "pipeline/--beat: copies Voice Keeper output. "
-             "session: copies all final encounter outputs joined.",
-    )
-    parser.add_argument(
-        "--config",
-        default="config/config.yaml",
-        help="Path to config YAML (default: config/config.yaml)",
-    )
-    parser.add_argument(
-        "--model",
-        default="claude-sonnet-4-20250514",
-        help="Claude model to use (default: claude-sonnet-4-20250514)",
-    )
-    parser.add_argument(
-        "--no-log",
-        action="store_true",
-        help="Skip saving a log file",
-    )
+    parser.add_argument("--mode", "-m", choices=["single", "pipeline"], default="single",
+                        help="single (default) or pipeline")
+    parser.add_argument("--clipboard", "-c", action="store_true",
+                        help="Copy final output to clipboard")
+    parser.add_argument("--config", default=find_default_config(__file__),
+                        help="Path to config YAML")
+    parser.add_argument("--model", default="claude-sonnet-4-20250514",
+                        help="Claude model to use")
+    parser.add_argument("--output", "-o", metavar="FILE",
+                        help="Save final output to file (Voice Keeper responses for pipeline, "
+                             "encounter doc for single)")
+    parser.add_argument("--no-log", action="store_true", help="Skip saving a log file")
     args = parser.parse_args()
 
-    config = load_config(args.config)
+    config, base_dir = load_config(args.config)
 
-    # ── Session arc mode ──────────────────────────────────────────────────────
     if args.session is not None:
-        outline = get_session_outline(args.session if args.session else None)
-        client = _anthropic_client()
-        run_session(client, config, outline, args.mode, args.model, args.clipboard, args.no_log)
+        outline = get_session_outline_from_file(args.session)
+        run_session(make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output)
         return
 
-    # ── Single beat mode ──────────────────────────────────────────────────────
+    if args.session_text is not None:
+        outline = get_session_outline_interactive(args.session_text if args.session_text else None)
+        run_session(make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output)
+        return
+
     beat = get_beat(args.beat)
-    user = assemble_user_prompt(config, beat)
+    user = assemble_user_prompt(config, beat, base_dir)
 
-    # Clipboard-only in single mode skips the API
     if args.mode == "single" and args.clipboard:
-        system = load_file(config["system_prompt"])
-        run_single(None, config, system, user, args.model, clipboard=True, no_log=args.no_log)
+        system = load_file(config["system_prompt"], base_dir)
+        run_single(None, config, system, user, args.model, clipboard=True, no_log=args.no_log, output=args.output)
         return
 
-    client = _anthropic_client()
-
+    client = make_client()
     if args.mode == "single":
-        system = load_file(config["system_prompt"])
-        run_single(client, config, system, user, args.model, clipboard=False, no_log=args.no_log)
+        run_single(client, config, load_file(config["system_prompt"], base_dir), user, args.model, clipboard=False, no_log=args.no_log, output=args.output)
     else:
-        run_pipeline(client, config, user, args.model, clipboard=args.clipboard, no_log=args.no_log)
+        run_pipeline(client, config, user, args.model, clipboard=args.clipboard, no_log=args.no_log, base_dir=base_dir, output=args.output)
 
 
 if __name__ == "__main__":

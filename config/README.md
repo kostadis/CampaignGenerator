@@ -26,6 +26,41 @@ documents:
 Paths can be absolute or relative to wherever you run `prep.py`.
 On WSL, absolute paths like `/mnt/c/Users/you/OneDrive/campaign/world_state.md` work fine.
 
+## Separate work directories
+
+To keep campaign data (docs, logs) outside the code repo, create a campaign-specific config file anywhere on your filesystem:
+
+```yaml
+# /home/you/campaigns/icespire/config.yaml
+
+system_prompt: config/system_prompt.md          # code-side prompt (relative path ok)
+
+log_dir: /home/you/campaigns/icespire/logs/
+
+agents:
+  lore_oracle: config/agents/lore_oracle.md
+  encounter_architect: config/agents/encounter_architect.md
+  voice_keeper: config/agents/voice_keeper.md
+
+documents:
+  - label: world_state
+    path: /home/you/campaigns/icespire/docs/world_state.md
+  - label: mechanics
+    path: /home/you/campaigns/icespire/docs/mechanics.md
+  - label: planning
+    path: /home/you/campaigns/icespire/docs/planning.md
+```
+
+Then pass it with `--config`:
+
+```bash
+python prep.py --config /home/you/campaigns/icespire/config.yaml --beat "..."
+```
+
+Agent prompts and system prompt can stay code-side (relative paths resolve from where you run `prep.py`), or be copied per-campaign if you want to customise them independently.
+
+---
+
 **Adding a document:** append an entry under `documents`. The `label` becomes the heading in the assembled prompt (`## label`). Order matters — documents are injected in the order listed.
 
 **Removing a document:** delete its entry. The tool will not error on missing optional documents; it only errors if a listed path doesn't exist.
