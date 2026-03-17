@@ -86,10 +86,12 @@ def make_client():
     return anthropic.Anthropic()
 
 
-def stream_api(client, system: str, user: str, model: str, max_tokens: int = 8096) -> str:
+def stream_api(client, system: str, user: str, model: str, max_tokens: int = 8096,
+               silent: bool = False) -> str:
     """Stream a Claude API call, printing each token as it arrives. Returns full response.
 
     Retries on rate limit errors with exponential backoff (up to 4 attempts).
+    Pass silent=True to suppress all output (useful for filter/classification passes).
     """
     import time
 
@@ -108,9 +110,11 @@ def stream_api(client, system: str, user: str, model: str, max_tokens: int = 809
                 messages=[{"role": "user", "content": user}],
             ) as stream:
                 for text in stream.text_stream:
-                    print(text, end="", flush=True)
+                    if not silent:
+                        print(text, end="", flush=True)
                     chunks.append(text)
-            print()
+            if not silent:
+                print()
             return "".join(chunks)
         except Exception as e:
             if "rate_limit_error" in str(e) and attempt < len(delays):

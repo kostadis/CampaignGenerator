@@ -12,6 +12,8 @@ agents:
   voice_keeper: config/agents/voice_keeper.md
 
 documents:
+  - label: campaign_state
+    path: docs/campaign_state.md
   - label: world_state
     path: docs/world_state.md
   - label: mechanics

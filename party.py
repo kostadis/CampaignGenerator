@@ -68,7 +68,8 @@ SYNTHESIZE_SYSTEM = """\
 You are creating a party reference document for a D&D campaign GM.
 
 You will receive:
-- Character sheets (definitive source for stats, abilities, and current arc scores)
+- Character sheets (definitive source for stats, abilities, and current arc score values)
+- Arc score mechanic documents (full definition of each score: triggers, thresholds, unlocked abilities)
 - Extracted session notes (arc score events, decisions, relationships from play)
 - Backstory documents (optional origin context)
 
@@ -86,7 +87,8 @@ One subsection per PC with:
 - Items of significance
 
 ## Arc Score Summary
-A compact table of all arc scores across all characters for quick reference.
+A compact table of all arc scores across all characters for quick reference, including
+current value, next threshold, and what ability unlocks at that threshold.
 
 ## Party Dynamics
 How the characters relate to each other, current tensions, shared goals.
@@ -150,6 +152,8 @@ def run_synthesize(
     character_files: list[Path],
     extract_files: list[Path],
     backstory_files: list[Path],
+    arc_score_files: list[Path],
+    context_files: list[Path],
     model: str,
 ) -> str:
     parts = []
@@ -175,6 +179,20 @@ def run_synthesize(
         )
         parts.append(f"# BACKSTORY DOCUMENTS\n\n{backstories}")
 
+    if arc_score_files:
+        arc_scores = "\n\n---\n\n".join(
+            f"<!-- Arc score mechanic: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
+            for f in arc_score_files
+        )
+        parts.append(f"# ARC SCORE MECHANICS\n\n{arc_scores}")
+
+    if context_files:
+        context = "\n\n---\n\n".join(
+            f"<!-- Context: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
+            for f in context_files
+        )
+        parts.append(f"# ADDITIONAL CONTEXT\n\n{context}")
+
     user_prompt = "\n\n===\n\n".join(parts)
     print(f"  Synthesizing ({len(user_prompt):,} chars total)...")
     print("  " + "─" * 56)
@@ -193,6 +211,10 @@ def main() -> None:
                         help="Session summaries file (large, will be chunked)")
     parser.add_argument("--backstory", "-b", nargs="+", metavar="FILE", default=[],
                         help="Backstory document(s) (optional)")
+    parser.add_argument("--arc-scores", "-a", nargs="+", metavar="FILE", default=[],
+                        help="Arc score mechanic document(s), one per character (optional)")
+    parser.add_argument("--context", nargs="+", metavar="FILE", default=[],
+                        help="Additional context files (e.g. campaign_state.md)")
     parser.add_argument("--output", "-o", required=True, metavar="FILE",
                         help="Where to save the party document")
     parser.add_argument("--chunk-size", type=int, default=60000, metavar="CHARS",
@@ -222,8 +244,10 @@ def main() -> None:
 
     character_files = [Path(f).expanduser().resolve() for f in args.character]
     backstory_files = [Path(f).expanduser().resolve() for f in args.backstory]
+    arc_score_files = [Path(f).expanduser().resolve() for f in args.arc_scores]
+    context_files = [Path(f).expanduser().resolve() for f in args.context]
 
-    for f in character_files + backstory_files:
+    for f in character_files + backstory_files + arc_score_files + context_files:
         if not f.exists():
             print(f"Error: file not found: {f}", file=sys.stderr)
             sys.exit(1)
@@ -254,10 +278,14 @@ def main() -> None:
         sources.append(f"{len(extract_files)} session extraction(s)")
     if backstory_files:
         sources.append(f"{len(backstory_files)} backstory doc(s)")
+    if arc_score_files:
+        sources.append(f"{len(arc_score_files)} arc score doc(s)")
+    if context_files:
+        sources.append(f"{len(context_files)} context file(s)")
 
     print(f"\n[Pass 2: Synthesize | {', '.join(sources)} | model: {args.model}]")
     print("=" * 60)
-    party_doc = run_synthesize(client, character_files, extract_files, backstory_files, args.model)
+    party_doc = run_synthesize(client, character_files, extract_files, backstory_files, arc_score_files, context_files, args.model)
     print("=" * 60)
 
     output.parent.mkdir(parents=True, exist_ok=True)
