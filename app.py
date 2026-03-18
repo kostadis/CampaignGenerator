@@ -5,13 +5,16 @@ Run with:
   streamlit run app.py
 """
 
+import json
 import os
 import shlex
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PYTHON = sys.executable
@@ -500,6 +503,257 @@ def page_npc_table(model: str) -> None:
     run_panel(cmd, "npc_table")
 
 
+CONNECTIONS_SYSTEM = """\
+You are extracting named entities and relationships from D&D campaign documents.
+
+Output a single JSON object with exactly this structure:
+{
+  "entities": [
+    {"id": "snake_case_unique_id", "label": "Display Name", "type": "TYPE", "summary": "one sentence"}
+  ],
+  "edges": [
+    {"source": "id1", "target": "id2", "label": "relationship"}
+  ]
+}
+
+Entity types (use exactly these strings):
+  npc       — named non-player characters
+  faction   — organizations, cults, societies, guilds
+  location  — named places, dungeons, regions
+  plot      — active quests, plot threads, missions
+  arc_score — tracking scores (e.g. Brundar's Echo, Planar Distortion Score)
+  party     — player characters
+
+Rules:
+- Every entity that appears must have a unique snake_case id.
+- The "summary" field is one sentence describing who/what this entity is.
+- For edges, use concise relationship labels: "member of", "enemy of", "ally of",
+  "located in", "triggered by", "seeks", "controls", "allied with", "hunts", etc.
+- Only create edges between entities that appear in your entities list.
+- Do not invent entities or relationships not present in the source documents.
+- Output only valid JSON. No preamble, no code fences, no commentary.
+"""
+
+NODE_COLORS = {
+    "npc":       "#4e9af1",   # blue
+    "faction":   "#f1814e",   # orange
+    "location":  "#4ef1a0",   # green
+    "plot":      "#c44ef1",   # purple
+    "arc_score": "#f1e14e",   # yellow
+    "party":     "#4ef1e1",   # teal
+}
+
+NODE_SHAPES = {
+    "npc":       "dot",
+    "faction":   "diamond",
+    "location":  "square",
+    "plot":      "triangle",
+    "arc_score": "star",
+    "party":     "dot",
+}
+
+
+def build_graph_html(data: dict, filter_types: set[str]) -> str:
+    try:
+        from pyvis.network import Network
+    except ImportError:
+        return "<p style='color:red'>pyvis not installed. Run: pip install pyvis</p>"
+
+    net = Network(height="680px", width="100%", bgcolor="#1a1a2e", font_color="white",
+                  directed=True)
+    net.set_options("""{
+      "physics": {
+        "solver": "forceAtlas2Based",
+        "forceAtlas2Based": {
+          "gravitationalConstant": -60,
+          "centralGravity": 0.005,
+          "springLength": 180,
+          "springConstant": 0.06,
+          "damping": 0.4
+        },
+        "stabilization": {"iterations": 150}
+      },
+      "nodes": {
+        "size": 22,
+        "font": {"size": 13, "strokeWidth": 2, "strokeColor": "#1a1a2e"},
+        "borderWidth": 2,
+        "borderWidthSelected": 4
+      },
+      "edges": {
+        "font": {"size": 10, "align": "middle", "strokeWidth": 0},
+        "arrows": {"to": {"enabled": true, "scaleFactor": 0.6}},
+        "smooth": {"type": "curvedCW", "roundness": 0.1},
+        "color": {"opacity": 0.7}
+      },
+      "interaction": {
+        "hover": true,
+        "tooltipDelay": 100,
+        "navigationButtons": true
+      }
+    }""")
+
+    entity_ids = set()
+    for ent in data.get("entities", []):
+        if ent.get("type") not in filter_types:
+            continue
+        eid = ent["id"]
+        entity_ids.add(eid)
+        etype = ent.get("type", "npc")
+        color = NODE_COLORS.get(etype, "#888888")
+        shape = NODE_SHAPES.get(etype, "dot")
+        tooltip = f"<b>{ent['label']}</b><br><i>{etype}</i><br>{ent.get('summary', '')}"
+        net.add_node(eid, label=ent["label"], color=color, shape=shape,
+                     title=tooltip, group=etype)
+
+    for edge in data.get("edges", []):
+        src, tgt = edge.get("source"), edge.get("target")
+        if src in entity_ids and tgt in entity_ids:
+            net.add_edge(src, tgt, label=edge.get("label", ""), title=edge.get("label", ""),
+                         color="#aaaaaa")
+
+    with tempfile.NamedTemporaryFile(suffix=".html", delete=False, mode="w") as f:
+        net.save_graph(f.name)
+        return open(f.name).read()
+
+
+def page_connections(model: str) -> None:
+    st.title("Connection Graph")
+    st.caption("Visualize relationships between NPCs, factions, locations, and plot threads.")
+
+    # ── File selection ────────────────────────────────────────────────────────
+    docs_dir = SCRIPT_DIR / "docs"
+    md_files: list[Path] = []
+    if docs_dir.exists():
+        md_files = sorted(docs_dir.rglob("*.md"))
+
+    all_md = [str(f.relative_to(SCRIPT_DIR)) for f in md_files]
+    extra_raw = st.text_area("Additional markdown files (one path per line)",
+                             key="cg_extra_files", height=80,
+                             help="Files outside docs/ — paste absolute or relative paths")
+    extra_files = [p.strip() for p in extra_raw.splitlines() if p.strip()]
+
+    if all_md:
+        selected = st.multiselect("Documents to include", all_md,
+                                  default=all_md[:min(4, len(all_md))],
+                                  key="cg_selected_docs")
+    else:
+        selected = []
+        st.info("No .md files found in docs/. Add files or use the extra paths field above.")
+
+    all_selected = selected + extra_files
+
+    # ── Cache file ────────────────────────────────────────────────────────────
+    cache_path = SCRIPT_DIR / "docs" / "connections.json"
+    cache_exists = cache_path.exists()
+
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        extract_btn = st.button("Extract connections (calls Claude API)",
+                                type="primary", key="cg_extract",
+                                disabled=not all_selected or not api_key_present())
+    with col2:
+        if cache_exists:
+            st.caption(f"Cache: `docs/connections.json` ✅  "
+                       f"({cache_path.stat().st_size // 1024}KB)")
+        else:
+            st.caption("No cache yet — click Extract to generate.")
+
+    if extract_btn and all_selected:
+        parts = []
+        for rel_path in all_selected:
+            p = (SCRIPT_DIR / rel_path).expanduser().resolve()
+            if p.exists():
+                parts.append(f"<!-- {rel_path} -->\n\n{p.read_text(encoding='utf-8').strip()}")
+            else:
+                st.warning(f"File not found: {rel_path}")
+        if parts:
+            combined = "\n\n---\n\n".join(parts)
+            st.info(f"Extracting from {len(parts)} document(s) ({len(combined):,} chars)…")
+            with st.spinner("Calling Claude to extract entities and relationships…"):
+                from campaignlib import make_client, stream_api
+                client = make_client()
+                raw = stream_api(client, CONNECTIONS_SYSTEM, combined, model,
+                                 max_tokens=4096, silent=True)
+            # Parse JSON — strip code fences if Claude wrapped it
+            raw = raw.strip()
+            if raw.startswith("```"):
+                raw = "\n".join(raw.splitlines()[1:])
+            if raw.endswith("```"):
+                raw = "\n".join(raw.splitlines()[:-1])
+            try:
+                data = json.loads(raw)
+                cache_path.parent.mkdir(parents=True, exist_ok=True)
+                cache_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+                st.success(f"Extracted {len(data.get('entities', []))} entities and "
+                           f"{len(data.get('edges', []))} relationships. Cached to docs/connections.json")
+                st.session_state["cg_data"] = data
+            except json.JSONDecodeError as e:
+                st.error(f"Could not parse Claude's response as JSON: {e}")
+                st.code(raw[:2000], language="json")
+
+    # ── Load data ─────────────────────────────────────────────────────────────
+    data: dict | None = st.session_state.get("cg_data")
+    if data is None and cache_exists:
+        data = json.loads(cache_path.read_text(encoding="utf-8"))
+        st.session_state["cg_data"] = data
+
+    if not data:
+        st.stop()
+
+    entities = data.get("entities", [])
+    edges = data.get("edges", [])
+
+    # ── Filters ───────────────────────────────────────────────────────────────
+    st.divider()
+    all_types = sorted({e.get("type", "npc") for e in entities})
+    st.subheader("Filters")
+    filter_cols = st.columns(len(all_types) or 1)
+    filter_types: set[str] = set()
+    for i, t in enumerate(all_types):
+        color = NODE_COLORS.get(t, "#888")
+        label = f":{t.replace('_', ' ').title()}"
+        if filter_cols[i].checkbox(t.replace("_", " ").title(), value=True,
+                                   key=f"cg_filter_{t}"):
+            filter_types.add(t)
+
+    # ── Stats ─────────────────────────────────────────────────────────────────
+    visible_ids = {e["id"] for e in entities if e.get("type") in filter_types}
+    visible_edges = [e for e in edges
+                     if e.get("source") in visible_ids and e.get("target") in visible_ids]
+    st.caption(f"{len(visible_ids)} nodes · {len(visible_edges)} edges visible "
+               f"(total: {len(entities)} entities, {len(edges)} relationships)")
+
+    # ── Graph ─────────────────────────────────────────────────────────────────
+    graph_html = build_graph_html(data, filter_types)
+    components.html(graph_html, height=700, scrolling=False)
+
+    # ── Legend ────────────────────────────────────────────────────────────────
+    st.divider()
+    st.subheader("Legend")
+    leg_cols = st.columns(len(NODE_COLORS))
+    for i, (etype, color) in enumerate(NODE_COLORS.items()):
+        leg_cols[i].markdown(
+            f"<span style='background:{color};padding:2px 8px;border-radius:4px;"
+            f"color:#000;font-size:12px'>{etype.replace('_',' ').title()}</span>",
+            unsafe_allow_html=True,
+        )
+
+    # ── Entity table ──────────────────────────────────────────────────────────
+    st.divider()
+    st.subheader("Entity List")
+    search = st.text_input("Search entities", key="cg_search", placeholder="Type to filter…")
+    rows = [e for e in entities
+            if e.get("type") in filter_types
+            and (not search or search.lower() in e["label"].lower()
+                 or search.lower() in e.get("summary", "").lower())]
+    if rows:
+        st.dataframe(
+            [{"Name": e["label"], "Type": e.get("type", ""),
+              "Summary": e.get("summary", "")} for e in rows],
+            use_container_width=True, hide_index=True,
+        )
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -513,6 +767,7 @@ def main() -> None:
         st.title("🎲 CampaignGenerator")
         page = st.radio("Navigate", [
             "Workflow Guide",
+            "Connection Graph",
             "D&D Sheet → Markdown",
             "Make Tracking List",
             "Campaign State",
@@ -536,6 +791,8 @@ def main() -> None:
 
     if page == "Workflow Guide":
         page_workflow_guide()
+    elif page == "Connection Graph":
+        page_connections(model)
     elif page == "D&D Sheet → Markdown":
         page_dnd_sheet(model)
     elif page == "Make Tracking List":
