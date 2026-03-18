@@ -641,10 +641,18 @@ def page_connections(model: str) -> None:
                              help="Files outside docs/ — paste absolute or relative paths")
     extra_files = [p.strip() for p in extra_raw.splitlines() if p.strip()]
 
+    def short_label(full_path: str) -> str:
+        """Show path relative to docs_dir, or just the filename if that fails."""
+        try:
+            return str(Path(full_path).relative_to(docs_dir))
+        except ValueError:
+            return Path(full_path).name
+
     if all_md:
         selected = st.multiselect("Documents to include", all_md,
                                   default=all_md[:min(4, len(all_md))],
-                                  key="cg_selected_docs")
+                                  key="cg_selected_docs",
+                                  format_func=short_label)
     else:
         selected = []
         st.info("No .md files found in docs/. Add files or use the extra paths field above.")
