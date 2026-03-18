@@ -662,8 +662,10 @@ def page_connections(model: str) -> None:
         parts = []
         for rel_path in all_selected:
             p = (SCRIPT_DIR / rel_path).expanduser().resolve()
-            if p.exists():
+            if p.is_file():
                 parts.append(f"<!-- {rel_path} -->\n\n{p.read_text(encoding='utf-8').strip()}")
+            elif p.is_dir():
+                st.warning(f"Skipping directory (provide file paths, not folders): {rel_path}")
             else:
                 st.warning(f"File not found: {rel_path}")
         if parts:
