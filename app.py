@@ -526,7 +526,7 @@ def main() -> None:
 
         st.divider()
         st.subheader("Model")
-        model = st.selectbox("", MODELS, key="global_model", label_visibility="collapsed")
+        model = st.selectbox("Claude model", MODELS, key="global_model", label_visibility="collapsed")
 
         st.divider()
         if api_key_present():
