@@ -553,6 +553,33 @@ NODE_SHAPES = {
 }
 
 
+EDGE_COLORS = {
+    "hostile":  "#ff4444",   # red    — enemy, hunts, opposes, attacks
+    "allied":   "#44ff88",   # green  — ally, allied with, supports, serves
+    "member":   "#ffaa44",   # orange — member of, belongs to, part of, controls
+    "located":  "#44aaff",   # blue   — located in, based in, found at, at
+    "triggers": "#ff44ff",   # pink   — triggers, activates, causes, linked to
+    "seeks":    "#ffff44",   # yellow — seeks, pursues, wants, searches for
+    "default":  "#cccccc",   # light grey
+}
+
+def edge_color(label: str) -> str:
+    l = label.lower()
+    if any(w in l for w in ("enemy", "hostile", "hunts", "opposes", "against", "fights", "kills")):
+        return EDGE_COLORS["hostile"]
+    if any(w in l for w in ("ally", "allied", "support", "serves", "works for", "loyal", "friend")):
+        return EDGE_COLORS["allied"]
+    if any(w in l for w in ("member", "belongs", "part of", "controls", "leads", "commands", "runs")):
+        return EDGE_COLORS["member"]
+    if any(w in l for w in ("located", "based", "found at", " at ", "resides", "in ", "operates")):
+        return EDGE_COLORS["located"]
+    if any(w in l for w in ("trigger", "activates", "causes", "linked", "tied to", "scores")):
+        return EDGE_COLORS["triggers"]
+    if any(w in l for w in ("seeks", "pursues", "wants", "searches", "hunts for", "after")):
+        return EDGE_COLORS["seeks"]
+    return EDGE_COLORS["default"]
+
+
 def build_graph_html(data: dict, filter_types: set[str]) -> str:
     try:
         from pyvis.network import Network
@@ -567,7 +594,7 @@ def build_graph_html(data: dict, filter_types: set[str]) -> str:
         "forceAtlas2Based": {
           "gravitationalConstant": -60,
           "centralGravity": 0.005,
-          "springLength": 180,
+          "springLength": 200,
           "springConstant": 0.06,
           "damping": 0.4
         },
@@ -575,20 +602,28 @@ def build_graph_html(data: dict, filter_types: set[str]) -> str:
       },
       "nodes": {
         "size": 22,
-        "font": {"size": 13, "strokeWidth": 2, "strokeColor": "#1a1a2e"},
+        "font": {"size": 14, "strokeWidth": 3, "strokeColor": "#1a1a2e"},
         "borderWidth": 2,
         "borderWidthSelected": 4
       },
       "edges": {
-        "font": {"size": 10, "align": "middle", "strokeWidth": 0},
+        "font": {
+          "size": 11,
+          "align": "middle",
+          "color": "#ffffff",
+          "strokeWidth": 3,
+          "strokeColor": "#1a1a2e"
+        },
         "arrows": {"to": {"enabled": true, "scaleFactor": 0.6}},
-        "smooth": {"type": "curvedCW", "roundness": 0.1},
-        "color": {"opacity": 0.7}
+        "smooth": {"type": "curvedCW", "roundness": 0.15},
+        "width": 1.5,
+        "selectionWidth": 3
       },
       "interaction": {
         "hover": true,
-        "tooltipDelay": 100,
-        "navigationButtons": true
+        "tooltipDelay": 80,
+        "navigationButtons": true,
+        "hideEdgesOnDrag": true
       }
     }""")
 
@@ -601,15 +636,21 @@ def build_graph_html(data: dict, filter_types: set[str]) -> str:
         etype = ent.get("type", "npc")
         color = NODE_COLORS.get(etype, "#888888")
         shape = NODE_SHAPES.get(etype, "dot")
-        tooltip = f"<b>{ent['label']}</b><br><i>{etype}</i><br>{ent.get('summary', '')}"
+        tooltip = (f"<b style='font-size:14px'>{ent['label']}</b><br>"
+                   f"<i style='color:#aaa'>{etype}</i><br><br>"
+                   f"{ent.get('summary', '')}")
         net.add_node(eid, label=ent["label"], color=color, shape=shape,
                      title=tooltip, group=etype)
 
     for edge in data.get("edges", []):
         src, tgt = edge.get("source"), edge.get("target")
+        rel = edge.get("label", "")
         if src in entity_ids and tgt in entity_ids:
-            net.add_edge(src, tgt, label=edge.get("label", ""), title=edge.get("label", ""),
-                         color="#aaaaaa")
+            ecolor = edge_color(rel)
+            tooltip = f"<b>{rel}</b>"
+            net.add_edge(src, tgt, label=rel, title=tooltip,
+                         color={"color": ecolor, "highlight": "#ffffff", "opacity": 0.85},
+                         font={"color": "#ffffff", "strokeWidth": 3, "strokeColor": "#1a1a2e"})
 
     with tempfile.NamedTemporaryFile(suffix=".html", delete=False, mode="w") as f:
         net.save_graph(f.name)
@@ -772,14 +813,34 @@ def page_connections(model: str) -> None:
 
     # ── Legend ────────────────────────────────────────────────────────────────
     st.divider()
-    st.subheader("Legend")
-    leg_cols = st.columns(len(NODE_COLORS))
-    for i, (etype, color) in enumerate(NODE_COLORS.items()):
-        leg_cols[i].markdown(
-            f"<span style='background:{color};padding:2px 8px;border-radius:4px;"
-            f"color:#000;font-size:12px'>{etype.replace('_',' ').title()}</span>",
-            unsafe_allow_html=True,
-        )
+    col_nodes, col_edges = st.columns(2)
+    with col_nodes:
+        st.caption("**Node types**")
+        for etype, color in NODE_COLORS.items():
+            st.markdown(
+                f"<span style='background:{color};padding:2px 10px;border-radius:4px;"
+                f"color:#000;font-size:12px;font-weight:bold'>"
+                f"{etype.replace('_',' ').title()}</span>",
+                unsafe_allow_html=True,
+            )
+    with col_edges:
+        st.caption("**Edge colors**")
+        edge_labels = {
+            "hostile":  "hostile / enemy / hunts",
+            "allied":   "ally / serves / supports",
+            "member":   "member of / controls / leads",
+            "located":  "located in / based at",
+            "triggers": "triggers / linked to",
+            "seeks":    "seeks / pursues",
+            "default":  "other relationship",
+        }
+        for key, desc in edge_labels.items():
+            st.markdown(
+                f"<span style='background:{EDGE_COLORS[key]};padding:2px 10px;"
+                f"border-radius:4px;color:#000;font-size:12px;font-weight:bold'>"
+                f"{desc}</span>",
+                unsafe_allow_html=True,
+            )
 
     # ── Entity table ──────────────────────────────────────────────────────────
     st.divider()
