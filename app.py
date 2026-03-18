@@ -621,12 +621,21 @@ def page_connections(model: str) -> None:
     st.caption("Visualize relationships between NPCs, factions, locations, and plot threads.")
 
     # ── File selection ────────────────────────────────────────────────────────
-    docs_dir = SCRIPT_DIR / "docs"
+    docs_dir_input = st.text_input(
+        "Campaign docs directory",
+        value=st.session_state.get("cg_docs_dir", str(SCRIPT_DIR / "docs")),
+        key="cg_docs_dir",
+        help="Folder to scan for .md files — e.g. /home/kroussos/campaigns/Phandalin/docs",
+    )
+    docs_dir = Path(docs_dir_input).expanduser().resolve()
     md_files: list[Path] = []
-    if docs_dir.exists():
+    if docs_dir.is_dir():
         md_files = sorted(docs_dir.rglob("*.md"))
+        st.caption(f"Found {len(md_files)} .md file(s) in `{docs_dir}`")
+    elif docs_dir_input.strip():
+        st.warning(f"Directory not found: {docs_dir}")
 
-    all_md = [str(f.relative_to(SCRIPT_DIR)) for f in md_files]
+    all_md = [str(f) for f in md_files]
     extra_raw = st.text_area("Additional markdown files (one path per line)",
                              key="cg_extra_files", height=80,
                              help="Files outside docs/ — paste absolute or relative paths")
@@ -661,7 +670,7 @@ def page_connections(model: str) -> None:
     if extract_btn and all_selected:
         parts = []
         for rel_path in all_selected:
-            p = (SCRIPT_DIR / rel_path).expanduser().resolve()
+            p = Path(rel_path).expanduser().resolve()
             if p.is_file():
                 parts.append(f"<!-- {rel_path} -->\n\n{p.read_text(encoding='utf-8').strip()}")
             elif p.is_dir():
