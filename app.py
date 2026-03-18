@@ -636,9 +636,7 @@ def build_graph_html(data: dict, filter_types: set[str]) -> str:
         etype = ent.get("type", "npc")
         color = NODE_COLORS.get(etype, "#888888")
         shape = NODE_SHAPES.get(etype, "dot")
-        tooltip = (f"<b style='font-size:14px'>{ent['label']}</b><br>"
-                   f"<i style='color:#aaa'>{etype}</i><br><br>"
-                   f"{ent.get('summary', '')}")
+        tooltip = f"{ent['label']} [{etype}]\n{ent.get('summary', '')}"
         net.add_node(eid, label=ent["label"], color=color, shape=shape,
                      title=tooltip, group=etype)
 
@@ -647,8 +645,7 @@ def build_graph_html(data: dict, filter_types: set[str]) -> str:
         rel = edge.get("label", "")
         if src in entity_ids and tgt in entity_ids:
             ecolor = edge_color(rel)
-            tooltip = f"<b>{rel}</b>"
-            net.add_edge(src, tgt, label=rel, title=tooltip,
+            net.add_edge(src, tgt, label=rel, title=rel,
                          color={"color": ecolor, "highlight": "#ffffff", "opacity": 0.85},
                          font={"color": "#ffffff", "strokeWidth": 3, "strokeColor": "#1a1a2e"})
 
