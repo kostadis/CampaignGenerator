@@ -667,6 +667,24 @@ def page_connections(model: str) -> None:
         else:
             st.caption("No cache yet — click Extract to generate.")
 
+    # Show live size estimate before running
+    CHAR_LIMIT = 600_000  # ~150k tokens, leaves headroom for system prompt + output
+    if all_selected:
+        est_chars = sum(
+            Path(p).expanduser().resolve().stat().st_size
+            for p in all_selected
+            if Path(p).expanduser().resolve().is_file()
+        )
+        pct = est_chars / CHAR_LIMIT * 100
+        color = "normal" if pct < 80 else ("warning" if pct < 100 else "error")
+        st.metric("Estimated input size", f"{est_chars:,} chars",
+                  delta=f"{pct:.0f}% of ~{CHAR_LIMIT:,} char limit",
+                  delta_color=color)
+        if pct >= 100:
+            st.error("Selection is too large for the API context window. "
+                     "Deselect some files — prioritize distilled docs (campaign_state.md, "
+                     "planning.md, party.md) over raw summaries.")
+
     if extract_btn and all_selected:
         parts = []
         for rel_path in all_selected:
@@ -677,8 +695,14 @@ def page_connections(model: str) -> None:
                 st.warning(f"Skipping directory (provide file paths, not folders): {rel_path}")
             else:
                 st.warning(f"File not found: {rel_path}")
+        if not parts:
+            st.stop()
+        combined = "\n\n---\n\n".join(parts)
+        if len(combined) > CHAR_LIMIT:
+            st.error(f"Combined text is {len(combined):,} chars — exceeds the ~{CHAR_LIMIT:,} char "
+                     f"limit. Deselect some files and try again.")
+            st.stop()
         if parts:
-            combined = "\n\n---\n\n".join(parts)
             st.info(f"Extracting from {len(parts)} document(s) ({len(combined):,} chars)…")
             with st.spinner("Calling Claude to extract entities and relationships…"):
                 from campaignlib import make_client, stream_api
