@@ -722,10 +722,10 @@ def page_connections(model: str) -> None:
             if Path(p).expanduser().resolve().is_file()
         )
         pct = est_chars / CHAR_LIMIT * 100
-        color = "normal" if pct < 80 else ("warning" if pct < 100 else "error")
+        delta_color = "off" if pct < 80 else ("orange" if pct < 100 else "red")
         st.metric("Estimated input size", f"{est_chars:,} chars",
                   delta=f"{pct:.0f}% of ~{CHAR_LIMIT:,} char limit",
-                  delta_color=color)
+                  delta_color=delta_color)
         if pct >= 100:
             st.error("Selection is too large for the API context window. "
                      "Deselect some files — prioritize distilled docs (campaign_state.md, "
