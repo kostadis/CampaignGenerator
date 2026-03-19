@@ -15,11 +15,38 @@ from pathlib import Path
 
 import streamlit as st
 import streamlit.components.v1 as components
+import yaml
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PYTHON = sys.executable
 DEFAULT_MODEL = "claude-sonnet-4-20250514"
 DEFAULT_CONFIG = str(SCRIPT_DIR / "config" / "config.yaml")
+
+
+def find_ui_config() -> Path:
+    cwd = Path.cwd() / "ui_config.yaml"
+    if cwd.exists():
+        return cwd
+    return SCRIPT_DIR / "ui_config.yaml"
+
+
+def load_ui_config(path: Path | None = None) -> dict:
+    p = path or find_ui_config()
+    if p.exists():
+        with open(p) as f:
+            return yaml.safe_load(f) or {}
+    return {}
+
+
+def resolve_cfg(cfg: dict, key: str, fallback: str = "") -> str:
+    """Return an absolute path from a config value, resolved relative to CWD."""
+    val = cfg.get(key, fallback) or fallback
+    if not val:
+        return fallback
+    p = Path(val).expanduser()
+    if not p.is_absolute():
+        p = Path.cwd() / p
+    return str(p)
 
 MODELS = [
     "claude-sonnet-4-20250514",
@@ -855,6 +882,76 @@ def page_connections(model: str) -> None:
         )
 
 
+def apply_ui_config_defaults(cfg: dict) -> None:
+    """Populate session_state with config values only on first load (don't overwrite user edits)."""
+    defaults = {
+        "global_model":          cfg.get("model", DEFAULT_MODEL),
+        "cg_docs_dir":           resolve_cfg(cfg, "docs_dir", str(SCRIPT_DIR / "docs")),
+        # summaries — shared across scripts
+        "cs_input":              resolve_cfg(cfg, "summaries"),
+        "distill_input":         resolve_cfg(cfg, "summaries"),
+        "party_summaries":       resolve_cfg(cfg, "summaries"),
+        "plan_summaries":        resolve_cfg(cfg, "summaries"),
+        "plan_build_summaries":  resolve_cfg(cfg, "summaries"),
+        "query_input":           resolve_cfg(cfg, "summaries"),
+        # outputs
+        "cs_output":             resolve_cfg(cfg, "campaign_state_output", "docs/campaign_state.md"),
+        "distill_output":        resolve_cfg(cfg, "world_state_output",    "docs/world_state.md"),
+        "party_output":          resolve_cfg(cfg, "party_output",          "docs/party.md"),
+        "plan_output":           resolve_cfg(cfg, "planning_output",       "docs/planning.md"),
+        # tracking
+        "cs_track_file":         resolve_cfg(cfg, "tracking_file"),
+        "mt_output":             resolve_cfg(cfg, "tracking_file"),
+        # prep config
+        "prep_config":           resolve_cfg(cfg, "prep_config", DEFAULT_CONFIG),
+        "npc_config":            resolve_cfg(cfg, "prep_config", DEFAULT_CONFIG),
+    }
+    for key, val in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = val
+
+
+def page_settings() -> None:
+    st.title("Settings")
+    st.caption("View and edit your UI configuration file.")
+
+    cfg_path = find_ui_config()
+    st.info(f"Config file: `{cfg_path}`")
+
+    if cfg_path.exists():
+        current = cfg_path.read_text(encoding="utf-8")
+    else:
+        current = ""
+
+    edited = st.text_area("ui_config.yaml", value=current, height=420,
+                          key="settings_editor",
+                          help="Edit and click Save. Changes take effect on next page load.")
+
+    col1, col2 = st.columns([1, 4])
+    with col1:
+        if st.button("Save", type="primary", key="settings_save"):
+            try:
+                yaml.safe_load(edited)   # validate before saving
+                cfg_path.write_text(edited, encoding="utf-8")
+                # clear cached defaults so they reload
+                for key in list(st.session_state.keys()):
+                    if key != "nav_page":
+                        del st.session_state[key]
+                st.success("Saved. Reload the page to apply changes.")
+            except yaml.YAMLError as e:
+                st.error(f"Invalid YAML: {e}")
+    with col2:
+        st.caption(f"Saving to `{cfg_path}`")
+
+    st.divider()
+    st.subheader("Current values")
+    try:
+        cfg = yaml.safe_load(edited) or {}
+        st.json(cfg)
+    except yaml.YAMLError:
+        pass
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -863,6 +960,12 @@ def main() -> None:
         page_icon="🎲",
         layout="wide",
     )
+
+    # Load config and apply defaults once per session
+    if "ui_config_loaded" not in st.session_state:
+        cfg = load_ui_config()
+        apply_ui_config_defaults(cfg)
+        st.session_state["ui_config_loaded"] = True
 
     with st.sidebar:
         st.title("🎲 CampaignGenerator")
@@ -878,6 +981,7 @@ def main() -> None:
             "Query Summaries",
             "Session Prep",
             "NPC Table",
+            "⚙️ Settings",
         ], key="nav_page")
 
         st.divider()
@@ -912,6 +1016,8 @@ def main() -> None:
         page_session_prep(model)
     elif page == "NPC Table":
         page_npc_table(model)
+    elif page == "⚙️ Settings":
+        page_settings()
 
 
 if __name__ == "__main__":
