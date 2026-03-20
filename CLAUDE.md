@@ -55,6 +55,7 @@ distill.py                  # CLI: convert session summaries into world_state.md
 campaign_state.py           # CLI: generate completed-content grounding doc from summaries
 make_tracking.py            # CLI: extract trackable events from an adventure module
 query.py                    # CLI: search summaries for a specific event or topic
+vtt_summary.py              # CLI: convert a Zoom .vtt transcript into a session summary
 planning.py                 # CLI: generate planning.md from NPC dossiers + arc scores
 party.py                    # CLI: generate party.md from character sheets + summaries
 dnd_sheet.py                # CLI: convert D&D Beyond PDF to markdown via Claude vision
@@ -299,6 +300,20 @@ python transform.py dossier.txt
 python transform.py dossier.txt --single          # extract as a single beat
 python transform.py dossier.txt -o beats/out.txt  # save for later
 ```
+
+## VTT transcript → session summary
+
+`vtt_summary.py` converts a Zoom `.vtt` transcript into a structured session summary
+using the same two-pass extract → synthesize pipeline as `distill.py`.
+
+```bash
+python vtt_summary.py session.vtt --output docs/summaries/session_12.md
+python vtt_summary.py session.vtt -o session_12.md --date "2026-03-15" --session-name "Session 12 — Icespire Hold"
+python vtt_summary.py --synthesize-only --extract-dir vtt_extractions/ -o out.md
+```
+
+Output is a `# Session Name` markdown document suitable for appending to your
+summaries file and feeding into `campaign_state.py` or `distill.py`.
 
 ## Running tests
 

@@ -66,11 +66,12 @@ def path_status(path_str: str) -> str:
     return "✅" if Path(path_str).expanduser().exists() else "❌ not found"
 
 
-def path_field(label: str, key: str, default: str = "", help: str = "", required: bool = False) -> str:
+def path_field(label: str, key: str, default: str = "", help: str = "",
+               required: bool = False, is_output: bool = False) -> str:
     label_text = f"{label} {'*(required)*' if required else '*(optional)*'}"
     val = st.text_input(label_text, value=st.session_state.get(key, default),
                         key=key, help=help)
-    if val.strip():
+    if val.strip() and not is_output:
         st.caption(path_status(val))
     return val.strip()
 
@@ -151,18 +152,20 @@ from scratch is shown below. For ongoing sessions, only run the steps that need 
 
 | Step | Tool | What it does |
 |---|---|---|
-| 3 | **Campaign State** | What's been completed, current NPC states, active threads |
-| 4 | **Distill World State** | Structured lore from raw session summaries |
-| 5 | **Party Document** | Party roster, arc scores, relationships |
-| 6 | **Planning Document** | NPC dossiers, threat arc scores, active plots |
+| 3 | **VTT → Session Summary** | Convert Zoom transcript to a structured session summary |
+| 4 | **Session Narrative** | First-person story in rotating character voices |
+| 5 | **Campaign State** | What's been completed, current NPC states, active threads |
+| 6 | **Distill World State** | Structured lore from raw session summaries |
+| 7 | **Party Document** | Party roster, arc scores, relationships |
+| 8 | **Planning Document** | NPC dossiers, threat arc scores, active plots |
 
 ### Session prep (run before each session)
 
 | Step | Tool | What it does |
 |---|---|---|
-| 7 | **Session Prep** | Generate encounter docs from a beat or session outline |
-| 8 | **NPC Table** | Quick reference table of all NPCs |
-| 9 | **Query Summaries** | Look up a specific event or NPC ad-hoc |
+| 8 | **Session Prep** | Generate encounter docs from a beat or session outline |
+| 9 | **NPC Table** | Quick reference table of all NPCs |
+| 10 | **Query Summaries** | Look up a specific event or NPC ad-hoc |
 
 ---
 
@@ -184,9 +187,9 @@ def page_dnd_sheet(model: str) -> None:
 
     pdfs = multi_path_field("PDF file(s)", key="dnd_pdfs", required=True)
     output = path_field("Output file", key="dnd_output",
-                        help="For a single PDF. Leave blank to print to terminal.")
+                        help="For a single PDF. Leave blank to print to terminal.", is_output=True)
     output_dir = path_field("Output directory", key="dnd_output_dir",
-                            help="For multiple PDFs. One .md file per PDF.")
+                            help="For multiple PDFs. One .md file per PDF.", is_output=True)
 
     if len(pdfs) > 1 and output:
         st.warning("--output only works for a single PDF. Use --output-dir for multiple files.")
@@ -206,7 +209,7 @@ def page_make_tracking(model: str) -> None:
 
     input_path = path_field("Adventure module markdown file", key="mt_input", required=True)
     output = path_field("Output file (.txt)", key="mt_output",
-                        default="docs/tracking.txt", required=True)
+                        default="docs/tracking.txt", required=True, is_output=True)
 
     st.info("Review and edit the generated tracking.txt before using it with Campaign State. "
             "Items are phrased neutrally — verify they match your campaign's actual events.")
@@ -230,7 +233,7 @@ def page_campaign_state(model: str) -> None:
         input_path = ""
 
     output = path_field("Output file", key="cs_output",
-                        default="docs/campaign_state.md", required=True)
+                        default="docs/campaign_state.md", required=True, is_output=True)
     track_file = path_field("Tracking file (--track-file)", key="cs_track_file",
                             help="Text file with events to explicitly track, one per line. "
                                  "Generate with Make Tracking List.")
@@ -275,7 +278,7 @@ def page_distill(model: str) -> None:
         input_path = ""
 
     output = path_field("Output file", key="distill_output",
-                        default="docs/world_state.md", required=True)
+                        default="docs/world_state.md", required=True, is_output=True)
     extract_dir = path_field("Extract dir", key="distill_extract_dir",
                              help="Default: <output_dir>/distill_extractions/")
     chunk_size = st.number_input("Chunk size (chars)", value=60000, step=5000,
@@ -316,7 +319,7 @@ def page_party(model: str) -> None:
     context_files = multi_path_field("Context files", key="party_context",
                                      help="e.g. docs/campaign_state.md")
     output = path_field("Output file", key="party_output",
-                        default="docs/party.md", required=True)
+                        default="docs/party.md", required=True, is_output=True)
     extract_dir = path_field("Extract dir", key="party_extract_dir",
                              help="Default: <output_dir>/party_extractions/")
     chunk_size = st.number_input("Chunk size (chars)", value=60000, step=5000,
@@ -358,7 +361,7 @@ def page_planning(model: str) -> None:
                 "Review and edit the results, then switch to Synthesize mode.")
         summaries = path_field("Session summaries file", key="plan_build_summaries", required=True)
         dossier_dir = path_field("Dossier output directory", key="plan_dossier_dir",
-                                 default="docs/npcs/")
+                                 default="docs/npcs/", is_output=True)
         extract_dir = path_field("Extract dir", key="plan_build_extract_dir",
                                  help="Default: ./planning_extractions/")
         chunk_size = st.number_input("Chunk size (chars)", value=60000, step=5000,
@@ -389,7 +392,7 @@ def page_planning(model: str) -> None:
         context_files = multi_path_field("Context files", key="plan_context",
                                          help="e.g. docs/campaign_state.md")
         output = path_field("Output file", key="plan_output",
-                            default="docs/planning.md", required=True)
+                            default="docs/planning.md", required=True, is_output=True)
         extract_dir = path_field("Extract dir", key="plan_extract_dir",
                                  help="Default: <output_dir>/planning_extractions/")
         chunk_size = st.number_input("Chunk size (chars)", value=60000, step=5000,
@@ -431,7 +434,7 @@ def page_query(model: str) -> None:
     with col2:
         verbose = st.checkbox("--verbose (show per-chunk progress)", key="query_verbose")
     output = path_field("Output file", key="query_output",
-                        help="Optional — saves the answer to a file")
+                        help="Optional — saves the answer to a file", is_output=True)
     chunk_size = st.number_input("Chunk size (chars)", value=40000, step=5000,
                                  min_value=10000, key="query_chunk_size")
 
@@ -479,7 +482,8 @@ def page_session_prep(model: str) -> None:
 
     config = path_field("Config file", key="prep_config", default=DEFAULT_CONFIG)
     output = path_field("Output file", key="prep_output",
-                        help="Saves the final response (Voice Keeper for pipeline, encounter for single)")
+                        help="Saves the final response (Voice Keeper for pipeline, encounter for single)",
+                        is_output=True)
     no_log = st.checkbox("--no-log (skip saving log file)", key="prep_no_log")
 
     cmd = [PYTHON, str(SCRIPT_DIR / "prep.py"), "--mode", prep_mode, "--model", model]
@@ -516,7 +520,7 @@ def page_npc_table(model: str) -> None:
                              help="Labels defined in your config.yaml — e.g. world_state planning campaign_state")
     config = path_field("Config file", key="npc_config", default=DEFAULT_CONFIG)
     output = path_field("Output file", key="npc_output",
-                        help="Optional — saves the table to a file")
+                        help="Optional — saves the table to a file", is_output=True)
     no_log = st.checkbox("--no-log", key="npc_no_log")
 
     docs_list = docs_str.split()
@@ -899,6 +903,14 @@ def apply_ui_config_defaults(cfg: dict) -> None:
         "distill_output":        resolve_cfg(cfg, "world_state_output",    "docs/world_state.md"),
         "party_output":          resolve_cfg(cfg, "party_output",          "docs/party.md"),
         "plan_output":           resolve_cfg(cfg, "planning_output",       "docs/planning.md"),
+        # narrative — pre-populate party
+        "narr_party":            resolve_cfg(cfg, "party_output"),
+        # vtt context — pre-populate with campaign_state + world_state if configured
+        "vtt_context":           "\n".join(filter(None, [
+                                     resolve_cfg(cfg, "campaign_state_output"),
+                                     resolve_cfg(cfg, "world_state_output"),
+                                     resolve_cfg(cfg, "party_output"),
+                                 ])),
         # tracking
         "cs_track_file":         resolve_cfg(cfg, "tracking_file"),
         "mt_output":             resolve_cfg(cfg, "tracking_file"),
@@ -909,6 +921,215 @@ def apply_ui_config_defaults(cfg: dict) -> None:
     for key, val in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = val
+
+
+def page_enhance_recap(model: str) -> None:
+    st.title("Enhance Recap")
+    st.caption("Improve an existing session recap with richer narrative, more memorable moments, "
+               "and a plot consistency check.")
+
+    recap_path = path_field("Existing recap file", key="er_recap", required=True,
+                            help="The recap to enhance, e.g. from gmassisstant.app")
+    output = path_field("Output file", key="er_output", required=True,
+                        help="e.g. docs/session-mar-enhanced.md", is_output=True)
+
+    st.divider()
+    st.subheader("Session extractions")
+
+    roleplay_dir = path_field("Roleplay extractions directory", key="er_roleplay_dir",
+                              help="vtt_roleplay_extractions/ — quoted dialogue and character moments")
+    summary_dir = path_field("Session extractions directory", key="er_summary_dir",
+                             help="vtt_extractions/ — action detail and environmental context")
+
+    st.divider()
+    st.subheader("Consistency check")
+
+    context_files = multi_path_field(
+        "Campaign context files", key="er_context",
+        help="campaign_state.md, world_state.md, party.md — used to catch errors in the recap",
+    )
+    party_path = path_field("Party document", key="er_party",
+                            help="party.md — for character voice in the enhanced summary")
+
+    no_log = st.checkbox("--no-log", key="er_no_log")
+
+    cmd = [PYTHON, str(SCRIPT_DIR / "enhance_recap.py")]
+    if recap_path:
+        cmd.append(recap_path)
+    if output:
+        cmd += ["--output", output]
+    if roleplay_dir:
+        cmd += ["--roleplay-extract-dir", roleplay_dir]
+    if summary_dir:
+        cmd += ["--summary-extract-dir", summary_dir]
+    if context_files:
+        cmd += ["--context"] + context_files
+    if party_path:
+        cmd += ["--party", party_path]
+    if no_log:
+        cmd.append("--no-log")
+    cmd += ["--model", model]
+
+    run_panel(cmd, "enhance_recap")
+
+
+def page_narrative(model: str) -> None:
+    st.title("Session Narrative")
+    st.caption("First-person story driven by roleplay moments. "
+               "The system picks which character narrates each section based on who was most present.")
+
+    roleplay_extract_dir = path_field(
+        "Roleplay extractions directory", key="narr_roleplay_extract_dir",
+        help="vtt_roleplay_extractions/ — dialogue, character voice, emotional beats.",
+    )
+    summary_extract_dir = path_field(
+        "Session extractions directory", key="narr_summary_extract_dir",
+        help="vtt_extractions/ — action detail, events, environmental context. "
+             "Combined with roleplay extractions for fuller narration.",
+    )
+    roleplay_path = path_field(
+        "Roleplay highlights file (fallback)", key="narr_roleplay",
+        help="Synthesized roleplay highlights. Used only if no extractions directory is set.",
+    )
+    summary_path = path_field(
+        "Session summary file", key="narr_summary",
+        help="Used as an event skeleton only — context, not foreground.",
+    )
+    party_path = path_field(
+        "Party document (party.md)", key="narr_party",
+        help="Backstory, personality, and relationships — deepens each character's voice.",
+    )
+
+    st.divider()
+
+    characters_input = st.text_input(
+        "Party roster *(optional)*",
+        value=st.session_state.get("narr_characters", ""),
+        key="narr_characters",
+        placeholder="Brewbarry, Soma, Valphine, Vukradin",
+        help="Comma-separated character names. The system chooses who narrates each section "
+             "based on their roleplay presence — you don't need to specify an order.",
+    )
+    session_name = st.text_input("Session name (optional)", key="narr_session_name",
+                                 placeholder="Session 12 — Icespire Hold")
+    output = path_field("Output file (.md)", key="narr_output", required=True,
+                        help="e.g. docs/narratives/session_12.md", is_output=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        plan_only = st.checkbox("--plan-only (preview section outline before generating)",
+                                key="narr_plan_only")
+    with col2:
+        no_log = st.checkbox("--no-log", key="narr_no_log")
+
+    characters = [c.strip() for c in characters_input.replace(",", " ").split() if c.strip()]
+    if characters:
+        st.caption(f"Available narrators: {', '.join(characters)} — system picks order & division")
+
+    if not roleplay_extract_dir and not roleplay_path:
+        st.info("Set the Roleplay extractions directory for best results. "
+                "Generate one using VTT → Session Summary with the roleplay output field set — "
+                "the extractions folder is created automatically alongside it.")
+
+    cmd = [PYTHON, str(SCRIPT_DIR / "narrative.py")]
+    if roleplay_extract_dir:
+        cmd += ["--roleplay-extract-dir", roleplay_extract_dir]
+    if summary_extract_dir:
+        cmd += ["--summary-extract-dir", summary_extract_dir]
+    if roleplay_path:
+        cmd += ["--roleplay", roleplay_path]
+    if summary_path:
+        cmd += ["--summary", summary_path]
+    if party_path:
+        cmd += ["--party", party_path]
+    if characters:
+        cmd += ["--characters", ", ".join(characters)]
+    if output:
+        cmd += ["--output", output]
+    if session_name.strip():
+        cmd += ["--session-name", session_name.strip()]
+    if plan_only:
+        cmd.append("--plan-only")
+    if no_log:
+        cmd.append("--no-log")
+    cmd += ["--model", model]
+
+    run_panel(cmd, "narrative")
+
+
+def page_vtt_summary(model: str) -> None:
+    st.title("VTT → Session Summary")
+    st.caption("Convert a Zoom .vtt transcript into a structured D&D session summary.")
+
+    synth_only = st.checkbox("--synthesize-only (skip extract, use existing extractions)",
+                             key="vtt_synth_only")
+
+    if not synth_only:
+        input_path = path_field("Zoom .vtt transcript file", key="vtt_input", required=True,
+                                help="Download from Zoom cloud recordings or local recording folder")
+    else:
+        input_path = ""
+
+    output = path_field("Summary output file (.md)", key="vtt_output", required=True,
+                        help="e.g. docs/summaries/session_12.md", is_output=True)
+    roleplay_output = path_field(
+        "Roleplay highlights output file (.md)", key="vtt_roleplay_output",
+        help="Optional — generates a separate Roleplay Highlights doc: character voices, "
+             "memorable exchanges, Voice Keeper notes. e.g. docs/summaries/session_12_roleplay.md",
+        is_output=True,
+    )
+
+    col1, col2 = st.columns(2)
+    with col1:
+        session_date = st.text_input("Session date", key="vtt_date",
+                                     value=st.session_state.get("vtt_date", ""),
+                                     placeholder="2026-03-15")
+    with col2:
+        session_name = st.text_input("Session name (optional)", key="vtt_session_name",
+                                     placeholder="Session 12 — Icespire Hold")
+
+    context_files = multi_path_field(
+        "Campaign context files",
+        key="vtt_context",
+        help="Recommended: campaign_state.md, world_state.md, party.md — "
+             "helps Claude identify NPC names correctly and note what changed vs. existing canon",
+    )
+    extract_dir = path_field("Extract dir", key="vtt_extract_dir",
+                             help="Default: <output_dir>/vtt_extractions/")
+    chunk_size = st.number_input("Chunk size (chars)", value=50000, step=5000,
+                                 min_value=10000, key="vtt_chunk_size")
+    no_log = st.checkbox("--no-log", key="vtt_no_log")
+
+    if synth_only and not extract_dir:
+        st.warning("--synthesize-only requires --extract-dir pointing to existing extractions.")
+
+    st.info("After generating, append the summary to your main summaries file, "
+            "then re-run Campaign State to update your grounding document. "
+            "The Roleplay Highlights doc can be fed to the Voice Keeper agent in Session Prep.")
+
+    cmd = [PYTHON, str(SCRIPT_DIR / "vtt_summary.py")]
+    if not synth_only and input_path:
+        cmd.append(input_path)
+    if output:
+        cmd += ["--output", output]
+    if session_date.strip():
+        cmd += ["--date", session_date.strip()]
+    if session_name.strip():
+        cmd += ["--session-name", session_name.strip()]
+    if roleplay_output:
+        cmd += ["--roleplay-output", roleplay_output]
+    if context_files:
+        cmd += ["--context"] + context_files
+    if extract_dir:
+        cmd += ["--extract-dir", extract_dir]
+    if chunk_size != 50000:
+        cmd += ["--chunk-size", str(chunk_size)]
+    if synth_only:
+        cmd.append("--synthesize-only")
+    if no_log:
+        cmd.append("--no-log")
+    cmd += ["--model", model]
+
+    run_panel(cmd, "vtt_summary")
 
 
 def page_settings() -> None:
@@ -974,6 +1195,9 @@ def main() -> None:
             "Connection Graph",
             "D&D Sheet → Markdown",
             "Make Tracking List",
+            "VTT → Session Summary",
+            "Session Narrative",
+            "Enhance Recap",
             "Campaign State",
             "Distill World State",
             "Party Document",
@@ -1002,6 +1226,12 @@ def main() -> None:
         page_dnd_sheet(model)
     elif page == "Make Tracking List":
         page_make_tracking(model)
+    elif page == "VTT → Session Summary":
+        page_vtt_summary(model)
+    elif page == "Session Narrative":
+        page_narrative(model)
+    elif page == "Enhance Recap":
+        page_enhance_recap(model)
     elif page == "Campaign State":
         page_campaign_state(model)
     elif page == "Distill World State":
