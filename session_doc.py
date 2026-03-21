@@ -123,17 +123,25 @@ so that every chunk appears in at least one section. Do not leave any chunk unco
 For each section:
 - Assign one narrator
 - Assign the chunk range they will draw from, e.g. "chunks: 1-2"
-- Chunks may overlap between sections when two characters both have important moments
-  in the same part of the session — the extraction pass isolates each character's
-  specific moments, so overlap is fine
 - Write a one-sentence FOCUS on the emotional/dramatic core of this character's experience
 
 How to divide:
-- With 4 characters and 2 chunks: give 2 characters chunk 1 and 2 characters chunk 2,
-  or distribute as 1, 1, 1-2, 2 etc. — whatever matches where each character's
-  most interesting moments fall
-- Do NOT give every character all chunks — that creates redundant coverage
-- The goal is a flowing narrative where each voice hands off to the next chronologically
+- With 4 characters and 2 chunks: give 2 characters chunk 1 and 2 characters chunk 2.
+  The standard distribution is 1, 1, 2, 2 — or 1, 1-2, 2, 2 if one character bridges.
+- Do NOT give every character all chunks — that creates redundant coverage.
+- The goal is a flowing narrative where each voice hands off to the next chronologically,
+  not four characters all describing the same events.
+
+OVERLAP RULE — read carefully:
+- A character may span two chunks (e.g. "chunks: 1-2") ONLY when their single most
+  important moment straddles the boundary between those chunks.
+- If Character A has chunks 1-2 and Character B has chunks 2, they will BOTH narrate
+  all of chunk 2 — the stone giants, the glacier, the drake, everything. That is
+  redundant and wrong. Avoid it.
+- Two characters should share the same chunk only when they each have ONE distinct moment
+  in it, not when both are present for the entire thing.
+- When in doubt, give a character the narrower range. It is better to have focused
+  sections than overlapping ones.
 
 Output ONLY the plan in this exact format — no preamble, no commentary:
 
@@ -161,13 +169,68 @@ focus: [one sentence]
  every chunk must be covered by at least one section)
 """
 
+# ── Pass 3 (scene mode): Scene-by-scene plan ──────────────────────────────────
+
+PLAN_SCENE_SYSTEM = """\
+You are planning a first-person D&D narrative in the style of a novel where each
+scene is narrated by a different character — like a book where one scene is Vukradin,
+the next is Soma, the next is Valphine, each showing the same unfolding story from
+their own eyes.
+
+You will be given numbered roleplay extractions (Chunk 1, Chunk 2, …).
+Each chunk covers a chronological slice of the session.
+
+Your job: identify the key scenes in the session and assign one narrator to each.
+
+CRITICAL: If an "Available narrators" list is provided:
+- Use ONLY those characters as narrators. Never assign a scene to an NPC, a guest
+  character, or anyone not on the list — even if they have interesting moments.
+- Each character must narrate at least one scene per chunk. With 4 characters and
+  2 chunks, every character should appear in chunk 1 AND in chunk 2.
+- Distribute scenes as evenly as possible — aim for the same number of scenes per
+  character. Do not give one character three scenes and another only one.
+
+CRITICAL: Together, the scenes must cover the ENTIRE session chronologically.
+If a "Session Scenes" checklist is provided, every scene on that list must appear
+in your plan. Do not stop until all of them are assigned a narrator.
+
+For each scene:
+- Give it a short name (3–6 words)
+- Assign the chunk it comes from
+- Assign one narrator — the character with the most interesting or revealing perspective
+  on that scene. Rotate through the roster so no character dominates.
+- Write a one-sentence FOCUS on what makes this scene theirs specifically
+
+Output ONLY the plan in this exact format — no preamble, no commentary:
+
+## Scene 1
+narrator: [name]
+chunks: 1
+scene: [short scene name]
+focus: [one sentence — why this character narrates this scene]
+
+## Scene 2
+narrator: [name]
+chunks: 1
+scene: [short scene name]
+focus: [one sentence]
+
+## Scene 3
+narrator: [name]
+chunks: 2
+scene: [short scene name]
+focus: [one sentence]
+
+(cover all major events — rotate narrators — every character must appear at least once)
+"""
+
 # ── Pass 4: Per-character extraction ──────────────────────────────────────────
 
 CHAR_EXTRACT_SYSTEM = """\
 You are extracting roleplay moments for a specific character from D&D session notes.
 
 Character: {narrator}
-
+{scene_block}
 Your job: pull out every moment worth narrating from {narrator}'s perspective — dialogue,
 action, and environment alike.
 
@@ -207,12 +270,12 @@ You are writing one section of a first-person D&D session narrative.
 
 You will be given:
 - The narrator's name and a one-sentence focus
-- A handoff line from the previous narrator (if any)
+{scene_scope_line}- A handoff line from the previous narrator (if any)
 - This character's extracted moments — their exact dialogue, reactions, and emotional beats
 - A party document with backstory, personality, and relationships
 {examples_block}
-Write as many paragraphs as needed to cover all the extracted moments — typically 4–8,
-but do not stop early. Every significant moment in the list should appear in the text.
+{length_instruction}
+Every significant moment in the extracted list should appear in the text.
 
 THE DIALOGUE IS THE STORY. The moments list contains full exchanges — both sides of each
 conversation. Write them as scenes. Every line from the exchange should appear in the text.
@@ -326,17 +389,26 @@ def format_extractions(extractions: list[tuple[str, str]], heading: str) -> str:
     return f"## {heading}\n\n" + "\n\n---\n\n".join(parts)
 
 
-def build_narrate_system(examples_text: str | None) -> str:
+def build_narrate_system(examples_text: str | None, scene: str | None = None) -> str:
     if examples_text:
         block = "\n" + EXAMPLES_BLOCK.replace("{examples}", examples_text.strip()) + "\n"
     else:
         block = ""
-    return NARRATE_SYSTEM_BASE.replace("{examples_block}", block)
+    if scene:
+        scope = f"- The scene you are writing: **{scene}** — write ONLY this scene, not what came before or after\n"
+        length = "Write 2–4 paragraphs covering this scene only. Do not extend into adjacent scenes."
+    else:
+        scope = ""
+        length = "Write as many paragraphs as needed to cover all the extracted moments — typically 4–8, but do not stop early."
+    return (NARRATE_SYSTEM_BASE
+            .replace("{examples_block}", block)
+            .replace("{scene_scope_line}", scope)
+            .replace("{length_instruction}", length))
 
 
 def parse_plan(plan_text: str, total_chunks: int) -> list[dict]:
     sections = []
-    for block in re.split(r"(?m)^## Section \d+", plan_text):
+    for block in re.split(r"(?m)^## (?:Section|Scene) \d+", plan_text):
         block = block.strip()
         if not block:
             continue
@@ -357,6 +429,8 @@ def parse_plan(plan_text: str, total_chunks: int) -> list[dict]:
                         n = int(single.group(1))
                         section["chunk_start"] = n
                         section["chunk_end"]   = n
+            elif line.startswith("scene:"):
+                section["scene"] = line.split(":", 1)[1].strip()
             elif line.startswith("focus:"):
                 section["focus"] = line.split(":", 1)[1].strip()
         if "narrator" in section and "chunk_start" in section:
@@ -441,10 +515,22 @@ def main() -> None:
                         help="Directory of per-character voice files written by players. "
                              "Name files {character}_voice.md or {character}.md. "
                              "Each file is injected only into that character's narration pass.")
+    parser.add_argument("--narrator", metavar="NAME",
+                        help="Generate narration for one character only (skips passes 1–2, "
+                             "runs the plan, then extracts and narrates the named character). "
+                             "Useful for tweaking voice files without regenerating the full doc.")
+    parser.add_argument("--by-scene", action="store_true",
+                        help="Scene-by-scene mode: each scene is narrated by one character "
+                             "in rotation, rather than each character covering a chunk of the "
+                             "session. Matches the style of the handcrafted campaign summaries.")
+    parser.add_argument("--plan-file", metavar="FILE",
+                        help="Use a pre-written plan file instead of running pass 3. "
+                             "Write the file in the same format as --plan-only output. "
+                             "Useful when the auto-generated plan has overlap issues.")
     parser.add_argument("--plan-only", action="store_true",
                         help="Run through the narrative plan and exit without generating text")
     parser.add_argument("--no-log", action="store_true")
-    parser.add_argument("--model", default="claude-sonnet-4-20250514")
+    parser.add_argument("--model", default="claude-sonnet-4-6")
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku instead of Sonnet (~4x cheaper, faster, slightly lower quality)")
     args = parser.parse_args()
@@ -527,9 +613,13 @@ def main() -> None:
 
     client = make_client()
 
+    single_narrator = args.narrator.strip() if args.narrator else None
+
     # ── Pass 1: Consistency check ─────────────────────────────────────────────
     consistency_report = ""
-    if context_parts:
+    if single_narrator:
+        print(f"\n[Pass 1: Skipped — single-narrator mode ({single_narrator})]")
+    elif context_parts:
         print(f"\n[Pass 1: Consistency check | model: {args.model}]")
         print("=" * 60)
         consistency_prompt = (
@@ -552,55 +642,85 @@ def main() -> None:
         print("\n[Pass 1: Consistency check skipped — no --context files provided]")
 
     # ── Pass 2: Enhance structured sections ───────────────────────────────────
-    print(f"\n[Pass 2: Enhance structured sections | model: {args.model}]")
-    print("=" * 60)
+    structured_sections = ""
+    if single_narrator:
+        print(f"[Pass 2: Skipped — single-narrator mode]")
+    else:
+        print(f"\n[Pass 2: Enhance structured sections | model: {args.model}]")
+        print("=" * 60)
 
-    enhance_parts = ["## Original Recap\n\n" + recap.strip()]
-    if roleplay_extractions:
-        enhance_parts.append(format_extractions(
-            roleplay_extractions,
-            "Roleplay Extractions (quoted dialogue and character moments — primary source)"
-        ))
-    if summary_extractions:
-        enhance_parts.append(format_extractions(
-            summary_extractions,
-            "Session Extractions (action detail, events, environmental context)"
-        ))
-    if consistency_report.strip():
-        enhance_parts.append("## Consistency Report\n\n" + consistency_report.strip())
-    if party:
-        enhance_parts.append("## Party Document (character voice reference)\n\n"
-                             + party.strip())
+        enhance_parts = ["## Original Recap\n\n" + recap.strip()]
+        if roleplay_extractions:
+            enhance_parts.append(format_extractions(
+                roleplay_extractions,
+                "Roleplay Extractions (quoted dialogue and character moments — primary source)"
+            ))
+        if summary_extractions:
+            enhance_parts.append(format_extractions(
+                summary_extractions,
+                "Session Extractions (action detail, events, environmental context)"
+            ))
+        if consistency_report.strip():
+            enhance_parts.append("## Consistency Report\n\n" + consistency_report.strip())
+        if party:
+            enhance_parts.append("## Party Document (character voice reference)\n\n"
+                                 + party.strip())
 
-    enhance_prompt = "\n\n---\n\n".join(enhance_parts)
-    structured_sections = stream_api(client, ENHANCE_SYSTEM, enhance_prompt, args.model)
-    print("=" * 60)
+        enhance_prompt = "\n\n---\n\n".join(enhance_parts)
+        structured_sections = stream_api(client, ENHANCE_SYSTEM, enhance_prompt, args.model)
+        print("=" * 60)
 
     # ── Pass 3: Narrative plan ─────────────────────────────────────────────────
-    print(f"\n[Pass 3: Narrative plan | {len(roleplay_extractions)} chunk(s) | model: {args.model}]")
-    print("=" * 60)
+    if args.plan_file:
+        plan_path = Path(args.plan_file).expanduser()
+        if not plan_path.exists():
+            print(f"Error: plan file not found: {plan_path}", file=sys.stderr)
+            sys.exit(1)
+        plan_text = plan_path.read_text(encoding="utf-8")
+        print(f"\n[Pass 3: Narrative plan loaded from {plan_path.name}]")
+    else:
+        print(f"\n[Pass 3: Narrative plan | {len(roleplay_extractions)} chunk(s) | model: {args.model}]")
+        print("=" * 60)
 
-    plan_parts: list[str] = []
-    if args.session_name:
-        plan_parts.append(f"# Session: {args.session_name}")
-    if characters:
-        plan_parts.append("## Available narrators\n" + "\n".join(f"- {c}" for c in characters))
-    chunk_parts = [f"### Chunk {i}\n\n{content}"
-                   for i, (_, content) in enumerate(roleplay_extractions, 1)]
-    plan_parts.append("## Roleplay Extractions\n"
-                      "(dialogue, character voice, emotional beats)\n\n"
-                      + "\n\n---\n\n".join(chunk_parts))
-    if summary_extractions:
-        s_parts = [f"### Chunk {i}\n\n{content}"
-                   for i, (_, content) in enumerate(summary_extractions, 1)]
-        plan_parts.append("## Session Extractions\n"
-                          "(action detail, events, environmental context)\n\n"
-                          + "\n\n---\n\n".join(s_parts))
-    if party:
-        plan_parts.append(f"## Party Document\n\n{party.strip()}")
+        plan_parts: list[str] = []
+        if args.session_name:
+            plan_parts.append(f"# Session: {args.session_name}")
+        if characters:
+            plan_parts.append("## Available narrators\n" + "\n".join(f"- {c}" for c in characters))
+        chunk_parts = [f"### Chunk {i}\n\n{content}"
+                       for i, (_, content) in enumerate(roleplay_extractions, 1)]
+        plan_parts.append("## Roleplay Extractions\n"
+                          "(dialogue, character voice, emotional beats)\n\n"
+                          + "\n\n---\n\n".join(chunk_parts))
+        if summary_extractions:
+            s_parts = [f"### Chunk {i}\n\n{content}"
+                       for i, (_, content) in enumerate(summary_extractions, 1)]
+            plan_parts.append("## Session Extractions\n"
+                              "(action detail, events, environmental context)\n\n"
+                              + "\n\n---\n\n".join(s_parts))
+        if party:
+            plan_parts.append(f"## Party Document\n\n{party.strip()}")
+        if args.by_scene:
+            # Extract scene names from the ## Scenes section of the recap
+            scene_lines = []
+            in_scenes = False
+            for line in recap.splitlines():
+                if line.strip() == "## Scenes":
+                    in_scenes = True
+                elif line.startswith("## ") and in_scenes:
+                    break  # left the Scenes section
+                elif in_scenes and line.startswith("### "):
+                    scene_lines.append(line.strip())
+            if scene_lines:
+                checklist = "\n".join(scene_lines)
+                plan_parts.append(
+                    "## Session Scenes (from recap — every scene below must appear in your plan)\n\n"
+                    + checklist
+                )
 
-    plan_text = stream_api(client, PLAN_SYSTEM, "\n\n---\n\n".join(plan_parts), args.model)
-    print("=" * 60)
+        plan_system = PLAN_SCENE_SYSTEM if args.by_scene else PLAN_SYSTEM
+        plan_text = stream_api(client, plan_system, "\n\n---\n\n".join(plan_parts), args.model)
+        print("=" * 60)
 
     sections = parse_plan(plan_text, len(roleplay_extractions))
     if not sections:
@@ -610,64 +730,118 @@ def main() -> None:
 
     print(f"\nPlan: {len(sections)} section(s)")
     for i, s in enumerate(sections, 1):
-        print(f"  {i}. {s['narrator']:15s}  chunks {s['chunk_start']}–{s['chunk_end']}  "
-              f"— {s.get('focus', '')}")
+        scene_label = f"  [{s['scene']}]" if s.get("scene") else ""
+        print(f"  {i}. {s['narrator']:15s}  chunks {s['chunk_start']}–{s['chunk_end']}"
+              f"{scene_label}  — {s.get('focus', '')}")
 
     if characters:
+        # Warn about narrators the model invented outside the roster
+        roster_lower = {c.lower() for c in characters}
+        intruders = [s["narrator"] for s in sections
+                     if s["narrator"].lower() not in roster_lower]
+        if intruders:
+            print(f"\nWarning: plan contains narrator(s) not in --characters: "
+                  f"{', '.join(intruders)}")
+            print("  Re-run with --plan-only or use --plan-file to fix.")
+
         assigned = {s["narrator"] for s in sections}
         missing = [c for c in characters if c not in assigned]
         if missing:
             print(f"\nWarning: these characters have no section: {', '.join(missing)}")
             print("  Re-run with --plan-only to inspect the plan.")
 
+    # Warn when characters share a multi-chunk overlap — two chars on the same
+    # single chunk is the normal 2+2 distribution and is fine (extraction
+    # isolates their moments). The problem is when one char's range spans
+    # multiple chunks that another char is also covering in full.
+    for i, a in enumerate(sections):
+        for b in sections[i + 1:]:
+            a_range = set(range(a["chunk_start"], a["chunk_end"] + 1))
+            b_range = set(range(b["chunk_start"], b["chunk_end"] + 1))
+            overlap = a_range & b_range
+            if overlap and (len(a_range) > 1 or len(b_range) > 1):
+                print(f"\nWarning: {a['narrator']} (chunks {a['chunk_start']}–{a['chunk_end']}) "
+                      f"and {b['narrator']} (chunks {b['chunk_start']}–{b['chunk_end']}) "
+                      f"overlap — they will both narrate the same events.")
+                print("  Consider re-running with --plan-only and adjusting the plan.")
+
+    if single_narrator:
+        matched = [s for s in sections
+                   if s["narrator"].lower() == single_narrator.lower()]
+        if not matched:
+            names = ", ".join(s["narrator"] for s in sections)
+            print(f"Error: narrator '{single_narrator}' not found in plan. "
+                  f"Plan has: {names}", file=sys.stderr)
+            sys.exit(1)
+        sections = matched
+        print(f"\nSingle-narrator mode: running passes 4–5 for {sections[0]['narrator']} only.")
+
     if args.plan_only:
         return
 
     # ── Passes 4 & 5: Extract then narrate ────────────────────────────────────
-    narrate_system = build_narrate_system(examples_text)
     section_texts: list[tuple[str, str]] = []
     handoff = ""
 
     for i, section in enumerate(sections, 1):
-        narrator = section["narrator"]
-        focus    = section.get("focus", "")
-        chunks   = f"chunks {section['chunk_start']}–{section['chunk_end']}"
+        narrator   = section["narrator"]
+        focus      = section.get("focus", "")
+        scene_name = section.get("scene", "")
+        chunks     = f"chunks {section['chunk_start']}–{section['chunk_end']}"
+        label      = f"{narrator} — {scene_name}" if scene_name else narrator
 
         # Pass 4: character-specific extraction (silent)
-        print(f"\n[Pass 4.{i}/{len(sections)}: Extract — {narrator} ({chunks})]")
-        char_extract_system = CHAR_EXTRACT_SYSTEM.replace("{narrator}", narrator)
+        print(f"\n[Pass 4.{i}/{len(sections)}: Extract — {label} ({chunks})]")
+        scene_block = (f"Scene: extract ONLY moments from the scene '{scene_name}'. "
+                       f"Ignore everything before and after this scene.\n"
+                       if scene_name else "")
+        char_extract_system = (CHAR_EXTRACT_SYSTEM
+                               .replace("{narrator}", narrator)
+                               .replace("{scene_block}", scene_block))
         char_extract_prompt = build_char_extract_prompt(
             section, roleplay_extractions, summary_extractions or None, roster
         )
+        # Scene mode needs far fewer output tokens — one scene is 2-4 paragraphs
+        extract_tokens  = 1500 if scene_name else 4096
+        narrate_tokens  = 3000 if scene_name else 12000
+
         char_moments = stream_api(client, char_extract_system, char_extract_prompt,
-                                  args.model, max_tokens=4096, silent=True)
+                                  args.model, max_tokens=extract_tokens, silent=True)
         print(f"  → {len(char_moments):,} chars of {narrator}'s moments")
 
         # Pass 5: narrate from character-specific moments
         voice_note = get_voice_note(voice_files, narrator) if voice_files else None
-        print(f"[Pass 5.{i}/{len(sections)}: Narrate — {narrator}"
+        print(f"[Pass 5.{i}/{len(sections)}: Narrate — {label}"
               f"{' (voice notes)' if voice_note else ''}]")
         print("─" * 60)
+        # In scene mode skip the heavy examples block to keep the prompt lean —
+        # the style constraint is already carried by voice notes and the handoff.
+        narrate_system = build_narrate_system(
+            None if scene_name else examples_text,
+            scene=scene_name or None
+        )
         narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff,
                                               roster, voice_note)
         narration = stream_api(client, narrate_system, narrate_prompt,
-                               args.model, max_tokens=12000)
+                               args.model, max_tokens=narrate_tokens)
         print("─" * 60)
 
         narration = narration.strip()
-        section_texts.append((narrator, narration))
+        section_texts.append((label, narration))
         handoff = narration.rsplit("\n", 1)[-1].strip().strip('"').strip("'")
 
     # ── Assemble final document ────────────────────────────────────────────────
     doc_parts: list[str] = []
 
-    title = args.session_name or recap_path.stem
-    doc_parts.append(f"# {title}\n")
-
-    for narrator, narration in section_texts:
-        doc_parts.append(f"---\n\n## {narrator}\n\n{narration}")
-
-    doc_parts.append("---\n\n" + structured_sections.strip())
+    if single_narrator:
+        narrator, narration = section_texts[0]
+        doc_parts.append(f"## {narrator}\n\n{narration}")
+    else:
+        title = args.session_name or recap_path.stem
+        doc_parts.append(f"# {title}\n")
+        for narrator, narration in section_texts:
+            doc_parts.append(f"---\n\n## {narrator}\n\n{narration}")
+        doc_parts.append("---\n\n" + structured_sections.strip())
 
     full_doc = "\n\n".join(doc_parts) + "\n"
 
@@ -677,12 +851,18 @@ def main() -> None:
     print(f"\nSession document saved to: {output}")
 
     if not args.no_log:
-        log_sections = (
-            [("Consistency Report", consistency_report or "(skipped)"),
-             ("Structured Sections", structured_sections),
-             ("Narrative Plan", plan_text)] +
-            [(f"Section — {n}", t) for n, t in section_texts]
-        )
+        if single_narrator:
+            log_sections = (
+                [("Narrative Plan", plan_text)] +
+                [(f"Section — {n}", t) for n, t in section_texts]
+            )
+        else:
+            log_sections = (
+                [("Consistency Report", consistency_report or "(skipped)"),
+                 ("Structured Sections", structured_sections),
+                 ("Narrative Plan", plan_text)] +
+                [(f"Section — {n}", t) for n, t in section_texts]
+            )
         log_file = save_log(str(output.parent / "logs"), log_sections, stem="session_doc")
         print(f"Log saved to: {log_file}")
 
