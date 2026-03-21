@@ -87,12 +87,21 @@ def make_client():
 
 
 def stream_api(client, system: str, user: str, model: str, max_tokens: int = 8096,
-               silent: bool = False) -> str:
+               silent: bool = False, verbose: bool = False) -> str:
     """Stream a Claude API call, printing each token as it arrives. Returns full response.
 
     Retries on rate limit errors with exponential backoff (up to 4 attempts).
     Pass silent=True to suppress all output (useful for filter/classification passes).
+    Pass verbose=True to print the system and user prompts before calling.
     """
+    if verbose:
+        print("\n" + "▲" * 60)
+        print("SYSTEM PROMPT:")
+        print(system)
+        print("─" * 60)
+        print("USER PROMPT:")
+        print(user)
+        print("▲" * 60 + "\n")
     import time
 
     delays = [60, 120, 240]  # seconds to wait before each retry

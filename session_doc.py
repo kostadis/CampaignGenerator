@@ -395,8 +395,13 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None) ->
     else:
         block = ""
     if scene:
-        scope = f"- The scene you are writing: **{scene}** — write ONLY this scene, not what came before or after\n"
-        length = "Write 2–4 paragraphs covering this scene only. Do not extend into adjacent scenes."
+        scope = (f"- The scene you are writing: **{scene}**\n"
+                 f"  STOP when this scene ends. Do not continue into what happened next.\n"
+                 f"  Do not summarise what came before. Do not foreshadow what comes after.\n"
+                 f"  This scene only.\n")
+        length = ("Write 2–3 paragraphs covering this scene. "
+                  "Stop as soon as the scene is complete. "
+                  "If you find yourself describing a new location or the next event, you have gone too far — stop.")
     else:
         scope = ""
         length = "Write as many paragraphs as needed to cover all the extracted moments — typically 4–8, but do not stop early."
@@ -441,21 +446,68 @@ def parse_plan(plan_text: str, total_chunks: int) -> list[dict]:
     return sections
 
 
+def extract_scene_text(recap: str, scene_name: str) -> str:
+    """Return the text of a single named scene from the recap's ## Scenes section."""
+    lines = recap.splitlines()
+    in_scenes = False
+    in_target = False
+    collected: list[str] = []
+    for line in lines:
+        if line.strip() == "## Scenes":
+            in_scenes = True
+            continue
+        if in_scenes and line.startswith("## "):
+            break  # left the Scenes section
+        if in_scenes and line.startswith("### "):
+            if in_target:
+                break  # reached the next scene
+            if line.strip("# ").strip().lower() == scene_name.lower():
+                in_target = True
+            continue
+        if in_target:
+            collected.append(line)
+    return "\n".join(collected).strip()
+
+
 def build_char_extract_prompt(section: dict,
                                extractions: list[tuple[str, str]],
                                summary_extractions: list[tuple[str, str]] | None,
-                               roster: str = "") -> str:
+                               roster: str = "",
+                               recap: str = "") -> str:
     start = section["chunk_start"] - 1
     end   = section["chunk_end"]
+    scene_name = section.get("scene", "")
 
     parts = []
     if roster:
         parts.append(f"## Character Classes (definitive — never contradict these)\n\n{roster}")
+
     roleplay_chunks = [f"### Chunk {start + i + 1}\n\n{content}"
                        for i, (_, content) in enumerate(extractions[start:end])]
+    roleplay_text = "\n\n---\n\n".join(roleplay_chunks)
+
+    if scene_name and recap:
+        # In scene mode: use the recap scene as the scope boundary, and the roleplay
+        # extractions as the dialogue source. The model is told to stay within the
+        # scene defined by the recap, but pull verbatim quotes from the extractions.
+        scene_text = extract_scene_text(recap, scene_name)
+        if scene_text:
+            parts.append(
+                f"## Scene scope: {scene_name}\n"
+                f"(defines what this scene covers — stay within these boundaries)\n\n"
+                f"{scene_text}"
+            )
+            parts.append(
+                f"## Roleplay Extractions\n"
+                f"(verbatim dialogue and character moments — primary source for quotes)\n\n"
+                f"{roleplay_text}"
+            )
+            return "\n\n---\n\n".join(parts)
+
+    # Non-scene mode (or scene not found in recap): send the full chunk extractions
     parts.append("## Roleplay Extractions\n"
                  "(dialogue, character voice, emotional beats — primary source)\n\n"
-                 + "\n\n---\n\n".join(roleplay_chunks))
+                 + roleplay_text)
 
     if summary_extractions:
         summary_chunks = [f"### Chunk {start + i + 1}\n\n{content}"
@@ -529,7 +581,12 @@ def main() -> None:
                              "Useful when the auto-generated plan has overlap issues.")
     parser.add_argument("--plan-only", action="store_true",
                         help="Run through the narrative plan and exit without generating text")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Build and print all prompts for passes 4-5 without calling the API. "
+                             "Useful for inspecting what each scene sends before committing.")
     parser.add_argument("--no-log", action="store_true")
+    parser.add_argument("--verbose", action="store_true",
+                        help="Print the full system and user prompt before each API call")
     parser.add_argument("--model", default="claude-sonnet-4-6")
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku instead of Sonnet (~4x cheaper, faster, slightly lower quality)")
@@ -628,7 +685,7 @@ def main() -> None:
             "\n\n---\n\n".join(context_parts)
         )
         consistency_report = stream_api(client, CONSISTENCY_SYSTEM, consistency_prompt,
-                                        args.model, silent=True)
+                                        args.model, silent=True, verbose=args.verbose)
         issue_count = consistency_report.count("**Location**")
         if issue_count:
             print(f"  Found {issue_count} potential issue(s):")
@@ -667,7 +724,8 @@ def main() -> None:
                                  + party.strip())
 
         enhance_prompt = "\n\n---\n\n".join(enhance_parts)
-        structured_sections = stream_api(client, ENHANCE_SYSTEM, enhance_prompt, args.model)
+        structured_sections = stream_api(client, ENHANCE_SYSTEM, enhance_prompt, args.model,
+                                          verbose=args.verbose)
         print("=" * 60)
 
     # ── Pass 3: Narrative plan ─────────────────────────────────────────────────
@@ -719,7 +777,8 @@ def main() -> None:
                 )
 
         plan_system = PLAN_SCENE_SYSTEM if args.by_scene else PLAN_SYSTEM
-        plan_text = stream_api(client, plan_system, "\n\n---\n\n".join(plan_parts), args.model)
+        plan_text = stream_api(client, plan_system, "\n\n---\n\n".join(plan_parts), args.model,
+                               verbose=args.verbose)
         print("=" * 60)
 
     sections = parse_plan(plan_text, len(roleplay_extractions))
@@ -792,21 +851,39 @@ def main() -> None:
 
         # Pass 4: character-specific extraction (silent)
         print(f"\n[Pass 4.{i}/{len(sections)}: Extract — {label} ({chunks})]")
-        scene_block = (f"Scene: extract ONLY moments from the scene '{scene_name}'. "
-                       f"Ignore everything before and after this scene.\n"
-                       if scene_name else "")
+        scene_block = (
+            f"Scene: '{scene_name}'\n"
+            f"You will be given two sources:\n"
+            f"1. Scene scope — the recap description of this scene. Use it to define the\n"
+            f"   boundaries: what belongs in this scene and what does not.\n"
+            f"2. Roleplay extractions — verbatim dialogue and character moments from the full\n"
+            f"   session. Mine these for actual quotes and exchanges that fall within the scene.\n"
+            f"Extract ONLY moments that belong to this scene. Ignore anything outside it.\n"
+            f"Capture everything {narrator} witnessed — their own actions AND what others did.\n"
+            if scene_name else "")
         char_extract_system = (CHAR_EXTRACT_SYSTEM
                                .replace("{narrator}", narrator)
                                .replace("{scene_block}", scene_block))
         char_extract_prompt = build_char_extract_prompt(
-            section, roleplay_extractions, summary_extractions or None, roster
+            section, roleplay_extractions, summary_extractions or None, roster, recap
         )
-        # Scene mode needs far fewer output tokens — one scene is 2-4 paragraphs
+        # Scene mode needs far fewer output tokens — one scene is 2-3 paragraphs
         extract_tokens  = 1500 if scene_name else 4096
-        narrate_tokens  = 3000 if scene_name else 12000
+        narrate_tokens  = 1500 if scene_name else 12000
+
+        if args.dry_run:
+            print(f"\n{'▲' * 60}")
+            print(f"PASS 4 SYSTEM — {label}:")
+            print(char_extract_system)
+            print("─" * 60)
+            print(f"PASS 4 USER — {label}:")
+            print(char_extract_prompt)
+            print(f"{'▲' * 60}\n")
+            continue
 
         char_moments = stream_api(client, char_extract_system, char_extract_prompt,
-                                  args.model, max_tokens=extract_tokens, silent=True)
+                                  args.model, max_tokens=extract_tokens, silent=True,
+                                  verbose=args.verbose)
         print(f"  → {len(char_moments):,} chars of {narrator}'s moments")
 
         # Pass 5: narrate from character-specific moments
@@ -823,7 +900,7 @@ def main() -> None:
         narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff,
                                               roster, voice_note)
         narration = stream_api(client, narrate_system, narrate_prompt,
-                               args.model, max_tokens=narrate_tokens)
+                               args.model, max_tokens=narrate_tokens, verbose=args.verbose)
         print("─" * 60)
 
         narration = narration.strip()
