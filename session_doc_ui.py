@@ -648,8 +648,22 @@ def api_assemble():
     if not parts:
         return jsonify({"ok": False, "error": "no narrated scenes found"}), 400
 
+    # Strip the repeated "# session-name" title and any surrounding --- dividers
+    # from every scene, then emit one title at the top of the assembled file.
+    session_name = Path(CONFIG["session"]).stem
+    title_line   = f"# {session_name}"
+
+    def strip_header(text: str) -> str:
+        lines = text.split("\n")
+        while lines and lines[0].strip() in ("", "---", title_line):
+            lines.pop(0)
+        return "\n".join(lines).strip()
+
+    stripped = [strip_header(p) for p in parts]
+    content  = f"{title_line}\n\n---\n\n" + "\n\n---\n\n".join(stripped) + "\n"
+
     out_path = assembled_output_path()
-    out_path.write_text("\n\n---\n\n".join(parts) + "\n", encoding="utf-8")
+    out_path.write_text(content, encoding="utf-8")
 
     print(f"  Assembled {len(parts)} scenes → {out_path}")
     if missing:
