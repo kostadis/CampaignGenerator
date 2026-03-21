@@ -179,6 +179,8 @@ button:disabled { opacity: .35; cursor: default; }
   <h1>Session Doc</h1>
   <span id="session-label" style="font-size:12px;color:#6c7086"></span>
   <span id="status-msg"></span>
+  <button class="btn-neutral btn-sm" id="btn-assemble" onclick="assembleDoc()" style="margin-left:8px">Assemble Doc</button>
+  <button class="btn-neutral btn-sm" id="btn-open-assembled" onclick="openAssembled()" style="display:none;margin-left:4px">Open in Typora</button>
 </header>
 
 <div class="columns">
@@ -410,9 +412,49 @@ function esc(s) {
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// ── Assemble ───────────────────────────────────────────────────────
+
+async function assembleDoc() {
+  const btn = document.getElementById('btn-assemble');
+  btn.disabled = true;
+  btn.textContent = 'Assembling…';
+  setStatus('Assembling session doc…');
+  try {
+    const res  = await fetch('/api/assemble', {method: 'POST'});
+    const data = await res.json();
+    if (data.ok) {
+      setStatus(`Saved → ${data.filename}  (${data.scenes_included} scenes)`);
+      const openBtn = document.getElementById('btn-open-assembled');
+      openBtn.style.display = '';
+      setTimeout(() => setStatus(''), 5000);
+    } else {
+      setStatus(`Assembly failed: ${data.error}`);
+    }
+  } catch (e) {
+    setStatus('Assembly error — check terminal.');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Assemble Doc';
+}
+
+async function openAssembled() {
+  const res = await fetch('/api/open/assembled/0', {method: 'POST'});
+  if (!res.ok) setStatus('Could not open assembled file.');
+}
+
 // ── Init ───────────────────────────────────────────────────────────
+
+async function checkAssembled() {
+  const res = await fetch('/api/assembled_exists');
+  if (res.ok) {
+    const data = await res.json();
+    if (data.exists) document.getElementById('btn-open-assembled').style.display = '';
+  }
+}
+
 loadScenes();
 loadVTT();
+checkAssembled();
 </script>
 </body>
 </html>
@@ -462,6 +504,11 @@ def open_in_typora(filepath: Path) -> None:
         print(f"  Opening: {win}")
     except Exception as e:
         print(f"  Warning: could not open file: {e}", file=sys.stderr)
+
+
+def assembled_output_path() -> Path:
+    session_stem = Path(CONFIG["session"]).stem
+    return Path(CONFIG["output_dir"]) / f"{session_stem}-doc.md"
 
 
 def build_narrate_cmd(scene_num: int) -> list[str]:
@@ -578,12 +625,52 @@ def api_narrate(n):
     )
 
 
+@app.route("/api/assembled_exists")
+def api_assembled_exists():
+    return jsonify({"exists": assembled_output_path().exists()})
+
+
+@app.route("/api/assemble", methods=["POST"])
+def api_assemble():
+    scenes = load_scenes()
+    if not scenes:
+        return jsonify({"ok": False, "error": "no plan loaded"}), 400
+
+    parts = []
+    missing = []
+    for s in scenes:
+        p = Path(CONFIG["output_dir"]) / f"scene{s['index']}.md"
+        if p.exists():
+            parts.append(p.read_text(encoding="utf-8").strip())
+        else:
+            missing.append(s["index"])
+
+    if not parts:
+        return jsonify({"ok": False, "error": "no narrated scenes found"}), 400
+
+    out_path = assembled_output_path()
+    out_path.write_text("\n\n---\n\n".join(parts) + "\n", encoding="utf-8")
+
+    print(f"  Assembled {len(parts)} scenes → {out_path}")
+    if missing:
+        print(f"  Missing scenes (not yet narrated): {missing}")
+
+    return jsonify({
+        "ok": True,
+        "filename": out_path.name,
+        "scenes_included": len(parts),
+        "scenes_missing":  missing,
+    })
+
+
 @app.route("/api/open/<file_type>/<int:n>", methods=["POST"])
 def api_open(file_type, n):
     if file_type == "extraction":
         path = get_extraction_path(n)
     elif file_type == "output":
         path = Path(CONFIG["output_dir"]) / f"scene{n}.md"
+    elif file_type == "assembled":
+        path = assembled_output_path()
     else:
         return jsonify({"ok": False}), 400
     if path and path.exists():
