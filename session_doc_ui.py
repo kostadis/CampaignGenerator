@@ -216,8 +216,12 @@ button:disabled { opacity: .35; cursor: default; }
       <div class="narration-header">
         <span>Narration output</span>
         <span style="flex:1"></span>
-        <button class="btn-neutral btn-sm" onclick="clearOutput()">Clear</button>
+        <button class="btn-neutral btn-sm" id="btn-raw" onclick="toggleRaw()" disabled>Raw</button>
+        <button class="btn-neutral btn-sm" onclick="clearOutput()" style="margin-left:4px">Clear</button>
       </div>
+      <div id="raw-preview" style="display:none;padding:8px 14px;background:#0d0d1a;
+           border-bottom:1px solid #313244;font-family:monospace;font-size:11px;
+           color:#6c7086;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow-y:auto"></div>
       <div id="narration-out"></div>
     </div>
   </div>
@@ -279,6 +283,9 @@ async function selectScene(n) {
 
   const outOk = await fetch(`/api/output/${n}`).then(r => r.ok);
   document.getElementById('btn-open-out').disabled = !outOk;
+  document.getElementById('btn-raw').disabled = !outOk;
+  // Refresh raw panel if it's open
+  if (rawVisible) toggleRaw();
 
   document.getElementById('editor-title').textContent =
     data.scene_label || `Scene ${n}`;
@@ -358,9 +365,11 @@ async function narrateScene() {
     btn.disabled = false;
     btn.textContent = 'Narrate';
     document.getElementById('btn-open-out').disabled = false;
+    document.getElementById('btn-raw').disabled = false;
     setStatus('Done.');
     setTimeout(() => setStatus(''), 3000);
     loadScenes();
+    if (rawVisible) toggleRaw();
   });
 
   sse.onerror = () => {
@@ -410,6 +419,22 @@ function setStatus(msg) { document.getElementById('status-msg').textContent = ms
 function esc(s) {
   return String(s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Raw preview ────────────────────────────────────────────────────
+
+let rawVisible = false;
+
+async function toggleRaw() {
+  const panel = document.getElementById('raw-preview');
+  rawVisible = !rawVisible;
+  document.getElementById('btn-raw').textContent = rawVisible ? 'Hide raw' : 'Raw';
+  if (!rawVisible) { panel.style.display = 'none'; return; }
+  if (currentScene === null) return;
+  const res  = await fetch(`/api/raw/${currentScene}`);
+  const data = await res.json();
+  panel.style.display = '';
+  panel.textContent = data.exists ? data.preview : '(no output file yet)';
 }
 
 // ── Assemble ───────────────────────────────────────────────────────
@@ -623,6 +648,19 @@ def api_narrate(n):
         mimetype="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
+
+
+@app.route("/api/raw/<int:n>")
+def api_raw(n):
+    path = Path(CONFIG["output_dir"]) / f"scene{n}.md"
+    if not path.exists():
+        return jsonify({"exists": False})
+    lines = path.read_text(encoding="utf-8").splitlines()
+    head  = lines[:6]
+    tail  = lines[-6:] if len(lines) > 12 else []
+    sep   = ["…"] if tail else []
+    preview = "\n".join(head + sep + tail)
+    return jsonify({"exists": True, "preview": preview, "total_lines": len(lines)})
 
 
 @app.route("/api/assembled_exists")
