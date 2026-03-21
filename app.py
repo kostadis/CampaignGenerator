@@ -987,6 +987,11 @@ def page_narrative(model: str) -> None:
         help="vtt_extractions/ — action detail, events, environmental context. "
              "Combined with roleplay extractions for fuller narration.",
     )
+    examples_files = multi_path_field(
+        "Style reference files (handcrafted summaries)", key="narr_examples",
+        help="Your own hand-written session summaries. Claude studies their voice, "
+             "structure, humour, and dialogue style and matches it.",
+    )
     roleplay_path = path_field(
         "Roleplay highlights file (fallback)", key="narr_roleplay",
         help="Synthesized roleplay highlights. Used only if no extractions directory is set.",
@@ -1035,6 +1040,8 @@ def page_narrative(model: str) -> None:
         cmd += ["--roleplay-extract-dir", roleplay_extract_dir]
     if summary_extract_dir:
         cmd += ["--summary-extract-dir", summary_extract_dir]
+    if examples_files:
+        cmd += ["--examples"] + examples_files
     if roleplay_path:
         cmd += ["--roleplay", roleplay_path]
     if summary_path:
