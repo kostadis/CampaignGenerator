@@ -107,7 +107,7 @@ def stream_api(client, system: str, user: str, model: str, max_tokens: int = 809
     delays = [60, 120, 240]  # seconds to wait before each retry
     for attempt, delay in enumerate([-1] + delays):
         if delay >= 0:
-            print(f"\n  [Rate limit hit — waiting {delay}s before retry {attempt}/{len(delays)}...]",
+            print(f"\n  [API unavailable — waiting {delay}s before retry {attempt}/{len(delays)}...]",
                   flush=True)
             time.sleep(delay)
         try:
@@ -126,7 +126,8 @@ def stream_api(client, system: str, user: str, model: str, max_tokens: int = 809
                 print()
             return "".join(chunks)
         except Exception as e:
-            if "rate_limit_error" in str(e) and attempt < len(delays):
+            err = str(e)
+            if ("rate_limit_error" in err or "overloaded_error" in err) and attempt < len(delays):
                 continue
             raise
 

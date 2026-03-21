@@ -903,6 +903,16 @@ def apply_ui_config_defaults(cfg: dict) -> None:
         "distill_output":        resolve_cfg(cfg, "world_state_output",    "docs/world_state.md"),
         "party_output":          resolve_cfg(cfg, "party_output",          "docs/party.md"),
         "plan_output":           resolve_cfg(cfg, "planning_output",       "docs/planning.md"),
+        # session doc editor
+        "sd_session":            resolve_cfg(cfg, "session_doc_session"),
+        "sd_extract_dir":        resolve_cfg(cfg, "session_doc_extract_dir"),
+        "sd_roleplay_dir":       resolve_cfg(cfg, "session_doc_roleplay_extract_dir"),
+        "sd_summary_dir":        resolve_cfg(cfg, "session_doc_summary_extract_dir"),
+        "sd_output_dir":         resolve_cfg(cfg, "session_doc_output_dir"),
+        "sd_party":              resolve_cfg(cfg, "party_output"),
+        "sd_voice_dir":          resolve_cfg(cfg, "session_doc_voice_dir"),
+        "sd_narrate_tokens":     str(cfg.get("session_doc_narrate_tokens", "4000")),
+        "sd_port":               str(cfg.get("session_doc_port", "5000")),
         # narrative — pre-populate party
         "narr_party":            resolve_cfg(cfg, "party_output"),
         # vtt context — pre-populate with campaign_state + world_state if configured
@@ -1139,6 +1149,128 @@ def page_vtt_summary(model: str) -> None:
     run_panel(cmd, "vtt_summary")
 
 
+def page_session_doc() -> None:
+    st.title("Session Doc Editor")
+    st.caption(
+        "Interactive editor for scene extractions. "
+        "Review, edit, and narrate each scene individually before assembling the final document."
+    )
+
+    st.subheader("Configuration")
+
+    session = path_field("Session recap file", key="sd_session", required=True,
+                         help="The session recap markdown file (e.g. session-mar).")
+    extract_dir = path_field("Scene extractions directory", key="sd_extract_dir", required=True,
+                             help="Directory containing plan.md and per-scene extraction files. "
+                                  "Generate with session_doc.py --extract-only.")
+    roleplay_dir = path_field("Roleplay extractions directory", key="sd_roleplay_dir", required=True,
+                              help="vtt_roleplay_extractions/ — shown in the right panel for reference.")
+    summary_dir = path_field("Session extractions directory (optional)", key="sd_summary_dir",
+                             help="vtt_extractions/ — used as context during narration.")
+    output_dir = path_field("Output directory", key="sd_output_dir", required=True,
+                            help="Where sceneN.md narration files are saved.", is_output=True)
+    party = path_field("Party document (party.md)", key="sd_party",
+                       help="Backstory, personality, and relationships.")
+    voice_dir = path_field("Voice files directory", key="sd_voice_dir",
+                           help="Directory of {name}_voice.md files written by players.")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        narrate_tokens = st.text_input("Narration token limit", key="sd_narrate_tokens",
+                                       help="Default ceiling for narration output. "
+                                            "Per-scene overrides can be set in extraction files.")
+    with col2:
+        port = st.text_input("Port", key="sd_port",
+                             help="Local port for the editor UI (default: 5000).")
+
+    st.divider()
+
+    # Build the command
+    port_int = int(port) if port.strip().isdigit() else 5000
+    ready = bool(session and extract_dir and roleplay_dir and output_dir)
+
+    # Track server process in session state
+    if "sd_server_pid" not in st.session_state:
+        st.session_state["sd_server_pid"] = None
+
+    server_running = False
+    if st.session_state["sd_server_pid"] is not None:
+        try:
+            import os
+            os.kill(st.session_state["sd_server_pid"], 0)
+            server_running = True
+        except (ProcessLookupError, PermissionError):
+            st.session_state["sd_server_pid"] = None
+
+    col_launch, col_stop = st.columns([1, 1])
+    with col_launch:
+        if st.button("Launch Editor", disabled=not ready or server_running, type="primary"):
+            cmd = [
+                sys.executable, str(SCRIPT_DIR / "session_doc_ui.py"),
+                session,
+                "--extract-dir",          extract_dir,
+                "--roleplay-extract-dir", roleplay_dir,
+                "--output-dir",           output_dir,
+                "--port",                 str(port_int),
+            ]
+            if summary_dir:
+                cmd += ["--summary-extract-dir", summary_dir]
+            if party:
+                cmd += ["--party", party]
+            if voice_dir:
+                cmd += ["--voice-dir", voice_dir]
+            if narrate_tokens.strip().isdigit():
+                cmd += ["--narrate-tokens", narrate_tokens.strip()]
+            proc = subprocess.Popen(cmd, cwd=str(Path(output_dir).parent
+                                                  if output_dir else Path.cwd()))
+            st.session_state["sd_server_pid"] = proc.pid
+            server_running = True
+            st.rerun()
+
+    with col_stop:
+        if st.button("Stop Server", disabled=not server_running):
+            try:
+                import signal
+                os.kill(st.session_state["sd_server_pid"], signal.SIGTERM)
+            except Exception:
+                pass
+            st.session_state["sd_server_pid"] = None
+            st.rerun()
+
+    if server_running:
+        url = f"http://localhost:{port_int}"
+        st.success(f"Editor running — [open {url}]({url})")
+        st.caption("The editor opens in your browser. "
+                   "Come back here to stop the server when you're done.")
+    elif not ready:
+        st.info("Set the required paths above to enable the Launch button.")
+
+    st.divider()
+    st.subheader("Run extractions first")
+    st.caption(
+        "If you haven't generated scene extractions yet, run this first "
+        "(passes 1–4 only — no narration):"
+    )
+    if ready:
+        extract_cmd = [
+            sys.executable, str(SCRIPT_DIR / "session_doc.py"),
+            session,
+            "--roleplay-extract-dir", roleplay_dir,
+            "--by-scene",
+            "--extract-dir",  extract_dir,
+            "--extract-only",
+            "--output", "/dev/null",
+        ]
+        if summary_dir:
+            extract_cmd += ["--summary-extract-dir", summary_dir]
+        if party:
+            extract_cmd += ["--party", party]
+        if voice_dir:
+            extract_cmd += ["--voice-dir", voice_dir]
+        st.code(format_command(extract_cmd), language="bash")
+        run_panel(extract_cmd, "sd_extract")
+
+
 def page_settings() -> None:
     st.title("Settings")
     st.caption("View and edit your UI configuration file.")
@@ -1204,6 +1336,7 @@ def main() -> None:
             "Make Tracking List",
             "VTT → Session Summary",
             "Session Narrative",
+            "Session Doc Editor",
             "Enhance Recap",
             "Campaign State",
             "Distill World State",
@@ -1237,6 +1370,8 @@ def main() -> None:
         page_vtt_summary(model)
     elif page == "Session Narrative":
         page_narrative(model)
+    elif page == "Session Doc Editor":
+        page_session_doc()
     elif page == "Enhance Recap":
         page_enhance_recap(model)
     elif page == "Campaign State":

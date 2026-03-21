@@ -239,7 +239,9 @@ THREE TYPES OF MOMENTS — capture all of them:
 1. DIALOGUE EXCHANGES
    A conversation has two sides. When {narrator} says something, include what the other
    person said — before and after — so the full exchange is present. Attribute every line.
-   Quote verbatim when possible; mark reconstructions as (paraphrase).
+   COPY EVERY LINE VERBATIM, exactly as it appears in the source — do not shorten,
+   paraphrase, or cut mid-sentence. If a line is cut off in the source, copy what is there
+   and mark it (truncated). Only mark (paraphrase) when no direct quote exists at all.
 
 2. ACTION BEATS
    Combat, physical challenges, feats of strength or skill — anything {narrator} did with
@@ -260,7 +262,13 @@ For each moment, format as:
 [one sentence: what this moment felt like or cost]
 
 Keep everything in chronological order. Do not skip quiet or wordless moments — they are
-the texture between the dramatic exchanges. Output only the extracted moments. No preamble.
+the texture between the dramatic exchanges.
+
+IMPORTANT: Only extract dialogue that actually appears in the Roleplay Extractions.
+Do not invent or paraphrase exchanges. If no verbatim dialogue exists for this scene,
+extract action beats and environmental moments only — that is a valid output.
+
+Output only the extracted moments. No preamble.
 """
 
 # ── Pass 5: Per-character narration ───────────────────────────────────────────
@@ -277,24 +285,10 @@ You will be given:
 {length_instruction}
 Every significant moment in the extracted list should appear in the text.
 
-THE DIALOGUE IS THE STORY. The moments list contains full exchanges — both sides of each
-conversation. Write them as scenes. Every line from the exchange should appear in the text.
-
-Good:
-  Kaella leaned in close, voice dropping to almost nothing. "You know nothing, my friend.
-  The true dangers ahead would make your blood run cold."
-  I met her eyes. "Then tell me. All of it."
-  She laughed — a short, hollow sound. "And if I do? What does that buy me?"
-
-Bad:
-  Kaella warned me about dangers I didn't understand, and I pressed her for information.
-
-A reader should feel like they were in the room. Give them the words, both voices,
-the silence between lines. Build prose around the exchanges, not in place of them.
+{dialogue_instruction}
 
 FOCUS ON:
-- Every line of dialogue from the moments list — include as many as fit naturally
-- The emotional weight behind each line: why did they say that, what did it cost them
+- The emotional weight of each moment: why did they do or say that, what did it cost them
 - What this character personally felt, feared, hoped for, or noticed in this moment
 - How their backstory and relationships colour what they said and why
 
@@ -389,6 +383,32 @@ def format_extractions(extractions: list[tuple[str, str]], heading: str) -> str:
     return f"## {heading}\n\n" + "\n\n---\n\n".join(parts)
 
 
+DIALOGUE_INSTRUCTION_FULL = """\
+THE DIALOGUE IS THE STORY. The moments list contains full exchanges — both sides of each
+conversation. Write them as scenes. Every line from the exchange should appear in the text.
+
+Good:
+  Kaella leaned in close, voice dropping to almost nothing. "You know nothing, my friend.
+  The true dangers ahead would make your blood run cold."
+  I met her eyes. "Then tell me. All of it."
+  She laughed — a short, hollow sound. "And if I do? What does that buy me?"
+
+Bad:
+  Kaella warned me about dangers I didn't understand, and I pressed her for information.
+
+A reader should feel like they were in the room. Give them the words, both voices,
+the silence between lines. Build prose around the exchanges, not in place of them.\
+"""
+
+DIALOGUE_INSTRUCTION_CONDITIONAL = """\
+USE DIALOGUE IF PRESENT. If the extracted moments include verbatim exchanges, write them
+as full scenes with both voices — every line should appear in the text, not summarised.
+If the extracted moments contain no dialogue (a wordless combat, a solo crossing, a quiet
+moment of action), write from action beats and environment only.
+DO NOT invent or paraphrase dialogue that is not in the extracted moments.\
+"""
+
+
 def build_narrate_system(examples_text: str | None, scene: str | None = None) -> str:
     if examples_text:
         block = "\n" + EXAMPLES_BLOCK.replace("{examples}", examples_text.strip()) + "\n"
@@ -399,16 +419,20 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None) ->
                  f"  STOP when this scene ends. Do not continue into what happened next.\n"
                  f"  Do not summarise what came before. Do not foreshadow what comes after.\n"
                  f"  This scene only.\n")
-        length = ("Write 2–3 paragraphs covering this scene. "
+        length = ("Write as many paragraphs as needed to give every extracted moment its due — "
+                  "do not compress multiple distinct beats into a single paragraph. "
                   "Stop as soon as the scene is complete. "
                   "If you find yourself describing a new location or the next event, you have gone too far — stop.")
+        dialogue = DIALOGUE_INSTRUCTION_CONDITIONAL
     else:
         scope = ""
         length = "Write as many paragraphs as needed to cover all the extracted moments — typically 4–8, but do not stop early."
+        dialogue = DIALOGUE_INSTRUCTION_FULL
     return (NARRATE_SYSTEM_BASE
             .replace("{examples_block}", block)
             .replace("{scene_scope_line}", scope)
-            .replace("{length_instruction}", length))
+            .replace("{length_instruction}", length)
+            .replace("{dialogue_instruction}", dialogue))
 
 
 def parse_plan(plan_text: str, total_chunks: int) -> list[dict]:
@@ -444,6 +468,40 @@ def parse_plan(plan_text: str, total_chunks: int) -> list[dict]:
                                          min(section["chunk_end"], total_chunks))
             sections.append(section)
     return sections
+
+
+def extraction_filename(index: int, narrator: str, scene: str) -> str:
+    """Return a sortable filename for a per-scene extraction, e.g. '03_soma_glacier_crossing.md'."""
+    def slugify(s: str) -> str:
+        return re.sub(r"[^a-z0-9]+", "_", s.lower()).strip("_")
+    suffix = f"_{slugify(scene)}" if scene else ""
+    return f"{index:02d}_{slugify(narrator)}{suffix}.md"
+
+
+def estimate_narration_tokens(text: str) -> int:
+    """Rough estimate of how many tokens the narration pass will need.
+
+    Prose narration expands compressed extraction notes by roughly 4x for
+    dialogue-heavy scenes (the quotes are written out in full) and 3x for
+    action/environment-only scenes. Rounded up to the nearest 250.
+    """
+    has_dialogue = bool(re.search(r'(?m)^[A-Z][^:\n]+:\s*"', text))
+    expansion = 4 if has_dialogue else 3
+    estimated = int(len(text) / 4 * expansion)
+    return max(500, ((estimated + 249) // 250) * 250)
+
+
+def parse_extraction_file(text: str) -> tuple[str, int | None]:
+    """Return (content, token_override) from an extraction file.
+
+    If the file starts with a 'tokens: N' line, strip it and return N as the
+    token override. Otherwise return the full text and None.
+    """
+    first, _, rest = text.partition("\n")
+    m = re.match(r"^tokens:\s*(\d+)\s*$", first.strip())
+    if m:
+        return rest.lstrip("\n"), int(m.group(1))
+    return text, None
 
 
 def extract_scene_text(recap: str, scene_name: str) -> str:
@@ -581,6 +639,27 @@ def main() -> None:
                              "Useful when the auto-generated plan has overlap issues.")
     parser.add_argument("--plan-only", action="store_true",
                         help="Run through the narrative plan and exit without generating text")
+    parser.add_argument("--extract-dir", metavar="DIR",
+                        help="Save each scene's pass-4 extraction to this directory (one file "
+                             "per scene, plus plan.md). Edit the files, then re-run with "
+                             "--from-extractions to narrate from the edited versions.")
+    parser.add_argument("--scene", nargs="+", type=int, metavar="N",
+                        help="Run only the specified scene number(s) from the plan (1-based). "
+                             "Useful for re-running a single scene without regenerating the rest. "
+                             "Combine with --from-extractions to load from disk.")
+    parser.add_argument("--extract-only", action="store_true",
+                        help="Run passes 1–4, save extractions to --extract-dir, then stop. "
+                             "Skips narration so you can review/edit before committing tokens.")
+    parser.add_argument("--from-extractions", metavar="DIR",
+                        help="Skip passes 1–4. Load per-scene extraction files from this "
+                             "directory (written by a previous --extract-dir run) and run "
+                             "narration only. Loads plan.md from the same directory unless "
+                             "--plan-file is also given.")
+    parser.add_argument("--narrate-tokens", type=int, default=None, metavar="N",
+                        help="Override the narration token limit for all scenes in this run "
+                             "(default: 1500 for scene mode, 12000 for chunk mode). "
+                             "Individual scenes can also be overridden by adding 'tokens: N' "
+                             "as the first line of their extraction file.")
     parser.add_argument("--dry-run", action="store_true",
                         help="Build and print all prompts for passes 4-5 without calling the API. "
                              "Useful for inspecting what each scene sends before committing.")
@@ -668,13 +747,39 @@ def main() -> None:
         if args.characters else []
     )
 
+    # Resolve extract-dir paths early so validation happens before any API calls
+    extract_dir: Path | None = None
+    if args.extract_dir:
+        extract_dir = Path(args.extract_dir).expanduser()
+        extract_dir.mkdir(parents=True, exist_ok=True)
+
+    from_extractions_dir: Path | None = None
+    if args.from_extractions:
+        from_extractions_dir = Path(args.from_extractions).expanduser()
+        if not from_extractions_dir.is_dir():
+            print(f"Error: --from-extractions directory not found: {from_extractions_dir}",
+                  file=sys.stderr)
+            sys.exit(1)
+        # Auto-load plan from the directory unless --plan-file is given
+        if not args.plan_file:
+            auto_plan = from_extractions_dir / "plan.md"
+            if auto_plan.exists():
+                args.plan_file = str(auto_plan)
+                print(f"  Plan: loaded from {auto_plan}")
+            else:
+                print("Error: --from-extractions requires a plan.md in the directory "
+                      "(or pass --plan-file explicitly).", file=sys.stderr)
+                sys.exit(1)
+
     client = make_client()
 
     single_narrator = args.narrator.strip() if args.narrator else None
 
     # ── Pass 1: Consistency check ─────────────────────────────────────────────
     consistency_report = ""
-    if single_narrator:
+    if from_extractions_dir:
+        print("\n[Passes 1–4: Skipped — loading extractions from disk]")
+    elif single_narrator:
         print(f"\n[Pass 1: Skipped — single-narrator mode ({single_narrator})]")
     elif context_parts:
         print(f"\n[Pass 1: Consistency check | model: {args.model}]")
@@ -700,8 +805,9 @@ def main() -> None:
 
     # ── Pass 2: Enhance structured sections ───────────────────────────────────
     structured_sections = ""
-    if single_narrator:
-        print(f"[Pass 2: Skipped — single-narrator mode]")
+    if from_extractions_dir or single_narrator:
+        if not from_extractions_dir:
+            print(f"[Pass 2: Skipped — single-narrator mode]")
     else:
         print(f"\n[Pass 2: Enhance structured sections | model: {args.model}]")
         print("=" * 60)
@@ -835,60 +941,111 @@ def main() -> None:
         sections = matched
         print(f"\nSingle-narrator mode: running passes 4–5 for {sections[0]['narrator']} only.")
 
+    if args.scene:
+        total = len(sections)
+        bad = [n for n in args.scene if n < 1 or n > total]
+        if bad:
+            print(f"Error: scene number(s) out of range: {bad} (plan has {total} scene(s))",
+                  file=sys.stderr)
+            sys.exit(1)
+        # Keep original 1-based index on the section so filenames stay consistent
+        sections = [(n, sections[n - 1]) for n in args.scene]
+        labels = ", ".join(
+            f"{n}. {s['narrator']}" + (f" [{s['scene']}]" if s.get('scene') else "")
+            for n, s in sections
+        )
+        print(f"\nScene filter: running passes 4–5 for {labels} only.")
+    else:
+        sections = list(enumerate(sections, 1))
+
     if args.plan_only:
         return
+
+    # Save the plan alongside extractions so --from-extractions can reload it
+    if extract_dir:
+        plan_save = extract_dir / "plan.md"
+        plan_save.write_text(plan_text, encoding="utf-8")
+        print(f"  Plan saved to: {plan_save}")
 
     # ── Passes 4 & 5: Extract then narrate ────────────────────────────────────
     section_texts: list[tuple[str, str]] = []
     handoff = ""
 
-    for i, section in enumerate(sections, 1):
+    for i, section in sections:
         narrator   = section["narrator"]
         focus      = section.get("focus", "")
         scene_name = section.get("scene", "")
         chunks     = f"chunks {section['chunk_start']}–{section['chunk_end']}"
         label      = f"{narrator} — {scene_name}" if scene_name else narrator
+        fname      = extraction_filename(i, narrator, scene_name)
+
+        # Scene mode needs far fewer output tokens — one scene is 2-3 paragraphs
+        extract_tokens = 1500 if scene_name else 4096
+        narrate_tokens = args.narrate_tokens or (1500 if scene_name else 12000)
+        file_token_override: int | None = None
 
         # Pass 4: character-specific extraction (silent)
-        print(f"\n[Pass 4.{i}/{len(sections)}: Extract — {label} ({chunks})]")
-        scene_block = (
-            f"Scene: '{scene_name}'\n"
-            f"You will be given two sources:\n"
-            f"1. Scene scope — the recap description of this scene. Use it to define the\n"
-            f"   boundaries: what belongs in this scene and what does not.\n"
-            f"2. Roleplay extractions — verbatim dialogue and character moments from the full\n"
-            f"   session. Mine these for actual quotes and exchanges that fall within the scene.\n"
-            f"Extract ONLY moments that belong to this scene. Ignore anything outside it.\n"
-            f"Capture everything {narrator} witnessed — their own actions AND what others did.\n"
-            if scene_name else "")
-        char_extract_system = (CHAR_EXTRACT_SYSTEM
-                               .replace("{narrator}", narrator)
-                               .replace("{scene_block}", scene_block))
-        char_extract_prompt = build_char_extract_prompt(
-            section, roleplay_extractions, summary_extractions or None, roster, recap
-        )
-        # Scene mode needs far fewer output tokens — one scene is 2-3 paragraphs
-        extract_tokens  = 1500 if scene_name else 4096
-        narrate_tokens  = 1500 if scene_name else 12000
+        if from_extractions_dir:
+            extract_file = from_extractions_dir / fname
+            if not extract_file.exists():
+                print(f"Error: extraction file not found: {extract_file}", file=sys.stderr)
+                sys.exit(1)
+            raw = extract_file.read_text(encoding="utf-8")
+            char_moments, file_token_override = parse_extraction_file(raw)
+            if file_token_override:
+                narrate_tokens = file_token_override
+            print(f"\n[Pass 4 scene {i}: Loaded from disk — {label}]")
+            est = estimate_narration_tokens(char_moments)
+            warn = f"  ⚠ estimated {est} — add 'tokens: {est}' to override" if est > narrate_tokens else ""
+            print(f"  → {len(char_moments):,} chars from {extract_file.name}"
+                  f"  (limit: {narrate_tokens}, est. ~{est}){warn}")
+        else:
+            print(f"\n[Pass 4 scene {i}: Extract — {label} ({chunks})]")
+            scene_block = (
+                f"Scene: '{scene_name}'\n"
+                f"You will be given two sources:\n"
+                f"1. Scene scope — the recap description of this scene. Use it to define the\n"
+                f"   boundaries: what belongs in this scene and what does not.\n"
+                f"2. Roleplay extractions — verbatim dialogue and character moments from the full\n"
+                f"   session. Mine these for actual quotes and exchanges that fall within the scene.\n"
+                f"Extract ONLY moments that belong to this scene. Ignore anything outside it.\n"
+                f"Capture everything {narrator} witnessed — their own actions AND what others did.\n"
+                if scene_name else "")
+            char_extract_system = (CHAR_EXTRACT_SYSTEM
+                                   .replace("{narrator}", narrator)
+                                   .replace("{scene_block}", scene_block))
+            char_extract_prompt = build_char_extract_prompt(
+                section, roleplay_extractions, summary_extractions or None, roster, recap
+            )
 
-        if args.dry_run:
-            print(f"\n{'▲' * 60}")
-            print(f"PASS 4 SYSTEM — {label}:")
-            print(char_extract_system)
-            print("─" * 60)
-            print(f"PASS 4 USER — {label}:")
-            print(char_extract_prompt)
-            print(f"{'▲' * 60}\n")
+            if args.dry_run:
+                print(f"\n{'▲' * 60}")
+                print(f"PASS 4 SYSTEM — {label}:")
+                print(char_extract_system)
+                print("─" * 60)
+                print(f"PASS 4 USER — {label}:")
+                print(char_extract_prompt)
+                print(f"{'▲' * 60}\n")
+                continue
+
+            char_moments = stream_api(client, char_extract_system, char_extract_prompt,
+                                      args.model, max_tokens=extract_tokens, silent=True,
+                                      verbose=args.verbose)
+            print(f"  → {len(char_moments):,} chars of {narrator}'s moments")
+
+            if extract_dir:
+                out = extract_dir / fname
+                out.write_text(char_moments, encoding="utf-8")
+                est = estimate_narration_tokens(char_moments)
+                warn = f"  ⚠ estimated {est} — add 'tokens: {est}' to override" if est > narrate_tokens else ""
+                print(f"  Saved: {out.name}  (est. ~{est} tokens){warn}")
+
+        if args.extract_only:
             continue
-
-        char_moments = stream_api(client, char_extract_system, char_extract_prompt,
-                                  args.model, max_tokens=extract_tokens, silent=True,
-                                  verbose=args.verbose)
-        print(f"  → {len(char_moments):,} chars of {narrator}'s moments")
 
         # Pass 5: narrate from character-specific moments
         voice_note = get_voice_note(voice_files, narrator) if voice_files else None
-        print(f"[Pass 5.{i}/{len(sections)}: Narrate — {label}"
+        print(f"[Pass 5 scene {i}: Narrate — {label}"
               f"{' (voice notes)' if voice_note else ''}]")
         print("─" * 60)
         # In scene mode skip the heavy examples block to keep the prompt lean —
@@ -906,6 +1063,11 @@ def main() -> None:
         narration = narration.strip()
         section_texts.append((label, narration))
         handoff = narration.rsplit("\n", 1)[-1].strip().strip('"').strip("'")
+
+    if args.extract_only:
+        print(f"\nExtractions saved to: {extract_dir}")
+        print("Review and edit the files, then re-run with --from-extractions to narrate.")
+        return
 
     # ── Assemble final document ────────────────────────────────────────────────
     doc_parts: list[str] = []
