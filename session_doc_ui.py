@@ -657,7 +657,9 @@ def api_assemble():
         lines = text.split("\n")
         while lines and lines[0].strip() in ("", "---", title_line):
             lines.pop(0)
-        return "\n".join(lines).strip()
+        while lines and lines[-1].strip() in ("", "---"):
+            lines.pop()
+        return "\n".join(lines)
 
     stripped = [strip_header(p) for p in parts]
     content  = f"{title_line}\n\n---\n\n" + "\n\n---\n\n".join(stripped) + "\n"
