@@ -294,6 +294,27 @@ def extract_character_roster(party_text: str) -> str:
     return "\n".join(roster)
 
 
+def load_voice_files(voice_dir: Path) -> dict[str, str]:
+    """Load per-character voice files from a directory.
+
+    Looks for files named {character_name}_voice.md or {character_name}.md
+    (case-insensitive). Returns a dict mapping lowercased character name to content.
+    """
+    voices: dict[str, str] = {}
+    for f in voice_dir.glob("*.md"):
+        stem = f.stem.lower()
+        # Strip trailing _voice suffix if present
+        key = stem.removesuffix("_voice")
+        voices[key] = f.read_text(encoding="utf-8").strip()
+    return voices
+
+
+def get_voice_note(voices: dict[str, str], narrator: str) -> str | None:
+    """Look up a voice note for a narrator by case-insensitive name match."""
+    key = narrator.lower().split()[0]  # match on first name
+    return voices.get(key) or voices.get(narrator.lower())
+
+
 def load_extractions(path: Path) -> list[tuple[str, str]]:
     files = sorted(path.glob("extract_*.md"))
     return [(f.name, f.read_text(encoding="utf-8").strip()) for f in files]
@@ -374,13 +395,17 @@ def build_char_extract_prompt(section: dict,
 
 
 def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
-                          party: str | None, handoff: str, roster: str = "") -> str:
+                          party: str | None, handoff: str, roster: str = "",
+                          voice_note: str | None = None) -> str:
     parts = [f"## Narrator: {narrator}\n## Focus: {focus}"]
     if roster:
         parts.append(f"## Character Classes (definitive — never contradict these)\n\n{roster}")
     if party:
         parts.append(f"## Party Document (authoritative source for character classes, "
                      f"abilities, and roles)\n\n{party.strip()}")
+    if voice_note:
+        parts.append(f"## {narrator}'s Voice Notes (written by the player — "
+                     f"follow these precisely)\n\n{voice_note}")
     if handoff:
         parts.append(f"## Handoff from previous narrator\n\"{handoff}\"")
     parts.append(f"## {narrator}'s Roleplay Moments\n\n{char_moments.strip()}")
@@ -412,6 +437,10 @@ def main() -> None:
                         help='e.g. "Session 12 — Icespire Hold"')
     parser.add_argument("--examples", nargs="+", metavar="FILE",
                         help="Handcrafted summary files as style references for narration")
+    parser.add_argument("--voice-dir", metavar="DIR",
+                        help="Directory of per-character voice files written by players. "
+                             "Name files {character}_voice.md or {character}.md. "
+                             "Each file is injected only into that character's narration pass.")
     parser.add_argument("--plan-only", action="store_true",
                         help="Run through the narrative plan and exit without generating text")
     parser.add_argument("--no-log", action="store_true")
@@ -466,6 +495,17 @@ def main() -> None:
                 print(f"  Character roster: {roster.count(chr(10)) + 1} character(s)")
         else:
             print(f"  Warning: party file not found: {p}", file=sys.stderr)
+
+    voice_files: dict[str, str] = {}
+    if args.voice_dir:
+        vd = Path(args.voice_dir).expanduser()
+        if vd.is_dir():
+            voice_files = load_voice_files(vd)
+            if voice_files:
+                print(f"  Voice files: {len(voice_files)} character(s) "
+                      f"({', '.join(voice_files.keys())})")
+        else:
+            print(f"  Warning: voice-dir not found: {vd}", file=sys.stderr)
 
     examples_text: str | None = None
     if args.examples:
@@ -604,9 +644,12 @@ def main() -> None:
         print(f"  → {len(char_moments):,} chars of {narrator}'s moments")
 
         # Pass 5: narrate from character-specific moments
-        print(f"[Pass 5.{i}/{len(sections)}: Narrate — {narrator}]")
+        voice_note = get_voice_note(voice_files, narrator) if voice_files else None
+        print(f"[Pass 5.{i}/{len(sections)}: Narrate — {narrator}"
+              f"{' (voice notes)' if voice_note else ''}]")
         print("─" * 60)
-        narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff, roster)
+        narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff,
+                                              roster, voice_note)
         narration = stream_api(client, narrate_system, narrate_prompt,
                                args.model, max_tokens=12000)
         print("─" * 60)

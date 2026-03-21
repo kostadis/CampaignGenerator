@@ -234,6 +234,26 @@ def extract_character_roster(party_text: str) -> str:
     return "\n".join(roster)
 
 
+def load_voice_files(voice_dir: Path) -> dict[str, str]:
+    """Load per-character voice files from a directory.
+
+    Looks for files named {character_name}_voice.md or {character_name}.md
+    (case-insensitive). Returns a dict mapping lowercased character name to content.
+    """
+    voices: dict[str, str] = {}
+    for f in voice_dir.glob("*.md"):
+        stem = f.stem.lower()
+        key = stem.removesuffix("_voice")
+        voices[key] = f.read_text(encoding="utf-8").strip()
+    return voices
+
+
+def get_voice_note(voices: dict[str, str], narrator: str) -> str | None:
+    """Look up a voice note for a narrator by case-insensitive name match."""
+    key = narrator.lower().split()[0]
+    return voices.get(key) or voices.get(narrator.lower())
+
+
 def load_file_safe(path_str: str, label: str) -> str | None:
     p = Path(path_str).expanduser()
     if not p.exists():
@@ -338,13 +358,17 @@ def build_char_extract_prompt(section: dict,
 
 
 def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
-                          party: str | None, handoff: str, roster: str = "") -> str:
+                          party: str | None, handoff: str, roster: str = "",
+                          voice_note: str | None = None) -> str:
     parts = [f"## Narrator: {narrator}\n## Focus: {focus}"]
     if roster:
         parts.append(f"## Character Classes (definitive — never contradict these)\n\n{roster}")
     if party:
         parts.append(f"## Party Document (authoritative source for character classes, "
                      f"abilities, and roles)\n\n{party.strip()}")
+    if voice_note:
+        parts.append(f"## {narrator}'s Voice Notes (written by the player — "
+                     f"follow these precisely)\n\n{voice_note}")
     if handoff:
         parts.append(f"## Handoff from previous narrator\n\"{handoff}\"")
     parts.append(f"## {narrator}'s Roleplay Moments\n\n{char_moments.strip()}")
@@ -378,6 +402,10 @@ def main() -> None:
     parser.add_argument("--examples", nargs="+", metavar="FILE",
                         help="Handcrafted session summary files to use as style references. "
                              "Claude will study their voice, structure, and tone and match it.")
+    parser.add_argument("--voice-dir", metavar="DIR",
+                        help="Directory of per-character voice files written by players. "
+                             "Name files {character}_voice.md or {character}.md. "
+                             "Each file is injected only into that character's narration pass.")
     parser.add_argument("--plan-only", action="store_true",
                         help="Run the planning pass only and print the section outline.")
     parser.add_argument("--no-log", action="store_true")
@@ -426,6 +454,17 @@ def main() -> None:
     roster  = extract_character_roster(party) if party else ""
     if roster:
         print(f"  Character roster: {roster.count(chr(10)) + 1} character(s)")
+
+    voice_files: dict[str, str] = {}
+    if args.voice_dir:
+        vd = Path(args.voice_dir).expanduser()
+        if vd.is_dir():
+            voice_files = load_voice_files(vd)
+            if voice_files:
+                print(f"  Voice files: {len(voice_files)} character(s) "
+                      f"({', '.join(voice_files.keys())})")
+        else:
+            print(f"  Warning: voice-dir not found: {vd}", file=sys.stderr)
 
     examples_text: str | None = None
     if args.examples:
@@ -497,7 +536,9 @@ def main() -> None:
         # Pass 3: narrate from character-specific moments
         print(f"[Pass 3.{i}/{len(sections)}: Narrate — {narrator}]")
         print("─" * 60)
-        narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff, roster)
+        voice_note = get_voice_note(voice_files, narrator) if voice_files else None
+        narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff,
+                                              roster, voice_note)
         narrate_system = build_narrate_system(examples_text)
         narration = stream_api(client, narrate_system, narrate_prompt,
                                args.model, max_tokens=12000)
