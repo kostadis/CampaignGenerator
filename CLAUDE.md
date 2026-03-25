@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # CampaignGenerator
 
 A D&D session-prep CLI that assembles campaign documents and session beats, then calls the Claude API to generate encounter design documents.
@@ -51,6 +55,7 @@ python prep.py --no-log --beat "..."
 campaignlib.py              # Shared library — all scripts import from here
 prep.py                     # CLI: session beat / session arc prep
 session_doc.py              # CLI: post-session narrative document generator (5-pass pipeline)
+narrative.py                # Supporting module for session_doc.py (narration passes, prompt assembly)
 session_doc_ui.py           # Flask web UI for the session_doc iterative workflow
 app.py                      # Streamlit launcher / configurator (all campaign tools)
 npc_table.py                # CLI: generate NPC reference table from lore docs
@@ -101,7 +106,7 @@ All file I/O, API calls, clipboard, and logging live in `campaignlib.py`. Every 
 ### Writing a new script
 
 ```python
-from campaignlib import find_default_config, load_config, assemble_docs, make_client, stream_api, save_log
+from campaignlib import find_default_config, load_config, assemble_docs, make_client, stream_api, call_api, save_log
 
 parser.add_argument("--config", default=find_default_config(__file__))
 config, base_dir = load_config(args.config)
@@ -109,6 +114,14 @@ docs = assemble_docs(config, ["world_state"], base_dir)
 client = make_client()
 response = stream_api(client, SYSTEM_PROMPT, docs, args.model)
 ```
+
+**Never import `anthropic` directly in scripts.** All Claude API calls must go through `campaignlib`:
+
+- `stream_api()` — streaming text call (use for all standard calls)
+- `call_api()` — non-streaming call; accepts a string or a list of content blocks (use for multimodal/vision calls, e.g. PDF documents)
+- `make_client()` — creates the Anthropic client
+
+Both functions handle retries automatically (rate limits, overload, connection errors). Do not implement retry logic in scripts.
 
 ## Config and workspaces
 
@@ -269,7 +282,7 @@ python session_doc.py session-mar \
     --party partyfile.md \
     --characters "Vukradin, Valphine, Soma, Brewbarry" \
     --voice-dir voice/ \
-    --examples examples/vukradin_arrival.md \
+    --examples examples/ \
     --output session-doc.md
 
 # Scene-by-scene mode
@@ -322,7 +335,7 @@ python session_doc.py session-mar ... --by-scene \
 | `--party` | — | `party.md` — backstory, personality, relationships |
 | `--characters` | — | Comma-separated narrator roster |
 | `--voice-dir` | — | Directory of `{name}_voice.md` files written by players |
-| `--examples` | — | Handcrafted summary files as style references |
+| `--examples` | — | Directory of handcrafted `.md` files as style references (all `*.md` in dir are loaded) |
 | `--session-name` | recap filename | Document title |
 | `--by-scene` | off | Scene-by-scene narration mode |
 | `--plan-file` | — | Supply a hand-written plan; skip pass 3 |
@@ -349,18 +362,44 @@ Per-character voice files live in `--voice-dir` (e.g. `voice/vukradin_voice.md`)
 
 ### session_doc_ui.py — Session Doc Editor (Flask web UI)
 
-A browser-based editor for the extract → edit → narrate workflow. Three panels:
+A browser-based editor for the extract → edit → narrate → assemble workflow. Three panels:
 
-- **Left**: scene list (click to switch scene)
-- **Centre**: extraction file editor + streaming narration output
-- **Right**: VTT roleplay source browser
+- **Left**: scene list with badges (Extracted / Narrated); click to switch scene
+- **Centre**: extraction file editor, toolbar, and streaming narration output
+- **Right**: VTT roleplay source browser (the `vtt_roleplay_extractions/` files for reference)
+
+#### Prerequisites
+
+Before starting the UI you need:
+
+1. **Session recap file** — the structured session notes passed to `session_doc.py` (e.g. `session-mar`)
+2. **Scene extractions** — run passes 1–4 first to produce `scene_extractions/plan.md` and one extraction file per scene:
+   ```bash
+   python session_doc.py session-mar \
+       --roleplay-extract-dir vtt_roleplay_extractions/ \
+       --summary-extract-dir  vtt_extractions/ \
+       --context docs/campaign_state.md docs/world_state.md \
+       --party partyfile.md \
+       --characters "Vukradin, Valphine, Soma, Brewbarry" \
+       --voice-dir voice/ \
+       --examples examples/ \
+       --by-scene \
+       --extract-dir scene_extractions/ \
+       --extract-only \
+       --output /dev/null
+   ```
+3. **VTT roleplay extractions** — the `vtt_roleplay_extractions/` directory produced by `vtt_summary.py --roleplay-output` (shown in the right panel for reference while editing)
+
+Optional but recommended:
+- `partyfile.md` — passed to each narration call
+- `voice/` directory — per-character voice files injected into narration
 
 #### Starting the UI
 
 From the campaign workspace directory:
 
 ```bash
-# Via wrapper script (recommended)
+# Via wrapper script (recommended — reads ui_config.yaml)
 ./ui.sh
 
 # Or directly
@@ -375,27 +414,33 @@ python ~/CampaignGenerator/session_doc_ui.py session-mar \
 # Then open http://localhost:5000
 ```
 
-Alternatively, launch from the Streamlit app (see below): navigate to **Session Doc Editor** and click **Launch Server**.
+Alternatively, launch from the Streamlit app: navigate to **Session Doc Editor** and click **Launch Server**.
 
-#### Workflow
+#### Scene-by-scene workflow
 
-1. Run extractions first (passes 1–4):
-   ```bash
-   python session_doc.py session-mar ... --by-scene \
-       --extract-dir scene_extractions/ --extract-only --output /dev/null
-   ```
-2. Open the UI at `http://localhost:5000`
-3. Click a scene → extraction text loads in the editor
-4. Edit: add missing dialogue, remove hallucinated lines, adjust emphasis
-5. Click **Save** to write changes to disk
-6. Click **Edit in Typora** to open the extraction file in Typora (WSL-aware)
-7. After editing in Typora: click **Reload** to pull changes back into the browser
-8. Click **Narrate** to stream the narration (calls `session_doc.py --from-extractions --scene N`)
-9. Click **Open narration in Typora** to open the saved output file
+1. Click a scene in the left panel → the extraction text loads in the editor
+2. Review and edit: add missing dialogue, remove hallucinated lines, adjust emphasis
+   - The right panel shows the VTT roleplay source for that session — use it to find exact quotes
+3. **Save** — writes the edited extraction back to disk
+4. **Edit in Typora** — opens the extraction file in Typora (WSL-aware); click **Reload** afterwards to pull changes back into the browser
+5. **Narrate** — streams the narration call (`session_doc.py --from-extractions --scene N`); output appears in the narration panel below the editor and is saved to `sceneN.md` in `--output-dir`
+6. **Open narration in Typora** — opens the saved `sceneN.md` for review
+7. Repeat for each scene; the left panel shows **Extracted** / **Narrated** badges per scene
+
+#### Assembling the final document
+
+Once all scenes are narrated, click **Assemble Doc** in the header bar. This:
+- Collects all `sceneN.md` files from `--output-dir`
+- Strips the per-scene title and surrounding dividers from each
+- Joins them with `---` separators under a single title
+- Saves the result as `{session-name}-doc.md` in `--output-dir`
+- Shows an **Open in Typora** button for the assembled file
+
+Scenes that have not yet been narrated are skipped (noted in the terminal). You can assemble a partial document at any point.
 
 #### Token estimates
 
-The scene list shows a token estimate for each extraction file. If the estimate exceeds `--narrate-tokens`, a warning is shown. To override for one scene, add a header line to the extraction file:
+Each extraction file shows an estimated output token count in the editor header. If it exceeds `--narrate-tokens`, the estimate turns orange. To override the limit for one scene, add this as the first line of the extraction file:
 
 ```
 tokens: 6000
@@ -403,15 +448,39 @@ tokens: 6000
 
 #### `ui_config.yaml` keys
 
+The minimal configuration is a single session directory; all sub-paths are derived automatically:
+
 ```yaml
-session_doc_session:              /path/to/session-mar
-session_doc_extract_dir:          /path/to/scene_extractions
-session_doc_roleplay_extract_dir: /path/to/vtt_roleplay_extractions
-session_doc_summary_extract_dir:  /path/to/vtt_extractions
-session_doc_output_dir:           /path/to/output
-session_doc_voice_dir:            /path/to/voice
-session_doc_narrate_tokens:       4000
-session_doc_port:                 5000
+# Minimal — everything derived from one directory
+session_doc_session_dir:  /path/to/summaries/20260324
+
+# Derived automatically (override only if non-standard):
+#   scene_extractions/         → extract dir (plan.md + extraction files)
+#   vtt_roleplay_extractions/  → roleplay source panel
+#   vtt_extracts/              → summary extractions (narration context)
+#   <session_dir>/             → output dir for sceneN.md files
+#   session-recap.md (or most recently modified .md) → recap file
+
+# Campaign-level settings (shared across sessions):
+session_doc_voice_dir:      /path/to/voice
+session_doc_characters:     "Zalthir, Grygum, Daz, Thorin"
+session_doc_examples_dir:   /path/to/examples/   # directory of *.md style references
+session_doc_narrate_tokens: 4000
+session_doc_port:           5000
+
+# Streamlit app pre-populates campaign_state and world_state from:
+campaign_state_output: docs/campaign_state.md
+world_state_output:    docs/world_state.md
+```
+
+Individual path keys (`session_doc_session`, `session_doc_extract_dir`, etc.) still work as overrides.
+
+#### CLI usage with `--session-dir`
+
+```bash
+python session_doc_ui.py --session-dir summaries/20260324 \
+    --voice-dir voice/ \
+    --characters "Zalthir, Grygum, Daz, Thorin"
 ```
 
 #### WSL / Windows / Typora
@@ -510,7 +579,7 @@ python -m pytest tests/
 ## Dependencies
 
 ```bash
-pip install anthropic pyyaml pyperclip
+pip install anthropic pyyaml pyperclip streamlit pyvis
 ```
 
 `ANTHROPIC_API_KEY` must be set in the environment.
