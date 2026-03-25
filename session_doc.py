@@ -531,7 +531,8 @@ def build_char_extract_prompt(section: dict,
                                extractions: list[tuple[str, str]],
                                summary_extractions: list[tuple[str, str]] | None,
                                roster: str = "",
-                               recap: str = "") -> str:
+                               recap: str = "",
+                               session_summary: str = "") -> str:
     start = section["chunk_start"] - 1
     end   = section["chunk_end"]
     scene_name = section.get("scene", "")
@@ -560,6 +561,13 @@ def build_char_extract_prompt(section: dict,
                 f"(verbatim dialogue and character moments — primary source for quotes)\n\n"
                 f"{roleplay_text}"
             )
+            if session_summary:
+                parts.append(
+                    "## Session Events (VTT Summary)\n"
+                    "(authoritative event log — use for action beats, mechanics, and "
+                    "anything not captured in dialogue)\n\n"
+                    + session_summary.strip()
+                )
             return "\n\n---\n\n".join(parts)
 
     # Non-scene mode (or scene not found in recap): send the full chunk extractions
@@ -610,6 +618,9 @@ def main() -> None:
                         help="vtt_roleplay_extractions/ — quoted dialogue and character moments")
     parser.add_argument("--summary-extract-dir", metavar="DIR",
                         help="vtt_extractions/ — action detail and event context")
+    parser.add_argument("--session-summary", metavar="FILE",
+                        help="Synthesised VTT session summary (e.g. session-clean.md). "
+                             "Used as an authoritative event log in passes 1, 3, and 4.")
     parser.add_argument("--context", nargs="+", metavar="FILE",
                         help="Campaign context files for consistency check "
                              "(e.g. campaign_state.md world_state.md party.md)")
@@ -619,8 +630,8 @@ def main() -> None:
                         help='Comma-separated roster, e.g. "Vukradin, Valphine, Soma, Brewbarry"')
     parser.add_argument("--session-name", default="", metavar="NAME",
                         help='e.g. "Session 12 — Icespire Hold"')
-    parser.add_argument("--examples", nargs="+", metavar="FILE",
-                        help="Handcrafted summary files as style references for narration")
+    parser.add_argument("--examples", metavar="DIR",
+                        help="Directory of handcrafted summary files as style references for narration")
     parser.add_argument("--voice-dir", metavar="DIR",
                         help="Directory of per-character voice files written by players. "
                              "Name files {character}_voice.md or {character}.md. "
@@ -695,6 +706,15 @@ def main() -> None:
         summary_extractions = load_extractions(Path(args.summary_extract_dir).expanduser())
         print(f"  Session extractions:  {len(summary_extractions)} chunk(s)")
 
+    session_summary: str = ""
+    if args.session_summary:
+        p = Path(args.session_summary).expanduser()
+        if p.exists():
+            session_summary = p.read_text(encoding="utf-8")
+            print(f"  Session summary:      {p.name} ({len(session_summary):,} chars)")
+        else:
+            print(f"  Warning: --session-summary file not found: {p}", file=sys.stderr)
+
     context_parts: list[str] = []
     if args.context:
         for ctx in args.context:
@@ -731,16 +751,18 @@ def main() -> None:
 
     examples_text: str | None = None
     if args.examples:
-        parts = []
-        for ex in args.examples:
-            p = Path(ex).expanduser()
-            if p.exists():
+        ed = Path(args.examples).expanduser()
+        if ed.is_dir():
+            parts = []
+            for p in sorted(ed.glob("*.md")):
                 parts.append(f"### Example: {p.name}\n\n{p.read_text(encoding='utf-8').strip()}")
+            if parts:
+                examples_text = "\n\n---\n\n".join(parts)
+                print(f"  Style examples: {len(parts)} file(s) from {ed} ({len(examples_text):,} chars)")
             else:
-                print(f"  Warning: example file not found: {p}", file=sys.stderr)
-        if parts:
-            examples_text = "\n\n---\n\n".join(parts)
-            print(f"  Style examples: {len(parts)} file(s) ({len(examples_text):,} chars)")
+                print(f"  Warning: no .md files found in examples dir: {ed}", file=sys.stderr)
+        else:
+            print(f"  Warning: examples dir not found: {ed}", file=sys.stderr)
 
     characters = (
         [c.strip() for c in args.characters.replace(",", " ").split() if c.strip()]
@@ -784,11 +806,16 @@ def main() -> None:
     elif context_parts:
         print(f"\n[Pass 1: Consistency check | model: {args.model}]")
         print("=" * 60)
-        consistency_prompt = (
-            "## Session Recap\n\n" + recap.strip() +
-            "\n\n---\n\n## Campaign Context\n\n" +
-            "\n\n---\n\n".join(context_parts)
+        consistency_parts = ["## Session Recap\n\n" + recap.strip()]
+        if session_summary:
+            consistency_parts.append(
+                "## This Session — VTT Summary (authoritative event log)\n\n"
+                + session_summary.strip()
+            )
+        consistency_parts.append(
+            "## Campaign Context\n\n" + "\n\n---\n\n".join(context_parts)
         )
+        consistency_prompt = "\n\n---\n\n".join(consistency_parts)
         consistency_report = stream_api(client, CONSISTENCY_SYSTEM, consistency_prompt,
                                         args.model, silent=True, verbose=args.verbose)
         issue_count = consistency_report.count("**Location**")
@@ -862,6 +889,12 @@ def main() -> None:
             plan_parts.append("## Session Extractions\n"
                               "(action detail, events, environmental context)\n\n"
                               + "\n\n---\n\n".join(s_parts))
+        if session_summary:
+            plan_parts.append(
+                "## Session Summary (authoritative — use to understand the full event arc "
+                "and assign scenes to the character with the most interesting perspective)\n\n"
+                + session_summary.strip()
+            )
         if party:
             plan_parts.append(f"## Party Document\n\n{party.strip()}")
         if args.by_scene:
@@ -1015,7 +1048,8 @@ def main() -> None:
                                    .replace("{narrator}", narrator)
                                    .replace("{scene_block}", scene_block))
             char_extract_prompt = build_char_extract_prompt(
-                section, roleplay_extractions, summary_extractions or None, roster, recap
+                section, roleplay_extractions, summary_extractions or None,
+                roster, recap, session_summary
             )
 
             if args.dry_run:

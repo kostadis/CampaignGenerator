@@ -179,7 +179,8 @@ button:disabled { opacity: .35; cursor: default; }
   <h1>Session Doc</h1>
   <span id="session-label" style="font-size:12px;color:#6c7086"></span>
   <span id="status-msg"></span>
-  <button class="btn-neutral btn-sm" id="btn-assemble" onclick="assembleDoc()" style="margin-left:8px">Assemble Doc</button>
+  <button class="btn-neutral btn-sm" id="btn-extract"  onclick="runExtract()"  style="margin-left:8px">Extract</button>
+  <button class="btn-neutral btn-sm" id="btn-assemble" onclick="assembleDoc()" style="margin-left:4px">Assemble Doc</button>
   <button class="btn-neutral btn-sm" id="btn-open-assembled" onclick="openAssembled()" style="display:none;margin-left:4px">Open in Typora</button>
 </header>
 
@@ -250,16 +251,22 @@ async function loadScenes() {
   const scenes = await fetch('/api/scenes').then(r => r.json());
   document.getElementById('session-label').textContent = PAGE.sessionName;
   const list = document.getElementById('scene-list');
-  list.innerHTML = scenes.map(s => `
-    <div class="scene-item" id="si-${s.index}" onclick="selectScene(${s.index})">
-      <div class="num">Scene ${s.index}</div>
-      <div class="narrator">${esc(s.narrator)}</div>
-      <div class="sname">${esc(s.scene || '—')}</div>
-      <div class="badges">
-        ${s.has_extraction ? '<span class="badge b-ext">Extracted</span>' : ''}
-        ${s.has_output     ? '<span class="badge b-nar">Narrated</span>'  : ''}
-      </div>
-    </div>`).join('');
+  if (scenes.length === 0) {
+    list.innerHTML = '<div style="padding:12px;font-size:11px;color:#6c7086;line-height:1.6">' +
+      'No plan yet.<br>Click <b style="color:#cba6f7">Extract</b> in the header<br>to run passes 1–4.' +
+      '</div>';
+  } else {
+    list.innerHTML = scenes.map(s => `
+      <div class="scene-item" id="si-${s.index}" onclick="selectScene(${s.index})">
+        <div class="num">Scene ${s.index}</div>
+        <div class="narrator">${esc(s.narrator)}</div>
+        <div class="sname">${esc(s.scene || '—')}</div>
+        <div class="badges">
+          ${s.has_extraction ? '<span class="badge b-ext">Extracted</span>' : ''}
+          ${s.has_output     ? '<span class="badge b-nar">Narrated</span>'  : ''}
+        </div>
+      </div>`).join('');
+  }
   return scenes;
 }
 
@@ -378,6 +385,49 @@ async function narrateScene() {
     narrating = false;
     btn.disabled = false;
     btn.textContent = 'Narrate';
+    setStatus('Stream error — check terminal.');
+  };
+}
+
+// ── Extract (passes 1–4) ───────────────────────────────────────────
+
+let extracting = false;
+
+async function runExtract() {
+  if (extracting || narrating) return;
+  extracting = true;
+  const btn = document.getElementById('btn-extract');
+  btn.disabled = true;
+  btn.textContent = 'Extracting…';
+
+  const out = document.getElementById('narration-out');
+  out.textContent = '';
+  setStatus('Running extraction (passes 1–4)…');
+
+  sse = new EventSource('/api/extract');
+
+  sse.onmessage = e => {
+    out.textContent += JSON.parse(e.data);
+    out.scrollTop = out.scrollHeight;
+  };
+
+  sse.addEventListener('done', e => {
+    sse.close(); sse = null;
+    extracting = false;
+    btn.disabled = false;
+    btn.textContent = 'Extract';
+    const rc = JSON.parse(e.data).returncode;
+    setStatus(rc === 0 ? 'Extraction complete.' : 'Extraction failed — check output.');
+    setTimeout(() => setStatus(''), 4000);
+    loadScenes();
+  });
+
+  sse.onerror = () => {
+    if (!sse) return;
+    sse.close(); sse = null;
+    extracting = false;
+    btn.disabled = false;
+    btn.textContent = 'Extract';
     setStatus('Stream error — check terminal.');
   };
 }
@@ -536,6 +586,30 @@ def assembled_output_path() -> Path:
     return Path(CONFIG["output_dir"]) / f"{session_stem}-doc.md"
 
 
+def build_extract_cmd() -> list[str]:
+    cmd = [
+        sys.executable,
+        str(Path(__file__).resolve().parent / "session_doc.py"),
+        CONFIG["session"],
+        "--roleplay-extract-dir", CONFIG["roleplay_extract_dir"],
+        "--by-scene",
+        "--extract-dir", CONFIG["extract_dir"],
+        "--extract-only",
+        "--output", "/dev/null",
+    ]
+    for flag, key in [("--party", "party"), ("--voice-dir", "voice_dir"),
+                      ("--summary-extract-dir", "summary_extract_dir"),
+                      ("--session-summary", "session_summary"),
+                      ("--characters", "characters")]:
+        if CONFIG.get(key):
+            cmd += [flag, CONFIG[key]]
+    for ctx in CONFIG.get("context") or []:
+        cmd += ["--context", ctx]
+    if CONFIG.get("examples"):
+        cmd += ["--examples", CONFIG["examples"]]
+    return cmd
+
+
 def build_narrate_cmd(scene_num: int) -> list[str]:
     cmd = [
         sys.executable,
@@ -618,6 +692,36 @@ def api_vtt():
         for f in sorted(vtt_dir.glob("extract_*.md"))
     ]
     return jsonify({"chunks": chunks})
+
+
+@app.route("/api/extract")
+def api_extract():
+    cmd = build_extract_cmd()
+
+    def generate():
+        proc = subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, bufsize=0, cwd=CONFIG["work_dir"],
+        )
+        buf = ""
+        while True:
+            ch = proc.stdout.read(1)
+            if not ch:
+                break
+            buf += ch
+            if len(buf) >= 20 or ch == "\n":
+                yield f"data: {json.dumps(buf)}\n\n"
+                buf = ""
+        if buf:
+            yield f"data: {json.dumps(buf)}\n\n"
+        proc.wait()
+        yield f"event: done\ndata: {json.dumps({'returncode': proc.returncode})}\n\n"
+
+    return Response(
+        stream_with_context(generate()),
+        mimetype="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @app.route("/api/narrate/<int:n>")
@@ -735,39 +839,100 @@ def api_open(file_type, n):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
+DERIVED_SUBDIRS = {
+    "extract_dir":          "scene_extractions",
+    "roleplay_extract_dir": "vtt_roleplay_extractions",
+    "summary_extract_dir":  "vtt_extracts",
+}
+
+
+def derive_paths(session_dir: Path) -> dict:
+    """Return default sub-paths for a session directory."""
+    result = {k: str(session_dir / v) for k, v in DERIVED_SUBDIRS.items()}
+    result["output_dir"] = str(session_dir)
+    # Auto-detect recap: prefer session-recap.md, else most recently modified .md
+    md_files = sorted(session_dir.glob("*.md"), key=lambda f: f.stat().st_mtime, reverse=True)
+    preferred = session_dir / "session-recap.md"
+    result["session"] = str(preferred if preferred.exists() else md_files[0]) if md_files else ""
+    # Auto-detect VTT session summary
+    for name in ("session-clean.md", "session_summary.md", "session_clean.md"):
+        candidate = session_dir / name
+        if candidate.exists():
+            result["session_summary"] = str(candidate)
+            break
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Web UI for reviewing and editing session_doc scene extractions."
     )
-    parser.add_argument("session", metavar="FILE",
-                        help="Session recap file (e.g. session-mar)")
-    parser.add_argument("--extract-dir", required=True, metavar="DIR",
-                        help="Directory containing plan.md and extraction files")
-    parser.add_argument("--roleplay-extract-dir", required=True, metavar="DIR",
-                        help="VTT roleplay extractions (shown in right panel)")
-    parser.add_argument("--output-dir", default=".", metavar="DIR",
-                        help="Where sceneN.md output files are saved (default: .)")
-    parser.add_argument("--party",               metavar="FILE")
-    parser.add_argument("--voice-dir",           metavar="DIR")
-    parser.add_argument("--summary-extract-dir", metavar="DIR")
-    parser.add_argument("--narrate-tokens",      type=int, metavar="N")
-    parser.add_argument("--port",                type=int, default=5000)
+    parser.add_argument("session", nargs="?", metavar="FILE",
+                        help="Session recap file. Omit when using --session-dir.")
+    parser.add_argument("--session-dir", metavar="DIR",
+                        help="Session directory — auto-derives all paths. "
+                             "Defaults: scene_extractions/, vtt_roleplay_extractions/, "
+                             "vtt_extracts/, output to the directory itself.")
+    parser.add_argument("--extract-dir",          metavar="DIR")
+    parser.add_argument("--roleplay-extract-dir",  metavar="DIR")
+    parser.add_argument("--output-dir",            metavar="DIR", default=None)
+    parser.add_argument("--party",                 metavar="FILE")
+    parser.add_argument("--voice-dir",             metavar="DIR")
+    parser.add_argument("--summary-extract-dir",   metavar="DIR")
+    parser.add_argument("--session-summary", metavar="FILE",
+                        help="Synthesised VTT session summary (e.g. session-clean.md)")
+    parser.add_argument("--context",    nargs="+", metavar="FILE")
+    parser.add_argument("--characters", metavar="NAMES")
+    parser.add_argument("--examples",   metavar="DIR")
+    parser.add_argument("--narrate-tokens", type=int, metavar="N")
+    parser.add_argument("--port",           type=int, default=5000)
     args = parser.parse_args()
+
+    # If --session-dir given, fill any unset args from derived defaults
+    if args.session_dir:
+        sd = Path(args.session_dir).expanduser().resolve()
+        derived = derive_paths(sd)
+        if not args.session:
+            args.session = derived["session"]
+        if not args.extract_dir:
+            args.extract_dir = derived["extract_dir"]
+        if not args.roleplay_extract_dir:
+            args.roleplay_extract_dir = derived["roleplay_extract_dir"]
+        if not args.summary_extract_dir:
+            args.summary_extract_dir = derived["summary_extract_dir"]
+        if not args.output_dir:
+            args.output_dir = derived["output_dir"]
+
+    # Validate required paths
+    missing = []
+    if not args.session:
+        missing.append("session recap file (positional arg or --session-dir)")
+    if not args.extract_dir:
+        missing.append("--extract-dir")
+    if not args.roleplay_extract_dir:
+        missing.append("--roleplay-extract-dir")
+    if missing:
+        parser.error("Missing required arguments: " + ", ".join(missing))
 
     CONFIG.update({
         "session":              str(Path(args.session).expanduser().resolve()),
         "extract_dir":          str(Path(args.extract_dir).expanduser().resolve()),
         "roleplay_extract_dir": str(Path(args.roleplay_extract_dir).expanduser().resolve()),
-        "output_dir":           str(Path(args.output_dir).expanduser().resolve()),
-        "party":     str(Path(args.party).expanduser().resolve())              if args.party              else None,
-        "voice_dir": str(Path(args.voice_dir).expanduser().resolve())          if args.voice_dir          else None,
-        "summary_extract_dir": str(Path(args.summary_extract_dir).expanduser().resolve()) if args.summary_extract_dir else None,
+        "output_dir":           str(Path(args.output_dir or ".").expanduser().resolve()),
+        "party":     str(Path(args.party).expanduser().resolve())     if args.party     else None,
+        "voice_dir": str(Path(args.voice_dir).expanduser().resolve()) if args.voice_dir else None,
+        "summary_extract_dir":  str(Path(args.summary_extract_dir).expanduser().resolve()) if args.summary_extract_dir else None,
+        "session_summary": str(Path(args.session_summary).expanduser().resolve()) if args.session_summary else None,
+        "context":    [str(Path(f).expanduser().resolve()) for f in args.context] if args.context else [],
+        "characters": args.characters or None,
+        "examples":   str(Path(args.examples).expanduser().resolve()) if args.examples else None,
         "narrate_tokens": args.narrate_tokens,
         "work_dir": str(Path(".").resolve()),
     })
 
     print(f"  Session Doc UI")
-    print(f"  Scenes:     {CONFIG['extract_dir']}")
+    print(f"  Session:    {CONFIG['session']}")
+    print(f"  Extractions:{CONFIG['extract_dir']}")
     print(f"  Output:     {CONFIG['output_dir']}")
     print(f"  Open http://localhost:{args.port} in your browser")
     print()

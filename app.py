@@ -19,7 +19,7 @@ import yaml
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PYTHON = sys.executable
-DEFAULT_MODEL = "claude-sonnet-4-20250514"
+DEFAULT_MODEL = "claude-sonnet-4-6"
 DEFAULT_CONFIG = str(SCRIPT_DIR / "config" / "config.yaml")
 
 
@@ -38,6 +38,25 @@ def load_ui_config(path: Path | None = None) -> dict:
     return {}
 
 
+_SKIP_SAVE_KEYS = {"ui_config_loaded", "nav_page", "FormSubmitter"}
+
+def save_ui_config_from_session() -> None:
+    """Persist all simple session_state widget values to ui_config.yaml in CWD."""
+    config_path = Path.cwd() / "ui_config.yaml"
+    existing: dict = {}
+    if config_path.exists():
+        with open(config_path) as f:
+            existing = yaml.safe_load(f) or {}
+    updates = {
+        k: v for k, v in st.session_state.items()
+        if isinstance(v, (str, list, bool, int, float))
+        and k not in _SKIP_SAVE_KEYS
+    }
+    existing.update(updates)
+    with open(config_path, "w") as f:
+        yaml.dump(existing, f, default_flow_style=False, allow_unicode=True)
+
+
 def resolve_cfg(cfg: dict, key: str, fallback: str = "") -> str:
     """Return an absolute path from a config value, resolved relative to CWD."""
     val = cfg.get(key, fallback) or fallback
@@ -49,6 +68,8 @@ def resolve_cfg(cfg: dict, key: str, fallback: str = "") -> str:
     return str(p)
 
 MODELS = [
+    "claude-sonnet-4-6",
+    "claude-opus-4-6",
     "claude-sonnet-4-20250514",
     "claude-opus-4-20250514",
     "claude-haiku-4-5-20251001",
@@ -99,7 +120,7 @@ def run_subprocess(cmd: list[str], output_placeholder) -> int:
         text=True,
         bufsize=1,
         env=env,
-        cwd=str(SCRIPT_DIR),
+        cwd=str(Path.cwd()),
     )
     collected: list[str] = []
     for i, line in enumerate(proc.stdout):
@@ -122,6 +143,7 @@ def run_panel(cmd: list[str], key: str) -> None:
         return
 
     if st.button("▶ Run", type="primary", key=f"{key}_run"):
+        save_ui_config_from_session()
         output_area = st.empty()
         with st.spinner("Running…"):
             rc = run_subprocess(cmd, output_area)
@@ -136,8 +158,8 @@ def run_panel(cmd: list[str], key: str) -> None:
 def page_workflow_guide() -> None:
     st.title("CampaignGenerator — Workflow Guide")
     st.markdown("""
-Use the sidebar to navigate to any tool. The recommended order for setting up a campaign
-from scratch is shown below. For ongoing sessions, only run the steps that need updating.
+Use the sidebar to navigate to any tool. Configure paths once in **⚙️ Settings** — they are
+saved to `ui_config.yaml` in your campaign directory and auto-loaded next time.
 
 ---
 
@@ -145,39 +167,63 @@ from scratch is shown below. For ongoing sessions, only run the steps that need 
 
 | Step | Tool | What it does |
 |---|---|---|
-| 1 | **D&D Sheet → Markdown** | Convert D&D Beyond PDFs to `.md` character sheets |
-| 2 | **Make Tracking List** | Extract trackable events from your adventure module |
+| 1 | **⚙️ Settings** | Set paths for your campaign files (saved to `ui_config.yaml`) |
+| 2 | **D&D Sheet → Markdown** | Convert D&D Beyond PDFs to `.md` character sheets |
+| 3 | **Make Tracking List** | Extract trackable events from your adventure module (review before use) |
 
-### After each session (update grounding docs)
+---
 
-| Step | Tool | What it does |
-|---|---|---|
-| 3 | **VTT → Session Summary** | Convert Zoom transcript to a structured session summary |
-| 4 | **Session Narrative** | First-person story in rotating character voices |
-| 5 | **Campaign State** | What's been completed, current NPC states, active threads |
-| 6 | **Distill World State** | Structured lore from raw session summaries |
-| 7 | **Party Document** | Party roster, arc scores, relationships |
-| 8 | **Planning Document** | NPC dossiers, threat arc scores, active plots |
+### After each session
 
-### Session prep (run before each session)
+#### A — Session document (the narrative write-up)
 
 | Step | Tool | What it does |
 |---|---|---|
-| 8 | **Session Prep** | Generate encounter docs from a beat or session outline |
-| 9 | **NPC Table** | Quick reference table of all NPCs |
-| 10 | **Query Summaries** | Look up a specific event or NPC ad-hoc |
+| 1 | **VTT → Session Summary** | Parse Zoom transcript → structured summary + roleplay highlights |
+| 2 | **Enhance Recap** | Consistency-check the recap and enhance structured sections (passes 1–2) |
+| 3 | **Session Doc — Extract** | Run passes 1–4: plan scenes, extract per-character moments, save to disk |
+| 4 | **Session Doc Editor** | Edit extractions scene by scene, narrate, then assemble the final document |
+
+**Session Doc flow:** run **Session Doc — Extract** first to generate `plan.md` and the
+extraction files, then open **Session Doc Editor** to review each scene, click **Narrate**,
+and finally **Assemble Doc** to produce `{session}-doc.md`.
+
+#### B — Grounding documents (for future session prep)
+
+Run these after appending the new summary to your summaries file. They can all run
+independently; run whichever ones have changed.
+
+| Step | Tool | What it does |
+|---|---|---|
+| 4 | **Campaign State** | Completed encounters, current NPC states, active threads |
+| 5 | **Distill World State** | Structured lore document from all session summaries |
+| 6 | **Party Document** | Party roster, arc scores, relationships, current situation |
+| 7 | **Planning Document** | NPC dossiers, threat arc scores, active plots |
+
+---
+
+### Before each session
+
+| Step | Tool | What it does |
+|---|---|---|
+| — | **Session Prep** | Generate encounter design docs from a beat or session outline |
+| — | **NPC Table** | Quick-reference table of all named NPCs and their current states |
+| — | **Query Summaries** | Ad-hoc lookup — "did the party meet X?", "what happened at Y?" |
+| — | **Connection Graph** | Visual map of NPC and faction relationships |
 
 ---
 
 ### Tips
 
-- **Campaign State** should be re-run with `--synthesize-only` after editing your tracking file
-  to avoid re-paying the cost of the extract pass.
-- Delete the `state_extractions/` (or `distill_extractions/`) folder to force a full re-extract.
-- `planning.py` has two modes: **Build Dossiers** (run first, produces editable per-NPC files)
-  and **Synthesize** (run after reviewing dossiers, produces `planning.md`).
-- The **Pipeline** mode in Session Prep automatically stops at FLAGS — review the output
-  and re-run as needed.
+- **First run vs. re-run:** Campaign State, Distill, Party, and Planning all save intermediate
+  extractions. Use **Synthesize Only** to re-run the final pass without re-paying extract costs.
+  Delete the extractions folder to force a full re-extract.
+- **Planning has two modes:** run **Build Dossiers** first (produces editable per-NPC files),
+  review and edit them, then run **Synthesize** to produce `planning.md`.
+- **Session Prep pipeline mode** pauses at FLAGS — the Lore Oracle flagged a canon conflict.
+  Review the output before continuing to the Encounter Architect.
+- **Session Narrative** is an older simpler pipeline (chunk-based, no scene extraction step).
+  Prefer **Session Doc Editor** for the full scene-by-scene workflow.
 """)
 
 
@@ -906,11 +952,21 @@ def apply_ui_config_defaults(cfg: dict) -> None:
         # session doc editor
         "sd_session":            resolve_cfg(cfg, "session_doc_session"),
         "sd_extract_dir":        resolve_cfg(cfg, "session_doc_extract_dir"),
+        "sd_session_dir":        resolve_cfg(cfg, "session_doc_session_dir"),
         "sd_roleplay_dir":       resolve_cfg(cfg, "session_doc_roleplay_extract_dir"),
         "sd_summary_dir":        resolve_cfg(cfg, "session_doc_summary_extract_dir"),
         "sd_output_dir":         resolve_cfg(cfg, "session_doc_output_dir"),
         "sd_party":              resolve_cfg(cfg, "party_output"),
+        "sd_campaign_state":     resolve_cfg(cfg, "campaign_state_output"),
+        "sd_world_state":        resolve_cfg(cfg, "world_state_output"),
         "sd_voice_dir":          resolve_cfg(cfg, "session_doc_voice_dir"),
+        "sd_examples_dir":       resolve_cfg(cfg, "session_doc_examples_dir"),
+        "sd_characters":         cfg.get("session_doc_characters", ""),
+        "sd_context":            "\n".join(filter(None, [
+                                     resolve_cfg(cfg, "campaign_state_output"),
+                                     resolve_cfg(cfg, "world_state_output"),
+                                     resolve_cfg(cfg, "party_output"),
+                                 ])),
         "sd_narrate_tokens":     str(cfg.get("session_doc_narrate_tokens", "4000")),
         "sd_port":               str(cfg.get("session_doc_port", "5000")),
         # narrative — pre-populate party
@@ -930,7 +986,8 @@ def apply_ui_config_defaults(cfg: dict) -> None:
     }
     for key, val in defaults.items():
         if key not in st.session_state:
-            st.session_state[key] = val
+            # Prefer an exact key saved from a previous session over the mapped default
+            st.session_state[key] = cfg.get(key, val)
 
 
 def page_enhance_recap(model: str) -> None:
@@ -1149,6 +1206,35 @@ def page_vtt_summary(model: str) -> None:
     run_panel(cmd, "vtt_summary")
 
 
+def _sd_populate_from_dir() -> None:
+    """Callback: when session_dir changes, fill derived fields."""
+    d = st.session_state.get("sd_session_dir", "").strip()
+    if not d:
+        return
+    p = Path(d).expanduser()
+    if not p.is_dir():
+        return
+    # Derived sub-paths
+    st.session_state["sd_extract_dir"]   = str(p / "scene_extractions")
+    st.session_state["sd_roleplay_dir"]  = str(p / "vtt_roleplay_extractions")
+    st.session_state["sd_summary_dir"]   = str(p / "vtt_extracts")
+    st.session_state["sd_output_dir"]    = str(p)
+    # Auto-detect recap file
+    preferred = p / "session-recap.md"
+    if preferred.exists():
+        st.session_state["sd_session"] = str(preferred)
+    else:
+        md_files = sorted(p.glob("*.md"), key=lambda f: f.stat().st_mtime, reverse=True)
+        if md_files:
+            st.session_state["sd_session"] = str(md_files[0])
+    # Auto-detect VTT session summary
+    for name in ("session-clean.md", "session_summary.md", "session_clean.md"):
+        candidate = p / name
+        if candidate.exists():
+            st.session_state["sd_session_summary"] = str(candidate)
+            break
+
+
 def page_session_doc() -> None:
     st.title("Session Doc Editor")
     st.caption(
@@ -1156,40 +1242,59 @@ def page_session_doc() -> None:
         "Review, edit, and narrate each scene individually before assembling the final document."
     )
 
-    st.subheader("Configuration")
+    # ── Primary input ──────────────────────────────────────────────────────────
+    st.text_input(
+        "Session directory",
+        key="sd_session_dir",
+        on_change=_sd_populate_from_dir,
+        help="Point to your session folder (e.g. summaries/20260324). "
+             "All sub-paths are derived automatically.",
+        placeholder="summaries/20260324",
+    )
 
-    session = path_field("Session recap file", key="sd_session", required=True,
-                         help="The session recap markdown file (e.g. session-mar).")
-    extract_dir = path_field("Scene extractions directory", key="sd_extract_dir", required=True,
-                             help="Directory containing plan.md and per-scene extraction files. "
-                                  "Generate with session_doc.py --extract-only.")
-    roleplay_dir = path_field("Roleplay extractions directory", key="sd_roleplay_dir", required=True,
-                              help="vtt_roleplay_extractions/ — shown in the right panel for reference.")
-    summary_dir = path_field("Session extractions directory (optional)", key="sd_summary_dir",
-                             help="vtt_extractions/ — used as context during narration.")
-    output_dir = path_field("Output directory", key="sd_output_dir", required=True,
-                            help="Where sceneN.md narration files are saved.", is_output=True)
-    party = path_field("Party document (party.md)", key="sd_party",
-                       help="Backstory, personality, and relationships.")
-    voice_dir = path_field("Voice files directory", key="sd_voice_dir",
-                           help="Directory of {name}_voice.md files written by players.")
+    # ── Characters and context ─────────────────────────────────────────────────
+    characters = st.text_input(
+        "Characters", key="sd_characters",
+        help="Comma-separated narrator roster, e.g. 'Zalthir, Grygum, Daz, Thorin'",
+    )
+    context_files = multi_path_field(
+        "Campaign context files", key="sd_context",
+        help="campaign_state.md, world_state.md, party.md — used in pass 1 consistency check",
+    )
+
+    # ── Path overrides (collapsed by default) ─────────────────────────────────
+    with st.expander("Path overrides", expanded=False):
+        session = path_field("Session recap file", key="sd_session", required=True,
+                             help="Auto-detected from session directory, or override here.")
+        session_summary_path = path_field("VTT session summary", key="sd_session_summary",
+                                          help="session-clean.md — authoritative event log used in "
+                                               "passes 1, 3, and 4. Auto-detected from session directory.")
+        extract_dir  = path_field("Scene extractions directory", key="sd_extract_dir",
+                                  help="Where plan.md and extraction files are stored/created.")
+        roleplay_dir = path_field("Roleplay extractions directory", key="sd_roleplay_dir",
+                                  help="vtt_roleplay_extractions/ — shown in right panel.")
+        summary_dir  = path_field("Session extractions directory", key="sd_summary_dir",
+                                  help="vtt_extracts/ — action/event context for narration.")
+        output_dir   = path_field("Output directory", key="sd_output_dir",
+                                  help="Where sceneN.md files land. Defaults to session directory.",
+                                  is_output=True)
+        party     = path_field("Party document", key="sd_party",
+                               help="party.md — backstory, personality, relationships.")
+        voice_dir = path_field("Voice files directory", key="sd_voice_dir",
+                               help="Directory of {name}_voice.md files.")
 
     col1, col2 = st.columns(2)
     with col1:
         narrate_tokens = st.text_input("Narration token limit", key="sd_narrate_tokens",
-                                       help="Default ceiling for narration output. "
-                                            "Per-scene overrides can be set in extraction files.")
+                                       help="Per-scene override: add 'tokens: N' as first line of extraction file.")
     with col2:
-        port = st.text_input("Port", key="sd_port",
-                             help="Local port for the editor UI (default: 5000).")
+        port = st.text_input("Port", key="sd_port", help="Local port (default: 5000).")
 
     st.divider()
 
-    # Build the command
     port_int = int(port) if port.strip().isdigit() else 5000
     ready = bool(session and extract_dir and roleplay_dir and output_dir)
 
-    # Track server process in session state
     if "sd_server_pid" not in st.session_state:
         st.session_state["sd_server_pid"] = None
 
@@ -1215,14 +1320,19 @@ def page_session_doc() -> None:
             ]
             if summary_dir:
                 cmd += ["--summary-extract-dir", summary_dir]
+            if session_summary_path:
+                cmd += ["--session-summary", session_summary_path]
             if party:
                 cmd += ["--party", party]
             if voice_dir:
                 cmd += ["--voice-dir", voice_dir]
+            if context_files:
+                cmd += ["--context"] + context_files
+            if characters.strip():
+                cmd += ["--characters", characters.strip()]
             if narrate_tokens.strip().isdigit():
                 cmd += ["--narrate-tokens", narrate_tokens.strip()]
-            proc = subprocess.Popen(cmd, cwd=str(Path(output_dir).parent
-                                                  if output_dir else Path.cwd()))
+            proc = subprocess.Popen(cmd, cwd=str(Path.cwd()))
             st.session_state["sd_server_pid"] = proc.pid
             server_running = True
             st.rerun()
@@ -1240,35 +1350,94 @@ def page_session_doc() -> None:
     if server_running:
         url = f"http://localhost:{port_int}"
         st.success(f"Editor running — [open {url}]({url})")
-        st.caption("The editor opens in your browser. "
-                   "Come back here to stop the server when you're done.")
+        st.caption("The editor opens in your browser. Come back here to stop the server.")
     elif not ready:
-        st.info("Set the required paths above to enable the Launch button.")
+        st.info("Enter a session directory above to populate paths, then Launch.")
 
-    st.divider()
-    st.subheader("Run extractions first")
+
+def page_session_doc_extract(model: str) -> None:
+    st.title("Session Doc — Extract")
     st.caption(
-        "If you haven't generated scene extractions yet, run this first "
-        "(passes 1–4 only — no narration):"
+        "Run passes 1–4: consistency check, enhanced sections, narrative plan, "
+        "and per-scene character extraction."
     )
+
+    # Session directory — shared key with Editor page so it pre-populates
+    st.text_input(
+        "Session directory",
+        key="sd_session_dir",
+        on_change=_sd_populate_from_dir,
+        help="Point to your session folder (e.g. summaries/20260324). "
+             "Paths are derived automatically. Set once on the Editor page and they carry over.",
+        placeholder="summaries/20260324",
+    )
+
+    characters = st.text_input(
+        "Characters",
+        key="sd_characters",
+        help='Comma-separated narrator roster, e.g. "Zalthir, Grygum, Daz, Thorin"',
+    )
+
+    session_name = st.text_input(
+        "Session name *(optional)*",
+        key="sd_session_name",
+        help="Override the document title (default: recap filename).",
+    )
+
+    with st.expander("Path overrides", expanded=False):
+        session         = path_field("Session recap file",            key="sd_session",         required=True)
+        session_summary = path_field("VTT session summary",           key="sd_session_summary",
+                                     help="session-clean.md — used in passes 1, 3, and 4.")
+        extract_dir     = path_field("Scene extractions directory",   key="sd_extract_dir",     is_output=True)
+        roleplay_dir    = path_field("Roleplay extractions directory", key="sd_roleplay_dir",    required=True)
+        summary_dir     = path_field("Session extractions directory",  key="sd_summary_dir")
+        party           = path_field("Party document",                 key="sd_party")
+        campaign_state  = path_field("Campaign state",                 key="sd_campaign_state",
+                                     help="campaign_state.md — passed as context for the consistency check.")
+        world_state     = path_field("World state",                    key="sd_world_state",
+                                     help="world_state.md — passed as context for the consistency check.")
+        voice_dir       = path_field("Voice files directory",          key="sd_voice_dir",
+                                     help="Directory of {name}_voice.md files.")
+        examples_dir    = path_field("Examples directory",             key="sd_examples_dir",
+                                     help="Directory of handcrafted .md files used as style references.")
+        context_files   = multi_path_field("Additional context files", key="sd_context",
+                                           help="Any extra context beyond campaign_state and world_state.")
+
+    ready = bool(session and extract_dir and roleplay_dir and characters.strip())
+
+    cmd = [
+        PYTHON, str(SCRIPT_DIR / "session_doc.py"),
+        session,
+        "--roleplay-extract-dir", roleplay_dir,
+        "--by-scene",
+        "--extract-dir", extract_dir,
+        "--extract-only",
+        "--output", "/dev/null",
+        "--model", model,
+    ]
+    if summary_dir:
+        cmd += ["--summary-extract-dir", summary_dir]
+    if session_summary:
+        cmd += ["--session-summary", session_summary]
+    if characters.strip():
+        cmd += ["--characters", characters.strip()]
+    if party:
+        cmd += ["--party", party]
+    if voice_dir:
+        cmd += ["--voice-dir", voice_dir]
+    if examples_dir:
+        cmd += ["--examples", examples_dir]
+    for ctx in [campaign_state, world_state] + context_files:
+        if ctx:
+            cmd += ["--context", ctx]
+    if session_name.strip():
+        cmd += ["--session-name", session_name.strip()]
+
     if ready:
-        extract_cmd = [
-            sys.executable, str(SCRIPT_DIR / "session_doc.py"),
-            session,
-            "--roleplay-extract-dir", roleplay_dir,
-            "--by-scene",
-            "--extract-dir",  extract_dir,
-            "--extract-only",
-            "--output", "/dev/null",
-        ]
-        if summary_dir:
-            extract_cmd += ["--summary-extract-dir", summary_dir]
-        if party:
-            extract_cmd += ["--party", party]
-        if voice_dir:
-            extract_cmd += ["--voice-dir", voice_dir]
-        st.code(format_command(extract_cmd), language="bash")
-        run_panel(extract_cmd, "sd_extract")
+        run_panel(cmd, "sd_extract")
+    else:
+        st.divider()
+        st.info("Enter a session directory above (or expand Path overrides) to enable.")
 
 
 def page_settings() -> None:
@@ -1336,6 +1505,7 @@ def main() -> None:
             "Make Tracking List",
             "VTT → Session Summary",
             "Session Narrative",
+            "Session Doc — Extract",
             "Session Doc Editor",
             "Enhance Recap",
             "Campaign State",
@@ -1370,6 +1540,8 @@ def main() -> None:
         page_vtt_summary(model)
     elif page == "Session Narrative":
         page_narrative(model)
+    elif page == "Session Doc — Extract":
+        page_session_doc_extract(model)
     elif page == "Session Doc Editor":
         page_session_doc()
     elif page == "Enhance Recap":
