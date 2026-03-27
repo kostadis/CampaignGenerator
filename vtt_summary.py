@@ -35,7 +35,7 @@ from campaignlib import make_client, stream_api, save_log
 EXTRACT_SYSTEM_BASE = """\
 You are reading a portion of a Zoom transcript from a D&D tabletop RPG session.
 The speakers are the players (PCs) and the Game Master (GM/DM).
-{context_section}
+{context_section}{reference_section}
 Extract a concise set of structured notes covering everything that happened in this portion:
 
 ## Events
@@ -63,16 +63,21 @@ ROLEPLAY_EXTRACT_SYSTEM_BASE = """\
 You are reading a portion of a Zoom transcript from a D&D tabletop RPG session.
 The speakers are the players (PCs) and the Game Master (GM/DM).
 {context_section}
-Your job is to identify and extract ROLEPLAY MOMENTS — instances where players or the GM
-are speaking in character, performing their characters, or creating dramatic narrative moments.
+{reference_section}
+Your job is to find the VERBATIM DIALOGUE for every significant moment in this transcript
+portion.
 
-Look for:
+{priority_block}
+
+WHAT TO EXTRACT:
 - In-character dialogue: a player speaking AS their character (not about them)
 - NPC portrayals: the GM giving voice to an NPC — their tone, speech patterns, threats, pleas
 - Dramatic exchanges: back-and-forth roleplay between a PC and an NPC or between PCs
 - Character-defining moments: a decision, revelation, or action that reveals who the character is
 - Emotional beats: fear, grief, triumph, betrayal, humour — moments with emotional weight
 - Memorable lines: a turn of phrase, a threat, a promise, a punchline that stands out
+- In-character jokes, item interactions, and moments that SOUND mechanical but have narrative
+  weight (e.g. "This is not my necklace. I am holding it until we find its rightful owner.")
 
 For each roleplay moment, record:
 - WHO is speaking (player name / character name if known, or "GM as [NPC name]")
@@ -88,11 +93,30 @@ Group related moments together if they form a single exchange.
 
 Rules:
 - Prefer exact quotes over paraphrasing. If you must paraphrase, mark it with (paraphrase).
-- Ignore purely mechanical talk ("I roll Persuasion", "what's the DC", "I have 14 hit points").
-- Ignore out-of-character scheduling, rules lookups, and side conversations unless they produce a funny/memorable moment worth capturing.
+- Ignore purely mechanical talk ONLY when it has no narrative or character weight.
+  If a player discusses an item, a spell, or a rule in a way that reveals character
+  (possessiveness, humour, fear, curiosity), capture it.
+- Ignore out-of-character scheduling and rules lookups.
 - Do not invent dialogue. Only record what is in the transcript.
 - Output only the roleplay moments. No preamble or commentary.
 """
+
+# When a reference summary (GMassistant) is available, the extraction is anchored
+# on it — find dialogue for its scenes first, then catch anything it missed.
+_ROLEPLAY_PRIORITY_WITH_REF = """\
+PRIORITY ORDER:
+1. ANCHOR on the reference summary above. For every scene and character moment it describes,
+   find the corresponding verbatim dialogue in this transcript chunk. The reference summary
+   was generated from this same transcript, so if it mentions something, the dialogue IS here.
+   Look carefully — it may appear as casual or mechanical-sounding talk.
+2. BONUS: after covering all referenced moments, scan for any significant exchanges the
+   reference summary missed — side conversations that turned into character moments,
+   throwaway jokes with narrative weight, quiet interactions between PCs."""
+
+_ROLEPLAY_PRIORITY_NO_REF = """\
+Scan the transcript for every moment worth narrating. Cast a wide net — it is better to
+over-extract than to miss a quiet character moment or an in-character joke buried in
+mechanical discussion."""
 
 ROLEPLAY_SYNTHESIZE_SYSTEM_BASE = """\
 You are a D&D session archivist. You will receive roleplay moment extractions from a single
@@ -230,9 +254,24 @@ def build_context_section(context_text: str) -> str:
     )
 
 
+def build_reference_section(reference_text: str) -> str:
+    """Return a formatted reference summary block for injection into system prompts."""
+    if not reference_text.strip():
+        return ""
+    return (
+        "\n\n# SESSION REFERENCE (authoritative — generated from this same transcript)\n"
+        "This is the definitive account of what happened in this session. Every scene and "
+        "character moment described below occurred in the transcript you are reading. "
+        "Your primary job is to find the verbatim dialogue for these moments.\n\n"
+        f"{reference_text.strip()}\n\n"
+        "# END SESSION REFERENCE\n\n"
+    )
+
+
 def run_extract(client, text: str, chunk_size: int, model: str,
                 extract_dir: Path, context_text: str = "",
-                system_base: str = None) -> list[Path]:
+                system_base: str = None,
+                reference_text: str = "") -> list[Path]:
     chunks = chunk_text(text, chunk_size)
     total = len(chunks)
     print(f"  {total} chunk(s) to process (chunk size: {chunk_size:,} chars)\n")
@@ -241,6 +280,13 @@ def run_extract(client, text: str, chunk_size: int, model: str,
     saved: list[Path] = []
     base = system_base if system_base is not None else EXTRACT_SYSTEM_BASE
     system = base.replace("{context_section}", build_context_section(context_text))
+    # Roleplay prompt has {reference_section} and {priority_block} placeholders;
+    # summary prompt doesn't — the replacements are no-ops for it.
+    has_ref = bool(reference_text.strip())
+    system = system.replace("{reference_section}", build_reference_section(reference_text))
+    system = system.replace("{priority_block}",
+                            _ROLEPLAY_PRIORITY_WITH_REF if has_ref
+                            else _ROLEPLAY_PRIORITY_NO_REF)
 
     for i, chunk in enumerate(chunks, 1):
         out_file = extract_dir / f"extract_{i:03d}.md"
@@ -401,7 +447,8 @@ def main() -> None:
         print(f"[Pass 1: Extract (summary) | model: {args.model}]")
         print("=" * 60)
         extract_files = run_extract(client, dialogue, args.chunk_size, args.model,
-                                    extract_dir, context_text)
+                                    extract_dir, context_text,
+                                    reference_text=reference_text)
         if not extract_files:
             print("Error: no chunks were extracted — dialogue may be too short.", file=sys.stderr)
             sys.exit(1)
@@ -436,6 +483,7 @@ def main() -> None:
                 client, dialogue, args.chunk_size, args.model,
                 roleplay_extract_dir, context_text,
                 system_base=ROLEPLAY_EXTRACT_SYSTEM_BASE,
+                reference_text=reference_text,
             )
             print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
         else:

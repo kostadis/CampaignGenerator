@@ -336,7 +336,15 @@ END OF STYLE REFERENCE
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def extract_character_roster(party_text: str) -> str:
-    """Parse party.md and return a compact name → class list for prompt injection."""
+    """Parse party.md and return a compact name → class list for prompt injection.
+
+    Expects sections like:
+        ## Soma
+        **Tortle Druid 5, Player: Wade**
+
+    Outputs:
+        - Soma (Wade): Tortle Druid 5
+    """
     roster = []
     current_name: str | None = None
     for line in party_text.splitlines():
@@ -346,7 +354,16 @@ def extract_character_roster(party_text: str) -> str:
         elif current_name:
             cm = re.match(r'^\*\*(.+\d+.+)\*\*$', line.strip())
             if cm:
-                roster.append(f"- {current_name}: {cm.group(1)}")
+                class_info = cm.group(1)
+                # Extract player name(s) if present
+                # Supports: "Player: Wade", "Player: Wade/Kostadis"
+                pm = re.search(r',\s*Player:\s*(.+)', class_info)
+                if pm:
+                    player = pm.group(1).strip().rstrip('*')
+                    class_only = class_info[:pm.start()].strip()
+                    roster.append(f"- {current_name} ({player}): {class_only}")
+                else:
+                    roster.append(f"- {current_name}: {class_info}")
                 current_name = None
     return "\n".join(roster)
 
@@ -504,6 +521,22 @@ def parse_extraction_file(text: str) -> tuple[str, int | None]:
     return text, None
 
 
+def extract_section_text(recap: str, section_name: str) -> str:
+    """Return the body text of a ## section from the recap (e.g. 'Summary', 'Memorable Moments')."""
+    lines = recap.splitlines()
+    in_target = False
+    collected: list[str] = []
+    for line in lines:
+        if line.strip().lower() == f"## {section_name.lower()}":
+            in_target = True
+            continue
+        if in_target and line.startswith("## "):
+            break
+        if in_target:
+            collected.append(line)
+    return "\n".join(collected).strip()
+
+
 def extract_scene_text(recap: str, scene_name: str) -> str:
     """Return the text of a single named scene from the recap's ## Scenes section."""
     lines = recap.splitlines()
@@ -549,6 +582,9 @@ def build_char_extract_prompt(section: dict,
         # In scene mode: use the recap scene as the scope boundary, and the roleplay
         # extractions as the dialogue source. The model is told to stay within the
         # scene defined by the recap, but pull verbatim quotes from the extractions.
+        # The recap's Summary and Memorable Moments provide narrative detail and
+        # character moments (e.g. backstory reflections) that may not appear in the
+        # VTT roleplay extractions.
         scene_text = extract_scene_text(recap, scene_name)
         if scene_text:
             parts.append(
@@ -556,6 +592,20 @@ def build_char_extract_prompt(section: dict,
                 f"(defines what this scene covers — stay within these boundaries)\n\n"
                 f"{scene_text}"
             )
+            # Include recap narrative sections for character moments and
+            # backstory beats that the VTT extraction may have missed
+            recap_context_parts = []
+            for section_name in ("Summary", "Memorable Moments"):
+                text = extract_section_text(recap, section_name)
+                if text:
+                    recap_context_parts.append(f"### {section_name}\n\n{text}")
+            if recap_context_parts:
+                parts.append(
+                    "## Recap Context\n"
+                    "(narrative detail, character reflections, and memorable quotes from "
+                    "the GM recap — incorporate any moments relevant to this scene)\n\n"
+                    + "\n\n".join(recap_context_parts)
+                )
             parts.append(
                 f"## Roleplay Extractions\n"
                 f"(verbatim dialogue and character moments — primary source for quotes)\n\n"
@@ -1038,9 +1088,10 @@ def main() -> None:
         label      = f"{narrator} — {scene_name}" if scene_name else narrator
         fname      = extraction_filename(i, narrator, scene_name)
 
-        # Scene mode needs far fewer output tokens — one scene is 2-3 paragraphs
-        extract_tokens = 1500 if scene_name else 4096
-        narrate_tokens = args.narrate_tokens or (1500 if scene_name else 12000)
+        # Extraction pulls verbatim dialogue — output scales with input size.
+        # Estimate ~1 output token per 4 input chars, with a floor of 1500 and cap of 8192.
+        extract_tokens = 4096  # updated after prompt is built (scene mode)
+        narrate_tokens = args.narrate_tokens or 12000
         file_token_override: int | None = None
 
         # Pass 4: character-specific extraction (silent)
@@ -1077,6 +1128,12 @@ def main() -> None:
                 section, roleplay_extractions, summary_extractions or None,
                 roster, recap, session_summary
             )
+
+            # Scale extraction tokens with input — verbatim dialogue extraction
+            # produces output roughly proportional to the roleplay content in scope.
+            # Floor 1500, cap 8192.
+            if scene_name:
+                extract_tokens = min(8192, max(1500, len(char_extract_prompt) // 4))
 
             if args.dry_run:
                 print(f"\n{'▲' * 60}")

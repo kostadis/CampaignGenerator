@@ -570,6 +570,31 @@ python vtt_summary.py --synthesize-only --extract-dir vtt_extractions/ -o out.md
 Output is a `# Session Name` markdown document suitable for appending to your
 summaries file and feeding into `campaign_state.py` or `distill.py`.
 
+### Reference summaries (GMassistant anchor)
+
+The `--reference-summaries` flag passes a pre-existing session summary (e.g. a GMassistant recap) to the extraction and synthesis passes. This is the recommended workflow when a GMassistant recap is available.
+
+```bash
+python vtt_summary.py session.vtt \
+    --output summaries/20260318/session-summary.md \
+    --roleplay-output summaries/20260318/session-roleplay.md \
+    --reference-summaries summaries/20260318/gm-assist.md \
+    --context docs/campaign_state.md docs/world_state.md docs/party.md
+```
+
+**Architecture**: the GMassistant recap is treated as the authoritative account of what happened — it is generated from the same VTT transcript, so every scene it describes has corresponding dialogue in the transcript. The extraction passes are anchored on it:
+
+1. **Primary**: find verbatim dialogue for every scene and character moment the reference describes
+2. **Bonus**: catch any significant exchanges the reference missed (side conversations, throwaway jokes that turned into moments)
+
+Without `--reference-summaries`, the extraction falls back to an unguided scan — less precise because each chunk is processed independently with no knowledge of what matters in the full session.
+
+The reference summary also feeds into the synthesis pass for cross-referencing, ensuring the final summary doesn't miss events that appear in the GMassistant recap.
+
+### Session doc extraction (recap context)
+
+`session_doc.py` Pass 4 (per-scene character extraction) now includes the GMassistant recap's `## Summary` and `## Memorable Moments` sections alongside the scene scope and roleplay extractions. This ensures narrative detail and character backstory beats (e.g. reflections, backstory triggers) that only appear in the recap — not in VTT dialogue — are available to the extraction model.
+
 ## Running tests
 
 ```bash
