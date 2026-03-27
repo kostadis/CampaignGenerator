@@ -102,7 +102,30 @@ header h1 { font-size: 13px; font-weight: 700; color: #cba6f7; }
 .token-est { font-size: 11px; color: #6c7086; white-space: nowrap; flex-shrink: 0; }
 .token-warn { color: #fab387 !important; }
 
-textarea#extraction {
+/* Tabs */
+.tab-bar {
+  background: #181825; border-bottom: 1px solid #313244;
+  display: flex; flex-shrink: 0;
+}
+.tab {
+  padding: 6px 14px; font-size: 11px; font-weight: 600; cursor: pointer;
+  border-bottom: 2px solid transparent; color: #6c7086;
+  transition: color .1s;
+}
+.tab:hover { color: #cdd6f4; }
+.tab.active { color: #cba6f7; border-bottom-color: #cba6f7; }
+.tab-badge {
+  display: inline-block; font-size: 9px; font-weight: 700;
+  padding: 1px 4px; border-radius: 3px; margin-left: 4px;
+  background: #1e3a2a; color: #a6e3a1; text-transform: uppercase; letter-spacing: .04em;
+}
+
+.editor-pane {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
+.editor-pane.hidden { display: none; }
+
+textarea.editor-ta {
   flex: 1; background: #1e1e2e; color: #cdd6f4;
   border: none; outline: none; resize: none;
   padding: 12px 14px;
@@ -198,14 +221,30 @@ button:disabled { opacity: .35; cursor: default; }
       <span class="editor-title" id="editor-title">Select a scene</span>
       <span class="token-est" id="token-est"></span>
     </div>
-    <textarea id="extraction"
-              placeholder="Select a scene from the list to begin editing."
-              spellcheck="false" oninput="onInput()"></textarea>
+    <div class="tab-bar">
+      <div class="tab active" id="tab-extraction" onclick="switchTab('extraction')">Extraction</div>
+      <div class="tab" id="tab-roleplay" onclick="switchTab('roleplay')">
+        Roleplay Context <span class="tab-badge" id="rp-badge" style="display:none">edited</span>
+      </div>
+    </div>
+
+    <div class="editor-pane" id="pane-extraction">
+      <textarea id="extraction" class="editor-ta"
+                placeholder="Select a scene from the list to begin editing."
+                spellcheck="false" oninput="onInput()"></textarea>
+    </div>
+
+    <div class="editor-pane hidden" id="pane-roleplay">
+      <textarea id="roleplay-ctx" class="editor-ta"
+                placeholder="No roleplay summary loaded. Set session-roleplay.md in the Streamlit app."
+                spellcheck="false" oninput="onRpInput()"></textarea>
+    </div>
+
     <div class="toolbar">
-      <button class="btn-primary"  id="btn-save"    onclick="saveExtraction()" disabled>Save</button>
-      <button class="btn-neutral"  id="btn-open-ext" onclick="openTypora('extraction')" disabled>Edit in Typora</button>
-      <button class="btn-neutral"  id="btn-reload"  onclick="reloadExtraction()" disabled>Reload</button>
-      <button class="btn-success"  id="btn-narrate" onclick="narrateScene()"   disabled>Narrate</button>
+      <button class="btn-primary"  id="btn-save"     onclick="saveActive()"          disabled>Save</button>
+      <button class="btn-neutral"  id="btn-open-ext"  onclick="openTyporaActive()"    disabled>Edit in Typora</button>
+      <button class="btn-neutral"  id="btn-reload"    onclick="reloadActive()"        disabled>Reload</button>
+      <button class="btn-success"  id="btn-narrate"   onclick="narrateScene()"        disabled>Narrate</button>
       <span class="save-flash" id="save-flash">Saved</span>
       <span style="flex:1"></span>
       <button class="btn-neutral btn-sm" id="btn-open-out"
@@ -244,6 +283,21 @@ const PAGE = __PAGE_CONFIG__;
 let currentScene = null;
 let narrating    = false;
 let sse          = null;
+let activeTab    = 'extraction';  // 'extraction' | 'roleplay'
+
+// ── Tabs ──────────────────────────────────────────────────────────
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tab-extraction').classList.toggle('active', tab === 'extraction');
+  document.getElementById('tab-roleplay').classList.toggle('active',   tab === 'roleplay');
+  document.getElementById('pane-extraction').classList.toggle('hidden', tab !== 'extraction');
+  document.getElementById('pane-roleplay').classList.toggle('hidden',   tab !== 'roleplay');
+  // Token estimate only makes sense for extraction
+  document.getElementById('token-est').style.visibility =
+    tab === 'extraction' ? '' : 'hidden';
+  updateEst();
+}
 
 // ── Scene list ────────────────────────────────────────────────────
 
@@ -282,6 +336,14 @@ async function selectScene(n) {
   ta.value    = data.content || '';
   ta.disabled = !data.exists;
 
+  // Load roleplay context
+  const rpData = await fetch(`/api/roleplay/${n}`).then(r => r.json());
+  const rpTa = document.getElementById('roleplay-ctx');
+  rpTa.value    = rpData.content || '';
+  rpTa.disabled = false;
+  const badge = document.getElementById('rp-badge');
+  badge.style.display = rpData.is_local ? '' : 'none';
+
   const has = data.exists;
   document.getElementById('btn-save').disabled     = !has;
   document.getElementById('btn-narrate').disabled  = !has;
@@ -311,8 +373,9 @@ function estimateTokens(text) {
 }
 
 function updateEst() {
-  const text  = document.getElementById('extraction').value;
-  const el    = document.getElementById('token-est');
+  const el = document.getElementById('token-est');
+  if (activeTab !== 'extraction') { el.textContent = ''; return; }
+  const text = document.getElementById('extraction').value;
   if (!text.trim()) { el.textContent = ''; el.className = 'token-est'; return; }
   const est   = estimateTokens(text);
   const limit = PAGE.defaultNarrateTokens;
@@ -325,9 +388,18 @@ function updateEst() {
   }
 }
 
-function onInput() { updateEst(); }
+function onInput()   { updateEst(); }
+function onRpInput() { /* badge updated on save */ }
 
 // ── Save ───────────────────────────────────────────────────────────
+
+async function saveActive() {
+  if (activeTab === 'roleplay') {
+    await saveRoleplay();
+  } else {
+    await saveExtraction();
+  }
+}
 
 async function saveExtraction() {
   if (currentScene === null) return;
@@ -337,10 +409,26 @@ async function saveExtraction() {
     headers: {'Content-Type': 'application/json'},
     body:    JSON.stringify({content}),
   });
-  const flash = document.getElementById('save-flash');
-  flash.classList.add('show');
-  setTimeout(() => flash.classList.remove('show'), 1800);
+  flash();
   loadScenes();
+}
+
+async function saveRoleplay() {
+  if (currentScene === null) return;
+  const content = document.getElementById('roleplay-ctx').value;
+  await fetch(`/api/roleplay/${currentScene}`, {
+    method:  'PUT',
+    headers: {'Content-Type': 'application/json'},
+    body:    JSON.stringify({content}),
+  });
+  document.getElementById('rp-badge').style.display = '';
+  flash();
+}
+
+function flash() {
+  const el = document.getElementById('save-flash');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1800);
 }
 
 // ── Narrate ────────────────────────────────────────────────────────
@@ -443,7 +531,33 @@ async function reloadExtraction() {
   setTimeout(() => setStatus(''), 2000);
 }
 
+async function reloadRoleplay() {
+  if (currentScene === null) return;
+  const data = await fetch(`/api/roleplay/${currentScene}`).then(r => r.json());
+  document.getElementById('roleplay-ctx').value = data.content || '';
+  document.getElementById('rp-badge').style.display = data.is_local ? '' : 'none';
+  setStatus('Reloaded from disk.');
+  setTimeout(() => setStatus(''), 2000);
+}
+
+// ── Reload ─────────────────────────────────────────────────────────
+
+async function reloadActive() {
+  if (activeTab === 'roleplay') {
+    await reloadRoleplay();
+  } else {
+    await reloadExtraction();
+  }
+}
+
 // ── Open in Typora ─────────────────────────────────────────────────
+
+async function openTyporaActive() {
+  if (currentScene === null) return;
+  const type = activeTab === 'roleplay' ? 'roleplay' : 'extraction';
+  const res = await fetch(`/api/open/${type}/${currentScene}`, {method: 'POST'});
+  if (!res.ok) setStatus('File not found.');
+}
 
 async function openTypora(type) {
   if (currentScene === null) return;
@@ -569,6 +683,14 @@ def get_extraction_path(n: int) -> Path | None:
     return Path(CONFIG["extract_dir"]) / scenes[n - 1]["filename"]
 
 
+def get_roleplay_path(n: int) -> Path | None:
+    """Return the per-scene roleplay file path (may not exist yet)."""
+    ext_path = get_extraction_path(n)
+    if ext_path is None:
+        return None
+    return ext_path.with_name(ext_path.stem + "_roleplay.md")
+
+
 def open_in_typora(filepath: Path) -> None:
     try:
         win = subprocess.check_output(
@@ -625,6 +747,12 @@ def build_narrate_cmd(scene_num: int) -> list[str]:
                       ("--summary-extract-dir", "summary_extract_dir")]:
         if CONFIG.get(key):
             cmd += [flag, CONFIG[key]]
+    # Use per-scene roleplay file if it exists, else fall back to global
+    local_rp = get_roleplay_path(scene_num)
+    if local_rp and local_rp.exists():
+        cmd += ["--roleplay-summary", str(local_rp)]
+    elif CONFIG.get("roleplay_summary"):
+        cmd += ["--roleplay-summary", CONFIG["roleplay_summary"]]
     if CONFIG.get("narrate_tokens"):
         cmd += ["--narrate-tokens", str(CONFIG["narrate_tokens"])]
     return cmd
@@ -673,6 +801,31 @@ def api_save_extraction(n):
     if path is None:
         return jsonify({"ok": False}), 404
     path.write_text(request.get_json()["content"], encoding="utf-8")
+    return jsonify({"ok": True})
+
+
+@app.route("/api/roleplay/<int:n>", methods=["GET"])
+def api_get_roleplay(n):
+    local_path = get_roleplay_path(n)
+    if local_path is None:
+        return jsonify({"exists": False, "content": "", "is_local": False}), 404
+    if local_path.exists():
+        return jsonify({"exists": True, "content": local_path.read_text(encoding="utf-8"),
+                        "is_local": True})
+    # Fall back to global roleplay summary
+    global_path = CONFIG.get("roleplay_summary")
+    if global_path and Path(global_path).exists():
+        return jsonify({"exists": True, "content": Path(global_path).read_text(encoding="utf-8"),
+                        "is_local": False})
+    return jsonify({"exists": False, "content": "", "is_local": False})
+
+
+@app.route("/api/roleplay/<int:n>", methods=["PUT"])
+def api_save_roleplay(n):
+    local_path = get_roleplay_path(n)
+    if local_path is None:
+        return jsonify({"ok": False}), 404
+    local_path.write_text(request.get_json()["content"], encoding="utf-8")
     return jsonify({"ok": True})
 
 
@@ -825,6 +978,13 @@ def api_assemble():
 def api_open(file_type, n):
     if file_type == "extraction":
         path = get_extraction_path(n)
+    elif file_type == "roleplay":
+        path = get_roleplay_path(n)
+        # If per-scene file doesn't exist yet, create it from global then open
+        if path and not path.exists():
+            global_path = CONFIG.get("roleplay_summary")
+            content = Path(global_path).read_text(encoding="utf-8") if global_path and Path(global_path).exists() else ""
+            path.write_text(content, encoding="utf-8")
     elif file_type == "output":
         path = Path(CONFIG["output_dir"]) / f"scene{n}.md"
     elif file_type == "assembled":
@@ -842,7 +1002,7 @@ def api_open(file_type, n):
 DERIVED_SUBDIRS = {
     "extract_dir":          "scene_extractions",
     "roleplay_extract_dir": "vtt_roleplay_extractions",
-    "summary_extract_dir":  "vtt_extracts",
+    "summary_extract_dir":  "vtt_extractions",
 }
 
 
@@ -855,11 +1015,15 @@ def derive_paths(session_dir: Path) -> dict:
     preferred = session_dir / "session-recap.md"
     result["session"] = str(preferred if preferred.exists() else md_files[0]) if md_files else ""
     # Auto-detect VTT session summary
-    for name in ("session-clean.md", "session_summary.md", "session_clean.md"):
+    for name in ("session-summary.md", "session-clean.md", "session_summary.md", "session_clean.md"):
         candidate = session_dir / name
         if candidate.exists():
             result["session_summary"] = str(candidate)
             break
+    # Auto-detect roleplay summary
+    roleplay_candidate = session_dir / "session-roleplay.md"
+    if roleplay_candidate.exists():
+        result["roleplay_summary"] = str(roleplay_candidate)
     return result
 
 
@@ -880,7 +1044,10 @@ def main() -> None:
     parser.add_argument("--voice-dir",             metavar="DIR")
     parser.add_argument("--summary-extract-dir",   metavar="DIR")
     parser.add_argument("--session-summary", metavar="FILE",
-                        help="Synthesised VTT session summary (e.g. session-clean.md)")
+                        help="Synthesised VTT session summary (e.g. session-summary.md)")
+    parser.add_argument("--roleplay-summary", metavar="FILE",
+                        help="Roleplay highlights document (session-roleplay.md) — "
+                             "injected into every narration pass")
     parser.add_argument("--context",    nargs="+", metavar="FILE")
     parser.add_argument("--characters", metavar="NAMES")
     parser.add_argument("--examples",   metavar="DIR")
@@ -902,6 +1069,10 @@ def main() -> None:
             args.summary_extract_dir = derived["summary_extract_dir"]
         if not args.output_dir:
             args.output_dir = derived["output_dir"]
+        if not args.session_summary and derived.get("session_summary"):
+            args.session_summary = derived["session_summary"]
+        if not args.roleplay_summary and derived.get("roleplay_summary"):
+            args.roleplay_summary = derived["roleplay_summary"]
 
     # Validate required paths
     missing = []
@@ -922,7 +1093,8 @@ def main() -> None:
         "party":     str(Path(args.party).expanduser().resolve())     if args.party     else None,
         "voice_dir": str(Path(args.voice_dir).expanduser().resolve()) if args.voice_dir else None,
         "summary_extract_dir":  str(Path(args.summary_extract_dir).expanduser().resolve()) if args.summary_extract_dir else None,
-        "session_summary": str(Path(args.session_summary).expanduser().resolve()) if args.session_summary else None,
+        "session_summary":  str(Path(args.session_summary).expanduser().resolve())  if args.session_summary  else None,
+        "roleplay_summary": str(Path(args.roleplay_summary).expanduser().resolve()) if args.roleplay_summary else None,
         "context":    [str(Path(f).expanduser().resolve()) for f in args.context] if args.context else [],
         "characters": args.characters or None,
         "examples":   str(Path(args.examples).expanduser().resolve()) if args.examples else None,

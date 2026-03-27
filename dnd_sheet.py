@@ -15,7 +15,7 @@ import base64
 import sys
 from pathlib import Path
 
-from campaignlib import make_client
+from campaignlib import make_client, call_api
 
 SYSTEM_PROMPT = """\
 You are converting a D&D Beyond character sheet PDF into a clean markdown document \
@@ -96,32 +96,21 @@ Rules:
 
 def pdf_to_markdown(client, pdf_path: Path, model: str) -> str:
     pdf_data = base64.standard_b64encode(pdf_path.read_bytes()).decode("utf-8")
-
-    response = client.messages.create(
-        model=model,
-        max_tokens=8096,
-        system=SYSTEM_PROMPT,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "document",
-                        "source": {
-                            "type": "base64",
-                            "media_type": "application/pdf",
-                            "data": pdf_data,
-                        },
-                    },
-                    {
-                        "type": "text",
-                        "text": "Please convert this D&D Beyond character sheet into the structured markdown format.",
-                    },
-                ],
-            }
-        ],
-    )
-    return response.content[0].text
+    content = [
+        {
+            "type": "document",
+            "source": {
+                "type": "base64",
+                "media_type": "application/pdf",
+                "data": pdf_data,
+            },
+        },
+        {
+            "type": "text",
+            "text": "Please convert this D&D Beyond character sheet into the structured markdown format.",
+        },
+    ]
+    return call_api(client, SYSTEM_PROMPT, content, model)
 
 
 def main() -> None:

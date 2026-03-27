@@ -10,8 +10,9 @@ Output is printed to stdout and optionally saved with --output.
 
 import argparse
 import sys
-from datetime import datetime
 from pathlib import Path
+
+from campaignlib import make_client, stream_api
 
 
 OUTLINE_SYSTEM = """\
@@ -78,30 +79,12 @@ def main() -> None:
 
     dossier = read_input(args.input)
 
-    try:
-        import anthropic
-    except ImportError:
-        print("Error: anthropic not installed. Run: pip install anthropic", file=sys.stderr)
-        sys.exit(1)
-
     system = SINGLE_SYSTEM if args.single else OUTLINE_SYSTEM
     mode_label = "single beat" if args.single else "session outline"
     print(f"[Transforming dossier → {mode_label}...]\n", file=sys.stderr)
 
-    client = anthropic.Anthropic()
-    chunks: list[str] = []
-    with client.messages.stream(
-        model=args.model,
-        max_tokens=1024,
-        system=system,
-        messages=[{"role": "user", "content": dossier}],
-    ) as stream:
-        for text in stream.text_stream:
-            print(text, end="", flush=True)
-            chunks.append(text)
-    print()
-
-    result = "".join(chunks)
+    client = make_client()
+    result = stream_api(client, system, dossier, args.model, max_tokens=1024)
 
     if args.output:
         out_path = Path(args.output).expanduser()

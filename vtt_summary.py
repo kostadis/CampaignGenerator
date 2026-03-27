@@ -263,12 +263,22 @@ def run_extract(client, text: str, chunk_size: int, model: str,
 
 def run_synthesize(client, extract_files: list[Path], model: str,
                    session_name: str, context_text: str = "",
-                   system_base: str = None) -> str:
+                   system_base: str = None, reference_text: str = "") -> str:
     combined = [
         f"<!-- Source: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
         for f in sorted(extract_files)
     ]
     user_prompt = "\n\n---\n\n".join(combined)
+    if reference_text.strip():
+        user_prompt += (
+            "\n\n---\n\n"
+            "## Reference Summaries\n\n"
+            "The following summaries were produced by other tools (GMassistant, Saga20, etc.) "
+            "for the same session. Cross-reference them against the extraction notes above. "
+            "Incorporate any events, NPC interactions, or decisions that appear here but are "
+            "absent from the extractions. Note any significant discrepancies.\n\n"
+            + reference_text.strip()
+        )
     base = system_base if system_base is not None else SYNTHESIZE_SYSTEM_BASE
     system = (base
               .replace("{session_name}", session_name)
@@ -310,6 +320,10 @@ def main() -> None:
     parser.add_argument("--context", nargs="+", metavar="FILE",
                         help="Campaign context files to include (e.g. campaign_state.md "
                              "world_state.md party.md). Helps identify NPCs and track changes.")
+    parser.add_argument("--reference-summaries", nargs="+", metavar="FILE",
+                        help="Pre-existing summaries (GMassistant recap, Saga20 summary, etc.) "
+                             "to cross-reference during synthesis. The model will incorporate "
+                             "anything present in these that is missing from the VTT extractions.")
     parser.add_argument("--no-log", action="store_true",
                         help="Skip saving a log file")
     parser.add_argument("--model", default="claude-sonnet-4-20250514",
@@ -324,6 +338,10 @@ def main() -> None:
         sys.exit(1)
 
     output = Path(args.output).expanduser().resolve()
+    if output.is_dir():
+        print(f"Error: --output must be a file path, not a directory: {output}", file=sys.stderr)
+        print(f"  Try: --output {output / 'session_summary.md'}", file=sys.stderr)
+        sys.exit(1)
     extract_dir = (
         Path(args.extract_dir).expanduser().resolve()
         if args.extract_dir
@@ -350,6 +368,20 @@ def main() -> None:
             context_text = "\n\n---\n\n".join(parts)
             print(f"[Context: {len(args.context)} file(s), {len(context_text):,} chars]")
 
+    # Load optional reference summaries (GMassistant recap, Saga20, etc.)
+    reference_text = ""
+    if args.reference_summaries:
+        parts = []
+        for ref_path in args.reference_summaries:
+            p = Path(ref_path).expanduser()
+            if not p.exists():
+                print(f"Warning: reference summary not found, skipping: {p}", file=sys.stderr)
+                continue
+            parts.append(f"### {p.name}\n\n{p.read_text(encoding='utf-8').strip()}")
+        if parts:
+            reference_text = "\n\n---\n\n".join(parts)
+            print(f"[Reference summaries: {len(parts)} file(s), {len(reference_text):,} chars]")
+
     client = make_client()
 
     if not args.synthesize_only:
@@ -362,11 +394,17 @@ def main() -> None:
         print(f"\n[Parsing VTT | {len(raw):,} raw chars | {vtt_path.name}]")
         dialogue = parse_vtt(raw)
         print(f"  → {len(dialogue):,} chars of clean dialogue\n")
+        if not dialogue.strip():
+            print(f"Error: no dialogue found in VTT file: {vtt_path.name}", file=sys.stderr)
+            sys.exit(1)
 
         print(f"[Pass 1: Extract (summary) | model: {args.model}]")
         print("=" * 60)
         extract_files = run_extract(client, dialogue, args.chunk_size, args.model,
                                     extract_dir, context_text)
+        if not extract_files:
+            print("Error: no chunks were extracted — dialogue may be too short.", file=sys.stderr)
+            sys.exit(1)
         print(f"Extractions saved to: {extract_dir}")
     else:
         extract_files = sorted(extract_dir.glob("extract_*.md"))
@@ -377,7 +415,8 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize (summary) | model: {args.model}]")
     print("=" * 60)
-    summary = run_synthesize(client, extract_files, args.model, session_name, context_text)
+    summary = run_synthesize(client, extract_files, args.model, session_name, context_text,
+                             reference_text=reference_text)
     print("=" * 60)
 
     output.parent.mkdir(parents=True, exist_ok=True)

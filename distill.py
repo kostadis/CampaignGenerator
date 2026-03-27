@@ -167,9 +167,15 @@ def main() -> None:
 
     if not args.synthesize_only:
         text = Path(args.input).expanduser().read_text(encoding="utf-8")
+        if not text.strip():
+            print(f"Error: input file is empty: {args.input}", file=sys.stderr)
+            sys.exit(1)
         print(f"\n[Pass 1: Extract | {len(text):,} chars | model: {args.model}]")
         print("=" * 60)
         extract_files = run_extract(client, text, args.chunk_size, args.model, extract_dir)
+        if not extract_files:
+            print("Error: no chunks were extracted — input may be too short.", file=sys.stderr)
+            sys.exit(1)
         print(f"Extractions saved to: {extract_dir}")
     else:
         extract_files = sorted(extract_dir.glob("extract_*.md"))

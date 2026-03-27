@@ -588,7 +588,8 @@ def build_char_extract_prompt(section: dict,
 
 def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
                           party: str | None, handoff: str, roster: str = "",
-                          voice_note: str | None = None) -> str:
+                          voice_note: str | None = None,
+                          roleplay_summary: str | None = None) -> str:
     parts = [f"## Narrator: {narrator}\n## Focus: {focus}"]
     if roster:
         parts.append(f"## Character Classes (definitive — never contradict these)\n\n{roster}")
@@ -598,6 +599,18 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
     if voice_note:
         parts.append(f"## {narrator}'s Voice Notes (written by the player — "
                      f"follow these precisely)\n\n{voice_note}")
+    if roleplay_summary:
+        parts.append(
+            f"## Session Roleplay Summary\n\n"
+            f"This is the synthesised roleplay document for this session — character voices "
+            f"with actual quotes, verbatim memorable exchanges, standout moments, and "
+            f"Voice Keeper Notes.\n\n"
+            f"Use this as an authoritative reference:\n"
+            f"- **Memorable Exchanges**: reproduce these verbatim where they fall in your scene\n"
+            f"- **Character Voices**: match the speech patterns and register shown here\n"
+            f"- **Voice Keeper Notes**: let PC emotional states and NPC patterns shape the prose\n\n"
+            f"{roleplay_summary.strip()}"
+        )
     if handoff:
         parts.append(f"## Handoff from previous narrator\n\"{handoff}\"")
     parts.append(f"## {narrator}'s Roleplay Moments\n\n{char_moments.strip()}")
@@ -636,6 +649,10 @@ def main() -> None:
                         help="Directory of per-character voice files written by players. "
                              "Name files {character}_voice.md or {character}.md. "
                              "Each file is injected only into that character's narration pass.")
+    parser.add_argument("--roleplay-summary", metavar="FILE",
+                        help="Synthesised roleplay highlights document (session-roleplay.md). "
+                             "Injected into every narration pass: character voices with actual "
+                             "quotes, verbatim memorable exchanges, and Voice Keeper Notes.")
     parser.add_argument("--narrator", metavar="NAME",
                         help="Generate narration for one character only (skips passes 1–2, "
                              "runs the plan, then extracts and narrates the named character). "
@@ -748,6 +765,15 @@ def main() -> None:
                       f"({', '.join(voice_files.keys())})")
         else:
             print(f"  Warning: voice-dir not found: {vd}", file=sys.stderr)
+
+    roleplay_summary: str | None = None
+    if args.roleplay_summary:
+        rp = Path(args.roleplay_summary).expanduser()
+        if rp.exists():
+            roleplay_summary = rp.read_text(encoding="utf-8")
+            print(f"  Roleplay summary: {rp.name} ({len(roleplay_summary):,} chars)")
+        else:
+            print(f"  Warning: roleplay summary not found: {rp}", file=sys.stderr)
 
     examples_text: str | None = None
     if args.examples:
@@ -1079,8 +1105,10 @@ def main() -> None:
 
         # Pass 5: narrate from character-specific moments
         voice_note = get_voice_note(voice_files, narrator) if voice_files else None
+        extras = [x for x in ["voice notes" if voice_note else "",
+                               "roleplay summary" if roleplay_summary else ""] if x]
         print(f"[Pass 5 scene {i}: Narrate — {label}"
-              f"{' (voice notes)' if voice_note else ''}]")
+              f"{' (' + ', '.join(extras) + ')' if extras else ''}]")
         print("─" * 60)
         # In scene mode skip the heavy examples block to keep the prompt lean —
         # the style constraint is already carried by voice notes and the handoff.
@@ -1089,7 +1117,7 @@ def main() -> None:
             scene=scene_name or None
         )
         narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff,
-                                              roster, voice_note)
+                                              roster, voice_note, roleplay_summary)
         narration = stream_api(client, narrate_system, narrate_prompt,
                                args.model, max_tokens=narrate_tokens, verbose=args.verbose)
         print("─" * 60)

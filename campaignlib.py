@@ -86,13 +86,71 @@ def make_client():
     return anthropic.Anthropic()
 
 
+def _is_retryable(exc) -> bool:
+    """Return True for transient API errors that are worth retrying."""
+    try:
+        import anthropic
+        if isinstance(exc, (
+            anthropic.RateLimitError,
+            anthropic.InternalServerError,
+            anthropic.APIConnectionError,
+            anthropic.APITimeoutError,
+        )):
+            return True
+        if isinstance(exc, anthropic.APIStatusError) and exc.status_code == 529:
+            return True  # overloaded_error
+    except ImportError:
+        pass
+    try:
+        import httpx
+        if isinstance(exc, (
+            httpx.RemoteProtocolError,
+            httpx.ConnectError,
+            httpx.ReadError,
+            httpx.TimeoutException,
+        )):
+            return True
+    except ImportError:
+        pass
+    return False
+
+
+def call_api(client, system: str, content, model: str, max_tokens: int = 8096) -> str:
+    """Non-streaming API call. Returns full response text.
+
+    content — a string or a list of content blocks (for multimodal/vision calls).
+    Retries on transient errors (rate limit, overload, connection) with exponential backoff.
+    """
+    import time
+    messages = [{"role": "user", "content": content}]
+    delays = [10, 20, 40]
+    for attempt, delay in enumerate([-1] + delays):
+        if delay >= 0:
+            print(f"\n  [API unavailable — waiting {delay}s before retry {attempt}/{len(delays)}...]",
+                  flush=True)
+            time.sleep(delay)
+        try:
+            response = client.messages.create(
+                model=model,
+                max_tokens=max_tokens,
+                system=system,
+                messages=messages,
+            )
+            return response.content[0].text
+        except Exception as e:
+            if _is_retryable(e) and attempt < len(delays):
+                continue
+            raise
+
+
 def stream_api(client, system: str, user: str, model: str, max_tokens: int = 8096,
                silent: bool = False, verbose: bool = False) -> str:
     """Stream a Claude API call, printing each token as it arrives. Returns full response.
 
-    Retries on rate limit errors with exponential backoff (up to 4 attempts).
-    Pass silent=True to suppress all output (useful for filter/classification passes).
-    Pass verbose=True to print the system and user prompts before calling.
+    Retries on transient errors (rate limit, overload, connection) with exponential backoff
+    (up to 4 attempts). Pass silent=True to suppress all output (useful for
+    filter/classification passes). Pass verbose=True to print the system and user prompts
+    before calling.
     """
     if verbose:
         print("\n" + "▲" * 60)
@@ -126,8 +184,7 @@ def stream_api(client, system: str, user: str, model: str, max_tokens: int = 809
                 print()
             return "".join(chunks)
         except Exception as e:
-            err = str(e)
-            if ("rate_limit_error" in err or "overloaded_error" in err) and attempt < len(delays):
+            if _is_retryable(e) and attempt < len(delays):
                 continue
             raise
 

@@ -194,6 +194,10 @@ def run_synthesize(
         parts.append(f"# ADDITIONAL CONTEXT\n\n{context}")
 
     user_prompt = "\n\n===\n\n".join(parts)
+    if not user_prompt.strip():
+        print("Error: no source material to synthesize — provide --character, --summaries, or --backstory.",
+              file=sys.stderr)
+        raise SystemExit(1)
     print(f"  Synthesizing ({len(user_prompt):,} chars total)...")
     print("  " + "─" * 56)
     result = stream_api(client, SYNTHESIZE_SYSTEM, user_prompt, model)
