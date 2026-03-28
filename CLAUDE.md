@@ -57,6 +57,7 @@ prep.py                     # CLI: session beat / session arc prep
 session_doc.py              # CLI: post-session narrative document generator (5-pass pipeline)
 narrative.py                # Supporting module for session_doc.py (narration passes, prompt assembly)
 session_doc_ui.py           # Flask web UI for the session_doc iterative workflow
+quote_ledger.py             # Quote Ledger: SQLite-backed VTT dialogue tracking and scene matching
 app.py                      # Streamlit launcher / configurator (all campaign tools)
 npc_table.py                # CLI: generate NPC reference table from lore docs
 distill.py                  # CLI: convert session summaries into world_state.md
@@ -366,7 +367,7 @@ A browser-based editor for the extract → edit → narrate → assemble workflo
 
 - **Left**: scene list with badges (Extracted / Narrated); click to switch scene
 - **Centre**: extraction file editor, toolbar, and streaming narration output
-- **Right**: VTT roleplay source browser (the `vtt_roleplay_extractions/` files for reference)
+- **Right**: tabbed panel — **VTT Source** (roleplay extraction files for reference) and **Quote Ledger** (SQLite-backed dialogue tracker)
 
 #### Prerequisites
 
@@ -437,6 +438,18 @@ Once all scenes are narrated, click **Assemble Doc** in the header bar. This:
 - Shows an **Open in Typora** button for the assembled file
 
 Scenes that have not yet been narrated are skipped (noted in the terminal). You can assemble a partial document at any point.
+
+#### Quote Ledger
+
+The right panel's **Quote Ledger** tab tracks verbatim VTT dialogue and shows which quotes made it into scene extractions. This surfaces the gap between what was said (VTT roleplay extractions) and what Claude chose to include (Pass 4 scene extractions), so you can find missing dialogue and paste it into the editor.
+
+**Sync** parses `vtt_roleplay_extractions/extract_*.md`, stores every quoted block in a SQLite database (`scene_extractions/quote_ledger.db`), and fuzzy-matches each quote against the dialogue in scene extraction files (0.6 similarity threshold).
+
+Quotes are grouped by scene. Unassigned quotes (no match found) appear at the top — these are the most likely to be missing from extractions. Click a quote to expand it, then use the **Move** dropdown to reassign it to a different scene or unassign it. Manual assignments are pinned and won't be overwritten by future syncs.
+
+The ledger is read-only with respect to extraction files — it does not modify them. To include a missing quote in a narration, copy it from the ledger into the extraction editor (middle panel) and save.
+
+`quote_ledger.py` contains the parsing, matching, and SQLite logic. The Flask routes are in `session_doc_ui.py`.
 
 #### Token estimates
 
@@ -594,6 +607,27 @@ The reference summary also feeds into the synthesis pass for cross-referencing, 
 ### Session doc extraction (recap context)
 
 `session_doc.py` Pass 4 (per-scene character extraction) now includes the GMassistant recap's `## Summary` and `## Memorable Moments` sections alongside the scene scope and roleplay extractions. This ensures narrative detail and character backstory beats (e.g. reflections, backstory triggers) that only appear in the recap — not in VTT dialogue — are available to the extraction model.
+
+### Player name mapping
+
+VTT roleplay extractions reference players by real name (e.g. "David (Vukradin)"), but scene scopes reference characters by name only. `session_doc.py` bridges this by parsing player names from `party.md`. The expected format in party.md is:
+
+```
+## Soma
+**Tortle Druid 5, Player: Wade**
+```
+
+`extract_character_roster()` parses this into roster lines like `- Soma (Wade): Tortle Druid 5`, which are injected into Pass 4 extraction prompts so the model can match VTT player names to characters.
+
+If a player is absent and someone else plays their character, update `party.md` temporarily (e.g. `Player: Wade/Kostadis`).
+
+### Extraction token scaling
+
+Pass 4 extraction output tokens scale dynamically with input size instead of using a fixed limit. The formula is `min(8192, max(1500, len(prompt) // 4))`. This prevents truncation on dense scenes while keeping short scenes efficient.
+
+### Narration token defaults
+
+The default `narrate_tokens` is 12000 for all modes (scene and chunk). Scene-mode narrations routinely need 3000–6000 tokens for dialogue-heavy scenes. The `--narrate-tokens` flag and `tokens:` extraction file header still override this.
 
 ## Running tests
 
