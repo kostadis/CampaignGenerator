@@ -75,10 +75,20 @@ def load_ui_config(path: Path | None = None) -> dict:
     return {}
 
 
-_SKIP_SAVE_KEYS = {"ui_config_loaded", "nav_page", "FormSubmitter"}
+_SAVE_KEY_PREFIXES = (
+    "cs_", "distill_", "party_", "plan_", "query_", "prep_", "npc_",  # grounding / prep
+    "sd_", "sw_", "vtt_", "session_dir",                               # session workflow
+    "narr_", "er_", "cg_",                                             # narrative / enhance / graph
+    "dnd_", "mt_",                                                     # setup tools
+    "global_",                                                         # app-wide settings
+)
+_NEVER_SAVE_KEYS = {
+    "sd_server_pid", "_refs_initialized", "__show_guide__",
+    "ui_config_loaded", "nav_page", "FormSubmitter",
+}
 
 def save_ui_config_from_session() -> None:
-    """Persist all simple session_state widget values to ui_config.yaml in CWD."""
+    """Persist known config widget values to ui_config.yaml in CWD."""
     config_path = Path.cwd() / "ui_config.yaml"
     existing: dict = {}
     if config_path.exists():
@@ -87,7 +97,8 @@ def save_ui_config_from_session() -> None:
     updates = {
         k: v for k, v in st.session_state.items()
         if isinstance(v, (str, list, bool, int, float))
-        and k not in _SKIP_SAVE_KEYS
+        and k.startswith(_SAVE_KEY_PREFIXES)
+        and k not in _NEVER_SAVE_KEYS
     }
     existing.update(updates)
     with open(config_path, "w") as f:
@@ -156,8 +167,9 @@ def path_field(label: str, key: str, default: str = "", help: str = "",
 
 def multi_path_field(label: str, key: str, help: str = "", required: bool = False) -> list[str]:
     label_text = f"{label} {'*(required)*' if required else '*(optional)*'} — one path per line"
-    val = st.text_area(label_text, value=st.session_state.get(key, ""),
-                       key=key, help=help, height=100)
+    if key not in st.session_state:
+        st.session_state[key] = ""
+    val = st.text_area(label_text, key=key, help=help, height=100)
     paths = [p.strip() for p in val.splitlines() if p.strip()]
     for p in paths:
         st.caption(f"`{p}` {path_status(p)}")
@@ -626,8 +638,9 @@ def page_npc_table(model: str) -> None:
     st.caption("Generate a quick-reference NPC table from config documents.")
     config_buttons()
 
+    if "npc_docs_str" not in st.session_state:
+        st.session_state["npc_docs_str"] = "world_state"
     docs_str = st.text_input("Document labels (space-separated)",
-                             value=st.session_state.get("npc_docs_str", "world_state"),
                              key="npc_docs_str",
                              help="Labels defined in your config.yaml — e.g. world_state planning campaign_state")
     config = path_field("Config file", key="npc_config", default=DEFAULT_CONFIG)
@@ -793,8 +806,13 @@ def build_graph_html(data: dict, filter_types: set[str]) -> str:
                          font={"color": "#ffffff", "strokeWidth": 3, "strokeColor": "#1a1a2e"})
 
     with tempfile.NamedTemporaryFile(suffix=".html", delete=False, mode="w") as f:
-        net.save_graph(f.name)
-        return open(f.name).read()
+        tmp_path = f.name
+    try:
+        net.save_graph(tmp_path)
+        with open(tmp_path) as f:
+            return f.read()
+    finally:
+        os.unlink(tmp_path)
 
 
 def page_connections(model: str) -> None:
@@ -803,9 +821,10 @@ def page_connections(model: str) -> None:
     config_buttons()
 
     # ── File selection ────────────────────────────────────────────────────────
+    if "cg_docs_dir" not in st.session_state:
+        st.session_state["cg_docs_dir"] = str(SCRIPT_DIR / "docs")
     docs_dir_input = st.text_input(
         "Campaign docs directory",
-        value=st.session_state.get("cg_docs_dir", str(SCRIPT_DIR / "docs")),
         key="cg_docs_dir",
         help="Folder to scan for .md files — e.g. /home/kroussos/campaigns/Phandalin/docs",
     )
@@ -842,7 +861,7 @@ def page_connections(model: str) -> None:
     all_selected = selected + extra_files
 
     # ── Cache file ────────────────────────────────────────────────────────────
-    cache_path = SCRIPT_DIR / "docs" / "connections.json"
+    cache_path = Path.cwd() / "docs" / "connections.json"
     cache_exists = cache_path.exists()
 
     col1, col2 = st.columns([2, 1])
@@ -1021,11 +1040,10 @@ def apply_ui_config_defaults(cfg: dict, force: bool = False) -> None:
         "party_output":          resolve_cfg(cfg, "party_output",          "docs/party.md"),
         "plan_output":           resolve_cfg(cfg, "planning_output",       "docs/planning.md"),
         # session workflow — shared session dir
-        "sw_session_dir":        resolve_cfg(cfg, "session_doc_session_dir"),
+        "session_dir":           resolve_cfg(cfg, "session_doc_session_dir"),
         # session doc editor
         "sd_session":            resolve_cfg(cfg, "session_doc_session"),
         "sd_extract_dir":        resolve_cfg(cfg, "session_doc_extract_dir"),
-        "sd_session_dir":        resolve_cfg(cfg, "session_doc_session_dir"),
         "sd_roleplay_dir":       resolve_cfg(cfg, "session_doc_roleplay_extract_dir"),
         "sd_summary_dir":        resolve_cfg(cfg, "session_doc_summary_extract_dir"),
         "sd_output_dir":         resolve_cfg(cfg, "session_doc_output_dir"),
@@ -1066,6 +1084,14 @@ def apply_ui_config_defaults(cfg: dict, force: bool = False) -> None:
                 st.session_state[key] = cfg.get(key) or val
             except st.errors.StreamlitAPIException:
                 pass  # widget already rendered this cycle — will pick up on rerun
+
+    # Migrate legacy session_dir keys from older ui_config.yaml files
+    if not st.session_state.get("session_dir"):
+        for legacy in ("sw_session_dir", "sd_session_dir", "vtt_session_dir"):
+            val = cfg.get(legacy, "")
+            if val:
+                st.session_state["session_dir"] = val
+                break
 
 
 def page_enhance_recap(model: str) -> None:
@@ -1154,9 +1180,10 @@ def page_narrative(model: str) -> None:
 
     st.divider()
 
+    if "narr_characters" not in st.session_state:
+        st.session_state["narr_characters"] = ""
     characters_input = st.text_input(
         "Party roster *(optional)*",
-        value=st.session_state.get("narr_characters", ""),
         key="narr_characters",
         placeholder="Brewbarry, Soma, Valphine, Vukradin",
         help="Comma-separated character names. The system chooses who narrates each section "
@@ -1210,20 +1237,18 @@ def page_narrative(model: str) -> None:
     run_panel(cmd, "narrative")
 
 
-def _sw_populate_from_dir() -> None:
-    """Callback: when sw_session_dir changes, propagate to VTT + SD pages and auto-detect files."""
-    d = st.session_state.get("sw_session_dir", "").strip()
+def _populate_from_session_dir() -> None:
+    """Callback: when session_dir changes, derive all sub-paths and auto-detect files."""
+    d = st.session_state.get("session_dir", "").strip()
     if not d:
         return
     p = Path(d).expanduser()
 
-    # ── Push to VTT page ──────────────────────────────────────────────
-    st.session_state["vtt_session_dir"]     = d
+    # ── VTT outputs ───────────────────────────────────────────────────
     st.session_state["vtt_output"]          = str(p / "session-summary.md")
     st.session_state["vtt_roleplay_output"] = str(p / "session-roleplay.md")
 
-    # ── Push to SD (Extract + Editor) pages ───────────────────────────
-    st.session_state["sd_session_dir"]      = d
+    # ── SD (Extract + Editor) paths ───────────────────────────────────
     st.session_state["sd_extract_dir"]      = str(p / "scene_extractions")
     st.session_state["sd_roleplay_dir"]     = str(p / "vtt_roleplay_extractions")
     st.session_state["sd_summary_dir"]      = str(p / "vtt_extractions")
@@ -1258,16 +1283,15 @@ def _sw_populate_from_dir() -> None:
     if rp.exists():
         st.session_state["sd_roleplay_summary"] = str(rp)
 
-
-
-def _vtt_populate_from_dir() -> None:
-    """Callback: when vtt_session_dir changes, fill derived output fields."""
-    d = st.session_state.get("vtt_session_dir", "").strip()
-    if not d:
-        return
-    p = Path(d).expanduser()
-    st.session_state["vtt_output"]          = str(p / "session-summary.md")
-    st.session_state["vtt_roleplay_output"] = str(p / "session-roleplay.md")
+    # Auto-detect recap file (for session_doc)
+    preferred = p / "session-recap.md"
+    if preferred.exists():
+        if not st.session_state.get("sd_session"):
+            st.session_state["sd_session"] = str(preferred)
+    elif not st.session_state.get("sd_session"):
+        md_files = sorted(p.glob("*.md"), key=lambda f: f.stat().st_mtime, reverse=True)
+        if md_files:
+            st.session_state["sd_session"] = str(md_files[0])
 
 
 def _init_refs_from_legacy() -> None:
@@ -1302,7 +1326,7 @@ def _sync_refs_to_vtt() -> None:
     The GMassistant recap (sd_session) is automatically included as a reference
     so the user doesn't need to enter it twice.
     """
-    session_dir = st.session_state.get("sw_session_dir", "")
+    session_dir = st.session_state.get("session_dir", "")
     ref_paths = []
     # Include GMassistant recap automatically
     gm_recap = st.session_state.get("sd_session", "").strip()
@@ -1322,15 +1346,6 @@ def page_session_config() -> None:
     st.caption("Set the session directory and shared inputs once — they carry across all workflow steps.")
     config_buttons()
 
-    # Bidirectional sync: if sd_session_dir was loaded from ui_config but
-    # sw_session_dir hasn't been set yet, copy it over (and vice versa).
-    _sw = st.session_state.get("sw_session_dir", "").strip()
-    _sd = st.session_state.get("sd_session_dir", "").strip()
-    if _sd and not _sw:
-        st.session_state["sw_session_dir"] = _sd
-    elif _sw and not _sd:
-        st.session_state["sd_session_dir"] = _sw
-
     # Auto-detect voice/ and examples/ from campaign directory (CWD)
     cwd = Path.cwd()
     if not st.session_state.get("sd_voice_dir") and (cwd / "voice").is_dir():
@@ -1343,15 +1358,15 @@ def page_session_config() -> None:
 
     st.text_input(
         "Session directory",
-        key="sw_session_dir",
+        key="session_dir",
         placeholder="summaries/20260318",
         help="All session files live here. VTT outputs, extractions, and narrated scenes "
              "are auto-derived from this path. The VTT file and GMassistant recap are "
              "auto-detected if present.",
-        on_change=_sw_populate_from_dir,
+        on_change=_populate_from_session_dir,
     )
 
-    _d = st.session_state.get("sw_session_dir", "").strip()
+    _d = st.session_state.get("session_dir", "").strip()
     if _d and Path(_d).expanduser().is_dir():
         detected = []
         if st.session_state.get("sw_vtt_file"):
@@ -1407,7 +1422,7 @@ def page_session_config() -> None:
                "Paths can be relative to the session directory or absolute.")
 
     n_refs = st.session_state.get("sw_ref_count", 0)
-    session_dir = st.session_state.get("sw_session_dir", "")
+    session_dir = st.session_state.get("session_dir", "")
 
     for i in range(n_refs):
         col_path, col_type = st.columns([3, 1])
@@ -1468,7 +1483,6 @@ def page_vtt_summary(model: str) -> None:
     col1, col2 = st.columns(2)
     with col1:
         session_date = st.text_input("Session date", key="vtt_date",
-                                     value=st.session_state.get("vtt_date", ""),
                                      placeholder="2026-03-15")
     with col2:
         session_name = st.text_input("Session name", key="vtt_session_name",
@@ -1494,12 +1508,12 @@ def page_vtt_summary(model: str) -> None:
 
     st.text_input(
         "Session directory",
-        key="vtt_session_dir",
+        key="session_dir",
         placeholder="summaries/20260318",
         help="Set this to auto-fill the output paths below. "
              "All files for this session — summary, roleplay highlights, and extraction caches — "
              "will be placed here.",
-        on_change=_vtt_populate_from_dir,
+        on_change=_populate_from_session_dir,
     )
 
     output = path_field(
@@ -1585,38 +1599,6 @@ def page_vtt_summary(model: str) -> None:
     run_panel(cmd, "vtt_summary")
 
 
-def _sd_populate_from_dir() -> None:
-    """Callback: when session_dir changes, fill derived fields."""
-    d = st.session_state.get("sd_session_dir", "").strip()
-    if not d:
-        return
-    p = Path(d).expanduser()
-    if not p.is_dir():
-        return
-    # Derived sub-paths
-    st.session_state["sd_extract_dir"]   = str(p / "scene_extractions")
-    st.session_state["sd_roleplay_dir"]  = str(p / "vtt_roleplay_extractions")
-    st.session_state["sd_summary_dir"]   = str(p / "vtt_extractions")
-    st.session_state["sd_output_dir"]    = str(p)
-    # Auto-detect recap file
-    preferred = p / "session-recap.md"
-    if preferred.exists():
-        st.session_state["sd_session"] = str(preferred)
-    else:
-        md_files = sorted(p.glob("*.md"), key=lambda f: f.stat().st_mtime, reverse=True)
-        if md_files:
-            st.session_state["sd_session"] = str(md_files[0])
-    # Auto-detect VTT session summary
-    for name in ("session-summary.md", "session-clean.md", "session_summary.md", "session_clean.md"):
-        candidate = p / name
-        if candidate.exists():
-            st.session_state["sd_session_summary"] = str(candidate)
-            break
-    # Auto-detect roleplay summary
-    roleplay_candidate = p / "session-roleplay.md"
-    if roleplay_candidate.exists():
-        st.session_state["sd_roleplay_summary"] = str(roleplay_candidate)
-
 
 def page_session_doc() -> None:
     st.title("Session Doc Editor")
@@ -1626,21 +1608,15 @@ def page_session_doc() -> None:
     )
     config_buttons()
 
-    # Inherit session dir from Session Config or VTT Summary if not already set
-    if not st.session_state.get("sd_session_dir"):
-        for _src in ("sw_session_dir", "vtt_session_dir"):
-            if st.session_state.get(_src):
-                st.session_state["sd_session_dir"] = st.session_state[_src]
-                break
     # Re-derive paths if session dir is set but derived fields are missing
-    if st.session_state.get("sd_session_dir") and not st.session_state.get("sd_extract_dir"):
-        _sd_populate_from_dir()
+    if st.session_state.get("session_dir") and not st.session_state.get("sd_extract_dir"):
+        _populate_from_session_dir()
 
     # ── Primary input ──────────────────────────────────────────────────────────
     st.text_input(
         "Session directory",
-        key="sd_session_dir",
-        on_change=_sd_populate_from_dir,
+        key="session_dir",
+        on_change=_populate_from_session_dir,
         help="Point to your session folder (e.g. summaries/20260324). "
              "All sub-paths are derived automatically.",
         placeholder="summaries/20260324",
@@ -1698,7 +1674,6 @@ def page_session_doc() -> None:
     server_running = False
     if st.session_state["sd_server_pid"] is not None:
         try:
-            import os
             os.kill(st.session_state["sd_server_pid"], 0)
             server_running = True
         except (ProcessLookupError, PermissionError):
@@ -1762,24 +1737,18 @@ def page_session_doc_extract(model: str) -> None:
     )
     config_buttons()
 
-    # Inherit session dir from Session Config or VTT Summary if not already set
-    if not st.session_state.get("sd_session_dir"):
-        for _src in ("sw_session_dir", "vtt_session_dir"):
-            if st.session_state.get(_src):
-                st.session_state["sd_session_dir"] = st.session_state[_src]
-                break
     # Re-derive paths if session dir is set but derived fields are missing
     # (happens when session dir comes from ui_config.yaml without the callback firing)
-    if st.session_state.get("sd_session_dir") and not st.session_state.get("sd_extract_dir"):
-        _sd_populate_from_dir()
+    if st.session_state.get("session_dir") and not st.session_state.get("sd_extract_dir"):
+        _populate_from_session_dir()
 
-    # Session directory — shared key with Editor page so it pre-populates
+    # Session directory — shared key with all session workflow pages
     st.text_input(
         "Session directory",
-        key="sd_session_dir",
-        on_change=_sd_populate_from_dir,
+        key="session_dir",
+        on_change=_populate_from_session_dir,
         help="Point to your session folder (e.g. summaries/20260324). "
-             "Paths are derived automatically. Set once on the Editor page and they carry over.",
+             "Paths are derived automatically. Set once on Session Config and they carry over.",
         placeholder="summaries/20260324",
     )
 
@@ -1948,7 +1917,7 @@ def main() -> None:
         """Deselect all other nav groups when one is clicked."""
         for k in ALL_NAV_KEYS:
             if k != active_key:
-                st.session_state.pop(k, None)
+                st.session_state[k] = None
 
     # Default selection on first load
     if not any(st.session_state.get(k) for k in ALL_NAV_KEYS):
