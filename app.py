@@ -154,6 +154,19 @@ def path_status(path_str: str) -> str:
     return "✅" if Path(path_str).expanduser().exists() else "❌ not found"
 
 
+def resolve_session_path(path_str: str) -> str:
+    """Resolve a relative path against session_dir if set, otherwise leave as-is."""
+    if not path_str.strip():
+        return path_str
+    p = Path(path_str).expanduser()
+    if p.is_absolute():
+        return path_str
+    session_dir = st.session_state.get("session_dir", "").strip()
+    if session_dir:
+        return str(Path(session_dir).expanduser() / p)
+    return path_str
+
+
 def path_field(label: str, key: str, default: str = "", help: str = "",
                required: bool = False, is_output: bool = False) -> str:
     label_text = f"{label} {'*(required)*' if required else '*(optional)*'}"
@@ -1434,6 +1447,16 @@ def page_vtt_summary(model: str) -> None:
     st.caption("Convert a Zoom .vtt transcript into a structured D&D session summary.")
     config_buttons()
 
+    # Ensure GM recap is included in reference summaries if not already present
+    gm_recap = st.session_state.get("sd_session", "").strip()
+    if gm_recap:
+        existing = st.session_state.get("vtt_reference_summaries", "")
+        existing_paths = {p.strip() for p in existing.splitlines() if p.strip()}
+        if gm_recap not in existing_paths:
+            lines = [p for p in existing.splitlines() if p.strip()]
+            lines.insert(0, gm_recap)
+            st.session_state["vtt_reference_summaries"] = "\n".join(lines)
+
     # Read synth_only from session state early so we can conditionally show the VTT input
     synth_only_state = st.session_state.get("vtt_synth_only", False)
 
@@ -1541,13 +1564,13 @@ def page_vtt_summary(model: str) -> None:
     cmd = [PYTHON, str(SCRIPT_DIR / "vtt_summary.py")]
     if not synth_only and input_path:
         cmd.append(input_path)
-    cmd_opt(cmd, "--output", output)
+    cmd_opt(cmd, "--output", resolve_session_path(output))
     cmd_opt(cmd, "--date", session_date.strip())
     cmd_opt(cmd, "--session-name", session_name.strip())
-    cmd_opt(cmd, "--roleplay-output", roleplay_output)
+    cmd_opt(cmd, "--roleplay-output", resolve_session_path(roleplay_output))
     cmd_multi(cmd, "--context", context_files)
     cmd_multi(cmd, "--reference-summaries", reference_files)
-    cmd_opt(cmd, "--extract-dir", extract_dir)
+    cmd_opt(cmd, "--extract-dir", resolve_session_path(extract_dir))
     cmd_opt(cmd, "--chunk-size", chunk_size if chunk_size != 50000 else 0)
     cmd_flag(cmd, "--synthesize-only", synth_only)
     cmd_flag(cmd, "--no-log", no_log)
@@ -1625,6 +1648,13 @@ def page_session_doc() -> None:
     port_int = int(port) if port.strip().isdigit() else 5000
     ready = bool(session and extract_dir and roleplay_dir and output_dir)
 
+    # Check that scene extractions exist before allowing launch
+    extract_missing = False
+    if ready:
+        ext_path = Path(extract_dir).expanduser()
+        if not ext_path.is_dir() or not (ext_path / "plan.md").exists():
+            extract_missing = True
+
     if "sd_server_pid" not in st.session_state:
         st.session_state["sd_server_pid"] = None
 
@@ -1636,9 +1666,13 @@ def page_session_doc() -> None:
         except (ProcessLookupError, PermissionError):
             st.session_state["sd_server_pid"] = None
 
+    if extract_missing:
+        st.warning(f"Scene extractions not found in `{extract_dir}`. "
+                   "Run **③ Scene Extraction** first to generate plan.md and per-scene extraction files.")
+
     col_launch, col_stop = st.columns([1, 1])
     with col_launch:
-        if st.button("Launch Editor", disabled=not ready or server_running, type="primary"):
+        if st.button("Launch Editor", disabled=not ready or server_running or extract_missing, type="primary"):
             cmd = [
                 sys.executable, str(SCRIPT_DIR / "session_doc_ui.py"),
                 session,

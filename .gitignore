@@ -3,3 +3,7 @@ xalvosh
 *.pyc
 __pycache__/
 .env
+node_modules/
+frontend/dist/
+*.db
+ui_config.yaml
