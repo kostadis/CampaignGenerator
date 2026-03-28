@@ -176,6 +176,24 @@ def multi_path_field(label: str, key: str, help: str = "", required: bool = Fals
     return paths
 
 
+def cmd_opt(cmd: list[str], flag: str, value) -> None:
+    """Append --flag value if value is truthy."""
+    if value:
+        cmd += [flag, str(value)]
+
+
+def cmd_multi(cmd: list[str], flag: str, values: list[str]) -> None:
+    """Append --flag v1 v2 … if values is non-empty."""
+    if values:
+        cmd += [flag] + values
+
+
+def cmd_flag(cmd: list[str], flag: str, condition: bool) -> None:
+    """Append --flag if condition is True."""
+    if condition:
+        cmd.append(flag)
+
+
 def format_command(cmd: list[str]) -> str:
     return shlex.join(str(c) for c in cmd)
 
@@ -368,17 +386,12 @@ def page_campaign_state(model: str) -> None:
     cmd = [PYTHON, str(SCRIPT_DIR / "campaign_state.py")]
     if not synth_only and input_path:
         cmd.append(input_path)
-    if output:
-        cmd += ["--output", output]
-    if track_file:
-        cmd += ["--track-file", track_file]
+    cmd_opt(cmd, "--output", output)
+    cmd_opt(cmd, "--track-file", track_file)
     track_items = [t.strip() for t in track_inline.splitlines() if t.strip()]
-    if track_items:
-        cmd += ["--track"] + track_items
-    if extract_dir:
-        cmd += ["--extract-dir", extract_dir]
-    if synth_only:
-        cmd.append("--synthesize-only")
+    cmd_multi(cmd, "--track", track_items)
+    cmd_opt(cmd, "--extract-dir", extract_dir)
+    cmd_flag(cmd, "--synthesize-only", synth_only)
     cmd += ["--chunk-size", str(chunk_size), "--model", model]
 
     run_panel(cmd, "campaign_state")
@@ -406,14 +419,10 @@ def page_distill(model: str) -> None:
     cmd = [PYTHON, str(SCRIPT_DIR / "distill.py")]
     if not synth_only and input_path:
         cmd.append(input_path)
-    if output:
-        cmd += ["--output", output]
-    if extract_dir:
-        cmd += ["--extract-dir", extract_dir]
-    if chunk_size != 60000:
-        cmd += ["--chunk-size", str(chunk_size)]
-    if synth_only:
-        cmd.append("--synthesize-only")
+    cmd_opt(cmd, "--output", output)
+    cmd_opt(cmd, "--extract-dir", extract_dir)
+    cmd_opt(cmd, "--chunk-size", chunk_size if chunk_size != 60000 else 0)
+    cmd_flag(cmd, "--synthesize-only", synth_only)
     cmd += ["--model", model]
 
     run_panel(cmd, "distill")
@@ -446,24 +455,16 @@ def page_party(model: str) -> None:
                                  min_value=10000, key="party_chunk_size")
 
     cmd = [PYTHON, str(SCRIPT_DIR / "party.py")]
-    if char_files:
-        cmd += ["--character"] + char_files
-    if summaries and not synth_only:
-        cmd += ["--summaries", summaries]
-    if backstory_files:
-        cmd += ["--backstory"] + backstory_files
-    if arc_score_files:
-        cmd += ["--arc-scores"] + arc_score_files
-    if context_files:
-        cmd += ["--context"] + context_files
-    if output:
-        cmd += ["--output", output]
-    if extract_dir:
-        cmd += ["--extract-dir", extract_dir]
-    if chunk_size != 60000:
-        cmd += ["--chunk-size", str(chunk_size)]
-    if synth_only:
-        cmd.append("--synthesize-only")
+    cmd_multi(cmd, "--character", char_files)
+    if not synth_only:
+        cmd_opt(cmd, "--summaries", summaries)
+    cmd_multi(cmd, "--backstory", backstory_files)
+    cmd_multi(cmd, "--arc-scores", arc_score_files)
+    cmd_multi(cmd, "--context", context_files)
+    cmd_opt(cmd, "--output", output)
+    cmd_opt(cmd, "--extract-dir", extract_dir)
+    cmd_opt(cmd, "--chunk-size", chunk_size if chunk_size != 60000 else 0)
+    cmd_flag(cmd, "--synthesize-only", synth_only)
     cmd += ["--model", model]
 
     run_panel(cmd, "party")
@@ -490,12 +491,9 @@ def page_planning(model: str) -> None:
 
         cmd = [PYTHON, str(SCRIPT_DIR / "planning.py"),
                "--summaries", summaries, "--build-dossiers", "--model", model]
-        if dossier_dir:
-            cmd += ["--dossier-dir", dossier_dir]
-        if extract_dir:
-            cmd += ["--extract-dir", extract_dir]
-        if chunk_size != 60000:
-            cmd += ["--chunk-size", str(chunk_size)]
+        cmd_opt(cmd, "--dossier-dir", dossier_dir)
+        cmd_opt(cmd, "--extract-dir", extract_dir)
+        cmd_opt(cmd, "--chunk-size", chunk_size if chunk_size != 60000 else 0)
 
     else:
         synth_only = st.checkbox("--synthesize-only", key="plan_synth_only")
@@ -520,22 +518,15 @@ def page_planning(model: str) -> None:
                                      min_value=10000, key="plan_chunk_size")
 
         cmd = [PYTHON, str(SCRIPT_DIR / "planning.py")]
-        if npc_files:
-            cmd += ["--npc"] + npc_files
-        if arc_score_files:
-            cmd += ["--arc-scores"] + arc_score_files
-        if summaries and not synth_only:
-            cmd += ["--summaries", summaries]
-        if context_files:
-            cmd += ["--context"] + context_files
-        if output:
-            cmd += ["--output", output]
-        if extract_dir:
-            cmd += ["--extract-dir", extract_dir]
-        if chunk_size != 60000:
-            cmd += ["--chunk-size", str(chunk_size)]
-        if synth_only:
-            cmd.append("--synthesize-only")
+        cmd_multi(cmd, "--npc", npc_files)
+        cmd_multi(cmd, "--arc-scores", arc_score_files)
+        if not synth_only:
+            cmd_opt(cmd, "--summaries", summaries)
+        cmd_multi(cmd, "--context", context_files)
+        cmd_opt(cmd, "--output", output)
+        cmd_opt(cmd, "--extract-dir", extract_dir)
+        cmd_opt(cmd, "--chunk-size", chunk_size if chunk_size != 60000 else 0)
+        cmd_flag(cmd, "--synthesize-only", synth_only)
         cmd += ["--model", model]
 
     run_panel(cmd, "planning")
@@ -565,12 +556,9 @@ def page_query(model: str) -> None:
 
     cmd = [PYTHON, str(SCRIPT_DIR / "query.py"),
            input_path, query_text, "--model", model, "--chunk-size", str(chunk_size)]
-    if hits_only:
-        cmd.append("--hits-only")
-    if verbose:
-        cmd.append("--verbose")
-    if output:
-        cmd += ["--output", output]
+    cmd_flag(cmd, "--hits-only", hits_only)
+    cmd_flag(cmd, "--verbose", verbose)
+    cmd_opt(cmd, "--output", output)
 
     run_panel(cmd, "query")
 
@@ -623,12 +611,9 @@ def page_session_prep(model: str) -> None:
         if text_val:
             cmd += ["--session-text", text_val]
 
-    if config:
-        cmd += ["--config", config]
-    if output:
-        cmd += ["--output", output]
-    if no_log:
-        cmd.append("--no-log")
+    cmd_opt(cmd, "--config", config)
+    cmd_opt(cmd, "--output", output)
+    cmd_flag(cmd, "--no-log", no_log)
 
     run_panel(cmd, "prep")
 
@@ -651,10 +636,8 @@ def page_npc_table(model: str) -> None:
     docs_list = docs_str.split()
     cmd = [PYTHON, str(SCRIPT_DIR / "npc_table.py"),
            "--docs"] + docs_list + ["--config", config, "--model", model]
-    if output:
-        cmd += ["--output", output]
-    if no_log:
-        cmd.append("--no-log")
+    cmd_opt(cmd, "--output", output)
+    cmd_flag(cmd, "--no-log", no_log)
 
     run_panel(cmd, "npc_table")
 
@@ -1128,18 +1111,12 @@ def page_enhance_recap(model: str) -> None:
     cmd = [PYTHON, str(SCRIPT_DIR / "enhance_recap.py")]
     if recap_path:
         cmd.append(recap_path)
-    if output:
-        cmd += ["--output", output]
-    if roleplay_dir:
-        cmd += ["--roleplay-extract-dir", roleplay_dir]
-    if summary_dir:
-        cmd += ["--summary-extract-dir", summary_dir]
-    if context_files:
-        cmd += ["--context"] + context_files
-    if party_path:
-        cmd += ["--party", party_path]
-    if no_log:
-        cmd.append("--no-log")
+    cmd_opt(cmd, "--output", output)
+    cmd_opt(cmd, "--roleplay-extract-dir", roleplay_dir)
+    cmd_opt(cmd, "--summary-extract-dir", summary_dir)
+    cmd_multi(cmd, "--context", context_files)
+    cmd_opt(cmd, "--party", party_path)
+    cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
     run_panel(cmd, "enhance_recap")
@@ -1210,28 +1187,18 @@ def page_narrative(model: str) -> None:
                 "the extractions folder is created automatically alongside it.")
 
     cmd = [PYTHON, str(SCRIPT_DIR / "narrative.py")]
-    if roleplay_extract_dir:
-        cmd += ["--roleplay-extract-dir", roleplay_extract_dir]
-    if summary_extract_dir:
-        cmd += ["--summary-extract-dir", summary_extract_dir]
-    if examples_files:
-        cmd += ["--examples"] + examples_files
-    if roleplay_path:
-        cmd += ["--roleplay", roleplay_path]
-    if summary_path:
-        cmd += ["--summary", summary_path]
-    if party_path:
-        cmd += ["--party", party_path]
+    cmd_opt(cmd, "--roleplay-extract-dir", roleplay_extract_dir)
+    cmd_opt(cmd, "--summary-extract-dir", summary_extract_dir)
+    cmd_multi(cmd, "--examples", examples_files)
+    cmd_opt(cmd, "--roleplay", roleplay_path)
+    cmd_opt(cmd, "--summary", summary_path)
+    cmd_opt(cmd, "--party", party_path)
     if characters:
         cmd += ["--characters", ", ".join(characters)]
-    if output:
-        cmd += ["--output", output]
-    if session_name.strip():
-        cmd += ["--session-name", session_name.strip()]
-    if plan_only:
-        cmd.append("--plan-only")
-    if no_log:
-        cmd.append("--no-log")
+    cmd_opt(cmd, "--output", output)
+    cmd_opt(cmd, "--session-name", session_name.strip())
+    cmd_flag(cmd, "--plan-only", plan_only)
+    cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
     run_panel(cmd, "narrative")
@@ -1574,26 +1541,16 @@ def page_vtt_summary(model: str) -> None:
     cmd = [PYTHON, str(SCRIPT_DIR / "vtt_summary.py")]
     if not synth_only and input_path:
         cmd.append(input_path)
-    if output:
-        cmd += ["--output", output]
-    if session_date.strip():
-        cmd += ["--date", session_date.strip()]
-    if session_name.strip():
-        cmd += ["--session-name", session_name.strip()]
-    if roleplay_output:
-        cmd += ["--roleplay-output", roleplay_output]
-    if context_files:
-        cmd += ["--context"] + context_files
-    if reference_files:
-        cmd += ["--reference-summaries"] + reference_files
-    if extract_dir:
-        cmd += ["--extract-dir", extract_dir]
-    if chunk_size != 50000:
-        cmd += ["--chunk-size", str(chunk_size)]
-    if synth_only:
-        cmd.append("--synthesize-only")
-    if no_log:
-        cmd.append("--no-log")
+    cmd_opt(cmd, "--output", output)
+    cmd_opt(cmd, "--date", session_date.strip())
+    cmd_opt(cmd, "--session-name", session_name.strip())
+    cmd_opt(cmd, "--roleplay-output", roleplay_output)
+    cmd_multi(cmd, "--context", context_files)
+    cmd_multi(cmd, "--reference-summaries", reference_files)
+    cmd_opt(cmd, "--extract-dir", extract_dir)
+    cmd_opt(cmd, "--chunk-size", chunk_size if chunk_size != 50000 else 0)
+    cmd_flag(cmd, "--synthesize-only", synth_only)
+    cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
     run_panel(cmd, "vtt_summary")
@@ -1690,20 +1647,13 @@ def page_session_doc() -> None:
                 "--output-dir",           output_dir,
                 "--port",                 str(port_int),
             ]
-            if summary_dir:
-                cmd += ["--summary-extract-dir", summary_dir]
-            if session_summary_path:
-                cmd += ["--session-summary", session_summary_path]
-            if roleplay_summary_path:
-                cmd += ["--roleplay-summary", roleplay_summary_path]
-            if party:
-                cmd += ["--party", party]
-            if voice_dir:
-                cmd += ["--voice-dir", voice_dir]
-            if context_files:
-                cmd += ["--context"] + context_files
-            if characters.strip():
-                cmd += ["--characters", characters.strip()]
+            cmd_opt(cmd, "--summary-extract-dir", summary_dir)
+            cmd_opt(cmd, "--session-summary", session_summary_path)
+            cmd_opt(cmd, "--roleplay-summary", roleplay_summary_path)
+            cmd_opt(cmd, "--party", party)
+            cmd_opt(cmd, "--voice-dir", voice_dir)
+            cmd_multi(cmd, "--context", context_files)
+            cmd_opt(cmd, "--characters", characters.strip())
             if narrate_tokens.strip().isdigit():
                 cmd += ["--narrate-tokens", narrate_tokens.strip()]
             proc = subprocess.Popen(cmd, cwd=str(Path.cwd()))
@@ -1799,25 +1749,16 @@ def page_session_doc_extract(model: str) -> None:
         "--output", "/dev/null",
         "--model", model,
     ]
-    if summary_dir:
-        cmd += ["--summary-extract-dir", summary_dir]
-    if session_summary:
-        cmd += ["--session-summary", session_summary]
-    if roleplay_summary:
-        cmd += ["--roleplay-summary", roleplay_summary]
-    if characters.strip():
-        cmd += ["--characters", characters.strip()]
-    if party:
-        cmd += ["--party", party]
-    if voice_dir:
-        cmd += ["--voice-dir", voice_dir]
-    if examples_dir:
-        cmd += ["--examples", examples_dir]
+    cmd_opt(cmd, "--summary-extract-dir", summary_dir)
+    cmd_opt(cmd, "--session-summary", session_summary)
+    cmd_opt(cmd, "--roleplay-summary", roleplay_summary)
+    cmd_opt(cmd, "--characters", characters.strip())
+    cmd_opt(cmd, "--party", party)
+    cmd_opt(cmd, "--voice-dir", voice_dir)
+    cmd_opt(cmd, "--examples", examples_dir)
     for ctx in [campaign_state, world_state] + context_files:
-        if ctx:
-            cmd += ["--context", ctx]
-    if session_name.strip():
-        cmd += ["--session-name", session_name.strip()]
+        cmd_opt(cmd, "--context", ctx)
+    cmd_opt(cmd, "--session-name", session_name.strip())
 
     if ready:
         run_panel(cmd, "sd_extract")
