@@ -1,0 +1,24 @@
+#!/bin/bash
+# Production startup — builds the Vue frontend and serves everything via FastAPI.
+# Usage: ./startup [--campaign-dir /path/to/campaign] [--session-dir /path/to/session] [--port 5000]
+#
+# Open http://localhost:5000 in your browser.
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Build frontend if dist is missing or sources are newer
+DIST="$SCRIPT_DIR/frontend/dist"
+if [ ! -d "$DIST" ] || [ "$SCRIPT_DIR/frontend/src" -nt "$DIST/index.html" ]; then
+  echo "Building frontend..."
+  cd "$SCRIPT_DIR/frontend" && npm run build
+  cd "$SCRIPT_DIR"
+fi
+
+# Launch FastAPI (serves the Vue build as static files)
+# PYTHONPATH lets `python -m server.main` find the server package
+# while keeping CWD as the campaign directory (for ui_config.yaml)
+echo "Starting Campaign Generator on http://localhost:5000"
+export PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}"
+exec python -m server.main "$@"

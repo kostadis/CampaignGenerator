@@ -23,6 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from session_doc import (estimate_narration_tokens, extraction_filename,
                          parse_extraction_file, parse_plan)
+from quote_ledger import QuoteLedger
 
 try:
     from flask import Flask, Response, jsonify, request, stream_with_context
@@ -33,6 +34,7 @@ except ImportError:
 
 app = Flask(__name__)
 CONFIG: dict = {}
+LEDGER: QuoteLedger | None = None
 
 
 # ── HTML ──────────────────────────────────────────────────────────────────────
@@ -162,14 +164,13 @@ textarea.editor-ta {
   background: #141420;
 }
 
-/* VTT panel */
+/* VTT / Ledger panel */
 .vtt-panel {
   background: #181825; border-left: 1px solid #313244;
   display: flex; flex-direction: column; overflow: hidden;
 }
-.vtt-panel h2 {
-  font-size: 10px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .08em; color: #6c7086; padding: 10px 12px 4px; flex-shrink: 0;
+.vtt-panel .tab-bar {
+  border-bottom: 1px solid #313244; flex-shrink: 0;
 }
 .vtt-scroll { flex: 1; overflow-y: auto; padding: 0 12px 12px; }
 .vtt-chunk { margin-bottom: 16px; }
@@ -181,6 +182,62 @@ textarea.editor-ta {
   font-size: 11px; line-height: 1.5; color: #a6adc8;
   white-space: pre-wrap; word-break: break-word;
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+}
+
+/* Quote ledger */
+.ledger-toolbar {
+  padding: 8px 12px; display: flex; gap: 6px; align-items: center;
+  border-bottom: 1px solid #313244; flex-shrink: 0;
+}
+.ledger-stats { font-size: 10px; color: #6c7086; margin-left: auto; }
+.ledger-section { margin-bottom: 12px; }
+.ledger-section-header {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: #6c7086; padding: 8px 12px 4px;
+  cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: 6px;
+}
+.ledger-section-header .arrow {
+  font-size: 8px; transition: transform .15s; display: inline-block;
+}
+.ledger-section-header .arrow.open { transform: rotate(90deg); }
+.ledger-section-header .count {
+  font-size: 9px; font-weight: 600; color: #89b4fa;
+}
+.ledger-section-header.unassigned .count { color: #fab387; }
+.quote-item {
+  padding: 5px 12px; font-size: 11px; cursor: pointer;
+  border-left: 3px solid transparent; transition: background .1s;
+}
+.quote-item:hover { background: #252535; }
+.quote-item.active { background: #252535; border-left-color: #cba6f7; }
+.quote-item .q-speaker {
+  font-weight: 600; font-size: 10px; color: #cba6f7;
+}
+.quote-item .q-context {
+  font-size: 10px; color: #6c7086; font-style: italic;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.quote-item .q-text {
+  color: #a6adc8; font-size: 11px; line-height: 1.4;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.quote-item.expanded .q-text {
+  white-space: pre-wrap; word-break: break-word;
+}
+.quote-item .q-pinned {
+  font-size: 8px; color: #a6e3a1; text-transform: uppercase; font-weight: 700;
+}
+.quote-assign {
+  margin-top: 4px; display: none;
+}
+.quote-item.expanded .quote-assign { display: flex; gap: 4px; align-items: center; }
+.quote-assign select {
+  font-size: 10px; padding: 2px 4px; border-radius: 3px;
+  background: #313244; color: #cdd6f4; border: 1px solid #45475a;
+}
+.quote-assign button {
+  font-size: 10px; padding: 2px 8px;
 }
 
 /* Buttons */
@@ -266,11 +323,27 @@ button:disabled { opacity: .35; cursor: default; }
     </div>
   </div>
 
-  <!-- ── VTT source ── -->
+  <!-- ── VTT source / Quote Ledger ── -->
   <div class="vtt-panel">
-    <h2>VTT Source</h2>
-    <div class="vtt-scroll" id="vtt-scroll">
-      <p style="color:#6c7086;font-size:12px;padding:8px 0">Loading…</p>
+    <div class="tab-bar">
+      <div class="tab active" id="tab-vtt" onclick="switchRightTab('vtt')">VTT Source</div>
+      <div class="tab" id="tab-ledger" onclick="switchRightTab('ledger')">Quote Ledger</div>
+    </div>
+    <div id="pane-vtt">
+      <div class="vtt-scroll" id="vtt-scroll">
+        <p style="color:#6c7086;font-size:12px;padding:8px 0">Loading…</p>
+      </div>
+    </div>
+    <div id="pane-ledger" style="display:none;flex:1;overflow:hidden;flex-direction:column">
+      <div class="ledger-toolbar">
+        <button class="btn-neutral btn-sm" onclick="syncLedger()">Sync</button>
+        <span class="ledger-stats" id="ledger-stats"></span>
+      </div>
+      <div class="vtt-scroll" id="ledger-scroll">
+        <p style="color:#6c7086;font-size:12px;padding:8px 0">
+          Click <b>Sync</b> to scan extraction files and build the quote ledger.
+        </p>
+      </div>
     </div>
   </div>
 
@@ -629,6 +702,184 @@ async function assembleDoc() {
 async function openAssembled() {
   const res = await fetch('/api/open/assembled/0', {method: 'POST'});
   if (!res.ok) setStatus('Could not open assembled file.');
+}
+
+// ── Right panel tabs ──────────────────────────────────────────
+
+let rightTab = 'vtt';
+
+function switchRightTab(tab) {
+  rightTab = tab;
+  document.getElementById('tab-vtt').classList.toggle('active', tab === 'vtt');
+  document.getElementById('tab-ledger').classList.toggle('active', tab === 'ledger');
+  const paneVtt    = document.getElementById('pane-vtt');
+  const paneLedger = document.getElementById('pane-ledger');
+  if (tab === 'vtt') {
+    paneVtt.style.display = '';
+    paneLedger.style.display = 'none';
+  } else {
+    paneVtt.style.display = 'none';
+    paneLedger.style.display = 'flex';
+  }
+}
+
+// ── Quote Ledger ─────────────────────────────────────────────
+
+let ledgerData = null;
+let expandedQuote = null;
+
+async function syncLedger() {
+  setStatus('Syncing quote ledger…');
+  try {
+    const res  = await fetch('/api/ledger/sync', {method: 'POST'});
+    const data = await res.json();
+    document.getElementById('ledger-stats').textContent =
+      `${data.total} quotes · ${data.matched} matched · ${data.unassigned} unassigned`;
+    setStatus(`Ledger synced: ${data.total} quotes found.`);
+    setTimeout(() => setStatus(''), 3000);
+    await loadLedger();
+  } catch (e) {
+    setStatus('Ledger sync error — check terminal.');
+  }
+}
+
+async function loadLedger() {
+  const res = await fetch('/api/ledger/quotes');
+  ledgerData = await res.json();
+  renderLedger();
+}
+
+function renderLedger() {
+  if (!ledgerData) return;
+  const el = document.getElementById('ledger-scroll');
+  let html = '';
+
+  // Unassigned section
+  const ua = ledgerData.unassigned || [];
+  if (ua.length > 0) {
+    html += '<div class="ledger-section">';
+    html += `<div class="ledger-section-header unassigned" onclick="toggleLedgerSection(this)">` +
+            `<span class="arrow open">▶</span> Unassigned ` +
+            `<span class="count">${ua.length}</span></div>`;
+    html += '<div class="ledger-quotes">';
+    html += ua.map(q => renderQuoteItem(q, null)).join('');
+    html += '</div></div>';
+  }
+
+  // Per-scene sections
+  for (const s of (ledgerData.scenes || [])) {
+    const qs = s.quotes || [];
+    const isActive = currentScene === s.index;
+    html += '<div class="ledger-section">';
+    html += `<div class="ledger-section-header${isActive ? ' style="color:#cba6f7"' : ''}" ` +
+            `onclick="toggleLedgerSection(this)">` +
+            `<span class="arrow${qs.length > 0 ? ' open' : ''}">▶</span> ` +
+            `Scene ${s.index}: ${esc(s.narrator)}` +
+            (s.scene_name ? ` — ${esc(s.scene_name)}` : '') +
+            ` <span class="count">${qs.length}</span></div>`;
+    html += `<div class="ledger-quotes"${qs.length === 0 ? ' style="display:none"' : ''}>`;
+    html += qs.map(q => renderQuoteItem(q, s.index)).join('');
+    html += '</div></div>';
+  }
+
+  if (!html) {
+    html = '<p style="color:#6c7086;font-size:12px;padding:8px 12px">No quotes in ledger. Click <b>Sync</b>.</p>';
+  }
+  el.innerHTML = html;
+}
+
+function renderQuoteItem(q, sceneIdx) {
+  const truncated = q.quote_text.length > 80
+    ? q.quote_text.substring(0, 80) + '…'
+    : q.quote_text;
+  const pinnedTag = q.pinned ? ' <span class="q-pinned">pinned</span>' : '';
+  // Build scene options for the move dropdown
+  let options = '<option value="">— Unassign —</option>';
+  if (ledgerData && ledgerData.scenes) {
+    for (const s of ledgerData.scenes) {
+      const sel = s.index === sceneIdx ? '' : '';
+      options += `<option value="${s.index}">Scene ${s.index}: ${esc(s.narrator)}</option>`;
+    }
+  }
+  return `<div class="quote-item" id="qi-${q.id}" onclick="toggleQuoteExpand(${q.id})">` +
+    `<div class="q-speaker">${esc(q.character)}${pinnedTag}</div>` +
+    `<div class="q-context">${esc(q.context)}</div>` +
+    `<div class="q-text">${esc(truncated)}</div>` +
+    `<div class="quote-assign">` +
+      `<select id="qa-${q.id}">${options}</select> ` +
+      `<button class="btn-primary btn-sm" onclick="event.stopPropagation();assignQuote(${q.id})">Move</button>` +
+    `</div>` +
+  `</div>`;
+}
+
+function toggleQuoteExpand(qid) {
+  const el = document.getElementById('qi-' + qid);
+  if (!el) return;
+  const wasExpanded = el.classList.contains('expanded');
+  // Collapse previous
+  document.querySelectorAll('.quote-item.expanded').forEach(e => {
+    e.classList.remove('expanded');
+    // Restore truncated text
+    const q = findQuote(parseInt(e.id.replace('qi-', '')));
+    if (q) {
+      const textEl = e.querySelector('.q-text');
+      textEl.textContent = q.quote_text.length > 80
+        ? q.quote_text.substring(0, 80) + '…' : q.quote_text;
+    }
+  });
+  if (!wasExpanded) {
+    el.classList.add('expanded');
+    const q = findQuote(qid);
+    if (q) {
+      el.querySelector('.q-text').textContent = q.quote_text;
+    }
+  }
+}
+
+function findQuote(qid) {
+  if (!ledgerData) return null;
+  for (const q of (ledgerData.unassigned || [])) {
+    if (q.id === qid) return q;
+  }
+  for (const s of (ledgerData.scenes || [])) {
+    for (const q of (s.quotes || [])) {
+      if (q.id === qid) return q;
+    }
+  }
+  return null;
+}
+
+async function assignQuote(qid) {
+  const sel = document.getElementById('qa-' + qid);
+  const val = sel.value;
+  const sceneIndex = val === '' ? null : parseInt(val);
+  const res = await fetch('/api/ledger/assign', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({quote_id: qid, scene_index: sceneIndex}),
+  });
+  const data = await res.json();
+  if (data.ok) {
+    setStatus('Quote reassigned.');
+    setTimeout(() => setStatus(''), 2000);
+    await loadLedger();
+  } else {
+    setStatus('Assignment failed.');
+  }
+}
+
+function toggleLedgerSection(header) {
+  const arrow = header.querySelector('.arrow');
+  const quotes = header.nextElementSibling;
+  if (!quotes) return;
+  const isOpen = arrow.classList.contains('open');
+  if (isOpen) {
+    arrow.classList.remove('open');
+    quotes.style.display = 'none';
+  } else {
+    arrow.classList.add('open');
+    quotes.style.display = '';
+  }
 }
 
 // ── Init ───────────────────────────────────────────────────────────
@@ -997,6 +1248,42 @@ def api_open(file_type, n):
     return jsonify({"ok": False, "error": "file not found"}), 404
 
 
+# ── Quote Ledger routes ───────────────────────────────────────────────────────
+
+@app.route("/api/ledger/sync", methods=["POST"])
+def api_ledger_sync():
+    global LEDGER
+    if LEDGER is None:
+        db_path = Path(CONFIG["extract_dir"]) / "quote_ledger.db"
+        LEDGER = QuoteLedger(db_path)
+    scenes = load_scenes()
+    result = LEDGER.sync(
+        roleplay_dir=Path(CONFIG["roleplay_extract_dir"]),
+        extract_dir=Path(CONFIG["extract_dir"]),
+        scenes=scenes,
+    )
+    return jsonify(result)
+
+
+@app.route("/api/ledger/quotes")
+def api_ledger_quotes():
+    if LEDGER is None:
+        return jsonify({"scenes": [], "unassigned": []})
+    scenes = load_scenes()
+    return jsonify(LEDGER.get_quotes_grouped(scenes))
+
+
+@app.route("/api/ledger/assign", methods=["POST"])
+def api_ledger_assign():
+    if LEDGER is None:
+        return jsonify({"ok": False, "error": "ledger not synced"}), 400
+    data = request.get_json()
+    quote_id = data["quote_id"]
+    scene_index = data.get("scene_index")  # None = unassign
+    ok = LEDGER.assign(quote_id, scene_index)
+    return jsonify({"ok": ok})
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 DERIVED_SUBDIRS = {
@@ -1101,6 +1388,11 @@ def main() -> None:
         "narrate_tokens": args.narrate_tokens,
         "work_dir": str(Path(".").resolve()),
     })
+
+    # Initialize quote ledger if extract dir exists
+    global LEDGER
+    db_path = Path(CONFIG["extract_dir"]) / "quote_ledger.db"
+    LEDGER = QuoteLedger(db_path)
 
     print(f"  Session Doc UI")
     print(f"  Session:    {CONFIG['session']}")

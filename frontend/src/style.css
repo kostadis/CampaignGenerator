@@ -1,0 +1,62 @@
+/* Catppuccin Mocha theme — matches session_doc_ui.py */
+:root {
+  --bg-base: #1e1e2e;
+  --bg-mantle: #181825;
+  --bg-crust: #11111b;
+  --bg-surface0: #313244;
+  --bg-surface1: #45475a;
+  --bg-overlay0: #6c7086;
+  --text: #cdd6f4;
+  --text-sub: #a6adc8;
+  --text-muted: #6c7086;
+  --mauve: #cba6f7;
+  --blue: #89b4fa;
+  --green: #a6e3a1;
+  --peach: #fab387;
+  --red: #f38ba8;
+  --teal: #94e2d5;
+  --mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  --sans: system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg-base);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Buttons */
+button {
+  padding: 5px 11px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity .1s;
+  font-family: var(--sans);
+}
+button:hover:not(:disabled) { opacity: .82; }
+button:disabled { opacity: .35; cursor: default; }
+
+.btn-primary  { background: var(--mauve); color: var(--bg-base); }
+.btn-success  { background: var(--green); color: var(--bg-base); }
+.btn-neutral  { background: var(--bg-surface0); color: var(--text); }
+.btn-sm { font-size: 10px; padding: 3px 8px; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-surface1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bg-overlay0); }
