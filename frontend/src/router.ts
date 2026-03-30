@@ -85,6 +85,11 @@ const routes = [
         name: 'query-summaries',
         component: () => import('./views/prep/QuerySummaries.vue'),
       },
+      {
+        path: 'connections',
+        name: 'connection-graph',
+        component: () => import('./views/prep/ConnectionGraph.vue'),
+      },
     ],
   },
   {

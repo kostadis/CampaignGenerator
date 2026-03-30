@@ -52,13 +52,30 @@ python prep.py --no-log --beat "..."
 ## Project structure
 
 ```
+# ── Web UI ──
+startup                     # Launch script — builds frontend, starts FastAPI server
+server/
+  main.py                   # FastAPI app, CORS, static serving, CLI entry point
+  config.py                 # ui_config.yaml management, path derivation
+  subprocess_runner.py      # Async SSE streaming for CLI tool subprocesses
+  routers/
+    config_routes.py        # /api/config — load, save, path validation
+    session_workflow.py     # /api/workflow — VTT summary, scene extraction
+    scene_editor.py         # /api/editor — scenes, extractions, narrate, assemble
+    ledger.py               # /api/ledger — quote sync, assign
+    grounding.py            # /api/grounding — campaign_state, distill, party, planning
+    prep.py                 # /api/prep — session_prep, npc_table, query
+    setup.py                # /api/setup — dnd_sheet, make_tracking
+    experimental.py         # /api/experimental — narrative, enhance_recap
+    connections.py          # /api/connections — entity/relationship graph extraction
+frontend/                   # Vue 3 + TypeScript + Pinia + Vue Router
+
+# ── CLI tools ──
 campaignlib.py              # Shared library — all scripts import from here
 prep.py                     # CLI: session beat / session arc prep
 session_doc.py              # CLI: post-session narrative document generator (5-pass pipeline)
 narrative.py                # Supporting module for session_doc.py (narration passes, prompt assembly)
-session_doc_ui.py           # Flask web UI for the session_doc iterative workflow
 quote_ledger.py             # Quote Ledger: SQLite-backed VTT dialogue tracking and scene matching
-app.py                      # Streamlit launcher / configurator (all campaign tools)
 npc_table.py                # CLI: generate NPC reference table from lore docs
 distill.py                  # CLI: convert session summaries into world_state.md
 campaign_state.py           # CLI: generate completed-content grounding doc from summaries
@@ -70,7 +87,9 @@ party.py                    # CLI: generate party.md from character sheets + sum
 dnd_sheet.py                # CLI: convert D&D Beyond PDF to markdown via Claude vision
 new_workspace.py            # CLI: create a new campaign workspace directory
 transform.py                # CLI: convert NotebookLLM dossiers into prep.py input
-requirements.txt            # anthropic, pyyaml, pyperclip
+
+# ── Config & docs ──
+requirements.txt            # anthropic, pyyaml, pyperclip, fastapi, uvicorn, pyvis
 tests/
   test_prep.py              # Tests for campaignlib, prep, and session_doc logic
 config/
@@ -361,155 +380,114 @@ Per-character voice files live in `--voice-dir` (e.g. `voice/vukradin_voice.md`)
 - **Chunk mode**: strong mandate — "THE DIALOGUE IS THE STORY". Full sessions reliably have dialogue.
 - **Scene mode**: conditional — "USE DIALOGUE IF PRESENT". If a scene had no dialogue (wordless combat, environmental crossing), the model narrates from action beats and environment only. It does not invent dialogue.
 
-### session_doc_ui.py — Session Doc Editor (Flask web UI)
+## Web UI (FastAPI + Vue 3)
 
-A browser-based editor for the extract → edit → narrate → assemble workflow. Three panels:
+The primary UI is a FastAPI backend + Vue 3 frontend that wraps all CLI tools in a browser interface with SSE streaming output.
 
-- **Left**: scene list with badges (Extracted / Narrated); click to switch scene
-- **Centre**: extraction file editor, toolbar, and streaming narration output
-- **Right**: tabbed panel — **VTT Source** (roleplay extraction files for reference) and **Quote Ledger** (SQLite-backed dialogue tracker)
-
-#### Prerequisites
-
-Before starting the UI you need:
-
-1. **Session recap file** — the structured session notes passed to `session_doc.py` (e.g. `session-mar`)
-2. **Scene extractions** — run passes 1–4 first to produce `scene_extractions/plan.md` and one extraction file per scene:
-   ```bash
-   python session_doc.py session-mar \
-       --roleplay-extract-dir vtt_roleplay_extractions/ \
-       --summary-extract-dir  vtt_extractions/ \
-       --context docs/campaign_state.md docs/world_state.md \
-       --party partyfile.md \
-       --characters "Vukradin, Valphine, Soma, Brewbarry" \
-       --voice-dir voice/ \
-       --examples examples/ \
-       --by-scene \
-       --extract-dir scene_extractions/ \
-       --extract-only \
-       --output /dev/null
-   ```
-3. **VTT roleplay extractions** — the `vtt_roleplay_extractions/` directory produced by `vtt_summary.py --roleplay-output` (shown in the right panel for reference while editing)
-
-Optional but recommended:
-- `partyfile.md` — passed to each narration call
-- `voice/` directory — per-character voice files injected into narration
-
-#### Starting the UI
-
-From the campaign workspace directory:
-
-```bash
-# Via wrapper script (recommended — reads ui_config.yaml)
-./ui.sh
-
-# Or directly
-python ~/CampaignGenerator/session_doc_ui.py session-mar \
-    --extract-dir scene_extractions/ \
-    --roleplay-extract-dir vtt_roleplay_extractions/ \
-    --output-dir . \
-    --party partyfile.md \
-    --voice-dir voice/ \
-    --narrate-tokens 4000
-
-# Then open http://localhost:5000
-```
-
-Alternatively, launch from the Streamlit app: navigate to **Session Doc Editor** and click **Launch Server**.
-
-#### Scene-by-scene workflow
-
-1. Click a scene in the left panel → the extraction text loads in the editor
-2. Review and edit: add missing dialogue, remove hallucinated lines, adjust emphasis
-   - The right panel shows the VTT roleplay source for that session — use it to find exact quotes
-3. **Save** — writes the edited extraction back to disk
-4. **Edit in Typora** — opens the extraction file in Typora (WSL-aware); click **Reload** afterwards to pull changes back into the browser
-5. **Narrate** — streams the narration call (`session_doc.py --from-extractions --scene N`); output appears in the narration panel below the editor and is saved to `sceneN.md` in `--output-dir`
-6. **Open narration in Typora** — opens the saved `sceneN.md` for review
-7. Repeat for each scene; the left panel shows **Extracted** / **Narrated** badges per scene
-
-#### Assembling the final document
-
-Once all scenes are narrated, click **Assemble Doc** in the header bar. This:
-- Collects all `sceneN.md` files from `--output-dir`
-- Strips the per-scene title and surrounding dividers from each
-- Joins them with `---` separators under a single title
-- Saves the result as `{session-name}-doc.md` in `--output-dir`
-- Shows an **Open in Typora** button for the assembled file
-
-Scenes that have not yet been narrated are skipped (noted in the terminal). You can assemble a partial document at any point.
-
-#### Quote Ledger
-
-The right panel's **Quote Ledger** tab tracks verbatim VTT dialogue and shows which quotes made it into scene extractions. This surfaces the gap between what was said (VTT roleplay extractions) and what Claude chose to include (Pass 4 scene extractions), so you can find missing dialogue and paste it into the editor.
-
-**Sync** parses `vtt_roleplay_extractions/extract_*.md`, stores every quoted block in a SQLite database (`scene_extractions/quote_ledger.db`), and fuzzy-matches each quote against the dialogue in scene extraction files (0.6 similarity threshold).
-
-Quotes are grouped by scene. Unassigned quotes (no match found) appear at the top — these are the most likely to be missing from extractions. Click a quote to expand it, then use the **Move** dropdown to reassign it to a different scene or unassign it. Manual assignments are pinned and won't be overwritten by future syncs.
-
-The ledger is read-only with respect to extraction files — it does not modify them. To include a missing quote in a narration, copy it from the ledger into the extraction editor (middle panel) and save.
-
-`quote_ledger.py` contains the parsing, matching, and SQLite logic. The Flask routes are in `session_doc_ui.py`.
-
-#### Token estimates
-
-Each extraction file shows an estimated output token count in the editor header. If it exceeds `--narrate-tokens`, the estimate turns orange. To override the limit for one scene, add this as the first line of the extraction file:
-
-```
-tokens: 6000
-```
-
-#### `ui_config.yaml` keys
-
-The minimal configuration is a single session directory; all sub-paths are derived automatically:
-
-```yaml
-# Minimal — everything derived from one directory
-session_doc_session_dir:  /path/to/summaries/20260324
-
-# Derived automatically (override only if non-standard):
-#   scene_extractions/         → extract dir (plan.md + extraction files)
-#   vtt_roleplay_extractions/  → roleplay source panel
-#   vtt_extracts/              → summary extractions (narration context)
-#   <session_dir>/             → output dir for sceneN.md files
-#   session-recap.md (or most recently modified .md) → recap file
-
-# Campaign-level settings (shared across sessions):
-session_doc_voice_dir:      /path/to/voice
-session_doc_characters:     "Zalthir, Grygum, Daz, Thorin"
-session_doc_examples_dir:   /path/to/examples/   # directory of *.md style references
-session_doc_narrate_tokens: 4000
-session_doc_port:           5000
-
-# Streamlit app pre-populates campaign_state and world_state from:
-campaign_state_output: docs/campaign_state.md
-world_state_output:    docs/world_state.md
-```
-
-Individual path keys (`session_doc_session`, `session_doc_extract_dir`, etc.) still work as overrides.
-
-#### CLI usage with `--session-dir`
-
-```bash
-python session_doc_ui.py --session-dir summaries/20260324 \
-    --voice-dir voice/ \
-    --characters "Zalthir, Grygum, Daz, Thorin"
-```
-
-#### WSL / Windows / Typora
-
-The UI runs in WSL but opens files in Typora on Windows. It uses `wslpath -w` to convert paths and `powershell.exe -c Start-Process "path"` to launch Typora. This handles UNC paths correctly (explorer.exe and cmd.exe do not).
-
-## Streamlit app (app.py)
-
-Central launcher for all campaign tools. Launch from the campaign workspace directory so it auto-detects `ui_config.yaml`:
+### Starting the UI
 
 ```bash
 cd ~/campaigns/Phandalin
-streamlit run ~/CampaignGenerator/app.py
+~/CampaignGenerator/startup --campaign-dir . --session-dir summaries/20260325
 ```
 
-Pages: Campaign State, World State, Party, Planning, Session Doc Editor. Each page reads its defaults from `ui_config.yaml` in the current working directory.
+Or without CLI args (configure campaign_dir and session_dir in the Session Config page):
+
+```bash
+cd ~/campaigns/Phandalin
+~/CampaignGenerator/startup
+```
+
+The `startup` script builds the frontend if needed, sets `PYTHONPATH`, and runs `python -m server.main`. Open http://localhost:5000 in your browser.
+
+### Campaign layout
+
+The UI expects a standard campaign directory structure:
+
+```
+<campaign>/
+    docs/                → campaign_state.md, world_state.md, party.md
+    voice/               → per-character voice files
+    examples/            → handcrafted style references
+    summaries/
+        <session>/       → VTT, GM recap, extractions, outputs
+```
+
+Users specify **campaign directory** + **session directory** on the Session Config page — everything else is derived automatically. Relative paths in form fields resolve against the session directory.
+
+### Pages
+
+**Session Workflow** (wizard steps):
+1. **Session Config** — set campaign_dir and session_dir; all paths auto-derived
+2. **VTT Summary** — convert .vtt transcript to session summary + roleplay highlights
+3. **Scene Extraction** — run session_doc.py passes 1–4 to produce per-scene extraction files
+4. **Session Doc Editor** — three-panel editor (scene list / extraction editor / VTT source + quote ledger)
+
+**Grounding Docs**: Campaign State, World State, Party Document, Planning Document
+
+**Prep**: Session Prep, NPC Table, Query Summaries, Connection Graph
+
+**Setup**: D&D Sheet, Make Tracking
+
+**Experimental**: Enhance Recap, Session Narrative
+
+**Settings**: Raw YAML editor for ui_config.yaml
+
+### Session Doc Editor
+
+Three-panel layout for the extract → edit → narrate → assemble workflow:
+
+- **Left**: scene list with Extracted / Narrated badges
+- **Centre**: extraction file editor with save/reload, token estimates, streaming narration output
+- **Right**: tabbed — VTT Source (roleplay extractions for reference) and Quote Ledger
+
+**Workflow**: click a scene → review/edit extraction → Narrate (streams `session_doc.py --from-extractions --scene N`) → repeat → Assemble Doc.
+
+The editor has a config panel for setting paths (session recap, extract_dir, roleplay_extract_dir, etc.) that auto-populates from the Session Config page. The config panel also accepts characters, voice_dir, examples, and narrate_tokens.
+
+**Typora integration**: Edit in Typora / Open narration buttons work on WSL via `wslpath -w` + `powershell.exe Start-Process`.
+
+### Quote Ledger
+
+The right panel's **Quote Ledger** tab tracks verbatim VTT dialogue and shows which quotes made it into scene extractions. **Sync** parses `vtt_roleplay_extractions/extract_*.md`, stores every quoted block in SQLite (`quote_ledger.db`), and fuzzy-matches against scene extraction dialogue (0.6 threshold).
+
+Unassigned quotes appear at the top — likely missing from extractions. Click to expand, use **Move** to reassign to a different scene. The ledger is read-only with respect to extraction files — copy quotes into the editor manually.
+
+`quote_ledger.py` contains the parsing, matching, and SQLite logic.
+
+### Token estimates
+
+Each extraction file shows an estimated output token count. If it exceeds narrate_tokens, the estimate turns orange. Override per-scene by adding `tokens: 6000` as the first line of an extraction file.
+
+### `ui_config.yaml`
+
+Config is stored in `ui_config.yaml` in the working directory (the campaign directory). The minimal config is:
+
+```yaml
+campaign_dir: /path/to/campaign
+session_dir:  /path/to/campaign/summaries/20260324
+```
+
+All other paths are derived automatically. The UI saves config changes to this file. Key prefixes that are persisted: `cs_`, `distill_`, `party_`, `plan_`, `query_`, `prep_`, `npc_`, `sd_`, `sw_`, `vtt_`, `session_dir`, `campaign_dir`, `narr_`, `er_`, `cg_`, `dnd_`, `mt_`, `global_`, `summaries`.
+
+### Architecture
+
+- **Backend**: `server/` — FastAPI app with 9 route modules. CLI tools run as async subprocesses with SSE streaming via `subprocess_runner.py`
+- **Frontend**: `frontend/` — Vue 3 + TypeScript + Pinia + Vue Router, Catppuccin Mocha theme
+- **CLI tools**: All existing scripts are unchanged — the backend orchestrates them
+
+### Development
+
+```bash
+# Two processes — hot reload on both
+cd frontend && npm run dev &   # :5173, proxies /api/* to :8000
+uvicorn server.main:app --reload --port 8000
+```
+
+### WSL / Windows / Typora
+
+The UI runs in WSL but opens files in Typora on Windows. It uses `wslpath -w` to convert paths and `powershell.exe -c Start-Process "path"` to launch Typora. This handles UNC paths correctly (explorer.exe and cmd.exe do not).
+
 
 ## Typical workflow for a new campaign
 
@@ -638,7 +616,8 @@ python -m pytest tests/
 ## Dependencies
 
 ```bash
-pip install anthropic pyyaml pyperclip streamlit pyvis
+pip install anthropic pyyaml pyperclip pyvis fastapi uvicorn
+cd frontend && npm install   # Vue 3 frontend
 ```
 
 `ANTHROPIC_API_KEY` must be set in the environment.

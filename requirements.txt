@@ -1,5 +1,6 @@
 anthropic
 pyyaml
 pyperclip
-streamlit
 pyvis
+fastapi
+uvicorn

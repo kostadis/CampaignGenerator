@@ -1,4 +1,4 @@
-"""Tests for campaignlib and prep.py logic."""
+"""Tests for campaignlib, prep.py, session_doc, and quote_ledger logic."""
 
 import sys
 import pytest
@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import campaignlib
 import prep
 import session_doc
+import quote_ledger
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
@@ -580,3 +581,490 @@ def test_extraction_files_can_be_reloaded(tmp_path):
         fname = session_doc.extraction_filename(i, section["narrator"], section.get("scene", ""))
         loaded = (tmp_path / fname).read_text(encoding="utf-8")
         assert loaded == expected
+
+
+# ── campaignlib.save_log ────────────────────────────────────────────────────
+
+def test_save_log_creates_file(tmp_path):
+    log_file = campaignlib.save_log(
+        str(tmp_path), [("Heading", "Content here.")], stem="test"
+    )
+    assert log_file.exists()
+    assert log_file.name.endswith("_test.md")
+
+
+def test_save_log_contains_sections(tmp_path):
+    log_file = campaignlib.save_log(
+        str(tmp_path),
+        [("System Prompt", "You are a DM."), ("Response", "The encounter begins.")],
+        stem="session",
+    )
+    text = log_file.read_text(encoding="utf-8")
+    assert "## System Prompt" in text
+    assert "You are a DM." in text
+    assert "## Response" in text
+    assert "The encounter begins." in text
+
+
+def test_save_log_creates_directory(tmp_path):
+    nested = tmp_path / "deep" / "logs"
+    log_file = campaignlib.save_log(str(nested), [("A", "B")])
+    assert log_file.exists()
+    assert nested.exists()
+
+
+# ── session_doc.extract_section_text ────────────────────────────────────────
+
+RECAP_WITH_SECTIONS = """\
+## Summary
+
+The party climbed the mountain and fought giants.
+
+## Memorable Moments
+
+- Vukradin stared down a stone giant.
+- Soma transformed into an eagle.
+
+## Scenes
+
+### The Stone Giants
+Big fight here.
+
+## NPCs
+
+- Stone Giant Leader
+"""
+
+
+def test_extract_section_text_summary():
+    text = session_doc.extract_section_text(RECAP_WITH_SECTIONS, "Summary")
+    assert "climbed the mountain" in text
+    assert "Memorable Moments" not in text
+
+
+def test_extract_section_text_memorable_moments():
+    text = session_doc.extract_section_text(RECAP_WITH_SECTIONS, "Memorable Moments")
+    assert "Vukradin stared down" in text
+    assert "Soma transformed" in text
+    assert "climbed the mountain" not in text
+
+
+def test_extract_section_text_case_insensitive():
+    text = session_doc.extract_section_text(RECAP_WITH_SECTIONS, "summary")
+    assert "climbed the mountain" in text
+
+
+def test_extract_section_text_nonexistent():
+    text = session_doc.extract_section_text(RECAP_WITH_SECTIONS, "Missing Section")
+    assert text == ""
+
+
+# ── session_doc.extract_character_roster ────────────────────────────────────
+
+PARTY_TEXT = """\
+## Soma
+**Tortle Druid 5, Player: Wade**
+
+Some backstory about Soma.
+
+## Vukradin
+**Goliath Barbarian 5, Player: Kostadis**
+
+Some backstory about Vukradin.
+
+## Valphine
+**Elf Wizard 5**
+
+No player listed.
+"""
+
+
+def test_extract_character_roster_basic():
+    roster = session_doc.extract_character_roster(PARTY_TEXT)
+    assert "Soma (Wade): Tortle Druid 5" in roster
+    assert "Vukradin (Kostadis): Goliath Barbarian 5" in roster
+
+
+def test_extract_character_roster_no_player():
+    """Characters without Player: field but with valid class line are included."""
+    text = "## Valphine\n**Elf Wizard 5, Bladesinger**\n"
+    roster = session_doc.extract_character_roster(text)
+    assert "Valphine: Elf Wizard 5, Bladesinger" in roster
+    assert "Valphine (" not in roster
+
+
+def test_extract_character_roster_empty():
+    assert session_doc.extract_character_roster("") == ""
+
+
+def test_extract_character_roster_multi_player():
+    text = "## Soma\n**Tortle Druid 5, Player: Wade/Kostadis**\n"
+    roster = session_doc.extract_character_roster(text)
+    assert "Wade/Kostadis" in roster
+
+
+# ── session_doc.load_voice_files ────────────────────────────────────────────
+
+def test_load_voice_files(tmp_path):
+    (tmp_path / "vukradin_voice.md").write_text("Gruff, terse.", encoding="utf-8")
+    (tmp_path / "soma.md").write_text("Gentle, wise.", encoding="utf-8")
+    voices = session_doc.load_voice_files(tmp_path)
+    assert voices["vukradin"] == "Gruff, terse."
+    assert voices["soma"] == "Gentle, wise."
+
+
+def test_load_voice_files_empty_dir(tmp_path):
+    voices = session_doc.load_voice_files(tmp_path)
+    assert voices == {}
+
+
+# ── session_doc.get_voice_note ──────────────────────────────────────────────
+
+def test_get_voice_note_found():
+    voices = {"vukradin": "Gruff.", "soma": "Gentle."}
+    assert session_doc.get_voice_note(voices, "Vukradin") == "Gruff."
+
+
+def test_get_voice_note_first_name():
+    voices = {"soma": "Gentle."}
+    assert session_doc.get_voice_note(voices, "Soma the Tortle") == "Gentle."
+
+
+def test_get_voice_note_missing():
+    voices = {"vukradin": "Gruff."}
+    assert session_doc.get_voice_note(voices, "Brewbarry") is None
+
+
+# ── session_doc.load_extractions ────────────────────────────────────────────
+
+def test_load_extractions_sorted(tmp_path):
+    (tmp_path / "extract_002.md").write_text("Second", encoding="utf-8")
+    (tmp_path / "extract_001.md").write_text("First", encoding="utf-8")
+    (tmp_path / "notes.md").write_text("Ignored", encoding="utf-8")
+    result = session_doc.load_extractions(tmp_path)
+    assert len(result) == 2
+    assert result[0] == ("extract_001.md", "First")
+    assert result[1] == ("extract_002.md", "Second")
+
+
+def test_load_extractions_empty_dir(tmp_path):
+    assert session_doc.load_extractions(tmp_path) == []
+
+
+# ── session_doc.format_extractions ──────────────────────────────────────────
+
+def test_format_extractions_basic():
+    exts = [("extract_001.md", "Dialogue here"), ("extract_002.md", "More dialogue")]
+    result = session_doc.format_extractions(exts, "Roleplay Extractions")
+    assert "## Roleplay Extractions" in result
+    assert "### Chunk 1" in result
+    assert "### Chunk 2" in result
+    assert "Dialogue here" in result
+    assert "---" in result
+
+
+def test_format_extractions_single_chunk():
+    exts = [("extract_001.md", "Only chunk")]
+    result = session_doc.format_extractions(exts, "Test")
+    assert "### Chunk 1" in result
+    assert "---" not in result.split("## Test\n\n", 1)[1]  # no separator with single chunk
+
+
+# ── session_doc.build_narrate_prompt ────────────────────────────────────────
+
+def test_build_narrate_prompt_basic():
+    result = session_doc.build_narrate_prompt(
+        narrator="Vukradin",
+        focus="Faces the stone giants",
+        char_moments="**The Giants**\nVukradin: \"We do not leave.\"",
+        party=None,
+        handoff="",
+    )
+    assert "## Narrator: Vukradin" in result
+    assert "Faces the stone giants" in result
+    assert "We do not leave" in result
+
+
+def test_build_narrate_prompt_includes_party():
+    result = session_doc.build_narrate_prompt(
+        narrator="Soma", focus="focus", char_moments="moments",
+        party="## Soma\nTortle Druid", handoff=""
+    )
+    assert "## Party Document" in result
+    assert "Tortle Druid" in result
+
+
+def test_build_narrate_prompt_includes_voice_note():
+    result = session_doc.build_narrate_prompt(
+        narrator="Soma", focus="focus", char_moments="moments",
+        party=None, handoff="", voice_note="Gentle and wise."
+    )
+    assert "Voice Notes" in result
+    assert "Gentle and wise." in result
+
+
+def test_build_narrate_prompt_includes_handoff():
+    result = session_doc.build_narrate_prompt(
+        narrator="Soma", focus="focus", char_moments="moments",
+        party=None, handoff="The mountain loomed ahead."
+    )
+    assert "Handoff" in result
+    assert "The mountain loomed ahead." in result
+
+
+def test_build_narrate_prompt_no_handoff_when_empty():
+    result = session_doc.build_narrate_prompt(
+        narrator="Soma", focus="focus", char_moments="moments",
+        party=None, handoff=""
+    )
+    assert "Handoff" not in result
+
+
+def test_build_narrate_prompt_includes_roster():
+    result = session_doc.build_narrate_prompt(
+        narrator="Soma", focus="focus", char_moments="moments",
+        party=None, handoff="", roster="- Soma: Tortle Druid 5"
+    )
+    assert "Character Classes" in result
+    assert "Tortle Druid 5" in result
+
+
+def test_build_narrate_prompt_includes_roleplay_summary():
+    result = session_doc.build_narrate_prompt(
+        narrator="Soma", focus="focus", char_moments="moments",
+        party=None, handoff="", roleplay_summary="Great roleplay here."
+    )
+    assert "Session Roleplay Summary" in result
+    assert "Great roleplay here." in result
+
+
+# ── session_doc.build_char_extract_prompt — recap context ───────────────────
+
+def test_scene_mode_includes_recap_context():
+    """Scene mode should include Summary and Memorable Moments from recap."""
+    prompt = session_doc.build_char_extract_prompt(
+        _scene_section("The Stone Giants"),
+        ALL_EXTRACTIONS, None, recap=RECAP_WITH_SCENES
+    )
+    assert "Recap Context" in prompt
+    assert "The party climbed the mountain" in prompt
+
+
+def test_scene_mode_includes_session_summary():
+    prompt = session_doc.build_char_extract_prompt(
+        _scene_section("The Stone Giants"),
+        ALL_EXTRACTIONS, None, recap=RECAP_WITH_SCENES,
+        session_summary="Session events log here."
+    )
+    assert "Session Events" in prompt
+    assert "Session events log here." in prompt
+
+
+def test_chunk_mode_includes_summary_extractions():
+    summary_exts = [("extract_001.md", "Action details chunk 1"),
+                    ("extract_002.md", "Action details chunk 2")]
+    prompt = session_doc.build_char_extract_prompt(
+        _chunk_section(1, 1), ALL_EXTRACTIONS, summary_exts
+    )
+    assert "Session Extractions" in prompt
+    assert "Action details chunk 1" in prompt
+
+
+def test_build_char_extract_prompt_includes_roster():
+    prompt = session_doc.build_char_extract_prompt(
+        _chunk_section(1, 2), ALL_EXTRACTIONS, None,
+        roster="- Vukradin: Goliath Barbarian 5"
+    )
+    assert "Character Classes" in prompt
+    assert "Goliath Barbarian 5" in prompt
+
+
+# ── quote_ledger.parse_roleplay_quotes ──────────────────────────────────────
+
+ROLEPLAY_TEXT = """\
+**kostadis1 as Vukradin** — *confronting the giant*
+> "We do not leave."
+> "This mountain is ours."
+
+**GM as Brewbarry** — *reaction*
+> "Then I guess we fight."
+"""
+
+
+def test_parse_roleplay_quotes_basic():
+    quotes = quote_ledger.parse_roleplay_quotes(ROLEPLAY_TEXT, "extract_001.md")
+    assert len(quotes) == 2
+    assert quotes[0]["speaker"] == "kostadis1 as Vukradin"
+    assert quotes[0]["character"] == "Vukradin"
+    assert quotes[0]["context"] == "confronting the giant"
+    assert "We do not leave" in quotes[0]["quote_text"]
+    assert "This mountain is ours" in quotes[0]["quote_text"]
+    assert quotes[0]["source_file"] == "extract_001.md"
+    assert quotes[0]["block_index"] == 0
+
+
+def test_parse_roleplay_quotes_gm_character():
+    quotes = quote_ledger.parse_roleplay_quotes(ROLEPLAY_TEXT, "test.md")
+    assert quotes[1]["character"] == "Brewbarry"
+
+
+def test_parse_roleplay_quotes_empty():
+    assert quote_ledger.parse_roleplay_quotes("No quotes here.", "f.md") == []
+
+
+def test_parse_roleplay_quotes_no_as_in_speaker():
+    text = '**David** — *talking*\n> "Hello there."\n'
+    quotes = quote_ledger.parse_roleplay_quotes(text, "f.md")
+    assert len(quotes) == 1
+    assert quotes[0]["character"] == "David"  # fallback to speaker
+
+
+# ── quote_ledger.parse_scene_dialogue ───────────────────────────────────────
+
+def test_parse_scene_dialogue_basic():
+    text = 'Vukradin: "We do not leave."\nSoma: "Hold on."'
+    result = quote_ledger.parse_scene_dialogue(text)
+    assert len(result) == 2
+    assert result[0] == ("Vukradin", "We do not leave.")
+    assert result[1] == ("Soma", "Hold on.")
+
+
+def test_parse_scene_dialogue_no_dialogue():
+    assert quote_ledger.parse_scene_dialogue("Just action beats.") == []
+
+
+def test_parse_scene_dialogue_requires_capital():
+    text = 'someone: "lowercase speaker"'
+    assert quote_ledger.parse_scene_dialogue(text) == []
+
+
+# ── quote_ledger.normalize_quote ────────────────────────────────────────────
+
+def test_normalize_quote_lowercase():
+    assert "hello world" in quote_ledger.normalize_quote("HELLO WORLD")
+
+
+def test_normalize_quote_strips_punctuation():
+    result = quote_ledger.normalize_quote('"Hello," said the giant—"Leave!"')
+    assert '"' not in result
+    assert ',' not in result
+    assert '—' not in result
+    assert '!' not in result
+
+
+def test_normalize_quote_collapses_whitespace():
+    result = quote_ledger.normalize_quote("  too   many   spaces  ")
+    assert "  " not in result
+    assert result == "too many spaces"
+
+
+def test_normalize_quote_strips_smart_quotes():
+    result = quote_ledger.normalize_quote("\u201cHello\u201d \u2018world\u2019")
+    assert "\u201c" not in result
+    assert "\u201d" not in result
+
+
+# ── quote_ledger.match_quote ────────────────────────────────────────────────
+
+def test_match_quote_identical():
+    assert quote_ledger.match_quote("we do not leave", "we do not leave") == 1.0
+
+
+def test_match_quote_different():
+    ratio = quote_ledger.match_quote("we do not leave", "completely different text here")
+    assert ratio < 0.5
+
+
+def test_match_quote_similar():
+    ratio = quote_ledger.match_quote("we do not leave this place",
+                                      "we do not leave this place ever")
+    assert ratio > 0.8
+
+
+# ── quote_ledger.first_n_words ──────────────────────────────────────────────
+
+def test_first_n_words_default():
+    text = "one two three four five six seven eight nine ten"
+    assert quote_ledger.first_n_words(text) == "one two three four five six seven eight"
+
+
+def test_first_n_words_short():
+    assert quote_ledger.first_n_words("hello") == "hello"
+
+
+def test_first_n_words_custom_n():
+    assert quote_ledger.first_n_words("a b c d e", n=3) == "a b c"
+
+
+# ── quote_ledger.QuoteLedger ───────────────────────────────────────────────
+
+def test_quote_ledger_create_and_close(tmp_path):
+    db = tmp_path / "test.db"
+    ledger = quote_ledger.QuoteLedger(db)
+    assert db.exists()
+    ledger.close()
+
+
+def test_quote_ledger_sync_and_query(tmp_path):
+    """Full round-trip: ingest roleplay files, match to scenes, query results."""
+    # Set up roleplay extraction dir
+    rp_dir = tmp_path / "roleplay"
+    rp_dir.mkdir()
+    (rp_dir / "extract_001.md").write_text(ROLEPLAY_TEXT, encoding="utf-8")
+
+    # Set up scene extraction dir with matching dialogue
+    ext_dir = tmp_path / "extractions"
+    ext_dir.mkdir()
+    scene_file = session_doc.extraction_filename(1, "Vukradin", "The Stone Giants")
+    (ext_dir / scene_file).write_text(
+        'Vukradin: "We do not leave."\nVukradin: "This mountain is ours."',
+        encoding="utf-8"
+    )
+
+    scenes = [{"index": 1, "narrator": "Vukradin", "scene": "The Stone Giants"}]
+
+    db = tmp_path / "test.db"
+    ledger = quote_ledger.QuoteLedger(db)
+    result = ledger.sync(rp_dir, ext_dir, scenes)
+    assert result["total"] == 2
+    assert result["matched"] >= 1  # at least Vukradin's quote should match
+
+    grouped = ledger.get_quotes_grouped(scenes)
+    assert len(grouped["scenes"]) == 1
+    ledger.close()
+
+
+def test_quote_ledger_assign(tmp_path):
+    """Manual assignment pins a quote to a scene."""
+    rp_dir = tmp_path / "roleplay"
+    rp_dir.mkdir()
+    (rp_dir / "extract_001.md").write_text(ROLEPLAY_TEXT, encoding="utf-8")
+
+    ext_dir = tmp_path / "extractions"
+    ext_dir.mkdir()
+
+    scenes = [{"index": 1, "narrator": "Vukradin", "scene": "The Stone Giants"}]
+
+    db = tmp_path / "test.db"
+    ledger = quote_ledger.QuoteLedger(db)
+    ledger.sync(rp_dir, ext_dir, scenes)
+
+    # Get an unassigned quote and assign it
+    grouped = ledger.get_quotes_grouped(scenes)
+    unassigned = grouped["unassigned"]
+    if unassigned:
+        qid = unassigned[0]["id"]
+        assert ledger.assign(qid, 1) is True
+        # Verify it moved
+        grouped2 = ledger.get_quotes_grouped(scenes)
+        scene_qids = [q["id"] for q in grouped2["scenes"][0]["quotes"]]
+        assert qid in scene_qids
+
+    ledger.close()
+
+
+def test_quote_ledger_assign_nonexistent(tmp_path):
+    db = tmp_path / "test.db"
+    ledger = quote_ledger.QuoteLedger(db)
+    assert ledger.assign(99999, 1) is False
+    ledger.close()

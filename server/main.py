@@ -11,8 +11,8 @@ from fastapi.staticfiles import StaticFiles
 
 from server.config import derive_campaign_paths, derive_session_paths, save_ui_config
 from server.routers import (
-    config_routes, experimental, grounding, ledger, prep, scene_editor,
-    session_workflow, setup,
+    config_routes, connections, experimental, grounding, ledger, prep,
+    scene_editor, session_workflow, setup,
 )
 
 app = FastAPI(title="CampaignGenerator")
@@ -35,6 +35,7 @@ app.include_router(setup.router, prefix="/api/setup", tags=["setup"])
 app.include_router(experimental.router, prefix="/api/experimental", tags=["experimental"])
 app.include_router(scene_editor.router, prefix="/api/editor", tags=["editor"])
 app.include_router(ledger.router, prefix="/api/ledger", tags=["ledger"])
+app.include_router(connections.router, prefix="/api/connections", tags=["connections"])
 
 # ── Static files (Vue build) ────────────────────────────────────────────────
 

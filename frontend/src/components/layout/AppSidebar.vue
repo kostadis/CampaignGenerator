@@ -41,6 +41,7 @@ const navGroups: NavGroup[] = [
       { label: 'Session Prep', path: '/prep/session-prep' },
       { label: 'NPC Table', path: '/prep/npc-table' },
       { label: 'Query Summaries', path: '/prep/query' },
+      { label: 'Connection Graph', path: '/prep/connections' },
     ],
   },
   {
