@@ -87,29 +87,29 @@ onMounted(() => { loadFromConfig() })
 
       <!-- Required: character sheets -->
       <div class="form-section">
-        <MultiPathField v-model="characters" label="Character sheet files" required
+        <MultiPathField v-model="characters" label="Character sheet files" required resolve-base="campaign"
           help="One character sheet per line (e.g. docs/characters/soma.md). Required." />
       </div>
 
       <!-- Summaries -->
       <div v-if="!synthOnly" class="form-section">
-        <PathField v-model="summaries" label="Session summaries file"
+        <PathField v-model="summaries" label="Session summaries file" resolve-base="campaign"
           help="The large summaries.md — chunked for per-character extraction." />
       </div>
 
       <!-- Output -->
       <div class="form-section">
-        <PathField v-model="output" label="Output file" required is-output
+        <PathField v-model="output" label="Output file" required is-output resolve-base="campaign"
           help="party.md — roster, arc scores, relationships." />
       </div>
 
       <!-- Optional inputs -->
       <div class="form-section">
-        <MultiPathField v-model="backstory" label="Backstory files"
+        <MultiPathField v-model="backstory" label="Backstory files" resolve-base="campaign"
           help="One per line. Optional backstory documents for each character." />
-        <MultiPathField v-model="arcScores" label="Arc score mechanic files"
+        <MultiPathField v-model="arcScores" label="Arc score mechanic files" resolve-base="campaign"
           help="One per line. Arc score documents, one per character." />
-        <MultiPathField v-model="context" label="Additional context files"
+        <MultiPathField v-model="context" label="Additional context files" resolve-base="campaign"
           help="e.g. campaign_state.md — optional extra context for synthesis." />
       </div>
 
@@ -120,7 +120,7 @@ onMounted(() => { loadFromConfig() })
         </button>
 
         <div v-if="showAdvanced" class="advanced-panel">
-          <PathField v-model="extractDir" label="Extractions directory"
+          <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign"
             help="Where intermediate party_extractions/ files are saved." />
           <div class="field">
             <label class="field-label">Chunk size (chars)</label>

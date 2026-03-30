@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 """Create a new CampaignGenerator workspace directory.
 
-Sets up the docs/, logs/ structure and writes a config.yaml with absolute
-paths so the workspace works from any working directory.
+Sets up the standard campaign layout expected by both the CLI tools and the
+FastAPI + Vue web UI:
+
+    <workspace>/
+        config.yaml         ← CLI tool config (absolute paths)
+        ui_config.yaml      ← Web UI config (campaign_dir + session_dir)
+        docs/               ← campaign_state.md, world_state.md, party.md, ...
+        voice/              ← per-character voice files
+        examples/           ← handcrafted style references
+        summaries/          ← per-session directories
+        logs/               ← auto-generated session logs
 
 If you already have files, point to them with --world-state, --mechanics,
---planning. The config will reference them directly (no copying).
+--planning, etc. The config will reference them directly (no copying).
 If omitted, placeholder files are created inside the workspace.
 
 Usage:
@@ -48,6 +57,11 @@ documents:
     path: {planning}
   - label: party
     path: {party}
+"""
+
+UI_CONFIG_TEMPLATE = """\
+campaign_dir: {campaign_dir}
+session_dir: ''
 """
 
 CAMPAIGN_STATE_TEMPLATE = """\
@@ -178,8 +192,11 @@ def main() -> None:
 
     docs_dir = workspace / "docs"
     logs_dir = workspace / "logs"
-    docs_dir.mkdir(parents=True, exist_ok=True)
-    logs_dir.mkdir(parents=True, exist_ok=True)
+    voice_dir = workspace / "voice"
+    examples_dir = workspace / "examples"
+    summaries_dir = workspace / "summaries"
+    for d in (docs_dir, logs_dir, voice_dir, examples_dir, summaries_dir):
+        d.mkdir(parents=True, exist_ok=True)
 
     # Resolve each doc: use supplied path or create a placeholder
     if args.campaign_state:
@@ -222,7 +239,7 @@ def main() -> None:
                                  PARTY_TEMPLATE.format(name=name))
         party_note = "← current party roster and arc scores"
 
-    # Write config.yaml
+    # Write config.yaml (CLI tools)
     config_content = CONFIG_TEMPLATE.format(
         system_prompt=SCRIPT_DIR / "config" / "system_prompt.md",
         log_dir=logs_dir,
@@ -238,32 +255,34 @@ def main() -> None:
     config_path = workspace / "config.yaml"
     config_path.write_text(config_content, encoding="utf-8")
 
+    # Write ui_config.yaml (Web UI)
+    ui_config_content = UI_CONFIG_TEMPLATE.format(campaign_dir=workspace)
+    ui_config_path = workspace / "ui_config.yaml"
+    ui_config_path.write_text(ui_config_content, encoding="utf-8")
+
     # Summary
     print(f"\nWorkspace created: {workspace}")
     print(f"\n  {workspace}/")
-    print(f"  ├── config.yaml")
+    print(f"  ├── config.yaml          ← CLI tool config")
+    print(f"  ├── ui_config.yaml       ← Web UI config")
     print(f"  ├── docs/")
-    if not args.campaign_state:
-        print(f"  │   ├── campaign_state.md  {campaign_state_note}")
-    else:
-        print(f"  │   campaign_state  →  {campaign_state_path}")
-    if not args.world_state:
-        print(f"  │   ├── world_state.md     {world_state_note}")
-    else:
-        print(f"  │   world_state     →  {world_state_path}")
-    if not args.mechanics:
-        print(f"  │   ├── mechanics.md       {mechanics_note}")
-    else:
-        print(f"  │   mechanics       →  {mechanics_path}")
-    if not args.planning:
-        print(f"  │   ├── planning.md        {planning_note}")
-    else:
-        print(f"  │   planning        →  {planning_path}")
-    if not args.party:
-        print(f"  │   └── party.md           {party_note}")
-    else:
-        print(f"  │   party           →  {party_path}")
-    print(f"  └── logs/                   ← auto-generated session logs")
+    doc_items = [
+        (args.campaign_state, "campaign_state.md", campaign_state_path, campaign_state_note),
+        (args.world_state, "world_state.md", world_state_path, world_state_note),
+        (args.mechanics, "mechanics.md", mechanics_path, mechanics_note),
+        (args.planning, "planning.md", planning_path, planning_note),
+        (args.party, "party.md", party_path, party_note),
+    ]
+    for i, (is_external, filename, path, note) in enumerate(doc_items):
+        connector = "└" if i == len(doc_items) - 1 else "├"
+        if is_external:
+            print(f"  │   {connector}── {filename:<20s} → {path}")
+        else:
+            print(f"  │   {connector}── {filename:<20s} {note}")
+    print(f"  ├── voice/               ← per-character voice files")
+    print(f"  ├── examples/            ← handcrafted style references")
+    print(f"  ├── summaries/           ← per-session directories")
+    print(f"  └── logs/                ← auto-generated session logs")
     print(f"\nNext steps:")
     print(f"  1. Generate campaign_state.md from your session summaries:")
     print(f"     python {SCRIPT_DIR}/campaign_state.py summaries.md --output {docs_dir}/campaign_state.md")
@@ -271,7 +290,8 @@ def main() -> None:
         print(f"  2. Fill in any other placeholder docs/ files with your campaign content")
     print(f"  3. Run prep from anywhere:")
     print(f"     python {SCRIPT_DIR}/prep.py --config {config_path} --beat \"...\"")
-    print(f"     python {SCRIPT_DIR}/npc_table.py --config {config_path}")
+    print(f"  4. Or launch the web UI:")
+    print(f"     cd {workspace} && {SCRIPT_DIR}/startup")
     print()
 
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { apiFetch } from '../../api/client'
-import { useConfigStore } from '../../stores/config'
+import { resolvePathWithBase, type ResolveBase } from '../../utils/paths'
 
 const props = defineProps<{
   modelValue: string
@@ -10,27 +10,22 @@ const props = defineProps<{
   required?: boolean
   isOutput?: boolean
   placeholder?: string
-  /** If true, don't resolve relative paths against session_dir (use for session_dir itself). */
+  /** If true, don't resolve relative paths (use for session_dir itself). */
   absolute?: boolean
+  /** Which base directory to resolve relative paths against. Default: 'session'. */
+  resolveBase?: ResolveBase
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
-const config = useConfigStore()
 const exists = ref<boolean | null>(null)
 let checkTimer: ReturnType<typeof setTimeout> | null = null
 
-/** Resolve a relative path against session_dir. */
 const resolvedPath = computed(() => {
-  const raw = props.modelValue.trim()
-  if (!raw) return ''
-  if (props.absolute) return raw
-  if (raw.startsWith('/') || raw.startsWith('~')) return raw
-  const sd = (config.values.session_dir || '').trim()
-  if (sd) return `${sd.replace(/\/+$/, '')}/${raw}`
-  return raw
+  if (props.absolute) return props.modelValue.trim()
+  return resolvePathWithBase(props.modelValue, props.resolveBase || 'session')
 })
 
 async function checkPath(path: string) {
@@ -54,7 +49,8 @@ watch(resolvedPath, (val) => {
 
 const isRelative = computed(() => {
   const raw = props.modelValue.trim()
-  return raw && !raw.startsWith('/') && !raw.startsWith('~') && !!(config.values.session_dir || '').trim()
+  if (!raw || raw.startsWith('/') || raw.startsWith('~')) return false
+  return resolvedPath.value !== raw
 })
 
 function onInput(e: Event) {

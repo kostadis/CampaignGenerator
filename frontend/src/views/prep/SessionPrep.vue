@@ -69,7 +69,7 @@ const runParams = computed(() => ({
         </div>
 
         <PathField v-if="inputMode === 'session_file'"
-          v-model="sessionFile" label="Session outline file" required />
+          v-model="sessionFile" label="Session outline file" required resolve-base="campaign" />
 
         <div v-if="inputMode === 'session_text'" class="field">
           <label class="field-label">Session outline <span class="required">*</span></label>
@@ -93,9 +93,9 @@ const runParams = computed(() => ({
 
       <!-- Optional -->
       <div class="form-section">
-        <PathField v-model="configFile" label="Config file"
+        <PathField v-model="configFile" label="Config file" resolve-base="campaign"
           help="Defaults to config.yaml in CWD." />
-        <PathField v-model="output" label="Output file" is-output
+        <PathField v-model="output" label="Output file" is-output resolve-base="campaign"
           help="Saves the final response to a file." />
         <div class="field">
           <label class="checkbox-label">

@@ -127,27 +127,27 @@ onMounted(() => { loadFromConfig() })
       </div>
 
       <div class="form-section">
-        <MultiPathField v-model="npcFiles" label="NPC dossier files" required
+        <MultiPathField v-model="npcFiles" label="NPC dossier files" required resolve-base="campaign"
           help="One per line. Per-NPC dossier files (docs/npcs/*.md)." />
       </div>
 
       <div class="form-section">
-        <MultiPathField v-model="arcScores" label="Threat arc score files"
+        <MultiPathField v-model="arcScores" label="Threat arc score files" resolve-base="campaign"
           help="One per line. Arc score documents for threat factions." />
       </div>
 
       <div v-if="!synthOnly" class="form-section">
-        <PathField v-model="summaries" label="Session summaries file"
+        <PathField v-model="summaries" label="Session summaries file" resolve-base="campaign"
           help="The large summaries.md — chunked for extraction." />
       </div>
 
       <div class="form-section">
-        <MultiPathField v-model="context" label="Context files"
+        <MultiPathField v-model="context" label="Context files" resolve-base="campaign"
           help="Optional world context (factions, locations, etc.)." />
       </div>
 
       <div class="form-section">
-        <PathField v-model="output" label="Output file" required is-output
+        <PathField v-model="output" label="Output file" required is-output resolve-base="campaign"
           help="planning.md — enemy dossiers and strategic planning." />
       </div>
 
@@ -157,7 +157,7 @@ onMounted(() => { loadFromConfig() })
         </button>
 
         <div v-if="showAdvanced" class="advanced-panel">
-          <PathField v-model="extractDir" label="Extractions directory" />
+          <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign" />
           <div class="field">
             <label class="field-label">Chunk size (chars)</label>
             <input type="number" class="field-input" v-model.number="chunkSize" min="10000" step="5000" />
@@ -183,12 +183,12 @@ onMounted(() => { loadFromConfig() })
     <!-- Build dossiers mode -->
     <div v-if="mode === 'dossiers'" class="form-grid">
       <div class="form-section">
-        <PathField v-model="dossierSummaries" label="Session summaries file" required
+        <PathField v-model="dossierSummaries" label="Session summaries file" required resolve-base="campaign"
           help="The large summaries.md — per-NPC info is extracted from this." />
       </div>
 
       <div class="form-section">
-        <PathField v-model="dossierDir" label="Dossier output directory" required is-output
+        <PathField v-model="dossierDir" label="Dossier output directory" required is-output resolve-base="campaign"
           help="Where per-NPC dossier files are saved (e.g. docs/npcs/)." />
       </div>
 
@@ -198,7 +198,7 @@ onMounted(() => { loadFromConfig() })
         </button>
 
         <div v-if="showAdvanced" class="advanced-panel">
-          <PathField v-model="dossierExtractDir" label="Extractions directory" />
+          <PathField v-model="dossierExtractDir" label="Extractions directory" resolve-base="campaign" />
           <div class="field">
             <label class="field-label">Chunk size (chars)</label>
             <input type="number" class="field-input" v-model.number="dossierChunkSize" min="10000" step="5000" />

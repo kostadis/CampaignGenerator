@@ -60,12 +60,12 @@ onMounted(() => { loadFromConfig() })
       </div>
 
       <div v-if="!synthOnly" class="form-section">
-        <PathField v-model="input" label="Session summaries file" required
+        <PathField v-model="input" label="Session summaries file" required resolve-base="campaign"
           help="The large summaries.md file that gets chunked and distilled." />
       </div>
 
       <div class="form-section">
-        <PathField v-model="output" label="Output file" required is-output
+        <PathField v-model="output" label="Output file" required is-output resolve-base="campaign"
           help="world_state.md — the structured canon document." />
       </div>
 
@@ -76,7 +76,7 @@ onMounted(() => { loadFromConfig() })
         </button>
 
         <div v-if="showAdvanced" class="advanced-panel">
-          <PathField v-model="extractDir" label="Extractions directory"
+          <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign"
             help="Where intermediate distill_extractions/ files are saved." />
           <div class="field">
             <label class="field-label">Chunk size (chars)</label>

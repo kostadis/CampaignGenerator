@@ -45,7 +45,7 @@ onMounted(() => { loadFromConfig() })
 
     <div class="form-grid">
       <div class="form-section">
-        <PathField v-model="input" label="Session summaries file" required />
+        <PathField v-model="input" label="Session summaries file" required resolve-base="campaign" />
       </div>
 
       <div class="form-section">
@@ -71,7 +71,7 @@ onMounted(() => { loadFromConfig() })
         </button>
 
         <div v-if="showAdvanced" class="advanced-panel">
-          <PathField v-model="output" label="Output file" is-output
+          <PathField v-model="output" label="Output file" is-output resolve-base="campaign"
             help="Save the answer to a file." />
           <div class="field">
             <label class="field-label">Chunk size (chars)</label>

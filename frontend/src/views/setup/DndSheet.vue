@@ -34,14 +34,14 @@ const runParams = computed(() => ({
 
     <div class="form-grid">
       <div class="form-section">
-        <MultiPathField v-model="pdfs" label="PDF files" required
+        <MultiPathField v-model="pdfs" label="PDF files" required resolve-base="campaign"
           help="One PDF path per line." />
       </div>
 
       <div class="form-section">
-        <PathField v-model="output" label="Output file (single PDF)" is-output
+        <PathField v-model="output" label="Output file (single PDF)" is-output resolve-base="campaign"
           help="For a single PDF. Leave blank to print to terminal." />
-        <PathField v-model="outputDir" label="Output directory (multiple PDFs)" is-output
+        <PathField v-model="outputDir" label="Output directory (multiple PDFs)" is-output resolve-base="campaign"
           help="One .md file per PDF, named after the input." />
       </div>
 

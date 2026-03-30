@@ -44,9 +44,9 @@ const runParams = computed(() => ({
       </div>
 
       <div class="form-section">
-        <PathField v-model="configFile" label="Config file"
+        <PathField v-model="configFile" label="Config file" resolve-base="campaign"
           help="Defaults to config.yaml in CWD." />
-        <PathField v-model="output" label="Output file" is-output
+        <PathField v-model="output" label="Output file" is-output resolve-base="campaign"
           help="Saves the NPC table to a file." />
         <div class="field">
           <label class="checkbox-label">

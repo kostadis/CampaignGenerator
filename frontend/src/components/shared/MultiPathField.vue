@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import { apiFetch } from '../../api/client'
-import { useConfigStore } from '../../stores/config'
+import { resolvePathWithBase, type ResolveBase } from '../../utils/paths'
 
 const props = defineProps<{
   modelValue: string
   label: string
   help?: string
   required?: boolean
+  /** Which base directory to resolve relative paths against. Default: 'session'. */
+  resolveBase?: ResolveBase
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
-const config = useConfigStore()
 const pathStatuses = ref<Record<string, boolean>>({})
 let checkTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -22,13 +23,8 @@ const paths = computed(() =>
   props.modelValue.split('\n').map(l => l.trim()).filter(Boolean)
 )
 
-/** Resolve a relative path against session_dir. */
 function resolve(raw: string): string {
-  if (!raw) return ''
-  if (raw.startsWith('/') || raw.startsWith('~')) return raw
-  const sd = (config.values.session_dir || '').trim()
-  if (sd) return `${sd.replace(/\/+$/, '')}/${raw}`
-  return raw
+  return resolvePathWithBase(raw, props.resolveBase || 'session')
 }
 
 async function checkPaths() {

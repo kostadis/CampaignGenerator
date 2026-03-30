@@ -36,12 +36,12 @@ onMounted(() => { loadFromConfig() })
 
     <div class="form-grid">
       <div class="form-section">
-        <PathField v-model="input" label="Adventure module file" required
+        <PathField v-model="input" label="Adventure module file" required resolve-base="campaign"
           help="Adventure module or campaign markdown file." />
       </div>
 
       <div class="form-section">
-        <PathField v-model="output" label="Output file" required is-output
+        <PathField v-model="output" label="Output file" required is-output resolve-base="campaign"
           help="tracking.txt — feed this to Campaign State via --track-file." />
       </div>
 
