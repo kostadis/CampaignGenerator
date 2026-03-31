@@ -9,13 +9,21 @@ export interface Scene {
   filename: string
 }
 
-defineProps<{
+const props = defineProps<{
   scenes: Scene[]
   currentScene: number | null
+  /** Quote counts per scene index. */
+  quoteCounts?: Record<number, number>
+  /** Show Sync/Auto-Assign buttons (quotes mode). */
+  showQuoteActions?: boolean
+  syncing?: boolean
+  autoAssigning?: boolean
 }>()
 
 const emit = defineEmits<{
   select: [index: number]
+  sync: []
+  'auto-assign': []
 }>()
 </script>
 
@@ -39,10 +47,22 @@ const emit = defineEmits<{
         <div class="narrator">{{ s.narrator }}</div>
         <div class="sname">{{ s.scene || '\u2014' }}</div>
         <div class="badges">
+          <span v-if="quoteCounts && quoteCounts[s.index] != null" class="badge b-quotes">
+            {{ quoteCounts[s.index] }} quotes
+          </span>
           <span v-if="s.has_extraction" class="badge b-ext">Extracted</span>
           <span v-if="s.has_output" class="badge b-nar">Narrated</span>
         </div>
       </div>
+    </div>
+
+    <div v-if="showQuoteActions" class="scene-actions">
+      <button class="btn-neutral btn-sm action-btn" :disabled="syncing" @click="emit('sync')">
+        {{ syncing ? 'Syncing...' : 'Sync Quotes' }}
+      </button>
+      <button class="btn-primary btn-sm action-btn" :disabled="autoAssigning" @click="emit('auto-assign')">
+        {{ autoAssigning ? 'Assigning...' : 'Auto-Assign' }}
+      </button>
     </div>
   </div>
 </template>
@@ -51,7 +71,9 @@ const emit = defineEmits<{
 .scenes {
   background: var(--bg-mantle);
   border-right: 1px solid var(--bg-surface0);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 .scenes h2 {
   font-size: 10px;
@@ -60,6 +82,11 @@ const emit = defineEmits<{
   letter-spacing: .08em;
   color: var(--text-muted);
   padding: 10px 12px 4px;
+  flex-shrink: 0;
+}
+.scene-list {
+  flex: 1;
+  overflow-y: auto;
 }
 .empty-msg {
   padding: 12px;
@@ -87,7 +114,7 @@ const emit = defineEmits<{
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.badges { display: flex; gap: 3px; margin-top: 3px; }
+.badges { display: flex; gap: 3px; margin-top: 3px; flex-wrap: wrap; }
 .badge {
   font-size: 9px;
   font-weight: 700;
@@ -96,6 +123,17 @@ const emit = defineEmits<{
   text-transform: uppercase;
   letter-spacing: .05em;
 }
+.b-quotes { background: #2a1e3a; color: var(--mauve); }
 .b-ext { background: #1e3a5f; color: var(--blue); }
 .b-nar { background: #1e3a2a; color: var(--green); }
+
+.scene-actions {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-top: 1px solid var(--bg-surface0);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.action-btn { width: 100%; }
 </style>

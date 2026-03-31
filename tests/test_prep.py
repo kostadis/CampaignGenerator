@@ -1068,3 +1068,131 @@ def test_quote_ledger_assign_nonexistent(tmp_path):
     ledger = quote_ledger.QuoteLedger(db)
     assert ledger.assign(99999, 1) is False
     ledger.close()
+
+
+# ── Helper: create a ledger with quotes ───────────────────────────────────
+
+def _make_ledger_with_quotes(tmp_path):
+    """Create a ledger with 3 quotes (2 Vukradin, 1 Brewbarry), all unassigned."""
+    rp_dir = tmp_path / "roleplay"
+    rp_dir.mkdir()
+    (rp_dir / "extract_001.md").write_text(ROLEPLAY_TEXT, encoding="utf-8")
+    ext_dir = tmp_path / "extractions"
+    ext_dir.mkdir()
+
+    db = tmp_path / "test.db"
+    ledger = quote_ledger.QuoteLedger(db)
+    # Ingest only (no scene matching since no extraction files)
+    ledger.sync(rp_dir, ext_dir, [])
+    return ledger
+
+
+# ── quote_ledger.QuoteLedger.bulk_assign ──────────────────────────────────
+
+def test_bulk_assign_basic(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    all_q = ledger.get_all_quotes()
+    ids = [q["id"] for q in all_q]
+    count = ledger.bulk_assign(ids[:2], scene_index=1)
+    assert count == 2
+    scene_q = ledger.get_scene_quotes(1)
+    assert len(scene_q) == 2
+    assert all(q["pinned"] == 1 for q in scene_q)
+    ledger.close()
+
+
+def test_bulk_assign_empty_list(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    assert ledger.bulk_assign([], scene_index=1) == 0
+    ledger.close()
+
+
+# ── quote_ledger.QuoteLedger.bulk_unassign ────────────────────────────────
+
+def test_bulk_unassign_basic(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    all_q = ledger.get_all_quotes()
+    ids = [q["id"] for q in all_q]
+    ledger.bulk_assign(ids, scene_index=1)
+    count = ledger.bulk_unassign(ids[:1])
+    assert count == 1
+    scene_q = ledger.get_scene_quotes(1)
+    assert len(scene_q) == len(ids) - 1
+    ledger.close()
+
+
+def test_bulk_unassign_empty_list(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    assert ledger.bulk_unassign([]) == 0
+    ledger.close()
+
+
+# ── quote_ledger.QuoteLedger.make_exclusive ───────────────────────────────
+
+def test_make_exclusive_reassigns_from_other_scene(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    all_q = ledger.get_all_quotes()
+    ids = [q["id"] for q in all_q]
+
+    # Assign first quote to scene 2
+    ledger.bulk_assign(ids[:1], scene_index=2)
+    # Make it exclusive to scene 1
+    ledger.make_exclusive(ids[:1], scene_index=1)
+
+    assert ledger.get_scene_quotes(2) == []
+    assert len(ledger.get_scene_quotes(1)) == 1
+    ledger.close()
+
+
+def test_make_exclusive_empty_list(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    assert ledger.make_exclusive([], scene_index=1) == 0
+    ledger.close()
+
+
+# ── quote_ledger.QuoteLedger.get_scene_quotes ─────────────────────────────
+
+def test_get_scene_quotes_empty(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    assert ledger.get_scene_quotes(99) == []
+    ledger.close()
+
+
+def test_get_scene_quotes_returns_correct_fields(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    all_q = ledger.get_all_quotes()
+    ledger.bulk_assign([all_q[0]["id"]], scene_index=3)
+    scene_q = ledger.get_scene_quotes(3)
+    assert len(scene_q) == 1
+    q = scene_q[0]
+    assert "id" in q
+    assert "speaker" in q
+    assert "character" in q
+    assert "quote_text" in q
+    assert q["scene_index"] == 3
+    ledger.close()
+
+
+# ── quote_ledger.QuoteLedger.get_all_quotes ───────────────────────────────
+
+def test_get_all_quotes_returns_all(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    all_q = ledger.get_all_quotes()
+    assert len(all_q) == 2  # ROLEPLAY_TEXT has 2 quote blocks
+    ledger.close()
+
+
+def test_get_all_quotes_includes_source_file(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    all_q = ledger.get_all_quotes()
+    assert all("source_file" in q for q in all_q)
+    assert all("block_index" in q for q in all_q)
+    ledger.close()
+
+
+def test_get_all_quotes_chronological_order(tmp_path):
+    ledger = _make_ledger_with_quotes(tmp_path)
+    all_q = ledger.get_all_quotes()
+    indices = [(q["source_file"], q["block_index"]) for q in all_q]
+    assert indices == sorted(indices)
+    ledger.close()

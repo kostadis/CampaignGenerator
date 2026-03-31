@@ -248,6 +248,64 @@ class QuoteLedger:
         self.conn.commit()
         return cur.rowcount > 0
 
+    def bulk_assign(self, quote_ids: list[int], scene_index: int) -> int:
+        """Assign multiple quotes to a scene. Sets pinned=1. Returns count."""
+        if not quote_ids:
+            return 0
+        placeholders = ",".join("?" for _ in quote_ids)
+        cur = self.conn.execute(
+            f"UPDATE quote SET scene_index = ?, pinned = 1 WHERE id IN ({placeholders})",
+            [scene_index, *quote_ids],
+        )
+        self.conn.commit()
+        return cur.rowcount
+
+    def bulk_unassign(self, quote_ids: list[int]) -> int:
+        """Unassign multiple quotes (set scene_index=NULL, pinned=1). Returns count."""
+        if not quote_ids:
+            return 0
+        placeholders = ",".join("?" for _ in quote_ids)
+        cur = self.conn.execute(
+            f"UPDATE quote SET scene_index = NULL, pinned = 1 WHERE id IN ({placeholders})",
+            quote_ids,
+        )
+        self.conn.commit()
+        return cur.rowcount
+
+    def make_exclusive(self, quote_ids: list[int], scene_index: int) -> int:
+        """Ensure quotes are assigned ONLY to this scene.
+
+        Any of the listed quotes assigned to a different scene are reassigned here.
+        Returns the number of rows changed.
+        """
+        if not quote_ids:
+            return 0
+        placeholders = ",".join("?" for _ in quote_ids)
+        cur = self.conn.execute(
+            f"UPDATE quote SET scene_index = ?, pinned = 1 WHERE id IN ({placeholders})",
+            [scene_index, *quote_ids],
+        )
+        self.conn.commit()
+        return cur.rowcount
+
+    def get_scene_quotes(self, scene_index: int) -> list[dict]:
+        """Return quotes for a single scene, ordered chronologically."""
+        rows = self.conn.execute(
+            """SELECT id, speaker, character, context, quote_text, scene_index, pinned
+               FROM quote WHERE scene_index = ? ORDER BY source_file, block_index""",
+            (scene_index,),
+        ).fetchall()
+        return [dict(r) for r in rows]
+
+    def get_all_quotes(self) -> list[dict]:
+        """Return all quotes in chronological order (for the quote picker)."""
+        rows = self.conn.execute(
+            """SELECT id, source_file, block_index, speaker, character, context,
+                      quote_text, scene_index, pinned
+               FROM quote ORDER BY source_file, block_index"""
+        ).fetchall()
+        return [dict(r) for r in rows]
+
     # ── Helpers ──────────────────────────────────────────────────────
 
     def _scalar(self, sql: str) -> int:
