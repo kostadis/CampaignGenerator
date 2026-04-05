@@ -4,3 +4,4 @@ pyperclip
 pyvis
 fastapi
 uvicorn
+requests
