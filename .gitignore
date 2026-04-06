@@ -7,3 +7,10 @@ node_modules/
 frontend/dist/
 *.db
 ui_config.yaml
+docs/connections.json
+docs/summaries.md
+docs/vtt_extractions/
+frontend/.vscode/
+frontend/README.md
+lib/
+summary
