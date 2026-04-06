@@ -79,6 +79,16 @@ def first_n_words(text: str, n: int = 8) -> str:
     return " ".join(text.split()[:n])
 
 
+def chunk_from_source_file(filename: str) -> int | None:
+    """Parse the chunk number from a roleplay extraction filename.
+
+    e.g. "extract_042.md" → 42, "extract_007.md" → 7
+    Returns None if the filename doesn't match the expected pattern.
+    """
+    m = re.match(r'extract_(\d+)\.md', filename)
+    return int(m.group(1)) if m else None
+
+
 # ── SQLite Schema ────────────────────────────────────────────────────────────
 
 _SCHEMA = """\
@@ -206,6 +216,39 @@ class QuoteLedger:
                     )
 
         self.conn.commit()
+
+    def chunk_assign(self, scenes: list[dict]) -> dict:
+        """Assign unassigned, un-pinned quotes to scenes by chunk range.
+
+        Parses the chunk number from each quote's source_file and assigns it to
+        the scene whose chunk_start <= chunk <= chunk_end. If multiple scenes
+        cover the same chunk, the earlier scene wins. Returns {"assigned", "skipped"}.
+        """
+        rows = self.conn.execute(
+            "SELECT id, source_file FROM quote WHERE pinned = 0 AND scene_index IS NULL"
+        ).fetchall()
+
+        assigned = 0
+        skipped = 0
+        for row in rows:
+            chunk = chunk_from_source_file(row["source_file"])
+            if chunk is None:
+                skipped += 1
+                continue
+            matching = [s for s in scenes
+                        if s["chunk_start"] <= chunk <= s["chunk_end"]]
+            if not matching:
+                skipped += 1
+                continue
+            scene = min(matching, key=lambda s: s["index"])
+            self.conn.execute(
+                "UPDATE quote SET scene_index = ? WHERE id = ?",
+                (scene["index"], row["id"]),
+            )
+            assigned += 1
+
+        self.conn.commit()
+        return {"assigned": assigned, "skipped": skipped}
 
     # ── Query ────────────────────────────────────────────────────────
 

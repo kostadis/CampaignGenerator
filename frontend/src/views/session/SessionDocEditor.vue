@@ -35,6 +35,7 @@ const examplesDir = ref('')
 const characters = ref('')
 const context = ref('')
 const narrateTokens = ref(4000)
+const proseMode = ref(false)
 const showOverrides = ref(false)
 
 function loadConfigFields() {
@@ -52,6 +53,7 @@ function loadConfigFields() {
   characters.value = v.sd_characters || v.session_doc_characters || ''
   context.value = v.vtt_context || ''
   narrateTokens.value = v.sd_narrate_tokens || v.session_doc_narrate_tokens || 4000
+  proseMode.value = v.sd_prose_mode || false
 }
 
 const contextFiles = computed(() => resolvePathList(context.value))
@@ -77,6 +79,7 @@ async function applyConfig() {
     characters: characters.value || undefined,
     context: contextFiles.value.length ? contextFiles.value : [],
     narrate_tokens: narrateTokens.value || undefined,
+    prose_mode: proseMode.value || undefined,
     work_dir: config.cwd,
   }
   try {
@@ -428,6 +431,13 @@ onMounted(async () => {
               min="1000" step="500" />
             <div class="field-help">Per-scene output cap (default: 4000). Override per-scene with "tokens: N" in extraction file.</div>
           </div>
+          <div class="field">
+            <label class="field-label checkbox-label">
+              <input type="checkbox" v-model="proseMode" @change="applyConfig" />
+              Prose mode
+            </label>
+            <div class="field-help">Strip all mechanical language and GM framing. GM descriptions become the narrator's direct perception; dice rolls and HP become narrative consequence.</div>
+          </div>
         </div>
 
         <!-- Optional overrides -->
@@ -555,6 +565,7 @@ onMounted(async () => {
             :is-roleplay-local="isRoleplayLocal"
             :narrating="narrating"
             :extracting="extracting"
+            :prose-mode="proseMode"
             @save-extraction="saveExtraction"
             @save-roleplay="saveRoleplay"
             @reload="reload"
@@ -562,6 +573,7 @@ onMounted(async () => {
             @open-typora="openTypora"
             @update:extraction-content="extractionContent = $event"
             @update:roleplay-content="roleplayContent = $event"
+            @update:prose-mode="proseMode = $event; apiPut('/api/editor/config', { prose_mode: $event || undefined })"
           />
           <NarrationOutput
             :output="narrationOutput"

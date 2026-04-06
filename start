@@ -1,0 +1,109 @@
+#!/bin/bash
+# Start the CampaignGenerator server in the background with persistent logs.
+# Wraps ./startup — accepts the same arguments.
+#
+# Usage (from anywhere):
+#   ~/CampaignGenerator/start \
+#       --campaign-dir ~/campaigns/out-of-the-abyss \
+#       --session-dir summaries/20260404
+#
+# --session-dir may be relative to --campaign-dir or an absolute path.
+# Logs go to <session-dir>/logs/  (or CampaignGenerator/logs/ if no session).
+# PID is saved to CampaignGenerator/server.pid.
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PID_FILE="$SCRIPT_DIR/server.pid"
+
+# ── Check for already-running server ────────────────────────────────────────
+if [ -f "$PID_FILE" ]; then
+    OLD_PID="$(cat "$PID_FILE")"
+    if kill -0 "$OLD_PID" 2>/dev/null; then
+        echo "Server already running (PID $OLD_PID). Run $(dirname "$0")/stop first."
+        exit 1
+    else
+        rm -f "$PID_FILE"
+    fi
+fi
+
+# ── Parse --campaign-dir and --session-dir from args ────────────────────────
+CAMPAIGN_DIR_RAW=""
+SESSION_DIR_RAW=""
+PREV=""
+for ARG in "$@"; do
+    case "$PREV" in
+        --campaign-dir) CAMPAIGN_DIR_RAW="$ARG" ;;
+        --session-dir)  SESSION_DIR_RAW="$ARG" ;;
+    esac
+    PREV="$ARG"
+done
+
+# Resolve campaign dir to absolute
+if [ -n "$CAMPAIGN_DIR_RAW" ]; then
+    CAMPAIGN_DIR_ABS="$(cd "$CAMPAIGN_DIR_RAW" 2>/dev/null && pwd)"
+else
+    CAMPAIGN_DIR_ABS=""
+fi
+
+# Resolve session dir: try absolute first, then relative to campaign dir
+SESSION_DIR_ABS=""
+if [ -n "$SESSION_DIR_RAW" ]; then
+    if [ -d "$SESSION_DIR_RAW" ]; then
+        SESSION_DIR_ABS="$(cd "$SESSION_DIR_RAW" && pwd)"
+    elif [ -n "$CAMPAIGN_DIR_ABS" ] && [ -d "$CAMPAIGN_DIR_ABS/$SESSION_DIR_RAW" ]; then
+        SESSION_DIR_ABS="$(cd "$CAMPAIGN_DIR_ABS/$SESSION_DIR_RAW" && pwd)"
+    else
+        echo "Error: session-dir '$SESSION_DIR_RAW' not found (tried absolute and relative to campaign-dir)."
+        exit 1
+    fi
+fi
+
+# ── Rebuild args with resolved absolute paths ────────────────────────────────
+NEW_ARGS=()
+PREV=""
+for ARG in "$@"; do
+    case "$PREV" in
+        --campaign-dir)
+            NEW_ARGS+=("${CAMPAIGN_DIR_ABS:-$ARG}")
+            PREV="$ARG"
+            continue
+            ;;
+        --session-dir)
+            NEW_ARGS+=("${SESSION_DIR_ABS:-$ARG}")
+            PREV="$ARG"
+            continue
+            ;;
+    esac
+    NEW_ARGS+=("$ARG")
+    PREV="$ARG"
+done
+
+# ── Determine log directory ──────────────────────────────────────────────────
+if [ -n "$SESSION_DIR_ABS" ]; then
+    LOG_BASE="$SESSION_DIR_ABS/logs"
+elif [ -n "$CAMPAIGN_DIR_ABS" ]; then
+    LOG_BASE="$CAMPAIGN_DIR_ABS/logs"
+else
+    LOG_BASE="$SCRIPT_DIR/logs"
+fi
+
+mkdir -p "$LOG_BASE"
+LOG_FILE="$LOG_BASE/server-$(date +%Y%m%d-%H%M%S).log"
+
+# ── Launch from campaign dir so ui_config.yaml lands in the right place ──────
+LAUNCH_DIR="${CAMPAIGN_DIR_ABS:-$SCRIPT_DIR}"
+
+echo "Starting Campaign Generator..."
+[ -n "$CAMPAIGN_DIR_ABS" ] && echo "  Campaign: $CAMPAIGN_DIR_ABS"
+[ -n "$SESSION_DIR_ABS"  ] && echo "  Session:  $SESSION_DIR_ABS"
+echo "  Log:      $LOG_FILE"
+echo ""
+
+cd "$LAUNCH_DIR"
+nohup "$SCRIPT_DIR/startup" "${NEW_ARGS[@]}" >> "$LOG_FILE" 2>&1 &
+SERVER_PID=$!
+echo "$SERVER_PID" > "$PID_FILE"
+
+echo "Server started (PID $SERVER_PID)"
+echo "Open http://localhost:5000 in your browser"
+echo ""
+echo "  tail -f $LOG_FILE"

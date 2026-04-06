@@ -34,8 +34,8 @@ def _get_ledger() -> QuoteLedger:
     global _LEDGER
     cfg = _config()
     db_path = Path(cfg["extract_dir"]) / "quote_ledger.db"
-    # Re-create if extract_dir changed (different session)
-    if _LEDGER is not None and _LEDGER.db_path != db_path:
+    # Re-create if extract_dir changed or the db file was deleted under us
+    if _LEDGER is not None and (_LEDGER.db_path != db_path or not db_path.exists()):
         _LEDGER.close()
         _LEDGER = None
     if _LEDGER is None:
@@ -140,30 +140,13 @@ def api_all_quotes():
     return {"quotes": _LEDGER.get_all_quotes()}
 
 
-# ── Auto-assign (Claude SSE) ─────────────────────────────────────────────
-
-AUTO_ASSIGN_SYSTEM = """\
-You assign verbatim VTT quotes to narrative scenes.
-
-Given a list of scenes (with narrator, name, focus, and chunk range) and a list
-of unassigned quotes (with id, speaker, character, context, and text), assign
-each quote to the single most appropriate scene based on:
-- The quote's context and content
-- The scene's focus and chunk range
-- Character alignment (the scene's narrator or other characters present)
-
-Output ONLY a JSON array of objects: [{"quote_id": <int>, "scene_index": <int>}, ...]
-Include only quotes you can confidently assign. Omit quotes that don't clearly
-fit any scene. Do not wrap in markdown code blocks.
-"""
-
+# ── Auto-assign (deterministic by chunk range) ───────────────────────────
 
 async def _stream_auto_assign() -> AsyncGenerator[str, None]:
-    """Call Claude to assign unassigned quotes to scenes, stream progress."""
-    import asyncio
-
+    """Assign unassigned quotes to scenes by chunk range (deterministic)."""
     ledger = _get_ledger()
     scenes = _load_scenes()
+
     all_quotes = ledger.get_all_quotes()
     unassigned = [q for q in all_quotes if q["scene_index"] is None]
 
@@ -173,86 +156,22 @@ async def _stream_auto_assign() -> AsyncGenerator[str, None]:
         return
 
     if not scenes:
-        yield _sse_event("No scenes found. Run scene extraction first.\n")
+        yield _sse_event("No scenes found. Run extraction first.\n")
         yield _sse_done(1)
         return
 
-    yield _sse_event(f"Assigning {len(unassigned)} quotes to {len(scenes)} scenes...\n")
-
-    # Build prompt
-    scene_lines = []
-    for s in scenes:
-        scene_lines.append(
-            f"Scene {s['index']}: narrator={s['narrator']}, "
-            f"name=\"{s.get('scene', '')}\", focus=\"{s.get('focus', '')}\", "
-            f"chunks={s['chunk_start']}-{s['chunk_end']}"
-        )
-
-    quote_lines = []
-    for q in unassigned:
-        text_preview = q["quote_text"][:200]
-        quote_lines.append(
-            f"[id={q['id']}] {q['character']} ({q['context']}): \"{text_preview}\""
-        )
-
-    user_prompt = (
-        "## Scenes\n" + "\n".join(scene_lines) +
-        "\n\n## Quotes to Assign\n" + "\n".join(quote_lines)
+    yield _sse_event(
+        f"Assigning {len(unassigned)} quotes across {len(scenes)} scenes "
+        f"by chunk range...\n"
     )
-
-    yield _sse_event("Calling Claude for assignment...\n")
-
-    # Call Claude API (sync, in thread to not block event loop)
-    try:
-        from campaignlib import make_client, call_api
-        client = make_client()
-        model = _config().get("model", "claude-sonnet-4-6")
-
-        response = await asyncio.to_thread(
-            call_api, client, AUTO_ASSIGN_SYSTEM, user_prompt, model, 8192
+    result = ledger.chunk_assign(scenes)
+    yield _sse_event(f"Assigned {result['assigned']} quotes.\n")
+    if result["skipped"]:
+        yield _sse_event(
+            f"{result['skipped']} quotes skipped "
+            f"(chunk not in any scene range).\n"
         )
-
-        yield _sse_event("Parsing response...\n")
-
-        # Parse JSON response
-        # Strip any markdown code fences if present
-        text = response.strip()
-        if text.startswith("```"):
-            text = text.split("\n", 1)[1] if "\n" in text else text[3:]
-        if text.endswith("```"):
-            text = text[:-3]
-        text = text.strip()
-
-        assignments = json.loads(text)
-        if not isinstance(assignments, list):
-            yield _sse_event(f"Unexpected response format: {type(assignments)}\n")
-            yield _sse_done(1)
-            return
-
-        # Group by scene and bulk assign
-        from collections import defaultdict
-        by_scene: dict[int, list[int]] = defaultdict(list)
-        for a in assignments:
-            by_scene[a["scene_index"]].append(a["quote_id"])
-
-        total = 0
-        for scene_idx, quote_ids in by_scene.items():
-            count = ledger.bulk_assign(quote_ids, scene_idx)
-            total += count
-            scene = next((s for s in scenes if s["index"] == scene_idx), None)
-            label = f"Scene {scene_idx}"
-            if scene:
-                label += f": {scene['narrator']}"
-                if scene.get("scene"):
-                    label += f" — {scene['scene']}"
-            yield _sse_event(f"  {label}: {count} quotes assigned\n")
-
-        yield _sse_event(f"\nDone — {total} quotes assigned to {len(by_scene)} scenes.\n")
-        yield _sse_done(0)
-
-    except Exception as e:
-        yield _sse_event(f"Error: {e}\n")
-        yield _sse_done(1)
+    yield _sse_done(0)
 
 
 @router.get("/auto-assign")

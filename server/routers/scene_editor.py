@@ -151,6 +151,8 @@ def _build_narrate_cmd(scene_num: int) -> list[str]:
         cmd += ["--roleplay-summary", CONFIG["roleplay_summary"]]
     if CONFIG.get("narrate_tokens"):
         cmd += ["--narrate-tokens", str(CONFIG["narrate_tokens"])]
+    if CONFIG.get("prose_mode"):
+        cmd += ["--prose-mode"]
     return cmd
 
 

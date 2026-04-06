@@ -11,6 +11,7 @@ const props = defineProps<{
   isRoleplayLocal: boolean
   narrating: boolean
   extracting: boolean
+  proseMode: boolean
 }>()
 
 const emit = defineEmits<{
@@ -21,6 +22,7 @@ const emit = defineEmits<{
   'open-typora': [type: string]
   'update:extractionContent': [content: string]
   'update:roleplayContent': [content: string]
+  'update:proseMode': [value: boolean]
 }>()
 
 const activeTab = ref<'extraction' | 'roleplay'>('extraction')
@@ -132,6 +134,11 @@ function openTypora() {
         :disabled="!hasExtraction || narrating || extracting"
         @click="emit('narrate')"
       >{{ narrating ? 'Narrating\u2026' : 'Narrate' }}</button>
+      <label class="prose-toggle" :title="'Strip mechanical language and GM framing from narration'">
+        <input type="checkbox" :checked="proseMode"
+          @change="emit('update:proseMode', ($event.target as HTMLInputElement).checked)" />
+        Prose
+      </label>
       <span class="save-flash" :class="{ show: saveFlash }">Saved</span>
       <span style="flex:1"></span>
       <button class="btn-neutral btn-sm" :disabled="!hasExtraction" @click="emit('open-typora', 'output')">
@@ -237,4 +244,14 @@ function openTypora() {
   transition: opacity .4s;
 }
 .save-flash.show { opacity: 1; }
+.prose-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.prose-toggle input { cursor: pointer; }
 </style>
