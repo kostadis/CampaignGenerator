@@ -430,26 +430,24 @@ async def session_prep(beat: str, mode: str = "single", model: str = "") -> str:
 
 
 @mcp.tool()
-async def arc_triggers(character: str = "", top: int = 3) -> str:
+async def arc_triggers(character: str, top: int = 3) -> str:
     """Search for arc score trigger candidates using mempalace's chronicle wing.
 
-    Reads trigger definitions for a character's hidden arc score, then searches
-    the chronicle (timeline) wing for events that match each trigger type.
-    Returns candidates organized by trigger with source references.
+    Finds the character's score tracking document via mempalace search,
+    extracts trigger definitions from it, then searches the chronicle
+    (timeline) wing for events matching each trigger. Returns candidates
+    organized by trigger with source references.
 
-    character — 'brewbarry' (Thistle's Echo Score) or 'soma' (Meril's Legacy Score).
-                Leave empty to list available characters.
-    top       — max results per search query (default: 3)
+    character — character name (e.g. 'brewbarry', 'soma', 'valphine').
+                Searches mempalace for the matching score doc — doesn't
+                need to be exact.
+    top       — max chronicle results per trigger (default: 3)
 
     This is a candidate-finding tool — the DM decides whether a trigger fires.
     """
-    args = []
-    if character:
-        args += ["--character", character]
+    args = ["--character", character]
     if top != 3:
         args += ["--top", str(top)]
-    if not character:
-        args.append("--list")
     return await _run_script("arc_triggers.py", args)
 
 
