@@ -12,6 +12,18 @@ from pathlib import Path
 DEFAULT_MODEL = "claude-sonnet-4-20250514"
 
 
+# ── Text cleaning ─────────────────────────────────────────────────────────────
+
+_BASE64_IMAGE_RE = re.compile(
+    r'^\[image\d+\]:\s*<data:image/[^>]+>\s*$',
+    re.MULTILINE,
+)
+
+def strip_base64_images(text: str) -> str:
+    """Remove markdown reference-style base64 image definitions (e.g. [image1]: <data:image/png;base64,...>)."""
+    return _BASE64_IMAGE_RE.sub('', text)
+
+
 # ── Text chunking ─────────────────────────────────────────────────────────────
 
 def chunk_text(text: str, chunk_size: int) -> list[str]:
@@ -47,9 +59,12 @@ def prepare_chunks(
 ) -> tuple[list[str], str]:
     """Chunk text by chapter prefix or character count, print progress, return (chunks, label).
 
+    Strips embedded base64 image data before chunking.
+
     split_label — word used in the progress line when splitting by prefix
                   (e.g. "session", "chapter"). Defaults to "section".
     """
+    text = strip_base64_images(text)
     if split_chapters:
         chunks = chunk_by_chapters(text, split_chapters)
         print(f"  {len(chunks)} {split_label}(s) to process (split on: {split_chapters!r})\n")
