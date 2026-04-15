@@ -142,9 +142,20 @@ def derive_campaign_paths(campaign_dir: str, session_dir: str) -> dict:
     examples = cd / "examples"
     result["examples_dir"] = str(examples) if examples.is_dir() else ""
 
+    # NPC dossier files (individual files, not directory)
+    npcs_dir = docs / "npcs"
+    if npcs_dir.is_dir():
+        npc_files = sorted(npcs_dir.glob("*.md"))
+        if npc_files:
+            result["plan_npc"] = "\n".join(str(f) for f in npc_files)
+
     # Context files (campaign_state + world_state + party if they exist)
     ctx = [result[k] for k in ("campaign_state", "world_state", "party") if result.get(k)]
     result["context"] = ctx
+
+    # Planning context: grounding docs for synthesis
+    if ctx:
+        result["plan_context"] = "\n".join(ctx)
 
     # ── Session-level paths ──
     result["session_dir"] = str(sd)
