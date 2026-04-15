@@ -108,6 +108,9 @@ async function deriveAll() {
       world_state_output: d.world_state || '',
       party_output: d.party || '',
       summaries: d.summaries || '',
+      plan_npc: d.plan_npc || '',
+      plan_context: d.plan_context || '',
+      planning_output: d.planning || '',
     })
 
     if (d.session_summary)
