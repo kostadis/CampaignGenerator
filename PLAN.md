@@ -234,8 +234,73 @@ Revealed Information` — exactly the consumer map from the design above.
 Error paths validated for missing directory and empty directory on all
 three scripts.
 
-Next step: Phase 4. Generate all three final docs from full chapter
-extracts and compare against baseline docs end-to-end.
+## Phase 4 results (2026-04-15): regression
+
+Full 36-chapter extract generated; all three synthesizers run end-to-end
+against the full set; outputs compared to baseline docs.
+
+| Doc | New lines | Baseline lines | Verdict |
+|---|---|---|---|
+| `world_state.md`    | 193 | 268 | Major regression |
+| `campaign_state.md` | 207 | 311 | Regression |
+| `planning.md`       | 109 | 513 | Major regression |
+
+**world_state.md** — lost the "The Party" section entirely (per-PC block
+with location / faction / motivations / traits / secrets / relationships)
+and the "Items & Artifacts" section. Root cause is prompt design: the new
+`SYNTHESIZE_FROM_CHAPTERS_SYSTEM` explicitly tells distill that `## Party`
+and `## Arc Score Events` are "incidental context". That is wrong for
+world_state — the Party block is the document's anchor.
+
+**campaign_state.md** — structure preserved. NPC Current States table
+dropped from 40 rows to 23 (Gnomengarde NPCs, Tower of Storms NPCs,
+Axeholm antagonists, Carver lieutenants missing). Per-encounter tactical
+detail collapsed to one-liners. Party-resource inventory (Necklace of
+Fireballs, Wand of Secrets, Midnight Tears vials, etc.) gone. Tracked
+Items Status retained the bulk of entries but lost forensic nuance like
+"NOT FOUND AS DESCRIBED" reconciliations.
+
+**planning.md** — 5 NPC dossiers vs 17 in baseline. Only 4 factions vs
+10. Threat Tracker values are guessed ("6–8 estimated") rather than
+carried from the arc-score docs. The 103 NPC dossier files and 8
+arc-score docs were passed in (same as baseline) but the synthesize pass
+summarized aggressively and dropped the long tail.
+
+### Root causes
+
+1. **Per-chapter extract breadth comes at a per-entity depth cost.** The
+   unified schema has 8 sections; each chapter's NPC section is terser
+   than a dedicated NPC-only extract would be. Synthesis across 36
+   chapters then reconstructs per-NPC views from fragments — and when
+   told to "be concise" the model cuts the long tail.
+2. **Synthesize prompts are too compressing.** They describe sections
+   rather than demanding enumeration. Baseline prompts produce longer
+   output from richer extracts; the new prompts produce shorter output
+   from terser extracts — compounding the loss.
+3. **Design error on distill.** Treating Party as incidental context was
+   wrong. world_state must have a Party anchor.
+
+### Remediation options (not yet tried)
+
+- **Prompt fixes only** (cheap, reversible):
+  - `distill.py`: reinstate a Party section; add Items & Artifacts.
+  - `planning.py`: demand one subsection per NPC that appears in any
+    chapter extract, no filtering; demand Threat Tracker values read
+    directly from the arc-score docs, not inferred.
+  - `campaign_state.py`: demand the NPC Current States table enumerate
+    every named NPC; demand per-encounter tactical entries match the
+    baseline's granularity.
+- **Extract-schema additions** (more invasive):
+  - Add `## Items & Artifacts` section to `chapter_extract.py` schema.
+  - Add `## Player Characters` or fold PC beats more assertively.
+- **Kill the branch** per the stated kill criteria: "If at any phase the
+  unified extract produces systematically worse synthesis — missed NPCs,
+  dropped arc score triggers, lost party acquisitions — abandon."
+
+The current outputs meet the kill criteria. Before pulling the plug, one
+round of prompt-only fixes is cheap to try (no new extracts needed —
+`chapter_extracts/` is cached) and will disambiguate prompt-level
+compression from architectural loss.
 
 ## Implementation phases
 
