@@ -130,76 +130,91 @@ Consumer map:
 ## POC results (Phandalin, 2026-04-15)
 
 A minimal `chapter_extract.py` was built to the schema above and run on three
-chunks of `docs/NeverwinterExpansionismAndTheNorth.md` using
-`--split-chapters "## "`:
+chapters of `docs/NeverwinterExpansionismAndTheNorth.md` using
+`--split-chapters "# Chapter"` — the canonical level-1 chapter boundary in
+this campaign.
 
-| Chunk | Size | Content |
+**Chunk distribution:** 36 chapters, sizes 2.7K – 54K, avg 13.8K. Much more
+even than the existing baselines (distill=32 files at char-count, state=9
+at char-count, planning=36). Chapter boundaries are finer-grained than
+"session" boundaries — a single play session sometimes spans two chapters.
+
+| Chapter | Size | Title |
 |---|---|---|
-| 10 | 5.5K | `## Soma` — gnome kings politically destabilized, Triboar play reveal |
-| 15 | 2.2K | `## 05-01 Taraksh 1495` — Vukradin's impulse to destroy the lighthouse |
-| 25 | 73K  | `## 09-02- Taraskh 1495` — Axeholm dungeon + gold mine + Phandalin wrap |
+| 10 |  9.6K | The stag, the brambles, the wolves, and the pool |
+| 15 | 21.3K | Deals with Harbin, and Sister Kayla, and no deal with Jenna |
+| 25 |  6.4K | From Out-of-Phase Dwarves to Mechanical Mysteries |
 
 ### What worked
 
-1. **Schema is robust across chunk sizes.** Output was well-formed for the 2K
-   tiny scene, the 5K medium scene, and the 73K bundled multi-session chunk.
-   Empty sections were correctly omitted for small chunks; all sections
-   populated on the large one.
-2. **Cross-cut captured cleanly.** Chunk 25 produced the expected unified
-   output: NPCs, Factions, Party, Quests & Threads with status labels,
-   Locations, Events, Arc Score Events, Revealed Information.
-3. **One file per chunk is genuinely easier to review** than three
+1. **Schema is robust across chapter sizes.** Output was well-formed for
+   all three chapters. Small chapters correctly omit empty sections; larger
+   chapters populate all relevant sections with reasonable depth.
+2. **Cross-cut captured cleanly.** Each extract produced named sections as
+   designed (NPCs / Factions / Party / Quests & Threads with status labels
+   / Locations / Events / Arc Score Events / Revealed Information).
+3. **One file per chapter is genuinely easier to review** than three
    (`distill_extractions/` + `state_extractions/` + `planning_extractions/`)
-   files for the same span.
+   separate files for the same span.
+4. **Chapter-aligned chunking produces clean, even chunks** — this was the
+   key unknown. The `# Chapter` splitter works. 36 chunks × avg ~14K each
+   is a sweet spot for both API cost and human review.
 
-### What surfaced as concerns
+### What to keep an eye on
 
-1. **Chunking convention matters more than expected.** Naive `## ` splitting
-   produced **65 chunks** on the Phandalin summaries — versus distill's
-   **32**, state's **9**, and planning's **36** on the same source. Chunks
-   are wildly uneven: some are sub-session headings (`## Soma`,
-   `## Summary`, `## Spells`), some are whole multi-day bundles at 73K.
-   The schema works but the *chunk boundaries* need engineering.
-2. **Large chunks lose detail at `max_tokens=8096`.** Chunk 25 at 73K
-   produced **more breadth, less depth** than distill's baseline for the
-   same source span. Distill had split this span into 7 smaller files, each
-   extracted deeply; the unified extract covered all the same NPCs and
-   events but with fewer descriptive details per entity. The 8K output cap
-   is the bottleneck on rich sessions.
-3. **Baseline has its own blind spots.** `distill_extractions/extract_025.md`
-   covers the Axeholm dungeon in extreme detail but misses the next-door
-   content (gold mine negotiation, Don-Jon murder, Harbin's 250 gp payment,
-   Teega's recovery, Big Al / Qelline reconciliation) which landed in
-   distill's extract_026–028. The baseline is split-and-dense; the new
-   approach is unified-and-broad. Neither is strictly better in isolation —
-   the synthesizer pass is what reconciles.
+1. **Chapter granularity is finer than session granularity.** A session
+   can span two chapters (e.g. the Axeholm session = chapters 24 + 25 +
+   26). Baseline `distill_extractions/extract_025.md` bundled a whole
+   session into one extract and captured Chief Accountant + Aletra at the
+   end; my chapter-25 extract stops before those beats because they're in
+   chapter 26. **This isn't a bug** — the synthesizer reads all chapters
+   and will cross-reference — but it does mean the raw per-chapter
+   extract is less narratively complete than the baseline per-session
+   extract. Downstream docs should still be fine.
+2. **`--max-tokens` headroom.** Default bumped to 32K so dense chapters
+   (max observed input 54K) have ample room; the schema has eight sections
+   and an over-extract posture, so generous headroom is cheap insurance.
+3. **Character asides and per-session sub-structures** (`## Summary`,
+   `## Memorable Moments`, `## Soma`) at level-2 are *inside* chapters
+   under the `# Chapter` splitter — they don't create spurious boundaries.
+   This vindicates the level-1 convention for this campaign.
 
-### Engineering implications
+### Quality comparison vs baseline
 
-- Need a **smart chunker** that targets ~30–40K per chunk. Merge tiny
-  sub-session fragments into their parent session. Subdivide oversized
-  multi-day bundles. Don't use raw `## ` splits.
-- Bump `--max-tokens` default for the extract pass. 16K–32K would cost
-  little more and capture significantly more detail on long sessions.
-- Document a canonical chapter-boundary convention per campaign. The
-  Phandalin summaries mix session date-stamps, per-session sub-structures
-  (Summary / Memorable Moments / Scenes), and character asides (`## Soma`).
-  The splitter cannot distinguish these without cleaner input markers.
+Spot-check of chapter 10 (Whispering Wood / Shimmering Stag) against
+`distill_extractions/extract_010.md`:
+
+- **Both capture:** stag's territorial behavior + planar instability,
+  teleporting antlers, bramble thicket combat, wolves with glowing eyes,
+  pool visions (Vukradin's "numbers" quote, Brewbarry's "both sides"
+  vision), stag's mention of "other nice people" who didn't return.
+- **Baseline captures, unified extract doesn't:** Adabra referenced as a
+  past presence, slightly more motivation detail per PC, explicit faction
+  listing for Party, a "Threads & Mysteries" closing section with more
+  open questions.
+- **Unified extract captures, baseline doesn't:** cleaner Arc Score Events
+  section (Planar Distortion flagged explicitly as a triggered arc),
+  tighter event timeline, consolidated Revealed Information.
+
+Net: roughly equivalent coverage, different format. No critical misses on
+the unified side. The baseline's extra detail is mostly per-PC narrative
+that the synthesizer can re-derive from the Party section.
 
 ### Go / no-go
 
-The core hypothesis — *one structured extract per chapter, three
-synthesizers consuming it* — is validated at the **schema** level. Output
-format is clean and the human-review story genuinely improves. The POC also
-shows the work splits into two threads:
+**Proceed.** The core hypothesis — *one structured extract per chapter,
+three synthesizers consuming it* — is validated on real data:
 
-- **Schema design:** done.
-- **Chunker engineering:** still needed.
+- Schema works.
+- Chapter-aligned chunking with `# Chapter` is the right convention for
+  this campaign (and the convention generalizes — other adventures should
+  use `# Chapter` too; if not, it's a per-campaign config).
+- Chunk sizes are naturally reasonable without a smart chunker.
+- Coverage quality is comparable to baseline.
 
-Recommend proceeding to Phase 3 (wire synthesizers) only after the chunker
-produces chunks comparable in size to distill's current 32 files (~15–25K
-per chunk). Otherwise the synthesizers inherit a detail deficit they can't
-recover from.
+Next step: Phase 3. Wire `--chapter-extracts` into `distill.py`,
+`campaign_state.py`, `planning.py`, generate the three final docs from the
+shared extract, and compare against baseline docs end-to-end.
 
 ## Implementation phases
 

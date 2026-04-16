@@ -124,7 +124,7 @@ def run_extract(
     system: str,
     split_chapters: str | None = None,
     only: set[int] | None = None,
-    max_tokens: int = 8096,
+    max_tokens: int = 32000,
 ) -> list[Path]:
     chunks, label = prepare_chunks(text, chunk_size, split_chapters, split_label="chapter")
     total = len(chunks)
@@ -170,8 +170,8 @@ def main() -> None:
                         help="Only process chunks at these 1-based indices "
                              "(useful for POC / validation)")
     parser.add_argument("--model", default=DEFAULT_MODEL)
-    parser.add_argument("--max-tokens", type=int, default=8096,
-                        help="Max output tokens per chunk (default 8096)")
+    parser.add_argument("--max-tokens", type=int, default=32000,
+                        help="Max output tokens per chunk (default 32000)")
     args = parser.parse_args()
 
     input_path = Path(args.input).expanduser()
