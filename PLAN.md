@@ -212,9 +212,30 @@ three synthesizers consuming it* — is validated on real data:
 - Chunk sizes are naturally reasonable without a smart chunker.
 - Coverage quality is comparable to baseline.
 
-Next step: Phase 3. Wire `--chapter-extracts` into `distill.py`,
-`campaign_state.py`, `planning.py`, generate the three final docs from the
-shared extract, and compare against baseline docs end-to-end.
+## Phase 3: wired (2026-04-15)
+
+All three synthesizers gained an additive `--chapter-extracts DIR` flag.
+No existing flags, functions, or prompts were modified — the new path is
+strictly parallel:
+
+- `distill.py`: `SYNTHESIZE_FROM_CHAPTERS_SYSTEM` + `run_synthesize_from_chapters()`.
+- `campaign_state.py`: `SYNTHESIZE_FROM_CHAPTERS_SYSTEM_BASE` + `build_synthesize_from_chapters_system()` + `run_synthesize_from_chapters()`. `--track-file` still applies to the synthesize-time Tracked Items Status overlay.
+- `planning.py`: `SYNTHESIZE_FROM_CHAPTERS_SYSTEM` + `run_synthesize_from_chapters()` (also accepts the usual `--npc`, `--arc-scores`, `--context`).
+
+Each new prompt enumerates the shared schema, names the sections it cares
+about, and explicitly calls out the sections it treats as incidental
+context. This keeps the three synthesizers focused on their own angle while
+sharing the extract file set.
+
+**Smoke test:** `distill.py --chapter-extracts` run on the three POC
+chapter extracts produced a clean `world_state.md` with sections `NPCs /
+Factions / Locations / Events Canon Timeline / Threads & Mysteries /
+Revealed Information` — exactly the consumer map from the design above.
+Error paths validated for missing directory and empty directory on all
+three scripts.
+
+Next step: Phase 4. Generate all three final docs from full chapter
+extracts and compare against baseline docs end-to-end.
 
 ## Implementation phases
 

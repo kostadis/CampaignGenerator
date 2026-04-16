@@ -14,6 +14,10 @@ Usage:
   python distill.py summaries.md --output world_state.md
   python distill.py summaries.md --output world_state.md --chunk-size 50000
   python distill.py --synthesize-only extractions/ --output world_state.md
+
+  # Consume the shared per-chapter extracts produced by chapter_extract.py
+  # (skips the extract pass entirely; uses a schema-aware synthesize prompt)
+  python distill.py --chapter-extracts chapter_extracts/ --output world_state.md
 """
 
 import argparse
@@ -70,6 +74,48 @@ This document will be read by an AI assistant, so precision matters more than pr
 Output only the world_state document. No preamble or commentary.
 """
 
+SYNTHESIZE_FROM_CHAPTERS_SYSTEM = """\
+You are a lore archivist for a D&D campaign. You will be given a set of \
+per-chapter structured extraction notes, each covering one chapter of the \
+campaign's session summaries. Each extract uses this shared schema:
+
+  ## NPCs                (named NPCs: identity, faction, actions, state changes, last location)
+  ## Factions            (visible actions, alliances, resources, members)
+  ## Party               (PC actions, decisions, acquisitions, arc beats)
+  ## Quests & Threads    (one bullet per thread with explicit OPENED / PROGRESSED / RESOLVED)
+  ## Locations           (named places and their current state)
+  ## Events              (significant events, chronological)
+  ## Arc Score Events    (moments that trigger tracked threat arcs)
+  ## Revealed Information (secrets, plans, intel the party uncovered)
+  ## Tracked Items       (optional; only present when a tracking list was used)
+
+Your output is a living **world_state** canon document. Focus on these sections \
+when building it:
+
+- ## NPCs → unified NPC entries with current state and known motivations
+- ## Factions → goals, alliances, recent actions, key members
+- ## Locations → what each place is and its current state
+- ## Events → a concise Canon Events timeline in chronological order
+- ## Quests & Threads → Threads & Mysteries (treat OPENED/PROGRESSED as open; list
+  RESOLVED threads only when their lasting consequence matters for canon)
+- ## Revealed Information → fold secrets/intel into the relevant NPC or faction entries
+
+The ## Party and ## Arc Score Events sections contain context you can reference \
+(who did what, which arcs moved) but they are not the focus of this document — \
+a companion document (campaign_state) covers party acquisitions and arc mechanics.
+
+The document should:
+- Merge duplicate entries across chapters; later chapters override earlier ones on conflicts
+- Be organised into clear sections a GM can scan quickly during prep
+- Capture the *current* state of the world, not a blow-by-blow history
+- End with a brief Canon Events timeline for chronological reference
+
+Use whatever section structure best fits the material. Write clearly and concisely. \
+Do not invent anything not present in the source extracts.
+
+Output only the world_state document. No preamble or commentary.
+"""
+
 
 
 def run_extract(client, text: str, chunk_size: int, model: str, extract_dir: Path,
@@ -112,6 +158,19 @@ def run_synthesize(client, extract_files: list[Path], model: str) -> str:
     return result
 
 
+def run_synthesize_from_chapters(client, chapter_files: list[Path], model: str) -> str:
+    combined = [
+        f"<!-- Chapter extract: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
+        for f in sorted(chapter_files)
+    ]
+    user_prompt = "\n\n---\n\n".join(combined)
+    print(f"  Synthesizing {len(chapter_files)} chapter extract(s) ({len(user_prompt):,} chars total)...")
+    print("  " + "─" * 56)
+    result = stream_api(client, SYNTHESIZE_FROM_CHAPTERS_SYSTEM, user_prompt, model)
+    print("  " + "─" * 56)
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Distill session summaries into a world_state lore document."
@@ -130,6 +189,11 @@ def main() -> None:
                              "(default: <output_dir>/distill_extractions/)")
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction and synthesize from existing files in --extract-dir")
+    parser.add_argument("--chapter-extracts", metavar="DIR", default=None,
+                        help="Synthesize from shared per-chapter extracts produced by "
+                             "chapter_extract.py. Skips the extract pass and uses a "
+                             "schema-aware synthesize prompt. Additive: existing --extract-dir "
+                             "/ --synthesize-only paths are unaffected.")
     parser.add_argument("--model", default="claude-sonnet-4-20250514",
                         help="Claude model to use")
     args = parser.parse_args()
@@ -137,8 +201,9 @@ def main() -> None:
     if args.synthesize_only and not args.extract_dir:
         print("Error: --synthesize-only requires --extract-dir", file=sys.stderr)
         sys.exit(1)
-    if not args.synthesize_only and not args.input:
-        print("Error: input file required unless --synthesize-only", file=sys.stderr)
+    if not args.synthesize_only and not args.chapter_extracts and not args.input:
+        print("Error: input file required unless --synthesize-only or --chapter-extracts",
+              file=sys.stderr)
         sys.exit(1)
 
     output = Path(args.output).expanduser().resolve()
@@ -149,6 +214,28 @@ def main() -> None:
     )
 
     client = make_client()
+
+    if args.chapter_extracts:
+        chapter_dir = Path(args.chapter_extracts).expanduser().resolve()
+        if not chapter_dir.is_dir():
+            print(f"Error: --chapter-extracts directory not found: {chapter_dir}",
+                  file=sys.stderr)
+            sys.exit(1)
+        chapter_files = sorted(chapter_dir.glob("extract_*.md"))
+        if not chapter_files:
+            print(f"Error: no extract_*.md files found in {chapter_dir}", file=sys.stderr)
+            sys.exit(1)
+        print(f"\n[Chapter-extracts mode | {len(chapter_files)} extract(s) from {chapter_dir}]")
+        print(f"\n[Pass 2: Synthesize from chapter extracts | model: {args.model}]")
+        print("=" * 60)
+        world_state = run_synthesize_from_chapters(client, chapter_files, args.model)
+        print("=" * 60)
+
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(world_state.strip() + "\n", encoding="utf-8")
+        print(f"\nWorld state saved to: {output}")
+        print(f"Source chapter extracts: {chapter_dir}\n")
+        return
 
     if not args.synthesize_only:
         text = Path(args.input).expanduser().read_text(encoding="utf-8")

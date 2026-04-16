@@ -34,6 +34,15 @@ Usage:
       --extract-dir docs/planning_extractions \\
       --output docs/planning.md
 
+  # Use the shared per-chapter extracts produced by chapter_extract.py in place of
+  # the planning-specific extract pass (skips extract; uses a schema-aware synthesize
+  # prompt). NPC dossiers, arc scores, and context files are still loaded as usual.
+  python planning.py \\
+      --npc grundar.md xalvosh.md \\
+      --arc-scores brundar_echo.md \\
+      --chapter-extracts docs/chapter_extracts \\
+      --output docs/planning.md
+
   # Build per-NPC dossier files from session summaries (run once, then edit)
   python planning.py \\
       --summaries "Neverwinter Expansionism and the North.md" \\
@@ -123,6 +132,81 @@ Rules:
 - NPC dossiers take precedence over session notes for definitive facts.
 - Session notes take precedence for current emotional state and recent actions.
 - Arc score documents define the mechanics; session notes track the current value.
+- Be concise. This is a quick-reference document used during live play.
+- Do not invent anything not present in the source material.
+- Output only the planning document. No preamble or commentary.
+"""
+
+
+SYNTHESIZE_FROM_CHAPTERS_SYSTEM = """\
+You are creating a GM planning reference document for a D&D campaign.
+
+You will receive:
+- NPC dossier files (definitive source for each NPC's identity, motivation, abilities, and secrets)
+- Threat arc score documents (full mechanics: triggers, thresholds, and narrative consequences)
+- Per-chapter structured extraction notes from the campaign summaries. Each extract uses this shared schema:
+
+    ## NPCs                (identity, faction, actions, state changes, last location)
+    ## Factions            (visible actions, alliances, resources, members)
+    ## Party               (PC actions, decisions, acquisitions, arc beats)
+    ## Quests & Threads    (one bullet per thread with explicit OPENED / PROGRESSED / RESOLVED)
+    ## Locations           (named places and their current state)
+    ## Events              (significant events, chronological)
+    ## Arc Score Events    (moments that trigger tracked threat arcs)
+    ## Revealed Information (secrets and intel the party uncovered)
+    ## Tracked Items       (optional)
+
+- World context files (optional faction overviews, location notes)
+
+Your output is a forward-looking **planning** document — what the GM needs to \
+run the next session. Focus on these sections when reading the chapter extracts:
+
+- ## NPCs → most recent activity, status, location, and plans for each NPC
+- ## Factions → current operations, alliances, resources, vulnerabilities
+- ## Arc Score Events → Threat Tracker current values and what triggers next
+- ## Revealed Information → what the party knows vs what is still hidden
+
+Sections that exist but are NOT the focus here: ## Party (PC side), ## Locations, \
+## Events, ## Quests & Threads, ## Tracked Items. Use them for incidental context \
+only — companion documents (world_state for lore, campaign_state for completion) \
+cover those angles.
+
+Produce a single authoritative planning.md with these sections:
+
+## Threat Tracker
+A compact table of all active threat arc scores:
+| Score Name | NPC/Faction | Current Value | Next Threshold | What Triggers Next |
+
+## NPC Dossiers
+One subsection per NPC with:
+- Current location and status
+- Active plans and immediate goals
+- What the party knows vs. what is hidden
+- Key relationships and leverage points
+- Current arc score value (if applicable) and what unlocks next
+
+## Faction States
+One subsection per faction with:
+- Current goals and active operations
+- Key members and their roles
+- Relationship to the party and other factions
+- Resources and vulnerabilities
+
+## Active Plots
+Threads currently in motion, ordered by urgency. For each:
+- What is happening
+- Timeline or trigger conditions
+- How it intersects with the party
+
+## DM Notes
+Foreshadowing opportunities, convergence points between plot threads, \
+and NPCs whose paths are about to cross.
+
+Rules:
+- NPC dossiers take precedence over chapter extracts for definitive facts.
+- Chapter extracts take precedence for current emotional state and recent actions.
+- Arc score documents define the mechanics; chapter extracts track the current value.
+- Later chapters override earlier ones when state conflicts.
 - Be concise. This is a quick-reference document used during live play.
 - Do not invent anything not present in the source material.
 - Output only the planning document. No preamble or commentary.
@@ -338,6 +422,56 @@ def run_synthesize(
     return result
 
 
+def run_synthesize_from_chapters(
+    client,
+    npc_files: list[Path],
+    arc_score_files: list[Path],
+    chapter_files: list[Path],
+    context_files: list[Path],
+    model: str,
+) -> str:
+    parts = []
+
+    if npc_files:
+        dossiers = "\n\n---\n\n".join(
+            f"<!-- NPC dossier: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
+            for f in npc_files
+        )
+        parts.append(f"# NPC DOSSIERS\n\n{dossiers}")
+
+    if arc_score_files:
+        arc_scores = "\n\n---\n\n".join(
+            f"<!-- Threat arc score: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
+            for f in arc_score_files
+        )
+        parts.append(f"# THREAT ARC SCORE MECHANICS\n\n{arc_scores}")
+
+    if chapter_files:
+        extractions = "\n\n---\n\n".join(
+            f"<!-- Chapter extract: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
+            for f in sorted(chapter_files)
+        )
+        parts.append(f"# CHAPTER EXTRACTS\n\n{extractions}")
+
+    if context_files:
+        context = "\n\n---\n\n".join(
+            f"<!-- World context: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
+            for f in context_files
+        )
+        parts.append(f"# WORLD CONTEXT\n\n{context}")
+
+    user_prompt = "\n\n===\n\n".join(parts)
+    if not user_prompt.strip():
+        print("Error: no source material to synthesize — provide --npc, --arc-scores, or --chapter-extracts.",
+              file=sys.stderr)
+        raise SystemExit(1)
+    print(f"  Synthesizing ({len(user_prompt):,} chars total)...")
+    print("  " + "─" * 56)
+    result = stream_api(client, SYNTHESIZE_FROM_CHAPTERS_SYSTEM, user_prompt, model)
+    print("  " + "─" * 56)
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate a planning.md from NPC dossiers, threat arc scores, and session summaries."
@@ -362,6 +496,13 @@ def main() -> None:
                              "(default: <output_dir>/planning_extractions/ or ./planning_extractions/)")
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction, synthesize from existing files in --extract-dir")
+    parser.add_argument("--chapter-extracts", metavar="DIR", default=None,
+                        help="Synthesize using shared per-chapter extracts produced by "
+                             "chapter_extract.py in place of the planning-specific extract "
+                             "pass. Skips the extract pass and uses a schema-aware synthesize "
+                             "prompt. Additive: existing --extract-dir / --synthesize-only "
+                             "paths are unaffected. NPC dossiers, arc scores, and context "
+                             "files are still loaded as usual.")
     parser.add_argument("--build-dossiers", action="store_true",
                         help="Build individual per-NPC dossier files from --summaries instead of "
                              "producing planning.md (save to --dossier-dir, review/edit, then run "
@@ -379,8 +520,10 @@ def main() -> None:
     if not args.build_dossiers and not args.output:
         print("Error: --output is required (unless using --build-dossiers)", file=sys.stderr)
         sys.exit(1)
-    if not args.build_dossiers and not args.npc and not args.summaries and not args.synthesize_only:
-        print("Error: provide at least --npc or --summaries", file=sys.stderr)
+    if (not args.build_dossiers and not args.npc and not args.summaries
+            and not args.synthesize_only and not args.chapter_extracts):
+        print("Error: provide at least --npc, --summaries, or --chapter-extracts",
+              file=sys.stderr)
         sys.exit(1)
     if args.synthesize_only and not args.extract_dir and not args.npc:
         print("Error: --synthesize-only requires --extract-dir or --npc", file=sys.stderr)
@@ -431,6 +574,42 @@ def main() -> None:
         if args.extract_dir
         else output.parent / "planning_extractions"
     )
+
+    # ── Chapter-extracts mode ─────────────────────────────────────────────────
+    if args.chapter_extracts:
+        chapter_dir = Path(args.chapter_extracts).expanduser().resolve()
+        if not chapter_dir.is_dir():
+            print(f"Error: --chapter-extracts directory not found: {chapter_dir}",
+                  file=sys.stderr)
+            sys.exit(1)
+        chapter_files = sorted(chapter_dir.glob("extract_*.md"))
+        if not chapter_files:
+            print(f"Error: no extract_*.md files found in {chapter_dir}",
+                  file=sys.stderr)
+            sys.exit(1)
+
+        sources = []
+        if npc_files:
+            sources.append(f"{len(npc_files)} NPC dossier(s)")
+        if arc_score_files:
+            sources.append(f"{len(arc_score_files)} arc score doc(s)")
+        sources.append(f"{len(chapter_files)} chapter extract(s)")
+        if context_files:
+            sources.append(f"{len(context_files)} context file(s)")
+
+        print(f"\n[Chapter-extracts mode | {len(chapter_files)} extract(s) from {chapter_dir}]")
+        print(f"\n[Synthesize | {', '.join(sources)} | model: {args.model}]")
+        print("=" * 60)
+        planning_doc = run_synthesize_from_chapters(
+            client, npc_files, arc_score_files, chapter_files, context_files, args.model
+        )
+        print("=" * 60)
+
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(planning_doc.strip() + "\n", encoding="utf-8")
+        print(f"\nPlanning document saved to: {output}")
+        print(f"Source chapter extracts: {chapter_dir}\n")
+        return
 
     # ── Extract pass ──────────────────────────────────────────────────────────
     if args.summaries and not args.synthesize_only:
