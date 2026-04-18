@@ -292,9 +292,27 @@ def run_build_dossiers(
         out_file.write_text(result, encoding="utf-8")
         print(f"  Saved: {out_file.name}\n")
 
-    # ── Phase 2: aggregate sections by NPC name ───────────────────────────────
-    npc_excerpts: dict[str, list[str]] = {}
+    # ── Load existing dossiers to resolve merged aliases ─────────────────────
+    # After /dossier-merge, name variants live in the canonical file's `aliases:`
+    # frontmatter. Without this, a rerun would re-create the merged-away duplicates.
+    dossier_dir.mkdir(parents=True, exist_ok=True)
+    existing_dossiers: dict[str, Path] = {}
+    alias_to_canonical: dict[str, str] = {}
+    for dossier_file in dossier_dir.glob("*.md"):
+        name, aliases, _ = parse_dossier(dossier_file)
+        existing_dossiers[name.lower()] = dossier_file
+        alias_to_canonical[name.lower()] = name
+        for alias in aliases:
+            alias_to_canonical[alias.lower()] = name
+
+    # ── Phase 2: aggregate sections by NPC name (folding aliases) ────────────
+    # Track source extract per body so we can write per-extract new_notes
+    # files for NPCs whose canonical dossier already exists.
+    npc_by_extract: dict[str, dict[int, list[str]]] = {}
+    alias_resolutions: dict[str, str] = {}
     for extract_file in sorted(extract_dir.glob("dossier_extract_*.md")):
+        m = re.search(r"dossier_extract_(\d+)\.md", extract_file.name)
+        extract_num = int(m.group(1)) if m else 0
         content = extract_file.read_text(encoding="utf-8")
         # split on lines that start with "## "
         sections = re.split(r"(?m)^## ", content)
@@ -305,20 +323,57 @@ def run_build_dossiers(
             lines = section.splitlines()
             npc_name = lines[0].strip()
             body = "\n".join(lines[1:]).strip()
-            if npc_name and body:
-                npc_excerpts.setdefault(npc_name, []).append(body)
+            if not (npc_name and body):
+                continue
+            canonical = alias_to_canonical.get(npc_name.lower(), npc_name)
+            if canonical != npc_name:
+                alias_resolutions[npc_name] = canonical
+            npc_by_extract.setdefault(canonical, {}).setdefault(extract_num, []).append(body)
+
+    npc_excerpts: dict[str, list[str]] = {
+        canonical: [body for bodies in by_extract.values() for body in bodies]
+        for canonical, by_extract in npc_by_extract.items()
+    }
 
     if not npc_excerpts:
         print("  No NPC sections found in extractions.", file=sys.stderr)
         return []
 
+    if alias_resolutions:
+        print(f"\n  Resolved {len(alias_resolutions)} variant(s) to existing dossiers:")
+        for variant, canonical in sorted(alias_resolutions.items()):
+            print(f"    {variant!r} → {canonical!r}")
+
     print(f"\n  Found {len(npc_excerpts)} NPC(s): {', '.join(sorted(npc_excerpts))}\n")
 
     # ── Phase 3: synthesize each NPC into a dossier file ─────────────────────
-    dossier_dir.mkdir(parents=True, exist_ok=True)
     saved = []
 
     for npc_name in sorted(npc_excerpts):
+        # If the canonical dossier already exists, don't rewrite it — instead
+        # drop per-extract new_notes files beside it for the user to manually
+        # merge. Named after the existing dossier's stem so aliased files land
+        # next to their canonical owner.
+        if npc_name.lower() in existing_dossiers:
+            existing_file = existing_dossiers[npc_name.lower()]
+            stem = existing_file.stem
+            written = []
+            for extract_num, bodies in sorted(npc_by_extract[npc_name].items()):
+                new_note_file = dossier_dir / f"{stem}.new_notes.{extract_num:03d}.md"
+                if new_note_file.exists():
+                    continue
+                header = f"# New notes for {npc_name} (from dossier_extract_{extract_num:03d}.md)\n\n"
+                new_note_file.write_text(header + "\n\n---\n\n".join(bodies) + "\n", encoding="utf-8")
+                written.append(new_note_file.name)
+            if written:
+                print(f"  Dossier exists ({existing_file.name}): wrote {len(written)} new_notes file(s) for {npc_name}")
+                for name in written:
+                    print(f"    → {name}")
+            else:
+                print(f"  Skipping (dossier exists: {existing_file.name}): {npc_name}")
+            saved.append(existing_file)
+            continue
+
         slug = re.sub(r"[^a-z0-9]+", "_", npc_name.lower()).strip("_")
         out_file = dossier_dir / f"{slug}.md"
         if out_file.exists():
