@@ -377,7 +377,23 @@ def run_build_dossiers(
         slug = re.sub(r"[^a-z0-9]+", "_", npc_name.lower()).strip("_")
         out_file = dossier_dir / f"{slug}.md"
         if out_file.exists():
-            print(f"  Skipping (already exists): {out_file.name}")
+            # Slug collides with an existing dossier whose canonical name didn't
+            # match this extraction's heading (punctuation drift, etc). Don't
+            # overwrite — drop new_notes sidecars so content isn't lost.
+            written = []
+            for extract_num, bodies in sorted(npc_by_extract[npc_name].items()):
+                new_note_file = dossier_dir / f"{slug}.new_notes.{extract_num:03d}.md"
+                if new_note_file.exists():
+                    continue
+                header = f"# New notes for {npc_name} (from dossier_extract_{extract_num:03d}.md)\n\n"
+                new_note_file.write_text(header + "\n\n---\n\n".join(bodies) + "\n", encoding="utf-8")
+                written.append(new_note_file.name)
+            if written:
+                print(f"  Slug collision ({out_file.name}): wrote {len(written)} new_notes file(s) for {npc_name}")
+                for name in written:
+                    print(f"    → {name}")
+            else:
+                print(f"  Skipping (slug collision, sidecars exist: {out_file.name}): {npc_name}")
             saved.append(out_file)
             continue
 
