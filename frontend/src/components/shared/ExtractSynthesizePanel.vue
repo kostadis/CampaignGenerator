@@ -28,14 +28,12 @@ const emit = defineEmits<{
 
 const config = useConfigStore()
 
-type Phase = 'extract' | 'synthesize'
 type Status = 'idle' | 'running' | 'done' | 'error'
 
 const extractStatus = ref<Status>('idle')
 const synthStatus = ref<Status>('idle')
 const extractOutput = ref('')
 const synthOutput = ref('')
-const activeTab = ref<Phase>('extract')
 
 const files = ref<{ name: string; size: number }[]>([])
 const filesLoaded = ref(false)
@@ -88,7 +86,6 @@ function runExtract() {
   if (!canExtract.value || !config.apiKeyPresent) return
   extractStatus.value = 'running'
   extractOutput.value = ''
-  activeTab.value = 'extract'
 
   const url = buildUrl(props.endpoint, { ...props.params, extract_only: true })
   connectSSE(url, {
@@ -106,7 +103,6 @@ function runSynthesize() {
   if (!canSynthesize.value || !config.apiKeyPresent) return
   synthStatus.value = 'running'
   synthOutput.value = ''
-  activeTab.value = 'synthesize'
 
   // Passing synthesize_only=true is the right default when the extract dir
   // already holds reviewed files — skip re-extracting. Callers that want a
@@ -211,120 +207,122 @@ if (props.extractDir) refreshFiles()
 
 <template>
   <div class="esp">
-    <!-- Phase 1: Extract -->
-    <div class="phase">
-      <div class="phase-header">
-        <span class="phase-label">1. Extract</span>
-        <span
-          v-if="extractStatus !== 'idle'"
-          class="phase-status"
-          :class="`status-${extractStatus}`"
-        >{{ statusBadge(extractStatus) }}</span>
-      </div>
-      <div class="controls">
-        <button
-          class="btn-primary"
-          :disabled="!canExtract || !config.apiKeyPresent"
-          @click="runExtract"
-        >{{ extractButtonLabel }}</button>
-        <button
-          class="btn-neutral btn-sm"
-          :disabled="!extractDir"
-          @click="refreshFiles"
-        >Refresh files</button>
-        <span v-if="!config.apiKeyPresent" class="warning">
-          ANTHROPIC_API_KEY not set
-        </span>
-      </div>
-    </div>
+    <!-- Two columns: Extract on the left, Synthesize on the right. -->
+    <div class="esp-grid">
+      <!-- ── Phase 1: Extract ──────────────────────────────── -->
+      <section class="phase-col">
+        <header class="phase-header">
+          <span class="phase-label">1. Extract</span>
+          <span
+            v-if="extractStatus !== 'idle'"
+            class="phase-status"
+            :class="`status-${extractStatus}`"
+          >{{ statusBadge(extractStatus) }}</span>
+          <span style="flex:1"></span>
+          <button
+            class="btn-neutral btn-xs"
+            :disabled="!extractDir"
+            @click="refreshFiles"
+            title="Re-list extract dir"
+          >Refresh</button>
+        </header>
 
-    <!-- Review panel: extraction files -->
-    <div v-if="extractDir && filesLoaded" class="review">
-      <div v-if="files.length === 0" class="review-empty">
-        No extract files in <code>{{ extractDir }}</code>. Run Extract, or check the path.
-      </div>
-      <div v-else class="review-grid">
-        <div class="file-list">
-          <div class="file-list-header">
-            {{ files.length }} file{{ files.length === 1 ? '' : 's' }}
-          </div>
-          <div
-            v-for="f in files"
-            :key="f.name"
-            class="file-row"
-            :class="{ active: f.name === selectedFile }"
-            @click="loadFile(f.name)"
-          >
-            <span class="file-name">{{ f.name }}</span>
-            <span class="file-size">{{ (f.size / 1024).toFixed(1) }}k</span>
+        <div class="controls">
+          <button
+            class="btn-primary"
+            :disabled="!canExtract || !config.apiKeyPresent"
+            @click="runExtract"
+          >{{ extractButtonLabel }}</button>
+          <span v-if="!config.apiKeyPresent" class="warning">
+            ANTHROPIC_API_KEY not set
+          </span>
+        </div>
+
+        <!-- Review area -->
+        <div v-if="!extractDir" class="review">
+          <div class="review-empty">
+            Set the <strong>Extractions directory</strong> above to browse and edit extract files here.
           </div>
         </div>
-        <div class="file-editor">
-          <div class="editor-header">
-            <span class="editor-title">{{ selectedFile || 'Select a file' }}</span>
-            <span v-if="fileDirty" class="dirty">• unsaved</span>
-            <span class="save-flash" :class="{ show: fileSavedFlash }">Saved</span>
-            <span style="flex:1"></span>
-            <button
-              class="btn-primary btn-sm"
-              :disabled="!fileDirty || fileSaving"
-              @click="saveFile"
-            >Save</button>
+        <div v-else-if="filesLoaded" class="review">
+          <div v-if="files.length === 0" class="review-empty">
+            No extract files in <code>{{ extractDir }}</code>. Run Extract, or check the path.
           </div>
-          <textarea
-            class="editor-ta"
-            :value="fileContent"
-            :disabled="!selectedFile"
-            @input="onEdit"
-            spellcheck="false"
-            placeholder="Select an extract file to review and edit."
-          />
+          <div v-else class="review-grid">
+            <div class="file-list">
+              <div class="file-list-header">
+                {{ files.length }} file{{ files.length === 1 ? '' : 's' }}
+              </div>
+              <div
+                v-for="f in files"
+                :key="f.name"
+                class="file-row"
+                :class="{ active: f.name === selectedFile }"
+                @click="loadFile(f.name)"
+              >
+                <span class="file-name">{{ f.name }}</span>
+                <span class="file-size">{{ (f.size / 1024).toFixed(1) }}k</span>
+              </div>
+            </div>
+            <div class="file-editor">
+              <div class="editor-header">
+                <span class="editor-title">{{ selectedFile || 'Select a file' }}</span>
+                <span v-if="fileDirty" class="dirty">• unsaved</span>
+                <span class="save-flash" :class="{ show: fileSavedFlash }">Saved</span>
+                <span style="flex:1"></span>
+                <button
+                  class="btn-primary btn-xs"
+                  :disabled="!fileDirty || fileSaving"
+                  @click="saveFile"
+                >Save</button>
+              </div>
+              <textarea
+                class="editor-ta"
+                :value="fileContent"
+                :disabled="!selectedFile"
+                @input="onEdit"
+                spellcheck="false"
+                placeholder="Select an extract file to review and edit."
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Phase 2: Synthesize -->
-    <div class="phase">
-      <div class="phase-header">
-        <span class="phase-label">2. Synthesize</span>
-        <span
-          v-if="synthStatus !== 'idle'"
-          class="phase-status"
-          :class="`status-${synthStatus}`"
-        >{{ statusBadge(synthStatus) }}</span>
-      </div>
-      <div class="controls">
-        <button
-          class="btn-success"
-          :disabled="!canSynthesize || !config.apiKeyPresent"
-          @click="runSynthesize"
-        >{{ synthButtonLabel }}</button>
-        <span v-if="synthesizeDisabled" class="help">
-          No synthesize pass for this flow — extract output is the final product.
-        </span>
-      </div>
-    </div>
+        <!-- Extract stream output -->
+        <div v-if="extractOutput" class="stream-output">
+          <div class="stream-header">Extract log</div>
+          <StreamOutput :text="extractOutput" />
+        </div>
+      </section>
 
-    <!-- Tabbed output -->
-    <div v-if="extractOutput || synthOutput" class="output-tabs">
-      <div class="tab-bar">
-        <div
-          class="tab"
-          :class="{ active: activeTab === 'extract' }"
-          @click="activeTab = 'extract'"
-        >Extract output</div>
-        <div
-          class="tab"
-          :class="{ active: activeTab === 'synthesize' }"
-          @click="activeTab = 'synthesize'"
-        >Synthesize output</div>
-      </div>
-      <div v-if="activeTab === 'extract'" class="output-container">
-        <StreamOutput :text="extractOutput || '(no output yet)'" />
-      </div>
-      <div v-if="activeTab === 'synthesize'" class="output-container">
-        <StreamOutput :text="synthOutput || '(no output yet)'" />
-      </div>
+      <!-- ── Phase 2: Synthesize ───────────────────────────── -->
+      <section class="phase-col">
+        <header class="phase-header">
+          <span class="phase-label">2. Synthesize</span>
+          <span
+            v-if="synthStatus !== 'idle'"
+            class="phase-status"
+            :class="`status-${synthStatus}`"
+          >{{ statusBadge(synthStatus) }}</span>
+        </header>
+
+        <div class="controls">
+          <button
+            class="btn-success"
+            :disabled="!canSynthesize || !config.apiKeyPresent"
+            @click="runSynthesize"
+          >{{ synthButtonLabel }}</button>
+          <span v-if="synthesizeDisabled" class="help">
+            No synthesize pass for this flow — extract output is the final product.
+          </span>
+        </div>
+
+        <!-- Synthesize stream output fills the rest of the column -->
+        <div class="stream-output synth-output">
+          <div class="stream-header">Synthesize log</div>
+          <StreamOutput :text="synthOutput || '(idle — click Synthesize to run the second pass)'" />
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -336,16 +334,27 @@ if (props.extractDir) refreshFiles()
   border-top: 1px solid var(--bg-surface0);
 }
 
-.phase {
-  padding: 10px 12px;
+.esp-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1px;
+  background: var(--bg-surface0);
   border-bottom: 1px solid var(--bg-surface0);
-  background: var(--bg-mantle);
 }
+.phase-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--bg-base);
+}
+
 .phase-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  padding: 8px 12px;
+  background: var(--bg-mantle);
+  border-bottom: 1px solid var(--bg-surface0);
 }
 .phase-label {
   font-size: 11px;
@@ -370,14 +379,17 @@ if (props.extractDir) refreshFiles()
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-mantle);
+  border-bottom: 1px solid var(--bg-surface0);
 }
 .warning { font-size: 11px; color: var(--peach); font-weight: 600; }
 .help { font-size: 11px; color: var(--text-muted); }
 
 .review {
   padding: 10px 12px;
-  border-bottom: 1px solid var(--bg-surface0);
   background: var(--bg-base);
+  border-bottom: 1px solid var(--bg-surface0);
 }
 .review-empty { font-size: 11px; color: var(--text-muted); }
 .review-empty code {
@@ -387,10 +399,9 @@ if (props.extractDir) refreshFiles()
 
 .review-grid {
   display: grid;
-  grid-template-columns: minmax(180px, 240px) 1fr;
-  gap: 10px;
-  min-height: 220px;
-  max-height: 380px;
+  grid-template-columns: minmax(140px, 200px) minmax(0, 1fr);
+  gap: 8px;
+  height: 420px;
 }
 
 .file-list {
@@ -398,6 +409,7 @@ if (props.extractDir) refreshFiles()
   border-radius: 4px;
   overflow-y: auto;
   border: 1px solid var(--bg-surface0);
+  min-height: 0;
 }
 .file-list-header {
   padding: 5px 8px;
@@ -432,6 +444,8 @@ if (props.extractDir) refreshFiles()
   border-radius: 4px;
   overflow: hidden;
   background: var(--bg-base);
+  min-width: 0;
+  min-height: 0;
 }
 .editor-header {
   display: flex;
@@ -454,39 +468,61 @@ if (props.extractDir) refreshFiles()
 .save-flash.show { opacity: 1; }
 .editor-ta {
   flex: 1;
-  min-height: 200px;
+  min-height: 0;
   background: var(--bg-base);
   color: var(--text);
   border: none;
   outline: none;
-  resize: vertical;
+  resize: none;
   padding: 8px 10px;
   font-family: var(--mono);
   font-size: 11px;
   line-height: 1.55;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.output-tabs {
-  border-bottom: 1px solid var(--bg-surface0);
-}
-.tab-bar {
-  background: var(--bg-mantle);
-  border-bottom: 1px solid var(--bg-surface0);
+.stream-output {
   display: flex;
-}
-.tab {
-  padding: 6px 14px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  color: var(--text-muted);
-}
-.tab:hover { color: var(--text); }
-.tab.active { color: var(--mauve); border-bottom-color: var(--mauve); }
-.output-container {
+  flex-direction: column;
+  border-top: 1px solid var(--bg-surface0);
   max-height: 320px;
   min-height: 120px;
   overflow: auto;
+  background: var(--bg-base);
+}
+.stream-header {
+  padding: 5px 10px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-muted);
+  background: var(--bg-mantle);
+  border-bottom: 1px solid var(--bg-surface0);
+  position: sticky;
+  top: 0;
+}
+.synth-output {
+  flex: 1;
+  min-height: 320px;
+}
+
+.btn-xs {
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 3px;
+  border: 1px solid var(--bg-surface1);
+  background: var(--bg-surface0);
+  color: var(--text);
+  cursor: pointer;
+}
+.btn-xs:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Stack vertically on narrow viewports so the file editor stays usable. */
+@media (max-width: 1100px) {
+  .esp-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 </style>

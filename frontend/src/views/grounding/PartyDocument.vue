@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import MultiPathField from '../../components/shared/MultiPathField.vue'
@@ -67,6 +67,14 @@ const runParams = computed(() => ({
 }))
 
 const hasSummaries = computed(() => !!summaries.value.trim())
+
+watch(output, (newOutput) => {
+  if (!extractDir.value && newOutput) {
+    const idx = newOutput.lastIndexOf('/')
+    const parent = idx >= 0 ? newOutput.slice(0, idx) : ''
+    extractDir.value = parent ? `${parent}/party_extractions` : 'party_extractions'
+  }
+})
 
 onMounted(() => { loadFromConfig() })
 </script>
@@ -148,7 +156,7 @@ onMounted(() => { loadFromConfig() })
         :extract-dir="extractDir"
         :disabled="!ready"
         :extract-disabled="!hasSummaries"
-        extract-label="1. Extract per-character"
+        extract-label="1. Extract character info from summaries"
         synth-label="2. Synthesize party.md"
       />
     </div>
@@ -156,7 +164,7 @@ onMounted(() => { loadFromConfig() })
 </template>
 
 <style scoped>
-.page { padding: 20px 24px; max-width: 700px; }
+.page { padding: 20px 24px; max-width: 1400px; height: 100%; overflow-y: auto; box-sizing: border-box; }
 .page-header { margin-bottom: 20px; }
 .page-header h2 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .subtitle { font-size: 12px; color: var(--text-muted); }

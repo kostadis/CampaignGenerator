@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import MultiPathField from '../../components/shared/MultiPathField.vue'
@@ -91,6 +91,23 @@ const dossierParams = computed(() => ({
   no_log: noLog.value,
   model: config.model,
 }))
+
+watch(output, (newOutput) => {
+  if (!extractDir.value && newOutput) {
+    const idx = newOutput.lastIndexOf('/')
+    const parent = idx >= 0 ? newOutput.slice(0, idx) : ''
+    extractDir.value = parent ? `${parent}/planning_extractions` : 'planning_extractions'
+  }
+})
+
+watch(dossierDir, (newDir) => {
+  if (!dossierExtractDir.value && newDir) {
+    const trimmed = newDir.replace(/\/$/, '')
+    const idx = trimmed.lastIndexOf('/')
+    const parent = idx >= 0 ? trimmed.slice(0, idx) : ''
+    dossierExtractDir.value = parent ? `${parent}/planning_extractions` : 'planning_extractions'
+  }
+})
 
 onMounted(() => { loadFromConfig() })
 </script>
@@ -187,7 +204,7 @@ onMounted(() => { loadFromConfig() })
         :extract-dir="extractDir"
         :disabled="!synthReady"
         :extract-disabled="!synthHasSummaries"
-        extract-label="1. Extract per-NPC"
+        extract-label="1. Extract NPC info from summaries"
         synth-label="2. Synthesize planning.md"
       />
     </div>
@@ -252,7 +269,7 @@ onMounted(() => { loadFromConfig() })
 </template>
 
 <style scoped>
-.page { padding: 20px 24px; max-width: 700px; }
+.page { padding: 20px 24px; max-width: 1400px; height: 100%; overflow-y: auto; box-sizing: border-box; }
 .page-header { margin-bottom: 20px; }
 .page-header h2 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .subtitle { font-size: 12px; color: var(--text-muted); }
