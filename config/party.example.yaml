@@ -1,0 +1,34 @@
+# Example party config for party.py --party-config.
+#
+# Paths resolve relative to this file's parent directory. Every referenced
+# file must exist — the loader fails loudly otherwise.
+#
+# arc_score semantics:
+#   arc_score: path/to/file.md    → character has a formal arc score mechanic
+#   arc_score: null               → character is INTENTIONALLY TRACKLESS.
+#                                   The synthesizer will not invent a track
+#                                   for them or suggest creating one.
+#   (key omitted)                 → unspecified; treated like no arc score,
+#                                   but without the trackless signal. Prefer
+#                                   to be explicit with `null` for clarity.
+
+characters:
+  - name: Brewbarry
+    sheet: docs/party/brewbarry.md
+    backstory: docs/Backstory - Brewbarry.md
+    arc_score: docs/tracking/brewbarry-score.md
+
+  - name: Valphine
+    sheet: docs/party/valphine.md
+    backstory: docs/Backstory - Valphine Sotorra.md
+    arc_score: docs/tracking/valphine-score.md
+
+  - name: Soma
+    sheet: docs/party/soma.md
+    backstory: docs/Soma - Backstory.md
+    arc_score: docs/tracking/soma-score.md
+
+  - name: Vukradin
+    sheet: docs/party/Vukradin.md
+    # Vukradin has no formal arc score by design — mark as trackless.
+    arc_score: null
