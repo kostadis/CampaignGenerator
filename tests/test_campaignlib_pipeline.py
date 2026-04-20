@@ -123,6 +123,16 @@ def test_extract_uses_split_chapters(fake_stream_api, tmp_path):
     assert len(fake_stream_api.calls) == 2
 
 
+def test_extract_honors_custom_filename_template(fake_stream_api, tmp_path):
+    result = campaignlib.run_extract_pipeline(
+        client=None, text="x",
+        extract_system="", model="m",
+        extract_dir=tmp_path / "e", chunk_size=60000,
+        filename_template="dossier_extract_{i:03d}.md",
+    )
+    assert result[0].name == "dossier_extract_001.md"
+
+
 def test_extract_creates_output_dir(fake_stream_api, tmp_path):
     nested = tmp_path / "a" / "b" / "c"
     assert not nested.exists()

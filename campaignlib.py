@@ -86,10 +86,12 @@ def run_extract_pipeline(
     chunk_size: int = 60000,
     split_chapters: str | None = None,
     split_label: str = "chunk",
+    filename_template: str = "extract_{i:03d}.md",
 ) -> list[Path]:
     """Chunk `text`, run `extract_system` against each chunk, cache each result to `extract_dir`.
 
-    Files are named `extract_NNN.md`. Existing files are skipped so a partial run
+    Files are named via `filename_template` (default `extract_NNN.md`; `{i}` is
+    the 1-indexed chunk number). Existing files are skipped so a partial run
     can be resumed. Returns the ordered list of output paths (including skipped
     ones).
     """
@@ -99,7 +101,7 @@ def run_extract_pipeline(
     saved: list[Path] = []
 
     for i, chunk in enumerate(chunks, 1):
-        out_file = extract_dir / f"extract_{i:03d}.md"
+        out_file = extract_dir / filename_template.format(i=i)
         if out_file.exists():
             print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
             saved.append(out_file)

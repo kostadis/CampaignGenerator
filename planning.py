@@ -48,7 +48,7 @@ from pathlib import Path
 
 import yaml
 
-from campaignlib import prepare_chunks, make_client, stream_api
+from campaignlib import make_client, run_extract_pipeline, stream_api
 
 
 DOSSIER_FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n\n?(.*)\Z", re.DOTALL)
@@ -255,36 +255,11 @@ Rules:
 
 
 
-def run_extract(client, summaries_text: str, chunk_size: int, model: str, extract_dir: Path,
-                split_chapters: str | None = None) -> list[Path]:
-    chunks, label = prepare_chunks(summaries_text, chunk_size, split_chapters, split_label="session")
-    total = len(chunks)
-    extract_dir.mkdir(parents=True, exist_ok=True)
-    saved = []
-
-    for i, chunk in enumerate(chunks, 1):
-        out_file = extract_dir / f"extract_{i:03d}.md"
-        if out_file.exists():
-            print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
-            saved.append(out_file)
-            continue
-
-        print(f"  [{i}/{total}] Extracting {label} ({len(chunk):,} chars)...")
-        print("  " + "─" * 56)
-        result = stream_api(client, EXTRACT_SYSTEM, chunk, model)
-        print("  " + "─" * 56)
-
-        out_file.write_text(result, encoding="utf-8")
-        saved.append(out_file)
-        print(f"  Saved: {out_file.name}\n")
-
-    return saved
-
-
 def run_build_dossiers(
     client, summaries_text: str, chunk_size: int, model: str, extract_dir: Path, dossier_dir: Path,
     split_chapters: str | None = None,
     since: int | None = None,
+    extract_only: bool = False,
 ) -> list[Path]:
     """Two-phase dossier builder: extract per-chunk → aggregate by NPC → synthesize each dossier.
 
@@ -292,24 +267,29 @@ def run_build_dossiers(
             number >= since. Phase 1 extraction is unaffected (cache already handles it).
             Use this after a new session: --since <new_extract_num> skips re-processing
             historical chunks that have already been rolled into dossiers.
+
+    extract_only — if True, stop after Phase 1 so the user can review per-chunk
+                   NPC extractions before Phase 2 aggregation and Phase 3
+                   per-NPC LLM synthesis proceed.
     """
 
     # ── Phase 1: extract NPC mentions from each chunk ─────────────────────────
-    chunks, label = prepare_chunks(summaries_text, chunk_size, split_chapters, split_label="session")
-    total = len(chunks)
-    extract_dir.mkdir(parents=True, exist_ok=True)
+    run_extract_pipeline(
+        client, summaries_text,
+        extract_system=BUILD_EXTRACT_SYSTEM,
+        model=model,
+        extract_dir=extract_dir,
+        chunk_size=chunk_size,
+        split_chapters=split_chapters,
+        split_label="session",
+        filename_template="dossier_extract_{i:03d}.md",
+    )
 
-    for i, chunk in enumerate(chunks, 1):
-        out_file = extract_dir / f"dossier_extract_{i:03d}.md"
-        if out_file.exists():
-            print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
-            continue
-        print(f"  [{i}/{total}] Extracting NPC mentions from {label} ({len(chunk):,} chars)...")
-        print("  " + "─" * 56)
-        result = stream_api(client, BUILD_EXTRACT_SYSTEM, chunk, model)
-        print("  " + "─" * 56)
-        out_file.write_text(result, encoding="utf-8")
-        print(f"  Saved: {out_file.name}\n")
+    if extract_only:
+        print(f"\n[Extract-only mode — stopping before Phase 2 aggregation and Phase 3 synthesis]")
+        print(f"Review per-chunk NPC extractions in: {extract_dir}")
+        print(f"When ready, re-run the same command without --extract-only to continue.")
+        return []
 
     # ── Load existing dossiers to resolve merged aliases ─────────────────────
     # After /dossier-merge, name variants live in the canonical file's `aliases:`
@@ -534,6 +514,12 @@ def main() -> None:
                              "(default: <output_dir>/planning_extractions/ or ./planning_extractions/)")
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction, synthesize from existing files in --extract-dir")
+    parser.add_argument("--extract-only", action="store_true",
+                        help="Run the extract pass only, then stop so you can review "
+                             "extractions before synthesis. In --build-dossiers mode, stops "
+                             "after Phase 1 (per-chunk NPC extraction) before Phase 2 "
+                             "aggregation and Phase 3 per-NPC LLM synthesis. In the normal "
+                             "mode, stops before the planning.md synthesis call.")
     parser.add_argument("--build-dossiers", action="store_true",
                         help="Build individual per-NPC dossier files from --summaries instead of "
                              "producing planning.md (save to --dossier-dir, review/edit, then run "
@@ -550,6 +536,13 @@ def main() -> None:
                         help="Claude model to use")
     args = parser.parse_args()
 
+    if args.synthesize_only and args.extract_only:
+        print("Error: --synthesize-only and --extract-only are mutually exclusive",
+              file=sys.stderr)
+        sys.exit(1)
+    if args.extract_only and not args.summaries:
+        print("Error: --extract-only requires --summaries", file=sys.stderr)
+        sys.exit(1)
     if args.build_dossiers and not args.summaries:
         print("Error: --build-dossiers requires --summaries", file=sys.stderr)
         sys.exit(1)
@@ -593,8 +586,11 @@ def main() -> None:
         print(f"\n[Build dossiers | {len(summaries_text):,} chars | model: {args.model}]")
         print("=" * 60)
         saved = run_build_dossiers(client, summaries_text, args.chunk_size, args.model, extract_dir, dossier_dir,
-                                    split_chapters=args.split_chapters, since=args.since)
+                                    split_chapters=args.split_chapters, since=args.since,
+                                    extract_only=args.extract_only)
         print("=" * 60)
+        if args.extract_only:
+            return
         print(f"\n{len(saved)} dossier file(s) saved to: {dossier_dir}")
         print("\nNext steps:")
         print("  1. Review and edit the dossier files")
@@ -617,9 +613,23 @@ def main() -> None:
         summaries_text = Path(args.summaries).expanduser().read_text(encoding="utf-8")
         print(f"\n[Pass 1: Extract NPC/faction info | {len(summaries_text):,} chars | model: {args.model}]")
         print("=" * 60)
-        extract_files = run_extract(client, summaries_text, args.chunk_size, args.model, extract_dir,
-                                    split_chapters=args.split_chapters)
+        extract_files = run_extract_pipeline(
+            client, summaries_text,
+            extract_system=EXTRACT_SYSTEM,
+            model=args.model,
+            extract_dir=extract_dir,
+            chunk_size=args.chunk_size,
+            split_chapters=args.split_chapters,
+            split_label="session",
+        )
         print(f"Extractions saved to: {extract_dir}")
+
+        if args.extract_only:
+            print(f"\n[Extract-only mode — stopping before synthesis]")
+            print(f"Review files in: {extract_dir}")
+            print(f"When ready, re-run with --synthesize-only --extract-dir {extract_dir} "
+                  f"plus the same --npc/--arc-scores/--context args.")
+            return
     elif args.synthesize_only:
         extract_files = sorted(extract_dir.glob("extract_*.md"))
         if not extract_files:
