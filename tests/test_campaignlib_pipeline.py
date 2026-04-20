@@ -218,6 +218,27 @@ def test_synthesize_custom_source_label(fake_stream_api, tmp_path):
     assert "<!-- Character sheet: soma.md -->" in fake_stream_api.calls[0]["user"]
 
 
+def test_synthesize_per_group_label_override(fake_stream_api, tmp_path):
+    sheet = _write(tmp_path / "soma.md", "Tortle Druid")
+    extract = _write(tmp_path / "extract_001.md", "session note")
+    backstory = _write(tmp_path / "soma_backstory.md", "backstory prose")
+
+    campaignlib.run_synthesize_pipeline(
+        client=None,
+        source_groups=[
+            ("CHARACTERS", [sheet], "Character sheet"),
+            ("EXTRACTIONS", [extract], "Session extract"),
+            ("BACKSTORIES", [backstory]),  # no per-group label — falls back to default
+        ],
+        synthesize_system="", model="m",
+        source_label="Source",
+    )
+    prompt = fake_stream_api.calls[0]["user"]
+    assert "<!-- Character sheet: soma.md -->" in prompt
+    assert "<!-- Session extract: extract_001.md -->" in prompt
+    assert "<!-- Source: soma_backstory.md -->" in prompt
+
+
 def test_synthesize_returns_stream_response(monkeypatch, tmp_path):
     fake = FakeStreamAPI(responses=["scripted result"])
     monkeypatch.setattr(campaignlib, "stream_api", fake)

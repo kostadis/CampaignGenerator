@@ -34,7 +34,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import prepare_chunks, make_client, stream_api
+from campaignlib import make_client, run_extract_pipeline, run_synthesize_pipeline
 
 EXTRACT_SYSTEM = """\
 You are extracting party-relevant information from D&D session summary notes.
@@ -104,90 +104,6 @@ Rules:
 
 
 
-def run_extract(client, summaries_text: str, chunk_size: int, model: str, extract_dir: Path,
-                split_chapters: str | None = None) -> list[Path]:
-    chunks, label = prepare_chunks(summaries_text, chunk_size, split_chapters, split_label="session")
-    total = len(chunks)
-    extract_dir.mkdir(parents=True, exist_ok=True)
-    saved = []
-
-    for i, chunk in enumerate(chunks, 1):
-        out_file = extract_dir / f"extract_{i:03d}.md"
-        if out_file.exists():
-            print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
-            saved.append(out_file)
-            continue
-
-        print(f"  [{i}/{total}] Extracting {label} ({len(chunk):,} chars)...")
-        print("  " + "─" * 56)
-        result = stream_api(client, EXTRACT_SYSTEM, chunk, model)
-        print("  " + "─" * 56)
-
-        out_file.write_text(result, encoding="utf-8")
-        saved.append(out_file)
-        print(f"  Saved: {out_file.name}\n")
-
-    return saved
-
-
-def run_synthesize(
-    client,
-    character_files: list[Path],
-    extract_files: list[Path],
-    backstory_files: list[Path],
-    arc_score_files: list[Path],
-    context_files: list[Path],
-    model: str,
-) -> str:
-    parts = []
-
-    if character_files:
-        sheets = "\n\n---\n\n".join(
-            f"<!-- Character sheet: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-            for f in character_files
-        )
-        parts.append(f"# CHARACTER SHEETS\n\n{sheets}")
-
-    if extract_files:
-        extractions = "\n\n---\n\n".join(
-            f"<!-- Session extract: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-            for f in sorted(extract_files)
-        )
-        parts.append(f"# SESSION EXTRACTIONS\n\n{extractions}")
-
-    if backstory_files:
-        backstories = "\n\n---\n\n".join(
-            f"<!-- Backstory: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-            for f in backstory_files
-        )
-        parts.append(f"# BACKSTORY DOCUMENTS\n\n{backstories}")
-
-    if arc_score_files:
-        arc_scores = "\n\n---\n\n".join(
-            f"<!-- Arc score mechanic: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-            for f in arc_score_files
-        )
-        parts.append(f"# ARC SCORE MECHANICS\n\n{arc_scores}")
-
-    if context_files:
-        context = "\n\n---\n\n".join(
-            f"<!-- Context: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-            for f in context_files
-        )
-        parts.append(f"# ADDITIONAL CONTEXT\n\n{context}")
-
-    user_prompt = "\n\n===\n\n".join(parts)
-    if not user_prompt.strip():
-        print("Error: no source material to synthesize — provide --character, --summaries, or --backstory.",
-              file=sys.stderr)
-        raise SystemExit(1)
-    print(f"  Synthesizing ({len(user_prompt):,} chars total)...")
-    print("  " + "─" * 56)
-    result = stream_api(client, SYNTHESIZE_SYSTEM, user_prompt, model)
-    print("  " + "─" * 56)
-    return result
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate a party.md from character sheets, session summaries, and backstories."
@@ -214,15 +130,27 @@ def main() -> None:
                              "(default: <output_dir>/party_extractions/)")
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction, synthesize from existing files in --extract-dir")
+    parser.add_argument("--extract-only", action="store_true",
+                        help="Run the extract pass only, then stop so you can review "
+                             "extractions before synthesis. Re-run with --synthesize-only "
+                             "against the same --extract-dir to produce the final document.")
     parser.add_argument("--model", default="claude-sonnet-4-20250514",
                         help="Claude model to use")
     args = parser.parse_args()
 
+    if args.synthesize_only and args.extract_only:
+        print("Error: --synthesize-only and --extract-only are mutually exclusive",
+              file=sys.stderr)
+        sys.exit(1)
     if not args.character and not args.summaries and not args.synthesize_only:
         print("Error: provide at least --character or --summaries", file=sys.stderr)
         sys.exit(1)
     if args.synthesize_only and not args.extract_dir and not args.character:
         print("Error: --synthesize-only requires --extract-dir or --character", file=sys.stderr)
+        sys.exit(1)
+    if args.extract_only and not args.summaries:
+        print("Error: --extract-only requires --summaries (no summaries = nothing to extract)",
+              file=sys.stderr)
         sys.exit(1)
 
     output = Path(args.output).expanduser().resolve()
@@ -249,9 +177,23 @@ def main() -> None:
         summaries_text = Path(args.summaries).expanduser().read_text(encoding="utf-8")
         print(f"\n[Pass 1: Extract party info | {len(summaries_text):,} chars | model: {args.model}]")
         print("=" * 60)
-        extract_files = run_extract(client, summaries_text, args.chunk_size, args.model, extract_dir,
-                                    split_chapters=args.split_chapters)
+        extract_files = run_extract_pipeline(
+            client, summaries_text,
+            extract_system=EXTRACT_SYSTEM,
+            model=args.model,
+            extract_dir=extract_dir,
+            chunk_size=args.chunk_size,
+            split_chapters=args.split_chapters,
+            split_label="session",
+        )
         print(f"Extractions saved to: {extract_dir}")
+
+        if args.extract_only:
+            print(f"\n[Extract-only mode — stopping before synthesis]")
+            print(f"Review files in: {extract_dir}")
+            print(f"When ready, re-run with --synthesize-only --extract-dir {extract_dir} "
+                  f"plus the same --character/--backstory/--arc-scores/--context args.")
+            return
     elif args.synthesize_only:
         extract_files = sorted(extract_dir.glob("extract_*.md"))
         if not extract_files:
@@ -276,7 +218,18 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize | {', '.join(sources)} | model: {args.model}]")
     print("=" * 60)
-    party_doc = run_synthesize(client, character_files, extract_files, backstory_files, arc_score_files, context_files, args.model)
+    party_doc = run_synthesize_pipeline(
+        client,
+        source_groups=[
+            ("CHARACTER SHEETS", character_files, "Character sheet"),
+            ("SESSION EXTRACTIONS", extract_files, "Session extract"),
+            ("BACKSTORY DOCUMENTS", backstory_files, "Backstory"),
+            ("ARC SCORE MECHANICS", arc_score_files, "Arc score mechanic"),
+            ("ADDITIONAL CONTEXT", context_files, "Context"),
+        ],
+        synthesize_system=SYNTHESIZE_SYSTEM,
+        model=args.model,
+    )
     print("=" * 60)
 
     output.parent.mkdir(parents=True, exist_ok=True)

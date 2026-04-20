@@ -120,7 +120,7 @@ def run_extract_pipeline(
 def run_synthesize_pipeline(
     client,
     *,
-    source_groups: list[tuple[str, list[Path]]],
+    source_groups: list[tuple],
     synthesize_system: str,
     model: str,
     source_label: str = "Source",
@@ -129,13 +129,16 @@ def run_synthesize_pipeline(
 ) -> str:
     """Concat labeled file groups into a user prompt, call `stream_api`, return the response.
 
-    source_groups — list of `(heading, files)`. An empty heading renders the
-                    group's files without a `# HEADING` line (used when a single
-                    unnamed group is the whole input, e.g. distill.py). Groups
-                    with no files are skipped.
+    source_groups — list of tuples in one of two shapes:
+                      `(heading, files)` — uses the default `source_label`
+                      `(heading, files, group_label)` — override label for this group
+                    An empty heading renders the group's files without a
+                    `# HEADING` line (used when a single unnamed group is the
+                    whole input, e.g. distill.py). Groups with no files are
+                    skipped.
 
     Each file is rendered as:
-        <!-- {source_label}: {filename} -->
+        <!-- {label}: {filename} -->
 
         <stripped contents>
 
@@ -144,11 +147,16 @@ def run_synthesize_pipeline(
     """
     parts: list[str] = []
     total_files = 0
-    for heading, files in source_groups:
+    for group in source_groups:
+        if len(group) == 3:
+            heading, files, group_label = group
+        else:
+            heading, files = group
+            group_label = source_label
         if not files:
             continue
         blocks = [
-            f"<!-- {source_label}: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
+            f"<!-- {group_label}: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
             for f in files
         ]
         body = file_separator.join(blocks)
