@@ -15,6 +15,9 @@ Runs in two passes:
      and thread resolution from each chunk
   2. Synthesize — merges all extractions into a clean campaign_state.md
 
+Use --extract-only to stop after the extract pass so you can review and edit
+the intermediate files before synthesis (recommended for large corpora).
+
 Usage:
   python campaign_state.py summaries.md --output docs/campaign_state.md
 
@@ -61,7 +64,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import prepare_chunks, make_client, stream_api
+from campaignlib import make_client, run_extract_pipeline, run_synthesize_pipeline
 
 EXTRACT_SYSTEM_BASE = """\
 You are extracting campaign completion and status information from D&D session summary notes.
@@ -194,51 +197,6 @@ def build_synthesize_system(tracked_items: list[str]) -> str:
 
 
 
-def run_extract(
-    client, text: str, chunk_size: int, model: str, extract_dir: Path,
-    tracked_items: list[str], split_chapters: str | None = None,
-) -> list[Path]:
-    chunks, label = prepare_chunks(text, chunk_size, split_chapters, split_label="session")
-    total = len(chunks)
-    extract_dir.mkdir(parents=True, exist_ok=True)
-    system = build_extract_system(tracked_items)
-    saved = []
-
-    for i, chunk in enumerate(chunks, 1):
-        out_file = extract_dir / f"extract_{i:03d}.md"
-        if out_file.exists():
-            print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
-            saved.append(out_file)
-            continue
-
-        print(f"  [{i}/{total}] Extracting {label} ({len(chunk):,} chars)...")
-        print("  " + "─" * 56)
-        result = stream_api(client, system, chunk, model)
-        print("  " + "─" * 56)
-
-        out_file.write_text(result, encoding="utf-8")
-        saved.append(out_file)
-        print(f"  Saved: {out_file.name}\n")
-
-    return saved
-
-
-def run_synthesize(
-    client, extract_files: list[Path], model: str, tracked_items: list[str],
-) -> str:
-    combined = [
-        f"<!-- Source: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-        for f in sorted(extract_files)
-    ]
-    user_prompt = "\n\n---\n\n".join(combined)
-    system = build_synthesize_system(tracked_items)
-    print(f"  Synthesizing {len(extract_files)} extraction(s) ({len(user_prompt):,} chars total)...")
-    print("  " + "─" * 56)
-    result = stream_api(client, system, user_prompt, model)
-    print("  " + "─" * 56)
-    return result
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate a campaign_state.md (completed content + current NPC states) "
@@ -266,10 +224,18 @@ def main() -> None:
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction, synthesize from existing files in --extract-dir "
                              "(tracking list still applies to synthesize prompt)")
+    parser.add_argument("--extract-only", action="store_true",
+                        help="Run the extract pass only, then stop so you can review "
+                             "extractions before synthesis. Re-run with --synthesize-only "
+                             "against the same --extract-dir to produce the final document.")
     parser.add_argument("--model", default="claude-sonnet-4-20250514",
                         help="Claude model to use")
     args = parser.parse_args()
 
+    if args.synthesize_only and args.extract_only:
+        print("Error: --synthesize-only and --extract-only are mutually exclusive",
+              file=sys.stderr)
+        sys.exit(1)
     if args.synthesize_only and not args.extract_dir:
         print("Error: --synthesize-only requires --extract-dir", file=sys.stderr)
         sys.exit(1)
@@ -309,12 +275,27 @@ def main() -> None:
             sys.exit(1)
         print(f"\n[Pass 1: Extract campaign state | {len(text):,} chars | model: {args.model}]")
         print("=" * 60)
-        extract_files = run_extract(client, text, args.chunk_size, args.model, extract_dir,
-                                    tracked_items, split_chapters=args.split_chapters)
+        extract_files = run_extract_pipeline(
+            client, text,
+            extract_system=build_extract_system(tracked_items),
+            model=args.model,
+            extract_dir=extract_dir,
+            chunk_size=args.chunk_size,
+            split_chapters=args.split_chapters,
+            split_label="session",
+        )
         if not extract_files:
             print("Error: no chunks were extracted — input may be too short.", file=sys.stderr)
             sys.exit(1)
         print(f"Extractions saved to: {extract_dir}")
+
+        if args.extract_only:
+            print(f"\n[Extract-only mode — stopping before synthesis]")
+            print(f"Review files in: {extract_dir}")
+            print(f"When ready, run:")
+            print(f"  python campaign_state.py --synthesize-only "
+                  f"--extract-dir {extract_dir} --output {Path(args.output)}")
+            return
     else:
         extract_files = sorted(extract_dir.glob("extract_*.md"))
         if not extract_files:
@@ -324,7 +305,12 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize | model: {args.model}]")
     print("=" * 60)
-    state_doc = run_synthesize(client, extract_files, args.model, tracked_items)
+    state_doc = run_synthesize_pipeline(
+        client,
+        source_groups=[("", extract_files)],
+        synthesize_system=build_synthesize_system(tracked_items),
+        model=args.model,
+    )
     print("=" * 60)
 
     output.parent.mkdir(parents=True, exist_ok=True)
