@@ -10,10 +10,14 @@ Runs in two passes:
 Intermediate extractions are saved so you can re-run --synthesize-only if
 the final pass fails without repeating the expensive extract pass.
 
+Use --extract-only to stop after the extract pass so you can review and edit
+the intermediate files before synthesis (recommended for large corpora).
+
 Usage:
   python distill.py summaries.md --output world_state.md
   python distill.py summaries.md --output world_state.md --chunk-size 50000
-  python distill.py --synthesize-only extractions/ --output world_state.md
+  python distill.py summaries.md --output world_state.md --extract-only
+  python distill.py --synthesize-only --extract-dir extractions/ --output world_state.md
 """
 
 import argparse
@@ -89,10 +93,18 @@ def main() -> None:
                              "(default: <output_dir>/distill_extractions/)")
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction and synthesize from existing files in --extract-dir")
+    parser.add_argument("--extract-only", action="store_true",
+                        help="Run the extract pass only, then stop so you can review "
+                             "extractions before synthesis. Re-run with --synthesize-only "
+                             "against the same --extract-dir to produce the final document.")
     parser.add_argument("--model", default="claude-sonnet-4-20250514",
                         help="Claude model to use")
     args = parser.parse_args()
 
+    if args.synthesize_only and args.extract_only:
+        print("Error: --synthesize-only and --extract-only are mutually exclusive",
+              file=sys.stderr)
+        sys.exit(1)
     if args.synthesize_only and not args.extract_dir:
         print("Error: --synthesize-only requires --extract-dir", file=sys.stderr)
         sys.exit(1)
@@ -129,6 +141,14 @@ def main() -> None:
             print("Error: no chunks were extracted — input may be too short.", file=sys.stderr)
             sys.exit(1)
         print(f"Extractions saved to: {extract_dir}")
+
+        if args.extract_only:
+            print(f"\n[Extract-only mode — stopping before synthesis]")
+            print(f"Review files in: {extract_dir}")
+            print(f"When ready, run:")
+            print(f"  python distill.py --synthesize-only "
+                  f"--extract-dir {extract_dir} --output {Path(args.output)}")
+            return
     else:
         extract_files = sorted(extract_dir.glob("extract_*.md"))
         if not extract_files:
