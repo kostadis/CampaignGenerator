@@ -74,6 +74,99 @@ def prepare_chunks(
     return chunks, "chunk"
 
 
+# ── Extract / synthesize pipeline ─────────────────────────────────────────────
+
+def run_extract_pipeline(
+    client,
+    text: str,
+    *,
+    extract_system: str,
+    model: str,
+    extract_dir: Path,
+    chunk_size: int = 60000,
+    split_chapters: str | None = None,
+    split_label: str = "chunk",
+) -> list[Path]:
+    """Chunk `text`, run `extract_system` against each chunk, cache each result to `extract_dir`.
+
+    Files are named `extract_NNN.md`. Existing files are skipped so a partial run
+    can be resumed. Returns the ordered list of output paths (including skipped
+    ones).
+    """
+    chunks, label = prepare_chunks(text, chunk_size, split_chapters, split_label=split_label)
+    total = len(chunks)
+    extract_dir.mkdir(parents=True, exist_ok=True)
+    saved: list[Path] = []
+
+    for i, chunk in enumerate(chunks, 1):
+        out_file = extract_dir / f"extract_{i:03d}.md"
+        if out_file.exists():
+            print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
+            saved.append(out_file)
+            continue
+
+        print(f"  [{i}/{total}] Extracting {label} ({len(chunk):,} chars)...")
+        print("  " + "─" * 56)
+        result = stream_api(client, extract_system, chunk, model)
+        print("  " + "─" * 56)
+
+        out_file.write_text(result, encoding="utf-8")
+        saved.append(out_file)
+        print(f"  Saved: {out_file.name}\n")
+
+    return saved
+
+
+def run_synthesize_pipeline(
+    client,
+    *,
+    source_groups: list[tuple[str, list[Path]]],
+    synthesize_system: str,
+    model: str,
+    source_label: str = "Source",
+    group_separator: str = "\n\n===\n\n",
+    file_separator: str = "\n\n---\n\n",
+) -> str:
+    """Concat labeled file groups into a user prompt, call `stream_api`, return the response.
+
+    source_groups — list of `(heading, files)`. An empty heading renders the
+                    group's files without a `# HEADING` line (used when a single
+                    unnamed group is the whole input, e.g. distill.py). Groups
+                    with no files are skipped.
+
+    Each file is rendered as:
+        <!-- {source_label}: {filename} -->
+
+        <stripped contents>
+
+    Files within a group are joined by `file_separator`; groups are joined by
+    `group_separator`. Exits with SystemExit(1) if all groups are empty.
+    """
+    parts: list[str] = []
+    total_files = 0
+    for heading, files in source_groups:
+        if not files:
+            continue
+        blocks = [
+            f"<!-- {source_label}: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
+            for f in files
+        ]
+        body = file_separator.join(blocks)
+        parts.append(f"# {heading}\n\n{body}" if heading else body)
+        total_files += len(files)
+
+    if not parts:
+        print("Error: no source material to synthesize.", file=sys.stderr)
+        raise SystemExit(1)
+
+    user_prompt = group_separator.join(parts)
+    print(f"  Synthesizing {total_files} source file(s) ({len(user_prompt):,} chars total)...")
+    print("  " + "─" * 56)
+    result = stream_api(client, synthesize_system, user_prompt, model)
+    print("  " + "─" * 56)
+    return result
+
+
 # ── Config ────────────────────────────────────────────────────────────────────
 
 def find_default_config(script_file: str) -> str:
