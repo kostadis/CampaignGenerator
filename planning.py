@@ -54,25 +54,52 @@ from campaignlib import make_client, run_extract_pipeline, stream_api
 DOSSIER_FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n\n?(.*)\Z", re.DOTALL)
 
 
-def parse_dossier(path: Path) -> tuple[str, list[str], str]:
-    """Return (canonical_name, aliases, body_without_frontmatter).
+def parse_dossier(path: Path) -> tuple[str, list[str], list[int], str]:
+    """Return (canonical_name, aliases, source_extracts, body_without_frontmatter).
 
-    Dossiers without frontmatter fall back to filename stem as name and no aliases,
-    so pre-existing files keep working untouched.
+    `source_extracts` is the list of dossier_extract_NNN numbers already absorbed
+    into this dossier — used by --build-dossiers to skip writing redundant
+    `*.new_notes.NNN.md` sidecars on re-runs. Missing or malformed → empty list
+    (treated as "unknown": the caller should fall back to the prior behavior).
+
+    Dossiers without frontmatter fall back to filename stem as name and empty
+    aliases/source_extracts, so pre-existing files keep working untouched.
     """
     text = path.read_text(encoding="utf-8")
     m = DOSSIER_FRONTMATTER_RE.match(text)
     if not m:
-        return (path.stem, [], text)
+        return (path.stem, [], [], text)
     try:
         meta = yaml.safe_load(m.group(1)) or {}
     except yaml.YAMLError:
-        return (path.stem, [], text)
+        return (path.stem, [], [], text)
     name = meta.get("name") or path.stem
     aliases = meta.get("aliases") or []
     if not isinstance(aliases, list):
         aliases = []
-    return (str(name), [str(a) for a in aliases], m.group(2))
+    source_extracts = meta.get("source_extracts") or []
+    if not isinstance(source_extracts, list):
+        source_extracts = []
+    source_extracts = [int(n) for n in source_extracts if isinstance(n, int) or (isinstance(n, str) and n.isdigit())]
+    return (str(name), [str(a) for a in aliases], source_extracts, m.group(2))
+
+
+def write_dossier(
+    path: Path,
+    name: str,
+    aliases: list[str],
+    source_extracts: list[int],
+    body: str,
+) -> None:
+    """Write dossier with frontmatter: name, aliases, source_extracts."""
+    if aliases:
+        alias_yaml = "aliases:\n" + "\n".join(f"  - {a}" for a in aliases) + "\n"
+    else:
+        alias_yaml = "aliases: []\n"
+    nums = sorted(set(int(n) for n in source_extracts))
+    extracts_yaml = "source_extracts: [" + ", ".join(str(n) for n in nums) + "]\n"
+    fm = f"---\nname: {name}\n{alias_yaml}{extracts_yaml}---\n\n"
+    path.write_text(fm + body.lstrip(), encoding="utf-8")
 
 
 def _normalize_npc_key(name: str) -> str:
@@ -300,12 +327,18 @@ def run_build_dossiers(
     dossier_dir.mkdir(parents=True, exist_ok=True)
     existing_dossiers: dict[str, Path] = {}
     alias_to_canonical: dict[str, str] = {}
+    # Canonical-name → set of extract_nums already absorbed (per `source_extracts:`
+    # frontmatter). Used to skip writing *.new_notes.NNN.md sidecars for extracts
+    # that are already in the canonical dossier — prevents sidecar accumulation on
+    # deterministic re-runs and after sidecar merges.
+    canonical_source_extracts: dict[str, set[int]] = {}
     for dossier_file in dossier_dir.glob("*.md"):
-        name, aliases, _ = parse_dossier(dossier_file)
+        name, aliases, source_extracts, _ = parse_dossier(dossier_file)
         existing_dossiers[_normalize_npc_key(name)] = dossier_file
         alias_to_canonical[_normalize_npc_key(name)] = name
         for alias in aliases:
             alias_to_canonical[_normalize_npc_key(alias)] = name
+        canonical_source_extracts[name] = set(source_extracts)
 
     # ── Phase 2: aggregate sections by NPC name (folding aliases) ────────────
     # Track source extract per body so we can write per-extract new_notes
@@ -362,9 +395,15 @@ def run_build_dossiers(
         # next to their canonical owner.
         if _normalize_npc_key(npc_name) in existing_dossiers:
             existing_file = existing_dossiers[_normalize_npc_key(npc_name)]
+            existing_canonical = alias_to_canonical[_normalize_npc_key(npc_name)]
+            absorbed = canonical_source_extracts.get(existing_canonical, set())
             stem = existing_file.stem
             written = []
+            skipped_absorbed = 0
             for extract_num, bodies in sorted(npc_by_extract[npc_name].items()):
+                if extract_num in absorbed:
+                    skipped_absorbed += 1
+                    continue
                 new_note_file = dossier_dir / f"{stem}.new_notes.{extract_num:03d}.md"
                 if new_note_file.exists():
                     continue
@@ -375,6 +414,8 @@ def run_build_dossiers(
                 print(f"  Dossier exists ({existing_file.name}): wrote {len(written)} new_notes file(s) for {npc_name}")
                 for name in written:
                     print(f"    → {name}")
+            elif skipped_absorbed:
+                print(f"  Skipping (dossier exists: {existing_file.name}): {npc_name} — {skipped_absorbed} extract(s) already absorbed")
             else:
                 print(f"  Skipping (dossier exists: {existing_file.name}): {npc_name}")
             saved.append(existing_file)
@@ -386,8 +427,14 @@ def run_build_dossiers(
             # Slug collides with an existing dossier whose canonical name didn't
             # match this extraction's heading (punctuation drift, etc). Don't
             # overwrite — drop new_notes sidecars so content isn't lost.
+            _, _, collided_source_extracts, _ = parse_dossier(out_file)
+            absorbed = set(collided_source_extracts)
             written = []
+            skipped_absorbed = 0
             for extract_num, bodies in sorted(npc_by_extract[npc_name].items()):
+                if extract_num in absorbed:
+                    skipped_absorbed += 1
+                    continue
                 new_note_file = dossier_dir / f"{slug}.new_notes.{extract_num:03d}.md"
                 if new_note_file.exists():
                     continue
@@ -398,6 +445,8 @@ def run_build_dossiers(
                 print(f"  Slug collision ({out_file.name}): wrote {len(written)} new_notes file(s) for {npc_name}")
                 for name in written:
                     print(f"    → {name}")
+            elif skipped_absorbed:
+                print(f"  Skipping (slug collision: {out_file.name}): {npc_name} — {skipped_absorbed} extract(s) already absorbed")
             else:
                 print(f"  Skipping (slug collision, sidecars exist: {out_file.name}): {npc_name}")
             saved.append(out_file)
@@ -412,8 +461,8 @@ def run_build_dossiers(
         print("  " + "─" * 56)
         dossier = stream_api(client, BUILD_SYNTHESIZE_SYSTEM, raw_notes, model)
         print("  " + "─" * 56)
-        frontmatter = f"---\nname: {npc_name}\naliases: []\n---\n\n"
-        out_file.write_text(frontmatter + dossier.strip() + "\n", encoding="utf-8")
+        contributing_extracts = sorted(npc_by_extract[npc_name].keys())
+        write_dossier(out_file, npc_name, [], contributing_extracts, dossier.strip() + "\n")
         saved.append(out_file)
         print(f"  Saved: {out_file.name}\n")
 
@@ -433,7 +482,7 @@ def run_synthesize(
     canonical_to_aliases: dict[str, list[str]] = {}
     dossier_blocks: list[str] = []
     for f in npc_files:
-        name, aliases, body = parse_dossier(f)
+        name, aliases, _, body = parse_dossier(f)
         canonical_to_aliases[name] = aliases
         dossier_blocks.append(f"<!-- NPC dossier: {f.name} -->\n\n{body.strip()}")
 
