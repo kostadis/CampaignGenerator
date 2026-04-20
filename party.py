@@ -238,27 +238,39 @@ Current location, active quests, collective resources, and group reputation.
 One subsection per PC with:
 - Name, class, level, player
 - Key personality traits and motivations (2-3 sentences)
-- Current arc score tracks: name, current value, what triggers changes.
-  If the PC is intentionally trackless, state that plainly ("no formal arc
-  score mechanic — tracked narratively") and move on. Do not fabricate a
-  track or flag the absence as an issue.
 - Notable relationships (allies, enemies, obligations)
 - Items of significance
+- **Candidate Arc Score Events** (only for PCs who have a formal arc score
+  mechanic file; omit this subsection entirely for trackless PCs):
+  A bullet list of moments from the session notes that *might* trigger an
+  arc score change, formatted as:
 
-## Arc Score Summary
-A compact table of arc scores for the characters who have formal tracks,
-showing current value, next threshold, and what unlocks at that threshold.
-Omit trackless characters from this table entirely — do not list them with
-"N/A" rows.
+      - [Session ref]: [brief event] → candidate **+1 {Track name}**
+        (trigger: "{exact trigger text from the mechanic file}")
+
+  Rules for this list:
+  * DO NOT state a current value for any arc score. Ever.
+  * DO NOT compute running totals, deltas since last session, or
+    "net change" — only enumerate individual candidate events.
+  * DO NOT say "this would put them at X" or suggest thresholds crossed.
+  * Quote the trigger text verbatim from the character's arc score
+    mechanic file so the GM can verify the match.
+  * If an event could plausibly fit multiple triggers (or none), list
+    it once with a note like "(trigger match unclear — review)".
+  * If the session notes contain no candidate events for this PC,
+    write "No candidate events found in the current session notes."
 
 ## Party Dynamics
 How the characters relate to each other, current tensions, shared goals.
 
 Rules:
-- Character sheets take precedence over session notes for stats and arc score values.
+- Character sheets take precedence over session notes for stats.
+- The GM decides whether each candidate event actually triggers a score
+  change — your job is to surface the evidence, not to adjudicate it.
 - Session notes take precedence for current emotional state and recent decisions.
 - A character marked intentionally trackless has no arc score — full stop.
   Do not invent one. Do not suggest adopting the arc system of another PC.
+  Do not list candidate events for trackless PCs.
 - Be concise. This document is read quickly during session prep.
 - Do not invent anything not present in the source material.
 - Output only the party document. No preamble or commentary.
