@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import MultiPathField from '../../components/shared/MultiPathField.vue'
-import RunPanel from '../../components/shared/RunPanel.vue'
+import ExtractSynthesizePanel from '../../components/shared/ExtractSynthesizePanel.vue'
 
 const config = useConfigStore()
 
@@ -16,7 +16,6 @@ const output = ref('')
 const extractDir = ref('')
 const chunkSize = ref(60000)
 const splitChapters = ref('')
-const synthOnly = ref(false)
 const noLog = ref(false)
 const showAdvanced = ref(false)
 
@@ -46,11 +45,13 @@ const contextFiles = computed(() =>
   context.value.split('\n').map(l => l.trim()).filter(Boolean)
 )
 
-const ready = computed(() => {
-  if (synthOnly.value) return !!output.value.trim()
-  return !!(charFiles.value.length && output.value.trim())
-})
+const ready = computed(() =>
+  !!(charFiles.value.length && output.value.trim())
+)
 
+// Extract phase needs summaries; the two-phase panel appends extract_only=true.
+// When the user hits Synthesize, the panel auto-adds synthesize_only=true so
+// the CLI skips the extract pass and just reads the cached files.
 const runParams = computed(() => ({
   character: charFiles.value,
   summaries: summaries.value,
@@ -61,10 +62,11 @@ const runParams = computed(() => ({
   extract_dir: extractDir.value,
   chunk_size: chunkSize.value,
   split_chapters: splitChapters.value,
-  synthesize_only: synthOnly.value,
   no_log: noLog.value,
   model: config.model,
 }))
+
+const hasSummaries = computed(() => !!summaries.value.trim())
 
 onMounted(() => { loadFromConfig() })
 </script>
@@ -79,15 +81,6 @@ onMounted(() => { loadFromConfig() })
     </div>
 
     <div class="form-grid">
-      <div class="form-section">
-        <div class="field">
-          <label class="checkbox-label">
-            <input type="checkbox" v-model="synthOnly" />
-            Re-synthesize from existing extractions
-          </label>
-        </div>
-      </div>
-
       <!-- Required: character sheets -->
       <div class="form-section">
         <MultiPathField v-model="characters" label="Character sheet files" required resolve-base="campaign"
@@ -95,9 +88,14 @@ onMounted(() => { loadFromConfig() })
       </div>
 
       <!-- Summaries -->
-      <div v-if="!synthOnly" class="form-section">
+      <div class="form-section">
         <PathField v-model="summaries" label="Session summaries file" resolve-base="campaign"
-          help="The large summaries.md — chunked for per-character extraction." />
+          help="Optional. Omit to skip the Extract pass (characters-only mode)." />
+      </div>
+
+      <div class="form-section">
+        <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign"
+          help="Where intermediate party_extractions/ files live. Review these between Extract and Synthesize." />
       </div>
 
       <!-- Output -->
@@ -123,8 +121,6 @@ onMounted(() => { loadFromConfig() })
         </button>
 
         <div v-if="showAdvanced" class="advanced-panel">
-          <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign"
-            help="Where intermediate party_extractions/ files are saved." />
           <div class="field">
             <label class="field-label">Split by session prefix</label>
             <input type="text" class="field-input" v-model="splitChapters"
@@ -146,12 +142,14 @@ onMounted(() => { loadFromConfig() })
         </div>
       </div>
 
-      <RunPanel
+      <ExtractSynthesizePanel
         endpoint="/api/grounding/run/party"
         :params="runParams"
+        :extract-dir="extractDir"
         :disabled="!ready"
-        label="Run Party Document"
-        @done="() => {}"
+        :extract-disabled="!hasSummaries"
+        extract-label="1. Extract per-character"
+        synth-label="2. Synthesize party.md"
       />
     </div>
   </div>

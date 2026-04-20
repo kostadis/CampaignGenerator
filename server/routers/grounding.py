@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-from fastapi import APIRouter, Query
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi.responses import JSONResponse, StreamingResponse
 
 from server.subprocess_runner import python_exe, stream_subprocess
 
@@ -48,6 +48,7 @@ async def run_campaign_state(
     chunk_size: int = 60000,
     split_chapters: str = "",
     synthesize_only: bool = False,
+    extract_only: bool = False,
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
@@ -67,6 +68,7 @@ async def run_campaign_state(
         cmd += ["--chunk-size", str(chunk_size)]
 
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
+    _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
@@ -83,6 +85,7 @@ async def run_distill(
     chunk_size: int = 60000,
     split_chapters: str = "",
     synthesize_only: bool = False,
+    extract_only: bool = False,
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
@@ -100,6 +103,7 @@ async def run_distill(
         cmd += ["--chunk-size", str(chunk_size)]
 
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
+    _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
@@ -120,6 +124,7 @@ async def run_party(
     chunk_size: int = 60000,
     split_chapters: str = "",
     synthesize_only: bool = False,
+    extract_only: bool = False,
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
@@ -139,6 +144,7 @@ async def run_party(
         cmd += ["--chunk-size", str(chunk_size)]
 
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
+    _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
@@ -158,6 +164,7 @@ async def run_planning(
     chunk_size: int = 60000,
     split_chapters: str = "",
     synthesize_only: bool = False,
+    extract_only: bool = False,
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
@@ -176,6 +183,7 @@ async def run_planning(
         cmd += ["--chunk-size", str(chunk_size)]
 
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
+    _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
@@ -190,6 +198,7 @@ async def run_build_dossiers(
     chunk_size: int = 60000,
     split_chapters: str = "",
     since: int = 0,
+    extract_only: bool = False,
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
@@ -208,7 +217,67 @@ async def run_build_dossiers(
     if since > 0:
         cmd += ["--since", str(since)]
 
+    _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
     return _sse_response(cmd)
+
+
+# ── Extraction file review (two-phase checkpoint) ───────────────────────────
+# Used by the UI between the extract and synthesize passes: list the cached
+# extracts, read one for preview/edit, write an edited version back. The CLI
+# already writes these files — these endpoints just expose them to the browser
+# so the human review loop can happen without dropping to a terminal.
+
+def _resolve_extract_dir(extract_dir: str) -> Path:
+    if not extract_dir:
+        raise HTTPException(status_code=400, detail="extract_dir is required")
+    p = Path(extract_dir).expanduser()
+    if not p.is_absolute():
+        p = (Path.cwd() / p).resolve()
+    return p
+
+
+@router.get("/extracts")
+def list_extracts(extract_dir: str):
+    """List cached extract_*.md / dossier_extract_*.md files in a dir."""
+    d = _resolve_extract_dir(extract_dir)
+    if not d.exists():
+        return {"extract_dir": str(d), "exists": False, "files": []}
+    files = sorted(
+        f.name for f in d.iterdir()
+        if f.is_file() and f.suffix == ".md" and f.name.startswith(("extract_", "dossier_extract_"))
+    )
+    return {
+        "extract_dir": str(d),
+        "exists": True,
+        "files": [
+            {"name": name, "size": (d / name).stat().st_size}
+            for name in files
+        ],
+    }
+
+
+@router.get("/extracts/{filename}")
+def read_extract(filename: str, extract_dir: str):
+    d = _resolve_extract_dir(extract_dir)
+    if "/" in filename or "\\" in filename or filename.startswith("."):
+        raise HTTPException(status_code=400, detail="invalid filename")
+    path = d / filename
+    if not path.exists() or not path.is_file():
+        return JSONResponse({"exists": False, "content": ""}, status_code=404)
+    return {"exists": True, "content": path.read_text(encoding="utf-8")}
+
+
+@router.put("/extracts/{filename}")
+async def write_extract(filename: str, extract_dir: str, request: Request):
+    d = _resolve_extract_dir(extract_dir)
+    if "/" in filename or "\\" in filename or filename.startswith("."):
+        raise HTTPException(status_code=400, detail="invalid filename")
+    if not d.exists():
+        raise HTTPException(status_code=404, detail="extract_dir does not exist")
+    path = d / filename
+    data = await request.json()
+    path.write_text(data.get("content", ""), encoding="utf-8")
+    return {"ok": True, "size": path.stat().st_size}

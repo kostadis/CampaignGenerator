@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
-import RunPanel from '../../components/shared/RunPanel.vue'
+import ExtractSynthesizePanel from '../../components/shared/ExtractSynthesizePanel.vue'
 
 const config = useConfigStore()
 
@@ -11,7 +11,6 @@ const output = ref('')
 const extractDir = ref('')
 const chunkSize = ref(60000)
 const splitChapters = ref('')
-const synthOnly = ref(false)
 const noLog = ref(false)
 const showAdvanced = ref(false)
 
@@ -24,10 +23,9 @@ function loadFromConfig() {
   splitChapters.value = v.distill_split_chapters || ''
 }
 
-const ready = computed(() => {
-  if (synthOnly.value) return !!output.value.trim()
-  return !!(input.value.trim() && output.value.trim())
-})
+const ready = computed(() =>
+  !!(input.value.trim() && output.value.trim())
+)
 
 const runParams = computed(() => ({
   input: input.value,
@@ -35,7 +33,6 @@ const runParams = computed(() => ({
   extract_dir: extractDir.value,
   chunk_size: chunkSize.value,
   split_chapters: splitChapters.value,
-  synthesize_only: synthOnly.value,
   no_log: noLog.value,
   model: config.model,
 }))
@@ -54,15 +51,6 @@ onMounted(() => { loadFromConfig() })
 
     <div class="form-grid">
       <div class="form-section">
-        <div class="field">
-          <label class="checkbox-label">
-            <input type="checkbox" v-model="synthOnly" />
-            Re-synthesize from existing extractions
-          </label>
-        </div>
-      </div>
-
-      <div v-if="!synthOnly" class="form-section">
         <PathField v-model="input" label="Session summaries file" required resolve-base="campaign"
           help="The large summaries.md file that gets chunked and distilled." />
       </div>
@@ -72,6 +60,11 @@ onMounted(() => { loadFromConfig() })
           help="world_state.md — the structured canon document." />
       </div>
 
+      <div class="form-section">
+        <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign"
+          help="Where per-chunk extracts live. Review these between Extract and Synthesize." />
+      </div>
+
       <!-- Advanced -->
       <div class="form-section">
         <button class="btn-neutral btn-sm" @click="showAdvanced = !showAdvanced">
@@ -79,8 +72,6 @@ onMounted(() => { loadFromConfig() })
         </button>
 
         <div v-if="showAdvanced" class="advanced-panel">
-          <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign"
-            help="Where intermediate distill_extractions/ files are saved." />
           <div class="field">
             <label class="field-label">Split by chapter prefix</label>
             <input type="text" class="field-input" v-model="splitChapters"
@@ -102,12 +93,13 @@ onMounted(() => { loadFromConfig() })
         </div>
       </div>
 
-      <RunPanel
+      <ExtractSynthesizePanel
         endpoint="/api/grounding/run/distill"
         :params="runParams"
+        :extract-dir="extractDir"
         :disabled="!ready"
-        label="Run Distill"
-        @done="() => {}"
+        extract-label="1. Extract chunks"
+        synth-label="2. Synthesize world_state.md"
       />
     </div>
   </div>

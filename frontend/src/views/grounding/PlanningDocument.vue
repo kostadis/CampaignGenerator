@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import MultiPathField from '../../components/shared/MultiPathField.vue'
-import RunPanel from '../../components/shared/RunPanel.vue'
+import ExtractSynthesizePanel from '../../components/shared/ExtractSynthesizePanel.vue'
 
 const config = useConfigStore()
 
@@ -19,7 +19,6 @@ const output = ref('')
 const extractDir = ref('')
 const chunkSize = ref(60000)
 const splitChapters = ref('')
-const synthOnly = ref(false)
 const noLog = ref(false)
 const showAdvanced = ref(false)
 
@@ -59,10 +58,9 @@ const contextList = computed(() =>
   context.value.split('\n').map(l => l.trim()).filter(Boolean)
 )
 
-const synthReady = computed(() => {
-  if (synthOnly.value) return !!output.value.trim()
-  return !!(npcList.value.length && output.value.trim())
-})
+const synthReady = computed(() =>
+  !!(npcList.value.length && output.value.trim())
+)
 
 const dossierReady = computed(() =>
   !!(dossierSummaries.value.trim() && dossierDir.value.trim())
@@ -77,10 +75,11 @@ const synthParams = computed(() => ({
   extract_dir: extractDir.value,
   chunk_size: chunkSize.value,
   split_chapters: splitChapters.value,
-  synthesize_only: synthOnly.value,
   no_log: noLog.value,
   model: config.model,
 }))
+
+const synthHasSummaries = computed(() => !!summaries.value.trim())
 
 const dossierParams = computed(() => ({
   summaries: dossierSummaries.value,
@@ -126,15 +125,6 @@ onMounted(() => { loadFromConfig() })
     <!-- Synthesize mode -->
     <div v-if="mode === 'synthesize'" class="form-grid">
       <div class="form-section">
-        <div class="field">
-          <label class="checkbox-label">
-            <input type="checkbox" v-model="synthOnly" />
-            Re-synthesize from existing extractions
-          </label>
-        </div>
-      </div>
-
-      <div class="form-section">
         <MultiPathField v-model="npcFiles" label="NPC dossier files" required resolve-base="campaign"
           help="One per line. Per-NPC dossier files (docs/npcs/*.md)." />
       </div>
@@ -144,9 +134,9 @@ onMounted(() => { loadFromConfig() })
           help="One per line. Arc score documents for threat factions." />
       </div>
 
-      <div v-if="!synthOnly" class="form-section">
+      <div class="form-section">
         <PathField v-model="summaries" label="Session summaries file" resolve-base="campaign"
-          help="The large summaries.md — chunked for extraction." />
+          help="Optional. Omit to skip the Extract pass (synthesize from dossiers only)." />
       </div>
 
       <div class="form-section">
@@ -160,12 +150,16 @@ onMounted(() => { loadFromConfig() })
       </div>
 
       <div class="form-section">
+        <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign"
+          help="Where planning_extractions/ files live. Review between Extract and Synthesize." />
+      </div>
+
+      <div class="form-section">
         <button class="btn-neutral btn-sm" @click="showAdvanced = !showAdvanced">
           {{ showAdvanced ? 'Hide' : 'Show' }} advanced options
         </button>
 
         <div v-if="showAdvanced" class="advanced-panel">
-          <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign" />
           <div class="field">
             <label class="field-label">Split by session prefix</label>
             <input type="text" class="field-input" v-model="splitChapters"
@@ -187,12 +181,14 @@ onMounted(() => { loadFromConfig() })
         </div>
       </div>
 
-      <RunPanel
+      <ExtractSynthesizePanel
         endpoint="/api/grounding/run/planning"
         :params="synthParams"
+        :extract-dir="extractDir"
         :disabled="!synthReady"
-        label="Run Planning Synthesis"
-        @done="() => {}"
+        :extract-disabled="!synthHasSummaries"
+        extract-label="1. Extract per-NPC"
+        synth-label="2. Synthesize planning.md"
       />
     </div>
 
@@ -209,12 +205,16 @@ onMounted(() => { loadFromConfig() })
       </div>
 
       <div class="form-section">
+        <PathField v-model="dossierExtractDir" label="Extractions directory" resolve-base="campaign"
+          help="Where dossier_extract_*.md files live. Review between Extract and per-NPC synthesis." />
+      </div>
+
+      <div class="form-section">
         <button class="btn-neutral btn-sm" @click="showAdvanced = !showAdvanced">
           {{ showAdvanced ? 'Hide' : 'Show' }} advanced options
         </button>
 
         <div v-if="showAdvanced" class="advanced-panel">
-          <PathField v-model="dossierExtractDir" label="Extractions directory" resolve-base="campaign" />
           <div class="field">
             <label class="field-label">Split by session prefix</label>
             <input type="text" class="field-input" v-model="dossierSplitChapters"
@@ -239,12 +239,13 @@ onMounted(() => { loadFromConfig() })
         </div>
       </div>
 
-      <RunPanel
+      <ExtractSynthesizePanel
         endpoint="/api/grounding/run/build-dossiers"
         :params="dossierParams"
+        :extract-dir="dossierExtractDir"
         :disabled="!dossierReady"
-        label="Build Dossier Files"
-        @done="() => {}"
+        extract-label="1. Extract per-chunk NPCs"
+        synth-label="2. Aggregate & build dossiers"
       />
     </div>
   </div>
