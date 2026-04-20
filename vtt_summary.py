@@ -29,7 +29,13 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from campaignlib import chunk_text, load_file_optional, make_client, save_log, stream_api
+from campaignlib import (
+    load_file_optional,
+    make_client,
+    run_extract_pipeline,
+    run_synthesize_pipeline,
+    save_log,
+)
 
 
 EXTRACT_SYSTEM_BASE = """\
@@ -200,7 +206,6 @@ def parse_vtt(text: str) -> str:
     """Strip VTT headers, cue numbers, and timestamps. Return clean speaker dialogue."""
     lines = text.splitlines()
     dialogue: list[str] = []
-    # Patterns to skip
     header_re = re.compile(r"^WEBVTT", re.IGNORECASE)
     timestamp_re = re.compile(r"^\d{2}:\d{2}:\d{2}[.,]\d{3}\s*-->\s*\d{2}:\d{2}:\d{2}[.,]\d{3}")
     cue_re = re.compile(r"^\d+\s*$")
@@ -221,8 +226,6 @@ def parse_vtt(text: str) -> str:
         dialogue.append(stripped)
 
     return "\n".join(dialogue)
-
-
 
 
 def build_context_section(context_text: str) -> str:
@@ -252,72 +255,31 @@ def build_reference_section(reference_text: str) -> str:
     )
 
 
-def run_extract(client, text: str, chunk_size: int, model: str,
-                extract_dir: Path, context_text: str = "",
-                system_base: str = None,
-                reference_text: str = "") -> list[Path]:
-    chunks = chunk_text(text, chunk_size)
-    total = len(chunks)
-    print(f"  {total} chunk(s) to process (chunk size: {chunk_size:,} chars)\n")
-
-    extract_dir.mkdir(parents=True, exist_ok=True)
-    saved: list[Path] = []
-    base = system_base if system_base is not None else EXTRACT_SYSTEM_BASE
-    system = base.replace("{context_section}", build_context_section(context_text))
-    # Roleplay prompt has {reference_section} and {priority_block} placeholders;
-    # summary prompt doesn't — the replacements are no-ops for it.
-    has_ref = bool(reference_text.strip())
-    system = system.replace("{reference_section}", build_reference_section(reference_text))
-    system = system.replace("{priority_block}",
-                            _ROLEPLAY_PRIORITY_WITH_REF if has_ref
-                            else _ROLEPLAY_PRIORITY_NO_REF)
-
-    for i, chunk in enumerate(chunks, 1):
-        out_file = extract_dir / f"extract_{i:03d}.md"
-        if out_file.exists():
-            print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
-            saved.append(out_file)
-            continue
-
-        print(f"  [{i}/{total}] Extracting chunk ({len(chunk):,} chars)...")
-        print("  " + "─" * 56)
-        result = stream_api(client, system, chunk, model)
-        print("  " + "─" * 56)
-
-        out_file.write_text(result, encoding="utf-8")
-        saved.append(out_file)
-        print(f"  Saved: {out_file.name}\n")
-
-    return saved
+def build_summary_extract_system(context_text: str, reference_text: str) -> str:
+    return (EXTRACT_SYSTEM_BASE
+            .replace("{context_section}", build_context_section(context_text))
+            .replace("{reference_section}", build_reference_section(reference_text)))
 
 
-def run_synthesize(client, extract_files: list[Path], model: str,
-                   session_name: str, context_text: str = "",
-                   system_base: str = None, reference_text: str = "") -> str:
-    combined = [
-        f"<!-- Source: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-        for f in sorted(extract_files)
-    ]
-    user_prompt = "\n\n---\n\n".join(combined)
-    if reference_text.strip():
-        user_prompt += (
-            "\n\n---\n\n"
-            "## Reference Summaries\n\n"
-            "The following summaries were produced by other tools (GMassistant, Saga20, etc.) "
-            "for the same session. Cross-reference them against the extraction notes above. "
-            "Incorporate any events, NPC interactions, or decisions that appear here but are "
-            "absent from the extractions. Note any significant discrepancies.\n\n"
-            + reference_text.strip()
-        )
-    base = system_base if system_base is not None else SYNTHESIZE_SYSTEM_BASE
-    system = (base
-              .replace("{session_name}", session_name)
-              .replace("{context_section}", build_context_section(context_text)))
-    print(f"  Synthesizing {len(extract_files)} extraction(s) ({len(user_prompt):,} chars total)...")
-    print("  " + "─" * 56)
-    result = stream_api(client, system, user_prompt, model, max_tokens=8096)
-    print("  " + "─" * 56)
-    return result
+def build_roleplay_extract_system(context_text: str, reference_text: str) -> str:
+    priority = (_ROLEPLAY_PRIORITY_WITH_REF if reference_text.strip()
+                else _ROLEPLAY_PRIORITY_NO_REF)
+    return (ROLEPLAY_EXTRACT_SYSTEM_BASE
+            .replace("{context_section}", build_context_section(context_text))
+            .replace("{reference_section}", build_reference_section(reference_text))
+            .replace("{priority_block}", priority))
+
+
+def build_summary_synthesize_system(context_text: str, session_name: str) -> str:
+    return (SYNTHESIZE_SYSTEM_BASE
+            .replace("{context_section}", build_context_section(context_text))
+            .replace("{session_name}", session_name))
+
+
+def build_roleplay_synthesize_system(context_text: str, session_name: str) -> str:
+    return (ROLEPLAY_SYNTHESIZE_SYSTEM_BASE
+            .replace("{context_section}", build_context_section(context_text))
+            .replace("{session_name}", session_name))
 
 
 def main() -> None:
@@ -396,14 +358,19 @@ def main() -> None:
             context_text = "\n\n---\n\n".join(parts)
             print(f"[Context: {len(parts)} file(s), {len(context_text):,} chars]")
 
-    # Load optional reference summaries (GMassistant recap, Saga20, etc.)
+    # Load reference summaries — kept in two forms:
+    #   reference_text   — concatenated string injected into extract system prompts
+    #   reference_paths  — Path list handed to run_synthesize_pipeline as a source group
     reference_text = ""
+    reference_paths: list[Path] = []
     if args.reference_summaries:
         parts = []
         for ref_path in args.reference_summaries:
+            p = Path(ref_path).expanduser()
             content = load_file_optional(ref_path, "reference summary")
             if content is not None:
-                parts.append(f"### {Path(ref_path).name}\n\n{content.strip()}")
+                parts.append(f"### {p.name}\n\n{content.strip()}")
+                reference_paths.append(p.resolve())
         if parts:
             reference_text = "\n\n---\n\n".join(parts)
             print(f"[Reference summaries: {len(parts)} file(s), {len(reference_text):,} chars]")
@@ -426,9 +393,13 @@ def main() -> None:
 
         print(f"[Pass 1: Extract (summary) | model: {args.model}]")
         print("=" * 60)
-        extract_files = run_extract(client, dialogue, args.chunk_size, args.model,
-                                    extract_dir, context_text,
-                                    reference_text=reference_text)
+        extract_files = run_extract_pipeline(
+            client, dialogue,
+            extract_system=build_summary_extract_system(context_text, reference_text),
+            model=args.model,
+            extract_dir=extract_dir,
+            chunk_size=args.chunk_size,
+        )
         if not extract_files:
             print("Error: no chunks were extracted — dialogue may be too short.", file=sys.stderr)
             sys.exit(1)
@@ -442,8 +413,15 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize (summary) | model: {args.model}]")
     print("=" * 60)
-    summary = run_synthesize(client, extract_files, args.model, session_name, context_text,
-                             reference_text=reference_text)
+    summary = run_synthesize_pipeline(
+        client,
+        source_groups=[
+            ("", extract_files),
+            ("REFERENCE SUMMARIES", reference_paths),
+        ],
+        synthesize_system=build_summary_synthesize_system(context_text, session_name),
+        model=args.model,
+    )
     print("=" * 60)
 
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -459,11 +437,12 @@ def main() -> None:
         if not args.synthesize_only:
             print(f"\n[Pass 3: Extract (roleplay) | model: {args.model}]")
             print("=" * 60)
-            roleplay_extract_files = run_extract(
-                client, dialogue, args.chunk_size, args.model,
-                roleplay_extract_dir, context_text,
-                system_base=ROLEPLAY_EXTRACT_SYSTEM_BASE,
-                reference_text=reference_text,
+            roleplay_extract_files = run_extract_pipeline(
+                client, dialogue,
+                extract_system=build_roleplay_extract_system(context_text, reference_text),
+                model=args.model,
+                extract_dir=roleplay_extract_dir,
+                chunk_size=args.chunk_size,
             )
             print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
         else:
@@ -476,9 +455,11 @@ def main() -> None:
         if roleplay_extract_files:
             print(f"\n[Pass 4: Synthesize (roleplay) | model: {args.model}]")
             print("=" * 60)
-            roleplay_doc = run_synthesize(
-                client, roleplay_extract_files, args.model, session_name, context_text,
-                system_base=ROLEPLAY_SYNTHESIZE_SYSTEM_BASE,
+            roleplay_doc = run_synthesize_pipeline(
+                client,
+                source_groups=[("", roleplay_extract_files)],
+                synthesize_system=build_roleplay_synthesize_system(context_text, session_name),
+                model=args.model,
             )
             print("=" * 60)
 
