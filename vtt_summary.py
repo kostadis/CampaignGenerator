@@ -5,9 +5,13 @@ Parses Zoom's WebVTT format, strips timestamps and cue numbers to produce
 clean speaker dialogue, then runs a two-pass extract → synthesize pipeline
 to generate a structured session summary.
 
+Use --extract-only to stop after the extract pass(es) so you can review and
+edit the intermediate files before synthesis.
+
 Usage:
   python vtt_summary.py session.vtt --output docs/summaries/session_12.md
   python vtt_summary.py session.vtt -o session_12.md --date "2026-03-15"
+  python vtt_summary.py session.vtt --output session_12.md --extract-only
   python vtt_summary.py session.vtt --synthesize-only --extract-dir vtt_extractions/ -o out.md
 
 Output is a structured markdown session summary suitable for:
@@ -20,6 +24,7 @@ Options:
   --chunk-size CHARS    Characters per extract chunk (default: 50000)
   --extract-dir DIR     Where to save/load extract files (default: <output_dir>/vtt_extractions/)
   --synthesize-only     Skip extract, synthesize from existing files in --extract-dir
+  --extract-only        Run both extract passes then stop (review before synthesizing)
   --no-log              Skip saving a log file
 """
 
@@ -309,6 +314,12 @@ def main() -> None:
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction, synthesize from existing files in --extract-dir "
                              "(applies to both summary and roleplay passes)")
+    parser.add_argument("--extract-only", action="store_true",
+                        help="Run both extract passes, then stop so you can review "
+                             "per-chunk extractions before synthesis. Re-run with "
+                             "--synthesize-only against the same --extract-dir (and "
+                             "--roleplay-extract-dir if applicable) to produce the final "
+                             "document(s).")
     parser.add_argument("--context", nargs="+", metavar="FILE",
                         help="Campaign context files to include (e.g. campaign_state.md "
                              "world_state.md party.md). Helps identify NPCs and track changes.")
@@ -322,6 +333,10 @@ def main() -> None:
                         help="Claude model to use")
     args = parser.parse_args()
 
+    if args.synthesize_only and args.extract_only:
+        print("Error: --synthesize-only and --extract-only are mutually exclusive",
+              file=sys.stderr)
+        sys.exit(1)
     if args.synthesize_only and not args.extract_dir:
         print("Error: --synthesize-only requires --extract-dir", file=sys.stderr)
         sys.exit(1)
@@ -404,6 +419,26 @@ def main() -> None:
             print("Error: no chunks were extracted — dialogue may be too short.", file=sys.stderr)
             sys.exit(1)
         print(f"Extractions saved to: {extract_dir}")
+
+        if args.extract_only:
+            if args.roleplay_output:
+                print(f"\n[Pass 2: Extract (roleplay) | model: {args.model}]")
+                print("=" * 60)
+                run_extract_pipeline(
+                    client, dialogue,
+                    extract_system=build_roleplay_extract_system(context_text, reference_text),
+                    model=args.model,
+                    extract_dir=roleplay_extract_dir,
+                    chunk_size=args.chunk_size,
+                )
+                print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
+
+            print(f"\n[Extract-only mode — stopping before synthesis]")
+            print(f"Review files in: {extract_dir}")
+            if args.roleplay_output:
+                print(f"                 {roleplay_extract_dir}")
+            print(f"When ready, re-run with --synthesize-only to produce the final document(s).")
+            return
     else:
         extract_files = sorted(extract_dir.glob("extract_*.md"))
         if not extract_files:
