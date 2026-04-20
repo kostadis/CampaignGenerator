@@ -20,7 +20,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import prepare_chunks, make_client, stream_api
+from campaignlib import make_client, run_extract_pipeline, run_synthesize_pipeline
 
 EXTRACT_SYSTEM = """\
 You are a lore archivist for a D&D campaign. You will be given a portion of \
@@ -71,47 +71,6 @@ Output only the world_state document. No preamble or commentary.
 """
 
 
-
-def run_extract(client, text: str, chunk_size: int, model: str, extract_dir: Path,
-                split_chapters: str | None = None) -> list[Path]:
-    chunks, label = prepare_chunks(text, chunk_size, split_chapters, split_label="chapter")
-    total = len(chunks)
-
-    extract_dir.mkdir(parents=True, exist_ok=True)
-    saved = []
-
-    for i, chunk in enumerate(chunks, 1):
-        out_file = extract_dir / f"extract_{i:03d}.md"
-        if out_file.exists():
-            print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
-            saved.append(out_file)
-            continue
-
-        print(f"  [{i}/{total}] Extracting {label} ({len(chunk):,} chars)...")
-        print("  " + "─" * 56)
-        result = stream_api(client, EXTRACT_SYSTEM, chunk, model)
-        print("  " + "─" * 56)
-
-        out_file.write_text(result, encoding="utf-8")
-        saved.append(out_file)
-        print(f"  Saved: {out_file.name}\n")
-
-    return saved
-
-
-def run_synthesize(client, extract_files: list[Path], model: str) -> str:
-    combined = [
-        f"<!-- Source: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-        for f in sorted(extract_files)
-    ]
-    user_prompt = "\n\n---\n\n".join(combined)
-    print(f"  Synthesizing {len(extract_files)} extraction(s) ({len(user_prompt):,} chars total)...")
-    print("  " + "─" * 56)
-    result = stream_api(client, SYNTHESIZE_SYSTEM, user_prompt, model)
-    print("  " + "─" * 56)
-    return result
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Distill session summaries into a world_state lore document."
@@ -157,8 +116,15 @@ def main() -> None:
             sys.exit(1)
         print(f"\n[Pass 1: Extract | {len(text):,} chars | model: {args.model}]")
         print("=" * 60)
-        extract_files = run_extract(client, text, args.chunk_size, args.model, extract_dir,
-                                    split_chapters=args.split_chapters)
+        extract_files = run_extract_pipeline(
+            client, text,
+            extract_system=EXTRACT_SYSTEM,
+            model=args.model,
+            extract_dir=extract_dir,
+            chunk_size=args.chunk_size,
+            split_chapters=args.split_chapters,
+            split_label="chapter",
+        )
         if not extract_files:
             print("Error: no chunks were extracted — input may be too short.", file=sys.stderr)
             sys.exit(1)
@@ -172,7 +138,12 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize | model: {args.model}]")
     print("=" * 60)
-    world_state = run_synthesize(client, extract_files, args.model)
+    world_state = run_synthesize_pipeline(
+        client,
+        source_groups=[("", extract_files)],
+        synthesize_system=SYNTHESIZE_SYSTEM,
+        model=args.model,
+    )
     print("=" * 60)
 
     output.parent.mkdir(parents=True, exist_ok=True)
