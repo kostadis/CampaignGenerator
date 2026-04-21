@@ -87,6 +87,8 @@ def run_extract_pipeline(
     split_chapters: str | None = None,
     split_label: str = "chunk",
     filename_template: str = "extract_{i:03d}.md",
+    input_normalizer=None,
+    system_suffix: str = "",
 ) -> list[Path]:
     """Chunk `text`, run `extract_system` against each chunk, cache each result to `extract_dir`.
 
@@ -94,7 +96,19 @@ def run_extract_pipeline(
     the 1-indexed chunk number). Existing files are skipped so a partial run
     can be resumed. Returns the ordered list of output paths (including skipped
     ones).
+
+    input_normalizer — optional `Callable[[str], str]` applied to `text`
+                       before chunking. Used to rewrite alias variants to
+                       canonical names (see `build_alias_normalizer`).
+    system_suffix    — optional string appended to `extract_system` with a
+                       blank-line separator. Used to seed the prompt with a
+                       "Known NPCs" roster (see `format_npc_roster`).
     """
+    if input_normalizer:
+        text = input_normalizer(text)
+    if system_suffix:
+        extract_system = extract_system + "\n\n" + system_suffix
+
     chunks, label = prepare_chunks(text, chunk_size, split_chapters, split_label=split_label)
     total = len(chunks)
     extract_dir.mkdir(parents=True, exist_ok=True)
@@ -128,6 +142,8 @@ def run_synthesize_pipeline(
     source_label: str = "Source",
     group_separator: str = "\n\n===\n\n",
     file_separator: str = "\n\n---\n\n",
+    input_normalizer=None,
+    system_suffix: str = "",
 ) -> str:
     """Concat labeled file groups into a user prompt, call `stream_api`, return the response.
 
@@ -146,6 +162,11 @@ def run_synthesize_pipeline(
 
     Files within a group are joined by `file_separator`; groups are joined by
     `group_separator`. Exits with SystemExit(1) if all groups are empty.
+
+    input_normalizer — optional `Callable[[str], str]` applied to each file's
+                       contents before it is rendered into the prompt.
+    system_suffix    — optional string appended to `synthesize_system` with a
+                       blank-line separator.
     """
     parts: list[str] = []
     total_files = 0
@@ -157,10 +178,12 @@ def run_synthesize_pipeline(
             group_label = source_label
         if not files:
             continue
-        blocks = [
-            f"<!-- {group_label}: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-            for f in files
-        ]
+        blocks = []
+        for f in files:
+            body = f.read_text(encoding="utf-8").strip()
+            if input_normalizer:
+                body = input_normalizer(body)
+            blocks.append(f"<!-- {group_label}: {f.name} -->\n\n{body}")
         body = file_separator.join(blocks)
         parts.append(f"# {heading}\n\n{body}" if heading else body)
         total_files += len(files)
@@ -168,6 +191,9 @@ def run_synthesize_pipeline(
     if not parts:
         print("Error: no source material to synthesize.", file=sys.stderr)
         raise SystemExit(1)
+
+    if system_suffix:
+        synthesize_system = synthesize_system + "\n\n" + system_suffix
 
     user_prompt = group_separator.join(parts)
     print(f"  Synthesizing {total_files} source file(s) ({len(user_prompt):,} chars total)...")

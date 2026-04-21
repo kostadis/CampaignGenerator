@@ -283,3 +283,161 @@ def test_synthesize_strips_trailing_whitespace_from_file_contents(fake_stream_ap
     prompt = fake_stream_api.calls[0]["user"]
     assert "alpha with padding" in prompt
     assert not prompt.endswith("   \n\n")
+
+
+# ── input_normalizer / system_suffix kwargs ──────────────────────────────────
+
+def test_extract_applies_input_normalizer_before_chunking(fake_stream_api, tmp_path):
+    text = "Session 1: Cap. Tolubb and Captain Tolubb spoke."
+
+    campaignlib.run_extract_pipeline(
+        client=None, text=text,
+        extract_system="SYS", model="m",
+        extract_dir=tmp_path / "e", chunk_size=60000,
+        input_normalizer=lambda s: s.replace("Cap. Tolubb", "Tolubb").replace("Captain Tolubb", "Tolubb"),
+    )
+    user_prompt = fake_stream_api.calls[0]["user"]
+    assert "Cap. Tolubb" not in user_prompt
+    assert "Captain Tolubb" not in user_prompt
+    assert user_prompt.count("Tolubb") == 2
+
+
+def test_extract_appends_system_suffix(fake_stream_api, tmp_path):
+    campaignlib.run_extract_pipeline(
+        client=None, text="hello",
+        extract_system="BASE SYSTEM", model="m",
+        extract_dir=tmp_path / "e", chunk_size=60000,
+        system_suffix="Known NPCs: Tolubb",
+    )
+    system = fake_stream_api.calls[0]["system"]
+    assert system == "BASE SYSTEM\n\nKnown NPCs: Tolubb"
+
+
+def test_extract_no_normalizer_no_suffix_is_default_shape(fake_stream_api, tmp_path):
+    campaignlib.run_extract_pipeline(
+        client=None, text="hello",
+        extract_system="BASE", model="m",
+        extract_dir=tmp_path / "e", chunk_size=60000,
+    )
+    assert fake_stream_api.calls[0]["system"] == "BASE"
+    assert fake_stream_api.calls[0]["user"] == "hello"
+
+
+def test_synthesize_applies_input_normalizer_per_file(fake_stream_api, tmp_path):
+    f1 = _write(tmp_path / "a.md", "Cap. Tolubb did a thing.")
+    f2 = _write(tmp_path / "b.md", "Later, Captain Tolubb did another.")
+
+    campaignlib.run_synthesize_pipeline(
+        client=None,
+        source_groups=[("NOTES", [f1, f2])],
+        synthesize_system="SYS", model="m",
+        input_normalizer=lambda s: s.replace("Cap. Tolubb", "Tolubb").replace("Captain Tolubb", "Tolubb"),
+    )
+    prompt = fake_stream_api.calls[0]["user"]
+    assert "Cap. Tolubb" not in prompt
+    assert "Captain Tolubb" not in prompt
+    assert prompt.count("Tolubb") == 2
+
+
+def test_synthesize_appends_system_suffix(fake_stream_api, tmp_path):
+    f1 = _write(tmp_path / "a.md", "body")
+    campaignlib.run_synthesize_pipeline(
+        client=None,
+        source_groups=[("", [f1])],
+        synthesize_system="BASE", model="m",
+        system_suffix="Known NPCs: Tolubb",
+    )
+    assert fake_stream_api.calls[0]["system"] == "BASE\n\nKnown NPCs: Tolubb"
+
+
+# ── Alias machinery (lifted into campaignlib) ────────────────────────────────
+
+def test_parse_dossier_with_full_frontmatter(tmp_path):
+    p = tmp_path / "tolubb.md"
+    p.write_text(
+        "---\nname: Tolubb\naliases:\n  - Cap. Tolubb\n  - Captain Tolubb\n"
+        "source_extracts: [1, 3, 5]\n---\n\n# Body\n",
+        encoding="utf-8",
+    )
+    name, aliases, source_extracts, body = campaignlib.parse_dossier(p)
+    assert name == "Tolubb"
+    assert aliases == ["Cap. Tolubb", "Captain Tolubb"]
+    assert source_extracts == [1, 3, 5]
+    assert body.startswith("# Body")
+
+
+def test_parse_dossier_no_frontmatter_falls_back_to_stem(tmp_path):
+    p = tmp_path / "legacy.md"
+    p.write_text("just body, no frontmatter\n", encoding="utf-8")
+    name, aliases, source_extracts, _ = campaignlib.parse_dossier(p)
+    assert name == "legacy"
+    assert aliases == []
+    assert source_extracts == []
+
+
+def test_load_alias_map_skips_sidecars(tmp_path):
+    (tmp_path / "tolubb.md").write_text(
+        "---\nname: Tolubb\naliases:\n  - Cap. Tolubb\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+    # Sidecar file — must NOT appear in the alias map.
+    (tmp_path / "tolubb.new_notes.003.md").write_text("sidecar contents", encoding="utf-8")
+    m = campaignlib.load_alias_map(tmp_path)
+    assert "Tolubb" in m
+    assert m["Tolubb"] == ["Cap. Tolubb"]
+    assert len(m) == 1
+
+
+def test_load_alias_map_empty_or_missing_dir(tmp_path):
+    assert campaignlib.load_alias_map(None) == {}
+    assert campaignlib.load_alias_map(tmp_path / "does-not-exist") == {}
+    # Empty but existing dir → empty map.
+    (tmp_path / "empty").mkdir()
+    assert campaignlib.load_alias_map(tmp_path / "empty") == {}
+
+
+def test_build_alias_normalizer_rewrites_longest_first():
+    normalize, _ = campaignlib.build_alias_normalizer({
+        "Tolubb": ["Cap. Tolubb", "Captain Tolubb"],
+    })
+    assert normalize("Captain Tolubb walked in, and Cap. Tolubb sat down.") \
+        == "Tolubb walked in, and Tolubb sat down."
+
+
+def test_build_alias_normalizer_case_insensitive():
+    normalize, _ = campaignlib.build_alias_normalizer({"Xalvosh": ["xalvos"]})
+    assert normalize("Then XALVOS appeared.") == "Then Xalvosh appeared."
+
+
+def test_build_alias_normalizer_whole_word_only():
+    normalize, _ = campaignlib.build_alias_normalizer({"Tolubb": ["Cap"]})
+    # "Cap" should not match inside "Capture" or "Captain"
+    assert normalize("Capture the Captain.") == "Capture the Captain."
+    assert normalize("The Cap arrived.") == "The Tolubb arrived."
+
+
+def test_build_alias_normalizer_empty_map_is_identity():
+    normalize, entries = campaignlib.build_alias_normalizer({})
+    assert normalize("anything at all") == "anything at all"
+    assert entries == []
+
+
+def test_format_npc_roster_empty_is_empty_string():
+    assert campaignlib.format_npc_roster({}) == ""
+
+
+def test_format_npc_roster_renders_sorted_with_aliases():
+    roster = campaignlib.format_npc_roster({
+        "Tolubb": ["Cap. Tolubb", "Captain Tolubb"],
+        "Xalvosh": [],
+    })
+    lines = roster.splitlines()
+    assert lines[0].startswith("Known NPCs")
+    # Sorted alphabetically.
+    assert lines[1] == "- Tolubb (also: Cap. Tolubb, Captain Tolubb)"
+    assert lines[2] == "- Xalvosh"
+
+
+def test_normalize_npc_key_strips_punctuation_and_case():
+    assert campaignlib.normalize_npc_key("Harbin (Townmaster)") == "harbin townmaster"
+    assert campaignlib.normalize_npc_key("Elara 'Seasong' Meliamne") == "elara seasong meliamne"
