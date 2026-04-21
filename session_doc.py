@@ -39,7 +39,15 @@ import re
 import sys
 from pathlib import Path
 
-from campaignlib import load_file_optional, make_client, stream_api, save_log
+from campaignlib import (
+    build_alias_normalizer,
+    format_npc_roster,
+    load_alias_map,
+    load_file_optional,
+    make_client,
+    save_log,
+    stream_api,
+)
 
 
 # ── Pass 1: Consistency check ──────────────────────────────────────────────────
@@ -995,6 +1003,12 @@ def main() -> None:
                              "and campaign context in narration (Pass 5).")
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku instead of Sonnet (~4x cheaper, faster, slightly lower quality)")
+    parser.add_argument("--dossier-dir", metavar="DIR", default=None,
+                        help="Directory of per-NPC dossier files (built by "
+                             "planning.py --build-dossiers). If given, every "
+                             "alias in dossier frontmatter is rewritten to its "
+                             "canonical name in recap/extractions before Pass 4, "
+                             "and a 'Known NPCs' roster seeds the extract prompt.")
     args = parser.parse_args()
     if args.fast:
         args.model = "claude-haiku-4-5-20251001"
@@ -1008,9 +1022,18 @@ def main() -> None:
     recap = recap_path.read_text(encoding="utf-8")
     print(f"  Recap: {recap_path.name} ({len(recap):,} chars)")
 
+    alias_map = load_alias_map(args.dossier_dir)
+    normalize, _ = build_alias_normalizer(alias_map)
+    npc_roster = format_npc_roster(alias_map)
+    if alias_map:
+        print(f"  Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
+    recap = normalize(recap)
+
     roleplay_extractions: list[tuple[str, str]] = []
     if args.roleplay_extract_dir:
         roleplay_extractions = load_extractions(Path(args.roleplay_extract_dir).expanduser())
+        if alias_map:
+            roleplay_extractions = [(n, normalize(c)) for n, c in roleplay_extractions]
         print(f"  Roleplay extractions: {len(roleplay_extractions)} chunk(s)")
     if not roleplay_extractions:
         print("Error: --roleplay-extract-dir is required", file=sys.stderr)
@@ -1019,12 +1042,15 @@ def main() -> None:
     summary_extractions: list[tuple[str, str]] = []
     if args.summary_extract_dir:
         summary_extractions = load_extractions(Path(args.summary_extract_dir).expanduser())
+        if alias_map:
+            summary_extractions = [(n, normalize(c)) for n, c in summary_extractions]
         print(f"  Session extractions:  {len(summary_extractions)} chunk(s)")
 
     session_summary: str = ""
     if args.session_summary:
         session_summary = load_file_optional(args.session_summary, "--session-summary file") or ""
         if session_summary:
+            session_summary = normalize(session_summary)
             print(f"  Session summary:      {Path(args.session_summary).name} ({len(session_summary):,} chars)")
 
     context_parts: list[str] = []
@@ -1396,6 +1422,8 @@ def main() -> None:
             char_extract_system = (CHAR_EXTRACT_SYSTEM
                                    .replace("{narrator}", narrator)
                                    .replace("{scene_block}", scene_block))
+            if npc_roster:
+                char_extract_system = char_extract_system + "\n\n" + npc_roster
             char_extract_prompt = build_char_extract_prompt(
                 section, roleplay_extractions, summary_extractions or None,
                 roster, recap, session_summary
