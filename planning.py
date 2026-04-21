@@ -48,6 +48,8 @@ from pathlib import Path
 
 from campaignlib import (
     build_alias_normalizer,
+    format_npc_roster,
+    load_alias_map,
     make_client,
     normalize_npc_key as _normalize_npc_key,
     parse_dossier,
@@ -233,6 +235,12 @@ def run_build_dossiers(
     """
 
     # ── Phase 1: extract NPC mentions from each chunk ─────────────────────────
+    # Seed the extract prompt with the existing canonical roster so re-builds
+    # don't fragment NPCs the human has already merged (e.g. Tolubb vs
+    # "Captain Tolubb"). No-op for a fresh campaign with an empty dossier dir.
+    existing_roster = format_npc_roster(load_alias_map(dossier_dir))
+    if existing_roster:
+        print(f"  Seeding extract prompt with {existing_roster.count(chr(10))} known NPC(s).")
     run_extract_pipeline(
         client, summaries_text,
         extract_system=BUILD_EXTRACT_SYSTEM,
@@ -242,6 +250,7 @@ def run_build_dossiers(
         split_chapters=split_chapters,
         split_label="session",
         filename_template="dossier_extract_{i:03d}.md",
+        system_suffix=existing_roster,
     )
 
     if extract_only:
