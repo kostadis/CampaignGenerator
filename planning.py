@@ -102,6 +102,9 @@ Last known location or status of any named NPC or faction operative.
 Rules:
 - Only include information about NPCs and factions, not player characters.
 - Be specific: name the NPC/faction and the session event.
+- Preserve information about every named NPC and faction mentioned in this chunk. Do not make scope decisions about which NPCs are "important enough" — scope and consolidation happen in the next phase; your job here is to capture everything.
+- Include deceased NPCs whose corpses or remains are in play, being examined, harvested, or discussed (e.g. "the party harvested the dragon's breath pouch"). Death does not disqualify an NPC from the notes.
+- Include referenced-but-absent NPCs when they are meaningfully discussed — a mentor named in dialogue, a faction leader whose plans are debated, an NPC whose belongings are in play. Physical presence is not required; being talked about counts.
 - If a section has nothing relevant, omit it entirely.
 - Output only the structured notes under the headings above.
 """
@@ -169,9 +172,12 @@ For each named NPC that appears in this text, create a section using their full 
 
 Rules:
 - Use ## Full NPC Name as the heading for each NPC (one ## per NPC, no sub-headings)
+- Every named NPC that appears gets their own section. Do NOT fold one NPC's activity into another NPC's section — even if they interact, even if one is dead, even if one is minor. Scope/consolidation decisions happen in the next phase; your job is to preserve information per-NPC.
+- Include deceased NPCs if they are present in the events (e.g. a corpse being examined, a body being harvested, a named casualty). Death does not disqualify an NPC from having their own section.
+- Include referenced-but-absent NPCs if they are meaningfully discussed — e.g. a PC's mentor mentioned in dialogue, a faction leader whose plans are being debated, an NPC whose belongings are in play. Physical presence is not required; being talked about counts. If you include such an NPC, open their section by noting they do not appear in this chunk, then record what was said about them.
 - Only include named NPCs — not player characters, not generic "bandits" or "guards"
 - Be specific: name the session event, not a generic description
-- If an NPC doesn't appear in this chunk at all, omit them entirely
+- If an NPC is not mentioned, referenced, or discussed anywhere in this chunk, omit them entirely
 - Output only the NPC sections. No preamble, no summary.
 """
 
