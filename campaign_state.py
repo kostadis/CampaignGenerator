@@ -64,7 +64,14 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import make_client, run_extract_pipeline, run_synthesize_pipeline
+from campaignlib import (
+    build_alias_normalizer,
+    format_npc_roster,
+    load_alias_map,
+    make_client,
+    run_extract_pipeline,
+    run_synthesize_pipeline,
+)
 
 EXTRACT_SYSTEM_BASE = """\
 You are extracting campaign completion and status information from D&D session summary notes.
@@ -228,6 +235,12 @@ def main() -> None:
                         help="Run the extract pass only, then stop so you can review "
                              "extractions before synthesis. Re-run with --synthesize-only "
                              "against the same --extract-dir to produce the final document.")
+    parser.add_argument("--dossier-dir", metavar="DIR", default=None,
+                        help="Directory of per-NPC dossier files (built by "
+                             "planning.py --build-dossiers). If given, every "
+                             "alias in dossier frontmatter is rewritten to its "
+                             "canonical name before extract/synth, and a "
+                             "'Known NPCs' roster seeds the system prompts.")
     parser.add_argument("--model", default="claude-sonnet-4-20250514",
                         help="Claude model to use")
     args = parser.parse_args()
@@ -261,6 +274,12 @@ def main() -> None:
         else output.parent / "state_extractions"
     )
 
+    alias_map = load_alias_map(args.dossier_dir)
+    normalize, _ = build_alias_normalizer(alias_map)
+    roster = format_npc_roster(alias_map)
+    if alias_map:
+        print(f"Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
+
     client = make_client()
 
     if tracked_items:
@@ -283,6 +302,8 @@ def main() -> None:
             chunk_size=args.chunk_size,
             split_chapters=args.split_chapters,
             split_label="session",
+            input_normalizer=normalize,
+            system_suffix=roster,
         )
         if not extract_files:
             print("Error: no chunks were extracted — input may be too short.", file=sys.stderr)
@@ -310,6 +331,8 @@ def main() -> None:
         source_groups=[("", extract_files)],
         synthesize_system=build_synthesize_system(tracked_items),
         model=args.model,
+        input_normalizer=normalize,
+        system_suffix=roster,
     )
     print("=" * 60)
 

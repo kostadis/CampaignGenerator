@@ -45,7 +45,15 @@ from pathlib import Path
 
 import yaml
 
-from campaignlib import make_client, run_extract_pipeline, run_synthesize_pipeline, stream_api
+from campaignlib import (
+    build_alias_normalizer,
+    format_npc_roster,
+    load_alias_map,
+    make_client,
+    run_extract_pipeline,
+    run_synthesize_pipeline,
+    stream_api,
+)
 
 
 @dataclass
@@ -141,7 +149,7 @@ def load_party_config(path: Path) -> PartyConfig:
     return PartyConfig(characters=characters)
 
 
-def _render_party_block(party_config: PartyConfig) -> str:
+def _render_party_block(party_config: PartyConfig, input_normalizer=None) -> str:
     """Render the PARTY source group as `# PARTY` with one `## {name}`
     subsection per PC, nesting sheet / backstory / arc_score files with
     source-comment labels.
@@ -149,14 +157,18 @@ def _render_party_block(party_config: PartyConfig) -> str:
     Trackless characters get an explicit marker so the LLM doesn't
     invent an arc track or suggest creating one.
     """
+    def _read(p: Path) -> str:
+        body = p.read_text(encoding="utf-8").strip()
+        return input_normalizer(body) if input_normalizer else body
+
     char_blocks: list[str] = []
     for pc in party_config.characters:
         parts = [f"## {pc.name}"]
-        parts.append(f"<!-- Character sheet: {pc.sheet.name} -->\n\n{pc.sheet.read_text(encoding='utf-8').strip()}")
+        parts.append(f"<!-- Character sheet: {pc.sheet.name} -->\n\n{_read(pc.sheet)}")
         if pc.backstory is not None:
-            parts.append(f"<!-- Backstory: {pc.backstory.name} -->\n\n{pc.backstory.read_text(encoding='utf-8').strip()}")
+            parts.append(f"<!-- Backstory: {pc.backstory.name} -->\n\n{_read(pc.backstory)}")
         if pc.arc_score is not None:
-            parts.append(f"<!-- Arc score mechanic: {pc.arc_score.name} -->\n\n{pc.arc_score.read_text(encoding='utf-8').strip()}")
+            parts.append(f"<!-- Arc score mechanic: {pc.arc_score.name} -->\n\n{_read(pc.arc_score)}")
         elif pc.trackless:
             parts.append(
                 "<!-- Arc score: INTENTIONALLY TRACKLESS -->\n\n"
@@ -168,15 +180,18 @@ def _render_party_block(party_config: PartyConfig) -> str:
     return "# PARTY\n\n" + "\n\n---\n\n".join(char_blocks)
 
 
-def _render_source_group(heading: str, files: list[Path], label: str) -> str:
+def _render_source_group(heading: str, files: list[Path], label: str,
+                         input_normalizer=None) -> str:
     """Match run_synthesize_pipeline's rendering so the party-config path
     produces an equivalent user prompt for non-party groups."""
     if not files:
         return ""
-    blocks = [
-        f"<!-- {label}: {f.name} -->\n\n{f.read_text(encoding='utf-8').strip()}"
-        for f in files
-    ]
+    blocks = []
+    for f in files:
+        body = f.read_text(encoding="utf-8").strip()
+        if input_normalizer:
+            body = input_normalizer(body)
+        blocks.append(f"<!-- {label}: {f.name} -->\n\n{body}")
     body = "\n\n---\n\n".join(blocks)
     return f"# {heading}\n\n{body}" if heading else body
 
@@ -312,6 +327,12 @@ def main() -> None:
                         help="Run the extract pass only, then stop so you can review "
                              "extractions before synthesis. Re-run with --synthesize-only "
                              "against the same --extract-dir to produce the final document.")
+    parser.add_argument("--dossier-dir", metavar="DIR", default=None,
+                        help="Directory of per-NPC dossier files (built by "
+                             "planning.py --build-dossiers). If given, every "
+                             "alias in dossier frontmatter is rewritten to its "
+                             "canonical name before extract/synth, and a "
+                             "'Known NPCs' roster seeds the system prompts.")
     parser.add_argument("--model", default="claude-sonnet-4-20250514",
                         help="Claude model to use")
     args = parser.parse_args()
@@ -359,6 +380,12 @@ def main() -> None:
             print(f"Error: file not found: {f}", file=sys.stderr)
             sys.exit(1)
 
+    alias_map = load_alias_map(args.dossier_dir)
+    normalize, _ = build_alias_normalizer(alias_map)
+    roster = format_npc_roster(alias_map)
+    if alias_map:
+        print(f"Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
+
     client = make_client()
 
     # ── Extract pass ──────────────────────────────────────────────────────────
@@ -374,6 +401,8 @@ def main() -> None:
             chunk_size=args.chunk_size,
             split_chapters=args.split_chapters,
             split_label="session",
+            input_normalizer=normalize,
+            system_suffix=roster,
         )
         print(f"Extractions saved to: {extract_dir}")
 
@@ -413,17 +442,20 @@ def main() -> None:
     print(f"\n[Pass 2: Synthesize | {', '.join(sources)} | model: {args.model}]")
     print("=" * 60)
     if party_config:
-        party_block = _render_party_block(party_config)
-        extracts_block = _render_source_group("SESSION EXTRACTIONS", extract_files, "Session extract")
-        context_block = _render_source_group("ADDITIONAL CONTEXT", context_files, "Context")
+        party_block = _render_party_block(party_config, input_normalizer=normalize)
+        extracts_block = _render_source_group("SESSION EXTRACTIONS", extract_files,
+                                              "Session extract", input_normalizer=normalize)
+        context_block = _render_source_group("ADDITIONAL CONTEXT", context_files,
+                                             "Context", input_normalizer=normalize)
         parts = [p for p in (party_block, extracts_block, context_block) if p]
         if not parts:
             print("Error: no source material to synthesize.", file=sys.stderr)
             sys.exit(1)
         user_prompt = "\n\n===\n\n".join(parts)
+        system_prompt = SYNTHESIZE_SYSTEM + ("\n\n" + roster if roster else "")
         print(f"  Synthesizing per-character party block ({len(user_prompt):,} chars)...")
         print("  " + "─" * 56)
-        party_doc = stream_api(client, SYNTHESIZE_SYSTEM, user_prompt, args.model)
+        party_doc = stream_api(client, system_prompt, user_prompt, args.model)
         print("  " + "─" * 56)
     else:
         party_doc = run_synthesize_pipeline(
@@ -437,6 +469,8 @@ def main() -> None:
             ],
             synthesize_system=SYNTHESIZE_SYSTEM,
             model=args.model,
+            input_normalizer=normalize,
+            system_suffix=roster,
         )
     print("=" * 60)
 

@@ -35,6 +35,9 @@ from datetime import date
 from pathlib import Path
 
 from campaignlib import (
+    build_alias_normalizer,
+    format_npc_roster,
+    load_alias_map,
     load_file_optional,
     make_client,
     run_extract_pipeline,
@@ -327,6 +330,12 @@ def main() -> None:
                         help="Pre-existing summaries (GMassistant recap, Saga20 summary, etc.) "
                              "to cross-reference during synthesis. The model will incorporate "
                              "anything present in these that is missing from the VTT extractions.")
+    parser.add_argument("--dossier-dir", metavar="DIR", default=None,
+                        help="Directory of per-NPC dossier files (built by "
+                             "planning.py --build-dossiers). If given, every "
+                             "alias in dossier frontmatter is rewritten to its "
+                             "canonical name before extract/synth, and a "
+                             "'Known NPCs' roster seeds the system prompts.")
     parser.add_argument("--no-log", action="store_true",
                         help="Skip saving a log file")
     parser.add_argument("--model", default="claude-sonnet-4-20250514",
@@ -390,6 +399,12 @@ def main() -> None:
             reference_text = "\n\n---\n\n".join(parts)
             print(f"[Reference summaries: {len(parts)} file(s), {len(reference_text):,} chars]")
 
+    alias_map = load_alias_map(args.dossier_dir)
+    normalize, _ = build_alias_normalizer(alias_map)
+    roster = format_npc_roster(alias_map)
+    if alias_map:
+        print(f"Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
+
     client = make_client()
 
     if not args.synthesize_only:
@@ -414,6 +429,8 @@ def main() -> None:
             model=args.model,
             extract_dir=extract_dir,
             chunk_size=args.chunk_size,
+            input_normalizer=normalize,
+            system_suffix=roster,
         )
         if not extract_files:
             print("Error: no chunks were extracted — dialogue may be too short.", file=sys.stderr)
@@ -430,6 +447,8 @@ def main() -> None:
                     model=args.model,
                     extract_dir=roleplay_extract_dir,
                     chunk_size=args.chunk_size,
+                    input_normalizer=normalize,
+                    system_suffix=roster,
                 )
                 print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
 
@@ -456,6 +475,8 @@ def main() -> None:
         ],
         synthesize_system=build_summary_synthesize_system(context_text, session_name),
         model=args.model,
+        input_normalizer=normalize,
+        system_suffix=roster,
     )
     print("=" * 60)
 
@@ -478,6 +499,8 @@ def main() -> None:
                 model=args.model,
                 extract_dir=roleplay_extract_dir,
                 chunk_size=args.chunk_size,
+                input_normalizer=normalize,
+                system_suffix=roster,
             )
             print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
         else:
@@ -495,6 +518,8 @@ def main() -> None:
                 source_groups=[("", roleplay_extract_files)],
                 synthesize_system=build_roleplay_synthesize_system(context_text, session_name),
                 model=args.model,
+                input_normalizer=normalize,
+                system_suffix=roster,
             )
             print("=" * 60)
 
