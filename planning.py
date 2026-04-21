@@ -46,42 +46,14 @@ import re
 import sys
 from pathlib import Path
 
-import yaml
-
-from campaignlib import make_client, run_extract_pipeline, stream_api
-
-
-DOSSIER_FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n\n?(.*)\Z", re.DOTALL)
-
-
-def parse_dossier(path: Path) -> tuple[str, list[str], list[int], str]:
-    """Return (canonical_name, aliases, source_extracts, body_without_frontmatter).
-
-    `source_extracts` is the list of dossier_extract_NNN numbers already absorbed
-    into this dossier — used by --build-dossiers to skip writing redundant
-    `*.new_notes.NNN.md` sidecars on re-runs. Missing or malformed → empty list
-    (treated as "unknown": the caller should fall back to the prior behavior).
-
-    Dossiers without frontmatter fall back to filename stem as name and empty
-    aliases/source_extracts, so pre-existing files keep working untouched.
-    """
-    text = path.read_text(encoding="utf-8")
-    m = DOSSIER_FRONTMATTER_RE.match(text)
-    if not m:
-        return (path.stem, [], [], text)
-    try:
-        meta = yaml.safe_load(m.group(1)) or {}
-    except yaml.YAMLError:
-        return (path.stem, [], [], text)
-    name = meta.get("name") or path.stem
-    aliases = meta.get("aliases") or []
-    if not isinstance(aliases, list):
-        aliases = []
-    source_extracts = meta.get("source_extracts") or []
-    if not isinstance(source_extracts, list):
-        source_extracts = []
-    source_extracts = [int(n) for n in source_extracts if isinstance(n, int) or (isinstance(n, str) and n.isdigit())]
-    return (str(name), [str(a) for a in aliases], source_extracts, m.group(2))
+from campaignlib import (
+    build_alias_normalizer,
+    make_client,
+    normalize_npc_key as _normalize_npc_key,
+    parse_dossier,
+    run_extract_pipeline,
+    stream_api,
+)
 
 
 def write_dossier(
@@ -100,46 +72,6 @@ def write_dossier(
     extracts_yaml = "source_extracts: [" + ", ".join(str(n) for n in nums) + "]\n"
     fm = f"---\nname: {name}\n{alias_yaml}{extracts_yaml}---\n\n"
     path.write_text(fm + body.lstrip(), encoding="utf-8")
-
-
-def _normalize_npc_key(name: str) -> str:
-    """Lowercase + strip punctuation + collapse whitespace for alias matching.
-
-    LLM-emitted variants like "Harbin (Townmaster)", "Elara 'Seasong' Meliamne",
-    or "Toblen Stonehill (Spiderman)" must match flat aliases like
-    "Harbin Townmaster". Without normalization the parens/quotes block the lookup.
-    """
-    s = re.sub(r"[\(\)\[\]\'\"`\-]", "", name.lower())
-    s = re.sub(r"\s+", " ", s).strip()
-    return s
-
-
-def build_alias_normalizer(
-    canonical_to_aliases: dict[str, list[str]],
-) -> tuple[callable, list[tuple[str, list[str]]]]:
-    """Return (normalize(text) -> text, [(canonical, aliases), ...]) for resolution-block use.
-
-    Longest aliases first so "Captain Tolubb" wins over "Tolubb" when both are aliases.
-    """
-    alias_to_canonical: dict[str, str] = {}
-    for canonical, aliases in canonical_to_aliases.items():
-        for alias in aliases:
-            alias_to_canonical[alias.lower()] = canonical
-
-    if not alias_to_canonical:
-        return (lambda text: text, [])
-
-    sorted_aliases = sorted(alias_to_canonical.keys(), key=len, reverse=True)
-    pattern = re.compile(
-        r"\b(" + "|".join(re.escape(a) for a in sorted_aliases) + r")\b",
-        flags=re.IGNORECASE,
-    )
-
-    def normalize(text: str) -> str:
-        return pattern.sub(lambda m: alias_to_canonical[m.group(0).lower()], text)
-
-    entries = [(c, a) for c, a in canonical_to_aliases.items() if a]
-    return (normalize, entries)
 
 EXTRACT_SYSTEM = """\
 You are extracting NPC and faction-relevant information from D&D session summary notes.

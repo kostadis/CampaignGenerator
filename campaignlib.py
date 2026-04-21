@@ -177,6 +177,143 @@ def run_synthesize_pipeline(
     return result
 
 
+# ── NPC alias machinery ───────────────────────────────────────────────────────
+#
+# Dossier frontmatter records human-curated canonical ↔ alias mappings
+# (see "Dossier merge workflow" in CLAUDE.md). Every extractor can pre-
+# normalize its input against this map before the LLM sees it, and seed
+# its system prompt with a "Known NPCs" roster. Normalization is a pure
+# regex substitution — no LLM scope decision is introduced here.
+#
+# Empty alias maps collapse cleanly: normalize() becomes identity,
+# format_npc_roster() returns "". Safe for campaigns without a planning
+# workflow.
+
+_DOSSIER_FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n\n?(.*)\Z", re.DOTALL)
+
+
+def parse_dossier(path: "Path") -> tuple[str, list[str], list[int], str]:
+    """Return (canonical_name, aliases, source_extracts, body_without_frontmatter).
+
+    `source_extracts` is the list of dossier_extract_NNN numbers already
+    absorbed into this dossier (used by planning.py's sidecar dedup).
+    Missing or malformed → empty list.
+
+    Dossiers without frontmatter fall back to (filename_stem, [], [], full_text).
+    """
+    try:
+        import yaml
+    except ImportError:
+        print("Error: pyyaml not installed. Run: pip install pyyaml", file=sys.stderr)
+        sys.exit(1)
+    text = path.read_text(encoding="utf-8")
+    m = _DOSSIER_FRONTMATTER_RE.match(text)
+    if not m:
+        return (path.stem, [], [], text)
+    try:
+        meta = yaml.safe_load(m.group(1)) or {}
+    except yaml.YAMLError:
+        return (path.stem, [], [], text)
+    name = meta.get("name") or path.stem
+    aliases = meta.get("aliases") or []
+    if not isinstance(aliases, list):
+        aliases = []
+    source_extracts = meta.get("source_extracts") or []
+    if not isinstance(source_extracts, list):
+        source_extracts = []
+    source_extracts = [
+        int(n) for n in source_extracts
+        if isinstance(n, int) or (isinstance(n, str) and n.isdigit())
+    ]
+    return (str(name), [str(a) for a in aliases], source_extracts, m.group(2))
+
+
+def normalize_npc_key(name: str) -> str:
+    """Lowercase, strip punctuation, collapse whitespace — for alias-key lookups.
+
+    LLM-emitted variants like "Harbin (Townmaster)" must match flat aliases
+    like "Harbin Townmaster". Without normalization the parens block lookup.
+    """
+    s = re.sub(r"[\(\)\[\]\'\"`\-]", "", name.lower())
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
+def build_alias_normalizer(
+    canonical_to_aliases: dict[str, list[str]],
+):
+    """Return (normalize(text) -> text, [(canonical, aliases), ...]).
+
+    The returned `normalize` rewrites any alias occurrence in `text` to
+    its canonical name. Whole-word, case-insensitive, longest-first
+    (so "Captain Tolubb" wins over "Tolubb" when both are aliases).
+
+    An empty map yields an identity function and an empty entries list,
+    so every extractor can call this unconditionally.
+    """
+    alias_to_canonical: dict[str, str] = {}
+    for canonical, aliases in canonical_to_aliases.items():
+        for alias in aliases:
+            alias_to_canonical[alias.lower()] = canonical
+
+    if not alias_to_canonical:
+        return (lambda text: text, [])
+
+    sorted_aliases = sorted(alias_to_canonical.keys(), key=len, reverse=True)
+    pattern = re.compile(
+        r"\b(" + "|".join(re.escape(a) for a in sorted_aliases) + r")\b",
+        flags=re.IGNORECASE,
+    )
+
+    def normalize(text: str) -> str:
+        return pattern.sub(lambda m: alias_to_canonical[m.group(0).lower()], text)
+
+    entries = [(c, a) for c, a in canonical_to_aliases.items() if a]
+    return (normalize, entries)
+
+
+def load_alias_map(dossier_dir) -> dict[str, list[str]]:
+    """Scan `dossier_dir` for `*.md` dossiers; return `{canonical: [aliases]}`.
+
+    Returns `{}` when `dossier_dir` is None, missing, or contains no
+    dossiers — makes the caller a no-op for campaigns without planning.
+    """
+    if dossier_dir is None:
+        return {}
+    d = Path(dossier_dir).expanduser()
+    if not d.is_dir():
+        return {}
+    result: dict[str, list[str]] = {}
+    for f in sorted(d.glob("*.md")):
+        # Skip sidecar files — they're not canonical dossiers.
+        if ".new_notes." in f.name:
+            continue
+        name, aliases, _, _ = parse_dossier(f)
+        result[name] = aliases
+    return result
+
+
+def format_npc_roster(alias_map: dict[str, list[str]]) -> str:
+    """Render an alias map as a 'Known NPCs' block to append to an extract prompt.
+
+    Returns '' when the map is empty, so callers can write:
+        system = BASE + ("\\n\\n" + roster if roster else "")
+    """
+    if not alias_map:
+        return ""
+    lines = [
+        "Known NPCs in this campaign — use these exact canonical names when an NPC "
+        "appears in the source text, even if the text uses a variant:"
+    ]
+    for canonical in sorted(alias_map):
+        aliases = alias_map[canonical]
+        if aliases:
+            lines.append(f"- {canonical} (also: {', '.join(aliases)})")
+        else:
+            lines.append(f"- {canonical}")
+    return "\n".join(lines)
+
+
 # ── Config ────────────────────────────────────────────────────────────────────
 
 def find_default_config(script_file: str) -> str:
