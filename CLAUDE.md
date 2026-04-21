@@ -278,6 +278,20 @@ Dossiers without frontmatter (pre-existing files) still work — `parse_dossier(
 
 Generates `party.md` from character sheets, session summaries, backstories, and arc score mechanics.
 
+**Preferred: `--party-config` YAML.** Maps each PC explicitly to their sheet, backstory, and arc score mechanic so the synthesizer can't misattribute which file belongs to which character. `arc_score: null` is a first-class "intentionally trackless" signal — the synthesizer will not invent a track for that PC or suggest creating one.
+
+```bash
+python party.py \
+    --party-config config/party.yaml \
+    --summaries summaries.md \
+    --context docs/campaign_state.md \
+    --output docs/party.md
+```
+
+See `config/party.example.yaml` for the full schema. Every referenced file is validated at load time; missing paths fail loud.
+
+**Legacy flat flags** still work unchanged (mutex with `--party-config`):
+
 ```bash
 python party.py \
     --character soma.md vukradin.md valphine.md \
@@ -294,6 +308,8 @@ python party.py \
     --extract-dir docs/party_extractions \
     --output docs/party.md
 ```
+
+**Output shape — candidates, not decisions.** Each non-trackless PC gets a "Candidate Arc Score Events" bullet list: session events with the verbatim trigger text quoted from the mechanic file and a proposed direction (+/-). The GM decides which candidates actually fire. The synthesizer never commits to a current value, running total, or threshold claim — adjudicating score changes is a precision decision, not a rendering one (see the global CLAUDE.md "LLMs render, humans decide" rule). Trackless PCs have no candidate section at all.
 
 ### dnd_sheet.py
 
