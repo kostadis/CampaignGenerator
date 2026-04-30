@@ -427,6 +427,72 @@ python session_doc.py session-mar ... --by-scene \
     --scene 3 7
 ```
 
+### Four-stage recap → narration pipeline (recommended)
+
+Replaces the older single-shot `session_doc.py` flow when you want a
+human checkpoint after each LLM pass. The structural spec is the
+human-authored `gm-assist.md`; every stage that follows enriches or
+renders inside that spec.
+
+```
+gm-assist.md (structure, human-authored)
+    │
+    ▼  Stage 1 — enhance_summary.py
+session-summary.md  ◄── HUMAN REVIEW (edit freely)
+    │
+    ▼  Stage 2 — scene_extract.py --summary
+scene_extractions/NN_<slug>.md  ◄── HUMAN REVIEW
+    │
+    ▼  Stage 3 — session_doc.py --per-scene-output
+narration/session_doc_scene_NN_<slug>.md  ◄── HUMAN REVIEW
+    │
+    ▼  Stage 4 — assemble.py
+session_doc.md
+```
+
+```bash
+SESS=summaries/20260414
+
+# Stage 1 — enrich gm-assist with VTT detail (single cached call)
+python enhance_summary.py "$SESS"/*.vtt \
+    --gmassist  "$SESS/gm-assist.md" \
+    --output    "$SESS/session-summary.md"
+# REVIEW & EDIT $SESS/session-summary.md before continuing.
+
+# Stage 2 — per-scene verbatim quote extraction
+python scene_extract.py "$SESS"/*.vtt \
+    --summary    "$SESS/session-summary.md" \
+    --output-dir "$SESS/scene_extractions/"
+# REVIEW & EDIT scene_extractions/NN_*.md (drop bad quotes, add missing).
+
+# Stage 3 — per-scene narration to disk (no final assembly)
+python session_doc.py "$SESS/session-summary.md" \
+    --scene-extractions "$SESS/scene_extractions/" \
+    --voice-dir voice/ \
+    --characters "Vukradin, Valphine, Soma, Brewbarry" \
+    --per-scene-output "$SESS/narration/"
+# REVIEW & EDIT narration/session_doc_scene_NN_*.md (one narrator per file).
+
+# Re-narrate a single scene after editing its quotes
+python session_doc.py "$SESS/session-summary.md" \
+    --scene-extractions "$SESS/scene_extractions/" \
+    --voice-dir voice/ \
+    --characters "Vukradin, Valphine, Soma, Brewbarry" \
+    --per-scene-output "$SESS/narration/" \
+    --scene 3
+
+# Stage 4 — combine per-scene narration into one document
+python assemble.py "$SESS/narration/" \
+    --output "$SESS/session_doc.md" \
+    --title "Chapter 37 — A Gem of a Problem"
+```
+
+Why four stages: the global rule is "LLM extracts → human reviews and
+imposes structure → LLM renders inside that structure." Each stage is
+the LLM doing one thing the human can verify before the next call
+inherits its output. Per-scene narration files mean a single bad voice
+take only requires re-running that scene, not the whole session.
+
 #### All flags
 
 | Flag | Default | Description |

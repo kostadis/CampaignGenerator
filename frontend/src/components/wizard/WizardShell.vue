@@ -6,6 +6,7 @@ export interface WizardStep {
   label: string
   path: string
   number: number
+  queryStage?: string
 }
 
 const props = defineProps<{
@@ -15,26 +16,37 @@ const props = defineProps<{
 const router = useRouter()
 const route = useRoute()
 
-const currentIndex = computed(() =>
-  props.steps.findIndex(s => route.path === s.path)
-)
+const currentIndex = computed(() => {
+  const stage = (route.query.stage as string) || ''
+  let i = props.steps.findIndex(s =>
+    s.path === route.path && (s.queryStage || '') === stage
+  )
+  if (i < 0) {
+    // Fallback: first step matching the path (so visiting the page
+    // without a stage query still highlights its first step).
+    i = props.steps.findIndex(s => s.path === route.path)
+  }
+  return i
+})
 
 const canPrev = computed(() => currentIndex.value > 0)
 const canNext = computed(() => currentIndex.value < props.steps.length - 1)
 
-function navigate(path: string) {
-  router.push(path)
+function navigate(step: WizardStep) {
+  router.push(step.queryStage
+    ? { path: step.path, query: { stage: step.queryStage } }
+    : { path: step.path })
 }
 
 function prev() {
   if (canPrev.value) {
-    navigate(props.steps[currentIndex.value - 1].path)
+    navigate(props.steps[currentIndex.value - 1])
   }
 }
 
 function next() {
   if (canNext.value) {
-    navigate(props.steps[currentIndex.value + 1].path)
+    navigate(props.steps[currentIndex.value + 1])
   }
 }
 </script>
@@ -44,7 +56,7 @@ function next() {
     <!-- Step indicators -->
     <div class="wizard-header">
       <div class="steps">
-        <template v-for="(step, i) in steps" :key="step.path">
+        <template v-for="(step, i) in steps" :key="`${step.path}|${step.queryStage || ''}`">
           <div
             class="step"
             :class="{
@@ -52,7 +64,7 @@ function next() {
               completed: i < currentIndex,
               clickable: true,
             }"
-            @click="navigate(step.path)"
+            @click="navigate(step)"
           >
             <div class="step-number">{{ step.number }}</div>
             <div class="step-label">{{ step.label }}</div>

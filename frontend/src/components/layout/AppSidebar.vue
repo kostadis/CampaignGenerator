@@ -21,9 +21,7 @@ const navGroups: NavGroup[] = [
     title: 'SESSION WORKFLOW',
     items: [
       { label: '\u2460 Session Config', path: '/workflow/config' },
-      { label: '\u2461 VTT Summary', path: '/workflow/vtt' },
-      { label: '\u2462 Scene Extraction', path: '/workflow/extract' },
-      { label: '\u2463 Session Doc Editor', path: '/workflow/editor' },
+      { label: '\u2461 Session Doc Editor', path: '/workflow/editor' },
     ],
   },
   {
@@ -56,6 +54,13 @@ const navGroups: NavGroup[] = [
     items: [
       { label: 'Enhance Recap', path: '/experimental/enhance-recap' },
       { label: 'Session Narrative', path: '/experimental/narrative' },
+    ],
+  },
+  {
+    title: 'LEGACY',
+    items: [
+      { label: 'VTT Summary', path: '/workflow/vtt' },
+      { label: 'Scene Extraction', path: '/workflow/extract' },
     ],
   },
 ]

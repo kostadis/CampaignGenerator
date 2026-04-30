@@ -28,6 +28,8 @@ const roleplayExtractDir = ref('')
 const outputDir = ref('')
 const summaryExtractDir = ref('')
 const sessionSummary = ref('')
+const sceneExtractionsDir = ref('')
+const narrationDir = ref('')
 const roleplaySummary = ref('')
 const party = ref('')
 const voiceDir = ref('')
@@ -47,7 +49,9 @@ function loadConfigFields() {
   roleplayExtractDir.value = v.sd_roleplay_dir || 'vtt_roleplay_extractions'
   outputDir.value = v.sd_output_dir || v.session_dir || ''
   summaryExtractDir.value = v.sd_summary_dir || 'vtt_extractions'
-  sessionSummary.value = v.sd_session_summary || ''
+  sessionSummary.value = v.sd_session_summary || 'session-summary.md'
+  sceneExtractionsDir.value = v.sd_scene_extractions_dir || 'scene_extractions_new'
+  narrationDir.value = v.sd_narration_dir || 'narration'
   roleplaySummary.value = v.sd_roleplay_summary || ''
   party.value = v.sd_party || ''
   voiceDir.value = v.sd_voice_dir || v.session_doc_voice_dir || ''
@@ -63,8 +67,8 @@ function loadConfigFields() {
 const contextFiles = computed(() => resolvePathList(context.value))
 
 const configReady = computed(() =>
-  !!(session.value.trim() && extractDir.value.trim() &&
-     roleplayExtractDir.value.trim())
+  !!(session.value.trim() &&
+     (sceneExtractionsDir.value.trim() || extractDir.value.trim()))
 )
 
 async function applyConfig() {
@@ -76,6 +80,8 @@ async function applyConfig() {
     output_dir: resolvePath(outputDir.value) || config.cwd || '',
     summary_extract_dir: resolvePath(summaryExtractDir.value) || undefined,
     session_summary: resolvePath(sessionSummary.value) || undefined,
+    scene_extractions_dir: resolvePath(sceneExtractionsDir.value) || undefined,
+    narration_dir: resolvePath(narrationDir.value) || undefined,
     roleplay_summary: resolvePath(roleplaySummary.value) || undefined,
     party: resolvePath(party.value) || undefined,
     voice_dir: resolvePath(voiceDir.value) || undefined,
@@ -119,6 +125,8 @@ const hasExtraction = ref(false)
 const isRoleplayLocal = ref(false)
 const narrating = ref(false)
 const extracting = ref(false)
+const enhancing = ref(false)
+const planning = ref(false)
 const narrationOutput = ref('')
 const statusMsg = ref('')
 const rightTab = ref<'vtt' | 'ledger'>('vtt')
@@ -302,10 +310,10 @@ async function narrate() {
 }
 
 async function runExtract() {
-  if (extracting.value || narrating.value) return
+  if (extracting.value || narrating.value || enhancing.value || planning.value) return
   extracting.value = true
   narrationOutput.value = ''
-  setStatus('Running extraction (passes 1\u20134)...')
+  setStatus('Re-extracting quotes (Stage 2)...')
 
   activeSSE.value = connectSSE('/api/editor/extract', {
     onData(text) {
@@ -314,12 +322,62 @@ async function runExtract() {
     onDone(rc) {
       activeSSE.value = null
       extracting.value = false
-      setStatus(rc === 0 ? 'Extraction complete.' : 'Extraction failed.')
+      setStatus(rc === 0 ? 'Re-extraction complete.' : 'Re-extraction failed.')
       loadScenes()
     },
     onError() {
       activeSSE.value = null
       extracting.value = false
+      setStatus('Stream error \u2014 check terminal.')
+    },
+  })
+}
+
+async function runPlan() {
+  if (planning.value || enhancing.value || extracting.value || narrating.value) return
+  planning.value = true
+  narrationOutput.value = ''
+  setStatus('Planning & consistency check (Stage 3)...')
+
+  activeSSE.value = connectSSE('/api/editor/plan', {
+    onData(text) {
+      narrationOutput.value += text
+    },
+    onDone(rc) {
+      activeSSE.value = null
+      planning.value = false
+      setStatus(rc === 0
+        ? 'Plan & check complete — plan.md + enhanced_sections.md saved.'
+        : 'Plan & check failed.')
+      loadScenes()
+      loadEnhancedSections()
+    },
+    onError() {
+      activeSSE.value = null
+      planning.value = false
+      setStatus('Stream error — check terminal.')
+    },
+  })
+}
+
+async function runEnhance() {
+  if (enhancing.value || extracting.value || narrating.value || planning.value) return
+  enhancing.value = true
+  narrationOutput.value = ''
+  setStatus('Enhancing summary (Stage 1)...')
+
+  activeSSE.value = connectSSE('/api/editor/enhance', {
+    onData(text) {
+      narrationOutput.value += text
+    },
+    onDone(rc) {
+      activeSSE.value = null
+      enhancing.value = false
+      setStatus(rc === 0 ? 'Stage 1 complete \u2014 review session-summary.md.' : 'Stage 1 failed.')
+    },
+    onError() {
+      activeSSE.value = null
+      enhancing.value = false
       setStatus('Stream error \u2014 check terminal.')
     },
   })
@@ -392,7 +450,7 @@ onMounted(async () => {
   // Check if editor is already configured (e.g. from CLI startup)
   try {
     const existing = await apiFetch('/api/editor/config')
-    if (existing.session && existing.extract_dir) {
+    if (existing.session && (existing.scene_extractions_dir || existing.extract_dir)) {
       configured.value = true
       await loadScenes()
       await checkAssembled()
@@ -424,11 +482,13 @@ onMounted(async () => {
         <!-- Required -->
         <div class="form-section">
           <PathField v-model="session" label="GMassistant recap file" required
-            help="The structured session notes (e.g. gm-assist.md)." />
-          <PathField v-model="extractDir" label="Scene extractions directory" required
-            help="plan.md + per-scene extraction files. Run Extract on the previous page to generate." />
-          <PathField v-model="roleplayExtractDir" label="Roleplay extractions directory" required
-            help="vtt_roleplay_extractions/ — shown in the right panel for reference." />
+            help="The structured session notes (e.g. gm-assist.md). Stage 1 input." />
+          <PathField v-model="sessionSummary" label="Session summary file"
+            help="Stage 1 output (session-summary.md). Created/updated by the Enhance Summary button." />
+          <PathField v-model="sceneExtractionsDir" label="Scene extractions directory (Stage 2)"
+            help="Per-scene verbatim quote files (NN_<slug>.md). Created by Re-Extract Quotes." />
+          <PathField v-model="narrationDir" label="Narration directory (Stage 3)"
+            help="Per-scene narration output (session_doc_scene_NN_<slug>.md). Created by Narrate." />
         </div>
 
         <div class="form-section">
@@ -448,7 +508,7 @@ onMounted(async () => {
           </div>
           <div class="field">
             <label class="field-label checkbox-label">
-              <input type="checkbox" v-model="proseMode" @change="applyConfig" />
+              <input type="checkbox" v-model="proseMode" />
               Prose mode
             </label>
             <div class="field-help">Strip all mechanical language and GM framing. GM descriptions become the narrator's direct perception; dice rolls and HP become narrative consequence.</div>
@@ -466,7 +526,7 @@ onMounted(async () => {
           </div>
           <div class="field">
             <label class="field-label checkbox-label">
-              <input type="checkbox" v-model="reflections" @change="applyConfig" />
+              <input type="checkbox" v-model="reflections" />
               Reflections
             </label>
             <div class="field-help">
@@ -483,10 +543,12 @@ onMounted(async () => {
           </button>
 
           <div v-if="showOverrides" class="advanced-panel">
+            <PathField v-model="extractDir" label="Legacy extractions directory"
+              help="Old-flow Pass-4 extractions. Used as fallback only when Scene extractions directory is empty." />
+            <PathField v-model="roleplayExtractDir" label="Roleplay extractions directory"
+              help="vtt_roleplay_extractions/ — shown in the VTT panel for reference." />
             <PathField v-model="summaryExtractDir" label="Summary extractions directory"
               help="vtt_extractions/ — event context for narration." />
-            <PathField v-model="sessionSummary" label="VTT session summary"
-              help="session-summary.md — used in consistency check and narration." />
             <PathField v-model="roleplaySummary" label="Roleplay summary"
               help="session-roleplay.md — injected into narration if no per-scene roleplay exists." />
             <PathField v-model="party" label="Party document"
@@ -539,25 +601,52 @@ onMounted(async () => {
       </div>
 
       <span class="status-msg">{{ statusMsg }}</span>
+
+      <span class="stage-group">
+        <span class="stage-label">Stage 1</span>
+        <button
+          class="btn-neutral btn-sm"
+          :disabled="enhancing || extracting || narrating || planning"
+          @click="runEnhance"
+          title="Stage 1 \u2014 rebuild session-summary.md from VTT + gm-assist.md"
+        >{{ enhancing ? 'Enhancing\u2026' : 'Enhance Summary' }}</button>
+      </span>
+
+      <span class="stage-group">
+        <span class="stage-label">Stage 2</span>
+        <button
+          class="btn-neutral btn-sm"
+          :disabled="enhancing || extracting || narrating || planning"
+          @click="runExtract"
+          title="Stage 2 \u2014 rebuild per-scene quote files from session-summary.md"
+        >{{ extracting ? 'Re-extracting\u2026' : 'Re-Extract Quotes' }}</button>
+      </span>
+
+      <span class="stage-group">
+        <span class="stage-label">Stage 3</span>
+        <button
+          class="btn-neutral btn-sm"
+          :disabled="planning || enhancing || extracting || narrating"
+          @click="runPlan"
+          title="Stage 3 \u2014 consistency check + plan + enhanced sections (run once per session, cached for Narrate)"
+        >{{ planning ? 'Planning\u2026' : 'Plan &amp; Check' }}</button>
+      </span>
+
+      <span class="stage-group">
+        <span class="stage-label">Final</span>
+        <button class="btn-neutral btn-sm" @click="assembleDoc">
+          Assemble Doc
+        </button>
+        <button
+          v-if="assembledExists"
+          class="btn-neutral btn-sm"
+          @click="openAssembled"
+        >Open in Typora</button>
+      </span>
+
       <button
-        class="btn-neutral btn-sm"
-        :disabled="extracting || narrating"
-        @click="runExtract"
-        style="margin-left:8px"
-      >{{ extracting ? 'Extracting\u2026' : 'Extract' }}</button>
-      <button class="btn-neutral btn-sm" @click="assembleDoc" style="margin-left:4px">
-        Assemble Doc
-      </button>
-      <button
-        v-if="assembledExists"
-        class="btn-neutral btn-sm"
-        @click="openAssembled"
-        style="margin-left:4px"
-      >Open in Typora</button>
-      <button
-        class="btn-neutral btn-sm"
+        class="btn-neutral btn-sm config-btn"
         @click="backToConfig"
-        style="margin-left:4px"
       >Config</button>
     </header>
 
@@ -762,6 +851,28 @@ onMounted(async () => {
   font-size: 11px;
   color: var(--blue);
   margin-left: auto;
+}
+
+.stage-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-left: 1px solid var(--bg-surface0);
+}
+.stage-group:first-of-type {
+  margin-left: 4px;
+}
+.stage-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+  margin-right: 2px;
+}
+.config-btn {
+  margin-left: 4px;
 }
 
 .columns {

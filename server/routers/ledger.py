@@ -1,6 +1,7 @@
 """Quote Ledger API routes — sync, query, assign, auto-assign, generate extraction."""
 
 import json
+import re
 import sys
 from collections.abc import AsyncGenerator
 from pathlib import Path
@@ -25,6 +26,22 @@ def _config() -> dict:
     return CONFIG
 
 
+def _ledger_dir() -> Path:
+    """Where the ledger db lives — prefer new-flow scene_extractions_dir."""
+    from server.routers.scene_editor import _scene_extractions_dir
+    sx = _scene_extractions_dir()
+    if sx is not None:
+        return sx
+    cfg = _config()
+    return Path(cfg["extract_dir"])
+
+
+def _filename_for_scene_new(idx: int, _narrator: str, scene_name: str) -> str:
+    """Stage 2 filename: NN_<slug>.md (no narrator)."""
+    slug = re.sub(r"[^a-z0-9]+", "_", (scene_name or "").lower()).strip("_") or f"scene_{idx}"
+    return f"{idx:02d}_{slug}.md"
+
+
 def init_ledger_config(config: dict) -> None:
     """Legacy: called from main.py startup. Config now comes from scene_editor.CONFIG."""
     pass
@@ -32,9 +49,9 @@ def init_ledger_config(config: dict) -> None:
 
 def _get_ledger() -> QuoteLedger:
     global _LEDGER
-    cfg = _config()
-    db_path = Path(cfg["extract_dir"]) / "quote_ledger.db"
-    # Re-create if extract_dir changed or the db file was deleted under us
+    db_path = _ledger_dir() / "quote_ledger.db"
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    # Re-create if dir changed or the db file was deleted under us
     if _LEDGER is not None and (_LEDGER.db_path != db_path or not db_path.exists()):
         _LEDGER.close()
         _LEDGER = None
@@ -61,12 +78,14 @@ def _sse_done(returncode: int = 0) -> str:
 
 @router.post("/sync")
 def api_ledger_sync():
+    from server.routers.scene_editor import _using_new_flow
     ledger = _get_ledger()
     scenes = _load_scenes()
     result = ledger.sync(
         roleplay_dir=Path(_config()["roleplay_extract_dir"]),
-        extract_dir=Path(_config()["extract_dir"]),
+        extract_dir=_ledger_dir(),
         scenes=scenes,
+        filename_for_scene=_filename_for_scene_new if _using_new_flow() else None,
     )
     return result
 
@@ -202,15 +221,98 @@ def _normalize_speaker(raw: str) -> str:
     return name
 
 
+def _parse_stage2_scaffold(stage2_text: str) -> tuple[list[str], list[tuple[str, str, str]]]:
+    """Parse a Stage-2 file into (beats, quotes).
+
+    `beats` is the list of `- ...` bullet lines from the
+    `## Scene summary (from gm-assist, verbatim)` section.
+
+    `quotes` is a list of (speaker, context, quote_text) tuples parsed
+    from the `## Verbatim moments` section. We look for blocks shaped:
+
+        **Speaker** — *context*
+        > "quote text"
+        > "continuation"
+
+    Continuations attach to the preceding speaker block. Sub-scene tag
+    headers (`**[Scene tag — ...]**`) are dropped. OOC filtering is
+    intentionally NOT applied here — the human prunes by hand.
+    """
+    lines = stage2_text.splitlines()
+
+    # Split into sections by `## ` headers
+    sections: dict[str, list[str]] = {}
+    current = ""
+    for ln in lines:
+        if ln.startswith("## "):
+            current = ln[3:].strip().lower()
+            sections[current] = []
+        elif current:
+            sections[current].append(ln)
+
+    # Beats: from the gm-assist section
+    beat_section = next(
+        (v for k, v in sections.items() if k.startswith("scene summary")),
+        []
+    )
+    beats = [ln for ln in beat_section if ln.strip().startswith("-")]
+
+    # Quotes: from verbatim moments
+    moments = next(
+        (v for k, v in sections.items() if k.startswith("verbatim moments")),
+        []
+    )
+    quotes: list[tuple[str, str, str]] = []
+    speaker = ""
+    context = ""
+    speaker_re = re.compile(r"^\*\*([^*]+)\*\*\s*(?:—|--|-)?\s*(?:\*([^*]*)\*)?\s*$")
+    sub_scene_re = re.compile(r"^\*\*\[.*\]\*\*\s*$")
+    for ln in moments:
+        s = ln.rstrip()
+        if not s:
+            continue
+        if sub_scene_re.match(s):
+            speaker = ""
+            context = ""
+            continue
+        m = speaker_re.match(s)
+        if m:
+            speaker = m.group(1).strip()
+            context = (m.group(2) or "").strip()
+            continue
+        if s.startswith("> ") or s.startswith(">"):
+            quote_text = s.lstrip("> ").strip()
+            if quote_text.startswith('"') and quote_text.endswith('"'):
+                quote_text = quote_text[1:-1]
+            if speaker and quote_text:
+                quotes.append((speaker, context, quote_text))
+    return beats, quotes
+
+
+def _scaffold_path_for(scene_num: int, scene_name: str) -> Path:
+    """Where Scaffold-from-Stage-2 output is written. Sibling of the
+    Stage-2 file with a `.scaffold.md` suffix so the rich Stage-2
+    content is never overwritten."""
+    base = _filename_for_scene_new(scene_num, "", scene_name)
+    return _ledger_dir() / base.replace(".md", ".scaffold.md")
+
+
+def _stage2_path_for(scene_num: int, scene_name: str) -> Path:
+    """Stage-2 file path: scene_extractions_dir/NN_<slug>.md."""
+    return _ledger_dir() / _filename_for_scene_new(scene_num, "", scene_name)
+
+
 async def _stream_generate_extraction(scene_num: int) -> AsyncGenerator[str, None]:
     """Build a deterministic quote scaffold for scene N.
 
-    Beat lines are copied verbatim from the GM recap (no LLM decision).
-    Quotes from the ledger are listed below the beats.
-    The human's job: move each quote under the beat where it belongs,
-    and remove OOC lines before narrating.
+    New flow: parse beats + quotes from the Stage-2 file
+    (`NN_<slug>.md`) and re-emit them as a clean beat → quotes layout
+    in `NN_<slug>.scaffold.md` (sibling). The Stage-2 source is never
+    overwritten.
+
+    Legacy flow fallback: when no Stage-2 file is present, build the
+    scaffold from the GM recap + quote ledger as before.
     """
-    ledger = _get_ledger()
     scenes = _load_scenes()
 
     if scene_num < 1 or scene_num > len(scenes):
@@ -222,27 +324,107 @@ async def _stream_generate_extraction(scene_num: int) -> AsyncGenerator[str, Non
     narrator = scene["narrator"]
     scene_name = scene.get("scene", "")
     focus = scene.get("focus", "")
+
+    # ── New flow: read beats + quotes from the Stage-2 file ────────────────
+    stage2_path = _stage2_path_for(scene_num, scene_name)
+    if stage2_path.exists():
+        beat_lines, parsed_quotes = _parse_stage2_scaffold(
+            stage2_path.read_text(encoding="utf-8")
+        )
+        yield _sse_event(
+            f"Scaffolding Scene {scene_num}: {narrator} — {scene_name} "
+            f"(from {stage2_path.name}: {len(beat_lines)} beat(s), "
+            f"{len(parsed_quotes)} quote(s))...\n\n"
+        )
+
+        lines = [
+            f"[Scene {scene_num}] {scene_name}",
+            f"Narrator: {narrator}",
+            f"Focus: {focus}",
+            "",
+        ]
+
+        if not beat_lines and not parsed_quotes:
+            yield _sse_event(
+                f"Stage-2 file {stage2_path.name} has no beats or quotes — "
+                "nothing to scaffold.\n"
+            )
+            yield _sse_done(1)
+            return
+
+        if beat_lines:
+            for beat in beat_lines:
+                lines.append(beat)
+                lines.append("")
+            if parsed_quotes:
+                lines += [
+                    "<!-- Move each quote below under the beat where it belongs. -->",
+                    "<!-- Remove OOC lines (damage calls, mechanic announcements) before narrating. -->",
+                    "",
+                    "## Quotes to place",
+                    "",
+                ]
+        else:
+            lines += [
+                "<!-- No beats found in Stage-2 file. Add action beats as lines",
+                "     starting with -, then place quotes under them. -->",
+                "",
+            ]
+
+        for speaker, ctx, text in parsed_quotes:
+            speaker_norm = _normalize_speaker(speaker)
+            if ctx:
+                lines.append(f"<!-- {ctx} -->")
+            lines.append(f'{speaker_norm}: "{text}"')
+            lines.append("")
+
+        content = "\n".join(lines)
+        scaffold_path = _scaffold_path_for(scene_num, scene_name)
+        try:
+            scaffold_path.parent.mkdir(parents=True, exist_ok=True)
+            scaffold_path.write_text(content, encoding="utf-8")
+            yield _sse_event(content)
+            yield _sse_event(
+                f"\n\n[Saved to {scaffold_path.name}]\n"
+                f"Source preserved at {stage2_path.name}. "
+                "Place quotes under beats, remove OOC, then narrate."
+            )
+            yield _sse_done(0)
+        except Exception as e:
+            yield _sse_event(f"\nError: {e}\n")
+            yield _sse_done(1)
+        return
+
+    # ── Legacy fallback: no Stage-2 file → use ledger + recap ──────────────
+    ledger = _get_ledger()
     quotes = ledger.get_scene_quotes(scene_num)
 
     yield _sse_event(
         f"Scaffolding Scene {scene_num}: {narrator} — {scene_name} "
-        f"({len(quotes)} quote(s))...\n\n"
+        f"(legacy path; ledger has {len(quotes)} quote(s))...\n\n"
     )
 
-    # ── Beats: copy verbatim from the GM recap ──────────────────────────────
     beat_lines: list[str] = []
-    session_path = _config().get("session")
-    if session_path and Path(session_path).exists() and scene_name:
+    cfg = _config()
+    recap_path: Path | None = None
+    summary_path = cfg.get("session_summary")
+    if summary_path and Path(summary_path).exists():
+        recap_path = Path(summary_path)
+    else:
+        session_path = cfg.get("session")
+        if session_path and Path(session_path).exists():
+            recap_path = Path(session_path)
+
+    if recap_path and scene_name:
         from session_doc import extract_scene_text
         recap_text = extract_scene_text(
-            Path(session_path).read_text(encoding="utf-8"), scene_name
+            recap_path.read_text(encoding="utf-8"), scene_name
         )
         beat_lines = [
             ln for ln in recap_text.splitlines()
             if ln.strip().startswith("-")
         ]
 
-    # ── Assemble scaffold ───────────────────────────────────────────────────
     lines = [
         f"[Scene {scene_num}] {scene_name}",
         f"Narrator: {narrator}",
@@ -256,7 +438,6 @@ async def _stream_generate_extraction(scene_num: int) -> AsyncGenerator[str, Non
         return
 
     if beat_lines:
-        # Beats first — quotes go under the beat where they belong
         for beat in beat_lines:
             lines.append(beat)
             lines.append("")
@@ -288,9 +469,14 @@ async def _stream_generate_extraction(scene_num: int) -> AsyncGenerator[str, Non
     content = "\n".join(lines)
 
     try:
-        from session_doc import extraction_filename
-        fname = extraction_filename(scene_num, narrator, scene_name)
-        extract_path = Path(_config()["extract_dir"]) / fname
+        from server.routers.scene_editor import _using_new_flow
+        if _using_new_flow():
+            fname = _filename_for_scene_new(scene_num, narrator, scene_name)
+        else:
+            from session_doc import extraction_filename
+            fname = extraction_filename(scene_num, narrator, scene_name)
+        extract_path = _ledger_dir() / fname
+        extract_path.parent.mkdir(parents=True, exist_ok=True)
         extract_path.write_text(content, encoding="utf-8")
 
         yield _sse_event(content)

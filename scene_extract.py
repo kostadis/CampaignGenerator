@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Scene-anchored VTT extraction.
+"""Stage 2 — scene-anchored VTT extraction.
 
-Takes a Zoom .vtt transcript and a gm-assist (gmassistant.app) recap and
-produces one rich extraction file per scene named in the recap. The gm-assist
-recap is the human-verified scene structure — feeding it into extraction
-directly avoids re-deriving structure from arbitrary chunk windows.
+Takes a Zoom .vtt transcript and an enriched session summary (Stage 1 output
+from enhance_summary.py, post-human-review) and produces one rich
+extraction file per scene named in the summary. The summary is the
+human-verified scene structure — feeding it into extraction directly avoids
+re-deriving structure from arbitrary chunk windows.
 
 Each per-scene call sends the full VTT in the system prompt (cached as a
 prefix) and a short user message naming one scene + its bullets. The model
@@ -12,13 +13,13 @@ returns the verbatim transcript moments belonging to that scene.
 
 Usage:
   python scene_extract.py session.vtt \\
-      --gmassist gm-assist.md \\
+      --summary session-summary.md \\
       --output-dir scene_extractions/ \\
       [--dossier-dir docs/npcs/]
 
 Output:
   scene_extractions/01_<scene_slug>.md  ... 09_<scene_slug>.md
-  Each file contains gm-assist scene summary verbatim + a verbatim-moments
+  Each file contains the scene summary verbatim + a verbatim-moments
   section sourced from the VTT.
 """
 
@@ -39,23 +40,25 @@ from vtt_summary import parse_vtt
 
 
 SCENE_EXTRACT_SYSTEM_PREFIX = """\
-You are reading a Zoom transcript from a D&D session, anchored to a
-gm-assist recap that has already structured the session into named scenes.
+You are reading a Zoom transcript from a D&D session, anchored to an
+enriched session summary that has already structured the session into
+named scenes.
 
-The user will name one scene at a time and quote the recap's bullets for it.
-Your job: find every moment in the transcript that belongs to that scene
-and surface it as a rich, verbatim extraction.
+The user will name one scene at a time and quote the summary's bullets
+for it. Your job: find every moment in the transcript that belongs to
+that scene and surface it as a rich, verbatim extraction.
 
 GROUND RULES:
-- Use the recap bullets as scope: only extract moments that fit the scene.
+- Use the summary bullets as scope: only extract moments that fit the scene.
 - Quote dialogue VERBATIM. Do not paraphrase. If a line is cut off in the
   transcript, copy what is there and mark it (truncated). Only mark
   (paraphrase) when no direct quote exists at all.
 - Do NOT invent anything. If the transcript contains nothing that matches
-  a recap bullet, omit it — silence is correct, fabrication is not.
-- The recap is missing detail. Capture verbatim exchanges, OOC banter that
-  reveals character, dice rolls reified as narrative beats, and
-  environmental texture the recap glosses.
+  a summary bullet, omit it — silence is correct, fabrication is not.
+- The summary is the structural spec but may still miss detail. Capture
+  verbatim exchanges, OOC banter that reveals character, dice rolls
+  reified as narrative beats, and environmental texture the summary
+  glosses.
 
 OUTPUT FORMAT — flat markdown, no preamble:
 
@@ -80,7 +83,7 @@ SCENE_EXTRACT_USER_TEMPLATE = """\
 
 **{name}**
 
-Recap bullets (use as scope — only extract transcript moments that fit):
+Summary bullets (use as scope — only extract transcript moments that fit):
 
 {body}
 
@@ -97,8 +100,10 @@ def main() -> None:
         description="Scene-anchored VTT extraction (replaces blind chunked extraction)."
     )
     parser.add_argument("input", metavar="FILE", help="Zoom .vtt transcript file")
-    parser.add_argument("--gmassist", "-g", required=True, metavar="FILE",
-                        help="gm-assist recap (must contain a ## Scenes section)")
+    parser.add_argument("--summary", "-s", required=True, metavar="FILE",
+                        dest="summary",
+                        help="Enriched session summary from Stage 1 / "
+                             "enhance_summary.py (must contain a ## Scenes section)")
     parser.add_argument("--output-dir", "-o", required=True, metavar="DIR",
                         help="Where to write per-scene extraction files")
     parser.add_argument("--dossier-dir", metavar="DIR", default=None,
@@ -133,20 +138,20 @@ def main() -> None:
         sys.exit(1)
     print(f"  → {len(dialogue):,} chars of dialogue")
 
-    gm_path = Path(args.gmassist).expanduser()
-    if not gm_path.exists():
-        print(f"Error: gm-assist file not found: {gm_path}", file=sys.stderr)
+    summary_path = Path(args.summary).expanduser()
+    if not summary_path.exists():
+        print(f"Error: summary file not found: {summary_path}", file=sys.stderr)
         sys.exit(1)
-    gm_text = gm_path.read_text(encoding="utf-8")
+    summary_text = summary_path.read_text(encoding="utf-8")
 
-    scenes = parse_gmassist_scenes(gm_text)
+    scenes = parse_gmassist_scenes(summary_text)
     if not scenes:
-        print(f"Error: no '## Scenes' section (with ### scene headings) found in {gm_path}.\n"
+        print(f"Error: no '## Scenes' section (with ### scene headings) found in {summary_path}.\n"
               f"Scene-anchored extraction requires human-verified scene structure. "
               f"Use vtt_summary.py for unstructured chunk extraction instead.",
               file=sys.stderr)
         sys.exit(1)
-    print(f"\n[gm-assist | {gm_path.name}: {len(scenes)} scene(s)]")
+    print(f"\n[summary | {summary_path.name}: {len(scenes)} scene(s)]")
     for i, s in enumerate(scenes, 1):
         print(f"  {i}. {s['name']}")
 
@@ -180,7 +185,7 @@ def main() -> None:
     if not args.no_log:
         log_sections = [
             ("VTT", f"{vtt_path.name} — {len(dialogue):,} chars"),
-            ("gm-assist", gm_path.read_text(encoding="utf-8")),
+            ("Summary", summary_text),
             ("Scenes", "\n".join(f"{i}. {s['name']}" for i, s in enumerate(scenes, 1))),
             ("Output files", "\n".join(str(p) for p in saved)),
         ]

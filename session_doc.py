@@ -1003,8 +1003,16 @@ def main() -> None:
     )
     parser.add_argument("recap", metavar="FILE",
                         help="Existing session recap file (e.g. from gmassisstant.app)")
-    parser.add_argument("--output", "-o", required=True, metavar="FILE",
-                        help="Where to save the final document")
+    parser.add_argument("--output", "-o", default=None, metavar="FILE",
+                        help="Where to save the final assembled document. "
+                             "Required unless --per-scene-output is set.")
+    parser.add_argument("--per-scene-output", default=None, metavar="DIR",
+                        help="Stage 3 mode: write one narration file per scene "
+                             "(session_doc_scene_NN_<slug>.md, with YAML "
+                             "frontmatter) into this directory and skip the "
+                             "final-doc assembly. Use Stage 4 / assemble.py to "
+                             "combine the per-scene files later. Compatible with "
+                             "--scene N for re-narrating a single scene.")
     parser.add_argument("--roleplay-extract-dir", metavar="DIR",
                         help="vtt_roleplay_extractions/ — quoted dialogue and character moments")
     parser.add_argument("--summary-extract-dir", metavar="DIR",
@@ -1106,9 +1114,16 @@ def main() -> None:
                              "scene checklist from this directory's filenames/frontmatter "
                              "instead of the recap. Forces --by-scene.")
     args = parser.parse_args()
+    if args.output is None and args.per_scene_output is None and not args.plan_only and not args.extract_only:
+        parser.error("either --output or --per-scene-output must be set "
+                     "(or use --plan-only / --extract-only).")
     if args.fast:
         args.model = "claude-haiku-4-5-20251001"
         print("  [fast mode: claude-haiku-4-5-20251001]")
+    per_scene_output_dir: Path | None = None
+    if args.per_scene_output:
+        per_scene_output_dir = Path(args.per_scene_output).expanduser()
+        per_scene_output_dir.mkdir(parents=True, exist_ok=True)
 
     # ── Load inputs ───────────────────────────────────────────────────────────
     recap_path = Path(args.recap).expanduser()
@@ -1654,9 +1669,32 @@ def main() -> None:
         section_texts.append((label, narration))
         handoff = narration.rsplit("\n", 1)[-1].strip().strip('"').strip("'")
 
+        # Stage 3 per-scene output: write narration to disk immediately so
+        # users can edit single scenes and re-assemble via Stage 4.
+        if per_scene_output_dir is not None:
+            slug_scene = re.sub(r"[^a-z0-9]+", "_", (scene_name or narrator).lower()).strip("_")
+            session_id = recap_path.parent.name
+            per_scene_file = per_scene_output_dir / f"session_doc_scene_{i:02d}_{slug_scene}.md"
+            frontmatter = (
+                "---\n"
+                f"scene: {i:02d}\n"
+                f"slug: {slug_scene}\n"
+                f"narrator: {narrator}\n"
+                f"scene_name: {scene_name}\n"
+                f"session: {session_id}\n"
+                "---\n\n"
+            )
+            per_scene_file.write_text(frontmatter + narration + "\n", encoding="utf-8")
+            print(f"  Wrote per-scene narration: {per_scene_file.name}")
+
     if args.extract_only:
         print(f"\nExtractions saved to: {extract_dir}")
         print("Review and edit the files, then re-run with --from-extractions to narrate.")
+        return
+
+    if per_scene_output_dir is not None and args.output is None:
+        print(f"\nWrote {len(section_texts)} per-scene narration file(s) to: {per_scene_output_dir}")
+        print("Run assemble.py to combine them into a single session document.")
         return
 
     # ── Assemble final document ────────────────────────────────────────────────

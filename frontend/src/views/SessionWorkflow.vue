@@ -4,9 +4,11 @@ import type { WizardStep } from '../components/wizard/WizardShell.vue'
 
 const steps: WizardStep[] = [
   { number: 1, label: 'Session Config', path: '/workflow/config' },
-  { number: 2, label: 'VTT Summary', path: '/workflow/vtt' },
-  { number: 3, label: 'Scene Extraction', path: '/workflow/extract' },
-  { number: 4, label: 'Session Doc Editor', path: '/workflow/editor' },
+  { number: 2, label: 'Editor Config', path: '/workflow/editor', queryStage: 'config' },
+  { number: 3, label: 'Enhance Summary', path: '/workflow/editor', queryStage: 'enhance' },
+  { number: 4, label: 'Extract Quotes', path: '/workflow/editor', queryStage: 'extract' },
+  { number: 5, label: 'Plan & Check', path: '/workflow/editor', queryStage: 'plan' },
+  { number: 6, label: 'Editor', path: '/workflow/editor', queryStage: 'edit' },
 ]
 </script>
 

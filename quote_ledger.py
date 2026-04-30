@@ -130,8 +130,14 @@ class QuoteLedger:
     # ── Population ───────────────────────────────────────────────────
 
     def sync(self, roleplay_dir: Path, extract_dir: Path,
-             scenes: list[dict]) -> dict:
+             scenes: list[dict], filename_for_scene=None) -> dict:
         """Parse extraction files, populate DB, match quotes to scenes.
+
+        filename_for_scene — optional callable (idx, narrator, scene_name) -> str
+                             used to compute the scene-extraction filename inside
+                             extract_dir. Defaults to session_doc.extraction_filename
+                             (old NN_<narrator>_<slug>.md). New-flow callers pass a
+                             lambda that produces NN_<slug>.md.
 
         Returns {total, matched, unassigned}.
         """
@@ -139,7 +145,7 @@ class QuoteLedger:
         self._ingest_roleplay(roleplay_dir)
 
         # Step 2: Match un-pinned quotes to scenes
-        self._match_to_scenes(extract_dir, scenes)
+        self._match_to_scenes(extract_dir, scenes, filename_for_scene)
 
         # Step 3: Return summary
         total = self._scalar("SELECT COUNT(*) FROM quote")
@@ -167,13 +173,16 @@ class QuoteLedger:
                 )
         self.conn.commit()
 
-    def _match_to_scenes(self, extract_dir: Path, scenes: list[dict]) -> None:
+    def _match_to_scenes(self, extract_dir: Path, scenes: list[dict],
+                         filename_for_scene=None) -> None:
         """Match un-pinned quotes to scenes by fuzzy-matching against scene extractions."""
-        from session_doc import extraction_filename
+        if filename_for_scene is None:
+            from session_doc import extraction_filename
+            filename_for_scene = extraction_filename
 
         for scene in scenes:
             idx = scene["index"]
-            fname = extraction_filename(idx, scene["narrator"], scene.get("scene", ""))
+            fname = filename_for_scene(idx, scene["narrator"], scene.get("scene", ""))
             fpath = extract_dir / fname
             if not fpath.exists():
                 continue
