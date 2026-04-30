@@ -203,6 +203,163 @@ def run_synthesize_pipeline(
     return result
 
 
+# ── Scene-anchored extraction ─────────────────────────────────────────────────
+#
+# The gm-assist recap already structures the session into scenes. Feeding that
+# verified structure into extraction directly — instead of re-deriving structure
+# from blind 50K-char chunks — keeps the LLM in its rendering lane (find verbatim
+# moments inside a scene) instead of its architect lane (decide what a scene is).
+# See CLAUDE.md "LLMs render, humans decide".
+
+_SCENE_HEADING_RE = re.compile(r"^### +(.+?)\s*$")
+_TOP_HEADING_RE = re.compile(r"^## +(.+?)\s*$")
+
+
+def parse_gmassist_scenes(text: str) -> list[dict]:
+    """Parse the `## Scenes` block of a gm-assist recap into ordered scene dicts.
+
+    Returns a list of `{"name": str, "body": str}` — one per `### Scene Name`
+    heading found under the first `## Scenes` heading. `body` is the verbatim
+    text between this scene's heading and the next `###` (or the end of the
+    Scenes section), preserving the optional `#### subtitle` line and bullets.
+
+    Returns `[]` when no `## Scenes` section exists or it has no scene headings.
+    Empty list is the signal to callers that no human-verified structure is
+    available — they should bail out, not silently fall back to chunk mode.
+    """
+    lines = text.splitlines()
+    in_scenes = False
+    scenes: list[dict] = []
+    current: dict | None = None
+    body: list[str] = []
+
+    def flush():
+        if current is not None:
+            current["body"] = "\n".join(body).strip()
+            scenes.append(current)
+
+    for line in lines:
+        stripped = line.strip()
+        if not in_scenes:
+            if stripped.lower() == "## scenes":
+                in_scenes = True
+            continue
+        # Inside ## Scenes — leaving on next ## heading
+        if _TOP_HEADING_RE.match(line):
+            flush()
+            current = None
+            body = []
+            in_scenes = False
+            continue
+        m = _SCENE_HEADING_RE.match(line)
+        if m:
+            flush()
+            current = {"name": m.group(1).strip(), "body": ""}
+            body = []
+            continue
+        if current is not None:
+            body.append(line)
+
+    flush()
+    return scenes
+
+
+def _slugify(s: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", s.lower()).strip("_")
+
+
+def run_scene_extraction(
+    client,
+    *,
+    vtt_text: str,
+    scenes: list[dict],
+    extract_dir: "Path",
+    model: str,
+    extraction_instruction: str,
+    system_prefix: str = "",
+    system_suffix: str = "",
+    input_normalizer=None,
+    cache_vtt: bool = True,
+    filename_template: str = "{i:02d}_{slug}.md",
+    max_tokens: int = 8192,
+) -> list[Path]:
+    """For each scene in `scenes`, run a scene-anchored extraction over `vtt_text`.
+
+    Each call sends the full VTT in the system prompt (cached as a prefix when
+    `cache_vtt=True`) and a per-scene user prompt: the scene name + body from
+    gm-assist plus `extraction_instruction`. Output is one markdown file per
+    scene under `extract_dir`, named `NN_<slug>.md` by default.
+
+    Existing files are skipped so a partial run can be resumed.
+
+    extraction_instruction — the per-call task description. Receives `{name}`
+                              and `{body}` substitutions and is rendered as the
+                              user message. The caller controls the prompt — the
+                              engine just orchestrates the loop and caching.
+    system_prefix          — prepended to the system prompt (general-purpose
+                              instructions that should be cached alongside the
+                              VTT).
+    system_suffix          — appended to the system prompt (e.g. NPC roster
+                              from `format_npc_roster`).
+    input_normalizer       — optional `Callable[[str], str]` applied to
+                              `vtt_text` (alias normalization).
+    """
+    if not scenes:
+        print("Error: no scenes provided — cannot run scene-anchored extraction.",
+              file=sys.stderr)
+        raise SystemExit(1)
+
+    if input_normalizer:
+        vtt_text = input_normalizer(vtt_text)
+
+    extract_dir.mkdir(parents=True, exist_ok=True)
+    saved: list[Path] = []
+    total = len(scenes)
+
+    parts = []
+    if system_prefix:
+        parts.append(system_prefix.strip())
+    parts.append("# TRANSCRIPT (full session VTT)\n\n" + vtt_text.strip())
+    if system_suffix:
+        parts.append(system_suffix.strip())
+    system_prompt = "\n\n".join(parts)
+
+    for i, scene in enumerate(scenes, 1):
+        name = scene["name"]
+        body = scene.get("body", "").strip()
+        slug = _slugify(name) or f"scene_{i}"
+        out_file = extract_dir / filename_template.format(i=i, slug=slug)
+        if out_file.exists():
+            print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
+            saved.append(out_file)
+            continue
+
+        user_prompt = extraction_instruction.format(name=name, body=body)
+        print(f"  [{i}/{total}] Scene-extracting: {name}")
+        print("  " + "─" * 56)
+        result = stream_api(client, system_prompt, user_prompt, model,
+                            max_tokens=max_tokens, cache_system=cache_vtt)
+        print("  " + "─" * 56)
+
+        # Front-matter + scene body + LLM extraction
+        header = (
+            f"---\n"
+            f"scene: {name}\n"
+            f"source: gmassist\n"
+            f"---\n\n"
+            f"# {name}\n\n"
+            f"## Scene summary (from gm-assist, verbatim)\n\n"
+            f"{body}\n\n"
+            f"## Verbatim moments\n\n"
+            f"{result.strip()}\n"
+        )
+        out_file.write_text(header, encoding="utf-8")
+        saved.append(out_file)
+        print(f"  Saved: {out_file.name}\n")
+
+    return saved
+
+
 # ── NPC alias machinery ───────────────────────────────────────────────────────
 #
 # Dossier frontmatter records human-curated canonical ↔ alias mappings
@@ -513,24 +670,38 @@ def call_api_with_tools(client, *, system: str, messages: list, tools: list,
             raise
 
 
-def stream_api(client, system: str, user: str, model: str, max_tokens: int = 8096,
-               silent: bool = False, verbose: bool = False) -> str:
+def stream_api(client, system, user: str, model: str, max_tokens: int = 8096,
+               silent: bool = False, verbose: bool = False,
+               cache_system: bool = False) -> str:
     """Stream a Claude API call, printing each token as it arrives. Returns full response.
 
     Retries on transient errors (rate limit, overload, connection) with exponential backoff
     (up to 4 attempts). Pass silent=True to suppress all output (useful for
     filter/classification passes). Pass verbose=True to print the system and user prompts
     before calling.
+
+    system — string, or a pre-built list of content blocks (for callers that want to
+             control caching breakpoints precisely).
+    cache_system — when True and `system` is a string, wrap it in a single
+             cache_control: ephemeral block so subsequent calls with the same prefix
+             get the prompt-cache discount. Useful when a large fixed context (e.g.
+             a full VTT transcript) is reused across many short calls.
     """
     if verbose:
         print("\n" + "▲" * 60)
         print("SYSTEM PROMPT:")
-        print(system)
+        print(system if isinstance(system, str) else _render_system_blocks_for_log(system))
         print("─" * 60)
         print("USER PROMPT:")
         print(user)
         print("▲" * 60 + "\n")
     import time
+
+    if cache_system and isinstance(system, str):
+        system_arg = [{"type": "text", "text": system,
+                       "cache_control": {"type": "ephemeral"}}]
+    else:
+        system_arg = system
 
     delays = [60, 120, 240]  # seconds to wait before each retry
     for attempt, delay in enumerate([-1] + delays):
@@ -543,7 +714,7 @@ def stream_api(client, system: str, user: str, model: str, max_tokens: int = 809
             with client.messages.stream(
                 model=model,
                 max_tokens=max_tokens,
-                system=system,
+                system=system_arg,
                 messages=[{"role": "user", "content": user}],
             ) as stream:
                 for text in stream.text_stream:
@@ -557,6 +728,19 @@ def stream_api(client, system: str, user: str, model: str, max_tokens: int = 809
             if _is_retryable(e) and attempt < len(delays):
                 continue
             raise
+
+
+def _render_system_blocks_for_log(blocks) -> str:
+    if not isinstance(blocks, list):
+        return str(blocks)
+    parts = []
+    for b in blocks:
+        if isinstance(b, dict) and "text" in b:
+            cache = " [cached]" if b.get("cache_control") else ""
+            parts.append(f"<block{cache}>\n{b['text']}\n</block>")
+        else:
+            parts.append(str(b))
+    return "\n".join(parts)
 
 
 # ── Clipboard ─────────────────────────────────────────────────────────────────

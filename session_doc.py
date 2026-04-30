@@ -423,6 +423,78 @@ def load_extractions(path: Path) -> list[tuple[str, str]]:
     return [(f.name, f.read_text(encoding="utf-8").strip()) for f in files]
 
 
+_SCENE_FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n\n?(.*)\Z", re.DOTALL)
+
+
+def _split_scene_body(body: str) -> tuple[str, str]:
+    """Split the body of a scene_extract.py file into (gm_summary, verbatim_moments).
+
+    The conventional shape produced by scene_extract.py:
+        # Scene Name
+        ## Scene summary (from gm-assist, verbatim)
+        <gm-assist body>
+        ## Verbatim moments
+        <vtt-derived moments>
+
+    Returns ('', body) when the headings are absent — the caller treats the
+    whole file as moments and lets Pass 5 work out the structure.
+    """
+    summary_match = re.search(r"(?ms)^## Scene summary[^\n]*\n(.*?)(?=^## |\Z)", body)
+    moments_match = re.search(r"(?ms)^## Verbatim moments[^\n]*\n(.*?)(?=^## |\Z)", body)
+    if summary_match and moments_match:
+        return summary_match.group(1).strip(), moments_match.group(1).strip()
+    return "", body.strip()
+
+
+def load_scene_extractions(path: Path) -> list[dict]:
+    """Load scene-anchored extraction files written by scene_extract.py.
+
+    Looks for `NN_*.md` files (sorted), parses the YAML frontmatter for the
+    canonical `scene:` name, and returns ordered dicts:
+        [{"name": str, "path": Path, "summary": str, "moments": str, "body": str}, ...]
+
+    `summary` is the gm-assist scene body (used as Pass 5's structural
+    skeleton) and `moments` is the VTT-derived verbatim extraction (used as
+    Pass 5's quote source). When a file does not follow the dual-section
+    layout, `summary` is empty and `moments` holds the full body.
+
+    Files named `plan.md`, `enhanced_sections.md`, `consistency_report.md`, or
+    starting with `_` are skipped (they are sibling artifacts, not scene
+    extractions).
+    """
+    SKIP = {"plan.md", "enhanced_sections.md", "consistency_report.md"}
+    items: list[dict] = []
+    for f in sorted(path.glob("*.md")):
+        if f.name in SKIP or f.name.startswith("_"):
+            continue
+        # Conventional pattern from scene_extract.py: NN_<slug>.md
+        if not re.match(r"^\d{2}_", f.name):
+            continue
+        text = f.read_text(encoding="utf-8")
+        m = _SCENE_FRONTMATTER_RE.match(text)
+        if m:
+            name = ""
+            for line in m.group(1).splitlines():
+                if line.strip().lower().startswith("scene:"):
+                    name = line.split(":", 1)[1].strip()
+                    break
+            body = m.group(2).strip()
+            if not name:
+                name = f.stem.split("_", 1)[1].replace("_", " ").title() if "_" in f.stem else f.stem
+        else:
+            name = f.stem.split("_", 1)[1].replace("_", " ").title() if "_" in f.stem else f.stem
+            body = text.strip()
+        summary, moments = _split_scene_body(body)
+        items.append({
+            "name": name,
+            "path": f,
+            "body": body,
+            "summary": summary,
+            "moments": moments,
+        })
+    return items
+
+
 def format_extractions(extractions: list[tuple[str, str]], heading: str) -> str:
     parts = [f"### Chunk {i}\n\n{content}"
              for i, (_, content) in enumerate(extractions, 1)]
@@ -609,9 +681,24 @@ carry any of that framing into the prose:
 """
 
 
+SCENE_ANCHORED_DIRECTIVE = """\
+NARRATOR FOCUS — the moments below are SCENE-LEVEL, not pre-filtered to one character.
+They capture the whole scene as it happened around everyone present. Your job is to
+render that scene through {narrator}'s eyes specifically:
+- Foreground what {narrator} said, did, noticed, and felt — give those beats weight.
+- Other characters' actions are visible only as {narrator} would experience them
+  — what they saw, heard, or reacted to. No internal monologue for anyone but {narrator}.
+- Every verbatim quote in the moments belongs in the prose, even when {narrator} did
+  not speak it — they were there, they heard it, render it as heard.
+- Do not narrate from an omniscient camera. Stay in {narrator}'s body and point of view.\
+"""
+
+
 def build_narrate_system(examples_text: str | None, scene: str | None = None,
                          prose_mode: bool = False,
-                         has_scene_events: bool = False) -> str:
+                         has_scene_events: bool = False,
+                         scene_anchored: bool = False,
+                         narrator: str = "") -> str:
     if examples_text:
         block = "\n" + EXAMPLES_BLOCK.replace("{examples}", examples_text.strip()) + "\n"
     else:
@@ -648,6 +735,8 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
               .replace("{rendering_instruction}", rendering)
               .replace("{length_instruction}", length)
               .replace("{dialogue_instruction}", dialogue))
+    if scene_anchored and narrator:
+        result += "\n\n" + SCENE_ANCHORED_DIRECTIVE.replace("{narrator}", narrator)
     if prose_mode:
         result += "\n\n" + PROSE_MODE_INSTRUCTION
     return result
@@ -1009,6 +1098,13 @@ def main() -> None:
                              "alias in dossier frontmatter is rewritten to its "
                              "canonical name in recap/extractions before Pass 4, "
                              "and a 'Known NPCs' roster seeds the extract prompt.")
+    parser.add_argument("--scene-extractions", metavar="DIR", default=None,
+                        help="Directory of scene-anchored extractions (written by "
+                             "scene_extract.py). When supplied, Pass 4 is skipped: "
+                             "each section's matching scene file is fed directly to "
+                             "Pass 5 with a narrator-POV directive. Pass 3 reads the "
+                             "scene checklist from this directory's filenames/frontmatter "
+                             "instead of the recap. Forces --by-scene.")
     args = parser.parse_args()
     if args.fast:
         args.model = "claude-haiku-4-5-20251001"
@@ -1029,14 +1125,33 @@ def main() -> None:
         print(f"  Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
     recap = normalize(recap)
 
+    scene_extractions: list[dict] = []
+    if args.scene_extractions:
+        sx_dir = Path(args.scene_extractions).expanduser()
+        if not sx_dir.is_dir():
+            print(f"Error: --scene-extractions directory not found: {sx_dir}", file=sys.stderr)
+            sys.exit(1)
+        scene_extractions = load_scene_extractions(sx_dir)
+        if not scene_extractions:
+            print(f"Error: no scene extraction files found in {sx_dir} "
+                  f"(expected NN_*.md files written by scene_extract.py)", file=sys.stderr)
+            sys.exit(1)
+        if not args.by_scene:
+            print("  --scene-extractions implies --by-scene; enabling.")
+            args.by_scene = True
+        print(f"  Scene extractions: {len(scene_extractions)} scene(s) from {sx_dir}")
+        for i, sx in enumerate(scene_extractions, 1):
+            print(f"    {i}. {sx['name']}")
+
     roleplay_extractions: list[tuple[str, str]] = []
     if args.roleplay_extract_dir:
         roleplay_extractions = load_extractions(Path(args.roleplay_extract_dir).expanduser())
         if alias_map:
             roleplay_extractions = [(n, normalize(c)) for n, c in roleplay_extractions]
         print(f"  Roleplay extractions: {len(roleplay_extractions)} chunk(s)")
-    if not roleplay_extractions:
-        print("Error: --roleplay-extract-dir is required", file=sys.stderr)
+    if not roleplay_extractions and not scene_extractions:
+        print("Error: --roleplay-extract-dir is required (unless --scene-extractions is given)",
+              file=sys.stderr)
         sys.exit(1)
 
     summary_extractions: list[tuple[str, str]] = []
@@ -1230,7 +1345,8 @@ def main() -> None:
         plan_text = plan_path.read_text(encoding="utf-8")
         print(f"\n[Pass 3: Narrative plan loaded from {plan_path.name}]")
     else:
-        print(f"\n[Pass 3: Narrative plan | {len(roleplay_extractions)} chunk(s) | model: {args.model}]")
+        chunk_count = len(roleplay_extractions) if roleplay_extractions else len(scene_extractions)
+        print(f"\n[Pass 3: Narrative plan | {chunk_count} {'scene' if scene_extractions else 'chunk'}(s) | model: {args.model}]")
         print("=" * 60)
 
         plan_parts: list[str] = []
@@ -1238,11 +1354,12 @@ def main() -> None:
             plan_parts.append(f"# Session: {args.session_name}")
         if characters:
             plan_parts.append("## Available narrators\n" + "\n".join(f"- {c}" for c in characters))
-        chunk_parts = [f"### Chunk {i}\n\n{content}"
-                       for i, (_, content) in enumerate(roleplay_extractions, 1)]
-        plan_parts.append("## Roleplay Extractions\n"
-                          "(dialogue, character voice, emotional beats)\n\n"
-                          + "\n\n---\n\n".join(chunk_parts))
+        if roleplay_extractions:
+            chunk_parts = [f"### Chunk {i}\n\n{content}"
+                           for i, (_, content) in enumerate(roleplay_extractions, 1)]
+            plan_parts.append("## Roleplay Extractions\n"
+                              "(dialogue, character voice, emotional beats)\n\n"
+                              + "\n\n---\n\n".join(chunk_parts))
         if summary_extractions:
             s_parts = [f"### Chunk {i}\n\n{content}"
                        for i, (_, content) in enumerate(summary_extractions, 1)]
@@ -1258,20 +1375,28 @@ def main() -> None:
         if party:
             plan_parts.append(f"## Party Document\n\n{party.strip()}")
         if args.by_scene:
-            # Extract scene names from the ## Scenes section of the recap
-            scene_lines = []
-            in_scenes = False
-            for line in recap.splitlines():
-                if line.strip() == "## Scenes":
-                    in_scenes = True
-                elif line.startswith("## ") and in_scenes:
-                    break  # left the Scenes section
-                elif in_scenes and line.startswith("### "):
-                    scene_lines.append(line.strip())
+            scene_lines: list[str] = []
+            if scene_extractions:
+                # Authoritative checklist: the scene_extractions/ directory.
+                # The recap is irrelevant here — the user has already committed to
+                # the human-verified scene list when they ran scene_extract.py.
+                scene_lines = [f"### {sx['name']}" for sx in scene_extractions]
+            else:
+                # Fall back to the recap's ## Scenes section.
+                in_scenes = False
+                for line in recap.splitlines():
+                    if line.strip() == "## Scenes":
+                        in_scenes = True
+                    elif line.startswith("## ") and in_scenes:
+                        break  # left the Scenes section
+                    elif in_scenes and line.startswith("### "):
+                        scene_lines.append(line.strip())
             if scene_lines:
                 checklist = "\n".join(scene_lines)
+                source = "scene_extractions/" if scene_extractions else "recap"
                 plan_parts.append(
-                    "## Session Scenes (from recap — every scene below must appear in your plan)\n\n"
+                    f"## Session Scenes (from {source} — every scene below must "
+                    f"appear in your plan, in this exact order)\n\n"
                     + checklist
                 )
 
@@ -1280,7 +1405,8 @@ def main() -> None:
                                verbose=args.verbose)
         print("=" * 60)
 
-    sections = parse_plan(plan_text, len(roleplay_extractions))
+    plan_total_chunks = len(roleplay_extractions) or len(scene_extractions) or 1
+    sections = parse_plan(plan_text, plan_total_chunks)
     if not sections:
         print("Error: could not parse narrative plan. Raw output:", file=sys.stderr)
         print(plan_text, file=sys.stderr)
@@ -1393,7 +1519,31 @@ def main() -> None:
         file_token_override: int | None = None
 
         # Pass 4: character-specific extraction (silent)
-        if from_extractions_dir:
+        scene_summary_override: str | None = None
+        if scene_extractions:
+            # Scene-anchored mode — Pass 4 is skipped. Load the scene file by
+            # name match (case-insensitive); fall back to the i-th file.
+            match: dict | None = None
+            sn = (scene_name or "").lower().strip()
+            if sn:
+                for sx in scene_extractions:
+                    if sx["name"].lower().strip() == sn:
+                        match = sx
+                        break
+            if match is None and 1 <= i <= len(scene_extractions):
+                match = scene_extractions[i - 1]
+            if match is None:
+                print(f"Error: no scene extraction matches '{scene_name}' (scene {i}).",
+                      file=sys.stderr)
+                sys.exit(1)
+            char_moments = match["moments"] or match["body"]
+            scene_summary_override = match["summary"] or None
+            print(f"\n[Pass 4 scene {i}: Skipped — scene-anchored extraction loaded — {label}]")
+            est = estimate_narration_tokens(char_moments)
+            warn = f"  ⚠ estimated {est} — add 'tokens: {est}' to override" if est > narrate_tokens else ""
+            print(f"  → {len(char_moments):,} chars from {match['path'].name}"
+                  f"  (limit: {narrate_tokens}, est. ~{est}){warn}")
+        elif from_extractions_dir:
             extract_file = from_extractions_dir / fname
             if not extract_file.exists():
                 print(f"Error: extraction file not found: {extract_file}", file=sys.stderr)
@@ -1466,7 +1616,11 @@ def main() -> None:
         # scene_text or the model will narrate content from the recap that the user
         # intentionally left out of the extraction.
         scene_events_str = ""
-        if not from_extractions_dir:
+        if scene_summary_override:
+            # Scene-anchored mode: the extraction file already carries the
+            # gm-assist scene body. That is the authoritative event skeleton.
+            scene_events_str = scene_summary_override
+        elif not from_extractions_dir:
             if enhanced_sections and scene_name:
                 scene_events_str = extract_scene_text(enhanced_sections, scene_name)
             elif scene_name and recap:
@@ -1484,7 +1638,9 @@ def main() -> None:
             None if scene_name else examples_text,
             scene=scene_name or None,
             prose_mode=args.prose_mode,
-            has_scene_events=bool(scene_events_str or narrate_context)
+            has_scene_events=bool(scene_events_str or narrate_context),
+            scene_anchored=bool(scene_extractions and scene_summary_override),
+            narrator=narrator,
         )
         narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff,
                                               roster, voice_note, roleplay_summary,
