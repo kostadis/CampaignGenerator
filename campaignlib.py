@@ -481,6 +481,38 @@ def call_api(client, system: str, content, model: str, max_tokens: int = 8096) -
             raise
 
 
+def call_api_with_tools(client, *, system: str, messages: list, tools: list,
+                        model: str, max_tokens: int = 8192):
+    """Non-streaming tool-use API call. Returns the raw Message response.
+
+    Caller is responsible for the loop, message history, and dispatching
+    tool_use blocks. Caller needs response.content (list of blocks),
+    response.stop_reason, response.usage.
+
+    Retries on transient errors (rate limit, overload, connection) with
+    exponential backoff — same behaviour as call_api / stream_api.
+    """
+    import time
+    delays = [10, 20, 40]
+    for attempt, delay in enumerate([-1] + delays):
+        if delay >= 0:
+            print(f"\n  [API unavailable — waiting {delay}s before retry {attempt}/{len(delays)}...]",
+                  flush=True)
+            time.sleep(delay)
+        try:
+            return client.messages.create(
+                model=model,
+                max_tokens=max_tokens,
+                system=system,
+                messages=messages,
+                tools=tools,
+            )
+        except Exception as e:
+            if _is_retryable(e) and attempt < len(delays):
+                continue
+            raise
+
+
 def stream_api(client, system: str, user: str, model: str, max_tokens: int = 8096,
                silent: bool = False, verbose: bool = False) -> str:
     """Stream a Claude API call, printing each token as it arrives. Returns full response.
