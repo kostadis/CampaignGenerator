@@ -493,6 +493,51 @@ the LLM doing one thing the human can verify before the next call
 inherits its output. Per-scene narration files mean a single bad voice
 take only requires re-running that scene, not the whole session.
 
+#### Batch mode (`--batch`) — 50% off list price
+
+Stages 1 and 2 both accept `--batch`, which routes the call(s) through
+Anthropic's Message Batches API. Pricing is half list, prompt caching
+still applies (so Stage 2's per-scene cache hits compound on top of
+the discount), and results typically return in minutes — 24 h SLA worst
+case. The tradeoff is no live token streaming.
+
+```bash
+# Stage 1 — single batched call (50% off; blocks, polls, writes output)
+python enhance_summary.py "$SESS"/*.vtt \
+    --gmassist "$SESS/gm-assist.md" --output "$SESS/session-summary.md" \
+    --batch
+
+# Stage 2 — N scenes submitted as one batch (50% off + cache hits across scenes)
+python scene_extract.py "$SESS"/*.vtt \
+    --summary "$SESS/session-summary.md" \
+    --output-dir "$SESS/scene_extractions/" \
+    --batch
+```
+
+Detach mode (fire-and-forget, e.g. overnight):
+
+```bash
+# Submit, write a sidecar, exit.
+python enhance_summary.py ... --batch --submit-only
+#   → writes <output>.batch.json next to the output path
+python scene_extract.py  ... --batch --submit-only
+#   → writes <output-dir>/.batch.json
+
+# Later — retrieve from the sidecar.
+python enhance_summary.py --output "$SESS/session-summary.md" --batch --collect
+python scene_extract.py  --output-dir "$SESS/scene_extractions/" --batch --collect
+```
+
+Resume semantics carry over: if some scene files already exist on disk
+when `scene_extract.py --batch` runs, only the missing ones are
+submitted. Failed scenes leave the sidecar in place so a re-run can
+resubmit just the failures.
+
+The Web UI Scene Editor exposes the same toggle as a `Batch` checkbox
+in the Stage 1 / Stage 2 toolbar (persisted as `sd_batch` in
+`ui_config.yaml`). The poll-progress lines stream over the existing SSE
+endpoint, so the UI needs no other changes.
+
 #### All flags
 
 | Flag | Default | Description |

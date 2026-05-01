@@ -17,6 +17,11 @@ Usage:
       --output-dir scene_extractions/ \\
       [--dossier-dir docs/npcs/]
 
+  # 50% off via the Message Batches API (no live streaming)
+  python scene_extract.py ... --batch                # block + poll until done
+  python scene_extract.py ... --batch --submit-only  # detach: write sidecar, exit
+  python scene_extract.py ... --batch --collect      # retrieve from sidecar
+
 Output:
   scene_extractions/01_<scene_slug>.md  ... 09_<scene_slug>.md
   Each file contains the scene summary verbatim + a verbatim-moments
@@ -29,12 +34,23 @@ from pathlib import Path
 
 from campaignlib import (
     build_alias_normalizer,
+    build_batch_request,
+    build_scene_extraction_system_prompt,
+    collect_batch,
+    format_batch_progress,
     format_npc_roster,
+    format_scene_output,
     load_alias_map,
     make_client,
     parse_gmassist_scenes,
+    plan_scene_extraction,
+    poll_batch,
+    read_batch_sidecar,
     run_scene_extraction,
     save_log,
+    submit_batch,
+    utc_now_iso,
+    write_batch_sidecar,
 )
 from vtt_summary import parse_vtt
 
@@ -95,15 +111,133 @@ the system prompt. No preamble, no commentary.
 """
 
 
+SIDECAR_KIND = "scene_extract"
+SIDECAR_NAME = ".batch.json"
+
+
+def _sidecar_path(out_dir: Path) -> Path:
+    return out_dir / SIDECAR_NAME
+
+
+def _submit_pending(args, *, scenes, vtt_text, out_dir, alias_map):
+    """Build per-scene Requests for not-yet-extracted scenes and submit one batch."""
+    normalize, _ = build_alias_normalizer(alias_map)
+    system_suffix = format_npc_roster(alias_map)
+    system_prompt = build_scene_extraction_system_prompt(
+        vtt_text=vtt_text,
+        system_prefix=SCENE_EXTRACT_SYSTEM_PREFIX,
+        system_suffix=system_suffix,
+        input_normalizer=normalize if alias_map else None,
+    )
+
+    plan = plan_scene_extraction(scenes=scenes, extract_dir=out_dir)
+    pending = [p for p in plan if not p["exists"]]
+    if not pending:
+        print("\nAll scenes already extracted on disk — nothing to submit.")
+        return None, plan, system_prompt
+
+    requests = []
+    for entry in pending:
+        user_prompt = SCENE_EXTRACT_USER_TEMPLATE.format(
+            name=entry["name"], body=entry["body"]
+        )
+        requests.append(build_batch_request(
+            custom_id=entry["custom_id"],
+            system=system_prompt,
+            user=user_prompt,
+            model=args.model,
+            max_tokens=args.max_tokens,
+            cache_system=not args.no_cache,
+        ))
+
+    print(f"\n[Submitting batch | model: {args.model} | "
+          f"{len(requests)} of {len(plan)} scene(s) | "
+          f"system: {len(system_prompt):,} chars per request]")
+    client = make_client()
+    batch_id = submit_batch(client, requests)
+    sidecar = _sidecar_path(out_dir)
+    write_batch_sidecar(sidecar, {
+        "kind": SIDECAR_KIND,
+        "batch_id": batch_id,
+        "model": args.model,
+        "submitted_at": utc_now_iso(),
+        "scenes": [
+            {"i": p["i"], "name": p["name"], "slug": p["slug"],
+             "custom_id": p["custom_id"], "path": str(p["path"])}
+            for p in plan
+        ],
+        "pending_custom_ids": [p["custom_id"] for p in pending],
+    })
+    print(f"  Batch ID: {batch_id}")
+    print(f"  Sidecar:  {sidecar}")
+    return batch_id, plan, system_prompt
+
+
+def _collect_and_write(client, *, batch_id: str, out_dir: Path,
+                       plan_entries: list[dict],
+                       sidecar: Path | None = None) -> list[Path]:
+    """Retrieve batch results and write per-scene files using format_scene_output.
+
+    `plan_entries` is the full plan list (from plan_scene_extraction or the
+    sidecar) so we can map custom_id back to the on-disk path and the
+    verbatim scene body. Already-existing files are left alone.
+    """
+    print(f"\n[Collecting batch {batch_id}...]")
+    results = collect_batch(client, batch_id)
+    saved: list[Path] = []
+    errors: list[str] = []
+
+    by_id = {p["custom_id"]: p for p in plan_entries}
+    for custom_id, record in results.items():
+        entry = by_id.get(custom_id)
+        if entry is None:
+            print(f"  Warning: result for unknown custom_id {custom_id!r} — ignoring",
+                  file=sys.stderr)
+            continue
+        path = Path(entry["path"])
+        if path.exists():
+            print(f"  [{entry['i']}] {path.name}: already on disk — leaving untouched")
+            saved.append(path)
+            continue
+        if record["status"] != "succeeded":
+            errors.append(f"  [{entry['i']}] {custom_id}: {record['status']} — "
+                          f"{record.get('error')}")
+            continue
+        text = record["text"] or ""
+        body_text = format_scene_output(entry["name"], entry.get("body", ""), text)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(body_text, encoding="utf-8")
+        saved.append(path)
+        usage = record.get("usage") or {}
+        cache_read = usage.get("cache_read_input_tokens")
+        suffix = f" | cache_read={cache_read}" if cache_read else ""
+        print(f"  [{entry['i']}] Saved: {path.name}{suffix}")
+
+    if errors:
+        print("\nErrors:", file=sys.stderr)
+        for line in errors:
+            print(line, file=sys.stderr)
+        print("\nRe-run with --batch (sidecar preserved) to resubmit failures.",
+              file=sys.stderr)
+
+    if not errors and sidecar and sidecar.exists():
+        sidecar.unlink()
+        print(f"  Removed sidecar: {sidecar}")
+
+    return saved
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Scene-anchored VTT extraction (replaces blind chunked extraction)."
     )
-    parser.add_argument("input", metavar="FILE", help="Zoom .vtt transcript file")
-    parser.add_argument("--summary", "-s", required=True, metavar="FILE",
+    parser.add_argument("input", metavar="FILE", nargs="?",
+                        help="Zoom .vtt transcript file (optional with --batch --collect)")
+    parser.add_argument("--summary", "-s", metavar="FILE",
                         dest="summary",
                         help="Enriched session summary from Stage 1 / "
-                             "enhance_summary.py (must contain a ## Scenes section)")
+                             "enhance_summary.py (must contain a ## Scenes section). "
+                             "Optional with --batch --collect.")
     parser.add_argument("--output-dir", "-o", required=True, metavar="DIR",
                         help="Where to write per-scene extraction files")
     parser.add_argument("--dossier-dir", metavar="DIR", default=None,
@@ -120,11 +254,68 @@ def main() -> None:
     parser.add_argument("--no-cache", action="store_true",
                         help="Disable prompt caching of the VTT prefix")
     parser.add_argument("--no-log", action="store_true")
+    parser.add_argument("--batch", action="store_true",
+                        help="Use Anthropic's Message Batches API (50%% off list price). "
+                             "Per-scene calls are submitted as one batch and share the "
+                             "cached VTT prefix.")
+    parser.add_argument("--submit-only", action="store_true",
+                        help="With --batch: submit the batch, write a sidecar in "
+                             "--output-dir/.batch.json, exit.")
+    parser.add_argument("--collect", action="store_true",
+                        help="With --batch: read the sidecar in --output-dir/.batch.json "
+                             "and retrieve results.")
+    parser.add_argument("--poll-interval", type=int, default=10,
+                        help="Seconds between batch poll requests (default: 10)")
     args = parser.parse_args()
 
     if args.fast:
         args.model = "claude-haiku-4-5-20251001"
         print("  [fast mode: claude-haiku-4-5-20251001]")
+
+    if (args.submit_only or args.collect) and not args.batch:
+        parser.error("--submit-only and --collect require --batch")
+    if args.submit_only and args.collect:
+        parser.error("--submit-only and --collect are mutually exclusive")
+
+    out_dir = Path(args.output_dir).expanduser()
+
+    # ── --batch --collect: read sidecar, no inputs needed ──
+    if args.batch and args.collect:
+        sidecar = _sidecar_path(out_dir)
+        payload = read_batch_sidecar(sidecar)
+        if payload.get("kind") != SIDECAR_KIND:
+            print(f"Error: sidecar at {sidecar} is for kind={payload.get('kind')!r}, "
+                  f"expected {SIDECAR_KIND!r}", file=sys.stderr)
+            sys.exit(1)
+        client = make_client()
+        batch_id = payload["batch_id"]
+        plan_entries = payload.get("scenes", [])
+        # plan_scene_extraction returned dicts with body — sidecar entries
+        # don't include body, so re-load it from the summary if available.
+        if args.summary:
+            summary_path = Path(args.summary).expanduser()
+            if summary_path.exists():
+                scenes_now = parse_gmassist_scenes(
+                    summary_path.read_text(encoding="utf-8"))
+                body_by_name = {s["name"]: s.get("body", "").strip() for s in scenes_now}
+                for e in plan_entries:
+                    e["body"] = body_by_name.get(e["name"], "")
+        else:
+            for e in plan_entries:
+                e.setdefault("body", "")
+        print(f"[Polling batch {batch_id} (submitted {payload.get('submitted_at')})...]")
+        poll_batch(client, batch_id, interval=args.poll_interval,
+                   on_tick=lambda b: print("  " + format_batch_progress(b), flush=True))
+        saved = _collect_and_write(client, batch_id=batch_id, out_dir=out_dir,
+                                   plan_entries=plan_entries, sidecar=sidecar)
+        print(f"\nWrote {len(saved)} scene file(s) to {out_dir}")
+        return
+
+    # ── Everything else: need VTT + summary ──
+    if not args.input:
+        parser.error("input VTT file is required (omit only with --batch --collect)")
+    if not args.summary:
+        parser.error("--summary is required (omit only with --batch --collect)")
 
     vtt_path = Path(args.input).expanduser()
     if not vtt_path.exists():
@@ -156,34 +347,67 @@ def main() -> None:
         print(f"  {i}. {s['name']}")
 
     alias_map = load_alias_map(args.dossier_dir)
-    normalize, _ = build_alias_normalizer(alias_map)
-    npc_roster = format_npc_roster(alias_map)
     if alias_map:
         print(f"  Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
 
-    out_dir = Path(args.output_dir).expanduser()
+    if not args.batch:
+        # ── Live streaming path (unchanged behaviour) ──
+        normalize, _ = build_alias_normalizer(alias_map)
+        npc_roster = format_npc_roster(alias_map)
+        client = make_client()
+        print(f"\n[Scene extraction | {len(scenes)} scene(s) | model: {args.model}]")
+        print("=" * 60)
+        saved = run_scene_extraction(
+            client,
+            vtt_text=dialogue,
+            scenes=scenes,
+            extract_dir=out_dir,
+            model=args.model,
+            extraction_instruction=SCENE_EXTRACT_USER_TEMPLATE,
+            system_prefix=SCENE_EXTRACT_SYSTEM_PREFIX,
+            system_suffix=npc_roster,
+            input_normalizer=normalize if alias_map else None,
+            cache_vtt=not args.no_cache,
+            max_tokens=args.max_tokens,
+        )
+        print("=" * 60)
+        print(f"\nWrote {len(saved)} scene file(s) to {out_dir}")
+
+        if not args.no_log:
+            log_sections = [
+                ("VTT", f"{vtt_path.name} — {len(dialogue):,} chars"),
+                ("Summary", summary_text),
+                ("Scenes", "\n".join(f"{i}. {s['name']}" for i, s in enumerate(scenes, 1))),
+                ("Output files", "\n".join(str(p) for p in saved)),
+            ]
+            log_file = save_log(str(out_dir / "logs"), log_sections, stem="scene_extract")
+            print(f"Log saved to: {log_file}")
+        return
+
+    # ── --batch (block-and-poll) or --batch --submit-only ──
+    out_dir.mkdir(parents=True, exist_ok=True)
+    batch_id, plan_entries, _ = _submit_pending(
+        args, scenes=scenes, vtt_text=dialogue, out_dir=out_dir, alias_map=alias_map,
+    )
+    if batch_id is None:
+        # Nothing to do — every scene already on disk.
+        return
+    if args.submit_only:
+        print("\nSubmit-only: exiting. Run with --batch --collect to retrieve later.")
+        return
 
     client = make_client()
-    print(f"\n[Scene extraction | {len(scenes)} scene(s) | model: {args.model}]")
-    print("=" * 60)
-    saved = run_scene_extraction(
-        client,
-        vtt_text=dialogue,
-        scenes=scenes,
-        extract_dir=out_dir,
-        model=args.model,
-        extraction_instruction=SCENE_EXTRACT_USER_TEMPLATE,
-        system_prefix=SCENE_EXTRACT_SYSTEM_PREFIX,
-        system_suffix=npc_roster,
-        input_normalizer=normalize if alias_map else None,
-        cache_vtt=not args.no_cache,
-        max_tokens=args.max_tokens,
-    )
-    print("=" * 60)
+    print(f"\n[Polling batch {batch_id} every {args.poll_interval}s...]")
+    poll_batch(client, batch_id, interval=args.poll_interval,
+               on_tick=lambda b: print("  " + format_batch_progress(b), flush=True))
+    sidecar = _sidecar_path(out_dir)
+    saved = _collect_and_write(client, batch_id=batch_id, out_dir=out_dir,
+                               plan_entries=plan_entries, sidecar=sidecar)
     print(f"\nWrote {len(saved)} scene file(s) to {out_dir}")
 
     if not args.no_log:
         log_sections = [
+            ("Batch", f"id: {batch_id} (submit-and-collect)"),
             ("VTT", f"{vtt_path.name} — {len(dialogue):,} chars"),
             ("Summary", summary_text),
             ("Scenes", "\n".join(f"{i}. {s['name']}" for i, s in enumerate(scenes, 1))),

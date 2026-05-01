@@ -41,6 +41,9 @@ const proseMode = ref(false)
 const reflections = ref(false)
 const useEnhancedSections = ref(true)
 const showOverrides = ref(false)
+// Batch mode toggle for Stage 1 / Stage 2 (Anthropic Message Batches API,
+// 50% off list price; replaces token streaming with poll-progress lines).
+const useBatch = ref(false)
 
 function loadConfigFields() {
   const v = config.values
@@ -62,6 +65,16 @@ function loadConfigFields() {
   proseMode.value = v.sd_prose_mode || false
   reflections.value = v.sd_reflections || false
   useEnhancedSections.value = v.sd_use_enhanced_sections !== false
+  useBatch.value = v.sd_batch === true
+}
+
+async function persistBatchToggle() {
+  config.values.sd_batch = useBatch.value
+  try {
+    await config.save()
+  } catch {
+    /* non-fatal: toggle will still apply to in-flight calls */
+  }
 }
 
 const contextFiles = computed(() => resolvePathList(context.value))
@@ -313,9 +326,12 @@ async function runExtract() {
   if (extracting.value || narrating.value || enhancing.value || planning.value) return
   extracting.value = true
   narrationOutput.value = ''
-  setStatus('Re-extracting quotes (Stage 2)...')
+  setStatus(useBatch.value
+    ? 'Submitting Stage 2 batch (Message Batches API)...'
+    : 'Re-extracting quotes (Stage 2)...')
 
-  activeSSE.value = connectSSE('/api/editor/extract', {
+  const url = useBatch.value ? '/api/editor/extract?batch=1' : '/api/editor/extract'
+  activeSSE.value = connectSSE(url, {
     onData(text) {
       narrationOutput.value += text
     },
@@ -364,9 +380,12 @@ async function runEnhance() {
   if (enhancing.value || extracting.value || narrating.value || planning.value) return
   enhancing.value = true
   narrationOutput.value = ''
-  setStatus('Enhancing summary (Stage 1)...')
+  setStatus(useBatch.value
+    ? 'Submitting Stage 1 batch (Message Batches API)...'
+    : 'Enhancing summary (Stage 1)...')
 
-  activeSSE.value = connectSSE('/api/editor/enhance', {
+  const url = useBatch.value ? '/api/editor/enhance?batch=1' : '/api/editor/enhance'
+  activeSSE.value = connectSSE(url, {
     onData(text) {
       narrationOutput.value += text
     },
@@ -601,6 +620,20 @@ onMounted(async () => {
       </div>
 
       <span class="status-msg">{{ statusMsg }}</span>
+
+      <span class="stage-group">
+        <label
+          class="batch-toggle"
+          title="Submit Stage 1 / Stage 2 via Anthropic's Message Batches API (50% off list price). Replaces token streaming with poll-progress lines; usually finishes in minutes (24h SLA worst case)."
+        >
+          <input
+            type="checkbox"
+            v-model="useBatch"
+            @change="persistBatchToggle"
+          />
+          Batch
+        </label>
+      </span>
 
       <span class="stage-group">
         <span class="stage-label">Stage 1</span>
@@ -873,6 +906,21 @@ onMounted(async () => {
 }
 .config-btn {
   margin-left: 4px;
+}
+
+.batch-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.batch-toggle input {
+  cursor: pointer;
+  margin: 0;
 }
 
 .columns {

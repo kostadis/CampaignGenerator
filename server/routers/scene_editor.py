@@ -290,10 +290,13 @@ def _assembled_output_path() -> Path:
 
 # ── Command builders ────────────────────────────────────────────────────────
 
-def _build_enhance_cmd() -> list[str] | tuple[None, str]:
+def _build_enhance_cmd(batch: bool = False) -> list[str] | tuple[None, str]:
     """Stage 1: enhance_summary.py {vtt} --gmassist {session} --output {summary}.
 
     Returns the command list, or (None, error_message) on misconfig.
+    Pass `batch=True` to forward `--batch` so the script uses the Message
+    Batches API (50% off list price; the script's poll-progress lines flow
+    over the same SSE stream).
     """
     vtt = _vtt_path()
     if vtt is None or not vtt.exists():
@@ -303,17 +306,24 @@ def _build_enhance_cmd() -> list[str] | tuple[None, str]:
     summary = _session_summary_path()
     if summary is None:
         return None, "could not resolve session-summary.md output path"
-    return [
+    cmd = [
         python_exe(),
         str(SCRIPT_DIR / "enhance_summary.py"),
         str(vtt),
         "--gmassist", CONFIG["session"],
         "--output", str(summary),
     ]
+    if batch:
+        cmd.append("--batch")
+    return cmd
 
 
-def _build_reextract_cmd() -> list[str] | tuple[None, str]:
-    """Stage 2: scene_extract.py {vtt} --summary {summary} --output-dir {sx_dir}."""
+def _build_reextract_cmd(batch: bool = False) -> list[str] | tuple[None, str]:
+    """Stage 2: scene_extract.py {vtt} --summary {summary} --output-dir {sx_dir}.
+
+    Pass `batch=True` to forward `--batch` so per-scene calls are submitted
+    as one Message Batch (50% off + cache hits compound).
+    """
     vtt = _vtt_path()
     if vtt is None or not vtt.exists():
         return None, "no .vtt file resolved"
@@ -332,6 +342,8 @@ def _build_reextract_cmd() -> list[str] | tuple[None, str]:
     ]
     if CONFIG.get("dossier_dir"):
         cmd += ["--dossier-dir", CONFIG["dossier_dir"]]
+    if batch:
+        cmd.append("--batch")
     return cmd
 
 
@@ -551,9 +563,13 @@ def api_vtt():
 
 
 @router.get("/enhance")
-async def api_enhance():
-    """Stage 1 — stream enhance_summary.py output."""
-    result = _build_enhance_cmd()
+async def api_enhance(batch: int = 0):
+    """Stage 1 — stream enhance_summary.py output.
+
+    `batch=1` forwards `--batch` to the script (Message Batches API; 50%
+    off list price; replaces token streaming with poll-progress lines).
+    """
+    result = _build_enhance_cmd(batch=bool(batch))
     if isinstance(result, tuple):
         _, err = result
         return JSONResponse({"ok": False, "error": err}, status_code=400)
@@ -565,14 +581,15 @@ async def api_enhance():
 
 
 @router.get("/extract")
-async def api_extract():
+async def api_extract(batch: int = 0):
     """Stage 2 (Re-Extract Quotes) — calls scene_extract.py.
 
-    Falls back to the old Pass-1-to-4 command when the workspace is on the
-    legacy flow (no session-summary.md or scene_extractions_dir).
+    `batch=1` forwards `--batch` to the script. Falls back to the old
+    Pass-1-to-4 command (no batch support) when the workspace is on the
+    legacy flow.
     """
     if _using_new_flow() or _session_summary_path() and _session_summary_path().exists():
-        result = _build_reextract_cmd()
+        result = _build_reextract_cmd(batch=bool(batch))
         if isinstance(result, tuple):
             _, err = result
             return JSONResponse({"ok": False, "error": err}, status_code=400)
