@@ -1,11 +1,19 @@
-# Alias Pipeline Integration — Plan
+# Alias Pipeline Integration — As-Built Notes
 
-Supersedes `feat/alias-propagation`. That branch lifted alias machinery into
+> **STATUS: SHIPPED.** Every step in this plan is live in `campaignlib.py`
+> and the downstream extractors. Preserved as the design rationale behind
+> the current implementation. **For runtime behaviour and the merge
+> workflow, read [`docs/dossier_aliases.md`](docs/dossier_aliases.md). For
+> the API surface, see the "NPC alias machinery" section of
+> [`campaignlib.py`](campaignlib.py).**
+
+This file originally proposed the design that superseded
+`feat/alias-propagation`. That branch lifted alias machinery into
 `campaignlib` and retrofitted every extractor, but 5 of its 7 commits no
-longer apply: the downstream scripts (`distill`, `campaign_state`, `party`,
-`vtt_summary`) were migrated to the shared `run_extract_pipeline` /
+longer applied: the downstream scripts (`distill`, `campaign_state`, `party`,
+`vtt_summary`) had been migrated to the shared `run_extract_pipeline` /
 `run_synthesize_pipeline` pattern after that branch was written, and
-`planning.py`'s `parse_dossier` now returns a 4-tuple with `source_extracts`.
+`planning.py`'s `parse_dossier` returned a 4-tuple with `source_extracts`.
 
 ## Goal
 
@@ -43,25 +51,26 @@ roster = format_npc_roster(alias_map)
 makes `normalize` an identity function and `roster` the empty string —
 no-op for campaigns without a planning workflow.
 
-## Steps
+## Steps (all completed)
 
-1. Lift `parse_dossier`, `build_alias_normalizer`, `load_alias_map`,
-   `format_npc_roster` into `campaignlib`. Reconcile `parse_dossier`
-   with main's 4-tuple shape (keep `source_extracts` in the signature).
+1. Lifted `parse_dossier`, `build_alias_normalizer`, `load_alias_map`,
+   `format_npc_roster` into `campaignlib` (NPC alias machinery section).
+   `parse_dossier` returns a 4-tuple including `source_extracts`.
    `planning.py` imports from campaignlib; `write_dossier` stays local.
-2. Add `input_normalizer` + `system_suffix` kwargs to
+2. Added `input_normalizer` + `system_suffix` kwargs to
    `run_extract_pipeline` and `run_synthesize_pipeline`.
-3. Retrofit one script at a time (`distill`, `campaign_state`, `party`,
-   `vtt_summary`). `party.py` covers both the legacy flat-flag path and
-   the `--party-config` path.
-4. Retrofit `session_doc.py` Pass 4 — alias load hoisted above the
+3. Retrofitted `distill`, `campaign_state`, `party`, `vtt_summary`.
+   `party.py` covers both the legacy flat-flag path and the
+   `--party-config` path.
+4. Retrofitted `session_doc.py` Pass 4 — alias load hoisted above the
    per-scene loop; normalizer applied once to shared inputs.
-5. Verify `planning.py --build-dossiers` still self-seeds the extract
-   prompt with the existing roster.
-6. Tests: new tests for the pipeline kwargs; unit tests for the
-   campaignlib alias helpers; smoke tests per retrofit.
-7. Docs: "Cross-pipeline alias propagation" subsection in CLAUDE.md
-   under "Dossier merge workflow".
+5. `planning.py --build-dossiers` self-seeds the extract prompt with
+   the existing roster (verified).
+6. Tests: pipeline-kwarg tests, campaignlib alias-helper unit tests,
+   per-retrofit smoke tests in [`tests/`](tests/).
+7. "Cross-pipeline alias propagation" subsection added to
+   [`docs/dossier_aliases.md`](docs/dossier_aliases.md) and referenced
+   from [`CLAUDE.md`](CLAUDE.md) under "Dossier merge workflow".
 
 ## Deliberately excluded
 

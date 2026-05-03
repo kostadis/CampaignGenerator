@@ -1,26 +1,39 @@
 # Post-Session Workflow
 
-After each session you have a Zoom VTT transcript, a GM recap from gmassisstant.app,
-and a story worth telling. This guide walks through converting those raw materials into
-a finished narrated session document — rotating first-person voices from each character,
-fact-checked against your campaign docs.
+After each session you have a Zoom VTT transcript, a `gm-assist.md` recap
+from gmassisstant.app, and a story worth telling. This page is a short
+umbrella — pick the entry point that matches how you want to work.
 
-The full pipeline: **VTT transcript → session summary → per-scene extraction files →
-review & edit → narrate each scene → assemble final doc.**
+The recommended path is the **4-stage pipeline**:
+
+```
+gm-assist.md (human-authored)
+    │
+    ▼  Stage 1 — enhance_summary.py        ◄── Web UI: "Enhance Summary"
+session-summary.md                           ◄── HUMAN REVIEW
+    │
+    ▼  Stage 2 — scene_extract.py          ◄── Web UI: "Re-Extract Quotes"
+scene_extractions/NN_<slug>.md               ◄── HUMAN REVIEW
+    │
+    ▼  Stage 3 — session_doc.py            ◄── Web UI: "Plan & Check" + per-scene "Narrate"
+narration/session_doc_scene_NN_<slug>.md     ◄── HUMAN REVIEW
+    │
+    ▼  Stage 4 — assemble.py               ◄── Web UI: "Assemble Doc"
+session_doc.md
+```
+
+Each LLM stage emits a reviewable artefact before the next one runs.
+That's the point — see the global "LLMs render, humans decide" rule.
 
 ---
 
-## Prerequisites
+## I want to drive this from the web UI
 
-Before starting, you need:
+Open [`SESSION_DOC_UI_FLOW.md`](SESSION_DOC_UI_FLOW.md). It's a TL;DR
+button-by-button walkthrough of the Session Doc Editor that maps each
+click to its stage above.
 
-- The Zoom `.vtt` transcript for the session
-- The GM recap from gmassisstant.app (Scenes, NPCs, Memorable Moments sections)
-- The server running with the correct campaign and session directories
-
----
-
-## Step 1 — Start the Server
+Quick start:
 
 ```bash
 ~/CampaignGenerator/start \
@@ -28,167 +41,56 @@ Before starting, you need:
   --session-dir ~/campaigns/Phandalin/summaries/20260407
 ```
 
-Open **http://localhost:5000** in your browser.
-
-`start` runs the server in the background and logs to `<session-dir>/logs/`. Use
-`~/CampaignGenerator/stop` to shut it down.
-
-If you're already running, just navigate to the URL — the server picks up the
-campaign and session dirs from the last `start` call.
+Open <http://localhost:5000> → Session Workflow → Session Config →
+Session Doc Editor. The header has a `Batch` checkbox that routes
+Stage 1 / Stage 2 through Anthropic's Message Batches API for 50% off
+when you don't need live streaming.
 
 ---
 
-## Step 2 — Session Config
+## I want to drive this from the CLI
 
-**UI: Session Workflow → Session Config**
+Open [`docs/session_doc_pipeline.md`](docs/session_doc_pipeline.md). It
+covers every flag, voice files, dialogue handling, the 5-pass internals
+of `session_doc.py`, batch mode (`--batch` / `--submit-only` /
+`--collect`), and the older single-shot mode if you want to iterate on
+one character's voice.
 
-Set `campaign_dir` and `session_dir`. Click **Apply** — this pushes the config to the
-backend and derives all other paths automatically:
+Minimal command-line tour:
 
-| Derived path | Default |
-|---|---|
-| VTT roleplay extractions | `<session_dir>/vtt_roleplay_extractions/` |
-| VTT summary extractions | `<session_dir>/vtt_extractions/` |
-| Scene extractions | `<session_dir>/scene_extractions/` |
-| Output dir | `<session_dir>/` |
-| Voice dir | `<campaign_dir>/voice/` |
-| Examples dir | `<campaign_dir>/examples/` |
-| Party doc | `<campaign_dir>/docs/party.md` |
+```bash
+SESS=summaries/20260414
 
-You can override any path in the config panel on the Session Doc Editor page.
+# Stage 1
+python enhance_summary.py "$SESS"/*.vtt \
+    --gmassist  "$SESS/gm-assist.md" \
+    --output    "$SESS/session-summary.md"
 
----
+# Stage 2
+python scene_extract.py "$SESS"/*.vtt \
+    --summary    "$SESS/session-summary.md" \
+    --output-dir "$SESS/scene_extractions/"
 
-## Step 3 — Convert VTT Transcript
+# Stage 3 (one file per scene)
+python session_doc.py "$SESS/session-summary.md" \
+    --scene-extractions "$SESS/scene_extractions/" \
+    --voice-dir voice/ \
+    --characters "Vukradin, Valphine, Soma, Brewbarry" \
+    --per-scene-output "$SESS/narration/"
 
-**UI: Session Workflow → VTT Summary**
-
-**Input**: Zoom `.vtt` file + gmassisstant recap  
-**Output**: `session-summary.md` + `session-roleplay.md` in `<session_dir>/`
-
-The gmassisstant recap is the authoritative account of what happened — the VTT
-extraction is anchored on it. Every scene in the recap gets corresponding dialogue
-pulled from the transcript.
-
-**Skip this step** if you already ran it for this session (files exist). The VTT
-Summary step is idempotent but re-runs all API calls.
-
-For details on what this step produces: see [GMASSISTANT_PIPELINE.md](GMASSISTANT_PIPELINE.md).
-
----
-
-## Step 4 — Scene Extraction
-
-**UI: Session Workflow → Scene Extraction**
-
-**Input**: `session-summary.md` + roleplay extractions (from Step 3)  
-**Output** in `scene_extractions/`:
-- `plan.md` — which character narrates which scene
-- `NN_narrator_scene.md` — per-scene extraction files with action beats + assigned quotes
-- `enhanced_sections.md` — enhanced Memorable Moments, NPCs, Items, Spells, Consistency Notes
-
-This runs Passes 1–4 of `session_doc.py`:
-1. Consistency check (silent — flags contradictions between recap and campaign docs)
-2. Enhance structured sections → `enhanced_sections.md`
-3. Narrative plan → `plan.md`
-4. Per-scene character extraction → `NN_narrator_scene.md` files
-
-**Re-running**: overwrites all extraction files. Re-run if the recap changed or
-extraction quality was poor. Existing narrations (`scene{N}.md`) are not affected
-until you re-narrate.
-
-For details on what each extraction file contains: see [SCENE_EXTRACTION.md](SCENE_EXTRACTION.md).
-
----
-
-## Step 5 — Review & Edit Extractions
-
-**UI: Session Workflow → Session Doc Editor**
-
-This is the human checkpoint. Each extraction file is the direct input to narration —
-what's in the file is what the narrator works from. Review each scene before narrating.
-
-**For each scene:**
-
-1. Click the scene in the left panel to load it
-2. Read the **Extraction tab** — action beats (lines starting with `-`) and dialogue
-   quotes beneath each beat
-3. Check the **Session Notes tab** for additional quotes and moments from
-   `enhanced_sections.md` — copy anything missing into the Extraction tab
-4. Check the **Quote Ledger** (right panel) for unassigned VTT quotes — if a quote
-   belongs here, add it manually to the extraction
-5. Edit the extraction directly in the textarea; click **Save**
-
-**What good extractions look like:**
-
-```
-- The party discovers the treasure slag fused in residium-infused ice
-Soma: "I don't think this was natural — something planar did this."
-Vukradin: "So we can't spend it. I have opinions about this."
-
-- Brewbarry kills the paralyzed veteran
-Brewbarry: "I hope this will inspire a song in your new music studio."
+# Stage 4
+python assemble.py "$SESS/narration/" \
+    --output "$SESS/session_doc.md" \
+    --title  "Chapter 37 — A Gem of a Problem"
 ```
 
-Each action beat starts with `-`. Dialogue quotes follow directly beneath. The
-narrator uses this grouped format to weave beat and quotes together.
-
-**Typora**: click **Edit in Typora** to open the extraction in Typora on Windows
-for easier editing of long files.
-
 ---
 
-## Step 6 — Narrate Scenes
+## Further reading
 
-**UI: Session Doc Editor → Narrate button (per scene)**
-
-With a scene loaded, click **Narrate**. This streams `session_doc.py --from-extractions --scene N`
-and writes output to `scene{N}.md`.
-
-**Toolbar options:**
-
-| Toggle | What it does |
-|---|---|
-| **Prose** | Strips mechanical language from action beats (damage numbers → impact weight; spell slots → effort drawn on) |
-| **Memories** | Injects campaign history so the narrator can draw on past events as reflections |
-| **Enhanced** | Passes `enhanced_sections.md` to the narration as scene context |
-
-Watch the narration stream in the output panel. When it finishes, click
-**Open narration in Typora** to read it.
-
-**Re-narrating**: edit the extraction, save, click Narrate again. The output file
-is overwritten. Other scenes are not affected.
-
----
-
-## Step 7 — Assemble Final Doc
-
-**UI: Session Doc Editor → Assemble Doc button** (bottom of scene list)
-
-Concatenates all `scene{N}.md` files into `<session-name>-doc.md` in the output dir.
-Scenes are joined with `---` dividers. Missing scenes (not yet narrated) are listed
-in the status message but don't block assembly — you get a partial doc.
-
-**Open assembled doc in Typora**: the Assemble button shows a Typora link after assembly.
-
----
-
-## Re-running Individual Steps
-
-| Situation | What to do |
-|---|---|
-| Re-narrate one scene after editing extraction | Load scene → edit extraction → Save → Narrate |
-| Extraction was poor quality | Scene Extraction page → re-run (overwrites all extraction files) |
-| VTT transcript changed | VTT Summary → re-run → Scene Extraction → re-run |
-| Want to adjust narration style only | Change Prose/Memories toggles → Narrate again |
-| One extraction file manually edited | Just click Narrate — `--from-extractions` uses the file as-is |
-| Plan was wrong (wrong narrator for a scene) | Edit `scene_extractions/plan.md` directly → re-run extraction |
-
----
-
-## Further Reading
-
-- [SCENE_EXTRACTION.md](SCENE_EXTRACTION.md) — what each extraction file contains and how the plan works
-- [SESSION_DOC_PIPELINE.md](SESSION_DOC_PIPELINE.md) — deep dive into all five passes, narration modes, and engineering decisions
-- [GMASSISTANT_PIPELINE.md](GMASSISTANT_PIPELINE.md) — why the gmassisstant recap is the authoritative anchor
-- [PLAYER_VOICE_GUIDE.md](PLAYER_VOICE_GUIDE.md) — how players write voice files that shape their narrator's prose
+- [`SESSION_DOC_UI_FLOW.md`](SESSION_DOC_UI_FLOW.md) — Web UI walkthrough.
+- [`docs/session_doc_pipeline.md`](docs/session_doc_pipeline.md) — Full CLI reference for the four stages, voice files, batch mode.
+- [`SESSION_DOC_PIPELINE.md`](SESSION_DOC_PIPELINE.md) — Engineering deep-dive on the 5-pass internals (narrative bleed, chunk assignment, style transfer).
+- [`GMASSISTANT_PIPELINE.md`](GMASSISTANT_PIPELINE.md) — Why the gmassisstant recap is the authoritative anchor.
+- [`PLAYER_VOICE_GUIDE.md`](PLAYER_VOICE_GUIDE.md) — How players write voice files that shape their narrator's prose.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — Where everything lives and the rest of the codebase shape.
