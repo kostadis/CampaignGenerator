@@ -1,5 +1,11 @@
 # CampaignGenerator — TODO
 
+Active backlog. For the live feature inventory (RLM pipeline, batch API,
+session-prep flows that already shipped), see [`ARCHITECTURE.md`](ARCHITECTURE.md).
+For background/conventions, [`CLAUDE.md`](CLAUDE.md).
+
+---
+
 ## UI
 
 ### [ ] Session Doc Editor — vertical stepper redesign
@@ -301,6 +307,10 @@ Pick one of the four candidate fixes documented in
   with a working Save button
 - `server/config.py:_SAVE_KEY_PREFIXES` — backend prefix filter that decides
   which keys land in `ui_config.yaml`
+
+---
+
+## CLI / pipeline machinery
 
 ### [ ] Generalize `--since` (per-chunk re-extract) to all extract→synthesize pipelines
 
