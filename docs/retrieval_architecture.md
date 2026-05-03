@@ -1,5 +1,16 @@
 # Retrieval Architecture — CampaignGenerator ↔ MemPalace
 
+> **Scope: Palace internals deep-dive.** Read this when you're debugging
+> or extending the retrieval pipeline itself — the hierarchical descent
+> algorithm, the dirty-flag index lifecycle, the 100% recall guarantee,
+> failure modes, and the operational checklist for when something goes
+> wrong.
+>
+> **For the system-level reference** (three-pile awareness model, MCP
+> surface, where retrieval plugs into the rest of CampaignGenerator), read
+> [`rlm_architecture.md`](rlm_architecture.md). For a quick entry point,
+> [`rlm_pipeline.md`](rlm_pipeline.md).
+
 This document is the reference for **how `rpg_retriever.retrieve()` actually fetches verbatim content from a per-campaign palace**. It covers the process model, the on-disk collections, the hierarchical descent algorithm, the recall guarantee, and the failure modes.
 
 It complements `docs/rlm_architecture.md`, which describes the *three-pile* model (canonical 5etools / rpg-library PDFs / campaign content) and where retrieval fits inside it. This doc zooms in on the **drawer/statblock tier** — what happens when MemPalace already has the content the GM is asking about.
@@ -256,7 +267,7 @@ flowchart LR
 
 **Cross-cutting:**
 - `~/src/CampaignGenerator/docs/rlm_architecture.md` — three-pile model + the chosen-not-to-do log (§16).
-- `~/src/CampaignGenerator/docs/rlm_integration_plan.md` — historical planning doc; Sub-plan A is what Phase 1 shipped.
+- `~/src/CampaignGenerator/docs/archive/rlm_integration_plan.md` — historical planning doc; Sub-plan A is what Phase 1 shipped.
 - `~/campaigns/MEMPALACE_HOWTO.md` — per-campaign palace conventions.
 
 ---

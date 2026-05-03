@@ -335,8 +335,8 @@ history — the filename is configurable via `--output`).
 
 ## Related docs
 
-* `docs/rlm_integration_plan.md` — the architectural plan these three
-  scripts implement. Phases 1–3 are landed.
+* `docs/archive/rlm_integration_plan.md` — the architectural plan these three
+  scripts implement. Phases 1–3 are landed (archived; plan shipped).
 * `CLAUDE.md` § "RLM pipeline — rpglib + pdf-translators + MemPalace"
   — reference summary of the tool surface.
 * `tests/test_require_proposal_cli.py` — executable spec of the

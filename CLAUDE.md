@@ -62,7 +62,8 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |
 | `docs/dossier_aliases.md` | Dossier merge rules and cross-pipeline alias propagation |
 | `docs/rlm_pipeline.md` | Three-state retrieval, ingest flow, MCP tools, palace/rpglib path resolution |
-| `docs/rlm_architecture.md` | RLM architecture deep dive (untracked working doc) |
+| `docs/rlm_architecture.md` | RLM architecture deep dive — three-pile model, MCP surface, retrieval contract |
+| `docs/retrieval_architecture.md` | Palace internals — hierarchical descent algorithm, dirty-flag index lifecycle, 100% recall guarantee, failure modes, operational checklist |
 | `docs/session_prep_workflow.md` | End-to-end session-prep walkthrough |
 
 ## Critical rules (apply to every task)

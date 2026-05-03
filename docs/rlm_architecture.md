@@ -1,8 +1,18 @@
 # RLM Integration — Architecture Reference
 
+> **Scope: system-level reference.** Three-pile awareness model
+> (canonical 5etools / rpg-library / campaign content), MCP surface,
+> retrieval contract, ingest flow, code map. Read this to orient on the
+> RLM integration as a whole.
+>
+> **For Palace internals** (hierarchical descent algorithm, dirty-flag
+> index lifecycle, 100% recall guarantee, failure modes, operational
+> checklist), read [`retrieval_architecture.md`](retrieval_architecture.md).
+> For a quick entry point, [`rlm_pipeline.md`](rlm_pipeline.md).
+
 This document captures the architecture of the **Recursive Large Models (RLM)** integration spanning four trees: `mempalace-rlm`, `CampaignGenerator-rlm`, `~/src/mytools/rpg-lib/`, and `~/src/mytools/pdf-translators/`. Read this and you should be able to navigate the code, understand the design pressures that shaped the system, and reason about end-to-end behavior without re-deriving anything from the planning doc.
 
-For the planning narrative (phase gates, risks, host decisions) see `docs/rlm_integration_plan.md`. For the design philosophy that motivates the whole system see *Rich Plots, Real Improvisation* (https://wrongtool.kostadis.com/72-architecturalist-papers-rich-plots-real-improvisation/). For the JSON schema this whole pipeline is built on, see [`~/src/5etools-kostadis/JSON_FORMAT.md`](~/src/5etools-kostadis/JSON_FORMAT.md), [`~/src/5etools-kostadis/DATA_INVENTORY.md`](~/src/5etools-kostadis/DATA_INVENTORY.md), and [`~/src/5etools-kostadis/ARCHITECTURE.md`](~/src/5etools-kostadis/ARCHITECTURE.md). For the campaign-palace conventions that the per-campaign palaces follow, see [`~/campaigns/MEMPALACE_HOWTO.md`](~/campaigns/MEMPALACE_HOWTO.md).
+For the planning narrative (phase gates, risks, host decisions) see [`archive/rlm_integration_plan.md`](archive/rlm_integration_plan.md) (archived; the plan shipped). For the design philosophy that motivates the whole system see *Rich Plots, Real Improvisation* (https://wrongtool.kostadis.com/72-architecturalist-papers-rich-plots-real-improvisation/). For the JSON schema this whole pipeline is built on, see [`~/src/5etools-kostadis/JSON_FORMAT.md`](~/src/5etools-kostadis/JSON_FORMAT.md), [`~/src/5etools-kostadis/DATA_INVENTORY.md`](~/src/5etools-kostadis/DATA_INVENTORY.md), and [`~/src/5etools-kostadis/ARCHITECTURE.md`](~/src/5etools-kostadis/ARCHITECTURE.md). For the campaign-palace conventions that the per-campaign palaces follow, see [`~/campaigns/MEMPALACE_HOWTO.md`](~/campaigns/MEMPALACE_HOWTO.md).
 
 ---
 
@@ -532,7 +542,7 @@ All four trees (rpg-lib, pdf-translators, MemPalace, CampaignGenerator) run insi
 
 Why a VHD instead of `/mnt/c/`: ChromaDB (which MemPalace uses) and SQLite need correct `mmap` / `fsync` / `flock` semantics. WSL2's DrvFs/9P bridge does not provide them — locks can be lost, fsyncs can be no-ops, mmap'd writes can race. A dedicated VHD is native ext4 from WSL2's perspective, sidestepping the bridge entirely. MemPalace's `config.py` ships a startup warning that fires if the palace resolves onto DrvFs/9P/CIFS/NFS — that warning was the deliverable of mempalace-rlm commit `bc91c23`.
 
-See `docs/rlm_integration_plan.md` § "Storage architecture" for the full rationale.
+See [`archive/rlm_integration_plan.md`](archive/rlm_integration_plan.md) § "Storage architecture" for the full rationale.
 
 ---
 
@@ -622,7 +632,7 @@ Routing:
 | `tests/test_require_proposal_cli.py` | End-to-end CLI gate behavior. |
 | `tests/test_dossier_proposer.py`, `tests/test_proposal_loader.py`, `tests/test_mempalace_client.py`, `tests/test_fivetools_ingest.py`, `tests/test_suggest_conversion.py`, `tests/test_rpg_retriever.py` | Unit coverage per module. |
 | `tests/benchmarks/test_rlm_benchmark_rpg_gate2.py` | Phase 2 Gate. |
-| `docs/rlm_integration_plan.md` | Planning doc (phases, gates, risks). |
+| `docs/archive/rlm_integration_plan.md` | Planning doc (phases, gates, risks). Archived — plan shipped. |
 | `docs/rlm_architecture.md` | This document. |
 | `docs/fivetools_ingest_audit.md` | Phase 2 ingest gap analysis vs. the 5etools schema. |
 

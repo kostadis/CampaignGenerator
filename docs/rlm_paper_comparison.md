@@ -6,7 +6,7 @@ This document compares the system architecture of **CampaignGenerator + MemPalac
 
 > Zhang, A.L., Kraska, T., Khattab, O. *Recursive Language Models*. arXiv:2512.24601v2.
 
-The label "RLM" appears throughout our codebase and planning docs (e.g. branches `rlm-phase1` / `rlm-phase2`, `docs/rlm_architecture.md`, `docs/rlm_integration_plan.md`) because the paper directly inspired the hierarchical-pruning insight that anchors our retrieval layer. The system is not, however, a re-implementation of an RLM. It adopts the *idea* and rejects the *mechanism*. This document explains where the line falls and why.
+The label "RLM" appears throughout our codebase and planning docs (e.g. branches `rlm-phase1` / `rlm-phase2`, `docs/rlm_architecture.md`, `docs/archive/rlm_integration_plan.md`) because the paper directly inspired the hierarchical-pruning insight that anchors our retrieval layer. The system is not, however, a re-implementation of an RLM. It adopts the *idea* and rejects the *mechanism*. This document explains where the line falls and why.
 
 The intended audience is the paper's authors plus any practitioner who wants to see what it looked like to take RLM as inspiration in a domain (verbatim long-form retrieval over a typed schema with a human checkpoint) the paper does not directly target. It is not a critique. The paper's framing was load-bearing for our design.
 
@@ -201,7 +201,7 @@ We have not implemented these but the paper's discussion suggests they are worth
 
 **Internal architecture references:**
 - `CampaignGenerator/docs/rlm_architecture.md` — three-pile model + chosen-not-to-do log.
-- `CampaignGenerator/docs/rlm_integration_plan.md` — the original plan that names the paper as inspiration.
+- `CampaignGenerator/docs/archive/rlm_integration_plan.md` — the original plan that names the paper as inspiration.
 - `CampaignGenerator/docs/retrieval_architecture.md` — implementation reference for the retrieve path described in §3.1.
 - `CampaignGenerator/docs/fivetools_ingest_audit.md` — schema-aware ingest audit.
 
