@@ -203,6 +203,130 @@ python transform.py dossier.txt --single          # extract as a single beat
 python transform.py dossier.txt -o beats/out.txt  # save for later
 ```
 
+## Post-session pipeline (Stage 1 → 4)
+
+The recommended way to turn a finished session into a narrative document
+runs four scripts back-to-back with a human-review checkpoint after each.
+For the full reference (flags, batch mode, voice files, examples,
+dialogue handling), see [`docs/session_doc_pipeline.md`](session_doc_pipeline.md).
+
+```
+gm-assist.md                                       (human-authored recap)
+    │
+    ▼  Stage 1 — enhance_summary.py                (single cached call · --batch ✓)
+session-summary.md                                 ◄── HUMAN REVIEW
+    │
+    ▼  Stage 2 — scene_extract.py                  (per-scene · cached VTT · --batch ✓)
+scene_extractions/NN_<slug>.md                     ◄── HUMAN REVIEW
+    │
+    ▼  Stage 3 — session_doc.py --per-scene-output (5-pass narration; per-scene files)
+narration/session_doc_scene_NN_<slug>.md           ◄── HUMAN REVIEW
+    │
+    ▼  Stage 4 — assemble.py
+session_doc.md
+```
+
+### enhance_summary.py
+
+Stage 1: enrich a `gm-assist.md` recap with VTT detail. Single cached
+call. Output preserves the recap's section structure (Summary, Memorable
+Moments, Scenes, NPCs, Locations, Items, Spells) and fills in details +
+verbatim moments the recap missed.
+
+```bash
+python enhance_summary.py session.vtt \
+    --gmassist  gm-assist.md \
+    --output    session-summary.md
+
+# Batch mode (Anthropic Message Batches API; 50% off list price)
+python enhance_summary.py ... --batch                # block + poll
+python enhance_summary.py ... --batch --submit-only  # detach; sidecar in <output>.batch.json
+python enhance_summary.py ... --batch --collect      # retrieve from sidecar
+```
+
+Default model: `claude-sonnet-4-6`. `--fast` switches to Haiku.
+
+### scene_extract.py
+
+Stage 2: per-scene verbatim quote extraction. The full VTT is cached as a
+system prefix; the script issues one call per scene named in the
+session-summary's `## Scenes` section. Output is one
+`scene_extractions/NN_<slug>.md` per scene. Resume semantics: existing
+files are skipped.
+
+```bash
+python scene_extract.py session.vtt \
+    --summary    session-summary.md \
+    --output-dir scene_extractions/ \
+    [--dossier-dir docs/npcs/]      # rewrites NPC aliases to canonical names
+
+# Batch mode — N scenes submitted as one batch; cache hits compound
+python scene_extract.py ... --batch                # block + poll
+python scene_extract.py ... --batch --submit-only  # detach; sidecar in <output-dir>/.batch.json
+python scene_extract.py ... --batch --collect      # retrieve from sidecar
+```
+
+Default model: `claude-sonnet-4-6`.
+
+### session_doc.py
+
+Stage 3: per-scene first-person narration (5-pass internal pipeline). For
+the four-stage flow, run it with `--per-scene-output` to write one
+narration file per scene. For full pass-by-pass details, all flags, voice
+files, and the older single-shot mode, see
+[`docs/session_doc_pipeline.md`](session_doc_pipeline.md).
+
+```bash
+# Stage 3 of the 4-stage flow — writes one file per scene
+python session_doc.py session-summary.md \
+    --scene-extractions scene_extractions/ \
+    --voice-dir         voice/ \
+    --characters        "Vukradin, Valphine, Soma, Brewbarry" \
+    --per-scene-output  narration/
+
+# Re-narrate a single scene after editing its quote file
+python session_doc.py ... --scene 3
+```
+
+Default model: `claude-sonnet-4-6`. `--fast` switches to Haiku.
+
+### assemble.py
+
+Stage 4: concatenate the per-scene narration files into a single session
+document.
+
+```bash
+python assemble.py narration/ \
+    --output session_doc.md \
+    --title  "Chapter 37 — A Gem of a Problem"
+```
+
+### vtt_summary.py
+
+Convert a Zoom `.vtt` transcript into a structured session summary using
+the same two-pass extract → synthesize pipeline as `distill.py`. Use
+this to seed `summaries.md` from a recording before running grounding
+docs. The Stage 1 / Stage 2 flow above is preferred when you have a
+`gm-assist.md` recap.
+
+```bash
+python vtt_summary.py session.vtt --output summaries/session_12.md
+
+# With a pre-existing recap as anchor (recommended when available)
+python vtt_summary.py session.vtt \
+    --output           session-summary.md \
+    --roleplay-output  session-roleplay.md \
+    --reference-summaries gm-assist.md \
+    --context docs/campaign_state.md docs/world_state.md docs/party.md
+```
+
+### quote_ledger.py
+
+SQLite-backed VTT-quote ↔ scene matching. Used by the Web UI's Scene
+Editor to surface quotes that didn't make it into a `scene_extractions/`
+file. Not typically run from the CLI; see
+[`docs/web_ui.md`](web_ui.md) for the editor workflow.
+
 ## new_workspace.py
 
 Creates a new campaign workspace.
