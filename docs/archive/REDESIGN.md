@@ -1,3 +1,12 @@
+> **STATUS: ARCHIVED.** This is a UI redesign spec for the RPG Library
+> frontend, which lives in a different repo. Preserved here as a design
+> precedent — none of the components it names (`LibraryBrowse.vue`,
+> `CommandBar.vue`, `SubjectsDrawer.vue`, etc.) exist in this codebase.
+> For CampaignGenerator's actual UI, see [`docs/web_ui.md`](../web_ui.md)
+> and the Vue views under `frontend/src/views/`.
+
+---
+
 # RPG Library — Redesign Spec (Direction A: "Catalog")
 
 This file is the handoff for Claude Code. It describes a ground-up visual + structural redesign of the Vue frontend. Follow it top-to-bottom; every change is keyed to a file in `frontend/src/`.

@@ -1,3 +1,12 @@
+> **STATUS: ARCHIVED — plan shipped.** All phases described here (Gates
+> 0–3) are complete in the current codebase. Preserved for historical
+> context on the design decisions and risk mitigations that shaped the
+> final system. **For the current architecture, read
+> [`docs/rlm_architecture.md`](../rlm_architecture.md). For a quick
+> entry point, [`docs/rlm_pipeline.md`](../rlm_pipeline.md).**
+
+---
+
 # Plan — CampaignGenerator orchestrates rpglib + pdf-translators + MemPalace (MIT RLM pattern, two-repo split)
 
 ## Context
