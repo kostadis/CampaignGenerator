@@ -453,24 +453,41 @@ def load_scene_extractions(path: Path) -> list[dict]:
     canonical `scene:` name, and returns ordered dicts:
         [{"name": str, "path": Path, "summary": str, "moments": str, "body": str}, ...]
 
+    For each scene, prefers the user-edited `NN_<slug>.scaffold.md` over
+    the raw Stage-2 `NN_<slug>.md` when both exist — matching the Editor
+    behavior in `server/routers/scene_editor.py` so Narrate consumes the
+    same file the GM was looking at.
+
     `summary` is the gm-assist scene body (used as Pass 5's structural
     skeleton) and `moments` is the VTT-derived verbatim extraction (used as
     Pass 5's quote source). When a file does not follow the dual-section
     layout, `summary` is empty and `moments` holds the full body.
 
     Files named `plan.md`, `enhanced_sections.md`, `consistency_report.md`,
-    starting with `_`, or matching `*.scaffold.md` are skipped (they are
-    sibling artifacts, not scene extractions).
+    or starting with `_` are skipped (they are sibling artifacts, not scene
+    extractions).
     """
     SKIP = {"plan.md", "enhanced_sections.md", "consistency_report.md"}
+    by_stem: dict[str, Path] = {}
+    for f in path.glob("*.md"):
+        if f.name in SKIP or f.name.startswith("_"):
+            continue
+        if f.name.endswith(".scaffold.md"):
+            stem = f.name[: -len(".scaffold.md")]
+            is_scaffold = True
+        else:
+            stem = f.stem
+            is_scaffold = False
+        if not re.match(r"^\d{2}_", stem):
+            continue
+        # Scaffold wins over Stage-2; otherwise first one in.
+        if is_scaffold or stem not in by_stem:
+            by_stem[stem] = f
     items: list[dict] = []
-    for f in sorted(path.glob("*.md")):
-        if f.name in SKIP or f.name.startswith("_") or f.name.endswith(".scaffold.md"):
-            continue
-        # Conventional pattern from scene_extract.py: NN_<slug>.md
-        if not re.match(r"^\d{2}_", f.name):
-            continue
+    for stem in sorted(by_stem):
+        f = by_stem[stem]
         text = f.read_text(encoding="utf-8")
+        fallback_name = stem.split("_", 1)[1].replace("_", " ").title() if "_" in stem else stem
         m = _SCENE_FRONTMATTER_RE.match(text)
         if m:
             name = ""
@@ -480,9 +497,9 @@ def load_scene_extractions(path: Path) -> list[dict]:
                     break
             body = m.group(2).strip()
             if not name:
-                name = f.stem.split("_", 1)[1].replace("_", " ").title() if "_" in f.stem else f.stem
+                name = fallback_name
         else:
-            name = f.stem.split("_", 1)[1].replace("_", " ").title() if "_" in f.stem else f.stem
+            name = fallback_name
             body = text.strip()
         summary, moments = _split_scene_body(body)
         items.append({
@@ -1341,6 +1358,15 @@ def main() -> None:
         else:
             print("  No issues found.")
         print("=" * 60)
+
+        # Save to disk so the user can read the report on its own (it also
+        # gets folded into Pass 2's enhanced_sections.md, but that's buried
+        # in a much larger file).
+        report_dir = extract_dir or per_scene_output_dir
+        if report_dir and consistency_report.strip():
+            report_out = report_dir / "consistency_report.md"
+            report_out.write_text(consistency_report, encoding="utf-8")
+            print(f"  Consistency report saved: {report_out}")
     else:
         print("\n[Pass 1: Consistency check skipped — no --context files provided]")
 

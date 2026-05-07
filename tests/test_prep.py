@@ -793,6 +793,103 @@ def test_extract_player_character_map_empty():
     assert campaignlib.extract_player_character_map("") == {}
 
 
+def test_extract_player_character_map_new_format():
+    """party.py writes ### headings with `**Player:** Name` in a pipe-separated info line."""
+    import campaignlib
+    text = (
+        "### Daz — Wizard (Evoker) 7\n"
+        "**Class/Level:** Wizard 7 | **Species:** Elf | **Player:** Mike Hall\n"
+        "\n"
+        "### Vukradin\n"
+        "**Class/Level:** Bard 5 | **Species:** Aasimar | **Player:** kostadis1\n"
+    )
+    m = campaignlib.extract_player_character_map(text)
+    assert m["Mike Hall"] == "Daz"
+    assert m["kostadis1"] == "Vukradin"
+
+
+def test_extract_player_character_map_first_name_alias():
+    """A multi-token player name also registers under its first name when unambiguous."""
+    import campaignlib
+    text = (
+        "### Daz\n"
+        "**Class/Level:** Wizard 7 | **Player:** Mike Hall\n"
+        "\n"
+        "### Thorin\n"
+        "**Class/Level:** Fighter 7 | **Player:** Joe Beda\n"
+    )
+    m = campaignlib.extract_player_character_map(text)
+    assert m["Mike Hall"] == "Daz"
+    assert m["Mike"] == "Daz"
+    assert m["Joe Beda"] == "Thorin"
+    assert m["Joe"] == "Thorin"
+
+
+def test_extract_player_character_map_first_name_collision():
+    """If two players share a first name, drop the ambiguous alias."""
+    import campaignlib
+    text = (
+        "### Daz\n"
+        "**Class/Level:** Wizard 7 | **Player:** Mike Hall\n"
+        "\n"
+        "### Thorin\n"
+        "**Class/Level:** Fighter 7 | **Player:** Mike Smith\n"
+    )
+    m = campaignlib.extract_player_character_map(text)
+    assert m["Mike Hall"] == "Daz"
+    assert m["Mike Smith"] == "Thorin"
+    assert "Mike" not in m
+
+
+def test_extract_player_character_map_skips_placeholders():
+    """`(Not specified)` / `[not specified]` / `N/A` mean no player — must not be mapped."""
+    import campaignlib
+    text = (
+        "### Grygum\n"
+        "**Class/Level:** Cleric 7 | **Species:** Half-Orc | **Player:** (Not specified)\n"
+        "\n"
+        "### Zalthir\n"
+        "**Class/Level:** Monk 7 | **Species:** Dragonborn | **Player:** [not specified]\n"
+        "\n"
+        "### Thorin\n"
+        "**Class/Level:** Fighter 7 | **Species:** Dwarf | **Player:** N/A\n"
+    )
+    m = campaignlib.extract_player_character_map(text)
+    assert m == {}
+
+
+# ── server.routers.ledger._normalize_speaker ───────────────────────────────
+
+def test_normalize_speaker_strips_brackets_then_maps():
+    """Stage-2 emits speakers like `[Ben Pfaff]` and `[GM]` (brackets
+    included). The normalizer must peel them off before checking GM/DM
+    or looking the name up in player_map — otherwise the lookup misses
+    and the player name leaks all the way into the scaffold output.
+    """
+    from server.routers.ledger import _normalize_speaker
+    pmap = {"Ben Pfaff": "Grygum", "Joe Beda": "Thorin"}
+    assert _normalize_speaker("[Ben Pfaff]", pmap) == "Grygum"
+    assert _normalize_speaker("[Joe Beda]", pmap) == "Thorin"
+    assert _normalize_speaker("[GM]", pmap) == "GM"
+    assert _normalize_speaker("[DM]", pmap) == "GM"
+
+
+def test_normalize_speaker_unbracketed_still_works():
+    from server.routers.ledger import _normalize_speaker
+    pmap = {"Ben Pfaff": "Grygum"}
+    assert _normalize_speaker("Ben Pfaff", pmap) == "Grygum"
+    assert _normalize_speaker("Thorin (Joe)", pmap) == "Thorin"
+    assert _normalize_speaker("DM", pmap) == "GM"
+    assert _normalize_speaker("Random NPC", pmap) == "Random NPC"
+
+
+def test_normalize_speaker_passthrough_without_map():
+    from server.routers.ledger import _normalize_speaker
+    assert _normalize_speaker("[Ben Pfaff]") == "Ben Pfaff"
+    assert _normalize_speaker("[GM]") == "GM"
+    assert _normalize_speaker("Random NPC") == "Random NPC"
+
+
 # ── campaignlib.normalize_vtt_speakers ─────────────────────────────────────
 
 def test_normalize_vtt_speakers_rewrites_player_to_character():

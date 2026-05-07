@@ -57,6 +57,7 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 
 | File | When to read it |
 |---|---|
+| `docs/architecture.md` | **Start here.** System map: layers, pipelines, on-disk state, links into the deeper docs below |
 | `docs/cli_tools.md` | Per-script invocations and flags (prep, campaign_state, planning, party, distill, query, …); typical new-campaign workflow |
 | `docs/session_doc_pipeline.md` | session_doc.py 5-pass + 4-stage pipeline, all flags, voice files, dialogue handling, recap context, player-name mapping, token scaling, vtt_summary.py |
 | `docs/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |

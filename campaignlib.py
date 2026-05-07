@@ -571,36 +571,79 @@ def load_alias_map(dossier_dir) -> dict[str, list[str]]:
     return result
 
 
+_PLAYER_PLACEHOLDERS = {
+    "", "not specified", "(not specified)", "[not specified]",
+    "n/a", "na", "none", "unknown", "tbd",
+}
+
+
+def _is_player_placeholder(name: str) -> bool:
+    return name.strip().lower().strip("()[]").strip() in _PLAYER_PLACEHOLDERS
+
+
 def extract_player_character_map(party_text: str) -> dict[str, str]:
     """Parse party.md and return {player_name: character_name}.
 
-    Reads ``## <Character>`` headings followed by a
-    ``**<Class>, Player: <Player>**`` info line. When the Player slot
-    holds multiple names separated by ``/`` or ``,`` (e.g. a shared PC
-    or alt), both names map to the same character.
+    Supports two heading + info-line shapes:
 
-    Mirrors the parsing pattern of ``session_doc.extract_character_roster``
-    so the two stay in lockstep — they read the same party.md shape but
-    produce different outputs (one a roster string, one a reverse map).
+    Old (single bold span):
+        ## Soma
+        **Tortle Druid 5, Player: Wade**
+
+    New (party.py output, multiple bold spans separated by ``|``):
+        ### Soma — Druid 5
+        **Class/Level:** Druid 5 | **Species:** Tortle | **Player:** Wade
+
+    When the Player slot holds multiple names separated by ``/`` or
+    ``,``, both names map to the same character. Placeholder values
+    like ``(Not specified)`` / ``[not specified]`` / ``N/A`` are
+    treated as missing.
     """
     result: dict[str, str] = {}
     current_name: str | None = None
+
+    def _record_players(raw: str) -> None:
+        if _is_player_placeholder(raw):
+            return
+        for p in re.split(r'[/,]', raw):
+            p = p.strip().rstrip('*').strip()
+            if p and not _is_player_placeholder(p) and current_name:
+                result[p] = current_name
+
     for line in party_text.splitlines():
-        m = re.match(r'^## (.+)$', line.strip())
+        stripped = line.strip()
+        m = re.match(r'^#{2,3}\s+(.+)$', stripped)
         if m:
-            current_name = m.group(1).strip()
+            heading = m.group(1).strip()
+            current_name = re.split(r'\s+[—–-]\s+', heading, maxsplit=1)[0].strip()
             continue
-        if current_name:
-            cm = re.match(r'^\*\*(.+\d+.+)\*\*$', line.strip())
-            if cm:
-                pm = re.search(r',\s*Player:\s*(.+)', cm.group(1))
-                if pm:
-                    raw = pm.group(1).strip().rstrip('*')
-                    for p in re.split(r'[/,]', raw):
-                        p = p.strip()
-                        if p:
-                            result[p] = current_name
-                current_name = None
+        if not current_name:
+            continue
+        new_pm = re.search(r'\*\*Player:\*\*\s*([^|]+?)(?:\s*\||\s*$)', stripped)
+        if new_pm:
+            _record_players(new_pm.group(1))
+            current_name = None
+            continue
+        cm = re.match(r'^\*\*(.+\d+.+)\*\*$', stripped)
+        if cm:
+            pm = re.search(r',\s*Player:\s*(.+)', cm.group(1))
+            if pm:
+                _record_players(pm.group(1))
+            current_name = None
+
+    # First-name aliases: if a player's recorded name is "Joe Beda" → also map
+    # "Joe" → that character. Skip when the first name is ambiguous (two
+    # players share it but map to different characters) so we don't pick one
+    # arbitrarily. Existing full-name keys always win.
+    first_name_to_chars: dict[str, set[str]] = {}
+    for player, char in result.items():
+        first = player.split()[0] if player.split() else ""
+        if first and first != player:
+            first_name_to_chars.setdefault(first, set()).add(char)
+    for first, chars in first_name_to_chars.items():
+        if len(chars) == 1 and first not in result:
+            result[first] = next(iter(chars))
+
     return result
 
 
