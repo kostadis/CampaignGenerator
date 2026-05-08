@@ -188,8 +188,8 @@ onMounted(() => { loadFromConfig() })
       <div v-if="mode === 'flat'" class="form-section">
         <MultiPathField v-model="backstory" label="Backstory files" resolve-base="campaign"
           help="One per line. Optional backstory documents for each character." />
-        <MultiPathField v-model="arcScores" label="Arc score mechanic files" resolve-base="campaign"
-          help="One per line. Arc score documents, one per character." />
+        <MultiPathField v-model="arcScores" label="PC arc score mechanic files" resolve-base="campaign"
+          help="One per line. Arc score mechanic files for player characters, one per PC (e.g. soma-score.md). Defines score triggers for character arcs. Not for NPC/faction arc scores — those belong in Planning Document." />
       </div>
 
       <!-- Context (both modes) -->

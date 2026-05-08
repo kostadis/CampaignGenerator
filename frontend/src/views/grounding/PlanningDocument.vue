@@ -141,8 +141,8 @@ onMounted(() => { loadFromConfig() })
       </div>
 
       <div class="form-section">
-        <MultiPathField v-model="arcScores" label="Threat arc score files" resolve-base="campaign"
-          help="One per line. Arc score documents for threat factions." />
+        <MultiPathField v-model="arcScores" label="NPC/faction arc score files" resolve-base="campaign"
+          help="One per line. Arc score mechanic files for villains and factions (e.g. grundar_score.md, kraken_echoes.md). Defines triggers and thresholds for threat arcs. Not for PC arc scores — those belong in Party Document." />
       </div>
 
       <div class="form-section">
