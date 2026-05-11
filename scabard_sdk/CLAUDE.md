@@ -40,6 +40,7 @@ python -m scabard_sdk.test_scabard_api --username <u> --access-key <k> --campaig
 | `create_page(campaign_id, concept, name, ...)` | `tuple[bool, int \| None]` | Create page; re-fetches list to discover new ID |
 | `update_page(campaign_id, concept, thing_id, name, ...)` | `bool` | Update existing page |
 | `list_connection_types(concept)` | `list[dict]` | Catalog of valid connection types for a concept (campaign-agnostic) |
+| `create_connections(campaign_id, concept, thing_id, connections)` | `tuple[bool, dict[str, dict]]` | Create one or more connections from a page to other pages by name |
 
 `create_page` and `update_page` share the same optional keyword fields:
 `brief_summary`, `description`, `secrets`, `gm_secrets`, `is_secret`.
@@ -65,7 +66,15 @@ These differ from what the official API docs describe — handle them accordingl
 3. **Concept casing rule: URLs are lowercase, data values are Title Case.** URL path segments use lowercase (`/campaign/{id}/character`); response bodies and request body fields use Title Case (`"concept": "Character"`, `source: "Place"`, `target: "Event"`). The SDK applies `.title()` to body `concept` fields automatically.
 4. **Create response does not return the new page's ID.** `create_page` re-fetches the page list after a 1-second pause to discover the ID by name match.
 5. **Connection-type entries always include `isSymmetric` in live responses.** The docs example shows entries without the field, but live testing across `character`/`place`/`event`/`group` (226 entries total) had `isSymmetric` on every entry. The SDK still defensively treats absence as `False` (`.get("isSymmetric", False)`) — harmless, in case the docs example reflects a real edge case.
-6. **Connection-type entries include an undocumented `postParam` field.** Every live entry has e.g. `"postParam": "acquaintance_of:character"` alongside the documented keys. The format (`{snake_rel}:{lowercase_target}`) looks like the parameter token a future connection-CRUD endpoint would accept. The SDK passes it through in `list_connection_types` but does not consume it — no connection CRUD wrapper exists because the endpoint isn't documented. Worth asking the API author about before guessing.
+6. **`postParam` is the form key consumed by `POST .../connect`.** As of the 2026-05 docs update, the previously-undocumented `postParam` field returned by `list_connection_types` is officially the form-parameter key the new connection endpoint accepts. Format is `{snake_rel}:{lowercase_target}` (e.g. `mother_of:character`, `steward:character`). `create_connections` takes a `{postParam: target_name}` dict, so callers should pull postParams from `list_connection_types(concept)` rather than hand-constructing them.
+
+7. **`POST .../connect` docs lie about the body format.** The official docs show form-encoded `-d key=value` pairs (with `:` in keys, e.g. `mother_of:character=Khal`). Empirically (verified 2026-05-10 against the live API), form-encoded requests return `200 {"isSuccess": false}` with no error detail — the endpoint only accepts JSON. The SDK sends JSON via the standard `_post` helper. Same content type as every other POST in the SDK; no special encoding path. If the server later starts accepting form bodies the SDK won't need to change, but flag this if the docs get updated.
+
+8. **`/connect` resolves the target by name, not `thing_id`.** The value side of each connection entry is the **exact name** of an existing target page. Callers must ensure the target exists and the name matches case-sensitively. The response includes the resolved `uri` (`/campaign/{id}/{concept}/{thing_id}`) so callers can recover the target ID after the fact.
+
+9. **`/connect` response uses postParam strings as keys.** Response shape is `{"isSuccess": bool, "{postParam}": {relId, uri, value, isFormer, isSecret}, ...}` — the connection records sit at the top level alongside `isSuccess` rather than under a wrapper key. `create_connections` separates them: returns `(isSuccess, {postParam: record})`. `relId` is the **only handle** for an edge once created — there is no list-connections endpoint yet, so persist it if needed.
+
+10. **Canonical concept list is now official.** The 2026-05 docs enumerate concepts as `character, place, group, item, event, vehicle, category, attribute, note, folder`. Note `place`, **not** `location` — `list_connection_types` confirms (`source: "Place"`). The project's `scabard_sync.py` and outer `SCABARD_SDK.md` "Concepts Reference" table still use `location` and have never been verified against the live API for that concept. Worth a focused pass on `scabard_sync.py` next; not addressed in this SDK update.
 
 ## Rate limiting
 

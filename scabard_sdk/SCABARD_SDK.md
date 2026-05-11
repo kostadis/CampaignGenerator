@@ -168,6 +168,54 @@ for ct in conn_types:
 
 ---
 
+### `create_connections(campaign_id, concept, thing_id, connections) → tuple[bool, dict]`
+
+Creates one or more connections from a single source page to other pages. Multiple connections are sent in a single API call.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `campaign_id` | `int` | Campaign ID |
+| `concept` | `str` | Source page concept (lowercase) |
+| `thing_id` | `int` | Source page ID |
+| `connections` | `dict[str, str]` | `{postParam: target_page_name}` — postParams come from `list_connection_types(concept)` |
+
+The target page is resolved server-side by **exact name match** — the value is the target's name, not its `thing_id`. The target must already exist.
+
+**Returns**: `(isSuccess, {postParam: record})`. Each `record` dict contains:
+
+| Key | Type | Description |
+|---|---|---|
+| `relId` | `int` | New connection ID. The only handle for this edge — persist it if you need to reference the connection later. |
+| `uri` | `str` | Path to the resolved target page (e.g. `/campaign/121/place/158`) |
+| `value` | `str` | The target page's name as resolved server-side |
+| `isFormer` | `bool` | Whether the connection is marked "former" (always `False` on a fresh create — the request shape for setting it is undocumented) |
+| `isSecret` | `bool` | Whether the connection is GM-only (always `False` on a fresh create — request shape undocumented) |
+
+```python
+# Discover a valid postParam from the connection-type catalog
+conn_types = client.list_connection_types("character")
+mother_of = next(ct for ct in conn_types
+                 if ct["rel"] == "Mother of" and ct["target"] == "Character")
+
+ok, records = client.create_connections(
+    campaign_id=121,
+    concept="character",
+    thing_id=4500,           # Cersei
+    connections={
+        mother_of["postParam"]: "Joffrey",
+        "home:place":           "King's Landing",
+    },
+)
+for post_param, record in records.items():
+    print(f"{post_param} → {record['value']} (relId={record['relId']})")
+```
+
+**Notes:**
+- The API does not (yet) expose update / delete / list-existing connection endpoints. The returned `relId` is the only handle for an edge.
+- The official docs show this endpoint accepting form-encoded `-d key=value` pairs. **Empirically (verified 2026-05-10), the live server only accepts JSON** — form-encoded requests return `200 {"isSuccess": false}` with no error detail. The SDK sends JSON for this reason; callers don't see the wire format either way.
+
+---
+
 ### `create_page(campaign_id, concept, name, ...) → tuple[bool, int | None]`
 
 Creates a new page. Because the API does not return the new page's ID in the create response, this method re-fetches the page list to discover it.

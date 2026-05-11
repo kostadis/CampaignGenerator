@@ -364,3 +364,62 @@ class ScabardClient:
         """
         data = self._get(f"{self.BASE_URL}/campaign/conntypes/{concept}")
         return data.get("connTypes", [])
+
+    def create_connections(
+        self,
+        campaign_id: int,
+        concept: str,
+        thing_id: int,
+        connections: dict[str, str],
+    ) -> tuple[bool, dict[str, dict]]:
+        """Create one or more connections from a page to other pages by name.
+
+        Posts to ``/campaign/{id}/{concept}/{thing_id}/connect``. Targets are
+        resolved server-side by exact name match — the value of each entry
+        in ``connections`` is the target page's name, not its thing_id. The
+        endpoint accepts multiple connections in a single call.
+
+        Args:
+            campaign_id: Campaign ID.
+            concept:     Source page concept (lowercase) — e.g. "character".
+            thing_id:    Source page ID.
+            connections: Mapping of ``{postParam: target_page_name}``. The
+                         postParam strings come from
+                         ``list_connection_types(concept)`` and look like
+                         ``"mother_of:character"`` or ``"home:place"``.
+                         Multiple entries OK; all are sent in one request.
+
+        Returns:
+            ``(isSuccess, {postParam: connection_record})``. Each record is
+            the raw API dict and contains:
+
+              * ``relId``    — int connection ID (use to identify the edge)
+              * ``uri``      — path to the target page
+              * ``value``    — the resolved target page name
+              * ``isFormer`` — bool (always False on a fresh create)
+              * ``isSecret`` — bool (always False on a fresh create; the
+                               request shape for setting it is not documented)
+
+        Notes:
+            * Despite the official docs showing ``-d key=value`` form pairs,
+              the live endpoint only accepts a JSON body — form-encoded
+              requests return ``200 {"isSuccess": false}`` silently. The SDK
+              sends JSON (verified empirically 2026-05-10).
+            * The body's ``concept`` field is Title-cased automatically, same
+              convention as ``create_page`` / ``update_page``.
+            * The API does not (yet) expose update / delete / list-existing
+              connection endpoints. The returned ``relId`` is the only handle
+              for an edge, so callers wanting to track edges should persist
+              the response.
+        """
+        payload: dict = {"concept": concept.title(), **connections}
+        result = self._post(
+            f"{self.BASE_URL}/campaign/{campaign_id}/{concept}/{thing_id}/connect",
+            payload,
+        )
+        ok = bool(result.get("isSuccess", False))
+        records = {
+            k: v for k, v in result.items()
+            if k != "isSuccess" and isinstance(v, dict)
+        }
+        return ok, records

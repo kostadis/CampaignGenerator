@@ -100,6 +100,7 @@ def main() -> None:
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")
     test_page_name = f"TEST SDK Page {ts}"
     test_page_name_updated = f"TEST SDK Page {ts} [UPDATED]"
+    test_target_page_name = f"TEST SDK Target {ts}"
 
     client = ScabardClient(username=args.username, access_key=args.access_key)
     bad_client = ScabardClient(username="__invalid__", access_key="00000000000000000")
@@ -111,8 +112,9 @@ def main() -> None:
     print(f"Username    : {args.username}")
     print()
 
-    # Track created page across sections — used for dependent tests and cleanup
+    # Track created pages across sections — used for dependent tests and cleanup
     created_thing_id: int | None = None
+    created_target_thing_id: int | None = None
 
     # ── Section 1: Auth errors ────────────────────────────────────────────────
     print("[1] Auth error handling")
@@ -238,34 +240,122 @@ def main() -> None:
         run_test("get_updated_page", test_get_updated_page)
         run_test("fetch_existing_contains_page", test_fetch_existing)
 
-    # ── Section 4: Cleanup ────────────────────────────────────────────────────
-    print("\n[4] Cleanup")
+    # ── Section 4: Connection creation ────────────────────────────────────────
+    print("\n[4] Connection creation")
 
     if created_thing_id is None:
-        skip("cleanup_mark_test_page", "no page was created")
-    elif args.keep:
-        skip("cleanup_mark_test_page", "--keep flag set")
-        print(f"         NOTE: Test page left as-is (id={created_thing_id}, "
-              f"name='{test_page_name_updated}')")
+        for name in ("create_target_page", "create_connection_between_test_pages"):
+            skip(name, "source page was not created")
     else:
-        def test_cleanup():
-            ok = client.update_page(
+        def test_create_target_page():
+            nonlocal created_target_thing_id
+            ok, thing_id = client.create_page(
                 campaign_id=args.campaign_id,
                 concept=args.concept,
-                thing_id=created_thing_id,
-                name=test_page_name_updated,
-                brief_summary="[TEST PAGE - SAFE TO DELETE]",
-                description=(
-                    f"This page was created by `test_scabard_api.py` on {ts} "
-                    f"as part of SDK integration testing.\n\n"
-                    f"It is safe to delete."
-                ),
+                name=test_target_page_name,
+                brief_summary="Temporary target page for create_connections test.",
+                description=f"Created at {ts}. Safe to delete.",
             )
-            assert_true("cleanup update_page() returns True", ok)
+            assert_true("create_page() returns True for target", ok)
+            if thing_id is None:
+                existing = client.fetch_existing(args.campaign_id, args.concept)
+                thing_id = existing.get(test_target_page_name)
+            assert_true("target thing_id resolved", thing_id is not None)
+            created_target_thing_id = thing_id
+            print(f"         (target thing_id={thing_id})")
 
-        if run_test("cleanup_mark_test_page", test_cleanup):
-            print(f"         NOTE: Test page id={created_thing_id} marked "
-                  f"'[TEST PAGE - SAFE TO DELETE]' — delete it manually in Scabard.")
+        target_created = run_test("create_target_page", test_create_target_page)
+
+        if not target_created:
+            skip("create_connection_between_test_pages",
+                 "target page creation failed")
+        else:
+            def test_create_connection():
+                # Pick a self-referential connection type for this concept so
+                # the test doesn't depend on a second concept having pages.
+                conn_types = client.list_connection_types(args.concept)
+                title_concept = args.concept.title()
+                candidates = [
+                    ct for ct in conn_types
+                    if ct.get("source") == title_concept
+                    and ct.get("target") == title_concept
+                    and ct.get("postParam")
+                ]
+                if not candidates:
+                    raise AssertionError(
+                        f"no {title_concept}→{title_concept} connection types "
+                        f"in catalog for concept '{args.concept}'"
+                    )
+                chosen = candidates[0]
+                post_param = chosen["postParam"]
+                rel_label = chosen.get("rel", "?")
+
+                ok, records = client.create_connections(
+                    campaign_id=args.campaign_id,
+                    concept=args.concept,
+                    thing_id=created_thing_id,
+                    connections={post_param: test_target_page_name},
+                )
+                assert_true("create_connections() reports isSuccess=True", ok)
+                assert_in("response contains chosen postParam",
+                          post_param, records)
+                record = records[post_param]
+                assert_eq("connection target value matches",
+                          record.get("value"), test_target_page_name)
+                rel_id = record.get("relId")
+                assert_true("relId is an int", isinstance(rel_id, int))
+                uri = record.get("uri", "")
+                assert_true("uri is a non-empty str",
+                            isinstance(uri, str) and len(uri) > 0)
+                print(f"         ({title_concept} —[{rel_label}]→ "
+                      f"{title_concept}, relId={rel_id})")
+
+            run_test("create_connection_between_test_pages",
+                     test_create_connection)
+
+    # ── Section 5: Cleanup ────────────────────────────────────────────────────
+    print("\n[5] Cleanup")
+
+    cleanup_targets: list[tuple[str, int, str]] = []
+    if created_thing_id is not None:
+        cleanup_targets.append(
+            ("source", created_thing_id, test_page_name_updated)
+        )
+    if created_target_thing_id is not None:
+        cleanup_targets.append(
+            ("target", created_target_thing_id, test_target_page_name)
+        )
+
+    if not cleanup_targets:
+        skip("cleanup_mark_test_pages", "no pages were created")
+    elif args.keep:
+        skip("cleanup_mark_test_pages", "--keep flag set")
+        for role, tid, pname in cleanup_targets:
+            print(f"         NOTE: Test {role} page left as-is "
+                  f"(id={tid}, name='{pname}')")
+    else:
+        def test_cleanup():
+            for role, tid, pname in cleanup_targets:
+                ok = client.update_page(
+                    campaign_id=args.campaign_id,
+                    concept=args.concept,
+                    thing_id=tid,
+                    name=pname,
+                    brief_summary="[TEST PAGE - SAFE TO DELETE]",
+                    description=(
+                        f"This page was created by `test_scabard_api.py` on "
+                        f"{ts} as part of SDK integration testing "
+                        f"({role} page).\n\n"
+                        f"It is safe to delete."
+                    ),
+                )
+                assert_true(f"cleanup update_page() for {role} returns True", ok)
+
+        if run_test("cleanup_mark_test_pages", test_cleanup):
+            for role, tid, _ in cleanup_targets:
+                print(f"         NOTE: Test {role} page id={tid} marked "
+                      f"'[TEST PAGE - SAFE TO DELETE]' — delete it manually "
+                      f"in Scabard.")
 
     # ── Summary ───────────────────────────────────────────────────────────────
     passed = sum(1 for _, ok, _ in _results if ok)
