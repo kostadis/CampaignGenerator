@@ -39,12 +39,22 @@ Usage:
       --summaries "Neverwinter Expansionism and the North.md" \\
       --build-dossiers \\
       --dossier-dir docs/npcs/
+
+  # Preferred: per-entity config so the synthesizer can't confuse which
+  # arc score belongs to which NPC/faction (mirrors party.py --party-config).
+  python planning.py \\
+      --planning-config config/planning.yaml \\
+      --summaries summaries.md \\
+      --output docs/planning.md
 """
 
 import argparse
 import re
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
+
+import yaml
 
 from campaignlib import (
     build_alias_normalizer,
@@ -56,6 +66,206 @@ from campaignlib import (
     run_extract_pipeline,
     stream_api,
 )
+
+
+# ── Planning config (per-NPC / per-faction arc-score binding) ────────────────
+# Mirrors party.py's --party-config mechanism: lets the GM explicitly attach an
+# arc-score file to a specific NPC or faction. The synthesizer renders each
+# entry as a `## {name}` block nesting dossier (NPCs only) + arc-score together,
+# so the LLM can't lose the dossier-↔-score binding the way it can with the
+# legacy flat-group rendering.
+
+@dataclass
+class PlanningEntry:
+    name: str
+    dossier: Path | None = None       # NPC entries only; None for factions
+    arc_score: Path | None = None
+    trackless: bool = False           # True when arc_score is explicitly null
+
+
+@dataclass
+class PlanningConfig:
+    npcs: list[PlanningEntry] = field(default_factory=list)
+    factions: list[PlanningEntry] = field(default_factory=list)
+
+
+def load_planning_config(path: Path) -> PlanningConfig:
+    """Read a planning config YAML, validate referenced files, return PlanningConfig.
+
+    YAML shape (mirrors party.py):
+
+        npcs:
+          - name: Adabra
+            dossier: docs/npcs/adabra.md
+            arc_score: docs/tracking/Adabra quest line.md
+          - name: Lyra
+            dossier: docs/npcs/lyra.md
+            arc_score: null            # explicitly trackless
+
+        factions:
+          - name: Kraken Society
+            arc_score: docs/tracking/echoes-score.md
+
+    Distinctions for arc_score:
+        key absent      → arc_score=None, trackless=False
+        key present, null → arc_score=None, trackless=True
+        key present, path → arc_score=Path, trackless=False
+
+    NPC entries require `dossier`. Faction entries do not. All paths resolve
+    against the config file's parent directory; missing files are a hard error.
+    """
+    try:
+        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as e:
+        print(f"Error: invalid YAML in {path}: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    base = path.parent
+
+    def _resolve(rel: str, field_name: str, entry_name: str) -> Path:
+        p = (base / rel).expanduser().resolve()
+        if not p.exists():
+            print(f"Error: planning config references missing file for "
+                  f"{entry_name}.{field_name}: {p}", file=sys.stderr)
+            sys.exit(1)
+        return p
+
+    def _parse_entry(entry: dict, kind: str) -> PlanningEntry:
+        if not isinstance(entry, dict):
+            print(f"Error: each {kind} entry in {path} must be a mapping",
+                  file=sys.stderr)
+            sys.exit(1)
+        name = entry.get("name")
+        if not name:
+            print(f"Error: {kind} entry in {path} missing 'name': {entry}",
+                  file=sys.stderr)
+            sys.exit(1)
+
+        dossier = None
+        if kind == "npc":
+            dossier_rel = entry.get("dossier")
+            if not dossier_rel:
+                print(f"Error: npc entry {name!r} in {path} missing 'dossier'",
+                      file=sys.stderr)
+                sys.exit(1)
+            dossier = _resolve(dossier_rel, "dossier", name)
+        elif "dossier" in entry and entry["dossier"]:
+            # Allow faction entries to carry an optional faction-overview file
+            # under the same key — keep it simple by resolving identically.
+            dossier = _resolve(entry["dossier"], "dossier", name)
+
+        if "arc_score" in entry:
+            if entry["arc_score"] is None:
+                arc_score = None
+                trackless = True
+            else:
+                arc_score = _resolve(entry["arc_score"], "arc_score", name)
+                trackless = False
+        else:
+            arc_score = None
+            trackless = False
+
+        return PlanningEntry(name=str(name), dossier=dossier,
+                             arc_score=arc_score, trackless=trackless)
+
+    npcs_raw = raw.get("npcs") or []
+    factions_raw = raw.get("factions") or []
+    if not isinstance(npcs_raw, list) or not isinstance(factions_raw, list):
+        print(f"Error: {path} must define 'npcs' and/or 'factions' as lists",
+              file=sys.stderr)
+        sys.exit(1)
+    if not npcs_raw and not factions_raw:
+        print(f"Error: {path} must define a non-empty 'npcs' or 'factions' list",
+              file=sys.stderr)
+        sys.exit(1)
+
+    return PlanningConfig(
+        npcs=[_parse_entry(e, "npc") for e in npcs_raw],
+        factions=[_parse_entry(e, "faction") for e in factions_raw],
+    )
+
+
+def _read_normalized(p: Path, normalize) -> str:
+    body = p.read_text(encoding="utf-8").strip()
+    return normalize(body) if normalize else body
+
+
+def _render_planning_blocks(
+    config: PlanningConfig,
+    extra_npc_files: list[Path] | None = None,
+    normalize=None,
+) -> tuple[str, dict[str, list[str]]]:
+    """Render a PlanningConfig as # NPC DOSSIERS + # FACTIONS sections, each
+    with one `## {name}` subsection that nests the dossier (NPCs only) and
+    the arc-score file together. Returns (rendered_text, canonical_to_aliases)
+    so the caller can build the alias normalizer the same way `run_synthesize`
+    does for the legacy path.
+
+    `extra_npc_files` are additional dossier files (from --npc) that don't
+    appear in the config — typically the majority of NPCs, who have no arc
+    score and are pass-through. They render as `## {name}` blocks at the end
+    of the # NPC DOSSIERS section with no arc-score nested. The script-level
+    caller is responsible for rejecting overlap with config entries.
+
+    A config entry with `arc_score: null` carries an INTENTIONALLY TRACKLESS
+    marker so the LLM can't invent a score for it. An entry (or extra dossier)
+    with no arc-score block at all is just a dossier — also no score, but the
+    distinction is "not tracked at all" vs "deliberately untracked".
+    """
+    canonical_to_aliases: dict[str, list[str]] = {}
+
+    def _entry_block(entry: PlanningEntry, dossier_label: str) -> str:
+        parts = [f"## {entry.name}"]
+        if entry.dossier is not None:
+            name, aliases, _, body = parse_dossier(entry.dossier)
+            canonical_to_aliases[name] = aliases
+            parts.append(f"<!-- {dossier_label}: {entry.dossier.name} -->\n\n"
+                         f"{body.strip()}")
+        if entry.arc_score is not None:
+            parts.append(f"<!-- Threat arc score: {entry.arc_score.name} -->\n\n"
+                         f"{_read_normalized(entry.arc_score, normalize)}")
+        elif entry.trackless:
+            parts.append(
+                "<!-- Arc score: INTENTIONALLY TRACKLESS -->\n\n"
+                f"{entry.name} has no formal arc score mechanic. This is a "
+                "deliberate design choice — do not invent an arc score for "
+                "this entity and do not suggest creating one."
+            )
+        return "\n\n".join(parts)
+
+    def _flat_dossier_block(f: Path) -> str:
+        name, aliases, _, body = parse_dossier(f)
+        canonical_to_aliases[name] = aliases
+        return (f"## {name}\n\n"
+                f"<!-- NPC dossier: {f.name} -->\n\n"
+                f"{body.strip()}")
+
+    npc_blocks: list[str] = [_entry_block(e, "NPC dossier") for e in config.npcs]
+    if extra_npc_files:
+        npc_blocks.extend(_flat_dossier_block(f) for f in extra_npc_files)
+
+    sections: list[str] = []
+    if npc_blocks:
+        sections.append("# NPC DOSSIERS\n\n" + "\n\n---\n\n".join(npc_blocks))
+    if config.factions:
+        fac_blocks = [_entry_block(e, "Faction overview") for e in config.factions]
+        sections.append("# FACTIONS\n\n" + "\n\n---\n\n".join(fac_blocks))
+
+    return "\n\n===\n\n".join(sections), canonical_to_aliases
+
+
+def _render_flat_section(heading: str, files: list[Path], label: str,
+                         normalize=None) -> str:
+    """Render extracts/context the same way run_synthesize does (flat group
+    with per-file source comments) so the planning-config path produces an
+    equivalent prompt structure for non-bound source material."""
+    if not files:
+        return ""
+    blocks = [
+        f"<!-- {label}: {f.name} -->\n\n{_read_normalized(f, normalize)}"
+        for f in sorted(files)
+    ]
+    return f"# {heading}\n\n" + "\n\n---\n\n".join(blocks)
 
 
 def write_dossier(
@@ -112,11 +322,33 @@ Rules:
 SYNTHESIZE_SYSTEM = """\
 You are creating a GM planning reference document for a D&D campaign.
 
-You will receive:
-- NPC dossier files (definitive source for each NPC's identity, motivation, abilities, and secrets)
-- Threat arc score documents (full mechanics: triggers, thresholds, and narrative consequences)
-- Extracted session notes (what has actually happened at the table with each NPC/faction)
-- World context files (optional faction overviews, location notes)
+You may receive two input shapes:
+
+**A. Per-entity blocks** (preferred, when a planning config is supplied):
+A `# NPC DOSSIERS` section with one `## {Name}` subsection per NPC, each
+nesting that NPC's dossier and (optionally) their arc-score mechanic; and a
+`# FACTIONS` section with one `## {Name}` subsection per tracked faction,
+each nesting the faction's arc-score mechanic.
+
+Most NPCs do NOT have a score. The three states for any `## {Name}` block are:
+1. **Score bound** — block contains a `<!-- Threat arc score: ... -->` comment
+   followed by mechanic text. This entity MUST appear as a row in the Threat
+   Tracker. Use the file's track name as the score name.
+2. **Intentionally trackless** — block contains the marker
+   `<!-- Arc score: INTENTIONALLY TRACKLESS -->`. Never put this entity on the
+   Threat Tracker. Do not invent a score. Do not suggest creating one.
+3. **No score block at all** — just a dossier (this is the common case for
+   most NPCs). Treat as ordinary; omit from the Threat Tracker. Do not invent
+   a score. Do not flag the absence as a problem to solve.
+
+**B. Flat groups** (legacy CLI flags):
+Separate `# NPC DOSSIERS` and `# THREAT ARC SCORE MECHANICS` groups with no
+explicit binding. Infer which arc score belongs to which NPC/faction by
+name match.
+
+In both shapes you will also receive:
+- `# SESSION EXTRACTIONS` — what has actually happened at the table with each NPC/faction
+- `# WORLD CONTEXT` (optional) — faction overviews, location notes
 
 Produce a single authoritative planning.md with these sections:
 
@@ -486,10 +718,112 @@ def run_synthesize(
     return result
 
 
+def _check_npc_overlap(config: PlanningConfig, extra_npc_files: list[Path]) -> None:
+    """Reject if any --npc dossier's canonical name matches a config NPC entry.
+    Otherwise the same NPC would render twice (once with arc-score nested,
+    once without)."""
+    if not extra_npc_files:
+        return
+    config_names = {_normalize_npc_key(e.name) for e in config.npcs}
+    # Also include each config dossier's frontmatter name, since the YAML
+    # `name:` may differ from the dossier's own canonical name.
+    for e in config.npcs:
+        if e.dossier is not None:
+            cname, aliases, _, _ = parse_dossier(e.dossier)
+            config_names.add(_normalize_npc_key(cname))
+            for a in aliases:
+                config_names.add(_normalize_npc_key(a))
+    overlaps = []
+    for f in extra_npc_files:
+        cname, _aliases, _, _ = parse_dossier(f)
+        if _normalize_npc_key(cname) in config_names:
+            overlaps.append((f.name, cname))
+    if overlaps:
+        lines = "\n".join(f"  - {fname} (canonical: {cname})" for fname, cname in overlaps)
+        print(f"Error: --npc dossier(s) overlap with --planning-config entries; "
+              f"each NPC must appear in exactly one place:\n{lines}",
+              file=sys.stderr)
+        sys.exit(1)
+
+
+def run_synthesize_with_config(
+    client,
+    config: PlanningConfig,
+    extra_npc_files: list[Path],
+    extract_files: list[Path],
+    context_files: list[Path],
+    model: str,
+) -> str:
+    """Synthesize using the per-entity planning-config rendering. Mirrors
+    party.py's --party-config path: each NPC/faction in the config is a
+    `## {name}` block with the dossier and arc-score nested inside, so the
+    LLM can't mismatch a score to the wrong entity.
+
+    `extra_npc_files` are pass-through NPC dossiers (from --npc) for NPCs
+    with no arc score — typically the majority. They render as plain
+    `## {name}` blocks alongside the config entries.
+    """
+    _check_npc_overlap(config, extra_npc_files)
+
+    blocks_text, canonical_to_aliases = _render_planning_blocks(
+        config, extra_npc_files=extra_npc_files, normalize=None
+    )
+    normalize, resolution_entries = build_alias_normalizer(canonical_to_aliases)
+
+    # Re-render so dossier-internal alias normalization is applied. Cheap;
+    # parse_dossier is just a regex + YAML parse per file.
+    blocks_text, _ = _render_planning_blocks(
+        config, extra_npc_files=extra_npc_files, normalize=normalize
+    )
+
+    parts = [blocks_text] if blocks_text else []
+    extracts_block = _render_flat_section(
+        "SESSION EXTRACTIONS", extract_files, "Session extract", normalize=normalize
+    )
+    if extracts_block:
+        parts.append(extracts_block)
+    context_block = _render_flat_section(
+        "WORLD CONTEXT", context_files, "World context", normalize=normalize
+    )
+    if context_block:
+        parts.append(context_block)
+
+    user_prompt = "\n\n===\n\n".join(parts)
+    if not user_prompt.strip():
+        print("Error: planning config produced no source material to synthesize.",
+              file=sys.stderr)
+        raise SystemExit(1)
+
+    system_prompt = SYNTHESIZE_SYSTEM
+    if resolution_entries:
+        lines = [f"- **{name}** (also: {', '.join(aliases)})"
+                 for name, aliases in resolution_entries]
+        resolution_block = (
+            "# ENTITY RESOLUTION\n\n"
+            "The source text below has been pre-normalized: variant names have been "
+            "replaced with the canonical NPC name. If any variant still appears, treat "
+            "it as referring to the canonical NPC listed here.\n\n"
+            + "\n".join(lines) + "\n\n"
+        )
+        system_prompt = resolution_block + SYNTHESIZE_SYSTEM
+        print(f"  Alias map: {len(resolution_entries)} NPC(s) with variants.")
+
+    print(f"  Synthesizing ({len(user_prompt):,} chars total)...")
+    print("  " + "─" * 56)
+    result = stream_api(client, system_prompt, user_prompt, model)
+    print("  " + "─" * 56)
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate a planning.md from NPC dossiers, threat arc scores, and the canonical timeline."
     )
+    parser.add_argument("--planning-config", metavar="FILE", default=None,
+                        help="Planning config YAML mapping each NPC/faction to its dossier "
+                             "and arc-score file. When set, --npc and --arc-scores are rejected. "
+                             "Tighter coupling than the flat flags — prevents the synthesizer "
+                             "from mismatching a score to the wrong entity.")
     parser.add_argument("--npc", "-n", nargs="+", metavar="FILE", default=[],
                         help="NPC dossier file(s)")
     parser.add_argument("--arc-scores", "-a", nargs="+", metavar="FILE", default=[],
@@ -564,6 +898,14 @@ def main() -> None:
         print("Error: --synthesize-only and --extract-only are mutually exclusive",
               file=sys.stderr)
         sys.exit(1)
+    if args.planning_config and args.arc_scores:
+        print("Error: --planning-config replaces --arc-scores; pass arc-score files "
+              "in the YAML's `arc_score:` keys instead", file=sys.stderr)
+        sys.exit(1)
+    if args.planning_config and args.build_dossiers:
+        print("Error: --planning-config is for the synthesize pass; "
+              "--build-dossiers does not use it", file=sys.stderr)
+        sys.exit(1)
     if args.extract_only and not args.summaries:
         print("Error: --extract-only requires --summaries", file=sys.stderr)
         sys.exit(1)
@@ -576,12 +918,21 @@ def main() -> None:
     if not args.build_dossiers and not args.output:
         print("Error: --output is required (unless using --build-dossiers)", file=sys.stderr)
         sys.exit(1)
-    if not args.build_dossiers and not args.npc and not args.summaries and not args.synthesize_only:
-        print("Error: provide at least --npc or --summaries", file=sys.stderr)
+    if (not args.build_dossiers and not args.planning_config
+            and not args.npc and not args.summaries and not args.synthesize_only):
+        print("Error: provide at least --planning-config, --npc, or --summaries",
+              file=sys.stderr)
         sys.exit(1)
-    if args.synthesize_only and not args.extract_dir and not args.npc:
-        print("Error: --synthesize-only requires --extract-dir or --npc", file=sys.stderr)
+    if args.synthesize_only and not args.extract_dir and not args.npc and not args.planning_config:
+        print("Error: --synthesize-only requires --extract-dir, --npc, or --planning-config",
+              file=sys.stderr)
         sys.exit(1)
+
+    planning_config: PlanningConfig | None = None
+    if args.planning_config:
+        planning_config = load_planning_config(
+            Path(args.planning_config).expanduser().resolve()
+        )
 
     npc_files = [Path(f).expanduser().resolve() for f in args.npc]
     arc_score_files = [Path(f).expanduser().resolve() for f in args.arc_scores]
@@ -652,7 +1003,7 @@ def main() -> None:
             print(f"\n[Extract-only mode — stopping before synthesis]")
             print(f"Review files in: {extract_dir}")
             print(f"When ready, re-run with --synthesize-only --extract-dir {extract_dir} "
-                  f"plus the same --npc/--arc-scores/--context args.")
+                  f"plus the same --planning-config (or --npc/--arc-scores)/--context args.")
             return
     elif args.synthesize_only:
         extract_files = sorted(extract_dir.glob("extract_*.md"))
@@ -665,8 +1016,18 @@ def main() -> None:
 
     # ── Synthesize pass ───────────────────────────────────────────────────────
     sources = []
+    if planning_config:
+        bound_arc = sum(1 for e in planning_config.npcs + planning_config.factions
+                        if e.arc_score is not None)
+        trackless = sum(1 for e in planning_config.npcs + planning_config.factions
+                        if e.trackless)
+        sources.append(
+            f"{len(planning_config.npcs)} NPC(s) + {len(planning_config.factions)} faction(s) "
+            f"from planning config ({bound_arc} bound arc, {trackless} trackless)"
+        )
     if npc_files:
-        sources.append(f"{len(npc_files)} NPC dossier(s)")
+        kind = "extra unbound NPC dossier(s)" if planning_config else "NPC dossier(s)"
+        sources.append(f"{len(npc_files)} {kind}")
     if arc_score_files:
         sources.append(f"{len(arc_score_files)} arc score doc(s)")
     if extract_files:
@@ -676,7 +1037,15 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize | {', '.join(sources)} | model: {args.model}]")
     print("=" * 60)
-    planning_doc = run_synthesize(client, npc_files, arc_score_files, extract_files, context_files, args.model)
+    if planning_config:
+        planning_doc = run_synthesize_with_config(
+            client, planning_config, npc_files,
+            extract_files, context_files, args.model,
+        )
+    else:
+        planning_doc = run_synthesize(
+            client, npc_files, arc_score_files, extract_files, context_files, args.model
+        )
     print("=" * 60)
 
     output.parent.mkdir(parents=True, exist_ok=True)

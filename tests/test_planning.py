@@ -285,3 +285,250 @@ def test_build_dossiers_slug_collision_skips_absorbed_extract(
 
     sidecars = list(dossier_dir.glob("*.new_notes.*.md"))
     assert sidecars == []
+
+
+# ── Planning config (per-NPC / per-faction arc-score binding) ────────────────
+
+def _write_planning_config(tmp_path, body: str):
+    cfg = tmp_path / "planning.yaml"
+    cfg.write_text(body, encoding="utf-8")
+    return cfg
+
+
+def _write_dossier(path: Path, name: str, body: str = "Dossier body.") -> Path:
+    planning.write_dossier(path, name, [], [], f"# {name}\n\n{body}\n")
+    return path
+
+
+def test_load_planning_config_parses_npcs_and_factions(tmp_path):
+    _write_dossier(tmp_path / "adabra.md", "Adabra")
+    _write(tmp_path / "adabra_arc.md", "Fury of the Wild track")
+    _write(tmp_path / "kraken_score.md", "Kraken Society Echoes track")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Adabra
+    dossier: adabra.md
+    arc_score: adabra_arc.md
+factions:
+  - name: Kraken Society
+    arc_score: kraken_score.md
+""")
+    config = planning.load_planning_config(cfg)
+    assert len(config.npcs) == 1
+    assert config.npcs[0].name == "Adabra"
+    assert config.npcs[0].dossier.name == "adabra.md"
+    assert config.npcs[0].arc_score.name == "adabra_arc.md"
+    assert config.npcs[0].trackless is False
+    assert len(config.factions) == 1
+    assert config.factions[0].name == "Kraken Society"
+    assert config.factions[0].dossier is None
+    assert config.factions[0].arc_score.name == "kraken_score.md"
+
+
+def test_load_planning_config_trackless_vs_absent(tmp_path):
+    _write_dossier(tmp_path / "lyra.md", "Lyra")
+    _write_dossier(tmp_path / "omit.md", "Omit")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Lyra
+    dossier: lyra.md
+    arc_score: null
+  - name: Omit
+    dossier: omit.md
+""")
+    config = planning.load_planning_config(cfg)
+    lyra, omit = config.npcs
+    assert lyra.arc_score is None and lyra.trackless is True
+    assert omit.arc_score is None and omit.trackless is False
+
+
+def test_load_planning_config_missing_file_fails_loud(tmp_path):
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Ghost
+    dossier: missing.md
+""")
+    with pytest.raises(SystemExit):
+        planning.load_planning_config(cfg)
+
+
+def test_load_planning_config_npc_without_dossier_fails(tmp_path):
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: NoDossier
+""")
+    with pytest.raises(SystemExit):
+        planning.load_planning_config(cfg)
+
+
+def test_load_planning_config_empty_fails(tmp_path):
+    cfg = _write_planning_config(tmp_path, "npcs: []\nfactions: []\n")
+    with pytest.raises(SystemExit):
+        planning.load_planning_config(cfg)
+
+
+def test_planning_config_rejects_arc_scores_flag(tmp_path):
+    """--planning-config replaces --arc-scores; passing both is an error."""
+    _write_dossier(tmp_path / "any.md", "Any")
+    _write(tmp_path / "score.md", "score body")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Any
+    dossier: any.md
+""")
+    result = _run(
+        "--planning-config", str(cfg),
+        "--arc-scores", str(tmp_path / "score.md"),
+        "--output", str(tmp_path / "out.md"),
+    )
+    assert result.returncode == 1
+    assert "replaces --arc-scores" in result.stderr
+
+
+def test_planning_config_coexists_with_unbound_npc_flag(monkeypatch, fake_stream_api, tmp_path):
+    """--planning-config + --npc renders bound entities (with score nested)
+    AND unbound NPCs (plain dossier blocks) in one # NPC DOSSIERS section."""
+    _write_dossier(tmp_path / "adabra.md", "Adabra", "Adabra dossier prose")
+    _write(tmp_path / "adabra_arc.md", "Fury of the Wild")
+    _write_dossier(tmp_path / "harbin.md", "Harbin", "Harbin dossier prose")
+    _write_dossier(tmp_path / "toblen.md", "Toblen", "Toblen dossier prose")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Adabra
+    dossier: adabra.md
+    arc_score: adabra_arc.md
+""")
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--planning-config", str(cfg),
+        "--npc", str(tmp_path / "harbin.md"), str(tmp_path / "toblen.md"),
+        "--output", str(tmp_path / "planning.md"),
+    ])
+    planning.main()
+
+    prompt = fake_stream_api.calls[0]["user"]
+    # All three NPCs appear under # NPC DOSSIERS
+    assert "# NPC DOSSIERS" in prompt
+    assert "## Adabra" in prompt
+    assert "## Harbin" in prompt
+    assert "## Toblen" in prompt
+    # Adabra has the bound arc-score nested in her block
+    adabra_idx = prompt.index("## Adabra")
+    next_sep = prompt.index("\n---\n", adabra_idx)
+    adabra_block = prompt[adabra_idx:next_sep]
+    assert "<!-- Threat arc score: adabra_arc.md -->" in adabra_block
+    assert "Adabra dossier prose" in adabra_block
+    assert "Fury of the Wild" in adabra_block
+    # Harbin and Toblen have NO arc-score block (they're unbound dossiers)
+    harbin_idx = prompt.index("## Harbin")
+    toblen_idx = prompt.index("## Toblen")
+    # Find the slice between Harbin's start and Toblen's start.
+    harbin_block = prompt[harbin_idx:toblen_idx]
+    assert "<!-- NPC dossier: harbin.md -->" in harbin_block
+    assert "<!-- Threat arc score:" not in harbin_block
+    assert "INTENTIONALLY TRACKLESS" not in harbin_block
+
+
+def test_planning_config_overlap_with_npc_fails(monkeypatch, fake_stream_api, tmp_path):
+    """Same NPC can't appear in both --planning-config and --npc."""
+    _write_dossier(tmp_path / "adabra.md", "Adabra")
+    _write(tmp_path / "adabra_arc.md", "score")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Adabra
+    dossier: adabra.md
+    arc_score: adabra_arc.md
+""")
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--planning-config", str(cfg),
+        "--npc", str(tmp_path / "adabra.md"),
+        "--output", str(tmp_path / "planning.md"),
+    ])
+    with pytest.raises(SystemExit):
+        planning.main()
+
+
+def test_planning_config_renders_per_entity_block(monkeypatch, fake_stream_api, tmp_path):
+    _write_dossier(tmp_path / "adabra.md", "Adabra", "Adabra dossier prose")
+    _write(tmp_path / "adabra_arc.md", "Fury of the Wild track mechanics")
+    _write_dossier(tmp_path / "lyra.md", "Lyra", "Lyra dossier prose")
+    _write(tmp_path / "kraken_score.md", "Kraken Society Echoes track")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Adabra
+    dossier: adabra.md
+    arc_score: adabra_arc.md
+  - name: Lyra
+    dossier: lyra.md
+    arc_score: null
+factions:
+  - name: Kraken Society
+    arc_score: kraken_score.md
+""")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--planning-config", str(cfg),
+        "--output", str(output),
+    ])
+    planning.main()
+
+    assert len(fake_stream_api.calls) == 1
+    prompt = fake_stream_api.calls[0]["user"]
+    # Per-entity sections
+    assert "# NPC DOSSIERS" in prompt
+    assert "# FACTIONS" in prompt
+    assert "## Adabra" in prompt
+    assert "## Lyra" in prompt
+    assert "## Kraken Society" in prompt
+    # Adabra has dossier + arc-score together
+    assert "<!-- NPC dossier: adabra.md -->" in prompt
+    assert "<!-- Threat arc score: adabra_arc.md -->" in prompt
+    # Adabra body and arc-score body co-occur within ~one block (tight binding)
+    adabra_idx = prompt.index("## Adabra")
+    next_block_idx = prompt.index("\n---\n", adabra_idx)
+    adabra_block = prompt[adabra_idx:next_block_idx]
+    assert "Adabra dossier prose" in adabra_block
+    assert "Fury of the Wild track mechanics" in adabra_block
+    # Lyra trackless: no arc-score file, but explicit marker
+    lyra_idx = prompt.index("## Lyra")
+    lyra_block = prompt[lyra_idx:]
+    assert "INTENTIONALLY TRACKLESS" in lyra_block
+    # Faction has no dossier comment, only arc-score
+    faction_idx = prompt.index("## Kraken Society")
+    faction_block = prompt[faction_idx:]
+    assert "<!-- Threat arc score: kraken_score.md -->" in faction_block
+    assert "<!-- NPC dossier:" not in faction_block
+    # Legacy flat group must NOT appear when planning-config is in use
+    assert "# THREAT ARC SCORE MECHANICS" not in prompt
+    assert output.exists()
+
+
+def test_planning_config_synthesize_only_works_without_summaries(
+    monkeypatch, fake_stream_api, tmp_path
+):
+    """A planning-config-only invocation (no --summaries) should succeed and
+    produce planning.md from just the bound entity blocks."""
+    _write_dossier(tmp_path / "adabra.md", "Adabra")
+    _write(tmp_path / "adabra_arc.md", "Adabra arc")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Adabra
+    dossier: adabra.md
+    arc_score: adabra_arc.md
+""")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--planning-config", str(cfg),
+        "--output", str(output),
+    ])
+    planning.main()
+
+    assert len(fake_stream_api.calls) == 1
+    assert output.exists()
