@@ -39,6 +39,7 @@ const context = ref('')
 const narrateTokens = ref(16000)
 const proseMode = ref(false)
 const reflections = ref(false)
+const narrationGenre = ref('')
 const useEnhancedSections = ref(true)
 const showOverrides = ref(false)
 // Batch mode toggle for Stage 1 / Stage 2 (Anthropic Message Batches API,
@@ -64,6 +65,7 @@ function loadConfigFields() {
   narrateTokens.value = v.sd_narrate_tokens || v.session_doc_narrate_tokens || 16000
   proseMode.value = v.sd_prose_mode || false
   reflections.value = v.sd_reflections || false
+  narrationGenre.value = v.sd_narration_genre || ''
   useEnhancedSections.value = v.sd_use_enhanced_sections !== false
   useBatch.value = v.sd_batch === true
 }
@@ -107,6 +109,7 @@ async function applyConfig() {
     narrate_tokens: narrateTokens.value || undefined,
     prose_mode: proseMode.value || undefined,
     reflections: reflections.value || undefined,
+    narration_genre: narrationGenre.value.trim() || undefined,
     use_enhanced_sections: useEnhancedSections.value,
     work_dir: config.cwd,
   }
@@ -550,6 +553,15 @@ onMounted(async () => {
               Prose mode
             </label>
             <div class="field-help">Strip all mechanical language and GM framing. GM descriptions become the narrator's direct perception; dice rolls and HP become narrative consequence.</div>
+          </div>
+          <div class="field">
+            <label class="field-label">Narration genre</label>
+            <input type="text" class="field-input" v-model="narrationGenre"
+              placeholder='e.g. First-person comic-noir fantasy memoir — observational, dry, irony-forward' />
+            <div class="field-help">
+              One-line genre/register directive injected at the top of the Pass-5
+              narration prompt. Leave blank to use the default neutral prompt.
+            </div>
           </div>
           <div class="field">
             <label class="field-label checkbox-label">

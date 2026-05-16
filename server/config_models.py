@@ -63,6 +63,7 @@ class SessionDocSection(BaseModel):
     narrate_tokens: int = 16000
     prose_mode: bool = False
     reflections: bool = False
+    narration_genre: OptStr = None
     use_enhanced_sections: bool = False
     batch: bool = False
     session_name: OptStr = None

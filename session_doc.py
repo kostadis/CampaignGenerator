@@ -294,7 +294,7 @@ Output only the extracted moments. No preamble.
 
 NARRATE_SYSTEM_BASE = """\
 You are writing one section of a first-person D&D session narrative.
-
+{genre_directive}
 You will be given:
 - The narrator's name and a one-sentence focus
 {scene_scope_line}{scene_events_line}- A handoff line from the previous narrator (if any)
@@ -361,6 +361,41 @@ the narrator's perspective colours everything. Match this quality and style.
 END OF STYLE REFERENCE
 """
 
+PER_CHAR_EXAMPLES_BLOCK = """\
+STYLE REFERENCE — {narrator}'s VOICE SPECIFICALLY:
+Match this voice. Any global examples above show overall quality; the passages below
+show how {narrator} sounds in particular — the cadence, the vocabulary, the rhythm,
+the particular way this character sees the world. When the general examples and these
+disagree, these win. Prioritize matching them.
+
+{examples}
+
+END OF {narrator}-SPECIFIC STYLE REFERENCE
+"""
+
+VOICE_SPEC_BLOCK = """\
+AUTHORITATIVE VOICE SPEC — {narrator}:
+The following notes are written by {narrator}'s player. They override any conflicting
+style guidance above. Match the cadence, vocabulary, and tics described here. When in
+doubt about how a sentence should sound, refer to this section first.
+
+{voice_note}
+
+END OF VOICE SPEC
+"""
+
+PREV_VOICE_CONTRAST_BLOCK = """\
+## Previous Section's Voice (for contrast — do NOT imitate)
+
+The previous section was narrated by {prev_narrator}. A sample of their voice:
+
+> {prev_voice_sample}
+
+{narrator}'s voice should sound clearly different from {prev_narrator}'s. Lean into
+what makes {narrator} distinct — their rhythm, their concerns, their particular way
+of speaking — and away from anything that would make these two sections feel written
+by the same hand."""
+
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -416,6 +451,45 @@ def get_voice_note(voices: dict[str, str], narrator: str) -> str | None:
     """Look up a voice note for a narrator by case-insensitive name match."""
     key = narrator.lower().split()[0]  # match on first name
     return voices.get(key) or voices.get(narrator.lower())
+
+
+def get_char_examples(per_char_examples: dict[str, str], narrator: str) -> str | None:
+    """Look up per-character style examples by case-insensitive first-name match."""
+    key = narrator.lower().split()[0]
+    return per_char_examples.get(key) or per_char_examples.get(narrator.lower())
+
+
+def extract_contrast_sample(text: str, max_sentences: int = 5) -> str:
+    """First substantive paragraph's first ~5 sentences — Phase-3 contrast signal.
+
+    Skips markdown headings, italic-only captions, and `---` separators so the
+    sample is drawn from the first verbatim passage in a per-char examples file
+    rather than the file's title or subtitle. Title and italic subtitle are often
+    joined into one paragraph (single newline between them), so the skip checks
+    chrome line-by-line, not chunk-as-a-whole.
+    """
+    def is_chrome(line: str) -> bool:
+        s = line.strip()
+        if not s or s == "---":
+            return True
+        if s.startswith("#"):
+            return True
+        if s.startswith("*") and s.endswith("*") and len(s) > 1:
+            return True
+        return False
+
+    for chunk in text.split("\n\n"):
+        chunk = chunk.strip()
+        if not chunk or chunk == "---":
+            continue
+        lines = [ln for ln in chunk.splitlines() if ln.strip()]
+        if not lines or all(is_chrome(ln) for ln in lines):
+            continue
+        sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', chunk) if s.strip()]
+        if not sentences:
+            return chunk
+        return " ".join(sentences[:max_sentences])
+    return ""
 
 
 def load_extractions(path: Path) -> list[tuple[str, str]]:
@@ -715,11 +789,18 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                          prose_mode: bool = False,
                          has_scene_events: bool = False,
                          scene_anchored: bool = False,
-                         narrator: str = "") -> str:
+                         narrator: str = "",
+                         char_examples: str | None = None,
+                         voice_note: str | None = None,
+                         genre: str | None = None) -> str:
     if examples_text:
         block = "\n" + EXAMPLES_BLOCK.replace("{examples}", examples_text.strip()) + "\n"
     else:
         block = ""
+    if genre and genre.strip():
+        genre_block = f"GENRE: {genre.strip()}\n"
+    else:
+        genre_block = ""
     if scene:
         scope = (f"- The scene you are writing: **{scene}**\n"
                  f"  STOP when this scene ends. Do not continue into what happened next.\n"
@@ -746,6 +827,7 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
         scene_events_line = ""
         rendering = ""
     result = (NARRATE_SYSTEM_BASE
+              .replace("{genre_directive}", genre_block)
               .replace("{examples_block}", block)
               .replace("{scene_scope_line}", scope)
               .replace("{scene_events_line}", scene_events_line)
@@ -756,6 +838,16 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
         result += "\n\n" + SCENE_ANCHORED_DIRECTIVE.replace("{narrator}", narrator)
     if prose_mode:
         result += "\n\n" + PROSE_MODE_INSTRUCTION
+    if char_examples and narrator:
+        block = (PER_CHAR_EXAMPLES_BLOCK
+                 .replace("{narrator}", narrator)
+                 .replace("{examples}", char_examples.strip()))
+        result += "\n\n" + block
+    if voice_note and narrator:
+        block = (VOICE_SPEC_BLOCK
+                 .replace("{narrator}", narrator)
+                 .replace("{voice_note}", voice_note.strip()))
+        result += "\n\n" + block
     return result
 
 
@@ -945,10 +1037,11 @@ def build_char_extract_prompt(section: dict,
 
 def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
                           party: str | None, handoff: str, roster: str = "",
-                          voice_note: str | None = None,
                           roleplay_summary: str | None = None,
                           scene_text: str | None = None,
-                          context_docs: list[str] | None = None) -> str:
+                          context_docs: list[str] | None = None,
+                          prev_narrator: str | None = None,
+                          prev_voice_sample: str | None = None) -> str:
     parts = [f"## Narrator: {narrator}\n## Focus: {focus}"]
     if roster:
         parts.append(f"## Character Classes (definitive — never contradict these)\n\n{roster}")
@@ -980,9 +1073,6 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
             f"provide verbatim quotes and character-specific beats to weave in.\n\n"
             f"{scene_text.strip()}"
         )
-    if voice_note:
-        parts.append(f"## {narrator}'s Voice Notes (written by the player — "
-                     f"follow these precisely)\n\n{voice_note}")
     if roleplay_summary:
         parts.append(
             f"## Session Roleplay Summary\n\n"
@@ -993,6 +1083,13 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
             f"## {narrator}'s Roleplay Moments below — not from this document.\n\n"
             f"{roleplay_summary.strip()}"
         )
+    if (prev_narrator and prev_voice_sample
+            and prev_narrator.lower() != narrator.lower()):
+        contrast = (PREV_VOICE_CONTRAST_BLOCK
+                    .replace("{prev_narrator}", prev_narrator)
+                    .replace("{prev_voice_sample}", prev_voice_sample.strip())
+                    .replace("{narrator}", narrator))
+        parts.append(contrast)
     if handoff:
         parts.append(f"## Handoff from previous narrator\n\"{handoff}\"")
     # When an authoritative scene account is provided, rename the extraction block to
@@ -1102,6 +1199,13 @@ def main() -> None:
                         help="Strip all mechanical/game language and GM framing from narration. "
                              "GM descriptions become direct world perception; dice rolls and HP "
                              "become narrative consequence.")
+    parser.add_argument("--narration-genre", default=None, metavar="TEXT",
+                        help="One-line genre/register directive injected into the "
+                             "Pass-5 narration system prompt (e.g. 'First-person "
+                             "comic-noir fantasy memoir — observational, dry, "
+                             "irony-forward'). When unset, no genre line is "
+                             "added — narration prompt is identical to no-flag "
+                             "behaviour.")
     parser.add_argument("--reflections", action="store_true",
                         help="Inject campaign_state and world_state context into the narration "
                              "prompt so the narrator can draw on past events as memories, "
@@ -1274,25 +1378,44 @@ def main() -> None:
         roleplay_summary = _p.read_text(encoding="utf-8")
         print(f"  Roleplay summary: {_p.name} ({len(roleplay_summary):,} chars)")
 
+    characters = (
+        [c.strip() for c in args.characters.split(",") if c.strip()]
+        if args.characters else []
+    )
+
     examples_text: str | None = None
+    per_char_examples: dict[str, str] = {}
     if args.examples:
         ed = Path(args.examples).expanduser()
         if ed.is_dir():
-            parts = []
+            # Files whose stem (after stripping an optional _examples suffix)
+            # matches a character's first name route to that character only.
+            # Everything else falls into the global pool, preserving the
+            # pre-existing behaviour.
+            char_keys = {c.lower().split()[0] for c in characters if c}
+            global_parts: list[str] = []
             for p in sorted(ed.glob("*.md")):
-                parts.append(f"### Example: {p.name}\n\n{p.read_text(encoding='utf-8').strip()}")
-            if parts:
-                examples_text = "\n\n---\n\n".join(parts)
-                print(f"  Style examples: {len(parts)} file(s) from {ed} ({len(examples_text):,} chars)")
-            else:
+                stem_lower = p.stem.lower()
+                key = stem_lower.removesuffix("_examples")
+                snippet = f"### Example: {p.name}\n\n{p.read_text(encoding='utf-8').strip()}"
+                if key in char_keys:
+                    existing = per_char_examples.get(key, "")
+                    per_char_examples[key] = (
+                        existing + "\n\n---\n\n" + snippet if existing else snippet
+                    )
+                else:
+                    global_parts.append(snippet)
+            if global_parts:
+                examples_text = "\n\n---\n\n".join(global_parts)
+                print(f"  Style examples (global): {len(global_parts)} file(s) "
+                      f"from {ed} ({len(examples_text):,} chars)")
+            if per_char_examples:
+                print(f"  Style examples (per-character): "
+                      f"{', '.join(sorted(per_char_examples.keys()))}")
+            if not global_parts and not per_char_examples:
                 print(f"  Warning: no .md files found in examples dir: {ed}", file=sys.stderr)
         else:
             print(f"  Warning: examples dir not found: {ed}", file=sys.stderr)
-
-    characters = (
-        [c.strip() for c in args.characters.replace(",", " ").split() if c.strip()]
-        if args.characters else []
-    )
 
     # Resolve extract-dir paths early so validation happens before any API calls
     extract_dir: Path | None = None
@@ -1551,6 +1674,12 @@ def main() -> None:
         sections = matched
         print(f"\nSingle-narrator mode: running passes 4–5 for {sections[0]['narrator']} only.")
 
+    # Plan-position lookup for the Phase 3 contrast signal — survives --scene
+    # filtering so single-scene runs can still look up the prior narrator.
+    plan_narrator_by_scene: dict[int, str] = {
+        idx: s["narrator"] for idx, s in enumerate(sections, 1)
+    }
+
     if args.scene:
         total = len(sections)
         bad = [n for n in args.scene if n < 1 or n > total]
@@ -1707,6 +1836,20 @@ def main() -> None:
 
         # Pass 5: narrate from character-specific moments
         voice_note = get_voice_note(voice_files, narrator) if voice_files else None
+        char_examples = (get_char_examples(per_char_examples, narrator)
+                         if per_char_examples else None)
+        # Phase 3 contrast: sample the previous narrator's voice from their
+        # per-char examples (not from the prior scene's output) so single-scene
+        # runs from the UI still get the contrast signal.
+        prev_narrator = plan_narrator_by_scene.get(i - 1)
+        prev_voice_sample = None
+        if prev_narrator and prev_narrator.lower() != narrator.lower():
+            prev_text = (get_char_examples(per_char_examples, prev_narrator)
+                         if per_char_examples else None)
+            if prev_text:
+                prev_voice_sample = extract_contrast_sample(prev_text)
+            else:
+                prev_narrator = None
         # In --from-extractions mode the extraction file IS the scope — do not pass
         # scene_text or the model will narrate content from the recap that the user
         # intentionally left out of the extraction.
@@ -1722,6 +1865,8 @@ def main() -> None:
                 scene_events_str = extract_scene_text(recap, scene_name)
         narrate_context = context_parts if args.reflections and context_parts else None
         extras = [x for x in ["voice notes" if voice_note else "",
+                               "per-char examples" if char_examples else "",
+                               "prev-narrator contrast" if prev_voice_sample else "",
                                "roleplay summary" if roleplay_summary else "",
                                "enhanced context" if (scene_events_str or narrate_context) else ""] if x]
         print(f"[Pass 5 scene {i}: Narrate — {label}"
@@ -1736,11 +1881,16 @@ def main() -> None:
             has_scene_events=bool(scene_events_str or narrate_context),
             scene_anchored=bool(scene_extractions and scene_summary_override),
             narrator=narrator,
+            char_examples=char_examples,
+            voice_note=voice_note,
+            genre=args.narration_genre,
         )
         narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff,
-                                              roster, voice_note, roleplay_summary,
+                                              roster, roleplay_summary,
                                               scene_text=scene_events_str or None,
-                                              context_docs=narrate_context)
+                                              context_docs=narrate_context,
+                                              prev_narrator=prev_narrator,
+                                              prev_voice_sample=prev_voice_sample)
         narration = stream_api(client, narrate_system, narrate_prompt,
                                args.model, max_tokens=narrate_tokens, verbose=args.verbose)
         print("─" * 60)

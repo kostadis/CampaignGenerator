@@ -971,6 +971,38 @@ def test_get_voice_note_missing():
     assert session_doc.get_voice_note(voices, "Brewbarry") is None
 
 
+# ── session_doc.extract_contrast_sample ─────────────────────────────────────
+
+def test_extract_contrast_sample_skips_headings_and_caption():
+    """First substantive paragraph wins; markdown chrome is ignored."""
+    text = (
+        "# Vukradin — Voice Reference Passages\n"
+        "*Verbatim excerpts from the campaign bible.*\n\n"
+        "---\n\n"
+        "## From chapter 3: The Stone Pit\n\n"
+        "The trap was the same one. They always were. "
+        "I dropped through anyway because that is what you do.\n\n"
+        "## From chapter 5: The Climb\n\n"
+        "Different scene, also irrelevant for this test."
+    )
+    sample = session_doc.extract_contrast_sample(text)
+    assert "Verbatim excerpts" not in sample
+    assert "Voice Reference Passages" not in sample
+    assert "From chapter 3" not in sample
+    assert sample.startswith("The trap was the same one.")
+    assert "Different scene" not in sample  # only first substantive paragraph
+
+
+def test_extract_contrast_sample_caps_sentences():
+    text = "A. B. C. D. E. F. G."
+    assert session_doc.extract_contrast_sample(text, max_sentences=3) == "A. B. C."
+
+
+def test_extract_contrast_sample_empty_returns_empty():
+    assert session_doc.extract_contrast_sample("") == ""
+    assert session_doc.extract_contrast_sample("# Heading only\n\n---\n\n## Another heading") == ""
+
+
 # ── session_doc.load_extractions ────────────────────────────────────────────
 
 def test_load_extractions_sorted(tmp_path):
@@ -1030,13 +1062,22 @@ def test_build_narrate_prompt_includes_party():
     assert "Tortle Druid" in result
 
 
-def test_build_narrate_prompt_includes_voice_note():
+def test_build_narrate_system_includes_voice_note():
+    """Voice notes live in the system prompt under the authoritative spec heading."""
+    system = session_doc.build_narrate_system(
+        None, scene=None, narrator="Soma", voice_note="Gentle and wise."
+    )
+    assert "AUTHORITATIVE VOICE SPEC — Soma" in system
+    assert "Gentle and wise." in system
+
+
+def test_build_narrate_prompt_no_longer_takes_voice_note():
+    """Voice notes were hoisted to the system prompt; user prompt no longer carries them."""
     result = session_doc.build_narrate_prompt(
         narrator="Soma", focus="focus", char_moments="moments",
-        party=None, handoff="", voice_note="Gentle and wise."
+        party=None, handoff=""
     )
-    assert "Voice Notes" in result
-    assert "Gentle and wise." in result
+    assert "Voice Notes" not in result
 
 
 def test_build_narrate_prompt_includes_handoff():

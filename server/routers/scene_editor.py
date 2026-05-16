@@ -510,7 +510,8 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
         "--scene", str(scene_num),
     ]
     for flag, key in [("--party", "party"), ("--voice-dir", "voice_dir"),
-                      ("--characters", "characters")]:
+                      ("--characters", "characters"),
+                      ("--examples", "examples_dir")]:
         if CONFIG.get(key):
             cmd += [flag, CONFIG[key]]
     if CONFIG.get("roleplay_summary"):
@@ -521,6 +522,8 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
         cmd += ["--prose-mode"]
     if CONFIG.get("reflections"):
         cmd += ["--reflections"]
+    if CONFIG.get("narration_genre"):
+        cmd += ["--narration-genre", CONFIG["narration_genre"]]
     for ctx in CONFIG.get("context") or []:
         if ctx:
             cmd += ["--context", ctx]
@@ -546,7 +549,8 @@ def _build_narrate_cmd_old(scene_num: int) -> list[str]:
         "--output", str(Path(CONFIG["output_dir"]) / f"scene{scene_num}.md"),
     ]
     for flag, key in [("--party", "party"), ("--voice-dir", "voice_dir"),
-                      ("--summary-extract-dir", "summary_extract_dir")]:
+                      ("--summary-extract-dir", "summary_extract_dir"),
+                      ("--examples", "examples_dir")]:
         if CONFIG.get(key):
             cmd += [flag, CONFIG[key]]
     local_rp = _get_roleplay_path(scene_num)
