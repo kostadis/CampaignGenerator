@@ -315,7 +315,6 @@ python vtt_summary.py session.vtt --output summaries/session_12.md
 # With a pre-existing recap as anchor (recommended when available)
 python vtt_summary.py session.vtt \
     --output           session-summary.md \
-    --roleplay-output  session-roleplay.md \
     --reference-summaries gm-assist.md \
     --context docs/campaign_state.md docs/world_state.md docs/party.md
 ```

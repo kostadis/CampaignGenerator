@@ -266,7 +266,6 @@ The `--reference-summaries` flag passes a pre-existing session summary (e.g. a G
 ```bash
 python vtt_summary.py session.vtt \
     --output summaries/20260318/session-summary.md \
-    --roleplay-output summaries/20260318/session-roleplay.md \
     --reference-summaries summaries/20260318/gm-assist.md \
     --context docs/campaign_state.md docs/world_state.md docs/party.md
 ```

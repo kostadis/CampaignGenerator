@@ -128,8 +128,8 @@ One short paragraph: where are PCs, what is immediately at stake
 
 ### vtt_roleplay_extractions/extract_NNN.md (Dialogue & Voice)
 
-**Written by:** `vtt_summary.py` Pass 3 (optional)
-**Read by:** `session_doc.py` Pass 4–5
+**Written by:** `vtt_summary.py` Pass 3
+**Read by:** `quote_ledger.py`, `enhance_recap.py`
 **Pattern:** Same as above
 
 ```markdown

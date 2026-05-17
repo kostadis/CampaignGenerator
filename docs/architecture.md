@@ -140,7 +140,7 @@ End-to-end walkthrough: [`docs/session_prep_workflow.md`](session_prep_workflow.
 
 | Script | Role |
 |---|---|
-| [`vtt_summary.py`](../vtt_summary.py) | Zoom WebVTT → structured `session-summary.md` + `session-roleplay.md` |
+| [`vtt_summary.py`](../vtt_summary.py) | Zoom WebVTT → structured `session-summary.md` + verbatim `vtt_roleplay_extractions/` chunks |
 | [`enhance_summary.py`](../enhance_summary.py) | Stage 1: enrich gm-assist with VTT detail (cached system prefix) |
 | [`scene_extract.py`](../scene_extract.py) | Stage 2: per-scene verbatim moments |
 | [`session_doc.py`](../session_doc.py) | 5-pass narrative document (consistency → enhance → plan → character extract → narrate). The big one — read [`docs/session_doc_pipeline.md`](session_doc_pipeline.md) before touching it |
@@ -207,9 +207,8 @@ The campaign workspace is the database. All long-lived state is markdown.
     session.vtt               # Zoom transcript
     gm-assist.md              # GM recap (input to enhance_recap, scene structure for scene_extract)
     session-summary.md        ← vtt_summary.py
-    session-roleplay.md       ← vtt_summary.py --roleplay
     vtt_extractions/          ← vtt_summary.py        → distill, campaign_state
-    vtt_roleplay_extractions/ ← vtt_summary.py        → session_doc, narrative, ledger
+    vtt_roleplay_extractions/ ← vtt_summary.py        → quote_ledger, enhance_recap
     scene_extractions/        ← scene_extract.py      → session_doc Pass 4, ledger
   quote_ledger.db             # SQLite — fuzzy quote ↔ scene mapping
 ```
