@@ -132,44 +132,6 @@ Scan the transcript for every moment worth narrating. Cast a wide net — it is 
 over-extract than to miss a quiet character moment or an in-character joke buried in
 mechanical discussion."""
 
-ROLEPLAY_SYNTHESIZE_SYSTEM_BASE = """\
-You are a D&D session archivist. You will receive roleplay moment extractions from a single
-session's Zoom transcript. Your job is to synthesize them into a Roleplay Highlights document.
-{context_section}
-The document has two purposes:
-1. A record of memorable roleplay for the players and GM to look back on
-2. A Voice Keeper reference — character voice examples and speech patterns useful for future
-   session prep (feeding to the Voice Keeper agent or directly to encounter design)
-
-Format:
-# Roleplay Highlights — {session_name}
-
-## Character Voices
-One subsection per PC and significant NPC. For each: 2–3 bullet points describing their voice
-and personality as expressed this session, followed by 1–3 of their most representative quotes.
-
-### [Character/NPC Name]
-- Voice notes (speech patterns, register, emotional tone)
-> "memorable quote"
-
-## Memorable Exchanges
-The best back-and-forth roleplay moments — dramatic, funny, or emotionally significant dialogues.
-For each: a one-line scene-setter, then the exchange as a short script.
-
-## Standout Moments
-Individual character moments that defined the session — a decision, a revelation, a speech.
-One bullet per moment, with the quote or paraphrase.
-
-## Voice Keeper Notes
-A concise section for future session prep use:
-- Key NPC speech patterns the GM should maintain
-- PC emotional states and relationships that should inform NPC dialogue toward them
-- Any promises, threats, or vows made in character that future encounters should reference
-
-Write with clarity. Quotes should feel alive on the page.
-Output only the Roleplay Highlights document. No preamble or commentary.
-"""
-
 SYNTHESIZE_SYSTEM_BASE = """\
 You are a D&D session chronicler. You will receive structured extraction notes compiled
 from a single session's Zoom transcript. Your job is to synthesize them into a clean,
@@ -284,12 +246,6 @@ def build_summary_synthesize_system(context_text: str, session_name: str) -> str
             .replace("{session_name}", session_name))
 
 
-def build_roleplay_synthesize_system(context_text: str, session_name: str) -> str:
-    return (ROLEPLAY_SYNTHESIZE_SYSTEM_BASE
-            .replace("{context_section}", build_context_section(context_text))
-            .replace("{session_name}", session_name))
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate a D&D session summary from a Zoom VTT transcript."
@@ -304,10 +260,6 @@ def main() -> None:
                         help='Session label, e.g. "Session 12 — Icespire Hold"')
     parser.add_argument("--chunk-size", type=int, default=50000, metavar="CHARS",
                         help="Max characters per extract chunk (default: 50000)")
-    parser.add_argument("--roleplay-output", metavar="FILE",
-                        help="Also generate a Roleplay Highlights document (character voices, "
-                             "memorable exchanges, Voice Keeper notes). "
-                             "e.g. docs/summaries/session_12_roleplay.md")
     parser.add_argument("--extract-dir", metavar="DIR", default=None,
                         help="Where to save/load intermediate extractions "
                              "(default: <output_dir>/vtt_extractions/)")
@@ -438,25 +390,23 @@ def main() -> None:
         print(f"Extractions saved to: {extract_dir}")
 
         if args.extract_only:
-            if args.roleplay_output:
-                print(f"\n[Pass 2: Extract (roleplay) | model: {args.model}]")
-                print("=" * 60)
-                run_extract_pipeline(
-                    client, dialogue,
-                    extract_system=build_roleplay_extract_system(context_text, reference_text),
-                    model=args.model,
-                    extract_dir=roleplay_extract_dir,
-                    chunk_size=args.chunk_size,
-                    input_normalizer=normalize,
-                    system_suffix=roster,
-                )
-                print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
+            print(f"\n[Pass 2: Extract (roleplay) | model: {args.model}]")
+            print("=" * 60)
+            run_extract_pipeline(
+                client, dialogue,
+                extract_system=build_roleplay_extract_system(context_text, reference_text),
+                model=args.model,
+                extract_dir=roleplay_extract_dir,
+                chunk_size=args.chunk_size,
+                input_normalizer=normalize,
+                system_suffix=roster,
+            )
+            print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
 
             print(f"\n[Extract-only mode — stopping before synthesis]")
             print(f"Review files in: {extract_dir}")
-            if args.roleplay_output:
-                print(f"                 {roleplay_extract_dir}")
-            print(f"When ready, re-run with --synthesize-only to produce the final document(s).")
+            print(f"                 {roleplay_extract_dir}")
+            print(f"When ready, re-run with --synthesize-only to produce the final document.")
             return
     else:
         extract_files = sorted(extract_dir.glob("extract_*.md"))
@@ -484,49 +434,22 @@ def main() -> None:
     output.write_text(summary.strip() + "\n", encoding="utf-8")
     print(f"\nSession summary saved to: {output}")
 
-    # ── Roleplay pass ─────────────────────────────────────────────────────────
+    # ── Roleplay extract pass (feeds vtt_roleplay_extractions/ for quote_ledger / enhance_recap) ──
     log_sections = [("Session Summary", summary)]
 
-    if args.roleplay_output:
-        roleplay_output = Path(args.roleplay_output).expanduser().resolve()
-
-        if not args.synthesize_only:
-            print(f"\n[Pass 3: Extract (roleplay) | model: {args.model}]")
-            print("=" * 60)
-            roleplay_extract_files = run_extract_pipeline(
-                client, dialogue,
-                extract_system=build_roleplay_extract_system(context_text, reference_text),
-                model=args.model,
-                extract_dir=roleplay_extract_dir,
-                chunk_size=args.chunk_size,
-                input_normalizer=normalize,
-                system_suffix=roster,
-            )
-            print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
-        else:
-            roleplay_extract_files = sorted(roleplay_extract_dir.glob("extract_*.md"))
-            if not roleplay_extract_files:
-                print(f"Warning: no roleplay extractions found in {roleplay_extract_dir} "
-                      f"— skipping roleplay pass.", file=sys.stderr)
-                roleplay_extract_files = []
-
-        if roleplay_extract_files:
-            print(f"\n[Pass 4: Synthesize (roleplay) | model: {args.model}]")
-            print("=" * 60)
-            roleplay_doc = run_synthesize_pipeline(
-                client,
-                source_groups=[("", roleplay_extract_files)],
-                synthesize_system=build_roleplay_synthesize_system(context_text, session_name),
-                model=args.model,
-                input_normalizer=normalize,
-                system_suffix=roster,
-            )
-            print("=" * 60)
-
-            roleplay_output.parent.mkdir(parents=True, exist_ok=True)
-            roleplay_output.write_text(roleplay_doc.strip() + "\n", encoding="utf-8")
-            print(f"\nRoleplay highlights saved to: {roleplay_output}")
-            log_sections.append(("Roleplay Highlights", roleplay_doc))
+    if not args.synthesize_only:
+        print(f"\n[Pass 3: Extract (roleplay) | model: {args.model}]")
+        print("=" * 60)
+        run_extract_pipeline(
+            client, dialogue,
+            extract_system=build_roleplay_extract_system(context_text, reference_text),
+            model=args.model,
+            extract_dir=roleplay_extract_dir,
+            chunk_size=args.chunk_size,
+            input_normalizer=normalize,
+            system_suffix=roster,
+        )
+        print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
 
     if not args.no_log:
         log_dir = output.parent / "logs"

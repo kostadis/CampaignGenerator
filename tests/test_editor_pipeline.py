@@ -241,28 +241,3 @@ def test_build_narrate_cmd_uses_new_flags(tmp_path):
     assert "--by-scene" not in result
 
 
-def test_build_narrate_cmd_falls_back_to_old_flow(tmp_path):
-    """When the new-flow indicators are absent, the old narrate command is used."""
-    sd = tmp_path / "20260414"
-    sd.mkdir()
-    gm = sd / "gm-assist.md"
-    gm.write_text("# recap", encoding="utf-8")
-    legacy = sd / "extract_dir"
-    legacy.mkdir()
-    (legacy / "plan.md").write_text("## s\n- narrator: X\n", encoding="utf-8")
-    out = sd / "out_dir"
-    out.mkdir()
-    rp = sd / "rp_dir"
-    rp.mkdir()
-
-    scene_editor.CONFIG.clear()
-    scene_editor.CONFIG.update({
-        "session": str(gm),
-        "extract_dir": str(legacy),
-        "output_dir": str(out),
-        "roleplay_extract_dir": str(rp),
-    })
-    result = scene_editor._build_narrate_cmd(1)
-    assert isinstance(result, list)
-    assert "--from-extractions" in result
-    assert "--by-scene" in result

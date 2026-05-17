@@ -30,7 +30,6 @@ const summaryExtractDir = ref('')
 const sessionSummary = ref('')
 const sceneExtractionsDir = ref('')
 const narrationDir = ref('')
-const roleplaySummary = ref('')
 const party = ref('')
 const voiceDir = ref('')
 const examplesDir = ref('')
@@ -56,7 +55,6 @@ function loadConfigFields() {
   sessionSummary.value = v.sd_session_summary || 'session-summary.md'
   sceneExtractionsDir.value = v.sd_scene_extractions_dir || 'scene_extractions_new'
   narrationDir.value = v.sd_narration_dir || 'narration'
-  roleplaySummary.value = v.sd_roleplay_summary || ''
   party.value = v.sd_party || ''
   voiceDir.value = v.sd_voice_dir || v.session_doc_voice_dir || ''
   examplesDir.value = v.sd_examples_dir || v.session_doc_examples_dir || ''
@@ -100,7 +98,6 @@ async function applyConfig() {
     session_summary: resolvePath(sessionSummary.value) || undefined,
     scene_extractions_dir: resolvePath(sceneExtractionsDir.value) || undefined,
     narration_dir: resolvePath(narrationDir.value) || undefined,
-    roleplay_summary: resolvePath(roleplaySummary.value) || undefined,
     party: resolvePath(party.value) || undefined,
     voice_dir: resolvePath(voiceDir.value) || undefined,
     examples: resolvePath(examplesDir.value) || undefined,
@@ -137,11 +134,9 @@ const editorMode = ref<'quotes' | 'editor'>('quotes')
 const scenes = ref<Scene[]>([])
 const currentScene = ref<number | null>(null)
 const extractionContent = ref('')
-const roleplayContent = ref('')
 const sceneLabel = ref('')
 const estimatedTokens = ref<number | null>(null)
 const hasExtraction = ref(false)
-const isRoleplayLocal = ref(false)
 const narrating = ref(false)
 const extracting = ref(false)
 const enhancing = ref(false)
@@ -282,12 +277,6 @@ async function loadEditorScene(n: number) {
   sceneLabel.value = data.scene_label || `Scene ${n}`
   estimatedTokens.value = data.estimated_tokens || null
 
-  const rpData = await apiFetch(`/api/editor/roleplay/${n}`).catch(() => ({
-    content: '', is_local: false, exists: false
-  }))
-  roleplayContent.value = rpData.content || ''
-  isRoleplayLocal.value = rpData.is_local || false
-
   try {
     await apiFetch(`/api/editor/output/${n}`)
   } catch { /* no output yet */ }
@@ -298,13 +287,6 @@ async function saveExtraction(content: string) {
   extractionContent.value = content
   await apiPut(`/api/editor/extraction/${currentScene.value}`, { content })
   await loadScenes()
-}
-
-async function saveRoleplay(content: string) {
-  if (currentScene.value === null) return
-  roleplayContent.value = content
-  await apiPut(`/api/editor/roleplay/${currentScene.value}`, { content })
-  isRoleplayLocal.value = true
 }
 
 async function reload() {
@@ -599,8 +581,6 @@ onMounted(async () => {
               help="vtt_roleplay_extractions/ — shown in the VTT panel for reference." />
             <PathField v-model="summaryExtractDir" label="Summary extractions directory"
               help="vtt_extractions/ — event context for narration." />
-            <PathField v-model="roleplaySummary" label="Roleplay summary"
-              help="session-roleplay.md — injected into narration if no per-scene roleplay exists." />
             <PathField v-model="party" label="Party document"
               help="party.md — backstory, personality, relationships." />
             <PathField v-model="voiceDir" label="Voice files directory"
@@ -746,7 +726,6 @@ onMounted(async () => {
         <div class="center-col">
           <ExtractionEditor
             :extraction-content="extractionContent"
-            :roleplay-content="roleplayContent"
             :enhanced-content="enhancedContent"
             :has-enhanced="hasEnhanced"
             :scene-label="sceneLabel"
@@ -754,7 +733,6 @@ onMounted(async () => {
             :default-narrate-tokens="narrateTokens"
             :has-extraction="hasExtraction"
             :current-scene="currentScene"
-            :is-roleplay-local="isRoleplayLocal"
             :narrating="narrating"
             :extracting="extracting"
             :prose-mode="proseMode"
@@ -762,12 +740,10 @@ onMounted(async () => {
             :use-enhanced-sections="useEnhancedSections"
             :reviewed="currentSceneReviewed"
             @save-extraction="saveExtraction"
-            @save-roleplay="saveRoleplay"
             @reload="reload"
             @narrate="narrate"
             @open-typora="openTypora"
             @update:extraction-content="extractionContent = $event"
-            @update:roleplay-content="roleplayContent = $event"
             @update:prose-mode="proseMode = $event; apiPut('/api/editor/config', { prose_mode: $event || undefined })"
             @update:reflections="reflections = $event; apiPut('/api/editor/config', { reflections: $event || undefined })"
             @update:use-enhanced-sections="useEnhancedSections = $event"

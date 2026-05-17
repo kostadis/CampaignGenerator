@@ -59,10 +59,10 @@ class TestSessionDocCoercion:
 
 class TestVttSummaryCoercion:
     def test_empty_strings_normalize_to_none(self):
-        s = VttSummarySection(input="", output=" ", roleplay_output="x.md")
+        s = VttSummarySection(input="", output=" ", extract_dir="x")
         assert s.input is None
         assert s.output is None
-        assert s.roleplay_output == "x.md"
+        assert s.extract_dir == "x"
 
 
 class TestUIState:

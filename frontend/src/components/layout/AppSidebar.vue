@@ -60,7 +60,6 @@ const navGroups: NavGroup[] = [
     title: 'LEGACY',
     items: [
       { label: 'VTT Summary', path: '/workflow/vtt' },
-      { label: 'Scene Extraction', path: '/workflow/extract' },
     ],
   },
 ]

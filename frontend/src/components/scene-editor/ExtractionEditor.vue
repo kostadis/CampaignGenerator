@@ -6,14 +6,12 @@ const REVIEW_BANNER_KEY = 'cg_scene_review_banner_dismissed'
 
 const props = defineProps<{
   extractionContent: string
-  roleplayContent: string
   enhancedContent: string
   sceneLabel: string
   estimatedTokens: number | null
   defaultNarrateTokens: number
   hasExtraction: boolean
   hasEnhanced: boolean
-  isRoleplayLocal: boolean
   narrating: boolean
   extracting: boolean
   proseMode: boolean
@@ -25,12 +23,10 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'save-extraction': [content: string]
-  'save-roleplay': [content: string]
   'reload': []
   'narrate': []
   'open-typora': [type: string]
   'update:extractionContent': [content: string]
-  'update:roleplayContent': [content: string]
   'update:proseMode': [value: boolean]
   'update:reflections': [value: boolean]
   'update:useEnhancedSections': [value: boolean]
@@ -38,7 +34,7 @@ const emit = defineEmits<{
   'load-enhanced': []
 }>()
 
-const activeTab = ref<'extraction' | 'roleplay' | 'enhanced'>('extraction')
+const activeTab = ref<'extraction' | 'enhanced'>('extraction')
 const saveFlash = ref(false)
 const reviewBannerDismissed = ref(false)
 
@@ -84,17 +80,14 @@ function flash() {
 }
 
 function save() {
-  if (activeTab.value === 'roleplay') {
-    emit('save-roleplay', props.roleplayContent)
-  } else if (activeTab.value === 'extraction') {
+  if (activeTab.value === 'extraction') {
     emit('save-extraction', props.extractionContent)
   }
   flash()
 }
 
 function openTypora() {
-  const type = activeTab.value === 'roleplay' ? 'roleplay' : 'extraction'
-  emit('open-typora', type)
+  emit('open-typora', 'extraction')
 }
 
 // ── Diff vs. last run ───────────────────────────────────────────────────
@@ -198,14 +191,6 @@ async function toggleDiff() {
       >Extraction</div>
       <div
         class="tab"
-        :class="{ active: activeTab === 'roleplay' }"
-        @click="activeTab = 'roleplay'"
-      >
-        Roleplay Context
-        <span v-if="isRoleplayLocal" class="tab-badge">edited</span>
-      </div>
-      <div
-        class="tab"
         :class="{ active: activeTab === 'enhanced' }"
         @click="activeTab = 'enhanced'; emit('load-enhanced')"
       >
@@ -260,17 +245,6 @@ async function toggleDiff() {
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Roleplay pane -->
-    <div class="editor-pane" :class="{ hidden: activeTab !== 'roleplay' }">
-      <textarea
-        class="editor-ta"
-        :value="roleplayContent"
-        @input="emit('update:roleplayContent', ($event.target as HTMLTextAreaElement).value)"
-        placeholder="No roleplay summary loaded."
-        spellcheck="false"
-      />
     </div>
 
     <!-- Enhanced / Session Notes pane (read-only) -->

@@ -1037,7 +1037,6 @@ def build_char_extract_prompt(section: dict,
 
 def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
                           party: str | None, handoff: str, roster: str = "",
-                          roleplay_summary: str | None = None,
                           scene_text: str | None = None,
                           context_docs: list[str] | None = None,
                           prev_narrator: str | None = None,
@@ -1072,16 +1071,6 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
             f"that the narration must cover. The character's Roleplay Moments (below) "
             f"provide verbatim quotes and character-specific beats to weave in.\n\n"
             f"{scene_text.strip()}"
-        )
-    if roleplay_summary:
-        parts.append(
-            f"## Session Roleplay Summary\n\n"
-            f"This document covers the full session — use it for voice and style reference only.\n"
-            f"- **Character Voices**: match the speech patterns and register shown here\n"
-            f"- **Voice Keeper Notes**: let PC emotional states and NPC patterns shape the prose\n\n"
-            f"The dialogue to include in this scene comes exclusively from "
-            f"## {narrator}'s Roleplay Moments below — not from this document.\n\n"
-            f"{roleplay_summary.strip()}"
         )
     if (prev_narrator and prev_voice_sample
             and prev_narrator.lower() != narrator.lower()):
@@ -1149,10 +1138,6 @@ def main() -> None:
                         help="Directory of per-character voice files written by players. "
                              "Name files {character}_voice.md or {character}.md. "
                              "Each file is injected only into that character's narration pass.")
-    parser.add_argument("--roleplay-summary", metavar="FILE",
-                        help="Synthesised roleplay highlights document (session-roleplay.md). "
-                             "Injected into every narration pass: character voices with actual "
-                             "quotes, verbatim memorable exchanges, and Voice Keeper Notes.")
     parser.add_argument("--narrator", metavar="NAME",
                         help="Generate narration for one character only (skips passes 1–2, "
                              "runs the plan, then extracts and narrates the named character). "
@@ -1368,15 +1353,6 @@ def main() -> None:
                       f"({', '.join(voice_files.keys())})")
         else:
             print(f"  Warning: voice-dir not found: {vd}", file=sys.stderr)
-
-    roleplay_summary: str | None = None
-    if args.roleplay_summary:
-        _p = Path(args.roleplay_summary).expanduser()
-        if not _p.exists():
-            print(f"Error: --roleplay-summary file not found: {_p}", file=sys.stderr)
-            sys.exit(1)
-        roleplay_summary = _p.read_text(encoding="utf-8")
-        print(f"  Roleplay summary: {_p.name} ({len(roleplay_summary):,} chars)")
 
     characters = (
         [c.strip() for c in args.characters.split(",") if c.strip()]
@@ -1867,7 +1843,6 @@ def main() -> None:
         extras = [x for x in ["voice notes" if voice_note else "",
                                "per-char examples" if char_examples else "",
                                "prev-narrator contrast" if prev_voice_sample else "",
-                               "roleplay summary" if roleplay_summary else "",
                                "enhanced context" if (scene_events_str or narrate_context) else ""] if x]
         print(f"[Pass 5 scene {i}: Narrate — {label}"
               f"{' (' + ', '.join(extras) + ')' if extras else ''}]")
@@ -1886,7 +1861,7 @@ def main() -> None:
             genre=args.narration_genre,
         )
         narrate_prompt = build_narrate_prompt(narrator, focus, char_moments, party, handoff,
-                                              roster, roleplay_summary,
+                                              roster,
                                               scene_text=scene_events_str or None,
                                               context_docs=narrate_context,
                                               prev_narrator=prev_narrator,

@@ -1,12 +1,10 @@
-"""Session workflow API routes — VTT summary and scene extraction subprocess streaming."""
+"""Session workflow API routes — VTT summary subprocess streaming."""
 
-import sys
 from pathlib import Path
 
 from fastapi import APIRouter, Query
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 
-from server.config import load_ui_config
 from server.subprocess_runner import python_exe, stream_subprocess
 
 router = APIRouter()
@@ -50,7 +48,6 @@ async def run_vtt_summary(
     session_dir: str = "",
     vtt_input: str = "",
     output: str = "",
-    roleplay_output: str = "",
     date: str = "",
     session_name: str = "",
     context: list[str] = Query(default=[]),
@@ -69,7 +66,6 @@ async def run_vtt_summary(
     _cmd_opt(cmd, "--output", _resolve_session_path(output, session_dir))
     _cmd_opt(cmd, "--date", date.strip())
     _cmd_opt(cmd, "--session-name", session_name.strip())
-    _cmd_opt(cmd, "--roleplay-output", _resolve_session_path(roleplay_output, session_dir))
 
     for ctx in context:
         if ctx.strip():
@@ -96,138 +92,3 @@ async def run_vtt_summary(
     )
 
 
-# ── Scene Extraction (two-phase) ─────────────────────────────────────────────
-#
-# Phase 1: /run/generate-plan  — runs Passes 1-3, saves plan.md, stops at the
-#           Pass 3 checkpoint.  The user reviews plan.md before continuing.
-#
-# Phase 2: /run/scene-extraction — runs Pass 4 using the reviewed plan.
-#           Requires --plan-file so the checkpoint does not fire.
-#
-# Helper: /plan — returns plan.md content for display in the UI.
-
-
-def _shared_session_doc_opts(
-    cmd: list[str],
-    summary_dir: str,
-    session_summary: str,
-    roleplay_summary: str,
-    characters: str,
-    party: str,
-    voice_dir: str,
-    examples_dir: str,
-    campaign_state: str,
-    world_state: str,
-    context: list[str],
-    session_name: str,
-) -> None:
-    """Append optional flags shared by both session_doc endpoints."""
-    _cmd_opt(cmd, "--summary-extract-dir", summary_dir)
-    _cmd_opt(cmd, "--session-summary", session_summary)
-    _cmd_opt(cmd, "--roleplay-summary", roleplay_summary)
-    _cmd_opt(cmd, "--characters", characters.strip())
-    _cmd_opt(cmd, "--party", party)
-    _cmd_opt(cmd, "--voice-dir", voice_dir)
-    _cmd_opt(cmd, "--examples", examples_dir)
-    for ctx in [campaign_state, world_state] + list(context):
-        if ctx and ctx.strip():
-            cmd += ["--context", ctx.strip()]
-    _cmd_opt(cmd, "--session-name", session_name.strip())
-
-
-@router.get("/run/generate-plan")
-async def run_generate_plan(
-    session: str = "",
-    roleplay_dir: str = "",
-    extract_dir: str = "",
-    summary_dir: str = "",
-    session_summary: str = "",
-    roleplay_summary: str = "",
-    characters: str = "",
-    party: str = "",
-    voice_dir: str = "",
-    examples_dir: str = "",
-    campaign_state: str = "",
-    world_state: str = "",
-    context: list[str] = Query(default=[]),
-    session_name: str = "",
-    model: str = "claude-sonnet-4-6",
-):
-    """Run Passes 1-3 (plan generation).  Stops at the Pass 3 checkpoint so
-    the user can review plan.md before extraction begins."""
-    cmd = [
-        python_exe(), str(SCRIPT_DIR / "session_doc.py"),
-        session,
-        "--roleplay-extract-dir", roleplay_dir,
-        "--by-scene",
-        "--extract-dir", extract_dir,
-        # No --plan-file and no --no-plan-review → checkpoint fires after Pass 3
-        "--output", "/dev/null",
-        "--model", model,
-    ]
-    _shared_session_doc_opts(
-        cmd, summary_dir, session_summary, roleplay_summary,
-        characters, party, voice_dir, examples_dir,
-        campaign_state, world_state, list(context), session_name,
-    )
-    return StreamingResponse(
-        stream_subprocess(cmd, cwd=str(Path.cwd())),
-        media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-    )
-
-
-@router.get("/run/scene-extraction")
-async def run_scene_extraction(
-    session: str = "",
-    roleplay_dir: str = "",
-    extract_dir: str = "",
-    plan_file: str = "",
-    summary_dir: str = "",
-    session_summary: str = "",
-    roleplay_summary: str = "",
-    characters: str = "",
-    party: str = "",
-    voice_dir: str = "",
-    examples_dir: str = "",
-    campaign_state: str = "",
-    world_state: str = "",
-    context: list[str] = Query(default=[]),
-    session_name: str = "",
-    model: str = "claude-sonnet-4-6",
-):
-    """Run Pass 4 (per-scene extraction) from a human-reviewed plan.
-    Derives plan_file from extract_dir/plan.md if not provided."""
-    resolved_plan = plan_file.strip() or str(Path(extract_dir) / "plan.md")
-    cmd = [
-        python_exe(), str(SCRIPT_DIR / "session_doc.py"),
-        session,
-        "--roleplay-extract-dir", roleplay_dir,
-        "--by-scene",
-        "--extract-dir", extract_dir,
-        "--plan-file", resolved_plan,  # human-reviewed plan → checkpoint skipped
-        "--extract-only",
-        "--output", "/dev/null",
-        "--model", model,
-    ]
-    _shared_session_doc_opts(
-        cmd, summary_dir, session_summary, roleplay_summary,
-        characters, party, voice_dir, examples_dir,
-        campaign_state, world_state, list(context), session_name,
-    )
-    return StreamingResponse(
-        stream_subprocess(cmd, cwd=str(Path.cwd())),
-        media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-    )
-
-
-@router.get("/plan")
-async def get_plan(extract_dir: str = ""):
-    """Return the content of plan.md from the given extract_dir."""
-    if not extract_dir.strip():
-        return JSONResponse({"ok": False, "content": ""})
-    plan_path = Path(extract_dir) / "plan.md"
-    if not plan_path.exists():
-        return JSONResponse({"ok": False, "content": ""})
-    return JSONResponse({"ok": True, "content": plan_path.read_text(encoding="utf-8")})

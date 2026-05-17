@@ -69,44 +69,21 @@ def fake_stream_api(monkeypatch):
     return fake
 
 
-def test_extract_only_skips_both_synthesize_passes(monkeypatch, fake_stream_api, tmp_path, capsys):
-    vtt_file = tmp_path / "session.vtt"
-    vtt_file.write_text(SAMPLE_VTT, encoding="utf-8")
-    output = tmp_path / "summary.md"
-    extract_dir = tmp_path / "extractions"
-
-    monkeypatch.setattr(sys, "argv", [
-        "vtt_summary.py", str(vtt_file),
-        "--output", str(output),
-        "--extract-dir", str(extract_dir),
-        "--extract-only",
-        "--no-log",
-    ])
-    vtt_summary.main()
-
-    assert len(fake_stream_api.calls) == 1  # summary extract only; no synthesize
-    assert not output.exists()
-    assert any(extract_dir.glob("extract_*.md"))
-
-    stdout = capsys.readouterr().out
-    assert "Extract-only mode" in stdout
-    assert "--synthesize-only" in stdout
-
-
-def test_extract_only_with_roleplay_runs_both_extract_passes(
+def test_extract_only_runs_both_extract_passes(
     monkeypatch, fake_stream_api, tmp_path, capsys
 ):
+    """`--extract-only` now runs the roleplay extract pass unconditionally
+    (no `--roleplay-output` gate). Verifies vtt_roleplay_extractions/ is
+    populated for downstream quote_ledger / enhance_recap consumers."""
     vtt_file = tmp_path / "session.vtt"
     vtt_file.write_text(SAMPLE_VTT, encoding="utf-8")
     output = tmp_path / "summary.md"
-    roleplay_output = tmp_path / "roleplay.md"
     extract_dir = tmp_path / "extractions"
     roleplay_extract_dir = tmp_path / "roleplay_extractions"
 
     monkeypatch.setattr(sys, "argv", [
         "vtt_summary.py", str(vtt_file),
         "--output", str(output),
-        "--roleplay-output", str(roleplay_output),
         "--extract-dir", str(extract_dir),
         "--roleplay-extract-dir", str(roleplay_extract_dir),
         "--extract-only",
@@ -117,49 +94,31 @@ def test_extract_only_with_roleplay_runs_both_extract_passes(
     # Summary extract + roleplay extract; no synthesize calls.
     assert len(fake_stream_api.calls) == 2
     assert not output.exists()
-    assert not roleplay_output.exists()
     assert any(extract_dir.glob("extract_*.md"))
     assert any(roleplay_extract_dir.glob("extract_*.md"))
 
 
-def test_default_run_calls_extract_and_synthesize(monkeypatch, fake_stream_api, tmp_path):
+def test_default_run_calls_three_passes(monkeypatch, fake_stream_api, tmp_path):
+    """Default flow now runs three passes: summary extract, summary synth,
+    roleplay extract (unconditional). The old roleplay synth pass is gone
+    along with --roleplay-output."""
     vtt_file = tmp_path / "session.vtt"
     vtt_file.write_text(SAMPLE_VTT, encoding="utf-8")
     output = tmp_path / "summary.md"
-    extract_dir = tmp_path / "extractions"
-
-    monkeypatch.setattr(sys, "argv", [
-        "vtt_summary.py", str(vtt_file),
-        "--output", str(output),
-        "--extract-dir", str(extract_dir),
-        "--no-log",
-    ])
-    vtt_summary.main()
-
-    # 1 summary extract + 1 summary synthesize; no roleplay output requested.
-    assert len(fake_stream_api.calls) == 2
-    assert output.exists()
-
-
-def test_default_run_with_roleplay_calls_four_passes(monkeypatch, fake_stream_api, tmp_path):
-    vtt_file = tmp_path / "session.vtt"
-    vtt_file.write_text(SAMPLE_VTT, encoding="utf-8")
-    output = tmp_path / "summary.md"
-    roleplay_output = tmp_path / "roleplay.md"
     extract_dir = tmp_path / "extractions"
     roleplay_extract_dir = tmp_path / "roleplay_extractions"
 
     monkeypatch.setattr(sys, "argv", [
         "vtt_summary.py", str(vtt_file),
         "--output", str(output),
-        "--roleplay-output", str(roleplay_output),
         "--extract-dir", str(extract_dir),
         "--roleplay-extract-dir", str(roleplay_extract_dir),
         "--no-log",
     ])
     vtt_summary.main()
 
-    # summary extract, summary synthesize, roleplay extract, roleplay synthesize
-    assert len(fake_stream_api.calls) == 4
+    # summary extract, summary synthesize, roleplay extract.
+    assert len(fake_stream_api.calls) == 3
     assert output.exists()
-    assert roleplay_output.exists()
+    assert any(extract_dir.glob("extract_*.md"))
+    assert any(roleplay_extract_dir.glob("extract_*.md"))

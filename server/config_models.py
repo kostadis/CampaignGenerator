@@ -54,7 +54,6 @@ class SessionDocSection(BaseModel):
     session_summary: OptStr = None
     scene_extractions_dir: OptStr = None
     narration_dir: OptStr = None
-    roleplay_summary: OptStr = None
     party: OptStr = None
     voice_dir: OptStr = None
     examples_dir: OptStr = None
@@ -77,16 +76,14 @@ class VttSummarySection(BaseModel):
 
     input: OptStr = None
     output: OptStr = None
-    roleplay_output: OptStr = None
     context: list[str] = Field(default_factory=list)
     date: OptStr = None
     session_name: OptStr = None
     extract_dir: OptStr = None
     reference_summaries: OptStr = None
     # Set by the workflow router after a successful run so future page loads
-    # see the produced paths without a manual save (fixes VttSummary.vue:70-71).
+    # see the produced path without a manual save (fixes VttSummary.vue:70-71).
     session_summary: OptStr = None
-    roleplay_summary: OptStr = None
 
 
 class GroundingSection(BaseModel):

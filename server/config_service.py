@@ -65,7 +65,6 @@ _PATH_FIELDS: dict[str, dict[str, str]] = {
         "session_summary": "session",
         "scene_extractions_dir": "session",
         "narration_dir": "session",
-        "roleplay_summary": "session",
         "party": "campaign",
         "voice_dir": "campaign",
         "examples_dir": "campaign",
@@ -73,10 +72,8 @@ _PATH_FIELDS: dict[str, dict[str, str]] = {
     "vtt_summary": {
         "input": "session",
         "output": "session",
-        "roleplay_output": "session",
         "extract_dir": "session",
         "session_summary": "session",
-        "roleplay_summary": "session",
     },
     "grounding": {"summaries": "campaign"},
 }

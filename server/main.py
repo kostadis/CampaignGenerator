@@ -93,7 +93,6 @@ def _boot_overrides_from_args(args) -> dict:
         "output_dir": "session_doc.output_dir",
         "summary_extract_dir": "session_doc.summary_dir",
         "session_summary": "session_doc.session_summary",
-        "roleplay_summary": "session_doc.roleplay_summary",
         "party": "session_doc.party",
         "voice_dir": "session_doc.voice_dir",
         "examples": "session_doc.examples_dir",
@@ -133,7 +132,6 @@ def main() -> None:
     parser.add_argument("--voice-dir", metavar="DIR")
     parser.add_argument("--summary-extract-dir", metavar="DIR")
     parser.add_argument("--session-summary", metavar="FILE")
-    parser.add_argument("--roleplay-summary", metavar="FILE")
     parser.add_argument("--context", nargs="+", metavar="FILE")
     parser.add_argument("--characters", metavar="NAMES")
     parser.add_argument("--examples", metavar="DIR")
@@ -162,8 +160,6 @@ def main() -> None:
             args.output_dir = derived.get("output_dir", "")
         if not args.session_summary and derived.get("session_summary"):
             args.session_summary = derived["session_summary"]
-        if not args.roleplay_summary and derived.get("roleplay_summary"):
-            args.roleplay_summary = derived["roleplay_summary"]
         if not args.party and derived.get("party"):
             args.party = derived["party"]
         if not args.voice_dir and derived.get("voice_dir"):
@@ -196,7 +192,6 @@ def main() -> None:
         "voice_dir": _resolve(args.voice_dir),
         "summary_extract_dir": _resolve(args.summary_extract_dir),
         "session_summary": _resolve(args.session_summary),
-        "roleplay_summary": _resolve(args.roleplay_summary),
         "context": [str(Path(f).expanduser().resolve()) for f in args.context] if args.context else [],
         "characters": args.characters,
         "examples": _resolve(args.examples),

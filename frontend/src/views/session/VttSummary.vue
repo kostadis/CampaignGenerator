@@ -15,7 +15,6 @@ const vttSessionName = ref('')
 const vttContext = ref('')
 const referenceSummaries = ref('')
 const vttOutput = ref('')
-const roleplayOutput = ref('')
 const synthOnly = ref(false)
 const extractDir = ref('')
 const noLog = ref(false)
@@ -28,7 +27,6 @@ function loadFromConfig() {
   vttSessionName.value = v.vtt_session_name || ''
   vttContext.value = v.vtt_context || ''
   vttOutput.value = v.vtt_output || ''
-  roleplayOutput.value = v.vtt_roleplay_output || ''
   extractDir.value = v.vtt_extract_dir || ''
 
   // Build reference summaries from GM recap + any existing
@@ -54,7 +52,6 @@ const ready = computed(() => {
 const runParams = computed(() => ({
   vtt_input: resolvePath(vttInput.value),
   output: resolvePath(vttOutput.value),
-  roleplay_output: resolvePath(roleplayOutput.value),
   date: vttDate.value,
   session_name: vttSessionName.value,
   context: contextFiles.value,
@@ -68,21 +65,16 @@ const runParams = computed(() => ({
 async function onDone(rc: number) {
   if (rc !== 0) return
   const sessionSummary = resolvePath(vttOutput.value)
-  const roleplaySummary = resolvePath(roleplayOutput.value)
   // Mirror into the legacy overlay so any unmigrated view that reads
-  // ``config.values.sd_*`` sees the new paths immediately.
+  // ``config.values.sd_*`` sees the new path immediately.
   config.values.sd_session_summary = sessionSummary
-  config.values.sd_roleplay_summary = roleplaySummary
-  // Persist to the typed section so the value survives a server restart
-  // (was the original VttSummary.vue:70-71 bug — values disappeared
-  // unless the user later toggled Batch or saved Settings).
+  // Persist to the typed section so the value survives a server restart.
   try {
     await config.updateSection('session_doc', {
       session_summary: sessionSummary,
-      roleplay_summary: roleplaySummary,
     })
   } catch {
-    /* non-fatal: legacy overlay still holds the values for this session */
+    /* non-fatal: legacy overlay still holds the value for this session */
   }
 }
 
@@ -149,12 +141,6 @@ onMounted(() => {
           required
           is-output
           help="The structured session summary. Auto-filled as <session_dir>/session-summary.md."
-        />
-        <PathField
-          v-model="roleplayOutput"
-          label="Roleplay highlights output"
-          is-output
-          help="Character voices and memorable exchanges. Required by Session Doc."
         />
       </div>
 

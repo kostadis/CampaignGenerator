@@ -1106,15 +1106,6 @@ def test_build_narrate_prompt_includes_roster():
     assert "Tortle Druid 5" in result
 
 
-def test_build_narrate_prompt_includes_roleplay_summary():
-    result = session_doc.build_narrate_prompt(
-        narrator="Soma", focus="focus", char_moments="moments",
-        party=None, handoff="", roleplay_summary="Great roleplay here."
-    )
-    assert "Session Roleplay Summary" in result
-    assert "Great roleplay here." in result
-
-
 # ── session_doc.build_char_extract_prompt — recap context ───────────────────
 
 def test_scene_mode_includes_recap_context():

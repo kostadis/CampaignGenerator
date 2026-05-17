@@ -186,16 +186,12 @@ def derive_campaign_paths(campaign_dir: str, session_dir: str) -> dict:
             result["gm_recap"] = str(candidate)
             break
 
-    # Auto-detect session summary and roleplay summary
+    # Auto-detect session summary
     for name in ("session-summary.md", "session-clean.md", "session_summary.md"):
         candidate = sd / name
         if candidate.exists():
             result["session_summary"] = str(candidate)
             break
-
-    rp = sd / "session-roleplay.md"
-    if rp.exists():
-        result["roleplay_summary"] = str(rp)
 
     return result
 

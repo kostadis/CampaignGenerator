@@ -126,7 +126,6 @@ async function deriveAll() {
     Object.assign(config.values, {
       // Session-level (relative — resolvePath adds session_dir prefix)
       vtt_output: 'session-summary.md',
-      vtt_roleplay_output: 'session-roleplay.md',
       sd_extract_dir: 'scene_extractions',
       sd_roleplay_dir: 'vtt_roleplay_extractions',
       sd_summary_dir: 'vtt_extractions',
@@ -147,8 +146,6 @@ async function deriveAll() {
 
     if (d.session_summary)
       config.values.sd_session_summary = stripPrefix(d.session_summary, sd)
-    if (d.roleplay_summary)
-      config.values.sd_roleplay_summary = stripPrefix(d.roleplay_summary, sd)
 
     saveToConfig()
   } catch (e) {

@@ -24,11 +24,6 @@ const routes = [
         component: () => import('./views/session/VttSummary.vue'),
       },
       {
-        path: 'extract',
-        name: 'scene-extraction',
-        component: () => import('./views/session/SceneExtraction.vue'),
-      },
-      {
         path: 'editor',
         name: 'editor',
         component: () => import('./views/session/SessionDocEditor.vue'),

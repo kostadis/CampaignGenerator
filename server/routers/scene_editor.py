@@ -9,9 +9,10 @@ Drives the four-stage pipeline:
    per scene (`session_doc_scene_NN_<slug>.md`) under `narration_dir`.
 4. Stage 4 — `assemble.py` concatenates the narrations into the final doc.
 
-Backwards compat: when the new CONFIG keys (`scene_extractions_dir`,
-`narration_dir`, `session_summary`, `vtt`) are absent the editor falls
-back to the old-flow keys (`extract_dir`, `output_dir`, `roleplay_extract_dir`).
+`roleplay_extract_dir` (typed `roleplay_dir`) points at the kept
+`vtt_roleplay_extractions/` directory produced by `vtt_summary.py` — it
+feeds the VTT panel and the quote ledger. It is NOT the deleted
+`session-roleplay.md` synthesised-summary chain.
 """
 
 import re
@@ -351,13 +352,6 @@ def _reviewed_for_path(ext_path: Path | None) -> bool:
     return ext_path.with_name(ext_path.name + ".reviewed").exists()
 
 
-def _get_roleplay_path(n: int) -> Path | None:
-    ext_path = _get_extraction_path(n)
-    if ext_path is None:
-        return None
-    return ext_path.with_name(ext_path.stem + "_roleplay.md")
-
-
 def _open_in_typora(filepath: Path) -> None:
     try:
         win = subprocess.check_output(
@@ -457,39 +451,8 @@ def _build_reextract_cmd(batch: bool = False,
     return cmd
 
 
-def _build_extract_cmd_old() -> list[str]:
-    """Old-flow extract command (Pass 1–4 to extract_dir). Kept for back-compat."""
-    cmd = [
-        python_exe(),
-        str(SCRIPT_DIR / "session_doc.py"),
-        CONFIG["session"],
-        "--roleplay-extract-dir", CONFIG["roleplay_extract_dir"],
-        "--by-scene",
-        "--extract-dir", CONFIG["extract_dir"],
-        "--extract-only",
-        "--output", "/dev/null",
-    ]
-    for flag, key in [("--party", "party"), ("--voice-dir", "voice_dir"),
-                      ("--summary-extract-dir", "summary_extract_dir"),
-                      ("--session-summary", "session_summary"),
-                      ("--characters", "characters")]:
-        if CONFIG.get(key):
-            cmd += [flag, CONFIG[key]]
-    for ctx in CONFIG.get("context") or []:
-        cmd += ["--context", ctx]
-    if CONFIG.get("examples"):
-        cmd += ["--examples", CONFIG["examples"]]
-    return cmd
-
-
 def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
-    """Stage 3: session_doc.py --scene-extractions ... --per-scene-output ... --scene N.
-
-    Falls back to the old-flow command when new keys aren't configured.
-    """
-    if not _using_new_flow():
-        return _build_narrate_cmd_old(scene_num)
-
+    """Stage 3: session_doc.py --scene-extractions ... --per-scene-output ... --scene N."""
     summary = _session_summary_path()
     if summary is None or not summary.exists():
         return None, "session-summary.md not found — run Stage 1 first"
@@ -514,8 +477,6 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
                       ("--examples", "examples_dir")]:
         if CONFIG.get(key):
             cmd += [flag, CONFIG[key]]
-    if CONFIG.get("roleplay_summary"):
-        cmd += ["--roleplay-summary", CONFIG["roleplay_summary"]]
     if CONFIG.get("narrate_tokens"):
         cmd += ["--narrate-tokens", str(CONFIG["narrate_tokens"])]
     if CONFIG.get("prose_mode"):
@@ -534,43 +495,6 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
     plan_path = nd / "plan.md"
     if plan_path.exists():
         cmd += ["--plan-file", str(plan_path)]
-    return cmd
-
-
-def _build_narrate_cmd_old(scene_num: int) -> list[str]:
-    cmd = [
-        python_exe(),
-        str(SCRIPT_DIR / "session_doc.py"),
-        CONFIG["session"],
-        "--roleplay-extract-dir", CONFIG["roleplay_extract_dir"],
-        "--by-scene",
-        "--from-extractions", CONFIG["extract_dir"],
-        "--scene", str(scene_num),
-        "--output", str(Path(CONFIG["output_dir"]) / f"scene{scene_num}.md"),
-    ]
-    for flag, key in [("--party", "party"), ("--voice-dir", "voice_dir"),
-                      ("--summary-extract-dir", "summary_extract_dir"),
-                      ("--examples", "examples_dir")]:
-        if CONFIG.get(key):
-            cmd += [flag, CONFIG[key]]
-    local_rp = _get_roleplay_path(scene_num)
-    if local_rp and local_rp.exists():
-        cmd += ["--roleplay-summary", str(local_rp)]
-    elif CONFIG.get("roleplay_summary"):
-        cmd += ["--roleplay-summary", CONFIG["roleplay_summary"]]
-    if CONFIG.get("narrate_tokens"):
-        cmd += ["--narrate-tokens", str(CONFIG["narrate_tokens"])]
-    if CONFIG.get("prose_mode"):
-        cmd += ["--prose-mode"]
-    if CONFIG.get("reflections"):
-        cmd += ["--reflections"]
-    for ctx in CONFIG.get("context") or []:
-        if ctx:
-            cmd += ["--context", ctx]
-    if CONFIG.get("use_enhanced_sections", True) and CONFIG.get("extract_dir"):
-        enhanced_path = Path(CONFIG["extract_dir"]) / "enhanced_sections.md"
-        if enhanced_path.exists():
-            cmd += ["--enhanced-sections", str(enhanced_path)]
     return cmd
 
 
@@ -677,31 +601,6 @@ async def api_set_reviewed(n: int, request: Request):
     return {"ok": True, "reviewed": marker.exists()}
 
 
-@router.get("/roleplay/{n}")
-def api_get_roleplay(n: int):
-    local_path = _get_roleplay_path(n)
-    if local_path is None:
-        return JSONResponse({"exists": False, "content": "", "is_local": False}, status_code=404)
-    if local_path.exists():
-        return {"exists": True, "content": local_path.read_text(encoding="utf-8"),
-                "is_local": True}
-    global_path = CONFIG.get("roleplay_summary")
-    if global_path and Path(global_path).exists():
-        return {"exists": True, "content": Path(global_path).read_text(encoding="utf-8"),
-                "is_local": False}
-    return {"exists": False, "content": "", "is_local": False}
-
-
-@router.put("/roleplay/{n}")
-async def api_save_roleplay(n: int, request: Request):
-    local_path = _get_roleplay_path(n)
-    if local_path is None:
-        return JSONResponse({"ok": False}, status_code=404)
-    data = await request.json()
-    local_path.write_text(data["content"], encoding="utf-8")
-    return {"ok": True}
-
-
 @router.get("/output/{n}")
 def api_get_output(n: int):
     if _using_new_flow():
@@ -768,16 +667,12 @@ async def api_extract(batch: int = 0, force: int = 0):
     Pass-1-to-4 command (no batch / no force support) when the workspace
     is on the legacy flow.
     """
-    if _using_new_flow() or _session_summary_path() and _session_summary_path().exists():
-        result = _build_reextract_cmd(batch=bool(batch), force=bool(force))
-        if isinstance(result, tuple):
-            _, err = result
-            return JSONResponse({"ok": False, "error": err}, status_code=400)
-        cmd = result
-    else:
-        cmd = _build_extract_cmd_old()
+    result = _build_reextract_cmd(batch=bool(batch), force=bool(force))
+    if isinstance(result, tuple):
+        _, err = result
+        return JSONResponse({"ok": False, "error": err}, status_code=400)
     return StreamingResponse(
-        stream_subprocess(cmd, cwd=CONFIG.get("work_dir")),
+        stream_subprocess(result, cwd=CONFIG.get("work_dir")),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
@@ -969,12 +864,6 @@ def _api_assemble_old():
 def api_open(file_type: str, n: int):
     if file_type == "extraction":
         path = _get_extraction_path(n)
-    elif file_type == "roleplay":
-        path = _get_roleplay_path(n)
-        if path and not path.exists():
-            global_path = CONFIG.get("roleplay_summary")
-            content = Path(global_path).read_text(encoding="utf-8") if global_path and Path(global_path).exists() else ""
-            path.write_text(content, encoding="utf-8")
     elif file_type == "output" or file_type == "narration":
         if _using_new_flow():
             path = _narration_file_for_scene(n)
