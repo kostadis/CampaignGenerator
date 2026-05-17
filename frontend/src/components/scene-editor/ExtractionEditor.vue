@@ -14,6 +14,7 @@ const props = defineProps<{
   hasEnhanced: boolean
   narrating: boolean
   extracting: boolean
+  scrubbing: boolean
   proseMode: boolean
   reflections: boolean
   useEnhancedSections: boolean
@@ -25,6 +26,7 @@ const emit = defineEmits<{
   'save-extraction': [content: string]
   'reload': []
   'narrate': []
+  'scrub': []
   'open-typora': [type: string]
   'update:extractionContent': [content: string]
   'update:proseMode': [value: boolean]
@@ -275,6 +277,12 @@ async function toggleDiff() {
         :disabled="!hasExtraction || narrating || extracting"
         @click="emit('narrate')"
       >{{ narrating ? 'Narrating\u2026' : 'Narrate' }}</button>
+      <button
+        class="btn-success"
+        :disabled="scrubbing || narrating"
+        @click="emit('scrub')"
+        :title="'Second-pass mechanical scrub on this scene\u2019s narration; writes a .scrubbed.md sibling.'"
+      >{{ scrubbing ? 'Scrubbing\u2026' : 'Scrub' }}</button>
       <label class="prose-toggle" :title="'Strip mechanical language and GM framing from narration'">
         <input type="checkbox" :checked="proseMode"
           @change="emit('update:proseMode', ($event.target as HTMLInputElement).checked)" />

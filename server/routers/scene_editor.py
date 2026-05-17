@@ -498,6 +498,23 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
     return cmd
 
 
+def _llm_env() -> dict[str, str]:
+    """Translate the typed backend choice into env vars campaignlib.make_client honors.
+
+    Returned dict is merged into the subprocess env by stream_subprocess.
+    Empty dict (backend == "anthropic") means "no overrides — Anthropic API
+    via the default code path". Only narrate + scrub routes call this; the
+    Stage 1/2/Plan routes pass nothing because their LLM paths use tool-use
+    and the OpenAI-compat adapter does not support tools.
+    """
+    if CONFIG.get("backend") != "dgx":
+        return {}
+    return {
+        "DGX_ENDPOINT": CONFIG.get("dgx_endpoint") or "http://localhost:8000",
+        "DGX_MODEL": CONFIG.get("dgx_model") or "Qwen/Qwen2.5-14B-Instruct-AWQ",
+    }
+
+
 # ── Routes ──────────────────────────────────────────────────────────────────
 
 @router.get("/scenes")
@@ -685,7 +702,65 @@ async def api_narrate(n: int):
         _, err = result
         return JSONResponse({"ok": False, "error": err}, status_code=400)
     return StreamingResponse(
-        stream_subprocess(result, cwd=CONFIG.get("work_dir")),
+        stream_subprocess(result, cwd=CONFIG.get("work_dir"),
+                          env_extra=_llm_env()),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@router.get("/scrub/{n}")
+async def api_scrub(n: int):
+    """Scrub a single scene's narration.
+
+    Resolves the scene file server-side via `_narration_file_for_scene` so
+    `scrub_mechanics.py` needs no scene-aware CLI surface. Explicitly
+    refuses already-scrubbed files (the glob in `_narration_file_for_scene`
+    matches both `*.md` and `*.scrubbed.md`; today lexicographic order puts
+    the un-scrubbed source first but that's a fragile accident).
+    """
+    path = _narration_file_for_scene(n)
+    if path is None or not path.exists():
+        return JSONResponse(
+            {"ok": False, "error": f"no narration file for scene {n}"},
+            status_code=400,
+        )
+    if path.name.endswith(".scrubbed.md"):
+        return JSONResponse(
+            {"ok": False,
+             "error": f"refusing to scrub already-scrubbed file: {path.name}"},
+            status_code=400,
+        )
+    cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(path)]
+    if CONFIG.get("scrub_tokens"):
+        cmd += ["--max-tokens", str(CONFIG["scrub_tokens"])]
+    return StreamingResponse(
+        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
+                          env_extra=_llm_env()),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@router.get("/scrub-all")
+async def api_scrub_all():
+    """Scrub every session_doc_scene_*.md in narration_dir.
+
+    `scrub_mechanics.collect_targets` already filters out `.scrubbed.md`
+    files so re-runs don't recurse into their own output.
+    """
+    nd = _narration_dir()
+    if nd is None or not nd.is_dir():
+        return JSONResponse(
+            {"ok": False, "error": "narration_dir not configured"},
+            status_code=400,
+        )
+    cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(nd)]
+    if CONFIG.get("scrub_tokens"):
+        cmd += ["--max-tokens", str(CONFIG["scrub_tokens"])]
+    return StreamingResponse(
+        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
+                          env_extra=_llm_env()),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )

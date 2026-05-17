@@ -44,6 +44,10 @@ const showOverrides = ref(false)
 // Batch mode toggle for Stage 1 / Stage 2 (Anthropic Message Batches API,
 // 50% off list price; replaces token streaming with poll-progress lines).
 const useBatch = ref(false)
+// LLM backend selector — narrate + scrub honor this; Stage 1/2/Plan stay
+// on Anthropic regardless (their paths use tool-use which the OpenAI-
+// compat adapter doesn't support).
+const backend = ref<'anthropic' | 'dgx'>('anthropic')
 
 function loadConfigFields() {
   const v = config.values
@@ -66,6 +70,7 @@ function loadConfigFields() {
   narrationGenre.value = v.sd_narration_genre || ''
   useEnhancedSections.value = v.sd_use_enhanced_sections !== false
   useBatch.value = v.sd_batch === true
+  backend.value = v.sd_backend === 'dgx' ? 'dgx' : 'anthropic'
 }
 
 async function persistBatchToggle() {
@@ -77,6 +82,17 @@ async function persistBatchToggle() {
     await config.updateSection('session_doc', { batch: useBatch.value })
   } catch {
     /* non-fatal: toggle will still apply to in-flight calls */
+  }
+}
+
+async function setBackend(b: 'anthropic' | 'dgx') {
+  if (backend.value === b) return
+  backend.value = b
+  config.values.sd_backend = b
+  try {
+    await config.updateSection('session_doc', { backend: b })
+  } catch {
+    /* non-fatal — the next subprocess will still read the in-memory CONFIG */
   }
 }
 
@@ -138,6 +154,9 @@ const sceneLabel = ref('')
 const estimatedTokens = ref<number | null>(null)
 const hasExtraction = ref(false)
 const narrating = ref(false)
+// One scrub at a time — covers both per-scene and Scrub-All; both buttons
+// disable while it's true.
+const scrubbing = ref(false)
 const extracting = ref(false)
 const enhancing = ref(false)
 const planning = ref(false)
@@ -318,6 +337,58 @@ async function narrate() {
       activeSSE.value = null
       narrating.value = false
       setStatus('Stream error \u2014 check terminal.')
+    },
+  })
+}
+
+async function scrubScene() {
+  if (currentScene.value === null || scrubbing.value || narrating.value) return
+  scrubbing.value = true
+  narrationOutput.value = ''
+  setStatus(`Scrubbing scene ${currentScene.value}...`)
+
+  activeSSE.value = connectSSE(`/api/editor/scrub/${currentScene.value}`, {
+    onData(text) {
+      narrationOutput.value += text
+    },
+    onDone(rc) {
+      activeSSE.value = null
+      scrubbing.value = false
+      setStatus(rc === 0
+        ? `Scrubbed scene ${currentScene.value} — .scrubbed.md written.`
+        : 'Scrub failed.')
+      loadScenes()
+    },
+    onError() {
+      activeSSE.value = null
+      scrubbing.value = false
+      setStatus('Stream error — check terminal.')
+    },
+  })
+}
+
+async function scrubAll() {
+  if (scrubbing.value || narrating.value) return
+  scrubbing.value = true
+  narrationOutput.value = ''
+  setStatus('Scrubbing all scene narrations...')
+
+  activeSSE.value = connectSSE('/api/editor/scrub-all', {
+    onData(text) {
+      narrationOutput.value += text
+    },
+    onDone(rc) {
+      activeSSE.value = null
+      scrubbing.value = false
+      setStatus(rc === 0
+        ? 'Scrub-All complete — .scrubbed.md files written.'
+        : 'Scrub-All failed.')
+      loadScenes()
+    },
+    onError() {
+      activeSSE.value = null
+      scrubbing.value = false
+      setStatus('Stream error — check terminal.')
     },
   })
 }
@@ -646,6 +717,20 @@ onMounted(async () => {
         </label>
       </span>
 
+      <span class="stage-group backend-group" title="Backend for Narrate + Scrub. Stage 1/2/3 always use Anthropic (tool-use paths).">
+        <span class="stage-label">Backend</span>
+        <button
+          class="btn-sm backend-btn"
+          :class="{ active: backend === 'anthropic' }"
+          @click="setBackend('anthropic')"
+        >Anthropic</button>
+        <button
+          class="btn-sm backend-btn"
+          :class="{ active: backend === 'dgx' }"
+          @click="setBackend('dgx')"
+        >DGX</button>
+      </span>
+
       <span class="stage-group">
         <span class="stage-label">Stage 1</span>
         <button
@@ -674,6 +759,16 @@ onMounted(async () => {
           @click="runPlan"
           title="Stage 3 \u2014 consistency check + plan + enhanced sections (run once per session, cached for Narrate)"
         >{{ planning ? 'Planning\u2026' : 'Plan &amp; Check' }}</button>
+      </span>
+
+      <span class="stage-group">
+        <span class="stage-label">Stage 4½</span>
+        <button
+          class="btn-success btn-sm"
+          :disabled="scrubbing || narrating"
+          @click="scrubAll"
+          title="Run the second-pass mechanical scrub over every scene narration in narration_dir."
+        >{{ scrubbing ? 'Scrubbing…' : 'Scrub All' }}</button>
       </span>
 
       <span class="stage-group">
@@ -735,6 +830,7 @@ onMounted(async () => {
             :current-scene="currentScene"
             :narrating="narrating"
             :extracting="extracting"
+            :scrubbing="scrubbing"
             :prose-mode="proseMode"
             :reflections="reflections"
             :use-enhanced-sections="useEnhancedSections"
@@ -742,6 +838,7 @@ onMounted(async () => {
             @save-extraction="saveExtraction"
             @reload="reload"
             @narrate="narrate"
+            @scrub="scrubScene"
             @open-typora="openTypora"
             @update:extraction-content="extractionContent = $event"
             @update:prose-mode="proseMode = $event; apiPut('/api/editor/config', { prose_mode: $event || undefined })"
@@ -931,6 +1028,21 @@ onMounted(async () => {
 .batch-toggle input {
   cursor: pointer;
   margin: 0;
+}
+
+.backend-btn {
+  background: transparent;
+  border: 1px solid var(--bg-surface0);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.backend-btn.active {
+  background: var(--accent, #4a9eff);
+  color: white;
+  border-color: var(--accent, #4a9eff);
 }
 
 .columns {

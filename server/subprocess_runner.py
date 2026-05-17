@@ -50,6 +50,7 @@ def _save_run_log(cmd: list[str], cwd: str | None, output: str,
 async def stream_subprocess(
     cmd: list[str],
     cwd: str | None = None,
+    env_extra: dict[str, str] | None = None,
 ) -> AsyncGenerator[str, None]:
     """Run a subprocess and yield Server-Sent Events as output arrives.
 
@@ -57,11 +58,18 @@ async def stream_subprocess(
       - ``data: "text chunk"\\n\\n`` for stdout/stderr output
       - ``event: done\\ndata: {"returncode": N}\\n\\n`` when the process exits
 
+    `env_extra` is merged on top of the inherited environment after
+    ``PYTHONUNBUFFERED``. Used to inject per-route LLM backend env
+    (``DGX_ENDPOINT`` / ``DGX_MODEL``) without leaking it into routes that
+    must stay on the default Anthropic path.
+
     On exit, writes a per-run log file under `<cwd>/logs/` capturing the
     command line, returncode, duration, and full output so failed runs can
     be reproduced after the browser session is closed.
     """
     env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+    if env_extra:
+        env.update(env_extra)
 
     cmd_display = " \\\n  ".join(cmd)
     yield f"data: {json.dumps(f'$ {cmd_display}\\n\\n')}\n\n"
