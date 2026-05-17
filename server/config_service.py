@@ -29,7 +29,6 @@ from typing import Any
 import yaml
 from pydantic import ValidationError
 
-from server.config_migration import migrate_local_config, migrate_ui_config
 from server.config_models import (
     LocalConfig,
     UI_SECTION_NAMES,
@@ -41,8 +40,6 @@ from server.config_models import (
 TRACKED_CONFIG_NAME = "config.yaml"
 UI_STATE_NAME = "ui_state.yaml"
 LOCAL_CONFIG_NAME = ".campaigngenerator.local.yaml"
-LEGACY_UI_CONFIG_NAME = "ui_config.yaml"
-MIGRATION_MARKER_NAME = "ui_config.yaml.migrated"
 
 # ── Path-field knowledge ──────────────────────────────────────────────────
 # Per-section, per-field base for path resolution. ``"session"`` resolves
@@ -109,7 +106,7 @@ class CampaignConfigService:
     ) -> None:
         self.campaign_dir: Path = Path(campaign_dir).expanduser().resolve()
         self.boot_overrides: dict[str, Any] = dict(boot_overrides or {})
-        self.migration_warnings: list[str] = []
+        self.load_warnings: list[str] = []
         self._write_lock = threading.Lock()
 
         if not self.campaign_dir.is_dir():
@@ -118,7 +115,7 @@ class CampaignConfigService:
             )
 
         self._tracked: dict = self._load_tracked()
-        self._ui_state: UIState = self._load_or_migrate_ui_state()
+        self._ui_state: UIState = self._load_ui_state()
         self._local: LocalConfig = self._load_local()
 
     # ── Path properties ────────────────────────────────────────────────
@@ -136,12 +133,9 @@ class CampaignConfigService:
         return self.campaign_dir / LOCAL_CONFIG_NAME
 
     @property
-    def legacy_ui_config_path(self) -> Path:
-        return self.campaign_dir / LEGACY_UI_CONFIG_NAME
-
-    @property
-    def migration_marker_path(self) -> Path:
-        return self.campaign_dir / MIGRATION_MARKER_NAME
+    def migration_warnings(self) -> list[str]:
+        """Back-compat alias — the warning list is no longer migration-specific."""
+        return self.load_warnings
 
     # ── Loaders ────────────────────────────────────────────────────────
 
@@ -164,46 +158,23 @@ class CampaignConfigService:
             )
         return data
 
-    def _load_or_migrate_ui_state(self) -> UIState:
+    def _load_ui_state(self) -> UIState:
         path = self.ui_state_path
-        if path.exists():
-            try:
-                with path.open(encoding="utf-8") as f:
-                    raw = yaml.safe_load(f) or {}
-            except yaml.YAMLError as exc:
-                raise ConfigError(
-                    f"{UI_STATE_NAME} is not valid YAML: {exc}"
-                ) from exc
-            try:
-                return UIState.model_validate(raw)
-            except ValidationError as exc:
-                raise ConfigError(
-                    f"{UI_STATE_NAME} failed schema validation: {exc}"
-                ) from exc
-
-        # No ui_state.yaml — try to migrate from legacy ui_config.yaml.
-        legacy = self.legacy_ui_config_path
-        if legacy.exists():
-            try:
-                with legacy.open(encoding="utf-8") as f:
-                    legacy_raw = yaml.safe_load(f) or {}
-            except yaml.YAMLError as exc:
-                # A broken legacy file shouldn't block startup. Quarantine
-                # the whole thing as a single warning and start fresh.
-                self.migration_warnings.append(
-                    f"{LEGACY_UI_CONFIG_NAME} could not be parsed ({exc}); "
-                    f"starting with empty ui_state.yaml"
-                )
-                state = UIState()
-            else:
-                state, warnings = migrate_ui_config(legacy_raw)
-                self.migration_warnings.extend(warnings)
-            self._persist_ui_state(state)
-            self._mark_migration_done()
-            return state
-
-        # Fresh campaign — no legacy file either.
-        return UIState()
+        if not path.exists():
+            return UIState()
+        try:
+            with path.open(encoding="utf-8") as f:
+                raw = yaml.safe_load(f) or {}
+        except yaml.YAMLError as exc:
+            raise ConfigError(
+                f"{UI_STATE_NAME} is not valid YAML: {exc}"
+            ) from exc
+        try:
+            return UIState.model_validate(raw)
+        except ValidationError as exc:
+            raise ConfigError(
+                f"{UI_STATE_NAME} failed schema validation: {exc}"
+            ) from exc
 
     def _load_local(self) -> LocalConfig:
         path = self.local_config_path
@@ -215,14 +186,19 @@ class CampaignConfigService:
         except yaml.YAMLError as exc:
             # Local file is machine cruft — refusing to start over a bad
             # nav.last_page would be hostile. Log and treat as empty.
-            self.migration_warnings.append(
+            self.load_warnings.append(
                 f"{LOCAL_CONFIG_NAME} could not be parsed ({exc}); "
                 f"ignoring file contents"
             )
             return LocalConfig()
-        local, warnings = migrate_local_config(raw)
-        self.migration_warnings.extend(warnings)
-        return local
+        try:
+            return LocalConfig.model_validate(raw)
+        except ValidationError as exc:
+            self.load_warnings.append(
+                f"{LOCAL_CONFIG_NAME} failed schema validation ({exc}); "
+                f"ignoring file contents"
+            )
+            return LocalConfig()
 
     # ── Writers (atomic) ────────────────────────────────────────────────
 
@@ -251,12 +227,6 @@ class CampaignConfigService:
         )
         self._atomic_write(self.local_config_path, text)
 
-    def _mark_migration_done(self) -> None:
-        try:
-            self.migration_marker_path.touch(exist_ok=True)
-        except OSError:
-            pass
-
     # ── Section update API ──────────────────────────────────────────────
 
     def update_section(self, name: str, partial: dict[str, Any]) -> UIState:
@@ -274,6 +244,23 @@ class CampaignConfigService:
             new_state = self._ui_state.model_copy(
                 update={"ui": self._ui_state.ui.__class__.model_validate(ui_dict)}
             )
+            self._persist_ui_state(new_state)
+            self._ui_state = new_state
+        return new_state
+
+    def update_runtime(self, partial: dict[str, Any]) -> UIState:
+        """Merge ``partial`` into ``runtime`` and persist atomically.
+
+        Used by the sidebar model picker (``default_model``) and SessionConfig
+        (``session_dir``). Boot overrides for the same keys still win at
+        ``resolved()`` time for the lifetime of the process; this writer just
+        keeps the on-disk value in sync with the UI for next launch.
+        """
+        with self._write_lock:
+            current = self._ui_state.runtime.model_dump(mode="json")
+            current.update(partial)
+            new_runtime = self._ui_state.runtime.__class__.model_validate(current)
+            new_state = self._ui_state.model_copy(update={"runtime": new_runtime})
             self._persist_ui_state(new_state)
             self._ui_state = new_state
         return new_state
@@ -374,6 +361,42 @@ class CampaignConfigService:
 
         active_session_dir = runtime_raw.get("session_dir")
 
+        # If runtime.session_dir was overridden at boot, rebase any stale
+        # session-scoped absolute path that lives in a SIBLING session dir
+        # (e.g. a value persisted as `<campaign>/summaries/20260505/foo`
+        # when --session-dir now selects `<campaign>/summaries/20260512`).
+        # Without this, switching --session-dir at launch leaves persisted
+        # absolute paths pointing at the prior session. Fields the user
+        # explicitly overrode via CLI win, so we skip anything already in
+        # self.boot_overrides.
+        if active_session_dir and "runtime.session_dir" in self.boot_overrides:
+            new_base = self._resolve_session_base(active_session_dir)
+            if new_base:
+                new_base_path = Path(new_base)
+                new_sd_parent = str(new_base_path.parent).rstrip("/") + "/"
+                new_sd_name = new_base_path.name
+                for section, fields in _PATH_FIELDS.items():
+                    if section not in ui_raw or not isinstance(ui_raw[section], dict):
+                        continue
+                    for fname, base in fields.items():
+                        if base != "session":
+                            continue
+                        if f"{section}.{fname}" in self.boot_overrides:
+                            continue
+                        v = ui_raw[section].get(fname)
+                        if not isinstance(v, str) or not v.startswith(new_sd_parent):
+                            continue
+                        # Path is under the same summaries/ parent; check the
+                        # next component. If it's already the active session
+                        # name, nothing to do. Otherwise rebase.
+                        tail = v[len(new_sd_parent):]
+                        sep = tail.find("/")
+                        sibling_name = tail if sep == -1 else tail[:sep]
+                        if sibling_name == new_sd_name:
+                            continue
+                        rest = "" if sep == -1 else tail[sep:]
+                        ui_raw[section][fname] = new_base + rest
+
         for section, fields in _PATH_FIELDS.items():
             if section not in ui_raw or not isinstance(ui_raw[section], dict):
                 continue
@@ -398,3 +421,77 @@ class CampaignConfigService:
             "server": local_raw.get("server", {}),
             "nav": local_raw.get("nav", {}),
         }
+
+    def _resolve_session_base(self, value: str) -> str | None:
+        """Resolve a session_dir value (possibly relative) to absolute, without
+        the empty/None handling of :meth:`resolve_path`."""
+        if not value:
+            return None
+        p = Path(str(value).strip()).expanduser()
+        if not p.is_absolute():
+            p = (self.campaign_dir / p)
+        return str(p.resolve())
+
+
+# ── Flat-key overlay for the un-reshaped frontend ──────────────────────────
+# The Vue store still reads `config.values.sd_narrate_tokens`, `config.values.
+# session_dir`, etc. The route handler builds this projection from the
+# resolved view and folds it into the GET /api/config/ response. Removed once
+# every frontend view has migrated to `config.resolved`.
+
+_SECTION_TO_PREFIX: dict[str, str] = {
+    "session_doc": "sd_",
+    "vtt_summary": "vtt_",
+    "campaign_state": "cs_",
+    "distill": "distill_",
+    "party": "party_",
+    "planning": "plan_",
+    "query": "query_",
+    "prep": "prep_",
+    "npc": "npc_",
+    "workflow": "sw_",
+    "connections": "cg_",
+}
+
+_EXPERIMENTAL_SUB_TO_PREFIX: dict[str, str] = {
+    "narrative": "narr_",
+    "enhance_recap": "er_",
+    "dnd_sheet": "dnd_",
+    "make_tracking": "mt_",
+}
+
+
+def flatten_resolved_to_legacy(resolved: dict[str, Any]) -> dict[str, Any]:
+    """Project the service's ``resolved()`` view into the flat-key shape the
+    un-reshaped frontend still expects (paths absolute, boot overrides
+    applied)."""
+    ui = resolved.get("ui", {})
+    runtime = resolved.get("runtime", {})
+    out: dict[str, Any] = {}
+
+    for section_name, prefix in _SECTION_TO_PREFIX.items():
+        section = ui.get(section_name) or {}
+        for field, value in section.items():
+            if value is None:
+                continue
+            out[f"{prefix}{field}"] = value
+
+    experimental = ui.get("experimental") or {}
+    for sub_name, sub_prefix in _EXPERIMENTAL_SUB_TO_PREFIX.items():
+        sub_value = experimental.get(sub_name)
+        if isinstance(sub_value, dict):
+            for field, value in sub_value.items():
+                if value is None:
+                    continue
+                out[f"{sub_prefix}{field}"] = value
+
+    grounding = ui.get("grounding") or {}
+    if grounding.get("summaries") is not None:
+        out["summaries"] = grounding["summaries"]
+
+    if runtime.get("session_dir") is not None:
+        out["session_dir"] = runtime["session_dir"]
+    if runtime.get("default_model") is not None:
+        out["global_model"] = runtime["default_model"]
+
+    return out

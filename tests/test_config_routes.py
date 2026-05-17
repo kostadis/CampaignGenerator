@@ -1,12 +1,12 @@
-"""API tests for the unified config endpoints (step C).
+"""API tests for the unified config endpoints.
 
 Covers:
-  - ``GET /api/config/`` returns the new shape AND the legacy flat overlay
-    so the un-reshaped frontend keeps working.
+  - ``GET /api/config/`` returns the typed view AND a flat-key overlay so
+    the un-reshaped frontend keeps working.
   - ``PUT /api/config/section/{name}`` rejects unknown sections.
+  - ``PUT /api/config/runtime`` writes session_dir / default_model.
   - ``PUT /api/config/local`` cannot write ``ui.*`` keys.
-  - The legacy ``PUT /api/config/`` and raw-YAML endpoints still work
-    (they're removed in step F).
+  - Every route returns 503 when no service is wired (no silent fallback).
 """
 
 from __future__ import annotations
@@ -22,7 +22,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server.config_service import (
     CampaignConfigService,
-    LEGACY_UI_CONFIG_NAME,
     TRACKED_CONFIG_NAME,
 )
 from server.routers import config_routes
@@ -31,20 +30,6 @@ from server.routers import config_routes
 def _write(path: Path, body: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(body, encoding="utf-8")
-
-
-@pytest.fixture
-def campaign_with_legacy(tmp_path):
-    """Campaign dir with hand-written config.yaml AND legacy ui_config.yaml."""
-    _write(
-        tmp_path / TRACKED_CONFIG_NAME,
-        "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
-    )
-    _write(
-        tmp_path / LEGACY_UI_CONFIG_NAME,
-        "sd_narrate_tokens: '4000'\nsd_voice_dir: voice/\nglobal_model: claude-opus-4-6\n",
-    )
-    return tmp_path
 
 
 @pytest.fixture
@@ -86,10 +71,17 @@ class TestGetConfig:
         ):
             assert key in body, f"missing {key} in GET / response"
 
-    def test_legacy_flat_keys_present_for_unmigrated_frontend(
-        self, campaign_with_legacy
-    ):
-        client = TestClient(_make_app(campaign_with_legacy))
+    def test_legacy_flat_keys_present_for_unmigrated_frontend(self, fresh_campaign):
+        # Set values through typed endpoints, confirm flat overlay surfaces them.
+        client = TestClient(_make_app(fresh_campaign))
+        client.put(
+            "/api/config/section/session_doc",
+            json={"values": {"narrate_tokens": 4000, "voice_dir": "voice/"}},
+        )
+        client.put(
+            "/api/config/runtime",
+            json={"values": {"default_model": "claude-opus-4-6"}},
+        )
         body = client.get("/api/config/").json()
         # The flat overlay lets the unreshaped Pinia store keep reading
         # ``cfg.sd_narrate_tokens`` and ``cfg.global_model`` directly.
@@ -99,17 +91,11 @@ class TestGetConfig:
         assert body["sd_voice_dir"].endswith("/voice")
         assert body["global_model"] == "claude-opus-4-6"
 
-    def test_no_service_falls_back_to_legacy(self, monkeypatch):
-        # No campaign_dir wired → legacy load_ui_config path.
-        monkeypatch.setattr(
-            config_routes,
-            "load_ui_config",
-            lambda *a, **k: {"sd_voice_dir": "legacy/"},
-        )
-
+    def test_no_service_returns_503(self):
+        # The hostile fallback is gone — with no campaign_dir, GET / refuses.
         client = TestClient(_make_app(None))
-        body = client.get("/api/config/").json()
-        assert body == {"sd_voice_dir": "legacy/"}
+        resp = client.get("/api/config/")
+        assert resp.status_code == 503
 
 
 # ── PUT /section/{name} ────────────────────────────────────────────────────
@@ -184,49 +170,44 @@ class TestPutLocal:
         assert resp.status_code == 503
 
 
-# ── Migration warnings surface through GET / ──────────────────────────────
+# ── PUT /runtime ──────────────────────────────────────────────────────────
 
 
-class TestMigrationWarnings:
-    def test_legacy_campaign_surfaces_warnings(self, campaign_with_legacy):
-        # ``sd_voice_dir`` + ``session_doc_voice_dir`` would normally produce
-        # a duplicate-collapse warning. Add the legacy duplicate to trigger it.
-        legacy = campaign_with_legacy / LEGACY_UI_CONFIG_NAME
-        legacy.write_text(
-            legacy.read_text() + "session_doc_voice_dir: legacy/voice/\nbogus_unknown: ok\n",
-            encoding="utf-8",
-        )
-        client = TestClient(_make_app(campaign_with_legacy))
-        body = client.get("/api/config/").json()
-        warnings = body["migration_warnings"]
-        assert any("duplicate" in w.lower() or "collapsed" in w.lower() for w in warnings)
-        assert any("bogus_unknown" in w for w in warnings)
-
-
-# ── Legacy endpoints still work in step C ─────────────────────────────────
-
-
-class TestLegacyEndpointsStillFunctional:
-    def test_legacy_put_root_still_writes_old_file(
-        self, fresh_campaign, monkeypatch, tmp_path
-    ):
-        # PUT / writes to the file find_ui_config() points at. Redirect to
-        # tmp so the test is hermetic.
-        from server import config as legacy_config
-
-        target = tmp_path / "ui_config.yaml"
-        monkeypatch.setattr(legacy_config, "find_ui_config", lambda: target)
-
+class TestPutRuntime:
+    def test_runtime_update_persists(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
-        resp = client.put("/api/config/", json={"values": {"sd_voice_dir": "v/"}})
+        resp = client.put(
+            "/api/config/runtime",
+            json={"values": {"session_dir": "summaries/s1", "default_model": "claude-opus-4-6"}},
+        )
         assert resp.status_code == 200
-        assert target.exists()
-        assert "sd_voice_dir" in target.read_text(encoding="utf-8")
+
+        body = client.get("/api/config/").json()
+        # session_dir is path-resolved to absolute against campaign_dir.
+        assert body["resolved"]["runtime"]["session_dir"].endswith("summaries/s1")
+        assert body["resolved"]["runtime"]["default_model"] == "claude-opus-4-6"
+        # Flat overlay carries the runtime values too.
+        assert body["session_dir"].endswith("summaries/s1")
+        assert body["global_model"] == "claude-opus-4-6"
+
+    def test_no_service_503(self):
+        client = TestClient(_make_app(None))
+        resp = client.put("/api/config/runtime", json={"values": {"session_dir": "x"}})
+        assert resp.status_code == 503
+
+
+# ── Removed legacy endpoints ──────────────────────────────────────────────
+
+
+class TestLegacyEndpointsAreGone:
+    def test_legacy_put_root_returns_405(self, fresh_campaign):
+        client = TestClient(_make_app(fresh_campaign))
+        # The legacy bulk PUT / is removed; FastAPI should return method-not-
+        # allowed because GET / still exists.
+        resp = client.put("/api/config/", json={"values": {"sd_voice_dir": "v/"}})
+        assert resp.status_code in (404, 405)
 
     def test_raw_yaml_endpoints_removed(self, fresh_campaign):
-        # Step F removed GET/PUT /api/config/raw. The Settings.vue raw
-        # editor was the only consumer; it's now a read-only view of
-        # service.resolved.
         client = TestClient(_make_app(fresh_campaign))
         assert client.get("/api/config/raw").status_code == 404
         assert client.put("/api/config/raw", json={"text": "x: y"}).status_code == 404

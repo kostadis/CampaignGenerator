@@ -1,24 +1,7 @@
-"""UI config management — load/save ui_config.yaml, path derivation."""
+"""Model registry, default model, and campaign-path derivation helpers."""
 
 import os
 from pathlib import Path
-
-import yaml
-
-# ── Config persistence ──────────────────────────────────────────────────────
-
-_SAVE_KEY_PREFIXES = (
-    "cs_", "distill_", "party_", "plan_", "query_", "prep_", "npc_",
-    "sd_", "sw_", "vtt_", "session_dir", "campaign_dir",
-    "narr_", "er_", "cg_",
-    "dnd_", "mt_",
-    "global_", "summaries",
-)
-
-_NEVER_SAVE_KEYS = {
-    "sd_server_pid", "_refs_initialized", "__show_guide__",
-    "ui_config_loaded", "nav_page", "FormSubmitter",
-}
 
 MODELS = [
     "claude-sonnet-4-6",
@@ -35,62 +18,6 @@ DERIVED_SUBDIRS = {
     "roleplay_extract_dir": "vtt_roleplay_extractions",
     "summary_extract_dir":  "vtt_extractions",
 }
-
-
-def find_ui_config() -> Path:
-    """Return the ui_config.yaml path (CWD first, then script dir)."""
-    cwd_cfg = Path.cwd() / "ui_config.yaml"
-    if cwd_cfg.exists():
-        return cwd_cfg
-    return cwd_cfg  # default to CWD even if it doesn't exist yet
-
-
-def load_ui_config(path: Path | None = None) -> dict:
-    """Load ui_config.yaml and return its contents."""
-    if path is None:
-        path = find_ui_config()
-    if not path.exists():
-        return {}
-    with open(path, encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
-
-
-def save_ui_config(values: dict, path: Path | None = None) -> None:
-    """Merge values into ui_config.yaml (only saves allowed keys)."""
-    if path is None:
-        path = find_ui_config()
-
-    existing = load_ui_config(path)
-
-    for k, v in values.items():
-        if k in _NEVER_SAVE_KEYS:
-            continue
-        if not any(k.startswith(p) for p in _SAVE_KEY_PREFIXES):
-            continue
-        if isinstance(v, (str, int, float, bool, list)):
-            existing[k] = v
-
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        yaml.dump(existing, f, default_flow_style=False, allow_unicode=True)
-
-
-def load_ui_config_raw(path: Path | None = None) -> str:
-    """Return the raw YAML text of ui_config.yaml."""
-    if path is None:
-        path = find_ui_config()
-    if not path.exists():
-        return ""
-    return path.read_text(encoding="utf-8")
-
-
-def save_ui_config_raw(text: str, path: Path | None = None) -> None:
-    """Overwrite ui_config.yaml with raw YAML text. Validates first."""
-    if path is None:
-        path = find_ui_config()
-    yaml.safe_load(text)  # raises if invalid
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
 
 
 def derive_campaign_paths(campaign_dir: str, session_dir: str) -> dict:

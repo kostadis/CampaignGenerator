@@ -108,7 +108,7 @@ function navigate(path: string) {
     <div class="sidebar-footer">
       <div class="model-selector">
         <label class="model-label">MODEL</label>
-        <select v-model="config.model" class="model-select" @change="config.save()">
+        <select v-model="config.model" class="model-select" @change="config.updateRuntime({ default_model: config.model })">
           <option v-for="m in config.models" :key="m" :value="m">{{ m }}</option>
         </select>
       </div>

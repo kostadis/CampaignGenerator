@@ -284,6 +284,13 @@ def main() -> None:
                              "(only when content differs) and any <file>.reviewed "
                              "marker is cleared. Default behavior skips existing "
                              "files so partial runs can be resumed.")
+    parser.add_argument("--allow-speaker-mismatch", action="store_true",
+                        help="Skip the pre-flight check that aborts when --party "
+                             "or --gm-player is provided but no VTT lines match "
+                             "any of those display names. The check exists to "
+                             "catch wrong-VTT mistakes before spending money on "
+                             "extraction; only override if you know the VTT uses "
+                             "unrecognised display names.")
     parser.add_argument("--no-log", action="store_true")
     parser.add_argument("--batch", action="store_true",
                         help="Use Anthropic's Message Batches API (50%% off list price). "
@@ -392,6 +399,28 @@ def main() -> None:
             if any(line.startswith(f"{c}:") for c in set(player_map.values()) | {"GM"})
         )
         print(f"  Speaker labels rewritten: {changed} line(s); dialogue {before:,} → {len(dialogue):,} chars")
+        if changed == 0 and not args.allow_speaker_mismatch:
+            expected = sorted(set(player_map.keys()) | (
+                {args.gm_player} if args.gm_player else set()
+            ))
+            print(
+                f"\nError: speaker-mismatch pre-flight failed.\n"
+                f"  VTT:           {vtt_path}\n"
+                f"  Expected one or more of these display names to appear as a "
+                f"speaker:\n    {', '.join(expected)}\n"
+                f"  Found:         0 matching lines.\n"
+                f"\n"
+                f"This almost always means the wrong VTT is in this directory "
+                f"(a non-D&D recording, a different session, or a stale file). "
+                f"Aborting before submitting a batch — that would burn API tokens "
+                f"producing 'no matching moments' for every scene.\n"
+                f"\n"
+                f"Fix: replace the VTT with the correct recording and re-run. "
+                f"To bypass this check (rare — only if the VTT genuinely uses "
+                f"different display names), pass --allow-speaker-mismatch.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
 
     summary_path = Path(args.summary).expanduser()
     if not summary_path.exists():

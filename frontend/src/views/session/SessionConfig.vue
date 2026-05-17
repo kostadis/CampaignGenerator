@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { useConfigStore } from '../../stores/config'
-import { apiFetch, apiPut } from '../../api/client'
+import { apiFetch } from '../../api/client'
 import PathField from '../../components/shared/PathField.vue'
 import MultiPathField from '../../components/shared/MultiPathField.vue'
 
@@ -170,11 +170,12 @@ async function saveConfig() {
   saveToConfig()
   // Typed sections — survive a server restart through the unified service.
   await persistTypedSections()
-  // Legacy bulk save — still needed for top-level keys that don't fit a
-  // typed section yet (campaign_dir, session_dir, summaries-derived flat
-  // keys written by deriveAll). Removed in step F together with the
-  // legacy PUT /api/config/ endpoint.
-  await apiPut('/api/config/', { values: config.values })
+  // session_dir lives in ui_state.runtime, not under a typed UI section.
+  // campaign_dir is encoded by where ui_state.yaml lives and is never
+  // persisted to disk.
+  if (sessionDir.value.trim()) {
+    await config.updateRuntime({ session_dir: sessionDir.value.trim() })
+  }
 }
 
 onMounted(async () => {

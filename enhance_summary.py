@@ -30,6 +30,7 @@ from pathlib import Path
 from campaignlib import (
     build_batch_request,
     collect_batch,
+    extract_player_character_map,
     format_batch_progress,
     make_client,
     poll_batch,
@@ -98,8 +99,17 @@ def _sidecar_path(output_path: Path) -> Path:
     return output_path.with_name(output_path.name + ".batch.json")
 
 
-def _build_prompts(vtt_path: Path, gm_path: Path) -> tuple[str, str, str, str]:
-    """Read inputs, build (system, user, dialogue, gmassist_body)."""
+def _build_prompts(vtt_path: Path, gm_path: Path,
+                   party_path: Path | None = None,
+                   gm_player: str | None = None,
+                   allow_speaker_mismatch: bool = False) -> tuple[str, str, str, str]:
+    """Read inputs, build (system, user, dialogue, gmassist_body).
+
+    When `party_path` or `gm_player` is provided, runs a wrong-VTT
+    pre-flight: extracts expected speaker display names and aborts if
+    the VTT contains zero lines starting with any of them. The check
+    can be bypassed with `allow_speaker_mismatch=True`.
+    """
     raw = vtt_path.read_text(encoding="utf-8")
     print(f"\n[Parsing VTT | {len(raw):,} raw chars | {vtt_path.name}]")
     dialogue = parse_vtt(raw)
@@ -107,6 +117,47 @@ def _build_prompts(vtt_path: Path, gm_path: Path) -> tuple[str, str, str, str]:
         print(f"Error: no dialogue found in VTT file: {vtt_path.name}", file=sys.stderr)
         sys.exit(1)
     print(f"  → {len(dialogue):,} chars of dialogue")
+
+    expected: set[str] = set()
+    if party_path is not None:
+        player_map = extract_player_character_map(
+            party_path.read_text(encoding="utf-8"))
+        if player_map:
+            mapping_str = ", ".join(f"{p}→{c}" for p, c in sorted(player_map.items()))
+            print(f"  Player → character map ({len(player_map)}): {mapping_str}")
+            expected.update(player_map.keys())
+        else:
+            print(f"  Warning: --party {party_path.name} produced an empty player map "
+                  f"(no `**..., Player: ...**` lines found)", file=sys.stderr)
+    if gm_player:
+        print(f"  GM player: {gm_player}")
+        expected.add(gm_player)
+    if expected:
+        matches = sum(
+            1 for line in dialogue.splitlines()
+            if any(line.startswith(f"{name}:") for name in expected)
+        )
+        print(f"  Speaker pre-flight: {matches} line(s) match expected display names "
+              f"({', '.join(sorted(expected))})")
+        if matches == 0 and not allow_speaker_mismatch:
+            print(
+                f"\nError: speaker-mismatch pre-flight failed.\n"
+                f"  VTT:           {vtt_path}\n"
+                f"  Expected one or more of these display names to appear as a "
+                f"speaker:\n    {', '.join(sorted(expected))}\n"
+                f"  Found:         0 matching lines.\n"
+                f"\n"
+                f"This almost always means the wrong VTT is in this directory "
+                f"(a non-D&D recording, a different session, or a stale file). "
+                f"Aborting before submitting — enhance_summary is one big cached "
+                f"request and would burn the full VTT through the model.\n"
+                f"\n"
+                f"Fix: replace the VTT with the correct recording and re-run. "
+                f"To bypass this check (rare — only if the VTT genuinely uses "
+                f"different display names), pass --allow-speaker-mismatch.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
 
     gmassist_body = gm_path.read_text(encoding="utf-8")
     print(f"\n[gm-assist | {gm_path.name} | {len(gmassist_body):,} chars]")
@@ -224,6 +275,19 @@ def main() -> None:
     parser.add_argument("--output", "-o", required=True, metavar="FILE",
                         help="Where to write the enriched session-summary.md "
                              "(typically alongside the gm-assist)")
+    parser.add_argument("--party", metavar="FILE", default=None,
+                        help="party.md path. When set, expected speaker "
+                             "display names are parsed from the `**Class, "
+                             "Player: Name**` lines and used for a wrong-VTT "
+                             "pre-flight check (aborts before submission if "
+                             "no VTT line starts with any of those names).")
+    parser.add_argument("--gm-player", metavar="NAME", default=None,
+                        help="Display name the GM appears under in the VTT "
+                             "(e.g. 'Kostadis'). Added to the speaker pre-flight.")
+    parser.add_argument("--allow-speaker-mismatch", action="store_true",
+                        help="Skip the pre-flight check that aborts when --party "
+                             "or --gm-player is provided but no VTT lines match "
+                             "any of those display names.")
     parser.add_argument("--model", default="claude-sonnet-4-6")
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku instead of Sonnet (~4x cheaper, faster)")
@@ -290,7 +354,19 @@ def main() -> None:
         print(f"Error: gm-assist file not found: {gm_path}", file=sys.stderr)
         sys.exit(1)
 
-    system, user, dialogue, gmassist_body = _build_prompts(vtt_path, gm_path)
+    party_path: Path | None = None
+    if args.party:
+        party_path = Path(args.party).expanduser()
+        if not party_path.exists():
+            print(f"Error: party file not found: {party_path}", file=sys.stderr)
+            sys.exit(1)
+
+    system, user, dialogue, gmassist_body = _build_prompts(
+        vtt_path, gm_path,
+        party_path=party_path,
+        gm_player=args.gm_player,
+        allow_speaker_mismatch=args.allow_speaker_mismatch,
+    )
 
     if not args.batch:
         _run_streaming(args, system, user, vtt_path, len(dialogue), gmassist_body, out_path)

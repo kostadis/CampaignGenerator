@@ -70,11 +70,11 @@ export const useConfigStore = defineStore('config', () => {
     await refresh()
   }
 
-  // Legacy bulk save — kept for views still on the flat overlay. Removed
-  // in step F once every view has migrated to updateSection.
-  async function save() {
+  // Runtime update — session_dir, default_model. Backed by ui_state.runtime.
+  async function updateRuntime(partial: Record<string, any>) {
     if (!loaded.value) return
-    await apiPut('/api/config/', { values: { ...values.value, global_model: model.value } })
+    await apiPut('/api/config/runtime', { values: partial })
+    await refresh()
   }
 
   return {
@@ -88,9 +88,9 @@ export const useConfigStore = defineStore('config', () => {
     cwd,
     loaded,
     load,
-    save,
     updateSection,
     updateLocal,
+    updateRuntime,
     refresh,
   }
 })

@@ -203,24 +203,37 @@ def main() -> None:
     scene_editor.init_editor_config(config)
     ledger.init_ledger_config(config)
 
-    # ── Step B: construct the unified config service alongside the legacy
-    # CONFIG dict. Routers don't read it yet (that's Step D). If construction
-    # fails (no config.yaml in the resolved campaign dir, etc.), log and
-    # carry on so the legacy boot path keeps working unchanged.
+    # Construct the unified config service. Routers read everything through
+    # it; there is no fallback path. A failure here is fatal — silently
+    # serving an unrelated config when a campaign was explicitly named is
+    # the bug class this fail-fast prevents.
     campaign_dir_for_service = _resolve_campaign_dir_for_service(args)
-    if campaign_dir_for_service is not None:
-        try:
-            app.state.config_service = CampaignConfigService(
-                campaign_dir_for_service,
-                boot_overrides=_boot_overrides_from_args(args),
-            )
-            for warning in app.state.config_service.migration_warnings:
-                print(f"  config: {warning}")
-        except ConfigError as exc:
-            app.state.config_service = None
-            print(f"  config service: skipped ({exc})")
-    else:
-        app.state.config_service = None
+    if campaign_dir_for_service is None:
+        print(
+            "ERROR: no campaign_dir resolvable from --campaign-dir, "
+            "--session-dir, or CWD config.yaml. The server has no config to serve.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    try:
+        app.state.config_service = CampaignConfigService(
+            campaign_dir_for_service,
+            boot_overrides=_boot_overrides_from_args(args),
+        )
+    except ConfigError as exc:
+        bar = "=" * 72
+        print(
+            f"\n{bar}\nERROR: config service failed to initialize.\n"
+            f"  campaign_dir: {campaign_dir_for_service}\n"
+            f"  cause: {exc}\n"
+            f"Fix the offending file (likely {campaign_dir_for_service}/ui_state.yaml) "
+            f"and relaunch.\n{bar}\n",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    for warning in app.state.config_service.load_warnings:
+        print(f"  config: {warning}")
 
     print(f"  CampaignGenerator UI")
     if config["session"]:

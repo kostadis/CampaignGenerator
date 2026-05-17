@@ -9,7 +9,8 @@ The hard invariants this file freezes:
   - Atomic writes: a crash between ``tmp.write`` and ``os.replace`` leaves
     the original file untouched.
   - Concurrent updates serialize on the section lock.
-  - Migration runs lazily, idempotently, and surfaces warnings.
+  - A `--session-dir` boot override rebases stale absolute paths persisted
+    under the prior session dir.
 """
 
 from __future__ import annotations
@@ -27,9 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from server.config_service import (
     CampaignConfigService,
     ConfigError,
-    LEGACY_UI_CONFIG_NAME,
     LOCAL_CONFIG_NAME,
-    MIGRATION_MARKER_NAME,
     TRACKED_CONFIG_NAME,
     UI_STATE_NAME,
 )
@@ -50,21 +49,6 @@ def fresh_campaign(tmp_path):
     _write(
         cfg,
         "# hand-written, do not touch\ndocuments:\n  - label: world_state\n    path: docs/world_state.md\n",
-    )
-    return tmp_path
-
-
-@pytest.fixture
-def legacy_campaign(tmp_path):
-    """A campaign dir with ``config.yaml`` and a legacy ``ui_config.yaml``
-    that contains the worked-example bug."""
-    _write(
-        tmp_path / TRACKED_CONFIG_NAME,
-        "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
-    )
-    _write(
-        tmp_path / LEGACY_UI_CONFIG_NAME,
-        "sd_narrate_tokens: '4000'\nsd_voice_dir: voice/\nsession_doc_voice_dir: legacy/voice/\nglobal_model: claude-opus-4-6\nweird_unknown_key: hello\n",
     )
     return tmp_path
 
@@ -97,7 +81,7 @@ class TestConstruction:
         _write(fresh_campaign / LOCAL_CONFIG_NAME, "server: : :")
         # Hostile to refuse boot over a bad nav.last_page entry.
         svc = CampaignConfigService(fresh_campaign)
-        assert any("could not be parsed" in w for w in svc.migration_warnings)
+        assert any("could not be parsed" in w for w in svc.load_warnings)
 
 
 # ── config.yaml read-only invariant ──────────────────────────────────────
@@ -186,45 +170,34 @@ class TestBootOverrides:
         assert resolved["runtime"]["session_dir"] == "/tmp/x"
 
 
-# ── Migration ────────────────────────────────────────────────────────────
+# ── Fresh-campaign defaults ──────────────────────────────────────────────
 
 
-class TestMigration:
-    def test_legacy_file_migrates_on_first_load(self, legacy_campaign):
-        svc = CampaignConfigService(legacy_campaign)
-        assert (legacy_campaign / UI_STATE_NAME).exists()
-        assert (legacy_campaign / MIGRATION_MARKER_NAME).exists()
-        # Stringy int coerced.
-        assert svc.ui_state.ui.session_doc.narrate_tokens == 4000
-        # Duplicate collapsed (sd_ wins over session_doc_).
-        assert svc.ui_state.ui.session_doc.voice_dir == "voice/"
-        # global_model rerouted.
-        assert svc.ui_state.runtime.default_model == "claude-opus-4-6"
-        # Unknown quarantined with a warning.
-        assert "weird_unknown_key" in svc.ui_state.legacy.unmigrated
-        assert any("weird_unknown_key" in w for w in svc.migration_warnings)
-
-    def test_legacy_ui_config_left_untouched(self, legacy_campaign):
-        before = (legacy_campaign / LEGACY_UI_CONFIG_NAME).read_bytes()
-        CampaignConfigService(legacy_campaign)
-        after = (legacy_campaign / LEGACY_UI_CONFIG_NAME).read_bytes()
-        assert before == after
-
-    def test_migration_idempotent(self, legacy_campaign):
-        first = CampaignConfigService(legacy_campaign)
-        first_dump = first.ui_state.model_dump(mode="json")
-        second = CampaignConfigService(legacy_campaign)
-        second_dump = second.ui_state.model_dump(mode="json")
-        assert first_dump == second_dump
-        # The second construction did NOT re-run migration (ui_state
-        # already existed) — so warnings should be empty.
-        assert second.migration_warnings == []
-
-    def test_fresh_campaign_starts_with_empty_state(self, fresh_campaign):
+class TestFreshCampaign:
+    def test_no_ui_state_starts_with_defaults(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
-        assert svc.migration_warnings == []
-        # Defaults applied.
+        assert svc.load_warnings == []
+        # Defaults applied from the schema.
         assert svc.ui_state.ui.session_doc.narrate_tokens == 16000
+        # Bool defaults survive a YAML round-trip even when persisted as null.
+        assert svc.ui_state.ui.session_doc.prose_mode is False
+
+    def test_null_bool_in_persisted_file_does_not_block_load(self, fresh_campaign):
+        # The exact failure mode that triggered the --session-dir bug: a
+        # ui_state.yaml with `prose_mode: null` from a prior write.
+        (fresh_campaign / UI_STATE_NAME).write_text(
+            "version: 2\nui:\n  session_doc:\n    prose_mode: null\n"
+            "    reflections: null\n    use_enhanced_sections: null\n"
+            "    batch: null\n    scrub_enabled: null\n",
+            encoding="utf-8",
+        )
+        svc = CampaignConfigService(fresh_campaign)
+        sd = svc.ui_state.ui.session_doc
+        assert sd.prose_mode is False
+        assert sd.reflections is False
+        assert sd.use_enhanced_sections is False
+        assert sd.batch is False
+        assert sd.scrub_enabled is False
 
 
 # ── update_section / update_local ─────────────────────────────────────────
@@ -369,12 +342,161 @@ class TestResolvedView:
 
     def test_non_path_fields_pass_through(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
-        svc.update_section("session_doc", {"narrate_tokens": 12000, "prose_mode": "lyric"})
+        svc.update_section("session_doc", {"narrate_tokens": 12000, "narration_genre": "lyric"})
         resolved = svc.resolved()
         assert resolved["ui"]["session_doc"]["narrate_tokens"] == 12000
-        assert resolved["ui"]["session_doc"]["prose_mode"] == "lyric"
+        assert resolved["ui"]["session_doc"]["narration_genre"] == "lyric"
 
     def test_resolved_includes_campaign_dir(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
         resolved = svc.resolved()
         assert resolved["campaign_dir"] == str(fresh_campaign.resolve())
+
+    def test_boot_session_dir_rebases_stale_absolute_paths(self, fresh_campaign):
+        """The user-reported bug: ``ui_state.yaml`` had session-scoped fields
+        persisted as absolute paths under the previous session dir. Booting
+        with ``--session-dir`` overrode ``runtime.session_dir`` but the
+        absolute paths in ``ui.session_doc.*`` passed through unchanged. The
+        rebase pass in ``resolved()`` is the fix."""
+        old_sd = fresh_campaign / "summaries" / "20260505"
+        new_sd = fresh_campaign / "summaries" / "20260512"
+        for d in (old_sd, new_sd):
+            d.mkdir(parents=True)
+
+        # Persist the stale state — these are what the previous session left
+        # behind in ui_state.yaml.
+        svc_init = CampaignConfigService(fresh_campaign)
+        svc_init.update_section(
+            "session_doc",
+            {
+                "scene_extractions_dir": str(old_sd / "scene_extractions_new"),
+                "narration_dir": str(old_sd / "narration"),
+                "session_summary": str(old_sd / "session-summary.md"),
+                "voice_dir": str(fresh_campaign / "voice"),  # campaign-scoped — must NOT rebase
+            },
+        )
+        svc_init.update_runtime({"session_dir": str(old_sd)})
+
+        # New launch with --session-dir 20260512.
+        svc = CampaignConfigService(
+            fresh_campaign,
+            boot_overrides={"runtime.session_dir": str(new_sd)},
+        )
+        r = svc.resolved()
+
+        assert r["runtime"]["session_dir"] == str(new_sd.resolve())
+        assert r["ui"]["session_doc"]["scene_extractions_dir"] == str(
+            (new_sd / "scene_extractions_new").resolve()
+        )
+        assert r["ui"]["session_doc"]["narration_dir"] == str(
+            (new_sd / "narration").resolve()
+        )
+        assert r["ui"]["session_doc"]["session_summary"] == str(
+            (new_sd / "session-summary.md").resolve()
+        )
+        # Campaign-scoped path stays put.
+        assert r["ui"]["session_doc"]["voice_dir"] == str(
+            (fresh_campaign / "voice").resolve()
+        )
+
+    def test_rebase_handles_persisted_paths_under_unrelated_session(
+        self, fresh_campaign
+    ):
+        """The Phandalin failure mode: persisted runtime.session_dir was
+        ``summaries/20260429`` but session_doc fields were under
+        ``summaries/20260505`` (different historical save). The rebase pass
+        must key off the path PATTERN, not the persisted runtime value."""
+        for d in (
+            fresh_campaign / "summaries" / "20260429",
+            fresh_campaign / "summaries" / "20260505",
+            fresh_campaign / "summaries" / "20260512",
+        ):
+            d.mkdir(parents=True)
+        wrong_sd = fresh_campaign / "summaries" / "20260505"
+        stale_runtime_sd = fresh_campaign / "summaries" / "20260429"
+        new_sd = fresh_campaign / "summaries" / "20260512"
+
+        svc_init = CampaignConfigService(fresh_campaign)
+        svc_init.update_section(
+            "session_doc",
+            {"narration_dir": str(wrong_sd / "narration")},
+        )
+        svc_init.update_runtime({"session_dir": str(stale_runtime_sd)})
+
+        svc = CampaignConfigService(
+            fresh_campaign,
+            boot_overrides={"runtime.session_dir": str(new_sd)},
+        )
+        r = svc.resolved()
+        assert r["ui"]["session_doc"]["narration_dir"] == str(
+            (new_sd / "narration").resolve()
+        )
+
+    def test_rebase_only_runs_when_boot_overrides_session_dir(
+        self, fresh_campaign
+    ):
+        """Without a --session-dir CLI flag, persisted absolute paths must pass
+        through unchanged — even if ``runtime.session_dir`` happens to point
+        somewhere else. The rebase is a fix-the-stale-data behavior gated on
+        an explicit boot override."""
+        old_sd = fresh_campaign / "summaries" / "20260505"
+        runtime_sd = fresh_campaign / "summaries" / "20260512"
+        for d in (old_sd, runtime_sd):
+            d.mkdir(parents=True)
+
+        svc_init = CampaignConfigService(fresh_campaign)
+        svc_init.update_section(
+            "session_doc", {"narration_dir": str(old_sd / "narration")}
+        )
+        svc_init.update_runtime({"session_dir": str(runtime_sd)})
+
+        # No boot override.
+        svc = CampaignConfigService(fresh_campaign)
+        r = svc.resolved()
+        assert r["ui"]["session_doc"]["narration_dir"] == str(
+            (old_sd / "narration").resolve()
+        )
+
+    def test_explicit_boot_override_wins_over_rebase(self, fresh_campaign):
+        """If the CLI passes both --session-dir AND an explicit override for a
+        session-scoped field, the explicit one must win."""
+        old_sd = fresh_campaign / "summaries" / "old"
+        new_sd = fresh_campaign / "summaries" / "new"
+        custom = fresh_campaign / "custom" / "narration"
+        for d in (old_sd, new_sd, custom):
+            d.mkdir(parents=True)
+
+        svc_init = CampaignConfigService(fresh_campaign)
+        svc_init.update_section(
+            "session_doc", {"narration_dir": str(old_sd / "narration")}
+        )
+        svc_init.update_runtime({"session_dir": str(old_sd)})
+
+        svc = CampaignConfigService(
+            fresh_campaign,
+            boot_overrides={
+                "runtime.session_dir": str(new_sd),
+                "session_doc.narration_dir": str(custom),
+            },
+        )
+        r = svc.resolved()
+        assert r["ui"]["session_doc"]["narration_dir"] == str(custom.resolve())
+
+
+# ── update_runtime ────────────────────────────────────────────────────────
+
+
+class TestUpdateRuntime:
+    def test_update_runtime_persists(self, fresh_campaign):
+        svc = CampaignConfigService(fresh_campaign)
+        svc.update_runtime({"session_dir": "summaries/sess1", "default_model": "claude-opus-4-6"})
+        on_disk = yaml.safe_load((fresh_campaign / UI_STATE_NAME).read_text())
+        assert on_disk["runtime"]["session_dir"] == "summaries/sess1"
+        assert on_disk["runtime"]["default_model"] == "claude-opus-4-6"
+
+    def test_update_runtime_merges(self, fresh_campaign):
+        svc = CampaignConfigService(fresh_campaign)
+        svc.update_runtime({"session_dir": "summaries/sess1"})
+        svc.update_runtime({"default_model": "claude-opus-4-6"})
+        assert svc.ui_state.runtime.session_dir == "summaries/sess1"
+        assert svc.ui_state.runtime.default_model == "claude-opus-4-6"

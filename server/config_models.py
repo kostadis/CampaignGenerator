@@ -27,7 +27,14 @@ def _empty_to_none(v: Any) -> Any:
     return v
 
 
+def _none_to_false(v: Any) -> Any:
+    """Coerce a YAML/JSON ``null`` to ``False`` so legacy/UI writes that
+    leave a bool field unset never break schema validation."""
+    return False if v is None else v
+
+
 OptStr = Annotated[str | None, BeforeValidator(_empty_to_none)]
+OptBool = Annotated[bool, BeforeValidator(_none_to_false)]
 
 
 class _LooseSection(BaseModel):
@@ -60,11 +67,11 @@ class SessionDocSection(BaseModel):
     characters: OptStr = None
     gm_player: OptStr = None
     narrate_tokens: int = 16000
-    prose_mode: bool = False
-    reflections: bool = False
+    prose_mode: OptBool = False
+    reflections: OptBool = False
     narration_genre: OptStr = None
-    use_enhanced_sections: bool = False
-    batch: bool = False
+    use_enhanced_sections: OptBool = False
+    batch: OptBool = False
     session_name: OptStr = None
     context: list[str] = Field(default_factory=list)
     # LLM backend selector + DGX overrides. Endpoint/model defaults are
@@ -73,7 +80,7 @@ class SessionDocSection(BaseModel):
     backend: Literal["anthropic", "dgx"] = "anthropic"
     dgx_endpoint: OptStr = None
     dgx_model: OptStr = None
-    scrub_enabled: bool = False
+    scrub_enabled: OptBool = False
     scrub_tokens: int = 16000
 
 

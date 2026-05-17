@@ -6,6 +6,11 @@ Reads `session_doc_scene_NN_<slug>.md` files written by Stage 3
 frontmatter `scene` field (numeric), and concatenates them into a single
 session document.
 
+If a scene has both a raw `.md` and a `.scrubbed.md` variant (the latter
+produced by `scrub_mechanics.py`), the scrubbed version is used. Pass
+`--no-prefer-scrubbed` to fall back to the raw narration even when a
+scrubbed variant exists.
+
 No LLM calls. The point is to make narration incremental: the user can
 edit one scene file, re-run a single scene through `session_doc.py`,
 and re-assemble without touching the others.
@@ -42,6 +47,30 @@ def humanise_slug(slug: str) -> str:
     return " ".join(w.capitalize() for w in slug.split("_"))
 
 
+def collect_scene_files(in_dir: Path, pattern: str, prefer_scrubbed: bool) -> list[Path]:
+    """Return one file per scene, preferring `.scrubbed.md` when present.
+
+    The glob pattern matches both `foo.md` and `foo.scrubbed.md`, so we
+    dedupe by base stem (filename minus `.scrubbed.md` or `.md`). With
+    `prefer_scrubbed`, the scrubbed variant wins when both exist; without
+    it, the raw `.md` variant wins and `.scrubbed.md` files are ignored.
+    """
+    by_stem: dict[str, Path] = {}
+    for path in sorted(in_dir.glob(pattern)):
+        name = path.name
+        if name.endswith(".scrubbed.md"):
+            base = name[: -len(".scrubbed.md")]
+            if not prefer_scrubbed:
+                continue
+            by_stem[base] = path
+        elif name.endswith(".md"):
+            base = name[: -len(".md")]
+            by_stem.setdefault(base, path)
+        else:
+            continue
+    return [by_stem[k] for k in sorted(by_stem)]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Stage 4 — combine per-scene narration files into a single session document."
@@ -57,6 +86,10 @@ def main() -> None:
     parser.add_argument("--pattern", default="session_doc_scene_*.md",
                         help="Glob pattern for per-scene files (default: "
                              "session_doc_scene_*.md).")
+    parser.add_argument("--no-prefer-scrubbed", action="store_true",
+                        help="Use raw .md files even when a .scrubbed.md "
+                             "variant exists. Default behaviour prefers "
+                             "scrubbed.")
     args = parser.parse_args()
 
     in_dir = Path(args.input_dir).expanduser()
@@ -64,7 +97,8 @@ def main() -> None:
         print(f"Error: input directory not found: {in_dir}", file=sys.stderr)
         sys.exit(1)
 
-    files = sorted(in_dir.glob(args.pattern))
+    files = collect_scene_files(in_dir, args.pattern,
+                                prefer_scrubbed=not args.no_prefer_scrubbed)
     if not files:
         print(f"Error: no files matching '{args.pattern}' in {in_dir}", file=sys.stderr)
         sys.exit(1)
@@ -101,7 +135,9 @@ def main() -> None:
     out_path = Path(args.output).expanduser().resolve()
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(full_doc, encoding="utf-8")
-    print(f"\nAssembled {len(scenes)} scene(s) → {out_path}")
+    scrubbed_count = sum(1 for _, _, _, p in scenes if p.name.endswith(".scrubbed.md"))
+    print(f"\nAssembled {len(scenes)} scene(s) → {out_path}"
+          f" ({scrubbed_count} scrubbed, {len(scenes) - scrubbed_count} raw)")
     for scene_num, meta, _body, path in scenes:
         print(f"  {scene_num:02d}. {meta.get('scene_name') or meta.get('slug', '?')}"
               f" ({path.name})")
