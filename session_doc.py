@@ -743,6 +743,20 @@ carry any of that framing into the prose:
     BAD:  "the DM described a dark hall with guttering torches"
     BAD:  "we were told the air smelled of blood"
     GOOD: "the torches had gone out, and the dark pressed in; the smell hit me first"
+- DM/GM narrating an in-fiction action or NPC state is fictional truth — never
+  attribute it to the DM as a speaker. When the source has "the DM said she was
+  convinced" or "the DM announced combat begins" or "the DM confirmed the deception
+  sold", render the fact directly in the world. The DM is not a character. Treat
+  these as the world simply being that way:
+    BAD:  "The DM confirmed her sincerity."
+    BAD:  "The DM said, with a touch of grim humor, that Uncle Joon was dead."
+    BAD:  "'Bob rushes the dragon,' the DM announced, and the battle was on."
+    GOOD: "She meant it. I could see that — the way her hands had gone still."
+    GOOD: "Uncle Joon was dead. Whatever he had been about to tell me went with him."
+    GOOD: "Bob hit the dragon shoulder-first and the room broke open."
+  Rule: if the source line begins "the DM/GM [verb]" and the verb is about the
+  fiction (said, announced, confirmed, revealed, explained, told us, decided),
+  the line is fictional truth — render the truth, drop the attribution.
 - DM dramatic framing is the character's emotional reality — not a narrator's
   commentary on the significance of events. When the source material contains the DM
   building stakes or emotional weight ("this isn't just a fight — she is everything
@@ -808,6 +822,11 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                  f"  This scene only.\n")
         length = ("Write as many paragraphs as needed to give every extracted moment its due — "
                   "do not compress multiple distinct beats into a single paragraph. "
+                  "Target 600-900 words for a typical scene; expand each extracted moment into "
+                  "2-3 sentences of observation, voice, or aside. Do NOT summarize the moments — "
+                  "render each one with concrete sensory detail and the narrator's reaction. "
+                  "A short, plot-beat-only output is a failure mode: if your draft is under "
+                  "500 words, you have summarized rather than narrated; go back and expand. "
                   "Stop as soon as the scene is complete. "
                   "If you find yourself describing a new location or the next event, you have gone too far — stop.")
         dialogue = DIALOGUE_INSTRUCTION_CONDITIONAL
@@ -848,6 +867,15 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                  .replace("{narrator}", narrator)
                  .replace("{voice_note}", voice_note.strip()))
         result += "\n\n" + block
+    if genre and genre.strip():
+        # Repeat the genre directive at the tail of the prompt. The opening copy
+        # is buried under ~150 lines of prose-mode/voice rules by the time
+        # generation starts; smaller models lose the genre signal to recency.
+        # Claude is unaffected by the duplicate — same instruction, same prompt.
+        result += (
+            "\n\nGENRE — FINAL REMINDER (this overrides any generic register the "
+            "above rules suggest):\n" + genre.strip()
+        )
     return result
 
 
@@ -1199,6 +1227,22 @@ def main() -> None:
     parser.add_argument("--verbose", action="store_true",
                         help="Print the full system and user prompt before each API call")
     parser.add_argument("--model", default="claude-sonnet-4-6")
+    parser.add_argument(
+        "--dgx-endpoint",
+        default=None,
+        metavar="URL",
+        help="Route LLM calls to an OpenAI-compatible server instead of Anthropic "
+             "(e.g. http://192.168.1.147:8001/v1 for vLLM on the DGX Spark). "
+             "Falls back to the DGX_ENDPOINT env var when unset.",
+    )
+    parser.add_argument(
+        "--dgx-model",
+        default=None,
+        metavar="NAME",
+        help="Model name to send to the DGX endpoint "
+             "(default: Qwen/Qwen2.5-14B-Instruct-AWQ, or DGX_MODEL env var). "
+             "Ignored when --dgx-endpoint is unset.",
+    )
     parser.add_argument("--enhanced-sections", metavar="FILE",
                         help="Use a pre-saved Pass 2 output file instead of re-running Pass 2. "
                              "When --from-extractions is used, auto-detected as "
@@ -1432,7 +1476,7 @@ def main() -> None:
             enhanced_sections = auto_enhanced.read_text(encoding="utf-8")
             print(f"  Enhanced sections: auto-detected ({len(enhanced_sections):,} chars)")
 
-    client = make_client()
+    client = make_client(endpoint=args.dgx_endpoint, model_override=args.dgx_model)
 
     single_narrator = args.narrator.strip() if args.narrator else None
 

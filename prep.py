@@ -301,6 +301,22 @@ def main() -> None:
                              "encounter doc for single)")
     parser.add_argument("--no-log", action="store_true", help="Skip saving a log file")
     parser.add_argument(
+        "--dgx-endpoint",
+        default=None,
+        metavar="URL",
+        help="Route LLM calls to an OpenAI-compatible server instead of Anthropic "
+             "(e.g. http://192.168.1.147:8001/v1 for vLLM on the DGX Spark). "
+             "Falls back to the DGX_ENDPOINT env var when unset.",
+    )
+    parser.add_argument(
+        "--dgx-model",
+        default=None,
+        metavar="NAME",
+        help="Model name to send to the DGX endpoint "
+             "(default: Qwen/Qwen2.5-14B-Instruct-AWQ, or DGX_MODEL env var). "
+             "Ignored when --dgx-endpoint is unset.",
+    )
+    parser.add_argument(
         "--campaign-dir",
         default=None,
         help="Campaign workspace root (default: $CAMPAIGN_DIR or the config "
@@ -338,14 +354,17 @@ def main() -> None:
     # that happens to exist flows into the user prompt for free.
     attach_proposal_to_documents(config, _campaign_dir)
 
+    def _make_client():
+        return make_client(endpoint=args.dgx_endpoint, model_override=args.dgx_model)
+
     if args.session is not None:
         outline = get_session_outline_from_file(args.session)
-        run_session(make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output)
+        run_session(_make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output)
         return
 
     if args.session_text is not None:
         outline = get_session_outline_interactive(args.session_text if args.session_text else None)
-        run_session(make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output)
+        run_session(_make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output)
         return
 
     beat = get_beat(args.beat)
@@ -356,7 +375,7 @@ def main() -> None:
         run_single(None, config, system, user, args.model, clipboard=True, no_log=args.no_log, output=args.output)
         return
 
-    client = make_client()
+    client = _make_client()
     if args.mode == "single":
         run_single(client, config, load_file(config["system_prompt"], base_dir), user, args.model, clipboard=False, no_log=args.no_log, output=args.output)
     else:

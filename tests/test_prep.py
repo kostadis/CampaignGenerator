@@ -312,7 +312,7 @@ def test_plan_only_writes_plan_md_to_per_scene_output(tmp_path, monkeypatch):
         "focus: scouting the route ahead\n"
     )
 
-    monkeypatch.setattr(session_doc, "make_client", lambda: object())
+    monkeypatch.setattr(session_doc, "make_client", lambda **_: object())
     monkeypatch.setattr(
         session_doc, "stream_api",
         lambda *a, **kw: fake_plan,

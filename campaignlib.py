@@ -5,6 +5,7 @@ scripts only contain their own logic.
 """
 
 import json
+import os
 import re
 import sys
 import time
@@ -776,8 +777,172 @@ def assemble_docs(config: dict, doc_labels: list[str], base_dir: Path | None = N
 
 # ── API ───────────────────────────────────────────────────────────────────────
 
-def make_client():
-    """Return an Anthropic client, exiting with a helpful message if not installed."""
+DGX_DEFAULT_MODEL = "Qwen/Qwen2.5-14B-Instruct-AWQ"
+
+
+def _flatten_to_text(value) -> str:
+    """Reduce an Anthropic-style content value to plain text for OpenAI-compat servers.
+
+    Accepts: a string, or a list of content blocks (dicts with "type" + "text").
+    Drops any non-text blocks (images, tool_use). vLLM/Qwen doesn't see them.
+    """
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value
+    if isinstance(value, list):
+        parts = []
+        for block in value:
+            if isinstance(block, dict) and block.get("type") == "text":
+                parts.append(block.get("text", ""))
+            elif isinstance(block, str):
+                parts.append(block)
+        return "\n\n".join(p for p in parts if p)
+    return str(value)
+
+
+def _anthropic_to_openai_messages(system, messages):
+    """Translate (system, [Anthropic messages]) → OpenAI chat.completions messages."""
+    out = []
+    sys_text = _flatten_to_text(system)
+    if sys_text:
+        out.append({"role": "system", "content": sys_text})
+    for m in messages or []:
+        out.append({"role": m["role"], "content": _flatten_to_text(m.get("content"))})
+    return out
+
+
+class _OpenAICompatResponse:
+    """Mimics anthropic.types.Message just enough for call_api's `.content[0].text` access."""
+
+    class _Block:
+        def __init__(self, text: str):
+            self.type = "text"
+            self.text = text
+
+    def __init__(self, text: str):
+        self.content = [self._Block(text)]
+        self.stop_reason = "end_turn"
+
+
+class _OpenAICompatStream:
+    """Mimics the anthropic streaming context manager: `with client.messages.stream(...) as s: s.text_stream`."""
+
+    def __init__(self, oai_client, *, model: str, max_tokens: int, messages: list):
+        self._oai = oai_client
+        self._model = model
+        self._max_tokens = max_tokens
+        self._messages = messages
+        self._stream = None
+
+    def __enter__(self):
+        self._stream = self._oai.chat.completions.create(
+            model=self._model,
+            max_tokens=self._max_tokens,
+            messages=self._messages,
+            stream=True,
+        )
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        try:
+            self._stream.close()
+        except Exception:
+            pass
+        return False
+
+    @property
+    def text_stream(self):
+        def _iter():
+            for chunk in self._stream:
+                if not chunk.choices:
+                    continue
+                delta = chunk.choices[0].delta
+                piece = getattr(delta, "content", None)
+                if piece:
+                    yield piece
+        return _iter()
+
+
+class _OpenAICompatMessages:
+    def __init__(self, client: "_OpenAICompatClient"):
+        self._client = client
+
+    def _resolve_model(self, model: str) -> str:
+        if self._client.model_override:
+            return self._client.model_override
+        # Caller passed an Anthropic model name (e.g. "claude-sonnet-4-6") which the
+        # DGX server doesn't know about — substitute the configured default rather
+        # than 404.
+        if isinstance(model, str) and model.startswith("claude-"):
+            return DGX_DEFAULT_MODEL
+        return model
+
+    def create(self, *, model, max_tokens, system, messages, tools=None, **_ignored):
+        if tools:
+            raise NotImplementedError(
+                "tool use is not supported on the DGX endpoint — drop --dgx-endpoint "
+                "for paths that need tools (e.g. enhance_recap with tools enabled)."
+            )
+        resp = self._client.oai.chat.completions.create(
+            model=self._resolve_model(model),
+            max_tokens=max_tokens,
+            messages=_anthropic_to_openai_messages(system, messages),
+        )
+        text = resp.choices[0].message.content or ""
+        return _OpenAICompatResponse(text)
+
+    def stream(self, *, model, max_tokens, system, messages, **_ignored):
+        return _OpenAICompatStream(
+            self._client.oai,
+            model=self._resolve_model(model),
+            max_tokens=max_tokens,
+            messages=_anthropic_to_openai_messages(system, messages),
+        )
+
+
+class _OpenAICompatClient:
+    """Anthropic-shaped façade over an OpenAI-compatible server (vLLM on the DGX, etc.).
+
+    Supports only the call shapes used by stream_api / call_api: text-in, text-out,
+    single-turn user message with an optional system prompt. Batching, tool use,
+    and vision content are not implemented — those paths need the real Anthropic API.
+    """
+
+    def __init__(self, endpoint: str, model_override: str | None = None,
+                 api_key: str = "not-needed"):
+        try:
+            from openai import OpenAI
+        except ImportError:
+            print("Error: openai not installed. Run: pip install openai", file=sys.stderr)
+            sys.exit(1)
+        # vLLM serves under /v1/. Accept both "http://host:port" and "http://host:port/v1".
+        base_url = endpoint.rstrip("/")
+        if not base_url.endswith("/v1"):
+            base_url = base_url + "/v1"
+        self.oai = OpenAI(base_url=base_url, api_key=api_key)
+        self.model_override = model_override or os.environ.get("DGX_MODEL") or DGX_DEFAULT_MODEL
+        self.messages = _OpenAICompatMessages(self)
+
+
+def make_client(endpoint: str | None = None, model_override: str | None = None):
+    """Return an LLM client.
+
+    Default: an Anthropic client (existing behaviour).
+
+    When `endpoint` (or the DGX_ENDPOINT env var) is set, returns a thin adapter
+    that points at an OpenAI-compatible server — e.g. vLLM serving Qwen on the
+    DGX Spark — and presents the small subset of the anthropic SDK surface that
+    stream_api / call_api use. `model_override` (or DGX_MODEL env var) controls
+    which model name is sent to that server; defaults to Qwen 2.5 14B AWQ.
+
+    No fallback if the local endpoint is unreachable — the choice is explicit,
+    and an obscured swap-back to Anthropic would defeat the point of pointing
+    at the DGX in the first place.
+    """
+    endpoint = endpoint or os.environ.get("DGX_ENDPOINT")
+    if endpoint:
+        return _OpenAICompatClient(endpoint, model_override=model_override)
     try:
         import anthropic
     except ImportError:
