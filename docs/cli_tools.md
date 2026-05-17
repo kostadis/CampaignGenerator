@@ -165,6 +165,8 @@ python party.py \
 
 **Output shape — candidates, not decisions.** Each non-trackless PC gets a "Candidate Arc Score Events" bullet list: session events with the verbatim trigger text quoted from the mechanic file and a proposed direction (+/-). The GM decides which candidates actually fire. The synthesizer never commits to a current value, running total, or threshold claim — adjudicating score changes is a precision decision, not a rendering one. Trackless PCs have no candidate section at all.
 
+**Output file — draft, not in-place rewrite.** `party.md` is hand-edited downstream (session summaries and the GM add content the LLM never sees), so if `--output` already exists `party.py` writes a sibling `<stem>.candidate<ext>` (e.g. `docs/party.candidate.md`) and prints a `diff -u` command for manual merge. The live `party.md` is never clobbered. Pass `--overwrite` only when bootstrapping a fresh party.md.
+
 ## dnd_sheet.py
 
 Converts a D&D Beyond character sheet PDF to structured markdown using Claude's vision API.

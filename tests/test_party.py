@@ -290,3 +290,59 @@ characters:
     # No "Arc score mechanic" source comment, but the trackless marker is there.
     assert "<!-- Arc score mechanic:" not in prompt
     assert "<!-- Arc score: INTENTIONALLY TRACKLESS -->" in prompt
+
+
+def test_existing_output_is_preserved_and_candidate_is_written(monkeypatch, fake_stream_api, tmp_path, capsys):
+    # Hand-edited party.md must survive a re-run; the regenerated draft
+    # should land in a sibling .candidate.md instead.
+    sheet = _write(tmp_path / "soma.md", "Tortle Druid")
+    output = _write(tmp_path / "party.md", "HAND EDITED PARTY DOC — keep me")
+    candidate = tmp_path / "party.candidate.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--character", str(sheet),
+        "--output", str(output),
+    ])
+    party.main()
+
+    assert output.read_text(encoding="utf-8") == "HAND EDITED PARTY DOC — keep me"
+    assert candidate.exists()
+    assert "[stub-" in candidate.read_text(encoding="utf-8")
+    out = capsys.readouterr().out
+    assert "Candidate party document saved to" in out
+    assert "diff -u" in out
+
+
+def test_overwrite_flag_replaces_existing_output(monkeypatch, fake_stream_api, tmp_path):
+    sheet = _write(tmp_path / "soma.md", "Tortle Druid")
+    output = _write(tmp_path / "party.md", "OLD CONTENT")
+    candidate = tmp_path / "party.candidate.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--character", str(sheet),
+        "--output", str(output),
+        "--overwrite",
+    ])
+    party.main()
+
+    assert "[stub-" in output.read_text(encoding="utf-8")
+    assert not candidate.exists()
+
+
+def test_bootstrap_writes_directly_when_output_missing(monkeypatch, fake_stream_api, tmp_path):
+    sheet = _write(tmp_path / "soma.md", "Tortle Druid")
+    output = tmp_path / "party.md"
+    candidate = tmp_path / "party.candidate.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--character", str(sheet),
+        "--output", str(output),
+    ])
+    party.main()
+
+    assert output.exists()
+    assert "[stub-" in output.read_text(encoding="utf-8")
+    assert not candidate.exists()

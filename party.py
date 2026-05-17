@@ -10,6 +10,15 @@ Runs in two passes for the session summaries (same as distill.py):
   1. Extract — chunks the summaries, pulls party-relevant info from each chunk
   2. Synthesize — combines character sheets + extractions + backstories into party.md
 
+Output behavior:
+  party.md is now hand-edited downstream (session summaries and the GM
+  add content the LLM does not see), so this script does NOT overwrite an
+  existing --output file by default. When --output already exists it writes
+  a sibling `<stem>.candidate<ext>` (e.g. `party.candidate.md`) and prints
+  a diff command so the GM can manually merge the regenerated draft into
+  the live document. Pass --overwrite to restore the old clobbering
+  behavior (intended only when bootstrapping a fresh party.md).
+
 Usage:
   python party.py \\
       --character soma.md --character vukradin.md --character valphine.md \\
@@ -312,7 +321,14 @@ def main() -> None:
     parser.add_argument("--context", nargs="+", metavar="FILE", default=[],
                         help="Additional context files (e.g. campaign_state.md)")
     parser.add_argument("--output", "-o", required=True, metavar="FILE",
-                        help="Where to save the party document")
+                        help="Where to save the party document. If this file already "
+                             "exists, the regenerated draft is written to "
+                             "<stem>.candidate<ext> next to it (so hand edits are not "
+                             "clobbered) — see --overwrite.")
+    parser.add_argument("--overwrite", action="store_true",
+                        help="Overwrite --output even if it exists, instead of writing "
+                             "to a sibling .candidate.md file. Use only when "
+                             "bootstrapping a fresh party.md.")
     parser.add_argument("--chunk-size", type=int, default=60000, metavar="CHARS",
                         help="Max characters per extract chunk (default: 60000)")
     parser.add_argument("--split-chapters", metavar="PREFIX", default=None,
@@ -474,9 +490,28 @@ def main() -> None:
         )
     print("=" * 60)
 
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(party_doc.strip() + "\n", encoding="utf-8")
-    print(f"\nParty document saved to: {output}")
+    # party.md is hand-edited downstream — write to a sibling candidate file
+    # when the target already exists, so a regenerated draft can be merged
+    # manually instead of clobbering edits the LLM never saw.
+    if output.exists() and not args.overwrite:
+        write_path = output.with_name(output.stem + ".candidate" + output.suffix)
+        is_candidate = True
+    else:
+        write_path = output
+        is_candidate = False
+
+    write_path.parent.mkdir(parents=True, exist_ok=True)
+    write_path.write_text(party_doc.strip() + "\n", encoding="utf-8")
+
+    if is_candidate:
+        print(f"\nCandidate party document saved to: {write_path}")
+        print(f"  ({output.name} already exists — wrote to candidate to preserve hand edits)")
+        print(f"  Review and merge:")
+        print(f"    diff -u {output} {write_path}")
+        print(f"    # or open both in your editor and merge by hand")
+        print(f"  Pass --overwrite to replace {output.name} directly (bootstrap only).")
+    else:
+        print(f"\nParty document saved to: {write_path}")
     if extract_files:
         print(f"Extractions kept in: {extract_dir}")
         print("(Re-run with --synthesize-only to re-synthesize without re-extracting)\n")
