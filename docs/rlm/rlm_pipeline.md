@@ -17,7 +17,7 @@ CampaignGenerator integrates with three external tools to give the AI and the GM
 - `kind: "candidate"`, `cost: "cheap"` — entity in the canonical 5etools tree (`fivetools_catalog`) that's not yet in the palace. Carries a `fivetools_ingest.py --filter` one-liner.
 - `kind: "candidate"`, `cost: "expensive"` — PDF in rpg-library with no canonical-JSON equivalent. Carries a `pdf_to_5etools_v2.py convert` + `fivetools_ingest.py` command pair plus the `(book_id, relative_path, product_id)` identifier triple.
 
-Hard tier order: drawer/statblock > cheap > expensive. No score normalization across sources. See `docs/rlm_architecture.md` §9 for the canonical contract.
+Hard tier order: drawer/statblock > cheap > expensive. No score normalization across sources. See `rlm_architecture.md` §9 for the canonical contract.
 
 Writes go through **MemPalace's MCP server** (`mempalace_client.py`); reads from rpg-library go through its HTTP API (stdlib `urllib`); reads from the canonical 5etools tree go through `fivetools_catalog` in-process. No CG module opens MemPalace's ChromaDB directly.
 

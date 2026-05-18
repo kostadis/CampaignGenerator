@@ -217,7 +217,7 @@ The Web UI Scene Editor exposes the same toggle as a `Batch` checkbox in the Sta
 
 ## Voice files
 
-Per-character voice files live in `--voice-dir` (e.g. `voice/vukradin_voice.md`). Each file is injected only into that character's narration pass. Players write their own; see `PLAYER_VOICE_GUIDE.md` for the format.
+Per-character voice files live in `--voice-dir` (e.g. `voice/vukradin_voice.md`). Each file is injected only into that character's narration pass. Players write their own; see [`docs/player/voice_guide.md`](../player/voice_guide.md) for the format.
 
 ## Dialogue handling
 
@@ -278,3 +278,71 @@ python vtt_summary.py session.vtt \
 Without `--reference-summaries`, the extraction falls back to an unguided scan — less precise because each chunk is processed independently with no knowledge of what matters in the full session.
 
 The reference summary also feeds into the synthesis pass for cross-referencing, ensuring the final summary doesn't miss events that appear in the GMassistant recap.
+
+## Design rationale
+
+Why the pipeline looks the way it does. These are the engineering problems that drove the current shape — read this when you're tempted to "simplify" something.
+
+### 1. Narrative bleed
+
+Early versions passed all session extractions to every narrator. The result: the barbarian's section described things only the cleric witnessed; the druid's section referenced the bard's internal monologue. Characters "knew" things they weren't present for.
+
+**Solution**: Two-stage isolation.
+
+- Pass 3 (plan) assigns each character a *chunk range* or *scene* — a chronological slice of the session. Characters with important moments throughout get a wider range; characters central to a specific scene get a narrower one.
+- Pass 4 (extract) runs silently once per character, pulling *only that character's moments* from their assigned chunks. The narration pass (Pass 5) then receives only this character-specific list — no cross-contamination possible.
+
+### 2. Coverage vs. redundancy
+
+Getting the chunk assignment right took several iterations:
+
+- **Too narrow**: plan assigned 3 of 4 characters to chunk 1 only. The entire second half of the session fell to one character who couldn't cover it alone. Story cut short.
+- **Too broad**: every character got all chunks. Each character then narrated the entire session, producing four redundant full-length accounts.
+- **Correct**: the plan prompt explicitly models the intended distribution — novel-chapter style, where each character covers a chronological *portion* and together they cover the whole thing.
+
+The plan is parsed with regex into structured dicts; chunk ranges are integers, not filenames, to avoid string-matching failures.
+
+### 3. Wrong character classes
+
+The model kept misidentifying classes — calling the bard a paladin, for example — by inferring class from action descriptions in the VTT rather than reading `party.md`.
+
+**Solution**: `extract_character_roster()` parses the bold class lines from `party.md` at startup (e.g. `**Human Bard 5, Player: Alice**`) and injects a compact `## Character Classes (definitive — never contradict these)` block at the top of both the extraction and narration prompts, before any session content.
+
+### 4. Style transfer
+
+The handcrafted summaries have a distinctive voice: non-linear structure, narrator intrusion, verbatim dialogue exchanges (both sides), humour, short punchy paragraphs. Getting the model to match this from a system-prompt description alone wasn't reliable.
+
+**Solution**: few-shot examples via `--examples`. Excerpts extracted from earlier chapters of the campaign document, one per character, each covering a different scene type (travel, combat, political comedy, emotional beat), injected into the narration system prompt under a `STYLE REFERENCE` block with instructions to study voice, structure, and tone — not to copy content.
+
+### 5. Handoff continuity
+
+Between narrators, the last sentence of the previous section is passed as a "handoff" to the next narrator's prompt, so each voice picks up naturally from where the previous one left off — without knowing the full text of the previous section.
+
+### 6. VTT roleplay quote tracking
+
+The VTT contains verbatim roleplay quotes that are higher fidelity than what survives Pass 4 extraction. These need to be matched to scenes so the narration can use the actual words, not a paraphrase.
+
+**Solution**: the Quote Ledger ([`quote_ledger.py`](../../quote_ledger.py)) — a SQLite database that parses `extract_*.md` files from the roleplay extraction directory, matches quotes to scenes by chunk range (the source filename `extract_042.md` implies chunk 42, which maps deterministically to the scene whose `chunk_start ≤ 42 ≤ chunk_end`), and stores assignments. Manual overrides (pinned quotes) are never auto-reassigned. The auto-assign is fully deterministic — no LLM call. An earlier LLM-based match-by-similarity produced temporal violations (quotes from chunk 42 landing in Scene 1).
+
+### 7. Speaker labels in extractions
+
+VTT speaker labels often include player names in parentheses: `Thorin (Joe)`, `GM (Kostadis)`. These bleed into extraction files and then into narration prose.
+
+**Solution**: `CHAR_EXTRACT_SYSTEM` includes a normalization instruction:
+- `GM (Name)` or `DM (Name)` → always written as `GM`
+- `Character (Player)` → player name stripped; character name only
+- Unnamed NPCs → kept as-is
+
+This applies to newly generated extractions. Existing files must be edited manually.
+
+### Pass → system prompt map
+
+| Pass | System prompt | Key instruction |
+|---|---|---|
+| 1 | `CONSISTENCY_SYSTEM` | Find factual errors vs. context docs |
+| 2 | `ENHANCE_SYSTEM` | Expand Memorable Moments; preserve Scenes/NPCs; omit Summary |
+| 3 | `PLAN_SYSTEM` | Assign narrators to chunk/scene ranges; cover all; no redundancy |
+| 4 | `CHAR_EXTRACT_SYSTEM` | Extract this character's moments only: dialogue (both sides), action, environment |
+| 5 | `NARRATE_SYSTEM_BASE` | First-person memoir (no third person); scene skeleton from gm-assist injected before voice notes; prose-mode instruction appended if `--prose-mode` |
+
+Pass 5 user-prompt assembly order (in `build_narrate_prompt()`): narrator + focus → character roster → party document → scene scope ("what happened") → voice notes → roleplay summary → handoff sentence → narrator's extracted moments.

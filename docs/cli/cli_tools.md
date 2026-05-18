@@ -326,7 +326,7 @@ python vtt_summary.py session.vtt \
 SQLite-backed VTT-quote ↔ scene matching. Used by the Web UI's Scene
 Editor to surface quotes that didn't make it into a `scene_extractions/`
 file. Not typically run from the CLI; see
-[`docs/web_ui.md`](web_ui.md) for the editor workflow.
+[`docs/web/web_ui.md`](../web/web_ui.md) for the editor workflow.
 
 ## new_workspace.py
 

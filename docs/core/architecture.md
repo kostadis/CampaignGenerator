@@ -65,6 +65,132 @@ flowchart TB
     MCP --> Disk
 ```
 
+## Pipeline data flows
+
+Two pipelines, one CLI/UI surface. Every arrow that crosses a HUMAN REVIEW box is a gating checkpoint — that's where the LLM has done a rendering pass and a human imposes structure before the next call (see the global "LLMs render, humans decide" rule in `~/.claude/CLAUDE.md`).
+
+### Post-session pipeline
+
+```mermaid
+flowchart LR
+    VTT[("Zoom .vtt<br/>transcript")]
+    GM[("gm-assist.md<br/>(human recap)")]
+
+    ES["Stage 1<br/><b>enhance_summary.py</b><br/>(supports --batch)"]
+    SS[("session-summary.md<br/>◄ HUMAN REVIEW")]
+
+    SE["Stage 2<br/><b>scene_extract.py</b><br/>(per-scene · cached VTT · --batch)"]
+    SX[("scene_extractions/NN_*.md<br/>◄ HUMAN REVIEW")]
+
+    SD["Stage 3<br/><b>session_doc.py --per-scene-output</b><br/>(5 passes via narrative.py)"]
+    NARR[("narration/session_doc_scene_NN_*.md<br/>◄ HUMAN REVIEW")]
+
+    AS["Stage 4<br/><b>assemble.py</b>"]
+    DOC[("session_doc.md")]
+
+    QLED["quote_ledger.py<br/>(VTT quote → scene match,<br/>used by Web UI)"]
+
+    VTT --> ES
+    GM  --> ES
+    ES  --> SS
+    VTT --> SE
+    SS  --> SE
+    SE  --> SX
+    SX  --> SD
+    SD  --> NARR
+    NARR --> AS
+    AS  --> DOC
+    SX  -.-> QLED
+    VTT -.-> QLED
+```
+
+Side-pipelines that build the grounding docs the above and `prep.py` consume (run periodically, not per-session):
+
+```mermaid
+flowchart LR
+    SUMS[("summaries/*.md<br/>(rolling session log)")]
+    PDFS[("D&D Beyond PDFs")]
+    MOD[("adventure module .md")]
+
+    DS["dnd_sheet.py"] --> CHARS[("characters/*.md")]
+    MT["make_tracking.py"] --> TRK[("tracking.txt")]
+    TRK --> CS["campaign_state.py"]
+    SUMS --> CS --> CSDOC[("docs/campaign_state.md")]
+    SUMS --> DI["distill.py"] --> WS[("docs/world_state.md")]
+    CHARS --> PT["party.py"] --> PD[("docs/party.md")]
+    SUMS --> PT
+    SUMS --> PLAN["planning.py<br/>(--build-dossiers,<br/>then synthesize)"] --> PLDOC[("docs/planning.md")]
+    PLAN --> DOSS[("docs/npcs/*.md<br/>canonical dossiers")]
+
+    DOSS -. alias normalization .-> CS
+    DOSS -. alias normalization .-> DI
+    DOSS -. alias normalization .-> PT
+    DOSS -. alias normalization .-> SE2["scene_extract.py /<br/>session_doc.py"]
+```
+
+### RLM retrieval pipeline
+
+Three-state retrieval feeds a human-approved proposal file; render pipelines refuse to run without it.
+
+```mermaid
+flowchart LR
+    Q[("Query<br/>(beat / NPC / faction)")]
+
+    subgraph Sources["Three piles"]
+        DRW[("MemPalace drawers<br/>(already ingested)")]
+        FT[("5etools-kostadis<br/>canonical JSON on disk")]
+        RPGLIB[("rpglib PDFs<br/>(not yet converted)")]
+    end
+
+    RR["rpg_retriever.py<br/>(retrieve)"]
+    DRW --> RR
+    FTC["fivetools_catalog.py<br/>(name index, mtime-cached)"] --> RR
+    FT --> FTC
+    RPGLIB --> RR
+
+    Q --> RR
+
+    HITS[("Tiered hits:<br/>drawer · statblock ·<br/>candidate (cheap/expensive)")]
+    RR --> HITS
+
+    DP["dossier_proposer.py"]
+    HITS --> DP
+    PROP[("docs/dossier_proposal.md<br/>◄ HUMAN APPROVES (header line)")]
+    DP --> PROP
+
+    SUGG["suggest_conversion.py<br/>(builds convert+ingest hint)"]
+    HITS --> SUGG
+
+    subgraph Ingest["Ingest path (explicit, never auto)"]
+        CB["convert_book.py<br/>(pdf-translators wrapper)"]
+        FI["fivetools_ingest.py<br/>(JSON → MemPalace drawers)"]
+        FR["fivetools_render.py<br/>fivetools_copy.py<br/>(_copy resolve · entity → prose)"]
+    end
+    RPGLIB --> CB --> FI
+    FT --> FI
+    FI --> FR
+    FR --> DRW
+
+    LOAD["proposal_loader.py<br/>require_approved_proposal()"]
+    PROP --> LOAD
+
+    subgraph Render["Render pipelines (gated)"]
+        PR["prep.py"]
+        SDP["session_doc.py"]
+        PLN["planning.py"]
+    end
+    LOAD --> PR
+    LOAD --> SDP
+    LOAD --> PLN
+
+    MCP["mcp_server.py<br/>(rpg_search · propose_dossier · suggest_conversion)"]
+    MCP -.-> RR
+    MCP -.-> DP
+    MCP -.-> SUGG
+```
+
+Detail: [`docs/cli/session_doc_pipeline.md`](../cli/session_doc_pipeline.md), [`docs/cli/session_prep_workflow.md`](../cli/session_prep_workflow.md), [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md), [`docs/rlm/rlm_architecture.md`](../rlm/rlm_architecture.md), [`docs/rlm/retrieval_architecture.md`](../rlm/retrieval_architecture.md), [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md).
+
 ## Layer 1 — Core library
 
 [`campaignlib.py`](../../campaignlib.py) is the only module that talks to the Anthropic SDK. Every script imports from it. Group of responsibilities:
@@ -237,6 +363,47 @@ Run: `python -m pytest tests/`. Notable structural tests:
 - [`tests/test_campaignlib_pipeline.py`](../../tests/test_campaignlib_pipeline.py) — extract/synthesize pipeline end-to-end.
 
 Per-script tests live alongside (`test_prep.py`, `test_session_doc.py` covered by `test_polish.py` etc., `test_scene_extract.py`, `test_planning.py`, `test_party.py`, `test_distill.py`, `test_campaign_state.py`, `test_vtt_summary.py`, `test_dossier_proposer.py`, `test_rpg_retriever.py`, `test_fivetools_*`, `test_connections.py`, `test_editor_pipeline.py`, `test_batch_api.py`).
+
+## Recurring concepts (read once, recognize forever)
+
+- **Two-pass extract → synthesize.** Nearly every grounding-doc generator (`distill`, `campaign_state`, `party`, `planning`, `vtt_summary`) chunks the input, asks the LLM to extract per chunk, then synthesizes one document from the pile of extractions. Re-runs reuse cached extractions on disk. Implementation: `run_extract_pipeline` + `run_synthesize_pipeline` in [`campaignlib.py`](../../campaignlib.py).
+
+- **Scene-anchored extraction.** Stage 2 caches the full VTT in the system prompt and asks for one scene's quotes per call. Live (`run_scene_extraction`) and batch (`scene_extract.py:_submit_pending`) paths share the cache breakpoint so the prompt cache stays warm.
+
+- **Alias normalization.** A single source of truth — frontmatter in `docs/npcs/*.md` — feeds an `{canonical: [aliases]}` map into every extractor that crosses pipelines. Variants get rewritten *before the LLM sees them*; a "Known NPCs" roster is appended to the system prompt. Empty map = identity / no-op.
+
+- **Batch mode (`--batch`).** `enhance_summary.py` and `scene_extract.py` submit via Anthropic Message Batches API for 50% off, prompt caching honoured. Three sub-modes: block-and-poll (default), `--submit-only` (sidecar, exit), `--collect` (read sidecar, retrieve). Sidecars live next to the output: `<output>.batch.json` or `<output-dir>/.batch.json`.
+
+- **Three-state RLM retrieval.** Every hit is a *drawer* (already ingested), a *statblock* (already ingested), or a *candidate* — and candidates are tagged `cost="cheap"` (5etools JSON on disk, ready for `fivetools_ingest.py`) or `cost="expensive"` (rpglib PDF needing `convert_book.py` first). The retriever never fetches; it suggests.
+
+- **Proposal-gate.** Render pipelines (`prep.py`, `session_doc.py`, `planning.py`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
+
+- **CLI ↔ UI symmetry.** The FastAPI server never reimplements logic — it shells out to CLI scripts. Fixing a bug in a script fixes it in the UI; exposing a CLI flag means adding it to the corresponding `_build_*_cmd()` in the router.
+
+- **MCP boundary.** Anything that touches MemPalace goes through [`mempalace_client.py`](../../mempalace_client.py). Anything that exposes CampaignGenerator capability *outward* to other Claude sessions goes through [`mcp_server.py`](../../mcp_server.py). One file, one direction each.
+
+## Common task → start here
+
+A fast-orientation table for "I need to change X, where does it live?"
+
+| If you want to… | Open this first |
+|---|---|
+| Add a new CLI tool | [`campaignlib.py`](../../campaignlib.py) intro + a small existing script like [`npc_table.py`](../../npc_table.py) |
+| Change Stage 1/2 prompts | `ENHANCE_SYSTEM_PREFIX` in [`enhance_summary.py`](../../enhance_summary.py); `SCENE_EXTRACT_SYSTEM_PREFIX` in [`scene_extract.py`](../../scene_extract.py) |
+| Add `--batch` to another script | Copy the pattern from [`enhance_summary.py`](../../enhance_summary.py) (`_submit`, `_collect_and_write`, sidecar). Helpers already exist in [`campaignlib.py`](../../campaignlib.py). |
+| Touch retry / cache wiring | [`campaignlib.py`](../../campaignlib.py) `# ── API ──` and `# ── Batch API ──` sections (`_is_retryable`, `stream_api`, `build_batch_request`) |
+| Add a new Web UI page | A small existing view like [`frontend/src/views/setup/MakeTracking.vue`](../../frontend/src/views/setup/MakeTracking.vue) and its router [`server/routers/setup.py`](../../server/routers/setup.py) |
+| Stream a long-running script to the UI | [`server/subprocess_runner.py`](../../server/subprocess_runner.py) + a `StreamingResponse` endpoint in [`server/routers/scene_editor.py`](../../server/routers/scene_editor.py) |
+| Persist a new UI setting | [`frontend/src/stores/config.ts`](../../frontend/src/stores/config.ts); use a `sd_*` / `prep_*` / etc. prefix listed in CLAUDE.md |
+| Change scene-extraction file format | `format_scene_output` in [`campaignlib.py`](../../campaignlib.py) (live + batch share it) and [`session_doc.py:load_scene_extractions`](../../session_doc.py) |
+| Resolve NPC name variants | [`campaignlib.py`](../../campaignlib.py) NPC alias section + [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md) |
+| Understand the 5-pass narration | [`session_doc.py`](../../session_doc.py) docstring + [`narrative.py`](../../narrative.py) |
+| Match VTT quotes to scenes | [`quote_ledger.py`](../../quote_ledger.py) + [`server/routers/ledger.py`](../../server/routers/ledger.py) |
+| Add an MCP tool | [`mcp_server.py`](../../mcp_server.py); for MemPalace I/O use [`mempalace_client.py`](../../mempalace_client.py) only |
+| Change retrieval ranking / tiering | [`rpg_retriever.py`](../../rpg_retriever.py) (`retrieve`); name-index changes in [`fivetools_catalog.py`](../../fivetools_catalog.py) |
+| Touch the proposal-gate | [`proposal_loader.py`](../../proposal_loader.py) — `require_approved_proposal` is the choke point |
+| Render a 5etools entity to prose | [`fivetools_render.py`](../../fivetools_render.py) (`render_<type>` family); resolve `_copy` first via [`fivetools_copy.py`](../../fivetools_copy.py) |
+| Convert a new RPG PDF | [`convert_book.py`](../../convert_book.py) (wraps pdf-translators); then [`fivetools_ingest.py`](../../fivetools_ingest.py) — keep the steps explicit |
 
 ## Detailed docs
 

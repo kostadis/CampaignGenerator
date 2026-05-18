@@ -89,7 +89,7 @@ not necessarily after every single session. Its value is in synthesis: it reads
 your NPC dossier files (which you review and edit) and produces a structured threat
 tracker and NPC dossier section.
 
-This is a **two-phase** process — see [PLANNING_PIPELINE.md](PLANNING_PIPELINE.md) for
+This is a **two-phase** process — see [planning_pipeline.md](planning_pipeline.md) for
 the full workflow. The short version:
 
 1. **Build dossiers** (once per set of new sessions): extracts per-NPC information
@@ -154,5 +154,6 @@ use the CLI directly.
 
 ## Further Reading
 
-- [PLANNING_PIPELINE.md](PLANNING_PIPELINE.md) — detailed two-phase NPC dossier workflow
-- [CLAUDE.md](CLAUDE.md) — full flag reference for all four scripts
+- [planning_pipeline.md](planning_pipeline.md) — detailed two-phase NPC dossier workflow
+- [`docs/cli/cli_tools.md`](cli_tools.md) — full flag reference for all four scripts
+- [`CLAUDE.md`](../../CLAUDE.md) — repo-wide conventions

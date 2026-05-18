@@ -12,7 +12,7 @@
 
 This document captures the architecture of the **Recursive Large Models (RLM)** integration spanning four trees: `mempalace-rlm`, `CampaignGenerator-rlm`, `~/src/mytools/rpg-lib/`, and `~/src/mytools/pdf-translators/`. Read this and you should be able to navigate the code, understand the design pressures that shaped the system, and reason about end-to-end behavior without re-deriving anything from the planning doc.
 
-For the planning narrative (phase gates, risks, host decisions) see [`archive/rlm_integration_plan.md`](archive/rlm_integration_plan.md) (archived; the plan shipped). For the design philosophy that motivates the whole system see *Rich Plots, Real Improvisation* (https://wrongtool.kostadis.com/72-architecturalist-papers-rich-plots-real-improvisation/). For the JSON schema this whole pipeline is built on, see [`~/src/5etools-kostadis/JSON_FORMAT.md`](~/src/5etools-kostadis/JSON_FORMAT.md), [`~/src/5etools-kostadis/DATA_INVENTORY.md`](~/src/5etools-kostadis/DATA_INVENTORY.md), and [`~/src/5etools-kostadis/ARCHITECTURE.md`](~/src/5etools-kostadis/ARCHITECTURE.md). For the campaign-palace conventions that the per-campaign palaces follow, see [`~/campaigns/MEMPALACE_HOWTO.md`](~/campaigns/MEMPALACE_HOWTO.md).
+For the planning narrative (phase gates, risks, host decisions) see [`../archive/rlm_integration_plan.md`](../archive/rlm_integration_plan.md) (archived; the plan shipped). For the design philosophy that motivates the whole system see *Rich Plots, Real Improvisation* (https://wrongtool.kostadis.com/72-architecturalist-papers-rich-plots-real-improvisation/). For the JSON schema this whole pipeline is built on, see [`~/src/5etools-kostadis/JSON_FORMAT.md`](~/src/5etools-kostadis/JSON_FORMAT.md), [`~/src/5etools-kostadis/DATA_INVENTORY.md`](~/src/5etools-kostadis/DATA_INVENTORY.md), and [`~/src/5etools-kostadis/ARCHITECTURE.md`](~/src/5etools-kostadis/ARCHITECTURE.md). For the campaign-palace conventions that the per-campaign palaces follow, see [`~/campaigns/MEMPALACE_HOWTO.md`](~/campaigns/MEMPALACE_HOWTO.md).
 
 ---
 
@@ -83,7 +83,7 @@ This is also why pdf-translators is heavyweight enough to need a real ML pipelin
 
 **The 5etools repo itself ships the canonical corpus**, and that's what makes the *cheap* ingest path viable. `~/src/5etools-kostadis/data/` already contains 4,454 monsters across 106 source files (`bestiary-mm.json`, `bestiary-oota.json`, …), 99 adventure files (`adventure-oota.json`, …), 60 sourcebooks, 936 spells, plus the full class / race / item / variant-rule / fluff catalog — schema-perfect 5etools JSON sitting on disk in ~106 MB. For any campaign running a published WotC adventure, recreating that JSON via PDF→ML→Claude reconversion is wasted work. The retriever surfaces canonical-JSON content as a **`candidate (cost: cheap)`** with a one-line `fivetools_ingest.py` command, and reserves pdf-translators for the *expensive* path — content that genuinely doesn't exist in canonical form yet (third-party PDFs, AD&D modules, homebrew). See §4 for how this routes through retrieval, and the [serene-harbor plan](file:///home/kroussos/.claude/plans/sorry-you-should-read-serene-harbor.md) "Three piles" table for the corpus split.
 
-The schema is the contract that lets every downstream tool — MemPalace ingest, CG retrieval, the render pipeline — assume typed structure. **`fivetools_ingest.py` honors the full catalog-shape side of this contract** as of Step 1 of the serene-harbor plan (wrapper-key dispatch, `_copy` resolution, full statblock render); see [`docs/fivetools_ingest_audit.md`](fivetools_ingest_audit.md) for what's shipped vs. what's deferred to enrichment-only post-MVP work.
+The schema is the contract that lets every downstream tool — MemPalace ingest, CG retrieval, the render pipeline — assume typed structure. **`fivetools_ingest.py` honors the full catalog-shape side of this contract** as of Step 1 of the serene-harbor plan (wrapper-key dispatch, `_copy` resolution, full statblock render); see [`docs/archive/fivetools_ingest_audit.md`](../archive/fivetools_ingest_audit.md) for what's shipped vs. what's deferred to enrichment-only post-MVP work.
 
 ---
 
@@ -430,7 +430,7 @@ The campaign palaces follow the [MEMPALACE_HOWTO](~/campaigns/MEMPALACE_HOWTO.md
 
 The room layout inside each wing is **one room per source book**: `room_<sanitized-book-title>`. This mirrors how content is naturally sharded in 5etools (per-source files for bestiary/spells/classes) and lets hierarchical retrieval prune at the book level — Depth 1 picks the 2–3 books most relevant to the query before descending into drawers.
 
-**Status:** as of Step 1 of the serene-harbor plan, `fivetools_ingest.py` dispatches on the 5etools wrapper key (`monster` / `spell` / `item` / `class` / `subclass` / `classFeature` / `subclassFeature` / `race` / `background` / `feat` / `*Fluff` / `data`) and writes to the typed wings above. Statblock content is rendered in full per `JSON_FORMAT.md §6.1`. Adventure prose lands in `wing_rpglib` with `chapter_ordinal` metadata. Cross-shard `_copy` resolution (`fivetools_copy.py`) handles inheritance via `_meta.dependencies`. The `{@tag}` cross-reference DSL is flattened to plain text at render time; per-tag metadata extraction (S3.1 in the audit) is the deferred enrichment. See [`docs/fivetools_ingest_audit.md`](fivetools_ingest_audit.md) for what's shipped vs. what's still on the enrichment-only Batch C list.
+**Status:** as of Step 1 of the serene-harbor plan, `fivetools_ingest.py` dispatches on the 5etools wrapper key (`monster` / `spell` / `item` / `class` / `subclass` / `classFeature` / `subclassFeature` / `race` / `background` / `feat` / `*Fluff` / `data`) and writes to the typed wings above. Statblock content is rendered in full per `JSON_FORMAT.md §6.1`. Adventure prose lands in `wing_rpglib` with `chapter_ordinal` metadata. Cross-shard `_copy` resolution (`fivetools_copy.py`) handles inheritance via `_meta.dependencies`. The `{@tag}` cross-reference DSL is flattened to plain text at render time; per-tag metadata extraction (S3.1 in the audit) is the deferred enrichment. See [`docs/archive/fivetools_ingest_audit.md`](../archive/fivetools_ingest_audit.md) for what's shipped vs. what's still on the enrichment-only Batch C list.
 
 ---
 
@@ -542,7 +542,7 @@ All four trees (rpg-lib, pdf-translators, MemPalace, CampaignGenerator) run insi
 
 Why a VHD instead of `/mnt/c/`: ChromaDB (which MemPalace uses) and SQLite need correct `mmap` / `fsync` / `flock` semantics. WSL2's DrvFs/9P bridge does not provide them — locks can be lost, fsyncs can be no-ops, mmap'd writes can race. A dedicated VHD is native ext4 from WSL2's perspective, sidestepping the bridge entirely. MemPalace's `config.py` ships a startup warning that fires if the palace resolves onto DrvFs/9P/CIFS/NFS — that warning was the deliverable of mempalace-rlm commit `bc91c23`.
 
-See [`archive/rlm_integration_plan.md`](archive/rlm_integration_plan.md) § "Storage architecture" for the full rationale.
+See [`../archive/rlm_integration_plan.md`](../archive/rlm_integration_plan.md) § "Storage architecture" for the full rationale.
 
 ---
 
@@ -552,7 +552,7 @@ See [`archive/rlm_integration_plan.md`](archive/rlm_integration_plan.md) § "Sto
 |---|---|---|---|
 | 0 | Host + baselines (WSL2 + VHD) | ⚠️ Partial — VHD not mounted yet | benchmarks committed |
 | 1 | MemPalace hierarchical AAAK | ✅ Done | Gate 1: 19.82× cheaper at 0% recall loss |
-| 2 | CG ingest + retriever | ✅ Done — three-pile model shipped via the serene-harbor plan (Steps 1–3): wrapper-key dispatch, `_copy` resolver, full statblock render, `fivetools_catalog`, unified `rpg_retriever.retrieve` with cost-tagged candidates, three-mode `rpg_search` MCP tool. See [`docs/fivetools_ingest_audit.md`](fivetools_ingest_audit.md) for what's deferred to enrichment-only post-MVP work | Gate 2: top-3 ≥90% on 15 RPG queries (passes); retrieve/render isolation guard 48 cases passes |
+| 2 | CG ingest + retriever | ✅ Done — three-pile model shipped via the serene-harbor plan (Steps 1–3): wrapper-key dispatch, `_copy` resolver, full statblock render, `fivetools_catalog`, unified `rpg_retriever.retrieve` with cost-tagged candidates, three-mode `rpg_search` MCP tool. See [`docs/archive/fivetools_ingest_audit.md`](../archive/fivetools_ingest_audit.md) for what's deferred to enrichment-only post-MVP work | Gate 2: top-3 ≥90% on 15 RPG queries (passes); retrieve/render isolation guard 48 cases passes |
 | 3 | Dossier + render separation | ✅ Done | retrieve/render isolation CI passes; `--require-proposal` works end-to-end |
 | 4 | Wake-up integration (optional) | ⬜ Not started | — |
 | 5 | Scale stress test (conditional) | ⬜ Not started | — |

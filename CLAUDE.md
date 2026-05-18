@@ -57,15 +57,16 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 
 | File | When to read it |
 |---|---|
-| `docs/architecture.md` | **Start here.** System map: layers, pipelines, on-disk state, links into the deeper docs below |
-| `docs/cli_tools.md` | Per-script invocations and flags (prep, campaign_state, planning, party, distill, query, …); typical new-campaign workflow |
-| `docs/session_doc_pipeline.md` | session_doc.py 5-pass + 4-stage pipeline, all flags, voice files, dialogue handling, recap context, player-name mapping, token scaling, vtt_summary.py |
-| `docs/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |
-| `docs/dossier_aliases.md` | Dossier merge rules and cross-pipeline alias propagation |
-| `docs/rlm_pipeline.md` | Three-state retrieval, ingest flow, MCP tools, palace/rpglib path resolution |
-| `docs/rlm_architecture.md` | RLM architecture deep dive — three-pile model, MCP surface, retrieval contract |
-| `docs/retrieval_architecture.md` | Palace internals — hierarchical descent algorithm, dirty-flag index lifecycle, 100% recall guarantee, failure modes, operational checklist |
-| `docs/session_prep_workflow.md` | End-to-end session-prep walkthrough |
+| `docs/core/architecture.md` | **Start here.** System map: layers, pipelines, on-disk state, recurring concepts, "common task → start here" table |
+| `docs/cli/cli_tools.md` | Per-script invocations and flags (prep, campaign_state, planning, party, distill, query, …); typical new-campaign workflow |
+| `docs/cli/session_doc_pipeline.md` | session_doc.py 5-pass + 4-stage pipeline, all flags, voice files, dialogue handling, recap context, player-name mapping, token scaling, plus design rationale |
+| `docs/web/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |
+| `docs/rlm/dossier_aliases.md` | Dossier merge rules and cross-pipeline alias propagation |
+| `docs/rlm/rlm_pipeline.md` | Three-state retrieval, ingest flow, MCP tools, palace/rpglib path resolution |
+| `docs/rlm/rlm_architecture.md` | RLM architecture deep dive — three-pile model, MCP surface, retrieval contract |
+| `docs/rlm/retrieval_architecture.md` | Palace internals — hierarchical descent algorithm, dirty-flag index lifecycle, 100% recall guarantee, failure modes, operational checklist |
+| `docs/cli/session_prep_workflow.md` | End-to-end session-prep walkthrough |
+| `docs/README.md` | Full doc index — every doc, organised by audience |
 
 ## Critical rules (apply to every task)
 
@@ -107,7 +108,7 @@ Render pipelines (`prep.py`, `session_doc.py`, `planning.py`) must **not** consu
 
 A CI test (`tests/test_retrieve_render_isolation.py`) fails if any function body contains both a retrieval call (`retrieve`, `search_hierarchical`, `rpg_search`, …) and a render call (`stream_api`, `call_api`). Don't bypass this — fix the structure.
 
-See `docs/rlm_pipeline.md` for the proposal workflow and MCP tools.
+See `docs/rlm/rlm_pipeline.md` for the proposal workflow and MCP tools.
 
 ### LLM renders, humans decide
 
@@ -116,7 +117,7 @@ Per the global rule in `~/.claude/CLAUDE.md`: scope/ordering/attribution are pre
 Concrete examples already in the codebase:
 - `party.py` outputs candidate arc-score events with quoted triggers, never current values or thresholds
 - `planning.py --build-dossiers` writes per-NPC files for human review before `--synthesize`
-- The 4-stage `session_doc` pipeline (`docs/session_doc_pipeline.md`) inserts a human review after each LLM pass
+- The 4-stage `session_doc` pipeline (`docs/cli/session_doc_pipeline.md`) inserts a human review after each LLM pass
 - `dossier_proposer.py` writes a proposal file; the GM approves it before render pipelines consume it
 
 ## Running tests

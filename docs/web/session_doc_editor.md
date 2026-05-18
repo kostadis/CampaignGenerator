@@ -232,4 +232,4 @@ It should print the absolute path to `scene_extractions_new/`.
 
 The web server (`server/main.py`) wires these to UI buttons via routers in `server/routers/`, primarily `scene_editor.py` (extraction, plan, narrate) and `ledger.py` (Scaffold-from-Stage-2; legacy ledger sync/auto-assign).
 
-For the older internal pass-by-pass design notes, see `SESSION_DOC_PIPELINE.md` (describes the original 5-pass flow that `session_doc.py` still implements internally — what's new is exposing the planning passes as their own UI button instead of bundling them into the first per-scene Narrate).
+For the older internal pass-by-pass design notes, see the "Design rationale" section of [`docs/cli/session_doc_pipeline.md`](../cli/session_doc_pipeline.md) (describes the 5-pass flow that `session_doc.py` still implements internally — what's new is exposing the planning passes as their own UI button instead of bundling them into the first per-scene Narrate).

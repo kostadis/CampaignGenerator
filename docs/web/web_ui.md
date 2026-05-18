@@ -95,7 +95,7 @@ Unassigned quotes appear at the top — likely missing from extractions. Click t
    - Click any entity row to open the **Context Panel** — shows the entity, 1-hop neighbors (clickable to navigate), and which doc files mention it (via grep on label + aliases).
    - **Path Finder** — pick source and target from the dropdowns (or use the A/B buttons on any row), set max hops (default 4, capped at 8), click "Find Paths." Returns all simple paths, sorted shortest-first, with per-edge direction and labels. Undirected traversal — it'll find A↔B regardless of which side of the edge A was on.
 
-**Why alias + dossier_dir matters:** without it, "Xalvos" and "Xalvosh" become separate nodes and no path is found. With it, input docs are rewritten to canonical names before the LLM sees them, and the roster is appended to the system prompt. Same mechanism as `planning.py --synthesize` (see `docs/dossier_aliases.md`).
+**Why alias + dossier_dir matters:** without it, "Xalvos" and "Xalvosh" become separate nodes and no path is found. With it, input docs are rewritten to canonical names before the LLM sees them, and the roster is appended to the system prompt. Same mechanism as `planning.py --synthesize` (see [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md)).
 
 **Model choice matters — Haiku truncates full grounding-doc extractions.** Extraction is a single Claude call with `max_tokens=32000`, but the API clamps that to each model's actual output ceiling:
 

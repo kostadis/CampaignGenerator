@@ -29,7 +29,7 @@ That's the point — see the global "LLMs render, humans decide" rule.
 
 ## I want to drive this from the web UI
 
-Open [`SESSION_DOC_UI_FLOW.md`](SESSION_DOC_UI_FLOW.md). It's a TL;DR
+Open [`docs/web/session_doc_editor.md`](../web/session_doc_editor.md). It's a TL;DR
 button-by-button walkthrough of the Session Doc Editor that maps each
 click to its stage above.
 
@@ -50,7 +50,7 @@ when you don't need live streaming.
 
 ## I want to drive this from the CLI
 
-Open [`docs/session_doc_pipeline.md`](docs/session_doc_pipeline.md). It
+Open [`session_doc_pipeline.md`](session_doc_pipeline.md). It
 covers every flag, voice files, dialogue handling, the 5-pass internals
 of `session_doc.py`, batch mode (`--batch` / `--submit-only` /
 `--collect`), and the older single-shot mode if you want to iterate on
@@ -88,9 +88,8 @@ python assemble.py "$SESS/narration/" \
 
 ## Further reading
 
-- [`SESSION_DOC_UI_FLOW.md`](SESSION_DOC_UI_FLOW.md) — Web UI walkthrough.
-- [`docs/session_doc_pipeline.md`](docs/session_doc_pipeline.md) — Full CLI reference for the four stages, voice files, batch mode.
-- [`SESSION_DOC_PIPELINE.md`](SESSION_DOC_PIPELINE.md) — Engineering deep-dive on the 5-pass internals (narrative bleed, chunk assignment, style transfer).
-- [`GMASSISTANT_PIPELINE.md`](GMASSISTANT_PIPELINE.md) — Why the gmassisstant recap is the authoritative anchor.
-- [`PLAYER_VOICE_GUIDE.md`](PLAYER_VOICE_GUIDE.md) — How players write voice files that shape their narrator's prose.
-- [`ARCHITECTURE.md`](ARCHITECTURE.md) — Where everything lives and the rest of the codebase shape.
+- [`docs/web/session_doc_editor.md`](../web/session_doc_editor.md) — Web UI walkthrough.
+- [`session_doc_pipeline.md`](session_doc_pipeline.md) — Full CLI reference for the four stages, voice files, batch mode.
+- [`gmassist_anchor.md`](gmassist_anchor.md) — Why the gm-assist recap is the authoritative event anchor.
+- [`docs/player/voice_guide.md`](../player/voice_guide.md) — How players write voice files that shape their narrator's prose.
+- [`docs/core/architecture.md`](../core/architecture.md) — Where everything lives and the rest of the codebase shape. The "Design rationale" section of [`session_doc_pipeline.md`](session_doc_pipeline.md) covers the 5-pass engineering notes (narrative bleed, chunk assignment, style transfer).

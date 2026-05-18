@@ -2,8 +2,8 @@
 > 0–3) are complete in the current codebase. Preserved for historical
 > context on the design decisions and risk mitigations that shaped the
 > final system. **For the current architecture, read
-> [`docs/rlm_architecture.md`](../rlm_architecture.md). For a quick
-> entry point, [`docs/rlm_pipeline.md`](../rlm_pipeline.md).**
+> [`docs/rlm/rlm_architecture.md`](../rlm/rlm_architecture.md). For a quick
+> entry point, [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).**
 
 ---
 

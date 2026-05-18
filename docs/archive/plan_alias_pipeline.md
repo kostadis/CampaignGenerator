@@ -3,9 +3,9 @@
 > **STATUS: SHIPPED.** Every step in this plan is live in `campaignlib.py`
 > and the downstream extractors. Preserved as the design rationale behind
 > the current implementation. **For runtime behaviour and the merge
-> workflow, read [`docs/dossier_aliases.md`](docs/dossier_aliases.md). For
+> workflow, read [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md). For
 > the API surface, see the "NPC alias machinery" section of
-> [`campaignlib.py`](campaignlib.py).**
+> [`campaignlib.py`](../../campaignlib.py).**
 
 This file originally proposed the design that superseded
 `feat/alias-propagation`. That branch lifted alias machinery into
@@ -67,10 +67,10 @@ no-op for campaigns without a planning workflow.
 5. `planning.py --build-dossiers` self-seeds the extract prompt with
    the existing roster (verified).
 6. Tests: pipeline-kwarg tests, campaignlib alias-helper unit tests,
-   per-retrofit smoke tests in [`tests/`](tests/).
+   per-retrofit smoke tests in [`tests/`](../../tests/).
 7. "Cross-pipeline alias propagation" subsection added to
-   [`docs/dossier_aliases.md`](docs/dossier_aliases.md) and referenced
-   from [`CLAUDE.md`](CLAUDE.md) under "Dossier merge workflow".
+   [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md) and referenced
+   from [`CLAUDE.md`](../../CLAUDE.md) under "Dossier merge workflow".
 
 ## Deliberately excluded
 

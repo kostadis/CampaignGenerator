@@ -1,38 +1,47 @@
 # CampaignGenerator Documentation
 
-Welcome to the CampaignGenerator documentation. Use the guides below to find the information you need based on your role or task.
+Pick a doc by audience or task. The repo root has only the project README, the Claude rules (`CLAUDE.md`), and the backlog (`TODO.md`); everything else lives here.
 
-## 🗺️ Overview & Architecture
-Everything starts here. Understand how the system components interact.
-- [System Architecture](core/architecture.md): High-level system map and hard rules.
-- [Configuration](core/configuration.md): How to manage tool and campaign settings.
+## Core — start here
 
-## 🛠️ CLI Tools & Workflows
-For running scripts and managing campaign data via the terminal.
-- [CLI Tool Guide](cli/cli_tools.md): Command-line flags and general usage.
-- [Session Prep Workflow](cli/session_prep_workflow.md): End-to-end guide for session preparation.
-- [Session Doc Pipeline](cli/session_doc_pipeline.md): Deep dive into the 5-pass narrative generation.
+- [System architecture](core/architecture.md) — layered system map, both pipeline data flows, recurring concepts, and a "common task → start here" navigation table. **Read this first.**
+- [Configuration](core/configuration.md) — `config.yaml`, `ui_state.yaml`, `.campaigngenerator.local.yaml`: who owns what, how the server resolves paths, how the CLI auto-detects.
 
-## 🌐 Web UI & Server
-For developers working on the FastAPI backend or Vue 3 frontend.
-- [Web UI Overview](web/web_ui.md): Screens, stores, and user flows.
-- [UI Configuration & Persistence](web/web_ui_config_persistence.md): How state is saved and managed.
+## CLI tools and workflows
 
-## 🔍 Retrieval-Augmented Language Model (RLM)
-Deep dives into the retrieval engine and MCP integration.
-- [RLM Architecture](rlm/rlm_architecture.md): The three-pile model and retrieval contract.
-- [Retrieval Architecture](rlm/retrieval_architecture.md): Internal mechanics of the search engine.
-- [RLM Pipeline](rlm/rlm_pipeline.md): How retrieval feeds into rendering.
-- [Dossier Management](rlm/dossier_aliases.md): Aliases and merging rules.
-- [Audit Logs](rlm/fivetools_ingest_audit.md): 5etools ingestion status.
+- [CLI tool reference](cli/cli_tools.md) — per-script flags and a typical new-campaign workflow.
+- [Session-prep workflow](cli/session_prep_workflow.md) — end-to-end pre-session pipeline.
+- [Session-doc pipeline](cli/session_doc_pipeline.md) — the 4-stage post-session pipeline (`enhance_summary` → `scene_extract` → `session_doc` → `assemble`) plus the 5-pass internals and design rationale.
+- [Post-session umbrella](cli/post_session.md) — short "which entry point matches how I want to work" page.
+- [gm-assist anchor](cli/gmassist_anchor.md) — why the gm-assist document is the authoritative event skeleton.
+- [Grounding documents](cli/grounding_docs.md) — when and how to refresh `campaign_state`, `world_state`, `planning`, `party`.
+- [planning.py workflow](cli/planning_pipeline.md) — the two-phase build-dossiers → synthesize design.
 
-## 📋 Specifications
-Technical definitions for data formats.
-- [Data Formats](specs/formats.md): Input/output structures for tools.
+## Web UI
 
----
+- [Web UI overview](web/web_ui.md) — pages, stores, dev workflow.
+- [UI configuration & persistence](web/web_ui_config_persistence.md) — `ui_config.yaml` model and the in-progress unification.
+- [Session Doc Editor walkthrough](web/session_doc_editor.md) — button-by-button operator flow for the post-session pipeline in the browser.
 
-## 📂 Other Directories
-- `docs/core/`: Core logic and long-lived state docs (mechanics, planning, world_state).
-- `docs/design/`: Design docs and RFCs (not yet finalized).
-- `docs/archive/`: Deprecated or historical documentation.
+## RLM (retrieval) pipeline
+
+- [RLM architecture](rlm/rlm_architecture.md) — three-pile model, MCP surface, retrieval contract.
+- [RLM pipeline](rlm/rlm_pipeline.md) — how retrieval feeds approved proposals into the render pipelines.
+- [Retrieval architecture](rlm/retrieval_architecture.md) — palace internals, hierarchical descent, dirty-flag index lifecycle.
+- [Dossier aliases](rlm/dossier_aliases.md) — dossier merge rules and cross-pipeline alias propagation.
+
+## For players
+
+- [Voice guide](player/voice_guide.md) — how to write a per-character voice file the narrator will use.
+
+## Specs
+
+- [File formats](specs/formats.md) — input/output shapes for the major tools.
+
+## Design notes
+
+- [RLM paper comparison](design/rlm_paper_comparison.md) — how this system relates to (and diverges from) the published RLM paper.
+
+## Archive
+
+Shipped plans, deprecated docs, and one-time audits — kept for rationale, not currency. See [`archive/`](archive/).

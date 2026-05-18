@@ -24,9 +24,9 @@ A D&D session-prep and post-session documentation toolkit powered by the [Claude
 
 All scripts share a common library (`campaignlib.py`) for API calls, file I/O, logging, and config loading.
 
-There's also a **Web UI** (FastAPI + Vue 3 — see [`docs/web_ui.md`](docs/web_ui.md)) that wraps every CLI tool and a separate **RLM retrieval pipeline** (rpglib + 5etools + MemPalace) exposed via `rpg_retriever.py`, `dossier_proposer.py`, and friends — see [`docs/rlm_pipeline.md`](docs/rlm_pipeline.md).
+There's also a **Web UI** (FastAPI + Vue 3 — see [`docs/web/web_ui.md`](docs/web/web_ui.md)) that wraps every CLI tool and a separate **RLM retrieval pipeline** (rpglib + 5etools + MemPalace) exposed via `rpg_retriever.py`, `dossier_proposer.py`, and friends — see [`docs/rlm/rlm_pipeline.md`](docs/rlm/rlm_pipeline.md).
 
-For a fast tour of the codebase shape, start at [`ARCHITECTURE.md`](ARCHITECTURE.md). For rules and conventions, [`CLAUDE.md`](CLAUDE.md).
+For a fast tour of the codebase shape, start at [`docs/core/architecture.md`](docs/core/architecture.md). The full doc index is [`docs/README.md`](docs/README.md). For rules and conventions, [`CLAUDE.md`](CLAUDE.md).
 
 ---
 
@@ -92,7 +92,7 @@ python ~/CampaignGenerator/session_doc.py session-recap \
 
 ## session_doc.py — Narrative session documents
 
-> **Recommended path: the 4-stage pipeline.** For new work, drive narration through `enhance_summary.py` → `scene_extract.py` → `session_doc.py --per-scene-output` → `assemble.py`, with a human-review checkpoint after each stage. See [`docs/session_doc_pipeline.md`](docs/session_doc_pipeline.md). The single-shot 5-pass flow described below still works and remains useful for quick iteration on a single character's voice.
+> **Recommended path: the 4-stage pipeline.** For new work, drive narration through `enhance_summary.py` → `scene_extract.py` → `session_doc.py --per-scene-output` → `assemble.py`, with a human-review checkpoint after each stage. See [`docs/cli/session_doc_pipeline.md`](docs/cli/session_doc_pipeline.md). The single-shot 5-pass flow described below still works and remains useful for quick iteration on a single character's voice.
 
 `session_doc.py` is the post-session centerpiece. It takes a raw recap and turns it into a document that reads like a novel chapter — each player character narrates a chronological slice of the session in their own first-person voice — followed by enhanced structured sections (Memorable Moments, Scenes, NPCs, etc.).
 
@@ -200,7 +200,7 @@ physical metaphors (stones, weight, iron). He never says "feel" — he says "kno
 
 A full Sonnet run costs roughly **$0.25–0.40** depending on session length. `--fast` (Haiku) costs roughly **$0.07**. `max_tokens` is a ceiling, not a cost driver — you pay for what's generated.
 
-For the technical design notes behind this pipeline (narrative bleed, chunk assignment, style transfer), see [SESSION_DOC_PIPELINE.md](SESSION_DOC_PIPELINE.md).
+For the technical design notes behind this pipeline (narrative bleed, chunk assignment, style transfer), see the "Design rationale" section of [`docs/cli/session_doc_pipeline.md`](docs/cli/session_doc_pipeline.md).
 
 ---
 

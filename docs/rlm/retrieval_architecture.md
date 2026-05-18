@@ -13,7 +13,7 @@
 
 This document is the reference for **how `rpg_retriever.retrieve()` actually fetches verbatim content from a per-campaign palace**. It covers the process model, the on-disk collections, the hierarchical descent algorithm, the recall guarantee, and the failure modes.
 
-It complements `docs/rlm_architecture.md`, which describes the *three-pile* model (canonical 5etools / rpg-library PDFs / campaign content) and where retrieval fits inside it. This doc zooms in on the **drawer/statblock tier** — what happens when MemPalace already has the content the GM is asking about.
+It complements `rlm_architecture.md`, which describes the *three-pile* model (canonical 5etools / rpg-library PDFs / campaign content) and where retrieval fits inside it. This doc zooms in on the **drawer/statblock tier** — what happens when MemPalace already has the content the GM is asking about.
 
 > Repos referenced: `kostadis/CampaignGenerator` (`main`, post `#18 1f13f44`), `kostadis/mempalace` (`kostadis-dev`, post `#5 a0d6a4d`). Branch tags `rlm-phase2` / `rlm-phase1` preserved on origin.
 
@@ -238,7 +238,7 @@ flowchart LR
     class T3 tier3
 ```
 
-**Hard tier order:** drawer/statblock > cheap candidate > expensive candidate. No score normalization across sources. `reconcile()` truncates each candidate tier independently via `k_cheap` / `k_expensive`. See `docs/rlm_architecture.md` §9 for the canonical retrieval contract.
+**Hard tier order:** drawer/statblock > cheap candidate > expensive candidate. No score normalization across sources. `reconcile()` truncates each candidate tier independently via `k_cheap` / `k_expensive`. See `rlm_architecture.md` §9 for the canonical retrieval contract.
 
 **Wake-up integration (Phase 4, not yet shipped):** `max_depth=0` returns wing-level AAAK hits only — no room or drawer descent. The intent is to use this as the L1/L2 cold-start signal so wake-up stays under the 900-token / 100-ms budget per Gate 4. CG today always sends `max_depth=2`; Phase 4 will introduce a `max_depth=0` codepath.
 
@@ -266,7 +266,7 @@ flowchart LR
 - `tests/benchmarks/test_hierarchical_aaak_gate1.py` — Gate 1 (recall + cost ratio).
 
 **Cross-cutting:**
-- `~/src/CampaignGenerator/docs/rlm_architecture.md` — three-pile model + the chosen-not-to-do log (§16).
+- `~/src/CampaignGenerator/docs/rlm/rlm_architecture.md` — three-pile model + the chosen-not-to-do log (§16).
 - `~/src/CampaignGenerator/docs/archive/rlm_integration_plan.md` — historical planning doc; Sub-plan A is what Phase 1 shipped.
 - `~/campaigns/MEMPALACE_HOWTO.md` — per-campaign palace conventions.
 

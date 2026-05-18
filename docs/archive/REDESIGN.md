@@ -2,7 +2,7 @@
 > frontend, which lives in a different repo. Preserved here as a design
 > precedent — none of the components it names (`LibraryBrowse.vue`,
 > `CommandBar.vue`, `SubjectsDrawer.vue`, etc.) exist in this codebase.
-> For CampaignGenerator's actual UI, see [`docs/web_ui.md`](../web_ui.md)
+> For CampaignGenerator's actual UI, see [`docs/web/web_ui.md`](../web/web_ui.md)
 > and the Vue views under `frontend/src/views/`.
 
 ---

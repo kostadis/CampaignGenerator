@@ -9,7 +9,7 @@
 
 ## 0. Reading order under the three-pile model
 
-This audit predates the **three-pile architecture** that the serene-harbor plan shipped in 2026-05-01. Read [`docs/rlm_architecture.md`](rlm_architecture.md) §1–§4 first for the model and §16 for the rejected alternatives. In short:
+This audit predates the **three-pile architecture** that the serene-harbor plan shipped in 2026-05-01. Read [`docs/rlm/rlm_architecture.md`](../rlm/rlm_architecture.md) §1–§4 first for the model and §16 for the rejected alternatives. In short:
 
 - The retriever consults the per-campaign palace **plus** two awareness catalogs (rpg-library over HTTP, `fivetools_catalog` in-process). It surfaces drawers/statblocks (already ingested) alongside cost-tagged candidates (not yet ingested).
 - A **`candidate (cost: cheap)`** points at canonical 5etools JSON sitting in `~/src/5etools-kostadis/data/`. The ingest one-liner is `fivetools_ingest.py <path> --palace <campaign> --filter "name=…"` (or `chapter=N` for adventure-shape docs).
@@ -23,7 +23,7 @@ If a section of this audit conflicts with the architecture doc, the architecture
 
 ## TL;DR
 
-**The headline gaps this audit identified — schema-shape blindness, statblock content loss, two-wing flattening — are closed as of Step 1 of the serene-harbor plan (commit `ceba57f`).** `fivetools_ingest.py` now dispatches on the wrapper key (`monster` / `spell` / `item` / `class` / `subclass` / `classFeature` / `subclassFeature` / `race` / `background` / `feat` / `*Fluff` / `data`), routes to the typed wing taxonomy from [`rlm_architecture.md §8`](rlm_architecture.md), resolves `_copy` cross-shard via `_meta.dependencies`, and renders full statblocks per `JSON_FORMAT.md §6.1`. The canonical 5etools tree at `~/src/5etools-kostadis/data/` is now ingestable at per-entity granularity via `--filter "name=…"` (catalog shape) or `--filter "chapter=N"` (adventure shape).
+**The headline gaps this audit identified — schema-shape blindness, statblock content loss, two-wing flattening — are closed as of Step 1 of the serene-harbor plan (commit `ceba57f`).** `fivetools_ingest.py` now dispatches on the wrapper key (`monster` / `spell` / `item` / `class` / `subclass` / `classFeature` / `subclassFeature` / `race` / `background` / `feat` / `*Fluff` / `data`), routes to the typed wing taxonomy from [`rlm_architecture.md §8`](../rlm/rlm_architecture.md), resolves `_copy` cross-shard via `_meta.dependencies`, and renders full statblocks per `JSON_FORMAT.md §6.1`. The canonical 5etools tree at `~/src/5etools-kostadis/data/` is now ingestable at per-entity granularity via `--filter "name=…"` (catalog shape) or `--filter "chapter=N"` (adventure shape).
 
 Step 3 (commit `f84144f`) added the retrieval surface that consumes this — `rpg_retriever.retrieve()` merges palace hits with `fivetools_catalog` cheap candidates and rpg-library expensive candidates into a single ranked tiered list.
 
@@ -92,7 +92,7 @@ What the current ingest does for each entity type the 5etools schema defines:
 
 ### S1 — Schema-shape blindness (would render the corpus unusable)
 
-**1.1 Wrapper-key wrappers are not iterated.** [`_iter_top_level_entries`](../fivetools_ingest.py) handles `data` / `adventureData` / `entries` / bare list, nothing else. Every catalog file in `~/src/5etools-kostadis/data/` is shaped `{spell: [...]}` or `{monster: [...]}` or similar — the contents are invisible to this iterator. **Fix:** add a wrapper-dispatch step that recognizes the ~30 wrapper keys from `JSON_FORMAT.md §1.1` and yields entities with their wrapper-type label so downstream routing knows *what* it's looking at.
+**1.1 Wrapper-key wrappers are not iterated.** [`_iter_top_level_entries`](../../fivetools_ingest.py) handles `data` / `adventureData` / `entries` / bare list, nothing else. Every catalog file in `~/src/5etools-kostadis/data/` is shaped `{spell: [...]}` or `{monster: [...]}` or similar — the contents are invisible to this iterator. **Fix:** add a wrapper-dispatch step that recognizes the ~30 wrapper keys from `JSON_FORMAT.md §1.1` and yields entities with their wrapper-type label so downstream routing knows *what* it's looking at.
 
 **1.2 No `_copy` resolution.** The walker happily iterates `_copy` stubs as if they were complete entities. A `Goblin Boss` drawer would have no actions, no traits, no HP — just whatever `_mod` overrides happened to be inline. **Fix:** mirror `DataUtil.generic.copyApplier` from `~/src/5etools-kostadis/js/utils-dataloader.js`. Resolve `_copy` *before* walking. `_meta.internalCopies` declares which entity types in a file need this.
 
@@ -100,7 +100,7 @@ What the current ingest does for each entity type the 5etools schema defines:
 
 ### S2 — Routing too coarse for surgical retrieval
 
-**2.1 Two-wing flatten.** Everything is `wing_rpglib` or `wing_bestiary`. A spell, an item, a class feature, a variant rule, an inset, a chapter — all the same wing. **Fix:** wire the typed-wing taxonomy from [`rlm_architecture.md` §8](rlm_architecture.md):
+**2.1 Two-wing flatten.** Everything is `wing_rpglib` or `wing_bestiary`. A spell, an item, a class feature, a variant rule, an inset, a chapter — all the same wing. **Fix:** wire the typed-wing taxonomy from [`rlm_architecture.md` §8](../rlm/rlm_architecture.md):
 
 - `wing_bestiary` (already exists) — monsters
 - `wing_spells` (new) — spells
@@ -164,7 +164,7 @@ The most important thing. Without it the ingest could not consume the canonical 
 
 Once the ingest knew what kind of entity it was looking at, the typed wings + per-entity metadata + content rendering followed.
 
-1. **Typed-wing routing** per [`rlm_architecture.md §8`](rlm_architecture.md). ✅ `fivetools_ingest._WRAPPER_KEY_WINGS` maps wrapper keys to `wing_bestiary` / `wing_spells` / `wing_items` / `wing_classes` / `wing_lore`. Adventure prose continues to land in `wing_rpglib`.
+1. **Typed-wing routing** per [`rlm_architecture.md §8`](../rlm/rlm_architecture.md). ✅ `fivetools_ingest._WRAPPER_KEY_WINGS` maps wrapper keys to `wing_bestiary` / `wing_spells` / `wing_items` / `wing_classes` / `wing_lore`. Adventure prose continues to land in `wing_rpglib`.
 2. **Per-entity metadata extractors.** ✅ Each per-type renderer in `fivetools_render.py` pulls the canonical facets into the drawer's metadata (CR / type / size / environment / sense for monsters; level / school / classes / range / duration for spells; etc.). Per-type field coverage is best-effort and grows with new test fixtures rather than aiming for exhaustive coverage today.
 3. **Statblock content renderer.** ✅ `fivetools_render.py` matches `JSON_FORMAT §6.1`: full statblock per drawer (AC, HP, speed, abilities, saves, skills, senses, languages, CR, traits, actions, bonus, reactions, legendary, mythic, spellcasting). End-to-end verified on Drow Priestess of Lolth (~2 KB drawer, full content).
 4. **`{@tag}` flattening.** ✅ `strip_tags()` collapses `{@tag content|src}` to readable plaintext at render time so embedding-based search has real text to embed. Per-tag *metadata* extraction (parallel `tag_creature` / `tag_spell` / `tag_item` arrays for "what does this monster cast") is enrichment-only — see Batch C.
@@ -179,7 +179,7 @@ Slots in cleanly on top of Batches A and B; intentionally deferred until the che
 2. **Pre-built lookup ingestion.** Load `gendata-spell-source-lookup.json` and merge into spell drawers. Ingest `bookref-quick.json` / `bookref-dmscreen.json` into `wing_rules`. Ingest `gendata-tables.json` per-table.
 3. **Magic variant expansion.** Load `items-base.json`, walk `magicvariants.json::magicvariant`, materialize.
 4. **`--replace` actually replaces.** Coordinate with `mempalace-rlm` to add a "delete drawers by metadata" tool; until then, document the dropped-room workaround.
-5. **`--data-root` batch mode.** Read loader manifests, iterate per-source shards. (Note: this overlaps with the rejected bulk-ingest design — see [`rlm_architecture.md §16.1`](rlm_architecture.md). If implemented, it should remain GM-driven, scoped per filter; not a "ingest the whole corpus" knob.)
+5. **`--data-root` batch mode.** Read loader manifests, iterate per-source shards. (Note: this overlaps with the rejected bulk-ingest design — see [`rlm_architecture.md §16.1`](../rlm/rlm_architecture.md). If implemented, it should remain GM-driven, scoped per filter; not a "ingest the whole corpus" knob.)
 6. **`{@tag}` *metadata* extraction (S3.1).** State-machine parser; emit `tag_*` parallel metadata arrays. The flattening for embedding-readability shipped in Batch B; the structured-cross-reference index is the deferred piece.
 7. **Default `pdf-translators` path** → `~/src/mytools/pdf-translators/`. (Cosmetic; Step 3 handles the v2 path correctly via `suggest_conversion`.)
 
@@ -213,9 +213,9 @@ Both questions the audit closed with were resolved during the serene-harbor plan
 
 ### 6.1 One reference palace, or one per source-game-system?
 
-**Resolved per D1 (serene-harbor plan):** **per-campaign palace, no shared reference palace.** Both 5etools-derived drawers and campaign narrative drawers land in the active campaign's palace (`~/.mempalace/palaces/<campaign>/`). There is **no** shared `dnd5e` palace, no `--palace ad&d`, no `--palace pathfinder` — those would be pre-bulk-ingest designs and bulk-ingest is rejected ([`rlm_architecture.md §16.1`](rlm_architecture.md)).
+**Resolved per D1 (serene-harbor plan):** **per-campaign palace, no shared reference palace.** Both 5etools-derived drawers and campaign narrative drawers land in the active campaign's palace (`~/.mempalace/palaces/<campaign>/`). There is **no** shared `dnd5e` palace, no `--palace ad&d`, no `--palace pathfinder` — those would be pre-bulk-ingest designs and bulk-ingest is rejected ([`rlm_architecture.md §16.1`](../rlm/rlm_architecture.md)).
 
-The same Drow Priestess statblock gets re-ingested per campaign that asks for it. At cheap-path millisecond ingest cost this is the right trade. The "save the cost of re-ingest" argument is for PDF conversion (minutes + API spend), not JSON reads — so a shared palace would optimize the wrong axis. Co-mingling content across campaigns also breaks ranker scope and the GM-checkpoint discipline ([`rlm_architecture.md §16.2`](rlm_architecture.md) for the full reasoning).
+The same Drow Priestess statblock gets re-ingested per campaign that asks for it. At cheap-path millisecond ingest cost this is the right trade. The "save the cost of re-ingest" argument is for PDF conversion (minutes + API spend), not JSON reads — so a shared palace would optimize the wrong axis. Co-mingling content across campaigns also breaks ranker scope and the GM-checkpoint discipline ([`rlm_architecture.md §16.2`](../rlm/rlm_architecture.md) for the full reasoning).
 
 **Mechanics shipped in Step 3:** the retriever resolves the active palace from `config.yaml` via `find_default_config(__file__)`. `rpg_search` accepts an optional `palace` arg as override. Wing taxonomy unchanged: `wing_bestiary` / `wing_spells` / `wing_rpglib` for 5etools-derived content alongside the existing per-campaign narrative wings.
 
@@ -226,6 +226,6 @@ The same Drow Priestess statblock gets re-ingested per campaign that asks for it
 - `fivetools_catalog.search()` over `~/src/5etools-kostadis/data/` — surfaces 5etools-canonical entities as **`candidate (cost: cheap)`**. Ingest one-liner: `fivetools_ingest.py <path> --palace <campaign> --filter "name=…"` (or `chapter=N` for adventure shape).
 - rpg-library HTTP API — surfaces unconverted PDFs as **`candidate (cost: expensive)`**. Ingest pair: `pdf_to_5etools_v2.py convert ...` + `fivetools_ingest.py ...`. Carries the identifier triple `(book_id, relative_path, product_id)` (per D7) so persisted references survive a rpg-library re-index.
 
-Bulk-ingest of the canonical corpus is rejected ([`rlm_architecture.md §16.1`](rlm_architecture.md)) — even though it's only 106 MB, cold content pollutes retrieval and bypasses the GM-as-checkpoint discipline. Per-entity on-demand cheap ingest is the only supported way 5etools-canonical content reaches the palace.
+Bulk-ingest of the canonical corpus is rejected ([`rlm_architecture.md §16.1`](../rlm/rlm_architecture.md)) — even though it's only 106 MB, cold content pollutes retrieval and bypasses the GM-as-checkpoint discipline. Per-entity on-demand cheap ingest is the only supported way 5etools-canonical content reaches the palace.
 
-The first ingest target for any new campaign is whatever the GM's first query surfaces as a `candidate (cost: cheap)`. For an OotA campaign that is typically `~/src/5etools-kostadis/data/adventure/adventure-oota.json --filter "chapter=0"` (Velkynvelve) — see the walkthrough at [`rlm_architecture.md §4.3`](rlm_architecture.md). pdf-translators only fires when the canonical tree has no relevant content (third-party PDFs, AD&D modules, homebrew).
+The first ingest target for any new campaign is whatever the GM's first query surfaces as a `candidate (cost: cheap)`. For an OotA campaign that is typically `~/src/5etools-kostadis/data/adventure/adventure-oota.json --filter "chapter=0"` (Velkynvelve) — see the walkthrough at [`rlm_architecture.md §4.3`](../rlm/rlm_architecture.md). pdf-translators only fires when the canonical tree has no relevant content (third-party PDFs, AD&D modules, homebrew).

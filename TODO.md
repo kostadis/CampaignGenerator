@@ -1,7 +1,7 @@
 # CampaignGenerator — TODO
 
 Active backlog. For the live feature inventory (RLM pipeline, batch API,
-session-prep flows that already shipped), see [`ARCHITECTURE.md`](ARCHITECTURE.md).
+session-prep flows that already shipped), see [`docs/core/architecture.md`](docs/core/architecture.md).
 For background/conventions, [`CLAUDE.md`](CLAUDE.md).
 
 ---
