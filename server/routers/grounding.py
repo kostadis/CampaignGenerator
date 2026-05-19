@@ -159,6 +159,7 @@ async def run_party(
 
 @router.get("/run/planning")
 async def run_planning(
+    planning_config: str = "",
     npc: list[str] = Query(default=[]),
     arc_scores: list[str] = Query(default=[]),
     summaries: str = "",
@@ -174,8 +175,14 @@ async def run_planning(
 ):
     cmd = [python_exe(), str(SCRIPT_DIR / "planning.py")]
 
-    _cmd_multi(cmd, "--npc", npc)
-    _cmd_multi(cmd, "--arc-scores", arc_scores)
+    if planning_config:
+        _cmd_opt(cmd, "--planning-config", planning_config)
+        # planning.py rejects --planning-config + --arc-scores; --npc extras
+        # are allowed (pass-through dossiers for trackless NPCs).
+        _cmd_multi(cmd, "--npc", npc)
+    else:
+        _cmd_multi(cmd, "--npc", npc)
+        _cmd_multi(cmd, "--arc-scores", arc_scores)
     _cmd_opt(cmd, "--summaries", summaries)
     _cmd_multi(cmd, "--context", context)
     _cmd_opt(cmd, "--output", output)

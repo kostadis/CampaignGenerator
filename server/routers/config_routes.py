@@ -8,6 +8,7 @@ service's resolved view, not read from disk.
 """
 
 from pathlib import Path
+from typing import Any
 
 import yaml
 from fastapi import APIRouter, HTTPException, Request
@@ -236,6 +237,128 @@ def put_party_yaml(update: PartyYamlSave):
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(yaml.safe_dump({"characters": out_chars}, sort_keys=False),
                  encoding="utf-8")
+    return {"ok": True, "path": str(p)}
+
+
+# ── Planning YAML (NPC + faction dossiers + arc scores) ───────────────────
+# Mirrors party-yaml above. Shape:
+#   npcs:
+#     - name: Adabra
+#       dossier: docs/npcs/adabra.md          # required for npcs
+#       arc_score: docs/tracking/adabra.md    # absent | null (trackless) | path
+#   factions:
+#     - name: Kraken Society
+#       dossier: docs/factions/kraken.md      # optional
+#       arc_score: docs/tracking/echoes.md
+# Three-state arc_score and trackless semantics match party.py exactly.
+
+
+def _read_planning_entries(raw_list: Any) -> list[dict]:
+    """Normalize a list of NPC or faction entries from on-disk YAML to the
+    UI wire shape: arc_score always present (empty when unset), explicit
+    trackless flag, dossier string."""
+    if not isinstance(raw_list, list):
+        return []
+    out = []
+    for e in raw_list:
+        if not isinstance(e, dict):
+            continue
+        out.append({
+            "name": e.get("name", ""),
+            "dossier": e.get("dossier") or "",
+            "arc_score": e.get("arc_score") if e.get("arc_score") else "",
+            "trackless": "arc_score" in e and e.get("arc_score") is None,
+        })
+    return out
+
+
+@router.get("/planning-yaml")
+def get_planning_yaml(path: str):
+    """Load a planning config YAML.
+
+    Returns ``npcs`` and ``factions`` lists in the UI wire shape (arc_score
+    always present, trackless flag set when the on-disk value is null).
+    Missing file is not an error — returns empty lists so the UI can offer
+    a 'create new' flow.
+    """
+    p = Path(path).expanduser().resolve() if path else None
+    if not p or not path:
+        raise HTTPException(status_code=400, detail="path is required")
+    if not p.exists():
+        return {"path": str(p), "exists": False, "npcs": [], "factions": []}
+    try:
+        raw = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as e:
+        raise HTTPException(status_code=400, detail=f"invalid YAML: {e}")
+    return {
+        "path": str(p),
+        "exists": True,
+        "npcs": _read_planning_entries(raw.get("npcs") or []),
+        "factions": _read_planning_entries(raw.get("factions") or []),
+    }
+
+
+class PlanningYamlSave(BaseModel):
+    path: str
+    npcs: list[dict] = []
+    factions: list[dict] = []
+
+
+@router.put("/planning-yaml")
+def put_planning_yaml(update: PlanningYamlSave):
+    """Write a planning config YAML.
+
+    NPC entries require ``name`` and ``dossier``. Faction entries require
+    only ``name`` (``dossier`` is optional faction-overview file).
+    ``arc_score`` is three-state per the trackless flag (matches party).
+    Shape validation only — does not verify referenced files exist
+    (planning.py's loader does that at run time).
+    """
+    p = Path(update.path).expanduser().resolve()
+    if not update.npcs and not update.factions:
+        raise HTTPException(
+            status_code=400,
+            detail="planning config must have at least one NPC or faction",
+        )
+
+    def _build_entry(c: dict, i: int, kind: str, require_dossier: bool) -> dict:
+        name = (c.get("name") or "").strip()
+        if not name:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{kind} #{i + 1}: 'name' is required",
+            )
+        dossier = (c.get("dossier") or "").strip()
+        if require_dossier and not dossier:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{kind} #{i + 1} ({name}): 'dossier' is required",
+            )
+        entry: dict = {"name": name}
+        if dossier:
+            entry["dossier"] = dossier
+        if c.get("trackless"):
+            entry["arc_score"] = None
+        else:
+            arc_score = (c.get("arc_score") or "").strip()
+            if arc_score:
+                entry["arc_score"] = arc_score
+        return entry
+
+    out: dict = {}
+    if update.npcs:
+        out["npcs"] = [
+            _build_entry(c, i, "npc", require_dossier=True)
+            for i, c in enumerate(update.npcs)
+        ]
+    if update.factions:
+        out["factions"] = [
+            _build_entry(c, i, "faction", require_dossier=False)
+            for i, c in enumerate(update.factions)
+        ]
+
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(yaml.safe_dump(out, sort_keys=False), encoding="utf-8")
     return {"ok": True, "path": str(p)}
 
 

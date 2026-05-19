@@ -4,11 +4,18 @@ import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import MultiPathField from '../../components/shared/MultiPathField.vue'
 import ExtractSynthesizePanel from '../../components/shared/ExtractSynthesizePanel.vue'
+import PlanningConfigEditor from '../../components/shared/PlanningConfigEditor.vue'
+import { resolvePathWithBase } from '../../utils/paths'
 
 const config = useConfigStore()
 
 // Mode: 'synthesize' or 'dossiers'
 const mode = ref<'synthesize' | 'dossiers'>('synthesize')
+
+// Synthesize input mode: 'config' (planning.yaml) or 'flat' (legacy flag lists).
+type SynthMode = 'config' | 'flat'
+const synthMode = ref<SynthMode>('flat')
+const planningConfigPath = ref('')
 
 // ── Synthesize mode ──
 const npcFiles = ref('')
@@ -42,7 +49,37 @@ function loadFromConfig() {
   dossierDir.value = v.plan_dossier_dir || 'docs/npcs/'
   dossierExtractDir.value = v.plan_build_extract_dir || ''
   dossierSplitChapters.value = v.plan_build_split_chapters || '# Chapter'
+
+  planningConfigPath.value = v.plan_config_path || ''
+  // Persisted mode wins; default to 'config' if a yaml path is set,
+  // else stay on 'flat' so legacy workspaces are unaffected.
+  if (v.plan_synth_mode === 'config' || v.plan_synth_mode === 'flat') {
+    synthMode.value = v.plan_synth_mode
+  } else {
+    synthMode.value = planningConfigPath.value ? 'config' : 'flat'
+  }
 }
+
+// Persist synth-mode + planning-config path through the typed planning
+// section so the choice survives a reload (mirrors PartyDocument).
+let planPersistTimer: ReturnType<typeof setTimeout> | null = null
+function schedulePlanPersist() {
+  if (planPersistTimer) clearTimeout(planPersistTimer)
+  planPersistTimer = setTimeout(() => {
+    config.updateSection('planning', {
+      synth_mode: synthMode.value,
+      config_path: planningConfigPath.value,
+    }).catch(() => { /* non-fatal — overlay still has the values */ })
+  }, 500)
+}
+watch(synthMode, (m) => {
+  config.values.plan_synth_mode = m
+  schedulePlanPersist()
+})
+watch(planningConfigPath, (p) => {
+  config.values.plan_config_path = p
+  schedulePlanPersist()
+})
 
 const npcList = computed(() =>
   npcFiles.value.split('\n').map(l => l.trim()).filter(Boolean)
@@ -54,27 +91,44 @@ const contextList = computed(() =>
   context.value.split('\n').map(l => l.trim()).filter(Boolean)
 )
 
-const synthReady = computed(() =>
-  !!(npcList.value.length && output.value.trim())
-)
+const synthReady = computed(() => {
+  if (!output.value.trim()) return false
+  return synthMode.value === 'config'
+    ? !!planningConfigPath.value.trim()
+    : npcList.value.length > 0
+})
 
 const dossierReady = computed(() =>
   !!(dossierSummaries.value.trim() && dossierDir.value.trim())
 )
 
-const synthParams = computed(() => ({
-  npc: npcList.value,
-  arc_scores: arcScoreList.value,
-  summaries: summaries.value,
-  context: contextList.value,
-  output: output.value,
-  extract_dir: extractDir.value,
-  split_chapters: splitChapters.value,
-  no_log: noLog.value,
-  model: config.model,
-}))
+const synthParams = computed(() => {
+  const base: Record<string, unknown> = {
+    summaries: summaries.value,
+    context: contextList.value,
+    output: output.value,
+    extract_dir: extractDir.value,
+    split_chapters: splitChapters.value,
+    no_log: noLog.value,
+    model: config.model,
+  }
+  if (synthMode.value === 'config') {
+    base.planning_config = planningConfigPath.value
+    // Pass-through extras: NPCs with no arc score that aren't in the yaml.
+    // planning.py rejects --planning-config + --arc-scores, so we drop those.
+    base.npc = npcList.value
+  } else {
+    base.npc = npcList.value
+    base.arc_scores = arcScoreList.value
+  }
+  return base
+})
 
 const synthHasSummaries = computed(() => !!summaries.value.trim())
+
+const resolvedPlanningConfigPath = computed(() =>
+  resolvePathWithBase(planningConfigPath.value, 'campaign')
+)
 
 const dossierParams = computed(() => ({
   summaries: dossierSummaries.value,
@@ -135,14 +189,45 @@ onMounted(() => { loadFromConfig() })
 
     <!-- Synthesize mode -->
     <div v-if="mode === 'synthesize'" class="form-grid">
-      <div class="form-section">
+      <!-- Input mode toggle -->
+      <div class="form-section mode-section">
+        <label class="field-label">Input mode</label>
+        <div class="mode-toggle-radio">
+          <label class="radio-label">
+            <input type="radio" value="config" v-model="synthMode" />
+            Planning config YAML
+            <span class="mode-hint">— preferred; binds each NPC/faction to its dossier + arc score with first-class trackless support</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" value="flat" v-model="synthMode" />
+            Flat file lists
+            <span class="mode-hint">— legacy; one file per line for dossiers / arc scores</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Config mode: planning.yaml path + inline editor -->
+      <div v-if="synthMode === 'config'" class="form-section">
+        <PathField v-model="planningConfigPath" label="Planning config file" required resolve-base="campaign"
+          help="Path to planning.yaml. Maps each NPC/faction to dossier + arc_score (use null for trackless)." />
+        <PlanningConfigEditor :config-path="resolvedPlanningConfigPath" />
+      </div>
+
+      <!-- Flat mode: required NPC dossiers + optional arc scores -->
+      <div v-if="synthMode === 'flat'" class="form-section">
         <MultiPathField v-model="npcFiles" label="NPC dossier files" required resolve-base="campaign"
           help="One per line. Per-NPC dossier files (docs/npcs/*.md)." />
       </div>
 
-      <div class="form-section">
+      <div v-if="synthMode === 'flat'" class="form-section">
         <MultiPathField v-model="arcScores" label="NPC/faction arc score files" resolve-base="campaign"
           help="One per line. Arc score mechanic files for villains and factions (e.g. grundar_score.md, kraken_echoes.md). Defines triggers and thresholds for threat arcs. Not for PC arc scores — those belong in Party Document." />
+      </div>
+
+      <!-- Config mode: optional pass-through NPC dossiers (no arc score, not in yaml) -->
+      <div v-if="synthMode === 'config'" class="form-section">
+        <MultiPathField v-model="npcFiles" label="Extra unbound NPC dossiers" resolve-base="campaign"
+          help="One per line. Optional — pass-through dossiers for NPCs with no arc score that aren't in planning.yaml. Names must not overlap with yaml entries." />
       </div>
 
       <div class="form-section">
@@ -270,6 +355,15 @@ onMounted(() => { loadFromConfig() })
 .mode-btn.active {
   background: var(--bg-surface0); color: var(--mauve); font-weight: 700;
 }
+
+.mode-section { display: flex; flex-direction: column; gap: 6px; }
+.mode-toggle-radio { display: flex; flex-direction: column; gap: 4px; }
+.radio-label {
+  font-size: 11px; color: var(--text-sub);
+  display: flex; align-items: center; gap: 6px; cursor: pointer;
+}
+.radio-label input { accent-color: var(--mauve); }
+.mode-hint { color: var(--text-muted); font-weight: 400; }
 
 .form-grid { display: flex; flex-direction: column; gap: 16px; }
 .form-section {
