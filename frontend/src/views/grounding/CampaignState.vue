@@ -9,6 +9,7 @@ const config = useConfigStore()
 const input = ref('')
 const output = ref('')
 const trackFile = ref('')
+const trackFilesExtra = ref('')
 const trackInline = ref('')
 const extractDir = ref('')
 const splitChapters = ref('# Chapter')
@@ -20,6 +21,7 @@ function loadFromConfig() {
   input.value = v.cs_input || v.summaries || ''
   output.value = v.cs_output || v.campaign_state_output || v.campaign_state || ''
   trackFile.value = v.cs_track_file || v.tracking_file || ''
+  trackFilesExtra.value = v.cs_track_files_extra || ''
   extractDir.value = v.cs_extract_dir || ''
   splitChapters.value = v.cs_split_chapters || '# Chapter'
 }
@@ -32,10 +34,15 @@ const trackItems = computed(() =>
   trackInline.value.split('\n').map(l => l.trim()).filter(Boolean)
 )
 
+const trackFilesExtraList = computed(() =>
+  trackFilesExtra.value.split('\n').map(l => l.trim()).filter(Boolean)
+)
+
 const runParams = computed(() => ({
   input: input.value,
   output: output.value,
   track_file: trackFile.value,
+  track_file_extra: trackFilesExtraList.value,
   track: trackItems.value,
   extract_dir: extractDir.value,
   split_chapters: splitChapters.value,
@@ -80,6 +87,15 @@ onMounted(() => { loadFromConfig() })
       </div>
 
       <div class="form-section">
+        <div class="field">
+          <label class="field-label">Additional tracking files</label>
+          <textarea class="field-textarea" v-model="trackFilesExtra" rows="3"
+            placeholder="One file path per line — e.g. notes/sessions/tracking_arc_x.txt" />
+          <span class="field-help">Per-arc or homebrew tracking files to merge with the module baseline. Each line becomes another --track-file. Use for prep that isn't in the published module.</span>
+        </div>
+      </div>
+
+      <div class="form-section">
         <PathField v-model="extractDir" label="Extractions directory" resolve-base="campaign"
           help="Where intermediate state_extractions/ files live. Review these between Extract and Synthesize." />
       </div>
@@ -87,10 +103,10 @@ onMounted(() => { loadFromConfig() })
       <!-- Advanced -->
       <div class="form-section">
         <div class="field">
-          <label class="field-label">Additional events to track</label>
+          <label class="field-label">Additional events to track (inline)</label>
           <textarea class="field-textarea" v-model="trackInline" rows="4"
             placeholder="One item per line — added to the tracking list above" />
-          <span class="field-help">Extra events to verify that aren't in the tracking file. Same format, same purpose — just typed directly instead of loaded from a file.</span>
+          <span class="field-help">Extra event descriptions typed directly (NOT file paths — for paths use "Additional tracking files" above).</span>
         </div>
       </div>
 

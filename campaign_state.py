@@ -213,10 +213,12 @@ def main() -> None:
                         help="Canonical timeline — the master narrative bible (not needed with --synthesize-only)")
     parser.add_argument("--output", "-o", required=True, metavar="FILE",
                         help="Where to save the campaign state document")
-    parser.add_argument("--track-file", metavar="FILE",
+    parser.add_argument("--track-file", metavar="FILE", action="append",
                         help="Text file listing events/locations/NPCs to explicitly track "
                              "(one item per line, # for comments). Items appear as a dedicated "
-                             "'Tracked Items Status' section in the output.")
+                             "'Tracked Items Status' section in the output. May be repeated to "
+                             "load multiple tracking files (e.g. a module baseline plus per-arc "
+                             "homebrew tracking).")
     parser.add_argument("--track", nargs="+", metavar="ITEM",
                         help="One or more tracking items as inline arguments "
                              "(alternative to --track-file)")
@@ -259,11 +261,12 @@ def main() -> None:
     # Load tracking items
     tracked_items: list[str] = []
     if args.track_file:
-        track_path = Path(args.track_file).expanduser()
-        if not track_path.exists():
-            print(f"Error: track file not found: {track_path}", file=sys.stderr)
-            sys.exit(1)
-        tracked_items = load_tracking_items(track_path)
+        for track_file in args.track_file:
+            track_path = Path(track_file).expanduser()
+            if not track_path.exists():
+                print(f"Error: track file not found: {track_path}", file=sys.stderr)
+                sys.exit(1)
+            tracked_items.extend(load_tracking_items(track_path))
     if args.track:
         tracked_items = tracked_items + args.track
 

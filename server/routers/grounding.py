@@ -43,6 +43,7 @@ async def run_campaign_state(
     input: str = "",
     output: str = "",
     track_file: str = "",
+    track_file_extra: list[str] = Query(default=[]),
     track: list[str] = Query(default=[]),
     extract_dir: str = "",
     chunk_size: int = 60000,
@@ -59,6 +60,7 @@ async def run_campaign_state(
 
     _cmd_opt(cmd, "--output", output)
     _cmd_opt(cmd, "--track-file", track_file)
+    _cmd_multi(cmd, "--track-file", track_file_extra)
     _cmd_multi(cmd, "--track", track)
     _cmd_opt(cmd, "--extract-dir", extract_dir)
 
