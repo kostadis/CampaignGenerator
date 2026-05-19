@@ -5,7 +5,7 @@ CampaignGenerator integrates with three external tools to give the AI and the GM
 | Tool | Role |
 |---|---|
 | **rpglib** (`~/src/mytools/rpg-lib/`) | 14K+ PDFs indexed in `rpg_library.db`. Source of book-level discovery and metadata. |
-| **pdf-translators** (`~/src/5etools-kostadis/pdf-translators/`) | Converts a PDF into structured 5etools JSON. Human review in `adventure_editor` / `toc_editor` / `monster_editor`. |
+| **pdf-translators** (`~/src/mytools/pdf-translators/`) | Converts a PDF into structured 5etools JSON. Human review in `adventure_editor` / `toc_editor` / `monster_editor`. |
 | **MemPalace** (`~/src/mempalace/` or a sibling worktree) | Verbatim-memory palace with hierarchical retrieval (`mempalace_search_hierarchical`). Source of prose hits + bestiary stat blocks. |
 
 ## Tiered retrieval

@@ -78,6 +78,17 @@ class TestWalkEntries:
         assert len(tops) == 1
         assert tops[0]["name"] == "Only chapter"
 
+    def test_sourcebook_shape_routes_through_bookData(self):
+        doc = {
+            "book": [{"id": "idx"}],
+            "bookData": [
+                {"data": [{"type": "section", "name": "Only chapter", "entries": []}]}
+            ],
+        }
+        tops = list(fti._iter_top_level_entries(doc))
+        assert len(tops) == 1
+        assert tops[0]["name"] == "Only chapter"
+
     def test_bare_list_document(self):
         doc = [{"type": "p", "entry": "stray prose"}]
         tops = list(fti._iter_top_level_entries(doc))
@@ -325,6 +336,13 @@ class TestDetectDocKind:
         doc = {
             "adventure": [{"id": "i"}],
             "adventureData": [{"data": [{"type": "section", "name": "x", "entries": []}]}],
+        }
+        assert fti.detect_doc_kind(doc) == "adventure"
+
+    def test_adventure_via_bookData(self):
+        doc = {
+            "book": [{"id": "i"}],
+            "bookData": [{"data": [{"type": "section", "name": "x", "entries": []}]}],
         }
         assert fti.detect_doc_kind(doc) == "adventure"
 

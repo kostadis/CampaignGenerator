@@ -5,7 +5,9 @@ The 5etools schema covers two distinct document shapes:
 
 * **Adventure / book** — ``{data: [{type:"section", entries:[...]}]}``
   (chapters, scenes, prose, inline statblocks). pdf-translators
-  outputs this shape.
+  outputs this shape. The homebrew variant uses ``adventure`` +
+  ``adventureData`` wrapper keys; the sourcebook variant uses
+  ``book`` + ``bookData``. Both are handled identically.
 * **Catalog** — ``{monster:[...], spell:[...], item:[...], class:[...],
   ...}`` keyed by entity wrapper key. Canonical 5etools repository
   files (``bestiary-mm.json``, ``spells-phb.json``, …) use this shape.
@@ -33,16 +35,16 @@ sidecar state file so re-running on an unchanged JSON is a no-op. Pass
 ``--force`` to override, or ``--replace`` to also wipe drawers from a
 previous ingest of this book before re-adding.
 
-Usage:
-    python fivetools_ingest.py path/to/adventure.json
-    python fivetools_ingest.py path/to/bestiary-mm.json
-    python fivetools_ingest.py path/to/bestiary-mm.json --filter "name=Drow Priestess of Lolth"
-    python fivetools_ingest.py path/to/bestiary-mm.json --filter "name=Drow,source=MM"
-    python fivetools_ingest.py path/to/adventure.json --palace /path/to/palace
-    python fivetools_ingest.py path/to/adventure.json --book-id 7421
-    python fivetools_ingest.py path/to/adventure.json --force
-    python fivetools_ingest.py path/to/adventure.json --replace
-    python fivetools_ingest.py path/to/adventure.json --dry-run
+Usage (--palace is always required — alias or absolute path):
+    python fivetools_ingest.py path/to/adventure.json --palace abyss
+    python fivetools_ingest.py path/to/bestiary-mm.json --palace chat
+    python fivetools_ingest.py path/to/bestiary-mm.json --palace chat --filter "name=Drow Priestess of Lolth"
+    python fivetools_ingest.py path/to/bestiary-mm.json --palace chat --filter "name=Drow,source=MM"
+    python fivetools_ingest.py path/to/adventure.json --palace /abs/path/to/palace
+    python fivetools_ingest.py path/to/adventure.json --palace abyss --book-id 7421
+    python fivetools_ingest.py path/to/adventure.json --palace abyss --force
+    python fivetools_ingest.py path/to/adventure.json --palace abyss --replace
+    python fivetools_ingest.py path/to/adventure.json --palace abyss --dry-run
 """
 
 from __future__ import annotations
@@ -70,7 +72,7 @@ logger = logging.getLogger(__name__)
 # ── Defaults ─────────────────────────────────────────────────────────────
 
 _DEFAULT_RPGLIB_DB = Path.home() / "src" / "mytools" / "rpg-lib" / "rpg_library.db"
-_DEFAULT_PDF_TRANSLATORS = Path.home() / "src" / "5etools-kostadis" / "pdf-translators"
+_DEFAULT_PDF_TRANSLATORS = Path.home() / "src" / "mytools" / "pdf-translators"
 _DEFAULT_FIVETOOLS_DATA_ROOT = Path.home() / "src" / "5etools-kostadis" / "data"
 _STATE_DIRNAME = ".fivetools_ingest"
 _STATE_VERSION = 1
@@ -153,9 +155,14 @@ _SKIPPED_CATALOG_KEYS = {
 # ── Validation hook into pdf-translators ─────────────────────────────────
 
 
-def _load_adventure_model(module_root: Path):
+def _load_adventure_model(module_root: Path, *, strict: bool = False):
     """Import adventure_model lazily so the script still runs for
     ``--dry-run`` or ``--help`` without pdf-translators on the machine.
+
+    Returns ``None`` if the module can't be imported. Callers treat that
+    as "validator unavailable" and skip the schema check — validation
+    is best-effort metadata, not load-bearing. In ``strict`` mode we
+    raise instead, because the user has asked for hard enforcement.
     """
     if str(module_root) not in sys.path:
         sys.path.insert(0, str(module_root))
@@ -164,19 +171,39 @@ def _load_adventure_model(module_root: Path):
 
         return adventure_model
     except ImportError as exc:
-        raise SystemExit(
+        msg = (
             f"fivetools_ingest: cannot import adventure_model from {module_root!r}: {exc}. "
-            "Pass --pdf-translators with the correct path."
+            "Pass --pdf-translators with the correct path to enable schema validation."
         )
+        if strict:
+            raise SystemExit(msg)
+        logger.warning("%s Proceeding without validation.", msg)
+        return None
 
 
 def validate_adventure_json(raw: dict, module_root: Path, strict: bool = False) -> list[str]:
     """Run pdf-translators' structural validator. Returns a list of issues
-    (empty when the JSON is well-formed). Raises on malformed JSON only
-    when ``strict=True``.
+    (empty when the JSON is well-formed or the validator is unavailable).
+    Raises on malformed JSON only when ``strict=True``.
     """
-    mod = _load_adventure_model(module_root)
-    ctx = mod.BuildContext(mode=mod.ErrorMode.STRICT if strict else mod.ErrorMode.WARN)
+    mod = _load_adventure_model(module_root, strict=strict)
+    if mod is None:
+        return []
+    try:
+        mode_enum = mod.ValidationMode
+    except AttributeError:
+        # API drift: older builds exposed mod.ErrorMode under that name.
+        mode_enum = getattr(mod, "ErrorMode", None)
+        if mode_enum is None:
+            msg = (
+                "fivetools_ingest: adventure_model exposes neither "
+                "ValidationMode nor ErrorMode — pdf-translators API has drifted."
+            )
+            if strict:
+                raise SystemExit(msg)
+            logger.warning("%s Skipping validation.", msg)
+            return []
+    ctx = mod.BuildContext(mode=mode_enum.STRICT if strict else mode_enum.WARN)
     mod.parse_document(raw, ctx=ctx)
     errs = getattr(ctx.result, "errors", None) or []
     return [str(e) for e in errs]
@@ -282,18 +309,19 @@ _ADVENTURE_SECTION_TYPES = {
 def detect_doc_kind(raw: Any) -> str:
     """Return ``"adventure"``, ``"catalog"``, or ``"unknown"``.
 
-    A doc is **adventure** when it carries ``adventureData[]`` (homebrew)
-    OR ``data[]`` whose elements look like sections/prose. A doc is
-    **catalog** when its top-level keys include any of the known
-    wrapper keys (``monster``, ``spell``, ``item``, …). Some files
-    contain both shapes (rare); precedence: adventure > catalog.
+    A doc is **adventure** when it carries ``adventureData[]`` (homebrew
+    adventure) or ``bookData[]`` (sourcebook) OR ``data[]`` whose
+    elements look like sections/prose. A doc is **catalog** when its
+    top-level keys include any of the known wrapper keys (``monster``,
+    ``spell``, ``item``, …). Some files contain both shapes (rare);
+    precedence: adventure > catalog.
     """
     if isinstance(raw, list):
         return "adventure"
     if not isinstance(raw, dict):
         return "unknown"
 
-    if isinstance(raw.get("adventureData"), list):
+    if isinstance(raw.get("adventureData"), list) or isinstance(raw.get("bookData"), list):
         return "adventure"
 
     data = raw.get("data")
@@ -308,6 +336,7 @@ def detect_doc_kind(raw: Any) -> str:
         isinstance(raw.get("entries"), list)
         and "data" not in raw
         and "adventureData" not in raw
+        and "bookData" not in raw
     ):
         return "adventure"
 
@@ -354,9 +383,10 @@ def wing_for_wrapper_key(prop: str) -> str:
 def _iter_top_level_entries(doc: Any) -> Iterator[dict]:
     """Yield every top-level adventure entry regardless of doc shape.
 
-    The two observed shapes:
-        * Homebrew: ``{"adventure": [...index...], "adventureData": [{"data": [...]}]}``
-        * Official: ``{"data": [...]}``
+    The observed shapes:
+        * Homebrew adventure: ``{"adventure": [...index...], "adventureData": [{"data": [...]}]}``
+        * Sourcebook:         ``{"book": [...index...], "bookData": [{"data": [...]}]}``
+        * Official adventure: ``{"data": [...]}``
     Plus a couple of one-off outputs where the top level is simply a list.
     """
     if isinstance(doc, list):
@@ -365,13 +395,20 @@ def _iter_top_level_entries(doc: Any) -> Iterator[dict]:
     if not isinstance(doc, dict):
         return
 
-    if isinstance(doc.get("adventureData"), list):
-        for ad in doc["adventureData"]:
-            if isinstance(ad, dict) and isinstance(ad.get("data"), list):
-                yield from (e for e in ad["data"] if isinstance(e, dict))
+    for wrapper_key in ("adventureData", "bookData"):
+        wrapped = doc.get(wrapper_key)
+        if isinstance(wrapped, list):
+            for ad in wrapped:
+                if isinstance(ad, dict) and isinstance(ad.get("data"), list):
+                    yield from (e for e in ad["data"] if isinstance(e, dict))
     if isinstance(doc.get("data"), list):
         yield from (e for e in doc["data"] if isinstance(e, dict))
-    if isinstance(doc.get("entries"), list) and "adventureData" not in doc and "data" not in doc:
+    if (
+        isinstance(doc.get("entries"), list)
+        and "adventureData" not in doc
+        and "bookData" not in doc
+        and "data" not in doc
+    ):
         yield from (e for e in doc["entries"] if isinstance(e, dict))
 
 
@@ -1014,8 +1051,10 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("json_path", type=Path, help="Path to the 5etools JSON file.")
     parser.add_argument(
         "--palace",
-        default=None,
-        help="Palace alias or absolute path (forwarded to mempalace-mcp).",
+        required=True,
+        help="Palace alias or absolute path (forwarded to mempalace-mcp). "
+        "Required: silent default-palace resolution at the mempalace-mcp "
+        "layer was footgun-prone (drawers landing in the wrong campaign).",
     )
     parser.add_argument(
         "--book-id",

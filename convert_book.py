@@ -30,7 +30,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 
-_DEFAULT_PDF_TRANSLATORS = Path.home() / "src" / "5etools-kostadis" / "pdf-translators"
+_DEFAULT_PDF_TRANSLATORS = Path.home() / "src" / "mytools" / "pdf-translators"
 _DEFAULT_CONVERTER_SCRIPT = "pdf_to_5etools_v2.py"
 
 
