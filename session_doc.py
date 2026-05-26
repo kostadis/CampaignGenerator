@@ -20,9 +20,7 @@ Passes that still run:
 (Pass 2 enhancement and Pass 4 character extraction are skipped — the
 scene-extraction files already supply both inputs.)
 
-The final document: rotating-voice narrative sections, optionally followed by
-any pre-built `--enhanced-sections` block (Memorable Moments, Scenes, NPCs,
-Locations, Items, Spells, Consistency Notes).
+The final document: rotating-voice narrative sections, one per scene.
 
 Writes one narration file per scene under `--per-scene-output DIR`. Use
 `assemble.py` (Stage 4) to combine them into a single session document.
@@ -78,38 +76,6 @@ For each issue, output:
 
 If nothing is wrong, say so clearly.
 Output only the consistency report. No preamble.
-"""
-
-# ── Pass 2: Enhance structured sections ───────────────────────────────────────
-
-ENHANCE_SYSTEM = """\
-You are enhancing the structured sections of a D&D session recap.
-You will be given:
-- The original recap
-- Roleplay extractions — raw quoted dialogue and character moments from the session
-- Session extractions — action detail, events, environmental context
-- A consistency report flagging errors in the original
-- (Optionally) a party document for character voice reference
-
-Your job: produce improved versions of the NON-SUMMARY sections only.
-The Summary will be replaced by a separate narrative pass — do not include it.
-
-1. MEMORABLE MOMENTS — Keep all existing entries. Add new ones for any significant
-   roleplay moment, memorable line, or dramatic beat in the extractions that isn't
-   already captured. Format new entries consistently with the existing ones:
-   bold description, italicised context note, blockquote for direct quotes.
-
-2. CONSISTENCY NOTES — Append a new section at the end listing any issues from the
-   consistency report that couldn't be silently fixed in the text (ambiguities,
-   unresolved contradictions, things the GM should verify). Omit this section if
-   there are no issues to flag.
-
-3. ALL OTHER SECTIONS (Scenes, NPCs, Locations, Items, Spells) — Preserve exactly
-   as they are. Do not rewrite, reorder, or add to them.
-
-Output starting from ## Memorable Moments (or the first non-Summary section in the recap).
-Do not include a Summary section — it is generated separately.
-No preamble or commentary.
 """
 
 # ── Pass 3: Narrative plan ────────────────────────────────────────────────────
@@ -416,11 +382,10 @@ def load_scene_extractions(path: Path) -> list[dict]:
     Pass 5's quote source). When a file does not follow the dual-section
     layout, `summary` is empty and `moments` holds the full body.
 
-    Files named `plan.md`, `enhanced_sections.md`, `consistency_report.md`,
-    or starting with `_` are skipped (they are sibling artifacts, not scene
-    extractions).
+    Files named `plan.md`, `consistency_report.md`, or starting with `_`
+    are skipped (they are sibling artifacts, not scene extractions).
     """
-    SKIP = {"plan.md", "enhanced_sections.md", "consistency_report.md"}
+    SKIP = {"plan.md", "consistency_report.md"}
     by_stem: dict[str, Path] = {}
     for f in path.glob("*.md"):
         if f.name in SKIP or f.name.startswith("_"):
@@ -914,7 +879,6 @@ class Inputs:
     characters: list[str] = field(default_factory=list)
     examples_text: str | None = None
     per_char_examples: dict[str, str] = field(default_factory=dict)
-    enhanced_sections: str = ""
     # Output / cache directories
     extract_dir: Path | None = None
     per_scene_output_dir: Path | None = None
@@ -1093,16 +1057,6 @@ def load_inputs(args, parser) -> Inputs:
         extract_dir = Path(args.extract_dir).expanduser()
         extract_dir.mkdir(parents=True, exist_ok=True)
 
-    # Enhanced sections (pre-built Memorable Moments / NPCs / Scenes block)
-    enhanced_sections: str = ""
-    if args.enhanced_sections:
-        _p = Path(args.enhanced_sections).expanduser()
-        if not _p.exists():
-            print(f"Error: --enhanced-sections file not found: {_p}", file=sys.stderr)
-            sys.exit(1)
-        enhanced_sections = _p.read_text(encoding="utf-8")
-        print(f"  Enhanced sections: {_p.name} ({len(enhanced_sections):,} chars)")
-
     return Inputs(
         recap_path=recap_path,
         recap=recap,
@@ -1119,7 +1073,6 @@ def load_inputs(args, parser) -> Inputs:
         characters=characters,
         examples_text=examples_text,
         per_char_examples=per_char_examples,
-        enhanced_sections=enhanced_sections,
         extract_dir=extract_dir,
         per_scene_output_dir=per_scene_output_dir,
     )
@@ -1213,11 +1166,8 @@ def narrate_section(
         else:
             prev_narrator = None
     scene_events_str = scene_summary_override or ""
-    if not scene_events_str and scene_name:
-        if inputs.enhanced_sections:
-            scene_events_str = extract_scene_text(inputs.enhanced_sections, scene_name)
-        elif inputs.recap:
-            scene_events_str = extract_scene_text(inputs.recap, scene_name)
+    if not scene_events_str and scene_name and inputs.recap:
+        scene_events_str = extract_scene_text(inputs.recap, scene_name)
     narrate_context = (inputs.context_parts
                        if args.reflections and inputs.context_parts else None)
     extras = [x for x in ["voice notes" if voice_note else "",
@@ -1376,10 +1326,6 @@ def main() -> None:
              "(default: Qwen/Qwen2.5-14B-Instruct-AWQ, or DGX_MODEL env var). "
              "Ignored when --dgx-endpoint is unset.",
     )
-    parser.add_argument("--enhanced-sections", metavar="FILE",
-                        help="Pre-built structured sections (Memorable Moments, NPCs, Scenes, "
-                             "etc.). Injected as scene context and campaign context in "
-                             "narration (Pass 5).")
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku instead of Sonnet (~4x cheaper, faster, slightly lower quality)")
     parser.add_argument("--dossier-dir", metavar="DIR", default=None,
@@ -1424,8 +1370,6 @@ def main() -> None:
     renarration_mode = bool(args.plan_file and args.scene)
 
     # ── Pass 1: Consistency check ─────────────────────────────────────────────
-    # This block is dead code and will be deleted in a follow-up.
-    # Consistency check is now handled entirely by the enhanced_sections input.
     consistency_report = ""
     if inputs.context_parts:
         print(f"\n[Pass 1: Consistency check | model: {args.model}]")
@@ -1452,9 +1396,6 @@ def main() -> None:
             print("  No issues found.")
         print("=" * 60)
 
-        # Save to disk so the user can read the report on its own (it also
-        # gets folded into Pass 2's enhanced_sections.md, but that's buried
-        # in a much larger file).
         report_dir = inputs.extract_dir or inputs.per_scene_output_dir
         if report_dir and consistency_report.strip():
             report_out = report_dir / "consistency_report.md"
@@ -1462,9 +1403,6 @@ def main() -> None:
             print(f"  Consistency report saved: {report_out}")
     else:
         print("\n[Pass 1: Consistency check skipped — no --context files provided]")
-
-    # Pass 2 (enhance structured sections) is no longer run inline.
-    # `enhanced_sections` is supplied via --enhanced-sections.
 
     # ── Pass 3: Narrative plan ─────────────────────────────────────────────────
     if args.plan_file:

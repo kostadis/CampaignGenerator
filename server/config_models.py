@@ -70,7 +70,6 @@ class SessionDocSection(BaseModel):
     prose_mode: OptBool = False
     reflections: OptBool = False
     narration_genre: OptStr = None
-    use_enhanced_sections: OptBool = False
     batch: OptBool = False
     session_name: OptStr = None
     context: list[str] = Field(default_factory=list)
@@ -114,8 +113,7 @@ class ProfileEntry(BaseModel):
 
     Paths are NOT part of a profile — they are per-session. Only the knobs
     that change between runs (token budget, prose mode, reflections, the
-    enhanced-sections toggle, the genre directive, the backend choice) are
-    captured.
+    genre directive, the backend choice) are captured.
     """
 
     model_config = ConfigDict(extra="allow")

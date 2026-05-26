@@ -29,10 +29,10 @@ Inside session_doc.py:
 | Pass | Status | System prompt | Purpose |
 |---|---|---|---|
 | 1 | optional (runs iff `--context`) | `CONSISTENCY_SYSTEM` | Compare recap against campaign context; surface factual errors |
-| 2 | skipped (`--enhanced-sections` supplies it) | — | Memorable Moments / NPCs / Scenes block (built upstream, e.g. by the Editor) |
 | 3 | always runs (unless `--plan-file`) | `PLAN_SYSTEM` | Assign one narrator per scene from the `scene_extractions/` checklist |
-| 4 | skipped (scene-extraction file supplies it) | — | Character moments — `## Scene summary` + `## Verbatim moments` already in each `NN_*.md` |
 | 5 | runs per scene | `NARRATE_SYSTEM_BASE` | First-person memoir rendered against the scene's summary + moments |
+
+(Pass 2 enhancement and Pass 4 character extraction are no longer run — the scene-extraction file produced by `scene_extract.py` already supplies both inputs.)
 
 Pass 5 user-prompt assembly order (in `build_narrate_prompt()`): narrator + focus → character roster → party document → scene scope ("what happened") → voice notes → handoff sentence → narrator's extracted moments.
 
@@ -123,7 +123,6 @@ Practical implication for the human review step:
 | `--characters NAMES` | — | Comma-separated narrator roster (`"Vukradin, Valphine, Soma, Brewbarry"`) |
 | `--voice-dir DIR` | — | Directory of `{name}_voice.md` files written by players (one per character) |
 | `--examples DIR` | — | Directory of style-reference `.md` files. Files whose stem matches a character's first name route to that character only; others are global. |
-| `--enhanced-sections FILE` | — | Pre-built Memorable Moments / NPCs / Scenes block to inject as scene context |
 | `--narrator NAME` | — | Filter the plan to one character's scenes only |
 | `--plan-file FILE` | — | Supply a pre-written plan; skip Pass 3 |
 | `--plan-only` | off | Run Pass 1 + Pass 3, write `plan.md`, exit |

@@ -204,7 +204,6 @@ def _narrate_knobs_snapshot() -> dict:
         "narrate_tokens": CONFIG.get("narrate_tokens"),
         "prose_mode": bool(CONFIG.get("prose_mode")),
         "reflections": bool(CONFIG.get("reflections")),
-        "use_enhanced_sections": bool(CONFIG.get("use_enhanced_sections", True)),
         "narration_genre": CONFIG.get("narration_genre"),
         "backend": CONFIG.get("backend") or "anthropic",
     }
@@ -563,10 +562,6 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
     for ctx in CONFIG.get("context") or []:
         if ctx:
             cmd += ["--context", ctx]
-    if CONFIG.get("use_enhanced_sections", True):
-        enhanced_path = nd / "enhanced_sections.md"
-        if enhanced_path.exists():
-            cmd += ["--enhanced-sections", str(enhanced_path)]
     plan_path = nd / "plan.md"
     if plan_path.exists():
         cmd += ["--plan-file", str(plan_path)]
@@ -797,16 +792,6 @@ def api_get_output(n: int):
     return {"exists": True}
 
 
-@router.get("/enhanced-sections")
-def api_get_enhanced_sections():
-    nd = _narration_dir()
-    if nd:
-        path = nd / "enhanced_sections.md"
-        if path.exists():
-            return {"exists": True, "content": path.read_text(encoding="utf-8")}
-    return {"exists": False, "content": ""}
-
-
 @router.get("/vtt")
 def api_vtt():
     if not CONFIG.get("roleplay_extract_dir"):
@@ -970,10 +955,9 @@ async def api_scrub_all():
 def _build_plan_cmd() -> list[str] | tuple[None, str]:
     """Run session_doc.py --plan-only against session-summary.md.
 
-    Produces narration_dir/plan.md + enhanced_sections.md +
-    consistency_report.md. After this runs once per session,
-    per-scene Narrate reuses those cached artifacts and skips
-    Pass 1 / Pass 2 / Pass 3.
+    Produces narration_dir/plan.md + consistency_report.md. After this
+    runs once per session, per-scene Narrate reuses those cached
+    artifacts and skips Pass 1 / Pass 3.
     """
     summary = _session_summary_path()
     if summary is None or not summary.exists():
@@ -1016,10 +1000,9 @@ async def api_plan():
     def _done(rc: int | None) -> None:
         outputs: list[str] = []
         if nd is not None:
-            for name in ("plan.md", "enhanced_sections.md"):
-                p = nd / name
-                if p.exists():
-                    outputs.append(str(p))
+            plan_p = nd / "plan.md"
+            if plan_p.exists():
+                outputs.append(str(plan_p))
         _record_activity(stage="plan", rc=rc, outputs=outputs)
 
     return StreamingResponse(
