@@ -26,63 +26,12 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import make_client, stream_api, save_log
+from campaignlib import load_agent_prompt, make_client, save_log, stream_api
 
 
-CONSISTENCY_SYSTEM = """\
-You are a continuity editor for a D&D campaign. You will be given a session recap and
-one or more campaign context documents (campaign state, world state, party document).
+CONSISTENCY_SYSTEM = load_agent_prompt("enhance_recap_consistency")
 
-Your job: identify every factual error, contradiction, or questionable claim in the recap.
-
-Look for:
-- Wrong NPC names, titles, or factions
-- Events described as completed that haven't happened yet (per campaign state)
-- Attributing actions or items to the wrong character
-- Lore contradictions against world_state (places, factions, history)
-- Character abilities or items that don't match their sheet
-- Timeline issues (referencing events out of order)
-- Ambiguous claims that might confuse future sessions
-
-For each issue, output:
-- **Location**: which section of the recap (Summary / Memorable Moments / Scenes / NPCs / etc.)
-- **Issue**: what is wrong or uncertain
-- **Evidence**: what the context documents say
-- **Suggested fix**: a brief correction
-
-If nothing is wrong, say so clearly.
-Output only the consistency report. No preamble.
-"""
-
-ENHANCE_SYSTEM = """\
-You are enhancing a D&D session recap. You will be given:
-- The original recap
-- Roleplay extractions — raw quoted dialogue and character moments from the session
-- Session extractions — action detail, events, environmental context
-- A consistency report flagging errors in the original
-- (Optionally) a party document for character voice reference
-
-Your job: produce an improved version of the recap that:
-
-1. SUMMARY — Rewrite with more narrative texture. Weave in quoted dialogue from the
-   extractions. Every significant thing a character said should appear as a direct quote,
-   not a paraphrase. Keep the existing prose structure but make it come alive.
-   Use the consistency report to correct any errors silently.
-
-2. MEMORABLE MOMENTS — Keep all existing entries. Add new ones for any significant
-   roleplay moment, memorable line, or dramatic beat in the extractions that isn't
-   already captured. Format new entries consistently with the existing ones:
-   bold description, italicised context note, blockquote for direct quotes.
-
-3. CONSISTENCY NOTES — Append a new section at the end listing any issues from the
-   consistency report that couldn't be silently fixed in the text (ambiguities,
-   unresolved contradictions, things the GM should verify).
-
-4. ALL OTHER SECTIONS (Scenes, NPCs, Locations, Items, Spells) — Preserve exactly
-   as they are. Do not rewrite, reorder, or add to them.
-
-Output the complete enhanced recap document. No preamble or commentary.
-"""
+ENHANCE_SYSTEM = load_agent_prompt("enhance_recap_enhance")
 
 
 def load_extractions(path_str: str) -> list[tuple[str, str]]:

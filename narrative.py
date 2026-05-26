@@ -32,211 +32,24 @@ import re
 import sys
 from pathlib import Path
 
-from campaignlib import make_client, stream_api, save_log
+from campaignlib import load_agent_prompt, make_client, save_log, stream_api
 
 
 # ── Pass 1: Planning ───────────────────────────────────────────────────────────
 
-PLAN_SYSTEM = """\
-You are planning a first-person narrative of a D&D session.
+PLAN_SYSTEM = load_agent_prompt("narrative/plan")
 
-You will be given numbered roleplay extractions (Chunk 1, Chunk 2, …).
-Each chunk covers a chronological slice of the session.
-
-Your job: create one section per character so every character gets a voice.
-
-CRITICAL: If an "Available narrators" list is provided, EVERY character on that list
-must appear as the narrator of exactly one section. Do not skip anyone.
-
-CRITICAL: Together, all sections must cover the ENTIRE session. Distribute the chunks
-so that every chunk appears in at least one section. Do not leave any chunk uncovered.
-
-For each section:
-- Assign one narrator
-- Assign the chunk range they will draw from, e.g. "chunks: 1-2"
-- Chunks may overlap between sections when two characters both have important moments
-  in the same part of the session — the extraction pass isolates each character's
-  specific moments, so overlap is fine
-- Write a one-sentence FOCUS on the emotional/dramatic core of this character's experience
-
-How to divide:
-- With 4 characters and 2 chunks: give 2 characters chunk 1 and 2 characters chunk 2,
-  or distribute as 1, 1, 1-2, 2 etc. — whatever matches where each character's
-  most interesting moments fall
-- Do NOT give every character all chunks — that creates redundant coverage
-- The goal is a flowing narrative where each voice hands off to the next chronologically
-- If no roster is provided, infer the main characters from the extractions
-
-Output ONLY the plan in this exact format — no preamble, no commentary:
-
-## Section 1
-narrator: [name]
-chunks: 1
-focus: [one sentence — the emotional/dramatic core of this character's experience]
-
-## Section 2
-narrator: [name]
-chunks: 1
-focus: [one sentence]
-
-## Section 3
-narrator: [name]
-chunks: 2
-focus: [one sentence]
-
-## Section 4
-narrator: [name]
-chunks: 2
-focus: [one sentence]
-
-(one section per character — every character in the roster must appear —
- every chunk must be covered by at least one section)
-"""
-
-PLAN_SCENE_SYSTEM = """\
-You are assigning narrators to scenes for a first-person D&D session narrative.
-
-You will be given:
-- A list of scenes (from the GM's session recap) — already in chronological order
-- A list of available narrators
-- Roleplay extractions from the session — use these to see which character had the
-  most interesting moments in each scene, to inform your narrator assignments
-
-Your job: assign exactly one narrator to each scene. Rotate through the roster so every
-character narrates at least once (distribute evenly if scenes > characters).
-
-Write a one-sentence FOCUS on the emotional/dramatic core of THIS narrator's experience
-in THIS scene — not what happened in the scene, but what the narrator specifically felt,
-feared, hoped for, or noticed.
-
-Output ONLY the plan in this exact format — no preamble, no commentary:
-
-## Scene 1
-narrator: [name]
-scene: [exact scene name from the list]
-focus: [one sentence — this narrator's specific emotional/dramatic core]
-
-## Scene 2
-narrator: [name]
-scene: [exact scene name]
-focus: [one sentence]
-
-(one section per scene — use the exact scene names — rotate narrators across the roster)
-"""
+PLAN_SCENE_SYSTEM = load_agent_prompt("narrative/plan_scene")
 
 # ── Pass 2: Per-section character extraction ───────────────────────────────────
 
-CHAR_EXTRACT_SYSTEM = """\
-You are extracting roleplay moments for a specific character from D&D session notes.
-
-Character: {narrator}
-
-Your job: pull out every moment worth narrating from {narrator}'s perspective — dialogue,
-action, and environment alike.
-
-THREE TYPES OF MOMENTS — capture all of them:
-
-1. DIALOGUE EXCHANGES
-   A conversation has two sides. When {narrator} says something, include what the other
-   person said — before and after — so the full exchange is present. Attribute every line.
-   Quote verbatim when possible; mark reconstructions as (paraphrase).
-
-2. ACTION BEATS
-   Combat, physical challenges, feats of strength or skill — anything {narrator} did with
-   their body. What happened, how it felt, what was at stake. Even if no words were spoken,
-   these moments deserve narration: the swing of a weapon, a creature lunging, a desperate
-   scramble over rocks, a near miss.
-
-3. ENVIRONMENTAL & TRAVEL MOMENTS
-   Crossing a glacier, descending into a dark place, feeling the cold or the wind or the
-   silence. The world pressing in on a character is worth narrating — it sets the scene
-   for everything else and grounds the reader in the physical reality of the moment.
-
-For each moment, format as:
-
-**[brief scene label — e.g. "The Drake Attack", "Crossing the Glacier"]**
-[for dialogue: Speaker A: "words" / Speaker B: "words" / etc.]
-[for action/environment: describe what happened and what {narrator} experienced]
-[one sentence: what this moment felt like or cost]
-
-Keep everything in chronological order. Do not skip quiet or wordless moments — they are
-the texture between the dramatic exchanges. Output only the extracted moments. No preamble.
-"""
+CHAR_EXTRACT_SYSTEM = load_agent_prompt("narrative/char_extract")
 
 # ── Pass 3: Per-section narration ─────────────────────────────────────────────
 
-NARRATE_SYSTEM_BASE = """\
-You are writing one section of a first-person D&D session narrative.
+NARRATE_SYSTEM_BASE = load_agent_prompt("narrative/narrate_base")
 
-You will be given:
-- The narrator's name and a one-sentence focus
-- A handoff line from the previous narrator (if any)
-- This character's extracted moments — their exact dialogue, reactions, and emotional beats
-- A party document with backstory, personality, and relationships
-{examples_block}
-Write as many paragraphs as needed to cover all the extracted moments — typically 4–8,
-but do not stop early. Every significant moment in the list should appear in the text.
-
-THE DIALOGUE IS THE STORY. The moments list contains full exchanges — both sides of each
-conversation. Write them as scenes. Every line from the exchange should appear in the text.
-
-Good:
-  Kaella leaned in close, voice dropping to almost nothing. "You know nothing, my friend.
-  The true dangers ahead would make your blood run cold."
-  I met her eyes. "Then tell me. All of it."
-  She laughed — a short, hollow sound. "And if I do? What does that buy me?"
-
-Bad:
-  Kaella warned me about dangers I didn't understand, and I pressed her for information.
-
-A reader should feel like they were in the room. Give them the words, both voices,
-the silence between lines. Build prose around the exchanges, not in place of them.
-
-FOCUS ON:
-- Every line of dialogue from the moments list — include as many as fit naturally
-- The emotional weight behind each line: why did they say that, what did it cost them
-- What this character personally felt, feared, hoped for, or noticed in this moment
-- How their backstory and relationships colour what they said and why
-
-ALLOW:
-- Non-linear structure — flashbacks, digressions, a character's mind drifting
-- The narrator's voice intruding on the action ("He tries not to stare...")
-- Humour, irony, self-deprecation — if that fits the character
-- Short, punchy paragraphs and sentence fragments for rhythm
-- Dates or scene headers if they help orient the reader
-
-AVOID:
-- Summarizing or paraphrasing lines that are already quoted — use the actual words
-- Dry event recaps ("then we went to X and fought Y")
-- Mechanical detail (rolls, HP, spell slots)
-- Generic fantasy prose that could belong to any character
-
-VOICE:
-- First person, emotionally honest, distinctly this character — not a generic narrator
-- The prose between quoted lines should sound like this character reflecting —
-  use their vocabulary, their rhythm, their particular way of seeing the world
-- The Party Document is the authoritative source for each character's class, abilities,
-  and role. Never infer class from the moments list or generic D&D archetypes.
-
-CONTINUITY:
-- If a handoff is provided, pick up naturally from that line
-- End at a natural emotional pause that another voice could follow
-
-Output only the narration. No heading, no name prefix, no commentary.
-"""
-
-EXAMPLES_BLOCK = """\
-- Style reference examples showing the voice, structure, and tone to aim for
-
-STYLE REFERENCE — HANDCRAFTED EXAMPLES:
-Study these carefully. They show what good looks like: the mix of internal monologue and
-dialogue, the non-linear structure, the humour, the character-specific voice, the way
-the narrator's perspective colours everything. Match this quality and style.
-
-{examples}
-
-END OF STYLE REFERENCE
-"""
+EXAMPLES_BLOCK = load_agent_prompt("narrative/examples_block")
 
 
 def build_narrate_system(examples_text: str | None) -> str:

@@ -27,62 +27,16 @@ from pathlib import Path
 from campaignlib import (
     build_alias_normalizer,
     format_npc_roster,
+    load_agent_prompt,
     load_alias_map,
     make_client,
     run_extract_pipeline,
     run_synthesize_pipeline,
 )
 
-EXTRACT_SYSTEM = """\
-You are a lore archivist for a D&D campaign. You will be given a portion of \
-session summary notes. Your job is to extract every piece of canon information \
-into structured notes under these headings:
+EXTRACT_SYSTEM = load_agent_prompt("distill_extract")
 
-## NPCs
-For each named NPC: current location, current state, recent actions, faction, \
-and any revealed motivations or secrets.
-
-## Factions
-For each faction or organisation: current goals, recent actions, relationships \
-to other factions, and key members.
-
-## World Events
-Significant events that occurred, in rough chronological order. One bullet per event. \
-Be specific and concrete.
-
-## Locations
-Named locations that appeared: what they are, what happened there, current state.
-
-## Threads & Mysteries
-Unresolved plot threads, open questions, and foreshadowed events.
-
-Rules:
-- Be exhaustive. Include every named person, place, and faction you encounter.
-- Scope and consolidation decisions happen in the next phase; your job here is to capture everything.
-- Include deceased NPCs whose corpses or remains are in play, being examined, harvested, or discussed. Death does not disqualify an NPC from the notes — record their final state, what became of their body, and any postmortem actions by others.
-- Include referenced-but-absent NPCs when they are meaningfully discussed — a mentor named in dialogue, a faction leader whose plans are debated, an NPC whose belongings are in play. Physical presence is not required; being talked about counts. Note that they do not appear in this chunk, then record what was said about them.
-- Do not invent anything not present in the text.
-- Do not summarise the narrative. Extract facts only.
-- Use the headings above exactly. Output only the structured notes.
-"""
-
-SYNTHESIZE_SYSTEM = """\
-You are a lore archivist for a D&D campaign. You will be given a set of \
-structured extraction notes compiled from multiple session summaries. Your job \
-is to synthesise them into a single authoritative world_state document that \
-will serve as the living canon reference for future session prep.
-
-The document should:
-- Merge duplicate entries and resolve any contradictions (later events take precedence)
-- Be organised into clear sections that a GM can scan quickly during prep
-- Capture the *current* state of the world (not a chronological history)
-- Include a brief Canon Events timeline at the end for chronological reference
-
-Use whatever section structure best fits the material. Write clearly and concisely. \
-This document will be read by an AI assistant, so precision matters more than prose.
-
-Output only the world_state document. No preamble or commentary.
-"""
+SYNTHESIZE_SYSTEM = load_agent_prompt("distill_synthesize")
 
 
 def main() -> None:
