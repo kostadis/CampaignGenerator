@@ -59,6 +59,7 @@ import yaml
 from campaignlib import (
     build_alias_normalizer,
     format_npc_roster,
+    load_agent_prompt,
     load_alias_map,
     make_client,
     normalize_npc_key as _normalize_npc_key,
@@ -285,171 +286,14 @@ def write_dossier(
     fm = f"---\nname: {name}\n{alias_yaml}{extracts_yaml}---\n\n"
     path.write_text(fm + body.lstrip(), encoding="utf-8")
 
-EXTRACT_SYSTEM = """\
-You are extracting NPC and faction-relevant information from D&D session summary notes.
+EXTRACT_SYSTEM = load_agent_prompt("planning_extract")
 
-Focus ONLY on named NPCs, factions, and threat actors (not player characters). Extract:
-
-## NPC Activity
-For each named NPC: what they did, where they appeared, what they revealed, \
-how they interacted with the party or other NPCs.
-
-## Faction Movements
-For each faction: actions taken, resources gained or lost, alliances shifted, \
-plans advanced or disrupted.
-
-## Threat Arc Events
-Specific moments that would trigger arc score increases for any tracked threat \
-(e.g. Brundar's Echo, Kraken Society Echoes, Planar Distortion). \
-Name the score and describe the triggering event.
-
-## Revealed Information
-Secrets, plans, or intel about NPCs/factions that the party has uncovered.
-
-## Current Whereabouts
-Last known location or status of any named NPC or faction operative.
-
-Rules:
-- Only include information about NPCs and factions, not player characters.
-- Be specific: name the NPC/faction and the session event.
-- Preserve information about every named NPC and faction mentioned in this chunk. Do not make scope decisions about which NPCs are "important enough" — scope and consolidation happen in the next phase; your job here is to capture everything.
-- Include deceased NPCs whose corpses or remains are in play, being examined, harvested, or discussed (e.g. "the party harvested the dragon's breath pouch"). Death does not disqualify an NPC from the notes.
-- Include referenced-but-absent NPCs when they are meaningfully discussed — a mentor named in dialogue, a faction leader whose plans are debated, an NPC whose belongings are in play. Physical presence is not required; being talked about counts.
-- If a section has nothing relevant, omit it entirely.
-- Output only the structured notes under the headings above.
-"""
-
-SYNTHESIZE_SYSTEM = """\
-You are creating a GM planning reference document for a D&D campaign.
-
-You may receive two input shapes:
-
-**A. Per-entity blocks** (preferred, when a planning config is supplied):
-A `# NPC DOSSIERS` section with one `## {Name}` subsection per NPC, each
-nesting that NPC's dossier and (optionally) their arc-score mechanic; and a
-`# FACTIONS` section with one `## {Name}` subsection per tracked faction,
-each nesting the faction's arc-score mechanic.
-
-Most NPCs do NOT have a score. The three states for any `## {Name}` block are:
-1. **Score bound** — block contains a `<!-- Threat arc score: ... -->` comment
-   followed by mechanic text. This entity MUST appear as a row in the Threat
-   Tracker. Use the file's track name as the score name.
-2. **Intentionally trackless** — block contains the marker
-   `<!-- Arc score: INTENTIONALLY TRACKLESS -->`. Never put this entity on the
-   Threat Tracker. Do not invent a score. Do not suggest creating one.
-3. **No score block at all** — just a dossier (this is the common case for
-   most NPCs). Treat as ordinary; omit from the Threat Tracker. Do not invent
-   a score. Do not flag the absence as a problem to solve.
-
-**B. Flat groups** (legacy CLI flags):
-Separate `# NPC DOSSIERS` and `# THREAT ARC SCORE MECHANICS` groups with no
-explicit binding. Infer which arc score belongs to which NPC/faction by
-name match.
-
-In both shapes you will also receive:
-- `# SESSION EXTRACTIONS` — what has actually happened at the table with each NPC/faction
-- `# WORLD CONTEXT` (optional) — faction overviews, location notes
-
-Produce a single authoritative planning.md with these sections:
-
-## Threat Tracker
-A compact table of all active threat arc scores:
-| Score Name | NPC/Faction | Current Value | Next Threshold | What Triggers Next |
-
-## NPC Dossiers
-One subsection per NPC with:
-- Current location and status
-- Active plans and immediate goals
-- What the party knows vs. what is hidden
-- Key relationships and leverage points
-- Current arc score value (if applicable) and what unlocks next
-
-## Faction States
-One subsection per faction with:
-- Current goals and active operations
-- Key members and their roles
-- Relationship to the party and other factions
-- Resources and vulnerabilities
-
-## Active Plots
-Threads currently in motion, ordered by urgency. For each:
-- What is happening
-- Timeline or trigger conditions
-- How it intersects with the party
-
-## DM Notes
-Foreshadowing opportunities, convergence points between plot threads, \
-and NPCs whose paths are about to cross.
-
-Rules:
-- NPC dossiers take precedence over session notes for definitive facts.
-- Session notes take precedence for current emotional state and recent actions.
-- Arc score documents define the mechanics; session notes track the current value.
-- Be concise. This is a quick-reference document used during live play.
-- Do not invent anything not present in the source material.
-- Output only the planning document. No preamble or commentary.
-"""
+SYNTHESIZE_SYSTEM = load_agent_prompt("planning_synthesize")
 
 
-BUILD_EXTRACT_SYSTEM = """\
-You are extracting information about named NPCs from D&D session summary notes.
+BUILD_EXTRACT_SYSTEM = load_agent_prompt("planning_build_extract")
 
-For each named NPC that appears in this text, create a section using their full name as the heading. Include everything relevant:
-- What they did, said, or ordered
-- Where they appeared and under what circumstances
-- Motivations, plans, or secrets revealed
-- Their relationships with the party and other characters
-- Any arc score events (e.g. Brundar's Echo increasing, Kraken Society Echoes)
-- Current status or last known whereabouts
-
-Rules:
-- Use ## Full NPC Name as the heading for each NPC (one ## per NPC, no sub-headings)
-- Every named NPC that appears gets their own section. Do NOT fold one NPC's activity into another NPC's section — even if they interact, even if one is dead, even if one is minor. Scope/consolidation decisions happen in the next phase; your job is to preserve information per-NPC.
-- Include deceased NPCs if they are present in the events (e.g. a corpse being examined, a body being harvested, a named casualty). Death does not disqualify an NPC from having their own section.
-- Include referenced-but-absent NPCs if they are meaningfully discussed — e.g. a PC's mentor mentioned in dialogue, a faction leader whose plans are being debated, an NPC whose belongings are in play. Physical presence is not required; being talked about counts. If you include such an NPC, open their section by noting they do not appear in this chunk, then record what was said about them.
-- Only include named NPCs — not player characters, not generic "bandits" or "guards"
-- Be specific: name the session event, not a generic description
-- If an NPC is not mentioned, referenced, or discussed anywhere in this chunk, omit them entirely
-- Output only the NPC sections. No preamble, no summary.
-"""
-
-BUILD_SYNTHESIZE_SYSTEM = """\
-You are writing an NPC dossier for a D&D campaign GM.
-
-You will receive raw session notes about a single NPC, extracted from multiple sessions. \
-Synthesize these into a clean, organized dossier for use during session prep.
-
-Structure:
-
-# [NPC Full Name]
-
-## Identity
-- Role / title / faction affiliation
-- First appearance and how the party met them
-
-## Personality & Motivations
-- Core goals and drives
-- Personality traits demonstrated through play (2–4 sentences)
-
-## History with the Party
-Chronological summary of significant interactions and events at the table.
-
-## Current Status
-- Last known location and what they were doing
-- Active plans or operations in progress
-- What the party knows vs. what remains hidden
-
-## Relationships
-Key relationships with other NPCs, factions, and the party members individually.
-
-## Arc Score Events
-If applicable: events that triggered arc score changes, and the direction (increase/decrease).
-
-Rules:
-- Only include information present in the source notes — do not invent anything.
-- Be concise. This document is read quickly during live play.
-- Output only the dossier. No preamble or commentary.
-"""
+BUILD_SYNTHESIZE_SYSTEM = load_agent_prompt("planning_build_synthesize")
 
 
 

@@ -67,114 +67,20 @@ from pathlib import Path
 from campaignlib import (
     build_alias_normalizer,
     format_npc_roster,
+    load_agent_prompt,
     load_alias_map,
     make_client,
     run_extract_pipeline,
     run_synthesize_pipeline,
 )
 
-EXTRACT_SYSTEM_BASE = """\
-You are extracting campaign completion and status information from D&D session summary notes.
+EXTRACT_SYSTEM_BASE = load_agent_prompt("campaign_state_extract")
 
-Focus on facts that establish WHAT HAS BEEN COMPLETED and WHAT IS CURRENTLY TRUE. Extract:
+EXTRACT_TRACKED_SECTION = load_agent_prompt("campaign_state_extract_tracked")
 
-## Completed Encounters & Quests
-Any quest, mission, encounter, dungeon, or objective that was fully resolved. For each:
-- Name or description of the content
-- Session or approximate time it occurred
-- Outcome (success, failure, partial, abandoned)
-- Consequences for the world or party
+SYNTHESIZE_SYSTEM_BASE = load_agent_prompt("campaign_state_synthesize")
 
-## Resolved Plot Threads
-Story threads that are definitively closed — mysteries solved, conflicts ended, \
-factions defeated or allied. Enough detail to know they are finished.
-
-## NPC State Changes
-Changes to named NPCs that define their current status:
-- Deaths, incapacitations, or captures
-- Alliance shifts (enemy → ally, neutral → hostile, etc.)
-- Location changes (where they went after an event)
-- Revealed true identities or changed roles
-
-## Party Accomplishments & Acquisitions
-Significant things the party has earned, learned, or achieved that carry forward:
-- Items, titles, reputations, or secrets gained
-- Abilities, oaths, or obligations taken on
-- Enemies made or allies secured
-
-## Party Current Situation
-The most recent snapshot of where the party is and what they are facing:
-- Current location
-- Immediate unresolved situation (if any)
-{tracked_section}
-Rules:
-- Only extract things that are clearly completed or definitively established.
-- Do not extract things that are still in progress or uncertain.
-- Be specific: name the encounter/NPC/thread.
-- If a section has nothing relevant in this chunk, omit it.
-- Output only the structured notes. No preamble.
-"""
-
-EXTRACT_TRACKED_SECTION = """\
-
-## Tracked Items
-The following specific events MUST be extracted if they appear anywhere in this chunk, \
-even if they would otherwise be omitted. For each one that appears, note exactly what \
-happened and the outcome:
-{items}
-"""
-
-SYNTHESIZE_SYSTEM_BASE = """\
-You are creating a campaign state reference document for a D&D GM.
-
-You will receive extraction notes from multiple session summaries. Synthesize them into a \
-single authoritative campaign_state.md. This document serves as grounding context for \
-future planning: it tells the LLM what is DONE and what is CURRENT so it does not \
-hallucinate completed content as still active, or suggest revisiting finished encounters.
-
-Produce campaign_state.md with these sections:
-
-## Completed Encounters & Quests
-A definitive list of content that is DONE and should NOT be replayed or re-suggested.
-For each entry: name, brief outcome, and any lasting consequence.
-Format as a list, most recent last.
-
-## Resolved Plot Threads
-Threads that are closed. One bullet per thread: what it was and how it ended.
-
-## NPC Current States
-A table of all named NPCs with their current status:
-| NPC | Status | Last Known Location | Disposition toward Party |
-(Status: Alive / Dead / Missing / Imprisoned / Unknown)
-
-## Active Quests & Open Threads
-What is genuinely still in play. For each: what it is, current stakes, and last known state.
-Keep this section short — if it's here, it's unfinished.
-
-## Party Current Situation
-- Current location
-- Active obligations and outstanding debts
-- Key resources and assets held
-- Recent developments shaping the next session
-{tracked_section}
-Rules:
-- Merge duplicate entries; later events override earlier ones.
-- The "Completed" sections are the most important — be thorough and explicit there.
-- The "Active" section should only contain genuinely unresolved threads.
-- Be concise. This document is scanned quickly before each session.
-- Do not invent anything not present in the source notes.
-- Output only the campaign_state document. No preamble or commentary.
-"""
-
-SYNTHESIZE_TRACKED_SECTION = """\
-
-## Tracked Items Status
-The following events were explicitly requested for tracking. For EACH item below, \
-include a subsection with its status and what was found in the session notes. \
-If an item was not found at all, write "NOT FOUND IN SUMMARIES" so the GM knows \
-to verify it manually.
-{items}
-"""
+SYNTHESIZE_TRACKED_SECTION = load_agent_prompt("campaign_state_synthesize_tracked")
 
 
 def load_tracking_items(path: Path) -> list[str]:
