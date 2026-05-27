@@ -25,7 +25,6 @@ interface Knobs {
   narrate_tokens?: number
   prose_mode?: boolean
   reflections?: boolean
-  use_enhanced_sections?: boolean
   narration_genre?: string | null
   backend?: 'anthropic' | 'dgx'
 }
@@ -98,7 +97,6 @@ const knobsRollup = computed(() => {
   const counts: Record<string, Record<string, number>> = {
     prose_mode: { on: 0, off: 0 },
     reflections: { on: 0, off: 0 },
-    use_enhanced_sections: { on: 0, off: 0 },
     backend: {},
   }
   const genres = new Set<string>()
@@ -107,7 +105,6 @@ const knobsRollup = computed(() => {
     if (!k) continue
     counts.prose_mode[k.prose_mode ? 'on' : 'off']++
     counts.reflections[k.reflections ? 'on' : 'off']++
-    counts.use_enhanced_sections[k.use_enhanced_sections ? 'on' : 'off']++
     const b = k.backend ?? 'anthropic'
     counts.backend[b] = (counts.backend[b] ?? 0) + 1
     if (k.narration_genre) genres.add(k.narration_genre)
@@ -258,7 +255,6 @@ onMounted(loadAll)
             <div v-if="r.applied_knobs" class="r-chips">
               <span v-if="r.applied_knobs.prose_mode" class="chip">prose</span>
               <span v-if="r.applied_knobs.reflections" class="chip">reflections</span>
-              <span v-if="r.applied_knobs.use_enhanced_sections" class="chip">enh</span>
               <span v-if="r.applied_knobs.backend" class="chip">{{ r.applied_knobs.backend }}</span>
               <span v-if="r.applied_knobs.narration_genre" class="chip wide" :title="r.applied_knobs.narration_genre">
                 genre
@@ -276,7 +272,6 @@ onMounted(loadAll)
       <div class="rollup">
         <span>prose: {{ knobsRollup.counts.prose_mode.on }}/{{ knobsRollup.counts.prose_mode.on + knobsRollup.counts.prose_mode.off }}</span>
         <span>reflections: {{ knobsRollup.counts.reflections.on }}/{{ knobsRollup.counts.reflections.on + knobsRollup.counts.reflections.off }}</span>
-        <span>enhanced: {{ knobsRollup.counts.use_enhanced_sections.on }}/{{ knobsRollup.counts.use_enhanced_sections.on + knobsRollup.counts.use_enhanced_sections.off }}</span>
         <span>backends:
           <template v-for="(n, k) in knobsRollup.counts.backend" :key="k">{{ k }}={{ n }} </template>
           <template v-if="Object.keys(knobsRollup.counts.backend).length === 0">—</template>

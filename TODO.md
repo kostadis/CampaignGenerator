@@ -30,8 +30,7 @@ horizontal wizard on top:
    `narrationOutput` ref (lines 309/336/360/390), rendered by
    `NarrationOutput → StreamOutput`. Plan & Check is the third button
    even though the user thinks of it as a distinct phase that produces
-   its own artifacts (`plan.md`, `consistency_report.md`,
-   `enhanced_sections.md`).
+   its own artifacts (`plan.md`, `consistency_report.md`).
 
 The user has to (a) re-enter overlapping config across two screens,
 (b) mentally translate the horizontal wizard into the actual data
@@ -92,8 +91,7 @@ by the backend (`scene_editor.py:332, 631`).
 - **Party / characters** — `party`, `characters`, `voiceDir`,
   `examplesDir`
 - **Context** — `vttContext` / context files (multi-path)
-- **Run options** — `narrateTokens`, `proseMode`, `reflections`,
-  `useEnhancedSections`
+- **Run options** — `narrateTokens`, `proseMode`, `reflections`
 
 Reuse `PathField.vue` and `MultiPathField.vue`. Keep the existing
 Pinia config store (`frontend/src/stores/config.ts`) as the single
@@ -119,8 +117,8 @@ owns one stage. Props: `stageId`, `endpoint`, `supportsBatch`,
     endpoint `GET /api/editor/file?path=...` scoped to allowed
     config dirs, or extend the `/extraction/{n}` pattern).
   - Stage 2 → list files under `scene_extractions/` with line counts.
-  - Plan & Check → render `consistency_report.md`, `plan.md`,
-    `enhanced_sections.md` as collapsible sections.
+  - Plan & Check → render `consistency_report.md`, `plan.md` as
+    collapsible sections.
 - Per-stage history — keep last run's stdout in a ref keyed by
   `stageId` so switching stages doesn't wipe it. Today the single
   `narrationOutput` ref (`SessionDocEditor.vue:143`) is shared across
@@ -131,10 +129,9 @@ match this model: `GET /api/editor/enhance?batch=0|1`
 (`scene_editor.py:565-575`), `GET /api/editor/extract?batch=0|1`,
 `GET /api/editor/plan` (`scene_editor.py:659-669`). Add one new
 endpoint to fetch artifact contents safely:
-`GET /api/editor/artifact?key={session_summary|consistency_report|plan|enhanced_sections}`
+`GET /api/editor/artifact?key={session_summary|consistency_report|plan}`
 — returns file text, mapping the key to a CONFIG-derived path so the
-URL never carries a raw filesystem path. Mirror
-`api_get_enhanced_sections` (`scene_editor.py:539`).
+URL never carries a raw filesystem path.
 
 *5. Step 5 — Session Doc Editor.* Extract the existing 3-column
 workspace from `SessionDocEditor.vue:602-775` into its own

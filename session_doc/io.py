@@ -55,11 +55,10 @@ def load_scene_extractions(path: Path) -> list[dict]:
     Pass 5's quote source). When a file does not follow the dual-section
     layout, `summary` is empty and `moments` holds the full body.
 
-    Files named `plan.md`, `enhanced_sections.md`, `consistency_report.md`,
-    or starting with `_` are skipped (they are sibling artifacts, not scene
-    extractions).
+    Files named `plan.md`, `consistency_report.md`, or starting with `_` are
+    skipped (they are sibling artifacts, not scene extractions).
     """
-    SKIP = {"plan.md", "enhanced_sections.md", "consistency_report.md"}
+    SKIP = {"plan.md", "consistency_report.md"}
     by_stem: dict[str, Path] = {}
     for f in path.glob("*.md"):
         if f.name in SKIP or f.name.startswith("_"):

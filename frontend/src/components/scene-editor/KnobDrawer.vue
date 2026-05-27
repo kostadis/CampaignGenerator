@@ -23,7 +23,6 @@ const props = defineProps<{
   proseMode: boolean
   reflections: boolean
   narrationGenre: string
-  useEnhancedSections: boolean
 }>()
 
 const emit = defineEmits<{
@@ -44,7 +43,6 @@ const emit = defineEmits<{
   'update:proseMode': [value: boolean]
   'update:reflections': [value: boolean]
   'update:narrationGenre': [value: string]
-  'update:useEnhancedSections': [value: boolean]
 }>()
 
 const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsDir?.trim()))
@@ -169,22 +167,6 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
           Batch mode (toggle above) and Backend apply here. The Re-Extract button always forwards
           <code>--force</code> so prior per-scene files are snapshotted to <code>.prev</code> and
           rewritten.
-        </div>
-      </section>
-
-      <!-- Stage 3 — Plan -->
-      <section class="drawer-section">
-        <h3>③ Plan &amp; Check</h3>
-        <label class="checkbox-row">
-          <input
-            type="checkbox"
-            :checked="useEnhancedSections"
-            @change="emit('update:useEnhancedSections', ($event.target as HTMLInputElement).checked)"
-          />
-          Reuse enhanced sections for downstream Narrate
-        </label>
-        <div class="field-help">
-          Off → Narrate runs from the extraction file alone (no Pass-2 corrections).
         </div>
       </section>
 

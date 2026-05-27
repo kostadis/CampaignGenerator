@@ -6,18 +6,15 @@ const REVIEW_BANNER_KEY = 'cg_scene_review_banner_dismissed'
 
 const props = defineProps<{
   extractionContent: string
-  enhancedContent: string
   sceneLabel: string
   estimatedTokens: number | null
   defaultNarrateTokens: number
   hasExtraction: boolean
-  hasEnhanced: boolean
   narrating: boolean
   extracting: boolean
   scrubbing: boolean
   proseMode: boolean
   reflections: boolean
-  useEnhancedSections: boolean
   reviewed: boolean
   currentScene: number | null
 }>()
@@ -31,12 +28,9 @@ const emit = defineEmits<{
   'update:extractionContent': [content: string]
   'update:proseMode': [value: boolean]
   'update:reflections': [value: boolean]
-  'update:useEnhancedSections': [value: boolean]
   'update:reviewed': [value: boolean]
-  'load-enhanced': []
 }>()
 
-const activeTab = ref<'extraction' | 'enhanced'>('extraction')
 const saveFlash = ref(false)
 const reviewBannerDismissed = ref(false)
 
@@ -50,9 +44,7 @@ function dismissReviewBanner() {
 }
 
 const showReviewBanner = computed(() =>
-  activeTab.value === 'extraction'
-    && props.hasExtraction
-    && !reviewBannerDismissed.value
+  props.hasExtraction && !reviewBannerDismissed.value
 )
 
 // Token estimate
@@ -68,7 +60,7 @@ function estimateTokens(text: string): number {
 }
 
 const tokenEst = computed(() => {
-  if (activeTab.value !== 'extraction' || !props.extractionContent.trim()) return null
+  if (!props.extractionContent.trim()) return null
   return estimateTokens(props.extractionContent)
 })
 
@@ -82,9 +74,7 @@ function flash() {
 }
 
 function save() {
-  if (activeTab.value === 'extraction') {
-    emit('save-extraction', props.extractionContent)
-  }
+  emit('save-extraction', props.extractionContent)
   flash()
 }
 
@@ -184,25 +174,8 @@ async function toggleDiff() {
       </span>
     </div>
 
-    <!-- Tabs -->
-    <div class="tab-bar">
-      <div
-        class="tab"
-        :class="{ active: activeTab === 'extraction' }"
-        @click="activeTab = 'extraction'"
-      >Extraction</div>
-      <div
-        class="tab"
-        :class="{ active: activeTab === 'enhanced' }"
-        @click="activeTab = 'enhanced'; emit('load-enhanced')"
-      >
-        Session Notes
-        <span v-if="hasEnhanced" class="tab-badge">ready</span>
-      </div>
-    </div>
-
     <!-- Extraction pane -->
-    <div class="editor-pane" :class="{ hidden: activeTab !== 'extraction' }">
+    <div class="editor-pane">
       <div v-if="showReviewBanner" class="review-banner">
         <div class="review-banner-text">
           <strong>Confirm the order is right.</strong>
@@ -249,25 +222,14 @@ async function toggleDiff() {
       </div>
     </div>
 
-    <!-- Enhanced / Session Notes pane (read-only) -->
-    <div class="editor-pane" :class="{ hidden: activeTab !== 'enhanced' }">
-      <textarea
-        class="editor-ta"
-        :value="enhancedContent"
-        readonly
-        placeholder="No enhanced_sections.md found. Run Scene Extraction first."
-        spellcheck="false"
-      />
-    </div>
-
     <!-- Toolbar -->
     <div class="toolbar">
-      <button class="btn-primary" :disabled="!hasExtraction || activeTab === 'enhanced'" @click="save">Save</button>
-      <button class="btn-neutral" :disabled="!hasExtraction || activeTab === 'enhanced'" @click="openTypora">Edit in Typora</button>
+      <button class="btn-primary" :disabled="!hasExtraction" @click="save">Save</button>
+      <button class="btn-neutral" :disabled="!hasExtraction" @click="openTypora">Edit in Typora</button>
       <button class="btn-neutral" :disabled="!hasExtraction" @click="emit('reload')">Reload</button>
       <button
         class="btn-neutral"
-        :disabled="!hasExtraction || activeTab !== 'extraction' || !currentScene"
+        :disabled="!hasExtraction || !currentScene"
         :class="{ active: diffMode }"
         @click="toggleDiff"
         title="Diff this scene's extraction against the prior version (.prev) saved on the last force re-run"
@@ -292,11 +254,6 @@ async function toggleDiff() {
         <input type="checkbox" :checked="reflections"
           @change="emit('update:reflections', ($event.target as HTMLInputElement).checked)" />
         Memories
-      </label>
-      <label class="prose-toggle" :title="'Pass enhanced_sections.md to the narration as scene context'">
-        <input type="checkbox" :checked="useEnhancedSections"
-          @change="emit('update:useEnhancedSections', ($event.target as HTMLInputElement).checked)" />
-        Enhanced
       </label>
       <label class="prose-toggle reviewed-toggle"
              :class="{ on: reviewed }"

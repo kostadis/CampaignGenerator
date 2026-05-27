@@ -70,7 +70,6 @@ class SessionDocSection(BaseModel):
     prose_mode: OptBool = False
     reflections: OptBool = False
     narration_genre: OptStr = None
-    use_enhanced_sections: OptBool = False
     batch: OptBool = False
     session_name: OptStr = None
     context: list[str] = Field(default_factory=list)

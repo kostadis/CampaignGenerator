@@ -204,7 +204,6 @@ def _narrate_knobs_snapshot() -> dict:
         "narrate_tokens": CONFIG.get("narrate_tokens"),
         "prose_mode": bool(CONFIG.get("prose_mode")),
         "reflections": bool(CONFIG.get("reflections")),
-        "use_enhanced_sections": bool(CONFIG.get("use_enhanced_sections", True)),
         "narration_genre": CONFIG.get("narration_genre"),
         "backend": CONFIG.get("backend") or "anthropic",
     }
@@ -800,16 +799,6 @@ def api_get_output(n: int):
     if path is None or not path.exists():
         return JSONResponse({"exists": False}, status_code=404)
     return {"exists": True}
-
-
-@router.get("/enhanced-sections")
-def api_get_enhanced_sections():
-    nd = _narration_dir()
-    if nd:
-        path = nd / "enhanced_sections.md"
-        if path.exists():
-            return {"exists": True, "content": path.read_text(encoding="utf-8")}
-    return {"exists": False, "content": ""}
 
 
 @router.get("/vtt")

@@ -187,7 +187,7 @@ class TestFreshCampaign:
         # ui_state.yaml with `prose_mode: null` from a prior write.
         (fresh_campaign / UI_STATE_NAME).write_text(
             "version: 2\nui:\n  session_doc:\n    prose_mode: null\n"
-            "    reflections: null\n    use_enhanced_sections: null\n"
+            "    reflections: null\n"
             "    batch: null\n    scrub_enabled: null\n",
             encoding="utf-8",
         )
@@ -195,7 +195,6 @@ class TestFreshCampaign:
         sd = svc.ui_state.ui.session_doc
         assert sd.prose_mode is False
         assert sd.reflections is False
-        assert sd.use_enhanced_sections is False
         assert sd.batch is False
         assert sd.scrub_enabled is False
 

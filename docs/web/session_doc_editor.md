@@ -12,7 +12,7 @@ The flow that runs from the **Session Doc Editor** page in the web UI.
 4. Header → **`STAGE 1 — Enhance Summary`** → wait for `session-summary.md`.
 5. **Open `session-summary.md` in Typora and review/edit it** — this is the human checkpoint.
 6. Header → **`STAGE 2 — Re-Extract Quotes`** → produces `scene_extractions_new/NN_<slug>.md`.
-7. Header → **`STAGE 3 — Plan & Check`** → produces `narration/plan.md` + `enhanced_sections.md` + `consistency_report.md`. **Review the consistency report.**
+7. Header → **`STAGE 3 — Plan & Check`** → produces `narration/plan.md` + `consistency_report.md`. **Review the consistency report.**
 8. For each scene: select it on the left, edit the extraction, click **`Narrate`**, optionally **`Scrub`**, mark **Reviewed** when the order looks right. The four lifecycle dots on the scene card fill in (E · R · N · S).
 9. Header → **`Assemble →`** → opens the **Review** screen.
 10. On the Review screen: confirm every scene is narrated (any scene that isn't blocks Assemble). Click **`Assemble Doc`** → optionally **`Open in Typora`**.
@@ -77,7 +77,6 @@ A profile is a named set of Stage-④ knobs:
     "narrate_tokens": 16000,
     "prose_mode": true,
     "reflections": true,
-    "use_enhanced_sections": true,
     "narration_genre": "First-person comic-noir fantasy memoir",
     "backend": "anthropic"
   }
@@ -204,7 +203,6 @@ summaries/YYYYMMDD/
 │   └── …
 ├── narration/                          # Stage 3 + Stage 4
 │   ├── consistency_report.md           # Pass 1 output (read this!)
-│   ├── enhanced_sections.md            # Pass 2 output (cached for Narrate)
 │   ├── plan.md                         # Pass 3 output (narrator assignments)
 │   ├── session_doc_scene_01_<slug>.md           # Stage 4 narration
 │   ├── session_doc_scene_01_<slug>.knobs.json   # which knobs were used (Review screen reads this)

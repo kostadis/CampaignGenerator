@@ -30,7 +30,6 @@ const narrateTokens = ref(16000)
 const proseMode = ref(false)
 const reflections = ref(false)
 const narrationGenre = ref('')
-const useEnhancedSections = ref(true)
 const useBatch = ref(false)
 const backend = ref<'anthropic' | 'dgx'>('anthropic')
 
@@ -58,7 +57,6 @@ function loadConfigFields() {
   proseMode.value = v.sd_prose_mode || false
   reflections.value = v.sd_reflections || false
   narrationGenre.value = v.sd_narration_genre || ''
-  useEnhancedSections.value = v.sd_use_enhanced_sections !== false
   useBatch.value = v.sd_batch === true
   backend.value = v.sd_backend === 'dgx' ? 'dgx' : 'anthropic'
 }
@@ -93,7 +91,6 @@ function buildEditorConfigPayload() {
     prose_mode: proseMode.value || undefined,
     reflections: reflections.value || undefined,
     narration_genre: narrationGenre.value.trim() || undefined,
-    use_enhanced_sections: useEnhancedSections.value,
     work_dir: config.cwd,
   }
 }
@@ -104,7 +101,6 @@ async function applyConfig() {
     if (configReady.value) {
       await loadScenes()
       await checkAssembled()
-      await loadEnhancedSections()
       await refreshPipeline()
     }
   } catch (e: any) {
@@ -121,7 +117,7 @@ function scheduleApply() {
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,
    party, voiceDir, examplesDir, characters, context,
-   narrateTokens, proseMode, reflections, narrationGenre, useEnhancedSections],
+   narrateTokens, proseMode, reflections, narrationGenre],
   scheduleApply,
 )
 
@@ -145,12 +141,6 @@ async function persistBackend() {
 }
 watch(backend, persistBackend)
 
-async function loadEnhancedSections() {
-  const data = await apiFetch('/api/editor/enhanced-sections')
-  enhancedContent.value = data.content || ''
-  hasEnhanced.value = data.exists || false
-}
-
 // ── Scene state ───────────────────────────────────────────────────
 const scenes = ref<Scene[]>([])
 const currentScene = ref<number | null>(null)
@@ -165,8 +155,6 @@ const enhancing = ref(false)
 const planning = ref(false)
 const narrationOutput = ref('')
 const statusMsg = ref('')
-const enhancedContent = ref('')
-const hasEnhanced = ref(false)
 const assembledExists = ref(false)
 
 const activeSSE = ref<EventSource | null>(null)
@@ -206,7 +194,6 @@ interface ProfileEntry {
     narrate_tokens?: number
     prose_mode?: boolean
     reflections?: boolean
-    use_enhanced_sections?: boolean
     narration_genre?: string
     backend?: 'anthropic' | 'dgx'
   }
@@ -229,7 +216,6 @@ const currentKnobs = computed(() => ({
   narrate_tokens: narrateTokens.value,
   prose_mode: proseMode.value,
   reflections: reflections.value,
-  use_enhanced_sections: useEnhancedSections.value,
   narration_genre: narrationGenre.value,
   backend: backend.value,
 }))
@@ -246,7 +232,6 @@ const profileDirty = computed(() => {
   return (k.narrate_tokens ?? 16000) !== c.narrate_tokens
     || !!k.prose_mode !== c.prose_mode
     || !!k.reflections !== c.reflections
-    || (k.use_enhanced_sections ?? true) !== c.use_enhanced_sections
     || (k.narration_genre ?? '') !== c.narration_genre
     || (k.backend ?? 'anthropic') !== c.backend
 })
@@ -268,7 +253,6 @@ function applyProfileKnobs(p: ProfileEntry) {
   if (typeof k.narrate_tokens === 'number') narrateTokens.value = k.narrate_tokens
   if (typeof k.prose_mode === 'boolean') proseMode.value = k.prose_mode
   if (typeof k.reflections === 'boolean') reflections.value = k.reflections
-  if (typeof k.use_enhanced_sections === 'boolean') useEnhancedSections.value = k.use_enhanced_sections
   if (typeof k.narration_genre === 'string') narrationGenre.value = k.narration_genre
   if (k.backend === 'anthropic' || k.backend === 'dgx') backend.value = k.backend
 }
@@ -483,10 +467,9 @@ async function runPlan() {
       activeSSE.value = null
       planning.value = false
       setStatus(rc === 0
-        ? 'Plan & check complete — plan.md + enhanced_sections.md saved.'
+        ? 'Plan & check complete — plan.md saved.'
         : 'Plan & check failed.')
       loadScenes()
-      loadEnhancedSections()
       refreshPipeline()
     },
     onError() {
@@ -575,7 +558,6 @@ onMounted(async () => {
     if (typeof existing.prose_mode === 'boolean') proseMode.value = existing.prose_mode
     if (typeof existing.reflections === 'boolean') reflections.value = existing.reflections
     if (existing.narration_genre) narrationGenre.value = existing.narration_genre
-    if (typeof existing.use_enhanced_sections === 'boolean') useEnhancedSections.value = existing.use_enhanced_sections
   } catch { /* server may not have CONFIG yet */ }
 
   configHydrated = true
@@ -723,8 +705,6 @@ onMounted(async () => {
       <div class="center-col">
         <ExtractionEditor
           :extraction-content="extractionContent"
-          :enhanced-content="enhancedContent"
-          :has-enhanced="hasEnhanced"
           :scene-label="sceneLabel"
           :estimated-tokens="estimatedTokens"
           :default-narrate-tokens="narrateTokens"
@@ -735,7 +715,6 @@ onMounted(async () => {
           :scrubbing="scrubbing"
           :prose-mode="proseMode"
           :reflections="reflections"
-          :use-enhanced-sections="useEnhancedSections"
           :reviewed="currentSceneReviewed"
           @save-extraction="saveExtraction"
           @reload="reload"
@@ -745,9 +724,7 @@ onMounted(async () => {
           @update:extraction-content="extractionContent = $event"
           @update:prose-mode="proseMode = $event"
           @update:reflections="reflections = $event"
-          @update:use-enhanced-sections="useEnhancedSections = $event"
           @update:reviewed="setReviewed"
-          @load-enhanced="loadEnhancedSections"
         />
         <NarrationOutput
           :output="narrationOutput"
@@ -789,7 +766,6 @@ onMounted(async () => {
       v-model:prose-mode="proseMode"
       v-model:reflections="reflections"
       v-model:narration-genre="narrationGenre"
-      v-model:use-enhanced-sections="useEnhancedSections"
     />
   </div>
 </template>
