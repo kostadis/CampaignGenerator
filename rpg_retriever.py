@@ -103,26 +103,6 @@ def _http_post_json(
         return None
 
 
-def _hydrate_book_detail(book: dict, *, base_url: str) -> dict:
-    """If ``book`` lacks ``filepath`` (older rpg-library deployments where
-    BookSummary doesn't yet expose it), fetch /book/{id} once. No-op when
-    filepath is already present.
-    """
-    if book.get("filepath"):
-        return book
-    book_id = book.get("id")
-    if book_id is None:
-        return book
-    detail = _http_get_json(f"{base_url}/api/library/book/{book_id}")
-    if not isinstance(detail, dict):
-        return book
-    enriched = dict(book)
-    for key in ("filepath", "relative_path", "product_id"):
-        if detail.get(key) and not enriched.get(key):
-            enriched[key] = detail[key]
-    return enriched
-
-
 def search_rpglib(
     query: str,
     *,
@@ -182,9 +162,7 @@ def search_rpglib(
             continue
         filtered.append(b)
 
-    # Hydrate filepath if BookSummary doesn't carry it (legacy rpg-library).
-    hydrated = [_hydrate_book_detail(b, base_url=base_url) for b in filtered[:limit]]
-    return [b for b in hydrated if b.get("filepath")]
+    return [b for b in filtered[:limit] if b.get("filepath")]
 
 
 # ── 5etools-canonical search (local, no network) ─────────────────────────

@@ -75,7 +75,7 @@ _DEFAULT_RPGLIB_DB = Path.home() / "src" / "mytools" / "rpg-lib" / "rpg_library.
 _DEFAULT_PDF_TRANSLATORS = Path.home() / "src" / "mytools" / "pdf-translators"
 _DEFAULT_FIVETOOLS_DATA_ROOT = Path.home() / "src" / "5etools-kostadis" / "data"
 _STATE_DIRNAME = ".fivetools_ingest"
-_STATE_VERSION = 1
+_STATE_VERSION = 2
 
 # Entry types we ingest from adventure-shape docs. Unknown types are
 # skipped with a debug log.
@@ -681,14 +681,25 @@ def _render_entry_content(entry: dict, entry_type: str | None, name: str | None,
 # ── Idempotence state ────────────────────────────────────────────────────
 
 
-def _state_path(json_path: Path) -> Path:
+def _state_path(
+    json_path: Path,
+    *,
+    palace: str | None = None,
+    filter_key: str = "{}",
+) -> Path:
     state_dir = json_path.parent / _STATE_DIRNAME
-    digest = hashlib.sha256(str(json_path.resolve()).encode("utf-8")).hexdigest()[:16]
+    key = "|".join([str(json_path.resolve()), palace or "", filter_key])
+    digest = hashlib.sha256(key.encode("utf-8")).hexdigest()[:16]
     return state_dir / f"{digest}.json"
 
 
-def read_state(json_path: Path) -> dict | None:
-    p = _state_path(json_path)
+def read_state(
+    json_path: Path,
+    *,
+    palace: str | None = None,
+    filter_key: str = "{}",
+) -> dict | None:
+    p = _state_path(json_path, palace=palace, filter_key=filter_key)
     if not p.is_file():
         return None
     try:
@@ -697,8 +708,14 @@ def read_state(json_path: Path) -> dict | None:
         return None
 
 
-def write_state(json_path: Path, payload: dict) -> None:
-    p = _state_path(json_path)
+def write_state(
+    json_path: Path,
+    payload: dict,
+    *,
+    palace: str | None = None,
+    filter_key: str = "{}",
+) -> None:
+    p = _state_path(json_path, palace=palace, filter_key=filter_key)
     p.parent.mkdir(parents=True, exist_ok=True)
     tmp = p.with_suffix(".tmp")
     tmp.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
@@ -928,15 +945,15 @@ def ingest_file(
         raise SystemExit(f"fivetools_ingest: {json_path} is not a file")
 
     sig = file_signature(json_path)
-    prior = read_state(json_path)
-    # Filters change the drawer set, so cache hit must include them.
+    # Sidecar is keyed on (path, palace, filter) so the same JSON ingested
+    # into multiple palaces, or with different filters, gets independent
+    # idempotence records. Critical for cross-campaign disambiguation.
     cur_filter_key = json.dumps(filters or {}, sort_keys=True)
-    prior_filter_key = (prior or {}).get("filter_key", "{}") if prior else "{}"
+    prior = read_state(json_path, palace=palace, filter_key=cur_filter_key)
     if prior and not force:
         if (
             prior.get("size") == sig["size"]
             and abs(prior.get("mtime", -1) - sig["mtime"]) < 0.001
-            and prior_filter_key == cur_filter_key
         ):
             logger.info("fivetools_ingest: %s unchanged since last ingest (skip)", json_path)
             return {
@@ -1031,9 +1048,10 @@ def ingest_file(
         "drawer_count": len(drawers),
         "ingested_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "kind": kind,
+        "palace": palace,
         "filter_key": cur_filter_key,
     }
-    write_state(json_path, state_payload)
+    write_state(json_path, state_payload, palace=palace, filter_key=cur_filter_key)
 
     return {
         "status": "ingested",

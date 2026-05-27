@@ -198,6 +198,27 @@ class TestIdempotenceState:
         j.write_text("{}", encoding="utf-8")
         assert fti.read_state(j) is None
 
+    def test_state_keyed_by_palace_and_filter(self, tmp_path: Path):
+        # Same JSON ingested into two palaces, or with two filters, must
+        # produce independent sidecars — otherwise the second ingest would
+        # masquerade as already-done.
+        j = tmp_path / "adv.json"
+        j.write_text("{}", encoding="utf-8")
+        fti.write_state(j, {"version": 2, "tag": "abyss-chap0"}, palace="abyss", filter_key='{"chapter":"0"}')
+        fti.write_state(j, {"version": 2, "tag": "abyss-chap1"}, palace="abyss", filter_key='{"chapter":"1"}')
+        fti.write_state(j, {"version": 2, "tag": "icespire-chap0"}, palace="icespire", filter_key='{"chapter":"0"}')
+
+        a = fti.read_state(j, palace="abyss", filter_key='{"chapter":"0"}')
+        b = fti.read_state(j, palace="abyss", filter_key='{"chapter":"1"}')
+        c = fti.read_state(j, palace="icespire", filter_key='{"chapter":"0"}')
+        assert a and a["tag"] == "abyss-chap0"
+        assert b and b["tag"] == "abyss-chap1"
+        assert c and c["tag"] == "icespire-chap0"
+
+        # Wrong (palace, filter) combos return None — no cross-talk.
+        assert fti.read_state(j, palace="abyss", filter_key='{"chapter":"2"}') is None
+        assert fti.read_state(j, palace="unknown", filter_key='{"chapter":"0"}') is None
+
 
 # ── End-to-end ingest with fake MCP client ───────────────────────────────
 

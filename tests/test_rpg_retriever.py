@@ -154,21 +154,6 @@ def test_search_rpglib_empty_query_uses_search_endpoint(rpglib_http):
     assert len(out) == 1
 
 
-def test_search_rpglib_hydrates_filepath_when_missing(rpglib_http):
-    base_url, responses = rpglib_http
-    # NLQ result missing filepath (legacy BookSummary).
-    responses["nlq"] = [
-        {"id": 5, "pdf_title": "NoFilepath", "tags": []},
-    ]
-    # /book/{id} carries it.
-    responses["books"][5] = {
-        "id": 5, "filepath": "/abs/path.pdf", "pdf_title": "NoFilepath", "tags": [],
-    }
-    out = rpgr.search_rpglib("anything", base_url=base_url)
-    assert len(out) == 1
-    assert out[0]["filepath"] == "/abs/path.pdf"
-
-
 # ── reconcile ────────────────────────────────────────────────────────────
 
 

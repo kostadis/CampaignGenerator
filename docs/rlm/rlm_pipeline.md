@@ -34,7 +34,91 @@ python fivetools_ingest.py /mnt/g/path/to/book.json --book-id 7421
 - Stat blocks route to `wing_bestiary/room_<sanitized-book-title>`.
 - Prose / section / inset / quote / table route to `wing_rpglib/room_<sanitized-book-title>`.
 - Every drawer carries `book_id`, `display_title`, `publisher`, `game_system`, `product_type`, `tags`, `series`, `section_path`, `page`, `entry_type`, `source_filepath` in its metadata so retrieval filters stay a single Chroma query.
-- Ingest is idempotent via `(size, mtime)` sidecar state in `<json_dir>/.fivetools_ingest/`. `--force` bypasses; `--dry-run` prints the plan without writing.
+- Ingest is idempotent via `(size, mtime)` sidecar state in `<json_dir>/.fivetools_ingest/`. Sidecars are keyed on `(json_path, palace, filter)` so the same JSON ingested into multiple palaces, or with different filters, gets independent records. `--force` bypasses; `--dry-run` prints the plan without writing.
+
+## Per-campaign ingest manifest (recovery + reproducibility)
+
+The MemPalace is a derived store; the *list* of which slices belong in a given campaign is the curation work that's expensive to recreate. Record it as `ingest_manifest.yaml` checked into the campaign workspace and replay it with `apply_ingest_manifest.py`:
+
+```yaml
+# <campaign-dir>/ingest_manifest.yaml
+palace: abyss                                 # optional; falls back to config.yaml mempalace.palace
+
+ingests:
+  - source: ~/src/5etools-kostadis/data/adventure/adventure-oota.json
+    filter: "chapter=0"
+    note: "Velkynvelve opening — session 1 grounding"
+  - source: ~/src/5etools-kostadis/data/bestiary/bestiary-oota.json
+    filter: "name=Drow Priestess of Lolth"
+  - source: ./converted/icespire-homebrew.json
+    book_id: 7421
+    note: "Homebrew faction, converted 2026-04-20"
+```
+
+Each entry maps 1:1 to a `fivetools_ingest.py` invocation. Run:
+
+```bash
+python apply_ingest_manifest.py            # replay every entry (idempotent)
+python apply_ingest_manifest.py --status   # report never-run / ingested / stale / missing-source per entry
+python apply_ingest_manifest.py --dry-run  # print the fivetools_ingest.py commands without executing
+python apply_ingest_manifest.py --only 1,3 # 1-based entry selection
+```
+
+**Why this exists:** if `~/.mempalace/palaces/<campaign>/` is lost (disk failure, accidental wipe, ChromaDB corruption), the sidecars alone aren't enough to rebuild — they live next to the *source* JSON, not the palace, and historically didn't record which palace they belonged to. The YAML manifest is the authoritative recipe; sidecars are a local cache. Treat the manifest as your campaign's bill of materials and commit additions as you make them.
+
+## Per-campaign navigation scope (refs.yaml + 5etools MCP)
+
+The palace is the **retrieval** layer (semantic drawer search, grounding for render pipelines). It is not built for "read the whole adventure" or "summarise this book without burning tokens on mechanics." For those use cases the campaign also exposes a **navigation** layer: a per-campaign instance of the `5etools-mcp` server, scoped to exactly the WotC content + purchased PDFs + homebrew this campaign uses.
+
+Scope is declared in two sibling files:
+
+```yaml
+# <campaign-dir>/refs.yaml — git-tracked, portable across machines
+canonical: all                    # or: [OotA, MM, XPHB] for explicit whitelist
+canonical_exclude:                # only meaningful when canonical: all
+  - VRGtR
+  - RotFM
+
+refs:
+  - rpglib: "DriveThru/Wizards of the Coast/Adventures/T14.pdf"
+    book_id: 7421
+    note: "Tales from the Yawning Portal"
+  - homebrew_private: "cross_campaign_canon/setting_bible/"
+  - homebrew_private: "1e_modules/desert_of_desolation.json"
+```
+
+```yaml
+# <campaign-dir>/refs.local.yaml — git-ignored, per-machine
+roots:
+  fivetools_data: ~/src/5etools-kostadis/data/
+  rpg_library: /mnt/g/                                  # varies per machine
+  homebrew_private: ~/src/homebrew-private/
+```
+
+Authoring a `rpglib:` ref:
+
+```bash
+# Find a book in your rpg-lib catalog (offline — reads rpg_library.db directly)
+python query_rpg_lib.py "tales yawning portal"
+
+# Emit a paste-ready refs.yaml block for one match
+python query_rpg_lib.py --book-id 7421
+```
+
+Launching the per-campaign MCP:
+
+```bash
+python launch_5etools_mcp.py --campaign-dir .            # build runtime tree + exec MCP
+python launch_5etools_mcp.py --campaign-dir . --status   # show resolved scope, no launch
+python launch_5etools_mcp.py --campaign-dir . --dry-run  # show planned DATA_DIRS, no launch
+python launch_5etools_mcp.py --campaign-dir . --init-local  # write a starter refs.local.yaml
+```
+
+The launcher builds `~/.5etools-mcp-runtime/<campaign>/` containing a (possibly filtered) view of canonical 5etools data plus a generated `homebrew/` tree for the campaign's refs, then `exec`s the MCP server with `DATA_DIRS` set to those two roots. Idempotent via a sha256 sidecar over `refs.yaml + refs.local.yaml` — repeated launches with unchanged refs reuse the tree.
+
+**Layering:** palace = surgical drawer-level retrieval (grounding for render pipelines); 5etools MCP = bulk-read navigation (read whole adventures, summarise books, look up monsters by name). They complement each other — the palace can be empty for a brand-new campaign and the MCP still gives Claude the full WotC+purchased+homebrew catalog to work from.
+
+**No runtime dependency on rpg-lib.** Once `refs.yaml` is authored, the launcher and MCP run fully offline — they don't talk to rpg-lib's HTTP service or touch its DB. Authoring (via `query_rpg_lib.py`) does need the DB read-only, but that's a one-time step per book added to the campaign.
 
 ## Retrieval/render separation (required)
 
