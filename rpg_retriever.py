@@ -53,6 +53,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
+from concurrent.futures import ThreadPoolExecutor
 from mempalace_client import MempalaceClient
 from suggest_conversion import build_suggestion
 
@@ -539,51 +540,69 @@ def retrieve(
             "`book_id` / `source` / `file_path` for a pin/scoped call"
         )
 
-    # ── rpg-library (expensive candidates) ───────────────────────────────
-    rpglib_books: list[dict] = []
-    if include_expensive:
-        rpglib_books = search_rpglib(
-            query,
-            base_url=rpg_library_url,
-            limit=max(limit * 2, 10),
-            game_system=game_system,
-            product_type=product_type,
-            book_id=book_id,
-        )
+    # ── Closures for concurrent execution ────────────────────────────────
+    def run_rpglib() -> list[dict]:
+        if include_expensive:
+            return search_rpglib(
+                query,
+                base_url=rpg_library_url,
+                limit=max(limit * 2, 10),
+                game_system=game_system,
+                product_type=product_type,
+                book_id=book_id,
+            )
+        return []
 
-    # ── 5etools catalog (cheap candidates) ───────────────────────────────
-    cheap_candidates = []
-    if include_cheap and book_id is None:  # book_id alone targets expensive only
-        cat = fivetools_catalog or _load_catalog_silently(fivetools_data_root)
-        cheap_candidates = search_fivetools_catalog(
-            query, catalog=cat, limit=max(k_cheap * 2, 10), source=source
-        )
+    def run_fivetools() -> list:
+        if include_cheap and book_id is None:
+            try:
+                cat = fivetools_catalog or _load_catalog_silently(fivetools_data_root)
+                return search_fivetools_catalog(
+                    query, catalog=cat, limit=max(k_cheap * 2, 10), source=source
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("5etools catalog search failed: %s", exc)
+                return []
+        return []
 
-    # ── MemPalace (already-ingested drawers) ─────────────────────────────
-    owns_client = mp_client is None
-    mempalace_result: dict
-    if owns_client:
-        mp_client = MempalaceClient(palace=active_palace)
-        try:
-            mp_client.start()
-        except Exception as exc:  # noqa: BLE001
-            logger.warning("MemPalace start failed: %s — drawer tier empty", exc)
-            mempalace_result = {"results": [], "path": {}, "fallback": True,
-                                "fallback_reason": f"mempalace unavailable: {exc}"}
-            mp_client = None
-            owns_client = False
-    if mp_client is not None:
-        try:
-            mempalace_result = mp_client.search_hierarchical(
-                query, limit=limit, max_depth=max_depth
-            ) if query else {"results": [], "path": {}, "fallback": False}
-        except Exception as exc:  # noqa: BLE001
-            logger.warning("MemPalace search failed: %s", exc)
-            mempalace_result = {"results": [], "path": {}, "fallback": True,
-                                "fallback_reason": f"mempalace search error: {exc}"}
-        finally:
-            if owns_client:
-                mp_client.close()
+    def run_mempalace() -> dict:
+        client = mp_client
+        owns = client is None
+        res: dict = {"results": [], "primary": [], "path": {}, "fallback": False}
+        if owns:
+            try:
+                client = MempalaceClient(palace=active_palace)
+                client.start()
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("MemPalace start failed: %s — drawer tier empty", exc)
+                return {"results": [], "primary": [], "path": {}, "fallback": True,
+                        "fallback_reason": f"mempalace unavailable: {exc}"}
+        if client is not None:
+            try:
+                res = client.search_hierarchical(
+                    query, limit=limit, max_depth=max_depth
+                ) if query else {"results": [], "primary": [], "path": {}, "fallback": False}
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("MemPalace search failed: %s", exc)
+                res = {"results": [], "primary": [], "path": {}, "fallback": True,
+                       "fallback_reason": f"mempalace search error: {exc}"}
+            finally:
+                if owns:
+                    try:
+                        client.close()
+                    except Exception:
+                        pass
+        return res
+
+    # ── Run queries concurrently ──────────────────────────────────────────
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        future_rpglib = executor.submit(run_rpglib)
+        future_fivetools = executor.submit(run_fivetools)
+        future_mempalace = executor.submit(run_mempalace)
+
+        rpglib_books = future_rpglib.result()
+        cheap_candidates = future_fivetools.result()
+        mempalace_result = future_mempalace.result()
 
     reconciled = reconcile(
         query,
