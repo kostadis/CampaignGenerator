@@ -389,7 +389,7 @@ def reconcile(
         for b in rpglib_books
         if isinstance(b, dict) and b.get("id") is not None
     }
-    drawer_hits = mempalace_result.get("results") or []
+    drawer_hits = mempalace_result.get("results") or mempalace_result.get("primary") or []
 
     fivetools_list = list(fivetools_candidates)
     result = RetrievalResult(
