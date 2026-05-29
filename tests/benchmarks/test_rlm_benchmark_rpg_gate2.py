@@ -40,35 +40,83 @@ def fixture() -> dict:
 
 
 @pytest.fixture(scope="module")
-def rpglib_db(tmp_path_factory, fixture) -> Path:
-    db = Path(tmp_path_factory.mktemp("rpglib_gate2")) / "rpg_library.db"
-    conn = sqlite3.connect(db)
-    conn.execute(
-        """
-        CREATE TABLE books (
-            id INTEGER PRIMARY KEY,
-            filename TEXT, filepath TEXT,
-            publisher TEXT, game_system TEXT, product_type TEXT,
-            series TEXT, tags TEXT,
-            page_count INTEGER, pdf_title TEXT, description TEXT,
-            min_level INTEGER, max_level INTEGER
-        )
-        """
-    )
-    for b in fixture["fixture"]["books"]:
-        conn.execute(
-            "INSERT INTO books VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            (
-                b["id"], b["filename"], b["filepath"],
-                b["publisher"], b["game_system"], b["product_type"],
-                b["series"], json.dumps(b["tags"]),
-                b["page_count"], b["pdf_title"], b["description"],
-                b["min_level"], b["max_level"],
-            ),
-        )
-    conn.commit()
-    conn.close()
-    return db
+def rpglib_url(fixture) -> str:
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    import threading
+
+    class _BenchmarkRpgLibraryHandler(BaseHTTPRequestHandler):
+        def log_message(self, *args, **kwargs):
+            return
+
+        def _respond(self, payload, status=200):
+            body = json.dumps(payload).encode("utf-8")
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def do_GET(self):
+            books = self.server.books
+            if self.path.startswith("/api/library/book/"):
+                try:
+                    book_id = int(self.path.rsplit("/", 1)[-1])
+                    for b in books:
+                        if b.get("id") == book_id:
+                            self._respond(b)
+                            return
+                except ValueError:
+                    pass
+                self._respond({"detail": "not found"}, 404)
+                return
+
+            if self.path.startswith("/api/library/search"):
+                self._respond({"results": books, "total": len(books)})
+                return
+
+            self._respond({"detail": "unhandled"}, 404)
+
+        def do_POST(self):
+            books = self.server.books
+            length = int(self.headers.get("Content-Length") or 0)
+            body = self.rfile.read(length) if length else b""
+            if self.path == "/api/library/nlq":
+                try:
+                    payload = json.loads(body)
+                    query = payload.get("query", "").lower()
+                except Exception:
+                    query = ""
+
+                if query:
+                    filtered = []
+                    for b in books:
+                        text_fields = [
+                            b.get("pdf_title", ""),
+                            b.get("description", ""),
+                            b.get("filename", ""),
+                            " ".join(b.get("tags") or []),
+                        ]
+                        combined = " ".join(text_fields).lower()
+                        words = query.split()
+                        if any(w in combined for w in words):
+                            filtered.append(b)
+                    self._respond({"results": filtered, "total": len(filtered)})
+                else:
+                    self._respond({"results": books, "total": len(books)})
+                return
+            self._respond({"detail": "unhandled"}, 404)
+
+    server = HTTPServer(("127.0.0.1", 0), _BenchmarkRpgLibraryHandler)
+    server.books = fixture["fixture"]["books"]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    url = f"http://127.0.0.1:{server.server_address[1]}"
+    try:
+        yield url
+    finally:
+        server.shutdown()
+        thread.join(timeout=2)
+
 
 
 @pytest.fixture(scope="module")
@@ -142,8 +190,14 @@ def _top3_match(hit_list: list[dict], query_spec: dict) -> bool:
 
     scope = hit_list if expected_kind == "pointer" else hit_list[:3]
     for h in scope:
-        if expected_kind and h.get("kind") != expected_kind:
-            continue
+        kind = h.get("kind")
+        cost = h.get("cost")
+        if expected_kind == "pointer":
+            if not (kind == "candidate" and cost == "expensive"):
+                continue
+        else:
+            if expected_kind and kind != expected_kind:
+                continue
         if expected_drawer_id and h.get("drawer_id") == expected_drawer_id:
             return True
         if expected_book_id and h.get("book_id") == expected_book_id and not expected_drawer_id:
@@ -152,7 +206,7 @@ def _top3_match(hit_list: list[dict], query_spec: dict) -> bool:
 
 
 @pytest.mark.benchmark
-def test_gate2_rpg_retrieval(benchmark_palace, rpglib_db, fixture):
+def test_gate2_rpg_retrieval(benchmark_palace, rpglib_url, fixture):
     queries = fixture["queries"]
     thresholds = fixture["gate_thresholds"]
 
@@ -171,10 +225,10 @@ def test_gate2_rpg_retrieval(benchmark_palace, rpglib_db, fixture):
         for q in queries:
             result = rpg_retriever.retrieve(
                 q["query"],
-                rpglib_db=rpglib_db,
+                rpg_library_url=rpglib_url,
                 mp_client=mp,
                 limit=5,
-                max_pointers=5,
+                k_expensive=5,
             )
             hits = result.get("hits", [])
             if result.get("fallback"):
@@ -184,10 +238,9 @@ def test_gate2_rpg_retrieval(benchmark_palace, rpglib_db, fixture):
             # Pointer-payload integrity check: every pointer hit must
             # carry a well-formed suggest_conversion block.
             for h in hits:
-                if h.get("kind") == "pointer":
-                    sc = h.get("suggest_conversion") or {}
-                    if not (sc.get("convert_command") and sc.get("ingest_command")
-                            and sc.get("filepath")):
+                if h.get("kind") == "candidate" and h.get("cost") == "expensive":
+                    if not (h.get("convert_command") and h.get("ingest_command")
+                            and h.get("filepath")):
                         pointer_payload_ok = False
 
             correct += int(hit)
