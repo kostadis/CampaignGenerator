@@ -7,6 +7,20 @@ Each fact is one object with exactly these keys:
 - `fact` — one self-contained sentence stating the fact. Concrete. No filler. No summary.
 - `source_quote` — a short verbatim snippet from the input that supports the fact. Copy text exactly. If no single quote supports it, use the empty string `""`.
 
+**THE MOST IMPORTANT RULE — one fact = one state-change.** Each object states exactly ONE thing: one action, one observation, one relationship, or one attribute. Never combine. If a character does three things, emit three facts, each backed by its own single contiguous quote. Being exhaustive means *more facts*, not *fatter facts*.
+
+WRONG — three events bundled into one fact (note the `...`-stitched quote):
+
+  {"type": "event", "subject": "Topsy and Turvy", "fact": "Topsy and Turvy offer to retrieve the gear for a price, transform into rats, and later return to gnomish form.", "source_quote": "we'll fetch it for a price ... they shrank into rats ... were gnomes again"}
+
+RIGHT — split into atomic facts, each with one contiguous quote:
+
+  {"type": "event", "subject": "gear retrieval offer", "fact": "Topsy and Turvy offer to retrieve the prisoners' gear for a price.", "source_quote": "we'll fetch your things — for a price"}
+  {"type": "event", "subject": "Topsy and Turvy transform", "fact": "Topsy and Turvy transform into rats.", "source_quote": "they shrank down into two scrawny rats"}
+  {"type": "event", "subject": "Topsy and Turvy revert", "fact": "Topsy and Turvy return to gnomish form.", "source_quote": "and then they were gnomes again"}
+
+The ellipsis is the tell: if you reach for `...` to build a quote, you have bundled — stop and split into separate facts.
+
 Rules:
 
 - Output ONLY a JSON array. No prose before or after. No markdown fences. No commentary.

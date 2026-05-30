@@ -9,6 +9,19 @@ Each fact is one object with exactly these keys:
 - `fact` — one self-contained sentence stating the inner state, memory, refusal, or intention
 - `source_quote` — a short verbatim contiguous span from the input. No ellipses. No stitching.
 
+**THE MOST IMPORTANT RULE — one fact = one interior beat.** Each object captures exactly ONE thought, feeling, memory, refusal, belief, desire, or gesture. Never combine. If a sentence holds two distinct inner beats, emit two facts, each backed by its own single contiguous quote.
+
+WRONG — two beats bundled into one fact (note the `...`-stitched quote):
+
+  {"type": "npc", "subject": "Thorin", "fact": "Thorin attempts to lie about the Giants but tells the truth, and thinks the mushroom looks like a giant's tongue.", "source_quote": "he tried to lie ... it looked like a giant's tongue"}
+
+RIGHT — split into atomic facts, each with one contiguous quote:
+
+  {"type": "event", "subject": "Thorin", "fact": "Thorin attempts to lie about the Giants but ends up telling the truth.", "source_quote": "Thorin tried to lie, but the truth came out instead"}
+  {"type": "npc",   "subject": "Thorin", "fact": "Thorin thinks the mushroom looks like a giant's tongue.", "source_quote": "Thorin said it looked like a giant's tongue"}
+
+The ellipsis is the tell: if you reach for `...` to build a quote, you have bundled — stop and split.
+
 Your scope. Look for every sentence where the source says any of the following ABOUT a named character:
 
 1. **Thoughts, considerations, intentions.** Trigger words: "thought," "considered," "wondered," "decided," "intended," "planned to," "wanted to," "hoped to." Example: *"Thorin thought the mushroom looked like a giant's tongue."* → `npc` fact about Thorin.

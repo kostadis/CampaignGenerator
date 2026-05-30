@@ -1043,6 +1043,23 @@ def _is_retryable(exc) -> bool:
     except ImportError:
         pass
     try:
+        # The DGX/vLLM path goes through the openai SDK, whose exceptions are
+        # distinct from anthropic's and wrap the underlying httpx error as
+        # __cause__ (so the httpx isinstance check below does NOT catch them).
+        # Without this branch a single transient blip kills a 20-min local run.
+        import openai
+        if isinstance(exc, (
+            openai.RateLimitError,
+            openai.InternalServerError,
+            openai.APIConnectionError,   # APITimeoutError subclasses this
+            openai.APITimeoutError,
+        )):
+            return True
+        if isinstance(exc, openai.APIStatusError) and exc.status_code in (500, 502, 503, 529):
+            return True
+    except ImportError:
+        pass
+    try:
         import httpx
         if isinstance(exc, (
             httpx.RemoteProtocolError,

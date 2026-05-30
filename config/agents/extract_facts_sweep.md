@@ -7,6 +7,20 @@ Each fact is one object with exactly these keys:
 - `fact` — one self-contained sentence stating the fact. Concrete. No filler.
 - `source_quote` — a short verbatim snippet from the input that supports the fact. Copy text exactly, as a single contiguous span. No ellipses. If no single span supports it, use `""`.
 
+**THE MOST IMPORTANT RULE — one fact = one state-change.** Each object in the array states exactly ONE thing: one action, one observation, one relationship, or one attribute. Never combine. If a character does three things, emit three facts, each backed by its own single contiguous quote. Breadth means *more facts*, not *fatter facts* — one entity routinely yields many atomic facts, never one summary.
+
+WRONG — three state-changes bundled into one fact (note the `...`-stitched quote):
+
+  {"type": "npc", "subject": "Buppido", "fact": "Buppido warns of large spiders, suggests burning the tower, and makes a wager about reaching Gracklstugh.", "source_quote": "there are spiders—very large spiders ... burn the place down? ... a wager is made"}
+
+RIGHT — split into atomic facts, each with one contiguous quote:
+
+  {"type": "npc",   "subject": "Buppido", "fact": "Buppido points out that there are very large spiders.", "source_quote": "Buppido clicks his tongue and points out that there are spiders—very large spiders"}
+  {"type": "event", "subject": "burning the tower", "fact": "Buppido suggests burning the tower before fleeing.", "source_quote": "So do we run, or do we first burn the place down?"}
+  {"type": "event", "subject": "wager", "fact": "Buppido makes a wager about reaching Gracklstugh.", "source_quote": "Put your money where your mouth is?"}
+
+The ellipsis is the tell: if you reach for `...` to build a quote, you have bundled — stop and split into separate facts.
+
 Your scope is **breadth over depth**. Cover these categories exhaustively:
 
 1. **Every proper noun.** List every capitalised name in the text — person, place, deity, book, faction, item with a name — and emit at least one fact for each. Include names that appear only once. Include names attributed to off-screen authors, sages, gods, books, or historical figures.
@@ -30,7 +44,7 @@ Rules:
 - `type` MUST be one of exactly: `npc`, `faction`, `event`, `location`, `object`, `monster`, `thread`, `date`. Do not invent new types. Do not emit `"type": "item"`, `"type": "creature"`, or any other value.
 - `npc` is reserved for named individuals (Ilvara, Stool, Imbros). Creature types and races are NOT NPCs. Use `monster` for opponent/hazard creatures (gray ooze, chasme, vrock, giant spider) and `faction` for races acting collectively with intent (duergar engineers, kuo-toa of Sloobludop).
 - An `object` is a named or campaign-relevant item, not a generic category. "Buckets" or "weapons" as a category does not need an object fact; a specific scourge, a vial of Drow poison, a Sava game set, a piece of paper with debtors' names, the Tongue of Madness mushroom — these do.
-- `source_quote` MUST be a single contiguous span copy-pasted from the input. It MUST NOT contain `...` and MUST NOT stitch together two quoted spans. If you find yourself wanting to do that, pick the single best span instead, or use `""`.
+- `source_quote` MUST be a single contiguous span copy-pasted from the input. It MUST NOT contain `...` and MUST NOT stitch together two quoted spans. If you find yourself wanting to do that, you have bundled multiple facts into one — split them into separate facts, each backed by its own single contiguous span.
 - Do not invent. If the text does not state it, do not emit it.
 - Do not editorialize. No "interestingly," no "notably," no "appears to."
 - Do not abstract. Extraction is selection, not interpretation. If the source says "X took Y's hand," emit "X took Y's hand" — NOT "X agreed to be friends with Y." If the source describes two distinct physical actions, emit two facts. Preserve concrete physical, gestural, and sensory detail verbatim in the fact text. The meaning is for the reader to infer from the action.

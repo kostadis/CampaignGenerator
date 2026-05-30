@@ -72,11 +72,18 @@ def test_all_externalised_prompts_listed():
         str(p.relative_to(ROOT / "config" / "agents")).replace("\\", "/")
         for p in (ROOT / "config" / "agents").rglob("*.md")
     }
-    # Drop session_doc/ subtree and any pre-existing top-level prompts
-    # (lore_oracle.md, encounter_architect.md, voice_keeper.md — used by prep.py).
+    # Exclude prompts that scripts load dynamically by name (via
+    # load_agent_prompt / load_file) instead of binding to a module-level
+    # constant — the CASES identity check above structurally cannot apply to
+    # them, there is no constant to compare against:
+    #   - session_doc/ subtree (guarded by test_session_doc_prompts.py)
+    #   - prep.py agents (lore_oracle, encounter_architect, voice_keeper)
+    #   - the fact-extraction ensemble lenses (extract_facts*.md), loaded via
+    #     `extract_facts.py --agent`.
     session_doc_files = {p for p in actual if p.startswith("session_doc/")}
     prep_files = {"lore_oracle.md", "encounter_architect.md", "voice_keeper.md"}
-    relevant = actual - session_doc_files - prep_files
+    ensemble_files = {p for p in actual if p.startswith("extract_facts")}
+    relevant = actual - session_doc_files - prep_files - ensemble_files
     assert expected == relevant, (
         f"Phase-3 CASES table out of sync with config/agents/.\n"
         f"  in CASES but not on disk: {sorted(expected - relevant)}\n"
