@@ -113,6 +113,40 @@ def test_session_label_prefers_parent_dir(tmp_path):
     assert sws.session_label(other) == "extract_004"
 
 
+def test_session_index_orders_numerically(tmp_path):
+    # chapter_2 must sort before chapter_10 (numeric, not lexical).
+    paths = [tmp_path / f"chapter_{n}.json" for n in (10, 2, 3)]
+    for p in paths:
+        p.write_text("[]", encoding="utf-8")
+    ordered = sorted(paths, key=sws.session_index)
+    assert [p.stem for p in ordered] == ["chapter_2", "chapter_3", "chapter_10"]
+
+
+def test_session_index_numberless_sorts_last(tmp_path):
+    numbered = tmp_path / "chapter_05.json"
+    numberless = tmp_path / "prologue.json"
+    for p in (numbered, numberless):
+        p.write_text("[]", encoding="utf-8")
+    ordered = sorted([numberless, numbered], key=sws.session_index)
+    assert [p.stem for p in ordered] == ["chapter_05", "prologue"]
+
+
+def test_session_dates_keeps_real_drops_placeholders():
+    facts = [
+        {"type": "date", "subject": "4th day of the 2nd Tenday of Taraskh 1493",
+         "fact": "x"},
+        {"type": "date", "subject": "session date", "fact": "y"},
+        {"type": "date", "subject": "4th day of the 2nd Tenday of Taraskh 1493",
+         "fact": "dup"},
+        {"type": "npc", "subject": "Daz", "fact": "not a date"},
+    ]
+    assert sws.session_dates(facts) == ["4th day of the 2nd Tenday of Taraskh 1493"]
+
+
+def test_session_dates_empty_when_none():
+    assert sws.session_dates([{"type": "npc", "subject": "Daz", "fact": "x"}]) == []
+
+
 def test_expand_globs_dedups_and_sorts(tmp_path):
     (tmp_path / "a").mkdir()
     (tmp_path / "b").mkdir()

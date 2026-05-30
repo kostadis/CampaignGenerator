@@ -59,6 +59,7 @@ Usage::
 import argparse
 import glob as globmod
 import json
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -106,9 +107,16 @@ Two kinds of source material follow.
 
 1. SESSION FACT EXTRACTS — atomic facts pulled from each session, grouped by
    type and subject. These are the authoritative record of WHAT HAPPENED.
-   Where a fact is followed by an indented "> quote", that is verbatim source
-   text supporting it; rely on it to disambiguate, and do not assert beyond
-   what the facts and their quotes support.
+   The sessions appear in CHRONOLOGICAL ORDER, earliest first; each block is
+   headed with its session number and in-world date(s). When sessions disagree
+   about the CURRENT state of a person, place, or thing, the LATER session
+   always wins — a fact from an earlier session describes a past moment, not
+   the present. The FINAL session reflects the current state of the world; do
+   not report a stale earlier situation (a wound since healed, a captivity
+   since escaped, a location since left) as if it were still true. Where a
+   fact is followed by an indented "> quote", that is verbatim source text
+   supporting it; rely on it to disambiguate, and do not assert beyond what
+   the facts and their quotes support.
 2. PLAYER CHARACTER BACKSTORIES — campaign-level background the session facts
    do not restate. Use these to enrich the party profiles, not to invent
    session events.
@@ -142,13 +150,17 @@ def load_party_names(path: Path | None) -> list[str]:
 
 
 def expand_globs(patterns: list[str]) -> list[Path]:
-    """Expand and de-dup a list of glob patterns into sorted Paths."""
+    """Expand and de-dup glob patterns, preserving order.
+
+    Matches within a single pattern are sorted (deterministic); patterns are
+    kept in the order given, so ``--preserve-order`` can rely on arg order.
+    """
     seen: dict[str, Path] = {}
     for pat in patterns:
-        for hit in globmod.glob(str(Path(pat).expanduser()), recursive=True):
+        for hit in sorted(globmod.glob(str(Path(pat).expanduser()), recursive=True)):
             p = Path(hit).resolve()
-            seen[str(p)] = p
-    return [seen[k] for k in sorted(seen)]
+            seen.setdefault(str(p), p)
+    return list(seen.values())
 
 
 def session_label(path: Path) -> str:
@@ -156,6 +168,42 @@ def session_label(path: Path) -> str:
     if path.name in ("merged.json", "facts.json") and path.parent.name:
         return path.parent.name
     return path.stem
+
+
+_INT_RE = re.compile(r"\d+")
+
+
+def session_index(path: Path) -> tuple:
+    """Chronological sort key from the session label's integers (chapter_03 → 3).
+
+    Labels containing a number sort first, by those numbers in order (so
+    chapter_2 < chapter_10, unlike a string sort); numberless labels sort last,
+    alphabetically. This ordering is what "current state" depends on, so the
+    resolved order is printed for the human to verify — session sequencing is
+    a GM decision, not one the model (or a silent sort) should quietly own.
+    """
+    label = session_label(path)
+    nums = [int(n) for n in _INT_RE.findall(label)]
+    return (0, nums, label.lower()) if nums else (1, [], label.lower())
+
+
+def session_dates(facts: list[dict]) -> list[str]:
+    """In-world date strings from a session's `date`-type facts, de-duped.
+
+    Generic placeholder subjects ("session date") are dropped; real anchors
+    ("4th day of the 2nd Tenday of Taraskh 1493") are kept in first-seen order
+    to label the session block with its narrative time.
+    """
+    out: list[str] = []
+    for f in facts:
+        if f.get("type") != "date":
+            continue
+        d = (f.get("subject") or "").strip()
+        if not d or d.lower() in {"session date", "date", "unknown"}:
+            continue
+        if d not in out:
+            out.append(d)
+    return out
 
 
 def render_facts(facts: list[dict], aliases: dict[str, str], with_quotes: bool) -> str:
@@ -220,6 +268,11 @@ def main() -> None:
     parser.add_argument("--aliases", default=None, metavar="FILE",
                         help="Optional aliases.json {canonical: [variants]} to "
                              "collapse spelling variants before synthesis.")
+    parser.add_argument("--preserve-order", action="store_true",
+                        help="Feed sessions in the order the corpus globs/args "
+                             "were given, instead of sorting by the session "
+                             "number parsed from each file's label. Use when "
+                             "your filenames carry no chronological index.")
     parser.add_argument("--quotes", action=argparse.BooleanOptionalAction,
                         default=True,
                         help="Include each fact's source_quote in the synthesis "
@@ -253,18 +306,40 @@ def main() -> None:
     )
     backstory_paths = expand_globs(args.backstories) if args.backstories else []
 
-    # ── Build the structured user prompt (deterministic; no LLM here) ──
-    blocks: list[str] = [GROUNDING_NOTE, "# SESSION FACT EXTRACTS"]
-    total_facts = 0
+    # ── Load corpus, order chronologically, render (deterministic; no LLM) ──
+    sessions: list[tuple] = []
     for path in corpus_paths:
         try:
             facts = json.loads(path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError) as exc:
             print(f"Warning: skipping {path}: {exc}", file=sys.stderr)
             continue
+        sessions.append((path, facts))
+    if not sessions:
+        print("Error: no readable merged.json files in corpus.", file=sys.stderr)
+        sys.exit(1)
+    if not args.preserve_order:
+        sessions.sort(key=lambda pf: session_index(pf[0]))
+
+    # Ordering is a precision decision — show it so the human can veto a
+    # mis-sort before it silently becomes "current state".
+    print("Session order (earliest → latest; the LAST session is current state):")
+    for i, (path, facts) in enumerate(sessions, 1):
+        ds = session_dates(facts)
+        print(f"  {i}. {session_label(path)}"
+              + (f"  [{'; '.join(ds)}]" if ds else "  [no in-world date]"))
+    print("=" * 60)
+
+    blocks: list[str] = [GROUNDING_NOTE, "# SESSION FACT EXTRACTS (chronological)"]
+    total_facts = 0
+    for i, (path, facts) in enumerate(sessions, 1):
         total_facts += len(facts)
+        ds = session_dates(facts)
+        date_note = f" | in-world date: {'; '.join(ds)}" if ds else ""
         rendered = render_facts(facts, aliases, args.quotes)
-        blocks.append(f"<!-- Session: {session_label(path)} -->\n\n{rendered}")
+        blocks.append(
+            f"<!-- Session {i}: {session_label(path)}{date_note} -->\n\n{rendered}"
+        )
 
     if backstory_paths:
         blocks.append("# PLAYER CHARACTER BACKSTORIES")
@@ -291,7 +366,7 @@ def main() -> None:
     inv_note = f" | inventory: {inventory_path.name}" if inventory_text else ""
     pc_note = f" | party: {len(party_names)} PCs" if party_names else ""
     bs_note = f" | backstories: {len(backstory_paths)}" if backstory_paths else ""
-    print(f"[Synthesise world_state | {len(corpus_paths)} session(s), "
+    print(f"[Synthesise world_state | {len(sessions)} session(s), "
           f"{total_facts} facts | quotes: {'on' if args.quotes else 'off'} | "
           f"model: {args.model}{pc_note}{inv_note}{bs_note}]")
     print(f"[Input: {len(user_prompt):,} chars]")
@@ -312,7 +387,7 @@ def main() -> None:
 
     print("\n" + "=" * 60)
     print(f"Wrote world_state: {output_path}")
-    print(f"Synthesised from {len(corpus_paths)} session(s), {total_facts} facts.")
+    print(f"Synthesised from {len(sessions)} session(s), {total_facts} facts.")
     if party_names:
         print(f"Party anchored: {', '.join(party_names)}")
 
