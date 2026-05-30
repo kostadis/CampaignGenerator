@@ -1,0 +1,321 @@
+#!/usr/bin/env python3
+"""Synthesise world_state.md from a corpus of ensemble merged.json files.
+
+This is ``distill.py``'s **synthesis pass**, with the local-LLM ensemble's
+``merged.json`` corpus swapped in for the Claude ``distill_extractions/
+extract_*.md`` corpus. Same synthesis prompt (``distill_synthesize``), same
+output document — only the upstream extractor changed (Claude pass-1 →
+local 5-lens ensemble). Keeping the prompt identical makes this a true
+drop-in replacement and isolates the one variable under test: whether the
+local facts synthesise as well as Claude's extracts.
+
+Pipeline::
+
+    session_NN.md
+      → ensemble_extract.py            (5 local-LLM lenses, DGX)
+    merged_NN.json                      (atomic facts, deterministic merge)
+      → synthesise_world_state.py       (this script: render + Claude synth)
+    world_state.md                      (cumulative campaign canon)
+
+Per the LLM Pipeline Design Rule, the two LLM stages are separated by a
+deterministic, human-reviewable checkpoint:
+
+    local LLM extracts → deterministic merge (merged.json, reviewed)
+        → deterministic render to structured input (no LLM)
+        → Claude synthesises inside that structure → human reviews world_state
+
+The render step is pure code: atomic facts are grouped by (type, subject)
+into the same profile shape the ``extract_*.md`` files use. No model decides
+scope, ordering, or attribution at that boundary. Claude only renders the
+verified structure into cumulative canon. Each fact can carry its
+``source_quote`` into synthesis (``--quotes``, default on) so a wrong fact
+is more likely to sit beside the verbatim text that corrects it.
+
+Grounding context fed alongside the corpus:
+  --party        party.yaml — PC roster; anchors the Party section so the
+                 canonical player characters always get a profile.
+  --inventory    module proper-noun inventory; authoritative spellings and
+                 identities (Velkenyvelve → Velkynvelve, etc.).
+  --backstories  per-PC backstory docs; campaign-level background the
+                 session facts never restate.
+
+The existing world_state.md is NOT fed in (it is the OUTPUT of this
+pipeline, regenerated from the corpus — feeding it back would anchor the
+regen to stale content). --output is required and is never defaulted to
+docs/world_state.md, so a partial corpus cannot silently overwrite the
+full-campaign canon. Point it at a scratch file, diff, then promote.
+
+Usage::
+
+    python synthesise_world_state.py \\
+        --corpus 'runs/*/merged.json' \\
+        --party docs/party.yaml \\
+        --inventory ~/campaigns/.../module_inventory.md \\
+        --backstories 'docs/*_backstory.md' \\
+        --output docs/world_state.generated.md \\
+        --model claude-opus-4-7
+"""
+
+import argparse
+import glob as globmod
+import json
+import sys
+from collections import defaultdict
+from pathlib import Path
+
+import yaml
+
+from campaignlib import (
+    DEFAULT_MODEL,
+    load_agent_prompt,
+    make_client,
+    stream_api,
+)
+
+# Same synthesis prompt distill.py uses — this script only swaps the input
+# corpus, so the prompt must stay identical for the comparison to be honest.
+SYNTHESIZE_SYSTEM = load_agent_prompt("distill_synthesize")
+
+# Render order mirrors synthesise_facts.py / the extract_*.md profile shape.
+TYPE_ORDER = ["npc", "monster", "faction", "location", "object", "date", "event", "thread"]
+TYPE_HEADINGS = {
+    "npc": "NPCs",
+    "monster": "Monsters",
+    "faction": "Factions",
+    "location": "Locations",
+    "object": "Objects",
+    "date": "Dates & Temporal Anchors",
+    "event": "World Events",
+    "thread": "Threads & Mysteries",
+}
+
+INVENTORY_PREAMBLE = """The following is the canonical name and entity inventory for this campaign, compiled by the GM from the source module. Treat it as the authoritative reference for spellings, factions, identities, and backgrounds. When a fact uses a variant spelling that clearly matches an inventory entry (Velkenyvelve → Velkynvelve, Sloopdopblop → Sloobludop), use the canonical spelling in your output. Use inventory descriptions to enrich profiles where the facts are silent on faction, race, or role. Never let the inventory override what the session facts say happened.
+
+---
+
+CANONICAL INVENTORY:
+
+"""
+
+ROSTER_PREAMBLE = """These are the campaign's player characters. Every one of them MUST receive a profile in the world_state document, anchored as the party section, even if the supplied facts touch them only lightly:
+
+"""
+
+GROUNDING_NOTE = """\
+Two kinds of source material follow.
+
+1. SESSION FACT EXTRACTS — atomic facts pulled from each session, grouped by
+   type and subject. These are the authoritative record of WHAT HAPPENED.
+   Where a fact is followed by an indented "> quote", that is verbatim source
+   text supporting it; rely on it to disambiguate, and do not assert beyond
+   what the facts and their quotes support.
+2. PLAYER CHARACTER BACKSTORIES — campaign-level background the session facts
+   do not restate. Use these to enrich the party profiles, not to invent
+   session events.
+"""
+
+
+def load_aliases(path: Path | None) -> dict[str, str]:
+    """Load aliases.json -> flat {variant: canonical} (canonicals self-map)."""
+    if path is None or not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    flat: dict[str, str] = {}
+    for canonical, variants in data.items():
+        flat[canonical] = canonical
+        for v in variants:
+            flat[v] = canonical
+    return flat
+
+
+def load_party_names(path: Path | None) -> list[str]:
+    """Pull PC names out of party.yaml (characters: [{name: ...}])."""
+    if path is None or not path.exists():
+        return []
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    names = []
+    for c in data.get("characters", []):
+        name = (c or {}).get("name")
+        if name:
+            names.append(str(name))
+    return names
+
+
+def expand_globs(patterns: list[str]) -> list[Path]:
+    """Expand and de-dup a list of glob patterns into sorted Paths."""
+    seen: dict[str, Path] = {}
+    for pat in patterns:
+        for hit in globmod.glob(str(Path(pat).expanduser()), recursive=True):
+            p = Path(hit).resolve()
+            seen[str(p)] = p
+    return [seen[k] for k in sorted(seen)]
+
+
+def session_label(path: Path) -> str:
+    """A human-readable label for a merged.json — prefer its parent dir name."""
+    if path.name in ("merged.json", "facts.json") and path.parent.name:
+        return path.parent.name
+    return path.stem
+
+
+def render_facts(facts: list[dict], aliases: dict[str, str], with_quotes: bool) -> str:
+    """Group atomic facts into the extract_*.md profile shape (no LLM).
+
+    Mirrors the ## Type / **Subject** / bulleted-fact layout the Claude
+    distill extracts use, so the synthesis prompt sees a familiar structure.
+    """
+    by_type: dict[str, dict[str, list[dict]]] = defaultdict(lambda: defaultdict(list))
+    for f in facts:
+        t = f.get("type", "unknown")
+        subject = f.get("subject", "")
+        canonical = aliases.get(subject, subject)
+        by_type[t][canonical].append(f)
+
+    lines: list[str] = []
+    ordered_types = TYPE_ORDER + [t for t in sorted(by_type) if t not in TYPE_ORDER]
+    for t in ordered_types:
+        if t not in by_type:
+            continue
+        lines.append(f"## {TYPE_HEADINGS.get(t, t.title())}")
+        lines.append("")
+        for subject in sorted(by_type[t], key=str.lower):
+            lines.append(f"**{subject}**")
+            for f in by_type[t][subject]:
+                fact_text = f.get("fact", "").strip()
+                if not fact_text:
+                    continue
+                lines.append(f"- {fact_text}")
+                quote = (f.get("source_quote") or "").strip()
+                if with_quotes and quote:
+                    quote = " ".join(quote.split())  # collapse newlines/runs
+                    lines.append(f'  > "{quote}"')
+            lines.append("")
+    return "\n".join(lines).strip()
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Synthesise world_state.md from a corpus of ensemble merged.json "
+            "files, using distill.py's synthesis prompt. The local-LLM "
+            "ensemble replaces Claude's distill_extractions as the input."
+        )
+    )
+    parser.add_argument("--corpus", required=True, nargs="+", metavar="GLOB",
+                        help="One or more globs matching merged.json files "
+                             "(e.g. 'runs/*/merged.json'). Quote them so the "
+                             "shell does not expand them first.")
+    parser.add_argument("--output", "-o", required=True, metavar="FILE",
+                        help="Where to write world_state markdown. Required and "
+                             "never defaulted — point at a scratch file and diff "
+                             "before promoting over docs/world_state.md.")
+    parser.add_argument("--party", default=None, metavar="FILE",
+                        help="party.yaml — PC roster; anchors the party section.")
+    parser.add_argument("--inventory", default=None, metavar="FILE",
+                        help="Module proper-noun inventory (markdown). "
+                             "Authoritative spellings/identities.")
+    parser.add_argument("--backstories", default=None, nargs="+", metavar="GLOB",
+                        help="Glob(s) for per-PC backstory docs "
+                             "(e.g. 'docs/*_backstory.md').")
+    parser.add_argument("--aliases", default=None, metavar="FILE",
+                        help="Optional aliases.json {canonical: [variants]} to "
+                             "collapse spelling variants before synthesis.")
+    parser.add_argument("--quotes", action=argparse.BooleanOptionalAction,
+                        default=True,
+                        help="Include each fact's source_quote in the synthesis "
+                             "input for grounding (default: on). --no-quotes for "
+                             "a clean baseline comparison against the extracts.")
+    parser.add_argument("--model", default=DEFAULT_MODEL,
+                        help=f"Claude model id (default: {DEFAULT_MODEL}). "
+                             f"Use claude-opus-4-7 for highest-quality synthesis.")
+    parser.add_argument("--max-tokens", type=int, default=16000,
+                        help="max_tokens for the synthesis call (default: 16000).")
+    parser.add_argument("--dump-input", default=None, metavar="FILE",
+                        help="Also write the rendered user prompt sent to Claude, "
+                             "for prompt debugging without spending tokens.")
+    args = parser.parse_args()
+
+    corpus_paths = expand_globs(args.corpus)
+    if not corpus_paths:
+        print(f"Error: no merged.json files matched {args.corpus}", file=sys.stderr)
+        sys.exit(1)
+
+    aliases = load_aliases(
+        Path(args.aliases).expanduser().resolve() if args.aliases else None
+    )
+    party_names = load_party_names(
+        Path(args.party).expanduser().resolve() if args.party else None
+    )
+    inventory_path = Path(args.inventory).expanduser().resolve() if args.inventory else None
+    inventory_text = (
+        inventory_path.read_text(encoding="utf-8").strip()
+        if inventory_path and inventory_path.exists() else ""
+    )
+    backstory_paths = expand_globs(args.backstories) if args.backstories else []
+
+    # ── Build the structured user prompt (deterministic; no LLM here) ──
+    blocks: list[str] = [GROUNDING_NOTE, "# SESSION FACT EXTRACTS"]
+    total_facts = 0
+    for path in corpus_paths:
+        try:
+            facts = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as exc:
+            print(f"Warning: skipping {path}: {exc}", file=sys.stderr)
+            continue
+        total_facts += len(facts)
+        rendered = render_facts(facts, aliases, args.quotes)
+        blocks.append(f"<!-- Session: {session_label(path)} -->\n\n{rendered}")
+
+    if backstory_paths:
+        blocks.append("# PLAYER CHARACTER BACKSTORIES")
+        for path in backstory_paths:
+            body = path.read_text(encoding="utf-8").strip()
+            blocks.append(f"<!-- Backstory: {path.stem} -->\n\n{body}")
+
+    user_prompt = "\n\n---\n\n".join(blocks)
+
+    # ── Grounding goes into the system prompt as authoritative context ──
+    system_prompt = SYNTHESIZE_SYSTEM
+    if party_names:
+        roster = "\n".join(f"- {n}" for n in party_names)
+        system_prompt += "\n\n" + ROSTER_PREAMBLE + roster
+    if inventory_text:
+        system_prompt += "\n\n" + INVENTORY_PREAMBLE + inventory_text
+
+    if args.dump_input:
+        Path(args.dump_input).expanduser().resolve().write_text(
+            user_prompt, encoding="utf-8"
+        )
+        print(f"Dumped synthesis input: {args.dump_input}")
+
+    inv_note = f" | inventory: {inventory_path.name}" if inventory_text else ""
+    pc_note = f" | party: {len(party_names)} PCs" if party_names else ""
+    bs_note = f" | backstories: {len(backstory_paths)}" if backstory_paths else ""
+    print(f"[Synthesise world_state | {len(corpus_paths)} session(s), "
+          f"{total_facts} facts | quotes: {'on' if args.quotes else 'off'} | "
+          f"model: {args.model}{pc_note}{inv_note}{bs_note}]")
+    print(f"[Input: {len(user_prompt):,} chars]")
+    print("=" * 60)
+
+    client = make_client()
+    world_state = stream_api(
+        client,
+        system_prompt,
+        user_prompt,
+        args.model,
+        max_tokens=args.max_tokens,
+    )
+
+    output_path = Path(args.output).expanduser().resolve()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(world_state.strip() + "\n", encoding="utf-8")
+
+    print("\n" + "=" * 60)
+    print(f"Wrote world_state: {output_path}")
+    print(f"Synthesised from {len(corpus_paths)} session(s), {total_facts} facts.")
+    if party_names:
+        print(f"Party anchored: {', '.join(party_names)}")
+
+
+if __name__ == "__main__":
+    main()
