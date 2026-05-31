@@ -14,6 +14,7 @@ Usage:
 import argparse
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 
@@ -47,6 +48,10 @@ def slugify(heading: str, prefix: str) -> str:
     """
     tail = re.sub(rf"^{re.escape(prefix)}\s*[\d.]+[:\-\s]*", "", heading, flags=re.IGNORECASE)
     tail = tail.strip().lower()
+    # Transliterate accents to ASCII (Faerûn → faerun, Entémoch → entemoch) so
+    # the canonical accented spelling can live in the heading without turning
+    # into underscores in the filename.
+    tail = unicodedata.normalize("NFKD", tail).encode("ascii", "ignore").decode("ascii")
     tail = re.sub(r"[^a-z0-9]+", "_", tail).strip("_")
     return tail or "untitled"
 
