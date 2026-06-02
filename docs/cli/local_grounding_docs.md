@@ -75,6 +75,27 @@ python party.py --synthesize-only \
   --extract-dir scratch_output/oota-party/extracts \
   --backstory $DOC/daz_backstory.md $DOC/zalthir_backstory.md $DOC/thorin_backstory.md $DOC/grygum_backstory.md \
   --output scratch_output/party_local.md --model claude-opus-4-8
+
+# 7. planning.md (Opus 4.8) — planning.py's plain synthesis over a CUT of the
+#    npcs. planning is forward-looking, so restrict to the "important & in play"
+#    NPCs rather than all 221: >=10 facts AND (spans >=5 chapters OR seen since
+#    ch47). source_extracts (chapter list) lives in each npc's frontmatter;
+#    n_facts in the matching oota-state/ dossier. Drop the "I" pronoun-leak junk.
+mapfile -t FILES < <(python3 - <<'PY'
+import glob, re
+se=re.compile(r'^source_extracts:\s*\[([^\]]*)\]',re.M); nf=re.compile(r'^n_facts:\s*(\d+)',re.M)
+nm=re.compile(r'^name:\s*(.+)$',re.M)
+for f in sorted(glob.glob('scratch_output/oota-planning/npcs/*.md')):
+    t=open(f).read()
+    if nm.search(t).group(1).strip().lower()=='i': continue
+    m=se.search(t); chs=[int(x) for x in m.group(1).split(',') if x.strip()] if m else []
+    try: n=int(nf.search(open(f.replace('oota-planning/npcs/','oota-state/npc_')).read()).group(1))
+    except Exception: n=0
+    if n>=10 and (len(chs)>=5 or (chs and max(chs)>=47)): print(f)
+PY
+)
+python planning.py --npc "${FILES[@]}" \
+  --output scratch_output/planning_local.md --model claude-opus-4-8   # 65 npcs
 ```
 
 ### The "staging" trick (steps 5–6)
@@ -96,16 +117,23 @@ and skip their own (Claude) extraction pass.
 - **`party_local.md` has no character sheets / arc-scores** — class/level/player
   fields are blank and there are no Candidate Arc Score Events. It's the
   narrative/role half of what `party.py` produces from D&D Beyond PDFs.
-- **`planning.md` was NOT generated** — only the `npcs/` (its input). To finish:
-  `planning.py --synthesize` over the npcs (+ arc-scores + context).
-- **Significance floor:** world_state used `--dossier-min-facts 20` (89
-  entities). ≥10 = 191, ≥40 = 42 (≈ the existing doc's scope).
+- **`planning.md` built from an importance CUT (65 npcs), not all 221** — planning
+  is forward-looking, so feeding every NPC makes a bloated, unprioritized doc.
+  Cut = ≥10 facts AND (spans ≥5 chapters OR seen since ch47). Two artifacts to
+  fix in review: it has **no real arc-scores** (the Threat Tracker is the model's
+  judgement from dossier content, not tracked scores), and the first-person
+  "narrator/I" leak produced a couple of conflated entries (e.g. Narrator /
+  Librarian / Yvenne merged). Fact-count is a recurrence proxy, not narrative
+  importance — a pivotal one-scene NPC can fall below the cut; sanity-check it.
+- **Significance floors used:** world_state `--dossier-min-facts 20` (89
+  entities; ≥10 = 191, ≥40 = 42 ≈ the existing doc's scope). planning: the
+  ≥10-facts + breadth/recency cut above (65 npcs).
 - **Models:** extraction/aggregation on local Qwen Instruct (a reasoning-model
   A/B with Nemotron was deferred); all synthesis on Opus 4.8.
 
 ## Token cost vs the old per-tool path
 Old (`distill`/etc., all API): each doc re-extracts → ~2.5–3.4M metered tokens
 for the full set. New: extract once locally (~9M local tokens, ~free) +
-per-doc synthesis ≈ **~193K metered tokens total** (world_state ~128K,
-campaign_state ~50K, party ~15K, npcs 0). ~15× less API; the gap widens with
-each additional doc, since extraction is shared rather than repeated.
+per-doc synthesis ≈ **~280K metered tokens total** (world_state ~128K,
+campaign_state ~50K, party ~15K, planning ~85K, npcs 0). ~10–12× less API; the
+gap widens with each additional doc, since extraction is shared not repeated.
