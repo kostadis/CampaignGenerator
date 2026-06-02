@@ -7,6 +7,11 @@ were resolved three sessions ago still being treated as active.
 
 They are inputs, not outputs. The scripts generate them; you review and keep them.
 
+> **Building them from a local ensemble extraction instead of the per-tool
+> Claude path?** See [`local_grounding_docs.md`](local_grounding_docs.md) — the
+> extract-once-locally runbook (facts_to_state.py → dossiers → synthesis), with
+> the exact commands and provenance of the Out of the Abyss run.
+
 ---
 
 ## The Four Documents
