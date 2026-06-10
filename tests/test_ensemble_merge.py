@@ -41,6 +41,22 @@ def test_merge_facts_dedups_within_subject_and_unions_passes():
     assert by[("event", "Fight")]["passes"] == ["b#1"]
 
 
+def test_merge_facts_quote_verified_travels_with_kept_quote():
+    # The flag describes the quote, so when a longer quote replaces a shorter
+    # one its verification status must replace too — in both directions.
+    pass_outputs = {
+        "a#1": [{"type": "npc", "subject": "Daz", "fact": "Daz is brave.",
+                 "source_quote": "short", "quote_verified": True}],
+        "b#1": [{"type": "npc", "subject": "Daz", "fact": "Daz is brave.",
+                 "source_quote": "much longer stitched quote",
+                 "quote_verified": False}],
+    }
+    merged = em.merge_facts(pass_outputs, similarity=0.85)
+    assert len(merged) == 1
+    assert merged[0]["source_quote"] == "much longer stitched quote"
+    assert merged[0]["quote_verified"] is False
+
+
 def test_merge_facts_keeps_distinct_facts_under_threshold():
     pass_outputs = {"a#1": [
         {"type": "npc", "subject": "Daz", "fact": "Daz is brave.", "source_quote": ""},

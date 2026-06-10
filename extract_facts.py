@@ -204,6 +204,28 @@ def validate_fact(fact: dict, idx: int) -> list[str]:
     return problems
 
 
+def verify_quotes(facts: list[dict], chunk: str) -> None:
+    """Stamp each fact with ``quote_verified``: is source_quote genuinely a
+    verbatim span of the chunk it was extracted from?
+
+    The extract prompts demand character-for-character substrings, which makes
+    this mechanically checkable — and a fabricated fact almost always carries
+    a fabricated or `...`-stitched quote, so the flag doubles as a free
+    hallucination detector. Score, don't filter: nothing is dropped, the flag
+    just lets human review sort unverified facts to the top. Empty quotes
+    count as unverified. Whitespace-normalized fallback so a reflowed line
+    break doesn't fail an otherwise verbatim quote.
+    """
+    chunk_norm = " ".join(chunk.split())
+    for f in facts:
+        if not isinstance(f, dict):
+            continue
+        q = f.get("source_quote") or ""
+        f["quote_verified"] = bool(q) and (
+            q in chunk or " ".join(q.split()) in chunk_norm
+        )
+
+
 def _atomic_write_text(path: Path, text: str) -> None:
     """Write via tmp + os.replace so a kill mid-write never leaves a torn file.
 
@@ -244,6 +266,7 @@ def extract_one_chunk(call_fn, chunk: str, out_file: Path) -> tuple[list | None,
         bad = out_file.with_suffix(".raw.txt")
         _atomic_write_text(bad, raw)
         return None, f"{e} (raw output saved to {bad.name})"
+    verify_quotes(facts, chunk)
     _atomic_write_text(out_file, json.dumps(facts, indent=2))
     return facts, None
 
@@ -265,6 +288,7 @@ def run_parallel(chunks: list, extract_dir: Path, call_fn,
         cached = _load_cached(out_file)
         if cached is not None:
             print(f"  [{i}/{len(chunks)}] Reusing cached: {out_file.name}")
+            verify_quotes(cached, chunk)  # stamp caches/hand-fixes that predate the flag
             results[i] = cached
         else:
             misses.append((i, chunk, out_file))
@@ -276,6 +300,7 @@ def run_parallel(chunks: list, extract_dir: Path, call_fn,
         # scan above — one stat beats a duplicate multi-minute API call.
         cached = _load_cached(out_file)
         if cached is not None:
+            verify_quotes(cached, chunk)
             return i, cached, None, True
         facts, err = extract_one_chunk(call_fn, chunk, out_file)
         return i, facts, err, False
@@ -417,6 +442,7 @@ def main() -> None:
             facts = _load_cached(out_file)
             if facts is not None:
                 print(f"  [{i}/{len(chunks)}] Reusing cached: {out_file.name}")
+                verify_quotes(facts, chunk)
             else:
                 print(f"  [{i}/{len(chunks)}] Extracting from {label} "
                       f"({len(chunk):,} chars)...")
@@ -437,6 +463,7 @@ def main() -> None:
                     print(f"  Fix by hand into {out_file} and re-run to continue.",
                           file=sys.stderr)
                     sys.exit(1)
+                verify_quotes(facts, chunk)
                 _atomic_write_text(out_file, json.dumps(facts, indent=2))
                 print(f"  Saved: {out_file.name} ({len(facts)} fact(s))\n")
             facts_by_chunk.append(facts)
@@ -459,10 +486,16 @@ def main() -> None:
     for f in all_facts:
         counts[f.get("type", "?")] = counts.get(f.get("type", "?"), 0) + 1
 
+    verified = sum(1 for f in all_facts
+                   if isinstance(f, dict) and f.get("quote_verified"))
+
     print("\n" + "=" * 60)
     print(f"Wrote {len(all_facts)} fact(s) to {output}")
     if counts:
         print("By type: " + ", ".join(f"{t}={n}" for t, n in sorted(counts.items())))
+    if all_facts:
+        print(f"Quotes verified: {verified}/{len(all_facts)} "
+              f"({len(all_facts) - verified} unverified — review those first)")
     print(f"Per-chunk extractions in: {extract_dir}")
 
 

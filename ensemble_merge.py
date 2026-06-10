@@ -83,6 +83,8 @@ def merge_facts(
                     matched["fact"] = text
                 if len(quote) > len(matched.get("source_quote", "")):
                     matched["source_quote"] = quote
+                    # The flag describes the quote — it travels with it.
+                    matched["quote_verified"] = fact.get("quote_verified")
                 if pass_name not in matched["passes"]:
                     matched["passes"].append(pass_name)
             else:
@@ -92,6 +94,7 @@ def merge_facts(
                         "subject": fact.get("subject", ""),
                         "fact": text,
                         "source_quote": quote,
+                        "quote_verified": fact.get("quote_verified"),
                         "passes": [pass_name],
                     }
                 )
@@ -193,12 +196,14 @@ def merge_facts_embed(
                     matched["subjects"].append(subj)
                 if len(quote) > len(matched.get("source_quote", "")):
                     matched["source_quote"] = quote
+                    matched["quote_verified"] = fact.get("quote_verified")
             else:
                 clusters.append({
                     "type": ftype,
                     "subject": subj,
                     "fact": text,            # anchor = longest, processed first
                     "source_quote": quote,
+                    "quote_verified": fact.get("quote_verified"),
                     "passes": [run_key],
                     "variants": [text] if text else [],
                     "subjects": [subj] if subj else [],
@@ -370,9 +375,13 @@ def main() -> None:
         pass_combo_counts[combo] = pass_combo_counts.get(combo, 0) + 1
         agree_hist[f["n_samples"]] = agree_hist.get(f["n_samples"], 0) + 1
 
+    verified = sum(1 for f in merged if f.get("quote_verified"))
+
     print(f"\nPer-lens facts (raw, summed over samples): {counts_by_lens}")
     print(f"Total merged (unique): {len(merged)}")
     print(f"By type:               {dict(sorted(counts_by_type.items()))}")
+    print(f"Quotes verified:       {verified}/{len(merged)} "
+          f"({len(merged) - verified} unverified — review those first)")
     if samples > 1:
         print(f"Agreement (n_samples -> #facts): {dict(sorted(agree_hist.items()))}")
     print("Pass coverage:")

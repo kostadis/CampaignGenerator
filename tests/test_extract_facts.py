@@ -98,6 +98,35 @@ def test_repair_leaves_valid_lines_untouched():
     assert ef._repair_unescaped_quotes(raw) == raw
 
 
+# ── verify_quotes ────────────────────────────────────────────────────────────
+
+def test_verify_quotes_flags_each_failure_mode():
+    chunk = "Daz crept into the vault.\nGrygum counted his coins twice."
+    facts = [
+        _fact("a") | {"source_quote": "crept into the vault"},      # verbatim
+        _fact("b") | {"source_quote": "Daz crept into the vault. Grygum"},
+        _fact("c") | {"source_quote": "Daz snuck into the vault"},  # paraphrase
+        _fact("d") | {"source_quote": "Daz crept ... his coins"},   # stitched
+        _fact("e") | {"source_quote": ""},                          # empty
+    ]
+    ef.verify_quotes(facts, chunk)
+    # b spans the newline — only the whitespace-normalized fallback passes it
+    assert [f["quote_verified"] for f in facts] == [True, True, False, False, False]
+
+
+def test_extract_one_chunk_caches_quote_verified(tmp_path):
+    chunk = "Daz crept into the vault."
+    raw = json.dumps([
+        _fact("real") | {"source_quote": "crept into the vault"},
+        _fact("fake") | {"source_quote": "Daz boldly strode in"},
+    ])
+    out = tmp_path / "facts_001.json"
+    facts, err = ef.extract_one_chunk(lambda c: raw, chunk, out)
+    assert err is None
+    cached = json.loads(out.read_text())
+    assert [f["quote_verified"] for f in cached] == [True, False]
+
+
 # ── run_parallel ─────────────────────────────────────────────────────────────
 
 def test_parallel_results_map_to_chunk_index(tmp_path):
@@ -133,7 +162,9 @@ def test_parallel_skips_cached_chunks(tmp_path):
                                         parallel=2)
     assert failures == []
     assert sorted(called) == ["a", "c"]
-    assert results[2] == seeded
+    # Cache hits pass through, gaining the quote_verified stamp (empty
+    # source_quote -> False)
+    assert results[2] == [seeded[0] | {"quote_verified": False}]
 
 
 def test_parallel_failure_does_not_cancel_others(tmp_path):
@@ -227,7 +258,7 @@ def test_cli_parallel_fully_cached(tmp_path):
          "--dgx-endpoint", "http://127.0.0.1:1"],  # unreachable: must not be hit
         capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
-    assert json.loads(out.read_text()) == seeded
+    assert json.loads(out.read_text()) == [seeded[0] | {"quote_verified": False}]
 
 
 def test_cli_rejects_parallel_zero(tmp_path):
