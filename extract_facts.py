@@ -103,13 +103,37 @@ def _salvage_objects(text: str) -> list[dict]:
     return objects
 
 
+_FIELD_LINE = re.compile(r'^(\s*"[a-z_]+"\s*:\s*")(.*)(",?\s*)$')
+
+
+def _repair_unescaped_quotes(text: str) -> str:
+    """Escape bare quotes inside single-line ``"field": "value"`` pairs.
+
+    The commonest local-model JSON fault: dialogue copied verbatim into a
+    string value without escaping its quotation marks. One bare quote flips
+    string-parity for everything after it, so even ``_salvage_objects``'s
+    string-aware scan desyncs and recovers nothing. Line-based repair works
+    because the models emit pretty-printed one-field-per-line output; lines
+    that don't match the pattern pass through untouched.
+    """
+    fixed = []
+    for line in text.splitlines():
+        m = _FIELD_LINE.match(line)
+        if m and '"' in m.group(2):
+            body = m.group(2).replace('\\"', '"').replace('"', '\\"')
+            line = m.group(1) + body + m.group(3)
+        fixed.append(line)
+    return "\n".join(fixed)
+
+
 def parse_facts_block(raw: str) -> list[dict]:
     """Extract a JSON facts array from a model response. Tolerant of fences/preamble.
 
     Local models sometimes wrap JSON in ```json fences, prepend a short
     explanation, or emit a single malformed object inside an otherwise valid
-    array. We strip fences, try a direct parse, then fall back to grabbing the
-    first ``[...]`` block, then fall back to per-object salvage.
+    array. We strip fences, try a direct parse, then retry with bare quotes
+    escaped, then fall back to grabbing the first ``[...]`` block, then fall
+    back to per-object salvage.
     """
     text = raw.strip()
     if text.startswith("```"):
@@ -118,6 +142,21 @@ def parse_facts_block(raw: str) -> list[dict]:
     try:
         data = json.loads(text)
     except json.JSONDecodeError:
+        repaired = _repair_unescaped_quotes(text)
+        if repaired != text:
+            try:
+                data = json.loads(repaired)
+            except json.JSONDecodeError:
+                text = repaired  # still better odds for the fallbacks below
+            else:
+                print("  WARN: parsed after escaping bare quotes in string "
+                      "values", file=sys.stderr)
+                if not isinstance(data, list):
+                    raise ValueError(
+                        f"expected JSON array at top level, "
+                        f"got {type(data).__name__}"
+                    )
+                return data
         match = re.search(r"\[.*\]", text, re.DOTALL)
         if match:
             try:

@@ -65,6 +65,39 @@ def test_parse_no_array_raises():
         ef.parse_facts_block("Sorry, I cannot extract facts from this text.")
 
 
+def test_parse_repairs_unescaped_dialogue_quotes():
+    # Real failure from runs/s1: dialogue copied into source_quote with bare
+    # quotes. The bare quote flips string-parity, so per-object salvage also
+    # recovers nothing — only the escape-repair retry saves the chunk.
+    raw = (
+        '[\n'
+        '  {\n'
+        '    "type": "npc",\n'
+        '    "subject": "Grygum",\n'
+        '    "fact": "Grygum is relieved.",\n'
+        '    "source_quote": "Well, that saves me money on potions," '
+        'said Grygum, relieved."\n'
+        '  },\n'
+        '  {\n'
+        '    "type": "npc",\n'
+        '    "subject": "Queenie",\n'
+        '    "fact": "Queenie woke around eight.",\n'
+        '    "source_quote": "She woke from her afternoon nap around eight"\n'
+        '  }\n'
+        ']'
+    )
+    facts = ef.parse_facts_block(raw)
+    assert [f["subject"] for f in facts] == ["Grygum", "Queenie"]
+    assert facts[0]["source_quote"] == (
+        'Well, that saves me money on potions," said Grygum, relieved.'
+    )
+
+
+def test_repair_leaves_valid_lines_untouched():
+    raw = '[{"type": "npc", "subject": "Daz", "fact": "f", "source_quote": ""}]'
+    assert ef._repair_unescaped_quotes(raw) == raw
+
+
 # ── run_parallel ─────────────────────────────────────────────────────────────
 
 def test_parallel_results_map_to_chunk_index(tmp_path):
