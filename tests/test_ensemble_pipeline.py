@@ -67,6 +67,24 @@ def test_extract_dry_run_writes_nothing(tmp_path):
     assert not (w / "manifest.json").exists()
 
 
+def test_extract_dry_run_shows_chunk_parallel(tmp_path):
+    w = _seed(tmp_path / "run")
+    r = _run(EXTRACT, "--workdir", w, "--plan", w / "plan.yaml",
+             "--dry-run", "--chunk-parallel", "3")
+    assert r.returncode == 0, r.stderr
+    assert "Chunk-parallel: 3 per endpoint" in r.stdout
+
+
+def test_driver_forwards_chunk_parallel(tmp_path):
+    # the driver echoes the generation command (ensemble.py prints it before
+    # running); --dry-run keeps this server-free
+    w = _seed(tmp_path / "run")
+    r = _run(DRIVER, "--workdir", w, "--plan", w / "plan.yaml",
+             "--dry-run", "--chunk-parallel", "3")
+    assert r.returncode == 0, r.stderr
+    assert "--chunk-parallel 3" in r.stdout
+
+
 def test_merge_subject_after_extract(tmp_path):
     w = _seed(tmp_path / "run")
     assert _run(EXTRACT, "--workdir", w, "--plan", w / "plan.yaml").returncode == 0

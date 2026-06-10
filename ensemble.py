@@ -59,6 +59,10 @@ def main() -> None:
     parser.add_argument("--endpoints", nargs="+", metavar="URL",
                         help="OpenAI-compatible endpoints to fan across "
                              "concurrently (default: $DGX_ENDPOINT).")
+    parser.add_argument("--chunk-parallel", type=int, default=4, metavar="N",
+                        help="In-flight chunk requests per endpoint (default 4, "
+                             "matching the Sparks' vLLM --max-num-seqs; 1 = old "
+                             "sequential behaviour).")
     parser.add_argument("--model", default=None, metavar="ID",
                         help="Model id sent to every endpoint (default: $DGX_MODEL).")
     parser.add_argument("--skip", action="append", default=[], metavar="NAME",
@@ -101,6 +105,7 @@ def main() -> None:
     extract_cmd += ["--samples", str(args.samples)]
     if args.endpoints:
         extract_cmd += ["--endpoints", *args.endpoints]
+    extract_cmd += ["--chunk-parallel", str(args.chunk_parallel)]
     if args.model:
         extract_cmd += ["--model", args.model]
     for s in args.skip:

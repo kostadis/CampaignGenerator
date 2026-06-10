@@ -3,7 +3,10 @@
 
 Runs ``extract_facts.py`` once per lens, fanned across endpoints with
 caching/speculation/timeouts, and writes each pass's facts plus a
-``manifest.json``. Merging is a SEPARATE step — see ``ensemble_merge.py``,
+``manifest.json``. The dispatcher keeps one unit per endpoint; within a unit,
+``--chunk-parallel`` (default 4, matching the Sparks' vLLM ``--max-num-seqs``)
+keeps that many chunk requests in flight, so vLLM's continuous batching is
+actually fed. Merging is a SEPARATE step — see ``ensemble_merge.py``,
 which consumes the manifest — so a generation can be re-merged (subject merge,
 nomic-embedding merge, different thresholds) without re-extracting. The
 ``ensemble.py`` driver runs both halves.
@@ -64,6 +67,28 @@ from pathlib import Path
 
 EXTRACT_SCRIPT = Path(__file__).resolve().parent / "extract_facts.py"
 
+
+def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
+                      extract_dir: Path, endpoint: str | None,
+                      model: str | None, chunk_parallel: int = 1) -> list[str]:
+    """Build the extract_facts.py command line for one unit. Pure function —
+    all the subprocess/bookkeeping mutation lives in run_unit."""
+    cmd = [
+        sys.executable,
+        str(EXTRACT_SCRIPT),
+        str(input_path),
+        "--output", str(output_path),
+        "--extract-dir", str(extract_dir),
+        "--chunk-size", str(pass_spec["chunk_size"]),
+        "--agent", pass_spec["agent"],
+        "--parallel", str(chunk_parallel),
+    ]
+    if endpoint:
+        cmd += ["--dgx-endpoint", endpoint]
+    if model:
+        cmd += ["--model", model]
+    return cmd
+
 PASSES = [
     {"name": "small",       "chunk_size": 6000,  "agent": "extract_facts"},
     {"name": "large",       "chunk_size": 15000, "agent": "extract_facts"},
@@ -77,6 +102,7 @@ def run_unit(
     input_path: Path, pass_spec: dict, k: int, samples: int, workdir: Path,
     endpoint: str | None, model: str | None,
     register_proc=None, is_cancelled=None, timeout: float | None = None,
+    chunk_parallel: int = 1,
 ) -> tuple[str, list[dict] | None, str | None, bool]:
     """Run ONE (lens, sample) unit on `endpoint`.
 
@@ -112,19 +138,8 @@ def run_unit(
         except json.JSONDecodeError:
             pass  # corrupt/partial — regenerate below
 
-    cmd = [
-        sys.executable,
-        str(EXTRACT_SCRIPT),
-        str(input_path),
-        "--output", str(output_path),
-        "--extract-dir", str(extract_dir),
-        "--chunk-size", str(pass_spec["chunk_size"]),
-        "--agent", pass_spec["agent"],
-    ]
-    if endpoint:
-        cmd += ["--dgx-endpoint", endpoint]
-    if model:
-        cmd += ["--model", model]
+    cmd = build_extract_cmd(input_path, pass_spec, output_path, extract_dir,
+                            endpoint, model, chunk_parallel)
 
     where = endpoint or "default endpoint"
     if is_cancelled and is_cancelled():
@@ -247,6 +262,14 @@ def main() -> None:
                              "else extract_facts.py's default). All endpoints must "
                              "serve this same model id, since the merge treats "
                              "their facts uniformly.")
+    parser.add_argument("--chunk-parallel", type=int, default=4, metavar="N",
+                        help="In-flight chunk requests per endpoint, forwarded "
+                             "to each extract_facts.py as --parallel (default "
+                             "4). The dispatcher runs one unit per endpoint, so "
+                             "this IS the per-Spark concurrency; the Sparks "
+                             "serve vLLM --max-num-seqs 4, so 4 saturates a box "
+                             "without server-side queueing. Use 1 for the old "
+                             "sequential behaviour.")
     parser.add_argument("--speculative", action=argparse.BooleanOptionalAction,
                         default=True,
                         help="Speculative re-execution / straggler mitigation "
@@ -270,7 +293,9 @@ def main() -> None:
                              "max_tokens usually recovers on a fresh connection, "
                              "and a re-queued unit can land on the healthy box. "
                              "After --unit-retries timeouts the unit fails the run. "
-                             "0 disables the cap (unbounded — the old behaviour).")
+                             "0 disables the cap (unbounded — the old behaviour). "
+                             "With --chunk-parallel 4 healthy units finish ~4x "
+                             "sooner; ~300 is reasonable for attended runs.")
     parser.add_argument("--unit-retries", type=int, default=3, metavar="N",
                         help="Max times a single unit may time out and be re-queued "
                              "before it fails the run (default 3).")
@@ -380,6 +405,7 @@ def main() -> None:
     print(f"Endpoints: {', '.join(e or 'default' for e in endpoints)}")
     print(f"Units:    {len(units)} ({len(active_passes)} passes x {args.samples} "
           f"sample(s)) across {len(endpoints)} endpoint(s)")
+    print(f"Chunk-parallel: {args.chunk_parallel} per endpoint")
     print("=" * 70)
     if args.dry_run:
         print("[dry-run] plan resolved; no extraction performed.")
@@ -478,7 +504,7 @@ def main() -> None:
                 _, facts, err, timed_out = run_unit(
                     pass_spec["input_path"], pass_spec, k, args.samples, workdir, endpoint, model,
                     register_proc=register, is_cancelled=lambda _key=key: _key in cancelled,
-                    timeout=unit_timeout)
+                    timeout=unit_timeout, chunk_parallel=args.chunk_parallel)
             except Exception as e:  # a worker must never die silently
                 facts, err, timed_out = None, repr(e), False
 
