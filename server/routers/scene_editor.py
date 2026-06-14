@@ -611,9 +611,9 @@ def _llm_env() -> dict[str, str]:
 
     Returned dict is merged into the subprocess env by stream_subprocess.
     Empty dict (backend == "anthropic") means "no overrides — Anthropic API
-    via the default code path". Only narrate + scrub routes call this; the
-    Stage 1/2/Plan routes pass nothing because their LLM paths use tool-use
-    and the OpenAI-compat adapter does not support tools.
+    via the default code path". All LLM-calling routes (enhance, extract,
+    narrate, scrub) pass this; plan routes are excluded because their LLM
+    paths use tool-use and the OpenAI-compat adapter does not support tools.
     """
     backend = CONFIG.get("backend")
     if backend == "claude-code":
@@ -869,7 +869,7 @@ async def api_enhance(batch: int = 0):
 
     return StreamingResponse(
         stream_subprocess(result, cwd=CONFIG.get("work_dir"),
-                          on_complete=_done),
+                          env_extra=_llm_env(), on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
@@ -899,7 +899,7 @@ async def api_extract(batch: int = 0, force: int = 0):
 
     return StreamingResponse(
         stream_subprocess(result, cwd=CONFIG.get("work_dir"),
-                          on_complete=_done),
+                          env_extra=_llm_env(), on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
