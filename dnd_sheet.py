@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 """Convert a D&D Beyond character sheet PDF into a structured markdown document.
 
-Uses the Claude API's document vision to read the PDF directly — no text
-extraction library required. Works with D&D Beyond's rendered/visual PDFs.
+Extracts text via PyMuPDF (no vision required) and sends it to Claude as a
+plain-text prompt. Works with the claude-code (subscription) backend.
 
 Usage:
   python dnd_sheet.py Soma.pdf --output soma.md
-  python dnd_sheet.py Soma.pdf         # prints to stdout
+  python dnd_sheet.py Soma.pdf                    # writes to doc/
   python dnd_sheet.py *.pdf --output-dir ~/campaigns/Phandalin/characters/
 """
 
 import argparse
-import base64
 import sys
 from pathlib import Path
+
+import fitz  # pymupdf
 
 from campaignlib import make_client, call_api, DEFAULT_MODEL
 
@@ -94,23 +95,20 @@ Rules:
 """
 
 
+def extract_text(pdf_path: Path) -> str:
+    doc = fitz.open(str(pdf_path))
+    pages = [page.get_text() for page in doc]
+    doc.close()
+    return "\n\n".join(pages)
+
+
 def pdf_to_markdown(client, pdf_path: Path, model: str) -> str:
-    pdf_data = base64.standard_b64encode(pdf_path.read_bytes()).decode("utf-8")
-    content = [
-        {
-            "type": "document",
-            "source": {
-                "type": "base64",
-                "media_type": "application/pdf",
-                "data": pdf_data,
-            },
-        },
-        {
-            "type": "text",
-            "text": "Please convert this D&D Beyond character sheet into the structured markdown format.",
-        },
-    ]
-    return call_api(client, SYSTEM_PROMPT, content, model)
+    text = extract_text(pdf_path)
+    user_prompt = (
+        "Please convert this D&D Beyond character sheet into the structured "
+        f"markdown format.\n\n{text}"
+    )
+    return call_api(client, SYSTEM_PROMPT, user_prompt, model)
 
 
 def main() -> None:
@@ -120,16 +118,12 @@ def main() -> None:
     parser.add_argument("pdfs", nargs="+", metavar="PDF",
                         help="PDF file(s) to convert")
     parser.add_argument("--output", "-o", metavar="FILE",
-                        help="Output file (single PDF only)")
-    parser.add_argument("--output-dir", metavar="DIR",
-                        help="Output directory for multiple PDFs (uses <name>.md as filename)")
+                        help="Output file (single PDF only). Overrides --output-dir.")
+    parser.add_argument("--output-dir", metavar="DIR", default="doc",
+                        help="Output directory (default: doc). One .md per PDF.")
     parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Claude model to use")
     args = parser.parse_args()
-
-    if args.output and len(args.pdfs) > 1:
-        print("Error: --output can only be used with a single PDF. Use --output-dir for multiple.", file=sys.stderr)
-        sys.exit(1)
 
     client = make_client()
 
@@ -142,18 +136,16 @@ def main() -> None:
         print(f"Converting {pdf_path.name}...", file=sys.stderr)
         markdown = pdf_to_markdown(client, pdf_path, args.model)
 
-        if args.output:
+        if args.output and len(args.pdfs) == 1:
             out = Path(args.output).expanduser()
+            out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(markdown.strip() + "\n", encoding="utf-8")
-            print(f"Saved to: {out}", file=sys.stderr)
-        elif args.output_dir:
+        else:
             out_dir = Path(args.output_dir).expanduser()
             out_dir.mkdir(parents=True, exist_ok=True)
             out = out_dir / (pdf_path.stem + ".md")
             out.write_text(markdown.strip() + "\n", encoding="utf-8")
-            print(f"Saved to: {out}", file=sys.stderr)
-        else:
-            print(markdown)
+        print(f"Saved to: {out}", file=sys.stderr)
 
 
 if __name__ == "__main__":
