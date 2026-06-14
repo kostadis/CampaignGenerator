@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 
+from campaignlib import DEFAULT_MODEL
 from server.subprocess_runner import python_exe, stream_subprocess
 
 router = APIRouter()
@@ -32,7 +33,7 @@ async def run_dnd_sheet(
     pdfs: list[str] = Query(default=[]),
     output: str = "",
     output_dir: str = "",
-    model: str = "claude-sonnet-4-6",
+    model: str = DEFAULT_MODEL,
 ):
     cmd = [python_exe(), str(SCRIPT_DIR / "dnd_sheet.py")]
 
@@ -57,7 +58,7 @@ async def run_dnd_sheet(
 async def run_make_tracking(
     input: str = "",
     output: str = "",
-    model: str = "claude-sonnet-4-6",
+    model: str = DEFAULT_MODEL,
 ):
     cmd = [python_exe(), str(SCRIPT_DIR / "make_tracking.py")]
 
