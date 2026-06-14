@@ -206,7 +206,7 @@ def expand_globs(patterns: list[str]) -> list[Path]:
 
 def session_label(path: Path) -> str:
     """A human-readable label for a merged.json — prefer its parent dir name."""
-    if path.name in ("merged.json", "facts.json") and path.parent.name:
+    if path.name in ("merged.json", "merged_embed.json", "facts.json") and path.parent.name:
         return path.parent.name
     return path.stem
 
@@ -339,8 +339,13 @@ def main() -> None:
     parser.add_argument("--max-tokens", type=int, default=16000,
                         help="max_tokens for the synthesis call (default: 16000).")
     parser.add_argument("--dump-input", default=None, metavar="FILE",
-                        help="Also write the rendered user prompt sent to Claude, "
+                        help="Also write the rendered user prompt sent to Claude "
+                             "(plus FILE.system.md with the system prompt), "
                              "for prompt debugging without spending tokens.")
+    parser.add_argument("--dump-only", action="store_true",
+                        help="With --dump-input: stop after writing the dump, "
+                             "making no API call (e.g. to run the synthesis "
+                             "through `claude -p` instead).")
     args = parser.parse_args()
 
     corpus_paths = expand_globs(args.corpus) if args.corpus else []
@@ -437,10 +442,17 @@ def main() -> None:
         system_prompt += "\n\n" + INVENTORY_PREAMBLE + inventory_text
 
     if args.dump_input:
-        Path(args.dump_input).expanduser().resolve().write_text(
-            user_prompt, encoding="utf-8"
-        )
-        print(f"Dumped synthesis input: {args.dump_input}")
+        dump_path = Path(args.dump_input).expanduser().resolve()
+        dump_path.write_text(user_prompt, encoding="utf-8")
+        # System prompt alongside, so external runners (`claude -p
+        # --system-prompt ...`) can reproduce the exact call.
+        system_path = dump_path.with_suffix(dump_path.suffix + ".system.md")
+        system_path.write_text(system_prompt, encoding="utf-8")
+        print(f"Dumped synthesis input: {dump_path}")
+        print(f"Dumped system prompt:   {system_path}")
+        if args.dump_only:
+            print("[--dump-only: stopping before the API call]")
+            return
 
     inv_note = f" | inventory: {inventory_path.name}" if inventory_text else ""
     pc_note = f" | party: {len(party_names)} PCs" if party_names else ""
