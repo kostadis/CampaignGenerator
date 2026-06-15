@@ -77,7 +77,9 @@ async def stream_subprocess(
     if env_extra:
         env.update(env_extra)
 
-    cmd_display = " \\\n  ".join(cmd)
+    env_prefix = " \\\n  ".join(f"{k}={v}" for k, v in (env_extra or {}).items())
+    cmd_parts = ([env_prefix] if env_prefix else []) + list(cmd)
+    cmd_display = " \\\n  ".join(cmd_parts)
     yield f"data: {json.dumps(f'$ {cmd_display}\\n\\n')}\n\n"
 
     proc = await asyncio.create_subprocess_exec(
