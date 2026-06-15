@@ -133,6 +133,10 @@ def main() -> None:
     full_doc = "\n\n".join(parts) + "\n"
 
     out_path = Path(args.output).expanduser().resolve()
+    if out_path.exists():
+        print(f"Error: output file already exists: {out_path}\n"
+              f"Delete it or choose a different path.", file=sys.stderr)
+        sys.exit(1)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(full_doc, encoding="utf-8")
     scrubbed_count = sum(1 for _, _, _, p in scenes if p.name.endswith(".scrubbed.md"))
