@@ -23,3 +23,7 @@ server*.pid
 # MemPalace per-project files (issue #185)
 mempalace.yaml
 entities.json
+
+# Batch run output trees
+runs/
+storm-giant/
