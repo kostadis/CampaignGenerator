@@ -70,7 +70,25 @@ python apply_ingest_manifest.py --only 1,3 # 1-based entry selection
 
 The palace is the **retrieval** layer (semantic drawer search, grounding for render pipelines). It is not built for "read the whole adventure" or "summarise this book without burning tokens on mechanics." For those use cases the campaign also exposes a **navigation** layer: a per-campaign instance of the `5etools-mcp` server, scoped to exactly the WotC content + purchased PDFs + homebrew this campaign uses.
 
-Scope is declared in two sibling files:
+### New campaign setup
+
+```bash
+# 1. Create refs.yaml in your campaign directory (see format below)
+#    At minimum: canonical: all  (no refs: block needed to start)
+
+# 2. Generate refs.local.yaml with detected defaults, then edit paths to match your machine
+python launch_5etools_mcp.py --campaign-dir . --init-local
+
+# 3. Verify what the resolver sees before launching
+python launch_5etools_mcp.py --campaign-dir . --status
+
+# 4. Launch the MCP server
+python launch_5etools_mcp.py --campaign-dir .
+```
+
+`refs.yaml` is git-tracked and lives at the campaign root alongside `config.yaml`. `refs.local.yaml` is git-ignored (paths differ per machine). You need `refs.yaml` to exist before running `--init-local`.
+
+Scope is declared in two sibling files (see [`refs_yaml_reference.md`](refs_yaml_reference.md) for the full field reference):
 
 ```yaml
 # <campaign-dir>/refs.yaml — git-tracked, portable across machines

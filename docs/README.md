@@ -15,6 +15,8 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [Post-session umbrella](cli/post_session.md) — short "which entry point matches how I want to work" page.
 - [gm-assist anchor](cli/gmassist_anchor.md) — why the gm-assist document is the authoritative event skeleton.
 - [Grounding documents](cli/grounding_docs.md) — when and how to refresh `campaign_state`, `world_state`, `planning`, `party`.
+- [Ensemble workflow](cli/ensemble_workflow.md) — end-to-end: chapters → `ensemble_batch.py` → `facts_to_state.py` → synthesis (API + subscription paths); Phandalin worked example. **Start here for grounding-doc refreshes.**
+- [Ensemble extraction](cli/ensemble_extraction.md) — single-file and multi-file `ensemble.py` deep dive; `--plan` YAML format, key flags, output layout.
 - [planning.py workflow](cli/planning_pipeline.md) — the two-phase build-dossiers → synthesize design.
 
 ## Web UI
@@ -29,6 +31,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [RLM pipeline](rlm/rlm_pipeline.md) — how retrieval feeds approved proposals into the render pipelines.
 - [Retrieval architecture](rlm/retrieval_architecture.md) — palace internals, hierarchical descent, dirty-flag index lifecycle.
 - [Dossier aliases](rlm/dossier_aliases.md) — dossier merge rules and cross-pipeline alias propagation.
+- [refs.yaml reference](rlm/refs_yaml_reference.md) — full field reference for refs.yaml and refs.local.yaml (5etools MCP scope).
 
 ## For players
 

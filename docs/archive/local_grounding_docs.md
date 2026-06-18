@@ -137,3 +137,59 @@ for the full set. New: extract once locally (~9M local tokens, ~free) +
 per-doc synthesis ≈ **~280K metered tokens total** (world_state ~128K,
 campaign_state ~50K, party ~15K, planning ~85K, npcs 0). ~10–12× less API; the
 gap widens with each additional doc, since extraction is shared not repeated.
+
+## Second run — Phandalin (2026-06-15)
+
+Corpus: `docs/ensemble/state_dossiers/` — 344 dossiers from a 122B-model
+ensemble run over the full Phandalin chapter bible (`docs/ensemble/chapters.md`,
+825 KB). Dossiers produced by `facts_to_state.py`; run details in
+`docs/ensemble/state_dossiers.log`.
+
+**Dossier distribution:**
+
+| min-facts | dossiers |
+|-----------|----------|
+| ≥5  | 193 |
+| ≥10 | 88  |
+| ≥15 | 53  |
+| ≥20 | 37  |
+| ≥30 | 21  |
+
+Significance floor chosen: **≥10 facts** (88 entities, ~26% of corpus) — broad
+enough for a world_state that covers factions, recurring locations, and minor
+NPCs without drowning synthesis in 3-fact item stubs.
+
+**Grounding inputs available:**
+
+- `config/party.yaml` — PC roster
+- Backstories: `docs/Backstory - Brewbarry.md`, `docs/Backstory - Valphine Sotorra.md`, `docs/Soma - Backstory.md`
+- No threads file (no `facts_to_state.py --types thread --render-only` pass run yet)
+- No module inventory file
+
+**world_state command** (run from campaign root `~/Phandalin/Phandalin/`):
+
+```bash
+python ~/src/CampaignGenerator/synthesise_world_state.py \
+  --dossiers 'docs/ensemble/state_dossiers/*.md' \
+  --dossier-min-facts 10 \
+  --party config/party.yaml \
+  --backstories 'docs/Backstory - Brewbarry.md' \
+               'docs/Backstory - Valphine Sotorra.md' \
+               'docs/Soma - Backstory.md' \
+  --output docs/world_state_draft.md \
+  --model claude-opus-4-8
+```
+
+Output goes to `docs/world_state_draft.md` (never directly to `world_state.md`).
+Diff and promote by hand after review.
+
+**Key difference from OotA run:** no `--threads` file fed; thread coverage comes
+only from the dossier bodies. If thread coverage looks thin, run
+`facts_to_state.py --types thread --render-only` against the ensemble corpus and
+add `--threads <file>` before re-synthesising.
+
+**Why `synthesise_world_state.py` not `distill.py --synthesize-only`:**
+`distill --synthesize-only` expects files named `extract_*.md` in the extract-dir.
+Dossier files use entity-slug names (`npc_valphine.md`, etc.) and won't be picked
+up. Use `synthesise_world_state.py --dossiers` for any pre-aggregated dossier
+corpus.

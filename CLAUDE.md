@@ -44,6 +44,8 @@ mempalace_client.py         # Writes via MemPalace MCP
 mcp_server.py               # MCP tools: rpg_search, propose_dossier, suggest_conversion
 convert_book.py             # PDF → 5etools JSON (pdf-translators)
 fivetools_ingest.py         # 5etools JSON → MemPalace drawers
+resolve_refs.py             # Resolve refs.yaml + refs.local.yaml → concrete JSON paths
+launch_5etools_mcp.py       # Per-campaign 5etools MCP server launcher (reads refs.yaml)
 
 # ── Config & docs ──
 config/
@@ -66,9 +68,12 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/web/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |
 | `docs/rlm/dossier_aliases.md` | Dossier merge rules and cross-pipeline alias propagation |
 | `docs/rlm/rlm_pipeline.md` | Three-state retrieval, ingest flow, MCP tools, palace/rpglib path resolution |
+| `docs/rlm/refs_yaml_reference.md` | Full field reference for `refs.yaml` + `refs.local.yaml` (5etools MCP scope declaration) |
 | `docs/rlm/rlm_architecture.md` | RLM architecture deep dive — three-pile model, MCP surface, retrieval contract |
 | `docs/rlm/retrieval_architecture.md` | Palace internals — hierarchical descent algorithm, dirty-flag index lifecycle, 100% recall guarantee, failure modes, operational checklist |
 | `docs/cli/session_prep_workflow.md` | End-to-end session-prep walkthrough |
+| `docs/cli/ensemble_extraction.md` | `ensemble.py` how-to: single-file, multi-file `--plan` YAML, key flags, output layout |
+| `docs/cli/ensemble_workflow.md` | End-to-end ensemble workflow: chapters → `ensemble_batch.py` → `facts_to_state.py` → synthesis (API + subscription paths); Phandalin worked example |
 | `docs/README.md` | Full doc index — every doc, organised by audience |
 
 ## Critical rules (apply to every task)
