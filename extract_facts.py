@@ -360,6 +360,12 @@ def main() -> None:
     parser.add_argument("--split-chapters", metavar="PREFIX",
                         help="Split at lines starting with PREFIX (e.g. '# Chapter') "
                              "instead of by character count")
+    parser.add_argument("--annotate-pov", action="store_true",
+                        help="Prepend carry-forward speaker/date context to chunks "
+                             "that don't open with a heading. Use when the source "
+                             "document uses ### Speaker sections (e.g. chapter files) "
+                             "to prevent the LLM losing track of who is speaking "
+                             "across chunk boundaries.")
     parser.add_argument("--extract-dir", metavar="DIR", default=None,
                         help="Where to save per-chunk JSON files "
                              "(default: <output_dir>/fact_extractions/). Existing "
@@ -409,7 +415,8 @@ def main() -> None:
     print("=" * 60)
 
     client = make_client(endpoint=args.dgx_endpoint, model_override=args.model)
-    chunks, label = prepare_chunks(text, args.chunk_size, args.split_chapters)
+    chunks, label = prepare_chunks(text, args.chunk_size, args.split_chapters,
+                                   annotate_pov=args.annotate_pov)
     extract_dir.mkdir(parents=True, exist_ok=True)
 
     all_facts: list[dict] = []

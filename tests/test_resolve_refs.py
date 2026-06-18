@@ -172,6 +172,17 @@ class TestRefsListValidation:
             ]
         )
 
+    def test_library_on_non_rpglib_raises(self):
+        with pytest.raises(SystemExit, match="only valid on 'rpglib:'"):
+            rr._validate_refs_list([{"path": "/c.json", "library": "drivethrurpg"}])
+
+    def test_library_empty_string_raises(self):
+        with pytest.raises(SystemExit, match="non-empty string"):
+            rr._validate_refs_list([{"rpglib": "a.pdf", "library": ""}])
+
+    def test_library_valid_string_ok(self):
+        rr._validate_refs_list([{"rpglib": "a.pdf", "library": "kickstarter"}])
+
 
 # ── Root resolution & precedence ─────────────────────────────────────────
 
@@ -334,6 +345,47 @@ class TestRpglibResolution:
         )
         assert ref.book_id == 42
         assert ref.note == "hi"
+
+    def test_named_library_root_selects_correct_directory(self, tmp_path: Path):
+        # DriveThru root has the PDF; Kickstarter root does not.
+        dt = tmp_path / "drivethrurpg"
+        ks = tmp_path / "kickstarter"
+        (dt / "WotC").mkdir(parents=True)
+        (dt / "WotC" / "T14.json").write_text("{}", encoding="utf-8")
+        ks.mkdir()
+
+        roots = {
+            "rpg_library_drivethrurpg": rr.ResolvedRoot(
+                "rpg_library_drivethrurpg", dt, "refs.local.yaml"
+            ),
+            "rpg_library_kickstarter": rr.ResolvedRoot(
+                "rpg_library_kickstarter", ks, "refs.local.yaml"
+            ),
+        }
+        ref = rr._resolve_rpglib_entry(
+            {"rpglib": "WotC/T14.pdf", "library": "drivethrurpg"}, roots
+        )
+        assert ref.json_path == (dt / "WotC" / "T14.json").resolve()
+
+    def test_named_library_root_missing_sidecar_raises(self, tmp_path: Path):
+        ks = tmp_path / "kickstarter"
+        ks.mkdir()
+        roots = {
+            "rpg_library_kickstarter": rr.ResolvedRoot(
+                "rpg_library_kickstarter", ks, "refs.local.yaml"
+            )
+        }
+        with pytest.raises(SystemExit, match="no JSON sidecar"):
+            rr._resolve_rpglib_entry(
+                {"rpglib": "SomeModule.pdf", "library": "kickstarter"}, roots
+            )
+
+    def test_rpglib_root_name_no_library(self):
+        assert rr._rpglib_root_name({"rpglib": "a.pdf"}) == "rpg_library"
+
+    def test_rpglib_root_name_with_library(self):
+        assert rr._rpglib_root_name({"rpglib": "a.pdf", "library": "drivethrurpg"}) == "rpg_library_drivethrurpg"
+        assert rr._rpglib_root_name({"rpglib": "a.pdf", "library": "kickstarter"}) == "rpg_library_kickstarter"
 
 
 # ── homebrew_private resolution ──────────────────────────────────────────

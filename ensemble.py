@@ -63,6 +63,10 @@ def main() -> None:
                         help="In-flight chunk requests per endpoint (default 4, "
                              "matching the Sparks' vLLM --max-num-seqs; 1 = old "
                              "sequential behaviour).")
+    parser.add_argument("--pass-parallel", type=int, default=None, metavar="N",
+                        help="Passes to run concurrently (default: one per endpoint). "
+                             "Set to the number of passes (e.g. 5) to parallelise "
+                             "all passes on a single endpoint.")
     parser.add_argument("--model", default=None, metavar="ID",
                         help="Model id sent to every endpoint (default: $DGX_MODEL).")
     parser.add_argument("--skip", action="append", default=[], metavar="NAME",
@@ -106,6 +110,8 @@ def main() -> None:
     if args.endpoints:
         extract_cmd += ["--endpoints", *args.endpoints]
     extract_cmd += ["--chunk-parallel", str(args.chunk_parallel)]
+    if args.pass_parallel is not None:
+        extract_cmd += ["--pass-parallel", str(args.pass_parallel)]
     if args.model:
         extract_cmd += ["--model", args.model]
     for s in args.skip:

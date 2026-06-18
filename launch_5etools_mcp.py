@@ -282,8 +282,14 @@ def _filter_index_and_symlink(
 # ── Build: homebrew root ─────────────────────────────────────────────────
 
 
-def _build_homebrew(hb_dir: Path, refs: list[rr.ResolvedRef]) -> None:
-    """Materialise the campaign's non-canonical refs into a 5etools-style layout."""
+def _build_homebrew(
+    hb_dir: Path, refs: list[rr.ResolvedRef]
+) -> list[dict]:
+    """Materialise the campaign's non-canonical refs into a 5etools-style layout.
+
+    Returns a list of ``{note, source_id, kind}`` dicts for every ref that
+    resolved to a known source code — used to write ``refs-index.json``.
+    """
     hb_dir.mkdir(parents=True)
 
     # We need to group refs by shape so we can synthesize the right index files.
@@ -291,13 +297,37 @@ def _build_homebrew(hb_dir: Path, refs: list[rr.ResolvedRef]) -> None:
     books_meta: list[dict] = []  # for homebrew/books.json
     bestiary_index: dict[str, str] = {}  # for homebrew/bestiary/index.json
     spells_index: dict[str, str] = {}  # for homebrew/spells/index.json
+    refs_index: list[dict] = []
 
     for ref in refs:
         shape, source_id = _peek_shape(ref.json_path)
+        raw = json.loads(ref.json_path.read_text(encoding="utf-8"))
         if shape == "adventure_meta":
-            adventures_meta.extend(json.loads(ref.json_path.read_text())["adventure"])
+            adventures_meta.extend(raw["adventure"])
+            # Combined file: adventureData is [{id, source, data: [chapters...]}, ...].
+            for ad_entry in raw.get("adventureData") or []:
+                src = ad_entry.get("id") or ad_entry.get("source") or source_id
+                chapters = ad_entry.get("data") or []
+                if src and chapters:
+                    adv_dir = hb_dir / "adventure"
+                    adv_dir.mkdir(exist_ok=True)
+                    (adv_dir / f"adventure-{src.lower()}.json").write_text(
+                        json.dumps({"data": chapters}, indent="\t"), encoding="utf-8"
+                    )
         elif shape == "book_meta":
-            books_meta.extend(json.loads(ref.json_path.read_text())["book"])
+            books_meta.extend(raw["book"])
+            # Combined file: bookData is [{id, source, data: [chapters...]}, ...].
+            # Extract the chapters for each source and write them as separate
+            # book/book-<src>.json content files with {data: [chapters...]}.
+            for bd_entry in raw.get("bookData") or []:
+                src = bd_entry.get("id") or bd_entry.get("source") or source_id
+                chapters = bd_entry.get("data") or []
+                if src and chapters:
+                    book_dir = hb_dir / "book"
+                    book_dir.mkdir(exist_ok=True)
+                    (book_dir / f"book-{src.lower()}.json").write_text(
+                        json.dumps({"data": chapters}, indent="\t"), encoding="utf-8"
+                    )
         elif shape == "adventure_content":
             src_code = source_id or ref.json_path.stem
             target = hb_dir / "adventure" / f"adventure-{src_code.lower()}.json"
@@ -326,6 +356,11 @@ def _build_homebrew(hb_dir: Path, refs: list[rr.ResolvedRef]) -> None:
             (hb_dir / "loose").mkdir(exist_ok=True)
             (hb_dir / "loose" / ref.json_path.name).symlink_to(ref.json_path.resolve())
 
+        if source_id:
+            refs_index.append(
+                {"note": ref.note or ref.abstract, "source_id": source_id, "kind": ref.kind}
+            )
+
     # Write the synthesized indices. Always write them — the MCP loader expects
     # adventures.json / books.json at the root.
     (hb_dir / "adventures.json").write_text(
@@ -343,8 +378,13 @@ def _build_homebrew(hb_dir: Path, refs: list[rr.ResolvedRef]) -> None:
             json.dumps(spells_index, indent="\t"), encoding="utf-8"
         )
 
+    return refs_index
+
 
 # ── Build orchestration ──────────────────────────────────────────────────
+
+
+REFS_INDEX_FILENAME = "refs-index.json"
 
 
 def build_runtime_tree(runtime: Path, scope: rr.ResolvedScope) -> None:
@@ -355,7 +395,10 @@ def build_runtime_tree(runtime: Path, scope: rr.ResolvedScope) -> None:
         shutil.rmtree(runtime)
     runtime.mkdir(parents=True)
     _build_canonical_data(runtime / "data", scope)
-    _build_homebrew(runtime / "homebrew", scope.refs)
+    refs_index = _build_homebrew(runtime / "homebrew", scope.refs)
+    (runtime / REFS_INDEX_FILENAME).write_text(
+        json.dumps(refs_index, indent="\t"), encoding="utf-8"
+    )
     _write_sidecar(runtime, scope)
 
 
@@ -427,6 +470,7 @@ def cmd_apply(
     env = os.environ.copy()
     env["DATA_DIRS"] = f"{runtime / 'data'}:{runtime / 'homebrew'}"
     env["CAMPAIGN_DIR"] = str(scope.refs_path.parent)
+    env["REFS_INDEX"] = str(runtime / REFS_INDEX_FILENAME)
     env.update(extra_env)
     if no_exec:
         print(f"# Runtime built at {runtime}")

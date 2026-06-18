@@ -87,6 +87,8 @@ def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
         cmd += ["--dgx-endpoint", endpoint]
     if model:
         cmd += ["--model", model]
+    if pass_spec.get("annotate_pov"):
+        cmd += ["--annotate-pov"]
     return cmd
 
 PASSES = [
@@ -270,6 +272,13 @@ def main() -> None:
                              "serve vLLM --max-num-seqs 4, so 4 saturates a box "
                              "without server-side queueing. Use 1 for the old "
                              "sequential behaviour.")
+    parser.add_argument("--pass-parallel", type=int, default=None, metavar="N",
+                        help="Number of passes to run concurrently (default: "
+                             "one per endpoint). Set higher than the endpoint "
+                             "count to parallelise passes on a single endpoint — "
+                             "e.g. --pass-parallel 5 runs all five passes of a "
+                             "chapter simultaneously, each sending --chunk-parallel "
+                             "chunks to the same vLLM server.")
     parser.add_argument("--speculative", action=argparse.BooleanOptionalAction,
                         default=True,
                         help="Speculative re-execution / straggler mitigation "
@@ -348,6 +357,7 @@ def main() -> None:
                 "name": name,
                 "agent": p.get("agent", "extract_facts"),
                 "chunk_size": int(p.get("chunk_size", 15000)),
+                "annotate_pov": bool(p.get("annotate_pov", False)),
                 "input_path": ip,
             })
     else:
@@ -545,8 +555,9 @@ def main() -> None:
                                 pass
 
     t0 = time.time()
-    threads = [threading.Thread(target=worker, args=(ep,), daemon=True)
-               for ep in endpoints]
+    n_workers = args.pass_parallel if args.pass_parallel is not None else len(endpoints)
+    threads = [threading.Thread(target=worker, args=(endpoints[i % len(endpoints)],), daemon=True)
+               for i in range(n_workers)]
     for t in threads:
         t.start()
     for t in threads:

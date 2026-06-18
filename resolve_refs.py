@@ -159,10 +159,13 @@ def resolve_roots(local: dict, required: set[str]) -> dict[str, ResolvedRoot]:
         missing.append(name)
 
     if missing:
-        hint = ", ".join(
-            f"set 'roots.{n}:' in refs.local.yaml or {_ROOT_ENV_VARS.get(n, '?')}"
-            for n in missing
-        )
+        def _hint(n: str) -> str:
+            env = _ROOT_ENV_VARS.get(n)
+            if env:
+                return f"set 'roots.{n}:' in refs.local.yaml or {env}"
+            return f"set 'roots.{n}:' in refs.local.yaml"
+
+        hint = ", ".join(_hint(n) for n in missing)
         raise SystemExit(
             f"resolve_refs: required root(s) not configured: {missing}. {hint}"
         )
@@ -273,9 +276,21 @@ def _pdf_to_json_sidecar(pdf_path: Path) -> Path:
     return pdf_path.parent / f"{pdf_path.stem}.json"
 
 
+def _rpglib_root_name(entry: dict) -> str:
+    """Return the root name for an rpglib entry.
+
+    If the entry has a ``library:`` key, the root name is
+    ``rpg_library_<library>`` (e.g. ``rpg_library_drivethrurpg``).
+    Without it, falls back to the plain ``rpg_library`` root.
+    """
+    library = entry.get("library")
+    return f"rpg_library_{library}" if library else "rpg_library"
+
+
 def _resolve_rpglib_entry(entry: dict, roots: dict[str, ResolvedRoot]) -> ResolvedRef:
     rel = str(entry["rpglib"])
-    rpg_root = roots["rpg_library"].path
+    root_name = _rpglib_root_name(entry)
+    rpg_root = roots[root_name].path
     pdf_path = (rpg_root / rel).resolve()
     json_path = _pdf_to_json_sidecar(pdf_path)
     if not json_path.is_file():
@@ -357,7 +372,7 @@ def _required_roots(refs_list: list[dict], canonical_mode: str) -> set[str]:
         required.add("fivetools_data")
     for entry in refs_list:
         if "rpglib" in entry:
-            required.add("rpg_library")
+            required.add(_rpglib_root_name(entry))
         elif "homebrew_private" in entry:
             required.add("homebrew_private")
     return required
@@ -377,6 +392,16 @@ def _validate_refs_list(refs_list: Any) -> list[dict]:
                 f"resolve_refs: refs[{i}] must have exactly one of "
                 f"'rpglib:', 'homebrew_private:', or 'path:' "
                 f"(found {sorted(keys) or 'none'})"
+            )
+        if "library" in entry and "rpglib" not in entry:
+            raise SystemExit(
+                f"resolve_refs: refs[{i}]: 'library:' is only valid on 'rpglib:' entries"
+            )
+        lib = entry.get("library")
+        if lib is not None and (not isinstance(lib, str) or not lib.strip()):
+            raise SystemExit(
+                f"resolve_refs: refs[{i}]: 'library:' must be a non-empty string "
+                f"(e.g. 'drivethrurpg' or 'kickstarter')"
             )
     return refs_list
 
