@@ -93,7 +93,8 @@ writes only into `notes/`. MemPalace I/O from here still goes through
 |---|---|---|
 | Session prep | `prep.py`, `proposal_loader.py` | [flow-session-prep](flow-session-prep.md) |
 | Post-session | `vtt_summary.py`, `enhance_summary.py`, `scene_extract.py`, `sd_consistency/plan/narrate.py`, `assemble.py`, `polish.py` | [flow-post-session](flow-post-session.md) |
-| Grounding docs | `distill.py`, `campaign_state.py`, `party.py`, `planning.py`, `make_tracking.py` | [`docs/cli/grounding_docs.md`](../cli/grounding_docs.md) |
+| Ensemble (grounding-doc generation) | `ensemble.py`, `ensemble_batch.py`, `facts_to_state.py`, `build_recent_events.py`, `synthesise_world_state.py` (+ `--synthesize-only` on `campaign_state/party/planning`) | [flow-ensemble](flow-ensemble.md) |
+| Grounding docs (legacy per-tool refresh) | `distill.py`, `campaign_state.py`, `party.py`, `planning.py`, `make_tracking.py` | [`docs/cli/grounding_docs.md`](../cli/grounding_docs.md) |
 | RLM retrieval | `rpg_retriever.py`, `fivetools_catalog.py`, `dossier_proposer.py`, `proposal_loader.py` | [flow-rlm-retrieval](flow-rlm-retrieval.md) |
 | MemPalace client | `mempalace_client.py` | [component-mempalace](component-mempalace.md) |
 | 5etools scoping | `launch_5etools_mcp.py`, `resolve_refs.py` | [component-campaign-data](component-campaign-data.md) |
