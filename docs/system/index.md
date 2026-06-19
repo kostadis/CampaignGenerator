@@ -93,13 +93,15 @@ The system has four top-level flows. Each has its own page with the file-by-file
 |---|---|---|
 | **Session prep** | Grounding docs (+ approved dossiers) → encounter/beat notes for the next session. | [flow-session-prep](flow-session-prep.md) |
 | **Post-session** | Zoom `.vtt` → summary → scenes → per-character narration → assembled session doc. | [flow-post-session](flow-post-session.md) |
-| **Ensemble → grounding docs** | Chapters → extract-once on Spark → human-reviewed dossiers → API synthesis → the four grounding docs. The modern, ~10× cheaper refresh path. | [flow-ensemble](flow-ensemble.md) |
+| **Ensemble → grounding docs** | Chapters → extract-once on Spark → human-reviewed dossiers → API synthesis → the four grounding docs. The path you take *when you have a DGX Spark* (~10× cheaper). | [flow-ensemble](flow-ensemble.md) |
 | **RLM retrieval** | A query → three-pile retrieval (palace + 5etools + rpglib) → human-approved proposal → render. | [flow-rlm-retrieval](flow-rlm-retrieval.md) |
 
-The **ensemble** flow is how `world_state.md` / `campaign_state.md` / `party.md` /
-`planning.md` are regenerated today; the legacy per-tool refresh (each tool
-re-extracting from the chapter bible) is kept at
-[`docs/cli/grounding_docs.md`](../cli/grounding_docs.md).
+The four grounding docs (`world_state.md` / `campaign_state.md` / `party.md` /
+`planning.md`) have **two refresh paths, gated on hardware** — not old vs new.
+**With a DGX Spark**, the **ensemble** flow extracts once locally (≈free) and
+spends the API only on synthesis. **Without local GPU**, the fallback is the
+per-tool API path where each tool re-extracts from the chapter bible
+([`docs/cli/grounding_docs.md`](../cli/grounding_docs.md)).
 
 ---
 

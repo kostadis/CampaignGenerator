@@ -1,8 +1,9 @@
 # Flow: Ensemble extraction → grounding docs
 
-> The **modern** way the four grounding docs are (re)generated: extract every
-> fact once on local Spark hardware, human-review scope, then call the API only
-> for the final synthesis. [↑ index](index.md)
+> How the four grounding docs are (re)generated **when you have a DGX Spark**:
+> extract every fact once on local hardware (≈free), human-review scope, then
+> call the API only for the final synthesis. Without a Spark, the fallback is the
+> per-tool API path in [`grounding_docs.md`](../cli/grounding_docs.md). [↑ index](index.md)
 
 **Deep docs:** [`docs/cli/ensemble_workflow.md`](../cli/ensemble_workflow.md)
 (end-to-end, with the Phandalin worked example) ·
@@ -10,19 +11,28 @@
 
 ---
 
-## Why this exists (the economics)
+## Why this exists (it's hardware-gated, not new-vs-old)
 
 `world_state.md`, `campaign_state.md`, `party.md`, and `planning.md` all derive
-from the same chapter/session text. The **old path** ran the Claude API *inside
-each* grounding-doc tool, re-extracting that text three or four times — ~2.5–3.4M
-metered tokens per full refresh.
+from the same chapter/session text. There are two ways to produce them, and
+**which one you use depends on whether you have a DGX Spark** — not on which is
+newer.
 
-The ensemble path inverts that: **extraction is expensive and should happen
-once.** It extracts atomic facts locally on the DGX Spark (≈free), aggregates to
-per-entity dossiers, lets a human review scope, then spends the API only on the
-final per-doc synthesis — **~280K tokens total**. This is the heaviest consumer
+- **No local GPU** → the per-tool API path: each grounding-doc tool runs the
+  Claude API to extract the text itself, re-extracting it three or four times
+  across the four tools — ~2.5–3.4M metered tokens per full refresh. This is the
+  fallback, documented in [`docs/cli/grounding_docs.md`](../cli/grounding_docs.md).
+  It is not deprecated; it is what you run without a Spark.
+- **With a Spark** → the ensemble path on this page, which inverts the cost
+  model: **extraction is expensive and should happen once**, and a local model
+  can do it for free.
+
+The ensemble path extracts atomic facts locally on the Spark (≈free), aggregates
+to per-entity dossiers, lets a human review scope, then spends the API only on
+the final per-doc synthesis — **~280K tokens total**. It is the heaviest consumer
 of the Spark / `dgxlib` stack (see [component-campaigngenerator](component-campaigngenerator.md)
-→ backends); Stages 1–2 are pure local inference.
+→ backends); Stages 1–2 are pure local inference, which is exactly why it needs
+the hardware.
 
 It is the same principle the whole system is built on — **LLM extracts → human
 reviews → LLM renders** — applied to grounding-doc generation: cheap local
@@ -93,10 +103,13 @@ at several gates, never by a model feeding the next model:
 
 ## Where it fits vs. the other flows
 
-- **Supersedes the per-tool grounding refresh.** `distill.py` / `campaign_state.py`
-  / `party.py` / `planning.py` still exist and are reused here as *synthesis-only*
-  stages, but the old "each tool re-extracts from the chapter bible" path is the
-  expensive one this replaces. The legacy how-to is [`docs/cli/grounding_docs.md`](../cli/grounding_docs.md).
+- **The Spark-enabled path for grounding docs.** Same destination docs as the
+  per-tool API path, different extraction economics gated on hardware. With a
+  Spark, ensemble extracts locally (Stages 1–2) and spends the API only on
+  synthesis; without one, the fallback is the per-tool path where `distill.py` /
+  `campaign_state.py` / `party.py` / `planning.py` each re-extract from the
+  chapter bible ([`docs/cli/grounding_docs.md`](../cli/grounding_docs.md)). Those
+  same tools are reused *here* as the `--synthesize-only` Stage-3 renderers.
 - **Orthogonal to RLM retrieval.** Ensemble mines *your own session history* into
   campaign state; RLM ([flow-rlm-retrieval](flow-rlm-retrieval.md)) retrieves
   *external reference* (monsters, adventure prose) from MemPalace / 5etools. They
