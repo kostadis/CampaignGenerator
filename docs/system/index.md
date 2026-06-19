@@ -85,19 +85,23 @@ Three ideas explain almost every design choice in the system:
 
 ---
 
-## How data flows (the three pipelines)
+## How data flows (the four pipelines)
 
-The system has three top-level flows. Each has its own page with the file-by-file sequence.
+The system has four top-level flows. Each has its own page with the file-by-file sequence.
 
 | Flow | One line | Page |
 |---|---|---|
 | **Session prep** | Grounding docs (+ approved dossiers) → encounter/beat notes for the next session. | [flow-session-prep](flow-session-prep.md) |
 | **Post-session** | Zoom `.vtt` → summary → scenes → per-character narration → assembled session doc. | [flow-post-session](flow-post-session.md) |
+| **Ensemble → grounding docs** | Chapters → extract-once on Spark → human-reviewed dossiers → API synthesis → the four grounding docs. The path you take *when you have a DGX Spark* (~10× cheaper). | [flow-ensemble](flow-ensemble.md) |
 | **RLM retrieval** | A query → three-pile retrieval (palace + 5etools + rpglib) → human-approved proposal → render. | [flow-rlm-retrieval](flow-rlm-retrieval.md) |
 
-A fourth, **grounding-docs refresh** (session summaries → `world_state.md` /
-`campaign_state.md` / `party.md` / `planning.md`), is documented in CG's own
-[`docs/cli/grounding_docs.md`](../cli/grounding_docs.md).
+The four grounding docs (`world_state.md` / `campaign_state.md` / `party.md` /
+`planning.md`) have **two refresh paths, gated on hardware** — not old vs new.
+**With a DGX Spark**, the **ensemble** flow extracts once locally (≈free) and
+spends the API only on synthesis. **Without local GPU**, the fallback is the
+per-tool API path where each tool re-extracts from the chapter bible
+([`docs/cli/grounding_docs.md`](../cli/grounding_docs.md)).
 
 ---
 
@@ -151,6 +155,7 @@ This wiki is a *map*. The territory is documented in each repo:
 - [`docs/core/configuration.md`](../core/configuration.md) — config.yaml / ui_state.yaml resolution
 - [`docs/cli/cli_tools.md`](../cli/cli_tools.md) — per-script invocations & flags
 - [`docs/cli/session_doc_pipeline.md`](../cli/session_doc_pipeline.md) — post-session deep dive
+- [`docs/cli/ensemble_workflow.md`](../cli/ensemble_workflow.md) · [`ensemble_extraction.md`](../cli/ensemble_extraction.md) — ensemble grounding-doc generation
 - [`docs/rlm/rlm_architecture.md`](../rlm/rlm_architecture.md) · [`rlm_pipeline.md`](../rlm/rlm_pipeline.md) · [`retrieval_architecture.md`](../rlm/retrieval_architecture.md)
 - [`docs/rlm/refs_yaml_reference.md`](../rlm/refs_yaml_reference.md) — refs.yaml field reference
 - [`docs/web/web_ui.md`](../web/web_ui.md) — Web UI
