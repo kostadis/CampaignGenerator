@@ -8,7 +8,7 @@ import json
 import os
 
 
-DGX_DEFAULT_MODEL = "Qwen/Qwen2.5-14B-Instruct-AWQ"
+DGX_DEFAULT_MODEL = "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8"
 
 
 def _flatten_to_text(value) -> str:
