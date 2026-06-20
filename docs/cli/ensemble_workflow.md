@@ -155,6 +155,21 @@ output** — it's a 10-minute pass, not a pipeline:
 4. Re-run `--list` with both; confirm the cast is now `[known]` and only
    anonymous labels (goblins, guards) remain `[location]`-scoped.
 
+**If the campaign runs a published module, you already have half of input #2.** The
+`gm-module-inventory` skill produces `docs/background/<module>-inventory.md` — a
+bold-marked proper-noun list of the module's NPCs/locations/items/factions. Pass it
+directly as a `--known-names` source; it covers the canon cast for free. Your
+hand-written `known_names.md` then only needs the **homebrew** additions the module
+inventory deliberately omits — the PCs, renamed/campaign-original NPCs, and
+campaign-original items. Worked example (Hillsfar/DDEX34, 15 sessions): staged each
+per-session `gm-assist.md` as `docs/chapters/chapter_NN_*.md`, passed the module
+inventory *and* a ~30-line campaign `known_names.md`, plus an `aliases.json` that
+folded title/spelling variants (`High Inquisitor Veris` → `Veris`, `Mezzoloth` →
+`Mezzaloth`) and the PC character-sheet *typo* spellings into the authoritative
+narrative spellings (`Akrita` → `Akritas`, `Daien` → `Daein`). Because the
+`gm-assist.md` files are human-authored (not raw Zoom dumps), the out-of-character
+DM/player-entity scan came up clean — no table-talk re-homing was needed.
+
 Also note that at this scale several downstream stages are near-trivial rather
 than the heavy passes they are for a mature campaign: **2e (type-merge)** may be a
 single entity (e.g. one NPC also extracted as a monster), and the **`--min-facts`**
@@ -290,6 +305,31 @@ All `ensemble.py` endpoint and model flags (`--endpoints`, `--model`, `--chunk-p
 | `--unit-timeout SEC` | 600 | Kill a stalled unit and re-queue. Set to 0 for reasoning models (122B) that emit 10K–30K thinking tokens before JSON output. |
 | `--speculative` / `--no-speculative` | on | When one endpoint stalls, a free endpoint re-runs its unit; first to finish wins. Use `--no-speculative` for attended runs where you may grab a Spark mid-job. Needs 2+ endpoints. |
 
+> **Reasoning models — disable thinking for extraction.** As of 2026-06 the Spark's
+> default chat slot is a *reasoning* model (`Qwen/Qwen3.5-122B-A10B-FP8`, a single
+> cross-box endpoint). Extraction is a recognise-and-list task, so the model's
+> `<think>` trace is pure waste — 10K–30K tokens burned per chunk before any JSON,
+> and on a `max_tokens`-bounded call the whole budget can land in `reasoning` with
+> `content: null` (a silently empty extraction). **Turn thinking off.** The DGX
+> backend resolves `enable_thinking` per model from `~/src/dgx/dgxlib/models.yaml`;
+> the 122B entry already sets `thinking_default: false`, so the ensemble path
+> inherits no-think automatically. Force it for any model with `DGX_NO_THINKING=1`
+> in the run's environment (belt-and-suspenders). Verify before a long run:
+>
+> ```bash
+> curl -s http://192.168.1.147:8001/v1/chat/completions -H 'Content-Type: application/json' \
+>   -d '{"model":"Qwen/Qwen3.5-122B-A10B-FP8","messages":[{"role":"user","content":"List two names as JSON. Output only JSON."}],"max_tokens":120,"chat_template_kwargs":{"enable_thinking":false}}' \
+>   | python3 -c 'import sys,json;m=json.load(sys.stdin)["choices"][0]["message"];print(repr(m["content"]),"reasoning=",m["reasoning"])'
+> # want: content is clean JSON, reasoning=None, finish_reason=stop
+> ```
+>
+> With thinking off, `--unit-timeout` can stay at its default — the JSON is bounded
+> and fast; the "set to 0 for reasoning models" note above only applies if you
+> *keep* thinking on. Single live endpoint → pass one `--endpoints` URL plus
+> `--no-speculative` (speculative needs 2+ endpoints). This path was validated on
+> Hillsfar/DDEX34 (15 chapters, 5,242 facts) and survived a mid-run Spark restart
+> via the per-chunk cache resume.
+
 ### 1c. Output layout
 
 After a successful run, `per_chapter/` contains one directory per chapter:
@@ -406,6 +446,14 @@ python ~/src/CampaignGenerator/facts_to_state.py \
 ```
 
 The run is **resumable**: entities whose dossier file already exists in `--out-dir` are skipped automatically.
+
+**Single endpoint?** Stage 2c fans one worker per endpoint by default, so a lone
+live endpoint aggregates serially. Add `--entity-parallel N` (e.g. 8) to run N
+entities concurrently against the one endpoint — keep N under the server's
+`--max-num-seqs`. Entities are processed largest-fact-first, so the opening wave
+(the PCs and major NPCs) is the slowest; smaller dossiers land quickly after. Set
+`DGX_NO_THINKING=1` here too — aggregation is also recognise-and-collapse, not a
+reasoning task.
 
 **`--min-facts` floors:**
 
@@ -581,7 +629,26 @@ claude -p \
 
 **Option B — Manual (claude.ai web).** Open claude.ai, start a new conversation, paste the system prompt first, then the user prompt. Copy the response to `docs/world_state_draft.md`.
 
-`campaign_state.py`, `party.py`, and `planning.py` all support `--dump-input` / `--dump-only`; use the same pattern as above for those docs (sections 3c–3e show the subscription path for each).
+> **Gotcha — `claude -p` inside a project can write the *live* doc, not stdout.**
+> Run from a campaign directory, the headless `claude` inherits the project's tool
+> permissions. `synthesise_world_state.py` and `planning.py` system prompts ask for
+> a document *body*, so the agent prints it to stdout (→ your `>` redirect — correct).
+> But `campaign_state.py` and `party.py` system prompts say "write
+> `docs/campaign_state.md`" / "write `docs/party.md`", so the agent **uses the Write
+> tool and overwrites the live grounding doc**, emitting only a summary to stdout —
+> your `*_draft.md` ends up holding the summary while the live doc is clobbered with
+> no diff. (Observed on the Hillsfar run: world_state/planning → drafts; campaign_state/party
+> → live files.) Fix: disable tools so every doc goes to stdout —
+> `claude -p --allowedTools '' --system-prompt "$(cat …system.md)" < …prompt.md > …_draft.md`
+> — or run `claude -p` from outside the campaign dir. If the headless agent did clobber
+> a live doc, recover with `cp docs/<doc>.md docs/<doc>_draft.md` then
+> `git checkout -- docs/<doc>.md`.
+>
+> **Also strip the API key.** When `ANTHROPIC_API_KEY` is exported in the shell,
+> `claude -p` bills the metered API instead of the subscription. Prefix every call
+> with `env -u ANTHROPIC_API_KEY` to force subscription billing.
+
+`campaign_state.py`, `party.py`, and `planning.py` all support `--dump-input` / `--dump-only`; use the same pattern as above for those docs (sections 3c–3e show the subscription path for each). Note `--output` is required by argparse even with `--dump-only` (it is the eventual write target; the dump just stops before the API call).
 
 ### 3c. campaign_state — staging trick
 
