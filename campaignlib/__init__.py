@@ -21,6 +21,7 @@ from .config import (
     load_config,
     load_file,
     load_file_optional,
+    load_repo_file,
     _clear_prompt_cache,
     load_agent_prompt,
     assemble_docs,
@@ -70,6 +71,7 @@ __all__ = [
     "load_config",
     "load_file",
     "load_file_optional",
+    "load_repo_file",
     "load_agent_prompt",
     "assemble_docs",
     # util
