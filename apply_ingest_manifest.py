@@ -12,10 +12,10 @@ Manifest shape (lives at ``<campaign-dir>/ingest_manifest.yaml``):
     palace: abyss                                 # optional; falls back to
                                                   # config.yaml mempalace.palace
     ingests:
-      - source: ~/src/5etools-kostadis/data/adventure/adventure-oota.json
+      - source: ~/src/5e-tools-kostadis/data/adventure/adventure-oota.json
         filter: "chapter=0"
         note: "Velkynvelve opening — session 1 grounding"
-      - source: ~/src/5etools-kostadis/data/bestiary/bestiary-oota.json
+      - source: ~/src/5e-tools-kostadis/data/bestiary/bestiary-oota.json
         filter: "name=Drow Priestess of Lolth"
       - source: ./converted/icespire-homebrew.json
         book_id: 7421

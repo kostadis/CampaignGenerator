@@ -65,6 +65,7 @@ from mempalace_client import MempalaceClient
 
 import fivetools_copy
 import fivetools_render
+import resolve_refs
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +74,9 @@ logger = logging.getLogger(__name__)
 
 _DEFAULT_RPGLIB_DB = Path.home() / "src" / "mytools" / "rpg-lib" / "rpg_library.db"
 _DEFAULT_PDF_TRANSLATORS = Path.home() / "src" / "mytools" / "pdf-translators"
-_DEFAULT_FIVETOOLS_DATA_ROOT = Path.home() / "src" / "5etools-kostadis" / "data"
+# Honors FIVETOOLS_DATA_ROOT, else the shared built-in default. See
+# resolve_refs.default_fivetools_data_root.
+_DEFAULT_FIVETOOLS_DATA_ROOT = resolve_refs.default_fivetools_data_root()
 _STATE_DIRNAME = ".fivetools_ingest"
 _STATE_VERSION = 2
 

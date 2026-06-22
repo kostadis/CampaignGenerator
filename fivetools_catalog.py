@@ -8,7 +8,7 @@ awareness layer — it knows where things are, not what they say.
 
 Shape::
 
-    >>> cat = build_catalog(Path("~/src/5etools-kostadis/data").expanduser())
+    >>> cat = build_catalog(Path("~/src/5e-tools-kostadis/data").expanduser())
     >>> hits = search(cat, "drow priestess")
     >>> hits[0]
     Candidate(entity_type='monster', name='Drow Priestess of Lolth',
@@ -39,13 +39,16 @@ from pathlib import Path
 from typing import Iterator
 
 import fivetools_ingest
+import resolve_refs
 
 logger = logging.getLogger(__name__)
 
 
 _CACHE_FILENAME = ".fivetools_catalog.pkl"
 _CACHE_VERSION = 1
-_DEFAULT_DATA_ROOT = Path.home() / "src" / "5etools-kostadis" / "data"
+# Honors FIVETOOLS_DATA_ROOT, else the shared built-in default. See
+# resolve_refs.default_fivetools_data_root.
+_DEFAULT_DATA_ROOT = resolve_refs.default_fivetools_data_root()
 
 
 # ── Records ────────────────────────────────────────────────────────────────
