@@ -25,7 +25,24 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from server.subprocess_runner import python_exe, stream_subprocess
+from server.subprocess_runner import (
+    python_exe,
+    sse_error_stream,
+    stream_subprocess,
+)
+
+
+def _sse_error(message: str):
+    """StreamingResponse that delivers a precondition failure over SSE.
+
+    Used instead of a 400 JSONResponse for endpoints the frontend opens with
+    an EventSource — see ``sse_error_stream`` for why the body must stream.
+    """
+    return StreamingResponse(
+        sse_error_stream(message),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 # ── Module-level state ──────────────────────────────────────────────────────
 # CONFIG is a derived view of the unified config service's resolved
@@ -858,7 +875,7 @@ async def api_enhance(batch: int = 0):
     result = _build_enhance_cmd(batch=bool(batch))
     if isinstance(result, tuple):
         _, err = result
-        return JSONResponse({"ok": False, "error": err}, status_code=400)
+        return _sse_error(err)
     summary = _session_summary_path()
     outputs = [str(summary)] if summary else []
 
@@ -888,7 +905,7 @@ async def api_extract(batch: int = 0, force: int = 0):
     result = _build_reextract_cmd(batch=bool(batch), force=bool(force))
     if isinstance(result, tuple):
         _, err = result
-        return JSONResponse({"ok": False, "error": err}, status_code=400)
+        return _sse_error(err)
     sx = _scene_extractions_dir()
 
     def _done(rc: int | None) -> None:
@@ -910,7 +927,7 @@ async def api_narrate(n: int):
     result = _build_narrate_cmd(n)
     if isinstance(result, tuple):
         _, err = result
-        return JSONResponse({"ok": False, "error": err}, status_code=400)
+        return _sse_error(err)
     knobs = _narrate_knobs_snapshot()
 
     def _done(rc: int | None) -> None:
@@ -941,16 +958,10 @@ async def api_scrub(n: int):
     """
     path = _narration_file_for_scene(n)
     if path is None or not path.exists():
-        return JSONResponse(
-            {"ok": False, "error": f"no narration file for scene {n}"},
-            status_code=400,
-        )
+        return _sse_error(f"no narration file for scene {n}")
     if path.name.endswith(".scrubbed.md"):
-        return JSONResponse(
-            {"ok": False,
-             "error": f"refusing to scrub already-scrubbed file: {path.name}"},
-            status_code=400,
-        )
+        return _sse_error(
+            f"refusing to scrub already-scrubbed file: {path.name}")
     cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(path)]
     cmd += _model_args()
     if CONFIG.get("scrub_tokens"):
@@ -978,10 +989,7 @@ async def api_scrub_all():
     """
     nd = _narration_dir()
     if nd is None or not nd.is_dir():
-        return JSONResponse(
-            {"ok": False, "error": "narration_dir not configured"},
-            status_code=400,
-        )
+        return _sse_error("narration_dir not configured")
     cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(nd)]
     cmd += _model_args()
     if CONFIG.get("scrub_tokens"):
@@ -1075,7 +1083,7 @@ async def api_plan():
     plan_result = _build_plan_cmd()
     if isinstance(plan_result, tuple):
         _, err = plan_result
-        return JSONResponse({"ok": False, "error": err}, status_code=400)
+        return _sse_error(err)
     consistency_result = _build_consistency_cmd()
     # consistency is optional — a tuple here means "skip, no --context"
     nd = _narration_dir()

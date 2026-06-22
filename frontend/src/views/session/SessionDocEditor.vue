@@ -364,10 +364,10 @@ async function narrate() {
 
   activeSSE.value = connectSSE(`/api/editor/narrate/${currentScene.value}`, {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       narrating.value = false
-      setStatus(rc === 0 ? 'Done.' : 'Narration failed.')
+      setStatus(rc === 0 ? 'Done.' : `Narration failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -387,12 +387,12 @@ async function scrubScene() {
 
   activeSSE.value = connectSSE(`/api/editor/scrub/${currentScene.value}`, {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       scrubbing.value = false
       setStatus(rc === 0
         ? `Scrubbed scene ${currentScene.value} — .scrubbed.md written.`
-        : 'Scrub failed.')
+        : `Scrub failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -412,12 +412,12 @@ async function scrubAll() {
 
   activeSSE.value = connectSSE('/api/editor/scrub-all', {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       scrubbing.value = false
       setStatus(rc === 0
         ? 'Scrub-All complete — .scrubbed.md files written.'
-        : 'Scrub-All failed.')
+        : `Scrub-All failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -442,10 +442,10 @@ async function runExtract() {
     : '/api/editor/extract?force=1'
   activeSSE.value = connectSSE(url, {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       extracting.value = false
-      setStatus(rc === 0 ? 'Re-extraction complete.' : 'Re-extraction failed.')
+      setStatus(rc === 0 ? 'Re-extraction complete.' : `Re-extraction failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -465,12 +465,12 @@ async function runPlan() {
 
   activeSSE.value = connectSSE('/api/editor/plan', {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       planning.value = false
       setStatus(rc === 0
         ? 'Plan & check complete — plan.md saved.'
-        : 'Plan & check failed.')
+        : `Plan & check failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -493,10 +493,10 @@ async function runEnhance() {
   const url = useBatch.value ? '/api/editor/enhance?batch=1' : '/api/editor/enhance'
   activeSSE.value = connectSSE(url, {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       enhancing.value = false
-      setStatus(rc === 0 ? 'Stage 1 complete — review session-summary.md.' : 'Stage 1 failed.')
+      setStatus(rc === 0 ? 'Stage 1 complete — review session-summary.md.' : `Stage 1 failed${error ? ': ' + error : ''}.`)
       refreshPipeline()
     },
     onError() {

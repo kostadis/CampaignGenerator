@@ -4,7 +4,7 @@
 
 export interface SSECallbacks {
   onData: (text: string) => void
-  onDone: (returncode: number) => void
+  onDone: (returncode: number, error?: string) => void
   onError: (err: Event) => void
 }
 
@@ -18,7 +18,7 @@ export function connectSSE(url: string, callbacks: SSECallbacks): EventSource {
   es.addEventListener('done', (e) => {
     es.close()
     const data = JSON.parse((e as MessageEvent).data)
-    callbacks.onDone(data.returncode)
+    callbacks.onDone(data.returncode, data.error)
   })
 
   es.onerror = (e) => {

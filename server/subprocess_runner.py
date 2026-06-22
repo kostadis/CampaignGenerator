@@ -120,6 +120,21 @@ async def stream_subprocess(
     yield f"event: done\ndata: {json.dumps({'returncode': proc.returncode})}\n\n"
 
 
+async def sse_error_stream(message: str, returncode: int = 1) -> AsyncGenerator[str, None]:
+    """Emit a precondition failure as an SSE stream an EventSource can read.
+
+    A plain ``JSONResponse(..., status_code=400)`` is invisible to the
+    browser's ``EventSource``: it only sees a connection error with no body,
+    so the frontend can only show a generic "Stream error". Instead we open
+    a real ``text/event-stream`` and emit the reason as a ``data`` chunk
+    (so it lands in the output panel) followed by a non-zero ``done`` event
+    carrying the same message. The ``done`` handler then surfaces the actual
+    cause ("characters not configured") instead of masking it.
+    """
+    yield f"data: {json.dumps(message.rstrip() + chr(10))}\n\n"
+    yield f"event: done\ndata: {json.dumps({'returncode': returncode, 'error': message})}\n\n"
+
+
 def python_exe() -> str:
     """Return the current Python interpreter path."""
     return sys.executable
