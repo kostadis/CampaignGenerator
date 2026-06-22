@@ -26,7 +26,8 @@ done
 
 # Launch FastAPI (serves the Vue build as static files)
 # PYTHONPATH lets `python -m server.main` find the server package
-# while keeping CWD as the campaign directory (for ui_config.yaml)
+# while keeping CWD as the campaign directory (the server falls back to
+# CWD/config.yaml when no --campaign-dir is passed)
 echo "Starting Campaign Generator on http://localhost:$PORT"
 export PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 exec python -m server.main "$@"
