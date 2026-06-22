@@ -37,7 +37,7 @@ LOCAL_FILENAME = "refs.local.yaml"
 # Default roots used when neither refs.local.yaml nor env vars set the path.
 # rpg_library has no default — the PDF corpus location genuinely varies.
 _DEFAULT_ROOTS = {
-    "fivetools_data": Path("~/src/5etools-kostadis/data").expanduser(),
+    "fivetools_data": Path("~/src/5e-tools-kostadis/data").expanduser(),
     "homebrew_private": Path("~/src/homebrew-private").expanduser(),
 }
 _ROOT_ENV_VARS = {
@@ -45,6 +45,22 @@ _ROOT_ENV_VARS = {
     "rpg_library": "RPG_LIBRARY_ROOT",
     "homebrew_private": "HOMEBREW_PRIVATE_ROOT",
 }
+
+
+def default_fivetools_data_root() -> Path:
+    """The canonical 5etools data root to assume outside a campaign context.
+
+    ``FIVETOOLS_DATA_ROOT`` if set, else the built-in default. Standalone
+    tools that walk the canonical tree without a campaign's refs.local.yaml
+    (``fivetools_ingest``, ``fivetools_catalog``) share this so "where is
+    5etools installed" has one resolution path instead of a hardcoded copy
+    per tool. Inside a campaign, ``resolve_roots`` is the real authority and
+    adds refs.local.yaml on top of this same precedence.
+    """
+    env = os.environ.get(_ROOT_ENV_VARS["fivetools_data"])
+    if env:
+        return Path(env).expanduser().resolve()
+    return _DEFAULT_ROOTS["fivetools_data"]
 
 
 # ── Data classes ─────────────────────────────────────────────────────────
