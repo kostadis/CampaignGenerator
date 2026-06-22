@@ -623,14 +623,19 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
     return cmd
 
 
-def _llm_env() -> dict[str, str]:
+def _llm_env(*, allow_openai_compat: bool = True) -> dict[str, str]:
     """Translate the typed backend choice into env vars campaignlib.make_client honors.
 
     Returned dict is merged into the subprocess env by stream_subprocess.
     Empty dict (backend == "anthropic") means "no overrides — Anthropic API
-    via the default code path". All LLM-calling routes (enhance, extract,
-    narrate, scrub) pass this; plan routes are excluded because their LLM
-    paths use tool-use and the OpenAI-compat adapter does not support tools.
+    via the default code path". Every LLM-calling route must pass this so the
+    selected backend actually reaches the subprocess.
+
+    `allow_openai_compat=False` suppresses only the DGX (OpenAI-compat) path —
+    its adapter can't serve routes that may use tool-use — while still
+    forwarding the subscription backend, which speaks native Anthropic and is
+    always safe. Plan routes pass False: a DGX selection there falls back to
+    the Anthropic API, but a subscription selection is honored.
     """
     backend = CONFIG.get("backend")
     if backend == "claude-code":
@@ -638,7 +643,7 @@ def _llm_env() -> dict[str, str]:
         # global model picker holds a native claude-* name, which this backend
         # honors as-is — so, unlike DGX, no model override is injected here.
         return {"CG_BACKEND": "claude-code"}
-    if backend != "dgx":
+    if backend != "dgx" or not allow_openai_compat:
         return {}
     return {
         "DGX_ENDPOINT": CONFIG.get("dgx_endpoint") or "http://localhost:8000",
@@ -1097,16 +1102,23 @@ async def api_plan():
                     outputs.append(str(p))
         _record_activity(stage="plan", rc=rc, outputs=outputs)
 
+    # Forward the selected backend (so a subscription pick bills the
+    # subscription instead of falling back to the metered API), but suppress
+    # the DGX OpenAI-compat path — see _llm_env(allow_openai_compat=...).
+    plan_env = _llm_env(allow_openai_compat=False)
+
     async def _stream_chained():
         """Stream consistency stdout (if applicable), then plan stdout."""
         from server.subprocess_runner import stream_subprocess as _stream
 
         if not isinstance(consistency_result, tuple):
             async for chunk in _stream(consistency_result,
-                                        cwd=CONFIG.get("work_dir")):
+                                        cwd=CONFIG.get("work_dir"),
+                                        env_extra=plan_env):
                 yield chunk
         async for chunk in _stream(plan_result,
                                     cwd=CONFIG.get("work_dir"),
+                                    env_extra=plan_env,
                                     on_complete=_done):
             yield chunk
 
