@@ -260,19 +260,29 @@ def _messages_user_text(messages: list) -> str:
     return "\n\n".join(p for p in parts if p)
 
 
-def _claude_code_generate(*, system, user: str, model: str) -> str:
+def _claude_code_generate(
+    *, system, user: str, model: str, max_tokens: int | None = None
+) -> str:
     """Invoke `claude -p` headless and return the assistant text.
 
     System prompt is passed via a temp file (--system-prompt-file) so a large
     cached prefix doesn't blow ARG_MAX; the user prompt is piped on stdin for
     the same reason. ANTHROPIC_API_KEY is stripped so billing lands on the
     subscription, not the metered API.
+
+    `claude -p` has no output-length CLI flag, but it honors the
+    CLAUDE_CODE_MAX_OUTPUT_TOKENS env var. We forward the caller's `max_tokens`
+    through it so the subscription path respects the same ceiling the Anthropic
+    API and DGX backends do (a ceiling, not a target — it permits longer output,
+    it does not force it).
     """
     import subprocess
     import tempfile
 
     sys_text = _blocks_to_text(system)
     env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
+    if max_tokens:
+        env["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] = str(max_tokens)
 
     cmd = [
         CLAUDE_CODE_CLI, "-p",
@@ -300,8 +310,18 @@ def _claude_code_generate(*, system, user: str, model: str) -> str:
             raise RuntimeError(
                 f"claude -p returned non-JSON output: {proc.stdout[:300]!r}") from e
         if data.get("is_error"):
-            raise RuntimeError(
-                f"claude -p error: {str(data.get('result', ''))[:500]}")
+            result_text = str(data.get("result", ""))
+            # Unlike the Anthropic API (which truncates and returns partial text
+            # with stop_reason=max_tokens), `claude -p` treats hitting the cap as
+            # a hard error and discards the text. Re-phrase its env-var-centric
+            # message in terms of the caller's knob (--narrate-tokens / max_tokens).
+            if max_tokens and "output token maximum" in result_text:
+                raise RuntimeError(
+                    f"claude -p hit the {max_tokens}-token output ceiling and "
+                    f"returned no text (the subscription backend errors on "
+                    f"overflow rather than truncating). Raise --narrate-tokens / "
+                    f"max_tokens for this run.")
+            raise RuntimeError(f"claude -p error: {result_text[:500]}")
         return data.get("result", "")
     finally:
         if sp_file is not None:
@@ -319,15 +339,17 @@ class _ClaudeCodeStream:
     `with client.messages.stream(...) as s: s.text_stream` contract.
     """
 
-    def __init__(self, *, system, user: str, model: str):
+    def __init__(self, *, system, user: str, model: str, max_tokens: int | None = None):
         self._system = system
         self._user = user
         self._model = model
+        self._max_tokens = max_tokens
         self._text = ""
 
     def __enter__(self):
         self._text = _claude_code_generate(
-            system=self._system, user=self._user, model=self._model)
+            system=self._system, user=self._user, model=self._model,
+            max_tokens=self._max_tokens)
         return self
 
     def __exit__(self, exc_type, exc, tb):
@@ -360,6 +382,7 @@ class _ClaudeCodeMessages:
             system=system,
             user=_messages_user_text(messages),
             model=self._resolve_model(model),
+            max_tokens=max_tokens,
         )
         return _OpenAICompatResponse(text)
 
@@ -368,6 +391,7 @@ class _ClaudeCodeMessages:
             system=system,
             user=_messages_user_text(messages),
             model=self._resolve_model(model),
+            max_tokens=max_tokens,
         )
 
 

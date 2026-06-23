@@ -19,6 +19,8 @@ const props = defineProps<{
   // ── Stage knobs ───────────────────────────────────────────
   useBatch: boolean
   backend: 'anthropic' | 'dgx' | 'claude-code'
+  dgxEndpoint: string
+  dgxModel: string
   narrateTokens: number
   proseMode: boolean
   reflections: boolean
@@ -39,6 +41,8 @@ const emit = defineEmits<{
   'update:context': [value: string]
   'update:useBatch': [value: boolean]
   'update:backend': [value: 'anthropic' | 'dgx' | 'claude-code']
+  'update:dgxEndpoint': [value: string]
+  'update:dgxModel': [value: string]
   'update:narrateTokens': [value: number]
   'update:proseMode': [value: boolean]
   'update:reflections': [value: boolean]
@@ -163,6 +167,28 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
             >DGX</button>
           </div>
           <div class="field-help">Stage 3 (Plan &amp; Check) always uses Anthropic — tool-use path.</div>
+        </div>
+        <div v-if="backend === 'dgx'" class="field">
+          <label class="field-label">DGX endpoint</label>
+          <input
+            type="text"
+            class="field-input"
+            :value="dgxEndpoint"
+            placeholder="http://192.168.1.147:8001/v1"
+            @input="emit('update:dgxEndpoint', ($event.target as HTMLInputElement).value)"
+          />
+          <div class="field-help">OpenAI-compatible URL. Use the Spark's IP, not a hostname — WSL2 can't resolve <code>spark</code>. Blank → <code>http://localhost:8000</code>.</div>
+        </div>
+        <div v-if="backend === 'dgx'" class="field">
+          <label class="field-label">DGX model</label>
+          <input
+            type="text"
+            class="field-input"
+            :value="dgxModel"
+            placeholder="Qwen/Qwen2.5-14B-Instruct-AWQ"
+            @input="emit('update:dgxModel', ($event.target as HTMLInputElement).value)"
+          />
+          <div class="field-help">Model name the endpoint serves. Blank → the runtime default.</div>
         </div>
       </section>
 
