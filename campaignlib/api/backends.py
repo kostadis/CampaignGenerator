@@ -8,7 +8,10 @@ import json
 import os
 
 
-DGX_DEFAULT_MODEL = "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8"
+from ..wiring import wiring_get  # noqa: E402
+
+# DGX model is EXTERNAL config (names what the DGX serves) — mneme-owned.
+DGX_DEFAULT_MODEL = wiring_get("dgx_model")
 
 
 def _flatten_to_text(value) -> str:

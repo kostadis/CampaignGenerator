@@ -71,9 +71,13 @@ logger = logging.getLogger(__name__)
 
 # ── Defaults ─────────────────────────────────────────────────────────────
 
-_DEFAULT_RPGLIB_DB = Path.home() / "src" / "mytools" / "rpg-lib" / "rpg_library.db"
-_DEFAULT_PDF_TRANSLATORS = Path.home() / "src" / "mytools" / "pdf-translators"
-_DEFAULT_FIVETOOLS_DATA_ROOT = Path.home() / "src" / "5etools-kostadis" / "data"
+# These paths are EXTERNAL config (rpg-lib DB, pdf-translators, 5etools root) —
+# owned by mneme, read from the rendered wiring.
+from campaignlib import wiring_path  # noqa: E402
+
+_DEFAULT_RPGLIB_DB = wiring_path("rpg_library_db")
+_DEFAULT_PDF_TRANSLATORS = wiring_path("pdf_translators")
+_DEFAULT_FIVETOOLS_DATA_ROOT = wiring_path("fivetools_data_root")
 _STATE_DIRNAME = ".fivetools_ingest"
 _STATE_VERSION = 2
 

@@ -60,7 +60,8 @@ from suggest_conversion import build_suggestion
 logger = logging.getLogger(__name__)
 
 
-_DEFAULT_RPGLIB_URL = "http://localhost:8000"
+from campaignlib import wiring_get  # noqa: E402  (rpg-lib URL is EXTERNAL — mneme-owned)
+_DEFAULT_RPGLIB_URL = wiring_get("rpg_library_url")
 _DEFAULT_HTTP_TIMEOUT = 5.0
 
 
@@ -697,7 +698,7 @@ def _resolve_cli_defaults(args: argparse.Namespace) -> argparse.Namespace:
 
     if args.fivetools_data_root is None:
         env = os.environ.get("FIVETOOLS_DATA_ROOT")
-        cfg = config.get("fivetools_data_root")
+        cfg = wiring_get("fivetools_data_root")
         if env:
             args.fivetools_data_root = Path(env).expanduser()
         elif isinstance(cfg, str) and cfg:
@@ -705,7 +706,7 @@ def _resolve_cli_defaults(args: argparse.Namespace) -> argparse.Namespace:
 
     if args.rpg_library_url == _DEFAULT_RPGLIB_URL:
         env = os.environ.get("RPG_LIBRARY_URL")
-        cfg = config.get("rpg_library_url")
+        cfg = wiring_get("rpg_library_url")
         if env:
             args.rpg_library_url = env
         elif isinstance(cfg, str) and cfg:

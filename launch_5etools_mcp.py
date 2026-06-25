@@ -49,7 +49,8 @@ import resolve_refs as rr
 
 
 RUNTIME_BASE = Path("~/.5etools-mcp-runtime").expanduser()
-DEFAULT_MCP_INDEX = Path("~/src/5etools-kostadis/mcp/index.js").expanduser()
+from campaignlib import wiring_path  # noqa: E402  (5etools MCP index is EXTERNAL — mneme-owned)
+DEFAULT_MCP_INDEX = wiring_path("fivetools_mcp_index")
 SHA_FILENAME = ".sources.sha256"
 
 

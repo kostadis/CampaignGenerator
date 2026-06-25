@@ -5,17 +5,10 @@ system_prompt: config/system_prompt.md
 
 log_dir: logs/
 
-# Path to the canonical 5etools data tree. Used by fivetools_catalog.py
-# (cheap-candidate awareness) and as the default for fivetools_ingest.py
-# --fivetools-data-root. Override per-campaign by setting this in the
-# campaign workspace's config.yaml.
-fivetools_data_root: ~/src/5etools-kostadis/data
-
-# rpg-library HTTP API base URL. The retriever (rpg_retriever.py) speaks
-# HTTP to library_server.py for expensive-tier candidates; if the server
-# isn't running, expensive candidates are soft-skipped with a logged
-# warning. Start the server via: ~/src/mytools/rpg-lib/service.sh start.
-rpg_library_url: http://localhost:8000
+# NOTE: EXTERNAL wiring (fivetools_data_root, rpg_library_url, dgx_endpoint,
+# dgx_model) is now owned by mneme and rendered into config/wiring.yaml — read via
+# campaignlib.wiring. It is intentionally NOT here: this file holds CampaignGenerator's
+# INTERNAL config only (prompts, agents, documents, log_dir).
 
 # Agent prompts for --mode pipeline
 agents:

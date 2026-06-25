@@ -13,24 +13,21 @@ Two modes:
 * **Emit:** ``query_rpg_lib.py --book-id 7421`` prints a paste-ready
   ``refs.yaml`` block for that book.
 
-The script imports rpg-lib's ``library_api.db`` from the rpg-lib checkout. If
-it lives somewhere other than ``~/src/mytools/rpg-lib/``, point at it with
-``--rpglib-dir`` or set the ``RPGLIB_DIR`` env var.
+The script imports rpg-lib's ``library_api.db`` (the installed ``rpg-lib``
+package). The database location comes from mneme wiring (``rpg_library_db``);
+override with ``--db``.
 """
 
 from __future__ import annotations
 
 import argparse
-import os
 import sqlite3
 import sys
 from pathlib import Path
 
 import yaml
 
-
-DEFAULT_RPGLIB_DIR = Path("~/src/mytools/rpg-lib").expanduser()
-DEFAULT_DB_BASENAME = "rpg_library.db"
+from campaignlib import wiring_path
 
 # Schema columns rpg-lib's search_books / get_book SELECT but which only exist
 # after the enrichment pass has run. If any of these is missing, both
@@ -39,16 +36,6 @@ DEFAULT_DB_BASENAME = "rpg_library.db"
 _ENRICHMENT_COLUMNS = (
     "display_title", "tags", "series", "min_level", "max_level",
 )
-
-
-def _add_rpglib_to_path(rpglib_dir: Path) -> None:
-    if not rpglib_dir.is_dir():
-        raise SystemExit(
-            f"query_rpg_lib: rpg-lib directory not found at {rpglib_dir}. "
-            f"Set --rpglib-dir or RPGLIB_DIR."
-        )
-    if str(rpglib_dir) not in sys.path:
-        sys.path.insert(0, str(rpglib_dir))
 
 
 def _detect_schema_gap(db_path: Path) -> list[str]:
@@ -65,7 +52,7 @@ def _schema_hint(db_path: Path, missing: list[str]) -> str:
     return (
         f"query_rpg_lib: rpg-lib database at {db_path} is missing enrichment "
         f"column(s): {', '.join(missing)}. Run the enrichment pass:\n"
-        f"  cd ~/src/mytools/rpg-lib && python pdf_enricher.py\n"
+        f"  python -m pdf_enricher <db>\n"
         f"(or whichever script populates display_title / tags / series in your "
         f"rpg-lib version)."
     )
@@ -83,7 +70,7 @@ def _open_db(db_path: Path):
     missing = _detect_schema_gap(db_path)
     if missing:
         raise SystemExit(_schema_hint(db_path, missing))
-    from library_api import db as rpglib_db  # noqa: E402  (sys.path mutated by caller)
+    from library_api import db as rpglib_db
     user_db_path = str(db_path.parent / "user_data.db")
     rpglib_db.init_user_db(user_db_path)
     return rpglib_db.get_db(str(db_path), user_db_path), rpglib_db
@@ -180,16 +167,10 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Skip search; emit a refs.yaml block for this specific book id.",
     )
     parser.add_argument(
-        "--rpglib-dir",
-        type=Path,
-        default=Path(os.environ.get("RPGLIB_DIR") or DEFAULT_RPGLIB_DIR),
-        help=f"Path to the rpg-lib checkout. Default: {DEFAULT_RPGLIB_DIR}",
-    )
-    parser.add_argument(
         "--db",
         type=Path,
-        default=None,
-        help=f"Path to rpg_library.db. Default: <rpglib-dir>/{DEFAULT_DB_BASENAME}",
+        default=wiring_path("rpg_library_db"),
+        help="Path to rpg_library.db (default: mneme wiring rpg_library_db).",
     )
     parser.add_argument(
         "--limit",
@@ -207,9 +188,12 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
-    rpglib_dir = args.rpglib_dir.expanduser().resolve()
-    _add_rpglib_to_path(rpglib_dir)
-    db_path = (args.db or (rpglib_dir / DEFAULT_DB_BASENAME)).expanduser().resolve()
+    if args.db is None:
+        raise SystemExit(
+            "query_rpg_lib: no rpg_library.db path — pass --db or render mneme "
+            "wiring (rpg_library_db)."
+        )
+    db_path = args.db.expanduser().resolve()
     conn, db_mod = _open_db(db_path)
 
     if args.book_id is not None:

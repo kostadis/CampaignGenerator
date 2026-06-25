@@ -22,6 +22,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from campaignlib import wiring_get
+
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
@@ -624,7 +626,7 @@ def _llm_env() -> dict[str, str]:
     if backend != "dgx":
         return {}
     return {
-        "DGX_ENDPOINT": CONFIG.get("dgx_endpoint") or "http://localhost:8000",
+        "DGX_ENDPOINT": CONFIG.get("dgx_endpoint") or wiring_get("dgx_endpoint"),
         "DGX_MODEL": CONFIG.get("dgx_model") or "Qwen/Qwen2.5-14B-Instruct-AWQ",
     }
 
