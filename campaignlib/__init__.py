@@ -9,6 +9,7 @@ so ``from campaignlib import X`` and ``campaignlib.X`` keep working unchanged.
 """
 
 from .constants import DEFAULT_MODEL
+from .wiring import load_wiring, wiring_get, wiring_path
 from .textproc import (
     strip_base64_images,
     chunk_text,
@@ -59,6 +60,10 @@ from .pipelines import run_extract_pipeline, run_synthesize_pipeline
 __all__ = [
     # constants
     "DEFAULT_MODEL",
+    # external wiring (mneme-owned, rendered)
+    "load_wiring",
+    "wiring_get",
+    "wiring_path",
     # textproc
     "strip_base64_images",
     "chunk_text",

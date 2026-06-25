@@ -30,6 +30,8 @@ from typing import Any
 
 import yaml
 
+from campaignlib import wiring_path
+
 
 REFS_FILENAME = "refs.yaml"
 LOCAL_FILENAME = "refs.local.yaml"
@@ -37,8 +39,8 @@ LOCAL_FILENAME = "refs.local.yaml"
 # Default roots used when neither refs.local.yaml nor env vars set the path.
 # rpg_library has no default — the PDF corpus location genuinely varies.
 _DEFAULT_ROOTS = {
-    "fivetools_data": Path("~/src/5etools-kostadis/data").expanduser(),
-    "homebrew_private": Path("~/src/homebrew-private").expanduser(),
+    "fivetools_data": wiring_path("fivetools_data_root"),  # EXTERNAL — mneme-owned
+    "homebrew_private": wiring_path("homebrew_private"),  # EXTERNAL — mneme-owned
 }
 _ROOT_ENV_VARS = {
     "fivetools_data": "FIVETOOLS_DATA_ROOT",

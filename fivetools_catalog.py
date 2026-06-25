@@ -45,7 +45,8 @@ logger = logging.getLogger(__name__)
 
 _CACHE_FILENAME = ".fivetools_catalog.pkl"
 _CACHE_VERSION = 1
-_DEFAULT_DATA_ROOT = Path.home() / "src" / "5etools-kostadis" / "data"
+from campaignlib import wiring_path  # noqa: E402  (5etools root is EXTERNAL — mneme-owned)
+_DEFAULT_DATA_ROOT = wiring_path("fivetools_data_root")
 
 
 # ── Records ────────────────────────────────────────────────────────────────
