@@ -50,6 +50,12 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
+    title: 'ENSEMBLE WORKFLOW',
+    items: [
+      { label: 'Ensemble Grounding Docs', path: '/ensemble/setup' },
+    ],
+  },
+  {
     title: 'PREP',
     items: [
       { label: 'Session Prep', path: '/prep/session-prep' },

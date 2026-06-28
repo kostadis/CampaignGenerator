@@ -1,5 +1,13 @@
 # Ensemble extraction workflow
 
+> **Run this from the UI.** The Ensemble Workflow page (`/ensemble` in the web UI)
+> mechanizes this whole sequence — Setup → Extract → Bundle → Synthesize — with the
+> scope-review, alias-correction, and diff-before-promote checkpoints kept as gates
+> you satisfy in the CLI or a Claude chat. Each LLM-bearing stage is backend-selectable
+> (Anthropic / DGX-Spark / **OpenRouter**), chosen independently for extraction and
+> synthesis. The UI only invokes the same CLI commands documented below; nothing here
+> is bypassed. See `docs/web/web_ui.md` and `specs/001-ensemble-workflow-ui/`.
+
 End-to-end guide: from a set of chapter files to reviewed dossiers ready for synthesis into the four grounding docs (`world_state.md`, `campaign_state.md`, `party.md`, `planning.md`).
 
 The core insight is that **extraction is expensive and should happen once**. Running the Claude API inside each grounding-doc tool (the old path) re-extracts the same chapter text three or four times, spending 2.5–3.4M metered tokens per full refresh. The local ensemble approach extracts once on Spark hardware (~free), aggregates to per-entity dossiers, lets a human review scope, then calls the API only for the final synthesis per doc (~280K tokens total).

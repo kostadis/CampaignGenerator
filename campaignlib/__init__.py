@@ -28,7 +28,10 @@ from .config import (
     assemble_docs,
 )
 from .util import copy_to_clipboard, save_log
-from .api.client import make_client, call_api, call_api_with_tools, stream_api
+from .api.client import (
+    make_client, call_api, call_api_with_tools, stream_api,
+    add_backend_args, client_from_args,
+)
 from .api.batch import (
     build_batch_request,
     submit_batch,
@@ -84,6 +87,8 @@ __all__ = [
     "save_log",
     # api — client
     "make_client",
+    "add_backend_args",
+    "client_from_args",
     "call_api",
     "call_api_with_tools",
     "stream_api",

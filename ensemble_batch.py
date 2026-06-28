@@ -32,8 +32,11 @@ def _build_parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument(
-        "--chapters", required=True, metavar="GLOB",
-        help="Glob for chapter files, e.g. 'docs/chapters/chapter_*.md'",
+        "--chapters", required=True, nargs="+", metavar="GLOB",
+        help="One or more globs or explicit chapter paths, e.g. "
+             "'docs/chapters/chapter_*.md' or a hand-picked subset "
+             "'docs/chapters/chapter_03.md docs/chapters/chapter_07.md'. "
+             "Matches are unioned, de-duplicated, and sorted.",
     )
     p.add_argument(
         "--per-chapter-dir", default="per_chapter", metavar="DIR",
@@ -133,9 +136,13 @@ def _build_ensemble_cmd(chapter: Path, workdir: Path, args) -> list[str]:
 def main():
     args = _build_parser().parse_args()
 
-    chapters = sorted(Path(p) for p in glob_module.glob(args.chapters))
+    matched: set[Path] = set()
+    for pattern in args.chapters:
+        for p in glob_module.glob(pattern):
+            matched.add(Path(p))
+    chapters = sorted(matched)
     if not chapters:
-        print(f"No chapter files matched: {args.chapters}", file=sys.stderr)
+        print(f"No chapter files matched: {' '.join(args.chapters)}", file=sys.stderr)
         sys.exit(1)
 
     per_chapter_dir = Path(args.per_chapter_dir)

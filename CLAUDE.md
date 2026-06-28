@@ -142,3 +142,18 @@ cd frontend && npm install   # Vue 3 frontend
 ```
 
 `ANTHROPIC_API_KEY` must be set in the environment.
+
+For the OpenRouter backend (ensemble workflow synthesis/extraction), `pip install
+openai` and set `OPENROUTER_API_KEY` in the environment. OpenRouter is reached
+only through `campaignlib/api` (`make_client(backend="openrouter")`); select it on
+a CLI with `--backend openrouter --model <openrouter-id>`, or via the
+`CG_BACKEND=openrouter` env var.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan:
+`specs/001-ensemble-workflow-ui/plan.md` (Ensemble Grounding-Doc Workflow UI —
+adds a stepped `/ensemble` UI page and OpenRouter as a per-stage LLM backend
+through the single `campaignlib` seam; leaves the existing `/grounding` Anthropic
+path unchanged).
+<!-- SPECKIT END -->

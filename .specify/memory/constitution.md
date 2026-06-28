@@ -88,6 +88,16 @@ The ensemble grounding-doc workflow is the canonical shape: the UI may step you 
 
 *Kills: The Walled Garden* — a UI that swallows the whole workflow, hides the files, and locks the human out of the conversation and the CLI.
 
+### X. Selection is Explicit; There is No Silent "All"
+
+A batch operation acts on the set the human explicitly chose — never on an implicit "everything" inferred from an empty or absent selection. **"Select all" is a deliberate act that materializes the full set as the chosen set; it is not the state the system falls into when the human chose nothing.** An empty selection means *nothing is selected*: the operation refuses to run and says so, rather than guessing that the human meant the whole corpus.
+
+Which inputs a token-spending pass touches is a **scope decision** (Principle II), and it is the human's — made explicitly, every time. A default that quietly expands to "all" removes that decision from the human exactly when it is most expensive to get wrong.
+
+Concrete clause: the ensemble chapter picker stores `ui.ensemble.chapters_selected` as the literal set of chosen chapters; "Select all" writes every resolved path; `GET /api/ensemble/run/extract` refuses an empty `chapters` list instead of falling back to the glob (`tests/test_ensemble_chapters.py`). The CLI engine is exempt only because a glob *typed at the CLI* is itself an explicit act; the UI must never manufacture that act on the human's behalf.
+
+*Kills: the Implicit Blast Radius* — a batch action that silently expands to "everything" because the set was never explicitly chosen.
+
 ## Architecture is Destiny
 
 Bad architectural choices are liabilities, and in this system the currency is twofold: **token spend** and **precision failures at the table**.
@@ -110,7 +120,7 @@ Humans author structure, identity, and schema. The LLM — including Spec Kit it
 This constitution supersedes conflicting specs, plans, and tasks. A conflict requires written justification or an amendment — not a silent override.
 
 - **Principle precedence:** I (Disk is Truth) and II (The Human Checkpoint) outrank all other principles. When a convenience, a performance gain, or a cleaner abstraction collides with truth-on-disk or the human gate, truth and the gate win.
-- Every spec and plan is tested, by name, against all nine principles before implementation begins.
+- Every spec and plan is tested, by name, against all ten principles before implementation begins.
 - Amendments require a stated rationale, a version bump, and a check that dependent templates and docs stay in sync.
 - Semantic versioning of this document:
   - **MAJOR** — a principle removed or redefined in a backward-incompatible way.
@@ -119,4 +129,6 @@ This constitution supersedes conflicting specs, plans, and tasks. A conflict req
 
 Runtime development guidance lives in `CLAUDE.md` (this repo) and `~/.claude/CLAUDE.md` (global). Where those and this constitution agree, this is the canonical statement; where they drift, amend one to match the other.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-27 | **Last Amended**: 2026-06-27
+**Version**: 1.2.0 | **Ratified**: 2026-06-27 | **Last Amended**: 2026-06-27
+
+> **1.2.0** (MINOR) — Added Principle X (*Selection is Explicit; There is No Silent "All"*), arising from the ensemble chapter picker: a batch pass acts only on an explicitly chosen set, and "Select all" must materialize that set rather than be an empty-means-everything default.

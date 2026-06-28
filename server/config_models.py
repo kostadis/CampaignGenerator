@@ -138,12 +138,51 @@ class ProfilesSection(BaseModel):
     active: OptStr = None
 
 
+class BackendProfile(BaseModel):
+    """A selectable execution target for one LLM-bearing ensemble stage.
+
+    The API key is NEVER stored here — it is read from the environment
+    (ANTHROPIC_API_KEY / OPENROUTER_API_KEY) at run time. `endpoint` is used
+    for the dgx backend; openrouter uses its own base URL.
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+    backend: Literal["anthropic", "dgx", "openrouter"] = "anthropic"
+    endpoint: OptStr = None
+    model: OptStr = None
+
+
+class EnsembleSection(BaseModel):
+    """``ui.ensemble`` — the ensemble grounding-doc workflow page.
+
+    Per-stage backend choice (extract vs synthesize are independent) plus the
+    scope inputs (known-names sources, aliases file) the bundle stage and the
+    alias-correction gate consume. Files on disk remain the source of truth;
+    this only records the operator's selections.
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+    campaign_dir: OptStr = None
+    chapters_glob: str = "docs/chapters/chapter_*.md"
+    # The explicit set of chapters chosen in the picker (relative paths).
+    # Principle X — there is no silent "all": empty means *nothing selected*
+    # and extraction refuses to run; "Select all" materializes every path here.
+    chapters_selected: list[str] = Field(default_factory=list)
+    extract: BackendProfile = Field(default_factory=BackendProfile)
+    synthesize: BackendProfile = Field(default_factory=BackendProfile)
+    known_names: list[str] = Field(default_factory=list)
+    aliases_path: OptStr = None
+
+
 class UISection(BaseModel):
     """All per-page state, one attribute per page or group of pages."""
 
     session_doc: SessionDocSection = Field(default_factory=SessionDocSection)
     vtt_summary: VttSummarySection = Field(default_factory=VttSummarySection)
     grounding: GroundingSection = Field(default_factory=GroundingSection)
+    ensemble: EnsembleSection = Field(default_factory=EnsembleSection)
     profiles: ProfilesSection = Field(default_factory=ProfilesSection)
     campaign_state: _LooseSection = Field(default_factory=_LooseSection)
     distill: _LooseSection = Field(default_factory=_LooseSection)
