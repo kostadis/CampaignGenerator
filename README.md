@@ -186,6 +186,37 @@ python kanka_push.py --campaign 1 --input docs/world_state.md --apply
 }
 ```
 
+### MCP server setup
+
+Three MCP servers can be wired into campaign workspaces so Claude has direct access to campaign data, 5etools, and Kanka:
+
+| Server | Script | Registered when |
+|---|---|---|
+| `campaign` | `mcp_server.py` | always (campaign has `config.yaml`) |
+| `5etools` | `launch_5etools_mcp.py` | campaign has `refs.yaml` |
+| `kanka` | `kanka_mcp.py` | `--kanka-token` is passed |
+
+Use `configure_mcp.py` to write `.mcp.json` for all campaign workspaces at once:
+
+```bash
+# Preview — show what would be written without changing anything
+python configure_mcp.py --dry-run
+
+# Write .mcp.json to all campaigns under ~/src/campaigns/
+python configure_mcp.py
+
+# Include the Kanka server
+python configure_mcp.py --kanka-token <your-api-token>
+
+# Target a single campaign
+python configure_mcp.py ~/src/campaigns/toee
+
+# Overwrite existing .mcp.json entirely (default: merge, preserving extra servers)
+python configure_mcp.py --force
+```
+
+By default the script **merges** into any existing `.mcp.json`, so manually added servers are preserved. `5etools` is only added when the campaign directory contains a `refs.yaml`.
+
 ### RPG Library Module (RLM)
 
 | Script | What it does |
