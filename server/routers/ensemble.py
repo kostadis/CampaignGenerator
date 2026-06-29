@@ -128,6 +128,9 @@ def _run_locked(stage: str, cmd: list[str], env_extra: dict[str, str] | None = N
     _RUNNING.add(key)
 
     def _release(_rc):
+        # T023: stream_subprocess calls on_complete from its finally block on
+        # every exit path (normal, explicit abort, or disconnect). The lock is
+        # therefore always released — no run can get stuck "running" after abort.
         _RUNNING.discard(key)
 
     async def _gen():

@@ -1001,6 +1001,17 @@ Old per-tool API path (distill / planning / party / campaign_state each re-extra
 
 ---
 
+## Observability & abort
+
+All ensemble stages (extraction, bundling, synthesis) support:
+
+- **Copyable command**: Every UI-launched run emits the exact, secret-free invocation as the first SSE event. Paste it into a terminal in the campaign workspace to reproduce the run. No API key appears in the command — keys are inherited from the server environment, never on the command line.
+- **Live streaming**: Output lines appear incrementally as each chapter/step completes. The UI shows a "Running…" state while the run is active.
+- **Abort**: The Abort button (UI) closes the EventSource connection. The server observes the disconnect and group-kills the entire worker tree (SIGTERM → SIGKILL after ~4 s) — no orphaned `ensemble_extract` or `facts_to_state` subprocesses keep spending tokens.
+- **Disconnect = implicit abort**: Closing the browser tab or dropping the network mid-run is treated identically to clicking Abort. The UI does NOT auto-reconnect during a running stage (that would silently restart the run). The server kills the process group when the connection drops.
+- **Durable record**: Every run writes `<campaign>/logs/<timestamp>_<script>.md` with the command, full output, outcome (succeeded / failed / aborted), and duration. Recoverable after the browser is closed.
+- **Cache integrity**: Per-chapter `merged.json` and per-entity `state_dossiers/*.md` are written atomically (temp-file + rename). A force-kill during write never leaves a truncated file at the resume-trusted path — the next run either finds a complete artifact (skip) or none (re-run), never a partial one.
+
 ## See also
 
 - [`ensemble_extraction.md`](ensemble_extraction.md) — single-file extraction, merge options, `--samples` and `--dry-run` patterns

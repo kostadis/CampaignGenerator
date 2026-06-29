@@ -43,6 +43,8 @@ import sys
 from difflib import SequenceMatcher
 from pathlib import Path
 
+import campaignlib
+
 
 def _norm_subject(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", s.lower())
@@ -360,7 +362,7 @@ def main() -> None:
         f["n_samples"] = len(runs)
         f["passes"] = sorted({p.split("#")[0] for p in runs})
 
-    output_path.write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
+    campaignlib.atomic_write_json(output_path, merged)  # FR-014: atomic publish
 
     counts_by_lens: dict[str, int] = {}
     for key, facts in pass_outputs.items():

@@ -1,13 +1,47 @@
-"""Async subprocess runner with SSE streaming output."""
+"""Async subprocess runner with SSE streaming output.
+
+Shared seam used by ALL SSE routes (ensemble, grounding, prep, session_workflow,
+scene_editor, …). The termination behaviour added here (T020–T021: start_new_session
++ group-kill on disconnect) is intentionally global — no route should leak a runaway
+subprocess when the client disconnects. Non-ensemble routes' request/response shapes
+are unchanged; they additionally gain disconnect-driven cleanup for free.
+See plan.md "Constraints / Shared-seam blast radius (I2)" and tests/test_subprocess_abort.py
+for regression coverage.
+"""
 
 import asyncio
 import json
 import os
+import signal
 import sys
 import time
 from collections.abc import AsyncGenerator, Callable
 from datetime import datetime
 from pathlib import Path
+
+GRACE_SECONDS = 4.0  # SIGTERM grace window before SIGKILL (FR-008)
+
+
+def classify_result(returncode: int | None) -> str:
+    """Map a subprocess returncode to a run outcome string (R5, data-model.md).
+
+    - ``None`` or negative (signal) → ``"aborted"``
+    - ``0``                         → ``"succeeded"``
+    - positive non-zero             → ``"failed"``
+    """
+    if returncode is None or returncode < 0:
+        return "aborted"
+    if returncode == 0:
+        return "succeeded"
+    return "failed"
+
+
+def _killpg_safe(pgid: int, sig: int) -> None:
+    """Send sig to process group pgid, silently ignoring ProcessLookupError."""
+    try:
+        os.killpg(pgid, sig)
+    except (ProcessLookupError, PermissionError):
+        pass
 
 
 def _log_stem(cmd: list[str]) -> str:
@@ -19,12 +53,13 @@ def _log_stem(cmd: list[str]) -> str:
 
 
 def _save_run_log(cmd: list[str], cwd: str | None, output: str,
-                  returncode: int | None, duration: float) -> None:
-    """Persist the run to `logs/` so it survives the SSE buffer.
+                  returncode: int | None, result: str, duration: float) -> None:
+    """Persist the run to `logs/` so it survives the SSE buffer (FR-007, SC-006).
 
-    Mirrors the format of `campaignlib.save_log` — markdown sections, one
-    file per run with a timestamped filename. Failures here are silent;
-    logging is best-effort and must not break the running subprocess.
+    Mirrors the format of `campaignlib.save_log` — markdown sections, one file
+    per run with a timestamped filename. Failures here are silent; logging is
+    best-effort and must not break the running subprocess. Runs on every exit
+    path (normal, abort, disconnect) via the finally in stream_subprocess.
     """
     try:
         log_dir = Path(cwd or os.getcwd()) / "logs"
@@ -36,6 +71,7 @@ def _save_run_log(cmd: list[str], cwd: str | None, output: str,
             f"# Subprocess run — {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
             f"## Command\n\n```\n{cmd_block}\n```\n\n"
             f"## Result\n\n"
+            f"- result: `{result}`\n"
             f"- returncode: `{returncode}`\n"
             f"- duration: `{duration:.2f}s`\n"
             f"- cwd: `{cwd or os.getcwd()}`\n\n"
@@ -55,23 +91,33 @@ async def stream_subprocess(
 ) -> AsyncGenerator[str, None]:
     """Run a subprocess and yield Server-Sent Events as output arrives.
 
-    Yields SSE-formatted strings:
-      - ``data: "text chunk"\\n\\n`` for stdout/stderr output
-      - ``event: done\\ndata: {"returncode": N}\\n\\n`` when the process exits
+    Yields SSE-formatted strings (in order):
+      - ``event: command\\ndata: "<invocation>"\\n\\n`` — distinct named event
+        carrying the secret-free, copyable invocation (US1, FR-001/002/003)
+      - ``data: "$ <invocation>\\n\\n"\\n\\n`` — legacy inline chunk (back-compat)
+      - ``data: "text chunk"\\n\\n`` — stdout/stderr as produced (US2, FR-004)
+      - ``event: done\\ndata: {...}\\n\\n`` — terminal event (US3, FR-006)
 
     `env_extra` is merged on top of the inherited environment after
-    ``PYTHONUNBUFFERED``. Used to inject per-route LLM backend env
-    (``DGX_ENDPOINT`` / ``DGX_MODEL``) without leaking it into routes that
-    must stay on the default Anthropic path.
+    ``PYTHONUNBUFFERED``. Secrets (API keys) are inherited from the server
+    environment, never on the command line — so cmd_display is secret-safe.
 
-    `on_complete`, if provided, fires once with the returncode after
-    ``proc.wait()`` returns but before the SSE ``done`` event is sent.
-    Exceptions are swallowed so a faulty hook can never break the stream.
-    Used by the editor routes to append a row to ``activity.jsonl``.
+    `on_complete`, if provided, fires once with the returncode (or None on
+    abort) from the finally block — always fires on every exit path so that
+    callers (e.g. ensemble.py's _RUNNING lock release) are never orphaned.
 
-    On exit, writes a per-run log file under `<cwd>/logs/` capturing the
-    command line, returncode, duration, and full output so failed runs can
-    be reproduced after the browser session is closed.
+    On exit (normal, explicit-abort, or disconnect), writes a per-run log
+    under ``<cwd>/logs/`` capturing the command, full output, result, and
+    duration — survives browser close (FR-007, SC-006).
+
+    Termination (US4, R1):
+    Subprocess is launched in its own session (``start_new_session=True``) so
+    the whole worker tree is signalable as a group. When the client disconnects
+    (or calls es.close()), Starlette cancels the response task via anyio's
+    cancel scope, which propagates as CancelledError into this generator.  The
+    finally block sends SIGTERM to the process group and schedules SIGKILL via
+    loop.call_later (avoiding any await in the cancelled context, where any await
+    would re-raise CancelledError immediately, per Starlette's anyio cancel scope).
     """
     env = {**os.environ, "PYTHONUNBUFFERED": "1"}
     if env_extra:
@@ -80,44 +126,83 @@ async def stream_subprocess(
     env_prefix = " \\\n  ".join(f"{k}={v}" for k, v in (env_extra or {}).items())
     cmd_parts = ([env_prefix] if env_prefix else []) + list(cmd)
     cmd_display = " \\\n  ".join(cmd_parts)
-    yield f"data: {json.dumps(f'$ {cmd_display}\\n\\n')}\n\n"
 
-    proc = await asyncio.create_subprocess_exec(
-        *cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.STDOUT,
-        cwd=cwd,
-        env=env,
-    )
-
-    assert proc.stdout is not None
+    # proc is initialised here so the finally can reference it even if aclose()
+    # is called before the subprocess starts (e.g. during the command yields).
+    proc: asyncio.subprocess.Process | None = None
     buf = ""
     captured: list[str] = []
     started = time.monotonic()
-    while True:
-        chunk = await proc.stdout.read(64)
-        if not chunk:
-            break
-        buf += chunk.decode("utf-8", errors="replace")
-        if len(buf) >= 20 or "\n" in buf:
+
+    try:
+        # US1: distinct named event for copyable command (FR-001/002/003) — FIRST
+        # These yields are inside the try so that aclose() before subprocess start
+        # still triggers the finally (on_complete / log write).
+        yield f"event: command\ndata: {json.dumps(cmd_display)}\n\n"
+        # Back-compat inline chunk (clients ignoring the command event still see it)
+        yield f"data: {json.dumps(f'$ {cmd_display}\\n\\n')}\n\n"
+
+        proc = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT,
+            cwd=cwd,
+            env=env,
+            start_new_session=True,  # own process group → killpg kills child workers (R1)
+        )
+
+        assert proc.stdout is not None
+        while True:
+            chunk = await proc.stdout.read(64)
+            if not chunk:
+                break
+            buf += chunk.decode("utf-8", errors="replace")
+            if len(buf) >= 20 or "\n" in buf:
+                captured.append(buf)
+                yield f"data: {json.dumps(buf)}\n\n"
+                buf = ""
+
+        if buf:
             captured.append(buf)
             yield f"data: {json.dumps(buf)}\n\n"
-            buf = ""
 
-    if buf:
-        captured.append(buf)
-        yield f"data: {json.dumps(buf)}\n\n"
+        await proc.wait()
 
-    await proc.wait()
-    _save_run_log(cmd, cwd, "".join(captured), proc.returncode,
-                  time.monotonic() - started)
-    if on_complete is not None:
-        try:
-            on_complete(proc.returncode)
-        except Exception:
-            # Activity recording is opportunistic — never break the stream.
-            pass
-    yield f"event: done\ndata: {json.dumps({'returncode': proc.returncode})}\n\n"
+    finally:
+        # Fires on: normal exit, explicit abort (es.close()), browser disconnect.
+        # Guard on proc/returncode to avoid signaling an already-exited process
+        # or one that was never started (aclose before proc was created).
+        if proc is not None and proc.returncode is None:
+            try:
+                pgid = os.getpgid(proc.pid)
+                _killpg_safe(pgid, signal.SIGTERM)
+                # SIGKILL via call_later — do NOT await here. Starlette delivers
+                # disconnect as anyio cancel-scope cancellation, which makes any
+                # await in this finally re-raise CancelledError immediately.
+                # call_later schedules from the event loop after finally exits,
+                # guaranteeing bounded stop within GRACE_SECONDS (FR-008).
+                loop = asyncio.get_running_loop()
+                loop.call_later(GRACE_SECONDS, _killpg_safe, pgid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass  # already exited between the returncode check and getpgid
+
+        returncode = proc.returncode if proc is not None else None
+        result = classify_result(returncode)
+        _save_run_log(cmd, cwd, "".join(captured), returncode, result,
+                      time.monotonic() - started)
+        if on_complete is not None:
+            try:
+                on_complete(returncode)
+            except Exception:
+                pass  # activity recording is opportunistic — never break the stream
+
+    # Only reached on normal completion (abort/disconnect exits via exception propagation)
+    if proc is not None:
+        result = classify_result(proc.returncode)
+        done_payload: dict[str, object] = {"returncode": proc.returncode}
+        if result == "aborted":
+            done_payload["aborted"] = True
+        yield f"event: done\ndata: {json.dumps(done_payload)}\n\n"
 
 
 async def sse_error_stream(message: str, returncode: int = 1) -> AsyncGenerator[str, None]:

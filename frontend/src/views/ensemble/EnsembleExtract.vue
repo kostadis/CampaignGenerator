@@ -3,12 +3,13 @@ import { ref, onMounted, computed } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import { useEnsembleRun, readEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
 import StreamOutput from '../../components/shared/StreamOutput.vue'
+import RunCommandBar from '../../components/shared/RunCommandBar.vue'
 import ChapterPicker from './ChapterPicker.vue'
 
 const emit = defineEmits<{ changed: [] }>()
 const config = useConfigStore()
 const cfg = ref<EnsembleConfig>(readEnsembleConfig({}))
-const { output, status, returnCode, run, clear } = useEnsembleRun()
+const { output, status, returnCode, command, run, abort, clear } = useEnsembleRun()
 
 onMounted(async () => {
   await config.load()
@@ -55,17 +56,20 @@ function start() {
       @update:glob="persistChapters"
       @update:selected="persistChapters" />
 
+    <RunCommandBar :command="command" />
+
     <div class="controls">
       <button class="btn-success" :disabled="status === 'running' || !canRun" @click="start">
         {{ status === 'running' ? 'Running…'
            : canRun ? `▶ Run extraction (${selectedCount})` : '▶ Run extraction' }}
       </button>
-      <span v-if="!canRun" class="need">Select at least one chapter to run.</span>
-      <span v-if="returnCode !== null" :class="returnCode === 0 ? 'ok' : 'err'">
-        {{ returnCode === 0 ? 'Done' : `Exit ${returnCode}` }}
-      </span>
+      <button v-if="status === 'running'" class="btn-warn btn-sm" @click="abort">Abort</button>
+      <span v-if="!canRun && status !== 'running'" class="need">Select at least one chapter to run.</span>
+      <span v-if="status === 'done'" class="ok">Done</span>
+      <span v-else-if="status === 'error'" class="err">Exit {{ returnCode }}</span>
+      <span v-else-if="status === 'aborted'" class="aborted">Aborted</span>
       <span style="flex:1"></span>
-      <button v-if="output" class="btn-neutral btn-sm" @click="clear">Clear</button>
+      <button v-if="output && status !== 'running'" class="btn-neutral btn-sm" @click="clear">Clear</button>
     </div>
     <StreamOutput v-if="output" :text="output" />
   </div>
@@ -78,5 +82,6 @@ h2 { font-size: 16px; margin-bottom: 6px; }
 .controls { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .ok { color: var(--green); font-size: 12px; font-weight: 600; }
 .err { color: var(--red); font-size: 12px; font-weight: 600; }
+.aborted { color: var(--peach); font-size: 12px; font-weight: 600; }
 .need { color: var(--peach); font-size: 12px; }
 </style>

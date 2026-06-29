@@ -12,6 +12,19 @@ const listRun = useEnsembleRun()
 const aggRun = useEnsembleRun()
 const threadsRun = useEnsembleRun()
 
+function statusLabel(s: string, rc: number | null): string {
+  if (s === 'done') return 'Done'
+  if (s === 'error') return `Exit ${rc}`
+  if (s === 'aborted') return 'Aborted'
+  return ''
+}
+function statusClass(s: string): string {
+  if (s === 'done') return 'ok'
+  if (s === 'error') return 'err'
+  if (s === 'aborted') return 'aborted'
+  return ''
+}
+
 // Gate state — aggregation is blocked until the operator confirms they reviewed
 // scope + aliases (Principle II: no precision decision auto-fed downstream).
 const gateConfirmed = ref(false)
@@ -88,9 +101,16 @@ function runThreads() {
         <code>[location]</code>-scoped — this is a precision decision; you may also
         run <code>facts_to_state.py --list</code> at the CLI.
       </p>
-      <button class="btn-neutral" :disabled="listRun.status.value === 'running'" @click="runList">
-        {{ listRun.status.value === 'running' ? 'Listing…' : 'Run scope list' }}
-      </button>
+      <div class="controls">
+        <button class="btn-neutral" :disabled="listRun.status.value === 'running'" @click="runList">
+          {{ listRun.status.value === 'running' ? 'Listing…' : 'Run scope list' }}
+        </button>
+        <button v-if="listRun.status.value === 'running'" class="btn-warn btn-sm" @click="listRun.abort()">Abort</button>
+        <span v-if="statusLabel(listRun.status.value, listRun.returnCode.value)"
+              :class="statusClass(listRun.status.value)">
+          {{ statusLabel(listRun.status.value, listRun.returnCode.value) }}
+        </span>
+      </div>
       <StreamOutput v-if="listRun.output.value" :text="listRun.output.value" />
     </section>
 
@@ -128,11 +148,16 @@ function runThreads() {
                 @click="runAggregate">
           {{ aggRun.status.value === 'running' ? 'Aggregating…' : '▶ Aggregate' }}
         </button>
-        <span v-if="aggRun.returnCode.value !== null"
-              :class="aggRun.returnCode.value === 0 ? 'ok' : 'err'">
-          {{ aggRun.returnCode.value === 0 ? 'Done' : `Exit ${aggRun.returnCode.value}` }}
+        <button v-if="aggRun.status.value === 'running'" class="btn-warn btn-sm" @click="aggRun.abort()">Abort</button>
+        <span v-if="statusLabel(aggRun.status.value, aggRun.returnCode.value)"
+              :class="statusClass(aggRun.status.value)">
+          {{ statusLabel(aggRun.status.value, aggRun.returnCode.value) }}
         </span>
-        <button class="btn-neutral btn-sm" @click="runThreads">Render threads.md</button>
+        <button class="btn-neutral btn-sm"
+                :disabled="threadsRun.status.value === 'running'"
+                @click="runThreads">
+          {{ threadsRun.status.value === 'running' ? 'Rendering…' : 'Render threads.md' }}
+        </button>
       </div>
       <StreamOutput v-if="aggRun.output.value" :text="aggRun.output.value" />
       <StreamOutput v-if="threadsRun.output.value" :text="threadsRun.output.value" />
@@ -153,4 +178,5 @@ h3 { font-size: 13px; margin-bottom: 4px; }
 .confirm { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-bottom: 6px; }
 .ok { color: var(--green); font-size: 12px; font-weight: 600; }
 .err { color: var(--red); font-size: 12px; font-weight: 600; }
+.aborted { color: var(--peach); font-size: 12px; font-weight: 600; }
 </style>

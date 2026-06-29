@@ -6,8 +6,13 @@ import { connectSSE } from '../../api/sse'
  *  don't need it. */
 export function useEnsembleRun() {
   const output = ref('')
-  const status = ref<'idle' | 'running' | 'done' | 'error'>('idle')
+  const status = ref<'idle' | 'running' | 'done' | 'error' | 'aborted'>('idle')
   const returnCode = ref<number | null>(null)
+  /** Secret-free, copyable invocation from the server's `command` SSE event (US1). */
+  const command = ref<string>('')
+
+  // Private EventSource handle — kept so abort() can close it.
+  let _es: EventSource | null = null
 
   function buildUrl(endpoint: string, params: Record<string, any>): string {
     const url = new URL(endpoint, window.location.origin)
@@ -29,24 +34,58 @@ export function useEnsembleRun() {
     status.value = 'running'
     output.value = ''
     returnCode.value = null
-    connectSSE(buildUrl(endpoint, params), {
+    command.value = ''
+    _es = connectSSE(buildUrl(endpoint, params), {
+      onCommand(cmd) { command.value = cmd },
       onData(t) { output.value += t },
-      onDone(rc) {
+      onDone(rc, error) {
+        _es = null
         status.value = rc === 0 ? 'done' : 'error'
         returnCode.value = rc
+        // Surface precondition refusals (FR-011): done.error carries the message.
+        if (error && !output.value.includes(error)) {
+          output.value += `\nError: ${error}\n`
+        }
         if (onDone) onDone(rc)
       },
-      onError() { status.value = 'error' },
+      onError(_e) {
+        // I1: onerror during 'running' = network drop / disconnect.
+        // Close the EventSource explicitly — prevents automatic reconnect which
+        // would re-issue the GET and silently restart the run (metered calls!).
+        // Treat as implicit abort; the server group-kills the process tree.
+        if (status.value === 'running') {
+          _es?.close()
+          _es = null
+          status.value = 'aborted'
+          output.value += '\n[connection lost — run stopped]\n'
+        } else {
+          // Not running (e.g. initial connection failure) — just error out.
+          _es?.close()
+          _es = null
+          status.value = 'error'
+        }
+      },
     })
+  }
+
+  /** Close the EventSource and mark status as aborted (valid only from 'running').
+   *  The server observes the connection drop and group-kills the worker tree.
+   */
+  function abort() {
+    if (status.value !== 'running') return
+    _es?.close()
+    _es = null
+    status.value = 'aborted'
   }
 
   function clear() {
     output.value = ''
     status.value = 'idle'
     returnCode.value = null
+    command.value = ''
   }
 
-  return { output, status, returnCode, run, clear }
+  return { output, status, returnCode, command, run, abort, clear }
 }
 
 export interface BackendProfile {

@@ -152,8 +152,13 @@ a CLI with `--backend openrouter --model <openrouter-id>`, or via the
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/001-ensemble-workflow-ui/plan.md` (Ensemble Grounding-Doc Workflow UI —
-adds a stepped `/ensemble` UI page and OpenRouter as a per-stage LLM backend
-through the single `campaignlib` seam; leaves the existing `/grounding` Anthropic
-path unchanged).
+`specs/002-ensemble-run-observability/plan.md` (Ensemble Run Observability —
+makes an ensemble-stage run observable and controllable from the `/ensemble` UI:
+a copyable, secret-free reproducible command; live streamed output; an
+unambiguous succeeded/failed/aborted result plus a durable on-disk run record;
+and abort = graceful→force process-group kill, where a lost connection is an
+implicit abort. Engine correctness — process-group kill in the shared
+`server/subprocess_runner.py` seam, atomic per-unit cache writes in
+`ensemble_batch.py`/`facts_to_state.py` — stays in the CLI/seam layer, not the
+router. Predecessor: `specs/001-ensemble-workflow-ui/plan.md`.).
 <!-- SPECKIT END -->

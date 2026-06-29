@@ -10,6 +10,19 @@ const config = useConfigStore()
 const cfg = ref<EnsembleConfig>(readEnsembleConfig({}))
 const run = useEnsembleRun()
 
+function statusLabel(s: string, rc: number | null): string {
+  if (s === 'done') return 'Draft written'
+  if (s === 'error') return `Exit ${rc}`
+  if (s === 'aborted') return 'Aborted'
+  return ''
+}
+function statusClass(s: string): string {
+  if (s === 'done') return 'ok'
+  if (s === 'error') return 'err'
+  if (s === 'aborted') return 'aborted'
+  return ''
+}
+
 const DOCS = [
   { id: 'world_state', label: 'World State' },
   { id: 'campaign_state', label: 'Campaign State' },
@@ -64,9 +77,10 @@ async function promote(doc: string) {
       <button class="btn-success" :disabled="run.status.value === 'running'" @click="synthesize">
         {{ run.status.value === 'running' ? 'Synthesizing…' : '▶ Synthesize draft' }}
       </button>
-      <span v-if="run.returnCode.value !== null"
-            :class="run.returnCode.value === 0 ? 'ok' : 'err'">
-        {{ run.returnCode.value === 0 ? 'Draft written' : `Exit ${run.returnCode.value}` }}
+      <button v-if="run.status.value === 'running'" class="btn-warn btn-sm" @click="run.abort()">Abort</button>
+      <span v-if="statusLabel(run.status.value, run.returnCode.value)"
+            :class="statusClass(run.status.value)">
+        {{ statusLabel(run.status.value, run.returnCode.value) }}
       </span>
     </div>
     <StreamOutput v-if="run.output.value" :text="run.output.value" />
@@ -94,6 +108,7 @@ h3 { font-size: 13px; margin: 16px 0 6px; }
 select { font-size: 12px; padding: 5px 7px; background: var(--bg-surface0); color: var(--text); border: 1px solid var(--bg-surface1); border-radius: 4px; }
 .ok { color: var(--green); font-size: 12px; font-weight: 600; }
 .err { color: var(--red); font-size: 12px; font-weight: 600; }
+.aborted { color: var(--peach); font-size: 12px; font-weight: 600; }
 .promote-tbl td { padding: 4px 10px 4px 0; font-size: 12px; }
 .diff { background: #141420; border: 1px solid var(--bg-surface0); border-radius: 4px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
 </style>
