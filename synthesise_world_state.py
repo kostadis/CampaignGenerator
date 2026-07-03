@@ -68,6 +68,8 @@ import yaml
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
+    client_from_args,
     load_agent_prompt,
     make_client,
     stream_api,
@@ -334,8 +336,10 @@ def main() -> None:
                              "input for grounding (default: on). --no-quotes for "
                              "a clean baseline comparison against the extracts.")
     parser.add_argument("--model", default=DEFAULT_MODEL,
-                        help=f"Claude model id (default: {DEFAULT_MODEL}). "
-                             f"Use claude-opus-4-7 for highest-quality synthesis.")
+                        help=f"Model id (default: {DEFAULT_MODEL}). "
+                             f"Use claude-opus-4-7 for highest-quality synthesis; "
+                             f"an OpenRouter id (e.g. anthropic/claude-sonnet-4) for --backend openrouter.")
+    add_backend_args(parser)
     parser.add_argument("--max-tokens", type=int, default=16000,
                         help="max_tokens for the synthesis call (default: 16000).")
     parser.add_argument("--dump-input", default=None, metavar="FILE",
@@ -470,7 +474,7 @@ def main() -> None:
     print(f"[Input: {len(user_prompt):,} chars]")
     print("=" * 60)
 
-    client = make_client()
+    client = client_from_args(args)
     world_state = stream_api(
         client,
         system_prompt,

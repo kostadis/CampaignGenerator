@@ -58,7 +58,9 @@ import yaml
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
     build_alias_normalizer,
+    client_from_args,
     format_npc_roster,
     load_agent_prompt,
     load_alias_map,
@@ -734,7 +736,8 @@ def main() -> None:
                              "(e.g. --since 11 when extract_011.md is the new chunk) to skip "
                              "historical chunks already rolled into dossiers.")
     parser.add_argument("--model", default=DEFAULT_MODEL,
-                        help="Claude model to use")
+                        help="Model id (Claude id, or an OpenRouter id for --backend openrouter)")
+    add_backend_args(parser)
     parser.add_argument("--campaign-dir", default=None,
                         help="Campaign workspace root (default: $CAMPAIGN_DIR "
                              "or the output file's parent, or CWD). Used to "
@@ -819,7 +822,7 @@ def main() -> None:
             print(f"Error: file not found: {f}", file=sys.stderr)
             sys.exit(1)
 
-    client = make_client()
+    client = client_from_args(args)
 
     # ── Build-dossiers mode ───────────────────────────────────────────────────
     if args.build_dossiers:

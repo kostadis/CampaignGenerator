@@ -43,6 +43,16 @@ Users specify **campaign directory** + **session directory** on the Session Conf
 
 **Grounding Docs**: Campaign State, World State, Party Document, Planning Document
 
+**Ensemble** (four-stage extraction + synthesis workflow):
+- **Stage 1 — Extraction**: Runs `ensemble_batch.py` over the selected chapters.
+  - **Command bar**: Shows the exact, secret-free, copyable invocation emitted by the server. Paste it into a workspace terminal to reproduce the run. No API key ever appears in the command.
+  - **Running state**: Button shows "Running…" while the stage is active; live output streams incrementally.
+  - **Abort**: An Abort button appears while running. Clicking it closes the stream — the server group-kills the entire worker tree (including per-chapter `ensemble_extract` subprocesses) via SIGTERM → SIGKILL. A "connection lost" note appears if the browser drops the network mid-run (treated as an implicit abort; no unobserved token spending).
+  - **Finished states**: "Done" (exit 0), "Exit N" (failure), or "Aborted" — each visually distinct.
+  - **Durable record**: Every run writes `<campaign>/logs/<timestamp>_ensemble_batch.md` with the command, full output, result, and duration. Recoverable after closing the browser.
+- **Stage 2 — Fact Bundling**: Human-gated scope review + alias correction + aggregate step. Each sub-run has a running state, abort button, and success/failure/aborted labels.
+- **Stage 3 — Synthesis & Promotion**: Synthesizes draft grounding docs; human reviews diff before promoting.
+
 **Prep**: Session Prep, NPC Table, Query Summaries, Connection Graph
 
 **Setup**: D&D Sheet, Make Tracking

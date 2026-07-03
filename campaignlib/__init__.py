@@ -27,8 +27,11 @@ from .config import (
     load_agent_prompt,
     assemble_docs,
 )
-from .util import copy_to_clipboard, save_log
-from .api.client import make_client, call_api, call_api_with_tools, stream_api
+from .util import copy_to_clipboard, save_log, atomic_write_text, atomic_write_json
+from .api.client import (
+    make_client, call_api, call_api_with_tools, stream_api,
+    add_backend_args, client_from_args,
+)
 from .api.batch import (
     build_batch_request,
     submit_batch,
@@ -82,8 +85,12 @@ __all__ = [
     # util
     "copy_to_clipboard",
     "save_log",
+    "atomic_write_text",
+    "atomic_write_json",
     # api — client
     "make_client",
+    "add_backend_args",
+    "client_from_args",
     "call_api",
     "call_api_with_tools",
     "stream_api",

@@ -3,7 +3,29 @@
 import os
 import sys
 
-from .backends import _OpenAICompatClient, _ClaudeCodeClient
+from .backends import _OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient
+
+# Clients that accept the DGX-style `thinking` request extra (mapped per-backend
+# to the right knob: enable_thinking for vLLM, `reasoning` for OpenRouter). The
+# real Anthropic SDK would reject it, so it is only forwarded to these.
+_THINKING_EXTRA_CLIENTS = (_OpenAICompatClient, _OpenRouterClient)
+
+
+def _require_nonempty(text: str) -> str:
+    """Guard against a silently-empty model response (Constitution Principle I).
+
+    A reasoning model can spend its entire token budget on a thinking trace and
+    return empty content — which would otherwise be written to disk as a valid
+    (but empty) extraction/synthesis artifact. Fail loudly instead so the caller
+    aborts before persisting anything.
+    """
+    if text is None or not text.strip():
+        raise RuntimeError(
+            "model returned empty output (no content). On a reasoning model this "
+            "usually means the token budget was spent on a thinking trace — disable "
+            "thinking (DGX_NO_THINKING=1 / OPENROUTER_NO_THINKING=1) or raise max_tokens."
+        )
+    return text
 
 
 def make_client(endpoint: str | None = None, model_override: str | None = None,
@@ -30,6 +52,8 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
     backend = backend or os.environ.get("CG_BACKEND")
     if backend == "claude-code":
         return _ClaudeCodeClient(model_override=model_override)
+    if backend == "openrouter":
+        return _OpenRouterClient(model_override=model_override)
     endpoint = endpoint or os.environ.get("DGX_ENDPOINT")
     if endpoint:
         return _OpenAICompatClient(endpoint, model_override=model_override)
@@ -39,6 +63,37 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
         print("Error: anthropic not installed. Run: pip install anthropic", file=sys.stderr)
         sys.exit(1)
     return anthropic.Anthropic()
+
+
+def add_backend_args(parser) -> None:
+    """Register the uniform --backend/--endpoint selection on a synthesis CLI.
+
+    Shared so every LLM-bearing script speaks the same backend vocabulary
+    (Constitution Principle V). Default is anthropic — see client_from_args for
+    the backward-compatibility contract.
+    """
+    parser.add_argument(
+        "--backend", choices=["anthropic", "dgx", "openrouter"], default="anthropic",
+        help="LLM backend (default: anthropic). 'dgx'/'openrouter' route through the "
+             "campaignlib seam; with no flag, behaviour is unchanged (Anthropic API).")
+    parser.add_argument(
+        "--endpoint", default=None, metavar="URL",
+        help="OpenAI-compatible endpoint for --backend dgx (OpenRouter uses its own base URL).")
+
+
+def client_from_args(args):
+    """Build a client from parsed --backend/--endpoint/--model args.
+
+    Backward-compatible: with the default ``--backend anthropic`` and no
+    ``--endpoint``, this resolves to ``make_client()`` exactly — env vars
+    (CG_BACKEND / DGX_ENDPOINT) still apply, so existing invocations are
+    byte-for-byte unchanged. For dgx/openrouter the chosen ``--model`` becomes the
+    seam's model override.
+    """
+    backend = None if getattr(args, "backend", "anthropic") == "anthropic" else args.backend
+    model_override = getattr(args, "model", None) if backend in ("dgx", "openrouter") else None
+    return make_client(backend=backend, endpoint=getattr(args, "endpoint", None),
+                       model_override=model_override)
 
 
 def _is_retryable(exc) -> bool:
@@ -98,8 +153,8 @@ def call_api(client, system: str, content, model: str, max_tokens: int = 8096,
     """
     import time
     messages = [{"role": "user", "content": content}]
-    # `thinking` is a DGX-only knob; the real Anthropic SDK would reject it.
-    extra = {"thinking": thinking} if isinstance(client, _OpenAICompatClient) else {}
+    # `thinking` is a local/OpenRouter knob; the real Anthropic SDK would reject it.
+    extra = {"thinking": thinking} if isinstance(client, _THINKING_EXTRA_CLIENTS) else {}
     delays = [10, 20, 40]
     for attempt, delay in enumerate([-1] + delays):
         if delay >= 0:
@@ -114,7 +169,7 @@ def call_api(client, system: str, content, model: str, max_tokens: int = 8096,
                 messages=messages,
                 **extra,
             )
-            return response.content[0].text
+            return _require_nonempty(response.content[0].text)
         except Exception as e:
             if _is_retryable(e) and attempt < len(delays):
                 continue
@@ -186,8 +241,8 @@ def stream_api(client, system, user: str, model: str, max_tokens: int = 8096,
     else:
         system_arg = system
 
-    # `thinking` is a DGX-only knob; the real Anthropic SDK would reject it.
-    extra = {"thinking": thinking} if isinstance(client, _OpenAICompatClient) else {}
+    # `thinking` is a local/OpenRouter knob; the real Anthropic SDK would reject it.
+    extra = {"thinking": thinking} if isinstance(client, _THINKING_EXTRA_CLIENTS) else {}
     delays = [60, 120, 240]  # seconds to wait before each retry
     for attempt, delay in enumerate([-1] + delays):
         if delay >= 0:
@@ -209,7 +264,7 @@ def stream_api(client, system, user: str, model: str, max_tokens: int = 8096,
                     chunks.append(text)
             if not silent:
                 print()
-            return "".join(chunks)
+            return _require_nonempty("".join(chunks))
         except Exception as e:
             if _is_retryable(e) and attempt < len(delays):
                 continue

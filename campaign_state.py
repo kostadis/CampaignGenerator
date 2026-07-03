@@ -66,7 +66,9 @@ from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
     build_alias_normalizer,
+    client_from_args,
     format_npc_roster,
     load_agent_prompt,
     load_alias_map,
@@ -151,7 +153,8 @@ def main() -> None:
                              "canonical name before extract/synth, and a "
                              "'Known NPCs' roster seeds the system prompts.")
     parser.add_argument("--model", default=DEFAULT_MODEL,
-                        help="Claude model to use")
+                        help="Model id (Claude id, or an OpenRouter id for --backend openrouter)")
+    add_backend_args(parser)
     parser.add_argument("--dump-input", default=None, metavar="FILE",
                         help="Write the synthesis prompt to FILE (and FILE.system.md) "
                              "without making an API call — for use with `claude -p`.")
@@ -195,7 +198,7 @@ def main() -> None:
     if alias_map:
         print(f"Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
 
-    client = make_client()
+    client = client_from_args(args)
 
     if tracked_items:
         print(f"\n  Tracking {len(tracked_items)} item(s):")

@@ -65,6 +65,33 @@ const routes = [
     ],
   },
   {
+    path: '/ensemble',
+    component: () => import('./views/EnsembleWorkflow.vue'),
+    children: [
+      { path: '', redirect: '/ensemble/setup' },
+      {
+        path: 'setup',
+        name: 'ensemble-setup',
+        component: () => import('./views/ensemble/EnsembleSetup.vue'),
+      },
+      {
+        path: 'extract',
+        name: 'ensemble-extract',
+        component: () => import('./views/ensemble/EnsembleExtract.vue'),
+      },
+      {
+        path: 'bundle',
+        name: 'ensemble-bundle',
+        component: () => import('./views/ensemble/EnsembleBundle.vue'),
+      },
+      {
+        path: 'synthesize',
+        name: 'ensemble-synthesize',
+        component: () => import('./views/ensemble/EnsembleSynthesize.vue'),
+      },
+    ],
+  },
+  {
     path: '/prep',
     component: () => import('./views/PrepTools.vue'),
     children: [

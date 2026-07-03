@@ -1,7 +1,41 @@
 """Clipboard and timestamped-log helpers."""
 
+import json
+import os
 from datetime import datetime
 from pathlib import Path
+from typing import Any
+
+
+def atomic_write_text(path: Path | str, text: str, encoding: str = "utf-8") -> None:
+    """Write text to path atomically (FR-014: no partial file at the trusted path).
+
+    Writes to a temp file in the same directory as `path`, then renames via
+    os.replace — a POSIX atomic rename on the same filesystem. A SIGKILL during
+    write leaves at most a discardable .tmp file; the destination is always either
+    the complete new content or the previous version, never a partial write.
+    """
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    try:
+        tmp.write_text(text, encoding=encoding)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            tmp.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise
+
+
+def atomic_write_json(path: Path | str, obj: Any, indent: int = 2) -> None:
+    """Write obj as JSON to path atomically (FR-014).
+
+    Serialises as json.dumps(obj, indent=indent) + "\\n" to match the existing
+    ensemble_merge.py output format exactly, then delegates to atomic_write_text.
+    """
+    atomic_write_text(path, json.dumps(obj, indent=indent) + "\n")
 
 
 def copy_to_clipboard(text: str) -> None:

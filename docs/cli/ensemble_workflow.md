@@ -1,5 +1,13 @@
 # Ensemble extraction workflow
 
+> **Run this from the UI.** The Ensemble Workflow page (`/ensemble` in the web UI)
+> mechanizes this whole sequence — Setup → Extract → Bundle → Synthesize — with the
+> scope-review, alias-correction, and diff-before-promote checkpoints kept as gates
+> you satisfy in the CLI or a Claude chat. Each LLM-bearing stage is backend-selectable
+> (Anthropic / DGX-Spark / **OpenRouter**), chosen independently for extraction and
+> synthesis. The UI only invokes the same CLI commands documented below; nothing here
+> is bypassed. See `docs/web/web_ui.md` and `specs/001-ensemble-workflow-ui/`.
+
 End-to-end guide: from a set of chapter files to reviewed dossiers ready for synthesis into the four grounding docs (`world_state.md`, `campaign_state.md`, `party.md`, `planning.md`).
 
 The core insight is that **extraction is expensive and should happen once**. Running the Claude API inside each grounding-doc tool (the old path) re-extracts the same chapter text three or four times, spending 2.5–3.4M metered tokens per full refresh. The local ensemble approach extracts once on Spark hardware (~free), aggregates to per-entity dossiers, lets a human review scope, then calls the API only for the final synthesis per doc (~280K tokens total).
@@ -992,6 +1000,17 @@ cp docs/world_state_draft.md docs/world_state.md
 Old per-tool API path (distill / planning / party / campaign_state each re-extracting from the chapter bible): **~2.5–3.4M metered tokens** per full refresh. The gap widens with each additional doc, since extraction is shared here but repeated there.
 
 ---
+
+## Observability & abort
+
+All ensemble stages (extraction, bundling, synthesis) support:
+
+- **Copyable command**: Every UI-launched run emits the exact, secret-free invocation as the first SSE event. Paste it into a terminal in the campaign workspace to reproduce the run. No API key appears in the command — keys are inherited from the server environment, never on the command line.
+- **Live streaming**: Output lines appear incrementally as each chapter/step completes. The UI shows a "Running…" state while the run is active.
+- **Abort**: The Abort button (UI) closes the EventSource connection. The server observes the disconnect and group-kills the entire worker tree (SIGTERM → SIGKILL after ~4 s) — no orphaned `ensemble_extract` or `facts_to_state` subprocesses keep spending tokens.
+- **Disconnect = implicit abort**: Closing the browser tab or dropping the network mid-run is treated identically to clicking Abort. The UI does NOT auto-reconnect during a running stage (that would silently restart the run). The server kills the process group when the connection drops.
+- **Durable record**: Every run writes `<campaign>/logs/<timestamp>_<script>.md` with the command, full output, outcome (succeeded / failed / aborted), and duration. Recoverable after the browser is closed.
+- **Cache integrity**: Per-chapter `merged.json` and per-entity `state_dossiers/*.md` are written atomically (temp-file + rename). A force-kill during write never leaves a truncated file at the resume-trusted path — the next run either finds a complete artifact (skip) or none (re-run), never a partial one.
 
 ## See also
 

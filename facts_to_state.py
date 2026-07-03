@@ -44,6 +44,7 @@ from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
+    atomic_write_text,
     load_agent_prompt,
     make_client,
     stream_api,
@@ -358,7 +359,7 @@ def write_dossier(out_dir: Path, b: Bundle, body: str) -> Path:
     fm = (f"---\nname: {b.display}\ntype: {b.type}\n"
           f"n_facts: {len(b.facts)}\nchapters: {lo}-{hi}\n---\n\n")
     dest = dossier_path(out_dir, b)
-    dest.write_text(fm + body.strip() + "\n", encoding="utf-8")
+    atomic_write_text(dest, fm + body.strip() + "\n")  # FR-014: atomic publish
     return dest
 
 

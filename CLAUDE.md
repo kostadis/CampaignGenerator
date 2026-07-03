@@ -142,3 +142,23 @@ cd frontend && npm install   # Vue 3 frontend
 ```
 
 `ANTHROPIC_API_KEY` must be set in the environment.
+
+For the OpenRouter backend (ensemble workflow synthesis/extraction), `pip install
+openai` and set `OPENROUTER_API_KEY` in the environment. OpenRouter is reached
+only through `campaignlib/api` (`make_client(backend="openrouter")`); select it on
+a CLI with `--backend openrouter --model <openrouter-id>`, or via the
+`CG_BACKEND=openrouter` env var.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan:
+`specs/002-ensemble-run-observability/plan.md` (Ensemble Run Observability —
+makes an ensemble-stage run observable and controllable from the `/ensemble` UI:
+a copyable, secret-free reproducible command; live streamed output; an
+unambiguous succeeded/failed/aborted result plus a durable on-disk run record;
+and abort = graceful→force process-group kill, where a lost connection is an
+implicit abort. Engine correctness — process-group kill in the shared
+`server/subprocess_runner.py` seam, atomic per-unit cache writes in
+`ensemble_batch.py`/`facts_to_state.py` — stays in the CLI/seam layer, not the
+router. Predecessor: `specs/001-ensemble-workflow-ui/plan.md`.).
+<!-- SPECKIT END -->

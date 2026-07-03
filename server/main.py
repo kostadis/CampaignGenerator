@@ -12,7 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from server.config import derive_campaign_paths, derive_session_paths
 from server.config_service import CampaignConfigService, ConfigError
 from server.routers import (
-    config_routes, connections, experimental, grounding, prep,
+    config_routes, connections, ensemble, experimental, grounding, prep,
     scene_editor, session_workflow, setup,
 )
 
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(config_routes.router, prefix="/api/config", tags=["config"])
 app.include_router(session_workflow.router, prefix="/api/workflow", tags=["workflow"])
 app.include_router(grounding.router, prefix="/api/grounding", tags=["grounding"])
+app.include_router(ensemble.router, prefix="/api/ensemble", tags=["ensemble"])
 app.include_router(prep.router, prefix="/api/prep", tags=["prep"])
 app.include_router(setup.router, prefix="/api/setup", tags=["setup"])
 app.include_router(experimental.router, prefix="/api/experimental", tags=["experimental"])

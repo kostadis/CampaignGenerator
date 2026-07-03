@@ -6,12 +6,14 @@ campaignlib.api.client (stream_api / call_api) depends on.
 
 import json
 import os
+import sys
 
 
 from ..wiring import wiring_get  # noqa: E402
 
 # DGX model is EXTERNAL config (names what the DGX serves) — mneme-owned.
 DGX_DEFAULT_MODEL = wiring_get("dgx_model")
+OPENROUTER_DEFAULT_BASE_URL = "https://openrouter.ai/api/v1"
 
 
 def _flatten_to_text(value) -> str:
@@ -198,6 +200,76 @@ class _OpenAICompatClient:
         if thinking is None and os.environ.get("DGX_NO_THINKING"):
             thinking = False
         return self._dgxlib.resolve_model_config(resolved_model, thinking=thinking).extra_body
+
+
+# ── OpenRouter backend ───────────────────────────────────────────────────────
+#
+# OpenRouter (https://openrouter.ai) is an OpenAI-wire-compatible gateway to many
+# model vendors. It is reached ONLY through this class — Constitution Principle V
+# (one seam per boundary). Unlike the DGX adapter it (a) uses a real API key from
+# OPENROUTER_API_KEY, (b) does NOT consult the dgxlib model registry (OpenRouter
+# ids are namespaced, e.g. "anthropic/claude-sonnet-4", and pass through verbatim),
+# and (c) maps a no-thinking request to OpenRouter's `reasoning` control so the
+# silently-empty-extraction trap (a reasoning model spending its whole budget on a
+# think trace) can be suppressed on this path too.
+
+
+class _OpenRouterMessages(_OpenAICompatMessages):
+    """Messages façade for OpenRouter — same wire calls as the DGX adapter, but
+    model ids pass through verbatim (no dgxlib registry, no claude→DGX substitution)."""
+
+    def _resolve_model(self, model: str) -> str:
+        # Honor an explicit override; otherwise send the caller's id straight
+        # through. OpenRouter ids are vendor-namespaced, so the DGX adapter's
+        # "claude-* → DGX default" substitution must NOT apply here.
+        return self._client.model_override or model
+
+
+class _OpenRouterClient:
+    """Anthropic-shaped façade over OpenRouter's OpenAI-compatible API.
+
+    Presents the same small slice of the anthropic SDK surface
+    (``.messages.create`` / ``.messages.stream``) that stream_api / call_api use,
+    reusing the OpenAI-compat stream/response machinery.
+    """
+
+    def __init__(self, model_override: str | None = None):
+        # Check config before importing the SDK so a missing key fails with a
+        # clear, deterministic error (no silent fallback to another backend).
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        if not api_key:
+            raise RuntimeError(
+                "OPENROUTER_API_KEY is not set. The openrouter backend requires a key; "
+                "export OPENROUTER_API_KEY in the environment."
+            )
+        try:
+            from openai import OpenAI
+        except ImportError:
+            print("Error: openai not installed. Run: pip install openai", file=sys.stderr)
+            sys.exit(1)
+        base_url = (os.environ.get("OPENROUTER_BASE_URL")
+                    or OPENROUTER_DEFAULT_BASE_URL).rstrip("/")
+        self.model_override = model_override or os.environ.get("OPENROUTER_MODEL")
+        import httpx
+        env_to = os.environ.get("OPENROUTER_READ_TIMEOUT")
+        read_timeout = float(env_to) if env_to else 600.0
+        timeout = httpx.Timeout(connect=10.0, read=read_timeout, write=30.0, pool=30.0)
+        self.oai = OpenAI(base_url=base_url, api_key=api_key, timeout=timeout)
+        self.messages = _OpenRouterMessages(self)
+
+    def extra_body_for(self, resolved_model: str, thinking: bool | None) -> dict:
+        """Per-call request extras. Maps no-thinking to OpenRouter's `reasoning`.
+
+        ``thinking`` is a per-call decision: ``None`` leaves OpenRouter's default
+        (but OPENROUTER_NO_THINKING / DGX_NO_THINKING force it off for parity with
+        the DGX extraction path); ``False`` disables reasoning; ``True`` leaves it on.
+        """
+        if thinking is None and (os.environ.get("OPENROUTER_NO_THINKING")
+                                 or os.environ.get("DGX_NO_THINKING")):
+            thinking = False
+        if thinking is False:
+            return {"reasoning": {"enabled": False}}
+        return {}
 
 
 # ── Claude Code (subscription) backend ──────────────────────────────────────
