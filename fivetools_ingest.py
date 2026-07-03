@@ -67,6 +67,7 @@ from mempalace_client import MempalaceClient
 
 import fivetools_copy
 import fivetools_render
+import resolve_refs
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +80,10 @@ from campaignlib import wiring_get, wiring_path  # noqa: E402
 
 _DEFAULT_RPGLIB_URL = wiring_get("rpg_library_url")
 _DEFAULT_PDF_TRANSLATORS = wiring_path("pdf_translators")
-_DEFAULT_FIVETOOLS_DATA_ROOT = wiring_path("fivetools_data_root")
+# 5etools root: FIVETOOLS_DATA_ROOT → mneme wiring → None (shared resolution
+# path with fivetools_catalog). None here is fine — autodetect soft-fails and
+# ingest proceeds without book metadata rather than aborting.
+_DEFAULT_FIVETOOLS_DATA_ROOT = resolve_refs.default_fivetools_data_root()
 _STATE_DIRNAME = ".fivetools_ingest"
 _STATE_VERSION = 2
 
@@ -917,7 +921,10 @@ def _autodetect_data_root(json_path: Path | None) -> Path | None:
     package default when nothing is found.
     """
     if json_path is None:
-        return _DEFAULT_FIVETOOLS_DATA_ROOT if _DEFAULT_FIVETOOLS_DATA_ROOT.is_dir() else None
+        return _DEFAULT_FIVETOOLS_DATA_ROOT if (
+            _DEFAULT_FIVETOOLS_DATA_ROOT is not None
+            and _DEFAULT_FIVETOOLS_DATA_ROOT.is_dir()
+        ) else None
     p = json_path.resolve().parent
     for _ in range(8):  # bounded walk
         if p.name == "data" and p.is_dir():
@@ -925,7 +932,10 @@ def _autodetect_data_root(json_path: Path | None) -> Path | None:
         if p.parent == p:
             break
         p = p.parent
-    return _DEFAULT_FIVETOOLS_DATA_ROOT if _DEFAULT_FIVETOOLS_DATA_ROOT.is_dir() else None
+    return _DEFAULT_FIVETOOLS_DATA_ROOT if (
+        _DEFAULT_FIVETOOLS_DATA_ROOT is not None
+        and _DEFAULT_FIVETOOLS_DATA_ROOT.is_dir()
+    ) else None
 
 
 def ingest_file(

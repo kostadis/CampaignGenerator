@@ -22,7 +22,7 @@ from campaignlib import (
     copy_to_clipboard,
     find_default_config,
     load_config,
-    load_file,
+    load_repo_file,
     make_client,
     save_log,
     stream_api,
@@ -126,7 +126,7 @@ def run_pipeline_encounter(
     # Stage 1: Lore Oracle
     print("  [1/3 Lore Oracle]")
     print("  " + "─" * 56)
-    oracle_response = stream_api(client, load_file(agents["lore_oracle"], base_dir), user, model)
+    oracle_response = stream_api(client, load_repo_file(agents["lore_oracle"], base_dir), user, model)
     print("  " + "─" * 56)
 
     if "FLAGS" in oracle_response:
@@ -139,7 +139,7 @@ def run_pipeline_encounter(
     print("  " + "─" * 56)
     architect_response = stream_api(
         client,
-        load_file(agents["encounter_architect"], base_dir),
+        load_repo_file(agents["encounter_architect"], base_dir),
         f"{user}\n\n---\n\n## Lore Oracle Report\n\n{oracle_response}",
         model,
     )
@@ -150,7 +150,7 @@ def run_pipeline_encounter(
     print("  " + "─" * 56)
     voice_response = stream_api(
         client,
-        load_file(agents["voice_keeper"], base_dir),
+        load_repo_file(agents["voice_keeper"], base_dir),
         f"{user}\n\n---\n\n## Encounter Document\n\n{architect_response}",
         model,
     )
@@ -214,7 +214,7 @@ def run_session(client, config, outline: str, mode: str, model: str, clipboard: 
     """Run all beats in the session outline, one encounter document per beat."""
     log_dir = config.get("log_dir", "logs/")
     agents = config.get("agents", {})
-    system = load_file(config["system_prompt"], base_dir) if mode == "single" else None
+    system = load_repo_file(config["system_prompt"], base_dir) if mode == "single" else None
 
     beats = parse_session_beats(outline)
     if not beats:
@@ -372,13 +372,13 @@ def main() -> None:
     user = assemble_user_prompt(config, beat, base_dir)
 
     if args.mode == "single" and args.clipboard:
-        system = load_file(config["system_prompt"], base_dir)
+        system = load_repo_file(config["system_prompt"], base_dir)
         run_single(None, config, system, user, args.model, clipboard=True, no_log=args.no_log, output=args.output)
         return
 
     client = _make_client()
     if args.mode == "single":
-        run_single(client, config, load_file(config["system_prompt"], base_dir), user, args.model, clipboard=False, no_log=args.no_log, output=args.output)
+        run_single(client, config, load_repo_file(config["system_prompt"], base_dir), user, args.model, clipboard=False, no_log=args.no_log, output=args.output)
     else:
         run_pipeline(client, config, user, args.model, clipboard=args.clipboard, no_log=args.no_log, base_dir=base_dir, output=args.output)
 

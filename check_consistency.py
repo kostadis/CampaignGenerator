@@ -11,6 +11,7 @@ Usage:
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -123,6 +124,7 @@ def main() -> None:
     client = make_client()
     report = stream_api(
         client, CONSISTENCY_SYSTEM, prompt, args.model,
+        max_tokens=int(os.environ.get("CG_CONSISTENCY_MAX_TOKENS", "32000")),
         silent=True, verbose=args.verbose,
     )
 

@@ -27,7 +27,24 @@ from campaignlib import wiring_get
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from server.subprocess_runner import python_exe, stream_subprocess
+from server.subprocess_runner import (
+    python_exe,
+    sse_error_stream,
+    stream_subprocess,
+)
+
+
+def _sse_error(message: str):
+    """StreamingResponse that delivers a precondition failure over SSE.
+
+    Used instead of a 400 JSONResponse for endpoints the frontend opens with
+    an EventSource — see ``sse_error_stream`` for why the body must stream.
+    """
+    return StreamingResponse(
+        sse_error_stream(message),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 # ── Module-level state ──────────────────────────────────────────────────────
 # CONFIG is a derived view of the unified config service's resolved
@@ -608,14 +625,19 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
     return cmd
 
 
-def _llm_env() -> dict[str, str]:
+def _llm_env(*, allow_openai_compat: bool = True) -> dict[str, str]:
     """Translate the typed backend choice into env vars campaignlib.make_client honors.
 
     Returned dict is merged into the subprocess env by stream_subprocess.
     Empty dict (backend == "anthropic") means "no overrides — Anthropic API
-    via the default code path". All LLM-calling routes (enhance, extract,
-    narrate, scrub) pass this; plan routes are excluded because their LLM
-    paths use tool-use and the OpenAI-compat adapter does not support tools.
+    via the default code path". Every LLM-calling route must pass this so the
+    selected backend actually reaches the subprocess.
+
+    `allow_openai_compat=False` suppresses only the DGX (OpenAI-compat) path —
+    its adapter can't serve routes that may use tool-use — while still
+    forwarding the subscription backend, which speaks native Anthropic and is
+    always safe. Plan routes pass False: a DGX selection there falls back to
+    the Anthropic API, but a subscription selection is honored.
     """
     backend = CONFIG.get("backend")
     if backend == "claude-code":
@@ -623,7 +645,7 @@ def _llm_env() -> dict[str, str]:
         # global model picker holds a native claude-* name, which this backend
         # honors as-is — so, unlike DGX, no model override is injected here.
         return {"CG_BACKEND": "claude-code"}
-    if backend != "dgx":
+    if backend != "dgx" or not allow_openai_compat:
         return {}
     return {
         "DGX_ENDPOINT": CONFIG.get("dgx_endpoint") or wiring_get("dgx_endpoint"),
@@ -860,7 +882,7 @@ async def api_enhance(batch: int = 0):
     result = _build_enhance_cmd(batch=bool(batch))
     if isinstance(result, tuple):
         _, err = result
-        return JSONResponse({"ok": False, "error": err}, status_code=400)
+        return _sse_error(err)
     summary = _session_summary_path()
     outputs = [str(summary)] if summary else []
 
@@ -890,7 +912,7 @@ async def api_extract(batch: int = 0, force: int = 0):
     result = _build_reextract_cmd(batch=bool(batch), force=bool(force))
     if isinstance(result, tuple):
         _, err = result
-        return JSONResponse({"ok": False, "error": err}, status_code=400)
+        return _sse_error(err)
     sx = _scene_extractions_dir()
 
     def _done(rc: int | None) -> None:
@@ -912,7 +934,7 @@ async def api_narrate(n: int):
     result = _build_narrate_cmd(n)
     if isinstance(result, tuple):
         _, err = result
-        return JSONResponse({"ok": False, "error": err}, status_code=400)
+        return _sse_error(err)
     knobs = _narrate_knobs_snapshot()
 
     def _done(rc: int | None) -> None:
@@ -943,16 +965,10 @@ async def api_scrub(n: int):
     """
     path = _narration_file_for_scene(n)
     if path is None or not path.exists():
-        return JSONResponse(
-            {"ok": False, "error": f"no narration file for scene {n}"},
-            status_code=400,
-        )
+        return _sse_error(f"no narration file for scene {n}")
     if path.name.endswith(".scrubbed.md"):
-        return JSONResponse(
-            {"ok": False,
-             "error": f"refusing to scrub already-scrubbed file: {path.name}"},
-            status_code=400,
-        )
+        return _sse_error(
+            f"refusing to scrub already-scrubbed file: {path.name}")
     cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(path)]
     cmd += _model_args()
     if CONFIG.get("scrub_tokens"):
@@ -980,10 +996,7 @@ async def api_scrub_all():
     """
     nd = _narration_dir()
     if nd is None or not nd.is_dir():
-        return JSONResponse(
-            {"ok": False, "error": "narration_dir not configured"},
-            status_code=400,
-        )
+        return _sse_error("narration_dir not configured")
     cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(nd)]
     cmd += _model_args()
     if CONFIG.get("scrub_tokens"):
@@ -1077,7 +1090,7 @@ async def api_plan():
     plan_result = _build_plan_cmd()
     if isinstance(plan_result, tuple):
         _, err = plan_result
-        return JSONResponse({"ok": False, "error": err}, status_code=400)
+        return _sse_error(err)
     consistency_result = _build_consistency_cmd()
     # consistency is optional — a tuple here means "skip, no --context"
     nd = _narration_dir()
@@ -1091,16 +1104,23 @@ async def api_plan():
                     outputs.append(str(p))
         _record_activity(stage="plan", rc=rc, outputs=outputs)
 
+    # Forward the selected backend (so a subscription pick bills the
+    # subscription instead of falling back to the metered API), but suppress
+    # the DGX OpenAI-compat path — see _llm_env(allow_openai_compat=...).
+    plan_env = _llm_env(allow_openai_compat=False)
+
     async def _stream_chained():
         """Stream consistency stdout (if applicable), then plan stdout."""
         from server.subprocess_runner import stream_subprocess as _stream
 
         if not isinstance(consistency_result, tuple):
             async for chunk in _stream(consistency_result,
-                                        cwd=CONFIG.get("work_dir")):
+                                        cwd=CONFIG.get("work_dir"),
+                                        env_extra=plan_env):
                 yield chunk
         async for chunk in _stream(plan_result,
                                     cwd=CONFIG.get("work_dir"),
+                                    env_extra=plan_env,
                                     on_complete=_done):
             yield chunk
 

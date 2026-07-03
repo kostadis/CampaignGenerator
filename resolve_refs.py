@@ -37,6 +37,10 @@ REFS_FILENAME = "refs.yaml"
 LOCAL_FILENAME = "refs.local.yaml"
 
 # Default roots used when neither refs.local.yaml nor env vars set the path.
+# These are EXTERNAL config (mneme-owned): the repo never hardcodes the
+# 5etools/homebrew on-disk location, it reads them from the rendered wiring.
+# ``wiring_path`` returns None when wiring.yaml is absent or lacks the key —
+# callers must treat None as "unconfigured" and fail with a clear message.
 # rpg_library has no default — the PDF corpus location genuinely varies.
 _DEFAULT_ROOTS = {
     "fivetools_data": wiring_path("fivetools_data_root"),  # EXTERNAL — mneme-owned
@@ -47,6 +51,30 @@ _ROOT_ENV_VARS = {
     "rpg_library": "RPG_LIBRARY_ROOT",
     "homebrew_private": "HOMEBREW_PRIVATE_ROOT",
 }
+
+
+def default_fivetools_data_root() -> Path | None:
+    """The canonical 5etools data root to assume outside a campaign context.
+
+    Precedence: ``FIVETOOLS_DATA_ROOT`` env var → mneme wiring
+    (``fivetools_data_root`` in config/wiring.yaml) → ``None``. Standalone
+    tools that walk the canonical tree without a campaign's refs.local.yaml
+    (``fivetools_ingest``, ``fivetools_catalog``) share this so "where is
+    5etools installed" has one resolution path instead of a hardcoded copy
+    per tool. Inside a campaign, ``resolve_roots`` is the real authority and
+    adds refs.local.yaml on top of this same precedence.
+
+    The 5etools root is EXTERNAL config (mneme-owned); this repo never
+    hardcodes its on-disk location. Returns ``None`` when neither the env var
+    nor rendered wiring provides it — callers that require the root must fail
+    with a clear message (import-time callers keep the None so merely importing
+    the module never raises).
+    """
+    env = os.environ.get(_ROOT_ENV_VARS["fivetools_data"])
+    if env:
+        return Path(env).expanduser().resolve()
+    wired = _DEFAULT_ROOTS["fivetools_data"]
+    return wired.resolve() if wired is not None else None
 
 
 # ── Data classes ─────────────────────────────────────────────────────────
@@ -154,8 +182,8 @@ def resolve_roots(local: dict, required: set[str]) -> dict[str, ResolvedRoot]:
             p = Path(os.environ[env_var]).expanduser().resolve()
             resolved[name] = ResolvedRoot(name, p, f"env:{env_var}")
             continue
-        # 3. default
-        if name in _DEFAULT_ROOTS:
+        # 3. default (mneme wiring — None when wiring.yaml is absent/unset)
+        if _DEFAULT_ROOTS.get(name) is not None:
             resolved[name] = ResolvedRoot(name, _DEFAULT_ROOTS[name].resolve(), "default")
             continue
         missing.append(name)
@@ -163,9 +191,12 @@ def resolve_roots(local: dict, required: set[str]) -> dict[str, ResolvedRoot]:
     if missing:
         def _hint(n: str) -> str:
             env = _ROOT_ENV_VARS.get(n)
+            base = f"set 'roots.{n}:' in refs.local.yaml"
             if env:
-                return f"set 'roots.{n}:' in refs.local.yaml or {env}"
-            return f"set 'roots.{n}:' in refs.local.yaml"
+                base += f" or {env}"
+            if n in _DEFAULT_ROOTS:
+                base += " or render config/wiring.yaml (mneme-owned)"
+            return base
 
         hint = ", ".join(_hint(n) for n in missing)
         raise SystemExit(

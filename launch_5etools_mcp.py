@@ -49,6 +49,9 @@ import resolve_refs as rr
 
 
 RUNTIME_BASE = Path("~/.5etools-mcp-runtime").expanduser()
+# 5etools MCP index is EXTERNAL config (mneme-owned). Used as the --mcp-index
+# default; None when unwired, in which case main() derives it from the resolved
+# fivetools_data root (single-source-of-truth fallback).
 from campaignlib import wiring_path  # noqa: E402  (5etools MCP index is EXTERNAL — mneme-owned)
 DEFAULT_MCP_INDEX = wiring_path("fivetools_mcp_index")
 SHA_FILENAME = ".sources.sha256"
@@ -482,7 +485,7 @@ def cmd_apply(
     if not mcp_index.is_file():
         raise SystemExit(
             f"launch_5etools_mcp: MCP entry point not found at {mcp_index}. "
-            f"Set --mcp-index or check your 5etools-kostadis checkout."
+            f"Set --mcp-index or check your 5e-tools-kostadis checkout."
         )
     os.execvpe("node", ["node", str(mcp_index)], env)
     return 0  # unreachable
@@ -504,8 +507,9 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--mcp-index",
         type=Path,
-        default=DEFAULT_MCP_INDEX,
-        help=f"Path to the 5etools MCP server's index.js. Default: {DEFAULT_MCP_INDEX}",
+        default=None,
+        help="Path to the 5etools MCP server's index.js. Default: derived from "
+        "the resolved fivetools_data root (<root>/../mcp/index.js).",
     )
     parser.add_argument(
         "--status",
@@ -544,7 +548,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.dry_run:
         return cmd_dry_run(scope, runtime)
 
-    return cmd_apply(scope, runtime, args.mcp_index, {}, no_exec=args.no_exec)
+    # The MCP server ships alongside the 5etools data tree: fivetools_data is
+    # `<repo>/data`, the server is `<repo>/mcp/index.js`. Derive it from the
+    # already-resolved root so "where is 5etools installed" is configured in
+    # exactly one place (refs.local.yaml). --mcp-index overrides for odd setups.
+    mcp_index = args.mcp_index or (
+        scope.roots["fivetools_data"].path.parent / "mcp" / "index.js"
+    )
+    return cmd_apply(scope, runtime, mcp_index, {}, no_exec=args.no_exec)
 
 
 if __name__ == "__main__":

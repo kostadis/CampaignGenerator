@@ -13,8 +13,30 @@ def find_default_config(script_file: str) -> str:
     return str(Path(script_file).resolve().parent / "config" / "config.yaml")
 
 
+def _expand_env(value):
+    """Recursively expand ``$VAR``/``${VAR}`` in all strings of a parsed config.
+
+    Lets a single committed ``config.yaml`` resolve to different paths per
+    worktree, e.g. ``path: ${CAMPAIGN_DOCS}/world_state.md``. Undefined
+    variables are left verbatim (``os.path.expandvars`` semantics), so the
+    downstream "file not found" error names the unexpanded path instead of
+    silently pointing somewhere wrong.
+    """
+    if isinstance(value, str):
+        return os.path.expandvars(value)
+    if isinstance(value, dict):
+        return {k: _expand_env(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_expand_env(v) for v in value]
+    return value
+
+
 def load_config(config_path: str) -> tuple[dict, Path]:
-    """Load a YAML config file. Returns (config_dict, config_directory)."""
+    """Load a YAML config file. Returns (config_dict, config_directory).
+
+    Environment variables (``$VAR`` / ``${VAR}``) in string values are
+    expanded after parsing — see :func:`_expand_env`.
+    """
     try:
         import yaml
     except ImportError:
@@ -22,14 +44,14 @@ def load_config(config_path: str) -> tuple[dict, Path]:
         sys.exit(1)
     p = Path(config_path).expanduser().resolve()
     with open(p) as f:
-        return yaml.safe_load(f), p.parent
+        return _expand_env(yaml.safe_load(f)), p.parent
 
 
 # ── File I/O ──────────────────────────────────────────────────────────────────
 
 def load_file(path: str, base_dir: Path | None = None) -> str:
     """Read a file. Relative paths are resolved against base_dir if given."""
-    p = Path(path).expanduser()
+    p = Path(os.path.expandvars(path)).expanduser()
     if not p.is_absolute() and base_dir:
         p = base_dir / p
     if not p.exists():
@@ -40,11 +62,53 @@ def load_file(path: str, base_dir: Path | None = None) -> str:
 
 def load_file_optional(path: str | Path, label: str = "file") -> str | None:
     """Read a file, returning None (with a stderr warning) if it does not exist."""
-    p = Path(path).expanduser()
+    p = Path(os.path.expandvars(str(path))).expanduser()
     if not p.exists():
         print(f"  Warning: {label} not found: {p}", file=sys.stderr)
         return None
     return p.read_text(encoding="utf-8")
+
+
+def load_repo_file(path: str | Path, base_dir: Path | None = None) -> str:
+    """Read a file that ships with the code repo (system prompt, agent prompt).
+
+    Unlike :func:`load_file` (for campaign-local files that live next to the
+    config), code-repo files live wherever CampaignGenerator is checked out —
+    independent of where the campaign workspace is. So a campaign ``config.yaml``
+    can name them relatively (``system_prompt: config/system_prompt.md``) and
+    this loader finds the repo copy regardless of user identity or clone path.
+
+    Resolution order: ``base_dir``-relative → repo root → CWD → the same
+    basename under the repo's ``config/`` and ``config/agents/`` trees. The
+    final basename fallback lets a config that still holds a stale absolute
+    path from another machine recover instead of hard-failing.
+    """
+    raw = os.path.expandvars(str(path))
+    p = Path(raw).expanduser()
+    repo_root = Path(__file__).resolve().parents[1]
+
+    candidates: list[Path] = []
+    if p.is_absolute():
+        candidates.append(p)
+    else:
+        if base_dir:
+            candidates.append(Path(base_dir) / p)
+        candidates.append(repo_root / p)
+        candidates.append(Path.cwd() / p)
+    # Last resort: recover by basename under the repo's prompt trees.
+    candidates.append(repo_root / "config" / p.name)
+    candidates.append(repo_root / "config" / "agents" / p.name)
+
+    for cand in candidates:
+        if cand.is_file():
+            return cand.read_text(encoding="utf-8")
+
+    tried = "\n  ".join(str(c) for c in candidates)
+    print(
+        f"Error: repo file not found: {raw}\nLooked in:\n  {tried}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 
 
 # ── Agent prompt loader ───────────────────────────────────────────────────────

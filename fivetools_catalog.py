@@ -8,7 +8,7 @@ awareness layer — it knows where things are, not what they say.
 
 Shape::
 
-    >>> cat = build_catalog(Path("~/src/5etools-kostadis/data").expanduser())
+    >>> cat = build_catalog(Path("~/src/5e-tools-kostadis/data").expanduser())
     >>> hits = search(cat, "drow priestess")
     >>> hits[0]
     Candidate(entity_type='monster', name='Drow Priestess of Lolth',
@@ -39,14 +39,18 @@ from pathlib import Path
 from typing import Iterator
 
 import fivetools_ingest
+import resolve_refs
 
 logger = logging.getLogger(__name__)
 
 
 _CACHE_FILENAME = ".fivetools_catalog.pkl"
 _CACHE_VERSION = 1
-from campaignlib import wiring_path  # noqa: E402  (5etools root is EXTERNAL — mneme-owned)
-_DEFAULT_DATA_ROOT = wiring_path("fivetools_data_root")
+# 5etools root is EXTERNAL config (mneme-owned). Precedence:
+# FIVETOOLS_DATA_ROOT → mneme wiring → None. See
+# resolve_refs.default_fivetools_data_root. None here (no env, no wiring) keeps
+# import safe; load_or_build raises a clear error if the root is still unset.
+_DEFAULT_DATA_ROOT = resolve_refs.default_fivetools_data_root()
 
 
 # ── Records ────────────────────────────────────────────────────────────────
@@ -347,6 +351,12 @@ def load_or_build(
     logged but never raised — the catalog is always recoverable from
     the source tree.
     """
+    if data_root is None:
+        raise SystemExit(
+            "fivetools_catalog: 5etools data root not configured. Pass it "
+            "explicitly, or set FIVETOOLS_DATA_ROOT / render config/wiring.yaml "
+            "(fivetools_data_root — mneme-owned external config)."
+        )
     data_root = Path(data_root).expanduser().resolve()
     cache = cache_path(data_root)
 

@@ -32,6 +32,8 @@ const reflections = ref(false)
 const narrationGenre = ref('')
 const useBatch = ref(false)
 const backend = ref<'anthropic' | 'dgx' | 'claude-code'>('anthropic')
+const dgxEndpoint = ref('')
+const dgxModel = ref('')
 
 // Drawer open/closed — persisted in localStorage so it survives reloads.
 const DRAWER_KEY = 'session-doc-editor.knob-drawer.open'
@@ -61,6 +63,8 @@ function loadConfigFields() {
   backend.value = v.sd_backend === 'dgx' ? 'dgx'
     : v.sd_backend === 'claude-code' ? 'claude-code'
     : 'anthropic'
+  dgxEndpoint.value = v.sd_dgx_endpoint || ''
+  dgxModel.value = v.sd_dgx_model || ''
 }
 
 // ── Auto-apply: debounce-PUT changes to /api/editor/config ───────
@@ -142,6 +146,26 @@ async function persistBackend() {
   }
 }
 watch(backend, persistBackend)
+
+// DGX endpoint/model are free-text — debounce so per-keystroke edits don't
+// spam updateSection. Empty string persists as null ("use the runtime default").
+let dgxPersistTimer: ReturnType<typeof setTimeout> | undefined
+async function persistDgx() {
+  config.values.sd_dgx_endpoint = dgxEndpoint.value
+  config.values.sd_dgx_model = dgxModel.value
+  try {
+    await config.updateSection('session_doc', {
+      dgx_endpoint: dgxEndpoint.value.trim() || null,
+      dgx_model: dgxModel.value.trim() || null,
+    })
+  } catch {
+    /* non-fatal — the next subprocess will still read the in-memory CONFIG */
+  }
+}
+watch([dgxEndpoint, dgxModel], () => {
+  if (dgxPersistTimer) clearTimeout(dgxPersistTimer)
+  dgxPersistTimer = setTimeout(persistDgx, 350)
+})
 
 // ── Scene state ───────────────────────────────────────────────────
 const scenes = ref<Scene[]>([])
@@ -364,10 +388,10 @@ async function narrate() {
 
   activeSSE.value = connectSSE(`/api/editor/narrate/${currentScene.value}`, {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       narrating.value = false
-      setStatus(rc === 0 ? 'Done.' : 'Narration failed.')
+      setStatus(rc === 0 ? 'Done.' : `Narration failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -387,12 +411,12 @@ async function scrubScene() {
 
   activeSSE.value = connectSSE(`/api/editor/scrub/${currentScene.value}`, {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       scrubbing.value = false
       setStatus(rc === 0
         ? `Scrubbed scene ${currentScene.value} — .scrubbed.md written.`
-        : 'Scrub failed.')
+        : `Scrub failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -412,12 +436,12 @@ async function scrubAll() {
 
   activeSSE.value = connectSSE('/api/editor/scrub-all', {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       scrubbing.value = false
       setStatus(rc === 0
         ? 'Scrub-All complete — .scrubbed.md files written.'
-        : 'Scrub-All failed.')
+        : `Scrub-All failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -442,10 +466,10 @@ async function runExtract() {
     : '/api/editor/extract?force=1'
   activeSSE.value = connectSSE(url, {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       extracting.value = false
-      setStatus(rc === 0 ? 'Re-extraction complete.' : 'Re-extraction failed.')
+      setStatus(rc === 0 ? 'Re-extraction complete.' : `Re-extraction failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -465,12 +489,12 @@ async function runPlan() {
 
   activeSSE.value = connectSSE('/api/editor/plan', {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       planning.value = false
       setStatus(rc === 0
         ? 'Plan & check complete — plan.md saved.'
-        : 'Plan & check failed.')
+        : `Plan & check failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
     },
@@ -493,10 +517,10 @@ async function runEnhance() {
   const url = useBatch.value ? '/api/editor/enhance?batch=1' : '/api/editor/enhance'
   activeSSE.value = connectSSE(url, {
     onData(text) { narrationOutput.value += text },
-    onDone(rc) {
+    onDone(rc, error) {
       activeSSE.value = null
       enhancing.value = false
-      setStatus(rc === 0 ? 'Stage 1 complete — review session-summary.md.' : 'Stage 1 failed.')
+      setStatus(rc === 0 ? 'Stage 1 complete — review session-summary.md.' : `Stage 1 failed${error ? ': ' + error : ''}.`)
       refreshPipeline()
     },
     onError() {
@@ -764,6 +788,8 @@ onMounted(async () => {
       v-model:context="context"
       v-model:use-batch="useBatch"
       v-model:backend="backend"
+      v-model:dgx-endpoint="dgxEndpoint"
+      v-model:dgx-model="dgxModel"
       v-model:narrate-tokens="narrateTokens"
       v-model:prose-mode="proseMode"
       v-model:reflections="reflections"

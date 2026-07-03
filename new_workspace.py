@@ -5,8 +5,7 @@ Sets up the standard campaign layout expected by both the CLI tools and the
 FastAPI + Vue web UI:
 
     <workspace>/
-        config.yaml         ← CLI tool config (absolute paths)
-        ui_config.yaml      ← Web UI config (campaign_dir + session_dir)
+        config.yaml         ← shared config (portable: relative paths)
         docs/               ← campaign_state.md, world_state.md, party.md, ...
         voice/              ← per-character voice files
         examples/           ← handcrafted style references
@@ -57,11 +56,6 @@ documents:
     path: {planning}
   - label: party
     path: {party}
-"""
-
-UI_CONFIG_TEMPLATE = """\
-campaign_dir: {campaign_dir}
-session_dir: ''
 """
 
 CAMPAIGN_STATE_TEMPLATE = """\
@@ -141,6 +135,20 @@ def placeholder(docs_dir: Path, filename: str, content: str) -> Path:
     p = docs_dir / filename
     p.write_text(content, encoding="utf-8")
     return p
+
+
+def rel_to_workspace(path: Path, workspace: Path) -> str:
+    """Express ``path`` relative to ``workspace`` when it lives inside it.
+
+    Keeps generated configs portable: campaign-local docs/logs become
+    ``docs/world_state.md`` / ``logs`` (resolved against the config's own
+    directory at load time), so the checked-in config survives a different
+    username or clone location. Paths outside the workspace stay absolute.
+    """
+    try:
+        return str(path.relative_to(workspace))
+    except ValueError:
+        return str(path)
 
 
 def main() -> None:
@@ -241,30 +249,27 @@ def main() -> None:
 
     # Write config.yaml (CLI tools)
     config_content = CONFIG_TEMPLATE.format(
-        system_prompt=SCRIPT_DIR / "config" / "system_prompt.md",
-        log_dir=logs_dir,
-        lore_oracle=SCRIPT_DIR / "config" / "agents" / "lore_oracle.md",
-        encounter_architect=SCRIPT_DIR / "config" / "agents" / "encounter_architect.md",
-        voice_keeper=SCRIPT_DIR / "config" / "agents" / "voice_keeper.md",
-        campaign_state=campaign_state_path,
-        world_state=world_state_path,
-        mechanics=mechanics_path,
-        planning=planning_path,
-        party=party_path,
+        # Code-repo prompts: relative names, auto-discovered against the
+        # CampaignGenerator checkout by load_repo_file — no machine-specific path.
+        system_prompt="config/system_prompt.md",
+        log_dir=rel_to_workspace(logs_dir, workspace),
+        lore_oracle="config/agents/lore_oracle.md",
+        encounter_architect="config/agents/encounter_architect.md",
+        voice_keeper="config/agents/voice_keeper.md",
+        # Campaign docs: relative to the workspace so the config stays portable.
+        campaign_state=rel_to_workspace(campaign_state_path, workspace),
+        world_state=rel_to_workspace(world_state_path, workspace),
+        mechanics=rel_to_workspace(mechanics_path, workspace),
+        planning=rel_to_workspace(planning_path, workspace),
+        party=rel_to_workspace(party_path, workspace),
     )
     config_path = workspace / "config.yaml"
     config_path.write_text(config_content, encoding="utf-8")
 
-    # Write ui_config.yaml (Web UI)
-    ui_config_content = UI_CONFIG_TEMPLATE.format(campaign_dir=workspace)
-    ui_config_path = workspace / "ui_config.yaml"
-    ui_config_path.write_text(ui_config_content, encoding="utf-8")
-
     # Summary
     print(f"\nWorkspace created: {workspace}")
     print(f"\n  {workspace}/")
-    print(f"  ├── config.yaml          ← CLI tool config")
-    print(f"  ├── ui_config.yaml       ← Web UI config")
+    print(f"  ├── config.yaml          ← CLI + Web UI config")
     print(f"  ├── docs/")
     doc_items = [
         (args.campaign_state, "campaign_state.md", campaign_state_path, campaign_state_note),
