@@ -7,6 +7,8 @@ statblock routing, idempotence signature) and the I/O driver with a
 """
 
 import json
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 import pytest
@@ -268,13 +270,13 @@ def test_ingest_file_emits_expected_drawers(homebrew_doc, tmp_path, monkeypatch)
     # Route validation through a no-op so the test doesn't require
     # pdf-translators installed on the machine running pytest.
     monkeypatch.setattr(fti, "validate_adventure_json", lambda raw, root, strict=False: [])
-    monkeypatch.setattr(fti, "lookup_book", lambda db, book_id=None, filepath=None: None)
+    monkeypatch.setattr(fti, "lookup_book", lambda url, book_id=None, filepath=None: None)
 
     report = fti.ingest_file(
         homebrew_doc,
         palace=None,
         book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf_translators",
         mp_client=fake,
     )
@@ -300,13 +302,13 @@ def test_ingest_file_emits_expected_drawers(homebrew_doc, tmp_path, monkeypatch)
 def test_ingest_file_is_idempotent(homebrew_doc, tmp_path, monkeypatch):
     fake = FakeMempalaceClient()
     monkeypatch.setattr(fti, "validate_adventure_json", lambda raw, root, strict=False: [])
-    monkeypatch.setattr(fti, "lookup_book", lambda db, book_id=None, filepath=None: None)
+    monkeypatch.setattr(fti, "lookup_book", lambda url, book_id=None, filepath=None: None)
 
     r1 = fti.ingest_file(
         homebrew_doc,
         palace=None,
         book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf_translators",
         mp_client=fake,
     )
@@ -317,7 +319,7 @@ def test_ingest_file_is_idempotent(homebrew_doc, tmp_path, monkeypatch):
         homebrew_doc,
         palace=None,
         book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf_translators",
         mp_client=fake,
     )
@@ -329,13 +331,13 @@ def test_ingest_file_is_idempotent(homebrew_doc, tmp_path, monkeypatch):
 def test_dry_run_does_not_call_client(homebrew_doc, tmp_path, monkeypatch):
     fake = FakeMempalaceClient()
     monkeypatch.setattr(fti, "validate_adventure_json", lambda raw, root, strict=False: [])
-    monkeypatch.setattr(fti, "lookup_book", lambda db, book_id=None, filepath=None: None)
+    monkeypatch.setattr(fti, "lookup_book", lambda url, book_id=None, filepath=None: None)
 
     report = fti.ingest_file(
         homebrew_doc,
         palace=None,
         book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf_translators",
         mp_client=fake,
         dry_run=True,
@@ -634,10 +636,10 @@ def catalog_doc(tmp_path: Path) -> Path:
 
 def test_catalog_ingest_routes_to_correct_wings(catalog_doc, tmp_path, monkeypatch):
     fake = FakeMempalaceClient()
-    monkeypatch.setattr(fti, "lookup_book", lambda db, book_id=None, filepath=None: None)
+    monkeypatch.setattr(fti, "lookup_book", lambda url, book_id=None, filepath=None: None)
     report = fti.ingest_file(
         catalog_doc, palace=None, book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf",
         mp_client=fake,
     )
@@ -653,10 +655,10 @@ def test_catalog_ingest_routes_to_correct_wings(catalog_doc, tmp_path, monkeypat
 
 def test_catalog_filter_drops_non_matching(catalog_doc, tmp_path, monkeypatch):
     fake = FakeMempalaceClient()
-    monkeypatch.setattr(fti, "lookup_book", lambda db, book_id=None, filepath=None: None)
+    monkeypatch.setattr(fti, "lookup_book", lambda url, book_id=None, filepath=None: None)
     report = fti.ingest_file(
         catalog_doc, palace=None, book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf",
         mp_client=fake,
         filters={"name": "Goblin"},
@@ -670,10 +672,10 @@ def test_catalog_full_statblock_in_content(catalog_doc, tmp_path, monkeypatch):
     """The headline Step-1 fix: catalog-shaped statblocks are no longer
     skeletal name-only blobs."""
     fake = FakeMempalaceClient()
-    monkeypatch.setattr(fti, "lookup_book", lambda db, book_id=None, filepath=None: None)
+    monkeypatch.setattr(fti, "lookup_book", lambda url, book_id=None, filepath=None: None)
     fti.ingest_file(
         catalog_doc, palace=None, book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf",
         mp_client=fake,
         filters={"name": "Goblin"},
@@ -689,11 +691,11 @@ def test_catalog_full_statblock_in_content(catalog_doc, tmp_path, monkeypatch):
 def test_catalog_filter_changes_idempotence_key(catalog_doc, tmp_path, monkeypatch):
     """Different --filter on the same file must NOT be treated as a no-op."""
     fake = FakeMempalaceClient()
-    monkeypatch.setattr(fti, "lookup_book", lambda db, book_id=None, filepath=None: None)
+    monkeypatch.setattr(fti, "lookup_book", lambda url, book_id=None, filepath=None: None)
 
     fti.ingest_file(
         catalog_doc, palace=None, book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf",
         mp_client=fake,
         filters={"name": "Goblin"},
@@ -703,7 +705,7 @@ def test_catalog_filter_changes_idempotence_key(catalog_doc, tmp_path, monkeypat
     # Different filter → must still ingest, not return "unchanged".
     r2 = fti.ingest_file(
         catalog_doc, palace=None, book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf",
         mp_client=fake,
         filters={"name": "Orc"},
@@ -716,7 +718,7 @@ def test_catalog_validator_does_not_invoke_pdf_translators(catalog_doc, tmp_path
     """Catalog shapes shouldn't even try to load adventure_model — it only
     knows the adventure schema. Regression: previously this raised."""
     fake = FakeMempalaceClient()
-    monkeypatch.setattr(fti, "lookup_book", lambda db, book_id=None, filepath=None: None)
+    monkeypatch.setattr(fti, "lookup_book", lambda url, book_id=None, filepath=None: None)
     called = []
 
     def _boom(*args, **kwargs):
@@ -726,7 +728,7 @@ def test_catalog_validator_does_not_invoke_pdf_translators(catalog_doc, tmp_path
     monkeypatch.setattr(fti, "validate_adventure_json", _boom)
     fti.ingest_file(
         catalog_doc, palace=None, book_id=None,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf",
         mp_client=fake,
     )
@@ -750,14 +752,14 @@ def test_ingest_uses_rpglib_metadata(homebrew_doc, tmp_path, monkeypatch):
     }
     monkeypatch.setattr(fti, "validate_adventure_json", lambda raw, root, strict=False: [])
     monkeypatch.setattr(
-        fti, "lookup_book", lambda db, book_id=None, filepath=None: stub_book
+        fti, "lookup_book", lambda url, book_id=None, filepath=None: stub_book
     )
 
     report = fti.ingest_file(
         homebrew_doc,
         palace=None,
         book_id=999,
-        rpglib_db=tmp_path / "fake.db",
+        rpg_library_url=None,
         pdf_translators=tmp_path / "fake_pdf_translators",
         mp_client=fake,
     )
@@ -769,3 +771,104 @@ def test_ingest_uses_rpglib_metadata(homebrew_doc, tmp_path, monkeypatch):
         assert md["book_id"] == 999
         assert md["game_system"] == "D&D 5e"
         assert md["tags"] == "asian-fantasy;island"
+
+
+# ── lookup_book (real HTTP, not monkeypatched) — GH mneme#9 ──────────────
+
+
+class _CannedRpgLibraryHandler(BaseHTTPRequestHandler):
+    """In-process rpg-library API stand-in for ``/search`` and ``/book/{id}``."""
+
+    def log_message(self, *_args, **_kwargs):
+        return
+
+    def _respond(self, payload, status=200):
+        body = json.dumps(payload).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):  # noqa: N802
+        responses = self.server.responses
+        if self.path.startswith("/api/library/book/"):
+            book_id = int(self.path.rsplit("/", 1)[-1])
+            book = responses.get("books", {}).get(book_id)
+            if not book:
+                self._respond({"detail": "Book not found"}, 404)
+                return
+            self._respond(book)
+            return
+        if self.path.startswith("/api/library/search"):
+            results = responses.get("search", [])
+            self._respond({
+                "results": results, "total": len(results),
+                "page": 1, "per_page": 50, "total_pages": 1,
+            })
+            return
+        self._respond({"detail": "unhandled"}, 404)
+
+
+@pytest.fixture
+def rpglib_http():
+    server = HTTPServer(("127.0.0.1", 0), _CannedRpgLibraryHandler)
+    server.responses = {"search": [], "books": {}}
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    base_url = f"http://127.0.0.1:{server.server_address[1]}"
+    try:
+        yield base_url, server.responses
+    finally:
+        server.shutdown()
+        thread.join(timeout=2)
+
+
+def test_lookup_book_by_id(rpglib_http):
+    base_url, responses = rpglib_http
+    responses["books"][7] = {"id": 7, "filename": "a.pdf", "filepath": "/x/a.pdf",
+                              "pdf_title": "Alpha", "tags": []}
+    book = fti.lookup_book(base_url, book_id=7)
+    assert book is not None
+    assert book["pdf_title"] == "Alpha"
+
+
+def test_lookup_book_by_filepath_exact_match(rpglib_http):
+    base_url, responses = rpglib_http
+    responses["search"] = [
+        {"id": 7, "filename": "a.pdf", "filepath": "/x/a.pdf", "tags": []},
+    ]
+    responses["books"][7] = {"id": 7, "filename": "a.pdf", "filepath": "/x/a.pdf",
+                              "pdf_title": "Alpha", "tags": []}
+    book = fti.lookup_book(base_url, filepath="/x/a.pdf")
+    assert book is not None
+    assert book["id"] == 7
+
+
+def test_lookup_book_by_filepath_falls_back_to_filename(rpglib_http):
+    """The caller's filepath doesn't match the indexed one (e.g. the JSON
+    was copied out of the source tree) — fall back to a filename match,
+    mirroring the old direct-SQLite two-tier lookup."""
+    base_url, responses = rpglib_http
+    responses["search"] = [
+        {"id": 7, "filename": "a.pdf", "filepath": "/original/location/a.pdf", "tags": []},
+    ]
+    responses["books"][7] = {"id": 7, "filename": "a.pdf",
+                              "filepath": "/original/location/a.pdf",
+                              "pdf_title": "Alpha", "tags": []}
+    book = fti.lookup_book(base_url, filepath="/some/other/path/a.pdf")
+    assert book is not None
+    assert book["id"] == 7
+
+
+def test_lookup_book_not_found_returns_none(rpglib_http):
+    base_url, _responses = rpglib_http
+    assert fti.lookup_book(base_url, book_id=9999) is None
+
+
+def test_lookup_book_unreachable_server_returns_none():
+    assert fti.lookup_book("http://127.0.0.1:1", book_id=1) is None
+
+
+def test_lookup_book_no_url_configured_returns_none():
+    assert fti.lookup_book(None, book_id=1) is None

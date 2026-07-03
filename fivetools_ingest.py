@@ -25,10 +25,10 @@ Each top-level entity becomes one drawer:
     * *Fluff entries                                      → wing_lore
 
 Book-level metadata (book_id, display_title, publisher, game_system,
-product_type, tags, series) is snapshot-copied from ``rpg_library.db``
-at ingest time so retrieval-time filtering stays a Chroma metadata
-query (no cross-DB join). The source_filepath stays verbatim so callers
-can jump back to the PDF at any point.
+product_type, tags, series) is snapshot-copied from rpg-lib's HTTP API
+(``library_server``) at ingest time so retrieval-time filtering stays a
+Chroma metadata query (no cross-DB join). The source_filepath stays
+verbatim so callers can jump back to the PDF at any point.
 
 Idempotence: the (json_path, size, mtime) tuple is recorded in a
 sidecar state file so re-running on an unchanged JSON is a no-op. Pass
@@ -55,9 +55,11 @@ import json
 import logging
 import os
 import re
-import sqlite3
 import sys
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -71,11 +73,11 @@ logger = logging.getLogger(__name__)
 
 # ── Defaults ─────────────────────────────────────────────────────────────
 
-# These paths are EXTERNAL config (rpg-lib DB, pdf-translators, 5etools root) —
+# These are EXTERNAL config (rpg-lib URL, pdf-translators, 5etools root) —
 # owned by mneme, read from the rendered wiring.
-from campaignlib import wiring_path  # noqa: E402
+from campaignlib import wiring_get, wiring_path  # noqa: E402
 
-_DEFAULT_RPGLIB_DB = wiring_path("rpg_library_db")
+_DEFAULT_RPGLIB_URL = wiring_get("rpg_library_url")
 _DEFAULT_PDF_TRANSLATORS = wiring_path("pdf_translators")
 _DEFAULT_FIVETOOLS_DATA_ROOT = wiring_path("fivetools_data_root")
 _STATE_DIRNAME = ".fivetools_ingest"
@@ -226,80 +228,77 @@ def validate_doc(raw: Any, kind: str, module_root: Path, strict: bool = False) -
     return []
 
 
-# ── rpglib lookup (direct SQLite — read-only) ────────────────────────────
+# ── rpglib lookup (HTTP via library_server) ──────────────────────────────
 
 
-_BOOK_COLUMNS = (
-    "id",
-    "filename",
-    "filepath",
-    "publisher",
-    "game_system",
-    "product_type",
-    "series",
-    "tags",
-    "page_count",
-    "pdf_title",
-    "pdf_author",
-    "min_level",
-    "max_level",
-)
+def _http_get_json(url: str, *, timeout: float = 10.0) -> dict | None:
+    """GET ``url`` and return parsed JSON, or None on any failure. Soft-fail
+    is deliberate here — ingest must proceed without book metadata rather
+    than abort when rpg-lib is unreachable or the lookup 404s."""
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            logger.warning("rpg-lib GET %s failed: HTTP %s", url, e.code)
+        return None
+    except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+        logger.warning("rpg-lib GET %s failed: %s", url, e)
+        return None
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        logger.warning("rpg-lib GET %s returned non-JSON: %s", url, e)
+        return None
+
+
+def _find_book_id_by_filepath(base_url: str, filepath: str) -> int | None:
+    """Resolve a book id from an absolute filepath via rpg-lib's search
+    endpoint. There's no exact-filepath endpoint, so this mirrors the
+    two-tier match (exact filepath, then filename basename) the old
+    direct-SQLite query performed: ungrouped (so a variant group's
+    representative doesn't hide the specific file), tolerant of
+    old/duplicate/draft editions (the old raw-SQL query was too).
+    """
+    name = Path(filepath).name
+    params = {
+        "q_name": name, "grouped": "false", "per_page": "50",
+        "include_old": "true", "include_drafts": "true", "include_duplicates": "true",
+    }
+    qs = urllib.parse.urlencode(params)
+    result = _http_get_json(f"{base_url}/api/library/search?{qs}")
+    books = result.get("results", []) if isinstance(result, dict) else []
+    if not isinstance(books, list):
+        return None
+    for b in books:
+        if isinstance(b, dict) and b.get("filepath") == filepath:
+            return b.get("id")
+    for b in books:
+        if isinstance(b, dict) and b.get("filename") == name:
+            return b.get("id")
+    return None
 
 
 def lookup_book(
-    db_path: Path,
+    rpg_library_url: str | None,
     *,
     book_id: int | None = None,
     filepath: str | None = None,
 ) -> dict | None:
     """Return the rpglib row for ``book_id`` or a ``filepath`` match, or None.
 
-    Direct SQLite read — rpglib has no Python API. Switching to MCP later
-    is a one-function rewrite; callers only see the dict return shape.
+    HTTP lookup via rpg-lib's ``library_server`` (was direct SQLite —
+    GH mneme#9). Soft-fails to None (with a logged warning) so ingest can
+    proceed without book metadata when rpg-lib is unreachable or the book
+    isn't found — this must never hard-fail an ingest run.
     """
-    if not db_path.is_file():
-        logger.warning("rpglib db not found at %s — ingesting without book metadata", db_path)
+    if not rpg_library_url:
+        logger.warning("no rpg-lib URL configured — ingesting without book metadata")
         return None
-    cols = ", ".join(_BOOK_COLUMNS)
-    try:
-        conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-    except sqlite3.Error as exc:
-        logger.warning("rpglib db open failed (%s) — skipping metadata lookup", exc)
+    base_url = rpg_library_url.rstrip("/")
+    if book_id is None and filepath is not None:
+        book_id = _find_book_id_by_filepath(base_url, filepath)
+    if book_id is None:
         return None
-
-    try:
-        conn.row_factory = sqlite3.Row
-        if book_id is not None:
-            row = conn.execute(
-                f"SELECT {cols} FROM books WHERE id = ?", (book_id,)
-            ).fetchone()
-        elif filepath is not None:
-            row = conn.execute(
-                f"SELECT {cols} FROM books WHERE filepath = ?", (filepath,)
-            ).fetchone()
-            if row is None:
-                # Fuzzy fallback: match by basename when the caller didn't
-                # pin the full path (common for JSONs copied out of the
-                # source tree).
-                row = conn.execute(
-                    f"SELECT {cols} FROM books WHERE filename = ? LIMIT 1",
-                    (Path(filepath).name,),
-                ).fetchone()
-        else:
-            return None
-    finally:
-        conn.close()
-
-    if row is None:
-        return None
-    data = dict(row)
-    tags_raw = data.get("tags")
-    if isinstance(tags_raw, str):
-        try:
-            data["tags"] = json.loads(tags_raw)
-        except json.JSONDecodeError:
-            data["tags"] = [t.strip() for t in tags_raw.split(",") if t.strip()]
-    return data
+    return _http_get_json(f"{base_url}/api/library/book/{book_id}")
 
 
 # ── Document shape detection ─────────────────────────────────────────────
@@ -934,7 +933,7 @@ def ingest_file(
     *,
     palace: str | None,
     book_id: int | None,
-    rpglib_db: Path,
+    rpg_library_url: str | None,
     pdf_translators: Path,
     mp_client: MempalaceClient | None = None,
     force: bool = False,
@@ -986,7 +985,7 @@ def ingest_file(
         candidate = json_path.with_suffix(".pdf")
         source_filepath = str(candidate) if candidate.exists() else str(json_path)
 
-    book = lookup_book(rpglib_db, book_id=book_id, filepath=source_filepath)
+    book = lookup_book(rpg_library_url, book_id=book_id, filepath=source_filepath)
     display_title = (
         (book or {}).get("pdf_title")
         or (book or {}).get("filename")
@@ -1086,10 +1085,9 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "book by filepath (the JSON's _meta.sourceFilepath or a sibling PDF).",
     )
     parser.add_argument(
-        "--rpglib-db",
-        type=Path,
-        default=_DEFAULT_RPGLIB_DB,
-        help=f"Path to rpg_library.db (default {_DEFAULT_RPGLIB_DB}).",
+        "--rpg-library-url",
+        default=_DEFAULT_RPGLIB_URL,
+        help=f"rpg-lib base URL (default {_DEFAULT_RPGLIB_URL}).",
     )
     parser.add_argument(
         "--pdf-translators",
@@ -1154,7 +1152,7 @@ def main(argv: list[str] | None = None) -> int:
         args.json_path,
         palace=args.palace,
         book_id=args.book_id,
-        rpglib_db=args.rpglib_db,
+        rpg_library_url=args.rpg_library_url,
         pdf_translators=args.pdf_translators,
         force=args.force,
         replace=args.replace,
