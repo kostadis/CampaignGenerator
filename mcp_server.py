@@ -27,7 +27,7 @@ except ImportError:
 SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
-from campaignlib import load_config, load_file
+from campaignlib import load_config, load_file, wiring_get
 
 # Resolve campaign directory: env var → CLI arg → CWD
 _campaign_dir_arg = ""
@@ -633,7 +633,7 @@ def _resolve_rpg_library_url() -> str:
     val = config.get("rpg_library_url")
     if isinstance(val, str) and val:
         return val
-    return "http://localhost:8000"
+    return wiring_get("rpg_library_url")
 
 
 def _resolve_fivetools_data_root() -> Path | None:

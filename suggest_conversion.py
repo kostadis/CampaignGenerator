@@ -32,16 +32,20 @@ import argparse
 import json
 import logging
 import math
-import sqlite3
 import sys
+import urllib.error
+import urllib.parse
+import urllib.request
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from campaignlib import wiring_get
+
 logger = logging.getLogger(__name__)
 
 
-_DEFAULT_RPGLIB_DB = Path.home() / "src" / "mytools" / "rpg-lib" / "rpg_library.db"
+_DEFAULT_RPGLIB_URL = wiring_get("rpg_library_url")
 _DEFAULT_PDF_TRANSLATORS = Path.home() / "src" / "mytools" / "pdf-translators"
 _DEFAULT_CONVERT_SCRIPT_NAME = "pdf_to_5etools_v2.py"
 _DEFAULT_INGEST_SCRIPT = "fivetools_ingest.py"
@@ -105,54 +109,67 @@ def _map_product_type_to_v2_flags(product_type: str | None) -> list[str]:
     return ["--type", "book"]
 
 
-def _lookup_book(
-    db_path: Path, *, book_id: int | None = None, filepath: str | None = None
-) -> dict | None:
-    """Direct-SQLite ad-hoc lookup. CLI helper only — runtime retrieval
-    goes via rpg-library HTTP per Step 3 design D6.
-    """
-    if not db_path.is_file():
-        return None
-    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+def _http_get_json(url: str, *, timeout: float = 10.0) -> dict | None:
+    """GET ``url`` and return parsed JSON, or None on any failure. Soft-fail
+    is deliberate — this is a CLI/library helper where "book not found" is
+    a normal, tolerated outcome, not a hard error."""
     try:
-        conn.row_factory = sqlite3.Row
-        # Probe schema so we tolerate older rpg-library deployments that
-        # don't yet expose relative_path / product_id columns.
-        cols = {r[1] for r in conn.execute("PRAGMA table_info(books)")}
-        select_cols = ["id", "filename", "filepath",
-                       "publisher", "game_system", "product_type",
-                       "series", "tags", "page_count", "pdf_title"]
-        if "relative_path" in cols:
-            select_cols.append("relative_path")
-        if "product_id" in cols:
-            select_cols.append("product_id")
-        sql_cols = ", ".join(select_cols)
-        if book_id is not None:
-            row = conn.execute(
-                f"SELECT {sql_cols} FROM books WHERE id = ?",
-                (book_id,),
-            ).fetchone()
-        elif filepath is not None:
-            row = conn.execute(
-                f"SELECT {sql_cols} FROM books WHERE filepath = ?",
-                (filepath,),
-            ).fetchone()
-        else:
-            return None
-    finally:
-        conn.close()
-    if row is None:
+        with urllib.request.urlopen(url, timeout=timeout) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            logger.warning("rpg-lib GET %s failed: HTTP %s", url, e.code)
         return None
-    data = dict(row)
-    tags_raw = data.get("tags")
-    if isinstance(tags_raw, str):
-        try:
-            data["tags"] = json.loads(tags_raw)
-        except json.JSONDecodeError:
-            data["tags"] = [t.strip() for t in tags_raw.split(",") if t.strip()]
-    elif not isinstance(data.get("tags"), list):
-        data["tags"] = []
-    return data
+    except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+        logger.warning("rpg-lib GET %s failed: %s", url, e)
+        return None
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        logger.warning("rpg-lib GET %s returned non-JSON: %s", url, e)
+        return None
+
+
+def _find_book_id_by_filepath(base_url: str, filepath: str) -> int | None:
+    """Resolve a book id from an absolute filepath via rpg-lib's search
+    endpoint. There's no exact-filepath endpoint, so this mirrors the
+    two-tier match (exact filepath, then filename basename) the old
+    direct-SQLite query performed: ungrouped (so a variant group's
+    representative doesn't hide the specific file), tolerant of
+    old/duplicate/draft editions (the old raw-SQL query was too).
+    """
+    name = Path(filepath).name
+    params = {
+        "q_name": name, "grouped": "false", "per_page": "50",
+        "include_old": "true", "include_drafts": "true", "include_duplicates": "true",
+    }
+    qs = urllib.parse.urlencode(params)
+    result = _http_get_json(f"{base_url}/api/library/search?{qs}")
+    books = result.get("results", []) if isinstance(result, dict) else []
+    if not isinstance(books, list):
+        return None
+    for b in books:
+        if isinstance(b, dict) and b.get("filepath") == filepath:
+            return b.get("id")
+    for b in books:
+        if isinstance(b, dict) and b.get("filename") == name:
+            return b.get("id")
+    return None
+
+
+def _lookup_book(
+    rpg_library_url: str | None, *, book_id: int | None = None, filepath: str | None = None
+) -> dict | None:
+    """HTTP lookup via rpg-lib's ``library_server`` (was direct SQLite —
+    GH mneme#9). CLI helper only — runtime retrieval goes via
+    rpg-library HTTP per Step 3 design D6, same as this now does.
+    """
+    if not rpg_library_url:
+        return None
+    base_url = rpg_library_url.rstrip("/")
+    if book_id is None and filepath is not None:
+        book_id = _find_book_id_by_filepath(base_url, filepath)
+    if book_id is None:
+        return None
+    return _http_get_json(f"{base_url}/api/library/book/{book_id}")
 
 
 def estimate_tokens(page_count: int | None, *, per_page: int = _TOKENS_PER_PAGE) -> int:
@@ -271,15 +288,16 @@ def build_suggestion(
     )
 
 
-def suggest_from_db(
+def suggest_from_rpglib(
     *,
-    db_path: Path = _DEFAULT_RPGLIB_DB,
+    rpg_library_url: str | None = _DEFAULT_RPGLIB_URL,
     book_id: int | None = None,
     filepath: str | None = None,
     **kwargs: Any,
 ) -> ConversionSuggestion | None:
-    """Look up a book in rpglib and build a :class:`ConversionSuggestion`."""
-    row = _lookup_book(db_path, book_id=book_id, filepath=filepath)
+    """Look up a book via rpg-lib's HTTP API and build a
+    :class:`ConversionSuggestion`."""
+    row = _lookup_book(rpg_library_url, book_id=book_id, filepath=filepath)
     if row is None:
         return None
     return build_suggestion(row, **kwargs)
@@ -287,7 +305,7 @@ def suggest_from_db(
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[1] if __doc__ else None)
-    parser.add_argument("--rpglib-db", type=Path, default=_DEFAULT_RPGLIB_DB)
+    parser.add_argument("--rpg-library-url", default=_DEFAULT_RPGLIB_URL)
     parser.add_argument("--book-id", type=int, default=None)
     parser.add_argument("--filepath", default=None)
     return parser.parse_args(argv)
@@ -297,8 +315,8 @@ def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     if args.book_id is None and not args.filepath:
         raise SystemExit("suggest_conversion: pass --book-id or --filepath")
-    suggestion = suggest_from_db(
-        db_path=args.rpglib_db,
+    suggestion = suggest_from_rpglib(
+        rpg_library_url=args.rpg_library_url,
         book_id=args.book_id,
         filepath=args.filepath,
     )

@@ -500,6 +500,38 @@ python ~/src/CampaignGenerator/build_recent_events.py \
 
 **Dual use — it also anchors synthesis.** Per-entity dossiers are organised by *entity* and threads by *plot*; neither carries a timeline, so the synthesis model has to *reconstruct* chapter order from current-state snapshots — exactly the step LLMs are unreliable at (mis-dated rescues, two distinct bosses fused into one). Feeding this chapter-ordered render to `synthesise_world_state.py --threads` (concatenated with `threads.md`) hands the model the ordering instead of making it guess. Use `--window 0` for the synthesis spine (it must see all chapters) even when the human-facing `recent_events.md` is windowed.
 
+> **Input contract — the timeline render assumes *narrative* chapters.** "Chapter-
+> ordered" means facts are ordered by their position in the source text, which equals
+> chronology **only when the chapter is linear narrative prose**. That is the normal
+> input contract (and what the `docs/chapters/chapter_*.md` corpus is expected to be).
+> A *structured* session doc breaks it — e.g. a `gm-assist.md` laid out as `## Summary`
+> → `## Scenes` → `## Locations / NPCs / Items / Spells` appendices. The entity-indexed
+> appendix sections re-state earlier events near the **end** of the file, so byte-
+> position no longer tracks time: an event quoted in the Items appendix sorts *after*
+> the chapter's true last scene. The synthesis model then reads the tail of the spine
+> for "where are they now" and places the party at the wrong location.
+>
+> **Observed (Hillsfar/DDEX34, Ch16):** the "present the severed tentacles at
+> **Sporedome**" beat is quoted under `## Items → Mind Flayer Tentacles` (offset
+> 19292), which sorts *after* the genuinely-final `## Scenes → A Strategic Dinner in
+> **Hillsfar**` (offset 13677). So `world_state` / `campaign_state` / `party` all
+> reported the party at Sporedome when they had ended the session in Hillsfar.
+> (Inside the `## Scenes` block alone, order was correct — "Return to Sporedome" *did*
+> precede "Dinner in Hillsfar".)
+>
+> **Two ways to satisfy the contract:**
+> - **Feed narrative chapters** (the normal flow) — position == chronology; nothing to do.
+> - **Using structured session docs?** Scope timeline extraction to the chronological
+>   region — the `## Summary` / `## Scenes` sections, where order *is* time — and treat
+>   the `## Locations/NPCs/Items/Spells` appendices as dossier-fuel (entity state), not
+>   timeline. ~96% of facts are locatable via `text.find(source_quote)` → char-offset →
+>   enclosing-section lookup, so this needs **no re-extraction** (the `temporal` lens
+>   currently reads the whole doc, appendices included, so it inherits the same scramble).
+>
+> Entity extraction is order-independent, so dossiers — and the NPC/faction/location
+> bulk of `world_state` — are unaffected either way; only the time-ordered "current
+> location / current objective" fields are at risk. **Verify those by hand in Stage 4.**
+
 ### 2e. Merge type-duplicate dossiers (before synthesis)
 
 Run this after Stage 2c to produce `merged_dossiers/` — a directory where every type-duplicate group is collapsed into one file, used as input to all Stage 3 synthesis steps instead of `state_dossiers/`.
@@ -931,6 +963,7 @@ All outputs land in `*_draft.md`. **Never write directly to the live docs.**
 
 Review each draft:
 - Each dossier has an `## Uncertainty` block listing facts the model flagged as ambiguous. Skim these before trusting synthesis — scope/ordering/attribution are the model's weak spots.
+- **Check the "current location / current objective" fields first — they are the least reliable.** Synthesis often records the right *events* (the timeline entry is correct) yet sets the wrong *current state*, because it weights the campaign's high-salience base over the most-recent scene, and there is no `party` dossier to anchor the answer (the meta-label is excluded in Stage 2a). This is amplified if the corpus was structured session docs rather than narrative chapters (see the timeline "input contract" note in 2d). Verify the snapshot against the **last scene of the final chapter** in the authoritative source.
 - Diff `world_state_draft.md` against `world_state.md` before promoting. The diff is the edit surface; don't copy blindly.
 - For `planning_draft.md`, check the NPC list against your own sense of who matters — the importance cut may miss forward-looking significance (an NPC who appeared rarely but is about to become central).
 

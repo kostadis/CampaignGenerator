@@ -1,7 +1,8 @@
 """Tests for suggest_conversion + convert_book helpers."""
 
 import json
-import sqlite3
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 import pytest
@@ -123,48 +124,92 @@ def test_cost_bounds_scale_with_pages():
     assert high_tokens == 10 * low_tokens
 
 
-# ── suggest_from_db ──────────────────────────────────────────────────────
+# ── suggest_from_rpglib (HTTP) ────────────────────────────────────────────
 
 
-def _seed_rpglib(tmp_path: Path) -> Path:
-    db = tmp_path / "rpg.db"
-    conn = sqlite3.connect(db)
-    conn.execute(
-        """
-        CREATE TABLE books (
-            id INTEGER PRIMARY KEY, filename TEXT, filepath TEXT,
-            publisher TEXT, game_system TEXT, product_type TEXT,
-            series TEXT, tags TEXT, page_count INTEGER, pdf_title TEXT
-        )
-        """
-    )
-    conn.execute(
-        "INSERT INTO books VALUES (1,'a.pdf','/x/a.pdf','WotC','D&D 5e','adventure','S',?,120,'Alpha')",
-        (json.dumps(["dungeon"]),),
-    )
-    conn.commit()
-    conn.close()
-    return db
+class _CannedRpgLibraryHandler(BaseHTTPRequestHandler):
+    """In-process rpg-library API stand-in for ``/search`` and ``/book/{id}``."""
+
+    def log_message(self, *_args, **_kwargs):
+        return
+
+    def _respond(self, payload, status=200):
+        body = json.dumps(payload).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):  # noqa: N802
+        responses = self.server.responses
+        if self.path.startswith("/api/library/book/"):
+            book_id = int(self.path.rsplit("/", 1)[-1])
+            book = responses.get("books", {}).get(book_id)
+            if not book:
+                self._respond({"detail": "Book not found"}, 404)
+                return
+            self._respond(book)
+            return
+        if self.path.startswith("/api/library/search"):
+            results = responses.get("search", [])
+            self._respond({
+                "results": results, "total": len(results),
+                "page": 1, "per_page": 50, "total_pages": 1,
+            })
+            return
+        self._respond({"detail": "unhandled"}, 404)
 
 
-def test_suggest_from_db_by_id(tmp_path: Path):
-    db = _seed_rpglib(tmp_path)
-    s = sc.suggest_from_db(db_path=db, book_id=1)
+@pytest.fixture
+def rpglib_http():
+    server = HTTPServer(("127.0.0.1", 0), _CannedRpgLibraryHandler)
+    server.responses = {"search": [], "books": {}}
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    base_url = f"http://127.0.0.1:{server.server_address[1]}"
+    try:
+        yield base_url, server.responses
+    finally:
+        server.shutdown()
+        thread.join(timeout=2)
+
+
+def test_suggest_from_rpglib_by_id(rpglib_http):
+    base_url, responses = rpglib_http
+    responses["books"][1] = {
+        "id": 1, "filename": "a.pdf", "filepath": "/x/a.pdf",
+        "publisher": "WotC", "game_system": "D&D 5e", "product_type": "adventure",
+        "series": "S", "tags": ["dungeon"], "page_count": 120, "pdf_title": "Alpha",
+    }
+    s = sc.suggest_from_rpglib(rpg_library_url=base_url, book_id=1)
     assert s is not None
     assert s.title == "Alpha"
     assert s.filepath == "/x/a.pdf"
 
 
-def test_suggest_from_db_by_filepath(tmp_path: Path):
-    db = _seed_rpglib(tmp_path)
-    s = sc.suggest_from_db(db_path=db, filepath="/x/a.pdf")
+def test_suggest_from_rpglib_by_filepath(rpglib_http):
+    base_url, responses = rpglib_http
+    responses["search"] = [
+        {"id": 1, "filename": "a.pdf", "filepath": "/x/a.pdf",
+         "publisher": "WotC", "game_system": "D&D 5e", "product_type": "adventure",
+         "series": "S", "tags": ["dungeon"], "page_count": 120, "pdf_title": "Alpha"},
+    ]
+    responses["books"][1] = responses["search"][0]
+    s = sc.suggest_from_rpglib(rpg_library_url=base_url, filepath="/x/a.pdf")
     assert s is not None
     assert s.book_id == 1
 
 
-def test_suggest_from_db_missing_returns_none(tmp_path: Path):
-    db = _seed_rpglib(tmp_path)
-    assert sc.suggest_from_db(db_path=db, book_id=9999) is None
+def test_suggest_from_rpglib_missing_returns_none(rpglib_http):
+    base_url, _responses = rpglib_http
+    assert sc.suggest_from_rpglib(rpg_library_url=base_url, book_id=9999) is None
+
+
+def test_suggest_from_rpglib_unreachable_server_returns_none():
+    assert sc.suggest_from_rpglib(
+        rpg_library_url="http://127.0.0.1:1", book_id=1
+    ) is None
 
 
 # ── convert_book helpers ─────────────────────────────────────────────────

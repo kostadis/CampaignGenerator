@@ -49,6 +49,11 @@ import resolve_refs as rr
 
 
 RUNTIME_BASE = Path("~/.5etools-mcp-runtime").expanduser()
+# 5etools MCP index is EXTERNAL config (mneme-owned). Used as the --mcp-index
+# default; None when unwired, in which case main() derives it from the resolved
+# fivetools_data root (single-source-of-truth fallback).
+from campaignlib import wiring_path  # noqa: E402  (5etools MCP index is EXTERNAL — mneme-owned)
+DEFAULT_MCP_INDEX = wiring_path("fivetools_mcp_index")
 SHA_FILENAME = ".sources.sha256"
 
 

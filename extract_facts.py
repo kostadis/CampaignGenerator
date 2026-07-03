@@ -52,10 +52,11 @@ from campaignlib import (
     make_client,
     prepare_chunks,
     stream_api,
+    wiring_get,
 )
 
-DEFAULT_ENDPOINT = "http://192.168.1.147:8001/v1"
-DEFAULT_MODEL = "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8"
+# DGX endpoint + model are EXTERNAL config (they name the DGX) — owned by mneme and
+# rendered into config/wiring.yaml. Read them from there; an env var still overrides.
 
 ALLOWED_TYPES = {"npc", "faction", "event", "location", "object", "monster", "thread", "date"}
 
@@ -371,15 +372,15 @@ def main() -> None:
                              "(default: <output_dir>/fact_extractions/). Existing "
                              "files are reused so partial runs can resume.")
     parser.add_argument("--dgx-endpoint",
-                        default=os.environ.get("DGX_ENDPOINT", DEFAULT_ENDPOINT),
-                        help=f"OpenAI-compatible endpoint "
-                             f"(default: $DGX_ENDPOINT or {DEFAULT_ENDPOINT})")
+                        default=os.environ.get("DGX_ENDPOINT") or wiring_get("dgx_endpoint"),
+                        help="OpenAI-compatible endpoint "
+                             "(default: $DGX_ENDPOINT or mneme wiring dgx_endpoint)")
     parser.add_argument("--model",
-                        default=os.environ.get("DGX_MODEL", DEFAULT_MODEL),
-                        help=f"Model id to send to the endpoint "
-                             f"(default: $DGX_MODEL or {DEFAULT_MODEL}). "
-                             f"Probe `curl http://<host>:8001/v1/models` if "
-                             f"the default returns 400 — vllm-chat gets swapped.")
+                        default=os.environ.get("DGX_MODEL") or wiring_get("dgx_model"),
+                        help="Model id to send to the endpoint "
+                             "(default: $DGX_MODEL or mneme wiring dgx_model). "
+                             "Probe `curl <endpoint>/models` if "
+                             "the default returns 400 — vllm-chat gets swapped.")
     parser.add_argument("--max-tokens", type=int, default=16000,
                         help="max_tokens per chunk call (default: 16000). Generous "
                              "because reasoning models burn budget before any output.")
