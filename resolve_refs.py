@@ -15,9 +15,9 @@ per-campaign symlink farm and start the 5etools MCP server with the right
 ``DATA_DIRS`` env var.
 
 No HTTP dependencies — purely filesystem. The optional ``query_rpg_lib.py``
-authoring helper uses ``rpg_library.db`` directly via ``library_api/db.py``
-to find books at refs-authoring time, but the resolver itself never opens
-that DB.
+authoring helper talks to rpg-lib's HTTP API (``library_server``) to find
+books at refs-authoring time, but the resolver itself never talks to rpg-lib
+at all.
 """
 
 from __future__ import annotations
