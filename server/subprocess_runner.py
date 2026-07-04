@@ -88,6 +88,7 @@ async def stream_subprocess(
     cwd: str | None = None,
     env_extra: dict[str, str] | None = None,
     on_complete: Callable[[int | None], None] | None = None,
+    emit_done: bool = True,
 ) -> AsyncGenerator[str, None]:
     """Run a subprocess and yield Server-Sent Events as output arrives.
 
@@ -105,6 +106,14 @@ async def stream_subprocess(
     `on_complete`, if provided, fires once with the returncode (or None on
     abort) from the finally block — always fires on every exit path so that
     callers (e.g. ensemble.py's _RUNNING lock release) are never orphaned.
+
+    `emit_done` (default True) controls the terminal ``event: done`` yield.
+    Pass False when this call is a NON-final stage of a chained response
+    (e.g. the consistency pass before the plan pass in scene_editor's /plan):
+    ``connectSSE`` closes the EventSource on the first ``done`` it sees, which
+    would disconnect the client mid-chain and group-kill the next subprocess.
+    Everything else (command event, output, log write, on_complete) is
+    unaffected — only the post-``finally`` ``done`` yield is suppressed.
 
     On exit (normal, explicit-abort, or disconnect), writes a per-run log
     under ``<cwd>/logs/`` capturing the command, full output, result, and
@@ -197,7 +206,7 @@ async def stream_subprocess(
                 pass  # activity recording is opportunistic — never break the stream
 
     # Only reached on normal completion (abort/disconnect exits via exception propagation)
-    if proc is not None:
+    if proc is not None and emit_done:
         result = classify_result(proc.returncode)
         done_payload: dict[str, object] = {"returncode": proc.returncode}
         if result == "aborted":

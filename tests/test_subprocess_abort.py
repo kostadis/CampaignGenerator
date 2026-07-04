@@ -180,6 +180,42 @@ def test_empty_selection_is_refused_not_expanded() -> None:
 
 
 # ---------------------------------------------------------------------------
+# emit_done — chained-subprocess done suppression (scene_editor /plan)
+# ---------------------------------------------------------------------------
+
+def test_emit_done_true_yields_exactly_one_done(tmp_workspace: Path) -> None:
+    """Default (emit_done=True) yields exactly one terminal `done` event."""
+    cmd = [sys.executable, "-c", "print('ok')"]
+    from server.subprocess_runner import stream_subprocess
+    events = asyncio.run(_collect(stream_subprocess(cmd, cwd=str(tmp_workspace))))
+
+    done_chunks = [e for e in events if e.startswith("event: done\n")]
+    assert len(done_chunks) == 1, "default run must emit exactly one done event"
+    assert _parse_done_event(events) == {"returncode": 0}
+
+
+def test_emit_done_false_yields_no_done(tmp_workspace: Path) -> None:
+    """emit_done=False suppresses the terminal `done` (non-final chain stage).
+
+    Regression guard for the Plan & Check bug: the consistency subprocess's
+    `done` used to reach connectSSE, which closed the EventSource and
+    group-killed the plan subprocess before it wrote plan.md. Everything else
+    (command event, output, log) must still be emitted/written.
+    """
+    cmd = [sys.executable, "-c", "print('ok')"]
+    from server.subprocess_runner import stream_subprocess
+    events = asyncio.run(_collect(
+        stream_subprocess(cmd, cwd=str(tmp_workspace), emit_done=False)))
+
+    done_chunks = [e for e in events if e.startswith("event: done\n")]
+    assert done_chunks == [], "emit_done=False must yield no done event"
+    # But the rest of the contract is intact:
+    assert _parse_command_event(events) is not None, "command event still emitted"
+    assert any('"ok' in e for e in events), "stdout still streamed"
+    assert len(list((tmp_workspace / "logs").glob("*.md"))) == 1, "log still written"
+
+
+# ---------------------------------------------------------------------------
 # T017: Durable run record — success and failure (FR-007, SC-006)
 # ---------------------------------------------------------------------------
 
