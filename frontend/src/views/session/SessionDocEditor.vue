@@ -48,7 +48,7 @@ function loadConfigFields() {
   session.value = v.sd_session || ''
   outputDir.value = v.sd_output_dir || v.session_dir || ''
   sessionSummary.value = v.sd_session_summary || 'session-summary.md'
-  sceneExtractionsDir.value = v.sd_scene_extractions_dir || 'scene_extractions_new'
+  sceneExtractionsDir.value = v.sd_scene_extractions_dir || 'scene_extractions'
   narrationDir.value = v.sd_narration_dir || 'narration'
   party.value = v.sd_party || ''
   voiceDir.value = v.sd_voice_dir || v.session_doc_voice_dir || ''
@@ -84,7 +84,6 @@ let configHydrated = false
 function buildEditorConfigPayload() {
   return {
     session: resolvePath(session.value),
-    output_dir: resolvePath(outputDir.value) || config.cwd || '',
     session_summary: resolvePath(sessionSummary.value) || undefined,
     scene_extractions_dir: resolvePath(sceneExtractionsDir.value) || undefined,
     narration_dir: resolvePath(narrationDir.value) || undefined,
@@ -564,36 +563,21 @@ async function checkAssembled() {
 
 // ── Init ──────────────────────────────────────────────────────────
 onMounted(async () => {
-  // Hydrate form refs from the config store (legacy flat overlay), then
-  // mark `configHydrated` so the watcher below doesn't echo the initial
-  // values back to the server.
+  // Hydrate form refs from the config store (the single source of truth —
+  // ui.session_doc + runtime.session_dir), then mark `configHydrated` so
+  // the watcher below doesn't echo the initial values back to the server.
   loadConfigFields()
-
-  try {
-    const existing = await apiFetch('/api/editor/config')
-    if (existing.session) session.value = existing.session
-    if (existing.output_dir) outputDir.value = existing.output_dir
-    if (existing.session_summary) sessionSummary.value = existing.session_summary
-    if (existing.scene_extractions_dir) sceneExtractionsDir.value = existing.scene_extractions_dir
-    if (existing.narration_dir) narrationDir.value = existing.narration_dir
-    if (existing.party) party.value = existing.party
-    if (existing.voice_dir) voiceDir.value = existing.voice_dir
-    if (existing.examples) examplesDir.value = existing.examples
-    if (existing.characters) characters.value = existing.characters
-    if (typeof existing.narrate_tokens === 'number') narrateTokens.value = existing.narrate_tokens
-    if (typeof existing.prose_mode === 'boolean') proseMode.value = existing.prose_mode
-    if (typeof existing.reflections === 'boolean') reflections.value = existing.reflections
-    if (existing.narration_genre) narrationGenre.value = existing.narration_genre
-  } catch { /* server may not have CONFIG yet */ }
 
   configHydrated = true
 
   loadProfilesFromStore()
 
   if (configReady.value) {
-    // Re-PUT once to make the server agree with our hydrated view, then
-    // load scenes / enhanced sections.
-    await applyConfig()
+    // Config is already in sync with the server — just load the derived
+    // views. Do NOT re-PUT here; that would just re-write what we loaded.
+    await loadScenes()
+    await checkAssembled()
+    await refreshPipeline()
   } else {
     // Cold start — pop the drawer so the user can fill in required fields.
     drawerOpen.value = true

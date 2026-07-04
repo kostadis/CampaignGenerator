@@ -88,7 +88,7 @@ def _boot_overrides_from_args(args) -> dict:
     """
     flag_map = {
         "session": "session_doc.session",
-        "extract_dir": "session_doc.extract_dir",
+        "extract_dir": "session_doc.scene_extractions_dir",
         "roleplay_extract_dir": "session_doc.roleplay_dir",
         "output_dir": "session_doc.output_dir",
         "summary_extract_dir": "session_doc.summary_dir",
@@ -151,7 +151,7 @@ def main() -> None:
         if not args.session:
             args.session = derived.get("gm_recap") or derived.get("session", "")
         if not args.extract_dir:
-            args.extract_dir = derived.get("extract_dir", "")
+            args.extract_dir = derived.get("scene_extractions_dir", "")
         if not args.roleplay_extract_dir:
             args.roleplay_extract_dir = derived.get("roleplay_extract_dir", "")
         if not args.summary_extract_dir:
@@ -185,7 +185,7 @@ def main() -> None:
 
     config = {
         "session": _resolve(args.session) or "",
-        "extract_dir": _resolve(args.extract_dir) or "",
+        "scene_extractions_dir": _resolve(args.extract_dir) or "",
         "roleplay_extract_dir": _resolve(args.roleplay_extract_dir) or "",
         "output_dir": _resolve(args.output_dir) or str(Path(".").resolve()),
         "party": _resolve(args.party),
@@ -237,8 +237,8 @@ def main() -> None:
     print(f"  CampaignGenerator UI")
     if config["session"]:
         print(f"  Session:     {config['session']}")
-    if config["extract_dir"]:
-        print(f"  Extractions: {config['extract_dir']}")
+    if config["scene_extractions_dir"]:
+        print(f"  Extractions: {config['scene_extractions_dir']}")
     if config["output_dir"]:
         print(f"  Output:      {config['output_dir']}")
     print(f"  Open http://{args.host}:{args.port} in your browser")

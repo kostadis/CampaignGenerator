@@ -17,9 +17,9 @@ DEFAULT_MODEL = os.environ.get("CAMPAIGN_MODEL") or "claude-sonnet-4-6"
 
 # Session directory derived sub-paths
 DERIVED_SUBDIRS = {
-    "extract_dir":          "scene_extractions",
-    "roleplay_extract_dir": "vtt_roleplay_extractions",
-    "summary_extract_dir":  "vtt_extractions",
+    "scene_extractions_dir": "scene_extractions",
+    "roleplay_extract_dir":  "vtt_roleplay_extractions",
+    "summary_extract_dir":   "vtt_extractions",
 }
 
 
