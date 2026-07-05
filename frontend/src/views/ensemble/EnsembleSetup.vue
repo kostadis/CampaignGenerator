@@ -63,24 +63,30 @@ async function save() {
         <legend>{{ stage === 'extract' ? 'Extraction backend' : 'Synthesis backend' }}</legend>
         <label class="fld">
           <span>Backend</span>
-          <select v-model="cfg[stage].backend">
-            <option value="anthropic">Anthropic (Claude)</option>
+          <select v-model="cfg[stage].backend"
+                  @change="cfg[stage].endpoint = ''; cfg[stage].model = ''">
+            <option value="anthropic">Anthropic (Claude API)</option>
             <option value="dgx">DGX / Spark (local)</option>
             <option value="openrouter">OpenRouter</option>
+            <option value="claude-code">Subscription (Claude Code)</option>
           </select>
         </label>
         <label class="fld" v-if="cfg[stage].backend === 'dgx'">
           <span>Endpoint</span>
           <input v-model="cfg[stage].endpoint" type="text" placeholder="http://192.168.1.147:8001/v1" />
         </label>
-        <label class="fld" v-if="cfg[stage].backend !== 'anthropic'">
+        <label class="fld" v-if="cfg[stage].backend !== 'anthropic' && cfg[stage].backend !== 'claude-code'">
           <span>Model id</span>
           <input v-model="cfg[stage].model" type="text"
                  :placeholder="cfg[stage].backend === 'openrouter' ? 'anthropic/claude-sonnet-4' : 'Qwen/Qwen3-Next-80B-A3B-Instruct-FP8'" />
         </label>
+        <label class="fld" v-if="cfg[stage].backend === 'claude-code'">
+          <span>Model id (optional — defaults to the subscription's own default)</span>
+          <input v-model="cfg[stage].model" type="text" placeholder="claude-opus-4-8" />
+        </label>
         <p v-if="stage === 'synthesize' && cfg.synthesize.backend !== 'anthropic'" class="warn-note">
-          Synthesis assumes a model at least as capable as Sonnet; weak local models
-          underperform here (you'll get a warning at run time, not a block).
+          Synthesis assumes a model at least as capable as Sonnet; a weak or
+          local model underperforms here (you'll get a warning at run time, not a block).
         </p>
       </fieldset>
     </div>

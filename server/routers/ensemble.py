@@ -83,6 +83,35 @@ def _is_live_doc(path: Path) -> bool:
     return path.resolve() in live
 
 
+def _default_party_config() -> Path | None:
+    """Conventional party.yaml location (mirrors server/config.py's
+    derive_campaign_paths) — used when the caller doesn't specify one."""
+    cwd = Path.cwd()
+    for rel in ("config/party.yaml", "party.yaml"):
+        p = cwd / rel
+        if p.exists():
+            return p
+    return None
+
+
+def _default_party_context() -> list[str]:
+    """Auto-include world_state/campaign_state as --context for party
+    synthesis — otherwise party.py's characters-only path has no source for
+    current location/active quests/reputation and correctly reports them as
+    absent. Prefers each doc's draft (this workflow's own freshest output)
+    over its live counterpart when both exist."""
+    cwd = Path.cwd()
+    found = []
+    for key in ("world_state", "campaign_state"):
+        live_rel, draft_rel = GROUNDING_DOCS[key]
+        draft, live = cwd / draft_rel, cwd / live_rel
+        if draft.exists():
+            found.append(str(draft))
+        elif live.exists():
+            found.append(str(live))
+    return found
+
+
 # ── LLM backend selection → subprocess env (Principle V) ────────────────────
 
 def _llm_env(backend: str, endpoint: str, model: str) -> dict[str, str]:
@@ -99,6 +128,11 @@ def _llm_env(backend: str, endpoint: str, model: str) -> dict[str, str]:
         env = {"DGX_ENDPOINT": endpoint or "http://localhost:8000"}
         if model:
             env["DGX_MODEL"] = model
+        return env
+    if backend == "claude-code":
+        env = {"CG_BACKEND": "claude-code"}
+        if model:
+            env["CG_CLAUDE_CODE_MODEL"] = model
         return env
     return {}  # anthropic: default path, no overrides
 
@@ -303,8 +337,9 @@ def run_extract(
            "--per-chapter-dir", per_chapter_dir,
            "--out", out]
     _cmd_opt(cmd, "--plan", plan)
-    _cmd_opt(cmd, "--endpoints", endpoint)
-    _cmd_opt(cmd, "--model", model)
+    if backend != "anthropic":
+        _cmd_opt(cmd, "--endpoints", endpoint)
+        _cmd_opt(cmd, "--model", model)
     _cmd_opt(cmd, "--chapter-parallel", chapter_parallel)
     _cmd_opt(cmd, "--chunk-parallel", chunk_parallel)
     _cmd_flag(cmd, "--no-speculative", no_speculative)
@@ -334,8 +369,9 @@ def run_bundle(
     else:
         _cmd_opt(cmd, "--out-dir", out_dir)
         _cmd_flag(cmd, "--known-only", known_only)
-        _cmd_opt(cmd, "--endpoints", endpoint)
-        _cmd_opt(cmd, "--model", model)
+        if backend != "anthropic":
+            _cmd_opt(cmd, "--endpoints", endpoint)
+            _cmd_opt(cmd, "--model", model)
         _cmd_opt(cmd, "--entity-parallel", entity_parallel)
     # --list does no model work, so it never needs the lock or backend env.
     if list:
@@ -380,6 +416,10 @@ def run_synthesize(
     # world_state
     dossiers: str = "docs/ensemble/merged_dossiers/*.md",
     dossier_min_facts: int = 10,
+    # party.yaml — anchors the Party section for world_state, and is the
+    # preferred (human-authored) source for the party doc's own synthesis.
+    # Falls back to the conventional config/party.yaml / party.yaml path
+    # when left blank.
     party: str = "",
     threads: str = "",
     backstories: list[str] = Query(default=[]),
@@ -412,24 +452,52 @@ def run_synthesize(
         _cmd_opt(cmd, "--extract-dir", extract_dir)
     elif doc == "party":
         cmd = [python_exe(), str(SCRIPT_DIR / "party.py"), "--output", out]
-        _cmd_flag(cmd, "--synthesize-only", synthesize_only)
-        _cmd_opt(cmd, "--extract-dir", extract_dir)
+        # Which dossiers/sheets belong to which PC is campaign-specific and
+        # already a human decision once party.yaml exists — reuse it instead
+        # of guessing. party.py's own "characters-only" path (no --summaries,
+        # no --synthesize-only) then needs neither --extract-dir nor staged
+        # extract_*.md files.
+        party_config_path = (
+            _resolve_ensemble_path(party) if party else _default_party_config()
+        )
+        if party_config_path:
+            _cmd_opt(cmd, "--party-config", str(party_config_path))
+            # Characters-only mode has no session extracts, so without context
+            # docs it correctly reports current location/quests/reputation as
+            # absent — feed it world_state/campaign_state so it doesn't have to.
+            party_context = context or _default_party_context()
+            _cmd_multi(cmd, "--context", party_context)
+        else:
+            _cmd_flag(cmd, "--synthesize-only", synthesize_only)
+            _cmd_opt(cmd, "--extract-dir", extract_dir)
     else:  # planning
         cmd = [python_exe(), str(SCRIPT_DIR / "planning.py"), "--output", out]
         _cmd_multi(cmd, "--npc", npc)
         _cmd_multi(cmd, "--arc-scores", arc_scores)
         _cmd_multi(cmd, "--context", context)
 
-    _cmd_opt(cmd, "--model", model)
     if backend != "anthropic":
         cmd += ["--backend", backend]
         _cmd_opt(cmd, "--endpoint", endpoint)
+        _cmd_opt(cmd, "--model", model)
 
+    prelude_parts = []
+    # Surface auto-detected party.yaml / context so picking them up isn't
+    # silent — the caller didn't ask for them explicitly.
+    if doc == "party" and party_config_path:
+        detected = []
+        if not party:
+            detected.append(f"party config: {party_config_path}")
+        if not context and party_context:
+            detected.append(f"context: {', '.join(party_context)}")
+        if detected:
+            prelude_parts.append(f"Auto-detected — {'; '.join(detected)}\n\n")
     # FR-014 / R6: warn (don't block) on a sub-Sonnet synthesis model.
-    prelude = ""
-    if model and model not in SYNTHESIS_CAPABLE:
-        prelude = (f"⚠️  '{model}' is not on the synthesis-capable list — synthesis "
-                   f"assumes a model at least as capable as Sonnet; output quality may "
-                   f"degrade. Proceeding anyway.\n\n")
+    if backend != "anthropic" and model and model not in SYNTHESIS_CAPABLE:
+        prelude_parts.append(
+            f"⚠️  '{model}' is not on the synthesis-capable list — synthesis "
+            f"assumes a model at least as capable as Sonnet; output quality may "
+            f"degrade. Proceeding anyway.\n\n")
+    prelude = "".join(prelude_parts)
     return _run_locked(f"synthesize-{doc}", cmd,
                        env_extra=_llm_env(backend, endpoint, model), prelude=prelude)

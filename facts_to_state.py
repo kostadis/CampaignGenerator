@@ -213,9 +213,32 @@ def load_known_names(sources: list[Path]) -> set[str]:
     return known
 
 
+def _collect_monster_vocab(corpus_paths: list[Path], aliases: dict[str, str]) -> set[str]:
+    """Normalised subjects of every type=="monster" fact in the corpus.
+
+    Used to auto-exclude npc-typed subjects that are really generic creatures
+    mistagged as npc (e.g. a fact framing "the ghoul" as having agency gets
+    type: npc in one chapter and type: monster, correctly, in another).
+    """
+    vocab: set[str] = set()
+    for path in corpus_paths:
+        try:
+            facts = json.loads(Path(path).read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        for f in facts:
+            if f.get("type") != "monster":
+                continue
+            raw = (f.get("subject") or "").strip()
+            if raw:
+                vocab.add(_norm_subject(aliases.get(raw, raw)))
+    return vocab
+
+
 def load_bundles(corpus_paths: list[Path], aliases: dict[str, str],
                  types: list[str], split_gap: int | None = None,
-                 known_names: set[str] | None = None) -> dict[str, Bundle]:
+                 known_names: set[str] | None = None,
+                 exclude_names: set[str] | None = None) -> dict[str, Bundle]:
     """Group facts across all corpus files by (type, canonical subject).
 
     split_gap   — if set, gap-split bundles whose consecutive chapters exceed
@@ -224,14 +247,38 @@ def load_bundles(corpus_paths: list[Path], aliases: dict[str, str],
 
     known_names — if set (built by load_known_names), entities whose normalised
                   subject is in this set get a global bundle keyed by
-                  (type, subject) — normal behaviour. Entities NOT in the set
-                  are anonymous/generic and get a location-scoped bundle keyed
-                  by (type, subject, chapter_dominant_location). Each bundle
-                  carries b.known = True/False so callers can skip synthesis
-                  for unknowns with --known-only.
+                  (type, subject) — normal behaviour.
+
+    exclude_names — normalised subjects forced anonymous/location-scoped even
+                  though they'd otherwise be treated as known. The override in
+                  the opposite direction from known_names — for the handful of
+                  generic role-phrases (e.g. "Bandit Chief", "the freed
+                  prisoner") that aren't unique individuals but also aren't
+                  caught by the monster-vocab check below.
+
+    Named-vs-generic split, in order of precedence:
+      1. In exclude_names -> anonymous, no matter what.
+      2. In known_names -> known.
+      3. type == "npc" and NOT also a type=="monster" subject somewhere in the
+         corpus -> known. Unlike creatures, a campaign never gives two
+         different NPCs the same name (players would confuse them) — so any
+         npc-typed subject with a real name is, by construction, a unique
+         individual. This makes exhaustively curating every NPC into
+         known_names.md unnecessary; it only needs to hold overrides.
+      4. Otherwise (non-npc types with no known_names, or explicit known_names
+         miss) -> known only if known_names is None.
+
+    Anonymous entities are location-scoped: keyed by
+    (type, subject, chapter_dominant_location) instead of (type, subject), so
+    e.g. "orc" becomes "Orc (Phandalin)", "Orc (Wayside Inn)" rather than one
+    campaign-wide omnibus. Each bundle carries b.known = True/False so callers
+    can skip synthesis for unknowns with --known-only.
     """
     bundles: dict[str, Bundle] = {}
     type_set = set(types)
+    exclude_names = exclude_names or set()
+    monster_vocab = _collect_monster_vocab(corpus_paths, aliases) if "npc" in type_set else set()
+    needs_location_scoping = known_names is not None or "npc" in type_set
     for path in sorted(corpus_paths, key=session_index):
         ch = chapter_num(path)
         try:
@@ -241,7 +288,7 @@ def load_bundles(corpus_paths: list[Path], aliases: dict[str, str],
             continue
 
         # Dominant location for this chapter — used to scope anonymous entities.
-        if known_names is not None:
+        if needs_location_scoping:
             loc_counts: Counter = Counter(
                 f["subject"] for f in facts if f.get("type") == "location"
             )
@@ -268,7 +315,15 @@ def load_bundles(corpus_paths: list[Path], aliases: dict[str, str],
             if not norm:
                 continue
 
-            is_known = known_names is None or norm in known_names
+            if norm in exclude_names:
+                is_known = False
+            elif known_names is not None and norm in known_names:
+                is_known = True
+            elif t == "npc":
+                is_known = norm not in monster_vocab
+            else:
+                is_known = known_names is None
+
             if is_known:
                 gkey = f"{t}\x00{norm}"
                 display_for_bundle = display
@@ -385,10 +440,22 @@ def build_parser() -> argparse.ArgumentParser:
                    help="One or more inventory .md files (bold-marked proper nouns) "
                         "and/or .dedup_state.json files. Entities whose normalised "
                         "name appears in any of these are treated as named "
-                        "individuals (global bundle, full dossier). Everything else "
-                        "is anonymous and scoped to the chapter's dominant location "
-                        "(e.g. 'orc' becomes 'Orc (Phandalin)', 'Orc (Wayside Inn)'). "
-                        "Use --known-only to skip synthesis for anonymous bundles.")
+                        "individuals (global bundle, full dossier). For non-npc "
+                        "types, everything else is anonymous and scoped to the "
+                        "chapter's dominant location (e.g. 'orc' becomes 'Orc "
+                        "(Phandalin)', 'Orc (Wayside Inn)'); npc-typed subjects are "
+                        "known by default regardless (see --types), so this mainly "
+                        "adds locations/factions/objects and any npc overrides. Use "
+                        "--known-only to skip synthesis for anonymous bundles.")
+    p.add_argument("--exclude-names", nargs="+", action="extend", default=[], metavar="FILE",
+                   help="Same file format as --known-names, but the inverse: forces "
+                        "these normalised names to anonymous/location-scoped even "
+                        "though they'd otherwise qualify as known. For npc, every "
+                        "named subject is known by default (see --types), so use "
+                        "this for the residual generic role-phrases that slip "
+                        "through as npc facts (e.g. 'Bandit Chief', 'the freed "
+                        "prisoner') and aren't already caught by the automatic "
+                        "monster-vocabulary check.")
     p.add_argument("--known-only", action="store_true",
                    help="With --known-names: synthesize dossiers only for known "
                         "(named) entities; print anonymous bundles in --list but "
@@ -442,16 +509,23 @@ def main() -> None:
         print(f"Known names: {len(known_names)} normalised entries from "
               f"{len(args.known_names)} source(s)")
 
+    exclude_names: set[str] = set()
+    if args.exclude_names:
+        exclude_names = load_known_names([Path(p) for p in args.exclude_names])
+        print(f"Excluded names: {len(exclude_names)} normalised entries from "
+              f"{len(args.exclude_names)} source(s)")
+
     bundles = load_bundles(corpus, aliases, args.types, split_gap=args.split_gap,
-                           known_names=known_names)
+                           known_names=known_names, exclude_names=exclude_names)
     selected = select(bundles, args.min_facts, args.only, args.top,
                       known_only=args.known_only)
 
+    scoping_active = known_names is not None or "npc" in set(args.types)
     total_entities = len(bundles)
     n_known   = sum(1 for b in bundles.values() if getattr(b, "known", True))
     n_unknown = total_entities - n_known
     scope_note = (f"  ({n_known} known / {n_unknown} location-scoped)"
-                  if known_names is not None else "")
+                  if scoping_active else "")
     split_note = f", gap-split >{args.split_gap}" if args.split_gap else ""
     print(f"Corpus:   {len(corpus)} file(s)")
     print(f"Entities: {total_entities} of types {args.types}{split_note}{scope_note} "
@@ -470,9 +544,9 @@ def main() -> None:
         return
 
     if args.list or not selected:
-        show_all = args.list and not args.known_only and known_names is not None
-        # When --known-names is active, show unknown entities too so the human
-        # can see what got location-scoped (even if they won't be synthesized).
+        show_all = args.list and not args.known_only and scoping_active
+        # When scoping is active, show unknown entities too so the human can
+        # see what got location-scoped (even if they won't be synthesized).
         list_items = selected
         if show_all:
             unseen_keys = {id(b) for b in selected}
@@ -484,7 +558,7 @@ def main() -> None:
             list_items = selected + extras
         for b in list_items:
             lo, hi = b.chapters
-            tag = "" if known_names is None else ("[known]   " if getattr(b, "known", True) else "[location]")
+            tag = "" if not scoping_active else ("[known]   " if getattr(b, "known", True) else "[location]")
             print(f"  {tag}{len(b.facts):>5}  {b.type:9s}  {b.display}  (ch {lo}-{hi})")
         if not selected:
             print("(nothing selected)")
