@@ -363,7 +363,7 @@ def write_dossier(out_dir: Path, b: Bundle, body: str) -> Path:
     return dest
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--corpus", required=True, nargs="+", metavar="GLOB",
@@ -381,7 +381,7 @@ def main() -> None:
                    help="Split any bundle whose consecutive-chapter gap exceeds N "
                         "into separate sub-bundles. Heuristic fallback; prefer "
                         "--known-names for campaigns with inventory files.")
-    p.add_argument("--known-names", nargs="+", default=None, metavar="FILE",
+    p.add_argument("--known-names", nargs="+", action="extend", default=[], metavar="FILE",
                    help="One or more inventory .md files (bold-marked proper nouns) "
                         "and/or .dedup_state.json files. Entities whose normalised "
                         "name appears in any of these are treated as named "
@@ -420,10 +420,15 @@ def main() -> None:
                    help=f"Model id (default: $DGX_MODEL on a DGX endpoint, else {DEFAULT_MODEL}).")
     p.add_argument("--max-tokens", type=int, default=8000, metavar="N",
                    help="max_tokens per aggregation call (default 8000).")
-    args = p.parse_args()
+    return p
+
+
+def main() -> None:
+    parser = build_parser()
+    args = parser.parse_args()
 
     if not args.list and not args.render_only and not args.out_dir:
-        p.error("--out-dir is required unless --list / --render-only")
+        parser.error("--out-dir is required unless --list / --render-only")
 
     corpus = expand_globs(args.corpus)
     if not corpus:

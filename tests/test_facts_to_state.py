@@ -109,3 +109,19 @@ def test_load_dossiers_filters_by_nfacts(tmp_path):
     kept = load_dossiers(list(tmp_path.glob("*.md")), min_facts=20)
     assert [stem for stem, _ in kept] == ["npc_a"]   # only A passes the floor
     assert "body A" in kept[0][1]
+
+
+def test_known_names_accepts_repeated_flags():
+    # The server (server/routers/ensemble.py _cmd_multi) passes each known-names
+    # source as its own --known-names flag. nargs="+" alone would keep only the
+    # last; action="extend" must accumulate all of them.
+    p = fts.build_parser()
+    args = p.parse_args(["--corpus", "x", "--known-names", "a.md",
+                         "--known-names", "b.json", "--list"])
+    assert args.known_names == ["a.md", "b.json"]
+    # Single-flag multi-value (CLI style) must still work.
+    args = p.parse_args(["--corpus", "x", "--known-names", "a.md", "b.json", "--list"])
+    assert args.known_names == ["a.md", "b.json"]
+    # Absent -> falsy so the "everything global" path is preserved.
+    args = p.parse_args(["--corpus", "x", "--list"])
+    assert not args.known_names
