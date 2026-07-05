@@ -178,6 +178,31 @@ characters:
     assert pc.trackless is False
 
 
+def test_load_party_config_parses_dossier(tmp_path):
+    _write(tmp_path / "zephyr.md", "Zephyr sheet")
+    _write(tmp_path / "npc_zephyr.md", "Zephyr ensemble dossier")
+    cfg = _write_party_config(tmp_path, """
+characters:
+  - name: Zephyr
+    sheet: zephyr.md
+    dossier: npc_zephyr.md
+""")
+    config = party.load_party_config(cfg)
+    pc = config.characters[0]
+    assert pc.dossier.name == "npc_zephyr.md"
+
+
+def test_load_party_config_dossier_absent_is_none(tmp_path):
+    _write(tmp_path / "omit.md", "Omit sheet")
+    cfg = _write_party_config(tmp_path, """
+characters:
+  - name: Omit
+    sheet: omit.md
+""")
+    config = party.load_party_config(cfg)
+    assert config.characters[0].dossier is None
+
+
 def test_load_party_config_trackless_vs_absent(tmp_path):
     _write(tmp_path / "vuk.md", "Vukradin sheet")
     _write(tmp_path / "omit.md", "Omit sheet")
@@ -268,6 +293,48 @@ characters:
     assert "# CHARACTER SHEETS" not in prompt
     assert "# ARC SCORE MECHANICS" not in prompt
     assert output.exists()
+
+
+def test_party_config_renders_dossier_block(monkeypatch, fake_stream_api, tmp_path):
+    _write(tmp_path / "zephyr.md", "Zephyr sheet content")
+    _write(tmp_path / "npc_zephyr.md", "Zephyr ensemble dossier content")
+    cfg = _write_party_config(tmp_path, """
+characters:
+  - name: Zephyr
+    sheet: zephyr.md
+    dossier: npc_zephyr.md
+""")
+    output = tmp_path / "party.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--party-config", str(cfg),
+        "--output", str(output),
+    ])
+    party.main()
+
+    prompt = fake_stream_api.calls[0]["user"]
+    assert "<!-- Ensemble dossier: npc_zephyr.md -->" in prompt
+    assert "Zephyr ensemble dossier content" in prompt
+
+
+def test_party_config_no_dossier_omits_block(monkeypatch, fake_stream_api, tmp_path):
+    _write(tmp_path / "soma.md", "Tortle Druid")
+    cfg = _write_party_config(tmp_path, """
+characters:
+  - name: Soma
+    sheet: soma.md
+""")
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--party-config", str(cfg),
+        "--output", str(tmp_path / "party.md"),
+    ])
+    party.main()
+
+    prompt = fake_stream_api.calls[0]["user"]
+    assert "<!-- Ensemble dossier:" not in prompt
 
 
 def test_party_config_trackless_character_gets_no_arc_file_block(monkeypatch, fake_stream_api, tmp_path):

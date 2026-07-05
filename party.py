@@ -74,6 +74,7 @@ class PartyCharacter:
     name: str
     sheet: Path
     backstory: Path | None = None
+    dossier: Path | None = None
     arc_score: Path | None = None
     trackless: bool = False  # True when arc_score is explicitly null in config
 
@@ -93,10 +94,18 @@ def load_party_config(path: Path) -> PartyConfig:
           - name: Brewbarry
             sheet: docs/party/brewbarry.md
             backstory: docs/Backstory - Brewbarry.md   # optional
+            dossier: docs/ensemble/merged_dossiers/npc_brewbarry.md  # optional
             arc_score: docs/tracking/brewbarry-score.md # optional
           - name: Vukradin
             sheet: docs/party/Vukradin.md
             arc_score: null   # intentionally trackless — first-class state
+
+    `dossier` is the character's own ensemble-built current-state dossier
+    (from facts_to_state.py's merged_dossiers/) — narrative facts pulled from
+    actual play (relationships, decisions, arc progression) that the static
+    sheet/backstory don't carry. Which dossier file belongs to which PC is a
+    campaign-specific attribution decision, so it is always an explicit,
+    human-authored mapping here — never inferred by name-matching.
 
     Distinction: `arc_score: null` (trackless by design) vs the key being
     absent (unspecified — treated the same as omitted for now, but the
@@ -138,6 +147,7 @@ def load_party_config(path: Path) -> PartyConfig:
             sys.exit(1)
         sheet = _resolve(sheet_rel, "sheet", name)
         backstory = _resolve(entry["backstory"], "backstory", name) if entry.get("backstory") else None
+        dossier = _resolve(entry["dossier"], "dossier", name) if entry.get("dossier") else None
 
         # arc_score distinguishes three cases:
         #   key absent → arc_score=None, trackless=False
@@ -155,7 +165,7 @@ def load_party_config(path: Path) -> PartyConfig:
             trackless = False
 
         characters.append(PartyCharacter(
-            name=str(name), sheet=sheet, backstory=backstory,
+            name=str(name), sheet=sheet, backstory=backstory, dossier=dossier,
             arc_score=arc_score, trackless=trackless,
         ))
 
@@ -164,8 +174,8 @@ def load_party_config(path: Path) -> PartyConfig:
 
 def _render_party_block(party_config: PartyConfig, input_normalizer=None) -> str:
     """Render the PARTY source group as `# PARTY` with one `## {name}`
-    subsection per PC, nesting sheet / backstory / arc_score files with
-    source-comment labels.
+    subsection per PC, nesting sheet / backstory / dossier / arc_score files
+    with source-comment labels.
 
     Trackless characters get an explicit marker so the LLM doesn't
     invent an arc track or suggest creating one.
@@ -180,6 +190,8 @@ def _render_party_block(party_config: PartyConfig, input_normalizer=None) -> str
         parts.append(f"<!-- Character sheet: {pc.sheet.name} -->\n\n{_read(pc.sheet)}")
         if pc.backstory is not None:
             parts.append(f"<!-- Backstory: {pc.backstory.name} -->\n\n{_read(pc.backstory)}")
+        if pc.dossier is not None:
+            parts.append(f"<!-- Ensemble dossier: {pc.dossier.name} -->\n\n{_read(pc.dossier)}")
         if pc.arc_score is not None:
             parts.append(f"<!-- Arc score mechanic: {pc.arc_score.name} -->\n\n{_read(pc.arc_score)}")
         elif pc.trackless:

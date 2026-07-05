@@ -799,7 +799,9 @@ claude -p \
   > docs/party_draft.md
 ```
 
-`party.yaml` maps each PC's name to a sheet + optional backstory + optional arc-score file (see `config/party.example.yaml`) — build it once via the Party Document page's config editor and every future ensemble run reuses it, no re-staging per run.
+`party.yaml` maps each PC's name to a sheet + optional backstory + optional arc-score file + optional `dossier` (see `config/party.example.yaml`) — build it once via the Party Document page's config editor and every future ensemble run reuses it, no re-staging per run.
+
+**`dossier:`** points at the PC's own ensemble-built current-state dossier (`docs/ensemble/merged_dossiers/npc_<name>.md`) — the narrative facts (relationships, decisions, arc progression) pulled from actual play that the static sheet/backstory don't carry, and the same category of information the old per-tool `party.py --summaries` extraction used to produce fresh each run. Rendered into the `# PARTY` block next to sheet/backstory/arc_score. Which dossier belongs to which PC is campaign-specific, so it's always an explicit mapping in `party.yaml` — never inferred by name-matching.
 
 **Fallback — no party.yaml yet.** Stage each PC's dossier as an extract by hand instead (which dossiers count as PCs is campaign-specific, so this step isn't automated):
 
