@@ -4,11 +4,18 @@
 takes the tens of thousands of atomic facts produced by `ensemble_extract.py` /
 `ensemble_batch.py` and bundles them into one current-state dossier per entity.
 
-Getting good bundles depends on three inputs, only one of which is obvious (the
-corpus). The other two — **`--aliases`** and **`--known-names`** — are curated,
+Getting good bundles depends on inputs beyond the obvious one (the corpus).
+**`--aliases`**, **`--known-names`**, and **`--exclude-names`** are curated,
 per-campaign, and their formats are non-obvious enough that it is easy to
 produce a silently-degenerate run. This document is the reference for building
 those files for a new campaign.
+
+> **2026-07-04 update:** `type=="npc"` subjects are now known-by-default (a
+> campaign never gives two different NPCs the same name — see
+> [How the pieces interact](#how-the-pieces-interact-order-of-operations)).
+> `known_names.md` is no longer the primary mechanism for NPCs; it's now
+> mostly an override list. It's still the primary mechanism for
+> locations/factions/objects, which don't have that same-name guarantee.
 
 > The failure modes here are silent: a wrong-format file exits `0` and produces
 > a plausible-looking list. Always sanity-check with `--list` (see
@@ -24,7 +31,7 @@ fixed by a **different** file. It is easy to fix one and forget the other.
 | Axis | Symptom | Fixed by |
 |------|---------|----------|
 | **Spelling** | Same entity under variant spellings becomes separate bundles (`Sequoia` + `Sequioa`, `Harch` + `Hartsch`) | `--aliases aliases.json` |
-| **Named vs generic** | A named entity shatters into one bundle per location (`Zephyr (Water Temple)`, `Zephyr (Hommlet)`, …), OR a generic subject (`orc`) becomes one meaningless campaign-wide omnibus | `--known-names …` |
+| **Named vs generic** | A named entity shatters into one bundle per location (`Zephyr (Water Temple)`, `Zephyr (Hommlet)`, …), OR a generic subject (`orc`) becomes one meaningless campaign-wide omnibus | For `npc`: automatic (known by default), with `--known-names`/`--exclude-names` as overrides. For other types: `--known-names …` |
 
 Everything below is in service of these two axes.
 
@@ -37,9 +44,40 @@ For every fact, in `load_bundles`:
 1. `display = aliases.get(raw_subject, raw_subject)` — **alias canonicalisation first**.
 2. `norm = _norm_subject(display)` — normalise: `lowercase, strip every non-alphanumeric char`.
    So `"Thorne (the Duke)"` → `thornetheduke`, `"St. Cuthbert"` → `stcuthbert`.
-3. `is_known = (known_names is None) or (norm in known_names)`.
+3. Classification, in order of precedence:
+   ```
+   if norm in exclude_names:      is_known = False   # explicit override, wins over everything
+   elif norm in known_names:      is_known = True    # explicit override
+   elif type == "npc":            is_known = norm not in monster_vocab
+   else:                          is_known = (known_names is None)
+   ```
+   `monster_vocab` is every normalised `type=="monster"` subject anywhere in the
+   corpus, computed automatically — no file to maintain. It catches creatures
+   that get mistagged `npc` in some chapters (a fact framing "the ghoul" as
+   having agency) and `monster` correctly in others.
    - **Known** → one global bundle, keyed by `(type, norm)`.
    - **Not known** → location-scoped bundle, keyed by `(type, norm, dominant_location_of_chapter)`.
+
+**Why `npc` defaults to known:** a GM never gives two different NPCs the same
+name — players would confuse them. So unlike a generic monster type (`orc`,
+where many different orcs legitimately share the label), any `npc`-typed
+subject with a real name is, by construction, a unique individual across the
+whole campaign. This means `known_names.md` no longer needs to *enumerate*
+NPCs — it only needs the residual overrides:
+- an NPC whose name collides with `monster_vocab` for a reason other than
+  actually being generic — e.g. a polymorphed/disguised NPC whose true form
+  gets fact-tagged `type: monster` under the same name (seen in practice:
+  an NPC revealed mid-campaign to be a dragon, and another who fights under a
+  monster stat block). Add these to `known_names.md`.
+- a genuinely generic role-phrase with no `monster_vocab` match at all
+  (`"Bandit Chief"`, `"the freed prisoner"`, `"Gnome guard"` — a title with no
+  name attached, and not a creature species either). Add these to
+  `exclude_names.md` (see [File 4](#file-4--exclude-namesmd---exclude-names-optional)).
+
+`known_names.md` remains the *primary* mechanism (not just an override) for
+`location`, `faction`, and `object` — those types don't have an equivalent
+"never reused" guarantee (a room can generically be called "the great hall" in
+many different dungeons; a named location like "Moathouse" cannot).
 
 Two consequences that trip people up:
 
@@ -135,8 +173,11 @@ doubt, mirror the exact strings seen in the corpus.
 ## File 3 — known-names sources (`--known-names`, one or more)
 
 **Purpose:** decide which entities are **named individuals** (→ one global
-dossier) vs **anonymous/generic** (→ location-scoped). Fixes the **named vs
-generic** axis.
+dossier) vs **anonymous/generic** (→ location-scoped). For `location`,
+`faction`, and `object`, this is the primary mechanism. For `npc`, it's now
+only for overrides — see
+[How the pieces interact](#how-the-pieces-interact-order-of-operations) for
+why `npc` defaults to known without curation.
 
 Accepts **multiple** sources; pass several (the runner and CLI both accumulate
 them). Two file kinds are recognised, by extension:
@@ -175,28 +216,67 @@ Read natively; no conversion needed. Contributes:
 - `pc_files_skipped` stems by the same rule (so PCs filtered out of the dedup
   pass are still treated as named — **but only if they were in that directory**).
 
-### The gap you must fill by hand: PCs
+### PCs no longer need explicit registration
 
-PCs typically appear in **neither** source:
-- not in an adventure/module proper-noun dictionary (they're your players', not the module's);
-- not in `docs/npcs/.dedup_state.json` if that pass ran only over `docs/npcs/`
-  (then `pc_files_skipped` is empty).
+PCs are `type: "npc"` like everyone else, so they're known-by-default now —
+you don't need to hand-add them to `known_names.md` for the named-vs-generic
+axis. (Historically this section said the opposite: PCs were the #1 thing that
+had to be added by hand, since they appear in neither an adventure dictionary
+nor `docs/npcs/.dedup_state.json`. That gap is closed by the default flip.)
 
-Yet PCs are the densest, most cross-chapter entities — the worst thing to leave
-unregistered. **Always add the PCs explicitly** to a bold `.md` known-names
-file (source them from `docs/party/` and `voice/`).
+What PCs still need is **`aliases.json`** for transcription/spelling drift
+(`"Zinnia": ["Zinia"]`) — that's a different axis, unaffected by this change.
 
 ### If you use a module proper-noun dictionary
 
-Include only the **clean, named** sections — deities, named module NPCs, named
+Now mainly relevant for **named locations** and the residual npc overrides
+(monster-vocab collisions, faction names). Include the **clean, named**
+sections — deities, named module NPCs (for the override cases above), named
 magic items, and hand-curated **named locations**. **Exclude:**
 - **Creatures** (`orc`, `ghoul`, `bugbear`): you *want* these location-scoped, so
   each encounter is a coherent bundle rather than one campaign-wide "state of ghoul".
+  (For `npc`-typed creature mentions specifically, `monster_vocab` now does
+  this automatically — see above.)
 - **Heuristic "Places" dumps**: these often mislabel creatures/NPCs/items as
   places; registering them as known pollutes the named set. Curate named
   locations from the *corpus* instead (the `type: location` subjects that are
   proper places — `Moathouse`, the temples — not generic rooms like
   `great hall`, `bone corridor`, `antechamber`).
+
+  > **Before you discard the Places dump, skim it for misfiled NPCs.** A
+  > heuristic extraction sometimes tags a real named NPC as a "place" (e.g.
+  > `Jaroo Ashstaff` or `Commander Hedrack` ending up under "Places, Realms &
+  > Notable Locations" instead of an NPCs section). This used to silently drop
+  > those NPCs from known-names entirely; now the npc-default-known rule means
+  > a misfiled NPC still resolves correctly on its own. It's still worth a
+  > skim before deleting the source file — the same section can hide misfiled
+  > **locations** or **factions** too, and those two types still rely on
+  > `known_names.md` as their primary mechanism, not just an override.
+
+---
+
+## File 4 — `exclude_names.md` (`--exclude-names`, optional)
+
+**Purpose:** the inverse of `known_names.md` for `npc` — forces a normalised
+name to stay anonymous/location-scoped even though the default-known rule
+would otherwise treat it as a unique individual. Only needed for genuine
+generic role-phrases that `monster_vocab` doesn't already catch (no matching
+`type=="monster"` subject in the corpus): bare titles or roles with no
+personal name attached, e.g. `"Bandit Chief"`, `"the freed prisoner"`,
+`"Gnome guard"`.
+
+**Format:** identical to `known_names.md` — bold-marked spans in a `.md` file,
+read by the same `load_known_names` loader.
+
+**How to build it:** run `--list --min-facts 1 --types npc` with no
+`--known-names`/`--exclude-names` at all, and read the `[known]` rows for
+anything that's a role/title rather than a name. In practice this list is
+short (a handful of entries per campaign) — most generic creature mentions
+resolve automatically via `monster_vocab`. When a case is ambiguous (is
+`"Gnoll King"` a unique boss or a generic leader-of-gnolls title?), check it
+against 5etools: if the name matches an official bestiary entry or a
+recognizable variant of one, it's generic; if it returns nothing, it's more
+likely a genuine proper name.
 
 ---
 
@@ -204,9 +284,11 @@ magic items, and hand-curated **named locations**. **Exclude:**
 
 | Situation | Effect |
 |-----------|--------|
-| No `--known-names` at all | `known_names` is `None` → **every** entity is global (no location-scoping). Generic subjects like `orc` become one omnibus bundle. |
-| `--known-names` given but loads **0** entries | Empty set → **every** entity is location-scoped. Named things shatter. (The bullet-list trap.) |
-| `--known-names` reasonably complete | Named → global, generic → location-scoped. The intended split. |
+| No `--known-names` at all, non-npc types | `known_names` is `None` → **every** non-npc entity is global (no location-scoping). Generic subjects like a location called `great hall` become one omnibus bundle. |
+| No `--known-names` at all, `npc` type | Unaffected — npc classification never depended on `known_names` being set; it's always known-by-default minus `monster_vocab`/`exclude_names`. |
+| `--known-names` given but loads **0** entries | Empty set → every non-npc entity is location-scoped (the bullet-list trap); npc classification is unaffected, same as above. |
+| `--known-names` reasonably complete (non-npc types) | Named → global, generic → location-scoped. The intended split. |
+| No `--exclude-names` | Every npc-typed subject not in `monster_vocab` stays known-by-default, including any un-curated generic role-phrases. |
 | No `--aliases` | Spelling variants stay separate. |
 
 Because "complete-enough known set" determines correctness, treat known-names as
@@ -222,12 +304,20 @@ add them, repeat.
    (canonical `name:` ← `aliases_recorded`), add PC spelling variants and any
    parenthetical corpus-subject forms. *This is a scope/attribution decision —
    review the merge list before it feeds synthesis.*
-3. **Build a bold `known_names.md`** — PCs (from `docs/party/`, `voice/`) +
-   clean module sections (deities, module NPCs, named items) + curated named
-   locations from the corpus. No creatures, no heuristic "places" dump.
-4. **Wire both known-names sources**: `--known-names known_names.md docs/npcs/.dedup_state.json`.
-5. **Dry-run `--list`** and read the header + the `[known]` / `[location]` tags.
-6. Iterate 2–3 until the split looks right, then run the real aggregation
+3. **Build a bold `known_names.md`** for the types that still need it — clean
+   module sections (deities, named items) + curated named locations/factions
+   from the corpus. No creatures, no heuristic "places" dump. Leave NPCs out
+   entirely at first; they resolve on their own now.
+4. **Dry-run `--list --types npc --min-facts 1`** with no known/exclude-names
+   at all and read the `[known]` rows for genuine role-phrases (not names).
+   Put those in `exclude_names.md`. This list is usually short.
+5. **Wire everything**: `--known-names known_names.md docs/npcs/.dedup_state.json --exclude-names exclude_names.md`.
+6. **Dry-run `--list`** (all types) and read the header + the `[known]` /
+   `[location]` tags — for npc, watch specifically for a real named individual
+   who got excluded because their name also matches a `type=="monster"`
+   subject (a disguised/polymorphed NPC, or one who fights under a monster
+   stat block) — add those to `known_names.md` as overrides.
+7. Iterate until the split looks right, then run the real aggregation
    (`--out-dir …`, drop `--list`), and **review the `## Uncertainty` blocks**
    before synthesis.
 
@@ -238,11 +328,13 @@ python facts_to_state.py \
   --corpus 'docs/ensemble/per_chapter/*/merged.json' \
   --aliases docs/ensemble/aliases.json \
   --known-names docs/ensemble/known_names.md docs/npcs/.dedup_state.json \
+  --exclude-names docs/ensemble/exclude_names.md \
   --min-facts 3 --list          # drop --list and add --out-dir DIR to generate dossiers
 ```
 
 Suggested per-campaign locations: `docs/ensemble/aliases.json`,
-`docs/ensemble/known_names.md`. The dedup file lives at `docs/npcs/.dedup_state.json`.
+`docs/ensemble/known_names.md`, `docs/ensemble/exclude_names.md`. The dedup
+file lives at `docs/npcs/.dedup_state.json`.
 
 ---
 
@@ -252,7 +344,8 @@ Run with `--list` (deterministic, no model calls) and read the header first:
 
 ```
 Known names: 175 normalised entries from 2 source(s)     ← count AND sources must match expectation
-Entities: 1636 …  (87 known / 1549 location-scoped)
+Excluded names: 8 normalised entries from 1 source(s)
+Entities: 1636 …  (254 known / 1382 location-scoped)
 Selected: 304 for aggregation
 ```
 
@@ -260,11 +353,13 @@ Failure signatures:
 
 | You see | Meaning |
 |---------|---------|
-| `… 0 normalised entries …` | A known-names source loaded nothing — almost always a `.md` with no `**bold**`. Everything will be location-scoped. |
+| `… 0 normalised entries …` | A known-names/exclude-names source loaded nothing — almost always a `.md` with no `**bold**`. |
 | `… from 1 source(s)` when you passed two | Only one source survived (historically, repeated `--known-names` flags were dropped — fixed, but check your invocation). |
-| PCs / named places tagged `[location]` and split by site | They're missing from the known set — add them. |
+| Named locations/factions tagged `[location]` and split by site | They're missing from `known_names.md` — add them. (Doesn't apply to npc — see below.) |
+| A named NPC tagged `[location]` and fragmented across many sites | Check `monster_vocab` — the name probably also appears as a `type=="monster"` subject somewhere (a disguised/polymorphed NPC, or one who fights under a monster stat block). Add it to `known_names.md` as an override; don't assume the whole npc mechanism is broken. |
+| A role/title with no name (`"Bandit Chief"`, `"the freed prisoner"`) shows `[known]` with one big global bundle | A generic npc role-phrase with no `monster_vocab` match. Add it to `exclude_names.md`. |
 | `Sequoia` **and** `Sequioa` both present | Missing alias entry — add to `aliases.json`. |
-| A generic monster with one huge global bundle | It was wrongly marked known — remove it. |
+| A generic monster (`type != "npc"`) with one huge global bundle | It was wrongly marked known in `known_names.md` — remove it. |
 
 Useful flags: `--min-facts N` (floor; below it there's nothing to collapse),
 `--known-only` (synthesise only named entities; list anonymous but skip them),
@@ -280,6 +375,8 @@ Useful flags: `--min-facts N` (floor; below it there's nothing to collapse),
 | `aliases.json` | `--aliases` | `{canonical:[variants]}` | Yes (seed from dedup) | `synthesise_world_state.py`, threads render |
 | `known_names.md` | `--known-names` | Markdown, `**bold**` names | Yes | — |
 | `.dedup_state.json` | `--known-names` | dedup-pass JSON | No (dedup output) | dossier-merge tooling |
+| `exclude_names.md` | `--exclude-names` | Markdown, `**bold**` names | Yes (short, npc-only) | — |
+| *(no file)* | — | `monster_vocab`, computed from the corpus each run | No | — |
 
 Related: this is the concern behind CampaignGenerator issue #122 (too many
 ad-hoc files/mechanisms for tracking inventories and aliases).
