@@ -499,3 +499,70 @@ class TestUpdateRuntime:
         svc.update_runtime({"default_model": "claude-opus-4-6"})
         assert svc.ui_state.runtime.session_dir == "summaries/sess1"
         assert svc.ui_state.runtime.default_model == "claude-opus-4-6"
+
+
+# ── Write-time relativization (issue #120 split-brain fix) ─────────────────
+#
+# The bug: session-scoped path fields were persisted as absolute (baked to
+# whatever session_dir was active at write time), so an absolute value never
+# re-tracked a later session_dir change — only relative values did. The fix
+# is a write-time choke point (`relativize_path`, wired into `update_section`)
+# that collapses absolute-but-under-base values back to relative storage
+# regardless of what the caller sent.
+
+
+class TestRelativizeOnWrite:
+    def test_update_section_relativizes_absolute_session_path(self, fresh_campaign):
+        session_dir = fresh_campaign / "summaries" / "sess1"
+        session_dir.mkdir(parents=True)
+        svc = CampaignConfigService(fresh_campaign)
+        svc.update_runtime({"session_dir": str(session_dir)})
+        svc.update_section(
+            "session_doc",
+            {"scene_extractions_dir": str(session_dir / "scene_extractions")},
+        )
+        # Raw stored value is relative, even though an absolute path was sent.
+        assert svc.ui_state.ui.session_doc.scene_extractions_dir == "scene_extractions"
+        # resolved() still reports it absolute, anchored under the session dir.
+        resolved = svc.resolved()
+        assert resolved["ui"]["session_doc"]["scene_extractions_dir"] == str(
+            (session_dir / "scene_extractions").resolve()
+        )
+
+    def test_update_section_leaves_out_of_tree_absolute(self, fresh_campaign):
+        session_dir = fresh_campaign / "summaries" / "sess1"
+        session_dir.mkdir(parents=True)
+        svc = CampaignConfigService(fresh_campaign)
+        svc.update_runtime({"session_dir": str(session_dir)})
+        svc.update_section(
+            "session_doc", {"scene_extractions_dir": "/totally/other/place"}
+        )
+        # A genuine out-of-tree override has no relative form — stored as-is.
+        assert (
+            svc.ui_state.ui.session_doc.scene_extractions_dir
+            == "/totally/other/place"
+        )
+
+    def test_session_path_retracks_after_session_dir_change(self, fresh_campaign):
+        session_a = fresh_campaign / "summaries" / "sessA"
+        session_b = fresh_campaign / "summaries" / "sessB"
+        session_a.mkdir(parents=True)
+        session_b.mkdir(parents=True)
+
+        svc = CampaignConfigService(fresh_campaign)
+        svc.update_section(
+            "session_doc", {"scene_extractions_dir": "scene_extractions"}
+        )
+        svc.update_runtime({"session_dir": str(session_a)})
+        resolved_a = svc.resolved()
+        assert resolved_a["ui"]["session_doc"]["scene_extractions_dir"] == str(
+            (session_a / "scene_extractions").resolve()
+        )
+
+        # Switching session_dir alone must retrack the relative value — the
+        # exact behavior that broke when the value was stored absolute.
+        svc.update_runtime({"session_dir": str(session_b)})
+        resolved_b = svc.resolved()
+        assert resolved_b["ui"]["session_doc"]["scene_extractions_dir"] == str(
+            (session_b / "scene_extractions").resolve()
+        )

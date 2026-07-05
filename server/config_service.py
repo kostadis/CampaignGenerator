@@ -116,6 +116,7 @@ class CampaignConfigService:
 
         self._tracked: dict = self._load_tracked()
         self._ui_state: UIState = self._load_ui_state()
+        self._normalize_stored_paths()
         self._local: LocalConfig = self._load_local()
 
     # ── Path properties ────────────────────────────────────────────────
@@ -200,6 +201,49 @@ class CampaignConfigService:
             )
             return LocalConfig()
 
+    def _normalize_stored_paths(self) -> None:
+        """One-time load-time self-heal for pre-existing ``ui_state.yaml``
+        files written before the write-time relativization choke point in
+        :meth:`update_section` existed.
+
+        Rewrites absolute ``session_doc`` / ``vtt_summary`` / ``grounding``
+        path fields to relative storage when they already sit under the
+        applicable base, using the CURRENTLY PERSISTED ``runtime.session_dir``
+        (not any boot override) as the session base. Session-scoped fields
+        are left untouched when ``runtime.session_dir`` is unset — same
+        guard as :meth:`relativize_path` itself, for the same reason: there
+        is no base to relativize against yet. Persists only if at least one
+        field actually changed.
+        """
+        sections_to_check = ("session_doc", "vtt_summary", "grounding")
+        persisted_session_dir = self._ui_state.runtime.session_dir
+
+        ui_dict = self._ui_state.ui.model_dump(mode="json")
+        changed = False
+        for section_name in sections_to_check:
+            fields = _PATH_FIELDS.get(section_name, {})
+            section = ui_dict.get(section_name)
+            if not fields or not isinstance(section, dict):
+                continue
+            for field, base in fields.items():
+                value = section.get(field)
+                if not isinstance(value, str) or not value:
+                    continue
+                new_value = self.relativize_path(
+                    value, base=base, session_dir=persisted_session_dir
+                )
+                if new_value != value:
+                    section[field] = new_value
+                    changed = True
+
+        if not changed:
+            return
+        new_state = self._ui_state.model_copy(
+            update={"ui": self._ui_state.ui.__class__.model_validate(ui_dict)}
+        )
+        self._persist_ui_state(new_state)
+        self._ui_state = new_state
+
     # ── Writers (atomic) ────────────────────────────────────────────────
 
     def _atomic_write(self, path: Path, text: str) -> None:
@@ -237,9 +281,16 @@ class CampaignConfigService:
                 f"valid: {', '.join(UI_SECTION_NAMES)}"
             )
         with self._write_lock:
+            path_fields = _PATH_FIELDS.get(name, {})
+            to_store = dict(partial)
+            for field, raw_value in partial.items():
+                if field in path_fields:
+                    to_store[field] = self.relativize_path(
+                        raw_value, base=path_fields[field]
+                    )
             ui_dict = self._ui_state.ui.model_dump(mode="json")
             section = ui_dict.get(name) or {}
-            section.update(partial)
+            section.update(to_store)
             ui_dict[name] = section
             new_state = self._ui_state.model_copy(
                 update={"ui": self._ui_state.ui.__class__.model_validate(ui_dict)}
@@ -334,6 +385,64 @@ class CampaignConfigService:
             # session_dir unset → fall back to campaign root rather than
             # leave the path relative; downstream consumers expect absolute.
         return str((self.campaign_dir / p).resolve())
+
+    def relativize_path(
+        self,
+        value: str | None,
+        *,
+        base: str = "campaign",
+        session_dir: str | None = None,
+    ) -> str | None:
+        """Inverse of :meth:`resolve_path` — collapse an absolute path back
+        to relative-to-base storage, so persisted values re-track base
+        changes the same way hand-authored relative values already do.
+
+        ``None`` / empty strings pass through as ``None``. Values that are
+        already relative pass through unchanged (nothing to do). Absolute
+        values are relativized against the base directory when they live
+        under it; a genuine out-of-tree absolute override (not under the
+        base) is returned unchanged, since there is no relative form that
+        preserves its meaning.
+
+        For ``base == "session"`` with no resolvable session_dir (neither
+        the explicit ``session_dir`` argument nor a persisted
+        ``runtime.session_dir``), the value is returned unchanged rather
+        than relativized against ``campaign_dir``. Relativizing against
+        campaign_dir here would be lossy: a session-scoped field's relative
+        storage is always interpreted against ``runtime.session_dir`` at
+        read time (see :meth:`resolve_path`), so a value written relative to
+        campaign_dir would be silently re-interpreted once a session_dir is
+        later set — the same base-mismatch bug this method exists to fix,
+        just triggered from the write side. This mirrors the defensive
+        "skip session-scoped fields when session_dir is unset" rule used by
+        the load-time normalize pass.
+        """
+        if value is None:
+            return None
+        s = str(value).strip()
+        if not s:
+            return None
+        p = Path(s).expanduser()
+        if not p.is_absolute():
+            # Already relative — leave as-is, nothing to collapse.
+            return value
+
+        if base == "session":
+            sd = session_dir or self._ui_state.runtime.session_dir
+            if not sd:
+                return value
+            base_path = Path(sd).expanduser()
+            if not base_path.is_absolute():
+                base_path = (self.campaign_dir / base_path).resolve()
+        else:
+            base_path = self.campaign_dir
+
+        resolved_value = p.resolve()
+        base_resolved = base_path.resolve()
+        if resolved_value.is_relative_to(base_resolved):
+            return resolved_value.relative_to(base_resolved).as_posix()
+        # Genuine out-of-tree override — no relative form preserves it.
+        return value
 
     def resolved(self) -> dict[str, Any]:
         """Typed read view with paths resolved (per-field base) and boot

@@ -72,6 +72,10 @@ async function persistTypedSections() {
       gm_player: gmPlayer.value || null,
       voice_dir: voiceDir.value || null,
       examples_dir: examplesDir.value || null,
+      scene_extractions_dir: 'scene_extractions',
+      narration_dir: 'narration',
+      session_summary: config.values.sd_session_summary || 'session-summary.md',
+      party: config.values.sd_party || null,
     }),
     config.updateSection('vtt_summary', {
       input: vttInput.value || null,
@@ -126,7 +130,8 @@ async function deriveAll() {
     Object.assign(config.values, {
       // Session-level (relative — resolvePath adds session_dir prefix)
       vtt_output: 'session-summary.md',
-      sd_extract_dir: 'scene_extractions',
+      sd_scene_extractions_dir: 'scene_extractions',
+      sd_narration_dir: 'narration',
       sd_roleplay_dir: 'vtt_roleplay_extractions',
       sd_summary_dir: 'vtt_extractions',
       sd_output_dir: sd,
