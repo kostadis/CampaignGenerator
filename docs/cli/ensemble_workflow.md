@@ -30,10 +30,10 @@ docs/ensemble/merged_dossiers/*.md             — type-merged dossiers, ready f
   ↓  synthesise_world_state.py                 (API or subscription)
 docs/world_state_draft.md
 
-  ↓  campaign_state.py --synthesize-only       (API — staging trick)
+  ↓  campaign_state.py --synthesize-only       (API — auto-stages world_state + threads)
 docs/campaign_state_draft.md
 
-  ↓  party.py --synthesize-only                (API — staging trick)
+  ↓  party.py --party-config config/party.yaml (API — human-authored roster, no staging)
 docs/party_draft.md
 
   ↓  planning.py --npc <cut>                   (API)
@@ -690,28 +690,24 @@ claude -p \
 
 `campaign_state.py`, `party.py`, and `planning.py` all support `--dump-input` / `--dump-only`; use the same pattern as above for those docs (sections 3c–3e show the subscription path for each). Note `--output` is required by argparse even with `--dump-only` (it is the eventual write target; the dump just stops before the API call).
 
-### 3c. campaign_state — staging trick
+### 3c. campaign_state — staging (now automatic)
 
-`campaign_state.py` expects its synthesis input as `extract_*.md` files. Stage the world_state and threads as extracts:
+`campaign_state.py` expects its synthesis input as `extract_*.md` files. Historically this required a manual `mkdir` + `cp` staging step; as of the auto-staging change, omitting `--extract-dir` with `--synthesize-only` stages `docs/world_state_draft.md` and `docs/ensemble/threads.md` for you (into `<output_dir>/state_staging/campaign_state/`, always re-copied from the current source files — run world_state synthesis and the threads stage first):
 
 ```bash
-mkdir -p /tmp/phandalin-cstate/extracts
-cp docs/world_state_draft.md /tmp/phandalin-cstate/extracts/extract_001_world_state.md
-cp docs/ensemble/threads.md  /tmp/phandalin-cstate/extracts/extract_002_threads.md
-
 python ~/src/CampaignGenerator/campaign_state.py \
   --synthesize-only \
-  --extract-dir /tmp/phandalin-cstate/extracts \
   --output docs/campaign_state_draft.md \
   --model claude-opus-4-8
 ```
+
+Pass `--extract-dir` explicitly to point at your own pre-staged extracts instead (e.g. to include the low-fact supplementary extract below).
 
 **Subscription path.** Use `--dump-input` + `--dump-only` then pipe to `claude -p`:
 
 ```bash
 python ~/src/CampaignGenerator/campaign_state.py \
   --synthesize-only \
-  --extract-dir /tmp/phandalin-cstate/extracts \
   --output docs/campaign_state_draft.md \
   --dump-input /tmp/campaign_state_prompt.md \
   --dump-only
@@ -739,9 +735,13 @@ If a dossier exists, read it and update the entry. Known false negatives from th
 | `npc_dazlyn.md` / `npc_norbus.md` | 3–4 | Gave sending stones as the Dwarven Excavation reward ch2 |
 | `location_shrine_of_savras.md` | 9 | Uncleared; known to party; active objective pending Neverwinter |
 
-**Structural fix for future runs:** stage a supplementary extract using `narrative_importance.yaml`'s `force_include` list plus any remaining below-threshold dossiers. This covers both GM-flagged entities and unknown-but-present ones:
+**Structural fix for future runs:** stage a supplementary extract using `narrative_importance.yaml`'s `force_include` list plus any remaining below-threshold dossiers. This covers both GM-flagged entities and unknown-but-present ones. A third extract file means building your own `--extract-dir` by hand — this bypasses the two-file auto-staging above:
 
 ```bash
+mkdir -p /tmp/phandalin-cstate/extracts
+cp docs/world_state_draft.md /tmp/phandalin-cstate/extracts/extract_001_world_state.md
+cp docs/ensemble/threads.md  /tmp/phandalin-cstate/extracts/extract_002_threads.md
+
 python3 - <<'PY' > /tmp/phandalin-cstate/extracts/extract_003_low_fact_dossiers.md
 import glob, re, yaml, os
 
@@ -769,11 +769,39 @@ print('\n\n---\n\n'.join(parts))
 PY
 ```
 
-Include `extract_003_low_fact_dossiers.md` in the `--extract-dir` before running the dump. The synthesis prompt grows by ~50–80 KB but coverage of minor module NPCs becomes accurate.
+Then run with `--extract-dir /tmp/phandalin-cstate/extracts` (the explicit path overrides the auto-stage). The synthesis prompt grows by ~50–80 KB but coverage of minor module NPCs becomes accurate.
 
-### 3d. party — staging trick
+### 3d. party — preferred: party.yaml config (now automatic)
 
-Stage the four PC dossiers as extracts:
+`party.py` has a "characters-only" mode that needs neither an extract pass nor `--synthesize-only` when given `--party-config` — it goes straight from the config to synthesis. But characters-only means no session extracts either, so without `--context` it has no source for current location / active quests / party reputation and will correctly report them as absent. Pass `world_state_draft.md` (or `world_state.md`) and `campaign_state_draft.md` (or `campaign_state.md`) as context — whichever exists. The Ensemble UI's Synthesize button now does both of these automatically (party-config + context) whenever `config/party.yaml` (or `party.yaml`) exists at the campaign root; no staged extracts required:
+
+```bash
+python ~/src/CampaignGenerator/party.py \
+  --party-config config/party.yaml \
+  --context docs/world_state_draft.md docs/campaign_state_draft.md \
+  --output docs/party_draft.md \
+  --model claude-opus-4-8
+```
+
+**Subscription path.**
+
+```bash
+python ~/src/CampaignGenerator/party.py \
+  --party-config config/party.yaml \
+  --context docs/world_state_draft.md docs/campaign_state_draft.md \
+  --output docs/party_draft.md \
+  --dump-input /tmp/party_prompt.md \
+  --dump-only
+
+claude -p \
+  --system-prompt "$(cat /tmp/party_prompt.md.system.md)" \
+  < /tmp/party_prompt.md \
+  > docs/party_draft.md
+```
+
+`party.yaml` maps each PC's name to a sheet + optional backstory + optional arc-score file (see `config/party.example.yaml`) — build it once via the Party Document page's config editor and every future ensemble run reuses it, no re-staging per run.
+
+**Fallback — no party.yaml yet.** Stage each PC's dossier as an extract by hand instead (which dossiers count as PCs is campaign-specific, so this step isn't automated):
 
 ```bash
 mkdir -p /tmp/phandalin-party/extracts
@@ -794,26 +822,7 @@ python ~/src/CampaignGenerator/party.py \
   --model claude-opus-4-8
 ```
 
-**Subscription path.**
-
-```bash
-python ~/src/CampaignGenerator/party.py \
-  --synthesize-only \
-  --extract-dir /tmp/phandalin-party/extracts \
-  --backstory 'docs/Backstory - Brewbarry.md' \
-              'docs/Backstory - Valphine Sotorra.md' \
-              'docs/Soma - Backstory.md' \
-  --output docs/party_draft.md \
-  --dump-input /tmp/party_prompt.md \
-  --dump-only
-
-claude -p \
-  --system-prompt "$(cat /tmp/party_prompt.md.system.md)" \
-  < /tmp/party_prompt.md \
-  > docs/party_draft.md
-```
-
-**Caveat:** `party_draft.md` has no D&D Beyond-sourced class/level/arc-scores — it's the narrative/role half only. If you need those, run the full `party.py` pass with character sheet PDFs.
+**Caveat:** `party_draft.md` (either path) has no D&D Beyond-sourced class/level/arc-scores — it's the narrative/role half only. If you need those, run the full `party.py` pass with character sheet PDFs.
 
 ### 3e. planning — importance cut
 
@@ -1044,7 +1053,8 @@ python ~/src/CampaignGenerator/campaign_state.py \
   --dump-input /tmp/cs_prompt.md --dump-only
 
 python ~/src/CampaignGenerator/party.py \
-  --synthesize-only --extract-dir /tmp/party/extracts \
+  --party-config config/party.yaml \
+  --context docs/world_state_draft.md docs/campaign_state_draft.md \
   --dump-input /tmp/party_prompt.md --dump-only
 
 python ~/src/CampaignGenerator/planning.py \

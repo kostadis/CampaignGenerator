@@ -89,7 +89,7 @@ export function useEnsembleRun() {
 }
 
 export interface BackendProfile {
-  backend: 'anthropic' | 'dgx' | 'openrouter'
+  backend: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
   endpoint: string
   model: string
 }

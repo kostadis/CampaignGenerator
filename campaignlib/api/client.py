@@ -73,9 +73,9 @@ def add_backend_args(parser) -> None:
     the backward-compatibility contract.
     """
     parser.add_argument(
-        "--backend", choices=["anthropic", "dgx", "openrouter"], default="anthropic",
-        help="LLM backend (default: anthropic). 'dgx'/'openrouter' route through the "
-             "campaignlib seam; with no flag, behaviour is unchanged (Anthropic API).")
+        "--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"], default="anthropic",
+        help="LLM backend (default: anthropic). 'dgx'/'openrouter'/'claude-code' route "
+             "through the campaignlib seam; with no flag, behaviour is unchanged (Anthropic API).")
     parser.add_argument(
         "--endpoint", default=None, metavar="URL",
         help="OpenAI-compatible endpoint for --backend dgx (OpenRouter uses its own base URL).")
@@ -91,7 +91,7 @@ def client_from_args(args):
     seam's model override.
     """
     backend = None if getattr(args, "backend", "anthropic") == "anthropic" else args.backend
-    model_override = getattr(args, "model", None) if backend in ("dgx", "openrouter") else None
+    model_override = getattr(args, "model", None) if backend in ("dgx", "openrouter", "claude-code") else None
     return make_client(backend=backend, endpoint=getattr(args, "endpoint", None),
                        model_override=model_override)
 

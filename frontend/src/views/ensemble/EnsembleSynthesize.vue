@@ -32,10 +32,15 @@ const DOCS = [
 
 const selectedDoc = ref<typeof DOCS[number]['id']>('world_state')
 const diffs = reactive<Record<string, string>>({})
+// Party config path set via the Party Document page (ui.party.config_path).
+// Passed through as-is — the server falls back to config/party.yaml or
+// party.yaml at the campaign root when this is blank.
+const partyConfigPath = ref('')
 
 onMounted(async () => {
   await config.load()
   cfg.value = readEnsembleConfig(config.resolved)
+  partyConfigPath.value = config.resolved?.ui?.party?.config_path || ''
 })
 
 function synthesize() {
@@ -44,6 +49,7 @@ function synthesize() {
     backend: cfg.value.synthesize.backend,
     endpoint: cfg.value.synthesize.endpoint,
     model: cfg.value.synthesize.model,
+    party: partyConfigPath.value,
   }, (rc) => { if (rc === 0) emit('changed') })
 }
 
@@ -68,6 +74,18 @@ async function promote(doc: string) {
     <p class="hint">
       Synthesis writes <code>*_draft.md</code> only — never a live doc. Backend:
       <strong>{{ cfg.synthesize.backend }}</strong>. Review the diff, then promote by hand.
+    </p>
+    <p v-if="selectedDoc === 'party'" class="hint">
+      Uses <code>{{ partyConfigPath || 'config/party.yaml (auto-detected if present)' }}</code>
+      — the human-maintained PC roster (see the Party Document page to create or edit
+      one). No pre-staged extracts needed once it exists. Also auto-includes
+      <code>world_state</code>/<code>campaign_state</code> (draft, or live if no draft
+      yet) as context, so current location/quests/reputation aren't reported as missing.
+    </p>
+    <p v-if="selectedDoc === 'party' && !partyConfigPath" class="hint warn-hint">
+      ⚠ If no <code>config/party.yaml</code> exists yet on disk, this will fall back to
+      the old staged-extracts path and error without <code>--extract-dir</code> — see
+      <code>docs/cli/ensemble_workflow.md</code> §3d, or create a party.yaml first.
     </p>
 
     <div class="controls">
@@ -104,6 +122,7 @@ h2 { font-size: 16px; margin-bottom: 6px; }
 h3 { font-size: 13px; margin: 16px 0 6px; }
 .tag { font-size: 9px; background: var(--peach); color: var(--bg-mantle); border-radius: 8px; padding: 1px 7px; margin-left: 6px; font-weight: 700; }
 .hint { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; max-width: 64ch; }
+.warn-hint { color: var(--peach); }
 .controls { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 select { font-size: 12px; padding: 5px 7px; background: var(--bg-surface0); color: var(--text); border: 1px solid var(--bg-surface1); border-radius: 4px; }
 .ok { color: var(--green); font-size: 12px; font-weight: 600; }

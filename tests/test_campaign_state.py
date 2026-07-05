@@ -39,6 +39,18 @@ def test_extract_only_and_synthesize_only_are_mutually_exclusive(tmp_path):
     assert "mutually exclusive" in result.stderr
 
 
+def test_synthesize_only_without_extract_dir_reports_missing_staging_sources(tmp_path):
+    # Run from REPO_ROOT (no docs/world_state_draft.md there) — auto-staging
+    # should fail with a clear pointer instead of a bare "requires --extract-dir".
+    result = _run(
+        "--synthesize-only",
+        "--output", str(tmp_path / "campaign_state_draft.md"),
+    )
+    assert result.returncode == 1
+    assert "world_state_draft.md" in result.stderr
+    assert "threads.md" in result.stderr
+
+
 # ── In-process behavior ──────────────────────────────────────────────────────
 
 class FakeStreamAPI:
@@ -114,6 +126,27 @@ def test_tracked_items_injected_into_both_system_prompts(monkeypatch, fake_strea
     assert "Gnomengarde resolution" in extract_system
     assert "Cryovain encounter" in synthesize_system
     assert "Gnomengarde resolution" in synthesize_system
+
+
+def test_synthesize_only_auto_stages_world_state_and_threads(monkeypatch, fake_stream_api, tmp_path):
+    docs_dir = tmp_path / "docs"
+    (docs_dir / "ensemble").mkdir(parents=True)
+    (docs_dir / "world_state_draft.md").write_text("world state content", encoding="utf-8")
+    (docs_dir / "ensemble" / "threads.md").write_text("threads content", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+    monkeypatch.setattr(sys, "argv", [
+        "campaign_state.py",
+        "--output", "docs/campaign_state_draft.md",
+        "--synthesize-only",
+    ])
+    campaign_state.main()
+
+    staged = docs_dir / "state_staging" / "campaign_state"
+    assert staged.joinpath("extract_001_world_state.md").read_text(encoding="utf-8") == "world state content"
+    assert staged.joinpath("extract_002_threads.md").read_text(encoding="utf-8") == "threads content"
+    assert len(fake_stream_api.calls) == 1  # synthesize pass only, no extract
+    assert (docs_dir / "campaign_state_draft.md").exists()
 
 
 def test_no_tracked_items_omits_tracked_section(monkeypatch, fake_stream_api, tmp_path):

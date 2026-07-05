@@ -143,12 +143,13 @@ class BackendProfile(BaseModel):
 
     The API key is NEVER stored here — it is read from the environment
     (ANTHROPIC_API_KEY / OPENROUTER_API_KEY) at run time. `endpoint` is used
-    for the dgx backend; openrouter uses its own base URL.
+    for the dgx backend; openrouter uses its own base URL; claude-code bills
+    the Pro/Max subscription via the local `claude` CLI instead of a key.
     """
 
     model_config = ConfigDict(extra="allow")
 
-    backend: Literal["anthropic", "dgx", "openrouter"] = "anthropic"
+    backend: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
     endpoint: OptStr = None
     model: OptStr = None
 

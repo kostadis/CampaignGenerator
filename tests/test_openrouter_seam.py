@@ -108,6 +108,27 @@ def test_client_from_args_openrouter_passes_model(monkeypatch):
                     "model_override": "anthropic/claude-sonnet-4"}
 
 
+def test_add_backend_args_accepts_claude_code():
+    p = argparse.ArgumentParser()
+    p.add_argument("--model", default="claude-sonnet-4-6")
+    campaignlib.add_backend_args(p)
+    ns = p.parse_args(["--backend", "claude-code"])
+    assert ns.backend == "claude-code"
+
+
+def test_client_from_args_claude_code_passes_model(monkeypatch):
+    """A stale/omitted model must not be dropped for claude-code the way it is
+    for anthropic — the subscription still needs to know which Claude model."""
+    seen = {}
+    monkeypatch.setattr(client_mod, "make_client",
+                        lambda backend=None, endpoint=None, model_override=None:
+                        seen.update(backend=backend, endpoint=endpoint, model_override=model_override))
+    ns = argparse.Namespace(backend="claude-code", endpoint=None, model="claude-opus-4-8")
+    client_mod.client_from_args(ns)
+    assert seen == {"backend": "claude-code", "endpoint": None,
+                    "model_override": "claude-opus-4-8"}
+
+
 # ── Principle V: OpenRouter constructed only inside campaignlib/api ──────────
 
 def test_no_out_of_seam_openrouter_construction():

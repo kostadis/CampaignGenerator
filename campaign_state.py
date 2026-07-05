@@ -32,6 +32,10 @@ Usage:
       --extract-dir docs/state_extractions \\
       --output docs/campaign_state.md
 
+  # Ensemble workflow: --extract-dir omitted auto-stages
+  # docs/world_state_draft.md + docs/ensemble/threads.md as extracts
+  python campaign_state.py --synthesize-only --output docs/campaign_state_draft.md
+
 Tracking file format (tracking.txt):
   One item per line. Blank lines and lines starting with # are ignored.
   Items can be short phrases or full sentences describing events to track.
@@ -61,6 +65,7 @@ Integration:
 """
 
 import argparse
+import shutil
 import sys
 from pathlib import Path
 
@@ -112,6 +117,33 @@ def build_synthesize_system(tracked_items: list[str]) -> str:
     return SYNTHESIZE_SYSTEM_BASE.format(tracked_section=tracked_section)
 
 
+def auto_stage_synthesize_only_extracts(output_dir: Path) -> Path:
+    """Auto-stage world_state_draft.md + docs/ensemble/threads.md as extract_*.md
+    so --synthesize-only works without the manual mkdir+cp 'staging trick'
+    (docs/cli/ensemble_workflow.md §3c). Always re-copies from source so a
+    staged extract can't go stale relative to what it was copied from.
+    """
+    cwd = Path.cwd()
+    sources = [
+        (cwd / "docs" / "world_state_draft.md", "extract_001_world_state.md"),
+        (cwd / "docs" / "ensemble" / "threads.md", "extract_002_threads.md"),
+    ]
+    missing = [str(src) for src, _ in sources if not src.exists()]
+    if missing:
+        print("Error: --synthesize-only auto-staging needs these files first:",
+              file=sys.stderr)
+        for m in missing:
+            print(f"  {m}", file=sys.stderr)
+        print("Run world_state synthesis (and the threads stage) before "
+              "campaign_state, or pass --extract-dir to point at your own "
+              "pre-staged extracts instead.", file=sys.stderr)
+        sys.exit(1)
+    staging_dir = output_dir / "state_staging" / "campaign_state"
+    staging_dir.mkdir(parents=True, exist_ok=True)
+    for src, name in sources:
+        shutil.copyfile(src, staging_dir / name)
+    return staging_dir
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -138,10 +170,13 @@ def main() -> None:
                              "count (e.g. '# Session'). Each session becomes one extract chunk.")
     parser.add_argument("--extract-dir", metavar="DIR", default=None,
                         help="Where to save/load intermediate extractions "
-                             "(default: <output_dir>/state_extractions/)")
+                             "(default: <output_dir>/state_extractions/, or an "
+                             "auto-staged dir — see --synthesize-only)")
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction, synthesize from existing files in --extract-dir "
-                             "(tracking list still applies to synthesize prompt)")
+                             "(tracking list still applies to synthesize prompt). If "
+                             "--extract-dir is omitted, auto-stages docs/world_state_draft.md "
+                             "+ docs/ensemble/threads.md as extracts (run those first)")
     parser.add_argument("--extract-only", action="store_true",
                         help="Run the extract pass only, then stop so you can review "
                              "extractions before synthesis. Re-run with --synthesize-only "
@@ -166,9 +201,6 @@ def main() -> None:
         print("Error: --synthesize-only and --extract-only are mutually exclusive",
               file=sys.stderr)
         sys.exit(1)
-    if args.synthesize_only and not args.extract_dir:
-        print("Error: --synthesize-only requires --extract-dir", file=sys.stderr)
-        sys.exit(1)
     if not args.synthesize_only and not args.input:
         print("Error: input file required unless --synthesize-only", file=sys.stderr)
         sys.exit(1)
@@ -186,11 +218,13 @@ def main() -> None:
         tracked_items = tracked_items + args.track
 
     output = Path(args.output).expanduser().resolve()
-    extract_dir = (
-        Path(args.extract_dir).expanduser().resolve()
-        if args.extract_dir
-        else output.parent / "state_extractions"
-    )
+    if args.extract_dir:
+        extract_dir = Path(args.extract_dir).expanduser().resolve()
+    elif args.synthesize_only:
+        extract_dir = auto_stage_synthesize_only_extracts(output.parent)
+        print(f"[Auto-staged synthesize-only inputs into {extract_dir}]")
+    else:
+        extract_dir = output.parent / "state_extractions"
 
     alias_map = load_alias_map(args.dossier_dir)
     normalize, _ = build_alias_normalizer(alias_map)
