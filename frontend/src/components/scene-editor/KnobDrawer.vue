@@ -166,7 +166,7 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
               @click="emit('update:backend', 'dgx')"
             >DGX</button>
           </div>
-          <div class="field-help">Stage 3 (Plan &amp; Check) always uses Anthropic — tool-use path.</div>
+          <div class="field-help">Stage 3 (Plan &amp; Check) honors Anthropic or Subscription; DGX falls back to the Anthropic API.</div>
         </div>
         <div v-if="backend === 'dgx'" class="field">
           <label class="field-label">DGX endpoint</label>

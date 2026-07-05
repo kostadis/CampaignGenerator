@@ -1038,8 +1038,11 @@ def _build_consistency_cmd() -> list[str] | tuple[None, str]:
         "--out", str(nd / "consistency_report.md"),
     ]
     cmd += _model_args()
-    for ctx in context:
-        cmd += ["--context", ctx]
+    # sd_consistency.py's --context is nargs="+", so ALL files go under one
+    # flag. Repeated `--context A --context B` would keep only the last (B),
+    # silently dropping the earlier context docs. Keep this LAST so nargs="+"
+    # doesn't swallow --out/--model.
+    cmd += ["--context", *context]
     return cmd
 
 
@@ -1114,9 +1117,15 @@ async def api_plan():
         from server.subprocess_runner import stream_subprocess as _stream
 
         if not isinstance(consistency_result, tuple):
+            # emit_done=False: this is the FIRST of two chained subprocesses.
+            # connectSSE closes the EventSource on the first `done` it sees, so
+            # letting consistency emit its terminal `done` would disconnect the
+            # client and group-kill the plan subprocess before it writes
+            # plan.md. Only the final (plan) stream emits `done`.
             async for chunk in _stream(consistency_result,
                                         cwd=CONFIG.get("work_dir"),
-                                        env_extra=plan_env):
+                                        env_extra=plan_env,
+                                        emit_done=False):
                 yield chunk
         async for chunk in _stream(plan_result,
                                     cwd=CONFIG.get("work_dir"),
