@@ -7,6 +7,7 @@ interface PartyChar {
   name: string
   sheet: string
   backstory: string
+  dossier: string
   arc_score: string
   trackless: boolean
 }
@@ -88,7 +89,7 @@ async function save() {
 
 function addChar() {
   characters.value.push({
-    name: '', sheet: '', backstory: '', arc_score: '', trackless: false,
+    name: '', sheet: '', backstory: '', dossier: '', arc_score: '', trackless: false,
   })
 }
 
@@ -173,6 +174,13 @@ watch(() => props.configPath, () => {
               label="Backstory"
               :base-dir="yamlParentDir"
               help="Optional. Path relative to the party.yaml directory."
+            />
+            <PathField
+              :model-value="c.dossier"
+              @update:model-value="(v: string) => (c.dossier = v)"
+              label="Ensemble dossier"
+              :base-dir="yamlParentDir"
+              help="Optional. This PC's own docs/ensemble/merged_dossiers/npc_*.md — narrative facts (relationships, decisions, arc progression) from actual play."
             />
 
             <div class="arc-row">

@@ -11,11 +11,19 @@
 #   (key omitted)                 → unspecified; treated like no arc score,
 #                                   but without the trackless signal. Prefer
 #                                   to be explicit with `null` for clarity.
+#
+# dossier (optional): this PC's own ensemble-built current-state dossier
+# (docs/ensemble/merged_dossiers/npc_<name>.md) — narrative facts pulled from
+# actual play (relationships, decisions, arc progression) that the static
+# sheet/backstory don't carry. Which dossier file belongs to which PC is
+# campaign-specific, so map it explicitly here rather than relying on
+# name-matching.
 
 characters:
   - name: Brewbarry
     sheet: docs/party/brewbarry.md
     backstory: docs/Backstory - Brewbarry.md
+    dossier: docs/ensemble/merged_dossiers/npc_brewbarry.md
     arc_score: docs/tracking/brewbarry-score.md
 
   - name: Valphine

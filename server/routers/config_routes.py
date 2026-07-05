@@ -155,8 +155,10 @@ def get_party_yaml(path: str):
     """Load a party config YAML.
 
     Returns the parsed `characters` list (with arc_score=null preserved as
-    null) and the resolved file path. If the file does not exist, returns
-    an empty character list so the UI can offer a 'create new' flow.
+    null, and `dossier` — the PC's ensemble-built merged_dossiers/npc_*.md
+    file, if mapped) and the resolved file path. If the file does not
+    exist, returns an empty character list so the UI can offer a
+    'create new' flow.
     """
     p = Path(path).expanduser().resolve() if path else None
     if not p or not path:
@@ -181,6 +183,7 @@ def get_party_yaml(path: str):
             "name": c.get("name", ""),
             "sheet": c.get("sheet", ""),
             "backstory": c.get("backstory") or "",
+            "dossier": c.get("dossier") or "",
             # Distinguish three cases for arc_score on the wire:
             #   present + null → trackless=True
             #   present + path → trackless=False, arc_score=path
@@ -200,7 +203,8 @@ class PartyYamlSave(BaseModel):
 def put_party_yaml(update: PartyYamlSave):
     """Write a party config YAML.
 
-    Each character dict must contain `name` and `sheet`. `backstory` is
+    Each character dict must contain `name` and `sheet`. `backstory` and
+    `dossier` (the PC's ensemble-built merged_dossiers/npc_*.md file) are
     optional. `arc_score` is three-state:
         trackless=True            → emits `arc_score: null`
         arc_score truthy          → emits `arc_score: <path>`
@@ -226,6 +230,9 @@ def put_party_yaml(update: PartyYamlSave):
         backstory = (c.get("backstory") or "").strip()
         if backstory:
             entry["backstory"] = backstory
+        dossier = (c.get("dossier") or "").strip()
+        if dossier:
+            entry["dossier"] = dossier
         if c.get("trackless"):
             entry["arc_score"] = None
         else:
