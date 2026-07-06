@@ -16,6 +16,7 @@ from .textproc import (
     chunk_by_chapters,
     annotate_chunks_with_pov,
     prepare_chunks,
+    norm_subject,
 )
 from .config import (
     find_default_config,
@@ -74,6 +75,7 @@ __all__ = [
     "chunk_by_chapters",
     "annotate_chunks_with_pov",
     "prepare_chunks",
+    "norm_subject",
     # config / file I/O / agent prompts
     "find_default_config",
     "load_config",

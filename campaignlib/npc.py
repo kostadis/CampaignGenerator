@@ -49,6 +49,9 @@ def normalize_npc_key(name: str) -> str:
 
     LLM-emitted variants like "Harbin (Townmaster)" must match flat aliases
     like "Harbin Townmaster". Without normalization the parens block lookup.
+
+    This is a display/lookup TEXT REWRITER (keeps spaces), not an identity
+    key. For entity-identity comparisons use ``campaignlib.textproc.norm_subject``.
     """
     s = re.sub(r"[\(\)\[\]\'\"`\-]", "", name.lower())
     s = re.sub(r"\s+", " ", s).strip()
