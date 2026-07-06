@@ -309,6 +309,128 @@ def test_dump_omits_default_scope_and_round_trips_to_persistent(tmp_path):
     assert loaded.entities[0].scope == "persistent"
 
 
+# ── alias ────────────────────────────────────────────────────────────────────
+
+def test_alias_attach_by_canonical_name(tmp_path):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc",
+    ]) == 0
+
+    rc = registry.main(["alias", str(campaign_dir), "--to", "Ilvara Mizzrym", "Ilvarra"])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    assert len(reg.entities) == 1
+    assert "Ilvarra" in reg.entities[0].aliases
+    assert reg.alias_to_canonical()["Ilvarra"] == "Ilvara Mizzrym"
+
+
+def test_alias_attach_by_existing_alias(tmp_path):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc",
+        "--aliases", "Ilvara",
+    ]) == 0
+
+    # --to targets an existing ALIAS, not the canonical spelling.
+    rc = registry.main(["alias", str(campaign_dir), "--to", "Ilvara", "Mistress Ilvara"])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    assert len(reg.entities) == 1
+    assert reg.entities[0].name == "Ilvara Mizzrym"
+    assert set(reg.entities[0].aliases) == {"Ilvara", "Mistress Ilvara"}
+
+
+def test_alias_attach_multiple_variants_one_call(tmp_path):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc",
+    ]) == 0
+
+    rc = registry.main([
+        "alias", str(campaign_dir), "--to", "Ilvara Mizzrym",
+        "Ilvarra", "Mistress Ilvara", "Ilvara",
+    ])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    assert len(reg.entities) == 1
+    assert set(reg.entities[0].aliases) == {"Ilvarra", "Mistress Ilvara", "Ilvara"}
+
+
+def test_alias_to_matches_nothing_errors_and_writes_nothing(tmp_path):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc",
+    ]) == 0
+
+    path = campaign_dir / "docs" / "entity_registry.yaml"
+    before = path.read_text(encoding="utf-8")
+
+    rc = registry.main(["alias", str(campaign_dir), "--to", "Nobody Here", "Whoever"])
+    assert rc == 1
+
+    after = path.read_text(encoding="utf-8")
+    assert before == after
+
+
+def test_alias_variant_owned_by_different_entity_is_atomic(tmp_path):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc",
+    ]) == 0
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Asha", "--type", "npc",
+    ]) == 0
+
+    path = campaign_dir / "docs" / "entity_registry.yaml"
+    before = path.read_text(encoding="utf-8")
+
+    # "Brand New" would be a valid new alias, but "Asha" already belongs to a
+    # different entity — the whole call must fail and write nothing, even
+    # though "Brand New" alone would have been fine.
+    rc = registry.main([
+        "alias", str(campaign_dir), "--to", "Ilvara Mizzrym", "Brand New", "Asha",
+    ])
+    assert rc == 1
+
+    after = path.read_text(encoding="utf-8")
+    assert before == after
+
+    reg = load_registry(path)
+    assert reg.entities[0].aliases == []
+
+
+def test_alias_already_attached_is_idempotent(tmp_path):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc",
+        "--aliases", "Ilvara",
+    ]) == 0
+
+    rc = registry.main(["alias", str(campaign_dir), "--to", "Ilvara Mizzrym", "Ilvara"])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    assert reg.entities[0].aliases == ["Ilvara"]  # no duplicate
+
+
+def test_alias_round_trip_still_validates(tmp_path):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc",
+    ]) == 0
+    assert registry.main([
+        "alias", str(campaign_dir), "--to", "Ilvara Mizzrym", "Ilvarra",
+    ]) == 0
+
+    # load_registry calls validate() internally; a broken registry would raise.
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    assert reg.entities[0].name == "Ilvara Mizzrym"
+
+
 def test_dump_omits_none_and_empty_fields(tmp_path):
     reg = Registry(version=1, campaign=None, entities=[Entity(name="Bare", type="npc")])
     text = dump_registry(reg)

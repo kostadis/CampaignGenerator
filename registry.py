@@ -2,12 +2,18 @@
 """registry.py — CLI for the campaign entity registry (docs/entity_registry.yaml).
 
 This is the write side of ``campaignlib.registry`` (the loader/validator
-library). It has three subcommands:
+library). Its subcommands:
 
   init    <campaign_dir>                 create an empty registry
   add     <campaign_dir> --name ... --type ...   add one entity, with a
                                           fuzzy typo guard against existing
                                           names/aliases before it lands
+  alias   <campaign_dir> --to ... variant [variant ...]   non-interactive
+                                          counterpart to add's interactive
+                                          "[1] same entity" choice: attach one
+                                          or more surface forms as aliases of
+                                          an existing entity (looked up by its
+                                          canonical name OR an existing alias)
   project <campaign_dir>                 write aliases.json and
                                           entity_inventory.md projections
                                           consumed by existing pipelines
@@ -1240,6 +1246,77 @@ def cmd_mark_rejected(args: argparse.Namespace) -> int:
     return 0
 
 
+# ── alias ────────────────────────────────────────────────────────────────────
+#
+# Non-interactive counterpart to `add`'s interactive near-miss choice [1]
+# ("same entity — add as an alias"). The forthcoming entity-triage skill walks
+# `triage-candidates` output with the GM and needs to attach a confirmed
+# surface form to an EXISTING entity without answering an input() prompt.
+# `--to` may name the entity's canonical spelling or any of its existing
+# aliases — either way it resolves through `_find_owner` to one entity. All
+# variants are pre-checked before anything is mutated, so a call with N
+# variants either lands all N (minus no-op already-attached ones) or writes
+# nothing at all.
+
+def cmd_alias(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+
+    reg = load_registry(path)
+
+    target_idx = _find_owner(reg, norm_subject(args.to))
+    if target_idx is None:
+        print(f"Error: no entity matching --to {args.to!r} in the registry", file=sys.stderr)
+        return 1
+    target = reg.entities[target_idx]
+
+    # Pre-check ALL variants before mutating anything, so a conflict on the
+    # 2nd of 3 variants doesn't leave the 1st one partially applied.
+    to_append: list[str] = []
+    already: list[str] = []
+    staged_keys: set[str] = set()
+    for variant in args.variants:
+        key = norm_subject(variant)
+        owner_idx = _find_owner(reg, key)
+        if owner_idx == target_idx or key in staged_keys:
+            already.append(variant)  # no-op: already the target's name/alias
+            continue
+        if owner_idx is not None:
+            print(
+                f"Error: {variant!r} already belongs to a different entity "
+                f"{reg.entities[owner_idx].name!r} — refusing to move it "
+                f"(mark-distinct if they are truly separate)",
+                file=sys.stderr,
+            )
+            return 1
+        to_append.append(variant)
+        staged_keys.add(key)
+
+    if not to_append:
+        print(f"Nothing to do — all already aliases of {target.name!r}")
+        return 0
+
+    target.aliases.extend(to_append)
+    try:
+        validate(reg)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    save_registry(reg, path)
+
+    print(f"Attached {to_append!r} as alias(es) of {target.name!r} in {path}")
+    if already:
+        print(f"  (already attached, skipped: {already!r})")
+    return 0
+
+
 # ── CLI wiring ───────────────────────────────────────────────────────────────
 
 def main(argv: "list[str] | None" = None) -> int:
@@ -1344,6 +1421,16 @@ def main(argv: "list[str] | None" = None) -> int:
     pmr.add_argument("campaign_dir")
     pmr.add_argument("names", nargs="+")
     pmr.set_defaults(func=cmd_mark_rejected)
+
+    pal = sub.add_parser(
+        "alias",
+        help="non-interactively attach one or more surface forms as aliases of an "
+             "existing entity (looked up by canonical name or existing alias)",
+    )
+    pal.add_argument("campaign_dir")
+    pal.add_argument("--to", required=True, help="canonical name or existing alias of the target entity")
+    pal.add_argument("variants", nargs="+", help="surface form(s) to attach as alias(es)")
+    pal.set_defaults(func=cmd_alias)
 
     args = p.parse_args(argv)
     return args.func(args)
