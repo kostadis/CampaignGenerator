@@ -13,6 +13,14 @@ library). It has three subcommands:
                                           consumed by existing pipelines
                                           (synthesise_world_state.load_aliases,
                                           spell_canon.inventory_tokens, ...)
+  import-inventory <campaign_dir> <md>   merge entities from an inventory
+                                          markdown file (``## Heading`` sections
+                                          of ``- **Name** / **Alias** — note``
+                                          bullets), e.g. a module inventory or
+                                          ``entity_inventory.md``
+  import-dedup <campaign_dir> <json>     merge NPC entities + anti-merge
+                                          guards from a ``.dedup_state.json``
+                                          file
 
 No API calls are made anywhere in this module.
 """
@@ -20,7 +28,9 @@ No API calls are made anywhere in this module.
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
+import re
 import sys
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -28,10 +38,10 @@ from pathlib import Path
 from campaignlib.registry import (
     Entity,
     Registry,
-    _validate,
     find_registry,
     load_registry,
     save_registry,
+    validate,
 )
 from campaignlib.textproc import norm_subject
 
@@ -133,7 +143,7 @@ def cmd_add(args: argparse.Namespace) -> int:
             target = near[0][0]
             target.aliases.append(args.name)
             try:
-                _validate(reg)
+                validate(reg)
             except ValueError as exc:
                 print(f"Error: {exc}", file=sys.stderr)
                 return 1
@@ -150,7 +160,7 @@ def cmd_add(args: argparse.Namespace) -> int:
 
     reg.entities.append(new_entity)
     try:
-        _validate(reg)
+        validate(reg)
     except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
@@ -186,6 +196,363 @@ def cmd_project(args: argparse.Namespace) -> int:
     return 0
 
 
+# ── shared merge helper ─────────────────────────────────────────────────────
+#
+# Every importer (import-inventory, import-dedup, and later packets'
+# import-alias-decisions / import-frontmatter) funnels new entity data through
+# _merge_entity so there is exactly one place that guarantees the resulting
+# registry still passes campaignlib.registry.validate() — no importer can ever
+# introduce an identity collision.
+
+def _find_owner(reg: Registry, key: str) -> "int | None":
+    """Index of the entity in ``reg.entities`` whose name or an alias
+    normalizes to ``key`` (already a ``norm_subject`` value), else None."""
+    if not key:
+        return None
+    for idx, e in enumerate(reg.entities):
+        if norm_subject(e.name) == key:
+            return idx
+        for alias in e.aliases:
+            if norm_subject(alias) == key:
+                return idx
+    return None
+
+
+def _merge_entity(
+    reg: Registry,
+    *,
+    name: str,
+    type: str,
+    aliases=(),
+    provenance=None,
+    source=None,
+    scope="persistent",
+    note=None,
+) -> "list[str]":
+    """Merge one incoming entity record into ``reg`` in place.
+
+    Never introduces an identity collision: any incoming alias already owned
+    by a *different* entity is skipped and reported instead of merged.
+    Returns a list of human-readable conflict strings (empty == clean merge).
+    """
+    conflicts: list[str] = []
+    name_key = norm_subject(name)
+    existing_idx = _find_owner(reg, name_key)
+
+    if existing_idx is not None:
+        entity = reg.entities[existing_idx]
+        if entity.type != type:
+            conflicts.append(
+                f"{name!r}: incoming type {type!r} conflicts with existing "
+                f"type {entity.type!r} for entity {entity.name!r} — keeping "
+                f"{entity.type!r}"
+            )
+        for alias in aliases:
+            alias_key = norm_subject(alias)
+            if not alias_key or alias_key == norm_subject(entity.name):
+                continue
+            owner_idx = _find_owner(reg, alias_key)
+            if owner_idx is not None and owner_idx != existing_idx:
+                conflicts.append(
+                    f"alias {alias!r} already belongs to entity "
+                    f"{reg.entities[owner_idx].name!r}; skipped for "
+                    f"{entity.name!r}"
+                )
+                continue
+            if owner_idx is None:
+                entity.aliases.append(alias)
+        if entity.provenance is None and provenance is not None:
+            entity.provenance = provenance
+        if entity.source is None and source is not None:
+            entity.source = source
+        if entity.note is None and note is not None:
+            entity.note = note
+        return conflicts
+
+    # Not found as an existing name/alias anywhere in the registry.
+    survivors: list[str] = []
+    seen_keys = {name_key}
+    for alias in aliases:
+        alias_key = norm_subject(alias)
+        if not alias_key or alias_key in seen_keys:
+            continue
+        owner_idx = _find_owner(reg, alias_key)
+        if owner_idx is not None:
+            conflicts.append(
+                f"alias {alias!r} already belongs to entity "
+                f"{reg.entities[owner_idx].name!r}; skipped for new entity "
+                f"{name!r}"
+            )
+            continue
+        survivors.append(alias)
+        seen_keys.add(alias_key)
+
+    reg.entities.append(
+        Entity(
+            name=name,
+            type=type,
+            aliases=survivors,
+            provenance=provenance,
+            source=source,
+            scope=scope,
+            note=note,
+        )
+    )
+    return conflicts
+
+
+def _add_distinct_pair(reg: Registry, a: str, b: str) -> None:
+    """Append ``[a, b]`` to ``reg.distinct`` unless an equal-by-norm pair is
+    already present (order-independent, case/punctuation-independent)."""
+    key = {norm_subject(a), norm_subject(b)}
+    for pair in reg.distinct:
+        if len(pair) == 2 and {norm_subject(pair[0]), norm_subject(pair[1])} == key:
+            return
+    reg.distinct.append([a, b])
+
+
+def _add_rejected_group(reg: Registry, members: "list[str]") -> None:
+    """Append ``members`` to ``reg.rejected_aliases`` unless an equal-by-norm
+    group (same members, any order) is already present."""
+    key = {norm_subject(m) for m in members}
+    for group in reg.rejected_aliases:
+        if {norm_subject(m) for m in group} == key:
+            return
+    reg.rejected_aliases.append(list(members))
+
+
+# ── import-inventory ─────────────────────────────────────────────────────────
+
+# Ordered keyword table for mapping a "## Heading" to an entity type: first
+# substring match (case-insensitive) against the lowercased heading wins.
+_HEADING_TYPE_KEYWORDS = [
+    ("npc", "npc"),
+    ("deit", "deity"),
+    ("god", "deity"),
+    ("location", "location"),
+    ("place", "location"),
+    ("plane", "concept"),
+    ("cosmolog", "concept"),
+    ("item", "item"),
+    ("spell", "item"),
+    ("artifact", "item"),
+    ("book", "item"),
+    ("weapon", "item"),
+    ("faction", "faction"),
+    ("title", "faction"),
+    ("rank", "faction"),
+    ("order", "faction"),
+    ("guild", "faction"),
+    ("event", "event"),
+    ("concept", "concept"),
+    ("date", "event"),
+]
+
+_SECTION_HEADING_RE = re.compile(r"^## (.+)$", re.MULTILINE)
+_BOLD_SPAN_RE = re.compile(r"\*\*([^*]+)\*\*")
+
+
+def _split_sections(text: str) -> "list[tuple[str, str]]":
+    """[(heading_text, body_text)] for each ``## `` section in ``text``."""
+    matches = list(_SECTION_HEADING_RE.finditer(text))
+    sections = []
+    for i, m in enumerate(matches):
+        heading = m.group(1).strip()
+        start = m.end()
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        sections.append((heading, text[start:end]))
+    return sections
+
+
+def _resolve_heading_type(heading: str, overrides: dict) -> "str | None":
+    for key, typ in overrides.items():
+        if key.lower() == heading.lower():
+            return typ
+    lower = heading.lower()
+    for keyword, typ in _HEADING_TYPE_KEYWORDS:
+        if keyword in lower:
+            return typ
+    return None
+
+
+def _parse_bullet(line: str) -> "tuple[str, list[str], str | None] | None":
+    """Parse one ``- **Name** / **Alias** — note`` bullet line.
+
+    Returns ``(name, aliases, note)`` or None if the bullet has no bold span.
+    """
+    body = line.strip()
+    if body.startswith("- "):
+        body = body[2:]
+
+    note = None
+    if " — " in body:
+        main_part, _, note_part = body.rpartition(" — ")
+        body = main_part
+        note = note_part.strip() or None
+
+    spans = [s.strip() for s in _BOLD_SPAN_RE.findall(body)]
+    spans = [s for s in spans if s]
+    if not spans:
+        return None
+    name, *aliases = spans
+    return name, aliases, note
+
+
+def cmd_import_inventory(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+
+    reg = load_registry(path)
+    text = Path(args.md).read_text(encoding="utf-8")
+
+    overrides: dict = {}
+    for item in (args.heading_type or []):
+        if "=" not in item:
+            print(f"Error: --heading-type must be 'Heading=type', got {item!r}", file=sys.stderr)
+            return 1
+        heading, _, typ = item.partition("=")
+        overrides[heading.strip()] = typ.strip()
+
+    added = updated = skipped = 0
+    all_conflicts: list[str] = []
+
+    for heading, body in _split_sections(text):
+        bullets = [ln.strip() for ln in body.splitlines() if ln.strip().startswith("- ")]
+        typ = _resolve_heading_type(heading, overrides)
+        if typ is None:
+            print(
+                f"WARNING: no type mapping for heading {heading!r} "
+                f"({len(bullets)} bullet(s)) — skipping",
+                file=sys.stderr,
+            )
+            skipped += len(bullets)
+            continue
+
+        for bullet in bullets:
+            parsed = _parse_bullet(bullet)
+            if parsed is None:
+                continue
+            name, aliases, note = parsed
+            existed = _find_owner(reg, norm_subject(name)) is not None
+            conflicts = _merge_entity(
+                reg,
+                name=name,
+                type=typ,
+                aliases=aliases,
+                provenance=args.provenance,
+                source=args.source,
+                note=note,
+            )
+            all_conflicts.extend(conflicts)
+            if existed:
+                updated += 1
+            else:
+                added += 1
+
+    print(f"import-inventory: {added} added, {updated} updated, {skipped} skipped", file=sys.stderr)
+    for c in all_conflicts:
+        print(f"  conflict: {c}", file=sys.stderr)
+
+    save_registry(reg, path)
+    return 0
+
+
+# ── import-dedup ─────────────────────────────────────────────────────────────
+
+def _stem_to_name(filename: str) -> str:
+    """``ilvara_mizzrym.md`` -> ``Ilvara Mizzrym``; ``asha.md`` -> ``Asha``."""
+    stem = filename
+    if stem.endswith(".md"):
+        stem = stem[: -len(".md")]
+    parts = re.split(r"[_-]+", stem)
+    return " ".join(p.capitalize() for p in parts if p)
+
+
+def cmd_import_dedup(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+
+    reg = load_registry(path)
+    data = json.loads(Path(args.json).read_text(encoding="utf-8"))
+
+    added = updated = skipped = 0
+    all_conflicts: list[str] = []
+
+    for cluster in data.get("clusters_confirmed", []):
+        canonical = cluster.get("canonical", "") or ""
+        files = cluster.get("files", []) or []
+        aliases_recorded = cluster.get("aliases_recorded", []) or []
+
+        if "(split)" in canonical or "+" in canonical:
+            marker = re.sub(r"\s*\(split\)\s*$", "", canonical).strip()
+            piece_files = [p.strip() for p in marker.split("+") if p.strip()]
+            piece_names = [_stem_to_name(p) for p in piece_files]
+
+            if aliases_recorded:
+                print(
+                    f"WARNING: split cluster {canonical!r} has aliases_recorded "
+                    f"{aliases_recorded!r} — ambiguous which sub-entity owns "
+                    f"them; not attaching",
+                    file=sys.stderr,
+                )
+
+            for piece_name in piece_names:
+                existed = _find_owner(reg, norm_subject(piece_name)) is not None
+                conflicts = _merge_entity(reg, name=piece_name, type="npc")
+                all_conflicts.extend(conflicts)
+                if existed:
+                    updated += 1
+                else:
+                    added += 1
+
+            for a, b in itertools.combinations(piece_names, 2):
+                _add_distinct_pair(reg, a, b)
+            continue
+
+        canonical_name = _stem_to_name(canonical)
+        alias_files = [f for f in files if f != canonical]
+        aliases = [_stem_to_name(f) for f in alias_files] + list(aliases_recorded)
+
+        existed = _find_owner(reg, norm_subject(canonical_name)) is not None
+        conflicts = _merge_entity(reg, name=canonical_name, type="npc", aliases=aliases)
+        all_conflicts.extend(conflicts)
+        if existed:
+            updated += 1
+        else:
+            added += 1
+
+    for cluster in data.get("clusters_rejected", []):
+        files = cluster.get("files", []) or []
+        members = [_stem_to_name(f) for f in files]
+        if members:
+            _add_rejected_group(reg, members)
+
+    # clusters_deferred: intentionally skipped (not yet a settled decision).
+    # pc_files_skipped (if present at all): intentionally never read — PCs
+    # live in party.yaml, not the entity registry.
+
+    print(f"import-dedup: {added} added, {updated} updated, {skipped} skipped", file=sys.stderr)
+    for c in all_conflicts:
+        print(f"  conflict: {c}", file=sys.stderr)
+
+    save_registry(reg, path)
+    return 0
+
+
 # ── CLI wiring ───────────────────────────────────────────────────────────────
 
 def main(argv: "list[str] | None" = None) -> int:
@@ -212,6 +579,31 @@ def main(argv: "list[str] | None" = None) -> int:
     pp = sub.add_parser("project", help="write aliases.json + entity_inventory.md projections")
     pp.add_argument("campaign_dir")
     pp.set_defaults(func=cmd_project)
+
+    pii = sub.add_parser(
+        "import-inventory",
+        help="merge entities from an inventory markdown file (## Heading sections of bullets)",
+    )
+    pii.add_argument("campaign_dir")
+    pii.add_argument("md")
+    pii.add_argument("--provenance", default=None)
+    pii.add_argument("--source", default=None)
+    pii.add_argument(
+        "--heading-type",
+        action="append",
+        default=None,
+        metavar="Heading=type",
+        help='override the type inferred for a heading, e.g. "Outside Candlekeep=location" (repeatable)',
+    )
+    pii.set_defaults(func=cmd_import_inventory)
+
+    pid = sub.add_parser(
+        "import-dedup",
+        help="merge NPC entities + anti-merge guards from a .dedup_state.json file",
+    )
+    pid.add_argument("campaign_dir")
+    pid.add_argument("json")
+    pid.set_defaults(func=cmd_import_dedup)
 
     args = p.parse_args(argv)
     return args.func(args)

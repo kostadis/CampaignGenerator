@@ -163,7 +163,7 @@ def _valid_scope(scope: str) -> bool:
     return scope in ("persistent", "scene") or bool(_CHAPTER_SCOPE_RE.match(scope or ""))
 
 
-def _validate(reg: Registry) -> None:
+def validate(reg: Registry) -> None:
     """Enforce the registry's identity invariants; raise ValueError on any violation."""
     owner: dict[str, int] = {}  # normalized string -> index of the owning entity
 
@@ -211,6 +211,10 @@ def _validate(reg: Registry) -> None:
             )
 
 
+# Back-compat alias — earlier packets (and the CLI) imported this as ``_validate``.
+_validate = validate
+
+
 def load_registry(path) -> Registry:
     """Parse and validate an entity_registry.yaml file; raise ValueError on any
     invariant violation (see module docstring for the on-disk contract)."""
@@ -240,7 +244,7 @@ def load_registry(path) -> Registry:
         rejected_aliases=rejected_aliases,
         source_path=path,
     )
-    _validate(reg)
+    validate(reg)
     return reg
 
 
@@ -289,5 +293,11 @@ def dump_registry(reg: Registry) -> str:
 
 
 def save_registry(reg: Registry, path) -> None:
-    """Write ``dump_registry(reg)`` to ``path`` (utf-8)."""
+    """Validate ``reg``, then write ``dump_registry(reg)`` to ``path`` (utf-8).
+
+    Raises ValueError (and writes nothing) if ``reg`` violates an identity
+    invariant — no importer or CLI subcommand can ever persist a broken
+    registry through this function.
+    """
+    validate(reg)
     Path(path).write_text(dump_registry(reg), encoding="utf-8")
