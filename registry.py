@@ -21,6 +21,45 @@ library). It has three subcommands:
   import-dedup <campaign_dir> <json>     merge NPC entities + anti-merge
                                           guards from a ``.dedup_state.json``
                                           file
+  import-frontmatter <campaign_dir> <dossier_dir>  merge NPC entities from
+                                          dossier frontmatter
+                                          (``campaignlib.npc.load_alias_map``);
+                                          fills gaps for singleton dossiers
+                                          that no dedup cluster ever touched
+  import-alias-decisions <campaign_dir> <json>   ENRICH-ONLY: add aliases to
+                                          entities that are already
+                                          registered, from approved
+                                          ``.alias_decisions.json`` groups;
+                                          never creates a new entity (approved
+                                          canonicals are often generic/garbage
+                                          strings with no reliable type)
+  check   <campaign_dir>                 surface drift between the registry
+                                          and the legacy scattered stores
+                                          (``.dedup_state.json``, an inventory
+                                          markdown, ``.alias_decisions.json``);
+                                          reports only — never resolves it
+
+Recommended import order (why order matters):
+
+    init -> import-inventory -> import-dedup -> import-frontmatter
+         -> import-alias-decisions -> check -> [GM resolves] -> project
+
+``import-inventory`` goes first because a module/campaign inventory carries
+real entity TYPES and the module's canonical spellings. ``import-dedup``
+goes next and is NPC-only (it blanket-types everything ``npc``) — running it
+before ``import-inventory`` would clobber an inventory-sourced type (e.g. a
+``deity`` or ``location`` that also shows up in a dedup cluster) and would
+let a dedup-cluster's file-stem spelling win over the inventory's authoritative
+spelling instead of just adding as an alias. ``import-frontmatter`` runs
+after dedup so it only fills gaps (singleton dossiers no dedup cluster ever
+grouped) rather than fighting dedup's merge decisions. ``import-alias-decisions``
+runs last among importers because it is enrich-only: it can only attach
+aliases to entities the earlier steps already created, so decisions whose
+canonical is not yet registered are reported as unmatched rather than
+guessed into existence. ``check`` runs after all imports (and again anytime
+after a GM edits the registry by hand) to surface any grouping the legacy
+stores disagree with, before ``project`` republishes ``aliases.json`` and
+``entity_inventory.md`` for downstream pipelines to consume.
 
 No API calls are made anywhere in this module.
 """
@@ -35,6 +74,7 @@ import sys
 from difflib import SequenceMatcher
 from pathlib import Path
 
+from campaignlib.npc import load_alias_map
 from campaignlib.registry import (
     Entity,
     Registry,
@@ -475,6 +515,27 @@ def _stem_to_name(filename: str) -> str:
     return " ".join(p.capitalize() for p in parts if p)
 
 
+def _dedup_cluster_group(cluster: dict) -> "tuple[str, list[str]] | None":
+    """(canonical_name, aliases) for one NON-split confirmed dedup cluster.
+
+    Returns None for a split cluster (``canonical`` contains ``(split)`` or
+    ``+``) — those intentionally name DIFFERENT entities and are handled by
+    the caller's split-specific branch, not by this shared grouping helper.
+    Shared by ``cmd_import_dedup`` (which merges the group into the registry)
+    and ``cmd_check`` (which only verifies the group already resolves to one
+    registry entity, never merging).
+    """
+    canonical = cluster.get("canonical", "") or ""
+    if "(split)" in canonical or "+" in canonical:
+        return None
+    files = cluster.get("files", []) or []
+    aliases_recorded = cluster.get("aliases_recorded", []) or []
+    canonical_name = _stem_to_name(canonical)
+    alias_files = [f for f in files if f != canonical]
+    aliases = [_stem_to_name(f) for f in alias_files] + list(aliases_recorded)
+    return canonical_name, aliases
+
+
 def cmd_import_dedup(args: argparse.Namespace) -> int:
     campaign_dir = Path(args.campaign_dir)
     path = find_registry(campaign_dir)
@@ -523,9 +584,7 @@ def cmd_import_dedup(args: argparse.Namespace) -> int:
                 _add_distinct_pair(reg, a, b)
             continue
 
-        canonical_name = _stem_to_name(canonical)
-        alias_files = [f for f in files if f != canonical]
-        aliases = [_stem_to_name(f) for f in alias_files] + list(aliases_recorded)
+        canonical_name, aliases = _dedup_cluster_group(cluster)
 
         existed = _find_owner(reg, norm_subject(canonical_name)) is not None
         conflicts = _merge_entity(reg, name=canonical_name, type="npc", aliases=aliases)
@@ -551,6 +610,341 @@ def cmd_import_dedup(args: argparse.Namespace) -> int:
 
     save_registry(reg, path)
     return 0
+
+
+# ── import-frontmatter ───────────────────────────────────────────────────────
+
+def cmd_import_frontmatter(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+
+    reg = load_registry(path)
+    amap = load_alias_map(args.dossier_dir)
+
+    added = updated = 0
+    all_conflicts: list[str] = []
+
+    for canonical, aliases in amap.items():
+        existed = _find_owner(reg, norm_subject(canonical)) is not None
+        conflicts = _merge_entity(reg, name=canonical, type="npc", aliases=aliases)
+        all_conflicts.extend(conflicts)
+        if existed:
+            updated += 1
+        else:
+            added += 1
+
+    print(f"import-frontmatter: {added} added, {updated} updated", file=sys.stderr)
+    for c in all_conflicts:
+        print(f"  conflict: {c}", file=sys.stderr)
+
+    save_registry(reg, path)
+    return 0
+
+
+# ── import-alias-decisions ───────────────────────────────────────────────────
+
+def _split_alias_decisions(data: dict) -> "tuple[list[dict], list[dict]]":
+    """(approved, rejected) decision dicts from a parsed .alias_decisions.json.
+
+    Tolerates a missing/null ``decisions`` key (-> both empty). Per the
+    on-disk contract there are only two statuses: ``approved`` (always has a
+    non-null ``canonical``) and ``rejected`` (always has ``canonical: null``).
+    Any decision with an unrecognized shape is silently ignored rather than
+    guessed at.
+    """
+    decisions = data.get("decisions") or []
+    approved = [d for d in decisions if d.get("status") == "approved" and d.get("canonical")]
+    rejected = [d for d in decisions if d.get("status") == "rejected"]
+    return approved, rejected
+
+
+def cmd_import_alias_decisions(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+
+    reg = load_registry(path)
+    data = json.loads(Path(args.json).read_text(encoding="utf-8"))
+    approved, rejected = _split_alias_decisions(data)
+
+    enriched = 0
+    unmatched: list[str] = []
+    all_conflicts: list[str] = []
+
+    for d in approved:
+        canonical = d["canonical"]
+        candidates = d.get("candidates") or []
+        canon_key = norm_subject(canonical)
+        owner_idx = _find_owner(reg, canon_key)
+        if owner_idx is None:
+            # ENRICH-ONLY: an unregistered canonical carries no reliable type
+            # (these decisions include generic/garbage canonicals like "stone
+            # giants" or "Temple of Lathander's Searing Pain of Justice") —
+            # never create an entity from it. Report for the GM to `add` by
+            # hand if it's actually worth registering.
+            unmatched.append(canonical)
+            continue
+        existing_type = reg.entities[owner_idx].type
+        others = [c for c in candidates if norm_subject(c) != canon_key]
+        conflicts = _merge_entity(reg, name=canonical, type=existing_type, aliases=others)
+        all_conflicts.extend(conflicts)
+        enriched += 1
+
+    rejected_count = 0
+    for d in rejected:
+        members = d.get("candidates") or []
+        if members:
+            _add_rejected_group(reg, members)
+            rejected_count += 1
+
+    print(
+        f"import-alias-decisions: {enriched} enriched, {len(unmatched)} unmatched, "
+        f"{rejected_count} rejected-groups",
+        file=sys.stderr,
+    )
+    for c in all_conflicts:
+        print(f"  conflict: {c}", file=sys.stderr)
+    if unmatched:
+        print("Unmatched canonicals (not registered — add by hand if warranted):", file=sys.stderr)
+        for u in unmatched:
+            print(f"  {u}", file=sys.stderr)
+
+    save_registry(reg, path)
+    return 0
+
+
+# ── check ────────────────────────────────────────────────────────────────────
+#
+# Surfaces drift between the registry and the legacy scattered stores it is
+# meant to replace. Reports only — never merges, never edits the registry.
+# Detectors, in order:
+#   (a) grouping drift — PRIMARY, exact, high-confidence. A legacy store that
+#       encodes GROUPING (dedup clusters, inventory bullets, alias decisions)
+#       disagrees with how the registry currently groups those same surface
+#       forms.
+#   (b) fuzzy near-duplicates — SECONDARY, noisy. Pairwise similarity across
+#       every registered name/alias; a GM review surface, not a verdict.
+#   (c) presence drift — informational. Names present in a legacy store but
+#       absent from the registry, and vice versa.
+
+def _inventory_bullet_groups(text: str) -> "list[list[str]]":
+    """[[name, *aliases], ...] for every ``- **Name** / **Alias**`` bullet
+    with 2+ bold spans in an inventory markdown file (headings are ignored —
+    ``check`` only cares whether the bullet's spans co-resolve, not the type
+    a heading would imply)."""
+    groups = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("- "):
+            continue
+        parsed = _parse_bullet(stripped)
+        if parsed is None:
+            continue
+        name, aliases, _note = parsed
+        group = [name, *aliases]
+        if len(group) >= 2:
+            groups.append(group)
+    return groups
+
+
+def _find_inventory_files(campaign_dir: Path) -> "list[Path]":
+    docs_dir = campaign_dir / "docs"
+    found = []
+    for base in (docs_dir, docs_dir / "background"):
+        if not base.is_dir():
+            continue
+        for f in sorted(base.glob("*.md")):
+            if "inventory" in f.name.lower():
+                found.append(f)
+    return found
+
+
+def _resolved_entity_names(reg: Registry, names: "list[str]") -> "set[str]":
+    """Display names (or 'MISSING') that ``names`` resolve to via _find_owner."""
+    resolved = set()
+    for n in names:
+        idx = _find_owner(reg, norm_subject(n))
+        resolved.add(reg.entities[idx].name if idx is not None else "MISSING")
+    return resolved
+
+
+def cmd_check(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = _registry_path(campaign_dir)
+    if not path.is_file():
+        print(
+            f"Error: no registry at {path} — run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+    try:
+        reg = load_registry(path)
+    except Exception as exc:  # noqa: BLE001 — any load/parse/validate failure is a report, not a crash
+        print(f"Error: registry at {path} failed to load: {exc}", file=sys.stderr)
+        return 1
+
+    grouping_findings: list[str] = []
+    fuzzy_findings: list[str] = []
+    legacy_display_names: list[str] = []  # for presence drift
+
+    # (a1) dedup grouping drift ------------------------------------------------
+    dedup_path = campaign_dir / "docs" / "npcs" / ".dedup_state.json"
+    if dedup_path.is_file():
+        try:
+            dedup_data = json.loads(dedup_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            print(f"WARNING: could not parse {dedup_path}: {exc}", file=sys.stderr)
+            dedup_data = {}
+        for cluster in dedup_data.get("clusters_confirmed", []) or []:
+            group = _dedup_cluster_group(cluster)
+            if group is None:
+                continue  # split cluster — intentionally different entities
+            canonical_name, aliases = group
+            names = [canonical_name, *aliases]
+            legacy_display_names.extend(names)
+            resolved = _resolved_entity_names(reg, names)
+            if len(resolved) > 1 or "MISSING" in resolved:
+                grouping_findings.append(
+                    f"dedup groups {names!r} but registry resolves them to "
+                    f"{sorted(resolved)}"
+                )
+
+    # (a2) inventory grouping drift --------------------------------------------
+    for inv_path in _find_inventory_files(campaign_dir):
+        text = inv_path.read_text(encoding="utf-8")
+        rel = inv_path.relative_to(campaign_dir)
+        for group in _inventory_bullet_groups(text):
+            legacy_display_names.extend(group)
+            resolved = _resolved_entity_names(reg, group)
+            if len(resolved) > 1 or "MISSING" in resolved:
+                grouping_findings.append(
+                    f"inventory {rel} groups {group!r} but registry resolves them "
+                    f"to {sorted(resolved)}"
+                )
+
+    # (a3) alias-decisions grouping drift --------------------------------------
+    decisions_path = campaign_dir / "docs" / "ensemble" / ".alias_decisions.json"
+    if decisions_path.is_file():
+        try:
+            decisions_data = json.loads(decisions_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            print(f"WARNING: could not parse {decisions_path}: {exc}", file=sys.stderr)
+            decisions_data = {}
+        approved, rejected = _split_alias_decisions(decisions_data)
+        for d in approved:
+            candidates = d.get("candidates") or []
+            if len(candidates) < 2:
+                continue
+            legacy_display_names.extend(candidates)
+            resolved = _resolved_entity_names(reg, candidates)
+            if len(resolved) > 1 or "MISSING" in resolved:
+                grouping_findings.append(
+                    f"alias-decisions approved group {candidates!r} but registry "
+                    f"resolves them to {sorted(resolved)}"
+                )
+        for d in rejected:
+            members = d.get("candidates") or []
+            if len(members) < 2:
+                continue
+            legacy_display_names.extend(members)
+            resolved = _resolved_entity_names(reg, members)
+            if len(resolved) == 1 and "MISSING" not in resolved:
+                grouping_findings.append(
+                    f"alias-decisions rejected group {members!r} but registry "
+                    f"merged them into {next(iter(resolved))!r} anyway"
+                )
+
+    # (b) fuzzy near-duplicates — suppress settled GM rulings ------------------
+    suppressed: set[frozenset] = set()
+    for pair in reg.distinct:
+        if len(pair) == 2:
+            suppressed.add(frozenset(norm_subject(x) for x in pair))
+    for group in reg.rejected_aliases:
+        keys = [norm_subject(m) for m in group]
+        for a, b in itertools.combinations(keys, 2):
+            suppressed.add(frozenset((a, b)))
+
+    catalog: list[tuple[str, str, int]] = []  # (display, norm_key, entity_idx)
+    for idx, e in enumerate(reg.entities):
+        catalog.append((e.name, norm_subject(e.name), idx))
+        for alias in e.aliases:
+            catalog.append((alias, norm_subject(alias), idx))
+
+    reported_pairs: set[frozenset] = set()
+    for (s1, k1, i1), (s2, k2, i2) in itertools.combinations(catalog, 2):
+        if i1 == i2 or k1 == k2:
+            continue
+        pair_key = frozenset((k1, k2))
+        if pair_key in suppressed or pair_key in reported_pairs:
+            continue
+        ratio = SequenceMatcher(None, k1, k2).ratio()
+        if ratio >= NEAR_MISS_THRESHOLD:
+            reported_pairs.add(pair_key)
+            fuzzy_findings.append(
+                f"possible fragmentation — review, do not assume: {s1!r} "
+                f"(entity {reg.entities[i1].name!r}) vs {s2!r} "
+                f"(entity {reg.entities[i2].name!r}), similarity {ratio:.2f}"
+            )
+
+    # (c) presence drift — informational ---------------------------------------
+    missing_from_registry = sorted(
+        {n for n in legacy_display_names if _find_owner(reg, norm_subject(n)) is None}
+    )
+    missing_from_legacy: list[str] = []
+    if legacy_display_names:
+        legacy_norms = {norm_subject(n) for n in legacy_display_names}
+        registry_norms: dict[str, str] = {}
+        for e in reg.entities:
+            for s in [e.name, *e.aliases]:
+                registry_norms.setdefault(norm_subject(s), s)
+        missing_from_legacy = sorted(
+            display for key, display in registry_norms.items() if key not in legacy_norms
+        )
+
+    # ── report ────────────────────────────────────────────────────────────
+    print("=== Grouping drift (primary, high-confidence) ===")
+    if grouping_findings:
+        for f in grouping_findings:
+            print(f"  {f}")
+    else:
+        print("  none")
+
+    print("\n=== Fuzzy near-duplicates (secondary — review, do not assume) ===")
+    if fuzzy_findings:
+        for f in fuzzy_findings:
+            print(f"  {f}")
+    else:
+        print("  none")
+
+    print("\n=== Presence drift (informational) ===")
+    print(f"  in legacy store(s) but not in registry ({len(missing_from_registry)}):")
+    for n in missing_from_registry:
+        print(f"    {n}")
+    print(f"  in registry but not in any scanned legacy store ({len(missing_from_legacy)}):")
+    for n in missing_from_legacy:
+        print(f"    {n}")
+
+    print(
+        f"\nSummary: {len(grouping_findings)} grouping-drift, "
+        f"{len(fuzzy_findings)} fuzzy-near-dup, "
+        f"{len(missing_from_registry)} missing-from-registry, "
+        f"{len(missing_from_legacy)} missing-from-legacy"
+    )
+
+    return 1 if (grouping_findings or fuzzy_findings) else 0
 
 
 # ── CLI wiring ───────────────────────────────────────────────────────────────
@@ -604,6 +998,30 @@ def main(argv: "list[str] | None" = None) -> int:
     pid.add_argument("campaign_dir")
     pid.add_argument("json")
     pid.set_defaults(func=cmd_import_dedup)
+
+    pif = sub.add_parser(
+        "import-frontmatter",
+        help="merge NPC entities from dossier frontmatter (campaignlib.npc.load_alias_map)",
+    )
+    pif.add_argument("campaign_dir")
+    pif.add_argument("dossier_dir")
+    pif.set_defaults(func=cmd_import_frontmatter)
+
+    pad = sub.add_parser(
+        "import-alias-decisions",
+        help="ENRICH-ONLY: add aliases to already-registered entities from an "
+             ".alias_decisions.json file; never creates new entities",
+    )
+    pad.add_argument("campaign_dir")
+    pad.add_argument("json")
+    pad.set_defaults(func=cmd_import_alias_decisions)
+
+    pc = sub.add_parser(
+        "check",
+        help="surface drift between the registry and legacy scattered stores (report-only)",
+    )
+    pc.add_argument("campaign_dir")
+    pc.set_defaults(func=cmd_check)
 
     args = p.parse_args(argv)
     return args.func(args)

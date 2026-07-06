@@ -344,6 +344,237 @@ def test_save_registry_rejects_and_leaves_existing_file_unchanged(tmp_path):
 
 # ── merge conflicts stay valid ───────────────────────────────────────────────
 
+def _write_dossier(dossier_dir: Path, filename: str, name: str, aliases: "list[str]") -> None:
+    alias_lines = "".join(f"  - {a}\n" for a in aliases)
+    aliases_block = f"aliases:\n{alias_lines}" if aliases else ""
+    (dossier_dir / filename).write_text(
+        f"---\nname: {name}\n{aliases_block}---\n\nBody text.\n",
+        encoding="utf-8",
+    )
+
+
+# ── import-frontmatter ───────────────────────────────────────────────────────
+
+def test_import_frontmatter_adds_entities_and_aliases(tmp_path):
+    campaign_dir = _init(tmp_path)
+    dossier_dir = campaign_dir / "docs" / "npcs"
+    dossier_dir.mkdir(parents=True)
+    _write_dossier(dossier_dir, "asha.md", "Asha Vandree", ["Asha"])
+    _write_dossier(dossier_dir, "byrtyn.md", "Byrtyn Fey", [])
+
+    rc = registry.main(["import-frontmatter", str(campaign_dir), str(dossier_dir)])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    by_name = {e.name: e for e in reg.entities}
+    assert by_name["Asha Vandree"].type == "npc"
+    assert by_name["Asha Vandree"].aliases == ["Asha"]
+    assert "Byrtyn Fey" in by_name
+
+
+def test_import_frontmatter_singleton_dossier_not_in_dedup_cluster_is_added(tmp_path):
+    """A singleton dossier no dedup cluster ever grouped still gets registered —
+    import-frontmatter fills the gap dedup import leaves behind."""
+    campaign_dir = _init(tmp_path)
+    dossier_dir = campaign_dir / "docs" / "npcs"
+    dossier_dir.mkdir(parents=True)
+    _write_dossier(dossier_dir, "hollow_singleton.md", "Hollow Singleton", ["Hollow"])
+
+    rc = registry.main(["import-frontmatter", str(campaign_dir), str(dossier_dir)])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    by_name = {e.name: e for e in reg.entities}
+    assert "Hollow Singleton" in by_name
+    assert by_name["Hollow Singleton"].aliases == ["Hollow"]
+
+
+def test_import_frontmatter_missing_registry_errors(tmp_path):
+    campaign_dir = tmp_path / "no-registry"
+    campaign_dir.mkdir()
+    dossier_dir = tmp_path / "npcs"
+    dossier_dir.mkdir()
+    rc = registry.main(["import-frontmatter", str(campaign_dir), str(dossier_dir)])
+    assert rc == 1
+
+
+# ── import-alias-decisions ───────────────────────────────────────────────────
+
+def _decisions_json(tmp_path, decisions: "list[dict]", name=".alias_decisions.json") -> Path:
+    p = tmp_path / name
+    p.write_text(json.dumps({"decisions": decisions}), encoding="utf-8")
+    return p
+
+
+def test_import_alias_decisions_approved_registered_canonical_enriches(tmp_path):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "House Margaster", "--type", "faction",
+    ]) == 0
+
+    decisions = [
+        {"candidates": ["House Margaster", "House Maragaster"], "canonical": "House Margaster", "status": "approved"},
+    ]
+    json_path = _decisions_json(tmp_path, decisions)
+
+    rc = registry.main(["import-alias-decisions", str(campaign_dir), str(json_path)])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    by_name = {e.name: e for e in reg.entities}
+    assert by_name["House Margaster"].aliases == ["House Maragaster"]
+    assert by_name["House Margaster"].type == "faction"
+
+
+def test_import_alias_decisions_approved_unregistered_canonical_not_created(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    decisions = [
+        {"candidates": ["giants", "stone giants"], "canonical": "stone giants", "status": "approved"},
+    ]
+    json_path = _decisions_json(tmp_path, decisions)
+
+    rc = registry.main(["import-alias-decisions", str(campaign_dir), str(json_path)])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    assert reg.entities == []
+
+    err = capsys.readouterr().err
+    assert "stone giants" in err
+    assert "Unmatched" in err
+
+
+def test_import_alias_decisions_rejected_group_recorded(tmp_path):
+    campaign_dir = _init(tmp_path)
+    decisions = [
+        {"candidates": ["Cult of Talos", "Talosians", "Talos"], "canonical": None, "status": "rejected"},
+    ]
+    json_path = _decisions_json(tmp_path, decisions)
+
+    rc = registry.main(["import-alias-decisions", str(campaign_dir), str(json_path)])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    groups = [set(g) for g in reg.rejected_aliases]
+    assert {"Cult of Talos", "Talosians", "Talos"} in groups
+
+
+def test_import_alias_decisions_missing_registry_errors(tmp_path):
+    campaign_dir = tmp_path / "no-registry"
+    campaign_dir.mkdir()
+    json_path = _decisions_json(tmp_path, [])
+    rc = registry.main(["import-alias-decisions", str(campaign_dir), str(json_path)])
+    assert rc == 1
+
+
+def test_import_alias_decisions_tolerates_missing_decisions_key(tmp_path):
+    campaign_dir = _init(tmp_path)
+    json_path = tmp_path / "empty.json"
+    json_path.write_text(json.dumps({}), encoding="utf-8")
+    rc = registry.main(["import-alias-decisions", str(campaign_dir), str(json_path)])
+    assert rc == 0
+
+
+# ── check ────────────────────────────────────────────────────────────────────
+
+def test_check_clean_registry_returns_zero(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    assert registry.main(["add", str(campaign_dir), "--name", "Asha Vandree", "--type", "npc", "--yes"]) == 0
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 0
+    out = capsys.readouterr().out
+    assert "0 grouping-drift" in out
+
+
+def test_check_missing_registry_errors(tmp_path):
+    campaign_dir = tmp_path / "no-registry"
+    campaign_dir.mkdir()
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 1
+
+
+def test_check_dedup_grouping_drift_detected(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    # Registry has A and B as SEPARATE entities...
+    assert registry.main(["add", str(campaign_dir), "--name", "Asha Vandree", "--type", "npc", "--yes"]) == 0
+    assert registry.main(["add", str(campaign_dir), "--name", "Shoor", "--type", "npc", "--yes"]) == 0
+
+    # ...but the dedup state file says they were confirmed as ONE cluster.
+    npcs_dir = campaign_dir / "docs" / "npcs"
+    npcs_dir.mkdir(parents=True)
+    dedup_data = {
+        "clusters_confirmed": [
+            {"files": ["asha_vandree.md", "shoor.md"], "canonical": "asha_vandree.md", "aliases_recorded": []},
+        ],
+    }
+    (npcs_dir / ".dedup_state.json").write_text(json.dumps(dedup_data), encoding="utf-8")
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 1
+    out = capsys.readouterr().out
+    assert "dedup groups" in out
+    assert "Asha Vandree" in out
+    assert "Shoor" in out
+
+
+def test_check_dedup_grouping_drift_when_entirely_unimported(tmp_path, capsys):
+    """A confirmed dedup cluster whose members are ALL absent from the
+    registry (not just split across different entities) is still grouping
+    drift, per spec: 'or some are missing'."""
+    campaign_dir = _init(tmp_path)  # empty registry — nothing imported yet
+    npcs_dir = campaign_dir / "docs" / "npcs"
+    npcs_dir.mkdir(parents=True)
+    dedup_data = {
+        "clusters_confirmed": [
+            {"files": ["asha_vandree.md", "asha.md"], "canonical": "asha_vandree.md", "aliases_recorded": []},
+        ],
+    }
+    (npcs_dir / ".dedup_state.json").write_text(json.dumps(dedup_data), encoding="utf-8")
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 1
+    out = capsys.readouterr().out
+    assert "dedup groups" in out
+    assert "MISSING" in out
+
+
+def test_check_malformed_registry_yaml_reports_and_returns_one(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    reg_path = campaign_dir / "docs" / "entity_registry.yaml"
+    reg_path.write_text("not: [valid, yaml: :::", encoding="utf-8")
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 1
+    err = capsys.readouterr().err
+    assert "Error" in err
+
+
+def test_check_fuzzy_near_duplicate_flagged_then_suppressed_once_distinct(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    assert registry.main(["add", str(campaign_dir), "--name", "Khalessa Draga", "--type", "npc", "--yes"]) == 0
+    assert registry.main(["add", str(campaign_dir), "--name", "Khelessa Draga", "--type", "npc", "--yes"]) == 0
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 1
+    out = capsys.readouterr().out
+    assert "possible fragmentation" in out
+    assert "Khalessa Draga" in out
+    assert "Khelessa Draga" in out
+
+    # GM rules them distinct — re-running check must SUPPRESS the pair.
+    reg_path = campaign_dir / "docs" / "entity_registry.yaml"
+    reg = load_registry(reg_path)
+    reg.distinct.append(["Khalessa Draga", "Khelessa Draga"])
+    save_registry(reg, reg_path)
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 0
+    out = capsys.readouterr().out
+    assert "possible fragmentation" not in out
+    assert "0 fuzzy-near-dup" in out
+
+
 def test_merge_conflict_same_alias_different_typed_sections(tmp_path, capsys):
     campaign_dir = _init(tmp_path)
     md = """\
