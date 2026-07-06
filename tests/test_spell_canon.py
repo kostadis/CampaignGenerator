@@ -5,12 +5,15 @@ lives), the corpus/inventory parsing, and the case-preserving apply.
 """
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+import registry  # noqa: E402
 import spell_canon as sc  # noqa: E402
+from campaignlib.registry import load_registry  # noqa: E402
 
 SIM = sc.DEFAULT_SIM
 DELTA = sc.DEFAULT_MAX_DELTA
@@ -136,3 +139,64 @@ def test_build_proposal_end_to_end(tmp_path):
     # Phase B: Grygum (×9 ≥ anchor_min) anchors the rare typo Grygm (×1)
     assert mapping["Grygm"] == "Grygum"
     assert "Phase A" in report and "Phase B" in report
+
+
+# ── proper_noun_counts refactor (Packet 3b) ──────────────────────────────────
+
+def test_proper_noun_counts_matches_repeated_names_and_drops_stopwords():
+    text = "Shuushar and Shuushar's plan. The cat. Daz ran. SHUUSHAR shouted.\n"
+    counts = sc.proper_noun_counts(text, sc.DEFAULT_MIN_LEN)
+    assert counts["Shuushar"] == 3               # base + possessive + all-caps form, folded by case
+    assert "The" not in counts                   # stopword
+    assert "Daz" not in counts                   # under MIN_LEN (5)
+    assert "cat" not in counts                   # never capitalised / short
+
+
+def test_proper_nouns_delegates_to_proper_noun_counts(tmp_path):
+    bible = tmp_path / "b.md"
+    text = "Shuushar and Shuushar's plan. The cat. Daz ran.\n"
+    bible.write_text(text, encoding="utf-8")
+
+    freq, lines_of = sc.proper_nouns(bible, sc.DEFAULT_MIN_LEN)
+    direct = sc.proper_noun_counts(text, sc.DEFAULT_MIN_LEN)
+
+    assert freq == direct
+    assert isinstance(freq, Counter)
+    assert set(lines_of) == set(freq)             # every surviving token has line samples
+    assert lines_of["Shuushar"] == [1, 1]          # both occurrences are on line 1
+
+
+# ── inventory_tokens against a registry.py-generated projection (Packet 3b) ─
+
+def test_inventory_tokens_parses_registry_generated_projection(tmp_path):
+    campaign_dir = tmp_path / "campaign"
+    campaign_dir.mkdir()
+    assert registry.main(["init", str(campaign_dir)]) == 0
+    assert registry.main([
+        "add", str(campaign_dir),
+        "--name", "Ilvara Mizzrym", "--type", "npc",
+        "--aliases", "Ilvara", "Mistress Ilvara",
+    ]) == 0
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Gracklstugh", "--type", "location",
+    ]) == 0
+    assert registry.main(["project", str(campaign_dir)]) == 0
+
+    inventory_path = campaign_dir / "docs" / "entity_inventory.md"
+    text = inventory_path.read_text(encoding="utf-8")
+    assert text.startswith("<!-- GENERATED from docs/entity_registry.yaml")
+    assert "## NPCs" in text and "## Locations" in text
+
+    tokens = sc.inventory_tokens(inventory_path, min_len=3)
+
+    # the HTML-comment header and "## Heading" lines contribute no tokens
+    assert "generated" not in tokens
+    assert "npcs" not in tokens
+    assert "locations" not in tokens
+
+    # each name/alias is its OWN token — never a combined "name/alias" blob
+    assert tokens["ilvara"] == "Ilvara"
+    assert tokens["mizzrym"] == "Mizzrym"
+    assert tokens["mistress"] == "Mistress"
+    assert tokens["gracklstugh"] == "Gracklstugh"
+    assert not any("/" in v for v in tokens.values())

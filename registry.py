@@ -71,9 +71,11 @@ import itertools
 import json
 import re
 import sys
+from collections import defaultdict
 from difflib import SequenceMatcher
 from pathlib import Path
 
+import spell_canon
 from campaignlib.npc import load_alias_map
 from campaignlib.registry import (
     Entity,
@@ -985,6 +987,259 @@ def cmd_check(args: argparse.Namespace) -> int:
     return 1 if (grouping_findings or fuzzy_findings) else 0
 
 
+# ── triage-candidates ────────────────────────────────────────────────────────
+#
+# Deterministically diffs proper nouns found in a campaign's session outputs
+# against the registry and emits a queue JSON of UNKNOWN surface forms for
+# the (separate, interactive) entity-triage skill to walk with the GM.
+# Identity is a precision decision — this command only surfaces candidates;
+# it never decides who is who. No API calls.
+
+_SUMMARY_GLOBS = [
+    "summaries/*/session-summary.md",
+    "summaries/*/scene_extractions_new/*.md",
+    "summaries/*/scene_extractions/*.md",
+    "summaries/old/*/scene_extractions*/*.md",
+]
+
+_MERGED_JSON_GLOBS = [
+    "docs/ensemble/per_chapter/*/merged.json",
+    "docs/ensemble/merged.json",
+]
+
+
+def _merged_json_text(path: Path) -> "str | None":
+    """Concatenated subject+fact text for every fact dict in a merged.json list.
+
+    ``subject`` is a descriptive phrase, not a clean name, so proper nouns are
+    tokenized out of the combined text rather than used verbatim. Returns None
+    (and lets the caller warn) if the file isn't parseable JSON.
+    """
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(data, list):
+        return None
+    parts = []
+    for fact in data:
+        if not isinstance(fact, dict):
+            continue
+        subject = fact.get("subject") or ""
+        fact_text = fact.get("fact") or ""
+        parts.append(f"{subject} {fact_text}")
+    return "\n".join(parts)
+
+
+def _gather_triage_sources(campaign_dir: Path, bible: "Path | None") -> "tuple[list[tuple[str, str]], list[str]]":
+    """[(source_label, text)] for every source file found, tolerating any/all
+    being absent, plus the list of glob patterns (+ bible path) that matched
+    at least one file — for the ``generated_from`` field of the queue JSON."""
+    sources: list[tuple[str, str]] = []
+    generated_from: list[str] = []
+
+    for pattern in _SUMMARY_GLOBS:
+        matches = sorted(campaign_dir.glob(pattern))
+        if matches:
+            generated_from.append(pattern)
+        for f in matches:
+            label = str(f.relative_to(campaign_dir))
+            sources.append((label, f.read_text(encoding="utf-8")))
+
+    for pattern in _MERGED_JSON_GLOBS:
+        matches = sorted(campaign_dir.glob(pattern))
+        if matches:
+            generated_from.append(pattern)
+        for f in matches:
+            label = str(f.relative_to(campaign_dir))
+            text = _merged_json_text(f)
+            if text is None:
+                print(f"WARNING: could not parse {f} as a fact-list JSON", file=sys.stderr)
+                continue
+            sources.append((label, text))
+
+    if bible is not None:
+        label = str(bible)
+        sources.append((label, bible.read_text(encoding="utf-8")))
+        generated_from.append(label)
+
+    return sources, generated_from
+
+
+def _load_pc_names(campaign_dir: Path) -> "list[str]":
+    """Player-character names from ``docs/party.yaml`` (or ``config/party.yaml``).
+
+    PCs live in party.yaml, not the entity registry (the importers deliberately
+    exclude them), so triage must treat them as known and not re-surface them as
+    unknown candidates on every run. Returns [] if no party.yaml exists.
+
+    NOTE: this duplicates a PC-name helper Phase 2 added to facts_to_state.py;
+    the two should be consolidated into campaignlib in a later cleanup (Phase 2
+    is on a different branch — do not consolidate here).
+    """
+    from synthesise_world_state import load_party_names
+
+    for rel in ("docs/party.yaml", "config/party.yaml"):
+        candidate = campaign_dir / rel
+        if candidate.is_file():
+            return load_party_names(candidate)
+    return []
+
+
+def _registry_catalog(reg: Registry) -> "list[tuple[str, str, int]]":
+    """[(display_string, norm_key, entity_idx)] for every registered name/alias."""
+    catalog: list[tuple[str, str, int]] = []
+    for idx, e in enumerate(reg.entities):
+        catalog.append((e.name, norm_subject(e.name), idx))
+        for alias in e.aliases:
+            catalog.append((alias, norm_subject(alias), idx))
+    return catalog
+
+
+def _suppressed_pairs(reg: Registry) -> "set[frozenset]":
+    """Normalized-key pairs already settled by a GM ruling (distinct or
+    rejected-aliases) — a near-miss hint must not re-suggest these."""
+    suppressed: set[frozenset] = set()
+    for pair in reg.distinct:
+        if len(pair) == 2:
+            suppressed.add(frozenset(norm_subject(x) for x in pair))
+    for group in reg.rejected_aliases:
+        keys = [norm_subject(m) for m in group]
+        for a, b in itertools.combinations(keys, 2):
+            suppressed.add(frozenset((a, b)))
+    return suppressed
+
+
+def _best_near_miss(
+    reg: Registry,
+    norm_key: str,
+    catalog: "list[tuple[str, str, int]]",
+    suppressed: "set[frozenset]",
+) -> "dict | None":
+    """Best-matching registry entity for an unknown surface form's normalized
+    key, or None if nothing clears ``NEAR_MISS_THRESHOLD`` or the best match
+    is a settled GM ruling (an already-decided distinct pair or rejected
+    alias group) — those must not be re-suggested."""
+    best: "tuple[float, str, int] | None" = None  # (ratio, matched_norm_key, entity_idx)
+    for _display, key, idx in catalog:
+        ratio = SequenceMatcher(None, norm_key, key).ratio()
+        if best is None or ratio > best[0]:
+            best = (ratio, key, idx)
+    if best is None or best[0] < NEAR_MISS_THRESHOLD:
+        return None
+    ratio, matched_key, idx = best
+    if frozenset((norm_key, matched_key)) in suppressed:
+        return None
+    return {"name": reg.entities[idx].name, "ratio": round(ratio, 3)}
+
+
+def cmd_triage_candidates(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+
+    reg = load_registry(path)
+    bible = Path(args.bible) if args.bible else None
+    sources, generated_from = _gather_triage_sources(campaign_dir, bible)
+
+    total_count: "dict[str, int]" = defaultdict(int)
+    source_labels: "dict[str, set[str]]" = defaultdict(set)
+    for label, text in sources:
+        for surface, n in spell_canon.proper_noun_counts(text, args.min_len).items():
+            total_count[surface] += n
+            source_labels[surface].add(label)
+
+    known = reg.known_names(extra=_load_pc_names(campaign_dir))
+    catalog = _registry_catalog(reg)
+    suppressed = _suppressed_pairs(reg)
+
+    candidates = []
+    for surface, count in total_count.items():
+        if count < args.min_count:
+            continue
+        norm = norm_subject(surface)
+        if norm in known:
+            continue
+        candidates.append({
+            "surface": surface,
+            "norm": norm,
+            "count": count,
+            "sources": sorted(source_labels[surface]),
+            "near_miss": _best_near_miss(reg, norm, catalog, suppressed),
+        })
+
+    candidates.sort(key=lambda c: (-c["count"], c["surface"]))
+
+    payload = {
+        "campaign": reg.campaign,
+        "generated_from": generated_from,
+        "candidates": candidates,
+    }
+    text_out = json.dumps(payload, indent=2, ensure_ascii=False)
+    if args.out:
+        Path(args.out).write_text(text_out, encoding="utf-8")
+    else:
+        print(text_out)
+
+    n_hints = sum(1 for c in candidates if c["near_miss"] is not None)
+    print(
+        f"triage-candidates: {len(candidates)} candidate(s), {n_hints} with near-miss hint(s)",
+        file=sys.stderr,
+    )
+    return 0
+
+
+# ── mark-distinct / mark-rejected ───────────────────────────────────────────
+#
+# Validated negative-writers: the (separate) interactive triage skill records
+# GM "these are NOT the same entity" rulings through these, not raw YAML
+# edits, so every negative still passes through campaignlib.registry.validate.
+
+def cmd_mark_distinct(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+
+    reg = load_registry(path)
+    _add_distinct_pair(reg, args.name_a, args.name_b)
+    save_registry(reg, path)  # raises ValueError (writes nothing) if a/b already resolve to one entity
+    print(f"Marked {args.name_a!r} and {args.name_b!r} as distinct entities in {path}")
+    return 0
+
+
+def cmd_mark_rejected(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+    if len(args.names) < 2:
+        print("Error: mark-rejected requires at least 2 names", file=sys.stderr)
+        return 1
+
+    reg = load_registry(path)
+    _add_rejected_group(reg, args.names)
+    save_registry(reg, path)
+    print(f"Marked {args.names!r} as a rejected alias group in {path}")
+    return 0
+
+
 # ── CLI wiring ───────────────────────────────────────────────────────────────
 
 def main(argv: "list[str] | None" = None) -> int:
@@ -1060,6 +1315,35 @@ def main(argv: "list[str] | None" = None) -> int:
     )
     pc.add_argument("campaign_dir")
     pc.set_defaults(func=cmd_check)
+
+    ptc = sub.add_parser(
+        "triage-candidates",
+        help="diff proper nouns in session outputs against the registry; emit an "
+             "UNKNOWN-surface-form queue JSON for the entity-triage skill",
+    )
+    ptc.add_argument("campaign_dir")
+    ptc.add_argument("--out", default=None, help="write queue JSON here (default: stdout)")
+    ptc.add_argument("--bible", default=None, help="also scan this bible file's text")
+    ptc.add_argument("--min-len", type=int, default=spell_canon.DEFAULT_MIN_LEN)
+    ptc.add_argument("--min-count", type=int, default=1)
+    ptc.set_defaults(func=cmd_triage_candidates)
+
+    pmd = sub.add_parser(
+        "mark-distinct",
+        help="record NAME_A and NAME_B as DIFFERENT entities (validated write)",
+    )
+    pmd.add_argument("campaign_dir")
+    pmd.add_argument("name_a")
+    pmd.add_argument("name_b")
+    pmd.set_defaults(func=cmd_mark_distinct)
+
+    pmr = sub.add_parser(
+        "mark-rejected",
+        help="record NAME... as a rejected (never-merge) alias group (validated write)",
+    )
+    pmr.add_argument("campaign_dir")
+    pmr.add_argument("names", nargs="+")
+    pmr.set_defaults(func=cmd_mark_rejected)
 
     args = p.parse_args(argv)
     return args.func(args)
