@@ -248,3 +248,46 @@ def find_registry(campaign_dir) -> "Path | None":
     """Return ``<campaign_dir>/docs/entity_registry.yaml`` if it exists, else None."""
     p = Path(campaign_dir) / "docs" / "entity_registry.yaml"
     return p if p.is_file() else None
+
+
+def _entity_to_dict(e: Entity) -> dict:
+    """Ordered dict for one entity, omitting unset/default fields (see dump_registry)."""
+    d: dict = {"name": e.name, "type": e.type}
+    if e.aliases:
+        d["aliases"] = list(e.aliases)
+    if e.provenance is not None:
+        d["provenance"] = e.provenance
+    if e.source is not None:
+        d["source"] = e.source
+    if e.scope != "persistent":
+        d["scope"] = e.scope
+    if e.note is not None:
+        d["note"] = e.note
+    return d
+
+
+def dump_registry(reg: Registry) -> str:
+    """Serialize a Registry to YAML text that ``load_registry`` round-trips exactly.
+
+    Field order per entity: name, type, aliases, provenance, source, scope,
+    note. Keys with a None value (or an empty ``aliases`` list) are omitted;
+    ``scope`` is omitted when it is the default ``"persistent"`` since
+    ``load_registry`` defaults it back on load. Top-level order is version,
+    campaign, entities, then distinct/rejected_aliases only if non-empty.
+    ``source_path`` is runtime-only and is never emitted.
+    """
+    data: dict = {
+        "version": reg.version,
+        "campaign": reg.campaign,
+        "entities": [_entity_to_dict(e) for e in reg.entities],
+    }
+    if reg.distinct:
+        data["distinct"] = [list(pair) for pair in reg.distinct]
+    if reg.rejected_aliases:
+        data["rejected_aliases"] = [list(pair) for pair in reg.rejected_aliases]
+    return yaml.safe_dump(data, sort_keys=False, allow_unicode=True, default_flow_style=False)
+
+
+def save_registry(reg: Registry, path) -> None:
+    """Write ``dump_registry(reg)`` to ``path`` (utf-8)."""
+    Path(path).write_text(dump_registry(reg), encoding="utf-8")
