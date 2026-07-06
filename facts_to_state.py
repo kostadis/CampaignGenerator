@@ -39,6 +39,7 @@ import queue
 import re
 import sys
 import threading
+import warnings
 from collections import Counter
 from pathlib import Path
 
@@ -49,10 +50,12 @@ from campaignlib import (
     make_client,
     stream_api,
 )
+from campaignlib.registry import find_registry, load_registry
 from ensemble_merge import _norm_subject
 from synthesise_world_state import (
     expand_globs,
     load_aliases,
+    load_party_names,
     session_index,
     session_label,
 )
@@ -233,6 +236,49 @@ def _collect_monster_vocab(corpus_paths: list[Path], aliases: dict[str, str]) ->
             if raw:
                 vocab.add(_norm_subject(aliases.get(raw, raw)))
     return vocab
+
+
+def _load_pc_names(campaign_dir: Path) -> list[str]:
+    """PC names from party.yaml (docs/party.yaml, else config/party.yaml).
+
+    The entity registry importers deliberately exclude party.yaml (PCs aren't
+    NPCs), so a registry-driven run must re-add them here or PC-named fact
+    subjects would look "unknown" to known_names() and fragment by chapter
+    location — the exact bug this packet fixes for everyone else.
+    """
+    for rel in ("docs/party.yaml", "config/party.yaml"):
+        path = campaign_dir / rel
+        if path.exists():
+            return load_party_names(path)
+    return []
+
+
+def _resolve_registry_path(
+    args: argparse.Namespace, p: argparse.ArgumentParser
+) -> tuple[Path | None, Path | None, bool]:
+    """Decide which entity_registry.yaml (if any) governs this run.
+
+    Returns (registry_path_or_None, campaign_dir_or_None, explicit).
+
+    - Explicit ``--registry`` always wins: a dir resolves via find_registry
+      (error if none there); a file is used as-is. ``explicit=True``.
+    - No ``--registry`` and no legacy flag (``--aliases``/``--known-names``):
+      auto-discover from CWD. ``explicit=False``.
+    - No ``--registry`` but a legacy flag IS given: explicit legacy opts out
+      of auto-discovery — returns (None, None, False).
+    """
+    if args.registry:
+        given = Path(args.registry).expanduser()
+        if given.is_dir():
+            found = find_registry(given)
+            if found is None:
+                p.error(f"--registry {given}: no entity_registry.yaml found under {given}/docs/")
+            return found, given, True
+        return given, given.parent.parent, True
+    if args.aliases or args.known_names:
+        return None, None, False
+    cwd = Path.cwd()
+    return find_registry(cwd), cwd, False
 
 
 def load_bundles(corpus_paths: list[Path], aliases: dict[str, str],
@@ -427,6 +473,9 @@ def build_parser() -> argparse.ArgumentParser:
                    help="Where to write per-entity dossiers (required unless --list)")
     p.add_argument("--aliases", metavar="FILE", default=None,
                    help="aliases.json ({canonical: [variants]}) for subject canonicalisation")
+    p.add_argument("--registry", metavar="PATH", default=None,
+                   help="Entity registry (docs/entity_registry.yaml) as the single source "
+                        "for aliases + known-names. Supersedes --aliases/--known-names.")
     p.add_argument("--types", nargs="+", default=STATEFUL_TYPES, metavar="TYPE",
                    help=f"Entity types to aggregate (default: {' '.join(STATEFUL_TYPES)})")
     p.add_argument("--min-facts", type=int, default=3, metavar="N",
@@ -501,13 +550,38 @@ def main() -> None:
     if not corpus:
         print("Error: no corpus files matched.", file=sys.stderr)
         sys.exit(1)
-    aliases = load_aliases(Path(args.aliases).expanduser()) if args.aliases else {}
+    registry_path, campaign_dir, explicit_registry = _resolve_registry_path(args, parser)
 
-    known_names: set[str] | None = None
-    if args.known_names:
-        known_names = load_known_names([Path(p) for p in args.known_names])
-        print(f"Known names: {len(known_names)} normalised entries from "
-              f"{len(args.known_names)} source(s)")
+    known_names: set[str] | None
+    if registry_path is not None:
+        if explicit_registry and (args.aliases or args.known_names):
+            parser.error("--registry is the single source; do not combine it with "
+                         "--aliases/--known-names")
+        reg = load_registry(registry_path)
+        pc_names = _load_pc_names(campaign_dir)
+        aliases = reg.alias_to_canonical()
+        known_names = reg.known_names(extra=pc_names)
+        if explicit_registry:
+            print(f"Entity registry: {registry_path}")
+        else:
+            print(f"Auto-discovered entity registry: {registry_path} "
+                  f"(pass --aliases/--known-names to use legacy files instead)")
+        if pc_names:
+            print(f"  + {len(pc_names)} PC name(s) from party.yaml folded into known_names")
+    else:
+        if args.aliases or args.known_names:
+            warnings.warn(
+                "--aliases/--known-names are deprecated; migrate to --registry "
+                "(docs/entity_registry.yaml). See registry.py.",
+                DeprecationWarning,
+            )
+        aliases = load_aliases(Path(args.aliases).expanduser()) if args.aliases else {}
+
+        known_names = None
+        if args.known_names:
+            known_names = load_known_names([Path(p) for p in args.known_names])
+            print(f"Known names: {len(known_names)} normalised entries from "
+                  f"{len(args.known_names)} source(s)")
 
     exclude_names: set[str] = set()
     if args.exclude_names:
