@@ -599,3 +599,104 @@ def test_merge_conflict_same_alias_different_typed_sections(tmp_path, capsys):
     by_name = {e.name: e for e in reg.entities}
     assert by_name["Someone"].aliases == ["SharedAlias"]
     assert by_name["Elsewhere"].aliases == []
+
+
+# ── check: (a4) dossier frontmatter grouping drift ──────────────────────────
+
+def test_check_frontmatter_grouping_drift_detected(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    # Registry has canonical and alias as SEPARATE entities...
+    assert registry.main(["add", str(campaign_dir), "--name", "Asha Vandree", "--type", "npc", "--yes"]) == 0
+    assert registry.main(["add", str(campaign_dir), "--name", "Asha", "--type", "npc", "--yes"]) == 0
+
+    # ...but a dossier's frontmatter declares them as one entity (canonical + alias).
+    dossier_dir = campaign_dir / "docs" / "npcs"
+    dossier_dir.mkdir(parents=True)
+    _write_dossier(dossier_dir, "asha.md", "Asha Vandree", ["Asha"])
+    _write_dossier(dossier_dir, "byrtyn.md", "Byrtyn Fey", [])  # unrelated, singleton — no drift of its own
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 1
+    out = capsys.readouterr().out
+    assert "dossier frontmatter groups" in out
+    assert "Asha Vandree" in out
+    assert "Asha" in out
+
+
+def test_check_frontmatter_grouping_no_drift_when_registry_agrees(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    # Registry already has "Asha" as an alias of "Asha Vandree" — no drift.
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Asha Vandree", "--type", "npc",
+        "--aliases", "Asha", "--yes",
+    ]) == 0
+
+    dossier_dir = campaign_dir / "docs" / "npcs"
+    dossier_dir.mkdir(parents=True)
+    _write_dossier(dossier_dir, "asha.md", "Asha Vandree", ["Asha"])
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 0
+    out = capsys.readouterr().out
+    assert "dossier frontmatter groups" not in out
+    assert "0 grouping-drift" in out
+
+
+# ── check: (a5) aliases.json grouping drift ─────────────────────────────────
+
+def test_check_aliases_json_grouping_drift_detected(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    # Registry has canonical and alias as SEPARATE entities...
+    assert registry.main(["add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc", "--yes"]) == 0
+    assert registry.main(["add", str(campaign_dir), "--name", "Ilvara", "--type", "npc", "--yes"]) == 0
+
+    ensemble_dir = campaign_dir / "docs" / "ensemble"
+    ensemble_dir.mkdir(parents=True)
+    (ensemble_dir / "aliases.json").write_text(
+        json.dumps({"Ilvara Mizzrym": ["Ilvara"]}), encoding="utf-8",
+    )
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 1
+    out = capsys.readouterr().out
+    assert "aliases.json groups" in out
+    assert "Ilvara Mizzrym" in out
+    assert "Ilvara" in out
+
+
+def test_check_aliases_json_grouping_no_drift_when_registry_agrees(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc",
+        "--aliases", "Ilvara", "--yes",
+    ]) == 0
+
+    ensemble_dir = campaign_dir / "docs" / "ensemble"
+    ensemble_dir.mkdir(parents=True)
+    (ensemble_dir / "aliases.json").write_text(
+        json.dumps({"Ilvara Mizzrym": ["Ilvara"]}), encoding="utf-8",
+    )
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 0
+    out = capsys.readouterr().out
+    assert "aliases.json groups" not in out
+    assert "0 grouping-drift" in out
+
+
+def test_check_aliases_json_fallback_path_scanned_when_ensemble_absent(tmp_path, capsys):
+    """docs/aliases.json must be scanned when docs/ensemble/aliases.json is absent."""
+    campaign_dir = _init(tmp_path)
+    assert registry.main(["add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc", "--yes"]) == 0
+    assert registry.main(["add", str(campaign_dir), "--name", "Ilvara", "--type", "npc", "--yes"]) == 0
+
+    docs_dir = campaign_dir / "docs"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    (docs_dir / "aliases.json").write_text(
+        json.dumps({"Ilvara Mizzrym": ["Ilvara"]}), encoding="utf-8",
+    )
+
+    rc = registry.main(["check", str(campaign_dir)])
+    assert rc == 1
+    out = capsys.readouterr().out
+    assert "aliases.json groups" in out

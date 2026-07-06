@@ -867,6 +867,44 @@ def cmd_check(args: argparse.Namespace) -> int:
                     f"merged them into {next(iter(resolved))!r} anyway"
                 )
 
+    # (a4) dossier frontmatter grouping drift -----------------------------------
+    dossier_dir = campaign_dir / "docs" / "npcs"
+    if dossier_dir.is_dir():
+        amap = load_alias_map(dossier_dir)
+        for canonical, aliases in amap.items():
+            group = [canonical, *aliases]
+            if len(group) < 2:
+                continue
+            legacy_display_names.extend(group)
+            resolved = _resolved_entity_names(reg, group)
+            if len(resolved) > 1 or "MISSING" in resolved:
+                grouping_findings.append(
+                    f"dossier frontmatter groups {group!r} but registry resolves "
+                    f"them to {sorted(resolved)}"
+                )
+
+    # (a5) aliases.json grouping drift ------------------------------------------
+    aliases_json_path = campaign_dir / "docs" / "ensemble" / "aliases.json"
+    if not aliases_json_path.is_file():
+        aliases_json_path = campaign_dir / "docs" / "aliases.json"
+    if aliases_json_path.is_file():
+        try:
+            aliases_data = json.loads(aliases_json_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            print(f"WARNING: could not parse {aliases_json_path}: {exc}", file=sys.stderr)
+            aliases_data = {}
+        for canonical, variants in aliases_data.items():
+            group = [canonical, *variants]
+            if len(group) < 2:
+                continue
+            legacy_display_names.extend(group)
+            resolved = _resolved_entity_names(reg, group)
+            if len(resolved) > 1 or "MISSING" in resolved:
+                grouping_findings.append(
+                    f"aliases.json groups {group!r} but registry resolves them "
+                    f"to {sorted(resolved)}"
+                )
+
     # (b) fuzzy near-duplicates — suppress settled GM rulings ------------------
     suppressed: set[frozenset] = set()
     for pair in reg.distinct:
