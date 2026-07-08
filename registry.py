@@ -635,6 +635,9 @@ def cmd_import_frontmatter(args: argparse.Namespace) -> int:
         return 1
 
     reg = load_registry(path)
+    # importer: read docs/npcs/ dossiers to BUILD the registry — never pass
+    # registry_path here (it would return the registry's own aliases and make
+    # this import a no-op).
     amap = load_alias_map(args.dossier_dir)
 
     added = updated = 0
@@ -879,6 +882,9 @@ def cmd_check(args: argparse.Namespace) -> int:
     # (a4) dossier frontmatter grouping drift -----------------------------------
     dossier_dir = campaign_dir / "docs" / "npcs"
     if dossier_dir.is_dir():
+        # check: compare dossier frontmatter AGAINST the registry — read dossiers
+        # only, never pass registry_path (that would compare the registry to
+        # itself and hide the very drift this is meant to surface).
         amap = load_alias_map(dossier_dir)
         for canonical, aliases in amap.items():
             group = [canonical, *aliases]
