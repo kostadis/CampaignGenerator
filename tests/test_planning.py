@@ -171,6 +171,42 @@ def test_build_dossiers_writes_source_extracts_on_new_dossier(monkeypatch, fake_
     assert source_extracts == [1, 3]
 
 
+def test_build_dossiers_seeds_registry_aliases_into_new_dossier(
+    monkeypatch, fake_stream_api, tmp_path
+):
+    """A freshly synthesized dossier is seeded with the registry's known aliases,
+    so new dossiers start life consistent with the single-authority registry."""
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs" / "entity_registry.yaml").write_text(
+        "version: 1\n"
+        "entities:\n"
+        "  - name: Grundar\n"
+        "    type: npc\n"
+        "    aliases: [Grundar Ironfist, The Smith]\n",
+        encoding="utf-8",
+    )
+    summaries = _write(tmp_path / "summaries.md", "pre-seeded")
+    dossier_dir = tmp_path / "npcs"
+    extract_dir = tmp_path / "extractions"
+    _prewrite_extract(extract_dir, 1, {"Grundar": "First mention of Grundar."})
+
+    # find_alias_registry auto-discovers docs/entity_registry.yaml from CWD.
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py", "--build-dossiers",
+        "--summaries", str(summaries),
+        "--dossier-dir", str(dossier_dir),
+        "--extract-dir", str(extract_dir),
+    ])
+    planning.main()
+
+    grundar = dossier_dir / "grundar.md"
+    assert grundar.exists()
+    name, aliases, _src, _body = planning.parse_dossier(grundar)
+    assert name == "Grundar"
+    assert aliases == ["Grundar Ironfist", "The Smith"]
+
+
 def test_build_dossiers_skips_sidecar_for_already_absorbed_extract(
     monkeypatch, fake_stream_api, tmp_path
 ):
