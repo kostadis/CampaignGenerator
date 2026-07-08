@@ -56,6 +56,10 @@ from .party import (
     load_party_names,
     load_pc_names,
 )
+from .registry import (
+    find_registry,
+    load_registry,
+)
 from .scenes import (
     parse_gmassist_scenes,
     snapshot_scene_for_rerun,
@@ -120,6 +124,9 @@ __all__ = [
     # party / PC names
     "load_party_names",
     "load_pc_names",
+    # entity registry
+    "find_registry",
+    "load_registry",
     # scenes
     "parse_gmassist_scenes",
     "snapshot_scene_for_rerun",

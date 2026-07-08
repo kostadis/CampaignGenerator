@@ -63,6 +63,7 @@ from campaignlib import (
     client_from_args,
     format_npc_roster,
     load_agent_prompt,
+    find_registry,
     load_alias_map,
     make_client,
     normalize_npc_key as _normalize_npc_key,
@@ -323,7 +324,8 @@ def run_build_dossiers(
     # Seed the extract prompt with the existing canonical roster so re-builds
     # don't fragment NPCs the human has already merged (e.g. Tolubb vs
     # "Captain Tolubb"). No-op for a fresh campaign with an empty dossier dir.
-    existing_roster = format_npc_roster(load_alias_map(dossier_dir))
+    existing_roster = format_npc_roster(
+        load_alias_map(dossier_dir, registry_path=find_registry(Path.cwd())))
     if existing_roster:
         print(f"  Seeding extract prompt with {existing_roster.count(chr(10))} known NPC(s).")
     run_extract_pipeline(
