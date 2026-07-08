@@ -14,6 +14,14 @@ library). Its subcommands:
                                           or more surface forms as aliases of
                                           an existing entity (looked up by its
                                           canonical name OR an existing alias)
+  merge   <campaign_dir> --into ... other [other ...]   fold one or more
+                                          EXISTING entities into a target (they
+                                          are the same thing) — the positive
+                                          counterpart to mark-distinct; refuses
+                                          if a distinct/rejected guard says they
+                                          are separate. This is how a GM resolves
+                                          grouping drift where two spellings each
+                                          registered as their own entity.
   project <campaign_dir>                 write aliases.json and
                                           entity_inventory.md projections
                                           consumed by existing pipelines
@@ -48,7 +56,8 @@ library). Its subcommands:
 Recommended import order (why order matters):
 
     init -> import-inventory -> import-dedup -> import-frontmatter
-         -> import-alias-decisions -> check -> [GM resolves] -> project
+         -> import-alias-decisions -> check -> [GM resolves: merge /
+            alias / mark-distinct / mark-rejected] -> project
 
 ``import-inventory`` goes first because a module/campaign inventory carries
 real entity TYPES and the module's canonical spellings. ``import-dedup``
@@ -368,6 +377,31 @@ def _add_rejected_group(reg: Registry, members: "list[str]") -> None:
         if {norm_subject(m) for m in group} == key:
             return
     reg.rejected_aliases.append(list(members))
+
+
+def _guard_blocks_merge(reg: Registry, target: Entity, other: Entity) -> "str | None":
+    """Reason string if folding ``other`` into ``target`` would override a
+    standing anti-merge guard, else None.
+
+    A guard blocks the merge when a ``distinct`` pair (or a ``rejected_aliases``
+    group) links one of ``target``'s names/aliases to one of ``other``'s — i.e.
+    the GM has already ruled these two entities are NOT the same. ``validate``
+    catches the ``distinct`` case indirectly (a distinct pair resolving to one
+    entity), but not ``rejected_aliases``; more importantly a merge must refuse
+    *before* mutating rather than silently trip an invariant, so the two guards
+    are checked here explicitly."""
+    target_keys = {norm_subject(s) for s in [target.name, *target.aliases]}
+    other_keys = {norm_subject(s) for s in [other.name, *other.aliases]}
+    for pair in reg.distinct:
+        if len(pair) == 2:
+            pk = {norm_subject(pair[0]), norm_subject(pair[1])}
+            if pk & target_keys and pk & other_keys:
+                return f"they are marked distinct ({pair!r})"
+    for group in reg.rejected_aliases:
+        gk = {norm_subject(m) for m in group}
+        if gk & target_keys and gk & other_keys:
+            return f"they share a rejected-aliases group ({group!r})"
+    return None
 
 
 # ── import-inventory ─────────────────────────────────────────────────────────
@@ -1304,6 +1338,116 @@ def cmd_alias(args: argparse.Namespace) -> int:
     return 0
 
 
+# ── merge ──────────────────────────────────────────────────────────────────
+#
+# The positive counterpart to `mark-distinct` / `mark-rejected`: fold one or
+# more EXISTING entities into a target entity (they turn out to be the same
+# thing). `alias` deliberately refuses to move a surface form already owned by
+# another entity ("mark-distinct if they are truly separate"); `merge` is the
+# sanctioned way to reconcile two already-registered spellings into one — the
+# operation that "GM resolves grouping drift" means in a Phase 5 migration,
+# where an inventory-provenance spelling and a dossier-provenance spelling each
+# registered as their own entity. Destructive (removes the folded entities), so
+# it is an explicit named verb, not an `alias` auto-merge. Anti-merge guards win
+# (a distinct/rejected pair refuses); target wins on a type mismatch (warned);
+# all targets are pre-checked so the call is atomic (lands all or writes nothing).
+
+def cmd_merge(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry.py init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+
+    reg = load_registry(path)
+
+    target_idx = _find_owner(reg, norm_subject(args.into))
+    if target_idx is None:
+        print(f"Error: no entity matching --into {args.into!r} in the registry", file=sys.stderr)
+        return 1
+    target = reg.entities[target_idx]
+
+    # Pre-check ALL others before mutating anything, so one bad name (missing,
+    # or guarded) doesn't leave a partial merge.
+    to_merge: list[int] = []
+    already: list[str] = []
+    seen: set[int] = {target_idx}
+    for other in args.others:
+        oidx = _find_owner(reg, norm_subject(other))
+        if oidx is None:
+            print(f"Error: no entity matching {other!r} in the registry", file=sys.stderr)
+            return 1
+        if oidx == target_idx:
+            already.append(other)  # already the target (its name or an alias)
+            continue
+        if oidx in seen:
+            continue  # same other named twice
+        blocked = _guard_blocks_merge(reg, target, reg.entities[oidx])
+        if blocked:
+            print(
+                f"Error: refusing to merge {reg.entities[oidx].name!r} into "
+                f"{target.name!r} — {blocked}. Remove that guard first if they "
+                f"really are the same entity.",
+                file=sys.stderr,
+            )
+            return 1
+        to_merge.append(oidx)
+        seen.add(oidx)
+
+    if not to_merge:
+        print(f"Nothing to do — all already part of {target.name!r}")
+        return 0
+
+    target_key = norm_subject(target.name)
+    existing_alias_keys = {norm_subject(a) for a in target.aliases}
+    merged_names: list[str] = []
+    type_warnings: list[str] = []
+    for oidx in to_merge:
+        other = reg.entities[oidx]
+        merged_names.append(other.name)
+        if other.type != target.type:
+            type_warnings.append(
+                f"{other.name!r} was type {other.type!r}, folded into "
+                f"{target.name!r} (type {target.type!r})"
+            )
+        # Every name/alias is unique across entities (validate guarantees), so
+        # these strings belonged solely to ``other`` — fold them in, skipping
+        # only the target's own name and aliases it already carries.
+        for s in [other.name, *other.aliases]:
+            skey = norm_subject(s)
+            if not skey or skey == target_key or skey in existing_alias_keys:
+                continue
+            target.aliases.append(s)
+            existing_alias_keys.add(skey)
+        if target.provenance is None and other.provenance is not None:
+            target.provenance = other.provenance
+        if target.source is None and other.source is not None:
+            target.source = other.source
+        if target.note is None and other.note is not None:
+            target.note = other.note
+
+    remove = set(to_merge)
+    reg.entities = [e for i, e in enumerate(reg.entities) if i not in remove]
+
+    try:
+        validate(reg)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    save_registry(reg, path)
+
+    print(f"Merged {merged_names!r} into {target.name!r} in {path}")
+    for w in type_warnings:
+        print(f"  warning: {w}", file=sys.stderr)
+    if already:
+        print(f"  (already part of {target.name!r}, skipped: {already!r})")
+    return 0
+
+
 # ── CLI wiring ───────────────────────────────────────────────────────────────
 
 def main(argv: "list[str] | None" = None) -> int:
@@ -1418,6 +1562,16 @@ def main(argv: "list[str] | None" = None) -> int:
     pal.add_argument("--to", required=True, help="canonical name or existing alias of the target entity")
     pal.add_argument("variants", nargs="+", help="surface form(s) to attach as alias(es)")
     pal.set_defaults(func=cmd_alias)
+
+    pmg = sub.add_parser(
+        "merge",
+        help="fold one or more EXISTING entities into a target entity (they are "
+             "the same thing); refuses if they are marked distinct/rejected",
+    )
+    pmg.add_argument("campaign_dir")
+    pmg.add_argument("--into", required=True, help="canonical name or alias of the surviving target entity")
+    pmg.add_argument("others", nargs="+", help="canonical name(s) or alias(es) of the entity/entities to fold in")
+    pmg.set_defaults(func=cmd_merge)
 
     args = p.parse_args(argv)
     return args.func(args)
