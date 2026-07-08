@@ -21,6 +21,7 @@ from campaignlib import (
     DEFAULT_MODEL,
     build_alias_normalizer,
     format_npc_roster,
+    find_alias_registry,
     load_alias_map,
     make_client,
     stream_api,
@@ -176,7 +177,7 @@ def main() -> None:
             if cp.exists():
                 context_parts.append(cp.read_text(encoding="utf-8"))
 
-    alias_map = load_alias_map(args.dossier_dir)
+    alias_map = load_alias_map(args.dossier_dir, registry_path=find_alias_registry(Path.cwd()))
     normalize, _ = build_alias_normalizer(alias_map)
     npc_roster = format_npc_roster(alias_map)
     if alias_map:

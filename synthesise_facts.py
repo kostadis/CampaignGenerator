@@ -46,9 +46,12 @@ import argparse
 import json
 import re
 import sys
+import warnings
 from collections import Counter, defaultdict
 from difflib import SequenceMatcher
 from pathlib import Path
+
+from campaignlib import load_registry, resolve_registry_arg
 
 TYPE_ORDER = ["npc", "monster", "faction", "location", "object", "date", "event", "thread"]
 TYPE_HEADINGS = {
@@ -192,7 +195,13 @@ def main() -> None:
     parser.add_argument("--aliases", default=None, metavar="FILE",
                         help="Optional aliases.json: {canonical: [variants]}. "
                              "If absent, no spelling-cluster collapsing is applied "
-                             "(all variants appear separately).")
+                             "(all variants appear separately). Deprecated: prefer "
+                             "--registry.")
+    parser.add_argument("--registry", default=None, metavar="PATH",
+                        help="Entity registry (docs/entity_registry.yaml) as the "
+                             "single source for aliases, superseding --aliases. A "
+                             "campaign dir resolves to its docs/entity_registry.yaml; "
+                             "omit to auto-discover one from the CWD.")
     parser.add_argument("--threshold", type=float, default=CLUSTER_THRESHOLD,
                         help=f"Similarity threshold for flagging potential aliases "
                              f"(default: {CLUSTER_THRESHOLD}). Lower = more "
@@ -208,7 +217,20 @@ def main() -> None:
         sys.exit(1)
 
     facts = json.loads(merged_path.read_text(encoding="utf-8"))
-    aliases = load_aliases(aliases_path)
+
+    registry_path, _campaign_dir, explicit_registry = resolve_registry_arg(
+        args.registry, bool(args.aliases), parser)
+    if registry_path is not None:
+        if explicit_registry and args.aliases:
+            parser.error("--registry is the single source; do not combine it with --aliases")
+        aliases = load_registry(registry_path).alias_to_canonical()
+        note = "Entity registry" if explicit_registry else "Auto-discovered entity registry"
+        print(f"{note}: {registry_path}", file=sys.stderr)
+    else:
+        if args.aliases:
+            warnings.warn("--aliases is deprecated; migrate to --registry "
+                          "(docs/entity_registry.yaml).", DeprecationWarning)
+        aliases = load_aliases(aliases_path)
 
     subjects_by_type: dict[str, list[str]] = defaultdict(list)
     for f in facts:

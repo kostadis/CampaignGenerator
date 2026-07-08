@@ -17,6 +17,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from campaignlib import (  # noqa: E402
+    find_registry,
     build_alias_normalizer,
     format_npc_roster,
     load_alias_map,
@@ -407,7 +408,15 @@ def extract_connections(req: ExtractRequest):
     """Call Claude to extract entities/relationships, canonicalize IDs, merge into cache."""
     CHAR_LIMIT = 600_000
 
-    alias_map = load_alias_map(req.dossier_dir) if req.dossier_dir else {}
+    # Server has no campaign CWD, so derive the registry (if any) from the
+    # request's dossier dir campaign root: <campaign>/docs/npcs -> <campaign>.
+    # find_registry returns None for non-standard layouts, so this only ever
+    # opts into a registry when one actually sits beside the dossiers.
+    alias_map = (
+        load_alias_map(req.dossier_dir,
+                       registry_path=find_registry(Path(req.dossier_dir).parent.parent))
+        if req.dossier_dir else {}
+    )
     normalize, _ = build_alias_normalizer(alias_map)
     roster = format_npc_roster(alias_map)
 
@@ -557,7 +566,8 @@ def get_context(
     # Build search terms: canonical label plus any aliases from the dossier map.
     terms = [entity["label"]]
     if dossier_dir:
-        alias_map = load_alias_map(dossier_dir)
+        alias_map = load_alias_map(
+            dossier_dir, registry_path=find_registry(Path(dossier_dir).parent.parent))
         for canonical, aliases in alias_map.items():
             if canonical.lower() == entity["label"].lower():
                 terms.extend(aliases)

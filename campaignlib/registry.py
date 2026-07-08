@@ -254,6 +254,40 @@ def find_registry(campaign_dir) -> "Path | None":
     return p if p.is_file() else None
 
 
+def resolve_registry_arg(registry_arg, legacy_present, parser):
+    """Decide which entity_registry.yaml (if any) governs a CLI run.
+
+    Shared by every ``--registry`` consumer (facts_to_state, synthesise_*) so
+    the precedence rules live in one place. Returns
+    ``(registry_path_or_None, campaign_dir_or_None, explicit)``:
+
+    - Explicit ``--registry`` always wins: a directory resolves via
+      ``find_registry`` (``parser.error`` if none is there); a file path is
+      used as-is. ``explicit=True``.
+    - No ``--registry`` and no legacy flag (``legacy_present`` False):
+      auto-discover from CWD. ``explicit=False``.
+    - No ``--registry`` but a legacy flag IS present: the explicit legacy
+      choice opts out of auto-discovery — returns ``(None, None, False)``.
+
+    ``legacy_present`` is a bool the caller computes from whichever legacy flags
+    that script exposes (e.g. ``bool(args.aliases)`` for the synthesise scripts,
+    ``bool(args.aliases or args.known_names)`` for facts_to_state).
+    """
+    if registry_arg:
+        given = Path(registry_arg).expanduser()
+        if given.is_dir():
+            found = find_registry(given)
+            if found is None:
+                parser.error(
+                    f"--registry {given}: no entity_registry.yaml found under {given}/docs/")
+            return found, given, True
+        return given, given.parent.parent, True
+    if legacy_present:
+        return None, None, False
+    cwd = Path.cwd()
+    return find_registry(cwd), cwd, False
+
+
 def _entity_to_dict(e: Entity) -> dict:
     """Ordered dict for one entity, omitting unset/default fields (see dump_registry)."""
     d: dict = {"name": e.name, "type": e.type}

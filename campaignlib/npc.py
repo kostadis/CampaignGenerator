@@ -91,12 +91,24 @@ def build_alias_normalizer(
     return (normalize, entries)
 
 
-def load_alias_map(dossier_dir) -> dict[str, list[str]]:
-    """Scan `dossier_dir` for `*.md` dossiers; return `{canonical: [aliases]}`.
+def load_alias_map(dossier_dir, registry_path=None) -> dict[str, list[str]]:
+    """Return `{canonical: [aliases]}` for a campaign's entities.
 
-    Returns `{}` when `dossier_dir` is None, missing, or contains no
-    dossiers — makes the caller a no-op for campaigns without planning.
+    If `registry_path` is given and points at a readable
+    `entity_registry.yaml`, the registry is the single authority: its
+    `{canonical: [aliases]}` projection REPLACES the dossier scan entirely
+    (dossier frontmatter is one of the legacy stores the registry supersedes).
+    A None/missing `registry_path` falls back to scanning `dossier_dir` for
+    `*.md` dossiers, so callers without a registry are unaffected.
+
+    Returns `{}` when neither a registry nor any dossiers are available —
+    makes the caller a no-op for campaigns without planning.
     """
+    if registry_path is not None:
+        rp = Path(registry_path).expanduser()
+        if rp.is_file():
+            from campaignlib.registry import load_registry
+            return load_registry(rp).canonical_to_aliases()
     if dossier_dir is None:
         return {}
     d = Path(dossier_dir).expanduser()
@@ -110,6 +122,30 @@ def load_alias_map(dossier_dir) -> dict[str, list[str]]:
         name, aliases, _, _ = parse_dossier(f)
         result[name] = aliases
     return result
+
+
+def find_alias_registry(campaign_dir, *, announce=True):
+    """Discover the campaign entity registry and, when found, announce that it
+    supersedes dossier aliases — so a run never *silently* swaps alias source.
+
+    Render CLIs pass the result as ``load_alias_map(..., registry_path=...)``.
+    Because a registry REPLACES the ``docs/npcs/`` dossier scan, a partial
+    registry (the norm during a Phase-5 incremental migration) would otherwise
+    drop hand-curated dossier aliases with no visible sign; the stderr notice is
+    that sign. Returns the registry Path or None. Server routes that must stay
+    quiet should call ``find_registry`` directly instead of this helper.
+    """
+    from campaignlib.registry import find_registry
+
+    p = find_registry(campaign_dir)
+    if p is not None and announce:
+        print(
+            f"Entity registry: {p}\n"
+            f"  -> aliases come from the registry; docs/npcs/ dossier frontmatter "
+            f"is superseded (remove the registry to use dossiers instead).",
+            file=sys.stderr,
+        )
+    return p
 
 
 _PLAYER_PLACEHOLDERS = {

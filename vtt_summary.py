@@ -38,6 +38,7 @@ from campaignlib import (
     DEFAULT_MODEL,
     build_alias_normalizer,
     format_npc_roster,
+    find_alias_registry,
     load_alias_map,
     load_file_optional,
     make_client,
@@ -352,7 +353,7 @@ def main() -> None:
             reference_text = "\n\n---\n\n".join(parts)
             print(f"[Reference summaries: {len(parts)} file(s), {len(reference_text):,} chars]")
 
-    alias_map = load_alias_map(args.dossier_dir)
+    alias_map = load_alias_map(args.dossier_dir, registry_path=find_alias_registry(Path.cwd()))
     normalize, _ = build_alias_normalizer(alias_map)
     roster = format_npc_roster(alias_map)
     if alias_map:

@@ -63,7 +63,9 @@ from campaignlib import (
     client_from_args,
     format_npc_roster,
     load_agent_prompt,
+    find_alias_registry,
     load_alias_map,
+    load_registry,
     make_client,
     normalize_npc_key as _normalize_npc_key,
     parse_dossier,
@@ -323,7 +325,18 @@ def run_build_dossiers(
     # Seed the extract prompt with the existing canonical roster so re-builds
     # don't fragment NPCs the human has already merged (e.g. Tolubb vs
     # "Captain Tolubb"). No-op for a fresh campaign with an empty dossier dir.
-    existing_roster = format_npc_roster(load_alias_map(dossier_dir))
+    registry_path = find_alias_registry(Path.cwd())
+    # Registry aliases (normalised key → aliases) to SEED new dossiers' frontmatter
+    # so freshly built dossiers already carry the canonical known variants. Safe to
+    # key by normalised name: the registry guarantees no two entities collide on it.
+    registry_alias_seed: dict[str, list[str]] = {}
+    if registry_path is not None:
+        registry_alias_seed = {
+            _normalize_npc_key(canon): aliases
+            for canon, aliases in load_registry(registry_path).canonical_to_aliases().items()
+        }
+    existing_roster = format_npc_roster(
+        load_alias_map(dossier_dir, registry_path=registry_path))
     if existing_roster:
         print(f"  Seeding extract prompt with {existing_roster.count(chr(10))} known NPC(s).")
     run_extract_pipeline(
@@ -488,7 +501,9 @@ def run_build_dossiers(
         dossier = stream_api(client, BUILD_SYNTHESIZE_SYSTEM, raw_notes, model)
         print("  " + "─" * 56)
         contributing_extracts = sorted(npc_by_extract[npc_name].keys())
-        write_dossier(out_file, npc_name, [], contributing_extracts, dossier.strip() + "\n")
+        seeded_aliases = registry_alias_seed.get(_normalize_npc_key(npc_name), [])
+        write_dossier(out_file, npc_name, seeded_aliases, contributing_extracts,
+                      dossier.strip() + "\n")
         saved.append(out_file)
         print(f"  Saved: {out_file.name}\n")
 

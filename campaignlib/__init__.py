@@ -48,9 +48,19 @@ from .npc import (
     normalize_npc_key,
     build_alias_normalizer,
     load_alias_map,
+    find_alias_registry,
     extract_player_character_map,
     normalize_vtt_speakers,
     format_npc_roster,
+)
+from .party import (
+    load_party_names,
+    load_pc_names,
+)
+from .registry import (
+    find_registry,
+    load_registry,
+    resolve_registry_arg,
 )
 from .scenes import (
     parse_gmassist_scenes,
@@ -110,9 +120,17 @@ __all__ = [
     "normalize_npc_key",
     "build_alias_normalizer",
     "load_alias_map",
+    "find_alias_registry",
     "extract_player_character_map",
     "normalize_vtt_speakers",
     "format_npc_roster",
+    # party / PC names
+    "load_party_names",
+    "load_pc_names",
+    # entity registry
+    "find_registry",
+    "load_registry",
+    "resolve_registry_arg",
     # scenes
     "parse_gmassist_scenes",
     "snapshot_scene_for_rerun",

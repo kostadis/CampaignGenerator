@@ -47,15 +47,15 @@ from campaignlib import (
     DEFAULT_MODEL,
     atomic_write_text,
     load_agent_prompt,
+    load_pc_names,
     make_client,
     stream_api,
 )
-from campaignlib.registry import find_registry, load_registry
+from campaignlib.registry import load_registry, resolve_registry_arg
 from ensemble_merge import _norm_subject
 from synthesise_world_state import (
     expand_globs,
     load_aliases,
-    load_party_names,
     session_index,
     session_label,
 )
@@ -238,47 +238,6 @@ def _collect_monster_vocab(corpus_paths: list[Path], aliases: dict[str, str]) ->
     return vocab
 
 
-def _load_pc_names(campaign_dir: Path) -> list[str]:
-    """PC names from party.yaml (docs/party.yaml, else config/party.yaml).
-
-    The entity registry importers deliberately exclude party.yaml (PCs aren't
-    NPCs), so a registry-driven run must re-add them here or PC-named fact
-    subjects would look "unknown" to known_names() and fragment by chapter
-    location — the exact bug this packet fixes for everyone else.
-    """
-    for rel in ("docs/party.yaml", "config/party.yaml"):
-        path = campaign_dir / rel
-        if path.exists():
-            return load_party_names(path)
-    return []
-
-
-def _resolve_registry_path(
-    args: argparse.Namespace, p: argparse.ArgumentParser
-) -> tuple[Path | None, Path | None, bool]:
-    """Decide which entity_registry.yaml (if any) governs this run.
-
-    Returns (registry_path_or_None, campaign_dir_or_None, explicit).
-
-    - Explicit ``--registry`` always wins: a dir resolves via find_registry
-      (error if none there); a file is used as-is. ``explicit=True``.
-    - No ``--registry`` and no legacy flag (``--aliases``/``--known-names``):
-      auto-discover from CWD. ``explicit=False``.
-    - No ``--registry`` but a legacy flag IS given: explicit legacy opts out
-      of auto-discovery — returns (None, None, False).
-    """
-    if args.registry:
-        given = Path(args.registry).expanduser()
-        if given.is_dir():
-            found = find_registry(given)
-            if found is None:
-                p.error(f"--registry {given}: no entity_registry.yaml found under {given}/docs/")
-            return found, given, True
-        return given, given.parent.parent, True
-    if args.aliases or args.known_names:
-        return None, None, False
-    cwd = Path.cwd()
-    return find_registry(cwd), cwd, False
 
 
 def load_bundles(corpus_paths: list[Path], aliases: dict[str, str],
@@ -550,7 +509,8 @@ def main() -> None:
     if not corpus:
         print("Error: no corpus files matched.", file=sys.stderr)
         sys.exit(1)
-    registry_path, campaign_dir, explicit_registry = _resolve_registry_path(args, parser)
+    registry_path, campaign_dir, explicit_registry = resolve_registry_arg(
+        args.registry, bool(args.aliases or args.known_names), parser)
 
     known_names: set[str] | None
     if registry_path is not None:
@@ -558,7 +518,7 @@ def main() -> None:
             parser.error("--registry is the single source; do not combine it with "
                          "--aliases/--known-names")
         reg = load_registry(registry_path)
-        pc_names = _load_pc_names(campaign_dir)
+        pc_names = load_pc_names(campaign_dir)
         aliases = reg.alias_to_canonical()
         known_names = reg.known_names(extra=pc_names)
         if explicit_registry:

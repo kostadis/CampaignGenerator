@@ -61,6 +61,7 @@ from campaignlib import (
     client_from_args,
     format_npc_roster,
     load_agent_prompt,
+    find_alias_registry,
     load_alias_map,
     make_client,
     run_extract_pipeline,
@@ -326,7 +327,7 @@ def main() -> None:
             print(f"Error: file not found: {f}", file=sys.stderr)
             sys.exit(1)
 
-    alias_map = load_alias_map(args.dossier_dir)
+    alias_map = load_alias_map(args.dossier_dir, registry_path=find_alias_registry(Path.cwd()))
     normalize, _ = build_alias_normalizer(alias_map)
     roster = format_npc_roster(alias_map)
     if alias_map:

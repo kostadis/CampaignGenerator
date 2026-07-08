@@ -396,6 +396,52 @@ def test_load_alias_map_empty_or_missing_dir(tmp_path):
     assert campaignlib.load_alias_map(tmp_path / "empty") == {}
 
 
+def test_load_alias_map_registry_replaces_dossier_scan(tmp_path):
+    # A dossier says one thing; the registry (single authority) says another —
+    # when registry_path is given, the registry wins and the dossier is ignored.
+    (tmp_path / "tolubb.md").write_text(
+        "---\nname: Tolubb\naliases:\n  - Cap. Tolubb\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+    registry_path = tmp_path / "entity_registry.yaml"
+    registry_path.write_text(
+        "version: 1\n"
+        "entities:\n"
+        "  - name: Ilvara Mizzrym\n"
+        "    type: npc\n"
+        "    aliases: [Ilvara, Mistress Ilvara]\n",
+        encoding="utf-8",
+    )
+    m = campaignlib.load_alias_map(tmp_path, registry_path=registry_path)
+    assert m == {"Ilvara Mizzrym": ["Ilvara", "Mistress Ilvara"]}
+    assert "Tolubb" not in m  # dossier scan fully superseded
+
+
+def test_load_alias_map_missing_registry_falls_back_to_dossiers(tmp_path):
+    (tmp_path / "tolubb.md").write_text(
+        "---\nname: Tolubb\naliases:\n  - Cap. Tolubb\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+    # registry_path points at a non-existent file → fall back to the dossier scan.
+    m = campaignlib.load_alias_map(tmp_path, registry_path=tmp_path / "nope.yaml")
+    assert m == {"Tolubb": ["Cap. Tolubb"]}
+
+
+def test_find_alias_registry_announces_when_found(tmp_path, capsys):
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs" / "entity_registry.yaml").write_text(
+        "version: 1\nentities: []\n", encoding="utf-8")
+    p = campaignlib.find_alias_registry(tmp_path)
+    assert p is not None
+    err = capsys.readouterr().err
+    assert "Entity registry" in err and "superseded" in err
+
+
+def test_find_alias_registry_silent_when_absent(tmp_path, capsys):
+    assert campaignlib.find_alias_registry(tmp_path) is None
+    assert capsys.readouterr().err == ""
+
+
 def test_build_alias_normalizer_rewrites_longest_first():
     normalize, _ = campaignlib.build_alias_normalizer({
         "Tolubb": ["Cap. Tolubb", "Captain Tolubb"],
