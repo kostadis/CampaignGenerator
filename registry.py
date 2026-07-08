@@ -545,6 +545,70 @@ def _dedup_cluster_group(cluster: dict) -> "tuple[str, list[str]] | None":
     return canonical_name, aliases
 
 
+def _confirmed_canon_map(data: dict) -> "dict[str, str]":
+    """``{member_file: canonical_file}`` for every NON-split confirmed cluster.
+
+    Two files sharing a canonical are confirmed the SAME entity — used to
+    collapse a rejected cluster so its guard never contradicts a confirmed
+    merge. Split clusters name DIFFERENT entities, so they contribute no
+    equivalence."""
+    canon: dict[str, str] = {}
+    for cluster in data.get("clusters_confirmed", []) or []:
+        canonical = cluster.get("canonical", "") or ""
+        if "(split)" in canonical or "+" in canonical:
+            continue
+        for f in cluster.get("files", []) or []:
+            canon[f] = canonical
+    return canon
+
+
+def _distinct_rejected_reps(
+    reg: Registry, files: "list[str]", confirmed_canon: "dict[str, str]"
+) -> "list[str]":
+    """Collapse a rejected dedup cluster's member files to one representative
+    NAME per DISTINCT entity.
+
+    A rejected cluster means "not all of these are one entity" — NOT that every
+    pair is distinct. Two members collapse together when they are confirmed the
+    same (same ``confirmed_canon`` file) OR already resolve to the same registry
+    entity (e.g. an inventory alias). Emitting a flat rejected_aliases group over
+    the raw files would forbid a pair the data elsewhere confirms as duplicates
+    (the ``{aliinka, plinki, pliinki} ⊃ confirmed {plinki, pliinki}`` bug);
+    collapsing first keeps the guard only across the entities actually ruled
+    apart. The representative is the registry's canonical name when a member
+    resolves, else the member's own file-stem name."""
+    n = len(files)
+    parent = list(range(n))
+
+    def find(i: int) -> int:
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    def union(i: int, j: int) -> None:
+        parent[find(i)] = find(j)
+
+    names = [_stem_to_name(f) for f in files]
+    owners = [_find_owner(reg, norm_subject(nm)) for nm in names]
+    for i in range(n):
+        for j in range(i + 1, n):
+            same_confirmed = (
+                confirmed_canon.get(files[i]) is not None
+                and confirmed_canon.get(files[i]) == confirmed_canon.get(files[j])
+            )
+            same_entity = owners[i] is not None and owners[i] == owners[j]
+            if same_confirmed or same_entity:
+                union(i, j)
+
+    reps: dict[int, str] = {}
+    for i in range(n):
+        root = find(i)
+        if root not in reps:
+            reps[root] = reg.entities[owners[i]].name if owners[i] is not None else names[i]
+    return list(reps.values())
+
+
 def cmd_import_dedup(args: argparse.Namespace) -> int:
     campaign_dir = Path(args.campaign_dir)
     path = find_registry(campaign_dir)
@@ -603,11 +667,27 @@ def cmd_import_dedup(args: argparse.Namespace) -> int:
         else:
             added += 1
 
+    confirmed_canon = _confirmed_canon_map(data)
     for cluster in data.get("clusters_rejected", []):
         files = cluster.get("files", []) or []
-        members = [_stem_to_name(f) for f in files]
-        if members:
-            _add_rejected_group(reg, members)
+        if not files:
+            continue
+        # A rejected cluster means "not all of these are one entity" — NOT that
+        # every pair is distinct. Collapse members that are confirmed the same
+        # (or already merged in the registry) BEFORE recording the guard, so it
+        # never forbids a pair a confirmed cluster marks as duplicates
+        # (e.g. rejected {aliinka, plinki, pliinki} ⊃ confirmed {plinki, pliinki}
+        # must guard only Aliinka vs Plinki, never Plinki vs Pliinki).
+        reps = _distinct_rejected_reps(reg, files, confirmed_canon)
+        if len(reps) >= 2:
+            _add_rejected_group(reg, reps)
+        else:
+            print(
+                f"WARNING: rejected cluster {[_stem_to_name(f) for f in files]!r} "
+                f"collapses to a single entity {reps!r} — its members are confirmed "
+                f"duplicates / already merged, so no anti-merge guard is added",
+                file=sys.stderr,
+            )
 
     # clusters_deferred: intentionally skipped (not yet a settled decision).
     # pc_files_skipped (if present at all): intentionally never read — PCs
