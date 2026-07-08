@@ -229,6 +229,86 @@ def test_import_dedup_rejected_cluster(tmp_path):
     assert {"Shoor", "Stool"} in groups
 
 
+def test_import_dedup_rejected_cluster_excludes_confirmed_subpair(tmp_path):
+    # The real OOTA bug: a rejected CLUSTER {aliinka, plinki, pliinki} whose
+    # reason is "Aliinka is separate; only plinki/pliinki are duplicates" — with
+    # a confirmed cluster {plinki, pliinki} — must NOT produce a guard that
+    # forbids the confirmed Plinki<->Pliinki merge. It must keep only the real
+    # distinction (Aliinka vs the plinki/pliinki entity).
+    campaign_dir = _init(tmp_path)
+    data = {
+        "clusters_confirmed": [
+            {"files": ["plinki.md", "pliinki.md"], "canonical": "plinki.md",
+             "aliases_recorded": []},
+        ],
+        "clusters_rejected": [
+            {"files": ["aliinka.md", "plinki.md", "pliinki.md"],
+             "reason": "Aliinka is a separate NPC; only plinki/pliinki are duplicates"},
+        ],
+    }
+    json_path = _dedup_json(tmp_path, data)
+
+    assert registry.main(["import-dedup", str(campaign_dir), str(json_path)]) == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    groups = [set(g) for g in reg.rejected_aliases]
+    # Aliinka kept apart from the (merged) Plinki entity...
+    assert {"Aliinka", "Plinki"} in groups
+    # ...but NO guard forbids Plinki<->Pliinki (the confirmed duplicate pair).
+    assert not any({"Plinki", "Pliinki"} <= g for g in groups)
+    # And Plinki really did absorb Pliinki as an alias (the confirmed merge held).
+    plinki = next(e for e in reg.entities if e.name == "Plinki")
+    assert "Pliinki" in plinki.aliases
+
+
+def test_import_dedup_rejected_collapses_by_registry_identity(tmp_path):
+    # A rejected cluster {ilvara, ilvara_mizzrym, ulnara} where Ilvara and
+    # Ilvara Mizzrym are ALREADY one entity in the registry (e.g. aliased by an
+    # earlier import-inventory) — even with no confirmed dedup cluster, the
+    # guard must collapse them and keep only Ulnara apart.
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Ilvara Mizzrym", "--type", "npc",
+        "--aliases", "Ilvara", "--yes",
+    ]) == 0
+    data = {
+        "clusters_rejected": [
+            {"files": ["ilvara.md", "ilvara_mizzrym.md", "ulnara.md"],
+             "reason": "Ulnara is a separate NPC from Ilvara/Ilvara Mizzrym"},
+        ],
+    }
+    json_path = _dedup_json(tmp_path, data)
+
+    assert registry.main(["import-dedup", str(campaign_dir), str(json_path)]) == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    groups = [set(g) for g in reg.rejected_aliases]
+    assert {"Ilvara Mizzrym", "Ulnara"} in groups
+    assert not any({"Ilvara", "Ilvara Mizzrym"} <= g for g in groups)
+
+
+def test_import_dedup_rejected_all_confirmed_adds_no_guard(tmp_path):
+    # Degenerate: a rejected cluster whose members ALL collapse to one entity
+    # (contradictory / already merged) — no guard is recorded (warned).
+    campaign_dir = _init(tmp_path)
+    data = {
+        "clusters_confirmed": [
+            {"files": ["plinki.md", "pliinki.md"], "canonical": "plinki.md",
+             "aliases_recorded": []},
+        ],
+        "clusters_rejected": [
+            {"files": ["plinki.md", "pliinki.md"], "reason": "n/a"},
+        ],
+    }
+    json_path = _dedup_json(tmp_path, data)
+
+    assert registry.main(["import-dedup", str(campaign_dir), str(json_path)]) == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    groups = [set(g) for g in reg.rejected_aliases]
+    assert not any({"Plinki", "Pliinki"} <= g for g in groups)
+
+
 def test_import_dedup_absent_pc_files_skipped_does_not_crash(tmp_path):
     campaign_dir = _init(tmp_path)
     # Real .dedup_state.json shape: no pc_files_skipped key at all, plus
