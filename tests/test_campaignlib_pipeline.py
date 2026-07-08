@@ -427,6 +427,21 @@ def test_load_alias_map_missing_registry_falls_back_to_dossiers(tmp_path):
     assert m == {"Tolubb": ["Cap. Tolubb"]}
 
 
+def test_find_alias_registry_announces_when_found(tmp_path, capsys):
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs" / "entity_registry.yaml").write_text(
+        "version: 1\nentities: []\n", encoding="utf-8")
+    p = campaignlib.find_alias_registry(tmp_path)
+    assert p is not None
+    err = capsys.readouterr().err
+    assert "Entity registry" in err and "superseded" in err
+
+
+def test_find_alias_registry_silent_when_absent(tmp_path, capsys):
+    assert campaignlib.find_alias_registry(tmp_path) is None
+    assert capsys.readouterr().err == ""
+
+
 def test_build_alias_normalizer_rewrites_longest_first():
     normalize, _ = campaignlib.build_alias_normalizer({
         "Tolubb": ["Cap. Tolubb", "Captain Tolubb"],
