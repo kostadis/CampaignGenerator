@@ -60,6 +60,7 @@ from .party import (
 from .registry import (
     find_registry,
     load_registry,
+    resolve_registry_arg,
 )
 from .scenes import (
     parse_gmassist_scenes,
@@ -129,6 +130,7 @@ __all__ = [
     # entity registry
     "find_registry",
     "load_registry",
+    "resolve_registry_arg",
     # scenes
     "parse_gmassist_scenes",
     "snapshot_scene_for_rerun",

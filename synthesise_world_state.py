@@ -61,6 +61,7 @@ import glob as globmod
 import json
 import re
 import sys
+import warnings
 from collections import defaultdict
 from pathlib import Path
 
@@ -72,7 +73,9 @@ from campaignlib import (
     client_from_args,
     load_agent_prompt,
     load_party_names,  # re-exported for back-compat; canonical home is campaignlib.party
+    load_registry,
     make_client,
+    resolve_registry_arg,
     stream_api,
 )
 
@@ -312,7 +315,14 @@ def main() -> None:
                              "(e.g. 'docs/*_backstory.md').")
     parser.add_argument("--aliases", default=None, metavar="FILE",
                         help="Optional aliases.json {canonical: [variants]} to "
-                             "collapse spelling variants before synthesis.")
+                             "collapse spelling variants before synthesis. "
+                             "Deprecated: prefer --registry.")
+    parser.add_argument("--registry", default=None, metavar="PATH",
+                        help="Entity registry (docs/entity_registry.yaml) as the "
+                             "single source for aliases, superseding --aliases. "
+                             "A campaign dir resolves to its docs/entity_registry.yaml; "
+                             "omit to auto-discover one from the CWD. Does NOT feed "
+                             "--inventory (that is separate module-canon grounding).")
     parser.add_argument("--preserve-order", action="store_true",
                         help="Feed sessions in the order the corpus globs/args "
                              "were given, instead of sorting by the session "
@@ -347,9 +357,22 @@ def main() -> None:
               file=sys.stderr)
         sys.exit(1)
 
-    aliases = load_aliases(
-        Path(args.aliases).expanduser().resolve() if args.aliases else None
-    )
+    registry_path, _campaign_dir, explicit_registry = resolve_registry_arg(
+        args.registry, bool(args.aliases), parser)
+    if registry_path is not None:
+        if explicit_registry and args.aliases:
+            parser.error("--registry is the single source; do not combine it with --aliases")
+        aliases = load_registry(registry_path).alias_to_canonical()
+        note = "Entity registry" if explicit_registry else "Auto-discovered entity registry"
+        print(f"{note}: {registry_path} (aliases only; --inventory stays separate)",
+              file=sys.stderr)
+    else:
+        if args.aliases:
+            warnings.warn("--aliases is deprecated; migrate to --registry "
+                          "(docs/entity_registry.yaml).", DeprecationWarning)
+        aliases = load_aliases(
+            Path(args.aliases).expanduser().resolve() if args.aliases else None
+        )
     party_names = load_party_names(
         Path(args.party).expanduser().resolve() if args.party else None
     )
