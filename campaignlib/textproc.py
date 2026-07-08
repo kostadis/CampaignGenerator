@@ -8,6 +8,20 @@ _BASE64_IMAGE_RE = re.compile(
     re.MULTILINE,
 )
 
+
+def norm_subject(s: str) -> str:
+    """Identity normalizer for entity keys: lowercase, strip all non-alphanumerics.
+
+    This is the AGGRESSIVE identity comparison used to decide whether two
+    strings name the same entity (e.g. "Ilvara Mizzrym" and "ilvara-mizzrym!"
+    both normalize to "ilvaramizzrym"). Contrast with
+    ``campaignlib.npc.normalize_npc_key``, which is a display/lookup text
+    rewriter (keeps spaces, only strips a narrow punctuation set) and is NOT
+    an identity key — do not use it for entity-identity comparisons.
+    """
+    return re.sub(r"[^a-z0-9]+", "", s.lower())
+
+
 def strip_base64_images(text: str) -> str:
     """Remove markdown reference-style base64 image definitions (e.g. [image1]: <data:image/png;base64,...>)."""
     return _BASE64_IMAGE_RE.sub('', text)

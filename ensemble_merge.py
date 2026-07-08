@@ -38,16 +38,12 @@ Usage:
 import argparse
 import json
 import os
-import re
 import sys
 from difflib import SequenceMatcher
 from pathlib import Path
 
 import campaignlib
-
-
-def _norm_subject(s: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "", s.lower())
+from campaignlib.textproc import norm_subject as _norm_subject
 
 
 def _fact_key(fact: dict) -> tuple[str, str]:
