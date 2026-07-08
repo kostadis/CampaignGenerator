@@ -66,6 +66,68 @@ flowchart TB
 | null | `arc_score: null` | trackless=True (first-class trackless PC/NPC) |
 | path | `arc_score: docs/tracking/x.md` | tracked against that file |
 
+## Freshness & ordering (mtime)
+
+The ensemble pipeline and the session-doc/narrate pipeline express "what is up to date"
+entirely through file **modification times**, computed on demand in status endpoints — there is
+no declared dependency graph and no execution gate.
+
+There are three distinct freshness mechanisms in the repo; only the first is mtime-based:
+
+| Mechanism | Where | Signal |
+|---|---|---|
+| Ensemble + narrate stage status | `ensemble.py`, `scene_editor.py` | `stat().st_mtime` comparisons |
+| 5e runtime rebuild | `launch_5etools_mcp.py` | sha256 of `refs.yaml` + `refs.local.yaml` |
+| Ingest idempotence | `fivetools_ingest` / `apply_ingest_manifest.check_status` | `(size, mtime)` sidecar tuple |
+
+### Promotion staleness rule (ensemble `/status`)
+
+A grounding doc counts as **promoted/reviewed** only when the live file exists, the draft file
+exists, and `live.mtime >= draft.mtime`:
+
+```python
+promoted = [name for name, (live_rel, draft_rel) in GROUNDING_DOCS.items()
+            if (cwd / live_rel).exists() and (cwd / draft_rel).exists()
+            and (cwd / live_rel).stat().st_mtime >= (cwd / draft_rel).stat().st_mtime]
+```
+
+Re-running synthesize writes a newer `*_draft.md`, which makes the draft newer than live, so the
+`review` stage flips back to not-complete. That timestamp comparison is the entire "live doc is
+stale vs a newer draft" detector — no content check.
+
+### Ordering is derived, not declared
+
+The ensemble `/status` endpoint recomputes stage completion from artifacts on disk every request
+(no caching):
+
+- `extract` complete = `docs/ensemble/per_chapter/*/merged.json` exists
+- `bundle` complete = `docs/ensemble/state_dossiers/*.md` exists
+- `synthesize` complete = any `*_draft.md` exists
+- `review` complete = the mtime rule above
+- `current_stage` = first non-complete stage
+
+The order `extract → bundle → synthesize → review` is inferred from which artifacts exist and
+their timestamps, not from a declared DAG. The narrate pipeline (`scene_editor.api_pipeline_status`)
+uses the same pattern: `cold` (no output), `warn` (an input mtime is newer than the output), `ok`.
+
+### What it does and does not do
+
+- Drives **UI status only** (stage badges / header strip). It does not trigger or block execution;
+  nothing auto-reruns a downstream stage when an upstream mtime moves.
+- Loosest across the `config.yaml` `documents[]` boundary: `prep.py` / `mcp_server.py` read the live
+  grounding docs with **no** freshness check, so a stale doc can flow downstream with no signal.
+
+### Failure modes of mtime-as-contract
+
+- **mtime ≠ content.** A no-op rewrite or `touch` marks a draft "newer"; hand-editing a *live* doc
+  bumps its mtime above the draft so it looks reviewed while its content has diverged.
+- **Clock skew / mtime granularity** can misorder near-simultaneous writes.
+- **No cross-service invalidation** for the prep/MCP consumers of the promoted docs.
+
+> Tracked improvement: grounding docs (starting with `world_state`) should carry an explicit,
+> content-derived freshness stamp *inside the file* (e.g. a front-matter `source_hash` / generation
+> id) rather than relying on filesystem mtime. See the CampaignGenerator issue on embedded grounding-doc stamps.
+
 ## How they connect
 
 `ui.ensemble` selects inputs (chapters, known_names, aliases, per-stage backends); the ensemble
