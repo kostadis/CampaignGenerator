@@ -7,10 +7,13 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 import facts_to_state as fts  # noqa: E402
+from campaignlib.registry import load_registry  # noqa: E402
 from synthesise_world_state import load_dossiers  # noqa: E402
 
 
@@ -99,6 +102,93 @@ def test_load_bundles_groups_across_chapters_with_aliases(tmp_path):
     assert b.display == "Buppido"                # alias-resolved
     assert len(b.facts) == 2
     assert b.chapters == (1, 2)                  # chapter tagging from file path
+
+
+def _write_faction_corpus(tmp_path):
+    """Two chapters, same FACTION ("Zhentarim"), each with a DIFFERENT dominant
+    location — the shape that makes an "unknown" entity fragment into one
+    location-scoped bundle per chapter (see load_bundles).
+
+    A non-npc type is deliberate: main's "a named npc is known by default"
+    heuristic would otherwise mask this fragmentation for npcs. The
+    disagreeing-stores bug is general, so we demonstrate it on a faction,
+    where that heuristic does not apply."""
+    (tmp_path / "gen-ch01").mkdir()
+    (tmp_path / "gen-ch02").mkdir()
+    (tmp_path / "gen-ch01" / "merged.json").write_text(json.dumps([
+        _fact("faction", "Zhentarim", "held the captives at the outpost"),
+        _fact("location", "Velkynvelve", "the outpost holding the captives"),
+    ]), encoding="utf-8")
+    (tmp_path / "gen-ch02" / "merged.json").write_text(json.dumps([
+        _fact("faction", "Zhentarim", "marched its forces east"),
+        _fact("location", "Blingdenstone", "the ruined gnome city"),
+    ]), encoding="utf-8")
+    return list(tmp_path.glob("gen-ch*/merged.json"))
+
+
+def test_legacy_aliases_and_known_names_disagreement_fragments_entity(tmp_path):
+    """Two independently hand-curated stores disagreeing IS the fragmentation
+    bug: aliases.json canonicalises "Zhentarim" -> "The Black Network", but the
+    inventory-derived known_names only knows the bare "Zhentarim" spelling —
+    not the alias's canonical form. The canonicalised subject then looks
+    "unknown" and gets split into one bundle per chapter's location.
+
+    Demonstrated on a faction, not an npc: main's "named npc is known by
+    default" heuristic masks this for npcs, but the disagreement bug is
+    general — it bites every type whose canonical form misses known_names."""
+    paths = _write_faction_corpus(tmp_path)
+    aliases = {"Zhentarim": "The Black Network"}
+    known_names = {fts._norm_subject("Zhentarim")}
+    bundles = fts.load_bundles(paths, aliases, types=["faction"], known_names=known_names)
+    faction_bundles = [b for b in bundles.values() if b.type == "faction"]
+    assert len(faction_bundles) == 2                   # fragmented, one per location
+    for b in faction_bundles:
+        assert getattr(b, "known") is False
+        assert b.display.startswith("The Black Network (")
+    assert sum(len(b.facts) for b in faction_bundles) == 2  # same 2 facts, just split
+
+
+def test_registry_aliases_and_known_names_agree_no_fragmentation(tmp_path):
+    """Same corpus, same load_bundles code path — only the source differs.
+    A registry entity with its alias listed means alias_to_canonical() and
+    known_names() can never disagree, so the entity stays one bundle."""
+    paths = _write_faction_corpus(tmp_path)
+    registry_path = tmp_path / "entity_registry.yaml"
+    registry_path.write_text(
+        "version: 1\n"
+        "entities:\n"
+        "  - name: The Black Network\n"
+        "    type: faction\n"
+        "    aliases: [Zhentarim]\n",
+        encoding="utf-8",
+    )
+    reg = load_registry(registry_path)
+    aliases = reg.alias_to_canonical()
+    known_names = reg.known_names()
+    bundles = fts.load_bundles(paths, aliases, types=["faction"], known_names=known_names)
+    faction_bundles = [b for b in bundles.values() if b.type == "faction"]
+    assert len(faction_bundles) == 1                   # no fragmentation
+    b = faction_bundles[0]
+    assert getattr(b, "known") is True
+    assert b.display == "The Black Network"
+    assert len(b.facts) == 2
+
+
+def test_main_rejects_explicit_registry_combined_with_legacy_aliases(tmp_path, monkeypatch):
+    (tmp_path / "gen-ch01").mkdir()
+    (tmp_path / "gen-ch01" / "merged.json").write_text("[]", encoding="utf-8")
+    registry_path = tmp_path / "entity_registry.yaml"
+    registry_path.write_text("version: 1\nentities: []\n", encoding="utf-8")
+    argv = [
+        "facts_to_state.py",
+        "--corpus", str(tmp_path / "gen-ch*" / "merged.json"),
+        "--list",
+        "--registry", str(registry_path),
+        "--aliases", "some_aliases.json",
+    ]
+    monkeypatch.setattr(sys, "argv", argv)
+    with pytest.raises(SystemExit):
+        fts.main()
 
 
 def test_load_dossiers_filters_by_nfacts(tmp_path):
