@@ -52,6 +52,10 @@ from .npc import (
     normalize_vtt_speakers,
     format_npc_roster,
 )
+from .party import (
+    load_party_names,
+    load_pc_names,
+)
 from .scenes import (
     parse_gmassist_scenes,
     snapshot_scene_for_rerun,
@@ -113,6 +117,9 @@ __all__ = [
     "extract_player_character_map",
     "normalize_vtt_speakers",
     "format_npc_roster",
+    # party / PC names
+    "load_party_names",
+    "load_pc_names",
     # scenes
     "parse_gmassist_scenes",
     "snapshot_scene_for_rerun",

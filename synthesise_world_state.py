@@ -71,6 +71,7 @@ from campaignlib import (
     add_backend_args,
     client_from_args,
     load_agent_prompt,
+    load_party_names,  # re-exported for back-compat; canonical home is campaignlib.party
     make_client,
     stream_api,
 )
@@ -156,19 +157,6 @@ def load_aliases(path: Path | None) -> dict[str, str]:
         for v in variants:
             flat[v] = canonical
     return flat
-
-
-def load_party_names(path: Path | None) -> list[str]:
-    """Pull PC names out of party.yaml (characters: [{name: ...}])."""
-    if path is None or not path.exists():
-        return []
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    names = []
-    for c in data.get("characters", []):
-        name = (c or {}).get("name")
-        if name:
-            names.append(str(name))
-    return names
 
 
 _NFACTS_RE = re.compile(r"^n_facts:\s*(\d+)", re.M)

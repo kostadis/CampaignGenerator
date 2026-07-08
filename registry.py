@@ -83,6 +83,7 @@ from pathlib import Path
 
 import spell_canon
 from campaignlib.npc import load_alias_map
+from campaignlib.party import load_pc_names
 from campaignlib.registry import (
     Entity,
     Registry,
@@ -1072,26 +1073,6 @@ def _gather_triage_sources(campaign_dir: Path, bible: "Path | None") -> "tuple[l
     return sources, generated_from
 
 
-def _load_pc_names(campaign_dir: Path) -> "list[str]":
-    """Player-character names from ``docs/party.yaml`` (or ``config/party.yaml``).
-
-    PCs live in party.yaml, not the entity registry (the importers deliberately
-    exclude them), so triage must treat them as known and not re-surface them as
-    unknown candidates on every run. Returns [] if no party.yaml exists.
-
-    NOTE: this duplicates a PC-name helper Phase 2 added to facts_to_state.py;
-    the two should be consolidated into campaignlib in a later cleanup (Phase 2
-    is on a different branch — do not consolidate here).
-    """
-    from synthesise_world_state import load_party_names
-
-    for rel in ("docs/party.yaml", "config/party.yaml"):
-        candidate = campaign_dir / rel
-        if candidate.is_file():
-            return load_party_names(candidate)
-    return []
-
-
 def _registry_catalog(reg: Registry) -> "list[tuple[str, str, int]]":
     """[(display_string, norm_key, entity_idx)] for every registered name/alias."""
     catalog: list[tuple[str, str, int]] = []
@@ -1161,7 +1142,7 @@ def cmd_triage_candidates(args: argparse.Namespace) -> int:
             total_count[surface] += n
             source_labels[surface].add(label)
 
-    known = reg.known_names(extra=_load_pc_names(campaign_dir))
+    known = reg.known_names(extra=load_pc_names(campaign_dir))
     catalog = _registry_catalog(reg)
     suppressed = _suppressed_pairs(reg)
 

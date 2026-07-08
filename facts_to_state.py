@@ -47,6 +47,7 @@ from campaignlib import (
     DEFAULT_MODEL,
     atomic_write_text,
     load_agent_prompt,
+    load_pc_names,
     make_client,
     stream_api,
 )
@@ -55,7 +56,6 @@ from ensemble_merge import _norm_subject
 from synthesise_world_state import (
     expand_globs,
     load_aliases,
-    load_party_names,
     session_index,
     session_label,
 )
@@ -236,21 +236,6 @@ def _collect_monster_vocab(corpus_paths: list[Path], aliases: dict[str, str]) ->
             if raw:
                 vocab.add(_norm_subject(aliases.get(raw, raw)))
     return vocab
-
-
-def _load_pc_names(campaign_dir: Path) -> list[str]:
-    """PC names from party.yaml (docs/party.yaml, else config/party.yaml).
-
-    The entity registry importers deliberately exclude party.yaml (PCs aren't
-    NPCs), so a registry-driven run must re-add them here or PC-named fact
-    subjects would look "unknown" to known_names() and fragment by chapter
-    location — the exact bug this packet fixes for everyone else.
-    """
-    for rel in ("docs/party.yaml", "config/party.yaml"):
-        path = campaign_dir / rel
-        if path.exists():
-            return load_party_names(path)
-    return []
 
 
 def _resolve_registry_path(
@@ -558,7 +543,7 @@ def main() -> None:
             parser.error("--registry is the single source; do not combine it with "
                          "--aliases/--known-names")
         reg = load_registry(registry_path)
-        pc_names = _load_pc_names(campaign_dir)
+        pc_names = load_pc_names(campaign_dir)
         aliases = reg.alias_to_canonical()
         known_names = reg.known_names(extra=pc_names)
         if explicit_registry:
