@@ -123,15 +123,19 @@ def inventory_tokens(inventory: Path, min_len: int) -> dict:
     return canon
 
 
-def proper_nouns(bible: Path, min_len: int) -> tuple[Counter, dict]:
-    """Distinct name-like BASE tokens (possessives folded), freq + line samples.
-    A token is kept if its capitalised form occurs somewhere; its display case
-    is the most common cased form seen."""
+def proper_noun_counts(text: str, min_len: int) -> Counter:
+    """Distinct name-like BASE tokens (possessives folded) -> frequency.
+
+    A token is kept if its capitalised form occurs somewhere; its display
+    case is the most common cased form seen. This is the shared tokenization
+    core used by ``proper_nouns`` (bible file) and any other caller that
+    already has text in hand (e.g. ``registry.py triage-candidates``, which
+    scans session summaries and fact-corpus JSON, not just a bible file).
+    """
     raw: Counter = Counter()
-    raw_lines: dict[str, list[int]] = defaultdict(list)
     seen_cap: set[str] = set()
     case_votes: dict[str, Counter] = defaultdict(Counter)
-    for i, line in enumerate(bible.read_text(encoding="utf-8").splitlines(), 1):
+    for line in text.splitlines():
         for tok in re.findall(r"[A-Za-z][A-Za-z'’]+", line):
             base = strip_possessive(tok)
             core = base.replace("'", "").replace("’", "")
@@ -140,18 +144,41 @@ def proper_nouns(bible: Path, min_len: int) -> tuple[Counter, dict]:
             low = base.lower()
             raw[low] += 1
             case_votes[low][base] += 1
-            if len(raw_lines[low]) < 6:
-                raw_lines[low].append(i)
             if base[:1].isupper() and base not in STOP:
                 seen_cap.add(low)
     freq: Counter = Counter()
-    lines_of: dict[str, list[int]] = {}
     for low, n in raw.items():
         if low in seen_cap:
             display = case_votes[low].most_common(1)[0][0]
             freq[display] = n
-            lines_of[display] = raw_lines[low]
-    return freq, lines_of
+    return freq
+
+
+def proper_nouns(bible: Path, min_len: int) -> tuple[Counter, dict]:
+    """Distinct name-like BASE tokens (possessives folded), freq + line samples.
+    A token is kept if its capitalised form occurs somewhere; its display case
+    is the most common cased form seen."""
+    text = bible.read_text(encoding="utf-8")
+    freq = proper_noun_counts(text, min_len)
+
+    # lines_of is a display-name -> line-numbers-sampled index; only the
+    # frequency/casing decision (which base tokens survive, and under which
+    # cased spelling) lives in proper_noun_counts. Re-derive which raw
+    # low-cased token each surviving display corresponds to, then re-scan for
+    # up to 6 sample line numbers per surviving token — same behavior as
+    # before the refactor, just without duplicating the casing logic.
+    low_to_display = {display.lower(): display for display in freq}
+    raw_lines: dict[str, list[int]] = defaultdict(list)
+    for i, line in enumerate(text.splitlines(), 1):
+        for tok in re.findall(r"[A-Za-z][A-Za-z'’]+", line):
+            base = strip_possessive(tok)
+            core = base.replace("'", "").replace("’", "")
+            if len(core) < min_len or not core.isalpha():
+                continue
+            display = low_to_display.get(base.lower())
+            if display is not None and len(raw_lines[display]) < 6:
+                raw_lines[display].append(i)
+    return freq, dict(raw_lines)
 
 
 def best_canon(tok: str, canon: dict, sim: float, max_delta: int) -> str | None:
