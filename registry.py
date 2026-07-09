@@ -643,6 +643,52 @@ def _distinct_rejected_reps(
     return list(reps.values())
 
 
+def _distinct_rejected_reps_by_name(reg: Registry, names: "list[str]") -> "list[str]":
+    """Collapse a rejected alias-decision cluster's candidate NAMES to one
+    representative per DISTINCT registry entity.
+
+    Same principle as :func:`_distinct_rejected_reps` (the #140 dedup fix): a
+    rejected group means "not all of these are one entity", NOT that every pair
+    is distinct. ``import-alias-decisions`` runs LAST — after import-dedup /
+    import-frontmatter and after this file's own approved groups are applied —
+    so by the time the rejected loop runs every candidate that IS a confirmed
+    duplicate already resolves to the same registry entity. Two members collapse
+    when they share a registry owner (or are the same surface form when neither
+    is registered); the guard is then recorded only across the entities actually
+    ruled apart. Without this a flat rejected group forbids a pair the same
+    file's approved decisions (or dedup) confirm as one — e.g. rejected
+    ``{Corbin, Harbin, Harbin Wester, Townmaster}`` must never forbid
+    ``Harbin ↔ Harbin Wester``. The representative is the registry's canonical
+    name when a member resolves, else the candidate's own name."""
+    n = len(names)
+    parent = list(range(n))
+
+    def find(i: int) -> int:
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    def union(i: int, j: int) -> None:
+        parent[find(i)] = find(j)
+
+    keys = [norm_subject(nm) for nm in names]
+    owners = [_find_owner(reg, k) for k in keys]
+    for i in range(n):
+        for j in range(i + 1, n):
+            same_entity = owners[i] is not None and owners[i] == owners[j]
+            same_key = keys[i] == keys[j]
+            if same_entity or same_key:
+                union(i, j)
+
+    reps: dict[int, str] = {}
+    for i in range(n):
+        root = find(i)
+        if root not in reps:
+            reps[root] = reg.entities[owners[i]].name if owners[i] is not None else names[i]
+    return list(reps.values())
+
+
 def cmd_import_dedup(args: argparse.Namespace) -> int:
     campaign_dir = Path(args.campaign_dir)
     path = find_registry(campaign_dir)
@@ -832,9 +878,27 @@ def cmd_import_alias_decisions(args: argparse.Namespace) -> int:
     rejected_count = 0
     for d in rejected:
         members = d.get("candidates") or []
-        if members:
-            _add_rejected_group(reg, members)
+        if not members:
+            continue
+        # A rejected cluster means "not all of these are one entity" — NOT that
+        # every pair is distinct. import-alias-decisions runs LAST, so confirmed
+        # duplicates (from dedup / this file's approved groups) already resolve
+        # together; collapse members that share a registry entity BEFORE
+        # recording the guard so it never forbids a pair confirmed elsewhere as
+        # one (the #140 bug, second home — e.g. rejected {Corbin, Harbin, Harbin
+        # Wester, Townmaster} must guard only Corbin vs Harbin Wester, never
+        # Harbin vs Harbin Wester).
+        reps = _distinct_rejected_reps_by_name(reg, members)
+        if len(reps) >= 2:
+            _add_rejected_group(reg, reps)
             rejected_count += 1
+        else:
+            print(
+                f"WARNING: rejected group {members!r} collapses to a single "
+                f"entity {reps!r} — its members already resolve together, so no "
+                f"anti-merge guard is added",
+                file=sys.stderr,
+            )
 
     print(
         f"import-alias-decisions: {enriched} enriched, {len(unmatched)} unmatched, "
