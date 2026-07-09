@@ -539,6 +539,78 @@ def test_import_alias_decisions_rejected_group_recorded(tmp_path):
     assert {"Cult of Talos", "Talosians", "Talos"} in groups
 
 
+def test_import_alias_decisions_rejected_collapses_by_registry_identity(tmp_path):
+    # A rejected cluster is "not all one" — it must NOT forbid a pair the same
+    # file's approved group confirms as one (the #140 bug, second home).
+    campaign_dir = _init(tmp_path)
+    # canonical must be registered for the approved (enrich-only) group to attach
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Harbin Wester", "--type", "npc",
+    ]) == 0
+
+    decisions = [
+        {"candidates": ["Harbin Wester", "Harbin", "Townmaster"],
+         "canonical": "Harbin Wester", "status": "approved"},
+        {"candidates": ["Corbin", "Harbin", "Harbin Wester", "Townmaster"],
+         "canonical": None, "status": "rejected"},
+    ]
+    json_path = _decisions_json(tmp_path, decisions)
+    rc = registry.main(["import-alias-decisions", str(campaign_dir), str(json_path)])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    by_name = {e.name: e for e in reg.entities}
+    # the confirmed aliases survived enrichment
+    assert "Harbin" in by_name["Harbin Wester"].aliases
+    assert "Townmaster" in by_name["Harbin Wester"].aliases
+    # guard recorded only across the entities actually ruled apart
+    groups = [set(g) for g in reg.rejected_aliases]
+    assert {"Harbin Wester", "Corbin"} in groups
+    # and NEVER forbids a confirmed-same pair
+    for g in groups:
+        assert not {"Harbin", "Harbin Wester"} <= g
+        assert not {"Townmaster", "Harbin Wester"} <= g
+
+
+def test_import_alias_decisions_rejected_all_one_entity_adds_no_guard(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Stonehill Inn", "--type", "location",
+    ]) == 0
+    decisions = [
+        {"candidates": ["Stonehill Inn", "Stonehill Tavern", "Stonehill"],
+         "canonical": "Stonehill Inn", "status": "approved"},
+        {"candidates": ["Stonehill Inn", "Stonehill Tavern", "Stonehill"],
+         "canonical": None, "status": "rejected"},
+    ]
+    json_path = _decisions_json(tmp_path, decisions)
+    rc = registry.main(["import-alias-decisions", str(campaign_dir), str(json_path)])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    # every member resolves to Stonehill Inn -> nothing left to guard
+    assert reg.rejected_aliases == []
+    assert "collapses to a single entity" in capsys.readouterr().err
+
+
+def test_import_alias_decisions_rejected_collapses_case_variants(tmp_path):
+    # Two unregistered candidates that normalize identically collapse to one rep
+    # so the guard isn't a spurious self-pair.
+    campaign_dir = _init(tmp_path)
+    decisions = [
+        {"candidates": ["Harbin", "harbin", "Raskin"], "canonical": None, "status": "rejected"},
+    ]
+    json_path = _decisions_json(tmp_path, decisions)
+    rc = registry.main(["import-alias-decisions", str(campaign_dir), str(json_path)])
+    assert rc == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    groups = [set(g) for g in reg.rejected_aliases]
+    assert len(groups) == 1
+    assert "Raskin" in groups[0]
+    assert len(groups[0]) == 2
+
+
 def test_import_alias_decisions_missing_registry_errors(tmp_path):
     campaign_dir = tmp_path / "no-registry"
     campaign_dir.mkdir()
