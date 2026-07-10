@@ -13,7 +13,7 @@ from server.config import derive_campaign_paths, derive_session_paths
 from server.config_service import CampaignConfigService, ConfigError
 from server.routers import (
     config_routes, connections, ensemble, experimental, grounding, prep,
-    scene_editor, session_workflow, setup,
+    scene_editor, session_workflow, setup, planning_routes,
 )
 
 app = FastAPI(title="CampaignGenerator")
@@ -27,7 +27,7 @@ app.add_middleware(
 )
 
 # ── API routers ──────────────────────────────────────────────────────────────
-
+ 
 app.include_router(config_routes.router, prefix="/api/config", tags=["config"])
 app.include_router(session_workflow.router, prefix="/api/workflow", tags=["workflow"])
 app.include_router(grounding.router, prefix="/api/grounding", tags=["grounding"])
@@ -37,6 +37,7 @@ app.include_router(setup.router, prefix="/api/setup", tags=["setup"])
 app.include_router(experimental.router, prefix="/api/experimental", tags=["experimental"])
 app.include_router(scene_editor.router, prefix="/api/editor", tags=["editor"])
 app.include_router(connections.router, prefix="/api/connections", tags=["connections"])
+app.include_router(planning_routes.router, prefix="/api/planning", tags=["planning"])
 
 # ── Static files (Vue build) ────────────────────────────────────────────────
 
