@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import { apiFetch, apiPut } from '../../api/client'
+import { apiFetch, apiPut, apiPost, apiDelete } from '../../api/client'
 import PathField from './PathField.vue'
 
 interface PlanningEntry {
@@ -13,11 +13,11 @@ interface PlanningEntry {
 const props = defineProps<{
   /** Absolute path to the planning.yaml file. */
   configPath: string
-}>()
+}>();
 
 const emit = defineEmits<{
   saved: [path: string]
-}>()
+}>();
 
 const open = ref(false)
 const npcs = ref<PlanningEntry[]>([])
@@ -52,20 +52,25 @@ async function load() {
   loading.value = true
   status.value = null
   try {
-    const url = `/api/config/planning-yaml?path=${encodeURIComponent(props.configPath)}`
-    const data = await apiFetch<{
-      exists: boolean
-      npcs: PlanningEntry[]
-      factions: PlanningEntry[]
-    }>(url)
-    fileExists.value = data.exists
-    npcs.value = data.npcs ?? []
-    factions.value = data.factions ?? []
-    if (!data.exists) {
-      status.value = { kind: 'ok', text: 'New file — add entries and Save to create.' }
-    }
+    // Load NPCs and factions in parallel
+    const [npcsResponse, factionsResponse] = await Promise.all([
+      apiFetch<PlanningEntry[]>(`/api/planning/npcs`),
+      apiFetch<PlanningEntry[]>(`/api/planning/factions`)
+    ])
+    npcs.value = npcsResponse
+    factions.value = factionsResponse
+    fileExists.value = true // If we got here, the file exists (empty arrays are valid)
+    status.value = { kind: 'ok', text: `Loaded ${npcs.value.length} NPCs and ${factions.value.length} factions` }
   } catch (e: any) {
-    status.value = { kind: 'err', text: e?.message || 'Failed to load' }
+    // Handle 404 (no planning.yaml) as a new file case
+    if (e?.response?.status === 404) {
+      npcs.value = []
+      factions.value = []
+      fileExists.value = false
+      status.value = { kind: 'ok', text: 'New file — add entries and Save to create.' }
+    } else {
+      status.value = { kind: 'err', text: e?.message || 'Failed to load' }
+    }
   } finally {
     loading.value = false
   }
@@ -75,14 +80,40 @@ async function save() {
   if (!canSave.value) return
   saving.value = true
   status.value = null
+  
   try {
-    await apiPut('/api/config/planning-yaml', {
-      path: props.configPath,
-      npcs: npcs.value,
-      factions: factions.value,
-    })
+    // We need to synchronize the local state with the server
+    // For simplicity, we'll do a full sync: delete all, then recreate
+    // In a more sophisticated implementation, we'd compute the diff
+    
+    // Get current server state
+    const [currentNpcs, currentFactions] = await Promise.all([
+      apiFetch<PlanningEntry[]>(`/api/planning/npcs`),
+      apiFetch<PlanningEntry[]>(`/api/planning/factions`)
+    ])
+    
+    // Delete all existing NPCs
+    for (const npc of currentNpcs) {
+      await apiDelete(`/api/planning/npcs/${npc.name}`)
+    }
+    
+    // Delete all existing factions
+    for (const faction of currentFactions) {
+      await apiDelete(`/api/planning/factions/${faction.name}`)
+    }
+    
+    // Create all NPCs from local state
+    for (const npc of npcs.value) {
+      await apiPost(`/api/planning/npcs`, npc)
+    }
+    
+    // Create all factions from local state
+    for (const faction of factions.value) {
+      await apiPost(`/api/planning/factions`, faction)
+    }
+    
     fileExists.value = true
-    status.value = { kind: 'ok', text: 'Saved.' }
+    status.value = { kind: 'ok', text: `Saved ${npcs.value.length} NPCs and ${factions.value.length} factions` }
     emit('saved', props.configPath)
   } catch (e: any) {
     status.value = { kind: 'err', text: e?.message || 'Save failed' }
@@ -341,8 +372,8 @@ watch(() => props.configPath, () => {
 .icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 .icon-btn.danger:hover { background: var(--red); color: var(--bg-base); border-color: var(--red); }
 
-.char-body { display: flex; flex-direction: column; gap: 8px; }
-.arc-row { display: flex; flex-direction: column; gap: 6px; }
+.char-body { display: flex; flex-direction; column; gap: 8px; }
+.arc-row { display: flex; flex-direction; column; gap: 6px; }
 
 .checkbox-label {
   font-size: 11px; color: var(--text-sub);
