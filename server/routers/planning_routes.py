@@ -15,7 +15,9 @@ router = APIRouter(prefix="/api/planning", tags=["planning"])
 def get_planning_service(request: Request) -> PlanningConfigService:
     """Dependency to get the planning config service for a request."""
     campaign_dir = get_campaign_dir_from_request(request)
-    return PlanningConfigService(campaign_dir)
+    config_service = getattr(request.app.state, "config_service", None)
+    config_dir = config_service.config_dir if config_service else "config"
+    return PlanningConfigService(campaign_dir, config_dir)
 
 
 # ============================================================================

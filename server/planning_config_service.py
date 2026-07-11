@@ -14,9 +14,10 @@ from .planning_config_shared import PlanningConfig, PlanningEntry, load_planning
 class PlanningConfigService:
     """Service for managing planning configuration with exclusive ownership of planning.yaml."""
     
-    def __init__(self, campaign_dir: str):
+    def __init__(self, campaign_dir: str, config_dir: str = "config"):
         self.campaign_dir = Path(campaign_dir)
-        self.planning_path = self.campaign_dir / "planning.yaml"
+        self.config_dir = config_dir
+        self.planning_path = self.campaign_dir / self.config_dir / "planning.yaml"
     
     def _load(self) -> PlanningConfig:
         """Load planning configuration, returning empty config if file doesn't exist."""

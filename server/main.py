@@ -59,25 +59,95 @@ if FRONTEND_DIST.is_dir():
 # ── Campaign-dir + boot-override helpers (used by main()) ───────────────────
 
 
-def _resolve_campaign_dir_for_service(args) -> Path | None:
+def _resolve_campaign_dir_for_service(args) -> Path:
     """Decide which directory the unified config service should anchor to.
 
     Order: ``--campaign-dir``, then the parents of ``--session-dir``
     (looking for the nearest one with a ``config.yaml``), then CWD if it
-    has one. Returns ``None`` if nothing matches; caller should skip
-    service construction in that case.
+    has one. Finally falls back to a default campaign directory.
     """
+    # Check explicit --campaign-dir
     if getattr(args, "campaign_dir", None):
         return Path(args.campaign_dir).expanduser().resolve()
+    
+    # Check --session-dir parents for config.yaml
     if getattr(args, "session_dir", None):
         sd = Path(args.session_dir).expanduser().resolve()
         for parent in (sd, *sd.parents):
             if (parent / "config.yaml").exists():
                 return parent
+    
+    # Check CWD for config.yaml
     cwd_cfg = Path.cwd() / "config.yaml"
     if cwd_cfg.exists():
         return Path.cwd().resolve()
-    return None
+    
+    # Fall back to default campaign directory (will create config subdir if needed)
+    return _get_or_create_default_campaign_dir()
+
+
+def _get_or_create_default_campaign_dir() -> Path:
+    """Get or create the default campaign directory (~/.campaigngenerator/).
+    
+    Returns the path to the default campaign directory, creating it and
+    initializing default config files if they don't exist.
+    """
+    default_dir = Path.home() / ".campaigngenerator"
+    default_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create default config.yaml if it doesn't exist
+    config_path = default_dir / "config.yaml"
+    if not config_path.exists():
+        default_config = {
+            "system_prompt": "config/system_prompt.md",
+            "log_dir": "logs/",
+            "agents": {
+                "lore_oracle": "agents/lore_oracle.py",
+                "encounter_architect": "agents/encounter_architect.py", 
+                "voice_keeper": "agents/voice_keeper.py"
+            },
+            "documents": [
+                {"label": "campaign_state", "path": "campaign_state.yaml"},
+                {"label": "world_state", "path": "world_state.yaml"},
+                {"label": "mechanics", "path": "mechanics.yaml"},
+                {"label": "planning", "path": "planning.yaml"},
+                {"label": "party", "path": "party.yaml"}
+            ]
+        }
+        import yaml
+        config_path.write_text(
+            yaml.dump(default_config, default_flow_style=False, sort_keys=False),
+            encoding="utf-8"
+        )
+    
+    # Create default system_prompt.md if it doesn't exist
+    system_prompt_path = default_dir / "config" / "system_prompt.md"
+    system_prompt_path.parent.mkdir(parents=True, exist_ok=True)
+    if not system_prompt_path.exists():
+        system_prompt_path.write_text(
+            "# Campaign Generator System Prompt\n\nYou are a helpful assistant for managing tabletop RPG campaigns.",
+            encoding="utf-8"
+        )
+    
+    # Create default agents directory if it doesn't exist
+    agents_dir = default_dir / "agents"
+    agents_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create default agents if they don't exist
+    for agent_name, agent_path in [
+        ("lore_oracle", "agents/lore_oracle.py"),
+        ("encounter_architect", "agents/encounter_architect.py"),
+        ("voice_keeper", "agents/voice_keeper.py")
+    ]:
+        agent_file = default_dir / agent_path
+        if not agent_file.exists():
+            agent_file.parent.mkdir(parents=True, exist_ok=True)
+            agent_file.write_text(
+                f'# {agent_name} agent\n\n"""Placeholder for {agent_name} agent."""\n\ndef main():\n    pass\n\nif __name__ == "__main__":\n    main()\n',
+                encoding="utf-8"
+            )
+    
+    return default_dir.resolve()
 
 
 def _boot_overrides_from_args(args) -> dict:
@@ -139,7 +209,10 @@ def main() -> None:
     parser.add_argument("--narrate-tokens", type=int, metavar="N")
     parser.add_argument("--port", type=int, default=5000)
     parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--config-dir", metavar="DIR", default="config",
+                        help="Configuration subdirectory within campaign (default: 'config')")
     args = parser.parse_args()
+    print(f"DEBUG: args.config_dir = {args.config_dir}", file=sys.stderr)
 
     # Derive paths from campaign-dir + session-dir
     if args.session_dir:
@@ -204,21 +277,16 @@ def main() -> None:
     scene_editor.init_editor_config(config)
 
     # Construct the unified config service. Routers read everything through
-    # it; there is no fallback path. A failure here is fatal — silently
-    # serving an unrelated config when a campaign was explicitly named is
-    # the bug class this fail-fast prevents.
+    # it; if no campaign directory is specified, use a default location.
     campaign_dir_for_service = _resolve_campaign_dir_for_service(args)
     if campaign_dir_for_service is None:
-        print(
-            "ERROR: no campaign_dir resolvable from --campaign-dir, "
-            "--session-dir, or CWD config.yaml. The server has no config to serve.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+        campaign_dir_for_service = _get_or_create_default_campaign_dir()
+        print(f"INFO: No campaign directory specified, using default: {campaign_dir_for_service}")
 
     try:
         app.state.config_service = CampaignConfigService(
             campaign_dir_for_service,
+            config_dir=args.config_dir,
             boot_overrides=_boot_overrides_from_args(args),
         )
     except ConfigError as exc:
