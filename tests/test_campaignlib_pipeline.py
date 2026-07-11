@@ -18,8 +18,11 @@ class FakeStreamAPI:
         self.calls = []
         self._responses = list(responses) if responses else None
 
-    def __call__(self, client, system, user, model, *args, **kwargs):
-        self.calls.append({"system": system, "user": user, "model": model})
+    def __call__(self, client, system, user, model, *args, max_tokens=8096, **kwargs):
+        # max_tokens defaults to stream_api's own default (8096) so a caller that
+        # omits it is recorded as the real behaviour would be.
+        self.calls.append({"system": system, "user": user, "model": model,
+                           "max_tokens": max_tokens})
         if self._responses:
             return self._responses.pop(0)
         return f"[stub-response-{len(self.calls)}]"
@@ -271,6 +274,41 @@ def test_synthesize_passes_system_prompt_and_model(fake_stream_api, tmp_path):
     )
     assert fake_stream_api.calls[0]["system"] == "SYN SYS"
     assert fake_stream_api.calls[0]["model"] == "some-model"
+
+
+def test_synthesize_forwards_default_max_tokens(fake_stream_api, tmp_path):
+    # Whole-document synthesis raises the ceiling well above the 8096 extraction
+    # default — a full campaign_state.md overflows 8096 (and hard-errors on the
+    # claude-code backend). Guard the raised default.
+    f1 = _write(tmp_path / "a.md", "x")
+    campaignlib.run_synthesize_pipeline(
+        client=None,
+        source_groups=[("", [f1])],
+        synthesize_system="", model="m",
+    )
+    assert fake_stream_api.calls[0]["max_tokens"] == campaignlib.pipelines.SYNTHESIS_MAX_TOKENS
+
+
+def test_synthesize_forwards_explicit_max_tokens(fake_stream_api, tmp_path):
+    f1 = _write(tmp_path / "a.md", "x")
+    campaignlib.run_synthesize_pipeline(
+        client=None,
+        source_groups=[("", [f1])],
+        synthesize_system="", model="m",
+        max_tokens=50000,
+    )
+    assert fake_stream_api.calls[0]["max_tokens"] == 50000
+
+
+def test_extract_keeps_8096_default(fake_stream_api, tmp_path):
+    # Per-chunk extraction must NOT inherit the raised synthesis ceiling — it
+    # stays at stream_api's 8096 default (chunks are small).
+    campaignlib.run_extract_pipeline(
+        client=None, text="short",
+        extract_system="", model="m",
+        extract_dir=tmp_path / "e", chunk_size=60000,
+    )
+    assert fake_stream_api.calls[0]["max_tokens"] == 8096
 
 
 def test_synthesize_strips_trailing_whitespace_from_file_contents(fake_stream_api, tmp_path):

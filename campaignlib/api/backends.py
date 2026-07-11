@@ -375,29 +375,44 @@ def _claude_code_generate(
             cmd += ["--system-prompt-file", sp_file.name]
         proc = subprocess.run(
             cmd, input=user, capture_output=True, text=True, env=env)
+
+        # `claude -p --output-format json` emits a parseable result envelope even
+        # when it fails on an output-token overflow — and in that case it ALSO
+        # exits non-zero. Inspect the envelope BEFORE the returncode so the
+        # overflow-specific message is reachable; fall back to the raw exit error
+        # only when stdout is not that envelope (genuine failures: CLI not found,
+        # auth failure, crash — no JSON envelope).
+        try:
+            data = json.loads(proc.stdout)
+        except json.JSONDecodeError:
+            data = None
+
+        if isinstance(data, dict) and data.get("type") == "result":
+            if data.get("is_error"):
+                result_text = str(data.get("result", ""))
+                # Unlike the Anthropic API (which truncates and returns partial
+                # text with stop_reason=max_tokens), `claude -p` treats hitting the
+                # cap as a hard error and discards the text. Re-phrase its
+                # env-var-centric message in terms of the caller's knob
+                # (--narrate-tokens / max_tokens).
+                if max_tokens and "output token maximum" in result_text:
+                    raise RuntimeError(
+                        f"claude -p hit the {max_tokens}-token output ceiling and "
+                        f"returned no text (the subscription backend errors on "
+                        f"overflow rather than truncating). Raise --narrate-tokens "
+                        f"/ max_tokens for this run.")
+                raise RuntimeError(f"claude -p error: {result_text[:500]}")
+            return data.get("result", "")
+
+        # Not the JSON result envelope — a genuine process failure.
         if proc.returncode != 0:
             raise RuntimeError(
                 f"claude -p exited {proc.returncode}: "
                 f"{(proc.stderr or proc.stdout).strip()[:500]}")
-        try:
-            data = json.loads(proc.stdout)
-        except json.JSONDecodeError as e:
-            raise RuntimeError(
-                f"claude -p returned non-JSON output: {proc.stdout[:300]!r}") from e
-        if data.get("is_error"):
-            result_text = str(data.get("result", ""))
-            # Unlike the Anthropic API (which truncates and returns partial text
-            # with stop_reason=max_tokens), `claude -p` treats hitting the cap as
-            # a hard error and discards the text. Re-phrase its env-var-centric
-            # message in terms of the caller's knob (--narrate-tokens / max_tokens).
-            if max_tokens and "output token maximum" in result_text:
-                raise RuntimeError(
-                    f"claude -p hit the {max_tokens}-token output ceiling and "
-                    f"returned no text (the subscription backend errors on "
-                    f"overflow rather than truncating). Raise --narrate-tokens / "
-                    f"max_tokens for this run.")
-            raise RuntimeError(f"claude -p error: {result_text[:500]}")
-        return data.get("result", "")
+
+        # Exited 0 but produced no usable result envelope.
+        raise RuntimeError(
+            f"claude -p returned non-JSON output: {proc.stdout[:300]!r}")
     finally:
         if sp_file is not None:
             try:
