@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import { apiFetch, apiPut, apiPost, apiDelete } from '../../api/client'
+import { apiFetch, apiPost, apiDelete } from '../../api/client'
 import PathField from './PathField.vue'
 
 interface PlanningEntry {
@@ -372,8 +372,8 @@ watch(() => props.configPath, () => {
 .icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 .icon-btn.danger:hover { background: var(--red); color: var(--bg-base); border-color: var(--red); }
 
-.char-body { display: flex; flex-direction; column; gap: 8px; }
-.arc-row { display: flex; flex-direction; column; gap: 6px; }
+.char-body { display: flex; flex-direction: column; gap: 8px; }
+.arc-row { display: flex; flex-direction: column; gap: 6px; }
 
 .checkbox-label {
   font-size: 11px; color: var(--text-sub);
