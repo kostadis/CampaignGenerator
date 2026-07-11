@@ -6,6 +6,13 @@ from pathlib import Path
 from .textproc import prepare_chunks
 from .api.client import stream_api
 
+# Whole-document synthesis needs a far larger output budget than per-chunk
+# extraction: a full campaign_state.md / world_state.md legitimately exceeds
+# the 8096-token extraction default. 32000 is well under the output ceiling of
+# the synthesis models (opus-4-8 / sonnet-4-6) and is accepted by claude -p via
+# CLAUDE_CODE_MAX_OUTPUT_TOKENS. Extraction (run_extract_pipeline) keeps 8096.
+SYNTHESIS_MAX_TOKENS = 32000
+
 
 def run_extract_pipeline(
     client,
@@ -70,6 +77,7 @@ def run_synthesize_pipeline(
     source_groups: list[tuple],
     synthesize_system: str,
     model: str,
+    max_tokens: int = SYNTHESIS_MAX_TOKENS,
     source_label: str = "Source",
     group_separator: str = "\n\n===\n\n",
     file_separator: str = "\n\n---\n\n",
@@ -79,6 +87,11 @@ def run_synthesize_pipeline(
     dump_only: bool = False,
 ) -> str:
     """Concat labeled file groups into a user prompt, call `stream_api`, return the response.
+
+    max_tokens     — output-token ceiling for the synthesis call (default
+                     `SYNTHESIS_MAX_TOKENS`). Whole-document synthesis needs far
+                     more headroom than per-chunk extraction; a ceiling, not a
+                     target — it permits a longer document, it does not force one.
 
     source_groups — list of tuples in one of two shapes:
                       `(heading, files)` — uses the default `source_label`
@@ -147,6 +160,6 @@ def run_synthesize_pipeline(
 
     print(f"  Synthesizing {total_files} source file(s) ({len(user_prompt):,} chars total)...")
     print("  " + "─" * 56)
-    result = stream_api(client, synthesize_system, user_prompt, model)
+    result = stream_api(client, synthesize_system, user_prompt, model, max_tokens=max_tokens)
     print("  " + "─" * 56)
     return result
