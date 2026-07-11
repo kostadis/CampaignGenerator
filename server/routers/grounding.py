@@ -5,11 +5,48 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
+from campaignlib import wiring_get
 from server.subprocess_runner import python_exe, stream_subprocess
 
 router = APIRouter()
 
 SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent  # CampaignGenerator/
+
+
+# ── LLM backend selection → subprocess env ──────────────────────────────────
+# The global backend chosen in the sidebar lives at ui.session_doc.backend in
+# the unified config service. Grounding runs (campaign_state / distill / party /
+# planning) must forward it exactly like scene_editor and ensemble do — otherwise
+# a "subscription" (claude-code) selection is silently dropped and every run
+# bills the metered Anthropic API. Forwarding is env-only (never a --backend
+# flag): campaignlib.make_client honors CG_BACKEND / DGX_ENDPOINT, and distill.py
+# calls make_client() with no args so the env var is the ONLY channel that works
+# uniformly across all five scripts.
+
+def _llm_env(request: Request) -> dict[str, str]:
+    """Translate the campaign's global backend choice into subprocess env vars.
+
+    Empty dict (backend == "anthropic", or no config service) means "no
+    overrides — the default Anthropic API code path". Mirrors
+    scene_editor._llm_env; the API key is inherited from the server env, never
+    injected here.
+    """
+    service = getattr(request.app.state, "config_service", None)
+    if service is None:
+        return {}
+    sd = service.resolved()["ui"]["session_doc"]
+    backend = sd.get("backend")
+    if backend == "claude-code":
+        # Route through the `claude` CLI (Pro/Max subscription billing). The
+        # --model already carries a native claude-* name the backend honors, so
+        # no model override is injected here.
+        return {"CG_BACKEND": "claude-code"}
+    if backend == "dgx":
+        return {
+            "DGX_ENDPOINT": sd.get("dgx_endpoint") or wiring_get("dgx_endpoint"),
+            "DGX_MODEL": sd.get("dgx_model") or "Qwen/Qwen2.5-14B-Instruct-AWQ",
+        }
+    return {}
 
 
 def _cmd_opt(cmd: list[str], flag: str, value: str | int | None) -> None:
@@ -28,9 +65,9 @@ def _cmd_flag(cmd: list[str], flag: str, condition: bool) -> None:
         cmd.append(flag)
 
 
-def _sse_response(cmd: list[str]) -> StreamingResponse:
+def _sse_response(cmd: list[str], env_extra: dict[str, str] | None = None) -> StreamingResponse:
     return StreamingResponse(
-        stream_subprocess(cmd, cwd=str(Path.cwd())),
+        stream_subprocess(cmd, cwd=str(Path.cwd()), env_extra=env_extra),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
@@ -40,6 +77,7 @@ def _sse_response(cmd: list[str]) -> StreamingResponse:
 
 @router.get("/run/campaign-state")
 async def run_campaign_state(
+    request: Request,
     input: str = "",
     output: str = "",
     track_file: str = "",
@@ -74,13 +112,14 @@ async def run_campaign_state(
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
-    return _sse_response(cmd)
+    return _sse_response(cmd, _llm_env(request))
 
 
 # ── Distill World State ─────────────────────────────────────────────────────
 
 @router.get("/run/distill")
 async def run_distill(
+    request: Request,
     input: str = "",
     output: str = "",
     extract_dir: str = "",
@@ -109,13 +148,14 @@ async def run_distill(
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
-    return _sse_response(cmd)
+    return _sse_response(cmd, _llm_env(request))
 
 
 # ── Party Document ──────────────────────────────────────────────────────────
 
 @router.get("/run/party")
 async def run_party(
+    request: Request,
     party_config: str = "",
     character: list[str] = Query(default=[]),
     summaries: str = "",
@@ -154,13 +194,14 @@ async def run_party(
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
-    return _sse_response(cmd)
+    return _sse_response(cmd, _llm_env(request))
 
 
 # ── Planning Document ───────────────────────────────────────────────────────
 
 @router.get("/run/planning")
 async def run_planning(
+    request: Request,
     planning_config: str = "",
     npc: list[str] = Query(default=[]),
     arc_scores: list[str] = Query(default=[]),
@@ -200,11 +241,12 @@ async def run_planning(
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
-    return _sse_response(cmd)
+    return _sse_response(cmd, _llm_env(request))
 
 
 @router.get("/run/build-dossiers")
 async def run_build_dossiers(
+    request: Request,
     summaries: str = "",
     dossier_dir: str = "",
     extract_dir: str = "",
@@ -234,7 +276,7 @@ async def run_build_dossiers(
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
 
-    return _sse_response(cmd)
+    return _sse_response(cmd, _llm_env(request))
 
 
 # ── Extraction file review (two-phase checkpoint) ───────────────────────────
