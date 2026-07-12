@@ -32,3 +32,10 @@ export async function apiPost<T = any>(path: string, body?: any): Promise<T> {
   }
   return apiFetch(path, options)
 }
+
+export async function apiDelete<T = any>(path: string): Promise<T> {
+  return apiFetch(path, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' }
+  })
+}

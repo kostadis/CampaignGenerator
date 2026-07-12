@@ -29,7 +29,8 @@ flowchart TB
 | 5. Boot overrides | CLI flags to `server.main` | operator | in-memory only | session/campaign dirs + session_doc knobs |
 | 6. Content / refs | `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`, `~/.5etools-mcp-runtime/` | human (+ `launch --init-local`) | YAML + generated symlink farm | 5e content scope, roots, ingest list, built MCP tree |
 | 7. Ensemble subsystem | `ui.ensemble`, `manifest.json`, `merge.yaml`, `docs/*_draft.md` | server + ensemble CLI | persisted section + per-run artifacts | chapters/known_names/aliases/backends |
-| 8. Grounding docs | `party.yaml`, `planning.yaml`, `tracking.txt`, `docs/*.md` | human + generators | YAML config + generated md | rosters/dossiers → world/campaign/party/planning docs |
+| 8. Planning subsystem | `planning.yaml` | human + planning service | YAML, planning service owned | npcs[], factions[] |
+| 9. Grounding docs | `party.yaml`, `tracking.txt`, `docs/*.md` | human + generators | YAML config + generated md | rosters/dossiers → world/campaign/party docs |
 
 ## Who writes what
 

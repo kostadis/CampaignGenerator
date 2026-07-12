@@ -55,6 +55,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
+from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
@@ -71,6 +72,14 @@ from campaignlib import (
     parse_dossier,
     run_extract_pipeline,
     stream_api,
+)
+
+# Import shared planning config logic
+from server.planning_config_shared import (
+    PlanningConfig,
+    PlanningEntry,
+    load_planning_config as shared_load_planning_config,
+    save_planning_config as shared_save_planning_config,
 )
 
 
@@ -97,98 +106,14 @@ class PlanningConfig:
 
 def load_planning_config(path: Path) -> PlanningConfig:
     """Read a planning config YAML, validate referenced files, return PlanningConfig.
-
-    YAML shape (mirrors party.py):
-
-        npcs:
-          - name: Adabra
-            dossier: docs/npcs/adabra.md
-            arc_score: docs/tracking/Adabra quest line.md
-          - name: Lyra
-            dossier: docs/npcs/lyra.md
-            arc_score: null            # explicitly trackless
-
-        factions:
-          - name: Kraken Society
-            arc_score: docs/tracking/echoes-score.md
-
-    Distinctions for arc_score:
-        key absent      → arc_score=None, trackless=False
-        key present, null → arc_score=None, trackless=True
-        key present, path → arc_score=Path, trackless=False
-
-    NPC entries require `dossier`. Faction entries do not. All paths resolve
-    against the config file's parent directory; missing files are a hard error.
+    
+    Delegates to the shared implementation in server.planning_config_shared.
     """
     try:
-        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    except yaml.YAMLError as e:
-        print(f"Error: invalid YAML in {path}: {e}", file=sys.stderr)
+        return shared_load_planning_config(path)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
-
-    base = path.parent
-
-    def _resolve(rel: str, field_name: str, entry_name: str) -> Path:
-        p = (base / rel).expanduser().resolve()
-        if not p.exists():
-            print(f"Error: planning config references missing file for "
-                  f"{entry_name}.{field_name}: {p}", file=sys.stderr)
-            sys.exit(1)
-        return p
-
-    def _parse_entry(entry: dict, kind: str) -> PlanningEntry:
-        if not isinstance(entry, dict):
-            print(f"Error: each {kind} entry in {path} must be a mapping",
-                  file=sys.stderr)
-            sys.exit(1)
-        name = entry.get("name")
-        if not name:
-            print(f"Error: {kind} entry in {path} missing 'name': {entry}",
-                  file=sys.stderr)
-            sys.exit(1)
-
-        dossier = None
-        if kind == "npc":
-            dossier_rel = entry.get("dossier")
-            if not dossier_rel:
-                print(f"Error: npc entry {name!r} in {path} missing 'dossier'",
-                      file=sys.stderr)
-                sys.exit(1)
-            dossier = _resolve(dossier_rel, "dossier", name)
-        elif "dossier" in entry and entry["dossier"]:
-            # Allow faction entries to carry an optional faction-overview file
-            # under the same key — keep it simple by resolving identically.
-            dossier = _resolve(entry["dossier"], "dossier", name)
-
-        if "arc_score" in entry:
-            if entry["arc_score"] is None:
-                arc_score = None
-                trackless = True
-            else:
-                arc_score = _resolve(entry["arc_score"], "arc_score", name)
-                trackless = False
-        else:
-            arc_score = None
-            trackless = False
-
-        return PlanningEntry(name=str(name), dossier=dossier,
-                             arc_score=arc_score, trackless=trackless)
-
-    npcs_raw = raw.get("npcs") or []
-    factions_raw = raw.get("factions") or []
-    if not isinstance(npcs_raw, list) or not isinstance(factions_raw, list):
-        print(f"Error: {path} must define 'npcs' and/or 'factions' as lists",
-              file=sys.stderr)
-        sys.exit(1)
-    if not npcs_raw and not factions_raw:
-        print(f"Error: {path} must define a non-empty 'npcs' or 'factions' list",
-              file=sys.stderr)
-        sys.exit(1)
-
-    return PlanningConfig(
-        npcs=[_parse_entry(e, "npc") for e in npcs_raw],
-        factions=[_parse_entry(e, "faction") for e in factions_raw],
-    )
 
 
 def _read_normalized(p: Path, normalize) -> str:

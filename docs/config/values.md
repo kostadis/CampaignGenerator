@@ -50,7 +50,7 @@ Writer: `PUT /section/session_doc` + `scene_editor` (`PUT /api/editor/config`).
 | `ui.grounding.summaries` | `mcp_server.py` (`_find_summaries_file`, `query_lore`, `grounded_search`) | `PUT /section/grounding` |
 | `ui.ensemble.*` | ensemble router + `ensemble_merge`/`extract_facts` | `PUT /section/ensemble` |
 | `ui.profiles.{profiles[], active}` | session-doc editor (active profile mirrored into `ui.session_doc`) | `PUT /section/profiles` |
-| `ui.<loose>` (campaign_state, distill, party, planning, prep, npc, query, workflow, connections, experimental) | their Vue pages via `GET /api/config` flat overlay | `PUT /section/<name>` |
+| `ui.<loose>` (campaign_state, distill, prep, npc, query, workflow, connections, experimental) | their Vue pages via `GET /api/config` flat overlay | `PUT /section/<name>` |
 | `runtime.default_model` | model picker / run scripts default model | `PUT /runtime` |
 | `runtime.session_dir` | `resolved()` session base for session-scoped paths | `PUT /runtime`; boot `--session-dir` wins for process |
 | `legacy.unmigrated` | migrator quarantine only | migration path only |

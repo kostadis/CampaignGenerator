@@ -26,6 +26,9 @@ from server.config_service import (
 )
 from server.routers import config_routes
 
+# Service reads config.yaml from <campaign>/<config_dir>/ (config_dir="config").
+CONFIG_SUBDIR = "config"
+
 
 def _write(path: Path, body: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -35,7 +38,7 @@ def _write(path: Path, body: str) -> None:
 @pytest.fixture
 def fresh_campaign(tmp_path):
     _write(
-        tmp_path / TRACKED_CONFIG_NAME,
+        tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
         "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
     )
     return tmp_path

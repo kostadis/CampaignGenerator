@@ -3,11 +3,11 @@
 Replaces the L2/L3/L4 split (``ui_config.yaml`` + boot CLI dict +
 ``scene_editor.CONFIG``) described in ``docs/configuration.md``.
 
-Three on-disk documents:
+Three on-disk documents in <campaign>/<config-dir>/:
 
-    <campaign>/config.yaml                       — tracked, human-only
-    <campaign>/ui_state.yaml                     — tracked, server-owned
-    <campaign>/.campaigngenerator.local.yaml     — gitignored, machine-local
+    <campaign>/<config-dir>/config.yaml                       — tracked, human-only
+    <campaign>/<config-dir>/ui_state.yaml                     — tracked, server-owned
+    <campaign>/<config-dir>/.campaigngenerator.local.yaml     — gitignored, machine-local
 
 Two in-memory layers on top:
 
@@ -102,9 +102,11 @@ class CampaignConfigService:
         self,
         campaign_dir: Path | str,
         *,
+        config_dir: str = "config",
         boot_overrides: dict[str, Any] | None = None,
     ) -> None:
         self.campaign_dir: Path = Path(campaign_dir).expanduser().resolve()
+        self.config_dir: str = config_dir
         self.boot_overrides: dict[str, Any] = dict(boot_overrides or {})
         self.load_warnings: list[str] = []
         self._write_lock = threading.Lock()
@@ -113,6 +115,17 @@ class CampaignConfigService:
             raise ConfigError(
                 f"campaign_dir does not exist: {self.campaign_dir}"
             )
+
+        # Build the path to the config subdirectory
+        self.config_path_base: Path = self.campaign_dir / self.config_dir
+
+        # Ensure the config subdirectory exists
+        try:
+            self.config_path_base.mkdir(parents=True, exist_ok=True)
+        except Exception as exc:
+            raise ConfigError(
+                f"cannot create or access config directory {self.config_path_base}: {exc}"
+            ) from exc
 
         self._tracked: dict = self._load_tracked()
         self._ui_state: UIState = self._load_ui_state()
@@ -123,15 +136,15 @@ class CampaignConfigService:
 
     @property
     def config_path(self) -> Path:
-        return self.campaign_dir / TRACKED_CONFIG_NAME
+        return self.config_path_base / TRACKED_CONFIG_NAME
 
     @property
     def ui_state_path(self) -> Path:
-        return self.campaign_dir / UI_STATE_NAME
+        return self.config_path_base / UI_STATE_NAME
 
     @property
     def local_config_path(self) -> Path:
-        return self.campaign_dir / LOCAL_CONFIG_NAME
+        return self.config_path_base / LOCAL_CONFIG_NAME
 
     @property
     def migration_warnings(self) -> list[str]:

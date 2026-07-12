@@ -25,8 +25,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from server.config_service import (
     CampaignConfigService,
     TRACKED_CONFIG_NAME,
+    UI_STATE_NAME,
 )
 from server.routers import config_routes, scene_editor
+
+# Service reads/writes its documents under <campaign>/<config_dir>/ (config_dir="config").
+CONFIG_SUBDIR = "config"
 
 
 def _write(path: Path, body: str) -> None:
@@ -37,7 +41,7 @@ def _write(path: Path, body: str) -> None:
 @pytest.fixture
 def fresh_campaign(tmp_path):
     _write(
-        tmp_path / TRACKED_CONFIG_NAME,
+        tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
         "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
     )
     return tmp_path
@@ -74,7 +78,7 @@ class TestPutPersistsViaService:
         assert resp.status_code == 200
 
         # Verify the service wrote it to disk.
-        assert (fresh_campaign / "ui_state.yaml").exists()
+        assert (fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).exists()
 
         # Second server (simulates a restart): no in-memory state carried
         # over, but the service reloads ui_state.yaml.

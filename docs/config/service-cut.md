@@ -38,7 +38,7 @@ flowchart TB
 | VTT Summary | `session_workflow.py` | `ui.vtt_summary` | `vtt_summary.py` | input/output, extract_dir, reference_summaries |
 | Grounding / Search | `grounding.py`, `mcp_server.py` | `ui.grounding` | grounded_search, query_lore, rpg_retriever | summaries pointer; reads wiring |
 | Party | `config_routes` party-yaml | `ui.party` (loose) | `party.py` | `party.yaml` (roster, 3-state arc_score) |
-| Planning | `config_routes` planning-yaml | `ui.planning` (loose) | `planning.py` | `planning.yaml` (npcs/factions) |
+| Planning | `planning_routes` | (none - uses dedicated PlanningConfigService) | `planning.py` | `planning.yaml` (npcs/factions) |
 | Campaign State | (CLI-only page) | `ui.campaign_state` (loose) | `campaign_state.py` | `tracking.txt` |
 | Distill / NPC / Query / Prep / Connections / Experimental | generic `PUT /section/{name}` | `ui.<loose>` | `distill.py`, `npc_table.py`, `prep.py`, ... | under-modeled `extra='allow'` sections |
 | Content Ingestion (5e) | `launch_5etools_mcp` / `apply_ingest_manifest` | (none) | `resolve_refs`, `fivetools_ingest` | `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`, runtime tree |
