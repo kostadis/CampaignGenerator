@@ -33,6 +33,11 @@ from server.config_service import (
     UI_STATE_NAME,
 )
 
+# The service reads/writes its three documents under <campaign>/<config_dir>/;
+# config_dir defaults to "config". Tests build on-disk paths against this same
+# subdir so fixtures land where the service looks.
+CONFIG_SUBDIR = "config"
+
 
 # ── Fixtures ──────────────────────────────────────────────────────────────
 
@@ -45,7 +50,7 @@ def _write(path: Path, body: str) -> None:
 @pytest.fixture
 def fresh_campaign(tmp_path):
     """A campaign dir with only ``config.yaml``."""
-    cfg = tmp_path / TRACKED_CONFIG_NAME
+    cfg = tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME
     _write(
         cfg,
         "# hand-written, do not touch\ndocuments:\n  - label: world_state\n    path: docs/world_state.md\n",
@@ -67,18 +72,18 @@ class TestConstruction:
             CampaignConfigService(tmp_path)
 
     def test_invalid_config_yaml_raises(self, tmp_path):
-        _write(tmp_path / TRACKED_CONFIG_NAME, "key: : :")
+        _write(tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME, "key: : :")
         with pytest.raises(ConfigError, match="not valid YAML"):
             CampaignConfigService(tmp_path)
 
     def test_invalid_ui_state_yaml_raises(self, tmp_path):
-        _write(tmp_path / TRACKED_CONFIG_NAME, "documents: []\n")
-        _write(tmp_path / UI_STATE_NAME, "version: 2\nui: : :")
+        _write(tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME, "documents: []\n")
+        _write(tmp_path / CONFIG_SUBDIR / UI_STATE_NAME, "version: 2\nui: : :")
         with pytest.raises(ConfigError, match="ui_state.yaml is not valid YAML"):
             CampaignConfigService(tmp_path)
 
     def test_local_yaml_syntax_error_does_not_block_startup(self, fresh_campaign):
-        _write(fresh_campaign / LOCAL_CONFIG_NAME, "server: : :")
+        _write(fresh_campaign / CONFIG_SUBDIR / LOCAL_CONFIG_NAME, "server: : :")
         # Hostile to refuse boot over a bad nav.last_page entry.
         svc = CampaignConfigService(fresh_campaign)
         assert any("could not be parsed" in w for w in svc.load_warnings)
@@ -89,11 +94,11 @@ class TestConstruction:
 
 class TestConfigYamlNeverWritten:
     def test_config_yaml_unchanged_after_updates(self, fresh_campaign):
-        original = (fresh_campaign / TRACKED_CONFIG_NAME).read_bytes()
+        original = (fresh_campaign / CONFIG_SUBDIR / TRACKED_CONFIG_NAME).read_bytes()
         svc = CampaignConfigService(fresh_campaign)
         svc.update_section("session_doc", {"narrate_tokens": 12000})
         svc.update_local({"server": {"port": 6001}})
-        assert (fresh_campaign / TRACKED_CONFIG_NAME).read_bytes() == original
+        assert (fresh_campaign / CONFIG_SUBDIR / TRACKED_CONFIG_NAME).read_bytes() == original
 
     def test_service_module_has_no_config_yaml_writer(self):
         """Source-level guard: no function in config_service.py opens
@@ -185,7 +190,7 @@ class TestFreshCampaign:
     def test_null_bool_in_persisted_file_does_not_block_load(self, fresh_campaign):
         # The exact failure mode that triggered the --session-dir bug: a
         # ui_state.yaml with `prose_mode: null` from a prior write.
-        (fresh_campaign / UI_STATE_NAME).write_text(
+        (fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).write_text(
             "version: 2\nui:\n  session_doc:\n    prose_mode: null\n"
             "    reflections: null\n"
             "    batch: null\n    scrub_enabled: null\n",
@@ -208,7 +213,7 @@ class TestUpdateSection:
         svc.update_section("session_doc", {"narrate_tokens": 12000})
 
         # Re-read from disk.
-        on_disk = yaml.safe_load((fresh_campaign / UI_STATE_NAME).read_text())
+        on_disk = yaml.safe_load((fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_text())
         assert on_disk["ui"]["session_doc"]["narrate_tokens"] == 12000
 
     def test_update_section_merges_not_replaces(self, fresh_campaign):
@@ -227,7 +232,7 @@ class TestUpdateSection:
     def test_update_local(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
         svc.update_local({"server": {"port": 6001}})
-        on_disk = yaml.safe_load((fresh_campaign / LOCAL_CONFIG_NAME).read_text())
+        on_disk = yaml.safe_load((fresh_campaign / CONFIG_SUBDIR / LOCAL_CONFIG_NAME).read_text())
         assert on_disk["server"]["port"] == 6001
 
 
@@ -240,7 +245,7 @@ class TestAtomicWrites:
     ):
         svc = CampaignConfigService(fresh_campaign)
         svc.update_section("session_doc", {"narrate_tokens": 11111})
-        before = (fresh_campaign / UI_STATE_NAME).read_bytes()
+        before = (fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_bytes()
 
         original_replace = os.replace
 
@@ -253,7 +258,7 @@ class TestAtomicWrites:
             svc.update_section("session_doc", {"narrate_tokens": 22222})
 
         # Original file unchanged.
-        assert (fresh_campaign / UI_STATE_NAME).read_bytes() == before
+        assert (fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_bytes() == before
 
         # Restore so cleanup works.
         monkeypatch.setattr(os, "replace", original_replace)
@@ -276,7 +281,7 @@ class TestAtomicWrites:
 
         assert errors == []
         # File is parseable (no torn YAML) — that's the actual invariant.
-        on_disk = yaml.safe_load((fresh_campaign / UI_STATE_NAME).read_text())
+        on_disk = yaml.safe_load((fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_text())
         assert isinstance(on_disk, dict)
         # Whatever the last writer was, it's a valid value from our range.
         assert 100 <= on_disk["ui"]["session_doc"]["narrate_tokens"] < 200
@@ -489,7 +494,7 @@ class TestUpdateRuntime:
     def test_update_runtime_persists(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
         svc.update_runtime({"session_dir": "summaries/sess1", "default_model": "claude-opus-4-6"})
-        on_disk = yaml.safe_load((fresh_campaign / UI_STATE_NAME).read_text())
+        on_disk = yaml.safe_load((fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_text())
         assert on_disk["runtime"]["session_dir"] == "summaries/sess1"
         assert on_disk["runtime"]["default_model"] == "claude-opus-4-6"
 
