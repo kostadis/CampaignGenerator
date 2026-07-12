@@ -20,8 +20,9 @@ Usage:
     DGX_MODEL=Qwen2.5-32B-AWQ python scrub_mechanics.py path/to/scene.md
 
 The default prompt lives in config/scrub_mechanics_prompt.md next to this
-script. A per-campaign override at <cwd>/scrub_mechanics_prompt.md takes
-precedence when present.
+script. Per-campaign overrides are resolved against the campaign root (via
+$CG_CAMPAIGN_DIR, forwarded by the server; falls back to cwd for standalone
+runs) — see resolve_prompt_path() for the search order.
 """
 from __future__ import annotations
 
@@ -38,15 +39,29 @@ from campaignlib import make_client, stream_api  # noqa: E402
 
 
 def resolve_prompt_path() -> Path:
-    """Per-campaign override beats the in-tree default.
+    """Resolve the scrub prompt, most specific first.
 
-    The subprocess runs with cwd set to the campaign directory, so a
-    `scrub_mechanics_prompt.md` in the workspace root overrides the default
-    without any flag. Falls back to the bundled prompt when none is present.
+    Overrides are discovered relative to the **campaign root**, not the process
+    cwd — the server's subprocess cwd is the launch directory, which need not be
+    the campaign. The server forwards the campaign root as ``$CG_CAMPAIGN_DIR``
+    and its config subdir as ``$CG_CONFIG_DIR`` (default ``"config"``). A
+    standalone CLI run falls back to the current directory, so run scrub from
+    within the campaign workspace.
+
+      1. ``<campaign>/<config_dir>/session_doc_editor/scrub_mechanics_prompt.md``
+         — the per-service override the web UI's session-doc editor owns.
+      2. ``<campaign>/scrub_mechanics_prompt.md`` — legacy per-campaign override.
+      3. the bundled in-tree default.
     """
-    cwd_override = Path.cwd() / PER_CAMPAIGN_PROMPT_NAME
-    if cwd_override.is_file():
-        return cwd_override
+    base = Path(os.environ.get("CG_CAMPAIGN_DIR") or Path.cwd())
+    config_dir = os.environ.get("CG_CONFIG_DIR", "config")
+    candidates = [
+        base / config_dir / "session_doc_editor" / PER_CAMPAIGN_PROMPT_NAME,
+        base / PER_CAMPAIGN_PROMPT_NAME,
+    ]
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
     return DEFAULT_PROMPT_PATH
 
 

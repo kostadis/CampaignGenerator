@@ -90,6 +90,12 @@ def _refresh_config_from_service(request: Request) -> None:
         CONFIG["model"] = default_model
     if "work_dir" not in CONFIG:
         CONFIG["work_dir"] = str(service.campaign_dir)
+    # Forward the campaign root + config subdir so subprocesses (e.g.
+    # scrub_mechanics.py) can find per-service overrides under
+    # <campaign>/<config_dir>/. The subprocess cwd is the launch dir, not the
+    # campaign, so resolution must key off campaign_dir explicitly.
+    CONFIG["campaign_dir"] = str(service.campaign_dir)
+    CONFIG["config_dir"] = service.config_dir
 
 
 router = APIRouter(dependencies=[Depends(_refresh_config_from_service)])
@@ -981,7 +987,10 @@ async def api_scrub(n: int):
 
     return StreamingResponse(
         stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
-                          env_extra=_llm_env(), on_complete=_done),
+                          env_extra={**_llm_env(),
+                                     "CG_CAMPAIGN_DIR": CONFIG.get("campaign_dir", ""),
+                                     "CG_CONFIG_DIR": CONFIG.get("config_dir", "config")},
+                          on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
@@ -1007,7 +1016,10 @@ async def api_scrub_all():
 
     return StreamingResponse(
         stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
-                          env_extra=_llm_env(), on_complete=_done),
+                          env_extra={**_llm_env(),
+                                     "CG_CAMPAIGN_DIR": CONFIG.get("campaign_dir", ""),
+                                     "CG_CONFIG_DIR": CONFIG.get("config_dir", "config")},
+                          on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
