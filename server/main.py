@@ -214,6 +214,16 @@ def main() -> None:
     args = parser.parse_args()
     print(f"DEBUG: args.config_dir = {args.config_dir}", file=sys.stderr)
 
+    # Capture boot overrides from the RAW, user-typed flags BEFORE the
+    # session-dir derivation block below backfills defaults into args. A value
+    # derived from --session-dir is NOT a user override, and boot overrides win
+    # permanently at resolved() time — so promoting derived paths to overrides
+    # makes every session_doc field (scene_extractions_dir, party, voice_dir,
+    # …) impossible to change from the UI: the persisted ui_state value is
+    # clobbered on every read. Only genuinely-typed flags belong here (the same
+    # reason --host/--port are excluded inside _boot_overrides_from_args).
+    boot_overrides = _boot_overrides_from_args(args)
+
     # Derive paths from campaign-dir + session-dir
     if args.session_dir:
         sd = Path(args.session_dir).expanduser().resolve()
@@ -287,7 +297,7 @@ def main() -> None:
         app.state.config_service = CampaignConfigService(
             campaign_dir_for_service,
             config_dir=args.config_dir,
-            boot_overrides=_boot_overrides_from_args(args),
+            boot_overrides=boot_overrides,
         )
     except ConfigError as exc:
         bar = "=" * 72

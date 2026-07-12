@@ -35,12 +35,11 @@ const backend = ref<'anthropic' | 'dgx' | 'claude-code'>('anthropic')
 const dgxEndpoint = ref('')
 const dgxModel = ref('')
 
-// Drawer open/closed — persisted in localStorage so it survives reloads.
-const DRAWER_KEY = 'session-doc-editor.knob-drawer.open'
-const drawerOpen = ref(localStorage.getItem(DRAWER_KEY) === 'true')
-watch(drawerOpen, (v) => {
-  localStorage.setItem(DRAWER_KEY, v ? 'true' : 'false')
-})
+// Drawer open/closed — always starts closed. The Config button opens it, and
+// onMounted auto-opens it on a cold start (required fields missing). Not
+// persisted: a stale persisted 'true' otherwise inverts the button's first
+// click (it would close an already-open drawer).
+const drawerOpen = ref(false)
 
 // ── Field → config-store key map (legacy flat-key overlay) ───────
 function loadConfigFields() {

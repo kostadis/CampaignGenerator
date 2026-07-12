@@ -8,11 +8,19 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Build frontend if dist is missing or sources are newer
-DIST="$SCRIPT_DIR/frontend/dist"
-if [ ! -d "$DIST" ] || [ "$SCRIPT_DIR/frontend/src" -nt "$DIST/index.html" ]; then
+# Build frontend if dist is missing or ANY source/config file is newer than the
+# built bundle. NOTE: do not test `frontend/src -nt dist/index.html` — that
+# compares the src *directory* mtime, which Linux does not bump when you edit an
+# existing file inside it (only add/remove/rename touches a dir's mtime). That
+# heuristic silently skips rebuilds after content edits and serves a stale
+# bundle. Scan files recursively with `find -newer` instead.
+FE="$SCRIPT_DIR/frontend"
+DIST="$FE/dist"
+if [ ! -f "$DIST/index.html" ] || \
+   [ -n "$(find "$FE/src" "$FE/index.html" "$FE/vite.config.ts" "$FE/package.json" \
+              -type f -newer "$DIST/index.html" 2>/dev/null | head -n 1)" ]; then
   echo "Building frontend..."
-  cd "$SCRIPT_DIR/frontend" && npm run build
+  cd "$FE" && npm run build
   cd "$SCRIPT_DIR"
 fi
 
