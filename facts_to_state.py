@@ -358,8 +358,20 @@ def load_bundles(corpus_paths: list[Path], aliases: dict[str, str],
 
 
 def select(bundles: dict[str, Bundle], min_facts: int, only: str | None,
-           top: int | None, known_only: bool = False) -> list[Bundle]:
-    items = [b for b in bundles.values() if len(b.facts) >= min_facts]
+           top: int | None, known_only: bool = False,
+           known_names: set[str] | None = None) -> list[Bundle]:
+    """min_facts is waived for entities in known_names (--known-names /
+    --registry): once a source enumerates the known-entity universe, a real
+    hit count of 1 is signal enough — the floor exists to filter noise out of
+    the *unscoped* pool, not to second-guess a ground-truth roster. Bundles
+    forced anonymous via --exclude-names (known=False) don't get the waiver
+    even if their key happens to also appear in known_names."""
+    def meets_floor(b: Bundle) -> bool:
+        if known_names is not None and getattr(b, "known", True) and b.key in known_names:
+            return True
+        return len(b.facts) >= min_facts
+
+    items = [b for b in bundles.values() if meets_floor(b)]
     if known_only:
         items = [b for b in items if getattr(b, "known", True)]
     if only is not None:
@@ -439,7 +451,9 @@ def build_parser() -> argparse.ArgumentParser:
                    help=f"Entity types to aggregate (default: {' '.join(STATEFUL_TYPES)})")
     p.add_argument("--min-facts", type=int, default=3, metavar="N",
                    help="Only aggregate entities with at least N facts (default 3); "
-                        "below this there's nothing to collapse.")
+                        "below this there's nothing to collapse. Waived for "
+                        "entities in --known-names/--registry — a known entity "
+                        "always gets a dossier, even with just 1 fact.")
     p.add_argument("--split-gap", type=int, default=None, metavar="N",
                    help="Split any bundle whose consecutive-chapter gap exceeds N "
                         "into separate sub-bundles. Heuristic fallback; prefer "
@@ -552,7 +566,7 @@ def main() -> None:
     bundles = load_bundles(corpus, aliases, args.types, split_gap=args.split_gap,
                            known_names=known_names, exclude_names=exclude_names)
     selected = select(bundles, args.min_facts, args.only, args.top,
-                      known_only=args.known_only)
+                      known_only=args.known_only, known_names=known_names)
 
     scoping_active = known_names is not None or "npc" in set(args.types)
     total_entities = len(bundles)
@@ -564,8 +578,11 @@ def main() -> None:
     print(f"Corpus:   {len(corpus)} file(s)")
     print(f"Entities: {total_entities} of types {args.types}{split_note}{scope_note} "
           f"(>= {args.min_facts} facts: {sum(1 for b in bundles.values() if len(b.facts) >= args.min_facts)})")
+    n_floor_waived = sum(1 for b in selected if len(b.facts) < args.min_facts)
     print(f"Selected: {len(selected)} for aggregation"
-          + (" (known-only)" if args.known_only else ""))
+          + (" (known-only)" if args.known_only else "")
+          + (f", {n_floor_waived} below --min-facts (included via known-names/registry)"
+             if n_floor_waived else ""))
     print("=" * 60)
 
     if args.render_only:

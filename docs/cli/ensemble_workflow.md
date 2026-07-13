@@ -423,7 +423,7 @@ Selected: 439 for aggregation
 - Are the PCs tagged `[known]`? (They should be.)
 - Are major recurring NPCs tagged `[known]`? (Adabra, Harbin, Falcon, etc.)
 - Are obviously anonymous labels (`guard`, `bandit`, `orc`) scoped to location? (They should be.)
-- Is the `--min-facts` floor reasonable? (3 is the lower bound for anything worth a dossier; 10 is a good synthesis floor.)
+- Is the `--min-facts` floor reasonable? (3 is the lower bound for anything worth a dossier; 10 is a good synthesis floor.) This floor is **waived for entities in `--known-names`/`--registry`** — once a source enumerates the known-entity universe, even a single-fact hit for a known entity gets a dossier (the floor exists to filter noise out of the unscoped pool, not to second-guess a ground-truth roster). The `Selected:` line reports how many were pulled in below the floor this way.
 
 `--list` does not call the model. Use it freely.
 
