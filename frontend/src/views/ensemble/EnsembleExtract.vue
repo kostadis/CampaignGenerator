@@ -34,7 +34,7 @@ function start() {
   run('/api/ensemble/run/extract', {
     chapters: cfg.value.chapters_selected,
     backend: cfg.value.extract.backend,
-    endpoint: cfg.value.extract.endpoint,
+    endpoints: cfg.value.extract.endpoints,
     model: cfg.value.extract.model,
   }, (rc) => { if (rc === 0) emit('changed') })
 }

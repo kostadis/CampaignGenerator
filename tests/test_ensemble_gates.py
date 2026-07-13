@@ -103,7 +103,7 @@ def test_bundle_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
     r = client.get("/api/ensemble/run/bundle", params={
         "backend": "anthropic",
         "model": "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
-        "endpoint": "http://192.168.1.147:8001/v1",
+        "endpoints": ["http://192.168.1.147:8001/v1"],
     })
     assert r.status_code == 200
     _ = r.text
