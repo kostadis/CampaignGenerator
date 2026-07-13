@@ -47,7 +47,7 @@ function synthesize() {
   run.run('/api/ensemble/run/synthesize', {
     doc: selectedDoc.value,
     backend: cfg.value.synthesize.backend,
-    endpoint: cfg.value.synthesize.endpoint,
+    endpoint: cfg.value.synthesize.endpoints[0] ?? '',
     model: cfg.value.synthesize.model,
     party: partyConfigPath.value,
   }, (rc) => { if (rc === 0) emit('changed') })

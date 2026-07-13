@@ -90,7 +90,7 @@ export function useEnsembleRun() {
 
 export interface BackendProfile {
   backend: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
-  endpoint: string
+  endpoints: string[]
   model: string
 }
 
@@ -109,7 +109,8 @@ export function readEnsembleConfig(resolved: any): EnsembleConfig {
   const e = resolved?.ui?.ensemble ?? {}
   const prof = (p: any): BackendProfile => ({
     backend: p?.backend ?? 'anthropic',
-    endpoint: p?.endpoint ?? '',
+    // Migration shim: older campaigns persisted a single `endpoint` string.
+    endpoints: Array.isArray(p?.endpoints) ? p.endpoints : (p?.endpoint ? [p.endpoint] : []),
     model: p?.model ?? '',
   })
   return {

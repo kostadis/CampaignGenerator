@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import { readEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
 import ChapterPicker from './ChapterPicker.vue'
@@ -7,16 +7,26 @@ import ChapterPicker from './ChapterPicker.vue'
 const config = useConfigStore()
 const cfg = ref<EnsembleConfig>(readEnsembleConfig({}))
 const knownNamesText = ref('')
+const extractEndpointsText = ref('')
 const saved = ref(false)
+
+// Synthesis is a single non-parallelized call, so it keeps one endpoint —
+// bind the array's first slot as if it were a plain string field.
+const synthEndpoint = computed({
+  get: () => cfg.value.synthesize.endpoints[0] ?? '',
+  set: (v: string) => { cfg.value.synthesize.endpoints = v ? [v] : [] },
+})
 
 onMounted(async () => {
   await config.load()
   cfg.value = readEnsembleConfig(config.resolved)
   knownNamesText.value = cfg.value.known_names.join('\n')
+  extractEndpointsText.value = cfg.value.extract.endpoints.join('\n')
 })
 
 async function save() {
   cfg.value.known_names = knownNamesText.value.split('\n').map(s => s.trim()).filter(Boolean)
+  cfg.value.extract.endpoints = extractEndpointsText.value.split('\n').map(s => s.trim()).filter(Boolean)
   await config.updateSection('ensemble', {
     campaign_dir: cfg.value.campaign_dir,
     chapters_glob: cfg.value.chapters_glob,
@@ -28,6 +38,12 @@ async function save() {
   })
   saved.value = true
   setTimeout(() => (saved.value = false), 1500)
+}
+
+function resetBackend(stage: 'extract' | 'synthesize') {
+  cfg.value[stage].endpoints = []
+  cfg.value[stage].model = ''
+  if (stage === 'extract') extractEndpointsText.value = ''
 }
 </script>
 
@@ -63,17 +79,21 @@ async function save() {
         <legend>{{ stage === 'extract' ? 'Extraction backend' : 'Synthesis backend' }}</legend>
         <label class="fld">
           <span>Backend</span>
-          <select v-model="cfg[stage].backend"
-                  @change="cfg[stage].endpoint = ''; cfg[stage].model = ''">
+          <select v-model="cfg[stage].backend" @change="resetBackend(stage)">
             <option value="anthropic">Anthropic (Claude API)</option>
             <option value="dgx">DGX / Spark (local)</option>
             <option value="openrouter">OpenRouter</option>
             <option value="claude-code">Subscription (Claude Code)</option>
           </select>
         </label>
-        <label class="fld" v-if="cfg[stage].backend === 'dgx'">
+        <label class="fld" v-if="cfg[stage].backend === 'dgx' && stage === 'extract'">
+          <span>DGX endpoints (one per line — fanned out round-robin across chapters/entities)</span>
+          <textarea v-model="extractEndpointsText" rows="3"
+                    placeholder="http://spark1:8001/v1&#10;http://spark2:8001/v1"></textarea>
+        </label>
+        <label class="fld" v-if="cfg[stage].backend === 'dgx' && stage === 'synthesize'">
           <span>Endpoint</span>
-          <input v-model="cfg[stage].endpoint" type="text" placeholder="http://192.168.1.147:8001/v1" />
+          <input v-model="synthEndpoint" type="text" placeholder="http://192.168.1.147:8001/v1" />
         </label>
         <label class="fld" v-if="cfg[stage].backend !== 'anthropic' && cfg[stage].backend !== 'claude-code'">
           <span>Model id</span>
