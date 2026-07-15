@@ -65,6 +65,22 @@ def test_chapters_confined_to_workspace(tmp_path, monkeypatch):
     assert body["count"] == 0
 
 
+def test_chapters_bare_directory_glob_raises_400(tmp_path, monkeypatch):
+    """A glob that matches a directory (e.g. the user typed the chapters dir
+    itself, not a file pattern) must fail loudly with an actionable message,
+    never silently auto-expand to the directory's contents."""
+    monkeypatch.chdir(tmp_path)
+    _make_chapters(tmp_path)
+    r = client.get("/api/ensemble/chapters", params={"glob": "docs/chapters"})
+    assert r.status_code == 400
+    assert "docs/chapters/*.md" in r.json()["detail"]
+
+    # The corrected glob still works and returns all 3 chapter files.
+    r2 = client.get("/api/ensemble/chapters", params={"glob": "docs/chapters/*.md"})
+    assert r2.status_code == 200
+    assert r2.json()["count"] == 3
+
+
 # ── Principle X: no silent "all" ─────────────────────────────────────────────
 
 def test_extract_refuses_empty_selection(tmp_path, monkeypatch):
