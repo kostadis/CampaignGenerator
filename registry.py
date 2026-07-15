@@ -1186,6 +1186,11 @@ def cmd_check(args: argparse.Namespace) -> int:
 # Identity is a precision decision — this command only surfaces candidates;
 # it never decides who is who. No API calls.
 
+# Registry candidates are sourced from the ensemble fact analysis
+# (_MERGED_JSON_GLOBS) whenever the campaign has one. Raw summaries
+# (_SUMMARY_GLOBS) are UPSTREAM of the ensemble — they produce it — so they are
+# only a legacy fallback for campaigns that have no ensemble at all. See
+# _gather_triage_sources for the auto-detect and the rationale.
 _SUMMARY_GLOBS = [
     "summaries/*/session-summary.md",
     "summaries/*/scene_extractions_new/*.md",
@@ -1193,6 +1198,8 @@ _SUMMARY_GLOBS = [
     "summaries/old/*/scene_extractions*/*.md",
 ]
 
+# Both are kept on purpose: the top-level merge is the hand-curated known-set,
+# and the per-chapter merges surface gaps the curated set is missing.
 _MERGED_JSON_GLOBS = [
     "docs/ensemble/per_chapter/*/merged.json",
     "docs/ensemble/merged.json",
@@ -1225,29 +1232,51 @@ def _merged_json_text(path: Path) -> "str | None":
 def _gather_triage_sources(campaign_dir: Path, bible: "Path | None") -> "tuple[list[tuple[str, str]], list[str]]":
     """[(source_label, text)] for every source file found, tolerating any/all
     being absent, plus the list of glob patterns (+ bible path) that matched
-    at least one file — for the ``generated_from`` field of the queue JSON."""
+    at least one file — for the ``generated_from`` field of the queue JSON.
+
+    Source auto-detection: the registry is sourced from the ensemble fact
+    analysis (``_MERGED_JSON_GLOBS`` — the hand-curated top-level merge plus the
+    per-chapter merges that surface gaps the curated set misses) whenever the
+    campaign has an ensemble. Raw summaries are UPSTREAM of the ensemble — they
+    *produce* it — so they are deliberately NOT scanned when an ensemble exists;
+    scanning them re-derives entities from noisy transcript prose and pulls in
+    archived (``summaries/old``) content. Only campaigns with no ensemble at all
+    fall back to scanning summaries directly. An explicit ``--bible`` is always
+    honored on top of whichever source was selected.
+    """
     sources: list[tuple[str, str]] = []
     generated_from: list[str] = []
 
-    for pattern in _SUMMARY_GLOBS:
-        matches = sorted(campaign_dir.glob(pattern))
-        if matches:
-            generated_from.append(pattern)
-        for f in matches:
-            label = str(f.relative_to(campaign_dir))
-            sources.append((label, f.read_text(encoding="utf-8")))
+    def _add_json(patterns: "list[str]") -> None:
+        for pattern in patterns:
+            matches = sorted(campaign_dir.glob(pattern))
+            if matches:
+                generated_from.append(pattern)
+            for f in matches:
+                label = str(f.relative_to(campaign_dir))
+                text = _merged_json_text(f)
+                if text is None:
+                    print(f"WARNING: could not parse {f} as a fact-list JSON", file=sys.stderr)
+                    continue
+                sources.append((label, text))
 
-    for pattern in _MERGED_JSON_GLOBS:
-        matches = sorted(campaign_dir.glob(pattern))
-        if matches:
-            generated_from.append(pattern)
-        for f in matches:
-            label = str(f.relative_to(campaign_dir))
-            text = _merged_json_text(f)
-            if text is None:
-                print(f"WARNING: could not parse {f} as a fact-list JSON", file=sys.stderr)
-                continue
-            sources.append((label, text))
+    def _add_summaries(patterns: "list[str]") -> None:
+        for pattern in patterns:
+            matches = sorted(campaign_dir.glob(pattern))
+            if matches:
+                generated_from.append(pattern)
+            for f in matches:
+                label = str(f.relative_to(campaign_dir))
+                sources.append((label, f.read_text(encoding="utf-8")))
+
+    has_ensemble = any(
+        next(campaign_dir.glob(pattern), None) is not None
+        for pattern in _MERGED_JSON_GLOBS
+    )
+    if has_ensemble:
+        _add_json(_MERGED_JSON_GLOBS)
+    else:
+        _add_summaries(_SUMMARY_GLOBS)
 
     if bible is not None:
         label = str(bible)
