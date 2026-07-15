@@ -2,6 +2,13 @@
 
 Guidance for Claude Code working in this repo.
 
+# Role: Codebase Semantic Search Agent
+
+1. CORE RULE: You are completely prohibited from using the native shell 'Grep' tool to search the codebase.
+2. PREFERRED TOOLS: Whenever you need to find definitions, references, call chains, or class relationships, you MUST use the `code-memory-mcp` (or your connected memory MCP) server.
+3. SEARCH STRATEGY: Treat `code-memory-mcp` as your primary exploratory tool. Only fall back to simple file reading or glob matching when the semantic memory tool does not yield results for a specific file path.
+4. Do not use 'find' or 'grep' to answer structural questions.
+
 # CampaignGenerator
 
 A D&D session-prep CLI that assembles campaign documents and session beats, calls the Claude API to generate encounter/narration documents, and integrates with rpglib + MemPalace for verbatim retrieval from a local RPG library.
