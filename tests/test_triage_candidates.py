@@ -36,30 +36,48 @@ def _add(campaign_dir, name, type_="npc", aliases=None):
 # ── triage-candidates ────────────────────────────────────────────────────────
 
 def _make_campaign(tmp_path):
-    """A tmp campaign with one known entity, one summary file, and one
-    merged.json fact corpus — the fixture shared by the triage-candidates
-    tests below."""
+    """A tmp campaign with one known entity and an ensemble merged.json fact
+    corpus (the canonical registry source), plus a summary file whose surface
+    ("Xyzzy") must be IGNORED — summaries are upstream of the ensemble and are
+    not scanned when an ensemble exists. Shared fixture for the tests below.
+
+    Subjects are lowercase descriptive phrases (as in real merged.json), so the
+    only proper nouns tokenized out of subject+fact text are the capitalized
+    names: Ilvara(1, known→dropped), Zalthir(3), Grazzt(1), Orcus(2)."""
     campaign_dir = _init(tmp_path, campaign="out-of-the-abyss")
     _add(campaign_dir, "Ilvara Mizzrym", aliases=["Ilvara"])
-
-    summary_dir = campaign_dir / "summaries" / "20260101"
-    summary_dir.mkdir(parents=True)
-    (summary_dir / "session-summary.md").write_text(
-        "Ilvara addressed the drow. Zalthir emerged from the shadows.\n"
-        "Zalthir spoke to Zalthir again. Grazzt watched from the throne.\n",
-        encoding="utf-8",
-    )
 
     ensemble_dir = campaign_dir / "docs" / "ensemble"
     ensemble_dir.mkdir(parents=True)
     (ensemble_dir / "merged.json").write_text(
         json.dumps([
+            {"subject": "the drow priestess", "fact": "Ilvara addressed the drow."},
+            {"subject": "a shadow figure", "fact": "Zalthir emerged from the shadows."},
+            {"subject": "a shadow figure", "fact": "Zalthir spoke to Zalthir again."},
+            {"subject": "a demon lord", "fact": "Grazzt watched from the throne."},
             {"subject": "a demon lord", "fact": "Orcus appeared in the vision."},
             {"subject": "a demon lord", "fact": "Orcus was summoned by the cultists."},
         ]),
         encoding="utf-8",
     )
+
+    # Summaries are upstream of the ensemble and must NOT be scanned when an
+    # ensemble is present. "Xyzzy" is the tripwire for that.
+    summary_dir = campaign_dir / "summaries" / "20260101"
+    summary_dir.mkdir(parents=True)
+    (summary_dir / "session-summary.md").write_text(
+        "Xyzzy the forgotten haunts the archive.\n",
+        encoding="utf-8",
+    )
     return campaign_dir
+
+
+def _append_ensemble_fact(campaign_dir, subject, fact):
+    """Append one fact to the campaign's ensemble merged.json corpus."""
+    merged = campaign_dir / "docs" / "ensemble" / "merged.json"
+    data = json.loads(merged.read_text(encoding="utf-8"))
+    data.append({"subject": subject, "fact": fact})
+    merged.write_text(json.dumps(data), encoding="utf-8")
 
 
 def test_triage_candidates_drops_knowns_and_queues_unknowns(tmp_path):
@@ -74,11 +92,12 @@ def test_triage_candidates_drops_knowns_and_queues_unknowns(tmp_path):
 
     surfaces = {c["surface"] for c in payload["candidates"]}
     assert "Ilvara" not in surfaces  # known (registered alias) — dropped
+    assert "Xyzzy" not in surfaces   # summary-only surface — ignored (ensemble is source)
 
     zalthir = next(c for c in payload["candidates"] if c["surface"] == "Zalthir")
     assert zalthir["count"] == 3
     assert zalthir["norm"] == "zalthir"
-    assert any("session-summary.md" in s for s in zalthir["sources"])
+    assert any("merged.json" in s for s in zalthir["sources"])
     assert zalthir["near_miss"] is None
 
     grazzt = next(c for c in payload["candidates"] if c["surface"] == "Grazzt")
@@ -88,8 +107,9 @@ def test_triage_candidates_drops_knowns_and_queues_unknowns(tmp_path):
     assert orcus["count"] == 2
     assert any("merged.json" in s for s in orcus["sources"])
 
-    assert any("summaries/*/session-summary.md" in g for g in payload["generated_from"])
+    # ensemble is the source; summaries are not scanned when one exists
     assert any("merged.json" in g for g in payload["generated_from"])
+    assert not any("summaries" in g for g in payload["generated_from"])
 
     # sorted by count desc then surface: Zalthir(3) before Orcus(2)/Grazzt(1)
     counts = [c["count"] for c in payload["candidates"]]
@@ -98,12 +118,8 @@ def test_triage_candidates_drops_knowns_and_queues_unknowns(tmp_path):
 
 def test_triage_candidates_near_miss_hint(tmp_path):
     campaign_dir = _make_campaign(tmp_path)
-    # Add a near-miss typo of the known alias "Ilvara" to the summary text.
-    summary = campaign_dir / "summaries" / "20260101" / "session-summary.md"
-    summary.write_text(
-        summary.read_text(encoding="utf-8") + "Ilvaraa gave a speech. Ilvaraa again.\n",
-        encoding="utf-8",
-    )
+    # Add a near-miss typo of the known alias "Ilvara" to the ensemble corpus.
+    _append_ensemble_fact(campaign_dir, "a speaker", "Ilvaraa gave a speech. Ilvaraa again.")
 
     rc = registry.main(["triage-candidates", str(campaign_dir)])
     assert rc == 0
@@ -120,11 +136,7 @@ def test_triage_candidates_near_miss_hint(tmp_path):
 
 def test_triage_candidates_suppresses_near_miss_for_settled_ruling(tmp_path):
     campaign_dir = _make_campaign(tmp_path)
-    summary = campaign_dir / "summaries" / "20260101" / "session-summary.md"
-    summary.write_text(
-        summary.read_text(encoding="utf-8") + "Ilvaraa gave a speech. Ilvaraa again.\n",
-        encoding="utf-8",
-    )
+    _append_ensemble_fact(campaign_dir, "a speaker", "Ilvaraa gave a speech. Ilvaraa again.")
 
     # GM already ruled "Ilvaraa" and "Ilvara" (the alias that would have
     # matched) are DIFFERENT entities — the hint must be suppressed.
@@ -179,11 +191,7 @@ def test_triage_candidates_drops_pc_names_from_party_yaml(tmp_path):
         "characters:\n  - name: Grygum\n  - name: Zalthir\n",
         encoding="utf-8",
     )
-    summary = campaign_dir / "summaries" / "20260101" / "session-summary.md"
-    summary.write_text(
-        summary.read_text(encoding="utf-8") + "Grazzt fought Grygum near the throne.\n",
-        encoding="utf-8",
-    )
+    _append_ensemble_fact(campaign_dir, "a skirmish", "Grazzt fought Grygum near the throne.")
 
     out = tmp_path / "q.json"
     assert registry.main(["triage-candidates", str(campaign_dir), "--out", str(out)]) == 0
@@ -193,6 +201,48 @@ def test_triage_candidates_drops_pc_names_from_party_yaml(tmp_path):
     assert "Grygum" not in surfaces   # PC name — suppressed via party.yaml union
     assert "Zalthir" not in surfaces  # also a listed PC now — suppressed
     assert "Grazzt" in surfaces        # not a PC, still an unknown candidate
+
+
+def test_triage_candidates_ignores_summaries_when_ensemble_present(tmp_path):
+    # Regression guard: when an ensemble exists, raw summaries (incl. the
+    # summaries/old archive) must not be scanned — they are upstream of the
+    # ensemble and re-derive noisy/archived entities.
+    campaign_dir = _make_campaign(tmp_path)  # ensemble corpus + a summary with "Xyzzy"
+    # Also drop an archived scene extraction that would otherwise be swept in.
+    old = campaign_dir / "summaries" / "old" / "20260101" / "scene_extractions_new"
+    old.mkdir(parents=True)
+    (old / "01_archived.md").write_text("Archivius stalks the stacks.\n", encoding="utf-8")
+
+    out = tmp_path / "q.json"
+    assert registry.main(["triage-candidates", str(campaign_dir), "--out", str(out)]) == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    surfaces = {c["surface"] for c in payload["candidates"]}
+
+    assert "Orcus" in surfaces          # ensemble surface — queued
+    assert "Xyzzy" not in surfaces      # current summary — ignored
+    assert "Archivius" not in surfaces  # summaries/old archive — ignored
+    assert not any("summaries" in g for g in payload["generated_from"])
+
+
+def test_triage_candidates_falls_back_to_summaries_without_ensemble(tmp_path):
+    # No docs/ensemble/* at all → legacy fallback scans raw summaries directly.
+    campaign_dir = _init(tmp_path, campaign="legacy")
+    _add(campaign_dir, "Ilvara Mizzrym", aliases=["Ilvara"])
+    summary_dir = campaign_dir / "summaries" / "20260101"
+    summary_dir.mkdir(parents=True)
+    (summary_dir / "session-summary.md").write_text(
+        "Zalthir emerged from the shadows. Grazzt watched from the throne.\n",
+        encoding="utf-8",
+    )
+
+    out = tmp_path / "q.json"
+    assert registry.main(["triage-candidates", str(campaign_dir), "--out", str(out)]) == 0
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    surfaces = {c["surface"] for c in payload["candidates"]}
+
+    assert "Zalthir" in surfaces
+    assert "Grazzt" in surfaces
+    assert any("session-summary.md" in g for g in payload["generated_from"])
 
 
 def test_triage_candidates_missing_registry_errors(tmp_path):
