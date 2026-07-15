@@ -16,6 +16,7 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
+from campaignlib.registry import find_registry
 from server.subprocess_runner import python_exe, stream_subprocess, sse_error_stream
 
 router = APIRouter()
@@ -380,8 +381,16 @@ def run_bundle(
     entity_parallel: int = 0,
 ):
     cmd = [python_exe(), str(SCRIPT_DIR / "facts_to_state.py"), "--corpus", corpus]
-    _cmd_opt(cmd, "--aliases", aliases)
-    _cmd_multi(cmd, "--known-names", known_names)
+    # A campaign that has migrated to docs/entity_registry.yaml supersedes the
+    # UI's persisted legacy aliases/known-names fields (Principle: single
+    # source of truth for aliases). Passing both trips facts_to_state.py's
+    # deprecation guard and permanently disables its own auto-discovery.
+    registry_path = find_registry(Path.cwd())
+    if registry_path is not None:
+        _cmd_opt(cmd, "--registry", str(registry_path))
+    else:
+        _cmd_opt(cmd, "--aliases", aliases)
+        _cmd_multi(cmd, "--known-names", known_names)
     _cmd_opt(cmd, "--min-facts", min_facts)
     if list:
         cmd.append("--list")
@@ -421,7 +430,11 @@ def run_threads(
     cmd = [python_exe(), str(SCRIPT_DIR / "facts_to_state.py"),
            "--corpus", corpus, "--types", "thread",
            "--min-facts", str(min_facts), "--render-only", output]
-    _cmd_opt(cmd, "--aliases", aliases)
+    registry_path = find_registry(Path.cwd())
+    if registry_path is not None:
+        _cmd_opt(cmd, "--registry", str(registry_path))
+    else:
+        _cmd_opt(cmd, "--aliases", aliases)
     return _run_locked("threads", cmd)
 
 

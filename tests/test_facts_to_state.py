@@ -70,6 +70,28 @@ def test_select_min_facts_only_and_top():
     assert [b.display for b in top] == ["Daz", "Stool"]
 
 
+def test_select_waives_min_facts_for_known_names():
+    bundles = {
+        "npc\x00daz": _bundle("npc", "daz", [(i, _fact("npc", "Daz", f"f{i}"), "Daz") for i in range(1, 6)]),
+        "npc\x00bit": _bundle("npc", "bit", [(1, _fact("npc", "Bit", "z"), "Bit")]),
+        "npc\x00stray": _bundle("npc", "stray", [(1, _fact("npc", "Stray", "z"), "Stray")]),
+    }
+    # "bit" is a registry/known-names entry with only 1 fact — included anyway.
+    # "stray" isn't in known_names — still dropped by the min_facts floor.
+    selected = fts.select(bundles, min_facts=3, only=None, top=None,
+                          known_names={"bit"})
+    assert {b.display for b in selected} == {"Daz", "Bit"}
+
+
+def test_select_does_not_waive_min_facts_for_excluded_names():
+    b = _bundle("npc", "bit", [(1, _fact("npc", "Bit", "z"), "Bit")])
+    b.known = False  # forced anonymous via --exclude-names, despite key overlap
+    bundles = {"npc\x00bit\x00unknown": b}
+    selected = fts.select(bundles, min_facts=3, only=None, top=None,
+                          known_names={"bit"})
+    assert selected == []
+
+
 def test_render_bundles_groups_and_chapter_tags():
     b = _bundle("thread", "themystery", [
         (4, _fact("thread", "the mystery", "clue A", "quote A"), "the mystery"),

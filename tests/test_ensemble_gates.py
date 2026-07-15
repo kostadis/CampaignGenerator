@@ -112,6 +112,64 @@ def test_bundle_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
     assert not captured["env_extra"]
 
 
+# ── entity_registry.yaml supersedes stale UI-persisted --aliases/--known-names
+# ── (a campaign that's migrated to the registry must not keep tripping
+# ── facts_to_state.py's deprecation guard, which also disables its own
+# ── auto-discovery when legacy flags are present) ──────────────────────────
+
+def test_bundle_prefers_registry_over_stale_aliases(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "docs").mkdir()
+    registry = tmp_path / "docs" / "entity_registry.yaml"
+    registry.write_text("version: 1\nentities: []\n")
+
+    r = client.get("/api/ensemble/run/bundle", params={
+        "aliases": "docs/ensemble/alias.json",
+        "known_names": ["docs/entity_inventory.md"],
+    })
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--registry" in cmd
+    assert cmd[cmd.index("--registry") + 1] == str(registry)
+    assert "--aliases" not in cmd
+    assert "--known-names" not in cmd
+
+
+def test_bundle_falls_back_to_legacy_aliases_without_registry(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+
+    r = client.get("/api/ensemble/run/bundle", params={
+        "aliases": "docs/ensemble/alias.json",
+        "known_names": ["docs/entity_inventory.md"],
+    })
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--registry" not in cmd
+    assert cmd[cmd.index("--aliases") + 1] == "docs/ensemble/alias.json"
+    assert cmd[cmd.index("--known-names") + 1] == "docs/entity_inventory.md"
+
+
+def test_threads_prefers_registry_over_stale_aliases(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "docs").mkdir()
+    registry = tmp_path / "docs" / "entity_registry.yaml"
+    registry.write_text("version: 1\nentities: []\n")
+
+    r = client.get("/api/ensemble/run/threads",
+                   params={"aliases": "docs/ensemble/alias.json"})
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--registry" in cmd
+    assert cmd[cmd.index("--registry") + 1] == str(registry)
+    assert "--aliases" not in cmd
+
+
 # ── Subscription (claude-code) backend selection ────────────────────────────
 
 def test_synthesize_forwards_claude_code_backend_and_model(tmp_path, monkeypatch):

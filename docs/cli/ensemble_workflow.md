@@ -423,7 +423,7 @@ Selected: 439 for aggregation
 - Are the PCs tagged `[known]`? (They should be.)
 - Are major recurring NPCs tagged `[known]`? (Adabra, Harbin, Falcon, etc.)
 - Are obviously anonymous labels (`guard`, `bandit`, `orc`) scoped to location? (They should be.)
-- Is the `--min-facts` floor reasonable? (3 is the lower bound for anything worth a dossier; 10 is a good synthesis floor.)
+- Is the `--min-facts` floor reasonable? (3 is the lower bound for anything worth a dossier; 10 is a good synthesis floor.) This floor is **waived for entities in `--known-names`/`--registry`** — once a source enumerates the known-entity universe, even a single-fact hit for a known entity gets a dossier (the floor exists to filter noise out of the unscoped pool, not to second-guess a ground-truth roster). The `Selected:` line reports how many were pulled in below the floor this way.
 
 `--list` does not call the model. Use it freely.
 
@@ -544,48 +544,26 @@ python ~/src/CampaignGenerator/build_recent_events.py \
 
 Run this after Stage 2c to produce `merged_dossiers/` — a directory where every type-duplicate group is collapsed into one file, used as input to all Stage 3 synthesis steps instead of `state_dossiers/`.
 
-```bash
-cd ~/Phandalin/Phandalin
+**Use the `/ensemble-type-merge` skill for this, not a blind script.** A shared subject name across types is
+not always the same entity — grouping by filename alone and merging every match is unsafe: e.g. a 539-fact
+`npc_daz.md` (a PC) next to a 1-fact `faction_daz.md` is almost certainly extraction noise, not a real
+second facet, while `npc_glabbagool.md` + `monster_glabbagool.md` genuinely are the same entity. This is an
+identity decision, not a rendering one, so it needs the same human-checkpoint treatment as
+`ensemble-alias-review`. The skill walks every type-duplicate candidate group one at a time, reads the
+dossier bodies (not just fact counts), recommends merge/keep-separate/uncertain with reasoning, and only
+then runs the deterministic concatenation — persisting decisions to
+`docs/ensemble/.type_merge_decisions.json` so re-runs are resumable.
 
-python3 - <<'PY'
-import glob, re, os, shutil
-from collections import defaultdict
-
-src = 'docs/ensemble/state_dossiers'
-dst = 'docs/ensemble/merged_dossiers'
-os.makedirs(dst, exist_ok=True)
-
-def n_facts(path):
-    m = re.search(r'^n_facts:\s*(\d+)', open(path).read(), re.M)
-    return int(m.group(1)) if m else 0
-
-# group by subject = everything after the first underscore
-groups = defaultdict(list)
-for f in sorted(glob.glob(f'{src}/*.md')):
-    base = os.path.basename(f)
-    subject = base.split('_', 1)[1] if '_' in base else base
-    groups[subject].append(f)
-
-for subject, files in sorted(groups.items()):
-    if len(files) == 1:
-        shutil.copy(files[0], os.path.join(dst, os.path.basename(files[0])))
-    else:
-        primary = max(files, key=n_facts)
-        out_name = os.path.basename(primary)
-        parts = []
-        for f in sorted(files, key=n_facts, reverse=True):
-            parts.append(f'<!-- source: {os.path.basename(f)} -->\n')
-            parts.append(open(f).read().rstrip())
-        with open(os.path.join(dst, out_name), 'w') as fh:
-            fh.write('\n\n---\n\n'.join(parts) + '\n')
-        print(f'merged → {out_name}  ({[os.path.basename(f) for f in sorted(files, key=n_facts, reverse=True)]})')
-
-total = len(list(glob.glob(dst + '/*.md')))
-print(f'{total} files in merged_dossiers/')
-PY
+```
+/ensemble-type-merge [campaign-dir]
 ```
 
-The merged file takes the name of the highest-fact-count member; all sources are listed in HTML comments at the top of each section for traceability.
+Under the hood it's still the same deterministic concatenation this section used to document as a raw
+heredoc: group `state_dossiers/*.md` by subject, concatenate confirmed type-duplicates (primary file's name
+wins, each source kept verbatim behind an HTML-comment marker), copy everything else through unchanged. The
+merged file takes the name of the highest-fact-count member; all sources are listed in HTML comments at the
+top of each section for traceability. The skill just adds the human confirmation step before any merge
+actually happens.
 
 **Deity entities — annotate, do not exclude.** Deities (Talos, Lolth, etc.) produce thin dossiers (< 20 facts) because extraction only sees how characters *talk about* them — their divine nature is not captured, only campaign-specific mentions. A synthesis model reading them cold will not know what it is looking at. As the party gains levels, direct divine interaction (avatars, omens, divine challenges) becomes plausible, so these dossiers become increasingly important.
 
