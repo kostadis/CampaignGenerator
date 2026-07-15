@@ -625,8 +625,12 @@ def _resolve_palace_path() -> str | None:
     return None
 
 
-def _resolve_rpg_library_url() -> str:
-    """Resolve the rpg-library HTTP base URL — env var, config, or default."""
+def _resolve_rpg_library_url() -> str | None:
+    """Resolve the rpg-library HTTP base URL — env var, config, or default.
+
+    Returns None when unwired (no env var, config, or mneme wiring key) —
+    callers must not assume a str.
+    """
     val = os.environ.get("RPG_LIBRARY_URL")
     if val:
         return val
@@ -808,7 +812,13 @@ def suggest_conversion(book_id: int = 0, filepath: str = "") -> str:
     from rpg_retriever import _http_get_json
     from suggest_conversion import build_suggestion
 
-    base_url = _resolve_rpg_library_url().rstrip("/")
+    raw_url = _resolve_rpg_library_url()
+    if not raw_url:
+        return (
+            "Error: rpg-library URL not configured. Set RPG_LIBRARY_URL, "
+            "config.yaml's rpg_library_url, or the mneme wiring rpg_library_url."
+        )
+    base_url = raw_url.rstrip("/")
     palace = _resolve_palace_path()
 
     book: dict | None = None
