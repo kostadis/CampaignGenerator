@@ -251,11 +251,17 @@ def list_chapters(
         if not pattern or not pattern.strip():
             continue
         for hit in cwd.glob(pattern.strip()):
-            if not hit.is_file():
-                continue
             r = hit.resolve()
             if cwd not in r.parents:
-                continue  # confine to the workspace
+                continue  # confine to the workspace (escaping hits stay silently empty)
+            if r.is_dir():
+                rel = r.relative_to(cwd)
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"'{pattern.strip()}' matched a directory ({rel}), not chapter files. Did you mean '{rel}/*.md'?",
+                )
+            if not r.is_file():
+                continue
             matched[str(r.relative_to(cwd))] = r
     out = []
     for rel in sorted(matched):

@@ -20,8 +20,7 @@ if [ ! -f "$DIST/index.html" ] || \
    [ -n "$(find "$FE/src" "$FE/index.html" "$FE/vite.config.ts" "$FE/package.json" \
               -type f -newer "$DIST/index.html" 2>/dev/null | head -n 1)" ]; then
   echo "Building frontend..."
-  cd "$FE" && npm run build
-  cd "$SCRIPT_DIR"
+  ( cd "$FE" && npm run build )
 fi
 
 # Parse --port from args for the startup message
