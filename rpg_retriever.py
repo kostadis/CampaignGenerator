@@ -108,7 +108,7 @@ def _http_post_json(
 def search_rpglib(
     query: str,
     *,
-    base_url: str = _DEFAULT_RPGLIB_URL,
+    base_url: str | None = _DEFAULT_RPGLIB_URL,
     limit: int = 20,
     game_system: str | None = None,
     product_type: str | None = None,
@@ -117,7 +117,8 @@ def search_rpglib(
     """Search rpg-library for candidate books via its HTTP API.
 
     Soft-fails to ``[]`` with a logged warning when the server is
-    unreachable — drawers and cheap candidates still flow.
+    unreachable, or when ``base_url`` is unset (rpg_library_url not
+    configured) — drawers and cheap candidates still flow.
 
     When ``book_id`` is set, fetches ``/book/{id}`` directly and returns
     a one-element list (or empty if not found). Otherwise uses
@@ -126,6 +127,9 @@ def search_rpglib(
     scoped-search calls that pass only ``game_system`` or
     ``product_type``).
     """
+    if not base_url:
+        logger.warning("rpg-library base_url not configured — expensive tier skipped")
+        return []
     base_url = base_url.rstrip("/")
 
     # Mode C pin by book_id: single fetch.
@@ -228,6 +232,7 @@ class RetrievalResult:
     statblock_hits: int = 0
     fallback: bool = False
     fallback_reason: str | None = None
+    expensive_fallback_reason: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         out = {
@@ -245,6 +250,8 @@ class RetrievalResult:
         }
         if self.fallback_reason:
             out["fallback_reason"] = self.fallback_reason
+        if self.expensive_fallback_reason:
+            out["expensive_fallback_reason"] = self.expensive_fallback_reason
         return out
 
 
@@ -360,6 +367,7 @@ def reconcile(
     k_cheap: int = 10,
     k_expensive: int = 10,
     palace: str | None = None,
+    expensive_fallback_reason: str | None = None,
 ) -> RetrievalResult:
     """Merge MemPalace hits + cheap + expensive candidates into the tiered
     retrieval result. Pure function — no I/O.
@@ -380,6 +388,7 @@ def reconcile(
         fivetools_candidates_seen=len(fivetools_list),
         fallback=bool(mempalace_result.get("fallback")),
         fallback_reason=mempalace_result.get("fallback_reason"),
+        expensive_fallback_reason=expensive_fallback_reason,
     )
 
     # ── Tier 1: drawers / statblocks ─────────────────────────────────────
@@ -472,7 +481,7 @@ def retrieve(
     query: str = "",
     *,
     palace: str | None = None,
-    rpg_library_url: str = _DEFAULT_RPGLIB_URL,
+    rpg_library_url: str | None = _DEFAULT_RPGLIB_URL,
     fivetools_data_root: Path | None = None,
     fivetools_catalog=None,
     limit: int = 10,
@@ -500,6 +509,11 @@ def retrieve(
           an expensive pin.
     """
     active_palace = _resolve_active_palace(palace)
+    expensive_fallback_reason = (
+        "rpg-library unavailable: rpg_library_url not configured"
+        if include_expensive and not rpg_library_url
+        else None
+    )
 
     # ── Mode C cheap pin: synthesize one cheap candidate, skip search ────
     if not query and file_path:
@@ -593,6 +607,7 @@ def retrieve(
         k_cheap=k_cheap,
         k_expensive=k_expensive,
         palace=active_palace,
+        expensive_fallback_reason=expensive_fallback_reason,
     )
     return reconciled.to_dict()
 

@@ -143,6 +143,13 @@ def test_search_rpglib_unreachable_server_soft_fails():
     assert out == []
 
 
+def test_search_rpglib_none_base_url_soft_fails():
+    # Unwired rpg_library_url (mneme wiring absent) must soft-fail like an
+    # unreachable server, not crash on base_url.rstrip().
+    out = rpgr.search_rpglib("anything", base_url=None)
+    assert out == []
+
+
 def test_search_rpglib_empty_query_uses_search_endpoint(rpglib_http):
     base_url, responses = rpglib_http
     responses["search"] = [
@@ -361,6 +368,33 @@ def test_retrieve_mode_c_cheap_pin():
 def test_retrieve_validation_requires_some_driver():
     with pytest.raises(ValueError):
         rpgr.retrieve(query="")
+
+
+def test_retrieve_rpg_library_url_none_soft_skips_expensive_tier():
+    # Unwired rpg_library_url (mneme wiring absent) must not crash retrieve();
+    # drawer tier stays intact and the expensive tier soft-skips with a
+    # fallback reason instead of raising on base_url.rstrip(None).
+    fake_mp = FakeMempalaceClient(responses={
+        "mempalace_search_hierarchical": lambda **kw: {
+            "query": kw["query"], "max_depth": kw.get("max_depth", 2),
+            "path": {"wings": [], "rooms": []},
+            "results": [
+                {"drawer_id": "d1", "wing": "wing_rpglib", "room": "room_x",
+                 "text": "some prose", "similarity": 0.9},
+            ],
+            "total_before_filter": 1, "fallback": False,
+        },
+    })
+    out = rpgr.retrieve(
+        "kappa", rpg_library_url=None, mp_client=fake_mp,
+        limit=5, k_cheap=0, k_expensive=5,
+    )
+    assert out["drawer_hits"] == 1
+    assert out["candidates_expensive_emitted"] == 0
+    assert out["expensive_fallback_reason"] == (
+        "rpg-library unavailable: rpg_library_url not configured"
+    )
+    assert out["fallback"] is False  # mempalace tier itself was healthy
 
 
 def test_retrieve_book_id_only_targets_expensive(rpglib_http):
