@@ -22,6 +22,18 @@ RIGHT — split into atomic facts, each with one contiguous quote:
 
 The ellipsis is the tell: if you reach for `...` to build a quote, you have bundled — stop and split.
 
+WRONG — literal "I" left as the subject of a first-person interior beat:
+
+  {"type": "npc", "subject": "I", "fact": "I know what's real. I know what I've left behind and what I haven't.", "source_quote": "I know what's real. I know what I've left behind and what I haven't."}
+
+RIGHT — the pronoun resolved to the POV character named in the chunk's continuation banner:
+
+  [Continuing — Speaker: Zalthir, Scene: The Confrontation with Ilvara]
+
+  I know what's real. I know what I've left behind and what I haven't...
+
+  {"type": "npc", "subject": "Zalthir", "fact": "Zalthir believes he knows what's real, what he's left behind, and what he hasn't.", "source_quote": "I know what's real. I know what I've left behind and what I haven't."}
+
 Your scope. Look for every sentence where the source says any of the following ABOUT a named character:
 
 1. **Thoughts, considerations, intentions.** Trigger words: "thought," "considered," "wondered," "decided," "intended," "planned to," "wanted to," "hoped to." Example: *"Thorin thought the mushroom looked like a giant's tongue."* → `npc` fact about Thorin.
@@ -49,6 +61,7 @@ Rules:
 - `type` MUST be one of exactly: `npc`, `faction`, `event`, `location`, `object`, `monster`, `thread`, `date`. Do not invent new types.
 - **The source text must contain an explicit interiority trigger OR a relational gesture between named characters.** For categories 1-8 (thoughts, feelings, refusals, etc.), do not infer interior states from actions alone. If the text says "X drew a sword" do NOT emit "X felt angry." If the text says "X drew a sword, his face purple with rage" you may emit a feeling fact because rage is explicit. For category 9 (gestures), extract the gesture itself verbatim and stop there — do NOT translate it into the feeling it implies. The gesture is the fact; the feeling is the reader's inference.
 - **The subject must be a named character.** Do not emit interiority facts about unnamed groups ("the prisoners felt hopeful"). One named subject per fact.
+- **Resolve first-person pronouns.** If the source text uses "I"/"me"/"my"/"myself" with no named character in view, resolve the pronoun to the POV character named in a `[Continuing — Speaker: X, ...]` banner at the top of the chunk, or failing that, the character named in the nearest preceding `## Name — Scene` or `### Name` heading. Use that name as `subject` — never emit `"I"`, `"me"`, `"narrator"`, or `"speaker"` as a literal subject. If no named POV character can be determined either way, drop the fact rather than guessing.
 - `source_quote` MUST be a single contiguous span copy-pasted from the input. No `...`. No stitching.
 - Do not editorialize. State only what the text says about the character's interior; do not interpret further.
 - A descriptive phrase in commas attaches to the noun immediately before it.

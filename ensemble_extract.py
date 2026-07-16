@@ -92,11 +92,11 @@ def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
     return cmd
 
 PASSES = [
-    {"name": "small",       "chunk_size": 6000,  "agent": "extract_facts"},
-    {"name": "large",       "chunk_size": 15000, "agent": "extract_facts"},
-    {"name": "sweep",       "chunk_size": 15000, "agent": "extract_facts_sweep"},
-    {"name": "temporal",    "chunk_size": 15000, "agent": "extract_facts_temporal"},
-    {"name": "interiority", "chunk_size": 15000, "agent": "extract_facts_interiority"},
+    {"name": "small",       "chunk_size": 6000,  "agent": "extract_facts",             "annotate_pov": True},
+    {"name": "large",       "chunk_size": 15000, "agent": "extract_facts",             "annotate_pov": True},
+    {"name": "sweep",       "chunk_size": 15000, "agent": "extract_facts_sweep",       "annotate_pov": True},
+    {"name": "temporal",    "chunk_size": 15000, "agent": "extract_facts_temporal",    "annotate_pov": True},
+    {"name": "interiority", "chunk_size": 15000, "agent": "extract_facts_interiority", "annotate_pov": True},
 ]
 
 

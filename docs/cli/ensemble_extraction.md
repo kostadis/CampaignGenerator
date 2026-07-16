@@ -18,7 +18,13 @@ python ensemble.py session-summary.md --workdir gen-ch01/
 ```
 
 This runs 5 passes (small / large / sweep / temporal / interiority) against
-`session-summary.md`, then merges them into `gen-ch01/merged.json`.
+`session-summary.md`, then merges them into `gen-ch01/merged.json`. All 5
+passes default to `annotate_pov: true` — chunks that don't open with their
+own `## Speaker — Scene` or `### Speaker` heading get a carry-forward
+`[Continuing — Speaker: X, ...]` banner prepended, so a chunk boundary
+landing mid-scene doesn't strand first-person prose with no named subject.
+It's a no-op on documents with no matching headings. Override per pass via
+`--plan` (see below) if you need it off.
 
 With both Sparks:
 
