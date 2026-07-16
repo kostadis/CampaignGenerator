@@ -223,6 +223,12 @@ def _collect_monster_vocab(corpus_paths: list[Path], aliases: dict[str, str]) ->
     mistagged as npc (e.g. a fact framing "the ghoul" as having agency gets
     type: npc in one chapter and type: monster, correctly, in another).
     """
+    # Normalise alias-map keys so a registry/aliases.json entry matches
+    # regardless of the raw extracted subject's casing/punctuation (e.g.
+    # registry alias "zurkwhood" must still catch extracted subject
+    # "Zurkwhood") — canonicals (the dict values) stay exact-case display
+    # strings; only the lookup key is normalised.
+    aliases = {_norm_subject(k): v for k, v in aliases.items()}
     vocab: set[str] = set()
     for path in corpus_paths:
         try:
@@ -234,7 +240,7 @@ def _collect_monster_vocab(corpus_paths: list[Path], aliases: dict[str, str]) ->
                 continue
             raw = (f.get("subject") or "").strip()
             if raw:
-                vocab.add(_norm_subject(aliases.get(raw, raw)))
+                vocab.add(_norm_subject(aliases.get(_norm_subject(raw), raw)))
     return vocab
 
 
@@ -282,6 +288,10 @@ def load_bundles(corpus_paths: list[Path], aliases: dict[str, str],
     bundles: dict[str, Bundle] = {}
     type_set = set(types)
     exclude_names = exclude_names or set()
+    # See _collect_monster_vocab's matching comment: normalise alias-map keys
+    # so casing/punctuation in the raw extracted subject can't defeat a
+    # registry/aliases.json match.
+    aliases = {_norm_subject(k): v for k, v in aliases.items()}
     monster_vocab = _collect_monster_vocab(corpus_paths, aliases) if "npc" in type_set else set()
     needs_location_scoping = known_names is not None or "npc" in type_set
     for path in sorted(corpus_paths, key=session_index):
@@ -315,7 +325,7 @@ def load_bundles(corpus_paths: list[Path], aliases: dict[str, str],
             raw = (f.get("subject") or "").strip()
             if not raw:
                 continue
-            display = aliases.get(raw, raw)
+            display = aliases.get(_norm_subject(raw), raw)
             norm = _norm_subject(display)
             if not norm:
                 continue
