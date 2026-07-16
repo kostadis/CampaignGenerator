@@ -6,11 +6,17 @@ from pathlib import Path
 from .textproc import prepare_chunks
 from .api.client import stream_api
 
+# Default per-chunk extraction output budget — matches stream_api's own
+# default. Most extract_system prompts produce compact notes well under this;
+# callers whose notes run longer (e.g. distill.py's citation-bearing bullets,
+# which roughly double each line's length) pass a larger `max_tokens`.
+EXTRACT_MAX_TOKENS = 8096
+
 # Whole-document synthesis needs a far larger output budget than per-chunk
 # extraction: a full campaign_state.md / world_state.md legitimately exceeds
-# the 8096-token extraction default. 32000 is well under the output ceiling of
-# the synthesis models (opus-4-8 / sonnet-4-6) and is accepted by claude -p via
-# CLAUDE_CODE_MAX_OUTPUT_TOKENS. Extraction (run_extract_pipeline) keeps 8096.
+# EXTRACT_MAX_TOKENS. 32000 is well under the output ceiling of the synthesis
+# models (opus-4-8 / sonnet-4-6) and is accepted by claude -p via
+# CLAUDE_CODE_MAX_OUTPUT_TOKENS.
 SYNTHESIS_MAX_TOKENS = 32000
 
 
@@ -27,6 +33,7 @@ def run_extract_pipeline(
     filename_template: str = "extract_{i:03d}.md",
     input_normalizer=None,
     system_suffix: str = "",
+    max_tokens: int = EXTRACT_MAX_TOKENS,
 ) -> list[Path]:
     """Chunk `text`, run `extract_system` against each chunk, cache each result to `extract_dir`.
 
@@ -41,6 +48,13 @@ def run_extract_pipeline(
     system_suffix    — optional string appended to `extract_system` with a
                        blank-line separator. Used to seed the prompt with a
                        "Known NPCs" roster (see `format_npc_roster`).
+    max_tokens       — output-token ceiling for each extraction call (default
+                       `EXTRACT_MAX_TOKENS`). Raise it for extract prompts whose
+                       notes run long relative to the source (e.g. per-bullet
+                       citations). On the claude-code (subscription) backend,
+                       hitting the ceiling is a hard error with no partial
+                       text, unlike the Anthropic API's graceful truncation —
+                       so a too-low ceiling fails the whole chunk outright.
     """
     if input_normalizer:
         text = input_normalizer(text)
@@ -61,7 +75,7 @@ def run_extract_pipeline(
 
         print(f"  [{i}/{total}] Extracting {label} ({len(chunk):,} chars)...")
         print("  " + "─" * 56)
-        result = stream_api(client, extract_system, chunk, model)
+        result = stream_api(client, extract_system, chunk, model, max_tokens=max_tokens)
         print("  " + "─" * 56)
 
         out_file.write_text(result, encoding="utf-8")
