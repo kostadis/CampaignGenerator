@@ -12,7 +12,13 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import load_agent_prompt, make_client, stream_api, DEFAULT_MODEL
+from campaignlib import (
+    DEFAULT_MODEL,
+    add_backend_args,
+    client_from_args,
+    load_agent_prompt,
+    stream_api,
+)
 
 
 def main() -> None:
@@ -31,12 +37,10 @@ def main() -> None:
                         help="Where to write the report (default: consistency_report.md "
                              "in the current directory).")
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    add_backend_args(parser)
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku (~4x cheaper, faster).")
     parser.add_argument("--verbose", action="store_true")
-    parser.add_argument("--dgx-endpoint", default=None, metavar="URL",
-                        help="Route LLM calls to an OpenAI-compatible server.")
-    parser.add_argument("--dgx-model", default=None, metavar="NAME")
     args = parser.parse_args()
 
     if args.fast:
@@ -70,7 +74,7 @@ def main() -> None:
         "## Campaign Context\n\n" + "\n\n---\n\n".join(context_parts)
     )
 
-    client = make_client(endpoint=args.dgx_endpoint, model_override=args.dgx_model)
+    client = client_from_args(args)
     system = load_agent_prompt("session_doc/consistency")
 
     print(f"[sd_consistency: Pass 1 | model: {args.model} | "

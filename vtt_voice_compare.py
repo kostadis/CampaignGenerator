@@ -27,8 +27,9 @@ import sys
 from pathlib import Path
 
 from campaignlib import (
+    add_backend_args,
+    client_from_args,
     find_default_config,
-    make_client,
     stream_api,
     save_log,
     DEFAULT_MODEL,
@@ -154,6 +155,7 @@ def main() -> None:
     parser.add_argument("--update", action="store_true", help="Append suggested lines to the voice file")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="Claude model to use")
     parser.add_argument("--no-log", action="store_true", help="Skip saving a log file")
+    add_backend_args(parser)
     args = parser.parse_args()
 
     vtt_path = Path(args.vtt).expanduser()
@@ -182,7 +184,7 @@ def main() -> None:
     voice_text = voice_path.read_text(encoding="utf-8")
     user_prompt = build_user_prompt(args.player, character, player_lines, voice_text)
 
-    client = make_client()
+    client = client_from_args(args)
     print(f"\nAnalysing against {voice_path.name}…\n")
     response = stream_api(client, ANALYSIS_SYSTEM, user_prompt, args.model)
 

@@ -36,12 +36,13 @@ from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
     build_alias_normalizer,
+    client_from_args,
     format_npc_roster,
     find_alias_registry,
     load_alias_map,
     load_file_optional,
-    make_client,
     run_extract_pipeline,
     run_synthesize_pipeline,
     save_log,
@@ -294,6 +295,7 @@ def main() -> None:
                         help="Skip saving a log file")
     parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Claude model to use")
+    add_backend_args(parser)
     args = parser.parse_args()
 
     if args.synthesize_only and args.extract_only:
@@ -359,7 +361,7 @@ def main() -> None:
     if alias_map:
         print(f"Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
 
-    client = make_client()
+    client = client_from_args(args)
 
     if not args.synthesize_only:
         vtt_path = Path(args.input).expanduser()

@@ -302,7 +302,7 @@ def test_sd_plan_writes_plan_md(tmp_path, monkeypatch):
         "focus: scouting the route ahead\n"
     )
 
-    monkeypatch.setattr(sd_plan, "make_client", lambda **_: object())
+    monkeypatch.setattr(sd_plan, "client_from_args", lambda *a, **kw: object())
     monkeypatch.setattr(sd_plan, "stream_api", lambda *a, **kw: fake_plan)
 
     monkeypatch.setattr(

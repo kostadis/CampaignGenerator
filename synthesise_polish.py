@@ -51,8 +51,9 @@ import warnings
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
+    client_from_args,
     load_registry,
-    make_client,
     resolve_registry_arg,
     stream_api,
 )
@@ -216,6 +217,7 @@ def main() -> None:
     parser.add_argument("--max-tokens", type=int, default=16000,
                         help="max_tokens for the render call (default: 16000). "
                              "Synthesis can be long; raise if output is truncated.")
+    add_backend_args(parser)
     parser.add_argument("--dump-input", default=None, metavar="FILE",
                         help="Also write the structured input we send to Claude. "
                              "Useful for debugging the prompt without spending tokens.")
@@ -262,7 +264,7 @@ def main() -> None:
     print(f"[Polish | {len(facts)} facts | model: {args.model}{inv_note}]")
     print("=" * 60)
 
-    client = make_client()
+    client = client_from_args(args)
     response = stream_api(
         client,
         system_prompt,

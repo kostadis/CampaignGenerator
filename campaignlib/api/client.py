@@ -65,23 +65,27 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
     return anthropic.Anthropic()
 
 
-def add_backend_args(parser) -> None:
-    """Register the uniform --backend/--endpoint selection on a synthesis CLI.
+def add_backend_args(parser, default_backend: str = "anthropic") -> None:
+    """Register the uniform --backend/--endpoint selection on a CLI.
 
     Shared so every LLM-bearing script speaks the same backend vocabulary
-    (Constitution Principle V). Default is anthropic — see client_from_args for
-    the backward-compatibility contract.
+    (Constitution Principle V). ``default_backend`` lets a script whose
+    endpoint always resolves to a real DGX URL (e.g. extract_facts.py, which
+    never falls through to Anthropic today) default to "dgx" instead of
+    silently changing behaviour when it adopts this seam — see
+    client_from_args for the backward-compatibility contract.
     """
     parser.add_argument(
-        "--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"], default="anthropic",
-        help="LLM backend (default: anthropic). 'dgx'/'openrouter'/'claude-code' route "
-             "through the campaignlib seam; with no flag, behaviour is unchanged (Anthropic API).")
+        "--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+        default=default_backend,
+        help=f"LLM backend (default: {default_backend}). 'dgx'/'openrouter'/'claude-code' route "
+             "through the campaignlib seam; with no flag, behaviour is unchanged.")
     parser.add_argument(
         "--endpoint", default=None, metavar="URL",
         help="OpenAI-compatible endpoint for --backend dgx (OpenRouter uses its own base URL).")
 
 
-def client_from_args(args):
+def client_from_args(args, *, endpoint: str | None = None):
     """Build a client from parsed --backend/--endpoint/--model args.
 
     Backward-compatible: with the default ``--backend anthropic`` and no
@@ -89,10 +93,15 @@ def client_from_args(args):
     (CG_BACKEND / DGX_ENDPOINT) still apply, so existing invocations are
     byte-for-byte unchanged. For dgx/openrouter the chosen ``--model`` becomes the
     seam's model override.
+
+    ``endpoint`` — explicit override that wins over ``args.endpoint``, for
+    callers that resolve a specific endpoint from a fan-out pool at call time
+    (e.g. facts_to_state.py's per-thread worker, one client per DGX box).
     """
     backend = None if getattr(args, "backend", "anthropic") == "anthropic" else args.backend
     model_override = getattr(args, "model", None) if backend in ("dgx", "openrouter", "claude-code") else None
-    return make_client(backend=backend, endpoint=getattr(args, "endpoint", None),
+    resolved_endpoint = endpoint if endpoint is not None else getattr(args, "endpoint", None)
+    return make_client(backend=backend, endpoint=resolved_endpoint,
                        model_override=model_override)
 
 

@@ -31,9 +31,10 @@ const proseMode = ref(false)
 const reflections = ref(false)
 const narrationGenre = ref('')
 const useBatch = ref(false)
-const backend = ref<'anthropic' | 'dgx' | 'claude-code'>('anthropic')
+const backend = ref<'anthropic' | 'dgx' | 'openrouter' | 'claude-code'>('anthropic')
 const dgxEndpoint = ref('')
 const dgxModel = ref('')
+const openrouterModel = ref('')
 
 // Drawer open/closed — always starts closed. The Config button opens it, and
 // onMounted auto-opens it on a cold start (required fields missing). Not
@@ -60,10 +61,12 @@ function loadConfigFields() {
   narrationGenre.value = v.sd_narration_genre || ''
   useBatch.value = v.sd_batch === true
   backend.value = v.sd_backend === 'dgx' ? 'dgx'
+    : v.sd_backend === 'openrouter' ? 'openrouter'
     : v.sd_backend === 'claude-code' ? 'claude-code'
     : 'anthropic'
   dgxEndpoint.value = v.sd_dgx_endpoint || ''
   dgxModel.value = v.sd_dgx_model || ''
+  openrouterModel.value = v.sd_openrouter_model || ''
 }
 
 // ── Auto-apply: debounce-PUT changes to /api/editor/config ───────
@@ -165,6 +168,24 @@ watch([dgxEndpoint, dgxModel], () => {
   dgxPersistTimer = setTimeout(persistDgx, 350)
 })
 
+// OpenRouter model is free-text — same debounce pattern as DGX. There is no
+// user-configurable endpoint (OpenRouter uses its own fixed base URL).
+let openrouterPersistTimer: ReturnType<typeof setTimeout> | undefined
+async function persistOpenrouter() {
+  config.values.sd_openrouter_model = openrouterModel.value
+  try {
+    await config.updateSection('session_doc', {
+      openrouter_model: openrouterModel.value.trim() || null,
+    })
+  } catch {
+    /* non-fatal — the next subprocess will still read the in-memory CONFIG */
+  }
+}
+watch(openrouterModel, () => {
+  if (openrouterPersistTimer) clearTimeout(openrouterPersistTimer)
+  openrouterPersistTimer = setTimeout(persistOpenrouter, 350)
+})
+
 // ── Scene state ───────────────────────────────────────────────────
 const scenes = ref<Scene[]>([])
 const currentScene = ref<number | null>(null)
@@ -219,7 +240,7 @@ interface ProfileEntry {
     prose_mode?: boolean
     reflections?: boolean
     narration_genre?: string
-    backend?: 'anthropic' | 'dgx' | 'claude-code'
+    backend?: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
   }
 }
 const profiles = ref<ProfileEntry[]>([])
@@ -278,7 +299,7 @@ function applyProfileKnobs(p: ProfileEntry) {
   if (typeof k.prose_mode === 'boolean') proseMode.value = k.prose_mode
   if (typeof k.reflections === 'boolean') reflections.value = k.reflections
   if (typeof k.narration_genre === 'string') narrationGenre.value = k.narration_genre
-  if (k.backend === 'anthropic' || k.backend === 'dgx' || k.backend === 'claude-code') backend.value = k.backend
+  if (k.backend === 'anthropic' || k.backend === 'dgx' || k.backend === 'openrouter' || k.backend === 'claude-code') backend.value = k.backend
 }
 
 async function selectProfile(name: string) {
@@ -773,6 +794,7 @@ onMounted(async () => {
       v-model:backend="backend"
       v-model:dgx-endpoint="dgxEndpoint"
       v-model:dgx-model="dgxModel"
+      v-model:openrouter-model="openrouterModel"
       v-model:narrate-tokens="narrateTokens"
       v-model:prose-mode="proseMode"
       v-model:reflections="reflections"

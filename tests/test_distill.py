@@ -52,7 +52,7 @@ class FakeStreamAPI:
 def fake_stream_api(monkeypatch):
     fake = FakeStreamAPI()
     monkeypatch.setattr(campaignlib.pipelines, "stream_api", fake)
-    monkeypatch.setattr(distill, "make_client", lambda: None)
+    monkeypatch.setattr(distill, "client_from_args", lambda *a, **kw: None)
     return fake
 
 

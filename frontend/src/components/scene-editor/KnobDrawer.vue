@@ -18,9 +18,10 @@ const props = defineProps<{
   context: string
   // ── Stage knobs ───────────────────────────────────────────
   useBatch: boolean
-  backend: 'anthropic' | 'dgx' | 'claude-code'
+  backend: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
   dgxEndpoint: string
   dgxModel: string
+  openrouterModel: string
   narrateTokens: number
   proseMode: boolean
   reflections: boolean
@@ -40,9 +41,10 @@ const emit = defineEmits<{
   'update:characters': [value: string]
   'update:context': [value: string]
   'update:useBatch': [value: boolean]
-  'update:backend': [value: 'anthropic' | 'dgx' | 'claude-code']
+  'update:backend': [value: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code']
   'update:dgxEndpoint': [value: string]
   'update:dgxModel': [value: string]
+  'update:openrouterModel': [value: string]
   'update:narrateTokens': [value: number]
   'update:proseMode': [value: boolean]
   'update:reflections': [value: boolean]
@@ -165,6 +167,11 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
               :class="{ active: backend === 'dgx' }"
               @click="emit('update:backend', 'dgx')"
             >DGX</button>
+            <button
+              class="seg-btn"
+              :class="{ active: backend === 'openrouter' }"
+              @click="emit('update:backend', 'openrouter')"
+            >OpenRouter</button>
           </div>
           <div class="field-help">Stage 3 (Plan &amp; Check) honors Anthropic or Subscription; DGX falls back to the Anthropic API.</div>
         </div>
@@ -189,6 +196,17 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
             @input="emit('update:dgxModel', ($event.target as HTMLInputElement).value)"
           />
           <div class="field-help">Model name the endpoint serves. Blank → the runtime default.</div>
+        </div>
+        <div v-if="backend === 'openrouter'" class="field">
+          <label class="field-label">OpenRouter model</label>
+          <input
+            type="text"
+            class="field-input"
+            :value="openrouterModel"
+            placeholder="anthropic/claude-sonnet-4"
+            @input="emit('update:openrouterModel', ($event.target as HTMLInputElement).value)"
+          />
+          <div class="field-help">OpenRouter model id. Blank → the runtime default. Uses OpenRouter's fixed base URL — no endpoint to configure.</div>
         </div>
       </section>
 

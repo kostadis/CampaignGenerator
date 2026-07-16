@@ -17,6 +17,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib.registry import find_registry
+from server.backend_forwarding import backend_cli_args
 from server.planning_config_shared import load_planning_config
 from server.subprocess_runner import python_exe, stream_subprocess, sse_error_stream
 
@@ -54,17 +55,6 @@ def _cmd_multi(cmd: list[str], flag: str, values: list[str]) -> None:
     for v in values or []:
         if v and v.strip():
             cmd += [flag, v.strip()]
-
-
-def _cmd_nargs(cmd: list[str], flag: str, values: list[str]) -> None:
-    """Emit ONE `flag v1 v2 ...` occurrence for an argparse nargs="+" flag
-    (e.g. --endpoints). Unlike _cmd_multi (which repeats the flag once per
-    value — correct for action="append" flags), nargs="+" keeps only the
-    LAST occurrence's values if the flag is repeated, so every value must go
-    into a single occurrence."""
-    vs = [v.strip() for v in (values or []) if v and v.strip()]
-    if vs:
-        cmd += [flag, *vs]
 
 
 def _cmd_flag(cmd: list[str], flag: str, condition: bool) -> None:
@@ -152,33 +142,6 @@ def _default_party_context() -> list[str]:
         elif live.exists():
             found.append(str(live))
     return found
-
-
-# ── LLM backend selection → subprocess env (Principle V) ────────────────────
-
-def _llm_env(backend: str, endpoints: list[str], model: str) -> dict[str, str]:
-    """Translate a per-stage backend choice into env that campaignlib.make_client
-    honors. The API key itself is inherited from the server env, never injected
-    from a query param.
-    """
-    if backend == "openrouter":
-        env = {"CG_BACKEND": "openrouter"}
-        if model:
-            env["OPENROUTER_MODEL"] = model
-        return env
-    if backend == "dgx":
-        # DGX_ENDPOINT is only a fallback for when --endpoints isn't passed
-        # on the CLI at all; the explicit flag (built below) always wins.
-        env = {"DGX_ENDPOINT": (endpoints[0] if endpoints else "") or "http://localhost:8000"}
-        if model:
-            env["DGX_MODEL"] = model
-        return env
-    if backend == "claude-code":
-        env = {"CG_BACKEND": "claude-code"}
-        if model:
-            env["CG_CLAUDE_CODE_MODEL"] = model
-        return env
-    return {}  # anthropic: default path, no overrides
 
 
 # ── Per-stage in-flight lock (M4) ───────────────────────────────────────────
@@ -395,13 +358,11 @@ def run_extract(
            "--per-chapter-dir", per_chapter_dir,
            "--out", out]
     _cmd_opt(cmd, "--plan", plan)
-    if backend != "anthropic":
-        _cmd_nargs(cmd, "--endpoints", endpoints)
-        _cmd_opt(cmd, "--model", model)
+    cmd += backend_cli_args(backend, model, endpoints=endpoints)
     _cmd_opt(cmd, "--chapter-parallel", chapter_parallel)
     _cmd_opt(cmd, "--chunk-parallel", chunk_parallel)
     _cmd_flag(cmd, "--no-speculative", no_speculative)
-    return _run_locked("extract", cmd, env_extra=_llm_env(backend, endpoints, model))
+    return _run_locked("extract", cmd)
 
 
 @router.get("/run/bundle")
@@ -435,14 +396,12 @@ def run_bundle(
     else:
         _cmd_opt(cmd, "--out-dir", out_dir)
         _cmd_flag(cmd, "--known-only", known_only)
-        if backend != "anthropic":
-            _cmd_nargs(cmd, "--endpoints", endpoints)
-            _cmd_opt(cmd, "--model", model)
+        cmd += backend_cli_args(backend, model, endpoints=endpoints)
         _cmd_opt(cmd, "--entity-parallel", entity_parallel)
     # --list does no model work, so it never needs the lock or backend env.
     if list:
         return _run_locked("bundle-list", cmd)
-    return _run_locked("bundle", cmd, env_extra=_llm_env(backend, endpoints, model))
+    return _run_locked("bundle", cmd)
 
 
 @router.get("/run/recent-events")
@@ -573,10 +532,7 @@ def run_synthesize(
             _cmd_multi(cmd, "--arc-scores", arc_scores)
         _cmd_multi(cmd, "--context", context)
 
-    if backend != "anthropic":
-        cmd += ["--backend", backend]
-        _cmd_opt(cmd, "--endpoint", endpoint)
-        _cmd_opt(cmd, "--model", model)
+    cmd += backend_cli_args(backend, model, endpoint=endpoint)
 
     prelude_parts = []
     # Surface auto-detected party.yaml / context so picking them up isn't
@@ -604,6 +560,4 @@ def run_synthesize(
             f"assumes a model at least as capable as Sonnet; output quality may "
             f"degrade. Proceeding anyway.\n\n")
     prelude = "".join(prelude_parts)
-    return _run_locked(f"synthesize-{doc}", cmd,
-                       env_extra=_llm_env(backend, [endpoint] if endpoint else [], model),
-                       prelude=prelude)
+    return _run_locked(f"synthesize-{doc}", cmd, prelude=prelude)

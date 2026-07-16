@@ -34,7 +34,7 @@ import sys
 import time
 from pathlib import Path
 
-from campaignlib import make_client, stream_api, DEFAULT_MODEL
+from campaignlib import add_backend_args, client_from_args, stream_api, DEFAULT_MODEL
 from scabard_sdk import ScabardAuthError, ScabardClient, ScabardRateLimitError
 
 EXTRACT_SYSTEM = """\
@@ -215,6 +215,7 @@ def main() -> None:
 
     parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Claude model for extraction (default: campaignlib.DEFAULT_MODEL / $CAMPAIGN_MODEL)")
+    add_backend_args(parser)
 
     args = parser.parse_args()
 
@@ -248,7 +249,7 @@ def main() -> None:
             sys.exit(1)
 
         docs_text = "\n\n---\n\n".join(doc_parts)
-        claude_client = make_client()
+        claude_client = client_from_args(args)
         entities = extract_entities(claude_client, docs_text, args.model)
 
         extract_path = Path(args.extract_file).expanduser().resolve()

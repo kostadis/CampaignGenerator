@@ -6,6 +6,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib import wiring_get
+from server.backend_forwarding import backend_cli_args
 from server.subprocess_runner import python_exe, stream_subprocess
 
 router = APIRouter()
@@ -13,40 +14,33 @@ router = APIRouter()
 SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent  # CampaignGenerator/
 
 
-# ── LLM backend selection → subprocess env ──────────────────────────────────
+# ── LLM backend selection → subprocess CLI flags ────────────────────────────
 # The global backend chosen in the sidebar lives at ui.session_doc.backend in
 # the unified config service. Grounding runs (campaign_state / distill / party /
 # planning) must forward it exactly like scene_editor and ensemble do — otherwise
-# a "subscription" (claude-code) selection is silently dropped and every run
-# bills the metered Anthropic API. Forwarding is env-only (never a --backend
-# flag): campaignlib.make_client honors CG_BACKEND / DGX_ENDPOINT, and distill.py
-# calls make_client() with no args so the env var is the ONLY channel that works
-# uniformly across all five scripts.
+# a selection (e.g. "openrouter") is silently dropped and every run bills the
+# metered Anthropic API. All four scripts now accept the shared --backend/
+# --endpoint/--model vocabulary (campaignlib.api.client.add_backend_args), so
+# forwarding is done as explicit CLI flags via backend_cli_args, not env vars.
 
-def _llm_env(request: Request) -> dict[str, str]:
-    """Translate the campaign's global backend choice into subprocess env vars.
+def _backend_flags(request: Request) -> list[str]:
+    """Translate the campaign's global backend choice into subprocess CLI flags.
 
-    Empty dict (backend == "anthropic", or no config service) means "no
-    overrides — the default Anthropic API code path". Mirrors
-    scene_editor._llm_env; the API key is inherited from the server env, never
-    injected here.
+    Empty list (backend == "anthropic", or no config service) means "no
+    overrides — the script's own argparse default (Anthropic API) applies".
     """
     service = getattr(request.app.state, "config_service", None)
     if service is None:
-        return {}
+        return []
     sd = service.resolved()["ui"]["session_doc"]
     backend = sd.get("backend")
-    if backend == "claude-code":
-        # Route through the `claude` CLI (Pro/Max subscription billing). The
-        # --model already carries a native claude-* name the backend honors, so
-        # no model override is injected here.
-        return {"CG_BACKEND": "claude-code"}
     if backend == "dgx":
-        return {
-            "DGX_ENDPOINT": sd.get("dgx_endpoint") or wiring_get("dgx_endpoint"),
-            "DGX_MODEL": sd.get("dgx_model") or "Qwen/Qwen2.5-14B-Instruct-AWQ",
-        }
-    return {}
+        return backend_cli_args(
+            backend, model=sd.get("dgx_model") or wiring_get("dgx_model"),
+            endpoint=sd.get("dgx_endpoint") or wiring_get("dgx_endpoint"))
+    if backend == "openrouter":
+        return backend_cli_args(backend, model=sd.get("openrouter_model"))
+    return backend_cli_args(backend)  # anthropic -> [], claude-code -> ["--backend", "claude-code"]
 
 
 def _cmd_opt(cmd: list[str], flag: str, value: str | int | None) -> None:
@@ -65,9 +59,9 @@ def _cmd_flag(cmd: list[str], flag: str, condition: bool) -> None:
         cmd.append(flag)
 
 
-def _sse_response(cmd: list[str], env_extra: dict[str, str] | None = None) -> StreamingResponse:
+def _sse_response(cmd: list[str]) -> StreamingResponse:
     return StreamingResponse(
-        stream_subprocess(cmd, cwd=str(Path.cwd()), env_extra=env_extra),
+        stream_subprocess(cmd, cwd=str(Path.cwd())),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
@@ -111,8 +105,9 @@ async def run_campaign_state(
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
+    cmd += _backend_flags(request)
 
-    return _sse_response(cmd, _llm_env(request))
+    return _sse_response(cmd)
 
 
 # ── Distill World State ─────────────────────────────────────────────────────
@@ -147,8 +142,9 @@ async def run_distill(
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
+    cmd += _backend_flags(request)
 
-    return _sse_response(cmd, _llm_env(request))
+    return _sse_response(cmd)
 
 
 # ── Party Document ──────────────────────────────────────────────────────────
@@ -193,8 +189,9 @@ async def run_party(
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
+    cmd += _backend_flags(request)
 
-    return _sse_response(cmd, _llm_env(request))
+    return _sse_response(cmd)
 
 
 # ── Planning Document ───────────────────────────────────────────────────────
@@ -240,8 +237,9 @@ async def run_planning(
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
+    cmd += _backend_flags(request)
 
-    return _sse_response(cmd, _llm_env(request))
+    return _sse_response(cmd)
 
 
 @router.get("/run/build-dossiers")
@@ -275,8 +273,9 @@ async def run_build_dossiers(
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
     cmd += ["--model", model]
+    cmd += _backend_flags(request)
 
-    return _sse_response(cmd, _llm_env(request))
+    return _sse_response(cmd)
 
 
 # ── Extraction file review (two-phase checkpoint) ───────────────────────────

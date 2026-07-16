@@ -20,7 +20,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import make_client, stream_api, DEFAULT_MODEL
+from campaignlib import add_backend_args, client_from_args, stream_api, DEFAULT_MODEL
 
 SYSTEM_PROMPT = """\
 You are reading a D&D adventure module or campaign document and extracting a tracking list.
@@ -67,6 +67,7 @@ def main() -> None:
                         help="Where to save the tracking list (e.g. tracking.txt)")
     parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Claude model to use")
+    add_backend_args(parser)
     args = parser.parse_args()
 
     input_path = Path(args.input).expanduser()
@@ -78,7 +79,7 @@ def main() -> None:
     print(f"\n[Extracting tracking list | {len(text):,} chars | model: {args.model}]")
     print("=" * 60)
 
-    client = make_client()
+    client = client_from_args(args)
     result = stream_api(client, SYSTEM_PROMPT, text, args.model)
     print("=" * 60)
 

@@ -35,7 +35,12 @@ from pathlib import Path
 DEFAULT_PROMPT_PATH = Path(__file__).resolve().parent / "config" / "scrub_mechanics_prompt.md"
 PER_CAMPAIGN_PROMPT_NAME = "scrub_mechanics_prompt.md"
 
-from campaignlib import make_client, stream_api  # noqa: E402
+from campaignlib import (  # noqa: E402
+    DEFAULT_MODEL,
+    add_backend_args,
+    client_from_args,
+    stream_api,
+)
 
 
 def resolve_prompt_path() -> Path:
@@ -143,8 +148,9 @@ def collect_targets(arg: Path) -> list[Path]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("path", type=Path, help="Narration file or directory")
-    parser.add_argument("--model", default=None,
+    parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Model name override (else DGX_MODEL env / library default)")
+    add_backend_args(parser)
     parser.add_argument("--max-tokens", type=int, default=16000,
                         help="Generation cap per file (default: 16000)")
     parser.add_argument("--dry-run", action="store_true",
@@ -165,12 +171,12 @@ def main() -> int:
         print(f"error: no narration files found under {args.path}", file=sys.stderr)
         return 2
 
-    endpoint = os.environ.get("DGX_ENDPOINT")
-    client = make_client(endpoint=endpoint, model_override=args.model)
-    model = args.model or os.environ.get("DGX_MODEL") or "claude-sonnet-4-6"
+    client = client_from_args(args)
+    model = args.model or DEFAULT_MODEL
 
     print(f"prompt:   {prompt_path}", file=sys.stderr)
-    print(f"endpoint: {endpoint or 'anthropic-api'}", file=sys.stderr)
+    print(f"backend:  {args.backend}"
+          + (f" ({args.endpoint})" if args.endpoint else ""), file=sys.stderr)
     print(f"model:    {model}", file=sys.stderr)
     print(f"targets:  {len(targets)} file(s)", file=sys.stderr)
 
