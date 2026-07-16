@@ -199,7 +199,7 @@ and drop only the pure rules/pacing/logistics lines. This is a precision
 
 ### 1a. Plan YAML
 
-The plan YAML lives alongside the ensemble workspace and controls which extraction lenses run on each chapter. The Phandalin plan:
+The plan YAML lives alongside the ensemble workspace and controls which extraction lenses run on each chapter. `annotate_pov: true` is now the built-in default for all 5 lenses (`ensemble_extract.py`'s `PASSES`), so a plan.yaml only needs to mention it to *override* that default, e.g. to turn it off, or to add a custom pass. The Phandalin plan, written before that default existed, still spells it out explicitly:
 
 ```yaml
 # docs/ensemble/plan.yaml
@@ -226,7 +226,12 @@ passes:
     annotate_pov: true
 ```
 
-`annotate_pov: true` prepends a `[Continuing — Date: X, Speaker: Y]` banner to any chunk that doesn't open with its own `##`-level heading. The chapters use `### Speaker` headings to mark POV sections; without this, chunking at character boundaries drops the heading and the model invents generic labels ("Narrator", "Speaker") as dossier subjects.
+`annotate_pov: true` prepends a `[Continuing — Date: X, Speaker: Y]` or `[Continuing — Speaker: X, Scene: Y]` banner to any chunk that doesn't open with its own `##`-level heading. Two chapter-heading conventions are recognized:
+
+- **Legacy** (Phandalin and OOTA's earlier chapters): `### Speaker` headings mark POV sections, `## date` marks date boundaries (two tiers).
+- **Current** (`assemble.py`, OOTA's later chapters): `## Speaker — Scene` marks both the speaker and scene in one `##`-level heading, with no `###` tier.
+
+Without this annotation, chunking at character boundaries drops whichever heading is in scope, and the model invents generic labels ("Narrator", "Speaker", or literal "I") as dossier subjects.
 
 To target different files per pass (e.g. a GM-assist doc for the interiority lens), add a `document:` key per pass:
 
@@ -818,6 +823,8 @@ Importance cut: **≥10 facts AND (spans ≥5 chapters OR seen since chapter 40)
 - `force_exclude` — entities above threshold that should be dropped (deceased / resolved NPCs)
 
 Each entry has a `file` key (relative to `merged_dossiers/`) and a `reason` for later pruning.
+
+Both scripts below skip any dossier named `narrator`/`speaker`/`i` — a backstop against exactly the POV-label leak that `annotate_pov` and the extraction prompts' pronoun-resolution rule now catch upstream. Kept as defense-in-depth; harmless if it never fires.
 
 **Audit pass** — run this first to see what the threshold cut picks, overlaid with the curation file:
 

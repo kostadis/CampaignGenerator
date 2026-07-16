@@ -56,42 +56,63 @@ def chunk_by_chapters(text: str, chapter_pattern: str) -> list[str]:
 
 _H3_RE = re.compile(r'^###\s+(.+)$', re.MULTILINE)
 _H2_RE = re.compile(r'^##(?!#)\s+(.+)$', re.MULTILINE)
+_H2_SPEAKER_RE = re.compile(r'^##(?!#)\s+(.+?)\s+—\s+(.+)$', re.MULTILINE)
 
 
 def annotate_chunks_with_pov(chunks: list[str]) -> list[str]:
-    """Prepend carry-forward speaker/date context to chunks that lack a heading.
+    """Prepend carry-forward speaker/date/scene context to chunks that lack a heading.
 
-    Chapter documents use ``### Name`` headings to mark POV sections and
-    ``## date`` for date boundaries. When chunk_text splits mid-section those
-    headings are absent from the next chunk, so the LLM loses track of who is
-    speaking. This function scans each chunk for those headings, maintains
-    running state, and prepends a ``[Continuing — ...]`` banner to any chunk
-    that does not open with its own ``##``-level heading.
+    Chapter documents use two conventions to mark POV sections, both live in
+    real campaign data:
+
+    - Legacy: ``### Name`` headings mark the speaker, ``## date`` marks date
+      boundaries (two tiers).
+    - Current (``assemble.py``): ``## Name — Scene`` marks the speaker AND
+      scene in a single ``##``-level heading, with no ``###`` tier at all.
+
+    When chunk_text splits mid-section those headings are absent from the
+    next chunk, so the LLM loses track of who is speaking. This function
+    scans each chunk for both heading shapes, maintains running state, and
+    prepends a ``[Continuing — ...]`` banner to any chunk that does not open
+    with its own ``##``-level heading.
     """
     last_speaker: str | None = None
     last_date: str | None = None
+    last_scene: str | None = None
     result = []
 
     for chunk in chunks:
         needs_banner = not re.match(r'^##', chunk.lstrip())
 
-        if needs_banner and (last_speaker or last_date):
+        if needs_banner and (last_speaker or last_date or last_scene):
             parts = []
             if last_date:
                 parts.append(f"Date: {last_date}")
             if last_speaker:
                 parts.append(f"Speaker: {last_speaker}")
+            if last_scene:
+                parts.append(f"Scene: {last_scene}")
             chunk = f"[Continuing — {', '.join(parts)}]\n\n{chunk}"
 
-        # Update running state from headings found in this chunk.
-        # Use the LAST heading of each type so a chunk that spans multiple
-        # sections leaves state pointing at the final one.
-        h2s = _H2_RE.findall(chunk)
+        # Update running state from headings found in this chunk, in
+        # document order, so a chunk that spans multiple sections leaves
+        # state pointing at the final one. Each bare ##-level line is either
+        # a "Name — Scene" speaker heading or a plain date/other heading —
+        # never both — so they're classified individually rather than via
+        # two independent findall() passes.
+        for m in _H2_RE.finditer(chunk):
+            line = m.group(1).strip()
+            speaker_match = _H2_SPEAKER_RE.match(m.group(0))
+            if speaker_match:
+                last_speaker = speaker_match.group(1).strip()
+                last_scene = speaker_match.group(2).strip()
+            else:
+                last_date = line
+
         h3s = _H3_RE.findall(chunk)
-        if h2s:
-            last_date = h2s[-1].strip()
         if h3s:
             last_speaker = h3s[-1].strip()
+            last_scene = None  # legacy ### speaker headings carry no scene
 
         result.append(chunk)
     return result
@@ -111,10 +132,11 @@ def prepare_chunks(
     split_label  — word used in the progress line when splitting by prefix
                    (e.g. "session", "chapter"). Defaults to "section".
     annotate_pov — if True, call annotate_chunks_with_pov() after chunking so
-                   each chunk carries carry-forward speaker/date context. Useful
-                   when the source document uses ### Speaker headings (e.g.
-                   chapter files) and character-count chunking would otherwise
-                   orphan those headings from their content.
+                   each chunk carries carry-forward speaker/date/scene context.
+                   Useful when the source document uses ### Speaker headings or
+                   ## Name — Scene headings (e.g. chapter files) and
+                   character-count chunking would otherwise orphan those
+                   headings from their content.
     """
     text = strip_base64_images(text).lstrip("﻿")
     if split_chapters:
