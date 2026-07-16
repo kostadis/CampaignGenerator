@@ -14,11 +14,12 @@ from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
     assemble_docs,
+    client_from_args,
     copy_to_clipboard,
     find_default_config,
     load_config,
-    make_client,
     save_log,
     stream_api,
 )
@@ -58,13 +59,14 @@ def main() -> None:
                         help="Path to config YAML")
     parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Claude model to use")
+    add_backend_args(parser)
     parser.add_argument("--no-log", action="store_true", help="Skip saving a log file")
     args = parser.parse_args()
 
     config, config_dir = load_config(args.config)
     user_prompt = assemble_docs(config, args.docs, config_dir)
 
-    client = make_client()
+    client = client_from_args(args)
     print(f"\n[NPC Table | docs: {', '.join(args.docs)} | model: {args.model}]\n")
     print("=" * 60)
     table = stream_api(client, SYSTEM_PROMPT, user_prompt, args.model, max_tokens=4096)

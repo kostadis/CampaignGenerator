@@ -25,12 +25,12 @@ Examples:
   # Prototype: aggregate one dense entity on the local Spark
   python facts_to_state.py --corpus 'scratch_output/full-oota/gen-ch*/merged.json' \
       --only Daz --out-dir scratch_output/state-proto \
-      --dgx-endpoint http://192.168.1.147:8001/v1 \
+      --backend dgx --endpoints http://192.168.1.147:8001/v1 \
       --model Qwen/Qwen3-Next-80B-A3B-Instruct-FP8
 
   # Top 10 densest entities
   python facts_to_state.py --corpus '...' --top 10 --out-dir scratch_output/state-proto \
-      --dgx-endpoint http://192.168.1.147:8001/v1 --model Qwen/...
+      --backend dgx --endpoints http://192.168.1.147:8001/v1 --model Qwen/...
 """
 
 import argparse
@@ -46,9 +46,9 @@ from pathlib import Path
 from campaignlib import (
     DEFAULT_MODEL,
     atomic_write_text,
+    client_from_args,
     load_agent_prompt,
     load_pc_names,
-    make_client,
     stream_api,
 )
 from campaignlib.registry import load_registry, resolve_registry_arg
@@ -497,11 +497,19 @@ def build_parser() -> argparse.ArgumentParser:
                         "(e.g. --types thread --min-facts 2 --render-only threads.md).")
     p.add_argument("--quotes", action=argparse.BooleanOptionalAction, default=True,
                    help="Include source_quote lines in the model input (default on).")
-    p.add_argument("--dgx-endpoint", default=None, metavar="URL",
-                   help="Single OpenAI-compatible local endpoint (else Anthropic API).")
+    # Declared directly rather than via campaignlib.api.client.add_backend_args(
+    # — that helper also registers a singular --endpoint, which would collide
+    # with this script's own fan-out --endpoints (plural, one client per
+    # worker thread; see client_from_args(args, endpoint=...) in the worker
+    # pool below).
+    p.add_argument("--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+                   default="anthropic",
+                   help="LLM backend (default: anthropic). Combine with --endpoints "
+                        "for --backend dgx.")
     p.add_argument("--endpoints", nargs="+", default=None, metavar="URL",
-                   help="Multiple endpoints to fan out across concurrently (one worker per "
-                        "endpoint, work-stealing). Overrides --dgx-endpoint. All must serve --model.")
+                   help="Multiple OpenAI-compatible endpoints to fan out across "
+                        "concurrently (one worker per endpoint, work-stealing). "
+                        "All must serve --model.")
     p.add_argument("--entity-parallel", type=int, default=None, metavar="N",
                    help="Number of entities to aggregate concurrently (default: one per endpoint). "
                         "Set higher than the endpoint count to parallelise on a single endpoint.")
@@ -624,7 +632,10 @@ def main() -> None:
     todo = [b for b in selected if not dossier_path(out_dir, b).exists()]
     already = len(selected) - len(todo)
 
-    endpoints = args.endpoints or [args.dgx_endpoint]
+    # [None] means "no explicit endpoint" — the worker pool still runs once,
+    # resolving via client_from_args(args, endpoint=None), which falls back to
+    # --backend / env resolution (anthropic by default).
+    endpoints = args.endpoints or [None]
     where = ", ".join(e or "Anthropic API" for e in endpoints)
     print(f"Aggregating {len(todo)} entitie(s) on {where} (model: {model or 'default'})"
           f"{f'; {already} already done (skipped)' if already else ''}\n")
@@ -638,7 +649,7 @@ def main() -> None:
 
     def worker(endpoint: str | None) -> None:
         nonlocal done
-        client = make_client(endpoint=endpoint, model_override=model)
+        client = client_from_args(args, endpoint=endpoint)
         while True:
             try:
                 i, b = work.get_nowait()

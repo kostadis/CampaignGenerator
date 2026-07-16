@@ -112,6 +112,51 @@ def test_bundle_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
     assert not captured["env_extra"]
 
 
+def test_extract_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    r = client.get("/api/ensemble/run/extract", params={
+        "chapters": ["docs/chapters/chapter_01.md"],
+        "backend": "anthropic",
+        "model": "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
+        "endpoints": ["http://192.168.1.147:8001/v1"],
+    })
+    assert r.status_code == 200
+    _ = r.text
+    assert "--model" not in captured["cmd"]
+    assert "--backend" not in captured["cmd"]
+    assert "--endpoints" not in captured["cmd"]
+    assert not captured["env_extra"]
+
+
+def test_extract_forwards_backend_and_endpoints_when_non_anthropic(tmp_path, monkeypatch):
+    """run_extract previously had no way to forward a backend choice at all
+    (ensemble_batch.py had no --backend flag, so the router could only ever
+    fall back to env_extra, which run_extract never even set). That gap is
+    closed now that ensemble_batch.py accepts --backend/--endpoints/--model
+    via the shared backend_cli_args seam."""
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    r = client.get("/api/ensemble/run/extract", params={
+        "chapters": ["docs/chapters/chapter_01.md"],
+        "backend": "dgx",
+        "model": "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
+        "endpoints": ["http://192.168.1.147:8001/v1"],
+    })
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--backend" in cmd
+    assert cmd[cmd.index("--backend") + 1] == "dgx"
+    assert "--endpoints" in cmd
+    assert cmd[cmd.index("--endpoints") + 1] == "http://192.168.1.147:8001/v1"
+    assert "--model" in cmd
+    assert cmd[cmd.index("--model") + 1] == "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8"
+    # Chapter selection flags are undisturbed by backend forwarding.
+    assert "--chapters" in cmd
+    assert not captured["env_extra"]
+
+
 # ── entity_registry.yaml supersedes stale UI-persisted --aliases/--known-names
 # ── (a campaign that's migrated to the registry must not keep tripping
 # ── facts_to_state.py's deprecation guard, which also disables its own
@@ -173,6 +218,8 @@ def test_threads_prefers_registry_over_stale_aliases(tmp_path, monkeypatch):
 # ── Subscription (claude-code) backend selection ────────────────────────────
 
 def test_synthesize_forwards_claude_code_backend_and_model(tmp_path, monkeypatch):
+    """Backend selection now travels as explicit CLI flags on cmd, not as
+    env_extra (env_extra is never passed by any route anymore)."""
     captured = _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
     r = client.get("/api/ensemble/run/synthesize", params={
@@ -182,17 +229,19 @@ def test_synthesize_forwards_claude_code_backend_and_model(tmp_path, monkeypatch
     })
     assert r.status_code == 200
     _ = r.text
-    assert "--backend" in captured["cmd"]
-    assert captured["cmd"][captured["cmd"].index("--backend") + 1] == "claude-code"
-    assert "--model" in captured["cmd"]
-    assert captured["cmd"][captured["cmd"].index("--model") + 1] == "claude-opus-4-8"
-    assert captured["env_extra"] == {
-        "CG_BACKEND": "claude-code",
-        "CG_CLAUDE_CODE_MODEL": "claude-opus-4-8",
-    }
+    cmd = captured["cmd"]
+    assert "--backend" in cmd
+    assert cmd[cmd.index("--backend") + 1] == "claude-code"
+    assert "--model" in cmd
+    assert cmd[cmd.index("--model") + 1] == "claude-opus-4-8"
+    # Other flags around the backend forwarding are undisturbed.
+    assert "--dossiers" in cmd
+    assert "--output" in cmd
+    assert not captured["env_extra"]
 
 
-def test_bundle_sets_claude_code_env(tmp_path, monkeypatch):
+def test_bundle_forwards_claude_code_backend_and_model(tmp_path, monkeypatch):
+    """Same cmd-based forwarding for the run_bundle route (-> facts_to_state.py)."""
     captured = _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
     r = client.get("/api/ensemble/run/bundle", params={
@@ -201,10 +250,15 @@ def test_bundle_sets_claude_code_env(tmp_path, monkeypatch):
     })
     assert r.status_code == 200
     _ = r.text
-    assert captured["env_extra"] == {
-        "CG_BACKEND": "claude-code",
-        "CG_CLAUDE_CODE_MODEL": "claude-opus-4-8",
-    }
+    cmd = captured["cmd"]
+    assert "--backend" in cmd
+    assert cmd[cmd.index("--backend") + 1] == "claude-code"
+    assert "--model" in cmd
+    assert cmd[cmd.index("--model") + 1] == "claude-opus-4-8"
+    # Other flags around the backend forwarding are undisturbed.
+    assert "--out-dir" in cmd
+    assert "--min-facts" in cmd
+    assert not captured["env_extra"]
 
 
 # ── party synthesis: party.yaml preferred over staged extracts ─────────────

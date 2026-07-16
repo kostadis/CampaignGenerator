@@ -19,9 +19,9 @@ if str(_REPO_ROOT) not in sys.path:
 from campaignlib import (  # noqa: E402
     find_registry,
     build_alias_normalizer,
+    client_from_args,
     format_npc_roster,
     load_alias_map,
-    make_client,
     stream_api,
 )
 
@@ -439,7 +439,9 @@ def extract_connections(req: ExtractRequest):
 
     system = CONNECTIONS_SYSTEM + (("\n\n" + roster) if roster else "")
 
-    client = make_client()
+    # req has no backend/endpoint fields, so this resolves identically to the
+    # old bare make_client() — just routed through the one approved seam.
+    client = client_from_args(req)
     # 32K output gives room for ~300 entities + ~500 edges. 4K truncates large
     # campaigns mid-string and produces unparseable JSON.
     raw = stream_api(client, system, combined, req.model, max_tokens=32000, silent=True)

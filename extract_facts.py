@@ -48,8 +48,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from campaignlib import (
+    add_backend_args,
+    client_from_args,
     load_agent_prompt,
-    make_client,
     prepare_chunks,
     stream_api,
     wiring_get,
@@ -371,16 +372,11 @@ def main() -> None:
                         help="Where to save per-chunk JSON files "
                              "(default: <output_dir>/fact_extractions/). Existing "
                              "files are reused so partial runs can resume.")
-    parser.add_argument("--dgx-endpoint",
-                        default=os.environ.get("DGX_ENDPOINT") or wiring_get("dgx_endpoint"),
-                        help="OpenAI-compatible endpoint "
-                             "(default: $DGX_ENDPOINT or mneme wiring dgx_endpoint)")
-    parser.add_argument("--model",
-                        default=os.environ.get("DGX_MODEL") or wiring_get("dgx_model"),
+    parser.add_argument("--model", default=None,
                         help="Model id to send to the endpoint "
-                             "(default: $DGX_MODEL or mneme wiring dgx_model). "
-                             "Probe `curl <endpoint>/models` if "
-                             "the default returns 400 — vllm-chat gets swapped.")
+                             "(default: $DGX_MODEL or mneme wiring dgx_model, resolved "
+                             "by the dgx backend adapter). Probe `curl <endpoint>/models` "
+                             "if the default returns 400 — vllm-chat gets swapped.")
     parser.add_argument("--max-tokens", type=int, default=16000,
                         help="max_tokens per chunk call (default: 16000). Generous "
                              "because reasoning models burn budget before any output.")
@@ -395,6 +391,11 @@ def main() -> None:
                              "matching the server's batch budget multiplies "
                              "aggregate throughput — the Sparks serve "
                              "--max-num-seqs 4, so 4 saturates a box.")
+    add_backend_args(parser, default_backend="dgx")
+    # This script always resolved to a real DGX endpoint before the --backend
+    # seam existed — preserve that default (env var, then mneme wiring) so an
+    # invocation with no --endpoint flag is unchanged.
+    parser.set_defaults(endpoint=os.environ.get("DGX_ENDPOINT") or wiring_get("dgx_endpoint"))
     args = parser.parse_args()
 
     extract_system = load_agent_prompt(args.agent)
@@ -412,10 +413,10 @@ def main() -> None:
         sys.exit(1)
 
     print(f"[Extract facts | {len(text):,} chars | "
-          f"endpoint: {args.dgx_endpoint} | model: {args.model}]")
+          f"endpoint: {args.endpoint} | model: {args.model or 'default'}]")
     print("=" * 60)
 
-    client = make_client(endpoint=args.dgx_endpoint, model_override=args.model)
+    client = client_from_args(args)
     chunks, label = prepare_chunks(text, args.chunk_size, args.split_chapters,
                                    annotate_pov=args.annotate_pov)
     extract_dir.mkdir(parents=True, exist_ok=True)

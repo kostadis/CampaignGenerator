@@ -11,10 +11,10 @@ const route = useRoute()
 // field _llm_env() reads server-side — so the Session Doc Editor's own toggle
 // stays in sync. 'claude-code' routes generation through the Claude Code CLI,
 // billing the Pro/Max subscription instead of the metered Anthropic API.
-type Backend = 'anthropic' | 'dgx' | 'claude-code'
+type Backend = 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
 const currentBackend = computed<Backend>(() => {
   const b = config.values.sd_backend
-  return b === 'dgx' || b === 'claude-code' ? b : 'anthropic'
+  return b === 'dgx' || b === 'openrouter' || b === 'claude-code' ? b : 'anthropic'
 })
 async function setBackend(b: Backend) {
   if (currentBackend.value === b) return
@@ -149,6 +149,12 @@ function navigate(path: string) {
             title="Local DGX / vLLM endpoint"
             @click="setBackend('dgx')"
           >DGX</button>
+          <button
+            class="backend-btn"
+            :class="{ active: currentBackend === 'openrouter' }"
+            title="OpenRouter — hosted gateway, billed to OPENROUTER_API_KEY"
+            @click="setBackend('openrouter')"
+          >OR</button>
         </div>
       </div>
       <div class="model-selector">

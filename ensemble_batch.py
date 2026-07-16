@@ -60,6 +60,11 @@ def _build_parser():
                    help="OpenAI-compatible endpoints")
     p.add_argument("--model", metavar="ID",
                    help="Model id sent to every endpoint")
+    p.add_argument("--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+                   default="dgx",
+                   help="LLM backend forwarded to ensemble.py -> ensemble_extract.py "
+                        "-> extract_facts.py (default: dgx). This driver never builds "
+                        "a client itself.")
     p.add_argument("--chunk-parallel", type=int, metavar="N",
                    help="In-flight chunk requests per endpoint (default: ensemble.py default)")
     p.add_argument("--pass-parallel", type=int, metavar="N",
@@ -103,6 +108,7 @@ def _build_ensemble_cmd(chapter: Path, workdir: Path, args) -> list[str]:
         cmd += ["--endpoints"] + args.endpoints
     if args.model:
         cmd += ["--model", args.model]
+    cmd += ["--backend", args.backend]
     if args.samples is not None:
         cmd += ["--samples", str(args.samples)]
     if args.chunk_parallel is not None:

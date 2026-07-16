@@ -129,6 +129,37 @@ def test_client_from_args_claude_code_passes_model(monkeypatch):
                     "model_override": "claude-opus-4-8"}
 
 
+def test_add_backend_args_default_backend_override():
+    """A script whose endpoint always resolves (e.g. extract_facts.py) can
+    default to dgx instead of anthropic without changing the flag surface."""
+    p = argparse.ArgumentParser()
+    p.add_argument("--model", default="claude-sonnet-4-6")
+    campaignlib.add_backend_args(p, default_backend="dgx")
+    ns = p.parse_args([])
+    assert ns.backend == "dgx"
+    # Still a full opt-out, unlike the old bespoke --dgx-endpoint flags.
+    ns_anthropic = p.parse_args(["--backend", "anthropic"])
+    assert ns_anthropic.backend == "anthropic"
+
+
+def test_client_from_args_endpoint_override_wins(monkeypatch):
+    """facts_to_state.py's per-thread worker resolves one endpoint from a
+    fan-out pool at call time — the explicit override must win over
+    args.endpoint (which is None/unused in that path)."""
+    seen = {}
+    monkeypatch.setattr(client_mod, "make_client",
+                        lambda backend=None, endpoint=None, model_override=None:
+                        seen.update(backend=backend, endpoint=endpoint, model_override=model_override))
+    ns = argparse.Namespace(backend="dgx", endpoint=None, model="Qwen/Qwen2.5-14B-Instruct-AWQ")
+    client_mod.client_from_args(ns, endpoint="http://192.168.1.147:8001/v1")
+    assert seen["endpoint"] == "http://192.168.1.147:8001/v1"
+
+    # An explicit override still wins even when args.endpoint is also set.
+    ns2 = argparse.Namespace(backend="dgx", endpoint="http://stale:8000", model=None)
+    client_mod.client_from_args(ns2, endpoint="http://fresh:8001/v1")
+    assert seen["endpoint"] == "http://fresh:8001/v1"
+
+
 # ── Principle V: OpenRouter constructed only inside campaignlib/api ──────────
 
 def test_no_out_of_seam_openrouter_construction():

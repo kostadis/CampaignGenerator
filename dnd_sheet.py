@@ -16,7 +16,7 @@ from pathlib import Path
 
 import fitz  # pymupdf
 
-from campaignlib import make_client, call_api, DEFAULT_MODEL
+from campaignlib import add_backend_args, call_api, client_from_args, DEFAULT_MODEL
 
 SYSTEM_PROMPT = """\
 You are converting a D&D Beyond character sheet PDF into a clean markdown document \
@@ -123,9 +123,10 @@ def main() -> None:
                         help="Output directory (default: doc). One .md per PDF.")
     parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Claude model to use")
+    add_backend_args(parser)
     args = parser.parse_args()
 
-    client = make_client()
+    client = client_from_args(args)
 
     for pdf_path_str in args.pdfs:
         pdf_path = Path(pdf_path_str).expanduser().resolve()

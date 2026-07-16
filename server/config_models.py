@@ -75,11 +75,12 @@ class SessionDocSection(BaseModel):
     session_name: OptStr = None
     context: list[str] = Field(default_factory=list)
     # LLM backend selector + DGX overrides. Endpoint/model defaults are
-    # applied at the route boundary in `scene_editor._llm_env()` so a null
-    # value here means "use the runtime default", not "unset".
-    backend: Literal["anthropic", "dgx", "claude-code"] = "anthropic"
+    # applied at the route boundary in `scene_editor._backend_flags()` so a
+    # null value here means "use the runtime default", not "unset".
+    backend: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
     dgx_endpoint: OptStr = None
     dgx_model: OptStr = None
+    openrouter_model: OptStr = None
     scrub_enabled: OptBool = False
     scrub_tokens: int = 16000
 

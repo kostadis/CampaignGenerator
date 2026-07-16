@@ -70,7 +70,8 @@ EXTRACT_SCRIPT = Path(__file__).resolve().parent / "extract_facts.py"
 
 def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
                       extract_dir: Path, endpoint: str | None,
-                      model: str | None, chunk_parallel: int = 1) -> list[str]:
+                      model: str | None, backend: str,
+                      chunk_parallel: int = 1) -> list[str]:
     """Build the extract_facts.py command line for one unit. Pure function —
     all the subprocess/bookkeeping mutation lives in run_unit."""
     cmd = [
@@ -82,9 +83,10 @@ def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
         "--chunk-size", str(pass_spec["chunk_size"]),
         "--agent", pass_spec["agent"],
         "--parallel", str(chunk_parallel),
+        "--backend", backend,
     ]
     if endpoint:
-        cmd += ["--dgx-endpoint", endpoint]
+        cmd += ["--endpoint", endpoint]
     if model:
         cmd += ["--model", model]
     if pass_spec.get("annotate_pov"):
@@ -102,7 +104,7 @@ PASSES = [
 
 def run_unit(
     input_path: Path, pass_spec: dict, k: int, samples: int, workdir: Path,
-    endpoint: str | None, model: str | None,
+    endpoint: str | None, model: str | None, backend: str,
     register_proc=None, is_cancelled=None, timeout: float | None = None,
     chunk_parallel: int = 1,
 ) -> tuple[str, list[dict] | None, str | None, bool]:
@@ -141,7 +143,7 @@ def run_unit(
             pass  # corrupt/partial — regenerate below
 
     cmd = build_extract_cmd(input_path, pass_spec, output_path, extract_dir,
-                            endpoint, model, chunk_parallel)
+                            endpoint, model, backend, chunk_parallel)
 
     where = endpoint or "default endpoint"
     if is_cancelled and is_cancelled():
@@ -264,6 +266,12 @@ def main() -> None:
                              "else extract_facts.py's default). All endpoints must "
                              "serve this same model id, since the merge treats "
                              "their facts uniformly.")
+    parser.add_argument("--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+                        default="dgx",
+                        help="LLM backend forwarded to each extract_facts.py child "
+                             "(default: dgx). This dispatcher never builds a client "
+                             "itself — it just passes --backend/--endpoint down the "
+                             "subprocess chain.")
     parser.add_argument("--chunk-parallel", type=int, default=4, metavar="N",
                         help="In-flight chunk requests per endpoint, forwarded "
                              "to each extract_facts.py as --parallel (default "
@@ -412,6 +420,7 @@ def main() -> None:
     model = args.model or os.environ.get("DGX_MODEL")
 
     units = [(p, k) for p in active_passes for k in range(1, args.samples + 1)]
+    print(f"Backend:  {args.backend}")
     print(f"Endpoints: {', '.join(e or 'default' for e in endpoints)}")
     print(f"Units:    {len(units)} ({len(active_passes)} passes x {args.samples} "
           f"sample(s)) across {len(endpoints)} endpoint(s)")
@@ -513,6 +522,7 @@ def main() -> None:
             try:
                 _, facts, err, timed_out = run_unit(
                     pass_spec["input_path"], pass_spec, k, args.samples, workdir, endpoint, model,
+                    args.backend,
                     register_proc=register, is_cancelled=lambda _key=key: _key in cancelled,
                     timeout=unit_timeout, chunk_parallel=args.chunk_parallel)
             except Exception as e:  # a worker must never die silently

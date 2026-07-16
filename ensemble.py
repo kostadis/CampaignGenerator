@@ -69,6 +69,11 @@ def main() -> None:
                              "all passes on a single endpoint.")
     parser.add_argument("--model", default=None, metavar="ID",
                         help="Model id sent to every endpoint (default: $DGX_MODEL).")
+    parser.add_argument("--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+                        default="dgx",
+                        help="LLM backend forwarded to ensemble_extract.py -> "
+                             "extract_facts.py (default: dgx). This driver never "
+                             "builds a client itself.")
     parser.add_argument("--skip", action="append", default=[], metavar="NAME",
                         help="Skip a named pass (can repeat).")
     parser.add_argument("--speculative", action=argparse.BooleanOptionalAction,
@@ -114,6 +119,7 @@ def main() -> None:
         extract_cmd += ["--pass-parallel", str(args.pass_parallel)]
     if args.model:
         extract_cmd += ["--model", args.model]
+    extract_cmd += ["--backend", args.backend]
     for s in args.skip:
         extract_cmd += ["--skip", s]
     if not args.speculative:

@@ -26,7 +26,14 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import load_agent_prompt, make_client, save_log, stream_api, DEFAULT_MODEL
+from campaignlib import (
+    add_backend_args,
+    client_from_args,
+    load_agent_prompt,
+    save_log,
+    stream_api,
+    DEFAULT_MODEL,
+)
 
 
 CONSISTENCY_SYSTEM = load_agent_prompt("enhance_recap_consistency")
@@ -66,6 +73,7 @@ def main() -> None:
                         help="Party document for character voice reference")
     parser.add_argument("--no-log", action="store_true")
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    add_backend_args(parser)
     args = parser.parse_args()
 
     # ── Load inputs ───────────────────────────────────────────────────────────
@@ -105,7 +113,7 @@ def main() -> None:
         else:
             print(f"  Warning: party file not found: {p}", file=sys.stderr)
 
-    client = make_client()
+    client = client_from_args(args)
 
     # ── Pass 1: Consistency check ─────────────────────────────────────────────
     consistency_report = ""

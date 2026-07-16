@@ -19,11 +19,12 @@ from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
     build_alias_normalizer,
+    client_from_args,
     format_npc_roster,
     find_alias_registry,
     load_alias_map,
-    make_client,
     stream_api,
 )
 from session_doc.examples import get_char_examples
@@ -127,11 +128,9 @@ def main() -> None:
                         help="Build prompts but skip the API call.")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    add_backend_args(parser)
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku (~4x cheaper, faster).")
-    parser.add_argument("--dgx-endpoint", default=None, metavar="URL",
-                        help="Route LLM calls to an OpenAI-compatible server.")
-    parser.add_argument("--dgx-model", default=None, metavar="NAME")
     args = parser.parse_args()
 
     if args.fast:
@@ -212,7 +211,7 @@ def main() -> None:
     else:
         sections = list(enumerate(sections, 1))
 
-    client = make_client(endpoint=args.dgx_endpoint, model_override=args.dgx_model)
+    client = client_from_args(args)
     handoff = ""
     written: list[Path] = []
 

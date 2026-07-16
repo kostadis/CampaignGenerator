@@ -29,12 +29,13 @@ from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
     build_batch_request,
+    client_from_args,
     collect_batch,
     extract_player_character_map,
     format_batch_progress,
     load_agent_prompt,
-    make_client,
     poll_batch,
     read_batch_sidecar,
     save_log,
@@ -150,7 +151,7 @@ def _save_log(out_path: Path, vtt_path: Path, dialogue_len: int,
 
 def _run_streaming(args, system: str, user: str, vtt_path: Path,
                    dialogue_len: int, gmassist_body: str, out_path: Path) -> None:
-    client = make_client()
+    client = client_from_args(args)
     print(f"\n[Enhancing summary | model: {args.model} | "
           f"system: {len(system):,} chars | user: {len(user):,} chars]")
     print("=" * 60)
@@ -170,7 +171,7 @@ def _run_streaming(args, system: str, user: str, vtt_path: Path,
 
 
 def _submit(args, system: str, user: str, out_path: Path) -> str:
-    client = make_client()
+    client = client_from_args(args)
     request = build_batch_request(
         custom_id=CUSTOM_ID,
         system=system,
@@ -201,7 +202,7 @@ def _collect_and_write(args, batch_id: str, out_path: Path,
                        dialogue_len: int | None = None,
                        gmassist_body: str | None = None,
                        sidecar: Path | None = None) -> None:
-    client = make_client()
+    client = client_from_args(args)
     print(f"\n[Collecting batch {batch_id}...]")
     results = collect_batch(client, batch_id)
     record = results.get(CUSTOM_ID)
@@ -250,6 +251,7 @@ def main() -> None:
                              "or --gm-player is provided but no VTT lines match "
                              "any of those display names.")
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    add_backend_args(parser)
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku instead of Sonnet (~4x cheaper, faster)")
     parser.add_argument("--max-tokens", type=int, default=16384,
@@ -292,7 +294,7 @@ def main() -> None:
             print(f"Error: sidecar at {sidecar} is for kind={payload.get('kind')!r}, "
                   f"expected {SIDECAR_KIND!r}", file=sys.stderr)
             sys.exit(1)
-        client = make_client()
+        client = client_from_args(args)
         batch_id = payload["batch_id"]
         print(f"[Polling batch {batch_id} (submitted {payload.get('submitted_at')})...]")
         poll_batch(client, batch_id, interval=args.poll_interval,
@@ -339,7 +341,7 @@ def main() -> None:
         print("\nSubmit-only: exiting. Run with --batch --collect to retrieve later.")
         return
 
-    client = make_client()
+    client = client_from_args(args)
     print(f"\n[Polling batch {batch_id} every {args.poll_interval}s...]")
     poll_batch(client, batch_id, interval=args.poll_interval,
                on_tick=lambda b: print("  " + format_batch_progress(b), flush=True))

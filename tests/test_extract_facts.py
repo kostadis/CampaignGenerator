@@ -255,7 +255,7 @@ def test_cli_parallel_fully_cached(tmp_path):
         [sys.executable, str(SCRIPT), str(doc),
          "--output", str(out), "--extract-dir", str(extract_dir),
          "--parallel", "2",
-         "--dgx-endpoint", "http://127.0.0.1:1"],  # unreachable: must not be hit
+         "--endpoint", "http://127.0.0.1:1"],  # unreachable: must not be hit
         capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
     assert json.loads(out.read_text()) == [seeded[0] | {"quote_verified": False}]

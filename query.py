@@ -24,7 +24,13 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import chunk_text, make_client, stream_api, DEFAULT_MODEL
+from campaignlib import (
+    add_backend_args,
+    chunk_text,
+    client_from_args,
+    stream_api,
+    DEFAULT_MODEL,
+)
 
 FILTER_SYSTEM = """\
 You are searching D&D session notes for information relevant to a specific query.
@@ -115,6 +121,7 @@ def main() -> None:
                         help="Show per-chunk progress")
     parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Claude model to use")
+    add_backend_args(parser)
     args = parser.parse_args()
 
     summaries_path = Path(args.input).expanduser()
@@ -123,7 +130,7 @@ def main() -> None:
         sys.exit(1)
 
     text = summaries_path.read_text(encoding="utf-8")
-    client = make_client()
+    client = client_from_args(args)
 
     print(f"\n[Query: \"{args.query}\"]")
     print(f"[{len(text):,} chars | chunk size: {args.chunk_size:,} | model: {args.model}]")

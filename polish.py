@@ -22,11 +22,12 @@ from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
     call_api_with_tools,
+    client_from_args,
     find_default_config,
     load_agent_prompt,
     load_config,
-    make_client,
     save_log,
 )
 from session_doc import extract_character_roster, load_voice_files
@@ -756,6 +757,7 @@ def main() -> None:
                         help=f"Hard cap on agent loop turns (default {DEFAULT_MAX_ITERATIONS})")
     parser.add_argument("--config", default=find_default_config(__file__))
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    add_backend_args(parser)
     parser.add_argument("--no-log", action="store_true",
                         help="Skip the run-summary log in <output_dir>/logs/")
     parser.add_argument("--verbose", action="store_true",
@@ -859,7 +861,7 @@ def main() -> None:
         roster_names=roster_names, current_turn=0,
     )
 
-    client = make_client()
+    client = client_from_args(args)
 
     print(f"\nTrace: {trace_path}")
     print("=" * 60)

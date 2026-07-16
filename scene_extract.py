@@ -34,9 +34,11 @@ from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
     build_alias_normalizer,
     build_batch_request,
     build_scene_extraction_system_prompt,
+    client_from_args,
     collect_batch,
     extract_player_character_map,
     format_batch_progress,
@@ -45,7 +47,6 @@ from campaignlib import (
     load_agent_prompt,
     find_alias_registry,
     load_alias_map,
-    make_client,
     normalize_vtt_speakers,
     parse_gmassist_scenes,
     plan_scene_extraction,
@@ -112,7 +113,7 @@ def _submit_pending(args, *, scenes, vtt_text, out_dir, alias_map):
     print(f"\n[Submitting batch | model: {args.model} | "
           f"{len(requests)} of {len(plan)} scene(s) | "
           f"system: {len(system_prompt):,} chars per request]")
-    client = make_client()
+    client = client_from_args(args)
     batch_id = submit_batch(client, requests)
     sidecar = _sidecar_path(out_dir)
     write_batch_sidecar(sidecar, {
@@ -225,6 +226,7 @@ def main() -> None:
                              "extraction. Without this flag the GM's lines "
                              "stay under their player name.")
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    add_backend_args(parser)
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku instead of Sonnet (~4x cheaper, faster)")
     parser.add_argument("--max-tokens", type=int, default=8192,
@@ -278,7 +280,7 @@ def main() -> None:
             print(f"Error: sidecar at {sidecar} is for kind={payload.get('kind')!r}, "
                   f"expected {SIDECAR_KIND!r}", file=sys.stderr)
             sys.exit(1)
-        client = make_client()
+        client = client_from_args(args)
         batch_id = payload["batch_id"]
         plan_entries = payload.get("scenes", [])
         # plan_scene_extraction returned dicts with body — sidecar entries
@@ -400,7 +402,7 @@ def main() -> None:
         # ── Live streaming path (unchanged behaviour) ──
         normalize, _ = build_alias_normalizer(alias_map)
         npc_roster = format_npc_roster(alias_map)
-        client = make_client()
+        client = client_from_args(args)
         print(f"\n[Scene extraction | {len(scenes)} scene(s) | model: {args.model}]")
         print("=" * 60)
         saved = run_scene_extraction(
@@ -443,7 +445,7 @@ def main() -> None:
         print("\nSubmit-only: exiting. Run with --batch --collect to retrieve later.")
         return
 
-    client = make_client()
+    client = client_from_args(args)
     print(f"\n[Polling batch {batch_id} every {args.poll_interval}s...]")
     poll_batch(client, batch_id, interval=args.poll_interval,
                on_tick=lambda b: print("  " + format_batch_progress(b), flush=True))

@@ -17,10 +17,11 @@ from pathlib import Path
 
 from campaignlib import (
     DEFAULT_MODEL,
+    add_backend_args,
     assemble_docs,
+    client_from_args,
     find_default_config,
     load_config,
-    make_client,
     stream_api,
 )
 
@@ -73,6 +74,7 @@ def main() -> None:
         default=DEFAULT_MODEL,
         help="Claude model to use",
     )
+    add_backend_args(parser)
     parser.add_argument(
         "--output",
         metavar="FILE",
@@ -121,7 +123,7 @@ def main() -> None:
         "## Campaign Context\n\n" + "\n\n---\n\n".join(context_parts),
     ])
 
-    client = make_client()
+    client = client_from_args(args)
     report = stream_api(
         client, CONSISTENCY_SYSTEM, prompt, args.model,
         max_tokens=int(os.environ.get("CG_CONSISTENCY_MAX_TOKENS", "32000")),

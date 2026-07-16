@@ -75,12 +75,13 @@ def test_build_extract_cmd_forwards_chunk_parallel(tmp_path):
     cmd = ee.build_extract_cmd(tmp_path / "doc.txt", PASS,
                                tmp_path / "small.json", tmp_path / "cache",
                                endpoint="http://spark:8001/v1",
-                               model="m", chunk_parallel=4)
+                               model="m", backend="dgx", chunk_parallel=4)
     assert cmd[:2] == [sys.executable, str(ee.EXTRACT_SCRIPT)]
     assert cmd[2] == str(tmp_path / "doc.txt")
     i = cmd.index("--parallel")
     assert cmd[i + 1] == "4"
-    assert cmd[cmd.index("--dgx-endpoint") + 1] == "http://spark:8001/v1"
+    assert cmd[cmd.index("--backend") + 1] == "dgx"
+    assert cmd[cmd.index("--endpoint") + 1] == "http://spark:8001/v1"
     assert cmd[cmd.index("--model") + 1] == "m"
     assert cmd[cmd.index("--chunk-size") + 1] == "6000"
     assert cmd[cmd.index("--agent") + 1] == "extract_facts"
@@ -89,7 +90,8 @@ def test_build_extract_cmd_forwards_chunk_parallel(tmp_path):
 def test_build_extract_cmd_defaults_sequential(tmp_path):
     cmd = ee.build_extract_cmd(tmp_path / "doc.txt", PASS,
                                tmp_path / "small.json", tmp_path / "cache",
-                               endpoint=None, model=None)
+                               endpoint=None, model=None, backend="dgx")
     assert cmd[cmd.index("--parallel") + 1] == "1"
-    assert "--dgx-endpoint" not in cmd
+    assert cmd[cmd.index("--backend") + 1] == "dgx"
+    assert "--endpoint" not in cmd
     assert "--model" not in cmd

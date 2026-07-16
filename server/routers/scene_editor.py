@@ -27,6 +27,7 @@ from campaignlib import wiring_get
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
+from server.backend_forwarding import backend_cli_args
 from server.subprocess_runner import (
     python_exe,
     sse_error_stream,
@@ -485,13 +486,14 @@ def _model_args() -> list[str]:
     by _refresh_config_from_service) to every pipeline script, so the editor
     stages honor the picker instead of each script's hardcoded default.
 
-    Skipped when backend == "dgx": the global picker holds an Anthropic model
-    name, which is meaningless for the DGX endpoint (that model is governed by
-    DGX_MODEL via _llm_env). It would also be actively wrong for scrub —
-    scrub_mechanics.py passes --model straight through as the OpenAI-compat
-    model_override, so a "claude-*" name there 404s against the DGX server.
+    Skipped when backend is dgx or openrouter: the global picker holds an
+    Anthropic model name, which is meaningless for either endpoint (that
+    model is instead governed by _backend_flags's own --model). It would
+    also be actively wrong for scrub — scrub_mechanics.py passes --model
+    straight through as the OpenAI-compat model_override, so a "claude-*"
+    name there 404s against a non-Anthropic backend.
     """
-    if CONFIG.get("backend") == "dgx":
+    if CONFIG.get("backend") in ("dgx", "openrouter"):
         return []
     model = (CONFIG.get("model") or "").strip()
     return ["--model", model] if model else []
@@ -631,32 +633,44 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
     return cmd
 
 
-def _llm_env(*, allow_openai_compat: bool = True) -> dict[str, str]:
-    """Translate the typed backend choice into env vars campaignlib.make_client honors.
+def _backend_flags(*, allow_openai_compat: bool = True) -> list[str]:
+    """Translate the typed backend choice into subprocess CLI flags.
 
-    Returned dict is merged into the subprocess env by stream_subprocess.
-    Empty dict (backend == "anthropic") means "no overrides — Anthropic API
-    via the default code path". Every LLM-calling route must pass this so the
-    selected backend actually reaches the subprocess.
+    Replaces the old env-var translator (`_llm_env`): every downstream
+    script this router shells out to (enhance_summary.py, scene_extract.py,
+    sd_narrate.py, sd_consistency.py, sd_plan.py, scrub_mechanics.py) now
+    accepts --backend/--endpoint/--model directly via
+    campaignlib.api.client.add_backend_args, so forwarding is done as
+    explicit flags via backend_cli_args, not env vars — see
+    server/backend_forwarding.py for why (one of three independently
+    reimplemented env translators silently dropped "openrouter").
 
-    `allow_openai_compat=False` suppresses only the DGX (OpenAI-compat) path —
-    its adapter can't serve routes that may use tool-use — while still
-    forwarding the subscription backend, which speaks native Anthropic and is
+    Empty list (backend == "anthropic", or unset) means "no overrides — the
+    script's own argparse default (Anthropic API) applies". Every
+    LLM-calling route must append this to its subprocess cmd so the selected
+    backend actually reaches the subprocess.
+
+    `allow_openai_compat=False` suppresses only the DGX (OpenAI-compat)
+    path — its adapter can't serve routes that may use tool-use — while
+    still forwarding claude-code and openrouter, which speak native
+    Anthropic-shaped protocols (or route to hosted frontier models) and are
     always safe. Plan routes pass False: a DGX selection there falls back to
-    the Anthropic API, but a subscription selection is honored.
+    the Anthropic API (and _model_args() also yields [] in that case, so no
+    --model is forwarded either), but a subscription or openrouter selection
+    is honored in full.
     """
     backend = CONFIG.get("backend")
-    if backend == "claude-code":
-        # Route through the `claude` CLI (Pro/Max subscription billing). The
-        # global model picker holds a native claude-* name, which this backend
-        # honors as-is — so, unlike DGX, no model override is injected here.
-        return {"CG_BACKEND": "claude-code"}
-    if backend != "dgx" or not allow_openai_compat:
-        return {}
-    return {
-        "DGX_ENDPOINT": CONFIG.get("dgx_endpoint") or wiring_get("dgx_endpoint"),
-        "DGX_MODEL": CONFIG.get("dgx_model") or "Qwen/Qwen2.5-14B-Instruct-AWQ",
-    }
+    if backend == "dgx":
+        if not allow_openai_compat:
+            return []
+        return backend_cli_args(
+            backend,
+            model=CONFIG.get("dgx_model") or wiring_get("dgx_model"),
+            endpoint=CONFIG.get("dgx_endpoint") or wiring_get("dgx_endpoint"),
+        )
+    if backend == "openrouter":
+        return backend_cli_args(backend, model=CONFIG.get("openrouter_model"))
+    return backend_cli_args(backend)  # anthropic -> [], claude-code -> ["--backend", "claude-code"]
 
 
 # ── Routes ──────────────────────────────────────────────────────────────────
@@ -889,6 +903,7 @@ async def api_enhance(batch: int = 0):
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
+    cmd = result + _backend_flags()
     summary = _session_summary_path()
     outputs = [str(summary)] if summary else []
 
@@ -898,8 +913,8 @@ async def api_enhance(batch: int = 0):
                          outputs=outputs)
 
     return StreamingResponse(
-        stream_subprocess(result, cwd=CONFIG.get("work_dir"),
-                          env_extra=_llm_env(), on_complete=_done),
+        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
+                          on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
@@ -919,6 +934,7 @@ async def api_extract(batch: int = 0, force: int = 0):
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
+    cmd = result + _backend_flags()
     sx = _scene_extractions_dir()
 
     def _done(rc: int | None) -> None:
@@ -928,8 +944,8 @@ async def api_extract(batch: int = 0, force: int = 0):
                          outputs=outputs)
 
     return StreamingResponse(
-        stream_subprocess(result, cwd=CONFIG.get("work_dir"),
-                          env_extra=_llm_env(), on_complete=_done),
+        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
+                          on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
@@ -941,6 +957,7 @@ async def api_narrate(n: int):
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
+    cmd = result + _backend_flags()
     knobs = _narrate_knobs_snapshot()
 
     def _done(rc: int | None) -> None:
@@ -952,8 +969,8 @@ async def api_narrate(n: int):
                          knobs=knobs, outputs=outputs)
 
     return StreamingResponse(
-        stream_subprocess(result, cwd=CONFIG.get("work_dir"),
-                          env_extra=_llm_env(), on_complete=_done),
+        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
+                          on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
@@ -977,6 +994,7 @@ async def api_scrub(n: int):
             f"refusing to scrub already-scrubbed file: {path.name}")
     cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(path)]
     cmd += _model_args()
+    cmd += _backend_flags()
     if CONFIG.get("scrub_tokens"):
         cmd += ["--max-tokens", str(CONFIG["scrub_tokens"])]
 
@@ -987,8 +1005,7 @@ async def api_scrub(n: int):
 
     return StreamingResponse(
         stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
-                          env_extra={**_llm_env(),
-                                     "CG_CAMPAIGN_DIR": CONFIG.get("campaign_dir", ""),
+                          env_extra={"CG_CAMPAIGN_DIR": CONFIG.get("campaign_dir", ""),
                                      "CG_CONFIG_DIR": CONFIG.get("config_dir", "config")},
                           on_complete=_done),
         media_type="text/event-stream",
@@ -1008,6 +1025,7 @@ async def api_scrub_all():
         return _sse_error("narration_dir not configured")
     cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(nd)]
     cmd += _model_args()
+    cmd += _backend_flags()
     if CONFIG.get("scrub_tokens"):
         cmd += ["--max-tokens", str(CONFIG["scrub_tokens"])]
 
@@ -1016,8 +1034,7 @@ async def api_scrub_all():
 
     return StreamingResponse(
         stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
-                          env_extra={**_llm_env(),
-                                     "CG_CAMPAIGN_DIR": CONFIG.get("campaign_dir", ""),
+                          env_extra={"CG_CAMPAIGN_DIR": CONFIG.get("campaign_dir", ""),
                                      "CG_CONFIG_DIR": CONFIG.get("config_dir", "config")},
                           on_complete=_done),
         media_type="text/event-stream",
@@ -1106,8 +1123,19 @@ async def api_plan():
     if isinstance(plan_result, tuple):
         _, err = plan_result
         return _sse_error(err)
+    # Forward the selected backend (so a subscription or openrouter pick
+    # bills that backend instead of falling back to the metered API), but
+    # suppress the DGX OpenAI-compat path — see
+    # _backend_flags(allow_openai_compat=...).
+    backend_flags = _backend_flags(allow_openai_compat=False)
+    plan_cmd = plan_result + backend_flags
     consistency_result = _build_consistency_cmd()
     # consistency is optional — a tuple here means "skip, no --context"
+    consistency_cmd = (
+        consistency_result + backend_flags
+        if not isinstance(consistency_result, tuple)
+        else consistency_result
+    )
     nd = _narration_dir()
 
     def _done(rc: int | None) -> None:
@@ -1119,29 +1147,22 @@ async def api_plan():
                     outputs.append(str(p))
         _record_activity(stage="plan", rc=rc, outputs=outputs)
 
-    # Forward the selected backend (so a subscription pick bills the
-    # subscription instead of falling back to the metered API), but suppress
-    # the DGX OpenAI-compat path — see _llm_env(allow_openai_compat=...).
-    plan_env = _llm_env(allow_openai_compat=False)
-
     async def _stream_chained():
         """Stream consistency stdout (if applicable), then plan stdout."""
         from server.subprocess_runner import stream_subprocess as _stream
 
-        if not isinstance(consistency_result, tuple):
+        if not isinstance(consistency_cmd, tuple):
             # emit_done=False: this is the FIRST of two chained subprocesses.
             # connectSSE closes the EventSource on the first `done` it sees, so
             # letting consistency emit its terminal `done` would disconnect the
             # client and group-kill the plan subprocess before it writes
             # plan.md. Only the final (plan) stream emits `done`.
-            async for chunk in _stream(consistency_result,
+            async for chunk in _stream(consistency_cmd,
                                         cwd=CONFIG.get("work_dir"),
-                                        env_extra=plan_env,
                                         emit_done=False):
                 yield chunk
-        async for chunk in _stream(plan_result,
+        async for chunk in _stream(plan_cmd,
                                     cwd=CONFIG.get("work_dir"),
-                                    env_extra=plan_env,
                                     on_complete=_done):
             yield chunk
 

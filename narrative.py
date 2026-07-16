@@ -32,7 +32,14 @@ import re
 import sys
 from pathlib import Path
 
-from campaignlib import load_agent_prompt, make_client, save_log, stream_api, DEFAULT_MODEL
+from campaignlib import (
+    add_backend_args,
+    client_from_args,
+    load_agent_prompt,
+    save_log,
+    stream_api,
+    DEFAULT_MODEL,
+)
 
 
 # ── Pass 1: Planning ───────────────────────────────────────────────────────────
@@ -328,6 +335,7 @@ def main() -> None:
                         help="Run the planning pass only and print the section outline.")
     parser.add_argument("--no-log", action="store_true")
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    add_backend_args(parser)
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku instead of Sonnet (~4x cheaper, faster, slightly lower quality)")
     args = parser.parse_args()
@@ -407,7 +415,7 @@ def main() -> None:
         if args.characters else []
     )
 
-    client = make_client()
+    client = client_from_args(args)
 
     # ── Pass 1: Plan ──────────────────────────────────────────────────────────
     plan_system = PLAN_SCENE_SYSTEM if scene_list else PLAN_SYSTEM

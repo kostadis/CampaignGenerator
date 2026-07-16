@@ -12,7 +12,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import make_client, stream_api, DEFAULT_MODEL
+from campaignlib import add_backend_args, client_from_args, stream_api, DEFAULT_MODEL
 
 
 OUTLINE_SYSTEM = """\
@@ -75,6 +75,7 @@ def main() -> None:
         default=DEFAULT_MODEL,
         help="Claude model to use (default: campaignlib.DEFAULT_MODEL / $CAMPAIGN_MODEL)",
     )
+    add_backend_args(parser)
     args = parser.parse_args()
 
     dossier = read_input(args.input)
@@ -83,7 +84,7 @@ def main() -> None:
     mode_label = "single beat" if args.single else "session outline"
     print(f"[Transforming dossier → {mode_label}...]\n", file=sys.stderr)
 
-    client = make_client()
+    client = client_from_args(args)
     result = stream_api(client, system, dossier, args.model, max_tokens=1024)
 
     if args.output:
