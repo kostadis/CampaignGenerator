@@ -18,6 +18,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib.registry import find_registry
 from server.backend_forwarding import backend_cli_args
+from server.planning_config_shared import load_planning_config
 from server.subprocess_runner import python_exe, stream_subprocess, sse_error_stream
 
 router = APIRouter()
@@ -96,6 +97,35 @@ def _default_party_config() -> Path | None:
     return None
 
 
+def _default_planning_config() -> Path | None:
+    """Conventional planning.yaml location (mirrors _default_party_config) —
+    used when the caller doesn't specify one."""
+    cwd = Path.cwd()
+    for rel in ("config/planning.yaml", "planning.yaml"):
+        p = cwd / rel
+        if p.exists():
+            return p
+    return None
+
+
+def _planning_npc_passthrough(config_path: Path) -> list[str]:
+    """Merged NPC dossiers not already bound in planning.yaml.
+
+    planning.py's own docstring frames --planning-config entries as the
+    arc-scored minority and --npc pass-through dossiers as "the majority" —
+    without this, every NPC not manually added to planning.yaml is silently
+    absent from planning.md. Dossiers already bound in the config are
+    excluded so planning.py's own overlap guard (each NPC in exactly one
+    place) doesn't trip."""
+    cwd = Path.cwd()
+    npc_files = sorted(cwd.glob("docs/ensemble/merged_dossiers/npc_*.md"))
+    if not npc_files:
+        return []
+    config = load_planning_config(config_path)
+    bound = {e.dossier.resolve() for e in config.npcs if e.dossier is not None}
+    return [str(p) for p in npc_files if p.resolve() not in bound]
+
+
 def _default_party_context() -> list[str]:
     """Auto-include world_state/campaign_state as --context for party
     synthesis — otherwise party.py's characters-only path has no source for
@@ -126,16 +156,24 @@ def _lock_key(stage: str) -> str:
     return f"{Path.cwd().resolve()}::{stage}"
 
 
+def _sse_error_response(message: str) -> StreamingResponse:
+    """Wrap a precondition failure as a real SSE stream (see sse_error_stream's
+    docstring) — a plain error response is invisible to the browser's
+    EventSource and reads as a dropped connection, not a reported error."""
+    return StreamingResponse(
+        sse_error_stream(message),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
 def _run_locked(stage: str, cmd: list[str], env_extra: dict[str, str] | None = None,
                 prelude: str = "") -> StreamingResponse:
     key = _lock_key(stage)
     if key in _RUNNING:
-        return StreamingResponse(
-            sse_error_stream(f"stage '{stage}' is already running for this campaign — "
-                             f"wait for it to finish (avoids corrupting the workdir)."),
-            media_type="text/event-stream",
-            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-        )
+        return _sse_error_response(
+            f"stage '{stage}' is already running for this campaign — "
+            f"wait for it to finish (avoids corrupting the workdir).")
     _RUNNING.add(key)
 
     def _release(_rc):
@@ -418,6 +456,7 @@ def run_synthesize(
     extract_dir: str = "",
     synthesize_only: bool = True,
     # planning
+    planning_config: str = "",
     npc: list[str] = Query(default=[]),
     arc_scores: list[str] = Query(default=[]),
     context: list[str] = Query(default=[]),
@@ -463,8 +502,34 @@ def run_synthesize(
             _cmd_opt(cmd, "--extract-dir", extract_dir)
     else:  # planning
         cmd = [python_exe(), str(SCRIPT_DIR / "planning.py"), "--output", out]
-        _cmd_multi(cmd, "--npc", npc)
-        _cmd_multi(cmd, "--arc-scores", arc_scores)
+        # The tracked (arc-scored) NPC/faction subset is a human-curated
+        # decision (docs/cli/ensemble_workflow.md §3e) — reuse the
+        # already-curated planning.yaml the same way the party branch reuses
+        # party.yaml, instead of guessing at it.
+        planning_config_path = (
+            _resolve_ensemble_path(planning_config) if planning_config
+            else _default_planning_config()
+        )
+        if planning_config_path:
+            _cmd_opt(cmd, "--planning-config", str(planning_config_path))
+            # planning.py rejects --planning-config + --arc-scores; --npc
+            # extras are allowed (pass-through dossiers for trackless NPCs).
+            # planning.yaml's own npcs: list is only the arc-scored minority
+            # (planning.py's docstring calls --npc pass-through "the
+            # majority") — without this, every NPC not in planning.yaml is
+            # silently absent from planning.md.
+            try:
+                npc_passthrough = npc or _planning_npc_passthrough(planning_config_path)
+            except ValueError as e:
+                # load_planning_config raises on a missing/invalid dossier
+                # reference — surface it as a real SSE error (below) instead
+                # of an unhandled 500, which the frontend's EventSource can't
+                # distinguish from a dropped connection.
+                return _sse_error_response(f"planning config error: {e}")
+            _cmd_multi(cmd, "--npc", npc_passthrough)
+        else:
+            _cmd_multi(cmd, "--npc", npc)
+            _cmd_multi(cmd, "--arc-scores", arc_scores)
         _cmd_multi(cmd, "--context", context)
 
     cmd += backend_cli_args(backend, model, endpoint=endpoint)
@@ -478,6 +543,14 @@ def run_synthesize(
             detected.append(f"party config: {party_config_path}")
         if not context and party_context:
             detected.append(f"context: {', '.join(party_context)}")
+        if detected:
+            prelude_parts.append(f"Auto-detected — {'; '.join(detected)}\n\n")
+    if doc == "planning" and planning_config_path:
+        detected = []
+        if not planning_config:
+            detected.append(f"planning config: {planning_config_path}")
+        if not npc and npc_passthrough:
+            detected.append(f"{len(npc_passthrough)} pass-through NPC dossier(s)")
         if detected:
             prelude_parts.append(f"Auto-detected — {'; '.join(detected)}\n\n")
     # FR-014 / R6: warn (don't block) on a sub-Sonnet synthesis model.

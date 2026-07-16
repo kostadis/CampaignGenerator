@@ -363,10 +363,11 @@ def main() -> None:
                         help="Split at lines starting with PREFIX (e.g. '# Chapter') "
                              "instead of by character count")
     parser.add_argument("--annotate-pov", action="store_true",
-                        help="Prepend carry-forward speaker/date context to chunks "
-                             "that don't open with a heading. Use when the source "
-                             "document uses ### Speaker sections (e.g. chapter files) "
-                             "to prevent the LLM losing track of who is speaking "
+                        help="Prepend carry-forward speaker/date/scene context to "
+                             "chunks that don't open with a heading. Use when the "
+                             "source document uses ### Speaker sections or "
+                             "## Name — Scene sections (e.g. chapter files) to "
+                             "prevent the LLM losing track of who is speaking "
                              "across chunk boundaries.")
     parser.add_argument("--extract-dir", metavar="DIR", default=None,
                         help="Where to save per-chunk JSON files "

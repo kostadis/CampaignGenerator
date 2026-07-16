@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import { apiFetch, apiPost } from '../../api/client'
 import { useEnsembleRun, readEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
 import StreamOutput from '../../components/shared/StreamOutput.vue'
+import EnsemblePlanningFields from '../../components/ensemble/EnsemblePlanningFields.vue'
 
 const emit = defineEmits<{ changed: [] }>()
 const config = useConfigStore()
@@ -36,21 +37,77 @@ const diffs = reactive<Record<string, string>>({})
 // Passed through as-is — the server falls back to config/party.yaml or
 // party.yaml at the campaign root when this is blank.
 const partyConfigPath = ref('')
+// Planning config path set via the Planning Document page
+// (ui.planning.config_path). Same fallback pattern as party: the server
+// falls back to config/planning.yaml or planning.yaml when this is blank.
+// Shared with the standalone Planning Document page on purpose — both
+// pages should point at the same campaign planning.yaml.
+const planningConfigPath = ref('')
+const planningSynthMode = ref<'config' | 'flat'>('config')
+const planningNpcFiles = ref('')
+const planningArcScores = ref('')
+const planningContextFiles = ref('')
 
 onMounted(async () => {
   await config.load()
   cfg.value = readEnsembleConfig(config.resolved)
   partyConfigPath.value = config.resolved?.ui?.party?.config_path || ''
+  planningConfigPath.value = config.resolved?.ui?.planning?.config_path || ''
+  const e = config.resolved?.ui?.ensemble || {}
+  if (e.planning_synth_mode === 'config' || e.planning_synth_mode === 'flat') {
+    planningSynthMode.value = e.planning_synth_mode
+  }
+  planningNpcFiles.value = e.planning_npc || ''
+  planningArcScores.value = e.planning_arc_scores || ''
+  planningContextFiles.value = e.planning_context || ''
 })
 
+// Auto-persist planning field edits — mirrors PlanningDocument.vue's own
+// debounced persist. planningConfigPath goes to the shared ui.planning
+// section (same field the standalone page writes); the rest are
+// ensemble-specific overrides and live under ui.ensemble so they don't
+// collide with the standalone page's own npc/arc-score/context lists.
+let planPersistTimer: ReturnType<typeof setTimeout> | null = null
+function schedulePlanPersist() {
+  if (planPersistTimer) clearTimeout(planPersistTimer)
+  planPersistTimer = setTimeout(() => {
+    config.updateSection('planning', { config_path: planningConfigPath.value }).catch(() => {})
+    config.updateSection('ensemble', {
+      planning_synth_mode: planningSynthMode.value,
+      planning_npc: planningNpcFiles.value,
+      planning_arc_scores: planningArcScores.value,
+      planning_context: planningContextFiles.value,
+    }).catch(() => {})
+  }, 500)
+}
+watch([planningConfigPath, planningSynthMode, planningNpcFiles, planningArcScores, planningContextFiles],
+  schedulePlanPersist)
+
 function synthesize() {
-  run.run('/api/ensemble/run/synthesize', {
+  const params: Record<string, unknown> = {
     doc: selectedDoc.value,
     backend: cfg.value.synthesize.backend,
     endpoint: cfg.value.synthesize.endpoints[0] ?? '',
     model: cfg.value.synthesize.model,
     party: partyConfigPath.value,
-  }, (rc) => { if (rc === 0) emit('changed') })
+  }
+  if (selectedDoc.value === 'planning') {
+    // Unlike PlanningDocument.vue, the ensemble endpoint always
+    // auto-detects config/planning.yaml server-side when planning_config is
+    // blank (there's no way to force "flat, even if a config exists" —
+    // see the warning shown in flat mode). So planning_config is sent
+    // unconditionally; the synthMode toggle only decides which fields are
+    // visible/editable, not which backend branch runs.
+    params.planning_config = planningConfigPath.value
+    params.npc = planningNpcFiles.value.split('\n').map(l => l.trim()).filter(Boolean)
+    params.context = planningContextFiles.value.split('\n').map(l => l.trim()).filter(Boolean)
+    if (planningSynthMode.value === 'flat') {
+      params.arc_scores = planningArcScores.value.split('\n').map(l => l.trim()).filter(Boolean)
+    }
+  } else {
+    params.planning_config = planningConfigPath.value
+  }
+  run.run('/api/ensemble/run/synthesize', params, (rc) => { if (rc === 0) emit('changed') })
 }
 
 async function showDiff(doc: string) {
@@ -87,6 +144,26 @@ async function promote(doc: string) {
       the old staged-extracts path and error without <code>--extract-dir</code> — see
       <code>docs/cli/ensemble_workflow.md</code> §3d, or create a party.yaml first.
     </p>
+    <template v-if="selectedDoc === 'planning'">
+      <p class="hint">
+        The config-mode NPC/faction list is the tracked (arc-scored) subset —
+        a human-curated choice. Every other NPC dossier in
+        <code>docs/ensemble/merged_dossiers/</code> is auto-included as
+        pass-through context alongside it unless overridden below.
+      </p>
+      <p v-if="!planningConfigPath && !planningNpcFiles" class="hint warn-hint">
+        ⚠ No planning config path set and no NPC dossiers listed below — if
+        neither <code>config/planning.yaml</code> nor <code>planning.yaml</code>
+        exists on disk either, this will error with no source material.
+      </p>
+      <EnsemblePlanningFields
+        v-model:synth-mode="planningSynthMode"
+        v-model:config-path="planningConfigPath"
+        v-model:npc-files="planningNpcFiles"
+        v-model:arc-scores="planningArcScores"
+        v-model:context-files="planningContextFiles"
+      />
+    </template>
 
     <div class="controls">
       <select v-model="selectedDoc">

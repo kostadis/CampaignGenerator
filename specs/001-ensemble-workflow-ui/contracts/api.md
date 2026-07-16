@@ -30,7 +30,9 @@ Runs `build_recent_events.py`. Query params: `corpus`, `output`, `window`. SSE.
 ### `GET /api/ensemble/run/synthesize`
 Runs one of the four synthesis scripts depending on `doc`.
 
-Query params: `doc` ∈ {`world_state`, `campaign_state`, `party`, `planning`} (selects the script), the doc-specific inputs (e.g. `dossiers`, `dossier_min_facts`, `threads`, `party`, `npc[]`, `arc_scores[]`, `context[]`, `extract_dir`, `synthesize_only`), `output` (must be a `*_draft.md` path), `backend`, `endpoint`, `model`.
+Query params: `doc` ∈ {`world_state`, `campaign_state`, `party`, `planning`} (selects the script), the doc-specific inputs (e.g. `dossiers`, `dossier_min_facts`, `threads`, `party`, `planning_config`, `npc[]`, `arc_scores[]`, `context[]`, `extract_dir`, `synthesize_only`), `output` (must be a `*_draft.md` path), `backend`, `endpoint`, `model`.
+
+For `doc=planning`, `planning_config` (falling back to an auto-detected `config/planning.yaml`/`planning.yaml`, mirroring `party`) takes precedence and is passed as `--planning-config`; only when no config is found or given do `npc[]`/`arc_scores[]` get passed directly. The tracked (arc-scored) NPC/faction subset inside the config is a human-curated decision (`docs/cli/ensemble_workflow.md` §3e). Everything else — every `docs/ensemble/merged_dossiers/npc_*.md` not already bound as a config entry's `dossier` — is auto-included as `--npc` pass-through (planning.py's own docstring: config entries are the arc-scored minority, `--npc` extras are "the majority"), unless `npc[]` is supplied explicitly.
 
 Response: SSE.
 

@@ -362,3 +362,144 @@ def test_synthesize_party_explicit_context_overrides_auto_detect(tmp_path, monke
     assert context_flags == ["notes.md"]
     # Caller-supplied context — no auto-detect note for it.
     assert "context:" not in r.text
+
+
+# ── planning synthesis: planning.yaml preferred over raw --npc/--arc-scores ─
+
+def test_synthesize_planning_auto_detects_conventional_config(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config").mkdir()
+    planning_yaml = tmp_path / "config" / "planning.yaml"
+    planning_yaml.write_text("factions:\n  - name: Test\n")
+
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "planning"})
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--planning-config" in cmd
+    assert cmd[cmd.index("--planning-config") + 1] == str(planning_yaml)
+    assert "--arc-scores" not in cmd
+    # em-dash is JSON-escaped in the SSE payload — check around it instead.
+    assert "Auto-detected" in r.text
+    assert "planning config:" in r.text
+
+
+def test_synthesize_planning_explicit_path_overrides_default(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "planning.yaml").write_text("factions:\n  - name: Test\n")
+    custom = tmp_path / "custom_planning.yaml"
+    custom.write_text("factions:\n  - name: Test\n")
+
+    r = client.get("/api/ensemble/run/synthesize",
+                   params={"doc": "planning", "planning_config": "custom_planning.yaml"})
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert cmd[cmd.index("--planning-config") + 1] == str(custom)
+    assert "Auto-detected" not in r.text
+
+
+def test_synthesize_planning_falls_back_without_any_planning_config(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+
+    r = client.get("/api/ensemble/run/synthesize", params={
+        "doc": "planning",
+        "npc": ["grundar.md"],
+        "arc_scores": ["grundar_score.md"],
+    })
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--planning-config" not in cmd
+    assert cmd[cmd.index("--npc") + 1] == "grundar.md"
+    assert cmd[cmd.index("--arc-scores") + 1] == "grundar_score.md"
+
+
+# ── planning synthesis: --npc pass-through for NPCs not in planning.yaml ───
+# planning.yaml's npcs: list is only the arc-scored minority (planning.py's
+# own docstring calls --npc pass-through "the majority") — without this,
+# every NPC not manually added to planning.yaml is silently absent from
+# planning.md.
+
+def test_synthesize_planning_auto_includes_passthrough_npc_dossiers(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config").mkdir()
+    dossiers_dir = tmp_path / "docs" / "ensemble" / "merged_dossiers"
+    dossiers_dir.mkdir(parents=True)
+    tracked = dossiers_dir / "npc_grundar.md"
+    tracked.write_text("# Grundar\n")
+    untracked = dossiers_dir / "npc_xalvosh.md"
+    untracked.write_text("# Xalvosh\n")
+
+    planning_yaml = tmp_path / "config" / "planning.yaml"
+    planning_yaml.write_text(f"npcs:\n  - name: Grundar\n    dossier: {tracked}\n")
+
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "planning"})
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    npc_flags = [cmd[i + 1] for i, v in enumerate(cmd) if v == "--npc"]
+    # The config-bound dossier must NOT also appear as pass-through (planning.py's
+    # own overlap guard rejects an NPC appearing in both places).
+    assert str(untracked) in npc_flags
+    assert str(tracked) not in npc_flags
+    assert "Auto-detected" in r.text
+    assert "pass-through NPC dossier" in r.text
+
+
+def test_synthesize_planning_explicit_npc_overrides_passthrough(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config").mkdir()
+    dossiers_dir = tmp_path / "docs" / "ensemble" / "merged_dossiers"
+    dossiers_dir.mkdir(parents=True)
+    (dossiers_dir / "npc_xalvosh.md").write_text("# Xalvosh\n")
+    (tmp_path / "config" / "planning.yaml").write_text("factions:\n  - name: Test\n")
+
+    r = client.get("/api/ensemble/run/synthesize",
+                   params={"doc": "planning", "npc": ["custom.md"]})
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    npc_flags = [cmd[i + 1] for i, v in enumerate(cmd) if v == "--npc"]
+    assert npc_flags == ["custom.md"]
+    assert "pass-through" not in r.text
+
+
+def test_synthesize_planning_no_passthrough_without_merged_dossiers(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "planning.yaml").write_text("factions:\n  - name: Test\n")
+
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "planning"})
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--npc" not in cmd
+    assert "pass-through" not in r.text
+
+
+def test_synthesize_planning_bad_config_surfaces_sse_error_not_500(tmp_path, monkeypatch):
+    """load_planning_config raises ValueError on a missing dossier reference —
+    that must reach the client as a readable SSE error, not an unhandled 500
+    (which the frontend's EventSource can't distinguish from a dropped
+    connection and reports as "[connection lost — run stopped]")."""
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "config").mkdir()
+    bad = tmp_path / "config" / "planning.yaml"
+    bad.write_text("npcs:\n  - name: Ghost\n    dossier: missing.md\n")
+    dossiers_dir = tmp_path / "docs" / "ensemble" / "merged_dossiers"
+    dossiers_dir.mkdir(parents=True)
+    (dossiers_dir / "npc_xalvosh.md").write_text("# Xalvosh\n")
+
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "planning"})
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/event-stream")
+    assert "planning config error" in r.text
+    assert "event: done" in r.text
