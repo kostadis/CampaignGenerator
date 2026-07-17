@@ -35,6 +35,10 @@ PREP_BIN = str(Path(sys.executable).parent / "prep")
 # `planning` console script — same rationale as PREP_BIN above.
 PLANNING_BIN = str(Path(sys.executable).parent / "planning")
 
+# sd_plan.py has moved into session_doc/ and now runs as the `sd_plan`
+# console script — same rationale as PREP_BIN above.
+SD_PLAN_BIN = str(Path(sys.executable).parent / "sd_plan")
+
 
 def _write_proposal(campaign_dir: Path, text: str) -> Path:
     p = campaign_dir / pl.DOSSIER_PROPOSAL_REL_PATH
@@ -145,7 +149,7 @@ class TestSdPlanRequireProposal:
         sx_dir.mkdir()
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "sd_plan.py"),
+                SD_PLAN_BIN,
                 "--scene-extractions", str(sx_dir),
                 "--characters", "Vukradin",
                 "--campaign-dir", str(tmp_path),
@@ -161,7 +165,7 @@ class TestSdPlanRequireProposal:
         _write_proposal(tmp_path, "# X\n\n> **Status:** candidates only.\n")
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "sd_plan.py"),
+                SD_PLAN_BIN,
                 "--scene-extractions", str(sx_dir),
                 "--characters", "Vukradin",
                 "--campaign-dir", str(tmp_path),

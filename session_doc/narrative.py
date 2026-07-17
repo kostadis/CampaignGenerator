@@ -12,12 +12,12 @@ Runs in three passes:
               plus the party doc and a one-line handoff from the previous narrator.
 
 Usage:
-  python narrative.py \\
+  narrative \\
       --roleplay-extract-dir vtt_roleplay_extractions/ \\
       --party docs/party.md \\
       --output docs/narratives/session_12.md
 
-  python narrative.py \\
+  narrative \\
       --roleplay-extract-dir vtt_roleplay_extractions/ \\
       --summary session_12.md \\
       --party docs/party.md \\

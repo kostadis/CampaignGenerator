@@ -74,7 +74,7 @@ prep --session "1. Travel to Hold 2. Confront boss 3. Dragon reveal"
 
 ```bash
 # Convert Zoom transcript to summary
-python ~/CampaignGenerator/vtt_summary.py session.vtt -o summaries/session_12.md
+vtt_summary session.vtt -o summaries/session_12.md
 
 # Regenerate grounding docs
 campaign_state summaries.md -o docs/campaign_state.md
@@ -85,24 +85,24 @@ distill summaries.md -o docs/world_state.md
 
 ---
 
-## Post-session narrative pipeline (`sd_*.py`)
+## Post-session narrative pipeline (`sd_*`)
 
 The recommended path for producing narrative session documents is a four-script pipeline with a human-review checkpoint after each stage:
 
 ```
 VTT transcript + recap
         │
- enhance_summary.py   ← enhance raw summary
+ enhance_summary      ← enhance raw summary
         │
- scene_extract.py     ← extract per-scene dialogue and action beats from VTT
+ scene_extract        ← extract per-scene dialogue and action beats from VTT
         │  [human review]
- sd_consistency.py    ← Pass 1: consistency check vs. campaign state / world state
+ sd_consistency       ← Pass 1: consistency check vs. campaign state / world state
         │
- sd_plan.py           ← Pass 3: narrative plan — assigns characters to scene chunks
+ sd_plan              ← Pass 3: narrative plan — assigns characters to scene chunks
         │  [human review]
- sd_narrate.py        ← Pass 5: per-scene first-person narration in each character's voice
+ sd_narrate           ← Pass 5: per-scene first-person narration in each character's voice
         │  [human review]
- assemble.py          ← combine narrated scenes into the final session document
+ assemble             ← combine narrated scenes into the final session document
 ```
 
 Each script is standalone — run it, review the output, then proceed. See [`docs/cli/session_doc_pipeline.md`](docs/cli/session_doc_pipeline.md) for flags, voice files, player-name mapping, token scaling, and design rationale.
@@ -124,16 +124,16 @@ Each script is standalone — run it, review the output, then proceed. See [`doc
 
 | Script | What it does |
 |---|---|
-| `vtt_summary.py` | Zoom `.vtt` transcript → structured session summary |
-| `enhance_summary.py` | Enhance a raw session summary before extraction |
-| `enhance_recap.py` | Enhance a raw session recap |
-| `scene_extract.py` | Extract per-scene dialogue and action beats from VTT |
-| `sd_consistency.py` | Pipeline Pass 1 — consistency check vs. campaign docs |
-| `sd_plan.py` | Pipeline Pass 3 — narrative plan: assign characters to scene chunks |
-| `sd_narrate.py` | Pipeline Pass 5 — per-scene first-person narration |
-| `assemble.py` | Assemble narrated scenes into the final session document |
-| `quote_ledger.py` | SQLite-backed VTT dialogue tracking and speaker review |
-| `narrative.py` | Standalone experimental VTT-anchored narration CLI |
+| `vtt_summary.py` (`session_doc/`) | Zoom `.vtt` transcript → structured session summary |
+| `enhance_summary.py` (`session_doc/`) | Enhance a raw session summary before extraction |
+| `enhance_recap.py` (`session_doc/`) | Enhance a raw session recap |
+| `scene_extract.py` (`session_doc/`) | Extract per-scene dialogue and action beats from VTT |
+| `sd_consistency.py` (`session_doc/`) | Pipeline Pass 1 — consistency check vs. campaign docs |
+| `sd_plan.py` (`session_doc/`) | Pipeline Pass 3 — narrative plan: assign characters to scene chunks |
+| `sd_narrate.py` (`session_doc/`) | Pipeline Pass 5 — per-scene first-person narration |
+| `assemble.py` (`session_doc/`) | Assemble narrated scenes into the final session document |
+| `quote_ledger.py` (`session_doc/`) | SQLite-backed VTT dialogue tracking and speaker review |
+| `narrative.py` (`session_doc/`) | Standalone experimental VTT-anchored narration CLI |
 
 ### Grounding docs
 
@@ -245,7 +245,7 @@ The RLM pipeline lets prep and narration tools pull statblocks, encounter tables
 
 1. **Retrieve** — `rpg_retriever` searches in tiers: MemPalace drawer → statblock → cost-tagged candidate
 2. **Propose** — `dossier_proposer` writes `docs/dossier_proposal.md` — a ranked candidate list for human review and approval
-3. **Render** — approved proposals are consumed by render pipelines (`prep`, `sd_narrate.py`, `planning`)
+3. **Render** — approved proposals are consumed by render pipelines (`prep`, `sd_narrate`, `planning`)
 
 The human checkpoint between retrieval and rendering is enforced by a CI test — render pipelines cannot call retrieval functions directly. See [`docs/rlm/rlm_pipeline.md`](docs/rlm/rlm_pipeline.md) and [`docs/rlm/rlm_architecture.md`](docs/rlm/rlm_architecture.md).
 
@@ -285,8 +285,8 @@ python -m pytest tests/
 All scripts default to **Claude Sonnet** (`claude-sonnet-4-6`) and accept `--model` for overrides. Narration scripts accept `--fast` for **Claude Haiku** (~4× cheaper), useful for iterating before a final run.
 
 ```bash
-python sd_narrate.py ... --fast                       # Haiku — iterate quickly
-python sd_narrate.py ... --model claude-opus-4-8      # Opus — highest quality
+sd_narrate ... --fast                       # Haiku — iterate quickly
+sd_narrate ... --model claude-opus-4-8      # Opus — highest quality
 ```
 
 ---

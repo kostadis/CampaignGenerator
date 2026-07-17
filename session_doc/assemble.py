@@ -7,7 +7,7 @@ frontmatter `scene` field (numeric), and concatenates them into a single
 session document.
 
 If a scene has both a raw `.md` and a `.scrubbed.md` variant (the latter
-produced by `scrub_mechanics.py`), the scrubbed version is used. Pass
+produced by `scrub_mechanics`), the scrubbed version is used. Pass
 `--no-prefer-scrubbed` to fall back to the raw narration even when a
 scrubbed variant exists.
 
@@ -16,7 +16,7 @@ edit one scene file, re-run a single scene through `session_doc.py`,
 and re-assemble without touching the others.
 
 Usage:
-  python assemble.py narration/ --output session_doc.md \\
+  assemble narration/ --output session_doc.md \\
       [--title "Chapter 37 — A Gem of a Problem"]
 """
 

@@ -2,7 +2,7 @@
 """Stage 2 — scene-anchored VTT extraction.
 
 Takes a Zoom .vtt transcript and an enriched session summary (Stage 1 output
-from enhance_summary.py, post-human-review) and produces one rich
+from enhance_summary, post-human-review) and produces one rich
 extraction file per scene named in the summary. The summary is the
 human-verified scene structure — feeding it into extraction directly avoids
 re-deriving structure from arbitrary chunk windows.
@@ -12,15 +12,15 @@ prefix) and a short user message naming one scene + its bullets. The model
 returns the verbatim transcript moments belonging to that scene.
 
 Usage:
-  python scene_extract.py session.vtt \\
+  scene_extract session.vtt \\
       --summary session-summary.md \\
       --output-dir scene_extractions/ \\
       [--dossier-dir docs/npcs/]
 
   # 50% off via the Message Batches API (no live streaming)
-  python scene_extract.py ... --batch                # block + poll until done
-  python scene_extract.py ... --batch --submit-only  # detach: write sidecar, exit
-  python scene_extract.py ... --batch --collect      # retrieve from sidecar
+  scene_extract ... --batch                # block + poll until done
+  scene_extract ... --batch --submit-only  # detach: write sidecar, exit
+  scene_extract ... --batch --collect      # retrieve from sidecar
 
 Output:
   scene_extractions/01_<scene_slug>.md  ... 09_<scene_slug>.md
@@ -58,7 +58,7 @@ from campaignlib import (
     utc_now_iso,
     write_batch_sidecar,
 )
-from vtt_summary import parse_vtt
+from .vtt_summary import parse_vtt
 
 
 SCENE_EXTRACT_SYSTEM_PREFIX = load_agent_prompt("scene_extract")
@@ -205,13 +205,13 @@ def main() -> None:
     parser.add_argument("--summary", "-s", metavar="FILE",
                         dest="summary",
                         help="Enriched session summary from Stage 1 / "
-                             "enhance_summary.py (must contain a ## Scenes section). "
+                             "enhance_summary (must contain a ## Scenes section). "
                              "Optional with --batch --collect.")
     parser.add_argument("--output-dir", "-o", required=True, metavar="DIR",
                         help="Where to write per-scene extraction files")
     parser.add_argument("--dossier-dir", metavar="DIR", default=None,
                         help="Directory of per-NPC dossier files (built by "
-                             "planning.py --build-dossiers). Aliases are "
+                             "planning --build-dossiers). Aliases are "
                              "rewritten to canonical names in the VTT before "
                              "extraction; the canonical NPC roster is appended "
                              "to the system prompt.")
@@ -387,7 +387,7 @@ def main() -> None:
     if not scenes:
         print(f"Error: no '## Scenes' section (with ### scene headings) found in {summary_path}.\n"
               f"Scene-anchored extraction requires human-verified scene structure. "
-              f"Use vtt_summary.py for unstructured chunk extraction instead.",
+              f"Use vtt_summary for unstructured chunk extraction instead.",
               file=sys.stderr)
         sys.exit(1)
     print(f"\n[summary | {summary_path.name}: {len(scenes)} scene(s)]")

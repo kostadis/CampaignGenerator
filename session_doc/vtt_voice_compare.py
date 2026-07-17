@@ -8,9 +8,9 @@ then calls Claude to:
   3. Suggest new lines to add with context annotations, in the voice file format
 
 Usage:
-  python vtt_voice_compare.py session.vtt --player Gabe --voice-file voice/zalthir_voice.md
-  python vtt_voice_compare.py session.vtt --player Gabe --voice-file voice/zalthir_voice.md --update
-  python vtt_voice_compare.py session.vtt --player Gabe --character Zalthir --voice-file voice/zalthir_voice.md
+  vtt_voice_compare session.vtt --player Gabe --voice-file voice/zalthir_voice.md
+  vtt_voice_compare session.vtt --player Gabe --voice-file voice/zalthir_voice.md --update
+  vtt_voice_compare session.vtt --player Gabe --character Zalthir --voice-file voice/zalthir_voice.md
 
 Options:
   --player NAME       Speaker label as it appears in the VTT (e.g. "Gabe")

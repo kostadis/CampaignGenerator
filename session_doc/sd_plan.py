@@ -6,7 +6,7 @@ roster + character names + optional session summary, runs one LLM call to
 assign one narrator per scene, writes plan.md (and prints it).
 
 This is the Phase-4 split of what used to be Pass 3 inside session_doc.py.
-``--plan-only`` is no longer a flag — invoking ``sd_plan.py`` *is* the
+``--plan-only`` is no longer a flag — invoking ``sd_plan`` *is* the
 plan-and-exit operation. See docs/design/SessionDocRefactor.md.
 """
 
@@ -30,7 +30,7 @@ def main() -> None:
                     "scene_extractions/ checklist. Writes plan.md."
     )
     parser.add_argument("--scene-extractions", required=True, metavar="DIR",
-                        help="Directory of NN_*.md scene files (scene_extract.py output).")
+                        help="Directory of NN_*.md scene files (scene_extract output).")
     parser.add_argument("--characters", required=True, metavar="NAMES",
                         help='Comma-separated narrator roster '
                              '(e.g. "Vukradin, Valphine, Soma, Brewbarry").')
@@ -92,7 +92,7 @@ def main() -> None:
     scene_extractions = load_scene_extractions(sx_dir)
     if not scene_extractions:
         print(f"Error: no NN_*.md files in {sx_dir} "
-              "(run scene_extract.py first)", file=sys.stderr)
+              "(run scene_extract first)", file=sys.stderr)
         sys.exit(1)
 
     characters = [c.strip() for c in args.characters.split(",") if c.strip()]

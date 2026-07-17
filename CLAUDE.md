@@ -21,18 +21,20 @@ frontend/                   # Vue 3 + TypeScript + Pinia + Vue Router
 # ── CLI tools ──
 campaignlib.py              # Shared library — all scripts import from here
 pipelines/session_prep/prep.py  # CLI: session beat / session arc prep
-sd_consistency.py           # CLI: Pass 1 — consistency check (sd_*.py replaced session_doc.py)
-sd_plan.py                  # CLI: Pass 3 — narrative plan
-sd_narrate.py               # CLI: Pass 5 — per-scene narration
-session_doc/                # Shared helpers (io, voice, roster, examples, narrate)
-narrative.py                # Standalone experimental: VTT-anchored narration CLI
-quote_ledger.py             # SQLite-backed VTT dialogue tracking
+session_doc/sd_consistency.py  # CLI: Pass 1 — consistency check (sd_*.py replaced session_doc.py)
+session_doc/sd_plan.py         # CLI: Pass 3 — narrative plan
+session_doc/sd_narrate.py      # CLI: Pass 5 — per-scene narration
+session_doc/                # Post-session pipeline CLIs (sd_*, assemble, scene_extract,
+                             #   enhance_*, vtt_summary, …) + shared helpers (io, voice,
+                             #   roster, examples, narrate)
+session_doc/narrative.py    # Standalone experimental: VTT-anchored narration CLI
+session_doc/quote_ledger.py # SQLite-backed VTT dialogue tracking
 pipelines/grounding/npc_table.py        # CLI: generate NPC reference table
 pipelines/grounding/distill.py          # CLI: convert summaries → world_state.md
 pipelines/grounding/campaign_state.py   # CLI: generate completed-content grounding doc
 pipelines/grounding/make_tracking.py    # CLI: extract trackable events from a module
 pipelines/rlm/query.py      # CLI: search summaries
-vtt_summary.py              # CLI: Zoom .vtt → session summary
+session_doc/vtt_summary.py  # CLI: Zoom .vtt → session summary
 pipelines/grounding/planning.py         # CLI: NPC dossiers + arc scores → planning.md
 pipelines/grounding/party.py            # CLI: character sheets + summaries → party.md
 pipelines/content_ingest/dnd_sheet.py  # CLI: D&D Beyond PDF → markdown (vision API)
@@ -127,7 +129,7 @@ All scripts look for `config.yaml` in the CWD first, then fall back to `config/c
 
 ### Retrieval/render separation (RLM)
 
-Render pipelines (`prep`, `sd_narrate.py`, `planning`) must **not** consume raw `rpg_retriever` output. They consume a human-approved `docs/dossier_proposal.md` file instead. Retrieval is a scope decision; rendering is a prose decision; the proposal is the human checkpoint between them.
+Render pipelines (`prep`, `sd_narrate`, `planning`) must **not** consume raw `rpg_retriever` output. They consume a human-approved `docs/dossier_proposal.md` file instead. Retrieval is a scope decision; rendering is a prose decision; the proposal is the human checkpoint between them.
 
 A CI test (`tests/test_retrieve_render_isolation.py`) fails if any function body contains both a retrieval call (`retrieve`, `search_hierarchical`, `rpg_search`, …) and a render call (`stream_api`, `call_api`). Don't bypass this — fix the structure.
 

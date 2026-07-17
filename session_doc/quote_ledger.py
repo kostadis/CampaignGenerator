@@ -1,6 +1,6 @@
 """Quote Ledger — SQLite-backed tracking of VTT roleplay quotes and their scene assignments.
 
-Parses roleplay extraction files (from vtt_summary.py) and scene extraction files
+Parses roleplay extraction files (from vtt_summary) and scene extraction files
 (from session_doc.py Pass 4), cross-references them via fuzzy matching, and stores
 assignments in a local SQLite database.
 """

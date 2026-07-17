@@ -121,7 +121,11 @@ def test_build_enhance_cmd_resolves_paths(tmp_path):
                                 "session_summary": str(sd / "session-summary.md")})
     cmd = scene_editor._build_enhance_cmd()
     assert isinstance(cmd, list)
-    assert "enhance_summary.py" in cmd[1]
+    # enhance_summary.py moved into session_doc/ and now runs as the bare
+    # `enhance_summary` console script (server.subprocess_runner.console_script()),
+    # so cmd[0] is the resolved binary path, not `python <path>.py` — check
+    # cmd[0]'s basename instead of a `.py`-suffixed cmd[1].
+    assert "enhance_summary" in cmd[0]
     assert str(vtt) in cmd
     assert str(gm) in cmd
     assert str(sd / "session-summary.md") in cmd

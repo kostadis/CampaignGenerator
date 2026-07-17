@@ -11,16 +11,17 @@ DGX_ENDPOINT is set the call routes to the local vLLM endpoint
 
 Usage:
     DGX_ENDPOINT=http://localhost:8000 \\
-        python scrub_mechanics.py summaries/20250226/narration/session_doc_scene_03*.md
+        scrub_mechanics summaries/20250226/narration/session_doc_scene_03*.md
 
     # Whole directory:
-    python scrub_mechanics.py summaries/20250226/narration/
+    scrub_mechanics summaries/20250226/narration/
 
     # Override model (otherwise uses DGX_MODEL env or library default):
-    DGX_MODEL=Qwen2.5-32B-AWQ python scrub_mechanics.py path/to/scene.md
+    DGX_MODEL=Qwen2.5-32B-AWQ scrub_mechanics path/to/scene.md
 
-The default prompt lives in config/scrub_mechanics_prompt.md next to this
-script. Per-campaign overrides are resolved against the campaign root (via
+The default prompt lives in the repo's config/scrub_mechanics_prompt.md
+(REPO_ROOT, not this script's own directory — see the REPO_ROOT comment
+below). Per-campaign overrides are resolved against the campaign root (via
 $CG_CAMPAIGN_DIR, forwarded by the server; falls back to cwd for standalone
 runs) — see resolve_prompt_path() for the search order.
 """
@@ -32,7 +33,12 @@ import re
 import sys
 from pathlib import Path
 
-DEFAULT_PROMPT_PATH = Path(__file__).resolve().parent / "config" / "scrub_mechanics_prompt.md"
+# This file lives at session_doc/scrub_mechanics.py — one directory below
+# the repo root, unlike the pipelines/<cluster>/ scripts (two levels down)
+# that established this REPO_ROOT pattern — so a single .parent.parent gets
+# back to the repo root that holds config/scrub_mechanics_prompt.md.
+REPO_ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_PROMPT_PATH = REPO_ROOT / "config" / "scrub_mechanics_prompt.md"
 PER_CAMPAIGN_PROMPT_NAME = "scrub_mechanics_prompt.md"
 
 from campaignlib import (  # noqa: E402

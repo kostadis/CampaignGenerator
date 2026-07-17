@@ -8,19 +8,19 @@ gm-assist's section structure (Summary, Memorable Moments, Scenes, NPCs,
 Locations, Items, Spells, etc.) but fills in details and verbatim moments
 the recap missed.
 
-Output is human-reviewable. It is the input to Stage 2 (scene_extract.py).
+Output is human-reviewable. It is the input to Stage 2 (scene_extract).
 
 Usage:
-  python enhance_summary.py session.vtt \\
+  enhance_summary session.vtt \\
       --gmassist gm-assist.md \\
       --output session-summary.md
 
 Batch mode (50% off list price, no live streaming, results in minutes
 typically — 24h SLA worst case):
 
-  python enhance_summary.py ... --batch                 # block + poll until done
-  python enhance_summary.py ... --batch --submit-only   # detach: write sidecar, exit
-  python enhance_summary.py ... --batch --collect       # retrieve from sidecar
+  enhance_summary ... --batch                 # block + poll until done
+  enhance_summary ... --batch --submit-only   # detach: write sidecar, exit
+  enhance_summary ... --batch --collect       # retrieve from sidecar
 """
 
 import argparse
@@ -44,7 +44,7 @@ from campaignlib import (
     utc_now_iso,
     write_batch_sidecar,
 )
-from vtt_summary import parse_vtt
+from .vtt_summary import parse_vtt
 
 
 ENHANCE_SYSTEM_PREFIX = load_agent_prompt("enhance_summary")

@@ -5,9 +5,9 @@ Loads campaign_state and world_state from config automatically; pass additional
 files (e.g. party.md) via --context.
 
 Usage:
-    check_consistency.py session-doc.md
-    check_consistency.py enhanced_sections.md --context docs/party.md
-    check_consistency.py session-doc.md --output consistency_report.md
+    check_consistency session-doc.md
+    check_consistency enhanced_sections.md --context docs/party.md
+    check_consistency session-doc.md --output consistency_report.md
 """
 
 import argparse
@@ -24,6 +24,13 @@ from campaignlib import (
     load_config,
     stream_api,
 )
+
+# This file lives at session_doc/check_consistency.py; find_default_config()'s
+# script-dir fallback expects to sit next to config/ (the repo root), which
+# is no longer this file's own directory since the move — anchor it at
+# REPO_ROOT explicitly instead (same fix as pipelines/session_prep/prep.py,
+# one .parent shorter since session_doc/ is only one level below repo root).
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
 CONSISTENCY_SYSTEM = """\
 You are a continuity editor for a D&D campaign. You will be given a session recap and
@@ -60,7 +67,7 @@ def main() -> None:
     parser.add_argument("document", help="Path to the document to check")
     parser.add_argument(
         "--config",
-        default=find_default_config(__file__),
+        default=find_default_config(str(REPO_ROOT / "check_consistency.py")),
         help="Path to config.yaml (default: CWD or script-dir config/config.yaml)",
     )
     parser.add_argument(

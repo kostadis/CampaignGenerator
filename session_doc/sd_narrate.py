@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Pass 5 — per-scene narration standalone CLI.
 
-Reads plan.md (sd_plan.py output) + scene_extractions/ + per-character voice
+Reads plan.md (sd_plan output) + scene_extractions/ + per-character voice
 files + style examples + party.md, and writes one narration file per scene
 to ``--per-scene-output DIR``. Optional filters: ``--scene N [M …]`` to
 re-narrate a subset, ``--narrator NAME`` to render only one character's
@@ -90,9 +90,9 @@ def main() -> None:
                         help="Session recap (used to extract scene event text when the "
                              "scene file lacks an explicit summary).")
     parser.add_argument("--plan", required=True, metavar="FILE",
-                        help="plan.md (sd_plan.py output).")
+                        help="plan.md (sd_plan output).")
     parser.add_argument("--scene-extractions", required=True, metavar="DIR",
-                        help="Directory of NN_*.md scene files (scene_extract.py output).")
+                        help="Directory of NN_*.md scene files (scene_extract output).")
     parser.add_argument("--per-scene-output", required=True, metavar="DIR",
                         help="Where to write session_doc_scene_NN_<slug>.md files.")
     parser.add_argument("--party", metavar="FILE",
@@ -118,7 +118,7 @@ def main() -> None:
     parser.add_argument("--context", nargs="+", action="extend", metavar="FILE",
                         help="Campaign context files for --reflections.")
     parser.add_argument("--dossier-dir", default=None, metavar="DIR",
-                        help="Per-NPC dossier files (planning.py --build-dossiers). "
+                        help="Per-NPC dossier files (planning --build-dossiers). "
                              "Aliases are normalised before Pass 5; a 'Known NPCs' roster "
                              "is seeded into the narrate prompt.")
     parser.add_argument("--narrate-tokens", type=int, default=16000, metavar="N",
@@ -141,7 +141,7 @@ def main() -> None:
     recap = recap_path.read_text(encoding="utf-8") if recap_path.exists() else ""
     plan_path = Path(args.plan).expanduser()
     if not plan_path.exists():
-        print(f"Error: --plan not found: {plan_path} (run sd_plan.py first)", file=sys.stderr)
+        print(f"Error: --plan not found: {plan_path} (run sd_plan first)", file=sys.stderr)
         sys.exit(1)
     plan_text = plan_path.read_text(encoding="utf-8")
 
@@ -318,7 +318,7 @@ def main() -> None:
 
     if not args.dry_run:
         print(f"\nWrote {len(written)} per-scene narration file(s) to {per_scene_output_dir}/")
-        print("Run assemble.py to combine them into a single session document.")
+        print("Run assemble to combine them into a single session document.")
 
 
 if __name__ == "__main__":

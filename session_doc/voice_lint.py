@@ -15,9 +15,9 @@ No model calls, no dependencies — pure stdlib, cheap to run in a loop.
 Exit code is 1 if any hard ERROR fired (so it can gate a pipeline), else 0.
 
 Usage:
-    voice_lint.py path/to/gm-assist-doc.md
-    voice_lint.py summaries/20260601/*.md
-    voice_lint.py narration.md --quiet      # errors only, no warnings
+    voice_lint path/to/gm-assist-doc.md
+    voice_lint summaries/20260601/*.md
+    voice_lint narration.md --quiet      # errors only, no warnings
 """
 
 import argparse

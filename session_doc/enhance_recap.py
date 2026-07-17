@@ -15,7 +15,7 @@ Takes a recap file (e.g. from gmassisstant.app) and runs two passes:
 The Scenes, NPCs, Locations, Items, and Spells sections are preserved unchanged.
 
 Usage:
-  python enhance_recap.py session-mar \\
+  enhance_recap session-mar \\
       --roleplay-extract-dir vtt_roleplay_extractions/ \\
       --summary-extract-dir  vtt_extractions/ \\
       --context docs/campaign_state.md docs/world_state.md docs/party.md \\

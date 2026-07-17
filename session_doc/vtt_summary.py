@@ -9,13 +9,13 @@ Use --extract-only to stop after the extract pass(es) so you can review and
 edit the intermediate files before synthesis.
 
 Usage:
-  python vtt_summary.py session.vtt --output docs/summaries/session_12.md
-  python vtt_summary.py session.vtt -o session_12.md --date "2026-03-15"
-  python vtt_summary.py session.vtt --output session_12.md --extract-only
-  python vtt_summary.py session.vtt --synthesize-only --extract-dir vtt_extractions/ -o out.md
+  vtt_summary session.vtt --output docs/summaries/session_12.md
+  vtt_summary session.vtt -o session_12.md --date "2026-03-15"
+  vtt_summary session.vtt --output session_12.md --extract-only
+  vtt_summary session.vtt --synthesize-only --extract-dir vtt_extractions/ -o out.md
 
 Output is a structured markdown session summary suitable for:
-  - Appending to a session summaries file (fed to distill.py, campaign_state.py, etc.)
+  - Appending to a session summaries file (fed to distill, campaign_state, etc.)
   - Direct review after the session
 
 Options:
@@ -287,7 +287,7 @@ def main() -> None:
                              "anything present in these that is missing from the VTT extractions.")
     parser.add_argument("--dossier-dir", metavar="DIR", default=None,
                         help="Directory of per-NPC dossier files (built by "
-                             "planning.py --build-dossiers). If given, every "
+                             "planning --build-dossiers). If given, every "
                              "alias in dossier frontmatter is rewritten to its "
                              "canonical name before extract/synth, and a "
                              "'Known NPCs' roster seeds the system prompts.")
@@ -462,7 +462,7 @@ def main() -> None:
 
     print(f"\nNext steps:")
     print(f"  Append to your summaries file, then run:")
-    print(f"  python campaign_state.py summaries.md --output docs/campaign_state.md")
+    print(f"  campaign_state summaries.md --output docs/campaign_state.md")
 
 
 if __name__ == "__main__":

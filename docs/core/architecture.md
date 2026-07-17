@@ -16,7 +16,7 @@ Hard rules — see [Critical rules](../../CLAUDE.md#critical-rules-apply-to-ever
 ```mermaid
 flowchart TB
     subgraph User["User entry points"]
-        CLI["CLI scripts (prep, sd_consistency.py, sd_plan.py, sd_narrate.py, polish, …)"]
+        CLI["CLI scripts (prep, sd_consistency, sd_plan, sd_narrate, polish, …)"]
         Web["Web UI (Vue 3, experimental routes: /api/experimental, /api/setup)"]
     end
 
@@ -75,20 +75,20 @@ flowchart LR
     VTT[("Zoom .vtt<br/>transcript")]
     GM[("gm-assist.md<br/>(human recap)")]
     
-    ES["Stage 1<br/><b>enhance_summary.py</b><br/>(supports --batch, --collect)"]
+    ES["Stage 1<br/><b>enhance_summary</b><br/>(supports --batch, --collect)"]
     SS[("session-summary.md<br/>◄ HUMAN REVIEW")]
     
-    SE["Stage 2<br/><b>scene_extract.py</b><br/>(per-scene · cached VTT · --batch, --collect)"]
+    SE["Stage 2<br/><b>scene_extract</b><br/>(per-scene · cached VTT · --batch, --collect)"]
     SX[("scene_extractions/NN_*.md<br/>◄ HUMAN REVIEW")]
     
     SD["Stage 3<br/><b>sd_consistency / sd_plan / sd_narrate</b><br/>(3 LLM passes via session_doc/ helpers)"]
     NARR[("narration/session_doc_scene_NN_*.md<br/>◄ HUMAN REVIEW")]
     
-    AS["Stage 4<br/><b>assemble.py</b>"]
+    AS["Stage 4<br/><b>assemble</b>"]
     DOC[("session_doc.md")]
     POL[("polish (optional experimental refinement)")]
     
-    QLED["quote_ledger.py<br/>(VTT quote → scene match,<br/>used by Web UI)"]
+    QLED["quote_ledger<br/>(VTT quote → scene match,<br/>used by Web UI)"]
     
     VTT --> ES
     GM  --> ES
@@ -126,7 +126,7 @@ flowchart LR
     DOSS -. alias normalization .-> CS
     DOSS -. alias normalization .-> DI
     DOSS -. alias normalization .-> PT
-    DOSS -. alias normalization .-> SE2["scene_extract.py /<br/>sd_narrate.py"]
+    DOSS -. alias normalization .-> SE2["scene_extract /<br/>sd_narrate"]
 ```
 
 ### RLM retrieval pipeline
@@ -177,7 +177,7 @@ flowchart LR
 
     subgraph Render["Render pipelines (gated)"]
         PR["prep"]
-        SDP["sd_narrate.py"]
+        SDP["sd_narrate"]
         PLN["planning"]
     end
     LOAD --> PR
@@ -259,7 +259,7 @@ Each pipeline follows the **extract → human review → synthesize/render** pat
 | [`planning.py`](../../pipelines/grounding/planning.py) | Two-pass: extract NPC/faction state from summaries, synthesize into `planning.md`. `--build-dossiers` writes per-NPC files for human review before `--synthesize` |
 | [`party.py`](../../pipelines/grounding/party.py) | Two-pass: arc-score candidate events from summaries + character sheets → `party.md` |
 | [`dossier_proposer.py`](../../pipelines/rlm/dossier_proposer.py) | Proposes NPC dossiers from narrative text; writes `docs/dossier_proposal.md` (the human checkpoint between retrieval and render) |
-| [`scene_extract.py`](../../scene_extract.py) | Stage-2 scene-anchored extraction (per-scene verbatim moments). Supports Batch API |
+| [`scene_extract.py`](../../session_doc/scene_extract.py) | Stage-2 scene-anchored extraction (per-scene verbatim moments). Supports Batch API |
 
 End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_prep_workflow.md).
 
@@ -267,14 +267,14 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 
 | Script | Role |
 |---|---|
-| [`vtt_summary.py`](../../vtt_summary.py) | Zoom WebVTT → structured `session-summary.md` + verbatim `vtt_roleplay_extractions/` chunks |
-| [`enhance_summary.py`](../../enhance_summary.py) | Stage 1: enrich gm-assist with VTT detail (cached system prefix) |
-| [`scene_extract.py`](../../scene_extract.py) | Stage 2: per-scene verbatim moments |
-| [`sd_consistency.py`](../../sd_consistency.py) / [`sd_plan.py`](../../sd_plan.py) / [`sd_narrate.py`](../../sd_narrate.py) | Three single-LLM-call tools (Pass 1 / Pass 3 / Pass 5) split from the old `session_doc.py`. Shared helpers live under [`session_doc/`](../../session_doc/). Read [`docs/cli/session_doc_pipeline.md`](../cli/session_doc_pipeline.md). |
-| [`narrative.py`](../../narrative.py) | Standalone experimental VTT-anchored narrator (separate from the `sd_narrate.py` flow). |
-| [`enhance_recap.py`](../../enhance_recap.py) | Single cached call: enriches gm-assist recap |
+| [`vtt_summary.py`](../../session_doc/vtt_summary.py) | Zoom WebVTT → structured `session-summary.md` + verbatim `vtt_roleplay_extractions/` chunks |
+| [`enhance_summary.py`](../../session_doc/enhance_summary.py) | Stage 1: enrich gm-assist with VTT detail (cached system prefix) |
+| [`scene_extract.py`](../../session_doc/scene_extract.py) | Stage 2: per-scene verbatim moments |
+| [`sd_consistency.py`](../../session_doc/sd_consistency.py) / [`sd_plan.py`](../../session_doc/sd_plan.py) / [`sd_narrate.py`](../../session_doc/sd_narrate.py) | Three single-LLM-call tools (Pass 1 / Pass 3 / Pass 5) split from the old `session_doc.py`. Shared helpers live under [`session_doc/`](../../session_doc/). Read [`docs/cli/session_doc_pipeline.md`](../cli/session_doc_pipeline.md). |
+| [`narrative.py`](../../session_doc/narrative.py) | Standalone experimental VTT-anchored narrator (separate from the `sd_narrate` flow). |
+| [`enhance_recap.py`](../../session_doc/enhance_recap.py) | Single cached call: enriches gm-assist recap |
 | [`polish.py`](../../pipelines/ensemble/polish.py) | Agentic loop with tools (read/edit/insert/finish) — experimental |
-| [`quote_ledger.py`](../../quote_ledger.py) | SQLite-backed fuzzy-matching of quotes across roleplay + scene extractions |
+| [`quote_ledger.py`](../../session_doc/quote_ledger.py) | SQLite-backed fuzzy-matching of quotes across roleplay + scene extractions |
 
 ### Grounding docs (long-lived state)
 
@@ -325,24 +325,24 @@ The campaign workspace is the database. All long-lived state is markdown.
     dossier_proposal.md       ← dossier_proposer      → render pipelines (human-approved)
     npcs/*.md                 ← planning --build-dossiers
   voice/                      # Per-character narrator personality notes
-  examples/                   # Handcrafted style examples for sd_narrate.py
+  examples/                   # Handcrafted style examples for sd_narrate
   notes/                      # MCP server's only writable directory
   summaries.md                # Concatenated session summaries (input to distill, campaign_state)
   summaries/{session}/
     session.vtt               # Zoom transcript
     gm-assist.md              # GM recap (input to enhance_recap, scene structure for scene_extract)
-    session-summary.md        ← vtt_summary.py
-    vtt_extractions/          ← vtt_summary.py        → distill, campaign_state
-    vtt_roleplay_extractions/ ← vtt_summary.py        → quote_ledger, enhance_recap
-    scene_extractions/        ← scene_extract.py      → session_doc Pass 4, ledger
+    session-summary.md        ← vtt_summary
+    vtt_extractions/          ← vtt_summary            → distill, campaign_state
+    vtt_roleplay_extractions/ ← vtt_summary            → quote_ledger, enhance_recap
+    scene_extractions/        ← scene_extract          → session_doc Pass 4, ledger
   quote_ledger.db             # SQLite — fuzzy quote ↔ scene mapping
 ```
 
 Typical session lifecycle:
-1. `vtt_summary.py` → `session-summary.md` + extractions
-2. `enhance_summary.py` → enriched gm-assist (supports `--batch`, `--collect`)
-3. `scene_extract.py` → `scene_extractions/` (supports `--batch`, `--collect`)
-4. `sd_consistency.py` (if --context) + `sd_plan.py` + `sd_narrate.py` → narration files (optional refinement via `polish`)
+1. `vtt_summary` → `session-summary.md` + extractions
+2. `enhance_summary` → enriched gm-assist (supports `--batch`, `--collect`)
+3. `scene_extract` → `scene_extractions/` (supports `--batch`, `--collect`)
+4. `sd_consistency` (if --context) + `sd_plan` + `sd_narrate` → narration files (optional refinement via `polish`)
 5. Append summary to `summaries.md`
 6. `distill`, `campaign_state`, `planning`, `party` update grounding docs
 7. Next session: `prep` reads all four grounding docs (including any polish feedback)
@@ -376,11 +376,11 @@ Per-script tests live alongside (`test_prep.py`, `test_sd_split.py` / `test_sess
 
 - **Alias normalization.** A single source of truth — frontmatter in `docs/npcs/*.md` — feeds an `{canonical: [aliases]}` map into every extractor that crosses pipelines. Variants get rewritten *before the LLM sees them*; a "Known NPCs" roster is appended to the system prompt. Empty map = identity / no-op.
 
-- **Batch mode (`--batch`).** `enhance_summary.py` and `scene_extract.py` submit via Anthropic Message Batches API for 50% off, prompt caching honoured. Three sub-modes: block-and-poll (default), `--submit-only` (sidecar, exit), `--collect` (read sidecar, retrieve). Sidecars live next to the output: `<output>.batch.json` or `<output-dir>/.batch.json`.
+- **Batch mode (`--batch`).** `enhance_summary` and `scene_extract` submit via Anthropic Message Batches API for 50% off, prompt caching honoured. Three sub-modes: block-and-poll (default), `--submit-only` (sidecar, exit), `--collect` (read sidecar, retrieve). Sidecars live next to the output: `<output>.batch.json` or `<output-dir>/.batch.json`.
 
 - **Three-state RLM retrieval.** Every hit is a *drawer* (already ingested), a *statblock* (already ingested), or a *candidate* — and candidates are tagged `cost="cheap"` (5etools JSON on disk, ready for `fivetools_ingest`) or `cost="expensive"` (rpglib PDF needing `convert_book` first). The retriever never fetches; it suggests.
 
-- **Proposal-gate.** Render pipelines (`prep`, `sd_plan.py`, `planning`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../pipelines/rlm/proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
+- **Proposal-gate.** Render pipelines (`prep`, `sd_plan`, `planning`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../pipelines/rlm/proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
 
 - **CLI ↔ UI symmetry.** The FastAPI server never reimplements logic — it shells out to CLI scripts. Fixing a bug in a script fixes it in the UI; exposing a CLI flag means adding it to the corresponding `_build_*_cmd()` in the router.
 
@@ -393,16 +393,16 @@ A fast-orientation table for "I need to change X, where does it live?"
 | If you want to… | Open this first |
 |---|---|
 | Add a new CLI tool | [`campaignlib.py`](../../campaignlib.py) intro + a small existing script like [`npc_table.py`](../../pipelines/grounding/npc_table.py) |
-| Change Stage 1/2 prompts | `ENHANCE_SYSTEM_PREFIX` in [`enhance_summary.py`](../../enhance_summary.py); `SCENE_EXTRACT_SYSTEM_PREFIX` in [`scene_extract.py`](../../scene_extract.py) |
-| Add `--batch` to another script | Copy the pattern from [`enhance_summary.py`](../../enhance_summary.py) (`_submit`, `_collect_and_write`, sidecar). Helpers already exist in [`campaignlib.py`](../../campaignlib.py). |
+| Change Stage 1/2 prompts | `ENHANCE_SYSTEM_PREFIX` in [`enhance_summary.py`](../../session_doc/enhance_summary.py); `SCENE_EXTRACT_SYSTEM_PREFIX` in [`scene_extract.py`](../../session_doc/scene_extract.py) |
+| Add `--batch` to another script | Copy the pattern from [`enhance_summary.py`](../../session_doc/enhance_summary.py) (`_submit`, `_collect_and_write`, sidecar). Helpers already exist in [`campaignlib.py`](../../campaignlib.py). |
 | Touch retry / cache wiring | [`campaignlib.py`](../../campaignlib.py) `# ── API ──` and `# ── Batch API ──` sections (`_is_retryable`, `stream_api`, `build_batch_request`) |
 | Add a new Web UI page | A small existing view like [`frontend/src/views/setup/MakeTracking.vue`](../../frontend/src/views/setup/MakeTracking.vue) and its router [`server/routers/setup.py`](../../server/routers/setup.py) |
 | Stream a long-running script to the UI | [`server/subprocess_runner.py`](../../server/subprocess_runner.py) + a `StreamingResponse` endpoint in [`server/routers/scene_editor.py`](../../server/routers/scene_editor.py) |
 | Persist a new UI setting | [`frontend/src/stores/config.ts`](../../frontend/src/stores/config.ts); use a `sd_*` / `prep_*` / etc. prefix listed in CLAUDE.md |
 | Change scene-extraction file format | `format_scene_output` in [`campaignlib.py`](../../campaignlib.py) (live + batch share it) and [`session_doc/io.py:load_scene_extractions`](../../session_doc/io.py) |
 | Resolve NPC name variants | [`campaignlib.py`](../../campaignlib.py) NPC alias section + [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md) |
-| Understand the narration | [`sd_narrate.py`](../../sd_narrate.py) docstring + [`session_doc/narrate.py`](../../session_doc/narrate.py) (build_narrate_system / build_narrate_prompt) |
-| Match VTT quotes to scenes | [`quote_ledger.py`](../../quote_ledger.py) + [`server/routers/ledger.py`](../../server/routers/ledger.py) |
+| Understand the narration | [`sd_narrate.py`](../../session_doc/sd_narrate.py) docstring + [`session_doc/narrate.py`](../../session_doc/narrate.py) (build_narrate_system / build_narrate_prompt) |
+| Match VTT quotes to scenes | [`quote_ledger.py`](../../session_doc/quote_ledger.py) + [`server/routers/ledger.py`](../../server/routers/ledger.py) |
 | Add an MCP tool | [`mcp_server.py`](../../pipelines/rlm/mcp_server.py); for MemPalace I/O use [`mempalace_client.py`](../../pipelines/rlm/mempalace_client.py) only |
 | Change retrieval ranking / tiering | [`rpg_retriever.py`](../../pipelines/rlm/rpg_retriever.py) (`retrieve`); name-index changes in [`fivetools_catalog.py`](../../pipelines/rlm/fivetools_catalog.py) |
 | Touch the proposal-gate | [`proposal_loader.py`](../../pipelines/rlm/proposal_loader.py) — `require_approved_proposal` is the choke point |
