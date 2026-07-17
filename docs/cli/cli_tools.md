@@ -58,32 +58,32 @@ If the Lore Oracle response contains the word `FLAGS`, the user is prompted befo
 Generates `campaign_state.md` — a grounding document that tells all planning scripts what has been completed and what is currently true. Prevents hallucination of completed content as still active.
 
 ```bash
-python campaign_state.py summaries.md --output docs/campaign_state.md
+campaign_state summaries.md --output docs/campaign_state.md
 
 # With a tracking list to ensure specific events are never missed
-python campaign_state.py summaries.md \
+campaign_state summaries.md \
     --track-file docs/tracking.txt \
     --output docs/campaign_state.md
 
 # Re-synthesize without re-extracting (delete state_extractions/ to re-extract)
-python campaign_state.py --synthesize-only \
+campaign_state --synthesize-only \
     --extract-dir docs/state_extractions \
     --output docs/campaign_state.md
 ```
 
 The output contains: Completed Encounters & Quests, Resolved Plot Threads, NPC Current States table, Active Quests & Open Threads, Party Current Situation, and (if a tracking list was provided) a Tracked Items Status section where missing items are flagged as `NOT FOUND IN SUMMARIES`.
 
-`campaign_state.md` is loaded first in `config.yaml` so it is the first context `prep.py` sees.
+`campaign_state.md` is loaded first in `config.yaml` so it is the first context `prep` sees.
 
 ## make_tracking.py
 
-Extracts a tracking list from an adventure module markdown. Items are phrased neutrally (subject + event type, no outcome) so `campaign_state.py` can determine whether each one has happened yet.
+Extracts a tracking list from an adventure module markdown. Items are phrased neutrally (subject + event type, no outcome) so `campaign_state` can determine whether each one has happened yet.
 
 ```bash
-python make_tracking.py "Dragon of Icespire Peak.md" --output docs/tracking.txt
+make_tracking "Dragon of Icespire Peak.md" --output docs/tracking.txt
 ```
 
-Then pass the result to `campaign_state.py --track-file`. Review and edit the list before use — the model may include events that have not yet occurred in your campaign.
+Then pass the result to `campaign_state --track-file`. Review and edit the list before use — the model may include events that have not yet occurred in your campaign.
 
 ## query.py
 
@@ -104,20 +104,20 @@ Generates `planning.md` from NPC dossiers, threat arc score documents, and sessi
 
 ```bash
 # Standard: dossiers + arc scores + summaries → planning.md
-python planning.py \
+planning \
     --npc grundar.md xalvosh.md \
     --arc-scores brundar_echo.md kraken_echoes.md \
     --summaries summaries.md \
     --output docs/planning.md
 
 # Build individual per-NPC dossier files from summaries (run once, then edit)
-python planning.py \
+planning \
     --summaries summaries.md \
     --build-dossiers \
     --dossier-dir docs/npcs/
 
 # Re-synthesize without re-extracting
-python planning.py \
+planning \
     --npc grundar.md xalvosh.md \
     --synthesize-only \
     --extract-dir docs/planning_extractions \
@@ -135,7 +135,7 @@ Generates `party.md` from character sheets, session summaries, backstories, and 
 **Preferred: `--party-config` YAML.** Maps each PC explicitly to their sheet, backstory, and arc score mechanic so the synthesizer can't misattribute which file belongs to which character. `arc_score: null` is a first-class "intentionally trackless" signal — the synthesizer will not invent a track for that PC or suggest creating one.
 
 ```bash
-python party.py \
+party \
     --party-config config/party.yaml \
     --summaries summaries.md \
     --context docs/campaign_state.md \
@@ -147,7 +147,7 @@ See `config/party.example.yaml` for the full schema. Every referenced file is va
 **Legacy flat flags** still work unchanged (mutex with `--party-config`):
 
 ```bash
-python party.py \
+party \
     --character soma.md vukradin.md valphine.md \
     --summaries summaries.md \
     --arc-scores soma_arc.md vukradin_arc.md \
@@ -156,7 +156,7 @@ python party.py \
     --output docs/party.md
 
 # Re-synthesize without re-extracting
-python party.py \
+party \
     --character soma.md \
     --synthesize-only \
     --extract-dir docs/party_extractions \
@@ -165,7 +165,7 @@ python party.py \
 
 **Output shape — candidates, not decisions.** Each non-trackless PC gets a "Candidate Arc Score Events" bullet list: session events with the verbatim trigger text quoted from the mechanic file and a proposed direction (+/-). The GM decides which candidates actually fire. The synthesizer never commits to a current value, running total, or threshold claim — adjudicating score changes is a precision decision, not a rendering one. Trackless PCs have no candidate section at all.
 
-**Output file — draft, not in-place rewrite.** `party.md` is hand-edited downstream (session summaries and the GM add content the LLM never sees), so if `--output` already exists `party.py` writes a sibling `<stem>.candidate<ext>` (e.g. `docs/party.candidate.md`) and prints a `diff -u` command for manual merge. The live `party.md` is never clobbered. Pass `--overwrite` only when bootstrapping a fresh party.md.
+**Output file — draft, not in-place rewrite.** `party.md` is hand-edited downstream (session summaries and the GM add content the LLM never sees), so if `--output` already exists `party` writes a sibling `<stem>.candidate<ext>` (e.g. `docs/party.candidate.md`) and prints a `diff -u` command for manual merge. The live `party.md` is never clobbered. Pass `--overwrite` only when bootstrapping a fresh party.md.
 
 ## dnd_sheet.py
 
@@ -181,9 +181,9 @@ python dnd_sheet.py *.pdf --output-dir ~/campaigns/characters/
 Generates a markdown NPC reference table (Name / Faction / Current State / Motivations) from one or more campaign documents.
 
 ```bash
-python npc_table.py                              # uses world_state
-python npc_table.py --docs world_state planning  # combine multiple docs
-python npc_table.py --output npc_state.md
+npc_table                              # uses world_state
+npc_table --docs world_state planning  # combine multiple docs
+npc_table --output npc_state.md
 ```
 
 ## distill.py
@@ -191,8 +191,8 @@ python npc_table.py --output npc_state.md
 Converts a large session-summary file into a structured `world_state.md` via a two-pass extract → synthesize pipeline. Intermediate extractions are saved so the synthesis can be re-run without re-extracting.
 
 ```bash
-python distill.py summaries.md --output docs/world_state.md
-python distill.py --synthesize-only --extract-dir docs/distill_extractions --output docs/world_state.md
+distill summaries.md --output docs/world_state.md
+distill --synthesize-only --extract-dir docs/distill_extractions --output docs/world_state.md
 ```
 
 ## transform.py
@@ -370,22 +370,22 @@ cd ~/campaigns/icespire
 python ~/CampaignGenerator/dnd_sheet.py *.pdf --output-dir docs/characters/
 
 # 3. Extract tracking list from adventure module
-python ~/CampaignGenerator/make_tracking.py "adventure.md" --output docs/tracking.txt
+make_tracking "adventure.md" --output docs/tracking.txt
 # (review and edit tracking.txt)
 
 # 4. Generate grounding documents from session summaries
-python ~/CampaignGenerator/campaign_state.py summaries.md \
+campaign_state summaries.md \
     --track-file docs/tracking.txt --output docs/campaign_state.md
-python ~/CampaignGenerator/distill.py summaries.md --output docs/world_state.md
-python ~/CampaignGenerator/party.py \
+distill summaries.md --output docs/world_state.md
+party \
     --character docs/characters/soma.md \
     --summaries summaries.md --output docs/party.md
 
 # 5. Build NPC dossiers, then synthesize planning doc
-python ~/CampaignGenerator/planning.py \
+planning \
     --summaries summaries.md --build-dossiers --dossier-dir docs/npcs/
 # (review docs/npcs/*.md)
-python ~/CampaignGenerator/planning.py \
+planning \
     --npc docs/npcs/*.md --arc-scores arc_scores/*.md \
     --output docs/planning.md
 

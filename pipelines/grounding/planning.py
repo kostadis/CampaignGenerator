@@ -12,14 +12,14 @@ Runs in two passes for the session summaries:
   2. Synthesize — combines dossiers + arc scores + extractions into planning.md
 
 Usage:
-  python planning.py \\
+  planning \\
       --npc grundar.md xalvosh.md jena_roscoe.md \\
       --arc-scores brundar_echo.md kraken_echoes.md kp_planar_distortion.md \\
       --summaries "Neverwinter Expansionism and the North.md" \\
       --output docs/planning.md
 
   # With optional world context
-  python planning.py \\
+  planning \\
       --npc grundar.md \\
       --arc-scores brundar_echo.md \\
       --summaries summaries.md \\
@@ -27,7 +27,7 @@ Usage:
       --output docs/planning.md
 
   # Re-synthesize without re-extracting
-  python planning.py \\
+  planning \\
       --npc grundar.md xalvosh.md \\
       --arc-scores brundar_echo.md \\
       --synthesize-only \\
@@ -35,14 +35,14 @@ Usage:
       --output docs/planning.md
 
   # Build per-NPC dossier files from session summaries (run once, then edit)
-  python planning.py \\
+  planning \\
       --summaries "Neverwinter Expansionism and the North.md" \\
       --build-dossiers \\
       --dossier-dir docs/npcs/
 
   # Preferred: per-entity config so the synthesizer can't confuse which
-  # arc score belongs to which NPC/faction (mirrors party.py --party-config).
-  python planning.py \\
+  # arc score belongs to which NPC/faction (mirrors party --party-config).
+  planning \\
       --planning-config config/planning.yaml \\
       --summaries summaries.md \\
       --output docs/planning.md
@@ -882,7 +882,7 @@ def main() -> None:
         npc_args = " ".join(f"--npc {f.name}" for f in saved[:3])
         if len(saved) > 3:
             npc_args += " ..."
-        print(f"     python planning.py {npc_args} --output planning.md")
+        print(f"     planning {npc_args} --output planning.md")
         return
 
     output = Path(args.output).expanduser().resolve()

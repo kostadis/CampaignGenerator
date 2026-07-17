@@ -29,6 +29,15 @@ transform = "pipelines.session_prep.transform:main"
 convert_book = "pipelines.content_ingest.convert_book:main"
 fivetools_ingest = "pipelines.content_ingest.fivetools_ingest:main"
 dnd_sheet = "pipelines.content_ingest.dnd_sheet:main"
+distill = "pipelines.grounding.distill:main"
+campaign_state = "pipelines.grounding.campaign_state:main"
+planning = "pipelines.grounding.planning:main"
+party = "pipelines.grounding.party:main"
+npc_table = "pipelines.grounding.npc_table:main"
+make_tracking = "pipelines.grounding.make_tracking:main"
+arc_triggers = "pipelines.grounding.arc_triggers:main"
+build_recent_events = "pipelines.grounding.build_recent_events:main"
+normalize_bible_headings = "pipelines.grounding.normalize_bible_headings:main"
 
 [project.optional-dependencies]
 test = [

@@ -31,6 +31,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # pytest — same rationale as server.subprocess_runner.console_script().
 PREP_BIN = str(Path(sys.executable).parent / "prep")
 
+# planning.py has moved into pipelines/grounding/ and now runs as the
+# `planning` console script — same rationale as PREP_BIN above.
+PLANNING_BIN = str(Path(sys.executable).parent / "planning")
+
 
 def _write_proposal(campaign_dir: Path, text: str) -> Path:
     p = campaign_dir / pl.DOSSIER_PROPOSAL_REL_PATH
@@ -178,7 +182,7 @@ class TestPlanningRequireProposal:
         out = tmp_path / "planning.md"
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "planning.py"),
+                PLANNING_BIN,
                 "--npc", str(npc),
                 "--output", str(out),
                 "--campaign-dir", str(tmp_path),
@@ -195,7 +199,7 @@ class TestPlanningRequireProposal:
         _write_proposal(tmp_path, "# X\n\n> **Status:** candidates only.\n")
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "planning.py"),
+                PLANNING_BIN,
                 "--npc", str(npc),
                 "--output", str(tmp_path / "planning.md"),
                 "--campaign-dir", str(tmp_path),

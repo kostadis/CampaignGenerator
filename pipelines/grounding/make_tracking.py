@@ -2,16 +2,16 @@
 """Extract a campaign_state tracking list from an adventure module or campaign document.
 
 Reads a markdown adventure file and produces a tracking.txt suitable for passing
-to campaign_state.py --track-file. The tracking file lists every named quest,
+to campaign_state --track-file. The tracking file lists every named quest,
 encounter, dungeon, key location, and plot point in the adventure so that
-campaign_state.py will explicitly hunt for and report on each one.
+campaign_state will explicitly hunt for and report on each one.
 
 Usage:
-  python make_tracking.py adventure.md --output tracking.txt
-  python make_tracking.py "Dragon of Icespire Peak.md" -o docs/tracking.txt
+  make_tracking adventure.md --output tracking.txt
+  make_tracking "Dragon of Icespire Peak.md" -o docs/tracking.txt
 
-  # Then use with campaign_state.py:
-  python campaign_state.py summaries.md \\
+  # Then use with campaign_state:
+  campaign_state summaries.md \\
       --track-file docs/tracking.txt \\
       --output docs/campaign_state.md
 """
@@ -92,7 +92,7 @@ def main() -> None:
     items = [l for l in result.splitlines() if l.strip() and not l.strip().startswith("#")]
     print(f"{len(items)} trackable item(s) extracted.")
     print(f"\nNext step:")
-    print(f"  python campaign_state.py summaries.md --track-file {output} --output campaign_state.md")
+    print(f"  campaign_state summaries.md --track-file {output} --output campaign_state.md")
 
 
 if __name__ == "__main__":

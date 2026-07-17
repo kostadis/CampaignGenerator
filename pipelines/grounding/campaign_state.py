@@ -19,22 +19,22 @@ Use --extract-only to stop after the extract pass so you can review and edit
 the intermediate files before synthesis (recommended for large corpora).
 
 Usage:
-  python campaign_state.py summaries.md --output docs/campaign_state.md
+  campaign_state summaries.md --output docs/campaign_state.md
 
   # With a tracking list to ensure specific events are never missed
-  python campaign_state.py summaries.md \\
+  campaign_state summaries.md \\
       --track-file tracking.txt \\
       --output docs/campaign_state.md
 
   # Re-synthesize without re-extracting (tracking list still applies)
-  python campaign_state.py --synthesize-only \\
+  campaign_state --synthesize-only \\
       --track-file tracking.txt \\
       --extract-dir docs/state_extractions \\
       --output docs/campaign_state.md
 
   # Ensemble workflow: --extract-dir omitted auto-stages
   # docs/world_state_draft.md + docs/ensemble/threads.md as extracts
-  python campaign_state.py --synthesize-only --output docs/campaign_state_draft.md
+  campaign_state --synthesize-only --output docs/campaign_state_draft.md
 
 Tracking file format (tracking.txt):
   One item per line. Blank lines and lines starting with # are ignored.
@@ -54,14 +54,14 @@ Tracking file format (tracking.txt):
     Lord Neverember's involvement
 
 Integration:
-  Add to config.yaml to have prep.py include it in every session prep call:
+  Add to config.yaml to have prep include it in every session prep call:
     documents:
       - label: campaign_state
         path: docs/campaign_state.md
 
-  Pass to planning.py or party.py:
-    python planning.py --npc grundar.md --context docs/campaign_state.md --output planning.md
-    python party.py --character soma.md --context docs/campaign_state.md --output party.md
+  Pass to planning or party:
+    planning --npc grundar.md --context docs/campaign_state.md --output planning.md
+    party --character soma.md --context docs/campaign_state.md --output party.md
 """
 
 import argparse
@@ -267,7 +267,7 @@ def main() -> None:
             print(f"\n[Extract-only mode — stopping before synthesis]")
             print(f"Review files in: {extract_dir}")
             print(f"When ready, run:")
-            print(f"  python campaign_state.py --synthesize-only "
+            print(f"  campaign_state --synthesize-only "
                   f"--extract-dir {extract_dir} --output {Path(args.output)}")
             return
     else:

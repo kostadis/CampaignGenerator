@@ -24,9 +24,9 @@ are affected, so it also catches this mixing pattern in chapters written in
 the future, not just the ones already known to have it.
 
 Usage:
-  python normalize_bible_headings.py docs/TheUnderdark.md --dry-run
-  python normalize_bible_headings.py docs/TheUnderdark.md
-  python normalize_bible_headings.py docs/TheUnderdark.md --registry docs/entity_registry.yaml --party config/party.yaml
+  normalize_bible_headings docs/TheUnderdark.md --dry-run
+  normalize_bible_headings docs/TheUnderdark.md
+  normalize_bible_headings docs/TheUnderdark.md --registry docs/entity_registry.yaml --party config/party.yaml
 """
 
 import argparse
@@ -38,6 +38,17 @@ import yaml
 
 from campaignlib.registry import find_registry, load_registry
 from campaignlib.textproc import norm_subject
+
+# TEMPORARY until pipelines/ensemble/ cluster migrates (source-tree restructure,
+# docs/design/SourceTreeRestructure.md task "Cluster: pipelines/ensemble/"):
+# split_chapters.py still lives at the repo root, so it isn't reachable as
+# `pipelines.ensemble.*` yet, and this file no longer sits next to it (its own
+# directory is no longer sys.path[0]'s repo root). Bridge the repo root back
+# onto sys.path just for this one import. REMOVE this bridge when the
+# ensemble cluster lands and replace the import below with
+# `from pipelines.ensemble.split_chapters import CHAPTER_RE_TEMPLATE`.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from split_chapters import CHAPTER_RE_TEMPLATE
 
 _H2_RE = re.compile(r'^##(?!#)\s+(.+)$', re.MULTILINE)

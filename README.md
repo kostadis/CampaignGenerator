@@ -77,8 +77,8 @@ prep --session "1. Travel to Hold 2. Confront boss 3. Dragon reveal"
 python ~/CampaignGenerator/vtt_summary.py session.vtt -o summaries/session_12.md
 
 # Regenerate grounding docs
-python ~/CampaignGenerator/campaign_state.py summaries.md -o docs/campaign_state.md
-python ~/CampaignGenerator/distill.py summaries.md -o docs/world_state.md
+campaign_state summaries.md -o docs/campaign_state.md
+distill summaries.md -o docs/world_state.md
 
 # Session doc pipeline — see sd_*.py section below
 ```
@@ -116,8 +116,8 @@ Each script is standalone — run it, review the output, then proceed. See [`doc
 | Script | What it does |
 |---|---|
 | `prep.py` (`pipelines/session_prep/`) | Session beat and arc prep — single mode or Lore Oracle → Encounter Architect → Voice Keeper pipeline |
-| `planning.py` | Generate `planning.md` from NPC dossiers and arc scores |
-| `npc_table.py` | Generate a quick NPC reference table (Name / Faction / State / Motivations) |
+| `planning.py` (`pipelines/grounding/`) | Generate `planning.md` from NPC dossiers and arc scores |
+| `npc_table.py` (`pipelines/grounding/`) | Generate a quick NPC reference table (Name / Faction / State / Motivations) |
 | `query.py` | Search session summaries for a specific event, NPC, or topic |
 
 ### Post-session pipeline
@@ -139,9 +139,9 @@ Each script is standalone — run it, review the output, then proceed. See [`doc
 
 | Script | What it does |
 |---|---|
-| `campaign_state.py` | Generate a grounding doc tracking completed content and current NPC states |
-| `distill.py` | Synthesize session summaries → living `world_state.md` |
-| `party.py` | Generate `party.md` from character sheets, summaries, and arc scores |
+| `campaign_state.py` (`pipelines/grounding/`) | Generate a grounding doc tracking completed content and current NPC states |
+| `distill.py` (`pipelines/grounding/`) | Synthesize session summaries → living `world_state.md` |
+| `party.py` (`pipelines/grounding/`) | Generate `party.md` from character sheets, summaries, and arc scores |
 
 ### Kanka CE integration
 
@@ -234,7 +234,7 @@ By default the script **merges** into any existing `.mcp.json`, so manually adde
 |---|---|
 | `new_workspace.py` (`pipelines/workspace/`) | Create a new campaign workspace with a `config.yaml` |
 | `dnd_sheet.py` (`pipelines/content_ingest/`) | D&D Beyond character sheet PDF → markdown (vision API) |
-| `make_tracking.py` | Extract trackable events from an adventure module |
+| `make_tracking.py` (`pipelines/grounding/`) | Extract trackable events from an adventure module |
 | `transform.py` (`pipelines/session_prep/`) | Convert NotebookLLM dossiers to `prep` input |
 
 ---
@@ -245,7 +245,7 @@ The RLM pipeline lets prep and narration tools pull statblocks, encounter tables
 
 1. **Retrieve** — `rpg_retriever.py` searches in tiers: MemPalace drawer → statblock → cost-tagged candidate
 2. **Propose** — `dossier_proposer.py` writes `docs/dossier_proposal.md` — a ranked candidate list for human review and approval
-3. **Render** — approved proposals are consumed by render pipelines (`prep`, `sd_narrate.py`, `planning.py`)
+3. **Render** — approved proposals are consumed by render pipelines (`prep`, `sd_narrate.py`, `planning`)
 
 The human checkpoint between retrieval and rendering is enforced by a CI test — render pipelines cannot call retrieval functions directly. See [`docs/rlm/rlm_pipeline.md`](docs/rlm/rlm_pipeline.md) and [`docs/rlm/rlm_architecture.md`](docs/rlm/rlm_architecture.md).
 

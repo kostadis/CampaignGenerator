@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from normalize_bible_headings import apply_demotions, find_demotions  # noqa: E402
+from pipelines.grounding.normalize_bible_headings import apply_demotions, find_demotions  # noqa: E402
 
 KNOWN = {"zalthir", "daz", "grygum", "thorin"}
 
@@ -90,7 +90,7 @@ def test_clean_two_tier_recap_and_emdash_chapters_are_no_ops():
 
 def test_dry_run_writes_nothing(tmp_path, capsys):
     import yaml
-    import normalize_bible_headings as nbh
+    from pipelines.grounding import normalize_bible_headings as nbh
 
     campaign_dir = tmp_path / "campaign"
     (campaign_dir / "docs").mkdir(parents=True)

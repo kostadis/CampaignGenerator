@@ -20,7 +20,7 @@ from campaignlib.registry import find_registry
 from server.backend_forwarding import backend_cli_args
 from server.party_config_shared import load_party_config
 from server.planning_config_shared import load_planning_config
-from server.subprocess_runner import python_exe, stream_subprocess, sse_error_stream
+from server.subprocess_runner import console_script, python_exe, stream_subprocess, sse_error_stream
 
 router = APIRouter()
 
@@ -456,7 +456,7 @@ def run_recent_events(
     output: str = "docs/recent_events.md",
     window: int = 0,
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "build_recent_events.py"),
+    cmd = [console_script("build_recent_events"),
            "--corpus", corpus, "--output", output, "--window", str(window)]
     return _run_locked("recent-events", cmd)
 
@@ -529,11 +529,11 @@ def run_synthesize(
         _cmd_opt(cmd, "--threads", threads_path)
         _cmd_multi(cmd, "--backstories", backstories)
     elif doc == "campaign_state":
-        cmd = [python_exe(), str(SCRIPT_DIR / "campaign_state.py"), "--output", out]
+        cmd = [console_script("campaign_state"), "--output", out]
         _cmd_flag(cmd, "--synthesize-only", synthesize_only)
         _cmd_opt(cmd, "--extract-dir", extract_dir)
     elif doc == "party":
-        cmd = [python_exe(), str(SCRIPT_DIR / "party.py"), "--output", out]
+        cmd = [console_script("party"), "--output", out]
         # Which dossiers/sheets belong to which PC is campaign-specific and
         # already a human decision once party.yaml exists — reuse it instead
         # of guessing. party.py's own "characters-only" path (no --summaries,
@@ -553,7 +553,7 @@ def run_synthesize(
             _cmd_flag(cmd, "--synthesize-only", synthesize_only)
             _cmd_opt(cmd, "--extract-dir", extract_dir)
     else:  # planning
-        cmd = [python_exe(), str(SCRIPT_DIR / "planning.py"), "--output", out]
+        cmd = [console_script("planning"), "--output", out]
         # The tracked (arc-scored) NPC/faction subset is a human-curated
         # decision (docs/cli/ensemble_workflow.md §3e) — reuse the
         # already-curated planning.yaml the same way the party branch reuses

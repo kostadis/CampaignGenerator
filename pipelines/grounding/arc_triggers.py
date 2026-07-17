@@ -10,9 +10,9 @@ This is a candidate-finding tool — the DM makes the final precision
 decision about whether a trigger actually fires.
 
 Usage:
-    python arc_triggers.py --character brewbarry
-    python arc_triggers.py --character soma
-    python arc_triggers.py --character brewbarry --top 5
+    arc_triggers --character brewbarry
+    arc_triggers --character soma
+    arc_triggers --character brewbarry --top 5
 
 Requires mempalace to be installed with chronicle and phandalin wings mined.
 """

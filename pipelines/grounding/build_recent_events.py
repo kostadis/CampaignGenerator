@@ -20,7 +20,7 @@ already been captured by world_state synthesis.
 
 Run from inside a campaign dir, consistent with the other CampaignGenerator tools:
 
-  python build_recent_events.py \
+  build_recent_events \
       --corpus 'docs/ensemble/per_chapter/*/merged.json' \
       --output docs/recent_events.md \
       --window 0            # 0 = all chapters; N = keep only the last N

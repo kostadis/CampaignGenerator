@@ -27,14 +27,14 @@ sd_narrate.py               # CLI: Pass 5 — per-scene narration
 session_doc/                # Shared helpers (io, voice, roster, examples, narrate)
 narrative.py                # Standalone experimental: VTT-anchored narration CLI
 quote_ledger.py             # SQLite-backed VTT dialogue tracking
-npc_table.py                # CLI: generate NPC reference table
-distill.py                  # CLI: convert summaries → world_state.md
-campaign_state.py           # CLI: generate completed-content grounding doc
-make_tracking.py            # CLI: extract trackable events from a module
+pipelines/grounding/npc_table.py        # CLI: generate NPC reference table
+pipelines/grounding/distill.py          # CLI: convert summaries → world_state.md
+pipelines/grounding/campaign_state.py   # CLI: generate completed-content grounding doc
+pipelines/grounding/make_tracking.py    # CLI: extract trackable events from a module
 query.py                    # CLI: search summaries
 vtt_summary.py              # CLI: Zoom .vtt → session summary
-planning.py                 # CLI: NPC dossiers + arc scores → planning.md
-party.py                    # CLI: character sheets + summaries → party.md
+pipelines/grounding/planning.py         # CLI: NPC dossiers + arc scores → planning.md
+pipelines/grounding/party.py            # CLI: character sheets + summaries → party.md
 pipelines/content_ingest/dnd_sheet.py  # CLI: D&D Beyond PDF → markdown (vision API)
 pipelines/workspace/new_workspace.py  # CLI: create a new campaign workspace
 pipelines/session_prep/transform.py  # CLI: NotebookLLM dossiers → prep input
@@ -121,13 +121,13 @@ All scripts look for `config.yaml` in the CWD first, then fall back to `config/c
 **Consumers auto-adopt it when present:**
 - `facts_to_state.py` and `synthesise_world_state`/`synthesise_facts`/`synthesise_polish` take `--registry` (an explicit dir/file wins; omit to auto-discover `docs/entity_registry.yaml` from the CWD). It supersedes the deprecated `--aliases`/`--known-names`, and errors if an explicit `--registry` is combined with them. The registry supplies **aliases only** — `--inventory` is separate human-authored module-canon grounding and is never substituted by it.
 - The render CLIs (`distill`, `party`, `sd_narrate`, `vtt_summary`, `scene_extract`, `campaign_state`, `planning`) call `load_alias_map(dossier_dir, registry_path=…)`: a resolved registry **replaces** the `docs/npcs/` dossier scan (via `find_alias_registry`, which prints an adoption notice so a partial registry never silently drops hand-curated dossier aliases).
-- `planning.py --build-dossiers` seeds new dossiers' `aliases:` frontmatter from the registry.
+- `planning --build-dossiers` seeds new dossiers' `aliases:` frontmatter from the registry.
 
 **Building one:** there is no `import-source`. Produce a typed module inventory with the `gm-module-inventory` skill (published module → `docs/background/<module>-inventory.md`), then `registry.py import-inventory`. The `import-*` verbs fold the legacy stores in; `check` reports grouping drift + fuzzy near-dups for GM review.
 
 ### Retrieval/render separation (RLM)
 
-Render pipelines (`prep`, `sd_narrate.py`, `planning.py`) must **not** consume raw `rpg_retriever` output. They consume a human-approved `docs/dossier_proposal.md` file instead. Retrieval is a scope decision; rendering is a prose decision; the proposal is the human checkpoint between them.
+Render pipelines (`prep`, `sd_narrate.py`, `planning`) must **not** consume raw `rpg_retriever` output. They consume a human-approved `docs/dossier_proposal.md` file instead. Retrieval is a scope decision; rendering is a prose decision; the proposal is the human checkpoint between them.
 
 A CI test (`tests/test_retrieve_render_isolation.py`) fails if any function body contains both a retrieval call (`retrieve`, `search_hierarchical`, `rpg_search`, …) and a render call (`stream_api`, `call_api`). Don't bypass this — fix the structure.
 
@@ -138,8 +138,8 @@ See `docs/rlm/rlm_pipeline.md` for the proposal workflow and MCP tools.
 Per the global rule in `~/.claude/CLAUDE.md`: scope/ordering/attribution are precision decisions and need a human checkpoint; rendering verified structure into prose is what LLMs do well. When designing new pipelines in this repo, the pattern is **LLM extracts → human reviews → LLM renders inside that structure** — never **LLM extracts → LLM structures → LLM renders**.
 
 Concrete examples already in the codebase:
-- `party.py` outputs candidate arc-score events with quoted triggers, never current values or thresholds
-- `planning.py --build-dossiers` writes per-NPC files for human review before `--synthesize`
+- `party` outputs candidate arc-score events with quoted triggers, never current values or thresholds
+- `planning --build-dossiers` writes per-NPC files for human review before `--synthesize`
 - The 4-stage `session_doc` pipeline (`docs/cli/session_doc_pipeline.md`) inserts a human review after each LLM pass
 - `dossier_proposer.py` writes a proposal file; the GM approves it before render pipelines consume it
 

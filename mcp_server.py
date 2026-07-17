@@ -592,7 +592,7 @@ async def arc_triggers(character: str, top: int = 3) -> str:
     args = ["--character", character]
     if top != 3:
         args += ["--top", str(top)]
-    return await _run_script("arc_triggers.py", args)
+    return await _run_script("arc_triggers", args)
 
 
 @mcp.tool()
@@ -610,7 +610,7 @@ async def generate_npc_table(docs: list[str] | None = None, model: str = "") -> 
     args = ["--docs"] + docs + ["--no-log"]
     if model:
         args += ["--model", model]
-    return await _run_script("npc_table.py", args)
+    return await _run_script("npc_table", args)
 
 
 # ── RLM Phase 3: RPG retrieval tools ──────────────────────────────────────────

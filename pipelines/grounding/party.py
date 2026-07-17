@@ -20,12 +20,12 @@ Output behavior:
   behavior (intended only when bootstrapping a fresh party.md).
 
 Usage:
-  python party.py \\
+  party \\
       --character soma.md --character vukradin.md --character valphine.md \\
       --summaries "Neverwinter Expansionism and the North.md" \\
       --output docs/party.md
 
-  python party.py \\
+  party \\
       --character soma.md \\
       --summaries summaries.md \\
       --backstory soma_backstory.md \\
@@ -34,13 +34,13 @@ Usage:
   # Preferred: per-character config so the synthesizer can't confuse which
   # arc score belongs to which PC, and characters without a formal track
   # are first-class citizens (see config/party.example.yaml).
-  python party.py \\
+  party \\
       --party-config config/party.yaml \\
       --summaries summaries.md \\
       --output docs/party.md
 
   # Skip extraction if already done
-  python party.py \\
+  party \\
       --character soma.md vukradin.md \\
       --synthesize-only \\
       --extract-dir docs/party_extractions \\

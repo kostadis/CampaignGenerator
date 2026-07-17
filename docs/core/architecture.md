@@ -114,13 +114,13 @@ flowchart LR
     MOD[("adventure module .md")]
 
     DS["dnd_sheet"] --> CHARS[("characters/*.md")]
-    MT["make_tracking.py"] --> TRK[("tracking.txt")]
-    TRK --> CS["campaign_state.py"]
+    MT["make_tracking"] --> TRK[("tracking.txt")]
+    TRK --> CS["campaign_state"]
     SUMS --> CS --> CSDOC[("docs/campaign_state.md")]
-    SUMS --> DI["distill.py"] --> WS[("docs/world_state.md")]
-    CHARS --> PT["party.py"] --> PD[("docs/party.md")]
+    SUMS --> DI["distill"] --> WS[("docs/world_state.md")]
+    CHARS --> PT["party"] --> PD[("docs/party.md")]
     SUMS --> PT
-    SUMS --> PLAN["planning.py<br/>(--build-dossiers,<br/>then synthesize)"] --> PLDOC[("docs/planning.md")]
+    SUMS --> PLAN["planning<br/>(--build-dossiers,<br/>then synthesize)"] --> PLDOC[("docs/planning.md")]
     PLAN --> DOSS[("docs/npcs/*.md<br/>canonical dossiers")]
 
     DOSS -. alias normalization .-> CS
@@ -178,7 +178,7 @@ flowchart LR
     subgraph Render["Render pipelines (gated)"]
         PR["prep"]
         SDP["sd_narrate.py"]
-        PLN["planning.py"]
+        PLN["planning"]
     end
     LOAD --> PR
     LOAD --> SDP
@@ -256,8 +256,8 @@ Each pipeline follows the **extract → human review → synthesize/render** pat
 | Script | Role |
 |---|---|
 | [`prep.py`](../../pipelines/session_prep/prep.py) | Single mode (one call), pipeline mode (Lore Oracle → Encounter Architect → Voice Keeper), session mode (outline → per-beat encounters) |
-| [`planning.py`](../../planning.py) | Two-pass: extract NPC/faction state from summaries, synthesize into `planning.md`. `--build-dossiers` writes per-NPC files for human review before `--synthesize` |
-| [`party.py`](../../party.py) | Two-pass: arc-score candidate events from summaries + character sheets → `party.md` |
+| [`planning.py`](../../pipelines/grounding/planning.py) | Two-pass: extract NPC/faction state from summaries, synthesize into `planning.md`. `--build-dossiers` writes per-NPC files for human review before `--synthesize` |
+| [`party.py`](../../pipelines/grounding/party.py) | Two-pass: arc-score candidate events from summaries + character sheets → `party.md` |
 | [`dossier_proposer.py`](../../dossier_proposer.py) | Proposes NPC dossiers from narrative text; writes `docs/dossier_proposal.md` (the human checkpoint between retrieval and render) |
 | [`scene_extract.py`](../../scene_extract.py) | Stage-2 scene-anchored extraction (per-scene verbatim moments). Supports Batch API |
 
@@ -280,10 +280,10 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 
 | Script | Output | Reads |
 |---|---|---|
-| [`distill.py`](../../distill.py) | `docs/world_state.md` (lore, NPC/faction states) | summaries.md |
-| [`campaign_state.py`](../../campaign_state.py) | `docs/campaign_state.md` (what's done, active threads) | summaries.md |
-| [`make_tracking.py`](../../make_tracking.py) | per-character/faction arc tracking files | adventure module |
-| [`arc_triggers.py`](../../arc_triggers.py) | candidate trigger events from chronicle | mempalace |
+| [`distill.py`](../../pipelines/grounding/distill.py) | `docs/world_state.md` (lore, NPC/faction states) | summaries.md |
+| [`campaign_state.py`](../../pipelines/grounding/campaign_state.py) | `docs/campaign_state.md` (what's done, active threads) | summaries.md |
+| [`make_tracking.py`](../../pipelines/grounding/make_tracking.py) | per-character/faction arc tracking files | adventure module |
+| [`arc_triggers.py`](../../pipelines/grounding/arc_triggers.py) | candidate trigger events from chronicle | mempalace |
 
 ### RLM / retrieval
 
@@ -317,13 +317,13 @@ The campaign workspace is the database. All long-lived state is markdown.
   config.yaml                 # Tool config (paths, prompts, models)
   ui_config.yaml              # Web UI state (campaign_dir, session_dir, model selections)
   docs/
-    campaign_state.md         ← campaign_state.py     → prep, session_doc, mcp
-    world_state.md            ← distill.py            → prep, party, planning, session_doc, mcp
-    planning.md               ← planning.py           → prep, scene_editor, mcp
-    party.md                  ← party.py              → prep, session_doc, narrative, mcp
+    campaign_state.md         ← campaign_state        → prep, session_doc, mcp
+    world_state.md            ← distill               → prep, party, planning, session_doc, mcp
+    planning.md               ← planning              → prep, scene_editor, mcp
+    party.md                  ← party                 → prep, session_doc, narrative, mcp
     mechanics.md              ← (manual)              → optional grounding
     dossier_proposal.md       ← dossier_proposer.py   → render pipelines (human-approved)
-    npcs/*.md                 ← planning.py --build-dossiers
+    npcs/*.md                 ← planning --build-dossiers
   voice/                      # Per-character narrator personality notes
   examples/                   # Handcrafted style examples for sd_narrate.py
   notes/                      # MCP server's only writable directory
@@ -344,7 +344,7 @@ Typical session lifecycle:
 3. `scene_extract.py` → `scene_extractions/` (supports `--batch`, `--collect`)
 4. `sd_consistency.py` (if --context) + `sd_plan.py` + `sd_narrate.py` → narration files (optional refinement via `polish.py`)
 5. Append summary to `summaries.md`
-6. `distill.py`, `campaign_state.py`, `planning.py`, `party.py` update grounding docs
+6. `distill`, `campaign_state`, `planning`, `party` update grounding docs
 7. Next session: `prep` reads all four grounding docs (including any polish feedback)
 
 ## MCP integration
@@ -380,7 +380,7 @@ Per-script tests live alongside (`test_prep.py`, `test_sd_split.py` / `test_sess
 
 - **Three-state RLM retrieval.** Every hit is a *drawer* (already ingested), a *statblock* (already ingested), or a *candidate* — and candidates are tagged `cost="cheap"` (5etools JSON on disk, ready for `fivetools_ingest`) or `cost="expensive"` (rpglib PDF needing `convert_book` first). The retriever never fetches; it suggests.
 
-- **Proposal-gate.** Render pipelines (`prep`, `sd_plan.py`, `planning.py`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
+- **Proposal-gate.** Render pipelines (`prep`, `sd_plan.py`, `planning`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
 
 - **CLI ↔ UI symmetry.** The FastAPI server never reimplements logic — it shells out to CLI scripts. Fixing a bug in a script fixes it in the UI; exposing a CLI flag means adding it to the corresponding `_build_*_cmd()` in the router.
 
@@ -392,7 +392,7 @@ A fast-orientation table for "I need to change X, where does it live?"
 
 | If you want to… | Open this first |
 |---|---|
-| Add a new CLI tool | [`campaignlib.py`](../../campaignlib.py) intro + a small existing script like [`npc_table.py`](../../npc_table.py) |
+| Add a new CLI tool | [`campaignlib.py`](../../campaignlib.py) intro + a small existing script like [`npc_table.py`](../../pipelines/grounding/npc_table.py) |
 | Change Stage 1/2 prompts | `ENHANCE_SYSTEM_PREFIX` in [`enhance_summary.py`](../../enhance_summary.py); `SCENE_EXTRACT_SYSTEM_PREFIX` in [`scene_extract.py`](../../scene_extract.py) |
 | Add `--batch` to another script | Copy the pattern from [`enhance_summary.py`](../../enhance_summary.py) (`_submit`, `_collect_and_write`, sidecar). Helpers already exist in [`campaignlib.py`](../../campaignlib.py). |
 | Touch retry / cache wiring | [`campaignlib.py`](../../campaignlib.py) `# ── API ──` and `# ── Batch API ──` sections (`_is_retryable`, `stream_api`, `build_batch_request`) |

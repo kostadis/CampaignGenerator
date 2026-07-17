@@ -7,11 +7,9 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib import wiring_get
 from server.backend_forwarding import backend_cli_args
-from server.subprocess_runner import python_exe, stream_subprocess
+from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
-
-SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent  # CampaignGenerator/
 
 
 # ── LLM backend selection → subprocess CLI flags ────────────────────────────
@@ -85,7 +83,7 @@ async def run_campaign_state(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "campaign_state.py")]
+    cmd = [console_script("campaign_state")]
 
     if not synthesize_only and input:
         cmd.append(input)
@@ -125,7 +123,7 @@ async def run_distill(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "distill.py")]
+    cmd = [console_script("distill")]
 
     if not synthesize_only and input:
         cmd.append(input)
@@ -167,7 +165,7 @@ async def run_party(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "party.py")]
+    cmd = [console_script("party")]
 
     if party_config:
         _cmd_opt(cmd, "--party-config", party_config)
@@ -213,7 +211,7 @@ async def run_planning(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "planning.py")]
+    cmd = [console_script("planning")]
 
     if planning_config:
         _cmd_opt(cmd, "--planning-config", planning_config)
@@ -255,7 +253,7 @@ async def run_build_dossiers(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "planning.py")]
+    cmd = [console_script("planning")]
 
     _cmd_opt(cmd, "--summaries", summaries)
     cmd.append("--build-dossiers")

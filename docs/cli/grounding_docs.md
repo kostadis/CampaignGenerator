@@ -18,10 +18,10 @@ They are inputs, not outputs. The scripts generate them; you review and keep the
 
 | Document | Script | UI Page | What it tracks |
 |---|---|---|---|
-| `campaign_state.md` | `campaign_state.py` | Campaign State | Completed encounters, resolved threads, current NPC states, active quests |
-| `world_state.md` | `distill.py` | Distill World State | Living canon — geography, factions, history, how the world currently is |
-| `party.md` | `party.py` | Party Document | Party roster, arc scores, backstory, relationships, current emotional state |
-| `planning.md` | `planning.py` | Planning Document | Active threats, NPC intentions, plot threads ordered by urgency |
+| `campaign_state.md` | `campaign_state` | Campaign State | Completed encounters, resolved threads, current NPC states, active quests |
+| `world_state.md` | `distill` | Distill World State | Living canon — geography, factions, history, how the world currently is |
+| `party.md` | `party` | Party Document | Party roster, arc scores, backstory, relationships, current emotional state |
+| `planning.md` | `planning` | Planning Document | Active threats, NPC intentions, plot threads ordered by urgency |
 
 These four files are loaded into every session prep and narration call in this order:
 `campaign_state.md` first (most specific), `world_state.md`, `party.md`, `planning.md`.
@@ -40,13 +40,13 @@ appended to your summaries file.
 **UI: Grounding Docs → Campaign State**
 
 ```bash
-python campaign_state.py summaries.md \
+campaign_state summaries.md \
     --track-file docs/tracking.txt \
     --output docs/campaign_state.md
 ```
 
 The `--track-file` is a list of trackable events from the adventure module
-(generated once by `make_tracking.py`). It ensures the model flags anything
+(generated once by `make_tracking`). It ensures the model flags anything
 in the adventure that hasn't shown up in summaries yet.
 
 ---
@@ -61,7 +61,7 @@ was revealed that changes the shape of the world).
 **UI: Grounding Docs → Distill World State**
 
 ```bash
-python distill.py summaries.md --output docs/world_state.md
+distill summaries.md --output docs/world_state.md
 ```
 
 ---
@@ -78,7 +78,7 @@ Regenerate when:
 **UI: Grounding Docs → Party Document**
 
 ```bash
-python party.py \
+party \
     --character docs/characters/soma.md docs/characters/vukradin.md \
     --summaries summaries.md \
     --arc-scores docs/arc_scores/soma_arc.md \
@@ -107,10 +107,10 @@ the full workflow. The short version:
 
 ```bash
 # Phase 1: extract dossiers
-python planning.py --summaries summaries.md --build-dossiers --dossier-dir docs/npcs/
+planning --summaries summaries.md --build-dossiers --dossier-dir docs/npcs/
 
 # Phase 2: synthesize (after reviewing docs/npcs/*.md)
-python planning.py \
+planning \
     --npc docs/npcs/*.md \
     --arc-scores docs/arc_scores/*.md \
     --output docs/planning.md
@@ -140,7 +140,7 @@ file or want to tweak the synthesis prompt.
 | New sessions added to summaries | Re-run normally (extraction + synthesis) |
 | Edited a dossier, want updated planning.md | `--synthesize-only` with `--extract-dir` |
 | Extraction files are stale or corrupt | Delete `*_extractions/` dir, re-run |
-| Re-synthesize world_state after editing extractions | `python distill.py --synthesize-only --extract-dir docs/distill_extractions --output docs/world_state.md` |
+| Re-synthesize world_state after editing extractions | `distill --synthesize-only --extract-dir docs/distill_extractions --output docs/world_state.md` |
 
 The **Synthesize Only** toggle in the UI maps to `--synthesize-only`.
 

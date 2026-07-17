@@ -14,10 +14,10 @@ Use --extract-only to stop after the extract pass so you can review and edit
 the intermediate files before synthesis (recommended for large corpora).
 
 Usage:
-  python distill.py summaries.md --output world_state.md
-  python distill.py summaries.md --output world_state.md --chunk-size 50000
-  python distill.py summaries.md --output world_state.md --extract-only
-  python distill.py --synthesize-only --extract-dir extractions/ --output world_state.md
+  distill summaries.md --output world_state.md
+  distill summaries.md --output world_state.md --chunk-size 50000
+  distill summaries.md --output world_state.md --extract-only
+  distill --synthesize-only --extract-dir extractions/ --output world_state.md
 """
 
 import argparse
@@ -140,7 +140,7 @@ def main() -> None:
             print(f"\n[Extract-only mode — stopping before synthesis]")
             print(f"Review files in: {extract_dir}")
             print(f"When ready, run:")
-            print(f"  python distill.py --synthesize-only "
+            print(f"  distill --synthesize-only "
                   f"--extract-dir {extract_dir} --output {Path(args.output)}")
             return
     else:

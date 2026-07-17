@@ -72,7 +72,7 @@ async def run_npc_table(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "npc_table.py")]
+    cmd = [console_script("npc_table")]
 
     doc_list = [d.strip() for d in docs if d.strip()]
     if doc_list:

@@ -9,14 +9,21 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 import campaignlib  # noqa: E402
-import distill  # noqa: E402
+from pipelines.grounding import distill  # noqa: E402
+
+# distill.py has moved into pipelines/grounding/ and now runs as the `distill`
+# console script (pyproject.toml's [project.scripts]). Resolve it next to the
+# current interpreter (same venv bin/) rather than relying on $PATH, so this
+# test doesn't depend on the venv being "activated" in the process running
+# pytest — same rationale as server.subprocess_runner.console_script().
+DISTILL_BIN = str(Path(sys.executable).parent / "distill")
 
 
 # ── Subprocess-based tests (fast: no API calls required) ─────────────────────
 
 def _run_distill(*args: str) -> subprocess.CompletedProcess:
     return subprocess.run(
-        [sys.executable, str(REPO_ROOT / "distill.py"), *args],
+        [DISTILL_BIN, *args],
         capture_output=True, text=True, cwd=REPO_ROOT,
     )
 

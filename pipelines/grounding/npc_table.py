@@ -2,11 +2,11 @@
 """Generate a markdown NPC reference table from one or more campaign documents.
 
 Usage:
-  python npc_table.py                          # uses world_state from config
-  python npc_table.py --docs world_state planning
-  python npc_table.py --output npc_table.md
-  python npc_table.py --clipboard
-  python npc_table.py --config /path/to/config.yaml
+  npc_table                          # uses world_state from config
+  npc_table --docs world_state planning
+  npc_table --output npc_table.md
+  npc_table --clipboard
+  npc_table --config /path/to/config.yaml
 """
 
 import argparse
@@ -23,6 +23,12 @@ from campaignlib import (
     save_log,
     stream_api,
 )
+
+# This file lives at pipelines/grounding/npc_table.py; find_default_config()'s
+# script-dir fallback expects to sit next to config/ (the repo root), which
+# is no longer this file's own directory since the move — anchor it at
+# REPO_ROOT explicitly instead (same fix as pipelines/session_prep/prep.py).
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 SYSTEM_PROMPT = """\
 You are a campaign document analyst for a D&D game. Your only job is to extract \
@@ -55,7 +61,7 @@ def main() -> None:
                         help="Save the table to this file")
     parser.add_argument("--clipboard", "-c", action="store_true",
                         help="Copy the table to clipboard")
-    parser.add_argument("--config", default=find_default_config(__file__),
+    parser.add_argument("--config", default=find_default_config(str(REPO_ROOT / "npc_table.py")),
                         help="Path to config YAML")
     parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Claude model to use")

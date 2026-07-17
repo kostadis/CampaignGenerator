@@ -6,11 +6,9 @@ from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 
 from campaignlib import DEFAULT_MODEL
-from server.subprocess_runner import console_script, python_exe, stream_subprocess
+from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
-
-SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 def _cmd_opt(cmd: list[str], flag: str, value: str | int | None) -> None:
@@ -60,7 +58,7 @@ async def run_make_tracking(
     output: str = "",
     model: str = DEFAULT_MODEL,
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "make_tracking.py")]
+    cmd = [console_script("make_tracking")]
 
     if input.strip():
         cmd.append(input.strip())
