@@ -240,12 +240,12 @@ hood) a side effect of querying, which violates the scope rule.
 
 ## Step 3 — render with `--require-proposal`
 
-Now prep actually runs. `prep.py` is the primary render pipeline; the
+Now prep actually runs. `prep` is the primary render pipeline; the
 same convention works for `sd_plan.py` and `planning.py`.
 
 ```bash
 cd ~/campaigns/icespire
-python ~/src/CampaignGenerator/prep.py \
+prep \
     --campaign-dir . \
     --require-proposal \
     --mode pipeline \
@@ -291,7 +291,7 @@ and only has to do the rendering job.
 
 ## What gets saved
 
-`prep.py` writes a timestamped log to `logs/` (system prompt + user
+`prep` writes a timestamped log to `logs/` (system prompt + user
 prompt + response) unless you pass `--no-log`. The rendered encounter
 doc also goes to `--output FILE` if you pass one, or just streams to
 stdout otherwise. Nothing in this workflow writes to the MemPalace

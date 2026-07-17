@@ -117,11 +117,21 @@ def _safe_notes_path(filename: str) -> Path:
 
 
 async def _run_script(script_name: str, args: list[str]) -> str:
-    """Run a CLI script as a subprocess, return combined stdout+stderr."""
+    """Run a CLI tool as a subprocess, return combined stdout+stderr.
+
+    `script_name` is either a `<name>.py` filename (resolved against
+    SCRIPT_DIR, the repo root) for scripts that still live there, or a bare
+    console-script name (no `.py`) for scripts that have migrated into
+    `pipelines/` and gained a `[project.scripts]` entry point — resolved
+    against the current interpreter's own venv `bin/` directory rather than
+    `$PATH`, so it works whether or not the venv is "activated".
+    """
+    if script_name.endswith(".py"):
+        cmd = [sys.executable, str(SCRIPT_DIR / script_name), *args]
+    else:
+        cmd = [str(Path(sys.executable).parent / script_name), *args]
     proc = await asyncio.create_subprocess_exec(
-        sys.executable,
-        str(SCRIPT_DIR / script_name),
-        *args,
+        *cmd,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.STDOUT,
         cwd=str(campaign_dir),
@@ -560,7 +570,7 @@ async def session_prep(beat: str, mode: str = "single", model: str = "") -> str:
     args = ["--beat", beat, "--mode", mode, "--no-log"]
     if model:
         args += ["--model", model]
-    return await _run_script("prep.py", args)
+    return await _run_script("prep", args)
 
 
 @mcp.tool()

@@ -41,7 +41,7 @@ No build step needed — run scripts from a campaign workspace:
 ```bash
 new_workspace ~/campaigns/mycamp --name "My Campaign"
 cd ~/campaigns/mycamp
-python ~/CampaignGenerator/prep.py --beat "The party enters Icespire Hold"
+prep --beat "The party enters Icespire Hold"
 ```
 
 ---
@@ -61,13 +61,13 @@ Generates a `config.yaml` with absolute paths — every script auto-detects it w
 
 ```bash
 # Single encounter beat
-python ~/CampaignGenerator/prep.py --beat "The party enters Icespire Hold"
+prep --beat "The party enters Icespire Hold"
 
 # Three-stage pipeline: Lore Oracle → Encounter Architect → Voice Keeper
-python ~/CampaignGenerator/prep.py --mode pipeline --beat "The party enters Icespire Hold"
+prep --mode pipeline --beat "The party enters Icespire Hold"
 
 # Full session arc
-python ~/CampaignGenerator/prep.py --session "1. Travel to Hold 2. Confront boss 3. Dragon reveal"
+prep --session "1. Travel to Hold 2. Confront boss 3. Dragon reveal"
 ```
 
 ### 3. After a session — documentation pipeline
@@ -115,7 +115,7 @@ Each script is standalone — run it, review the output, then proceed. See [`doc
 
 | Script | What it does |
 |---|---|
-| `prep.py` | Session beat and arc prep — single mode or Lore Oracle → Encounter Architect → Voice Keeper pipeline |
+| `prep.py` (`pipelines/session_prep/`) | Session beat and arc prep — single mode or Lore Oracle → Encounter Architect → Voice Keeper pipeline |
 | `planning.py` | Generate `planning.md` from NPC dossiers and arc scores |
 | `npc_table.py` | Generate a quick NPC reference table (Name / Faction / State / Motivations) |
 | `query.py` | Search session summaries for a specific event, NPC, or topic |
@@ -235,7 +235,7 @@ By default the script **merges** into any existing `.mcp.json`, so manually adde
 | `new_workspace.py` (`pipelines/workspace/`) | Create a new campaign workspace with a `config.yaml` |
 | `dnd_sheet.py` | D&D Beyond character sheet PDF → markdown (vision API) |
 | `make_tracking.py` | Extract trackable events from an adventure module |
-| `transform.py` | Convert NotebookLLM dossiers to `prep.py` input |
+| `transform.py` (`pipelines/session_prep/`) | Convert NotebookLLM dossiers to `prep` input |
 
 ---
 
@@ -245,7 +245,7 @@ The RLM pipeline lets prep and narration tools pull statblocks, encounter tables
 
 1. **Retrieve** — `rpg_retriever.py` searches in tiers: MemPalace drawer → statblock → cost-tagged candidate
 2. **Propose** — `dossier_proposer.py` writes `docs/dossier_proposal.md` — a ranked candidate list for human review and approval
-3. **Render** — approved proposals are consumed by render pipelines (`prep.py`, `sd_narrate.py`, `planning.py`)
+3. **Render** — approved proposals are consumed by render pipelines (`prep`, `sd_narrate.py`, `planning.py`)
 
 The human checkpoint between retrieval and rendering is enforced by a CI test — render pipelines cannot call retrieval functions directly. See [`docs/rlm/rlm_pipeline.md`](docs/rlm/rlm_pipeline.md) and [`docs/rlm/rlm_architecture.md`](docs/rlm/rlm_architecture.md).
 

@@ -298,7 +298,7 @@ def main() -> None:
     if not (args.world_state and args.mechanics and args.planning):
         print(f"  2. Fill in any other placeholder docs/ files with your campaign content")
     print(f"  3. Run prep from anywhere:")
-    print(f"     python {REPO_ROOT}/prep.py --config {config_path} --beat \"...\"")
+    print(f"     prep --config {config_path} --beat \"...\"")
     print(f"  4. Or launch the web UI:")
     print(f"     cd {workspace} && {REPO_ROOT}/startup")
     print()

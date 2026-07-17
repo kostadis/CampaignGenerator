@@ -5,7 +5,7 @@ from pathlib import Path
 from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 
-from server.subprocess_runner import python_exe, stream_subprocess
+from server.subprocess_runner import console_script, python_exe, stream_subprocess
 
 router = APIRouter()
 
@@ -44,7 +44,7 @@ async def run_session_prep(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "prep.py")]
+    cmd = [console_script("prep")]
     cmd += ["--mode", prep_mode]
 
     if input_mode == "beat" and beat.strip():

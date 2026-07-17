@@ -10,25 +10,25 @@ Single-beat or session-arc encounter generation.
 
 ```bash
 # Single beat, interactive input
-python prep.py
+prep
 
 # Single beat, inline
-python prep.py --beat "The party enters Icespire Hold"
+prep --beat "The party enters Icespire Hold"
 
 # Pipeline mode (Lore Oracle → Encounter Architect → Voice Keeper)
-python prep.py --mode pipeline --beat "The party enters Icespire Hold"
+prep --mode pipeline --beat "The party enters Icespire Hold"
 
 # Session arc: full numbered outline, interactive entry
-python prep.py --session
+prep --session
 
 # Session arc: inline outline
-python prep.py --session "1. Travel to Hold 2. Confront Carver 3. Cryovain reveal"
+prep --session "1. Travel to Hold 2. Confront Carver 3. Cryovain reveal"
 
 # Copy assembled prompt to clipboard instead of calling API
-python prep.py --clipboard --beat "..."
+prep --clipboard --beat "..."
 
 # Skip saving a log file
-python prep.py --no-log --beat "..."
+prep --no-log --beat "..."
 ```
 
 ### All flags
@@ -197,12 +197,12 @@ python distill.py --synthesize-only --extract-dir docs/distill_extractions --out
 
 ## transform.py
 
-Converts a NotebookLLM planning document into `prep.py` input format.
+Converts a NotebookLLM planning document into `prep` input format.
 
 ```bash
-python transform.py dossier.txt
-python transform.py dossier.txt --single          # extract as a single beat
-python transform.py dossier.txt -o beats/out.txt  # save for later
+transform dossier.txt
+transform dossier.txt --single          # extract as a single beat
+transform dossier.txt -o beats/out.txt  # save for later
 ```
 
 ## Post-session pipeline (Stage 1 → 4)
@@ -390,5 +390,5 @@ python ~/CampaignGenerator/planning.py \
     --output docs/planning.md
 
 # 6. Run session prep
-python ~/CampaignGenerator/prep.py --beat "The party arrives at Icespire Hold"
+prep --beat "The party arrives at Icespire Hold"
 ```

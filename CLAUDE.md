@@ -20,7 +20,7 @@ frontend/                   # Vue 3 + TypeScript + Pinia + Vue Router
 
 # ── CLI tools ──
 campaignlib.py              # Shared library — all scripts import from here
-prep.py                     # CLI: session beat / session arc prep
+pipelines/session_prep/prep.py  # CLI: session beat / session arc prep
 sd_consistency.py           # CLI: Pass 1 — consistency check (sd_*.py replaced session_doc.py)
 sd_plan.py                  # CLI: Pass 3 — narrative plan
 sd_narrate.py               # CLI: Pass 5 — per-scene narration
@@ -37,7 +37,7 @@ planning.py                 # CLI: NPC dossiers + arc scores → planning.md
 party.py                    # CLI: character sheets + summaries → party.md
 dnd_sheet.py                # CLI: D&D Beyond PDF → markdown (vision API)
 pipelines/workspace/new_workspace.py  # CLI: create a new campaign workspace
-transform.py                # CLI: NotebookLLM dossiers → prep.py input
+pipelines/session_prep/transform.py  # CLI: NotebookLLM dossiers → prep input
 
 # ── RLM tools ──
 rpg_retriever.py            # Tiered retrieval (drawer / statblock / cost-tagged candidate)
@@ -127,7 +127,7 @@ All scripts look for `config.yaml` in the CWD first, then fall back to `config/c
 
 ### Retrieval/render separation (RLM)
 
-Render pipelines (`prep.py`, `sd_narrate.py`, `planning.py`) must **not** consume raw `rpg_retriever` output. They consume a human-approved `docs/dossier_proposal.md` file instead. Retrieval is a scope decision; rendering is a prose decision; the proposal is the human checkpoint between them.
+Render pipelines (`prep`, `sd_narrate.py`, `planning.py`) must **not** consume raw `rpg_retriever` output. They consume a human-approved `docs/dossier_proposal.md` file instead. Retrieval is a scope decision; rendering is a prose decision; the proposal is the human checkpoint between them.
 
 A CI test (`tests/test_retrieve_render_isolation.py`) fails if any function body contains both a retrieval call (`retrieve`, `search_hierarchical`, `rpg_search`, …) and a render call (`stream_api`, `call_api`). Don't bypass this — fix the structure.
 

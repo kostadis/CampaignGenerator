@@ -45,11 +45,18 @@ def _killpg_safe(pgid: int, sig: int) -> None:
 
 
 def _log_stem(cmd: list[str]) -> str:
-    """Derive a filename stem from the script being run."""
+    """Derive a filename stem from the script or console command being run.
+
+    Scripts not yet migrated still run as ``[python_exe(), "<name>.py", ...]``
+    (matched via the ``.py`` scan below). Migrated scripts run as a bare
+    console-script entry point (see :func:`console_script`) with no ``.py``
+    argument anywhere in ``cmd`` — fall back to ``cmd[0]``'s own stem so their
+    log files still get a meaningful name instead of the generic ``"run"``.
+    """
     for arg in cmd[1:]:
         if arg.endswith(".py"):
             return Path(arg).stem
-    return "run"
+    return Path(cmd[0]).stem if cmd else "run"
 
 
 def _save_run_log(cmd: list[str], cwd: str | None, output: str,
@@ -232,3 +239,17 @@ async def sse_error_stream(message: str, returncode: int = 1) -> AsyncGenerator[
 def python_exe() -> str:
     """Return the current Python interpreter path."""
     return sys.executable
+
+
+def console_script(name: str) -> str:
+    """Return the path to a console-script entry point (pyproject.toml's
+    ``[project.scripts]``) installed in the same venv as the running server.
+
+    Scripts that have migrated into ``pipelines/`` no longer live at a fixed
+    path relative to the repo root, so callers invoke them by their installed
+    command name instead of ``python_exe() + SCRIPT_DIR / "<name>.py"``.
+    Resolved via ``sys.executable``'s own directory rather than ``$PATH``, so
+    it works whether or not the venv is "activated" in the parent shell —
+    the same robustness ``python_exe()`` already gives the interpreter path.
+    """
+    return str(Path(python_exe()).parent / name)

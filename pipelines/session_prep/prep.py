@@ -29,6 +29,12 @@ from campaignlib import (
     stream_api,
 )
 
+# This file lives at pipelines/session_prep/prep.py; find_default_config()'s
+# script-dir fallback expects to sit next to config/ (the repo root), which
+# is no longer this file's own directory since the move — anchor it at
+# REPO_ROOT explicitly instead.
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
 
 # ── Prompt assembly ───────────────────────────────────────────────────────────
 
@@ -294,7 +300,7 @@ def main() -> None:
                         help="single (default) or pipeline")
     parser.add_argument("--clipboard", "-c", action="store_true",
                         help="Copy final output to clipboard")
-    parser.add_argument("--config", default=find_default_config(__file__),
+    parser.add_argument("--config", default=find_default_config(str(REPO_ROOT / "prep.py")),
                         help="Path to config YAML")
     parser.add_argument("--model", default=DEFAULT_MODEL,
                         help="Claude model to use")

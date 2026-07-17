@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Transform a NotebookLLM dossier into prep.py input format.
+"""Transform a NotebookLLM dossier into prep input format.
 
 Reads a campaign dossier and uses Claude to extract it into either:
-  - A numbered session outline  (default) → paste into: prep.py --session
-  - A single session beat       (--single) → paste into: prep.py --beat
+  - A numbered session outline  (default) → paste into: prep --session
+  - A single session beat       (--single) → paste into: prep --beat
 
 Output is printed to stdout and optionally saved with --output.
 """
@@ -53,7 +53,7 @@ def read_input(path: str | None) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Transform a NotebookLLM dossier into prep.py input format."
+        description="Transform a NotebookLLM dossier into prep input format."
     )
     parser.add_argument(
         "input",
@@ -95,10 +95,10 @@ def main() -> None:
 
     print(f"\n[Review the output above, then run:]", file=sys.stderr)
     if args.single:
-        print(f'  python prep.py --beat "<paste beat here>"', file=sys.stderr)
+        print(f'  prep --beat "<paste beat here>"', file=sys.stderr)
     else:
-        print(f'  python prep.py --session "<paste outline here>"', file=sys.stderr)
-        print(f"  — or interactively: python prep.py --session", file=sys.stderr)
+        print(f'  prep --session "<paste outline here>"', file=sys.stderr)
+        print(f"  — or interactively: prep --session", file=sys.stderr)
 
 
 if __name__ == "__main__":

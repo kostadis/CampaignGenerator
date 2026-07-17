@@ -24,6 +24,13 @@ import proposal_loader as pl
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
+# prep.py has moved into pipelines/session_prep/ and now runs as the `prep`
+# console script (pyproject.toml's [project.scripts]). Resolve it next to the
+# current interpreter (same venv bin/) rather than relying on $PATH, so this
+# test doesn't depend on the venv being "activated" in the process running
+# pytest — same rationale as server.subprocess_runner.console_script().
+PREP_BIN = str(Path(sys.executable).parent / "prep")
+
 
 def _write_proposal(campaign_dir: Path, text: str) -> Path:
     p = campaign_dir / pl.DOSSIER_PROPOSAL_REL_PATH
@@ -72,7 +79,7 @@ class TestPrepRequireProposal:
         config = _write_config(tmp_path)
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "prep.py"),
+                PREP_BIN,
                 "--config", str(config),
                 "--campaign-dir", str(tmp_path),
                 "--require-proposal",
@@ -87,7 +94,7 @@ class TestPrepRequireProposal:
         _write_proposal(tmp_path, "# X\n\n> **Status:** candidates only.\n")
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "prep.py"),
+                PREP_BIN,
                 "--config", str(config),
                 "--campaign-dir", str(tmp_path),
                 "--require-proposal",
@@ -105,7 +112,7 @@ class TestPrepRequireProposal:
         _write_proposal(tmp_path, "# X\n\n> **Status:** approved on 2026-04-24.\n")
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "prep.py"),
+                PREP_BIN,
                 "--config", str(config),
                 "--campaign-dir", str(tmp_path),
                 "--require-proposal",

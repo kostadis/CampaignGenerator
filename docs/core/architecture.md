@@ -16,7 +16,7 @@ Hard rules — see [Critical rules](../../CLAUDE.md#critical-rules-apply-to-ever
 ```mermaid
 flowchart TB
     subgraph User["User entry points"]
-        CLI["CLI scripts (prep.py, sd_consistency.py, sd_plan.py, sd_narrate.py, polish.py, …)"]
+        CLI["CLI scripts (prep, sd_consistency.py, sd_plan.py, sd_narrate.py, polish.py, …)"]
         Web["Web UI (Vue 3, experimental routes: /api/experimental, /api/setup)"]
     end
 
@@ -176,7 +176,7 @@ flowchart LR
     PROP --> LOAD
 
     subgraph Render["Render pipelines (gated)"]
-        PR["prep.py"]
+        PR["prep"]
         SDP["sd_narrate.py"]
         PLN["planning.py"]
     end
@@ -255,7 +255,7 @@ Each pipeline follows the **extract → human review → synthesize/render** pat
 
 | Script | Role |
 |---|---|
-| [`prep.py`](../../prep.py) | Single mode (one call), pipeline mode (Lore Oracle → Encounter Architect → Voice Keeper), session mode (outline → per-beat encounters) |
+| [`prep.py`](../../pipelines/session_prep/prep.py) | Single mode (one call), pipeline mode (Lore Oracle → Encounter Architect → Voice Keeper), session mode (outline → per-beat encounters) |
 | [`planning.py`](../../planning.py) | Two-pass: extract NPC/faction state from summaries, synthesize into `planning.md`. `--build-dossiers` writes per-NPC files for human review before `--synthesize` |
 | [`party.py`](../../party.py) | Two-pass: arc-score candidate events from summaries + character sheets → `party.md` |
 | [`dossier_proposer.py`](../../dossier_proposer.py) | Proposes NPC dossiers from narrative text; writes `docs/dossier_proposal.md` (the human checkpoint between retrieval and render) |
@@ -305,7 +305,7 @@ Deep dives: [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md), [`docs/rlm/rlm
 |---|---|
 | [`new_workspace.py`](../../pipelines/workspace/new_workspace.py) | Skeleton: `config.yaml`, `docs/`, `voice/`, `examples/`, `summaries/` |
 | [`dnd_sheet.py`](../../dnd_sheet.py) | D&D Beyond PDF → markdown (vision API) |
-| [`transform.py`](../../transform.py) | NotebookLLM dossier → prep.py beat format |
+| [`transform.py`](../../pipelines/session_prep/transform.py) | NotebookLLM dossier → prep beat format |
 | [`scabard_sync.py`](../../scabard_sync.py) | Sync workspace ↔ Scabard |
 
 ## Data flow — on-disk state
@@ -345,7 +345,7 @@ Typical session lifecycle:
 4. `sd_consistency.py` (if --context) + `sd_plan.py` + `sd_narrate.py` → narration files (optional refinement via `polish.py`)
 5. Append summary to `summaries.md`
 6. `distill.py`, `campaign_state.py`, `planning.py`, `party.py` update grounding docs
-7. Next session: `prep.py` reads all four grounding docs (including any polish feedback)
+7. Next session: `prep` reads all four grounding docs (including any polish feedback)
 
 ## MCP integration
 
@@ -380,7 +380,7 @@ Per-script tests live alongside (`test_prep.py`, `test_sd_split.py` / `test_sess
 
 - **Three-state RLM retrieval.** Every hit is a *drawer* (already ingested), a *statblock* (already ingested), or a *candidate* — and candidates are tagged `cost="cheap"` (5etools JSON on disk, ready for `fivetools_ingest.py`) or `cost="expensive"` (rpglib PDF needing `convert_book.py` first). The retriever never fetches; it suggests.
 
-- **Proposal-gate.** Render pipelines (`prep.py`, `sd_plan.py`, `planning.py`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
+- **Proposal-gate.** Render pipelines (`prep`, `sd_plan.py`, `planning.py`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
 
 - **CLI ↔ UI symmetry.** The FastAPI server never reimplements logic — it shells out to CLI scripts. Fixing a bug in a script fixes it in the UI; exposing a CLI flag means adding it to the corresponding `_build_*_cmd()` in the router.
 

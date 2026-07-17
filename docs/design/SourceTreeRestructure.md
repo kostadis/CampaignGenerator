@@ -43,7 +43,7 @@ Every one of the 62 files, grouped by the pipeline it belongs to (per `docs/core
 
 | Cluster | Files | LOC | Home |
 |---|---:|---:|---|
-| `session_prep` | 2 | 478 | new package under `pipelines/` |
+| `session_prep` | 2 | 478 | ✅ moved to `pipelines/session_prep/` |
 | session-doc pipeline | 14 | 3,783 | **absorbed into the existing `session_doc/` package**, not a new one |
 | `grounding` | 9 | 2,664 | new package under `pipelines/` |
 | `ensemble` | 11 | 4,697 | new package under `pipelines/` |
