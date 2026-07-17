@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-import convert_book
+from pipelines.content_ingest import convert_book
 import suggest_conversion as sc
 
 

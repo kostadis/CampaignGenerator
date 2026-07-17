@@ -7,10 +7,10 @@ user review in adventure_editor / toc_editor before the JSON lands in
 MemPalace.
 
 Usage:
-    python convert_book.py /mnt/g/path/to/book.pdf
-    python convert_book.py book.pdf --pdf-translators ~/src/pdf-translators
-    python convert_book.py book.pdf --book-id 7421     # forwarded to ingest hint
-    python convert_book.py book.pdf --extra-args --marker --pages 1-20
+    convert_book /mnt/g/path/to/book.pdf
+    convert_book book.pdf --pdf-translators ~/src/pdf-translators
+    convert_book book.pdf --book-id 7421     # forwarded to ingest hint
+    convert_book book.pdf --extra-args --marker --pages 1-20
 
 Exit codes:
     0 — conversion succeeded; review + ingest hint printed
@@ -77,7 +77,18 @@ def format_ingest_hint(
     ingest_script: str = "fivetools_ingest.py",
     python: str = sys.executable,
 ) -> str:
-    """Render the exact shell command the user should run next."""
+    """Render the exact shell command the user should run next.
+
+    NOTE: the ``ingest_script``/``python`` defaults print a
+    ``<python> fivetools_ingest.py <path>`` invocation, which predates
+    fivetools_ingest's move to pipelines/content_ingest/ and its
+    ``fivetools_ingest`` console-script entry point. Left as-is here
+    (source-tree restructure is a git-mv + import-path exercise, not a
+    behavior change — see docs/design/SourceTreeRestructure.md §2) because
+    tests/test_suggest_conversion.py pins this exact default string. A
+    correct fix (default to ``ingest_script="fivetools_ingest"``, drop the
+    ``python`` prefix) is follow-up work, not part of this migration.
+    """
     parts = [shlex.quote(python), ingest_script, shlex.quote(str(json_path))]
     if book_id is not None:
         parts += ["--book-id", str(book_id)]

@@ -5,9 +5,9 @@ Extracts text via PyMuPDF (no vision required) and sends it to Claude as a
 plain-text prompt. Works with the claude-code (subscription) backend.
 
 Usage:
-  python dnd_sheet.py Soma.pdf --output soma.md
-  python dnd_sheet.py Soma.pdf                    # writes to doc/
-  python dnd_sheet.py *.pdf --output-dir ~/campaigns/Phandalin/characters/
+  dnd_sheet Soma.pdf --output soma.md
+  dnd_sheet Soma.pdf                    # writes to doc/
+  dnd_sheet *.pdf --output-dir ~/campaigns/Phandalin/characters/
 """
 
 import argparse

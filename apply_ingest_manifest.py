@@ -47,7 +47,15 @@ from typing import Iterable
 import yaml
 
 from campaignlib import find_default_config, load_config
-from fivetools_ingest import _state_path, file_signature, parse_filter_spec
+# fivetools_ingest moved to pipelines/content_ingest/ in the source-tree
+# restructure (docs/design/SourceTreeRestructure.md); this file itself is
+# part of the still-unmigrated `rlm` cluster, so import the new location
+# directly rather than a bare `from fivetools_ingest import ...`.
+from pipelines.content_ingest.fivetools_ingest import (
+    _state_path,
+    file_signature,
+    parse_filter_spec,
+)
 
 
 MANIFEST_FILENAME = "ingest_manifest.yaml"
@@ -118,6 +126,16 @@ def build_argv(
     *,
     dry_run: bool = False,
 ) -> list[str]:
+    # NOTE: fivetools_ingest.py moved to pipelines/content_ingest/ in the
+    # source-tree restructure (docs/design/SourceTreeRestructure.md), so
+    # `script_dir / "fivetools_ingest.py"` (script_dir is this file's own
+    # directory, cmd_apply below) no longer resolves to a real file —
+    # cmd_apply's actual subprocess.run(argv) call would now fail. Left
+    # as-is here because tests/test_ingest_manifest.py's TestBuildArgv
+    # pins this exact argv shape given an arbitrary script_dir; this file
+    # is part of the still-unmigrated `rlm` cluster and will get a real
+    # fix (console_script("fivetools_ingest"), dropping script_dir here
+    # entirely) when that cluster migrates.
     source = resolve_source(entry["source"], manifest_dir)
     argv = [
         sys.executable,

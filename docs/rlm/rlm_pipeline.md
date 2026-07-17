@@ -25,10 +25,10 @@ Writes go through **MemPalace's MCP server** (`mempalace_client.py`); reads from
 
 ```bash
 # 1. Convert (runs pdf-translators; review the JSON in adventure_editor afterwards)
-python convert_book.py /mnt/g/path/to/book.pdf
+convert_book /mnt/g/path/to/book.pdf
 
 # 2. Ingest the approved JSON into MemPalace
-python fivetools_ingest.py /mnt/g/path/to/book.json --book-id 7421
+fivetools_ingest /mnt/g/path/to/book.json --book-id 7421
 ```
 
 - Stat blocks route to `wing_bestiary/room_<sanitized-book-title>`.

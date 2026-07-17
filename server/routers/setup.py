@@ -6,7 +6,7 @@ from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 
 from campaignlib import DEFAULT_MODEL
-from server.subprocess_runner import python_exe, stream_subprocess
+from server.subprocess_runner import console_script, python_exe, stream_subprocess
 
 router = APIRouter()
 
@@ -35,7 +35,7 @@ async def run_dnd_sheet(
     output_dir: str = "",
     model: str = DEFAULT_MODEL,
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "dnd_sheet.py")]
+    cmd = [console_script("dnd_sheet")]
 
     for pdf in pdfs:
         if pdf.strip():

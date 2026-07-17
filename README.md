@@ -223,8 +223,8 @@ By default the script **merges** into any existing `.mcp.json`, so manually adde
 | `rpg_retriever.py` | Tiered retrieval from local RPG library (drawer / statblock / cost-tagged candidate) |
 | `dossier_proposer.py` | Run retrieval → write `docs/dossier_proposal.md` for human approval |
 | `fivetools_catalog.py` | Mtime-cached name index over canonical 5etools data |
-| `fivetools_ingest.py` | Ingest 5etools JSON into MemPalace drawers |
-| `convert_book.py` | PDF → 5etools JSON (pdf-translators) |
+| `fivetools_ingest.py` (`pipelines/content_ingest/`) | Ingest 5etools JSON into MemPalace drawers |
+| `convert_book.py` (`pipelines/content_ingest/`) | PDF → 5etools JSON (pdf-translators) |
 | `mcp_server.py` | MCP server — `rpg_search`, `propose_dossier`, `suggest_conversion` tools |
 | `mempalace_client.py` | MemPalace MCP write client |
 
@@ -233,7 +233,7 @@ By default the script **merges** into any existing `.mcp.json`, so manually adde
 | Script | What it does |
 |---|---|
 | `new_workspace.py` (`pipelines/workspace/`) | Create a new campaign workspace with a `config.yaml` |
-| `dnd_sheet.py` | D&D Beyond character sheet PDF → markdown (vision API) |
+| `dnd_sheet.py` (`pipelines/content_ingest/`) | D&D Beyond character sheet PDF → markdown (vision API) |
 | `make_tracking.py` | Extract trackable events from an adventure module |
 | `transform.py` (`pipelines/session_prep/`) | Convert NotebookLLM dossiers to `prep` input |
 

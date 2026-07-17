@@ -660,9 +660,9 @@ cd ~/src/mytools/rpg-lib && ./service.sh start
 
 # (one-time, per book) convert and ingest a PDF on demand
 cd ~/src/CampaignGenerator-rlm
-python convert_book.py /mnt/g/path/to/book.pdf
+convert_book /mnt/g/path/to/book.pdf
 # → produces /mnt/data/.../book.json + book-bestiary.json (if --extract-monsters)
-python fivetools_ingest.py /mnt/data/.../book.json --book-id 7421 --palace <campaign>
+fivetools_ingest /mnt/data/.../book.json --book-id 7421 --palace <campaign>
 # → adventure prose drawers land in wing_rpglib/room_<book>; statblocks land in wing_bestiary
 # → catalog files dispatch to wing_spells / wing_items / wing_classes / wing_lore / etc. by wrapper key
 

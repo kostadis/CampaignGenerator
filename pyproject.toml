@@ -26,6 +26,9 @@ kanka_push = "pipelines.integrations.kanka.kanka_push:main"
 kanka_sync = "pipelines.integrations.kanka.kanka_sync:main"
 prep = "pipelines.session_prep.prep:main"
 transform = "pipelines.session_prep.transform:main"
+convert_book = "pipelines.content_ingest.convert_book:main"
+fivetools_ingest = "pipelines.content_ingest.fivetools_ingest:main"
+dnd_sheet = "pipelines.content_ingest.dnd_sheet:main"
 
 [project.optional-dependencies]
 test = [

@@ -113,7 +113,7 @@ flowchart LR
     PDFS[("D&D Beyond PDFs")]
     MOD[("adventure module .md")]
 
-    DS["dnd_sheet.py"] --> CHARS[("characters/*.md")]
+    DS["dnd_sheet"] --> CHARS[("characters/*.md")]
     MT["make_tracking.py"] --> TRK[("tracking.txt")]
     TRK --> CS["campaign_state.py"]
     SUMS --> CS --> CSDOC[("docs/campaign_state.md")]
@@ -163,8 +163,8 @@ flowchart LR
     HITS --> SUGG
 
     subgraph Ingest["Ingest path (explicit, never auto)"]
-        CB["convert_book.py<br/>(pdf-translators wrapper)"]
-        FI["fivetools_ingest.py<br/>(JSON → MemPalace drawers)"]
+        CB["convert_book<br/>(pdf-translators wrapper)"]
+        FI["fivetools_ingest<br/>(JSON → MemPalace drawers)"]
         FR["fivetools_render.py<br/>fivetools_copy.py<br/>(_copy resolve · entity → prose)"]
     end
     RPGLIB --> CB --> FI
@@ -291,7 +291,7 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 |---|---|
 | [`rpg_retriever.py`](../../rpg_retriever.py) | Three-pile orchestrator (mempalace → 5etools → rpg-library) |
 | [`fivetools_catalog.py`](../../fivetools_catalog.py) | Mtime-cached name index over canonical 5etools data |
-| [`fivetools_ingest.py`](../../fivetools_ingest.py) | 5etools JSON → MemPalace drawer prose |
+| [`fivetools_ingest.py`](../../pipelines/content_ingest/fivetools_ingest.py) | 5etools JSON → MemPalace drawer prose |
 | [`mempalace_client.py`](../../mempalace_client.py) | HTTP client for MemPalace search |
 | [`dossier_proposer.py`](../../dossier_proposer.py) | Retrieval → `docs/dossier_proposal.md` (human checkpoint) |
 | [`proposal_loader.py`](../../proposal_loader.py) | Render pipelines load approved proposals from here |
@@ -304,7 +304,7 @@ Deep dives: [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md), [`docs/rlm/rlm
 | Script | Role |
 |---|---|
 | [`new_workspace.py`](../../pipelines/workspace/new_workspace.py) | Skeleton: `config.yaml`, `docs/`, `voice/`, `examples/`, `summaries/` |
-| [`dnd_sheet.py`](../../dnd_sheet.py) | D&D Beyond PDF → markdown (vision API) |
+| [`dnd_sheet.py`](../../pipelines/content_ingest/dnd_sheet.py) | D&D Beyond PDF → markdown (vision API) |
 | [`transform.py`](../../pipelines/session_prep/transform.py) | NotebookLLM dossier → prep beat format |
 | [`scabard_sync.py`](../../scabard_sync.py) | Sync workspace ↔ Scabard |
 
@@ -378,7 +378,7 @@ Per-script tests live alongside (`test_prep.py`, `test_sd_split.py` / `test_sess
 
 - **Batch mode (`--batch`).** `enhance_summary.py` and `scene_extract.py` submit via Anthropic Message Batches API for 50% off, prompt caching honoured. Three sub-modes: block-and-poll (default), `--submit-only` (sidecar, exit), `--collect` (read sidecar, retrieve). Sidecars live next to the output: `<output>.batch.json` or `<output-dir>/.batch.json`.
 
-- **Three-state RLM retrieval.** Every hit is a *drawer* (already ingested), a *statblock* (already ingested), or a *candidate* — and candidates are tagged `cost="cheap"` (5etools JSON on disk, ready for `fivetools_ingest.py`) or `cost="expensive"` (rpglib PDF needing `convert_book.py` first). The retriever never fetches; it suggests.
+- **Three-state RLM retrieval.** Every hit is a *drawer* (already ingested), a *statblock* (already ingested), or a *candidate* — and candidates are tagged `cost="cheap"` (5etools JSON on disk, ready for `fivetools_ingest`) or `cost="expensive"` (rpglib PDF needing `convert_book` first). The retriever never fetches; it suggests.
 
 - **Proposal-gate.** Render pipelines (`prep`, `sd_plan.py`, `planning.py`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
 
@@ -406,8 +406,8 @@ A fast-orientation table for "I need to change X, where does it live?"
 | Add an MCP tool | [`mcp_server.py`](../../mcp_server.py); for MemPalace I/O use [`mempalace_client.py`](../../mempalace_client.py) only |
 | Change retrieval ranking / tiering | [`rpg_retriever.py`](../../rpg_retriever.py) (`retrieve`); name-index changes in [`fivetools_catalog.py`](../../fivetools_catalog.py) |
 | Touch the proposal-gate | [`proposal_loader.py`](../../proposal_loader.py) — `require_approved_proposal` is the choke point |
-| Render a 5etools entity to prose | [`fivetools_render.py`](../../fivetools_render.py) (`render_<type>` family); resolve `_copy` first via [`fivetools_copy.py`](../../fivetools_copy.py) |
-| Convert a new RPG PDF | [`convert_book.py`](../../convert_book.py) (wraps pdf-translators); then [`fivetools_ingest.py`](../../fivetools_ingest.py) — keep the steps explicit |
+| Render a 5etools entity to prose | [`fivetools_render.py`](../../pipelines/content_ingest/fivetools_render.py) (`render_<type>` family); resolve `_copy` first via [`fivetools_copy.py`](../../pipelines/content_ingest/fivetools_copy.py) |
+| Convert a new RPG PDF | [`convert_book.py`](../../pipelines/content_ingest/convert_book.py) (wraps pdf-translators); then [`fivetools_ingest.py`](../../pipelines/content_ingest/fivetools_ingest.py) — keep the steps explicit |
 
 ## Detailed docs
 

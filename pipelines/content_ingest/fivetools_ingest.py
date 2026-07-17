@@ -36,15 +36,15 @@ sidecar state file so re-running on an unchanged JSON is a no-op. Pass
 previous ingest of this book before re-adding.
 
 Usage (--palace is always required — alias or absolute path):
-    python fivetools_ingest.py path/to/adventure.json --palace abyss
-    python fivetools_ingest.py path/to/bestiary-mm.json --palace chat
-    python fivetools_ingest.py path/to/bestiary-mm.json --palace chat --filter "name=Drow Priestess of Lolth"
-    python fivetools_ingest.py path/to/bestiary-mm.json --palace chat --filter "name=Drow,source=MM"
-    python fivetools_ingest.py path/to/adventure.json --palace /abs/path/to/palace
-    python fivetools_ingest.py path/to/adventure.json --palace abyss --book-id 7421
-    python fivetools_ingest.py path/to/adventure.json --palace abyss --force
-    python fivetools_ingest.py path/to/adventure.json --palace abyss --replace
-    python fivetools_ingest.py path/to/adventure.json --palace abyss --dry-run
+    fivetools_ingest path/to/adventure.json --palace abyss
+    fivetools_ingest path/to/bestiary-mm.json --palace chat
+    fivetools_ingest path/to/bestiary-mm.json --palace chat --filter "name=Drow Priestess of Lolth"
+    fivetools_ingest path/to/bestiary-mm.json --palace chat --filter "name=Drow,source=MM"
+    fivetools_ingest path/to/adventure.json --palace /abs/path/to/palace
+    fivetools_ingest path/to/adventure.json --palace abyss --book-id 7421
+    fivetools_ingest path/to/adventure.json --palace abyss --force
+    fivetools_ingest path/to/adventure.json --palace abyss --replace
+    fivetools_ingest path/to/adventure.json --palace abyss --dry-run
 """
 
 from __future__ import annotations
@@ -63,11 +63,22 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Iterator
 
-from mempalace_client import MempalaceClient
+# TEMPORARY until pipelines/rlm/ cluster migrates (source-tree restructure,
+# docs/design/SourceTreeRestructure.md task "Cluster: pipelines/rlm/"):
+# resolve_refs.py and mempalace_client.py still live at the repo root, so
+# they aren't reachable as `pipelines.rlm.*` yet, and this file no longer
+# sits next to them (its own directory is no longer sys.path[0]'s repo
+# root). Bridge the repo root back onto sys.path just for these two
+# imports. REMOVE this bridge when the rlm cluster lands and replace the
+# two imports below with `from pipelines.rlm import mempalace_client,
+# resolve_refs`.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-import fivetools_copy
-import fivetools_render
+from mempalace_client import MempalaceClient
 import resolve_refs
+
+from . import fivetools_copy
+from . import fivetools_render
 
 logger = logging.getLogger(__name__)
 

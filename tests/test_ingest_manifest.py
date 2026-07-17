@@ -23,7 +23,7 @@ import pytest
 import yaml
 
 import apply_ingest_manifest as aim
-import fivetools_ingest as fti
+from pipelines.content_ingest import fivetools_ingest as fti
 
 
 # ── Manifest loading ─────────────────────────────────────────────────────

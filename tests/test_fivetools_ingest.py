@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-import fivetools_ingest as fti
+from pipelines.content_ingest import fivetools_ingest as fti
 from mempalace_client import FakeMempalaceClient
 
 
