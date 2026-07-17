@@ -51,7 +51,7 @@ Every one of the 62 files, grouped by the pipeline it belongs to (per `docs/core
 | `content_ingest` | 5 | 3,339 | new package under `pipelines/` |
 | `entity_registry` | 2 | 2,106 | new top-level sibling to `campaignlib/` (see naming note below) |
 | `integrations/kanka` | 4 | 885 | new package under `pipelines/integrations/` |
-| `workspace` | 2 | 476 | new package under `pipelines/` |
+| `workspace` | 2 | 476 | ✅ moved to `pipelines/workspace/` |
 | **Migrated total** | **61** | **23,900** | |
 | `scabard_sync.py` | 1 | 307 | **not migrated** — stays at root alongside `scabard_sdk/`, per §6 decision |
 | **Repo total** | **62** | **24,207** | |

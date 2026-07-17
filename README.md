@@ -39,7 +39,7 @@ Then open `http://localhost:8000`.
 No build step needed — run scripts from a campaign workspace:
 
 ```bash
-python new_workspace.py ~/campaigns/mycamp --name "My Campaign"
+new_workspace ~/campaigns/mycamp --name "My Campaign"
 cd ~/campaigns/mycamp
 python ~/CampaignGenerator/prep.py --beat "The party enters Icespire Hold"
 ```
@@ -51,7 +51,7 @@ python ~/CampaignGenerator/prep.py --beat "The party enters Icespire Hold"
 ### 1. Create a workspace
 
 ```bash
-python new_workspace.py ~/campaigns/mycamp --name "My Campaign"
+new_workspace ~/campaigns/mycamp --name "My Campaign"
 cd ~/campaigns/mycamp
 ```
 
@@ -196,23 +196,23 @@ Three MCP servers can be wired into campaign workspaces so Claude has direct acc
 | `5etools` | `launch_5etools_mcp.py` | campaign has `refs.yaml` |
 | `kanka` | `kanka_mcp.py` | `--kanka-token` is passed |
 
-Use `configure_mcp.py` to write `.mcp.json` for all campaign workspaces at once:
+Use `configure_mcp` to write `.mcp.json` for all campaign workspaces at once:
 
 ```bash
 # Preview — show what would be written without changing anything
-python configure_mcp.py --dry-run
+configure_mcp --dry-run
 
 # Write .mcp.json to all campaigns under ~/src/campaigns/
-python configure_mcp.py
+configure_mcp
 
 # Include the Kanka server
-python configure_mcp.py --kanka-token <your-api-token>
+configure_mcp --kanka-token <your-api-token>
 
 # Target a single campaign
-python configure_mcp.py ~/src/campaigns/toee
+configure_mcp ~/src/campaigns/toee
 
 # Overwrite existing .mcp.json entirely (default: merge, preserving extra servers)
-python configure_mcp.py --force
+configure_mcp --force
 ```
 
 By default the script **merges** into any existing `.mcp.json`, so manually added servers are preserved. `5etools` is only added when the campaign directory contains a `refs.yaml`.
@@ -233,7 +233,7 @@ By default the script **merges** into any existing `.mcp.json`, so manually adde
 
 | Script | What it does |
 |---|---|
-| `new_workspace.py` | Create a new campaign workspace with a `config.yaml` |
+| `new_workspace.py` (`pipelines/workspace/`) | Create a new campaign workspace with a `config.yaml` |
 | `dnd_sheet.py` | D&D Beyond character sheet PDF → markdown (vision API) |
 | `make_tracking.py` | Extract trackable events from an adventure module |
 | `transform.py` | Convert NotebookLLM dossiers to `prep.py` input |

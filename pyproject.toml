@@ -19,6 +19,8 @@ dependencies = [
 Repository = "https://github.com/kostadis/CampaignGenerator"
 
 [project.scripts]
+new_workspace = "pipelines.workspace.new_workspace:main"
+configure_mcp = "pipelines.workspace.configure_mcp:main"
 
 [project.optional-dependencies]
 test = [
@@ -33,4 +35,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["campaignlib", "session_doc", "server"]
+packages = ["campaignlib", "session_doc", "server", "pipelines"]

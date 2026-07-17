@@ -36,7 +36,7 @@ vtt_summary.py              # CLI: Zoom .vtt → session summary
 planning.py                 # CLI: NPC dossiers + arc scores → planning.md
 party.py                    # CLI: character sheets + summaries → party.md
 dnd_sheet.py                # CLI: D&D Beyond PDF → markdown (vision API)
-new_workspace.py            # CLI: create a new campaign workspace
+pipelines/workspace/new_workspace.py  # CLI: create a new campaign workspace
 transform.py                # CLI: NotebookLLM dossiers → prep.py input
 
 # ── RLM tools ──

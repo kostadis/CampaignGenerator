@@ -17,9 +17,9 @@ If you already have files, point to them with --world-state, --mechanics,
 If omitted, placeholder files are created inside the workspace.
 
 Usage:
-  python new_workspace.py ~/campaigns/icespire
-  python new_workspace.py ~/campaigns/icespire --name "Icespire Peak"
-  python new_workspace.py ~/campaigns/icespire \\
+  new_workspace ~/campaigns/icespire
+  new_workspace ~/campaigns/icespire --name "Icespire Peak"
+  new_workspace ~/campaigns/icespire \\
       --world-state ~/Phandalin/neverwinter_lore.md \\
       --mechanics   ~/Phandalin/arc_scores.md \\
       --planning    ~/Phandalin/enemy_dossiers.md
@@ -29,7 +29,11 @@ import argparse
 import sys
 from pathlib import Path
 
-SCRIPT_DIR = Path(__file__).resolve().parent
+# This file lives at pipelines/workspace/new_workspace.py; the "next steps"
+# commands printed below reference sibling scripts and `startup` that still
+# live at the repo root, so resolve the repo root explicitly rather than
+# assuming they're this file's own siblings.
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 CONFIG_TEMPLATE = """\
 # CampaignGenerator workspace config
@@ -290,13 +294,13 @@ def main() -> None:
     print(f"  └── logs/                ← auto-generated session logs")
     print(f"\nNext steps:")
     print(f"  1. Generate campaign_state.md from your session summaries:")
-    print(f"     python {SCRIPT_DIR}/campaign_state.py summaries.md --output {docs_dir}/campaign_state.md")
+    print(f"     python {REPO_ROOT}/campaign_state.py summaries.md --output {docs_dir}/campaign_state.md")
     if not (args.world_state and args.mechanics and args.planning):
         print(f"  2. Fill in any other placeholder docs/ files with your campaign content")
     print(f"  3. Run prep from anywhere:")
-    print(f"     python {SCRIPT_DIR}/prep.py --config {config_path} --beat \"...\"")
+    print(f"     python {REPO_ROOT}/prep.py --config {config_path} --beat \"...\"")
     print(f"  4. Or launch the web UI:")
-    print(f"     cd {workspace} && {SCRIPT_DIR}/startup")
+    print(f"     cd {workspace} && {REPO_ROOT}/startup")
     print()
 
 

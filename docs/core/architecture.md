@@ -303,7 +303,7 @@ Deep dives: [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md), [`docs/rlm/rlm
 
 | Script | Role |
 |---|---|
-| [`new_workspace.py`](../../new_workspace.py) | Skeleton: `config.yaml`, `docs/`, `voice/`, `examples/`, `summaries/` |
+| [`new_workspace.py`](../../pipelines/workspace/new_workspace.py) | Skeleton: `config.yaml`, `docs/`, `voice/`, `examples/`, `summaries/` |
 | [`dnd_sheet.py`](../../dnd_sheet.py) | D&D Beyond PDF → markdown (vision API) |
 | [`transform.py`](../../transform.py) | NotebookLLM dossier → prep.py beat format |
 | [`scabard_sync.py`](../../scabard_sync.py) | Sync workspace ↔ Scabard |

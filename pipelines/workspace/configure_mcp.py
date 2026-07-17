@@ -11,19 +11,19 @@ workspace directories:
 Usage
 -----
   # Configure all campaigns under ~/src/campaigns/
-  python configure_mcp.py
+  configure_mcp
 
   # Specific campaign(s)
-  python configure_mcp.py ~/src/campaigns/Phandalin ~/src/campaigns/toee
+  configure_mcp ~/src/campaigns/Phandalin ~/src/campaigns/toee
 
   # Include the Kanka server (needs KANKA_TOKEN)
-  python configure_mcp.py --kanka-token <token>
+  configure_mcp --kanka-token <token>
 
   # Preview without writing
-  python configure_mcp.py --dry-run
+  configure_mcp --dry-run
 
   # Overwrite existing entries (default: merge, preserving extra servers)
-  python configure_mcp.py --force
+  configure_mcp --force
 """
 
 from __future__ import annotations
@@ -34,11 +34,15 @@ import sys
 from pathlib import Path
 
 CAMPAIGNS_ROOT = Path("~/src/campaigns").expanduser()
-SCRIPT_DIR = Path(__file__).resolve().parent
+# This file lives at pipelines/workspace/configure_mcp.py; the servers it
+# points to (mcp_server.py, launch_5etools_mcp.py, kanka_mcp.py) still live
+# at the repo root as of this move, so resolve the repo root explicitly
+# rather than assuming they're this file's own siblings.
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
-MCP_SERVER = str(SCRIPT_DIR / "mcp_server.py")
-FIVETOOLS_SERVER = str(SCRIPT_DIR / "launch_5etools_mcp.py")
-KANKA_SERVER = str(SCRIPT_DIR / "kanka_mcp.py")
+MCP_SERVER = str(REPO_ROOT / "mcp_server.py")
+FIVETOOLS_SERVER = str(REPO_ROOT / "launch_5etools_mcp.py")
+KANKA_SERVER = str(REPO_ROOT / "kanka_mcp.py")
 
 
 def find_campaigns(roots: list[Path]) -> list[Path]:
