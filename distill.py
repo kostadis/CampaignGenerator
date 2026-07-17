@@ -29,6 +29,12 @@ from campaignlib import (
     add_backend_args,
     build_alias_normalizer,
     client_from_args,
+    check_citations,
+    check_synthesis_citations,
+    CITATION_RULES_EXTRACT,
+    CITATION_RULES_SYNTHESIZE,
+    CITED_EXTRACT_MAX_TOKENS,
+    CitationIdAssigner,
     format_npc_roster,
     load_agent_prompt,
     find_alias_registry,
@@ -37,9 +43,13 @@ from campaignlib import (
     run_synthesize_pipeline,
 )
 
-EXTRACT_SYSTEM = load_agent_prompt("distill_extract")
+EXTRACT_SYSTEM_BASE = load_agent_prompt("distill_extract")
 
-SYNTHESIZE_SYSTEM = load_agent_prompt("distill_synthesize")
+SYNTHESIZE_SYSTEM_BASE = load_agent_prompt("distill_synthesize")
+
+EXTRACT_SYSTEM = EXTRACT_SYSTEM_BASE + "\n\n" + CITATION_RULES_EXTRACT
+
+SYNTHESIZE_SYSTEM = SYNTHESIZE_SYSTEM_BASE + "\n\n" + CITATION_RULES_SYNTHESIZE
 
 
 def main() -> None:
@@ -118,11 +128,13 @@ def main() -> None:
             split_label="chapter",
             input_normalizer=normalize,
             system_suffix=roster,
+            max_tokens=CITED_EXTRACT_MAX_TOKENS,
         )
         if not extract_files:
             print("Error: no chunks were extracted — input may be too short.", file=sys.stderr)
             sys.exit(1)
         print(f"Extractions saved to: {extract_dir}")
+        check_citations(text, normalize, extract_files, args.chunk_size, args.split_chapters, extract_dir)
 
         if args.extract_only:
             print(f"\n[Extract-only mode — stopping before synthesis]")
@@ -140,15 +152,17 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize | model: {args.model}]")
     print("=" * 60)
+    id_assigner = CitationIdAssigner()
     world_state = run_synthesize_pipeline(
         client,
         source_groups=[("", extract_files)],
         synthesize_system=SYNTHESIZE_SYSTEM,
         model=args.model,
-        input_normalizer=normalize,
+        input_normalizer=lambda body: id_assigner(normalize(body)),
         system_suffix=roster,
     )
     print("=" * 60)
+    world_state = check_synthesis_citations(world_state, id_assigner.id_to_quote, extract_dir)
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(world_state.strip() + "\n", encoding="utf-8")

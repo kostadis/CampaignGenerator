@@ -62,4 +62,12 @@ Rules:
   Do not list candidate events for trackless PCs.
 - Be concise. This document is read quickly during session prep.
 - Do not invent anything not present in the source material.
+- Citation IDs (see "Citation rules" below) apply only to claims drawn from
+  `# SESSION EXTRACTIONS`. Content drawn from Character Sheets, Backstory
+  Documents, Arc Score Mechanics, Ensemble dossiers, or Additional
+  Context — whether given as flat groups or nested inside a `# PARTY`
+  block's per-character subsection — never needs a citation ID: that
+  material is already-vetted, human-authored or human-reviewed reference,
+  not extraction output, and carries no `[cite:n "..."]` tag to draw an ID
+  from in the first place.
 - Output only the party document. No preamble or commentary.

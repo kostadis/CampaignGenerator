@@ -70,7 +70,25 @@ from .scenes import (
     build_scene_extraction_system_prompt,
     plan_scene_extraction,
 )
-from .pipelines import run_extract_pipeline, run_synthesize_pipeline
+from .pipelines import run_extract_pipeline, run_synthesize_pipeline, CITED_EXTRACT_MAX_TOKENS
+from .citations import (
+    Citation,
+    CitationIdAssigner,
+    IdCitation,
+    CITATION_RULES_EXTRACT,
+    CITATION_RULES_SYNTHESIZE,
+    extract_citations,
+    find_citation_refs,
+    find_uncited_bullets,
+    find_unreferenced_claims,
+    render_report,
+    render_sources_section,
+    render_synthesis_report,
+    strip_citation_tags,
+    verify_citations,
+    verify_id_citations,
+)
+from .citation_checks import check_citations, check_synthesis_citations
 
 __all__ = [
     # constants
@@ -141,4 +159,25 @@ __all__ = [
     # pipelines
     "run_extract_pipeline",
     "run_synthesize_pipeline",
+    "CITED_EXTRACT_MAX_TOKENS",
+    # citations (extract/synthesize grounding checks — shared across
+    # distill.py/planning.py/party.py)
+    "Citation",
+    "CitationIdAssigner",
+    "IdCitation",
+    "CITATION_RULES_EXTRACT",
+    "CITATION_RULES_SYNTHESIZE",
+    "extract_citations",
+    "find_citation_refs",
+    "find_uncited_bullets",
+    "find_unreferenced_claims",
+    "render_report",
+    "render_sources_section",
+    "render_synthesis_report",
+    "strip_citation_tags",
+    "verify_citations",
+    "verify_id_citations",
+    # citation_checks (file I/O + reporting wiring over citations.py)
+    "check_citations",
+    "check_synthesis_citations",
 ]
