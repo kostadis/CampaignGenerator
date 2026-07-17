@@ -8,9 +8,9 @@ nothing in this repo should open its SQLite DB directly (GH mneme#9).
 
 Two modes:
 
-* **Search:** ``query_rpg_lib.py "tales yawning portal"`` lists matching books
+* **Search:** ``query_rpg_lib "tales yawning portal"`` lists matching books
   with their id, title, and relative path.
-* **Emit:** ``query_rpg_lib.py --book-id 7421`` prints a paste-ready
+* **Emit:** ``query_rpg_lib --book-id 7421`` prints a paste-ready
   ``refs.yaml`` block for that book.
 
 The rpg-lib base URL comes from mneme wiring (``rpg_library_url``); override
@@ -181,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
     if results:
         print()
         print("# To emit a refs.yaml entry for one of these:")
-        print("#   python query_rpg_lib.py --book-id <id>")
+        print("#   query_rpg_lib --book-id <id>")
     return 0
 
 

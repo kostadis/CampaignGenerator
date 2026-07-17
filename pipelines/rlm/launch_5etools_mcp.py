@@ -42,7 +42,7 @@ from pathlib import Path
 
 import yaml
 
-import resolve_refs as rr
+from . import resolve_refs as rr
 
 
 # ── Constants ────────────────────────────────────────────────────────────

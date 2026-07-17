@@ -118,7 +118,7 @@ Each script is standalone — run it, review the output, then proceed. See [`doc
 | `prep.py` (`pipelines/session_prep/`) | Session beat and arc prep — single mode or Lore Oracle → Encounter Architect → Voice Keeper pipeline |
 | `planning.py` (`pipelines/grounding/`) | Generate `planning.md` from NPC dossiers and arc scores |
 | `npc_table.py` (`pipelines/grounding/`) | Generate a quick NPC reference table (Name / Faction / State / Motivations) |
-| `query.py` | Search session summaries for a specific event, NPC, or topic |
+| `query.py` (`pipelines/rlm/`) | Search session summaries for a specific event, NPC, or topic |
 
 ### Post-session pipeline
 
@@ -191,8 +191,8 @@ Three MCP servers can be wired into campaign workspaces so Claude has direct acc
 
 | Server | Script | Registered when |
 |---|---|---|
-| `campaign` | `mcp_server.py` | always (campaign has `config.yaml`) |
-| `5etools` | `launch_5etools_mcp.py` | campaign has `refs.yaml` |
+| `campaign` | `mcp_server.py` (`pipelines/rlm/`) | always (campaign has `config.yaml`) |
+| `5etools` | `launch_5etools_mcp.py` (`pipelines/rlm/`) | campaign has `refs.yaml` |
 | `kanka` | `kanka_mcp.py` (`pipelines/integrations/kanka/`) | `--kanka-token` is passed |
 
 Use `configure_mcp` to write `.mcp.json` for all campaign workspaces at once:
@@ -220,13 +220,13 @@ By default the script **merges** into any existing `.mcp.json`, so manually adde
 
 | Script | What it does |
 |---|---|
-| `rpg_retriever.py` | Tiered retrieval from local RPG library (drawer / statblock / cost-tagged candidate) |
-| `dossier_proposer.py` | Run retrieval → write `docs/dossier_proposal.md` for human approval |
-| `fivetools_catalog.py` | Mtime-cached name index over canonical 5etools data |
+| `rpg_retriever.py` (`pipelines/rlm/`) | Tiered retrieval from local RPG library (drawer / statblock / cost-tagged candidate) |
+| `dossier_proposer.py` (`pipelines/rlm/`) | Run retrieval → write `docs/dossier_proposal.md` for human approval |
+| `fivetools_catalog.py` (`pipelines/rlm/`) | Mtime-cached name index over canonical 5etools data |
 | `fivetools_ingest.py` (`pipelines/content_ingest/`) | Ingest 5etools JSON into MemPalace drawers |
 | `convert_book.py` (`pipelines/content_ingest/`) | PDF → 5etools JSON (pdf-translators) |
-| `mcp_server.py` | MCP server — `rpg_search`, `propose_dossier`, `suggest_conversion` tools |
-| `mempalace_client.py` | MemPalace MCP write client |
+| `mcp_server.py` (`pipelines/rlm/`) | MCP server — `rpg_search`, `propose_dossier`, `suggest_conversion` tools |
+| `mempalace_client.py` (`pipelines/rlm/`) | MemPalace MCP write client |
 
 ### Utilities
 
@@ -243,8 +243,8 @@ By default the script **merges** into any existing `.mcp.json`, so manually adde
 
 The RLM pipeline lets prep and narration tools pull statblocks, encounter tables, and canon lore from a local library without hallucination:
 
-1. **Retrieve** — `rpg_retriever.py` searches in tiers: MemPalace drawer → statblock → cost-tagged candidate
-2. **Propose** — `dossier_proposer.py` writes `docs/dossier_proposal.md` — a ranked candidate list for human review and approval
+1. **Retrieve** — `rpg_retriever` searches in tiers: MemPalace drawer → statblock → cost-tagged candidate
+2. **Propose** — `dossier_proposer` writes `docs/dossier_proposal.md` — a ranked candidate list for human review and approval
 3. **Render** — approved proposals are consumed by render pipelines (`prep`, `sd_narrate.py`, `planning`)
 
 The human checkpoint between retrieval and rendering is enforced by a CI test — render pipelines cannot call retrieval functions directly. See [`docs/rlm/rlm_pipeline.md`](docs/rlm/rlm_pipeline.md) and [`docs/rlm/rlm_architecture.md`](docs/rlm/rlm_architecture.md).

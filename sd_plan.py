@@ -69,7 +69,7 @@ def main() -> None:
     if args.require_proposal:
         import os as _os
 
-        from proposal_loader import (
+        from pipelines.rlm.proposal_loader import (
             ProposalNotApproved,
             ProposalRequired,
             require_approved_proposal,

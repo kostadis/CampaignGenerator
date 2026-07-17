@@ -9,7 +9,7 @@ module is the only file in CampaignGenerator that knows how to spawn
 
 Usage (CLI / script):
 
-    from mempalace_client import MempalaceClient
+    from pipelines.rlm.mempalace_client import MempalaceClient
 
     with MempalaceClient(palace="/mnt/data/mempalace/palaces/chat") as mp:
         mp.add_drawer(wing="wing_bestiary", room="room_ravnica",
@@ -429,7 +429,7 @@ def _demo() -> None:  # pragma: no cover — manual smoke test
 
     Usage::
 
-        python mempalace_client.py /path/to/palace
+        python pipelines/rlm/mempalace_client.py /path/to/palace
     """
     import argparse
 

@@ -54,8 +54,8 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from concurrent.futures import ThreadPoolExecutor
-from mempalace_client import MempalaceClient
-from suggest_conversion import build_suggestion
+from .mempalace_client import MempalaceClient
+from .suggest_conversion import build_suggestion
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +63,13 @@ logger = logging.getLogger(__name__)
 from campaignlib import wiring_get  # noqa: E402  (rpg-lib URL is EXTERNAL — mneme-owned)
 _DEFAULT_RPGLIB_URL = wiring_get("rpg_library_url")
 _DEFAULT_HTTP_TIMEOUT = 5.0
+
+# This file lives at pipelines/rlm/rpg_retriever.py; find_default_config()'s
+# script-dir fallback expects to sit next to config/ (the repo root), which
+# is no longer this file's own directory since the move — anchor it at
+# REPO_ROOT explicitly instead (same fix as pipelines/grounding/npc_table.py
+# and pipelines/session_prep/prep.py).
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 # ── rpg-library HTTP client ──────────────────────────────────────────────
@@ -200,7 +207,7 @@ def search_fivetools_catalog(
         return []
     if not query and not source:
         return []
-    import fivetools_catalog as fc
+    from . import fivetools_catalog as fc
 
     if not query and source:
         # Source-only scope — return everything from that source up to
@@ -466,7 +473,7 @@ def _load_catalog_silently(data_root: Path | None):
         logger.warning("no fivetools_data_root configured — cheap candidates disabled")
         return None
     try:
-        import fivetools_catalog as fc
+        from . import fivetools_catalog as fc
     except ImportError:
         logger.warning("fivetools_catalog import failed — cheap candidates disabled")
         return None
@@ -698,7 +705,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def _resolve_cli_defaults(args: argparse.Namespace) -> argparse.Namespace:
     """Backfill CLI args from config.yaml + env vars where unset, mirroring
-    the MCP server's resolution. Lets ``python rpg_retriever.py "query"``
+    the MCP server's resolution. Lets ``rpg_retriever "query"``
     from a campaign workspace pick up the configured palace and 5etools
     data root without forcing every flag on the command line.
     """
@@ -706,7 +713,7 @@ def _resolve_cli_defaults(args: argparse.Namespace) -> argparse.Namespace:
     from campaignlib import find_default_config, load_config
 
     try:
-        config_path = find_default_config(__file__)
+        config_path = find_default_config(str(REPO_ROOT / "rpg_retriever.py"))
         config, _ = load_config(config_path)
     except Exception:  # noqa: BLE001
         config = {}

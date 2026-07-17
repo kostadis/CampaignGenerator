@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-import proposal_loader as pl
+import pipelines.rlm.proposal_loader as pl
 
 
 def _write_proposal(campaign_dir: Path, text: str) -> Path:

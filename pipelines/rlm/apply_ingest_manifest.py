@@ -21,14 +21,14 @@ Manifest shape (lives at ``<campaign-dir>/ingest_manifest.yaml``):
         book_id: 7421
         note: "Homebrew faction, converted 2026-04-20"
 
-Each entry maps 1:1 to a ``fivetools_ingest.py`` invocation. ``source`` is
+Each entry maps 1:1 to a ``fivetools_ingest`` invocation. ``source`` is
 required; ``filter``, ``book_id``, ``force``, and ``note`` are optional.
 
 Subcommands (flags):
 
 * default — run every entry. Idempotent via the per-(path, palace, filter)
-  sidecars that ``fivetools_ingest.py`` writes.
-* ``--dry-run`` — print the ``fivetools_ingest.py`` commands without running.
+  sidecars that ``fivetools_ingest`` writes.
+* ``--dry-run`` — print the ``fivetools_ingest`` commands without running.
 * ``--status`` — report sidecar status per entry (never-run / ingested /
   stale / missing-source). No ingest runs.
 * ``--only 1,3,5`` — apply only the listed entries (1-based).
@@ -47,15 +47,18 @@ from typing import Iterable
 import yaml
 
 from campaignlib import find_default_config, load_config
-# fivetools_ingest moved to pipelines/content_ingest/ in the source-tree
-# restructure (docs/design/SourceTreeRestructure.md); this file itself is
-# part of the still-unmigrated `rlm` cluster, so import the new location
-# directly rather than a bare `from fivetools_ingest import ...`.
 from pipelines.content_ingest.fivetools_ingest import (
     _state_path,
     file_signature,
     parse_filter_spec,
 )
+
+# This file lives at pipelines/rlm/apply_ingest_manifest.py; find_default_config()'s
+# script-dir fallback expects to sit next to config/ (the repo root), which
+# is no longer this file's own directory since the move — anchor it at
+# REPO_ROOT explicitly instead (same fix as pipelines/grounding/npc_table.py
+# and pipelines/session_prep/prep.py).
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 MANIFEST_FILENAME = "ingest_manifest.yaml"
@@ -118,28 +121,32 @@ def resolve_source(source: str, manifest_dir: Path) -> Path:
 # ── Argv construction ────────────────────────────────────────────────────
 
 
+def _fivetools_ingest_command() -> str:
+    """Resolve the installed ``fivetools_ingest`` console-script path.
+
+    fivetools_ingest.py moved to pipelines/content_ingest/ in the source-tree
+    restructure (docs/design/SourceTreeRestructure.md) and gained a
+    ``fivetools_ingest`` console-script entry point ([project.scripts] in
+    pyproject.toml) — it is no longer a same-directory sibling script
+    invocable via ``<python> <script_dir>/fivetools_ingest.py``. Resolved via
+    ``sys.executable``'s own venv ``bin/`` directory (mirroring
+    ``server.subprocess_runner.console_script()``'s approach, without
+    importing the server package into this standalone CLI script), so it
+    works whether or not the venv is "activated" in the parent shell.
+    """
+    return str(Path(sys.executable).parent / "fivetools_ingest")
+
+
 def build_argv(
     entry: dict,
     palace: str,
     manifest_dir: Path,
-    script_dir: Path,
     *,
     dry_run: bool = False,
 ) -> list[str]:
-    # NOTE: fivetools_ingest.py moved to pipelines/content_ingest/ in the
-    # source-tree restructure (docs/design/SourceTreeRestructure.md), so
-    # `script_dir / "fivetools_ingest.py"` (script_dir is this file's own
-    # directory, cmd_apply below) no longer resolves to a real file —
-    # cmd_apply's actual subprocess.run(argv) call would now fail. Left
-    # as-is here because tests/test_ingest_manifest.py's TestBuildArgv
-    # pins this exact argv shape given an arbitrary script_dir; this file
-    # is part of the still-unmigrated `rlm` cluster and will get a real
-    # fix (console_script("fivetools_ingest"), dropping script_dir here
-    # entirely) when that cluster migrates.
     source = resolve_source(entry["source"], manifest_dir)
     argv = [
-        sys.executable,
-        str(script_dir / "fivetools_ingest.py"),
+        _fivetools_ingest_command(),
         str(source),
         "--palace",
         palace,
@@ -265,7 +272,6 @@ def cmd_apply(
 ) -> int:
     entries = manifest["ingests"]
     manifest_dir = manifest_path.parent
-    script_dir = Path(__file__).resolve().parent
     selected = sum(1 for i in range(len(entries)) if only is None or i in only)
     _print_header(manifest_path, palace, len(entries), selected)
 
@@ -273,7 +279,7 @@ def cmd_apply(
     for i, entry in enumerate(entries, start=1):
         if only is not None and (i - 1) not in only:
             continue
-        argv = build_argv(entry, palace, manifest_dir, script_dir, dry_run=dry_run)
+        argv = build_argv(entry, palace, manifest_dir, dry_run=dry_run)
         print(f"# [{i}/{len(entries)}] {_entry_label(entry)}")
         print(f"  $ {shlex.join(argv)}")
         if dry_run:
@@ -335,7 +341,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Print fivetools_ingest.py commands and pass --dry-run to each.",
+        help="Print fivetools_ingest commands and pass --dry-run to each.",
     )
     parser.add_argument(
         "--status",
@@ -356,7 +362,7 @@ def main(argv: list[str] | None = None) -> int:
     manifest = load_manifest(manifest_path)
 
     config = None
-    config_path = args.config or find_default_config(__file__)
+    config_path = args.config or find_default_config(str(REPO_ROOT / "apply_ingest_manifest.py"))
     if config_path and Path(config_path).is_file():
         try:
             config, _ = load_config(str(config_path))

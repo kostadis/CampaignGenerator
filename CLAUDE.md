@@ -31,7 +31,7 @@ pipelines/grounding/npc_table.py        # CLI: generate NPC reference table
 pipelines/grounding/distill.py          # CLI: convert summaries → world_state.md
 pipelines/grounding/campaign_state.py   # CLI: generate completed-content grounding doc
 pipelines/grounding/make_tracking.py    # CLI: extract trackable events from a module
-query.py                    # CLI: search summaries
+pipelines/rlm/query.py      # CLI: search summaries
 vtt_summary.py              # CLI: Zoom .vtt → session summary
 pipelines/grounding/planning.py         # CLI: NPC dossiers + arc scores → planning.md
 pipelines/grounding/party.py            # CLI: character sheets + summaries → party.md
@@ -40,16 +40,16 @@ pipelines/workspace/new_workspace.py  # CLI: create a new campaign workspace
 pipelines/session_prep/transform.py  # CLI: NotebookLLM dossiers → prep input
 
 # ── RLM tools ──
-rpg_retriever.py            # Tiered retrieval (drawer / statblock / cost-tagged candidate)
-fivetools_catalog.py        # Mtime-cached name index over canonical 5etools data
-dossier_proposer.py         # Run retrieval → write docs/dossier_proposal.md
-proposal_loader.py          # Render pipelines consume approved proposals
-mempalace_client.py         # Writes via MemPalace MCP
-mcp_server.py               # MCP tools: rpg_search, propose_dossier, suggest_conversion
+pipelines/rlm/rpg_retriever.py    # Tiered retrieval (drawer / statblock / cost-tagged candidate)
+pipelines/rlm/fivetools_catalog.py # Mtime-cached name index over canonical 5etools data
+pipelines/rlm/dossier_proposer.py # Run retrieval → write docs/dossier_proposal.md
+pipelines/rlm/proposal_loader.py  # Render pipelines consume approved proposals
+pipelines/rlm/mempalace_client.py # Writes via MemPalace MCP
+pipelines/rlm/mcp_server.py       # MCP tools: rpg_search, propose_dossier, suggest_conversion
 pipelines/content_ingest/convert_book.py     # PDF → 5etools JSON (pdf-translators)
 pipelines/content_ingest/fivetools_ingest.py # 5etools JSON → MemPalace drawers
-resolve_refs.py             # Resolve refs.yaml + refs.local.yaml → concrete JSON paths
-launch_5etools_mcp.py       # Per-campaign 5etools MCP server launcher (reads refs.yaml)
+pipelines/rlm/resolve_refs.py     # Resolve refs.yaml + refs.local.yaml → concrete JSON paths
+pipelines/rlm/launch_5etools_mcp.py # Per-campaign 5etools MCP server launcher (reads refs.yaml)
 
 # ── Config & docs ──
 config/
@@ -141,7 +141,7 @@ Concrete examples already in the codebase:
 - `party` outputs candidate arc-score events with quoted triggers, never current values or thresholds
 - `planning --build-dossiers` writes per-NPC files for human review before `--synthesize`
 - The 4-stage `session_doc` pipeline (`docs/cli/session_doc_pipeline.md`) inserts a human review after each LLM pass
-- `dossier_proposer.py` writes a proposal file; the GM approves it before render pipelines consume it
+- `dossier_proposer` writes a proposal file; the GM approves it before render pipelines consume it
 
 ## Running tests
 

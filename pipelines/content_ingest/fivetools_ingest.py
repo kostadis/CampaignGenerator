@@ -63,19 +63,10 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Iterator
 
-# TEMPORARY until pipelines/rlm/ cluster migrates (source-tree restructure,
-# docs/design/SourceTreeRestructure.md task "Cluster: pipelines/rlm/"):
-# resolve_refs.py and mempalace_client.py still live at the repo root, so
-# they aren't reachable as `pipelines.rlm.*` yet, and this file no longer
-# sits next to them (its own directory is no longer sys.path[0]'s repo
-# root). Bridge the repo root back onto sys.path just for these two
-# imports. REMOVE this bridge when the rlm cluster lands and replace the
-# two imports below with `from pipelines.rlm import mempalace_client,
-# resolve_refs`.
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-
-from mempalace_client import MempalaceClient
-import resolve_refs
+# mempalace_client and resolve_refs live in the separate pipelines/rlm/
+# cluster — a cross-cluster absolute import, not an intra-package one.
+from pipelines.rlm.mempalace_client import MempalaceClient
+from pipelines.rlm import resolve_refs
 
 from . import fivetools_copy
 from . import fivetools_render

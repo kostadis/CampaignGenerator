@@ -50,7 +50,7 @@ refs:
 | `[MM, PHB, OotA, …]` | Explicit whitelist. Only these source codes are in scope. `canonical_exclude:` is an error in this mode. |
 
 Source codes are uppercase identifiers like `MM`, `PHB`, `OotA`, `XPHB`. Run
-`python launch_5etools_mcp.py --campaign-dir . --status` to see all available
+`launch_5etools_mcp --campaign-dir . --status` to see all available
 source codes from your data tree.
 
 ---
@@ -97,8 +97,8 @@ Entries without `library:` fall back to the plain `roots.rpg_library` root
 To find the right path and `book_id`, use:
 
 ```bash
-python query_rpg_lib.py "tales yawning portal"   # search by title
-python query_rpg_lib.py --book-id 7421           # emit a paste-ready refs.yaml block
+query_rpg_lib "tales yawning portal"   # search by title
+query_rpg_lib --book-id 7421           # emit a paste-ready refs.yaml block
 ```
 
 Requires `roots.rpg_library` (or `roots.rpg_library_<name>` when using `library:`) in `refs.local.yaml`.
@@ -174,7 +174,7 @@ naming the missing root and telling you which key to set.
 To generate a starter `refs.local.yaml` with detected defaults:
 
 ```bash
-python launch_5etools_mcp.py --campaign-dir . --init-local
+launch_5etools_mcp --campaign-dir . --init-local
 ```
 
 ---

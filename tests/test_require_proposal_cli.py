@@ -19,7 +19,7 @@ from pathlib import Path
 
 import pytest
 
-import proposal_loader as pl
+import pipelines.rlm.proposal_loader as pl
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent

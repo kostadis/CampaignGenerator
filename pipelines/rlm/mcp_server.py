@@ -1,8 +1,8 @@
 """MCP server for CampaignGenerator — read campaign data, draft notes, run prep tools.
 
 Usage:
-    CAMPAIGN_DIR=/path/to/campaign python mcp_server.py
-    python mcp_server.py --campaign-dir /path/to/campaign
+    CAMPAIGN_DIR=/path/to/campaign mcp_server
+    mcp_server --campaign-dir /path/to/campaign
 
 Register per-campaign via .mcp.json in the campaign workspace directory.
 
@@ -24,8 +24,11 @@ except ImportError:
 
 # ── Bootstrap ──────────────────────────────────────────────────────────────────
 
-SCRIPT_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(SCRIPT_DIR))
+# This file lives at pipelines/rlm/mcp_server.py; REPO_ROOT is the actual repo
+# root (three .parents up), not this file's own directory — needed below for
+# the packaged-default config.yaml fallback (same REPO_ROOT pattern every
+# other migrated cluster has used, e.g. pipelines/grounding/npc_table.py).
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 from campaignlib import load_config, load_file, wiring_get
 
@@ -46,7 +49,7 @@ campaign_dir = Path(_campaign_dir_str).expanduser().resolve()
 # Load config
 _config_path = campaign_dir / "config.yaml"
 if not _config_path.exists():
-    _config_path = SCRIPT_DIR / "config" / "config.yaml"
+    _config_path = REPO_ROOT / "config" / "config.yaml"
 
 config, base_dir = load_config(str(_config_path))
 
@@ -120,14 +123,19 @@ async def _run_script(script_name: str, args: list[str]) -> str:
     """Run a CLI tool as a subprocess, return combined stdout+stderr.
 
     `script_name` is either a `<name>.py` filename (resolved against
-    SCRIPT_DIR, the repo root) for scripts that still live there, or a bare
-    console-script name (no `.py`) for scripts that have migrated into
-    `pipelines/` and gained a `[project.scripts]` entry point — resolved
-    against the current interpreter's own venv `bin/` directory rather than
-    `$PATH`, so it works whether or not the venv is "activated".
+    REPO_ROOT) for scripts that still live there, or a bare console-script
+    name (no `.py`) for scripts that have migrated into `pipelines/` and
+    gained a `[project.scripts]` entry point — resolved against the current
+    interpreter's own venv `bin/` directory rather than `$PATH`, so it works
+    whether or not the venv is "activated". As of the `rlm` cluster (which
+    includes this file), every script this server dispatches to has migrated
+    and gained a console-script entry, so the `.py` branch below has no
+    remaining caller — left in place as (harmless) dead code rather than
+    removed, since the dispatch mechanism itself may matter again for a
+    future not-yet-migrated tool.
     """
     if script_name.endswith(".py"):
-        cmd = [sys.executable, str(SCRIPT_DIR / script_name), *args]
+        cmd = [sys.executable, str(REPO_ROOT / script_name), *args]
     else:
         cmd = [str(Path(sys.executable).parent / script_name), *args]
     proc = await asyncio.create_subprocess_exec(
@@ -553,7 +561,7 @@ async def query_lore(query: str, summaries_file: str = "", hits_only: bool = Fal
     if hits_only:
         args.append("--hits-only")
 
-    return await _run_script("query.py", args)
+    return await _run_script("query", args)
 
 
 @mcp.tool()
@@ -718,7 +726,7 @@ def rpg_search(
     """
     import json
 
-    from rpg_retriever import retrieve
+    from .rpg_retriever import retrieve
 
     try:
         result = retrieve(
@@ -770,7 +778,7 @@ def propose_dossier(
     a human has to review it, edit scope, and change the status banner away
     from `candidates only` before any render pipeline will consume it.
     """
-    from dossier_proposer import propose, render, write_proposal
+    from .dossier_proposer import propose, render, write_proposal
 
     try:
         proposal = propose(
@@ -819,8 +827,8 @@ def suggest_conversion(book_id: int = 0, filepath: str = "") -> str:
     """
     import json as _json
 
-    from rpg_retriever import _http_get_json
-    from suggest_conversion import build_suggestion
+    from .rpg_retriever import _http_get_json
+    from .suggest_conversion import build_suggestion
 
     raw_url = _resolve_rpg_library_url()
     if not raw_url:
@@ -857,5 +865,18 @@ def suggest_conversion(book_id: int = 0, filepath: str = "") -> str:
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
-if __name__ == "__main__":
+def main() -> None:
+    """Console-script entry point (`mcp_server` — [project.scripts]).
+
+    All the actual server setup (campaign-dir resolution, config load,
+    tool/resource registration) already ran at import time above — this
+    just starts the stdio event loop, mirroring kanka_mcp.py's
+    ``def main() -> None: build_server().run()`` shape, minus the lazy
+    ``build_server()`` factory (this module builds `mcp` eagerly at import
+    time rather than lazily, since its tool set is not conditional).
+    """
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()

@@ -331,7 +331,7 @@ def main() -> None:
     #   --campaign-dir flag → $CAMPAIGN_DIR env → parent of the config file.
     import os as _os
 
-    from proposal_loader import (
+    from pipelines.rlm.proposal_loader import (
         ProposalNotApproved,
         ProposalRequired,
         attach_proposal_to_documents,

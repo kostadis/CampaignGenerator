@@ -11,7 +11,7 @@ retriever stub so the test never spawns mempalace-mcp.
 
 from __future__ import annotations
 
-import dossier_proposer as dp
+import pipelines.rlm.dossier_proposer as dp
 
 
 # ── classify() ───────────────────────────────────────────────────────────

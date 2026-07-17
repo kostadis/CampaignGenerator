@@ -18,8 +18,8 @@ from typing import Any
 import pytest
 import yaml
 
-import launch_5etools_mcp as launcher
-import resolve_refs as rr
+import pipelines.rlm.launch_5etools_mcp as launcher
+import pipelines.rlm.resolve_refs as rr
 
 
 # ── Shared fixtures (mirror test_resolve_refs.py shape) ──────────────────

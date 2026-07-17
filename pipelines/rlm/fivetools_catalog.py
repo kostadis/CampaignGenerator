@@ -38,12 +38,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterator
 
-# fivetools_ingest moved to pipelines/content_ingest/ in the source-tree
-# restructure (docs/design/SourceTreeRestructure.md); this file itself is
-# part of the still-unmigrated `rlm` cluster, so import the new location
-# directly rather than a bare `import fivetools_ingest`.
+# fivetools_ingest lives in the separate pipelines/content_ingest/ cluster —
+# a cross-cluster absolute import, not an intra-package one.
 from pipelines.content_ingest import fivetools_ingest
-import resolve_refs
+from . import resolve_refs
 
 logger = logging.getLogger(__name__)
 

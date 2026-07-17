@@ -8,16 +8,16 @@ Scans the summaries in chunks, extracts anything relevant to your query,
 then synthesizes the hits into a direct answer.
 
 Usage:
-  python query.py summaries.md "Did the party clear Gnomengarde?"
-  python query.py summaries.md "What happened with Grundar at Icespire Hold?"
-  python query.py summaries.md "Has the Kraken Society arc score ever increased?"
-  python query.py summaries.md "What does the party know about the planar distortion?"
+  query summaries.md "Did the party clear Gnomengarde?"
+  query summaries.md "What happened with Grundar at Icespire Hold?"
+  query summaries.md "Has the Kraken Society arc score ever increased?"
+  query summaries.md "What does the party know about the planar distortion?"
 
   # Just show raw hits without synthesizing
-  python query.py summaries.md "Xalvosh" --hits-only
+  query summaries.md "Xalvosh" --hits-only
 
   # Save the answer to a file
-  python query.py summaries.md "What is the current state of Neverwinter?" -o notes.md
+  query summaries.md "What is the current state of Neverwinter?" -o notes.md
 """
 
 import argparse

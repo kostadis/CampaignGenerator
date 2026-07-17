@@ -51,6 +51,15 @@ synthesise_polish = "pipelines.ensemble.synthesise_polish:main"
 synthesise_world_state = "pipelines.ensemble.synthesise_world_state:main"
 split_chapters = "pipelines.ensemble.split_chapters:main"
 polish = "pipelines.ensemble.polish:main"
+rpg_retriever = "pipelines.rlm.rpg_retriever:main"
+fivetools_catalog = "pipelines.rlm.fivetools_catalog:main"
+dossier_proposer = "pipelines.rlm.dossier_proposer:main"
+mcp_server = "pipelines.rlm.mcp_server:main"
+launch_5etools_mcp = "pipelines.rlm.launch_5etools_mcp:main"
+suggest_conversion = "pipelines.rlm.suggest_conversion:main"
+query = "pipelines.rlm.query:main"
+query_rpg_lib = "pipelines.rlm.query_rpg_lib:main"
+apply_ingest_manifest = "pipelines.rlm.apply_ingest_manifest:main"
 
 [project.optional-dependencies]
 test = [

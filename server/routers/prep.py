@@ -5,11 +5,9 @@ from pathlib import Path
 from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 
-from server.subprocess_runner import console_script, python_exe, stream_subprocess
+from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
-
-SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 def _cmd_opt(cmd: list[str], flag: str, value: str | int | None) -> None:
@@ -98,7 +96,7 @@ async def run_query(
     chunk_size: int = 40000,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "query.py")]
+    cmd = [console_script("query")]
 
     if input.strip():
         cmd.append(input.strip())

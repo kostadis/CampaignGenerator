@@ -22,7 +22,7 @@ Rationale (CLAUDE.md global rule): LLMs render, humans impose scope.
 
 Usage (library):
 
-    from dossier_proposer import propose
+    from pipelines.rlm.dossier_proposer import propose
 
     md = propose(
         "party arrives at Icespire Hold",
@@ -34,8 +34,8 @@ Usage (library):
 
 Usage (CLI):
 
-    python dossier_proposer.py "party arrives at Icespire Hold"
-    python dossier_proposer.py "Strahd" --output docs/dossier_proposal.md
+    dossier_proposer "party arrives at Icespire Hold"
+    dossier_proposer "Strahd" --output docs/dossier_proposal.md
 """
 
 from __future__ import annotations
@@ -49,7 +49,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from rpg_retriever import retrieve
+from .rpg_retriever import retrieve
 
 logger = logging.getLogger(__name__)
 

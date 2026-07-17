@@ -17,13 +17,13 @@ commands.
 
 Usage (library):
 
-    from suggest_conversion import build_suggestion
+    from pipelines.rlm.suggest_conversion import build_suggestion
     payload = build_suggestion(book_row, campaign_workspace="~/camp/icespire")
 
 Usage (CLI):
 
-    python suggest_conversion.py --book-id 7421
-    python suggest_conversion.py --filepath /mnt/g/some.pdf
+    suggest_conversion --book-id 7421
+    suggest_conversion --filepath /mnt/g/some.pdf
 """
 
 from __future__ import annotations

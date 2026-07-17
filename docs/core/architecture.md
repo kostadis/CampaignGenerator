@@ -47,7 +47,7 @@ flowchart TB
 
     subgraph External["External services"]
         Claude["Anthropic API (Claude)"]
-        MCP["MCP server (mcp_server.py) → MemPalace + 5etools"]
+        MCP["MCP server (mcp_server) → MemPalace + 5etools"]
     end
 
     Web --> Main
@@ -143,9 +143,9 @@ flowchart LR
         RPGLIB[("rpglib PDFs<br/>(not yet converted)")]
     end
 
-    RR["rpg_retriever.py<br/>(retrieve)"]
+    RR["rpg_retriever<br/>(retrieve)"]
     DRW --> RR
-    FTC["fivetools_catalog.py<br/>(name index, mtime-cached)"] --> RR
+    FTC["fivetools_catalog<br/>(name index, mtime-cached)"] --> RR
     FT --> FTC
     RPGLIB --> RR
 
@@ -154,12 +154,12 @@ flowchart LR
     HITS[("Tiered hits:<br/>drawer · statblock ·<br/>candidate (cheap/expensive)")]
     RR --> HITS
 
-    DP["dossier_proposer.py"]
+    DP["dossier_proposer"]
     HITS --> DP
     PROP[("docs/dossier_proposal.md<br/>◄ HUMAN APPROVES (header line)")]
     DP --> PROP
 
-    SUGG["suggest_conversion.py<br/>(builds convert+ingest hint)"]
+    SUGG["suggest_conversion<br/>(builds convert+ingest hint)"]
     HITS --> SUGG
 
     subgraph Ingest["Ingest path (explicit, never auto)"]
@@ -184,7 +184,7 @@ flowchart LR
     LOAD --> SDP
     LOAD --> PLN
 
-    MCP["mcp_server.py<br/>(rpg_search · propose_dossier · suggest_conversion)"]
+    MCP["mcp_server<br/>(rpg_search · propose_dossier · suggest_conversion)"]
     MCP -.-> RR
     MCP -.-> DP
     MCP -.-> SUGG
@@ -258,7 +258,7 @@ Each pipeline follows the **extract → human review → synthesize/render** pat
 | [`prep.py`](../../pipelines/session_prep/prep.py) | Single mode (one call), pipeline mode (Lore Oracle → Encounter Architect → Voice Keeper), session mode (outline → per-beat encounters) |
 | [`planning.py`](../../pipelines/grounding/planning.py) | Two-pass: extract NPC/faction state from summaries, synthesize into `planning.md`. `--build-dossiers` writes per-NPC files for human review before `--synthesize` |
 | [`party.py`](../../pipelines/grounding/party.py) | Two-pass: arc-score candidate events from summaries + character sheets → `party.md` |
-| [`dossier_proposer.py`](../../dossier_proposer.py) | Proposes NPC dossiers from narrative text; writes `docs/dossier_proposal.md` (the human checkpoint between retrieval and render) |
+| [`dossier_proposer.py`](../../pipelines/rlm/dossier_proposer.py) | Proposes NPC dossiers from narrative text; writes `docs/dossier_proposal.md` (the human checkpoint between retrieval and render) |
 | [`scene_extract.py`](../../scene_extract.py) | Stage-2 scene-anchored extraction (per-scene verbatim moments). Supports Batch API |
 
 End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_prep_workflow.md).
@@ -289,13 +289,13 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 
 | Script | Role |
 |---|---|
-| [`rpg_retriever.py`](../../rpg_retriever.py) | Three-pile orchestrator (mempalace → 5etools → rpg-library) |
-| [`fivetools_catalog.py`](../../fivetools_catalog.py) | Mtime-cached name index over canonical 5etools data |
+| [`rpg_retriever.py`](../../pipelines/rlm/rpg_retriever.py) | Three-pile orchestrator (mempalace → 5etools → rpg-library) |
+| [`fivetools_catalog.py`](../../pipelines/rlm/fivetools_catalog.py) | Mtime-cached name index over canonical 5etools data |
 | [`fivetools_ingest.py`](../../pipelines/content_ingest/fivetools_ingest.py) | 5etools JSON → MemPalace drawer prose |
-| [`mempalace_client.py`](../../mempalace_client.py) | HTTP client for MemPalace search |
-| [`dossier_proposer.py`](../../dossier_proposer.py) | Retrieval → `docs/dossier_proposal.md` (human checkpoint) |
-| [`proposal_loader.py`](../../proposal_loader.py) | Render pipelines load approved proposals from here |
-| [`mcp_server.py`](../../mcp_server.py) | FastMCP stdio server: read campaign docs, write to `notes/` only, semantic search via mempalace |
+| [`mempalace_client.py`](../../pipelines/rlm/mempalace_client.py) | HTTP client for MemPalace search |
+| [`dossier_proposer.py`](../../pipelines/rlm/dossier_proposer.py) | Retrieval → `docs/dossier_proposal.md` (human checkpoint) |
+| [`proposal_loader.py`](../../pipelines/rlm/proposal_loader.py) | Render pipelines load approved proposals from here |
+| [`mcp_server.py`](../../pipelines/rlm/mcp_server.py) | FastMCP stdio server: read campaign docs, write to `notes/` only, semantic search via mempalace |
 
 Deep dives: [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md), [`docs/rlm/rlm_architecture.md`](../rlm/rlm_architecture.md).
 
@@ -322,7 +322,7 @@ The campaign workspace is the database. All long-lived state is markdown.
     planning.md               ← planning              → prep, scene_editor, mcp
     party.md                  ← party                 → prep, session_doc, narrative, mcp
     mechanics.md              ← (manual)              → optional grounding
-    dossier_proposal.md       ← dossier_proposer.py   → render pipelines (human-approved)
+    dossier_proposal.md       ← dossier_proposer      → render pipelines (human-approved)
     npcs/*.md                 ← planning --build-dossiers
   voice/                      # Per-character narrator personality notes
   examples/                   # Handcrafted style examples for sd_narrate.py
@@ -349,7 +349,7 @@ Typical session lifecycle:
 
 ## MCP integration
 
-[`mcp_server.py`](../../mcp_server.py) is a FastMCP stdio server registered per campaign via `.mcp.json` ([template](../../.mcp.json.template)). Reads `CAMPAIGN_DIR` from env. Tools:
+[`mcp_server.py`](../../pipelines/rlm/mcp_server.py) is a FastMCP stdio server registered per campaign via `.mcp.json` ([template](../../.mcp.json.template)). Reads `CAMPAIGN_DIR` from env. Tools:
 
 - Read-only document access: `read_document`, `search_document`, `list_sessions`, `list_files`, `list_notes`
 - Write (into `<campaign_dir>/notes/` only): `write_note`, `append_note`
@@ -380,11 +380,11 @@ Per-script tests live alongside (`test_prep.py`, `test_sd_split.py` / `test_sess
 
 - **Three-state RLM retrieval.** Every hit is a *drawer* (already ingested), a *statblock* (already ingested), or a *candidate* — and candidates are tagged `cost="cheap"` (5etools JSON on disk, ready for `fivetools_ingest`) or `cost="expensive"` (rpglib PDF needing `convert_book` first). The retriever never fetches; it suggests.
 
-- **Proposal-gate.** Render pipelines (`prep`, `sd_plan.py`, `planning`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
+- **Proposal-gate.** Render pipelines (`prep`, `sd_plan.py`, `planning`) refuse to use retrieval results unless a human has flipped the status line in `docs/dossier_proposal.md` to "approved". Enforced in [`proposal_loader.py`](../../pipelines/rlm/proposal_loader.py); the rule is documented in [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md).
 
 - **CLI ↔ UI symmetry.** The FastAPI server never reimplements logic — it shells out to CLI scripts. Fixing a bug in a script fixes it in the UI; exposing a CLI flag means adding it to the corresponding `_build_*_cmd()` in the router.
 
-- **MCP boundary.** Anything that touches MemPalace goes through [`mempalace_client.py`](../../mempalace_client.py). Anything that exposes CampaignGenerator capability *outward* to other Claude sessions goes through [`mcp_server.py`](../../mcp_server.py). One file, one direction each.
+- **MCP boundary.** Anything that touches MemPalace goes through [`mempalace_client.py`](../../pipelines/rlm/mempalace_client.py). Anything that exposes CampaignGenerator capability *outward* to other Claude sessions goes through [`mcp_server.py`](../../pipelines/rlm/mcp_server.py). One file, one direction each.
 
 ## Common task → start here
 
@@ -403,9 +403,9 @@ A fast-orientation table for "I need to change X, where does it live?"
 | Resolve NPC name variants | [`campaignlib.py`](../../campaignlib.py) NPC alias section + [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md) |
 | Understand the narration | [`sd_narrate.py`](../../sd_narrate.py) docstring + [`session_doc/narrate.py`](../../session_doc/narrate.py) (build_narrate_system / build_narrate_prompt) |
 | Match VTT quotes to scenes | [`quote_ledger.py`](../../quote_ledger.py) + [`server/routers/ledger.py`](../../server/routers/ledger.py) |
-| Add an MCP tool | [`mcp_server.py`](../../mcp_server.py); for MemPalace I/O use [`mempalace_client.py`](../../mempalace_client.py) only |
-| Change retrieval ranking / tiering | [`rpg_retriever.py`](../../rpg_retriever.py) (`retrieve`); name-index changes in [`fivetools_catalog.py`](../../fivetools_catalog.py) |
-| Touch the proposal-gate | [`proposal_loader.py`](../../proposal_loader.py) — `require_approved_proposal` is the choke point |
+| Add an MCP tool | [`mcp_server.py`](../../pipelines/rlm/mcp_server.py); for MemPalace I/O use [`mempalace_client.py`](../../pipelines/rlm/mempalace_client.py) only |
+| Change retrieval ranking / tiering | [`rpg_retriever.py`](../../pipelines/rlm/rpg_retriever.py) (`retrieve`); name-index changes in [`fivetools_catalog.py`](../../pipelines/rlm/fivetools_catalog.py) |
+| Touch the proposal-gate | [`proposal_loader.py`](../../pipelines/rlm/proposal_loader.py) — `require_approved_proposal` is the choke point |
 | Render a 5etools entity to prose | [`fivetools_render.py`](../../pipelines/content_ingest/fivetools_render.py) (`render_<type>` family); resolve `_copy` first via [`fivetools_copy.py`](../../pipelines/content_ingest/fivetools_copy.py) |
 | Convert a new RPG PDF | [`convert_book.py`](../../pipelines/content_ingest/convert_book.py) (wraps pdf-translators); then [`fivetools_ingest.py`](../../pipelines/content_ingest/fivetools_ingest.py) — keep the steps explicit |
 

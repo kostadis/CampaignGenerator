@@ -25,7 +25,7 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
-from dossier_proposer import is_approved
+from .dossier_proposer import is_approved
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +93,7 @@ def require_approved_proposal(campaign_dir: Path | str | None = None) -> LoadedP
     if loaded is None:
         raise ProposalRequired(
             f"dossier proposal not found at {_proposal_path(campaign_dir)}. "
-            "Run `python dossier_proposer.py '<query>'` to generate one, "
+            "Run `dossier_proposer '<query>'` to generate one, "
             "review + edit it, then change the status banner to "
             "`> **Status:** approved by <name> on <date>.` before re-running."
         )

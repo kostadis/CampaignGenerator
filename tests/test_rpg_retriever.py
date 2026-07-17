@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-import rpg_retriever as rpgr
-from mempalace_client import FakeMempalaceClient
+import pipelines.rlm.rpg_retriever as rpgr
+from pipelines.rlm.mempalace_client import FakeMempalaceClient
 
 
 # ── HTTP fixture for rpg-library API ─────────────────────────────────────
@@ -273,7 +273,7 @@ class TestReconcile:
         assert got.hits == []
 
     def test_cheap_candidates_emitted_in_order(self):
-        from fivetools_catalog import Candidate as FC
+        from pipelines.rlm.fivetools_catalog import Candidate as FC
         cheap = [
             FC(entity_type="monster", name="Drow Priestess of Lolth",
                source="MM", file_path="/d/bestiary-mm.json",
@@ -301,7 +301,7 @@ class TestReconcile:
         assert "chapter=0" in second["ingest_command"]
 
     def test_include_cheap_false_suppresses_cheap_tier(self):
-        from fivetools_catalog import Candidate as FC
+        from pipelines.rlm.fivetools_catalog import Candidate as FC
         cheap = [FC(entity_type="monster", name="X", source="MM",
                     file_path="/d/m.json", wrapper_key="monster", score=80)]
         mp = _fake_mp_result([])

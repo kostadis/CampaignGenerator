@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from pipelines.content_ingest import convert_book
-import suggest_conversion as sc
+import pipelines.rlm.suggest_conversion as sc
 
 
 # ── build_suggestion ─────────────────────────────────────────────────────

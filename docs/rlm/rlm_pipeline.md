@@ -10,12 +10,12 @@ CampaignGenerator integrates with three external tools to give the AI and the GM
 
 ## Tiered retrieval
 
-`python rpg_retriever.py "fey forest encounter mid-level 5e"` returns a single ranked list using a `kind` discriminator, with a `cost` discriminator on candidates:
+`rpg_retriever "fey forest encounter mid-level 5e"` returns a single ranked list using a `kind` discriminator, with a `cost` discriminator on candidates:
 
 - `kind: "drawer"` — MemPalace hit (verbatim prose / table) joined with rpglib metadata.
 - `kind: "statblock"` — MemPalace hit in `wing_bestiary`. Compact creature reference.
-- `kind: "candidate"`, `cost: "cheap"` — entity in the canonical 5etools tree (`fivetools_catalog`) that's not yet in the palace. Carries a `fivetools_ingest.py --filter` one-liner.
-- `kind: "candidate"`, `cost: "expensive"` — PDF in rpg-library with no canonical-JSON equivalent. Carries a `pdf_to_5etools_v2.py convert` + `fivetools_ingest.py` command pair plus the `(book_id, relative_path, product_id)` identifier triple.
+- `kind: "candidate"`, `cost: "cheap"` — entity in the canonical 5etools tree (`fivetools_catalog`) that's not yet in the palace. Carries a `fivetools_ingest --filter` one-liner.
+- `kind: "candidate"`, `cost: "expensive"` — PDF in rpg-library with no canonical-JSON equivalent. Carries a `pdf_to_5etools_v2.py convert` + `fivetools_ingest` command pair plus the `(book_id, relative_path, product_id)` identifier triple.
 
 Hard tier order: drawer/statblock > cheap > expensive. No score normalization across sources. See `rlm_architecture.md` §9 for the canonical contract.
 
@@ -38,7 +38,7 @@ fivetools_ingest /mnt/g/path/to/book.json --book-id 7421
 
 ## Per-campaign ingest manifest (recovery + reproducibility)
 
-The MemPalace is a derived store; the *list* of which slices belong in a given campaign is the curation work that's expensive to recreate. Record it as `ingest_manifest.yaml` checked into the campaign workspace and replay it with `apply_ingest_manifest.py`:
+The MemPalace is a derived store; the *list* of which slices belong in a given campaign is the curation work that's expensive to recreate. Record it as `ingest_manifest.yaml` checked into the campaign workspace and replay it with `apply_ingest_manifest`:
 
 ```yaml
 # <campaign-dir>/ingest_manifest.yaml
@@ -55,13 +55,13 @@ ingests:
     note: "Homebrew faction, converted 2026-04-20"
 ```
 
-Each entry maps 1:1 to a `fivetools_ingest.py` invocation. Run:
+Each entry maps 1:1 to a `fivetools_ingest` invocation. Run:
 
 ```bash
-python apply_ingest_manifest.py            # replay every entry (idempotent)
-python apply_ingest_manifest.py --status   # report never-run / ingested / stale / missing-source per entry
-python apply_ingest_manifest.py --dry-run  # print the fivetools_ingest.py commands without executing
-python apply_ingest_manifest.py --only 1,3 # 1-based entry selection
+apply_ingest_manifest            # replay every entry (idempotent)
+apply_ingest_manifest --status   # report never-run / ingested / stale / missing-source per entry
+apply_ingest_manifest --dry-run  # print the fivetools_ingest commands without executing
+apply_ingest_manifest --only 1,3 # 1-based entry selection
 ```
 
 **Why this exists:** if `~/.mempalace/palaces/<campaign>/` is lost (disk failure, accidental wipe, ChromaDB corruption), the sidecars alone aren't enough to rebuild — they live next to the *source* JSON, not the palace, and historically didn't record which palace they belonged to. The YAML manifest is the authoritative recipe; sidecars are a local cache. Treat the manifest as your campaign's bill of materials and commit additions as you make them.
@@ -77,13 +77,13 @@ The palace is the **retrieval** layer (semantic drawer search, grounding for ren
 #    At minimum: canonical: all  (no refs: block needed to start)
 
 # 2. Generate refs.local.yaml with detected defaults, then edit paths to match your machine
-python launch_5etools_mcp.py --campaign-dir . --init-local
+launch_5etools_mcp --campaign-dir . --init-local
 
 # 3. Verify what the resolver sees before launching
-python launch_5etools_mcp.py --campaign-dir . --status
+launch_5etools_mcp --campaign-dir . --status
 
 # 4. Launch the MCP server
-python launch_5etools_mcp.py --campaign-dir .
+launch_5etools_mcp --campaign-dir .
 ```
 
 `refs.yaml` is git-tracked and lives at the campaign root alongside `config.yaml`. `refs.local.yaml` is git-ignored (paths differ per machine). You need `refs.yaml` to exist before running `--init-local`.
@@ -117,34 +117,34 @@ Authoring a `rpglib:` ref:
 
 ```bash
 # Find a book in your rpg-lib catalog (offline — reads rpg_library.db directly)
-python query_rpg_lib.py "tales yawning portal"
+query_rpg_lib "tales yawning portal"
 
 # Emit a paste-ready refs.yaml block for one match
-python query_rpg_lib.py --book-id 7421
+query_rpg_lib --book-id 7421
 ```
 
 Launching the per-campaign MCP:
 
 ```bash
-python launch_5etools_mcp.py --campaign-dir .            # build runtime tree + exec MCP
-python launch_5etools_mcp.py --campaign-dir . --status   # show resolved scope, no launch
-python launch_5etools_mcp.py --campaign-dir . --dry-run  # show planned DATA_DIRS, no launch
-python launch_5etools_mcp.py --campaign-dir . --init-local  # write a starter refs.local.yaml
+launch_5etools_mcp --campaign-dir .            # build runtime tree + exec MCP
+launch_5etools_mcp --campaign-dir . --status   # show resolved scope, no launch
+launch_5etools_mcp --campaign-dir . --dry-run  # show planned DATA_DIRS, no launch
+launch_5etools_mcp --campaign-dir . --init-local  # write a starter refs.local.yaml
 ```
 
 The launcher builds `~/.5etools-mcp-runtime/<campaign>/` containing a (possibly filtered) view of canonical 5etools data plus a generated `homebrew/` tree for the campaign's refs, then `exec`s the MCP server with `DATA_DIRS` set to those two roots. Idempotent via a sha256 sidecar over `refs.yaml + refs.local.yaml` — repeated launches with unchanged refs reuse the tree.
 
 **Layering:** palace = surgical drawer-level retrieval (grounding for render pipelines); 5etools MCP = bulk-read navigation (read whole adventures, summarise books, look up monsters by name). They complement each other — the palace can be empty for a brand-new campaign and the MCP still gives Claude the full WotC+purchased+homebrew catalog to work from.
 
-**No runtime dependency on rpg-lib.** Once `refs.yaml` is authored, the launcher and MCP run fully offline — they don't talk to rpg-lib's HTTP service or touch its DB. Authoring (via `query_rpg_lib.py`) does need the DB read-only, but that's a one-time step per book added to the campaign.
+**No runtime dependency on rpg-lib.** Once `refs.yaml` is authored, the launcher and MCP run fully offline — they don't talk to rpg-lib's HTTP service or touch its DB. Authoring (via `query_rpg_lib`) does need the DB read-only, but that's a one-time step per book added to the campaign.
 
 ## Retrieval/render separation (required)
 
-Render pipelines (`prep.py`, `sd_plan.py`, `planning.py`) must **not** consume raw `rpg_retriever` output — they consume a human-approved `docs/dossier_proposal.md` file instead.
+Render pipelines (`prep`, `sd_plan.py`, `planning`) must **not** consume raw `rpg_retriever` output — they consume a human-approved `docs/dossier_proposal.md` file instead.
 
 ```bash
 # 1. Produce a candidates file from a retrieval query
-python dossier_proposer.py "party arrives at Icespire Hold"
+dossier_proposer "party arrives at Icespire Hold"
 #    → <campaign-dir>/docs/dossier_proposal.md
 
 # 2. Review the file. Delete / reorder / edit candidates. Change the
@@ -154,9 +154,9 @@ python dossier_proposer.py "party arrives at Icespire Hold"
 #        > **Status:** approved by Kostadis on 2026-04-24.
 
 # 3. Render pipelines consume it:
-python prep.py --campaign-dir . --require-proposal --beat "The party enters Icespire Hold"
+prep --campaign-dir . --require-proposal --beat "The party enters Icespire Hold"
 python sd_plan.py --scene-extractions scene_extractions/ --characters "…" --campaign-dir . --require-proposal …
-python planning.py --npc docs/npcs/*.md --output docs/planning.md --campaign-dir . --require-proposal
+planning --npc docs/npcs/*.md --output docs/planning.md --campaign-dir . --require-proposal
 ```
 
 Without `--require-proposal`, the scripts still auto-attach an approved proposal when present (via `proposal_loader.attach_proposal_to_documents`) so the proposal's excerpts flow into the user prompt as grounding alongside `world_state.md`, `campaign_state.md`, `party.md`.
@@ -169,7 +169,7 @@ Without `--require-proposal`, the scripts still auto-attach an approved proposal
 |---|---|
 | `rpg_search` | Run `rpg_retriever.retrieve`; returns tiered JSON (drawer / statblock / cost-tagged candidate). Args: `query`, `k_cheap`, `k_expensive`, `include_cheap`, `include_expensive`, `source`, `book_id`, `file_path`, `filter`, `palace`. Three modes through one tool: search (with `query`), scoped search (`query` + `source` or `book_id`), pin (`file_path`+`filter` or `book_id`). No side effects. |
 | `propose_dossier` | Run `rpg_search` and write `docs/dossier_proposal.md`. Cheap and expensive ingest blocks are formatted differently so cost is legible at GM-review time. Returns a status string. |
-| `suggest_conversion` | Build the `pdf_to_5etools_v2.py convert` + `fivetools_ingest.py` command pair for a specific unconverted book (by id or filepath). `product_type` maps to v2's `--type` / `--monsters-only`. |
+| `suggest_conversion` | Build the `pdf_to_5etools_v2.py convert` + `fivetools_ingest` command pair for a specific unconverted book (by id or filepath). `product_type` maps to v2's `--type` / `--monsters-only`. |
 
 None of these tools calls Claude. They are retrieval / slotting / command-building only.
 
@@ -179,6 +179,6 @@ All CLI scripts accept explicit flags, with env var fallbacks:
 
 - `--palace` / `MEMPALACE_PALACE_PATH` — passed through to `mempalace-mcp`.
 - `--rpglib-db` / `RPGLIB_DB` — path to `rpg_library.db`.
-- `--campaign-dir` / `CAMPAIGN_DIR` — campaign workspace root. Default: CWD for CLIs, the config file's parent directory for `prep.py`, the scene_extractions parent for `sd_plan.py`.
+- `--campaign-dir` / `CAMPAIGN_DIR` — campaign workspace root. Default: CWD for CLIs, the config file's parent directory for `prep`, the scene_extractions parent for `sd_plan.py`.
 
 The MCP server picks up `MEMPALACE_PALACE_PATH` / `RPGLIB_DB` from the environment and from `config.yaml` keys `mempalace.palace` / `rpglib_db`.
