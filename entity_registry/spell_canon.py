@@ -30,11 +30,11 @@ second `propose` pass with a lower `--sim` (e.g. 0.80) and review carefully —
 the looser net drags in false positives that only a human can rule on.
 
 Usage:
-  python spell_canon.py propose bible.md --inventory inv.md \\
+  spell_canon propose bible.md --inventory inv.md \\
       --out map.json --report report.md
   # ...review/edit map.json...
-  python spell_canon.py apply bible.md --map map.json
-  python spell_canon.py apply bible.md --map map.json --dry-run
+  spell_canon apply bible.md --map map.json
+  spell_canon apply bible.md --map map.json --dry-run
 
 After applying, regenerate derived files (e.g. `split_chapters.py`).
 """
@@ -129,7 +129,7 @@ def proper_noun_counts(text: str, min_len: int) -> Counter:
     A token is kept if its capitalised form occurs somewhere; its display
     case is the most common cased form seen. This is the shared tokenization
     core used by ``proper_nouns`` (bible file) and any other caller that
-    already has text in hand (e.g. ``registry.py triage-candidates``, which
+    already has text in hand (e.g. ``registry triage-candidates``, which
     scans session summaries and fact-corpus JSON, not just a bible file).
     """
     raw: Counter = Counter()
@@ -296,7 +296,7 @@ def cmd_propose(args) -> int:
     print(f"Phase A (inventory): {n_a} canonical names | "
           f"Phase B (homebrew): {n_b} anchors | {len(mapping)} replacements proposed")
     print(f"Map:    {out}\nReport: {rep}")
-    print("Review the map, then: spell_canon.py apply "
+    print("Review the map, then: spell_canon apply "
           f"{args.bible} --map {args.out}")
     return 0
 

@@ -49,7 +49,7 @@ Every one of the 62 files, grouped by the pipeline it belongs to (per `docs/core
 | `ensemble` | 11 | 4,697 | new package under `pipelines/` |
 | `rlm` | 12 | 5,472 | new package under `pipelines/` |
 | `content_ingest` | 5 | 3,339 | ✅ moved to `pipelines/content_ingest/` |
-| `entity_registry` | 2 | 2,106 | new top-level sibling to `campaignlib/` (see naming note below) |
+| `entity_registry` | 2 | 2,106 | ✅ moved to `entity_registry/` (top-level sibling to `campaignlib/`, see naming note below) |
 | `integrations/kanka` | 4 | 885 | ✅ moved to `pipelines/integrations/kanka/` |
 | `workspace` | 2 | 476 | ✅ moved to `pipelines/workspace/` |
 | **Migrated total** | **61** | **23,900** | |

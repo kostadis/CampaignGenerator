@@ -15,7 +15,7 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-import registry  # noqa: E402
+from entity_registry import registry  # noqa: E402
 from campaignlib.registry import load_registry  # noqa: E402
 
 

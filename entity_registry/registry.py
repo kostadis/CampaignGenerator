@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""registry.py — CLI for the campaign entity registry (docs/entity_registry.yaml).
+"""registry — CLI for the campaign entity registry (docs/entity_registry.yaml).
 
 This is the write side of ``campaignlib.registry`` (the loader/validator
 library). Its subcommands:
@@ -90,7 +90,7 @@ from collections import defaultdict
 from difflib import SequenceMatcher
 from pathlib import Path
 
-import spell_canon
+from . import spell_canon
 from campaignlib.npc import load_alias_map
 from campaignlib.party import load_pc_names
 from campaignlib.registry import (
@@ -160,7 +160,7 @@ def cmd_add(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -246,7 +246,7 @@ def cmd_project(args: argparse.Namespace) -> int:
     )
 
     inventory_path = docs_dir / "entity_inventory.md"
-    header = "<!-- GENERATED from docs/entity_registry.yaml — do not hand-edit. Regenerate with: registry.py project -->\n\n"
+    header = "<!-- GENERATED from docs/entity_registry.yaml — do not hand-edit. Regenerate with: registry project -->\n\n"
     inventory_path.write_text(header + reg.inventory_markdown(), encoding="utf-8")
 
     print(f"Wrote {aliases_path} (do not hand-edit — generated from entity_registry.yaml)")
@@ -487,7 +487,7 @@ def cmd_import_inventory(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -695,7 +695,7 @@ def cmd_import_dedup(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -789,7 +789,7 @@ def cmd_import_frontmatter(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -843,7 +843,7 @@ def cmd_import_alias_decisions(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -976,7 +976,7 @@ def cmd_check(args: argparse.Namespace) -> int:
     path = _registry_path(campaign_dir)
     if not path.is_file():
         print(
-            f"Error: no registry at {path} — run `registry.py init {campaign_dir}` first",
+            f"Error: no registry at {path} — run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -1339,7 +1339,7 @@ def cmd_triage_candidates(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -1407,7 +1407,7 @@ def cmd_mark_distinct(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -1425,7 +1425,7 @@ def cmd_mark_rejected(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -1458,7 +1458,7 @@ def cmd_alias(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
@@ -1531,7 +1531,7 @@ def cmd_merge(args: argparse.Namespace) -> int:
     if path is None:
         print(
             f"Error: no registry at {_registry_path(campaign_dir)} — "
-            f"run `registry.py init {campaign_dir}` first",
+            f"run `registry init {campaign_dir}` first",
             file=sys.stderr,
         )
         return 1
