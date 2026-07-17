@@ -29,100 +29,27 @@ from campaignlib import (
     add_backend_args,
     build_alias_normalizer,
     client_from_args,
+    check_citations,
+    check_synthesis_citations,
+    CITATION_RULES_EXTRACT,
+    CITATION_RULES_SYNTHESIZE,
+    CITED_EXTRACT_MAX_TOKENS,
     CitationIdAssigner,
-    find_citation_refs,
-    find_uncited_bullets,
-    find_unreferenced_claims,
     format_npc_roster,
     load_agent_prompt,
     find_alias_registry,
     load_alias_map,
-    prepare_chunks,
-    render_report,
-    render_sources_section,
-    render_synthesis_report,
     run_extract_pipeline,
     run_synthesize_pipeline,
-    verify_citations,
-    verify_id_citations,
 )
 
-# Per-bullet [cite: "..."] tags roughly double a bullet's length over the
-# original 8096-token extraction default (a holdover from before distill.py
-# required citations). Match the synthesis pass's ceiling instead: on the
-# claude-code (subscription) backend a too-low ceiling is a hard error with
-# no partial text, not a graceful truncation.
-EXTRACT_MAX_TOKENS = 32000
+EXTRACT_SYSTEM_BASE = load_agent_prompt("distill_extract")
 
-EXTRACT_SYSTEM = load_agent_prompt("distill_extract")
+SYNTHESIZE_SYSTEM_BASE = load_agent_prompt("distill_synthesize")
 
-SYNTHESIZE_SYSTEM = load_agent_prompt("distill_synthesize")
+EXTRACT_SYSTEM = EXTRACT_SYSTEM_BASE + "\n\n" + CITATION_RULES_EXTRACT
 
-
-def check_citations(text: str, normalize, extract_files: list[Path],
-                     chunk_size: int, split_chapters: str | None, extract_dir: Path) -> None:
-    """Verify every `[cite: "..."]` tag in each extract file against its source
-    chunk; print a summary and, if anything is flagged, write citation_report.md.
-
-    Deterministic — no model call. Re-derives the same chunks
-    run_extract_pipeline produced (same normalizer + chunk args) so each
-    extract file lines up with the exact text it was extracted from.
-    """
-    normalized_text = normalize(text) if normalize else text
-    chunks, _ = prepare_chunks(normalized_text, chunk_size, split_chapters, split_label="chapter")
-    if len(chunks) != len(extract_files):
-        print(f"  [citation check skipped — {len(chunks)} chunk(s) vs "
-              f"{len(extract_files)} extract file(s); likely a resumed run "
-              f"with mismatched chunking]")
-        return
-
-    results_by_file = {}
-    total_cited = total_verified = total_uncited = 0
-    for chunk, extract_file in zip(chunks, extract_files):
-        extract_text = extract_file.read_text(encoding="utf-8")
-        citations = verify_citations(extract_text, chunk)
-        uncited = find_uncited_bullets(extract_text)
-        results_by_file[extract_file.name] = (citations, uncited)
-        total_cited += len(citations)
-        total_verified += sum(1 for c in citations if c.verified)
-        total_uncited += len(uncited)
-
-    flagged = (total_cited - total_verified) + total_uncited
-    missing_note = f", {total_uncited} bullet(s) missing a citation" if total_uncited else ""
-    print(f"  Citation check: {total_verified}/{total_cited} cited claims verified{missing_note}.")
-    if flagged:
-        report_path = extract_dir / "citation_report.md"
-        report_path.write_text(render_report(results_by_file), encoding="utf-8")
-        print(f"  {flagged} flagged claim(s) for review — see {report_path}")
-
-
-def check_synthesis_citations(world_state: str, known_ids: dict[int, str], extract_dir: Path) -> str:
-    """Verify every citation ID in the synthesized doc against the IDs
-    CitationIdAssigner actually showed the model during synthesis; print a
-    summary and, if anything is flagged, write synthesis_citation_report.md.
-    Returns `world_state` with a mechanically-rendered `## Sources` section
-    appended for the IDs actually used — the model never spends output
-    tokens reproducing quote text, so this is the only place the quotes
-    re-appear in the final document.
-
-    Deterministic — no model call, no fuzzy text matching. Synthesis can
-    only ever cite an ID it was shown, never invent a new one, so this is
-    exact ID lookup.
-    """
-    results = verify_id_citations(world_state, known_ids)
-    unreferenced = find_unreferenced_claims(world_state)
-
-    verified = sum(1 for r in results if r.verified)
-    flagged = (len(results) - verified) + len(unreferenced)
-    print(f"  Synthesis citation check: {verified}/{len(results)} citation IDs verified, "
-          f"{len(unreferenced)} claim(s) missing a citation.")
-    if flagged:
-        report_path = extract_dir / "synthesis_citation_report.md"
-        report_path.write_text(render_synthesis_report(results, unreferenced), encoding="utf-8")
-        print(f"  {flagged} flagged item(s) for review — see {report_path}")
-
-    used_ids = {n for _, nums in find_citation_refs(world_state) for n in nums}
-    return world_state.rstrip() + "\n\n" + render_sources_section(used_ids, known_ids)
+SYNTHESIZE_SYSTEM = SYNTHESIZE_SYSTEM_BASE + "\n\n" + CITATION_RULES_SYNTHESIZE
 
 
 def main() -> None:
@@ -201,7 +128,7 @@ def main() -> None:
             split_label="chapter",
             input_normalizer=normalize,
             system_suffix=roster,
-            max_tokens=EXTRACT_MAX_TOKENS,
+            max_tokens=CITED_EXTRACT_MAX_TOKENS,
         )
         if not extract_files:
             print("Error: no chunks were extracted — input may be too short.", file=sys.stderr)

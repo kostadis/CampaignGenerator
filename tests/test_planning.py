@@ -568,3 +568,170 @@ npcs:
 
     assert len(fake_stream_api.calls) == 1
     assert output.exists()
+
+
+# ── Citation grounding ───────────────────────────────────────────────────────
+# Extract-phase `[cite: "..."]` tags get numbered before reaching synthesis
+# (CitationIdAssigner), and whatever the model cites back gets verified and
+# rendered into a `## Sources` section on the final planning.md. Unlike
+# party.py, planning.py has no top-level `normalize` — run_synthesize() and
+# run_synthesize_with_config() each build their own alias normalizer
+# internally and compose it with the one CitationIdAssigner main() builds
+# before the config/flat branch split, so both paths need their own coverage.
+
+
+class CitingStreamAPI:
+    """Like FakeStreamAPI, but the synthesis response cites citation ID 1 —
+    lets tests exercise the whole grounding chain (extract-file
+    `[cite: "..."]` tag -> numbered `[cite:1 "..."]` shown to the model ->
+    model's `[1]` reference -> `## Sources` rendered with the real quote),
+    not just that the wiring is a silent no-op against an uncited stub."""
+
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, system, user, model, *args, **kwargs):
+        self.calls.append({"system": system, "user": user, "model": model})
+        return "- Test claim drawn from the session. [1]\n"
+
+
+@pytest.fixture
+def citing_stream_api(monkeypatch):
+    fake = CitingStreamAPI()
+    monkeypatch.setattr(campaignlib.pipelines, "stream_api", fake)
+    monkeypatch.setattr(planning, "stream_api", fake)
+    monkeypatch.setattr(planning, "make_client", lambda: None)
+    return fake
+
+
+def _write_tagged_extract(extract_dir: Path, quote: str) -> Path:
+    extract_dir.mkdir(parents=True, exist_ok=True)
+    return _write(
+        extract_dir / "extract_001.md",
+        f'- Test claim drawn from the session. [cite: "{quote}"]\n',
+    )
+
+
+def test_synthesis_numbers_extract_citation_tags(monkeypatch, citing_stream_api, tmp_path):
+    """Flat path (--npc, no --planning-config) goes through run_synthesize()."""
+    npc = _write_dossier(tmp_path / "grundar.md", "Grundar")
+    extract_dir = tmp_path / "extractions"
+    _write_tagged_extract(extract_dir, "Grundar swore vengeance against the cult")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--npc", str(npc),
+        "--synthesize-only",
+        "--extract-dir", str(extract_dir),
+        "--output", str(output),
+    ])
+    planning.main()
+
+    synthesize_prompt = citing_stream_api.calls[0]["user"]
+    # The extract pass's un-numbered [cite: "..."] tag is assigned a stable
+    # numeric ID before the synthesis prompt reaches the model.
+    assert '[cite:1 "Grundar swore vengeance against the cult"]' in synthesize_prompt
+
+
+def test_final_document_gets_sources_section(monkeypatch, citing_stream_api, tmp_path):
+    npc = _write_dossier(tmp_path / "grundar.md", "Grundar")
+    extract_dir = tmp_path / "extractions"
+    _write_tagged_extract(extract_dir, "Grundar swore vengeance against the cult")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--npc", str(npc),
+        "--synthesize-only",
+        "--extract-dir", str(extract_dir),
+        "--output", str(output),
+    ])
+    planning.main()
+
+    written = output.read_text(encoding="utf-8")
+    assert "## Sources" in written
+    assert '[1] "Grundar swore vengeance against the cult"' in written
+
+
+def test_planning_config_synthesis_also_numbers_extract_citation_tags(
+    monkeypatch, citing_stream_api, tmp_path
+):
+    # Same grounding chain, but through run_synthesize_with_config's own
+    # _render_flat_section("SESSION EXTRACTIONS", ...) call rather than
+    # run_synthesize's inline loop — both branches must share the one
+    # CitationIdAssigner instance main() builds before the config/flat
+    # branch split.
+    _write_dossier(tmp_path / "adabra.md", "Adabra")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Adabra
+    dossier: adabra.md
+""")
+    extract_dir = tmp_path / "extractions"
+    _write_tagged_extract(extract_dir, "Adabra sealed the rift with the last shard")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--planning-config", str(cfg),
+        "--synthesize-only",
+        "--extract-dir", str(extract_dir),
+        "--output", str(output),
+    ])
+    planning.main()
+
+    prompt = citing_stream_api.calls[0]["user"]
+    assert '[cite:1 "Adabra sealed the rift with the last shard"]' in prompt
+
+    written = output.read_text(encoding="utf-8")
+    assert "## Sources" in written
+    assert '[1] "Adabra sealed the rift with the last shard"' in written
+
+
+def test_run_synthesize_and_run_synthesize_with_config_share_one_id_assigner(
+    monkeypatch, tmp_path
+):
+    """planning.py's main() constructs exactly one CitationIdAssigner and
+    passes it into whichever of the two hand-rolled synthesis functions
+    actually runs (a single invocation only ever exercises one branch).
+    Call both functions directly against the same instance to confirm IDs
+    stay sequential across them — if a future refactor gave each branch its
+    own assigner, both would independently start at [cite:1 ...] and the
+    numbers in a real run would never collide, silently masking the bug."""
+    captured: list[str] = []
+
+    def _capture(client, system, user, model, *args, **kwargs):
+        captured.append(user)
+        return "stub"
+
+    monkeypatch.setattr(planning, "stream_api", _capture)
+
+    id_assigner = campaignlib.CitationIdAssigner()
+
+    _write_dossier(tmp_path / "adabra.md", "Adabra")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Adabra
+    dossier: adabra.md
+""")
+    config = planning.load_planning_config(cfg)
+    extract_dir1 = tmp_path / "extractions1"
+    extract1 = _write_tagged_extract(extract_dir1, "Adabra sealed the rift")
+    planning.run_synthesize_with_config(
+        None, config, [], [extract1], [], "model", id_assigner,
+    )
+
+    npc = _write_dossier(tmp_path / "grundar.md", "Grundar")
+    extract_dir2 = tmp_path / "extractions2"
+    extract2 = _write_tagged_extract(extract_dir2, "Grundar swore vengeance")
+    planning.run_synthesize(
+        None, [npc], [], [extract2], [], "model", id_assigner,
+    )
+
+    assert id_assigner.id_to_quote == {
+        1: "Adabra sealed the rift",
+        2: "Grundar swore vengeance",
+    }
+    assert '[cite:1 "Adabra sealed the rift"]' in captured[0]
+    assert '[cite:2 "Grundar swore vengeance"]' in captured[1]

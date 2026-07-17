@@ -61,6 +61,12 @@ from campaignlib import (
     DEFAULT_MODEL,
     add_backend_args,
     build_alias_normalizer,
+    check_citations,
+    check_synthesis_citations,
+    CITATION_RULES_EXTRACT,
+    CITATION_RULES_SYNTHESIZE,
+    CITED_EXTRACT_MAX_TOKENS,
+    CitationIdAssigner,
     client_from_args,
     format_npc_roster,
     load_agent_prompt,
@@ -216,9 +222,13 @@ def write_dossier(
     fm = f"---\nname: {name}\n{alias_yaml}{extracts_yaml}---\n\n"
     path.write_text(fm + body.lstrip(), encoding="utf-8")
 
-EXTRACT_SYSTEM = load_agent_prompt("planning_extract")
+EXTRACT_SYSTEM_BASE = load_agent_prompt("planning_extract")
 
-SYNTHESIZE_SYSTEM = load_agent_prompt("planning_synthesize")
+SYNTHESIZE_SYSTEM_BASE = load_agent_prompt("planning_synthesize")
+
+EXTRACT_SYSTEM = EXTRACT_SYSTEM_BASE + "\n\n" + CITATION_RULES_EXTRACT
+
+SYNTHESIZE_SYSTEM = SYNTHESIZE_SYSTEM_BASE + "\n\n" + CITATION_RULES_SYNTHESIZE
 
 
 BUILD_EXTRACT_SYSTEM = load_agent_prompt("planning_build_extract")
@@ -442,6 +452,7 @@ def run_synthesize(
     extract_files: list[Path],
     context_files: list[Path],
     model: str,
+    id_assigner: CitationIdAssigner,
     dump_input: str | None = None,
     dump_only: bool = False,
 ) -> str:
@@ -455,27 +466,28 @@ def run_synthesize(
         dossier_blocks.append(f"<!-- NPC dossier: {f.name} -->\n\n{body.strip()}")
 
     normalize, resolution_entries = build_alias_normalizer(canonical_to_aliases)
+    cited_normalize = lambda body: id_assigner(normalize(body))
 
     if dossier_blocks:
         parts.append("# NPC DOSSIERS\n\n" + "\n\n---\n\n".join(dossier_blocks))
 
     if arc_score_files:
         arc_scores = "\n\n---\n\n".join(
-            f"<!-- Threat arc score: {f.name} -->\n\n{normalize(f.read_text(encoding='utf-8').strip())}"
+            f"<!-- Threat arc score: {f.name} -->\n\n{cited_normalize(f.read_text(encoding='utf-8').strip())}"
             for f in arc_score_files
         )
         parts.append(f"# THREAT ARC SCORE MECHANICS\n\n{arc_scores}")
 
     if extract_files:
         extractions = "\n\n---\n\n".join(
-            f"<!-- Session extract: {f.name} -->\n\n{normalize(f.read_text(encoding='utf-8').strip())}"
+            f"<!-- Session extract: {f.name} -->\n\n{cited_normalize(f.read_text(encoding='utf-8').strip())}"
             for f in sorted(extract_files)
         )
         parts.append(f"# SESSION EXTRACTIONS\n\n{extractions}")
 
     if context_files:
         context = "\n\n---\n\n".join(
-            f"<!-- World context: {f.name} -->\n\n{normalize(f.read_text(encoding='utf-8').strip())}"
+            f"<!-- World context: {f.name} -->\n\n{cited_normalize(f.read_text(encoding='utf-8').strip())}"
             for f in context_files
         )
         parts.append(f"# WORLD CONTEXT\n\n{context}")
@@ -553,6 +565,7 @@ def run_synthesize_with_config(
     extract_files: list[Path],
     context_files: list[Path],
     model: str,
+    id_assigner: CitationIdAssigner,
     dump_input: str | None = None,
     dump_only: bool = False,
 ) -> str:
@@ -571,21 +584,22 @@ def run_synthesize_with_config(
         config, extra_npc_files=extra_npc_files, normalize=None
     )
     normalize, resolution_entries = build_alias_normalizer(canonical_to_aliases)
+    cited_normalize = lambda body: id_assigner(normalize(body))
 
     # Re-render so dossier-internal alias normalization is applied. Cheap;
     # parse_dossier is just a regex + YAML parse per file.
     blocks_text, _ = _render_planning_blocks(
-        config, extra_npc_files=extra_npc_files, normalize=normalize
+        config, extra_npc_files=extra_npc_files, normalize=cited_normalize
     )
 
     parts = [blocks_text] if blocks_text else []
     extracts_block = _render_flat_section(
-        "SESSION EXTRACTIONS", extract_files, "Session extract", normalize=normalize
+        "SESSION EXTRACTIONS", extract_files, "Session extract", normalize=cited_normalize
     )
     if extracts_block:
         parts.append(extracts_block)
     context_block = _render_flat_section(
-        "WORLD CONTEXT", context_files, "World context", normalize=normalize
+        "WORLD CONTEXT", context_files, "World context", normalize=cited_normalize
     )
     if context_block:
         parts.append(context_block)
@@ -815,8 +829,11 @@ def main() -> None:
             chunk_size=args.chunk_size,
             split_chapters=args.split_chapters,
             split_label="session",
+            max_tokens=CITED_EXTRACT_MAX_TOKENS,
         )
         print(f"Extractions saved to: {extract_dir}")
+        check_citations(summaries_text, None, extract_files, args.chunk_size,
+                         args.split_chapters, extract_dir, tool_name="planning.py")
 
         if args.extract_only:
             print(f"\n[Extract-only mode — stopping before synthesis]")
@@ -856,16 +873,17 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize | {', '.join(sources)} | model: {args.model}]")
     print("=" * 60)
+    id_assigner = CitationIdAssigner()
     if planning_config:
         planning_doc = run_synthesize_with_config(
             client, planning_config, npc_files,
-            extract_files, context_files, args.model,
+            extract_files, context_files, args.model, id_assigner,
             dump_input=args.dump_input,
             dump_only=args.dump_only,
         )
     else:
         planning_doc = run_synthesize(
-            client, npc_files, arc_score_files, extract_files, context_files, args.model,
+            client, npc_files, arc_score_files, extract_files, context_files, args.model, id_assigner,
             dump_input=args.dump_input,
             dump_only=args.dump_only,
         )
@@ -873,6 +891,12 @@ def main() -> None:
 
     if args.dump_only:
         return
+
+    extract_dir.mkdir(parents=True, exist_ok=True)
+    planning_doc = check_synthesis_citations(
+        planning_doc, id_assigner.id_to_quote, extract_dir,
+        tool_name="planning.py", flag_unreferenced=False,
+    )
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(planning_doc.strip() + "\n", encoding="utf-8")

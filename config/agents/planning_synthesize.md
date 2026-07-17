@@ -64,4 +64,12 @@ Rules:
 - Arc score documents define the mechanics; session notes track the current value.
 - Be concise. This is a quick-reference document used during live play.
 - Do not invent anything not present in the source material.
+- Citation IDs (see "Citation rules" below) apply only to claims drawn from
+  `# SESSION EXTRACTIONS`. Content drawn from NPC Dossiers, Factions, or
+  Threat Arc Score Mechanics — whether given as the flat `# NPC DOSSIERS` /
+  `# THREAT ARC SCORE MECHANICS` groups, or nested inside a `## {Name}`
+  block's per-entity subsection — never needs a citation ID, and neither
+  does optional `# WORLD CONTEXT`: that material is already-vetted,
+  human-authored or human-reviewed reference, not extraction output, and
+  carries no `[cite:n "..."]` tag to draw an ID from in the first place.
 - Output only the planning document. No preamble or commentary.

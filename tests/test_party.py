@@ -413,3 +413,138 @@ def test_bootstrap_writes_directly_when_output_missing(monkeypatch, fake_stream_
     assert output.exists()
     assert "[stub-" in output.read_text(encoding="utf-8")
     assert not candidate.exists()
+
+
+# ── Citation grounding ───────────────────────────────────────────────────────
+# Extract-phase `[cite: "..."]` tags get numbered before reaching synthesis
+# (CitationIdAssigner), and whatever the model cites back gets verified and
+# rendered into a `## Sources` section on the text that actually gets
+# written to disk — whichever path (--output or the candidate sibling) that
+# turns out to be.
+
+
+class CitingStreamAPI:
+    """Like FakeStreamAPI, but the synthesis response cites citation ID 1 —
+    lets tests exercise the whole grounding chain (extract-file
+    `[cite: "..."]` tag -> numbered `[cite:1 "..."]` shown to the model ->
+    model's `[1]` reference -> `## Sources` rendered with the real quote),
+    not just that the wiring is a silent no-op against an uncited stub."""
+
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, system, user, model, *args, **kwargs):
+        self.calls.append({"system": system, "user": user, "model": model})
+        return "- Test claim drawn from the session. [1]\n"
+
+
+@pytest.fixture
+def citing_stream_api(monkeypatch):
+    fake = CitingStreamAPI()
+    monkeypatch.setattr(campaignlib.pipelines, "stream_api", fake)
+    monkeypatch.setattr(party, "stream_api", fake)
+    monkeypatch.setattr(party, "make_client", lambda: None)
+    return fake
+
+
+def _write_tagged_extract(extract_dir: Path, quote: str) -> Path:
+    extract_dir.mkdir(parents=True, exist_ok=True)
+    return _write(
+        extract_dir / "extract_001.md",
+        f'- Test claim drawn from the session. [cite: "{quote}"]\n',
+    )
+
+
+def test_synthesis_numbers_extract_citation_tags(monkeypatch, citing_stream_api, tmp_path):
+    sheet = _write(tmp_path / "soma.md", "Tortle Druid")
+    extract_dir = tmp_path / "extractions"
+    _write_tagged_extract(extract_dir, "Soma made a pact with the fey lord")
+    output = tmp_path / "party.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--character", str(sheet),
+        "--synthesize-only",
+        "--extract-dir", str(extract_dir),
+        "--output", str(output),
+    ])
+    party.main()
+
+    synthesize_prompt = citing_stream_api.calls[0]["user"]
+    # The extract pass's un-numbered [cite: "..."] tag is assigned a stable
+    # numeric ID before the synthesis prompt reaches the model.
+    assert '[cite:1 "Soma made a pact with the fey lord"]' in synthesize_prompt
+
+
+def test_final_document_gets_sources_section(monkeypatch, citing_stream_api, tmp_path):
+    sheet = _write(tmp_path / "soma.md", "Tortle Druid")
+    extract_dir = tmp_path / "extractions"
+    _write_tagged_extract(extract_dir, "Soma made a pact with the fey lord")
+    output = tmp_path / "party.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--character", str(sheet),
+        "--synthesize-only",
+        "--extract-dir", str(extract_dir),
+        "--output", str(output),
+    ])
+    party.main()
+
+    written = output.read_text(encoding="utf-8")
+    assert "## Sources" in written
+    assert '[1] "Soma made a pact with the fey lord"' in written
+
+
+def test_candidate_file_receives_sources_augmented_text(monkeypatch, citing_stream_api, tmp_path):
+    # The candidate-file write path (--output already exists) must receive
+    # the post-check_synthesis_citations text — Sources appended — not the
+    # raw party_doc the model returned before the citation check ran.
+    sheet = _write(tmp_path / "soma.md", "Tortle Druid")
+    extract_dir = tmp_path / "extractions"
+    _write_tagged_extract(extract_dir, "Soma made a pact with the fey lord")
+    output = _write(tmp_path / "party.md", "HAND EDITED PARTY DOC — keep me")
+    candidate = tmp_path / "party.candidate.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--character", str(sheet),
+        "--synthesize-only",
+        "--extract-dir", str(extract_dir),
+        "--output", str(output),
+    ])
+    party.main()
+
+    assert output.read_text(encoding="utf-8") == "HAND EDITED PARTY DOC — keep me"
+    assert candidate.exists()
+    candidate_text = candidate.read_text(encoding="utf-8")
+    assert "## Sources" in candidate_text
+    assert '[1] "Soma made a pact with the fey lord"' in candidate_text
+
+
+def test_party_config_synthesis_also_numbers_extract_citation_tags(monkeypatch, citing_stream_api, tmp_path):
+    # Same grounding chain, but through the --party-config branch's own
+    # _render_source_group("SESSION EXTRACTIONS", ...) call rather than
+    # run_synthesize_pipeline's input_normalizer — both branches must share
+    # the one CitationIdAssigner instance built before the branch split.
+    _write(tmp_path / "brew.md", "Brewbarry sheet content")
+    cfg = _write_party_config(tmp_path, """
+characters:
+  - name: Brewbarry
+    sheet: brew.md
+""")
+    extract_dir = tmp_path / "extractions"
+    _write_tagged_extract(extract_dir, "Brewbarry swore an oath to the crown")
+    output = tmp_path / "party.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--party-config", str(cfg),
+        "--synthesize-only",
+        "--extract-dir", str(extract_dir),
+        "--output", str(output),
+    ])
+    party.main()
+
+    prompt = citing_stream_api.calls[0]["user"]
+    assert '[cite:1 "Brewbarry swore an oath to the crown"]' in prompt

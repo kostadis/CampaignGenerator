@@ -12,6 +12,12 @@ from .api.client import stream_api
 # which roughly double each line's length) pass a larger `max_tokens`.
 EXTRACT_MAX_TOKENS = 8096
 
+# Output budget for extract prompts that embed citation_rules_extract.md —
+# per-bullet `[cite: "..."]` tags roughly double a bullet's length over the
+# plain-prose EXTRACT_MAX_TOKENS default. Callers pass this explicitly as
+# `max_tokens`; it does not change run_extract_pipeline's own default.
+CITED_EXTRACT_MAX_TOKENS = 32000
+
 # Whole-document synthesis needs a far larger output budget than per-chunk
 # extraction: a full campaign_state.md / world_state.md legitimately exceeds
 # EXTRACT_MAX_TOKENS. 32000 is well under the output ceiling of the synthesis

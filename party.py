@@ -58,6 +58,12 @@ from campaignlib import (
     DEFAULT_MODEL,
     add_backend_args,
     build_alias_normalizer,
+    check_citations,
+    check_synthesis_citations,
+    CITATION_RULES_EXTRACT,
+    CITATION_RULES_SYNTHESIZE,
+    CITED_EXTRACT_MAX_TOKENS,
+    CitationIdAssigner,
     client_from_args,
     format_npc_roster,
     load_agent_prompt,
@@ -221,9 +227,13 @@ def _render_source_group(heading: str, files: list[Path], label: str,
     body = "\n\n---\n\n".join(blocks)
     return f"# {heading}\n\n{body}" if heading else body
 
-EXTRACT_SYSTEM = load_agent_prompt("party_extract")
+EXTRACT_SYSTEM_BASE = load_agent_prompt("party_extract")
 
-SYNTHESIZE_SYSTEM = load_agent_prompt("party_synthesize")
+SYNTHESIZE_SYSTEM_BASE = load_agent_prompt("party_synthesize")
+
+EXTRACT_SYSTEM = EXTRACT_SYSTEM_BASE + "\n\n" + CITATION_RULES_EXTRACT
+
+SYNTHESIZE_SYSTEM = SYNTHESIZE_SYSTEM_BASE + "\n\n" + CITATION_RULES_SYNTHESIZE
 
 
 
@@ -350,8 +360,11 @@ def main() -> None:
             split_label="session",
             input_normalizer=normalize,
             system_suffix=roster,
+            max_tokens=CITED_EXTRACT_MAX_TOKENS,
         )
         print(f"Extractions saved to: {extract_dir}")
+        check_citations(summaries_text, normalize, extract_files, args.chunk_size,
+                         args.split_chapters, extract_dir, tool_name="party.py")
 
         if args.extract_only:
             print(f"\n[Extract-only mode — stopping before synthesis]")
@@ -388,12 +401,14 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize | {', '.join(sources)} | model: {args.model}]")
     print("=" * 60)
+    id_assigner = CitationIdAssigner()
+    cited_normalize = lambda body: id_assigner(normalize(body))
     if party_config:
-        party_block = _render_party_block(party_config, input_normalizer=normalize)
+        party_block = _render_party_block(party_config, input_normalizer=cited_normalize)
         extracts_block = _render_source_group("SESSION EXTRACTIONS", extract_files,
-                                              "Session extract", input_normalizer=normalize)
+                                              "Session extract", input_normalizer=cited_normalize)
         context_block = _render_source_group("ADDITIONAL CONTEXT", context_files,
-                                             "Context", input_normalizer=normalize)
+                                             "Context", input_normalizer=cited_normalize)
         parts = [p for p in (party_block, extracts_block, context_block) if p]
         if not parts:
             print("Error: no source material to synthesize.", file=sys.stderr)
@@ -432,7 +447,7 @@ def main() -> None:
             ],
             synthesize_system=SYNTHESIZE_SYSTEM,
             model=args.model,
-            input_normalizer=normalize,
+            input_normalizer=cited_normalize,
             system_suffix=roster,
             dump_input=args.dump_input,
             dump_only=args.dump_only,
@@ -441,6 +456,12 @@ def main() -> None:
 
     if args.dump_only:
         return
+
+    extract_dir.mkdir(parents=True, exist_ok=True)
+    party_doc = check_synthesis_citations(
+        party_doc, id_assigner.id_to_quote, extract_dir,
+        tool_name="party.py", flag_unreferenced=False,
+    )
 
     # party.md is hand-edited downstream — write to a sibling candidate file
     # when the target already exists, so a regenerated draft can be merged
