@@ -324,7 +324,7 @@ def main() -> None:
                         help="Where to save the narrative.")
     parser.add_argument("--session-name", default="", metavar="NAME",
                         help='e.g. "Session 12 — Icespire Hold".')
-    parser.add_argument("--examples", nargs="+", metavar="FILE",
+    parser.add_argument("--examples", nargs="+", action="extend", metavar="FILE",
                         help="Handcrafted session summary files to use as style references. "
                              "Claude will study their voice, structure, and tone and match it.")
     parser.add_argument("--voice-dir", metavar="DIR",

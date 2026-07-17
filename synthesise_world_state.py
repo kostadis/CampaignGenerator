@@ -310,7 +310,7 @@ def main() -> None:
     parser.add_argument("--inventory", default=None, metavar="FILE",
                         help="Module proper-noun inventory (markdown). "
                              "Authoritative spellings/identities.")
-    parser.add_argument("--backstories", default=None, nargs="+", metavar="GLOB",
+    parser.add_argument("--backstories", default=None, nargs="+", action="extend", metavar="GLOB",
                         help="Glob(s) for per-PC backstory docs "
                              "(e.g. 'docs/*_backstory.md').")
     parser.add_argument("--aliases", default=None, metavar="FILE",

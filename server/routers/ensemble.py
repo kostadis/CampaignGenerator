@@ -18,6 +18,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib.registry import find_registry
 from server.backend_forwarding import backend_cli_args
+from server.party_config_shared import load_party_config
 from server.planning_config_shared import load_planning_config
 from server.subprocess_runner import python_exe, stream_subprocess, sse_error_stream
 
@@ -108,8 +109,28 @@ def _default_planning_config() -> Path | None:
     return None
 
 
-def _planning_npc_passthrough(config_path: Path) -> list[str]:
-    """Merged NPC dossiers not already bound in planning.yaml.
+def _default_threads_file() -> Path | None:
+    """The ensemble threads track's conventional output location (see the
+    /run/threads route) — used when the caller doesn't specify --threads
+    explicitly, for both world_state and planning synthesis."""
+    p = Path.cwd() / "docs/ensemble/threads.md"
+    return p if p.exists() else None
+
+
+def _all_planning_npc_files(exclude: set[Path] = frozenset()) -> list[str]:
+    """Every merged NPC dossier — the "flat" planning mode's auto-detect
+    fallback when no explicit --npc list is given and no planning.yaml is in
+    play (no config to bind against, unlike _planning_npc_passthrough, so
+    `exclude` — PC dossiers, see _party_pc_dossier_files — is the only
+    filter)."""
+    cwd = Path.cwd()
+    return [str(p) for p in sorted(cwd.glob("docs/ensemble/merged_dossiers/npc_*.md"))
+            if p.resolve() not in exclude]
+
+
+def _planning_npc_passthrough(config_path: Path, exclude: set[Path] = frozenset()) -> list[str]:
+    """Merged NPC dossiers not already bound in planning.yaml and not in
+    `exclude` (PC dossiers, see _party_pc_dossier_files).
 
     planning.py's own docstring frames --planning-config entries as the
     arc-scored minority and --npc pass-through dossiers as "the majority" —
@@ -123,7 +144,32 @@ def _planning_npc_passthrough(config_path: Path) -> list[str]:
         return []
     config = load_planning_config(config_path)
     bound = {e.dossier.resolve() for e in config.npcs if e.dossier is not None}
-    return [str(p) for p in npc_files if p.resolve() not in bound]
+    return [str(p) for p in npc_files if p.resolve() not in bound and p.resolve() not in exclude]
+
+
+def _party_pc_dossier_files(party_config_path: Path | None) -> tuple[set[Path], str | None]:
+    """Resolved dossier paths explicitly bound to a PC in party.yaml, so
+    planning's NPC auto-detect can exclude them — ensemble extraction
+    doesn't distinguish PCs from NPCs, so a PC gets a merged npc_*.md
+    dossier just like anyone else.
+
+    Only dossiers with an explicit `dossier:` entry in party.yaml are
+    excluded (see load_party_config's docstring: attribution is always an
+    explicit, human-authored mapping, never inferred by name-matching) — a
+    PC with no such binding still shows up in the NPC list, same as before
+    this existed.
+
+    Returns (exclude_set, warning). party.yaml is optional here (it's a
+    filter, not a required input), so a load failure doesn't block
+    planning — but it's surfaced as a warning instead of silently doing
+    nothing."""
+    if party_config_path is None:
+        return set(), None
+    try:
+        config = load_party_config(party_config_path)
+    except ValueError as e:
+        return set(), f"could not read {party_config_path} for PC exclusion: {e}"
+    return {pc.dossier.resolve() for pc in config.characters if pc.dossier is not None}, None
 
 
 def _default_party_context() -> list[str]:
@@ -457,9 +503,12 @@ def run_synthesize(
     synthesize_only: bool = True,
     # planning
     planning_config: str = "",
+    planning_mode: str = "config",
     npc: list[str] = Query(default=[]),
     arc_scores: list[str] = Query(default=[]),
     context: list[str] = Query(default=[]),
+    depth: str = "scene",
+    force_include: list[str] = Query(default=[]),
 ):
     if doc not in GROUNDING_DOCS:
         raise HTTPException(status_code=400, detail=f"unknown doc '{doc}'")
@@ -474,7 +523,10 @@ def run_synthesize(
                "--dossiers", dossiers, "--dossier-min-facts", str(dossier_min_facts),
                "--output", out]
         _cmd_opt(cmd, "--party", party)
-        _cmd_opt(cmd, "--threads", threads)
+        # Auto-detect docs/ensemble/threads.md the same way planning_config /
+        # party_config auto-detect — an explicit --threads override still wins.
+        threads_path = _resolve_ensemble_path(threads) if threads else _default_threads_file()
+        _cmd_opt(cmd, "--threads", threads_path)
         _cmd_multi(cmd, "--backstories", backstories)
     elif doc == "campaign_state":
         cmd = [python_exe(), str(SCRIPT_DIR / "campaign_state.py"), "--output", out]
@@ -505,11 +557,26 @@ def run_synthesize(
         # The tracked (arc-scored) NPC/faction subset is a human-curated
         # decision (docs/cli/ensemble_workflow.md §3e) — reuse the
         # already-curated planning.yaml the same way the party branch reuses
-        # party.yaml, instead of guessing at it.
+        # party.yaml, instead of guessing at it. "flat" is an explicit UI
+        # override ("Explicit dossier list") to skip planning.yaml outright —
+        # e.g. no config exists yet, or the one on disk is a stale/unfilled
+        # template (empty npcs:/factions: raises in load_planning_config).
+        # Honor that choice rather than auto-detecting underneath it.
         planning_config_path = (
+            None if planning_mode == "flat" else
             _resolve_ensemble_path(planning_config) if planning_config
             else _default_planning_config()
         )
+        # Ensemble extraction captures every named entity, PCs included, so
+        # the merged_dossiers/ glob below has an npc_<pc>.md right next to
+        # every real NPC. Excluding those is opt-in and explicit — only
+        # dossiers bound via party.yaml's `dossier:` field are excluded, and
+        # only when the caller didn't pass an explicit --npc list of their
+        # own (see _party_pc_dossier_files).
+        party_config_path = (
+            _resolve_ensemble_path(party) if party else _default_party_config()
+        )
+        pc_dossiers, pc_warning = _party_pc_dossier_files(party_config_path)
         if planning_config_path:
             _cmd_opt(cmd, "--planning-config", str(planning_config_path))
             # planning.py rejects --planning-config + --arc-scores; --npc
@@ -519,7 +586,7 @@ def run_synthesize(
             # majority") — without this, every NPC not in planning.yaml is
             # silently absent from planning.md.
             try:
-                npc_passthrough = npc or _planning_npc_passthrough(planning_config_path)
+                npc_passthrough = npc or _planning_npc_passthrough(planning_config_path, exclude=pc_dossiers)
             except ValueError as e:
                 # load_planning_config raises on a missing/invalid dossier
                 # reference — surface it as a real SSE error (below) instead
@@ -528,9 +595,19 @@ def run_synthesize(
                 return _sse_error_response(f"planning config error: {e}")
             _cmd_multi(cmd, "--npc", npc_passthrough)
         else:
-            _cmd_multi(cmd, "--npc", npc)
+            _cmd_multi(cmd, "--npc", npc or _all_planning_npc_files(exclude=pc_dossiers))
             _cmd_multi(cmd, "--arc-scores", arc_scores)
         _cmd_multi(cmd, "--context", context)
+        # Same auto-detect as the world_state branch: without this, Active
+        # Plots has nothing but scattered NPC-dossier snapshots to infer
+        # threads from, and the model has to guess chapter ordering.
+        threads_path = _resolve_ensemble_path(threads) if threads else _default_threads_file()
+        _cmd_opt(cmd, "--threads", threads_path)
+        # "scene" is planning.py --depth's own default — only pass it through
+        # when overridden so the reproducible command stays minimal.
+        if depth and depth != "scene":
+            _cmd_opt(cmd, "--depth", depth)
+        _cmd_multi(cmd, "--force-include", force_include)
 
     cmd += backend_cli_args(backend, model, endpoint=endpoint)
 
@@ -553,6 +630,14 @@ def run_synthesize(
             detected.append(f"{len(npc_passthrough)} pass-through NPC dossier(s)")
         if detected:
             prelude_parts.append(f"Auto-detected — {'; '.join(detected)}\n\n")
+    if doc == "planning" and not npc and pc_dossiers:
+        prelude_parts.append(
+            f"Auto-detected — {len(pc_dossiers)} PC dossier(s) excluded "
+            f"(bound in {party_config_path.name})\n\n")
+    if doc == "planning" and pc_warning:
+        prelude_parts.append(f"⚠️  {pc_warning}\n\n")
+    if doc in ("world_state", "planning") and not threads and threads_path:
+        prelude_parts.append(f"Auto-detected — threads track: {threads_path}\n\n")
     # FR-014 / R6: warn (don't block) on a sub-Sonnet synthesis model.
     if backend != "anthropic" and model and model not in SYNTHESIS_CAPABLE:
         prelude_parts.append(
