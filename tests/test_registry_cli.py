@@ -21,7 +21,7 @@ from campaignlib.registry import (  # noqa: E402
     load_registry,
     save_registry,
 )
-from synthesise_world_state import load_aliases  # noqa: E402
+from pipelines.ensemble.synthesise_world_state import load_aliases  # noqa: E402
 from entity_registry.spell_canon import inventory_tokens  # noqa: E402
 
 

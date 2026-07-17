@@ -40,6 +40,17 @@ build_recent_events = "pipelines.grounding.build_recent_events:main"
 normalize_bible_headings = "pipelines.grounding.normalize_bible_headings:main"
 registry = "entity_registry.registry:main"
 spell_canon = "entity_registry.spell_canon:main"
+ensemble = "pipelines.ensemble.ensemble:main"
+ensemble_batch = "pipelines.ensemble.ensemble_batch:main"
+ensemble_extract = "pipelines.ensemble.ensemble_extract:main"
+ensemble_merge = "pipelines.ensemble.ensemble_merge:main"
+extract_facts = "pipelines.ensemble.extract_facts:main"
+facts_to_state = "pipelines.ensemble.facts_to_state:main"
+synthesise_facts = "pipelines.ensemble.synthesise_facts:main"
+synthesise_polish = "pipelines.ensemble.synthesise_polish:main"
+synthesise_world_state = "pipelines.ensemble.synthesise_world_state:main"
+split_chapters = "pipelines.ensemble.split_chapters:main"
+polish = "pipelines.ensemble.polish:main"
 
 [project.optional-dependencies]
 test = [

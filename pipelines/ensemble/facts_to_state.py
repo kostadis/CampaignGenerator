@@ -52,8 +52,8 @@ from campaignlib import (
     stream_api,
 )
 from campaignlib.registry import load_registry, resolve_registry_arg
-from ensemble_merge import _norm_subject
-from synthesise_world_state import (
+from .ensemble_merge import _norm_subject
+from .synthesise_world_state import (
     expand_globs,
     load_aliases,
     session_index,
@@ -564,7 +564,7 @@ def main() -> None:
         if args.aliases or args.known_names:
             warnings.warn(
                 "--aliases/--known-names are deprecated; migrate to --registry "
-                "(docs/entity_registry.yaml). See registry.py.",
+                "(docs/entity_registry.yaml). See registry (entity_registry/registry.py).",
                 DeprecationWarning,
             )
         aliases = load_aliases(Path(args.aliases).expanduser()) if args.aliases else {}

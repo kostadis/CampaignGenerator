@@ -18,7 +18,9 @@ the validation guide.
 
 1. On the `/ensemble` page, select one or more chapters and click **Run extraction**.
 2. **Expect**: a dedicated, copyable **command box** appears showing the full
-   invocation (env prefix + `python …/ensemble_batch.py --chapters … --model …`).
+   invocation (env prefix + `…/ensemble_batch --chapters … --model …`, the
+   installed `ensemble_batch` console script rather than `python
+   ensemble_batch.py`).
 3. Copy it, open a terminal in the campaign workspace, paste, and run.
 4. **Expect**: it runs the same operation with no hand-editing (SC-001).
 5. Inspect the command box and the live output for any API key.

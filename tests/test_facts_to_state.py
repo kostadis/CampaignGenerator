@@ -12,9 +12,9 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-import facts_to_state as fts  # noqa: E402
+from pipelines.ensemble import facts_to_state as fts  # noqa: E402
 from campaignlib.registry import load_registry  # noqa: E402
-from synthesise_world_state import load_dossiers  # noqa: E402
+from pipelines.ensemble.synthesise_world_state import load_dossiers  # noqa: E402
 
 
 def _fact(type_, subject, fact, quote="", subjects=None):

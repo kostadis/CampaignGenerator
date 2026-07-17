@@ -1,12 +1,12 @@
 # Ensemble Extraction — How-To
 
-`ensemble.py` (and its two sub-tools `ensemble_extract.py` + `ensemble_merge.py`)
+`ensemble` (and its two sub-tools `ensemble_extract` + `ensemble_merge`)
 run a multi-lens fact-extraction pass over session text using a local LLM endpoint.
 This doc covers the common usage patterns — single file, multiple files, and the
 flags that matter most.
 
 See [`ensemble_workflow.md`](ensemble_workflow.md) for the full
-extract-once-locally pipeline (ensemble_batch.py → facts_to_state → synthesis) that
+extract-once-locally pipeline (ensemble_batch → facts_to_state → synthesis) that
 builds all four grounding docs from local compute.
 
 ---
@@ -14,7 +14,7 @@ builds all four grounding docs from local compute.
 ## Quickstart — single file, built-in 5-lens plan
 
 ```bash
-python ensemble.py session-summary.md --workdir gen-ch01/
+ensemble session-summary.md --workdir gen-ch01/
 ```
 
 This runs 5 passes (small / large / sweep / temporal / interiority) against
@@ -31,7 +31,7 @@ With both Sparks:
 ```bash
 EP="--endpoints http://192.168.1.147:8001/v1 http://192.168.1.69:8001/v1 \
     --model Qwen/Qwen3-Next-80B-A3B-Instruct-FP8"
-python ensemble.py session-summary.md --workdir gen-ch01/ $EP
+ensemble session-summary.md --workdir gen-ch01/ $EP
 ```
 
 ---
@@ -57,7 +57,7 @@ passes:
 ```
 
 ```bash
-python ensemble.py --plan plan.yaml --workdir gen-ch01/ $EP
+ensemble --plan plan.yaml --workdir gen-ch01/ $EP
 ```
 
 Relative `document` paths resolve against the plan file's directory, so you can
@@ -97,16 +97,16 @@ Pass names key the output files under `--workdir` — they must be unique.
 
 ## Separation of concerns
 
-`ensemble.py` is a convenience wrapper that calls `ensemble_extract.py` then
-`ensemble_merge.py`. When you need to iterate on merge settings without re-running
+`ensemble` is a convenience wrapper that calls `ensemble_extract` then
+`ensemble_merge`. When you need to iterate on merge settings without re-running
 extraction (expensive), call them separately:
 
 ```bash
 # 1. Run extraction only
-python ensemble_extract.py --plan plan.yaml --workdir gen-ch01/ $EP
+ensemble_extract --plan plan.yaml --workdir gen-ch01/ $EP
 
 # 2. Merge separately, tweaking settings
-python ensemble_merge.py --workdir gen-ch01/ --method embed --embed-threshold 0.88
+ensemble_merge --workdir gen-ch01/ --method embed --embed-threshold 0.88
 ```
 
 `--plan` controls extraction (passes + documents).  
@@ -123,5 +123,5 @@ After a successful run, `--workdir` contains:
 - `manifest.json` — maps each pass to its source document and output file
 - `merged.json` — deduplicated fact list with `n_samples` confidence counts
 
-`merged.json` is the input to `facts_to_state.py` for per-entity dossier
+`merged.json` is the input to `facts_to_state` for per-entity dossier
 aggregation. Human review of dossiers is the checkpoint before any synthesis call.

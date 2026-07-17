@@ -46,7 +46,7 @@ Every one of the 62 files, grouped by the pipeline it belongs to (per `docs/core
 | `session_prep` | 2 | 478 | ✅ moved to `pipelines/session_prep/` |
 | session-doc pipeline | 14 | 3,783 | **absorbed into the existing `session_doc/` package**, not a new one |
 | `grounding` | 9 | 2,664 | ✅ moved to `pipelines/grounding/` |
-| `ensemble` | 11 | 4,697 | new package under `pipelines/` |
+| `ensemble` | 11 | 4,697 | ✅ moved to `pipelines/ensemble/` |
 | `rlm` | 12 | 5,472 | new package under `pipelines/` |
 | `content_ingest` | 5 | 3,339 | ✅ moved to `pipelines/content_ingest/` |
 | `entity_registry` | 2 | 2,106 | ✅ moved to `entity_registry/` (top-level sibling to `campaignlib/`, see naming note below) |

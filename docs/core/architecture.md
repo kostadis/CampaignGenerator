@@ -16,7 +16,7 @@ Hard rules — see [Critical rules](../../CLAUDE.md#critical-rules-apply-to-ever
 ```mermaid
 flowchart TB
     subgraph User["User entry points"]
-        CLI["CLI scripts (prep, sd_consistency.py, sd_plan.py, sd_narrate.py, polish.py, …)"]
+        CLI["CLI scripts (prep, sd_consistency.py, sd_plan.py, sd_narrate.py, polish, …)"]
         Web["Web UI (Vue 3, experimental routes: /api/experimental, /api/setup)"]
     end
 
@@ -86,7 +86,7 @@ flowchart LR
     
     AS["Stage 4<br/><b>assemble.py</b>"]
     DOC[("session_doc.md")]
-    POL[("polish.py (optional experimental refinement)")]
+    POL[("polish (optional experimental refinement)")]
     
     QLED["quote_ledger.py<br/>(VTT quote → scene match,<br/>used by Web UI)"]
     
@@ -273,7 +273,7 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 | [`sd_consistency.py`](../../sd_consistency.py) / [`sd_plan.py`](../../sd_plan.py) / [`sd_narrate.py`](../../sd_narrate.py) | Three single-LLM-call tools (Pass 1 / Pass 3 / Pass 5) split from the old `session_doc.py`. Shared helpers live under [`session_doc/`](../../session_doc/). Read [`docs/cli/session_doc_pipeline.md`](../cli/session_doc_pipeline.md). |
 | [`narrative.py`](../../narrative.py) | Standalone experimental VTT-anchored narrator (separate from the `sd_narrate.py` flow). |
 | [`enhance_recap.py`](../../enhance_recap.py) | Single cached call: enriches gm-assist recap |
-| [`polish.py`](../../polish.py) | Agentic loop with tools (read/edit/insert/finish) — experimental |
+| [`polish.py`](../../pipelines/ensemble/polish.py) | Agentic loop with tools (read/edit/insert/finish) — experimental |
 | [`quote_ledger.py`](../../quote_ledger.py) | SQLite-backed fuzzy-matching of quotes across roleplay + scene extractions |
 
 ### Grounding docs (long-lived state)
@@ -342,7 +342,7 @@ Typical session lifecycle:
 1. `vtt_summary.py` → `session-summary.md` + extractions
 2. `enhance_summary.py` → enriched gm-assist (supports `--batch`, `--collect`)
 3. `scene_extract.py` → `scene_extractions/` (supports `--batch`, `--collect`)
-4. `sd_consistency.py` (if --context) + `sd_plan.py` + `sd_narrate.py` → narration files (optional refinement via `polish.py`)
+4. `sd_consistency.py` (if --context) + `sd_plan.py` + `sd_narrate.py` → narration files (optional refinement via `polish`)
 5. Append summary to `summaries.md`
 6. `distill`, `campaign_state`, `planning`, `party` update grounding docs
 7. Next session: `prep` reads all four grounding docs (including any polish feedback)

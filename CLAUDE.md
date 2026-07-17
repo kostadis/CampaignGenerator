@@ -76,8 +76,8 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/rlm/rlm_architecture.md` | RLM architecture deep dive — three-pile model, MCP surface, retrieval contract |
 | `docs/rlm/retrieval_architecture.md` | Palace internals — hierarchical descent algorithm, dirty-flag index lifecycle, 100% recall guarantee, failure modes, operational checklist |
 | `docs/cli/session_prep_workflow.md` | End-to-end session-prep walkthrough |
-| `docs/cli/ensemble_extraction.md` | `ensemble.py` how-to: single-file, multi-file `--plan` YAML, key flags, output layout |
-| `docs/cli/ensemble_workflow.md` | End-to-end ensemble workflow: chapters → `ensemble_batch.py` → `facts_to_state.py` → synthesis (API + subscription paths); Phandalin worked example |
+| `docs/cli/ensemble_extraction.md` | `ensemble` how-to: single-file, multi-file `--plan` YAML, key flags, output layout |
+| `docs/cli/ensemble_workflow.md` | End-to-end ensemble workflow: chapters → `ensemble_batch` → `facts_to_state` → synthesis (API + subscription paths); Phandalin worked example |
 | `docs/README.md` | Full doc index — every doc, organised by audience |
 
 ## Critical rules (apply to every task)
@@ -119,7 +119,7 @@ All scripts look for `config.yaml` in the CWD first, then fall back to `config/c
 `docs/entity_registry.yaml` is the single source of truth for entity identity — canonical spelling, aliases, and the anti-merge guards (`distinct`, `rejected_aliases`). It supersedes the legacy scattered stores (dossier `aliases:` frontmatter, `aliases.json`, `.alias_decisions.json`, module inventories, `.dedup_state.json`). Managed via `registry` (`init`/`add`/`alias`/`import-*`/`triage-candidates`/`check`/`project`); loaded via `campaignlib.registry` (`load_registry`, `find_registry`, `resolve_registry_arg`).
 
 **Consumers auto-adopt it when present:**
-- `facts_to_state.py` and `synthesise_world_state`/`synthesise_facts`/`synthesise_polish` take `--registry` (an explicit dir/file wins; omit to auto-discover `docs/entity_registry.yaml` from the CWD). It supersedes the deprecated `--aliases`/`--known-names`, and errors if an explicit `--registry` is combined with them. The registry supplies **aliases only** — `--inventory` is separate human-authored module-canon grounding and is never substituted by it.
+- `facts_to_state` and `synthesise_world_state`/`synthesise_facts`/`synthesise_polish` take `--registry` (an explicit dir/file wins; omit to auto-discover `docs/entity_registry.yaml` from the CWD). It supersedes the deprecated `--aliases`/`--known-names`, and errors if an explicit `--registry` is combined with them. The registry supplies **aliases only** — `--inventory` is separate human-authored module-canon grounding and is never substituted by it.
 - The render CLIs (`distill`, `party`, `sd_narrate`, `vtt_summary`, `scene_extract`, `campaign_state`, `planning`) call `load_alias_map(dossier_dir, registry_path=…)`: a resolved registry **replaces** the `docs/npcs/` dossier scan (via `find_alias_registry`, which prints an adoption notice so a partial registry never silently drops hand-curated dossier aliases).
 - `planning --build-dossiers` seeds new dossiers' `aliases:` frontmatter from the registry.
 

@@ -1,8 +1,8 @@
 # `facts_to_state.py` — the data files it needs
 
-`facts_to_state.py` is the **compression layer** of the ensemble pipeline: it
-takes the tens of thousands of atomic facts produced by `ensemble_extract.py` /
-`ensemble_batch.py` and bundles them into one current-state dossier per entity.
+`facts_to_state` is the **compression layer** of the ensemble pipeline: it
+takes the tens of thousands of atomic facts produced by `ensemble_extract` /
+`ensemble_batch` and bundles them into one current-state dossier per entity.
 
 Getting good bundles depends on inputs beyond the obvious one (the corpus).
 **`--aliases`**, **`--known-names`**, and **`--exclude-names`** are curated,
@@ -165,7 +165,7 @@ doubt, mirror the exact strings seen in the corpus.
 - **Parenthetical fact-subject forms** the dedup pass never saw
   (`"Thorne (the Duke)"`), found by scanning corpus subjects.
 
-`aliases.json` is shared: `synthesise_world_state.py` and the threads render
+`aliases.json` is shared: `synthesise_world_state` and the threads render
 (`--render-only`) consume the same file.
 
 ---
@@ -324,7 +324,7 @@ add them, repeat.
 Canonical command:
 
 ```bash
-python facts_to_state.py \
+facts_to_state \
   --corpus 'docs/ensemble/per_chapter/*/merged.json' \
   --aliases docs/ensemble/aliases.json \
   --known-names docs/ensemble/known_names.md docs/npcs/.dedup_state.json \
@@ -372,7 +372,7 @@ Useful flags: `--min-facts N` (floor; below it there's nothing to collapse),
 | File | Flag | Format | Hand-authored? | Also read by |
 |------|------|--------|----------------|--------------|
 | `*/merged.json` | `--corpus` | JSON fact array | No (generated) | — |
-| `aliases.json` | `--aliases` | `{canonical:[variants]}` | Yes (seed from dedup) | `synthesise_world_state.py`, threads render |
+| `aliases.json` | `--aliases` | `{canonical:[variants]}` | Yes (seed from dedup) | `synthesise_world_state`, threads render |
 | `known_names.md` | `--known-names` | Markdown, `**bold**` names | Yes | — |
 | `.dedup_state.json` | `--known-names` | dedup-pass JSON | No (dedup output) | dossier-merge tooling |
 | `exclude_names.md` | `--exclude-names` | Markdown, `**bold**` names | Yes (short, npc-only) | — |

@@ -1,7 +1,7 @@
 """ensemble_batch.py --chapters accepts one or more globs/paths (the engine
 contract behind the UI chapter picker's select-all / select-one / subset)."""
 
-import ensemble_batch
+from pipelines.ensemble import ensemble_batch
 
 
 def test_chapters_accepts_multiple_globs():

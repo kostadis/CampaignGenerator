@@ -8,8 +8,8 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import polish
-from polish import (
+from pipelines.ensemble import polish
+from pipelines.ensemble.polish import (
     SECTION_SEPARATOR,
     ChangelogEntry,
     Section,

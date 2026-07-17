@@ -12,7 +12,7 @@ End-to-end guide: from a set of chapter files to reviewed dossiers ready for syn
 
 The core insight is that **extraction is expensive and should happen once**. Running the Claude API inside each grounding-doc tool (the old path) re-extracts the same chapter text three or four times, spending 2.5–3.4M metered tokens per full refresh. The local ensemble approach extracts once on Spark hardware (~free), aggregates to per-entity dossiers, lets a human review scope, then calls the API only for the final synthesis per doc (~280K tokens total).
 
-For a description of the individual tools used here, see [`ensemble_extraction.md`](ensemble_extraction.md) (ensemble.py flags) and [`local_grounding_docs.md`](../archive/local_grounding_docs.md) (provenance of the first two full runs).
+For a description of the individual tools used here, see [`ensemble_extraction.md`](ensemble_extraction.md) (ensemble flags) and [`local_grounding_docs.md`](../archive/local_grounding_docs.md) (provenance of the first two full runs).
 
 ---
 
@@ -20,14 +20,14 @@ For a description of the individual tools used here, see [`ensemble_extraction.m
 
 ```
 docs/chapters/chapter_*.md
-  ↓  ensemble_batch.py  (local, Spark)
+  ↓  ensemble_batch  (local, Spark)
 docs/ensemble/per_chapter/<stem>/merged.json   — atomic facts per chapter
-  ↓  facts_to_state.py --list                  — HUMAN CHECKPOINT: scope review
-  ↓  facts_to_state.py                         (local, Spark)
+  ↓  facts_to_state --list                     — HUMAN CHECKPOINT: scope review
+  ↓  facts_to_state                            (local, Spark)
 docs/ensemble/state_dossiers/*.md              — per-entity current-state dossiers
   ↓  (Stage 2e: merge type-duplicate dossiers — human step)
 docs/ensemble/merged_dossiers/*.md             — type-merged dossiers, ready for synthesis
-  ↓  synthesise_world_state.py                 (API or subscription)
+  ↓  synthesise_world_state                    (API or subscription)
 docs/world_state_draft.md
 
   ↓  campaign_state.py --synthesize-only       (API — auto-stages world_state + threads)
@@ -61,7 +61,7 @@ After correcting, re-copy any `docs/chapters/` files that were generated from th
 
 ---
 
-**Corpus layout** — one `docs/chapters/chapter_NN_<title>.md` file per chapter, named so that `glob('chapter_*.md')` returns them in chapter order. A single concatenated file works too (pass it directly to `ensemble.py`), but the batch driver assumes per-chapter files.
+**Corpus layout** — one `docs/chapters/chapter_NN_<title>.md` file per chapter, named so that `glob('chapter_*.md')` returns them in chapter order. A single concatenated file works too (pass it directly to `ensemble`), but the batch driver assumes per-chapter files.
 
 **Spark hardware** — see [`HOWTO_122B.md`](../ensemble/HOWTO_122B.md) for the 122B Ray-cluster setup. The 80B dual-endpoint setup is the default and needs no extra steps beyond having both Spark containers running. Spark host names: `spark` (192.168.1.147) and `spark2` (192.168.1.121).
 
@@ -70,9 +70,9 @@ After correcting, re-copy any `docs/chapters/` files that were generated from th
 - `notes/neverwinter/*inventory.md` — same for region lore
 - `docs/npcs/.dedup_state.json` — confirmed alias clusters from a prior npc-dedup pass
 
-All three are optional but strongly recommended. Without them, `facts_to_state.py` cannot distinguish "Aldric" (named NPC) from "guard" (anonymous encounter label) and will produce one merged dossier for every guard in the campaign.
+All three are optional but strongly recommended. Without them, `facts_to_state` cannot distinguish "Aldric" (named NPC) from "guard" (anonymous encounter label) and will produce one merged dossier for every guard in the campaign.
 
-**Aliases file** (`docs/ensemble/aliases.json`) — optional spelling-variant map produced by `ensemble_merge.py`'s alias proposals and reviewed manually or with `review_aliases.py`. Pass it to `facts_to_state.py` with `--aliases` to canonicalise subject names before bundling.
+**Aliases file** (`docs/ensemble/aliases.json`) — optional spelling-variant map produced by `ensemble_merge`'s alias proposals and reviewed manually or with `review_aliases.py`. Pass it to `facts_to_state` with `--aliases` to canonicalise subject names before bundling.
 
 ### Keep aliases.json generated, not hand-maintained
 
@@ -199,7 +199,7 @@ and drop only the pure rules/pacing/logistics lines. This is a precision
 
 ### 1a. Plan YAML
 
-The plan YAML lives alongside the ensemble workspace and controls which extraction lenses run on each chapter. `annotate_pov: true` is now the built-in default for all 5 lenses (`ensemble_extract.py`'s `PASSES`), so a plan.yaml only needs to mention it to *override* that default, e.g. to turn it off, or to add a custom pass. The Phandalin plan, written before that default existed, still spells it out explicitly:
+The plan YAML lives alongside the ensemble workspace and controls which extraction lenses run on each chapter. `annotate_pov: true` is now the built-in default for all 5 lenses (`ensemble_extract`'s `PASSES`), so a plan.yaml only needs to mention it to *override* that default, e.g. to turn it off, or to add a custom pass. The Phandalin plan, written before that default existed, still spells it out explicitly:
 
 ```yaml
 # docs/ensemble/plan.yaml
@@ -246,13 +246,13 @@ passes:
 
 ### 1b. Batch driver
 
-`ensemble_batch.py` iterates over all chapter files, runs `ensemble.py` per chapter in parallel, and concatenates the results. It is the generalised replacement for campaign-local `run.py` scripts.
+`ensemble_batch` iterates over all chapter files, runs `ensemble` per chapter in parallel, and concatenates the results. It is the generalised replacement for campaign-local `run.py` scripts.
 
 ```bash
 # Run from the ensemble directory (where plan.yaml lives)
 cd ~/Phandalin/Phandalin/docs/ensemble
 
-python ~/src/CampaignGenerator/ensemble_batch.py \
+ensemble_batch \
   --chapters '../chapters/chapter_*.md' \
   --per-chapter-dir per_chapter \
   --out merged.json \
@@ -293,7 +293,7 @@ The run is **resumable**: chapters whose `per_chapter/<stem>/merged.json` alread
 >    intended concurrency. A pile of orphaned workers reads exactly like "the tool
 >    keeps crashing." Kill all of them, wipe `per_chapter/`, and start one clean run.
 >    (When grepping for workers, match the python executable, not the
->    `ensemble_extract.py` string — your own grep command contains that string and
+>    `ensemble_extract` string — your own grep command contains that string and
 >    will match itself.)
 
 **Key batch flags:**
@@ -304,9 +304,9 @@ The run is **resumable**: chapters whose `per_chapter/<stem>/merged.json` alread
 | `--per-chapter-dir DIR` | `./per_chapter` | Root for per-chapter workdirs |
 | `--out FILE` | `./merged.json` | Combined output file |
 | `--chapter-parallel N` | 3 | Chapters in flight at once |
-| `--plan YAML` | `./plan.yaml` if it exists | Passed through to `ensemble.py` |
+| `--plan YAML` | `./plan.yaml` if it exists | Passed through to `ensemble` |
 
-All `ensemble.py` endpoint and model flags (`--endpoints`, `--model`, `--chunk-parallel`, `--speculative`, `--unit-timeout`, `--embed-endpoint`, etc.) are accepted and passed through verbatim.
+All `ensemble` endpoint and model flags (`--endpoints`, `--model`, `--chunk-parallel`, `--speculative`, `--unit-timeout`, `--embed-endpoint`, etc.) are accepted and passed through verbatim.
 
 **Key ensemble flags to know:**
 
@@ -368,15 +368,15 @@ merged.json              ← all chapters concatenated (with source_chapter fiel
 
 ## Stage 1a — Alias review (optional, recommended)
 
-`ensemble_merge.py` generates alias proposals (spelling variants of the same entity) alongside each chapter's `merged.json`. The Phandalin workspace includes `review_aliases.py` as a local interactive reviewer; alternatively, edit `aliases.json` by hand.
+`ensemble_merge` generates alias proposals (spelling variants of the same entity) alongside each chapter's `merged.json`. The Phandalin workspace includes `review_aliases.py` as a local interactive reviewer; alternatively, edit `aliases.json` by hand.
 
-Pass the reviewed file to `facts_to_state.py --aliases` in Stage 2 so variant spellings ("Bupido" / "Buppido") are collapsed before bundling. Without this step, one entity ends up in two separate bundles that never merge.
+Pass the reviewed file to `facts_to_state --aliases` in Stage 2 so variant spellings ("Bupido" / "Buppido") are collapsed before bundling. Without this step, one entity ends up in two separate bundles that never merge.
 
 The alias file lives at `docs/ensemble/aliases.json` in the Phandalin workspace.
 
 ### Known limitation — type duplicates
 
-`facts_to_state.py` groups facts by `(type, subject)` pair, not by subject alone. The same entity extracted as both `npc` and `monster` in different scenes (e.g. Boney, Cryovain, The Carver, Talos, Gorthok) will produce two separate dossiers: `npc_boney.md` **and** `monster_boney.md`.
+`facts_to_state` groups facts by `(type, subject)` pair, not by subject alone. The same entity extracted as both `npc` and `monster` in different scenes (e.g. Boney, Cryovain, The Carver, Talos, Gorthok) will produce two separate dossiers: `npc_boney.md` **and** `monster_boney.md`.
 
 **These are not a bug** — the type facets often capture genuinely different information (combat stats vs. personality). But synthesis tools must be told to treat them as the same entity, and reviewers should be aware that important facts may be split across two files.
 
@@ -388,7 +388,7 @@ The alias file lives at `docs/ensemble/aliases.json` in the Phandalin workspace.
 
 ## Stage 2 — Fact bundling
 
-`facts_to_state.py` is the compression layer between raw atomic facts and the per-entity dossiers that synthesis consumes. It groups every fact about one `(type, subject)` pair in chapter order, then asks the local model to collapse them into a single current-state dossier.
+`facts_to_state` is the compression layer between raw atomic facts and the per-entity dossiers that synthesis consumes. It groups every fact about one `(type, subject)` pair in chapter order, then asks the local model to collapse them into a single current-state dossier.
 
 ### 2a. The `--list` checkpoint (always run first)
 
@@ -397,7 +397,7 @@ Before spending model time on aggregation, run `--list` to see the full entity c
 ```bash
 cd ~/Phandalin/Phandalin
 
-python ~/src/CampaignGenerator/facts_to_state.py \
+facts_to_state \
   --corpus 'docs/ensemble/per_chapter/*/merged.json' \
   --aliases docs/ensemble/aliases.json \
   --known-names docs/background/dragon-of-icespire-peak-inventory.md \
@@ -434,7 +434,7 @@ Selected: 439 for aggregation
 
 ### 2b. `--known-names`: named vs anonymous entity splitting
 
-Without `--known-names`, `facts_to_state.py` produces one global bundle per `(type, subject)` key — every orc encounter in the campaign collapses into a single "Orc" dossier. With `--known-names`, entities whose normalised name appears in any of the source files are treated as named individuals (global bundle); everything else is scoped to its chapter location (e.g. `Orc (Phandalin)`, `Orc (Wayside Inn)`).
+Without `--known-names`, `facts_to_state` produces one global bundle per `(type, subject)` key — every orc encounter in the campaign collapses into a single "Orc" dossier. With `--known-names`, entities whose normalised name appears in any of the source files are treated as named individuals (global bundle); everything else is scoped to its chapter location (e.g. `Orc (Phandalin)`, `Orc (Wayside Inn)`).
 
 Sources can be:
 - **Inventory `.md` files** — bold-marked proper nouns are extracted. First word of a multi-word name (≥ 4 chars) is also added as a short-form match.
@@ -445,7 +445,7 @@ Sources can be:
 Run aggregation with `--known-only` to skip anonymous location-scoped bundles. They appear in `--list` tagged `[location]` and can be addressed in a later dedup pass if needed.
 
 ```bash
-python ~/src/CampaignGenerator/facts_to_state.py \
+facts_to_state \
   --corpus 'docs/ensemble/per_chapter/*/merged.json' \
   --aliases docs/ensemble/aliases.json \
   --known-names docs/background/dragon-of-icespire-peak-inventory.md \
@@ -483,7 +483,7 @@ Use ≥ 3 for the aggregation run (don't discard facts at this stage). The synth
 Plot threads and mysteries are factual and don't need synthesis — render them directly:
 
 ```bash
-python ~/src/CampaignGenerator/facts_to_state.py \
+facts_to_state \
   --corpus 'docs/ensemble/per_chapter/*/merged.json' \
   --aliases docs/ensemble/aliases.json \
   --types thread \
@@ -491,7 +491,7 @@ python ~/src/CampaignGenerator/facts_to_state.py \
   --render-only docs/ensemble/threads.md
 ```
 
-This writes a chapter-tagged markdown file with no model call. Feed it to `synthesise_world_state.py --threads` if thread coverage looks thin from dossier bodies alone.
+This writes a chapter-tagged markdown file with no model call. Feed it to `synthesise_world_state --threads` if thread coverage looks thin from dossier bodies alone.
 
 ### Recent events — short-term world state (zero model tokens)
 
@@ -511,7 +511,7 @@ python ~/src/CampaignGenerator/build_recent_events.py \
   --window 0            # 0 = all chapters; N = keep only the last N (slide forward as the campaign grows)
 ```
 
-**Dual use — it also anchors synthesis.** Per-entity dossiers are organised by *entity* and threads by *plot*; neither carries a timeline, so the synthesis model has to *reconstruct* chapter order from current-state snapshots — exactly the step LLMs are unreliable at (mis-dated rescues, two distinct bosses fused into one). Feeding this chapter-ordered render to `synthesise_world_state.py --threads` (concatenated with `threads.md`) hands the model the ordering instead of making it guess. Use `--window 0` for the synthesis spine (it must see all chapters) even when the human-facing `recent_events.md` is windowed.
+**Dual use — it also anchors synthesis.** Per-entity dossiers are organised by *entity* and threads by *plot*; neither carries a timeline, so the synthesis model has to *reconstruct* chapter order from current-state snapshots — exactly the step LLMs are unreliable at (mis-dated rescues, two distinct bosses fused into one). Feeding this chapter-ordered render to `synthesise_world_state --threads` (concatenated with `threads.md`) hands the model the ordering instead of making it guess. Use `--window 0` for the synthesis spine (it must see all chapters) even when the human-facing `recent_events.md` is windowed.
 
 > **Input contract — the timeline render assumes *narrative* chapters.** "Chapter-
 > ordered" means facts are ordered by their position in the source text, which equals
@@ -604,7 +604,7 @@ Two paths: **API** (`ANTHROPIC_API_KEY`) or **Subscription** (claude.ai, no key 
 ```bash
 cd ~/Phandalin/Phandalin
 
-python ~/src/CampaignGenerator/synthesise_world_state.py \
+synthesise_world_state \
   --dossiers 'docs/ensemble/merged_dossiers/*.md' \
   --dossier-min-facts 10 \
   --party config/party.yaml \
@@ -625,7 +625,7 @@ python ~/src/CampaignGenerator/synthesise_world_state.py \
 `--dump-input` + `--dump-only` assemble the full prompt and write it to disk without making an API call:
 
 ```bash
-python ~/src/CampaignGenerator/synthesise_world_state.py \
+synthesise_world_state \
   --dossiers 'docs/ensemble/merged_dossiers/*.md' \
   --dossier-min-facts 10 \
   --party config/party.yaml \
@@ -654,7 +654,7 @@ claude -p \
 
 > **Gotcha — `claude -p` inside a project can write the *live* doc, not stdout.**
 > Run from a campaign directory, the headless `claude` inherits the project's tool
-> permissions. `synthesise_world_state.py` and `planning.py` system prompts ask for
+> permissions. `synthesise_world_state` and `planning.py` system prompts ask for
 > a document *body*, so the agent prints it to stdout (→ your `>` redirect — correct).
 > But `campaign_state.py` and `party.py` system prompts say "write
 > `docs/campaign_state.md`" / "write `docs/party.md`", so the agent **uses the Write
@@ -1032,7 +1032,7 @@ The `--dump-input --dump-only` flag already externalises the prompt to disk. The
 
 ```bash
 # Dump all four synthesis prompts (no API call)
-python ~/src/CampaignGenerator/synthesise_world_state.py \
+synthesise_world_state \
   --dossiers 'docs/ensemble/merged_dossiers/*.md' --dossier-min-facts 10 \
   --party config/party.yaml --threads docs/ensemble/threads.md \
   --dump-input /tmp/ws_prompt.md --dump-only
@@ -1071,7 +1071,7 @@ wait
 
 Instead of one large prompt per grounding doc, fan out by section — one Spark agent per NPC for `party.md`, one per faction for `planning.md`, one per location cluster for `world_state.md`. Merge the outputs in a final pass.
 
-This mirrors Stage 1's per-chapter fan-out (`ensemble_batch.py`). A `synthesis_batch.py` along the same lines would:
+This mirrors Stage 1's per-chapter fan-out (`ensemble_batch`). A `synthesis_batch.py` along the same lines would:
 - Fit larger campaigns in context (each agent sees only its slice)
 - Allow parallel execution across both Spark nodes
 - Make it cheap to re-run only the sections affected by new sessions
