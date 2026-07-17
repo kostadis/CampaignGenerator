@@ -1,6 +1,6 @@
 # Source Tree Restructure — Proposal
 
-Status: **proposal, decisions locked** (no code changed yet — pending review; see §6)
+Status: **implemented** (Phase 0 + all 9 Phase 1 clusters + Phase 4 docs pass landed on branch `worktree-source-tree-restructure`; see §3's per-cluster tracker and §5 for the phase history). Follow-up in §5 phase 5 (filing the `scrub_mechanics.py` deletion issue) is still pending.
 Adjacent docs: [architecture.md](../core/architecture.md), [SessionDocRefactor.md](SessionDocRefactor.md), [CLAUDE.md](../../CLAUDE.md)
 
 ## 1. Why
