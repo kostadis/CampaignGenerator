@@ -1067,10 +1067,11 @@ def _build_consistency_cmd() -> list[str] | tuple[None, str]:
         "--out", str(nd / "consistency_report.md"),
     ]
     cmd += _model_args()
-    # sd_consistency.py's --context is nargs="+", so ALL files go under one
-    # flag. Repeated `--context A --context B` would keep only the last (B),
-    # silently dropping the earlier context docs. Keep this LAST so nargs="+"
-    # doesn't swallow --out/--model.
+    # sd_consistency.py's --context is nargs="+" (now action="extend", so
+    # repeated `--context A --context B` accumulates correctly too — see
+    # server/routers/ensemble.py's _cmd_multi for that style). Still keep
+    # this LAST: nargs="+" greedily swallows subsequent bare tokens
+    # regardless of action, so it would otherwise eat --out/--model.
     cmd += ["--context", *context]
     return cmd
 

@@ -278,10 +278,10 @@ def main() -> None:
                              "--synthesize-only against the same --extract-dir (and "
                              "--roleplay-extract-dir if applicable) to produce the final "
                              "document(s).")
-    parser.add_argument("--context", nargs="+", metavar="FILE",
+    parser.add_argument("--context", nargs="+", action="extend", metavar="FILE",
                         help="Campaign context files to include (e.g. campaign_state.md "
                              "world_state.md party.md). Helps identify NPCs and track changes.")
-    parser.add_argument("--reference-summaries", nargs="+", metavar="FILE",
+    parser.add_argument("--reference-summaries", nargs="+", action="extend", metavar="FILE",
                         help="Pre-existing summaries (GMassistant recap, Saga20 summary, etc.) "
                              "to cross-reference during synthesis. The model will incorporate "
                              "anything present in these that is missing from the VTT extractions.")

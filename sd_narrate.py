@@ -115,7 +115,7 @@ def main() -> None:
     parser.add_argument("--reflections", action="store_true",
                         help="Inject campaign_state and world_state context into Pass 5 so "
                              "the narrator can draw on past events as memories.")
-    parser.add_argument("--context", nargs="+", metavar="FILE",
+    parser.add_argument("--context", nargs="+", action="extend", metavar="FILE",
                         help="Campaign context files for --reflections.")
     parser.add_argument("--dossier-dir", default=None, metavar="DIR",
                         help="Per-NPC dossier files (planning.py --build-dossiers). "

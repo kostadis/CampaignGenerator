@@ -47,6 +47,11 @@ const planningSynthMode = ref<'config' | 'flat'>('config')
 const planningNpcFiles = ref('')
 const planningArcScores = ref('')
 const planningContextFiles = ref('')
+// Overrides on top of the model's own scene-relevance curation — 'scene' is
+// planning.py --depth's default (exact no-op), so leaving these untouched
+// reproduces prior behavior. See EnsemblePlanningFields.vue.
+const planningDepth = ref<'scene' | 'full'>('scene')
+const planningForceInclude = ref('')
 
 onMounted(async () => {
   await config.load()
@@ -60,6 +65,8 @@ onMounted(async () => {
   planningNpcFiles.value = e.planning_npc || ''
   planningArcScores.value = e.planning_arc_scores || ''
   planningContextFiles.value = e.planning_context || ''
+  if (e.planning_depth === 'full') planningDepth.value = 'full'
+  planningForceInclude.value = e.planning_force_include || ''
 })
 
 // Auto-persist planning field edits — mirrors PlanningDocument.vue's own
@@ -77,10 +84,13 @@ function schedulePlanPersist() {
       planning_npc: planningNpcFiles.value,
       planning_arc_scores: planningArcScores.value,
       planning_context: planningContextFiles.value,
+      planning_depth: planningDepth.value,
+      planning_force_include: planningForceInclude.value,
     }).catch(() => {})
   }, 500)
 }
-watch([planningConfigPath, planningSynthMode, planningNpcFiles, planningArcScores, planningContextFiles],
+watch([planningConfigPath, planningSynthMode, planningNpcFiles, planningArcScores, planningContextFiles,
+       planningDepth, planningForceInclude],
   schedulePlanPersist)
 
 function synthesize() {
@@ -92,17 +102,26 @@ function synthesize() {
     party: partyConfigPath.value,
   }
   if (selectedDoc.value === 'planning') {
-    // Unlike PlanningDocument.vue, the ensemble endpoint always
-    // auto-detects config/planning.yaml server-side when planning_config is
-    // blank (there's no way to force "flat, even if a config exists" —
-    // see the warning shown in flat mode). So planning_config is sent
-    // unconditionally; the synthMode toggle only decides which fields are
-    // visible/editable, not which backend branch runs.
-    params.planning_config = planningConfigPath.value
+    // planning_mode tells the server which branch to run. In 'flat' mode
+    // (Explicit dossier list) the server skips planning.yaml auto-detection
+    // entirely, even if one exists on disk — so planning_config is only
+    // meaningful, and only sent, in 'config' mode.
+    params.planning_mode = planningSynthMode.value
+    if (planningSynthMode.value === 'config') {
+      params.planning_config = planningConfigPath.value
+    }
     params.npc = planningNpcFiles.value.split('\n').map(l => l.trim()).filter(Boolean)
     params.context = planningContextFiles.value.split('\n').map(l => l.trim()).filter(Boolean)
     if (planningSynthMode.value === 'flat') {
       params.arc_scores = planningArcScores.value.split('\n').map(l => l.trim()).filter(Boolean)
+    }
+    // 'scene' is the server-side default (exact no-op) — only send when overridden.
+    if (planningDepth.value === 'full') {
+      params.depth = 'full'
+    }
+    const forceInclude = planningForceInclude.value.split('\n').map(l => l.trim()).filter(Boolean)
+    if (forceInclude.length) {
+      params.force_include = forceInclude
     }
   } else {
     params.planning_config = planningConfigPath.value
@@ -162,6 +181,8 @@ async function promote(doc: string) {
         v-model:npc-files="planningNpcFiles"
         v-model:arc-scores="planningArcScores"
         v-model:context-files="planningContextFiles"
+        v-model:depth="planningDepth"
+        v-model:force-include="planningForceInclude"
       />
     </template>
 

@@ -49,10 +49,7 @@ Usage:
 
 import argparse
 import sys
-from dataclasses import dataclass, field
 from pathlib import Path
-
-import yaml
 
 from campaignlib import (
     DEFAULT_MODEL,
@@ -69,108 +66,25 @@ from campaignlib import (
     stream_api,
 )
 
-
-@dataclass
-class PartyCharacter:
-    name: str
-    sheet: Path
-    backstory: Path | None = None
-    dossier: Path | None = None
-    arc_score: Path | None = None
-    trackless: bool = False  # True when arc_score is explicitly null in config
-
-
-@dataclass
-class PartyConfig:
-    characters: list[PartyCharacter] = field(default_factory=list)
+# Import shared party config logic
+from server.party_config_shared import (
+    PartyCharacter,
+    PartyConfig,
+    load_party_config as _shared_load_party_config,
+)
 
 
 def load_party_config(path: Path) -> PartyConfig:
-    """Read a party config YAML file, validate every referenced file, and
-    return a PartyConfig.
-
-    The YAML shape is:
-
-        characters:
-          - name: Brewbarry
-            sheet: docs/party/brewbarry.md
-            backstory: docs/Backstory - Brewbarry.md   # optional
-            dossier: docs/ensemble/merged_dossiers/npc_brewbarry.md  # optional
-            arc_score: docs/tracking/brewbarry-score.md # optional
-          - name: Vukradin
-            sheet: docs/party/Vukradin.md
-            arc_score: null   # intentionally trackless — first-class state
-
-    `dossier` is the character's own ensemble-built current-state dossier
-    (from facts_to_state.py's merged_dossiers/) — narrative facts pulled from
-    actual play (relationships, decisions, arc progression) that the static
-    sheet/backstory don't carry. Which dossier file belongs to which PC is a
-    campaign-specific attribution decision, so it is always an explicit,
-    human-authored mapping here — never inferred by name-matching.
-
-    Distinction: `arc_score: null` (trackless by design) vs the key being
-    absent (unspecified — treated the same as omitted for now, but the
-    config author can audit it later).
-
-    Paths resolve against the config file's parent directory. Every
-    referenced file must exist — raises SystemExit on a missing file.
+    """CLI wrapper around server.party_config_shared.load_party_config that
+    prints to stderr and exits instead of raising, matching this script's
+    other error-handling. See the shared function's docstring for the YAML
+    shape and field semantics.
     """
     try:
-        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    except yaml.YAMLError as e:
-        print(f"Error: invalid YAML in {path}: {e}", file=sys.stderr)
+        return _shared_load_party_config(path)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
-
-    base = path.parent
-    chars_raw = raw.get("characters") or []
-    if not isinstance(chars_raw, list) or not chars_raw:
-        print(f"Error: {path} must define a non-empty 'characters' list", file=sys.stderr)
-        sys.exit(1)
-
-    def _resolve(rel: str, field_name: str, char_name: str) -> Path:
-        p = (base / rel).expanduser().resolve()
-        if not p.exists():
-            print(f"Error: party config references missing file for {char_name}.{field_name}: {p}",
-                  file=sys.stderr)
-            sys.exit(1)
-        return p
-
-    characters: list[PartyCharacter] = []
-    for entry in chars_raw:
-        if not isinstance(entry, dict):
-            print(f"Error: each character entry in {path} must be a mapping", file=sys.stderr)
-            sys.exit(1)
-        name = entry.get("name")
-        sheet_rel = entry.get("sheet")
-        if not name or not sheet_rel:
-            print(f"Error: character entry in {path} missing 'name' or 'sheet': {entry}",
-                  file=sys.stderr)
-            sys.exit(1)
-        sheet = _resolve(sheet_rel, "sheet", name)
-        backstory = _resolve(entry["backstory"], "backstory", name) if entry.get("backstory") else None
-        dossier = _resolve(entry["dossier"], "dossier", name) if entry.get("dossier") else None
-
-        # arc_score distinguishes three cases:
-        #   key absent → arc_score=None, trackless=False
-        #   key present, value null → arc_score=None, trackless=True
-        #   key present, value path → arc_score=Path, trackless=False
-        if "arc_score" in entry:
-            if entry["arc_score"] is None:
-                arc_score = None
-                trackless = True
-            else:
-                arc_score = _resolve(entry["arc_score"], "arc_score", name)
-                trackless = False
-        else:
-            arc_score = None
-            trackless = False
-
-        characters.append(PartyCharacter(
-            name=str(name), sheet=sheet, backstory=backstory, dossier=dossier,
-            arc_score=arc_score, trackless=trackless,
-        ))
-
-    return PartyConfig(characters=characters)
 
 
 def _render_party_block(party_config: PartyConfig, input_normalizer=None) -> str:
@@ -235,15 +149,15 @@ def main() -> None:
     parser.add_argument("--party-config", metavar="FILE", default=None,
                         help="Party config YAML mapping each PC to sheet/backstory/arc_score. "
                              "When set, --character/--backstory/--arc-scores are rejected.")
-    parser.add_argument("--character", "-c", nargs="+", metavar="FILE", default=[],
+    parser.add_argument("--character", "-c", nargs="+", action="extend", metavar="FILE", default=[],
                         help="Character sheet file(s)")
     parser.add_argument("--summaries", "-s", metavar="FILE",
                         help="Canonical timeline — the master narrative bible (large, will be chunked)")
-    parser.add_argument("--backstory", "-b", nargs="+", metavar="FILE", default=[],
+    parser.add_argument("--backstory", "-b", nargs="+", action="extend", metavar="FILE", default=[],
                         help="Backstory document(s) (optional)")
-    parser.add_argument("--arc-scores", "-a", nargs="+", metavar="FILE", default=[],
+    parser.add_argument("--arc-scores", "-a", nargs="+", action="extend", metavar="FILE", default=[],
                         help="Arc score mechanic document(s), one per character (optional)")
-    parser.add_argument("--context", nargs="+", metavar="FILE", default=[],
+    parser.add_argument("--context", nargs="+", action="extend", metavar="FILE", default=[],
                         help="Additional context files (e.g. campaign_state.md)")
     parser.add_argument("--output", "-o", required=True, metavar="FILE",
                         help="Where to save the party document. If this file already "

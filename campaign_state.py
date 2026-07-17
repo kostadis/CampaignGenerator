@@ -161,7 +161,7 @@ def main() -> None:
                              "'Tracked Items Status' section in the output. May be repeated to "
                              "load multiple tracking files (e.g. a module baseline plus per-arc "
                              "homebrew tracking).")
-    parser.add_argument("--track", nargs="+", metavar="ITEM",
+    parser.add_argument("--track", nargs="+", action="extend", metavar="ITEM",
                         help="One or more tracking items as inline arguments "
                              "(alternative to --track-file)")
     parser.add_argument("--chunk-size", type=int, default=60000, metavar="CHARS",
