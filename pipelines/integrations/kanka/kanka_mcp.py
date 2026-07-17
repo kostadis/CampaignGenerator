@@ -25,13 +25,12 @@ Design notes:
     (missing KANKA_TOKEN, missing input file) instead of stack traces.
 
 Setup:
-    pip install -r requirements.txt
+    pip install -e .   # registers the `kanka_mcp` console script
     # Register via .mcp.json — pass KANKA_TOKEN in the server's `env` block:
     # {
     #   "mcpServers": {
     #     "kanka": {
-    #       "command": "python",
-    #       "args": ["kanka_mcp.py"],
+    #       "command": "kanka_mcp",
     #       "env": {"KANKA_TOKEN": "<token>", "KANKA_BASE_URL": "http://localhost:8081"}
     #     }
     #   }
@@ -41,9 +40,9 @@ Setup:
 import os
 from pathlib import Path
 
-from kanka_client import KankaClient
-from kanka_push import apply_changes, parse_world_state, plan_changes
-from kanka_sync import build_world_state
+from .kanka_client import KankaClient
+from .kanka_push import apply_changes, parse_world_state, plan_changes
+from .kanka_sync import build_world_state
 
 DEFAULT_BASE_URL = os.environ.get("KANKA_BASE_URL", "http://localhost:8081")
 

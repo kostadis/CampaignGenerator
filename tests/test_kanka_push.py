@@ -9,8 +9,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import kanka_push
-import kanka_sync
+from pipelines.integrations.kanka import kanka_push
+from pipelines.integrations.kanka import kanka_sync
 
 
 # ── parse_entity_block ─────────────────────────────────────────────────────────

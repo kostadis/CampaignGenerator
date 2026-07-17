@@ -33,8 +33,8 @@ Private entities (is_private=true) are GM-secret and skipped by default; pass
 Usage:
     export KANKA_TOKEN=<your-api-token>
     export KANKA_BASE_URL=http://localhost:8081   # default
-    python kanka_sync.py --campaign 1 --output docs/world_state.generated.md
-    python kanka_sync.py --campaign 1 --stdout        # preview, no file write
+    kanka_sync --campaign 1 --output docs/world_state.generated.md
+    kanka_sync --campaign 1 --stdout        # preview, no file write
 """
 
 import argparse
@@ -45,7 +45,7 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
-from kanka_client import KankaClient
+from .kanka_client import KankaClient
 
 # Render order mirrors CampaignGenerator's TYPE_HEADINGS so the output is a
 # drop-in for the distill / synthesise pipeline.

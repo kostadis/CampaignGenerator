@@ -6,7 +6,7 @@ workspace directories:
 
   campaign   — mcp_server.py       (all campaigns that have config.yaml)
   5etools    — launch_5etools_mcp.py  (campaigns that have refs.yaml)
-  kanka      — kanka_mcp.py        (only when --kanka-token is given)
+  kanka      — kanka_mcp console script (only when --kanka-token is given)
 
 Usage
 -----
@@ -34,15 +34,16 @@ import sys
 from pathlib import Path
 
 CAMPAIGNS_ROOT = Path("~/src/campaigns").expanduser()
-# This file lives at pipelines/workspace/configure_mcp.py; the servers it
-# points to (mcp_server.py, launch_5etools_mcp.py, kanka_mcp.py) still live
-# at the repo root as of this move, so resolve the repo root explicitly
-# rather than assuming they're this file's own siblings.
+# This file lives at pipelines/workspace/configure_mcp.py; mcp_server.py and
+# launch_5etools_mcp.py still live at the repo root as of this move, so
+# resolve the repo root explicitly rather than assuming they're this file's
+# own siblings. kanka_mcp.py has since moved to pipelines/integrations/kanka/
+# and gained a `kanka_mcp` console-script entry point (see pyproject.toml),
+# so it's invoked by that bare command below instead of a repo-root path.
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 MCP_SERVER = str(REPO_ROOT / "mcp_server.py")
 FIVETOOLS_SERVER = str(REPO_ROOT / "launch_5etools_mcp.py")
-KANKA_SERVER = str(REPO_ROOT / "kanka_mcp.py")
 
 
 def find_campaigns(roots: list[Path]) -> list[Path]:
@@ -75,8 +76,8 @@ def build_server_block(campaign_dir: Path, kanka_token: str, kanka_url: str) -> 
 
     if kanka_token:
         servers["kanka"] = {
-            "command": "python3",
-            "args": [KANKA_SERVER],
+            "command": "kanka_mcp",
+            "args": [],
             "env": {
                 "KANKA_TOKEN": kanka_token,
                 "KANKA_BASE_URL": kanka_url,

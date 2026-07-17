@@ -2,8 +2,9 @@
 Minimal Kanka CE REST API client.
 Covers the entity types needed for campaign world-building.
 
-Usage:
-    python kanka_client.py
+Usage (manual smoke test — this file has no console-script entry, it's a
+library used by kanka_mcp / kanka_push / kanka_sync):
+    python pipelines/integrations/kanka/kanka_client.py
 
 Requires:
     pip install requests

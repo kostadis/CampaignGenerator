@@ -21,6 +21,9 @@ Repository = "https://github.com/kostadis/CampaignGenerator"
 [project.scripts]
 new_workspace = "pipelines.workspace.new_workspace:main"
 configure_mcp = "pipelines.workspace.configure_mcp:main"
+kanka_mcp = "pipelines.integrations.kanka.kanka_mcp:main"
+kanka_push = "pipelines.integrations.kanka.kanka_push:main"
+kanka_sync = "pipelines.integrations.kanka.kanka_sync:main"
 
 [project.optional-dependencies]
 test = [

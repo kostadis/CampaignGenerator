@@ -39,8 +39,8 @@ Safety:
 
 Usage:
     export KANKA_TOKEN=<your-api-token>
-    python kanka_push.py --campaign 1 --input docs/world_state.md            # dry run
-    python kanka_push.py --campaign 1 --input docs/world_state.md --apply    # commit
+    kanka_push --campaign 1 --input docs/world_state.md            # dry run
+    kanka_push --campaign 1 --input docs/world_state.md --apply    # commit
 """
 
 import argparse
@@ -49,8 +49,8 @@ import re
 import sys
 from pathlib import Path
 
-import kanka_sync
-from kanka_client import KankaClient
+from . import kanka_sync
+from .kanka_client import KankaClient
 
 # Doc heading → Kanka entity type. Built from kanka_sync's forward mapping so
 # the two stay in lock-step, plus the bare "Threads" heading some docs use.
