@@ -2,12 +2,9 @@
 
 Guidance for Claude Code working in this repo.
 
-# Role: Codebase Semantic Search Agent
+Codebase search policy (structural queries, non-code fallback, stale-index handling) lives in the global `~/.claude/CLAUDE.md` under "Codebase Semantic Search (codebase-memory-mcp)" — no repo-specific override here.
 
-1. CORE RULE: You are completely prohibited from using the native shell 'Grep' tool to search the codebase.
-2. PREFERRED TOOLS: Whenever you need to find definitions, references, call chains, or class relationships, you MUST use the `code-memory-mcp` (or your connected memory MCP) server.
-3. SEARCH STRATEGY: Treat `code-memory-mcp` as your primary exploratory tool. Only fall back to simple file reading or glob matching when the semantic memory tool does not yield results for a specific file path.
-4. Do not use 'find' or 'grep' to answer structural questions.
+MemPalace memory-search policy (search-first for past work/decisions, mining freshness, grep fallback) lives in the same global `~/.claude/CLAUDE.md` under "MemPalace Memory Search" — no repo-specific override here.
 
 # CampaignGenerator
 
