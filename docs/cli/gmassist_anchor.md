@@ -55,7 +55,7 @@ For each scene, Claude reads the enhanced transcript chunks falling within that 
 
 **gmassistant role:** scope boundary. The scene name determines which chunks get processed for this scene.
 
-Verbatim VTT roleplay quotes are also collected separately (via `vtt_summary.py`) and stored in the Quote Ledger. Auto-assign maps each quote to a scene by matching the quote's source chunk number to the scene's chunk range — deterministic, no guessing.
+Verbatim VTT roleplay quotes are also collected separately (via `vtt_summary`) and stored in the Quote Ledger. Auto-assign maps each quote to a scene by matching the quote's source chunk number to the scene's chunk range — deterministic, no guessing.
 
 ### Pass 5 — Narration
 The narration LLM receives a structured prompt in this order:

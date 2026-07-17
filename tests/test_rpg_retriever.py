@@ -232,7 +232,8 @@ class TestReconcile:
         assert hit["cost"] == "expensive"
         assert hit["book_id"] == 7
         assert hit["convert_command"][1].endswith("pdf_to_5etools_v2.py")
-        assert hit["ingest_command"][1].endswith("fivetools_ingest.py")
+        # Console-script name, not a `<python> fivetools_ingest.py` invocation.
+        assert hit["ingest_command"][0] == "fivetools_ingest"
 
     def test_drawer_suppresses_expensive_for_same_book(self):
         mp = _fake_mp_result([
@@ -358,7 +359,9 @@ def test_retrieve_mode_c_cheap_pin():
     assert hit["cost"] == "cheap"
     assert hit["score"] == 100
     cmd = hit["ingest_command"]
-    assert cmd[2].endswith("bestiary-mm.json")
+    # Console-script name, not a `<python> fivetools_ingest.py` invocation.
+    assert cmd[0] == "fivetools_ingest"
+    assert cmd[1].endswith("bestiary-mm.json")
     assert "--filter" in cmd
     assert cmd[cmd.index("--filter") + 1] == "name=Drow Priestess of Lolth"
     assert "--palace" in cmd

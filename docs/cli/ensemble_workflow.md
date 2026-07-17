@@ -30,13 +30,13 @@ docs/ensemble/merged_dossiers/*.md             — type-merged dossiers, ready f
   ↓  synthesise_world_state                    (API or subscription)
 docs/world_state_draft.md
 
-  ↓  campaign_state.py --synthesize-only       (API — auto-stages world_state + threads)
+  ↓  campaign_state --synthesize-only          (API — auto-stages world_state + threads)
 docs/campaign_state_draft.md
 
-  ↓  party.py --party-config config/party.yaml (API — human-authored roster, no staging)
+  ↓  party --party-config config/party.yaml    (API — human-authored roster, no staging)
 docs/party_draft.md
 
-  ↓  planning.py --npc <cut>                   (API)
+  ↓  planning --npc <cut>                      (API)
 docs/planning_draft.md
 ```
 
@@ -229,7 +229,7 @@ passes:
 `annotate_pov: true` prepends a `[Continuing — Date: X, Speaker: Y]` or `[Continuing — Speaker: X, Scene: Y]` banner to any chunk that doesn't open with its own `##`-level heading. Two chapter-heading conventions are recognized:
 
 - **Legacy** (Phandalin and OOTA's earlier chapters): `### Speaker` headings mark POV sections, `## date` marks date boundaries (two tiers).
-- **Current** (`assemble.py`, OOTA's later chapters): `## Speaker — Scene` marks both the speaker and scene in one `##`-level heading, with no `###` tier.
+- **Current** (`assemble`, OOTA's later chapters): `## Speaker — Scene` marks both the speaker and scene in one `##`-level heading, with no `###` tier.
 
 Without this annotation, chunking at character boundaries drops whichever heading is in scope, and the model invents generic labels ("Narrator", "Speaker", or literal "I") as dossier subjects.
 
@@ -505,7 +505,7 @@ Fact-count is a **proxy for persistence**, and the right threshold scales with t
 This resolves a real failure mode: if you only build the long-term doc, "what happened in Chapter 1" has no correct home, and a synthesis model asked for a timeline will either drop the transient entity (silent information loss) or mis-attribute its events to a surviving neighbour. Don't patch transient entities into `world_state.md` — that's the long-term doc where their absence is correct. Give them the short-term doc instead.
 
 ```bash
-python ~/src/CampaignGenerator/build_recent_events.py \
+build_recent_events \
   --corpus 'docs/ensemble/per_chapter/*/merged.json' \
   --output docs/recent_events.md \
   --window 0            # 0 = all chapters; N = keep only the last N (slide forward as the campaign grows)
@@ -654,9 +654,9 @@ claude -p \
 
 > **Gotcha — `claude -p` inside a project can write the *live* doc, not stdout.**
 > Run from a campaign directory, the headless `claude` inherits the project's tool
-> permissions. `synthesise_world_state` and `planning.py` system prompts ask for
+> permissions. `synthesise_world_state` and `planning` system prompts ask for
 > a document *body*, so the agent prints it to stdout (→ your `>` redirect — correct).
-> But `campaign_state.py` and `party.py` system prompts say "write
+> But `campaign_state` and `party` system prompts say "write
 > `docs/campaign_state.md`" / "write `docs/party.md`", so the agent **uses the Write
 > tool and overwrites the live grounding doc**, emitting only a summary to stdout —
 > your `*_draft.md` ends up holding the summary while the live doc is clobbered with
@@ -671,14 +671,14 @@ claude -p \
 > `claude -p` bills the metered API instead of the subscription. Prefix every call
 > with `env -u ANTHROPIC_API_KEY` to force subscription billing.
 
-`campaign_state.py`, `party.py`, and `planning.py` all support `--dump-input` / `--dump-only`; use the same pattern as above for those docs (sections 3c–3e show the subscription path for each). Note `--output` is required by argparse even with `--dump-only` (it is the eventual write target; the dump just stops before the API call).
+`campaign_state`, `party`, and `planning` all support `--dump-input` / `--dump-only`; use the same pattern as above for those docs (sections 3c–3e show the subscription path for each). Note `--output` is required by argparse even with `--dump-only` (it is the eventual write target; the dump just stops before the API call).
 
 ### 3c. campaign_state — staging (now automatic)
 
-`campaign_state.py` expects its synthesis input as `extract_*.md` files. Historically this required a manual `mkdir` + `cp` staging step; as of the auto-staging change, omitting `--extract-dir` with `--synthesize-only` stages `docs/world_state_draft.md` and `docs/ensemble/threads.md` for you (into `<output_dir>/state_staging/campaign_state/`, always re-copied from the current source files — run world_state synthesis and the threads stage first):
+`campaign_state` expects its synthesis input as `extract_*.md` files. Historically this required a manual `mkdir` + `cp` staging step; as of the auto-staging change, omitting `--extract-dir` with `--synthesize-only` stages `docs/world_state_draft.md` and `docs/ensemble/threads.md` for you (into `<output_dir>/state_staging/campaign_state/`, always re-copied from the current source files — run world_state synthesis and the threads stage first):
 
 ```bash
-python ~/src/CampaignGenerator/campaign_state.py \
+campaign_state \
   --synthesize-only \
   --output docs/campaign_state_draft.md \
   --model claude-opus-4-8
@@ -689,7 +689,7 @@ Pass `--extract-dir` explicitly to point at your own pre-staged extracts instead
 **Subscription path.** Use `--dump-input` + `--dump-only` then pipe to `claude -p`:
 
 ```bash
-python ~/src/CampaignGenerator/campaign_state.py \
+campaign_state \
   --synthesize-only \
   --output docs/campaign_state_draft.md \
   --dump-input /tmp/campaign_state_prompt.md \
@@ -756,10 +756,10 @@ Then run with `--extract-dir /tmp/phandalin-cstate/extracts` (the explicit path 
 
 ### 3d. party — preferred: party.yaml config (now automatic)
 
-`party.py` has a "characters-only" mode that needs neither an extract pass nor `--synthesize-only` when given `--party-config` — it goes straight from the config to synthesis. But characters-only means no session extracts either, so without `--context` it has no source for current location / active quests / party reputation and will correctly report them as absent. Pass `world_state_draft.md` (or `world_state.md`) and `campaign_state_draft.md` (or `campaign_state.md`) as context — whichever exists. The Ensemble UI's Synthesize button now does both of these automatically (party-config + context) whenever `config/party.yaml` (or `party.yaml`) exists at the campaign root; no staged extracts required:
+`party` has a "characters-only" mode that needs neither an extract pass nor `--synthesize-only` when given `--party-config` — it goes straight from the config to synthesis. But characters-only means no session extracts either, so without `--context` it has no source for current location / active quests / party reputation and will correctly report them as absent. Pass `world_state_draft.md` (or `world_state.md`) and `campaign_state_draft.md` (or `campaign_state.md`) as context — whichever exists. The Ensemble UI's Synthesize button now does both of these automatically (party-config + context) whenever `config/party.yaml` (or `party.yaml`) exists at the campaign root; no staged extracts required:
 
 ```bash
-python ~/src/CampaignGenerator/party.py \
+party \
   --party-config config/party.yaml \
   --context docs/world_state_draft.md docs/campaign_state_draft.md \
   --output docs/party_draft.md \
@@ -769,7 +769,7 @@ python ~/src/CampaignGenerator/party.py \
 **Subscription path.**
 
 ```bash
-python ~/src/CampaignGenerator/party.py \
+party \
   --party-config config/party.yaml \
   --context docs/world_state_draft.md docs/campaign_state_draft.md \
   --output docs/party_draft.md \
@@ -784,7 +784,7 @@ claude -p \
 
 `party.yaml` maps each PC's name to a sheet + optional backstory + optional arc-score file + optional `dossier` (see `config/party.example.yaml`) — build it once via the Party Document page's config editor and every future ensemble run reuses it, no re-staging per run.
 
-**`dossier:`** points at the PC's own ensemble-built current-state dossier (`docs/ensemble/merged_dossiers/npc_<name>.md`) — the narrative facts (relationships, decisions, arc progression) pulled from actual play that the static sheet/backstory don't carry, and the same category of information the old per-tool `party.py --summaries` extraction used to produce fresh each run. Rendered into the `# PARTY` block next to sheet/backstory/arc_score. Which dossier belongs to which PC is campaign-specific, so it's always an explicit mapping in `party.yaml` — never inferred by name-matching.
+**`dossier:`** points at the PC's own ensemble-built current-state dossier (`docs/ensemble/merged_dossiers/npc_<name>.md`) — the narrative facts (relationships, decisions, arc progression) pulled from actual play that the static sheet/backstory don't carry, and the same category of information the old per-tool `party --summaries` extraction used to produce fresh each run. Rendered into the `# PARTY` block next to sheet/backstory/arc_score. Which dossier belongs to which PC is campaign-specific, so it's always an explicit mapping in `party.yaml` — never inferred by name-matching.
 
 **Fallback — no party.yaml yet.** Stage each PC's dossier as an extract by hand instead (which dossiers count as PCs is campaign-specific, so this step isn't automated):
 
@@ -797,7 +797,7 @@ cp docs/ensemble/merged_dossiers/npc_brewbarry*.md /tmp/phandalin-party/extracts
 cp docs/ensemble/merged_dossiers/npc_soma*.md      /tmp/phandalin-party/extracts/extract_003_soma.md
 cp docs/ensemble/merged_dossiers/npc_vukradin*.md  /tmp/phandalin-party/extracts/extract_004_vukradin.md
 
-python ~/src/CampaignGenerator/party.py \
+party \
   --synthesize-only \
   --extract-dir /tmp/phandalin-party/extracts \
   --backstory 'docs/Backstory - Brewbarry.md' \
@@ -807,11 +807,11 @@ python ~/src/CampaignGenerator/party.py \
   --model claude-opus-4-8
 ```
 
-**Caveat:** `party_draft.md` (either path) has no D&D Beyond-sourced class/level/arc-scores — it's the narrative/role half only. If you need those, run the full `party.py` pass with character sheet PDFs.
+**Caveat:** `party_draft.md` (either path) has no D&D Beyond-sourced class/level/arc-scores — it's the narrative/role half only. If you need those, run the full `party` pass with character sheet PDFs.
 
 ### 3e. planning — importance cut
 
-`planning.py` consumes NPC dossier files directly with `--npc`. Feed only the entities worth forward-looking planning; the full dossier set produces a bloated, unprioritized doc.
+`planning` consumes NPC dossier files directly with `--npc`. Feed only the entities worth forward-looking planning; the full dossier set produces a bloated, unprioritized doc.
 
 **PCs auto-excluded via `party.yaml`.** Ensemble extraction doesn't distinguish PCs from NPCs, so `merged_dossiers/` gets an `npc_<pc-name>.md` for every PC right alongside real NPCs. The Ensemble UI's planning auto-detect (`_all_planning_npc_files` / `_planning_npc_passthrough` in `server/routers/ensemble.py`) excludes any dossier bound to a PC via `party.yaml`'s `dossier:` field (§3d) — same "explicit, never inferred by name-matching" rule as the party-block attribution. A PC with no `dossier:` binding in `party.yaml` still shows up in the NPC list; either add the binding or drop them via `narrative_importance.yaml`'s `force_exclude` below.
 
@@ -918,7 +918,7 @@ PY
 **Passing arc score files and context docs.** The Threat Tracker quality improves significantly when you pass the threat arc score files and any hand-authored context docs (e.g. `KP.md`, `CounterForce.md`). The 2026-06-17 run used:
 
 ```bash
-python ~/src/CampaignGenerator/planning.py \
+planning \
   --npc "${NPC_FILES[@]}" \
   --arc-scores \
     'docs/tracking/aletra-sortorra-arc.md' \
@@ -936,7 +936,7 @@ python ~/src/CampaignGenerator/planning.py \
 **Subscription path.** Build the NPC_FILES array the same way, then dump and synthesize directly:
 
 ```bash
-python ~/src/CampaignGenerator/planning.py \
+planning \
   --npc "${NPC_FILES[@]}" \
   --arc-scores \
     'docs/tracking/aletra-sortorra-arc.md' \
@@ -957,7 +957,7 @@ python ~/src/CampaignGenerator/planning.py \
 **Caveats:**
 - Fact-count is a recurrence proxy, not narrative importance. A pivotal one-scene NPC can fall below the cut (e.g. Aletra: 59 facts but only a 3-chapter span); always sanity-check the PASS/skip list and add manual entries as needed.
 - The `chapters:` field in merged dossiers is a `min-max` range, not a list. The span heuristic (`max - min + 1`) can overcount if the NPC appeared in only two widely-separated chapters. Cross-check suspicious entries against the dossier content.
-- Threat arc scores in `--arc-scores` must match the planning.py binding format — the system prompt reads `<!-- Threat arc score: filename -->` comments to bind a score file to the NPC it tracks. If a score file has no corresponding NPC dossier in `--npc`, the Threat Tracker row will still appear but without dossier context.
+- Threat arc scores in `--arc-scores` must match the `planning` binding format — the system prompt reads `<!-- Threat arc score: filename -->` comments to bind a score file to the NPC it tracks. If a score file has no corresponding NPC dossier in `--npc`, the Threat Tracker row will still appear but without dossier context.
 - The `narrator` / `speaker` filter above removes POV-label artifacts. Check for those in the PASS/skip output.
 - The `Fury of the Wild` score (Adabra) was not present as a formal arc score file in the 2026-06-17 run — it appears in CLAUDE.md but has no mechanic file. The Threat Tracker will be missing that row. Track it manually or create the file.
 
@@ -1037,16 +1037,16 @@ synthesise_world_state \
   --party config/party.yaml --threads docs/ensemble/threads.md \
   --dump-input /tmp/ws_prompt.md --dump-only
 
-python ~/src/CampaignGenerator/campaign_state.py \
+campaign_state \
   --synthesize-only --extract-dir /tmp/cstate/extracts \
   --dump-input /tmp/cs_prompt.md --dump-only
 
-python ~/src/CampaignGenerator/party.py \
+party \
   --party-config config/party.yaml \
   --context docs/world_state_draft.md docs/campaign_state_draft.md \
   --dump-input /tmp/party_prompt.md --dump-only
 
-python ~/src/CampaignGenerator/planning.py \
+planning \
   --npc "${NPC_FILES[@]}" \
   --dump-input /tmp/plan_prompt.md --dump-only
 

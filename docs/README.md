@@ -16,9 +16,9 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [Post-session umbrella](cli/post_session.md) — short "which entry point matches how I want to work" page.
 - [gm-assist anchor](cli/gmassist_anchor.md) — why the gm-assist document is the authoritative event skeleton.
 - [Grounding documents](cli/grounding_docs.md) — when and how to refresh `campaign_state`, `world_state`, `planning`, `party`.
-- [Ensemble workflow](cli/ensemble_workflow.md) — end-to-end: chapters → `ensemble_batch.py` → `facts_to_state.py` → synthesis (API + subscription paths); Phandalin worked example. **Start here for grounding-doc refreshes.**
-- [Ensemble extraction](cli/ensemble_extraction.md) — single-file and multi-file `ensemble.py` deep dive; `--plan` YAML format, key flags, output layout.
-- [planning.py workflow](cli/planning_pipeline.md) — the two-phase build-dossiers → synthesize design.
+- [Ensemble workflow](cli/ensemble_workflow.md) — end-to-end: chapters → `ensemble_batch` → `facts_to_state` → synthesis (API + subscription paths); Phandalin worked example. **Start here for grounding-doc refreshes.**
+- [Ensemble extraction](cli/ensemble_extraction.md) — single-file and multi-file `ensemble` deep dive; `--plan` YAML format, key flags, output layout.
+- [planning workflow](cli/planning_pipeline.md) — the two-phase build-dossiers → synthesize design.
 
 ## Web UI
 
@@ -44,7 +44,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 
 ## Design notes
 
-- [Source tree restructure](design/SourceTreeRestructure.md) — proposal to split the 62 flat root scripts into subsystem packages, grouped by pipeline; decisions locked, not yet implemented.
+- [Source tree restructure](design/SourceTreeRestructure.md) — splits the 62 flat root scripts into subsystem packages under `pipelines/`, `entity_registry/`, and `session_doc/`, grouped by pipeline; migration complete.
 - [RLM paper comparison](design/rlm_paper_comparison.md) — how this system relates to (and diverges from) the published RLM paper.
 - [Chapter-extract consolidation (killed)](design/ChapterExtractConsolidation_killed.md) — why consolidating the three extract passes into one per-chapter extract regressed all three grounding docs, and the depth-vs-breadth lesson.
 

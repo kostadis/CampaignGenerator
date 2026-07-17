@@ -58,7 +58,7 @@ Sections, top to bottom:
 | **② Extract** | (no separate knobs — uses Batch + Backend; the Re-Extract button always forwards `--force`) |
 | **③ Plan & Check** | Reuse enhanced sections for downstream Narrate |
 | **④ Narrate** | Token limit · Prose mode · Reflections · Narration genre |
-| **⑤ Assemble** | (placeholder for a polish toggle once `polish.py` is wired) |
+| **⑤ Assemble** | (placeholder for a polish toggle once `polish` is wired) |
 
 Backend uses the existing `_TYPED_TO_CONFIG_KEY` mapping in `scene_editor.py`: typed `ui.session_doc.*` ↔ legacy `CONFIG[*]`. The path fields formerly under "Show overrides" (`extract_dir`, `roleplay_extract_dir`, `summary_extract_dir`) are gone from the UI — they're populated server-side by `derive_campaign_paths` and not part of the editor's PUT payload.
 

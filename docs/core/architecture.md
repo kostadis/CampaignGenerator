@@ -105,7 +105,7 @@ flowchart LR
     VTT -.-> QLED
 ```
 
-Side-pipelines that build the grounding docs the above and `prep.py` consume (run periodically, not per-session):
+Side-pipelines that build the grounding docs the above and `prep` consume (run periodically, not per-session):
 
 ```mermaid
 flowchart LR

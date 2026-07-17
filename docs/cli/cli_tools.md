@@ -2,7 +2,7 @@
 
 Per-script invocations and flags. All scripts auto-detect `config.yaml` from CWD, falling back to `<script-dir>/config/config.yaml`.
 
-## prep.py
+## prep
 
 Single-beat or session-arc encounter generation.
 
@@ -53,7 +53,7 @@ Three sequential API calls per beat:
 
 If the Lore Oracle response contains the word `FLAGS`, the user is prompted before continuing to Stage 2.
 
-## campaign_state.py
+## campaign_state
 
 Generates `campaign_state.md` — a grounding document that tells all planning scripts what has been completed and what is currently true. Prevents hallucination of completed content as still active.
 
@@ -75,7 +75,7 @@ The output contains: Completed Encounters & Quests, Resolved Plot Threads, NPC C
 
 `campaign_state.md` is loaded first in `config.yaml` so it is the first context `prep` sees.
 
-## make_tracking.py
+## make_tracking
 
 Extracts a tracking list from an adventure module markdown. Items are phrased neutrally (subject + event type, no outcome) so `campaign_state` can determine whether each one has happened yet.
 
@@ -85,20 +85,20 @@ make_tracking "Dragon of Icespire Peak.md" --output docs/tracking.txt
 
 Then pass the result to `campaign_state --track-file`. Review and edit the list before use — the model may include events that have not yet occurred in your campaign.
 
-## query.py
+## query
 
 Ad-hoc search tool. Scans session summaries for a specific event, NPC, or topic and synthesizes a direct answer. Useful when `campaign_state.md` is missing something and you want to verify whether it happened.
 
 ```bash
-python query.py summaries.md "Did the party clear Gnomengarde?"
-python query.py summaries.md "What happened with Grundar at Icespire Hold?"
-python query.py summaries.md "Xalvosh" --hits-only   # raw matching extracts only
-python query.py summaries.md "Kraken Society arc score" -o notes/kraken.md
+query summaries.md "Did the party clear Gnomengarde?"
+query summaries.md "What happened with Grundar at Icespire Hold?"
+query summaries.md "Xalvosh" --hits-only   # raw matching extracts only
+query summaries.md "Kraken Society arc score" -o notes/kraken.md
 ```
 
 Uses a smaller default chunk size (40k) for more precise hits. The filter pass runs silently; only the synthesis streams to the terminal.
 
-## planning.py
+## planning
 
 Generates `planning.md` from NPC dossiers, threat arc score documents, and session summaries. Two modes:
 
@@ -128,7 +128,7 @@ planning \
 
 For dossier merge rules and cross-pipeline alias propagation, see `docs/dossier_aliases.md`.
 
-## party.py
+## party
 
 Generates `party.md` from character sheets, session summaries, backstories, and arc score mechanics.
 
@@ -167,16 +167,16 @@ party \
 
 **Output file — draft, not in-place rewrite.** `party.md` is hand-edited downstream (session summaries and the GM add content the LLM never sees), so if `--output` already exists `party` writes a sibling `<stem>.candidate<ext>` (e.g. `docs/party.candidate.md`) and prints a `diff -u` command for manual merge. The live `party.md` is never clobbered. Pass `--overwrite` only when bootstrapping a fresh party.md.
 
-## dnd_sheet.py
+## dnd_sheet
 
 Converts a D&D Beyond character sheet PDF to structured markdown using Claude's vision API.
 
 ```bash
-python dnd_sheet.py Soma.pdf --output soma.md
-python dnd_sheet.py *.pdf --output-dir ~/campaigns/characters/
+dnd_sheet Soma.pdf --output soma.md
+dnd_sheet *.pdf --output-dir ~/campaigns/characters/
 ```
 
-## npc_table.py
+## npc_table
 
 Generates a markdown NPC reference table (Name / Faction / Current State / Motivations) from one or more campaign documents.
 
@@ -186,7 +186,7 @@ npc_table --docs world_state planning  # combine multiple docs
 npc_table --output npc_state.md
 ```
 
-## distill.py
+## distill
 
 Converts a large session-summary file into a structured `world_state.md` via a two-pass extract → synthesize pipeline. Intermediate extractions are saved so the synthesis can be re-run without re-extracting.
 
@@ -195,7 +195,7 @@ distill summaries.md --output docs/world_state.md
 distill --synthesize-only --extract-dir docs/distill_extractions --output docs/world_state.md
 ```
 
-## transform.py
+## transform
 
 Converts a NotebookLLM planning document into `prep` input format.
 
@@ -215,22 +215,22 @@ dialogue handling), see [`docs/session_doc_pipeline.md`](session_doc_pipeline.md
 ```
 gm-assist.md                                       (human-authored recap)
     │
-    ▼  Stage 1 — enhance_summary.py                (single cached call · --batch ✓)
+    ▼  Stage 1 — enhance_summary               (single cached call · --batch ✓)
 session-summary.md                                 ◄── HUMAN REVIEW
     │
-    ▼  Stage 2 — scene_extract.py                  (per-scene · cached VTT · --batch ✓)
+    ▼  Stage 2 — scene_extract                  (per-scene · cached VTT · --batch ✓)
 scene_extractions/NN_<slug>.md                     ◄── HUMAN REVIEW
     │
-    ▼  Stage 3a — sd_consistency.py                (Pass 1: continuity check, optional)
-    ▼  Stage 3b — sd_plan.py                       (Pass 3: one narrator per scene)
-    ▼  Stage 3c — sd_narrate.py --per-scene-output (Pass 5: per-scene narration)
+    ▼  Stage 3a — sd_consistency                (Pass 1: continuity check, optional)
+    ▼  Stage 3b — sd_plan                       (Pass 3: one narrator per scene)
+    ▼  Stage 3c — sd_narrate --per-scene-output (Pass 5: per-scene narration)
 narration/session_doc_scene_NN_<slug>.md           ◄── HUMAN REVIEW
     │
-    ▼  Stage 4 — assemble.py
+    ▼  Stage 4 — assemble
 session_doc.md
 ```
 
-### enhance_summary.py
+### enhance_summary
 
 Stage 1: enrich a `gm-assist.md` recap with VTT detail. Single cached
 call. Output preserves the recap's section structure (Summary, Memorable
@@ -238,19 +238,19 @@ Moments, Scenes, NPCs, Locations, Items, Spells) and fills in details +
 verbatim moments the recap missed.
 
 ```bash
-python enhance_summary.py session.vtt \
+enhance_summary session.vtt \
     --gmassist  gm-assist.md \
     --output    session-summary.md
 
 # Batch mode (Anthropic Message Batches API; 50% off list price)
-python enhance_summary.py ... --batch                # block + poll
-python enhance_summary.py ... --batch --submit-only  # detach; sidecar in <output>.batch.json
-python enhance_summary.py ... --batch --collect      # retrieve from sidecar
+enhance_summary ... --batch                # block + poll
+enhance_summary ... --batch --submit-only  # detach; sidecar in <output>.batch.json
+enhance_summary ... --batch --collect      # retrieve from sidecar
 ```
 
 Default model: `claude-sonnet-4-6`. `--fast` switches to Haiku.
 
-### scene_extract.py
+### scene_extract
 
 Stage 2: per-scene verbatim quote extraction. The full VTT is cached as a
 system prefix; the script issues one call per scene named in the
@@ -259,20 +259,20 @@ session-summary's `## Scenes` section. Output is one
 files are skipped.
 
 ```bash
-python scene_extract.py session.vtt \
+scene_extract session.vtt \
     --summary    session-summary.md \
     --output-dir scene_extractions/ \
     [--dossier-dir docs/npcs/]      # rewrites NPC aliases to canonical names
 
 # Batch mode — N scenes submitted as one batch; cache hits compound
-python scene_extract.py ... --batch                # block + poll
-python scene_extract.py ... --batch --submit-only  # detach; sidecar in <output-dir>/.batch.json
-python scene_extract.py ... --batch --collect      # retrieve from sidecar
+scene_extract ... --batch                # block + poll
+scene_extract ... --batch --submit-only  # detach; sidecar in <output-dir>/.batch.json
+scene_extract ... --batch --collect      # retrieve from sidecar
 ```
 
 Default model: `claude-sonnet-4-6`.
 
-### sd_consistency.py / sd_plan.py / sd_narrate.py
+### sd_consistency / sd_plan / sd_narrate
 
 Stage 3: post-Phase-5 split of the old `session_doc.py` monolith into
 three single-LLM-call tools. Each reads its inputs from disk and writes
@@ -281,12 +281,12 @@ files, see [`docs/session_doc_pipeline.md`](session_doc_pipeline.md).
 
 ```bash
 # Pass 1 — continuity check (optional; runs only if --context is supplied)
-python sd_consistency.py session-summary.md \
+sd_consistency session-summary.md \
     --context docs/campaign_state.md docs/world_state.md docs/party.md \
     --out     narration/consistency_report.md
 
 # Pass 3 — narrative plan (assigns one narrator per scene)
-python sd_plan.py \
+sd_plan \
     --scene-extractions scene_extractions/ \
     --characters        "Vukradin, Valphine, Soma, Brewbarry" \
     --party             docs/party.md \
@@ -295,7 +295,7 @@ python sd_plan.py \
 # REVIEW narration/plan.md before running narrate
 
 # Pass 5 — per-scene narration (one file per scene)
-python sd_narrate.py session-summary.md \
+sd_narrate session-summary.md \
     --plan              narration/plan.md \
     --scene-extractions scene_extractions/ \
     --voice-dir         voice/ \
@@ -304,35 +304,35 @@ python sd_narrate.py session-summary.md \
     --per-scene-output  narration/
 
 # Re-narrate a single scene after editing its quote file
-python sd_narrate.py ... --scene 3
+sd_narrate ... --scene 3
 ```
 
 Default model: `claude-sonnet-4-6`. `--fast` switches to Haiku.
 
-### assemble.py
+### assemble
 
 Stage 4: concatenate the per-scene narration files into a single session
 document.
 
 ```bash
-python assemble.py narration/ \
+assemble narration/ \
     --output session_doc.md \
     --title  "Chapter 37 — A Gem of a Problem"
 ```
 
-### vtt_summary.py
+### vtt_summary
 
 Convert a Zoom `.vtt` transcript into a structured session summary using
-the same two-pass extract → synthesize pipeline as `distill.py`. Use
+the same two-pass extract → synthesize pipeline as `distill`. Use
 this to seed `summaries.md` from a recording before running grounding
 docs. The Stage 1 / Stage 2 flow above is preferred when you have a
 `gm-assist.md` recap.
 
 ```bash
-python vtt_summary.py session.vtt --output summaries/session_12.md
+vtt_summary session.vtt --output summaries/session_12.md
 
 # With a pre-existing recap as anchor (recommended when available)
-python vtt_summary.py session.vtt \
+vtt_summary session.vtt \
     --output           session-summary.md \
     --reference-summaries gm-assist.md \
     --context docs/campaign_state.md docs/world_state.md docs/party.md
@@ -345,12 +345,12 @@ Editor to surface quotes that didn't make it into a `scene_extractions/`
 file. Not typically run from the CLI; see
 [`docs/web/web_ui.md`](../web/web_ui.md) for the editor workflow.
 
-## new_workspace.py
+## new_workspace
 
 Creates a new campaign workspace.
 
 ```bash
-python new_workspace.py ~/campaigns/icespire --name "Icespire Peak"
+new_workspace ~/campaigns/icespire --name "Icespire Peak"
 ```
 
 Generates a `config.yaml` with absolute paths so it works from any directory. Pass `--world-state`, `--mechanics`, `--planning`, `--party`, or `--campaign-state` to point at existing files instead of creating placeholders.
@@ -363,11 +363,11 @@ Logs are saved to `log_dir` (from config) as timestamped markdown files. Single-
 
 ```bash
 # 1. Create workspace
-python new_workspace.py ~/campaigns/icespire --name "Icespire Peak"
+new_workspace ~/campaigns/icespire --name "Icespire Peak"
 cd ~/campaigns/icespire
 
 # 2. Convert character sheets
-python ~/CampaignGenerator/dnd_sheet.py *.pdf --output-dir docs/characters/
+dnd_sheet *.pdf --output-dir docs/characters/
 
 # 3. Extract tracking list from adventure module
 make_tracking "adventure.md" --output docs/tracking.txt

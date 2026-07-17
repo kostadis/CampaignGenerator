@@ -9,7 +9,7 @@ They are inputs, not outputs. The scripts generate them; you review and keep the
 
 > **Building them from a local ensemble extraction instead of the per-tool
 > Claude path?** See [`ensemble_workflow.md`](ensemble_workflow.md) — the
-> end-to-end runbook (ensemble_batch.py → facts_to_state.py → dossiers → synthesis),
+> end-to-end runbook (ensemble_batch → facts_to_state → dossiers → synthesis),
 > with Phandalin worked examples and both API and subscription synthesis paths.
 
 ---

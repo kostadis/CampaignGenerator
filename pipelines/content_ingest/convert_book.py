@@ -1,7 +1,7 @@
 """
 convert_book.py — thin wrapper around pdf-translators' pdf_to_5etools_v2.
 
-Runs the conversion, then prints the exact fivetools_ingest.py command
+Runs the conversion, then prints the exact fivetools_ingest command
 to run next. Does **not** auto-ingest — the plan mandates an explicit
 user review in adventure_editor / toc_editor before the JSON lands in
 MemPalace.
@@ -74,22 +74,20 @@ def format_ingest_hint(
     json_path: Path,
     *,
     book_id: int | None = None,
-    ingest_script: str = "fivetools_ingest.py",
-    python: str = sys.executable,
+    ingest_script: str = "fivetools_ingest",
 ) -> str:
     """Render the exact shell command the user should run next.
 
-    NOTE: the ``ingest_script``/``python`` defaults print a
-    ``<python> fivetools_ingest.py <path>`` invocation, which predates
-    fivetools_ingest's move to pipelines/content_ingest/ and its
-    ``fivetools_ingest`` console-script entry point. Left as-is here
-    (source-tree restructure is a git-mv + import-path exercise, not a
-    behavior change — see docs/design/SourceTreeRestructure.md §2) because
-    tests/test_suggest_conversion.py pins this exact default string. A
-    correct fix (default to ``ingest_script="fivetools_ingest"``, drop the
-    ``python`` prefix) is follow-up work, not part of this migration.
+    ``ingest_script`` defaults to the ``fivetools_ingest`` console-script
+    entry point (``[project.scripts]`` in pyproject.toml) rather than a
+    ``<python> fivetools_ingest.py`` invocation — fivetools_ingest.py moved
+    to pipelines/content_ingest/ in the source-tree restructure
+    (docs/design/SourceTreeRestructure.md) and is no longer a
+    same-directory sibling script, so there is no reason to prefix the
+    printed hint with a python interpreter path; the console script
+    resolves via the venv's ``bin/`` regardless of the caller's cwd.
     """
-    parts = [shlex.quote(python), ingest_script, shlex.quote(str(json_path))]
+    parts = [ingest_script, shlex.quote(str(json_path))]
     if book_id is not None:
         parts += ["--book-id", str(book_id)]
     return " ".join(parts)

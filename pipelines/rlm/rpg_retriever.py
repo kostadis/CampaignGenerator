@@ -10,8 +10,8 @@ Returns a single ranked-then-tiered hit list with discriminated records:
                                 further by ``cost``:
         * ``cost="cheap"``    — 5etools-canonical JSON on disk; surfaced
                                 via :mod:`fivetools_catalog`. Carries a
-                                ``ingest_command`` argv that runs
-                                ``fivetools_ingest.py``.
+                                ``ingest_command`` argv that runs the
+                                ``fivetools_ingest`` console script.
         * ``cost="expensive"`` — rpg-library PDF needing pdf-translators
                                 conversion. Carries a ``convert_command``
                                 + ``ingest_command`` argv pair.
@@ -309,13 +309,16 @@ def _shape_cheap_candidate(
     cand,
     *,
     palace: str | None,
-    python: str = "",
-    ingest_script: str = "fivetools_ingest.py",
+    ingest_script: str = "fivetools_ingest",
 ) -> dict:
-    """Convert a fivetools_catalog.Candidate into an external hit dict."""
-    import sys as _sys
-    py = python or _sys.executable
+    """Convert a fivetools_catalog.Candidate into an external hit dict.
 
+    ``ingest_script`` defaults to the ``fivetools_ingest`` console-script
+    entry point (``[project.scripts]`` in pyproject.toml), not a
+    ``<python> fivetools_ingest.py`` invocation — fivetools_ingest.py moved
+    to pipelines/content_ingest/ in the source-tree restructure and is no
+    longer a same-directory sibling script.
+    """
     if cand.entity_type in ("chapter", "section"):
         # Adventure prose — filter by chapter ordinal.
         ordinal = cand.chapter_ordinal if cand.chapter_ordinal is not None else 0
@@ -326,7 +329,7 @@ def _shape_cheap_candidate(
         if cand.source:
             filter_arg += f",source={cand.source}"
 
-    argv = [py, ingest_script, cand.file_path, "--filter", filter_arg]
+    argv = [ingest_script, cand.file_path, "--filter", filter_arg]
     if palace:
         argv += ["--palace", palace]
 
@@ -627,12 +630,13 @@ def _retrieve_cheap_pin(
 ) -> dict:
     """Mode C cheap pin — synthesize a single cheap-candidate hit
     pointing at ``file_path`` with the GM-supplied filter, no search.
-    """
-    import sys as _sys
 
+    The ingest command uses the ``fivetools_ingest`` console-script name
+    (no ``<python> fivetools_ingest.py`` prefix — see ``_shape_cheap_candidate``).
+    """
     fp = str(Path(file_path).expanduser())
     name_guess = Path(fp).stem
-    argv = [_sys.executable, "fivetools_ingest.py", fp]
+    argv = ["fivetools_ingest", fp]
     if pin_filter:
         argv += ["--filter", pin_filter]
     if palace:

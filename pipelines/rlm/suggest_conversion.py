@@ -6,8 +6,8 @@ drawers in MemPalace yet (a "pointer" result in the plan's three-state
 taxonomy), it needs to surface a concrete suggestion to the user:
 
     * the PDF filepath on disk
-    * the exact ``convert_book.py`` invocation to run
-    * the exact ``fivetools_ingest.py`` invocation to run afterwards
+    * the exact ``convert_book`` invocation to run
+    * the exact ``fivetools_ingest`` invocation to run afterwards
     * a rough token estimate so the user knows the cost envelope
 
 This module is import-friendly (``build_suggestion``) and also runs as
@@ -48,7 +48,11 @@ logger = logging.getLogger(__name__)
 _DEFAULT_RPGLIB_URL = wiring_get("rpg_library_url")
 _DEFAULT_PDF_TRANSLATORS = Path.home() / "src" / "mytools" / "pdf-translators"
 _DEFAULT_CONVERT_SCRIPT_NAME = "pdf_to_5etools_v2.py"
-_DEFAULT_INGEST_SCRIPT = "fivetools_ingest.py"
+# The `fivetools_ingest` console-script entry point ([project.scripts] in
+# pyproject.toml), not a `<python> fivetools_ingest.py` invocation —
+# fivetools_ingest.py moved to pipelines/content_ingest/ in the
+# source-tree restructure and is no longer a same-directory sibling script.
+_DEFAULT_INGEST_SCRIPT = "fivetools_ingest"
 
 # product_type values that map to v2 --type book (vs the default --type adventure).
 _BOOK_PRODUCT_TYPES = frozenset(
@@ -258,7 +262,10 @@ def build_suggestion(
     convert_command = [python, str(script_path), filepath]
     convert_command.extend(_map_product_type_to_v2_flags(product_type))
 
-    ingest_command = [python, ingest_script, output_json]
+    # No `python` prefix: ingest_script is the fivetools_ingest
+    # console-script name, resolved via PATH/venv bin, not a sibling
+    # script needing an explicit interpreter.
+    ingest_command = [ingest_script, output_json]
     if palace:
         ingest_command += ["--palace", palace]
     if book.get("id") is not None:

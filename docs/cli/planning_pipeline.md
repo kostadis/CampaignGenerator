@@ -1,4 +1,4 @@
-# planning.py — How the NPC Synthesize Workflow Works
+# planning — How the NPC Synthesize Workflow Works
 
 `planning` produces `planning.md` — the GM reference for active threats, NPC
 intentions, and plot threads. It runs in two separate phases that are designed to

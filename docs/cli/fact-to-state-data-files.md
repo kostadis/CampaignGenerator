@@ -1,4 +1,4 @@
-# `facts_to_state.py` — the data files it needs
+# `facts_to_state` — the data files it needs
 
 `facts_to_state` is the **compression layer** of the ensemble pipeline: it
 takes the tens of thousands of atomic facts produced by `ensemble_extract` /
