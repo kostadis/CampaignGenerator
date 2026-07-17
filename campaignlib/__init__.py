@@ -73,18 +73,17 @@ from .scenes import (
 from .pipelines import run_extract_pipeline, run_synthesize_pipeline
 from .citations import (
     Citation,
-    Endnote,
+    CitationIdAssigner,
+    IdCitation,
     extract_citations,
-    extract_endnote_definitions,
-    find_dangling_refs,
-    find_endnote_refs,
-    find_orphan_definitions,
+    find_citation_refs,
     find_uncited_bullets,
     find_unreferenced_claims,
     render_report,
+    render_sources_section,
     render_synthesis_report,
     verify_citations,
-    verify_endnotes,
+    verify_id_citations,
 )
 
 __all__ = [
@@ -158,16 +157,15 @@ __all__ = [
     "run_synthesize_pipeline",
     # citations (distill.py extract/synthesize grounding checks)
     "Citation",
-    "Endnote",
+    "CitationIdAssigner",
+    "IdCitation",
     "extract_citations",
-    "extract_endnote_definitions",
-    "find_dangling_refs",
-    "find_endnote_refs",
-    "find_orphan_definitions",
+    "find_citation_refs",
     "find_uncited_bullets",
     "find_unreferenced_claims",
     "render_report",
+    "render_sources_section",
     "render_synthesis_report",
     "verify_citations",
-    "verify_endnotes",
+    "verify_id_citations",
 ]

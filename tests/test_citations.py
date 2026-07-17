@@ -6,17 +6,16 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from campaignlib.citations import (
+    CitationIdAssigner,
     extract_citations,
-    extract_endnote_definitions,
-    find_dangling_refs,
-    find_endnote_refs,
-    find_orphan_definitions,
+    find_citation_refs,
     find_uncited_bullets,
     find_unreferenced_claims,
     render_report,
+    render_sources_section,
     render_synthesis_report,
     verify_citations,
-    verify_endnotes,
+    verify_id_citations,
 )
 
 SOURCE = (
@@ -166,11 +165,39 @@ def test_render_report_clean_when_nothing_flagged():
     assert "No flagged claims" in report
 
 
-# ── Synthesis endnotes ───────────────────────────────────────────────────────
+# ── CitationIdAssigner ───────────────────────────────────────────────────────
 
-KNOWN_CITATIONS = {
-    "declared himself Supreme Prophet of the Earth Temple, and named the party",
-    "killed him in his private chamber",
+def test_citation_id_assigner_tags_sequentially():
+    assigner = CitationIdAssigner()
+    out = assigner('- Claim one. [cite: "quote one"]\n- Claim two. [cite: "quote two"]')
+    assert out == (
+        '- Claim one. [cite:1 "quote one"]\n'
+        '- Claim two. [cite:2 "quote two"]'
+    )
+    assert assigner.id_to_quote == {1: "quote one", 2: "quote two"}
+
+
+def test_citation_id_assigner_continues_across_calls():
+    # Must number sequentially across every file it's called on, in call
+    # order — matches run_synthesize_pipeline's per-file rendering loop.
+    assigner = CitationIdAssigner()
+    assigner('- Claim. [cite: "quote a"]')
+    assigner('- Claim. [cite: "quote b"]')
+    assert assigner.id_to_quote == {1: "quote a", 2: "quote b"}
+
+
+def test_citation_id_assigner_leaves_non_citation_text_untouched():
+    assigner = CitationIdAssigner()
+    out = assigner('## NPCs\n- Faction: Earth Temple.\n')
+    assert out == '## NPCs\n- Faction: Earth Temple.\n'
+    assert assigner.id_to_quote == {}
+
+
+# ── Synthesis citation IDs ───────────────────────────────────────────────────
+
+KNOWN_IDS = {
+    1: "declared himself Supreme Prophet of the Earth Temple, and named the party",
+    2: "killed him in his private chamber",
 }
 
 SYNTH_DOC = (
@@ -178,30 +205,18 @@ SYNTH_DOC = (
     '- Hartsch became Supreme Prophet after the coup. [1]\n'
     '- Faction: Earth Temple.\n'
     '- Romag was killed in his chamber. [2]\n'
-    '\n'
-    '## Citations\n'
-    '\n'
-    '[1] "declared himself Supreme Prophet of the Earth Temple, and named the party"\n'
-    '[2] "killed him in his private chamber"\n'
 )
 
 
-def test_extract_endnote_definitions_parses_citations_section():
-    assert extract_endnote_definitions(SYNTH_DOC) == {
-        1: "declared himself Supreme Prophet of the Earth Temple, and named the party",
-        2: "killed him in his private chamber",
-    }
-
-
-def test_find_endnote_refs_finds_trailing_markers():
-    refs = find_endnote_refs(SYNTH_DOC)
+def test_find_citation_refs_finds_trailing_markers():
+    refs = find_citation_refs(SYNTH_DOC)
     assert ("- Hartsch became Supreme Prophet after the coup. [1]", [1]) in refs
     assert ("- Romag was killed in his chamber. [2]", [2]) in refs
 
 
-def test_find_endnote_refs_handles_multiple_markers():
+def test_find_citation_refs_handles_multiple_markers():
     text = '- Merged claim from two sources. [2][5]'
-    assert find_endnote_refs(text) == [("- Merged claim from two sources. [2][5]", [2, 5])]
+    assert find_citation_refs(text) == [("- Merged claim from two sources. [2][5]", [2, 5])]
 
 
 def test_find_unreferenced_claims_flags_missing_marker():
@@ -213,46 +228,40 @@ def test_find_unreferenced_claims_exempts_classification_labels():
     assert find_unreferenced_claims(SYNTH_DOC) == []
 
 
-def test_find_dangling_refs_flags_undefined_marker():
-    text = '- Claim citing a marker nobody defined. [9]\n\n## Citations\n\n[1] "real quote"\n'
-    assert find_dangling_refs(text) == [9]
+def test_verify_id_citations_true_for_known_id():
+    results = verify_id_citations(SYNTH_DOC, KNOWN_IDS)
+    assert len(results) == 2
+    assert all(r.verified for r in results)
 
 
-def test_find_orphan_definitions_flags_unused_entry():
-    text = '- Claim. [1]\n\n## Citations\n\n[1] "used quote"\n[2] "never referenced"\n'
-    assert find_orphan_definitions(text) == [2]
-
-
-def test_verify_endnotes_true_for_known_citation():
-    results = verify_endnotes(SYNTH_DOC, KNOWN_CITATIONS)
-    assert all(e.verified for e in results)
-
-
-def test_verify_endnotes_false_for_fabricated_quote():
-    text = '- Claim. [1]\n\n## Citations\n\n[1] "a quote synthesis made up"\n'
-    results = verify_endnotes(text, KNOWN_CITATIONS)
+def test_verify_id_citations_false_for_id_the_model_was_never_shown():
+    text = '- Claim citing a fabricated ID. [99]'
+    results = verify_id_citations(text, KNOWN_IDS)
+    assert results[0].number == 99
     assert results[0].verified is False
 
 
-def test_verify_endnotes_tolerates_quote_style_and_whitespace_drift():
-    text = '- Claim. [1]\n\n## Citations\n\n[1] "declared himself  Supreme Prophet of the Earth Temple, and named the party"\n'
-    results = verify_endnotes(text, KNOWN_CITATIONS)
-    assert results[0].verified is True
-
-
-def test_render_synthesis_report_lists_all_flag_categories():
-    endnotes = verify_endnotes(
-        '- Claim. [1]\n\n## Citations\n\n[1] "fabricated quote"\n', KNOWN_CITATIONS)
-    report = render_synthesis_report(
-        endnotes, unreferenced=["- Missing an endnote."],
-        dangling=[9], orphans=[3])
-    assert "fabricated quote" in report
-    assert "Missing an endnote." in report
-    assert "[9]" in report
-    assert "[3]" in report
+def test_render_synthesis_report_lists_flagged_categories():
+    results = verify_id_citations('- Claim. [99]', KNOWN_IDS)
+    report = render_synthesis_report(results, unreferenced=["- Missing a citation."])
+    assert "[99]" in report
+    assert "Missing a citation." in report
 
 
 def test_render_synthesis_report_clean_when_nothing_flagged():
-    endnotes = verify_endnotes(SYNTH_DOC, KNOWN_CITATIONS)
-    report = render_synthesis_report(endnotes, unreferenced=[], dangling=[], orphans=[])
+    results = verify_id_citations(SYNTH_DOC, KNOWN_IDS)
+    report = render_synthesis_report(results, unreferenced=[])
     assert "No flagged claims" in report
+
+
+# ── render_sources_section ───────────────────────────────────────────────────
+
+def test_render_sources_section_lists_only_used_ids():
+    section = render_sources_section({1}, KNOWN_IDS)
+    assert '[1] "declared himself Supreme Prophet of the Earth Temple, and named the party"' in section
+    assert "[2]" not in section
+
+
+def test_render_sources_section_flags_unknown_id():
+    section = render_sources_section({99}, KNOWN_IDS)
+    assert "<unknown citation>" in section

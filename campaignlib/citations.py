@@ -10,12 +10,16 @@ for the GM to review at the existing --extract-only checkpoint rather than
 silently trusted or silently discarded.
 
 distill_synthesize.md carries the same discipline into the merge pass, but
-as endnotes: every claim ends with `[n]`, and a `## Citations` section at
-the end of the document maps each `n` to a quote copied verbatim from one
-of the extraction notes' own `[cite: "..."]` tags. Because synthesis is
-required to copy a citation forward rather than invent one, verifying an
-endnote is a cheap exact-membership check against the set of citations the
-extract pass already produced — no fuzzy source matching needed.
+as numbered citation IDs rather than re-quoted text: CitationIdAssigner
+tags every `[cite: "..."]` tag synthesis is shown with a stable ID before
+the input reaches the model — `[cite:42 "..."]` — and the prompt asks it
+to cite `[42]`, never to re-type the quote. That keeps synthesis output
+small (an `[n]` marker costs a few tokens; a re-typed 5-25 word quote
+costs many, once per claim) and makes verification exact-match rather
+than fuzzy: the model can only ever cite an ID it was shown, so checking
+an ID is legitimate is a dict-key lookup, not a substring search. The
+human-readable Sources section is assembled entirely in code from the IDs
+actually used — the model never spends output tokens reproducing quotes.
 """
 
 import re
@@ -142,52 +146,56 @@ def render_report(results_by_file: dict[str, tuple[list[Citation], list[str]]]) 
     return "\n".join(lines) + "\n"
 
 
-# ── Synthesis endnotes ───────────────────────────────────────────────────────
+# ── Synthesis citation IDs ───────────────────────────────────────────────────
 
-_ENDNOTE_DEF_RE = re.compile(
-    rf'^\[(?P<num>\d+)\]\s*[{_QUOTE_OPEN}](?P<quote>.*?)[{_QUOTE_CLOSE}]\s*$',
-    re.MULTILINE,
+_CITE_TAG_INJECT_RE = re.compile(
+    rf'\[cite:\s*[{_QUOTE_OPEN}](?P<quote>.*?)[{_QUOTE_CLOSE}]\]'
 )
-_TRAILING_ENDNOTE_REFS_RE = re.compile(r'((?:\[\d+\])+)\s*$')
-_CITATIONS_HEADING_RE = re.compile(r'^##\s*Citations\s*$', re.IGNORECASE | re.MULTILINE)
+_TRAILING_CITE_REFS_RE = re.compile(r'((?:\[\d+\])+)\s*$')
+
+
+class CitationIdAssigner:
+    """Tags every `[cite: "..."]` in text fed to it with a stable, sequential
+    ID — `[cite:42 "..."]` — so synthesis can cite `[42]` instead of
+    re-typing the quote.
+
+    Use as `run_synthesize_pipeline`'s `input_normalizer`: it's called once
+    per extraction file, in file order, while the synthesis prompt is being
+    assembled — before any API call — so `.id_to_quote` is complete by the
+    time the pipeline call returns. IDs are assigned in call order, so the
+    same instance must not be reused across unrelated synthesis runs.
+    """
+
+    def __init__(self):
+        self.id_to_quote: dict[int, str] = {}
+        self._next_id = 1
+
+    def __call__(self, body: str) -> str:
+        def _assign(m: re.Match) -> str:
+            quote = m.group('quote')
+            cid = self._next_id
+            self._next_id += 1
+            self.id_to_quote[cid] = quote
+            return f'[cite:{cid} "{quote}"]'
+        return _CITE_TAG_INJECT_RE.sub(_assign, body)
 
 
 @dataclass
-class Endnote:
+class IdCitation:
     number: int
-    quote: str
+    claim: str
     verified: bool
 
 
-def _split_body_and_citations(text: str) -> tuple[str, str]:
-    """Split a synthesized document into (body, citations_section).
-
-    If no `## Citations` heading is found, the whole document is treated as
-    body and the citations section is empty — every claim will then
-    correctly show up as unreferenced rather than silently skipped.
-    """
-    m = _CITATIONS_HEADING_RE.search(text)
-    if not m:
-        return text, ''
-    return text[:m.start()], text[m.end():]
-
-
-def extract_endnote_definitions(text: str) -> dict[int, str]:
-    """Parse the `## Citations` section into {number: quote}."""
-    _, citations_text = _split_body_and_citations(text)
-    return {int(m.group('num')): m.group('quote') for m in _ENDNOTE_DEF_RE.finditer(citations_text)}
-
-
-def find_endnote_refs(text: str) -> list[tuple[str, list[int]]]:
-    """Return (claim, [endnote numbers]) for every body claim ending in a
-    trailing run of `[n]` markers, e.g. `...before the coup. [2][5]`."""
-    body, _ = _split_body_and_citations(text)
+def find_citation_refs(text: str) -> list[tuple[str, list[int]]]:
+    """Return (claim, [citation IDs]) for every claim ending in a trailing
+    run of `[n]` markers, e.g. `...before the coup. [12][47]`."""
     refs = []
-    for line in body.splitlines():
+    for line in text.splitlines():
         stripped = line.strip()
         if not stripped.startswith('- '):
             continue
-        m = _TRAILING_ENDNOTE_REFS_RE.search(stripped)
+        m = _TRAILING_CITE_REFS_RE.search(stripped)
         if m:
             nums = [int(n) for n in re.findall(r'\d+', m.group(1))]
             refs.append((stripped, nums))
@@ -195,86 +203,68 @@ def find_endnote_refs(text: str) -> list[tuple[str, list[int]]]:
 
 
 def find_unreferenced_claims(text: str) -> list[str]:
-    """Return body claims with no trailing `[n]` marker and no exemption
-    (same Faction:/Current location:/Current goals:/bare-absence exemption
-    as the extract pass's find_uncited_bullets)."""
-    body, _ = _split_body_and_citations(text)
+    """Return claims with no trailing `[n]` marker and no exemption (same
+    Faction:/Current location:/Current goals:/bare-absence exemption as the
+    extract pass's find_uncited_bullets)."""
     unreferenced = []
-    for line in body.splitlines():
+    for line in text.splitlines():
         stripped = line.strip()
         if (stripped.startswith('- ')
-                and not _TRAILING_ENDNOTE_REFS_RE.search(stripped)
+                and not _TRAILING_CITE_REFS_RE.search(stripped)
                 and not _is_exempt_from_citation(stripped)):
             unreferenced.append(stripped)
     return unreferenced
 
 
-def find_dangling_refs(text: str) -> list[int]:
-    """Endnote numbers referenced inline with no matching `## Citations` entry."""
-    definitions = extract_endnote_definitions(text)
-    referenced = {n for _, nums in find_endnote_refs(text) for n in nums}
-    return sorted(referenced - definitions.keys())
-
-
-def find_orphan_definitions(text: str) -> list[int]:
-    """`## Citations` entries never referenced inline — a hygiene issue,
-    not a hallucination risk (the quote is still real, just unused)."""
-    definitions = extract_endnote_definitions(text)
-    referenced = {n for _, nums in find_endnote_refs(text) for n in nums}
-    return sorted(definitions.keys() - referenced)
-
-
-def verify_endnotes(text: str, known_citations: set[str]) -> list[Endnote]:
-    """Check every `## Citations` entry's quote is an exact (normalized)
-    member of `known_citations` — the union of `[cite: "..."]` quotes
-    already present in the extraction notes synthesis was given. Synthesis
-    is required to copy a citation forward, not invent one, so this is
-    set-membership rather than a fuzzy substring search.
+def verify_id_citations(text: str, known_ids: dict[int, str]) -> list[IdCitation]:
+    """Check every citation ID referenced in `text` is a key in `known_ids`
+    — the IDs CitationIdAssigner actually showed the model during synthesis.
+    Synthesis can only ever cite an ID it saw, never invent a new one or a
+    new quote, so this is exact membership, not fuzzy text matching.
     """
-    known_normalized = {_normalize(q) for q in known_citations}
-    definitions = extract_endnote_definitions(text)
     return [
-        Endnote(number=n, quote=q, verified=bool(q) and _normalize(q) in known_normalized)
-        for n, q in sorted(definitions.items())
+        IdCitation(number=n, claim=claim, verified=n in known_ids)
+        for claim, nums in find_citation_refs(text)
+        for n in nums
     ]
 
 
-def render_synthesis_report(endnotes: list[Endnote], unreferenced: list[str],
-                             dangling: list[int], orphans: list[int]) -> str:
+def render_synthesis_report(results: list[IdCitation], unreferenced: list[str]) -> str:
     """Render a synthesis_citation_report.md body.
 
-    endnotes     — from verify_endnotes(); unverified entries are flagged.
+    results      — from verify_id_citations(); unverified entries are flagged.
     unreferenced — claims with no [n] marker, from find_unreferenced_claims().
-    dangling     — [n] used inline with no matching `## Citations` entry.
-    orphans      — `## Citations` entries never referenced inline (hygiene only).
     """
-    unverified = [e for e in endnotes if not e.verified]
+    unverified = [r for r in results if not r.verified]
     lines = [
         "# Synthesis Citation Report",
         "",
-        "Generated by distill.py's synthesis citation check (plain set-membership,"
-        " not a model call). Every claim in the synthesized document is expected"
-        " to carry an `[n]` endnote whose quote was copied verbatim from the"
-        " extraction notes' own `[cite: \"...\"]` tags.",
+        "Generated by distill.py's synthesis citation check (plain ID lookup,"
+        " not a model call). Every claim in the synthesized document is"
+        " expected to carry a citation ID — [n] — copied from the extraction"
+        " notes' [cite:n \"...\"] tags.",
     ]
-    if not unverified and not unreferenced and not dangling and not orphans:
-        lines += ["", "No flagged claims — every endnote traces to a citation"
-                       " already present in the extraction notes."]
+    if not unverified and not unreferenced:
+        lines += ["", "No flagged claims — every citation ID traces to one the"
+                       " model was actually shown during synthesis."]
         return "\n".join(lines) + "\n"
     if unverified:
-        lines += ["", "### Endnotes not found in any extraction file (candidate fabrication)"]
-        for e in unverified:
-            lines.append(f'- [{e.number}] "{e.quote}"')
+        lines += ["", "### Citation IDs not shown to the model during synthesis (candidate fabrication)"]
+        for r in unverified:
+            lines.append(f"- [{r.number}] cited by: {r.claim}")
     if unreferenced:
-        lines += ["", "### Claims missing an endnote"]
+        lines += ["", "### Claims missing a citation ID"]
         for claim in unreferenced:
             lines.append(f"- {claim}")
-    if dangling:
-        lines += ["", "### Endnote markers with no matching Citations entry"]
-        for n in dangling:
-            lines.append(f"- [{n}]")
-    if orphans:
-        lines += ["", "### Citations entries never referenced (hygiene only, not a hallucination risk)"]
-        for n in orphans:
-            lines.append(f"- [{n}]")
+    return "\n".join(lines) + "\n"
+
+
+def render_sources_section(used_ids: set[int], known_ids: dict[int, str]) -> str:
+    """Render a `## Sources` section for the IDs actually referenced in the
+    synthesized document — assembled entirely in code from IDs the model
+    saw during synthesis, so the model never spends output tokens
+    reproducing quote text."""
+    lines = ["## Sources", ""]
+    for n in sorted(used_ids):
+        lines.append(f'[{n}] "{known_ids.get(n, "<unknown citation>")}"')
     return "\n".join(lines) + "\n"

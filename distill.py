@@ -29,9 +29,8 @@ from campaignlib import (
     add_backend_args,
     build_alias_normalizer,
     client_from_args,
-    extract_citations,
-    find_dangling_refs,
-    find_orphan_definitions,
+    CitationIdAssigner,
+    find_citation_refs,
     find_uncited_bullets,
     find_unreferenced_claims,
     format_npc_roster,
@@ -40,11 +39,12 @@ from campaignlib import (
     load_alias_map,
     prepare_chunks,
     render_report,
+    render_sources_section,
     render_synthesis_report,
     run_extract_pipeline,
     run_synthesize_pipeline,
     verify_citations,
-    verify_endnotes,
+    verify_id_citations,
 )
 
 # Per-bullet [cite: "..."] tags roughly double a bullet's length over the
@@ -96,34 +96,33 @@ def check_citations(text: str, normalize, extract_files: list[Path],
         print(f"  {flagged} flagged claim(s) for review — see {report_path}")
 
 
-def check_synthesis_citations(world_state: str, extract_files: list[Path], extract_dir: Path) -> None:
-    """Verify every `[n]` endnote in the synthesized doc against the union of
-    `[cite: "..."]` quotes already present in the extraction notes; print a
+def check_synthesis_citations(world_state: str, known_ids: dict[int, str], extract_dir: Path) -> str:
+    """Verify every citation ID in the synthesized doc against the IDs
+    CitationIdAssigner actually showed the model during synthesis; print a
     summary and, if anything is flagged, write synthesis_citation_report.md.
+    Returns `world_state` with a mechanically-rendered `## Sources` section
+    appended for the IDs actually used — the model never spends output
+    tokens reproducing quote text, so this is the only place the quotes
+    re-appear in the final document.
 
-    Deterministic — no model call, no fuzzy source matching. Synthesis is
-    required to copy a citation forward rather than invent one, so this is
-    plain set membership.
+    Deterministic — no model call, no fuzzy text matching. Synthesis can
+    only ever cite an ID it was shown, never invent a new one, so this is
+    exact ID lookup.
     """
-    known_citations = {
-        quote
-        for f in extract_files
-        for _, quote in extract_citations(f.read_text(encoding="utf-8"))
-    }
-    endnotes = verify_endnotes(world_state, known_citations)
+    results = verify_id_citations(world_state, known_ids)
     unreferenced = find_unreferenced_claims(world_state)
-    dangling = find_dangling_refs(world_state)
-    orphans = find_orphan_definitions(world_state)
 
-    verified = sum(1 for e in endnotes if e.verified)
-    flagged = (len(endnotes) - verified) + len(unreferenced) + len(dangling) + len(orphans)
-    print(f"  Synthesis citation check: {verified}/{len(endnotes)} endnotes verified, "
-          f"{len(unreferenced)} claim(s) missing an endnote.")
+    verified = sum(1 for r in results if r.verified)
+    flagged = (len(results) - verified) + len(unreferenced)
+    print(f"  Synthesis citation check: {verified}/{len(results)} citation IDs verified, "
+          f"{len(unreferenced)} claim(s) missing a citation.")
     if flagged:
         report_path = extract_dir / "synthesis_citation_report.md"
-        report_path.write_text(
-            render_synthesis_report(endnotes, unreferenced, dangling, orphans), encoding="utf-8")
+        report_path.write_text(render_synthesis_report(results, unreferenced), encoding="utf-8")
         print(f"  {flagged} flagged item(s) for review — see {report_path}")
+
+    used_ids = {n for _, nums in find_citation_refs(world_state) for n in nums}
+    return world_state.rstrip() + "\n\n" + render_sources_section(used_ids, known_ids)
 
 
 def main() -> None:
@@ -226,16 +225,17 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize | model: {args.model}]")
     print("=" * 60)
+    id_assigner = CitationIdAssigner()
     world_state = run_synthesize_pipeline(
         client,
         source_groups=[("", extract_files)],
         synthesize_system=SYNTHESIZE_SYSTEM,
         model=args.model,
-        input_normalizer=normalize,
+        input_normalizer=lambda body: id_assigner(normalize(body)),
         system_suffix=roster,
     )
     print("=" * 60)
-    check_synthesis_citations(world_state, extract_files, extract_dir)
+    world_state = check_synthesis_citations(world_state, id_assigner.id_to_quote, extract_dir)
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(world_state.strip() + "\n", encoding="utf-8")
