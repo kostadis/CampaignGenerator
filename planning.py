@@ -127,6 +127,52 @@ def _read_normalized(p: Path, normalize) -> str:
     return normalize(body) if normalize else body
 
 
+def _synthesis_directives(force_include: list[str] | None, depth: str) -> str:
+    """Explicit, human-authored overrides to SYNTHESIZE_SYSTEM's default
+    scene-curation behavior — prepended ahead of it the same way the
+    per-run ENTITY RESOLUTION block is. The default (depth="scene", no
+    force_include) leaves the model's own relevance judgment alone; both
+    knobs exist so a GM can override specific cases without changing that
+    default for every run."""
+    blocks = []
+    if force_include:
+        names = ", ".join(force_include)
+        blocks.append(
+            "# FORCE-INCLUDE\n\n"
+            f"The following NPCs MUST receive a full ## subsection under NPC "
+            f"Dossiers, even if they seem tangential to the current scene or "
+            f"low-urgency: {names}. Do not omit them regardless of the "
+            "conciseness/relevance guidance elsewhere in these instructions.\n\n"
+        )
+    if depth == "full":
+        blocks.append(
+            "# COMPREHENSIVE MODE\n\n"
+            "Render a subsection under NPC Dossiers for EVERY NPC dossier you "
+            "were given, not only those most relevant to the immediate scene — "
+            "this is a full campaign-wide reference, not a scene-scoped "
+            "quick-reference. Same rule for Faction States: cover every "
+            "faction you have material for. Active Plots may still be ordered "
+            "by urgency and can omit fully resolved threads. Being "
+            "comprehensive does not mean padding — keep each subsection as "
+            "concise as the default instructions describe.\n\n"
+        )
+    return "".join(blocks)
+
+
+def _render_threads_block(threads_file: Path | None, normalize=None) -> str:
+    """Render the pre-rendered threads/mysteries track (from the ensemble
+    threads render or synthesise_world_state.py --render-only) as a
+    dedicated, verbatim, chronologically-ordered block — same heading and
+    treatment as synthesise_world_state.py's --threads, so the synthesis
+    model gets actual chapter ordering instead of having to reconstruct it
+    from NPC dossier snapshots (which is exactly the kind of ordering
+    inference LLMs get wrong)."""
+    if threads_file is None:
+        return ""
+    body = _read_normalized(threads_file, normalize)
+    return f"# OPEN THREADS & MYSTERIES (recurring, chronological)\n\n{body}"
+
+
 def _render_planning_blocks(
     config: PlanningConfig,
     extra_npc_files: list[Path] | None = None,
@@ -453,6 +499,9 @@ def run_synthesize(
     context_files: list[Path],
     model: str,
     id_assigner: CitationIdAssigner,
+    threads_file: Path | None = None,
+    force_include: list[str] | None = None,
+    depth: str = "scene",
     dump_input: str | None = None,
     dump_only: bool = False,
 ) -> str:
@@ -470,6 +519,10 @@ def run_synthesize(
 
     if dossier_blocks:
         parts.append("# NPC DOSSIERS\n\n" + "\n\n---\n\n".join(dossier_blocks))
+
+    threads_block = _render_threads_block(threads_file, normalize=normalize)
+    if threads_block:
+        parts.append(threads_block)
 
     if arc_score_files:
         arc_scores = "\n\n---\n\n".join(
@@ -498,7 +551,7 @@ def run_synthesize(
               file=sys.stderr)
         raise SystemExit(1)
 
-    system_prompt = SYNTHESIZE_SYSTEM
+    system_prompt = _synthesis_directives(force_include, depth) + SYNTHESIZE_SYSTEM
     if resolution_entries:
         lines = [f"- **{name}** (also: {', '.join(aliases)})"
                  for name, aliases in resolution_entries]
@@ -509,7 +562,7 @@ def run_synthesize(
             "it as referring to the canonical NPC listed here.\n\n"
             + "\n".join(lines) + "\n\n"
         )
-        system_prompt = resolution_block + SYNTHESIZE_SYSTEM
+        system_prompt = resolution_block + system_prompt
         print(f"  Alias map: {len(resolution_entries)} NPC(s) with variants.")
 
     if dump_input:
@@ -566,6 +619,9 @@ def run_synthesize_with_config(
     context_files: list[Path],
     model: str,
     id_assigner: CitationIdAssigner,
+    threads_file: Path | None = None,
+    force_include: list[str] | None = None,
+    depth: str = "scene",
     dump_input: str | None = None,
     dump_only: bool = False,
 ) -> str:
@@ -593,6 +649,9 @@ def run_synthesize_with_config(
     )
 
     parts = [blocks_text] if blocks_text else []
+    threads_block = _render_threads_block(threads_file, normalize=normalize)
+    if threads_block:
+        parts.append(threads_block)
     extracts_block = _render_flat_section(
         "SESSION EXTRACTIONS", extract_files, "Session extract", normalize=cited_normalize
     )
@@ -610,7 +669,7 @@ def run_synthesize_with_config(
               file=sys.stderr)
         raise SystemExit(1)
 
-    system_prompt = SYNTHESIZE_SYSTEM
+    system_prompt = _synthesis_directives(force_include, depth) + SYNTHESIZE_SYSTEM
     if resolution_entries:
         lines = [f"- **{name}** (also: {', '.join(aliases)})"
                  for name, aliases in resolution_entries]
@@ -621,7 +680,7 @@ def run_synthesize_with_config(
             "it as referring to the canonical NPC listed here.\n\n"
             + "\n".join(lines) + "\n\n"
         )
-        system_prompt = resolution_block + SYNTHESIZE_SYSTEM
+        system_prompt = resolution_block + system_prompt
         print(f"  Alias map: {len(resolution_entries)} NPC(s) with variants.")
 
     if dump_input:
@@ -651,14 +710,30 @@ def main() -> None:
                              "and arc-score file. When set, --npc and --arc-scores are rejected. "
                              "Tighter coupling than the flat flags — prevents the synthesizer "
                              "from mismatching a score to the wrong entity.")
-    parser.add_argument("--npc", "-n", nargs="+", metavar="FILE", default=[],
+    parser.add_argument("--npc", "-n", nargs="+", action="extend", metavar="FILE", default=[],
                         help="NPC dossier file(s)")
-    parser.add_argument("--arc-scores", "-a", nargs="+", metavar="FILE", default=[],
+    parser.add_argument("--arc-scores", "-a", nargs="+", action="extend", metavar="FILE", default=[],
                         help="Threat arc score document(s) (e.g. brundar_echo.md, kraken_echoes.md)")
     parser.add_argument("--summaries", "-s", metavar="FILE",
                         help="Canonical timeline — the master narrative bible (large, will be chunked)")
-    parser.add_argument("--context", "-c", nargs="+", metavar="FILE", default=[],
+    parser.add_argument("--context", "-c", nargs="+", action="extend", metavar="FILE", default=[],
                         help="Optional world context files (factions, locations, etc.)")
+    parser.add_argument("--threads", metavar="FILE", default=None,
+                        help="Pre-rendered threads/mysteries markdown (from the ensemble threads "
+                             "render or synthesise_world_state.py --render-only). Injected as a "
+                             "dedicated, verbatim, chapter-ordered block so Active Plots doesn't "
+                             "rely on the model inferring plot threads from scattered NPC dossier "
+                             "snapshots alone.")
+    parser.add_argument("--depth", choices=["scene", "full"], default="scene",
+                        help="'scene' (default): the model curates NPC Dossiers/Faction States "
+                             "down to what's relevant to the current scene, even given a large "
+                             "--npc list — the intended quick-reference behavior. 'full': render "
+                             "a subsection for every NPC/faction you were given, a comprehensive "
+                             "campaign-wide reference instead.")
+    parser.add_argument("--force-include", nargs="+", action="extend", metavar="NAME", default=[],
+                        help="NPC name(s) that must get a subsection under NPC Dossiers "
+                             "regardless of --depth scene's relevance curation — for the "
+                             "occasional NPC the model drops that you know matters.")
     parser.add_argument("--output", "-o", metavar="FILE",
                         help="Where to save the planning document (required unless --build-dossiers)")
     parser.add_argument("--chunk-size", type=int, default=60000, metavar="CHARS",
@@ -770,8 +845,9 @@ def main() -> None:
     npc_files = [Path(f).expanduser().resolve() for f in args.npc]
     arc_score_files = [Path(f).expanduser().resolve() for f in args.arc_scores]
     context_files = [Path(f).expanduser().resolve() for f in args.context]
+    threads_file = Path(args.threads).expanduser().resolve() if args.threads else None
 
-    for f in npc_files + arc_score_files + context_files:
+    for f in npc_files + arc_score_files + context_files + ([threads_file] if threads_file else []):
         if not f.exists():
             print(f"Error: file not found: {f}", file=sys.stderr)
             sys.exit(1)
@@ -870,6 +946,12 @@ def main() -> None:
         sources.append(f"{len(extract_files)} session extraction(s)")
     if context_files:
         sources.append(f"{len(context_files)} context file(s)")
+    if threads_file:
+        sources.append("threads track")
+    if args.depth == "full":
+        sources.append("depth=full")
+    if args.force_include:
+        sources.append(f"force-include: {', '.join(args.force_include)}")
 
     print(f"\n[Pass 2: Synthesize | {', '.join(sources)} | model: {args.model}]")
     print("=" * 60)
@@ -878,12 +960,18 @@ def main() -> None:
         planning_doc = run_synthesize_with_config(
             client, planning_config, npc_files,
             extract_files, context_files, args.model, id_assigner,
+            threads_file=threads_file,
+            force_include=args.force_include,
+            depth=args.depth,
             dump_input=args.dump_input,
             dump_only=args.dump_only,
         )
     else:
         planning_doc = run_synthesize(
             client, npc_files, arc_score_files, extract_files, context_files, args.model, id_assigner,
+            threads_file=threads_file,
+            force_include=args.force_include,
+            depth=args.depth,
             dump_input=args.dump_input,
             dump_only=args.dump_only,
         )

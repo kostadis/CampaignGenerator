@@ -66,7 +66,7 @@ def main() -> None:
                         help="vtt_roleplay_extractions/ — quoted dialogue and character moments")
     parser.add_argument("--summary-extract-dir", metavar="DIR",
                         help="vtt_extractions/ — action detail and event context")
-    parser.add_argument("--context", nargs="+", metavar="FILE",
+    parser.add_argument("--context", nargs="+", action="extend", metavar="FILE",
                         help="Campaign context files for consistency check "
                              "(e.g. campaign_state.md world_state.md party.md)")
     parser.add_argument("--party", metavar="FILE",

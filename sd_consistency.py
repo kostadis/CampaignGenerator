@@ -28,7 +28,7 @@ def main() -> None:
     )
     parser.add_argument("recap", metavar="FILE",
                         help="Session recap markdown (typically session-summary.md)")
-    parser.add_argument("--context", nargs="+", required=True, metavar="FILE",
+    parser.add_argument("--context", nargs="+", action="extend", required=True, metavar="FILE",
                         help="Campaign context files (campaign_state.md, world_state.md, party.md)")
     parser.add_argument("--session-summary", metavar="FILE",
                         help="Optional synthesised VTT session summary — included in the "

@@ -813,6 +813,8 @@ python ~/src/CampaignGenerator/party.py \
 
 `planning.py` consumes NPC dossier files directly with `--npc`. Feed only the entities worth forward-looking planning; the full dossier set produces a bloated, unprioritized doc.
 
+**PCs auto-excluded via `party.yaml`.** Ensemble extraction doesn't distinguish PCs from NPCs, so `merged_dossiers/` gets an `npc_<pc-name>.md` for every PC right alongside real NPCs. The Ensemble UI's planning auto-detect (`_all_planning_npc_files` / `_planning_npc_passthrough` in `server/routers/ensemble.py`) excludes any dossier bound to a PC via `party.yaml`'s `dossier:` field (§3d) — same "explicit, never inferred by name-matching" rule as the party-block attribution. A PC with no `dossier:` binding in `party.yaml` still shows up in the NPC list; either add the binding or drop them via `narrative_importance.yaml`'s `force_exclude` below.
+
 Importance cut: **≥10 facts AND (spans ≥5 chapters OR seen since chapter 40)**.
 
 **Field-name correction (verified 2026-06-17):** merged dossiers use `chapters: 20-39` range format in frontmatter, NOT `source_extracts: [20,21,...]`. The old `source_extracts` regex matches nothing and silently falls back to n_facts-only filtering. Use the `chapters:` parser below:
