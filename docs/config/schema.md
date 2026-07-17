@@ -37,12 +37,12 @@ Raw dict, no pydantic model. Read via `campaignlib.load_config` with `$VAR` expa
 
 | Key | Type | Example / default | Consumed by |
 |---|---|---|---|
-| `system_prompt` | str (repo path) | `config/system_prompt.md` | `prep.py` (`load_repo_file`) |
-| `log_dir` | str (path) | `logs/` | `prep.py`, `npc_table.py` |
-| `agents` | map name→path | `lore_oracle`, `encounter_architect`, `voice_keeper` | `prep.py` (pipeline mode) |
-| `documents` | list[{label, path}] | `campaign_state`, `world_state`, `mechanics`, `planning`, `party` | `assemble_docs`, `prep.py`, `mcp_server.py`, `check_consistency.py` |
-| `mempalace.canon_wing` | str | default `narrative` | `mcp_server.py` |
-| `mempalace.index_wings` | list | e.g. `[chronicle, abyss]` | `mcp_server.py` |
+| `system_prompt` | str (repo path) | `config/system_prompt.md` | `pipelines/session_prep/prep.py` (`load_repo_file`) |
+| `log_dir` | str (path) | `logs/` | `pipelines/session_prep/prep.py`, `pipelines/grounding/npc_table.py` |
+| `agents` | map name→path | `lore_oracle`, `encounter_architect`, `voice_keeper` | `pipelines/session_prep/prep.py` (pipeline mode) |
+| `documents` | list[{label, path}] | `campaign_state`, `world_state`, `mechanics`, `planning`, `party` | `assemble_docs`, `pipelines/session_prep/prep.py`, `pipelines/rlm/mcp_server.py`, `session_doc/check_consistency.py` |
+| `mempalace.canon_wing` | str | default `narrative` | `pipelines/rlm/mcp_server.py` |
+| `mempalace.index_wings` | list | e.g. `[chronicle, abyss]` | `pipelines/rlm/mcp_server.py` |
 | `mempalace.palace` | str | (usually unset) | `apply_ingest_manifest.resolve_palace` (fallback) |
 
 Legacy/compat keys — moved to `config/wiring.yaml` (mneme-owned); still read as fallback:

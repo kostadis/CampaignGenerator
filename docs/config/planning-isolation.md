@@ -42,7 +42,7 @@ class PlanningConfigService:
 ```
 
 ### 2. Shared Loading Logic (`server/planning_config_shared.py`)
-Refactored from `planning.py` to provide:
+Refactored from `pipelines/grounding/planning.py` to provide:
 - `load_planning_config(path: Path) -> PlanningConfig`
 - `save_planning_config(path: Path, config: PlanningConfig) -> None`
 - Data models: `PlanningConfig`, `NPC`, `Faction`, `PlanningEntry`
@@ -92,7 +92,7 @@ def delete_npc(...)
 
 ### Phase 2: Integration
 1. Remove `/planning-yaml` GET/PUT endpoints from `config_routes.py`
-2. Update `planning.py` CLI to use the shared loading functions (maintain backward compatibility)
+2. Update `pipelines/grounding/planning.py` CLI to use the shared loading functions (maintain backward compatibility)
 3. Add dependency injection for `PlanningConfigService` in route handlers
 
 ### Phase 3: Documentation
@@ -107,7 +107,7 @@ def delete_npc(...)
 3. **Better error handling**: Proper HTTP status codes (404, 409, 400)
 4. **Frontend efficiency**: Partial updates possible (update single NPC)
 5. **Maintainability**: Clear separation between planning domain and generic config
-6. **CLI compatibility**: Existing `planning.py` continues to work via shared logic
+6. **CLI compatibility**: Existing `pipelines/grounding/planning.py` continues to work via shared logic
 
 ## Migration Considerations
 - **Frontend impact**: Requires updating planning UI to use new endpoints
@@ -117,7 +117,7 @@ def delete_npc(...)
 
 ## Dependency Impact
 From code-graph analysis:
-- `planning.py`: Only called by its own `main()` and tests - safe to refactor
+- `pipelines/grounding/planning.py`: Only called by its own `main()` and tests - safe to refactor
 - `config_routes.py`: Only callers are tests - safe to replace endpoints
 - No direct dependencies on old planning-yaml endpoints in core application flow
 - Tests will need updating (expected for major revision)

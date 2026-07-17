@@ -19,15 +19,15 @@ retrieves and renders.
 
 ## The three piles
 
-`rpg_retriever.py` gathers candidates from three sources, each tagged by cost:
+`pipelines/rlm/rpg_retriever.py` gathers candidates from three sources, each tagged by cost:
 
 ```
 query (a beat / NPC / faction)
         │
-rpg_retriever.py --retrieve
-        ├─ MemPalace drawers     via mempalace_client.py (subprocess JSON-RPC)   → "drawer" hits
-        ├─ 5etools JSON on disk  via fivetools_catalog.py (mtime-cached index)   → "statblock" hits  (cheap)
-        └─ rpglib PDFs           via suggest_conversion.py                       → "candidate" hits  (expensive)
+pipelines/rlm/rpg_retriever.py --retrieve
+        ├─ MemPalace drawers     via pipelines/rlm/mempalace_client.py (subprocess JSON-RPC)   → "drawer" hits
+        ├─ 5etools JSON on disk  via pipelines/rlm/fivetools_catalog.py (mtime-cached index)   → "statblock" hits  (cheap)
+        └─ rpglib PDFs           via pipelines/rlm/suggest_conversion.py                       → "candidate" hits  (expensive)
         ▼
 tiered hits:  drawer | statblock | candidate(cheap=5etools | expensive=needs PDF conversion)
 ```
@@ -42,12 +42,12 @@ tiered hits:  drawer | statblock | candidate(cheap=5etools | expensive=needs PDF
 ## The human checkpoint
 
 ```
-dossier_proposer.py  → docs/dossier_proposal.md   (Status banner: "candidates only")
+pipelines/rlm/dossier_proposer.py  → docs/dossier_proposal.md   (Status banner: "candidates only")
         ▼  (you review, edit scope, change the banner to
         ▼   "> **Status:** approved by <name> on <date>.")
 proposal_loader.is_approved() / require_approved_proposal()   ← the gate
         ▼  (approved)
-render pipelines may now consume it:  prep.py · sd_plan.py · planning.py
+render pipelines may now consume it:  pipelines/session_prep/prep.py · session_doc/sd_plan.py · pipelines/grounding/planning.py
 ```
 
 The proposal carries a `> **Status:**` banner; `proposal_loader.is_approved()`
@@ -62,11 +62,11 @@ When a candidate comes from an unconverted PDF, you bring it into the system by
 hand, in explicit steps:
 
 ```
-convert_book.py   (wraps pdf-translators)  →  5etools JSON
+pipelines/content_ingest/convert_book.py   (wraps pdf-translators)  →  5etools JSON
         ▼  (it prints the next command; you review)
-fivetools_ingest.py  →  MemPalace drawers
-        │   - 5etools entities rendered via fivetools_render.py
-        │     (resolving _copy refs via fivetools_copy.py)
+pipelines/content_ingest/fivetools_ingest.py  →  MemPalace drawers
+        │   - 5etools entities rendered via pipelines/content_ingest/fivetools_render.py
+        │     (resolving _copy refs via pipelines/content_ingest/fivetools_copy.py)
         └─ rpg_library.db metadata snapshotted into drawer metadata
 ```
 
@@ -75,7 +75,7 @@ the library grows as you use it.
 
 ## Tools exposed over MCP
 
-`mcp_server.py` surfaces this to a Claude Code session as `rpg_search`,
+`pipelines/rlm/mcp_server.py` surfaces this to a Claude Code session as `rpg_search`,
 `propose_dossier`, and `suggest_conversion` — but the same approval gate applies:
 the MCP tools can *propose*, you still approve the file before anything renders.
 

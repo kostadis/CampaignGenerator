@@ -19,7 +19,7 @@ CampaignGenerator integrates with three external tools to give the AI and the GM
 
 Hard tier order: drawer/statblock > cheap > expensive. No score normalization across sources. See `rlm_architecture.md` §9 for the canonical contract.
 
-Writes go through **MemPalace's MCP server** (`mempalace_client.py`); reads from rpg-library go through its HTTP API (stdlib `urllib`); reads from the canonical 5etools tree go through `fivetools_catalog` in-process. No CG module opens MemPalace's ChromaDB directly.
+Writes go through **MemPalace's MCP server** (`pipelines/rlm/mempalace_client.py`); reads from rpg-library go through its HTTP API (stdlib `urllib`); reads from the canonical 5etools tree go through `fivetools_catalog` in-process. No CG module opens MemPalace's ChromaDB directly.
 
 ## Ingest flow (explicit user step, never automatic)
 
@@ -140,7 +140,7 @@ The launcher builds `~/.5etools-mcp-runtime/<campaign>/` containing a (possibly 
 
 ## Retrieval/render separation (required)
 
-Render pipelines (`prep`, `sd_plan.py`, `planning`) must **not** consume raw `rpg_retriever` output — they consume a human-approved `docs/dossier_proposal.md` file instead.
+Render pipelines (`prep`, `sd_plan`, `planning`) must **not** consume raw `rpg_retriever` output — they consume a human-approved `docs/dossier_proposal.md` file instead.
 
 ```bash
 # 1. Produce a candidates file from a retrieval query
@@ -155,7 +155,7 @@ dossier_proposer "party arrives at Icespire Hold"
 
 # 3. Render pipelines consume it:
 prep --campaign-dir . --require-proposal --beat "The party enters Icespire Hold"
-python sd_plan.py --scene-extractions scene_extractions/ --characters "…" --campaign-dir . --require-proposal …
+sd_plan --scene-extractions scene_extractions/ --characters "…" --campaign-dir . --require-proposal …
 planning --npc docs/npcs/*.md --output docs/planning.md --campaign-dir . --require-proposal
 ```
 
@@ -163,7 +163,7 @@ Without `--require-proposal`, the scripts still auto-attach an approved proposal
 
 **Why this matters** (per the global LLM-pipeline rule in `~/.claude/CLAUDE.md`): retrieval is a scope decision; rendering is a prose decision. The proposal file is the human checkpoint between them. A CI test (`tests/test_retrieve_render_isolation.py`) walks every `.py` module in the repo and fails if any function body contains both a retrieval call (`retrieve`, `search_hierarchical`, `rpg_search`, …) and a render call (`stream_api`, `call_api`).
 
-## MCP tools (exposed by `mcp_server.py`)
+## MCP tools (exposed by `pipelines/rlm/mcp_server.py`)
 
 | Tool | Purpose |
 |---|---|
@@ -179,6 +179,6 @@ All CLI scripts accept explicit flags, with env var fallbacks:
 
 - `--palace` / `MEMPALACE_PALACE_PATH` — passed through to `mempalace-mcp`.
 - `--rpglib-db` / `RPGLIB_DB` — path to `rpg_library.db`.
-- `--campaign-dir` / `CAMPAIGN_DIR` — campaign workspace root. Default: CWD for CLIs, the config file's parent directory for `prep`, the scene_extractions parent for `sd_plan.py`.
+- `--campaign-dir` / `CAMPAIGN_DIR` — campaign workspace root. Default: CWD for CLIs, the config file's parent directory for `prep`, the scene_extractions parent for `sd_plan`.
 
 The MCP server picks up `MEMPALACE_PALACE_PATH` / `RPGLIB_DB` from the environment and from `config.yaml` keys `mempalace.palace` / `rpglib_db`.

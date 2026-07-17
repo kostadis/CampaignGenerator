@@ -80,7 +80,7 @@ Three ideas explain almost every design choice in the system:
 
 3. **Every external thing is reached through exactly one seam.** All Anthropic
    calls go through `campaignlib/api/`. All MemPalace I/O goes through
-   `mempalace_client.py`. All DGX per-model behavior comes from `dgxlib`. When
+   `pipelines/rlm/mempalace_client.py`. All DGX per-model behavior comes from `dgxlib`. When
    you need to change how CG talks to X, there is one file to open.
 
 ---
@@ -114,16 +114,16 @@ This is the table to consult when something breaks at a boundary.
 | CG → **Anthropic API** | Python `import anthropic`, retry loop | `campaignlib/api/client.py`, `api/backends.py` |
 | CG → **DGX / vLLM** | HTTP, OpenAI-compatible client; per-model knobs from dgxlib | `campaignlib/api/backends.py` (`_OpenAICompatClient`) + `dgxlib.resolve_model_config` |
 | CG → **Claude Code** (Pro/Max) | Subprocess, `claude` CLI headless (`CG_BACKEND=claude-code`) | `campaignlib/api/backends.py` (`_ClaudeCodeClient`) |
-| CG → **MemPalace** | Subprocess **stdio JSON-RPC** to `mempalace-mcp` | `mempalace_client.py` (the *only* file that talks to it) |
+| CG → **MemPalace** | Subprocess **stdio JSON-RPC** to `mempalace-mcp` | `pipelines/rlm/mempalace_client.py` (the *only* file that talks to it) |
 | MemPalace → **turbovecdb / ChromaDB** | Python import; backend chosen by `MEMPALACE_BACKEND` | `mempalace/backends/{turbovec,chroma}.py` |
-| CG → **5etools JSON** | Filesystem read (mtime-cached index) | `fivetools_catalog.py`, `fivetools_ingest.py` |
-| CG → **5etools MCP** (per campaign) | Builds a scoped symlink farm, `exec`s a Node MCP server | `launch_5etools_mcp.py` + `resolve_refs.py`; scope from `refs.yaml` |
-| **Claude Code → CG** | FastMCP **stdio** server (read docs, write `notes/` only) | `mcp_server.py` (registered via `.mcp.json`) |
-| CG ← **mytools** | **Data only** — consumes 5etools JSON + `rpg_library.db` metadata | `fivetools_ingest.py`, `convert_book.py` (no code import) |
+| CG → **5etools JSON** | Filesystem read (mtime-cached index) | `pipelines/rlm/fivetools_catalog.py`, `pipelines/content_ingest/fivetools_ingest.py` |
+| CG → **5etools MCP** (per campaign) | Builds a scoped symlink farm, `exec`s a Node MCP server | `pipelines/rlm/launch_5etools_mcp.py` + `pipelines/rlm/resolve_refs.py`; scope from `refs.yaml` |
+| **Claude Code → CG** | FastMCP **stdio** server (read docs, write `notes/` only) | `pipelines/rlm/mcp_server.py` (registered via `.mcp.json`) |
+| CG ← **mytools** | **Data only** — consumes 5etools JSON + `rpg_library.db` metadata | `pipelines/content_ingest/fivetools_ingest.py`, `pipelines/content_ingest/convert_book.py` (no code import) |
 | CG + mytools → **dgxlib** | Shared installed package (`pip install -e ~/src/dgx`) | `dgxlib` (in `dgx-fun`) |
 
 > **Note the asymmetries that bite:** MemPalace is reached *only* through
-> `mempalace_client.py`; turbovecdb is *never* reached by CG directly (always
+> `pipelines/rlm/mempalace_client.py`; turbovecdb is *never* reached by CG directly (always
 > behind MemPalace); mytools and CG share **no code** — only files on disk.
 
 ---

@@ -27,7 +27,7 @@ Three processes are involved in any retrieval. They communicate over stdio JSON-
 graph TB
     subgraph CG["CampaignGenerator process (rlm-phase2 / main)"]
         RR["rpg_retriever.retrieve(query)"]
-        MC["MempalaceClient<br/>mempalace_client.py<br/>(spawns subprocess on first use)"]
+        MC["MempalaceClient<br/>mempalace_client<br/>(spawns subprocess on first use)"]
         DOSS["dossier_proposer<br/>propose() → docs/dossier_proposal.md"]
         MCP_CG["mcp_server<br/>rpg_search · propose_dossier"]
     end
@@ -79,7 +79,7 @@ graph TB
 **Rules the diagram encodes:**
 
 - ChromaDB collections live in **one location per palace**. The palace is selected by `--palace <name>` when CG spawns the subprocess (`MempalaceClient(palace=...)`). Per-campaign palaces are the standard since 2026-04 (`MEMPALACE_HOWTO`).
-- **CG never opens ChromaDB itself.** `grep -rn "chromadb\|PersistentClient" --include="*.py"` in CampaignGenerator returns zero hits. The only file in CG that touches mempalace is `mempalace_client.py`, and it only speaks JSON-RPC. This boundary is by design — see §5.
+- **CG never opens ChromaDB itself.** `grep -rn "chromadb\|PersistentClient" --include="*.py"` in CampaignGenerator returns zero hits. The only file in CG that touches mempalace is `pipelines/rlm/mempalace_client.py`, and it only speaks JSON-RPC. This boundary is by design — see §5.
 - The two **highlighted collections** (`wing_indices`, `room_indices`) are the Phase 1 deliverable. Drawers and closets pre-existed; the new collections add hierarchical pruning without changing storage of verbatim content.
 
 ---
@@ -148,7 +148,7 @@ The wing/room indices are **dirty-flag-driven**. Drawer writes don't trigger ind
 | `recursive_indexer.rebuild_all()` | nukes and regenerates every room and wing index for the palace. Used after a corruption / version bump / palace restore. |
 | Empty `wing_indices` collection | `tool_search_hierarchical` transparently falls back to flat `search_within` and sets `fallback=True` in the response (see §6). |
 
-**Who calls `rebuild_dirty()`?** Today, MemPalace's miners and the post-`add_drawer` hook in chat-mode operations call it under `mine_lock`. CG-side ingest (`fivetools_ingest.py`) writes drawers via the MCP `add_drawer` tool, so the dirty-flag plumbing happens server-side without CG having to know.
+**Who calls `rebuild_dirty()`?** Today, MemPalace's miners and the post-`add_drawer` hook in chat-mode operations call it under `mine_lock`. CG-side ingest (`pipelines/content_ingest/fivetools_ingest.py`) writes drawers via the MCP `add_drawer` tool, so the dirty-flag plumbing happens server-side without CG having to know.
 
 **No cron. No background worker.** Indices are rebuilt synchronously when something asks. If you ingest 1,000 drawers and then immediately query, you pay the rebuild cost on that first query (typically <1 s for a per-room rebuild; tens of ms for a wing aggregate). Subsequent queries are sub-100ms.
 

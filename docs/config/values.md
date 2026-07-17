@@ -19,15 +19,15 @@ Every `ui.<section>` is written through the one generic route `PUT /api/config/s
 additionally writes `session_doc` via `PUT /api/editor/config`. `config.yaml` has no writer;
 `wiring.yaml` is mneme-only.
 
-## config.yaml (writer: human / new_workspace.py)
+## config.yaml (writer: human / pipelines/workspace/new_workspace.py)
 
 | Value | Read by |
 |---|---|
-| `system_prompt` | `prep.py` |
-| `log_dir` | `prep.py`, `npc_table.py` |
-| `agents.{lore_oracle,encounter_architect,voice_keeper}` | `prep.py` pipeline |
-| `documents[]` | `assemble_docs`, `prep.py`, `mcp_server.py`, `check_consistency.py` |
-| `mempalace.canon_wing` / `index_wings` | `mcp_server.py` |
+| `system_prompt` | `pipelines/session_prep/prep.py` |
+| `log_dir` | `pipelines/session_prep/prep.py`, `pipelines/grounding/npc_table.py` |
+| `agents.{lore_oracle,encounter_architect,voice_keeper}` | `pipelines/session_prep/prep.py` pipeline |
+| `documents[]` | `assemble_docs`, `pipelines/session_prep/prep.py`, `pipelines/rlm/mcp_server.py`, `session_doc/check_consistency.py` |
+| `mempalace.canon_wing` / `index_wings` | `pipelines/rlm/mcp_server.py` |
 | `mempalace.palace` | `apply_ingest_manifest.resolve_palace` (fallback) |
 
 ## ui_state.yaml — ui.session_doc
@@ -46,8 +46,8 @@ Writer: `PUT /section/session_doc` + `scene_editor` (`PUT /api/editor/config`).
 
 | Value | Read by | Written by |
 |---|---|---|
-| `ui.vtt_summary.*` | `vtt_summary.py` / session_workflow router | `PUT /section/vtt_summary` (router also writes `session_summary` after a run) |
-| `ui.grounding.summaries` | `mcp_server.py` (`_find_summaries_file`, `query_lore`, `grounded_search`) | `PUT /section/grounding` |
+| `ui.vtt_summary.*` | `session_doc/vtt_summary.py` / session_workflow router | `PUT /section/vtt_summary` (router also writes `session_summary` after a run) |
+| `ui.grounding.summaries` | `pipelines/rlm/mcp_server.py` (`_find_summaries_file`, `query_lore`, `grounded_search`) | `PUT /section/grounding` |
 | `ui.ensemble.*` | ensemble router + `ensemble_merge`/`extract_facts` | `PUT /section/ensemble` |
 | `ui.profiles.{profiles[], active}` | session-doc editor (active profile mirrored into `ui.session_doc`) | `PUT /section/profiles` |
 | `ui.<loose>` (campaign_state, distill, prep, npc, query, workflow, connections, experimental) | their Vue pages via `GET /api/config` flat overlay | `PUT /section/<name>` |

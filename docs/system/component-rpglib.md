@@ -84,11 +84,11 @@ CG reaches mytools' output through two on-disk artifacts:
 
 | Artifact | Produced by | Consumed by CG | How |
 |---|---|---|---|
-| **5etools JSON files** | pdf-translators (`pdf_to_5etools_v2.py`) → land in the 5etools data/homebrew tree | `fivetools_catalog.py` (name index), `fivetools_ingest.py` (→ palace drawers) | filesystem |
-| **`rpg_library.db` metadata** | rpg-lib (`pdf_enricher.py`) | `fivetools_ingest.py` snapshots book metadata (id, title, publisher, system, tags, series, source filepath) into palace drawer metadata | SQLite read |
+| **5etools JSON files** | pdf-translators (`pdf_to_5etools_v2.py`) → land in the 5etools data/homebrew tree | `pipelines/rlm/fivetools_catalog.py` (name index), `pipelines/content_ingest/fivetools_ingest.py` (→ palace drawers) | filesystem |
+| **`rpg_library.db` metadata** | rpg-lib (`pdf_enricher.py`) | `pipelines/content_ingest/fivetools_ingest.py` snapshots book metadata (id, title, publisher, system, tags, series, source filepath) into palace drawer metadata | SQLite read |
 
-`convert_book.py` in CG is a thin wrapper that calls pdf-translators as a
-subprocess and then prints the exact `fivetools_ingest.py` command to run next —
+`pipelines/content_ingest/convert_book.py` in CG is a thin wrapper that calls pdf-translators as a
+subprocess and then prints the exact `pipelines/content_ingest/fivetools_ingest.py` command to run next —
 keeping the convert→review→ingest steps explicit (never automatic). See
 [component-campaign-data](component-campaign-data.md) and [flow-rlm-retrieval](flow-rlm-retrieval.md).
 
@@ -98,7 +98,7 @@ keeping the convert→review→ingest steps explicit (never automatic). See
           │                          │
           └──────────┬───────────────┘
                      ▼   (files on disk — no code import)
-          CampaignGenerator: fivetools_ingest.py
+          CampaignGenerator: pipelines/content_ingest/fivetools_ingest.py
                      ├─ 5etools JSON  → MemPalace drawers
                      └─ rpg_library.db metadata → drawer metadata
 ```

@@ -19,7 +19,7 @@ The user wants:
 1. An explicit **config option** that lets a campaign declare "prefer the cleaned VTT for downstream tools."
 2. An **error** when the cleaned file is required but missing, so silent drift becomes a visible failure.
 
-Non-goals: no changes to the CLI scripts (`scene_extract.py`, `enhance_summary.py`, `vtt_summary.py`, `vtt_voice_compare.py`) — they take a positional VTT arg and are unaffected. Fix lives at the server layer that builds those subprocesses.
+Non-goals: no changes to the CLI scripts (`session_doc/scene_extract.py`, `session_doc/enhance_summary.py`, `session_doc/vtt_summary.py`, `session_doc/vtt_voice_compare.py`) — they take a positional VTT arg and are unaffected. Fix lives at the server layer that builds those subprocesses.
 
 ---
 
@@ -29,8 +29,8 @@ Non-goals: no changes to the CLI scripts (`scene_extract.py`, `enhance_summary.p
 - **VTT discovery is a glob in two places** that don't agree:
   - `server/routers/scene_editor.py:148-157` — honors `CONFIG["vtt"]` else `sorted(sd.glob("*.vtt"))[0]`. Used by Stage 1 (`enhance_summary`) build at `:383-394` and Stage 2 (`scene_extract`) build at `:415-427`.
   - `server/config.py:104-107` — `list(sd.glob("*.vtt"))[0]` (unsorted). Populates `vtt_input` and the UI form.
-  - `mcp_server.py:275` — `session.glob("*.vtt")` (display only; not part of the bug, but worth surfacing cleaned-vs-raw here for visibility).
-- **CLI scripts take VTT as a positional arg**, no auto-detect: `scene_extract.py:249`, `enhance_summary.py:271`, `vtt_summary.py:254`, `vtt_voice_compare.py:150`. Bug surfaces through the server layer only.
+  - `pipelines/rlm/mcp_server.py:275` — `session.glob("*.vtt")` (display only; not part of the bug, but worth surfacing cleaned-vs-raw here for visibility).
+- **CLI scripts take VTT as a positional arg**, no auto-detect: `session_doc/scene_extract.py:249`, `session_doc/enhance_summary.py:271`, `session_doc/vtt_summary.py:254`, `session_doc/vtt_voice_compare.py:150`. Bug surfaces through the server layer only.
 - **Config loader**: `campaignlib.py:708-725` — flat `yaml.safe_load`, no schema. New keys just need to be read by callers.
 - **Concrete repro on disk now**: `/home/kroussos/campaigns/out-of-the-abyss/summaries/20260518/` has both `GMT20260519-005755_Recording.transcript.cleaned.vtt` and `...transcript.vtt`. The two discovery paths disagree on which to use.
 
@@ -101,10 +101,10 @@ No `--force` CLI flag is needed; the user can flip `require_cleaned: false` in Y
 
 1. **`server/config.py`** — add `MissingCleanedVTTError` and `resolve_session_vtt(session_dir, campaign_config)` near line 104. Replace the inline `glob("*.vtt")[0]` block at `:105-107` with a call to it. Read the `vtt:` block from the loaded YAML (passed through whatever currently loads `config.yaml` into `CONFIG`).
 2. **`server/routers/scene_editor.py:148-157`** — change `_vtt_path()` to delegate to the shared resolver. Catch `MissingCleanedVTTError` in `_build_enhance_cmd` / `_build_reextract_cmd` and return `(None, str(err))` so the existing tuple-error path at `:384-385` and `:416-417` carries the message to the UI.
-3. **`mcp_server.py:275`** *(optional cosmetic)* — surface "cleaned" vs "raw" in the `list_sessions` artifact tags so the MCP side also shows whether the cleaned pass has been done for each session.
+3. **`pipelines/rlm/mcp_server.py:275`** *(optional cosmetic)* — surface "cleaned" vs "raw" in the `list_sessions` artifact tags so the MCP side also shows whether the cleaned pass has been done for each session.
 4. **`/home/kroussos/campaigns/out-of-the-abyss/config.yaml`** — append the `vtt:` block shown above.
 5. **`/home/kroussos/campaigns/Phandalin/config.yaml`** — same block.
-6. **No CLI changes.** `scene_extract.py`, `enhance_summary.py`, `vtt_summary.py`, `vtt_voice_compare.py` keep their positional VTT arg.
+6. **No CLI changes.** `session_doc/scene_extract.py`, `session_doc/enhance_summary.py`, `session_doc/vtt_summary.py`, `session_doc/vtt_voice_compare.py` keep their positional VTT arg.
 
 ---
 
@@ -132,4 +132,4 @@ In `/home/kroussos/campaigns/out-of-the-abyss/summaries/20260518/`:
 - `/home/kroussos/src/CampaignGenerator/campaignlib.py` (only if the YAML loader needs to surface the `vtt:` block through `CONFIG`)
 - `/home/kroussos/campaigns/out-of-the-abyss/config.yaml`
 - `/home/kroussos/campaigns/Phandalin/config.yaml`
-- `/home/kroussos/src/CampaignGenerator/mcp_server.py` (optional, for `list_sessions` visibility)
+- `/home/kroussos/src/CampaignGenerator/pipelines/rlm/mcp_server.py` (optional, for `list_sessions` visibility)

@@ -13,7 +13,7 @@ Each of these was flagged in the matching PR body. None block the editor's day-t
 ### ~~`session_doc.py` CLI flag cleanup~~ (DONE — Phase 5 of SessionDocRefactor)
 
 - **What** — drop `--from-extractions`, `--by-scene`, `--roleplay-extract-dir` from the argparse surface, and the internal code paths that branch on them.
-- **Status (Phase 5 of SessionDocRefactor):** `session_doc.py` has been deleted. The legacy flags went with it. Pass 1 / Pass 3 / Pass 5 are now `sd_consistency.py` / `sd_plan.py` / `sd_narrate.py`.
+- **Status (Phase 5 of SessionDocRefactor):** `session_doc.py` has been deleted. The legacy flags went with it. Pass 1 / Pass 3 / Pass 5 are now `session_doc/sd_consistency.py` / `session_doc/sd_plan.py` / `session_doc/sd_narrate.py`.
 - **Acceptance** — `python -c "from session_doc import main"` still works; running the CLI with the new flags only (`--scene-extractions`, `--per-scene-output`, `--scene N`, `--plan-only`) succeeds; no `args.from_extractions` / `args.by_scene` / `args.roleplay_extract_dir` references remain.
 
 ### Amber-when-stale per-scene lifecycle dots
@@ -55,8 +55,8 @@ These are first-class refactors that the user planned but that have nothing to d
 ### Scene-extract canon preference
 
 - **Design doc** — [`SceneExtractCanonPreference.md`](SceneExtractCanonPreference.md)
-- **Problem** — `scene_extract.py` produces per-scene files whose `## Verbatim moments` paraphrase bullets use the VTT's surface vocabulary (e.g. "the West Inner Ward theology library") even when the `## Scene summary` block immediately above uses the canonical name (e.g. "Immortal Chambers"). The narration LLM downstream then silently re-injects every drift term the recap layer's consistency check already corrected.
-- **Status** — design only, no code. One-line prompt-level instruction in `scene_extract.py`'s SYSTEM prompt, telling it to prefer the scene-summary's proper nouns in its own prose while leaving verbatim `> "..."` quote blocks untouched.
+- **Problem** — `session_doc/scene_extract.py` produces per-scene files whose `## Verbatim moments` paraphrase bullets use the VTT's surface vocabulary (e.g. "the West Inner Ward theology library") even when the `## Scene summary` block immediately above uses the canonical name (e.g. "Immortal Chambers"). The narration LLM downstream then silently re-injects every drift term the recap layer's consistency check already corrected.
+- **Status** — design only, no code. One-line prompt-level instruction in `session_doc/scene_extract.py`'s SYSTEM prompt, telling it to prefer the scene-summary's proper nouns in its own prose while leaving verbatim `> "..."` quote blocks untouched.
 
 ---
 
