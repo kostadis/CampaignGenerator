@@ -4,7 +4,7 @@
 Configures MCP servers from CampaignGenerator into one or more campaign
 workspace directories:
 
-  campaign   — mcp_server console script          (all campaigns that have config.yaml)
+  campaign   — mcp_server console script          (all campaigns that have config/config.yaml)
   5etools    — launch_5etools_mcp console script   (campaigns that have refs.yaml)
   registry   — registry_mcp console script         (campaigns that have docs/entity_registry.yaml)
   kanka      — kanka_mcp console script             (only when --kanka-token is given)
@@ -43,14 +43,22 @@ CAMPAIGNS_ROOT = Path("~/src/campaigns").expanduser()
 
 
 def find_campaigns(roots: list[Path]) -> list[Path]:
-    """Return subdirs of each root that look like campaign workspaces."""
+    """Return subdirs of each root that look like campaign workspaces.
+
+    A campaign workspace is a directory with its own ``config/config.yaml``
+    (the per-campaign config location — moved under a ``config/`` subdir
+    rather than living at the campaign root). ``root`` itself is checked
+    first (so pointing directly at one campaign works), then, if that
+    misses, each child of ``root`` (so pointing at a container of many
+    campaigns, e.g. ``~/src/campaigns/``, also works).
+    """
     result = []
     for root in roots:
-        if (root / "config.yaml").exists():
+        if (root / "config" / "config.yaml").exists():
             result.append(root)
         else:
             for child in sorted(root.iterdir()):
-                if child.is_dir() and (child / "config.yaml").exists():
+                if child.is_dir() and (child / "config" / "config.yaml").exists():
                     result.append(child)
     return result
 
