@@ -80,6 +80,7 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/cli/session_prep_workflow.md` | End-to-end session-prep walkthrough |
 | `docs/cli/ensemble_extraction.md` | `ensemble` how-to: single-file, multi-file `--plan` YAML, key flags, output layout |
 | `docs/cli/ensemble_workflow.md` | End-to-end ensemble workflow: chapters → `ensemble_batch` → `facts_to_state` → synthesis (API + subscription paths); Phandalin worked example |
+| `docs/mcp/mcp_servers.md` | The four MCP servers a campaign can wire into `.mcp.json` (`campaign`, `5etools`, `registry`, `kanka`) — what each does, what gates it, how to wire one in via `configure_mcp` |
 | `docs/README.md` | Full doc index — every doc, organised by audience |
 
 ## Critical rules (apply to every task)
@@ -118,7 +119,7 @@ All scripts look for `config.yaml` in the CWD first, then fall back to `config/c
 
 ### Entity registry (single authority for aliases)
 
-`docs/entity_registry.yaml` is the single source of truth for entity identity — canonical spelling, aliases, and the anti-merge guards (`distinct`, `rejected_aliases`). It supersedes the legacy scattered stores (dossier `aliases:` frontmatter, `aliases.json`, `.alias_decisions.json`, module inventories, `.dedup_state.json`). Managed via `registry` (`init`/`add`/`alias`/`import-*`/`triage-candidates`/`check`/`project`); loaded via `campaignlib.registry` (`load_registry`, `find_registry`, `resolve_registry_arg`).
+`docs/entity_registry.yaml` is the single source of truth for entity identity — canonical spelling, aliases, and the anti-merge guards (`distinct`, `rejected_aliases`). It supersedes the legacy scattered stores (dossier `aliases:` frontmatter, `aliases.json`, `.alias_decisions.json`, module inventories, `.dedup_state.json`). Managed via `registry` (`init`/`add`/`alias`/`import-*`/`triage-candidates`/`check`/`project`); loaded via `campaignlib.registry` (`load_registry`, `find_registry`, `resolve_registry_arg`). Also exposed as an MCP server, `registry_mcp` (`entity_registry/registry_mcp.py`) — one tool per `registry` subcommand, registered per-campaign in `.mcp.json` (auto-added by `configure_mcp` when `docs/entity_registry.yaml` exists) — so a Claude session gets the CLI's full surface and ordering rules from the tool listing instead of re-deriving them each session.
 
 **Consumers auto-adopt it when present:**
 - `facts_to_state` and `synthesise_world_state`/`synthesise_facts`/`synthesise_polish` take `--registry` (an explicit dir/file wins; omit to auto-discover `docs/entity_registry.yaml` from the CWD). It supersedes the deprecated `--aliases`/`--known-names`, and errors if an explicit `--registry` is combined with them. The registry supplies **aliases only** — `--inventory` is separate human-authored module-canon grounding and is never substituted by it.
