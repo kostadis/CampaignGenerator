@@ -211,8 +211,12 @@ def test_project_writes_aliases_and_inventory(tmp_path):
     raw = json.loads(aliases_path.read_text(encoding="utf-8"))
     assert raw == reg.canonical_to_aliases()
 
+    # alias_to_canonical() is a strict superset of the projected file: it also
+    # infers bare-first-token variants (e.g. "Mistress" from "Mistress Ilvara")
+    # that the projection's explicit alias lists don't carry — see
+    # test_alias_to_canonical_infers_bare_first_token in test_registry.py.
     loaded = load_aliases(aliases_path)
-    assert loaded == reg.alias_to_canonical()
+    assert loaded.items() <= reg.alias_to_canonical().items()
 
     inventory_path = docs / "entity_inventory.md"
     md = inventory_path.read_text(encoding="utf-8")

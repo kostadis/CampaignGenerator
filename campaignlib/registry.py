@@ -87,12 +87,47 @@ class Registry:
         Canonicals self-map. This is the same shape
         ``synthesise_world_state.load_aliases`` produces when reading an
         ``aliases.json`` projected from this registry.
+
+        Also applies the same first-token rule as ``known_names()``: a
+        multi-word name/alias's bare first word (>= 4 chars) canonicalizes
+        to that entity too, e.g. "Kazryn" -> "Kazryn Nyantani". Without
+        this, ``known_names()`` marks the bare first word as a known entity
+        (so it isn't anonymized, and doesn't surface as an unknown surface
+        form in ``triage-candidates``) while this method leaves it
+        unresolved — the same fact subject then buckets into its own
+        dossier instead of the full name's, producing a silent duplicate
+        (e.g. OOTA's ``npc_kazryn.md`` next to ``npc_kazryn_nyantani.md``,
+        both "known", never flagged for review). An explicit registration
+        always wins over the inference, and a first word shared by two or
+        more DIFFERENT entities is genuinely ambiguous and is left
+        unresolved rather than guessed.
         """
         flat: dict[str, str] = {}
         for e in self.entities:
             flat[e.name] = e.name
             for alias in e.aliases:
                 flat[alias] = e.name
+
+        explicit_norms = {norm_subject(k) for k in flat}
+        first_token: dict[str, tuple[str, str | None]] = {}  # norm -> (word, canonical|None)
+        for e in self.entities:
+            for s in [e.name, *e.aliases]:
+                parts = s.split()
+                if len(parts) <= 1 or len(parts[0]) < 4:
+                    continue
+                word = parts[0]
+                key = norm_subject(word)
+                if key in explicit_norms:
+                    continue
+                if key in first_token and first_token[key][1] != e.name:
+                    first_token[key] = (word, None)
+                elif key not in first_token:
+                    first_token[key] = (word, e.name)
+
+        for word, canonical in first_token.values():
+            if canonical is not None:
+                flat[word] = canonical
+
         return flat
 
     def canonical_to_aliases(self) -> dict[str, list[str]]:

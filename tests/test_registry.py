@@ -167,8 +167,47 @@ def test_alias_to_canonical_matches_load_aliases(tmp_path):
     aliases_json = tmp_path / "aliases.json"
     aliases_json.write_text(json.dumps(reg.canonical_to_aliases()), encoding="utf-8")
 
+    # alias_to_canonical() is a strict superset of the file round-trip: it also
+    # infers bare-first-token variants (e.g. "Adabra" -> "Adabra Gwynn", see
+    # test_alias_to_canonical_infers_bare_first_token below) that never made it
+    # into the projected aliases.json's explicit alias lists.
     loaded = load_aliases(aliases_json)
-    assert loaded == reg.alias_to_canonical()
+    live = reg.alias_to_canonical()
+    assert loaded.items() <= live.items()
+    assert live["Adabra"] == "Adabra Gwynn"
+
+
+def test_alias_to_canonical_infers_bare_first_token(tmp_path):
+    """The first-token rule mirrors known_names(): a multi-word name/alias's
+    bare first word canonicalizes to the same entity too, unless an explicit
+    registration or a cross-entity collision makes that unsafe to infer."""
+    yaml_text = """
+version: 1
+campaign: test
+entities:
+  - name: Kazryn Nyantani
+    type: npc
+    aliases: [Nyantani]
+  - name: Kazryn Otherperson
+    type: npc
+  - name: Ilvara Mizzrym
+    type: npc
+    aliases: [Ilvara]
+"""
+    reg = load_registry(_write(tmp_path, yaml_text))
+    flat = reg.alias_to_canonical()
+
+    # Unambiguous first token -> inferred.
+    assert flat["Nyantani"] == "Kazryn Nyantani"
+
+    # "Kazryn" is the first token of TWO different entities -> left unresolved
+    # rather than guessed.
+    assert "Kazryn" not in flat
+
+    # Explicit registration always wins: "Ilvara" is already a real alias, so
+    # the inference must not have (redundantly, but importantly harmlessly)
+    # overridden it with a different value.
+    assert flat["Ilvara"] == "Ilvara Mizzrym"
 
 
 def test_canonical_to_aliases_shape_matches_load_alias_map(tmp_path):
