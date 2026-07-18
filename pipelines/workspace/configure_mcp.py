@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Write .mcp.json files for campaign directories.
 
-Configures three MCP servers from CampaignGenerator into one or more campaign
+Configures MCP servers from CampaignGenerator into one or more campaign
 workspace directories:
 
   campaign   — mcp_server console script          (all campaigns that have config.yaml)
   5etools    — launch_5etools_mcp console script   (campaigns that have refs.yaml)
-  kanka      — kanka_mcp console script            (only when --kanka-token is given)
+  registry   — registry_mcp console script         (campaigns that have docs/entity_registry.yaml)
+  kanka      — kanka_mcp console script             (only when --kanka-token is given)
 
 Usage
 -----
@@ -67,6 +68,13 @@ def build_server_block(campaign_dir: Path, kanka_token: str, kanka_url: str) -> 
         servers["5etools"] = {
             "command": "launch_5etools_mcp",
             "args": ["--campaign-dir", str(campaign_dir)],
+        }
+
+    if (campaign_dir / "docs" / "entity_registry.yaml").exists():
+        servers["registry"] = {
+            "command": "registry_mcp",
+            "args": [],
+            "env": {"CAMPAIGN_DIR": str(campaign_dir)},
         }
 
     if kanka_token:
