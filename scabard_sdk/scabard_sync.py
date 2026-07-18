@@ -35,7 +35,7 @@ import time
 from pathlib import Path
 
 from campaignlib import add_backend_args, client_from_args, stream_api, DEFAULT_MODEL
-from scabard_sdk import ScabardAuthError, ScabardClient, ScabardRateLimitError
+from . import ScabardAuthError, ScabardClient, ScabardRateLimitError
 
 EXTRACT_SYSTEM = """\
 You are a structured data extractor for a D&D campaign world-building tool.

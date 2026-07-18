@@ -35,7 +35,7 @@ None of this blocks any single task — but every "which file has X" question cu
 
 - **No logic changes.** This is a `git mv` + import-path exercise, not a rewrite. Anything that looks like a bug or dead code along the way gets a note in §6, not a fix.
 - **No changes to `campaignlib/`, `session_doc/`'s existing helper modules, `server/`, `frontend/`, `config/`, `docs/`, `specs/`.** They're already organized; this proposal only touches the 62 flat root scripts (and, derivatively, whatever imports them).
-- **No move for `llm-wiki/` or `scabard_sdk/`/`scabard_sync.py`.** Decided in §6 — both stay exactly where they are; not part of this restructure.
+- **No move for `llm-wiki/` or `scabard_sdk/`.** Decided in §6 — both stay exactly where they are; not part of this restructure. (`scabard_sync.py` is a partial exception — see §6's revised decision: it was later relocated *into* `scabard_sdk/`, though `scabard_sdk/` itself still didn't move.)
 
 ## 3. Target package layout
 
@@ -52,8 +52,8 @@ Every one of the 62 files, grouped by the pipeline it belongs to (per `docs/core
 | `entity_registry` | 2 | 2,106 | ✅ moved to `entity_registry/` (top-level sibling to `campaignlib/`, see naming note below) |
 | `integrations/kanka` | 4 | 885 | ✅ moved to `pipelines/integrations/kanka/` |
 | `workspace` | 2 | 476 | ✅ moved to `pipelines/workspace/` |
-| **Migrated total** | **61** | **23,900** | |
-| `scabard_sync.py` | 1 | 307 | **not migrated** — stays at root alongside `scabard_sdk/`, per §6 decision |
+| **Migrated total** | **61** | **23,900** | (9 `pipelines/`-cluster moves above; excludes `scabard_sync.py`, see below) |
+| `scabard_sync.py` | 1 | 307 | **moved** — relocated *into* `scabard_sdk/` as a later, separate follow-up (revised §6 decision); not one of the 9 clusters above, so kept as its own row rather than folded into "Migrated total". `scabard_sdk/` itself still did not move |
 | **Repo total** | **62** | **24,207** | |
 
 ### File-level mapping
@@ -74,7 +74,7 @@ Every one of the 62 files, grouped by the pipeline it belongs to (per `docs/core
 
 **`pipelines/integrations/kanka/`** — `kanka_client.py`, `kanka_mcp.py`, `kanka_push.py`, `kanka_sync.py`
 
-**Not migrated:** `scabard_sync.py` and `scabard_sdk/` stay at repo root — decided in §6. There is no `pipelines/integrations/scabard/` in this pass.
+**Not migrated:** `scabard_sdk/` stays at repo root — decided in §6. There is no `pipelines/integrations/scabard/` in this pass. (`scabard_sync.py` no longer stays alongside it at repo root — see §6's revised decision: it was later moved *into* `scabard_sdk/`, which is not the same thing as this pass gaining a `pipelines/integrations/scabard/` cluster.)
 
 **`pipelines/workspace/`** — `new_workspace.py`, `configure_mcp.py`
 
@@ -128,7 +128,7 @@ Each phase is independently shippable and testable; nothing later depends on lat
 Each of these was an open question in an earlier draft of this proposal; all six are now settled.
 
 - **`llm-wiki/`** — leave in place, untouched. Not part of this restructure.
-- **`scabard_sdk/` and `scabard_sync.py`** — leave both untouched. Neither moves; there is no `pipelines/integrations/scabard/` in this pass. Revisit separately if `scabard_sdk/` is ever split into its own repo.
+- **`scabard_sdk/`** — leave untouched; it doesn't move. There is no `pipelines/integrations/scabard/` in this pass. Revisit separately if `scabard_sdk/` is ever split into its own repo. **Revised:** this decision originally kept `scabard_sync.py` at repo root alongside `scabard_sdk/` too. The user later reconsidered that half of it and had `scabard_sync.py` moved *into* `scabard_sdk/` — its one loose caller relocated next to the package it already imports from (`from . import ScabardClient, …` after the move, was `from scabard_sdk import …` before) — as a small, separate follow-up, not a `pipelines/integrations/scabard/` migration. `scabard_sdk/` itself is unaffected by this revision and still lives at repo root, outside `pipelines/`.
 - **`registry.py` naming** — leave as the documented read/write pairing. `entity_registry/` (root `registry.py` + `spell_canon.py`) resolves the literal package-name collision with `campaignlib/registry.py`; the pairing itself is not renamed.
 - **`scrub_mechanics.py`** — confirmed deprecated: it's the old autonomous scrub pass, already superseded by the `/scrub` skill's propose→review→apply flow, tracked by the already-open **issue #151**. It is **not migrated** as part of this restructure. Follow-up: file a new issue referencing/closing #151 to delete `scrub_mechanics.py`, as separate work — not filed yet, pending review of this plan (filing a GitHub issue is a visible action outside the scope of "just write a proposal doc").
 - **Packaging** — add `pyproject.toml` (`hatchling` build backend, flat layout) and `pip install -e .`, matching `~/src/mempalace/`'s existing convention (the only sibling repo with packaging already; `~/src/mytools/` has none).
@@ -158,5 +158,5 @@ A repo-wide sweep for the 62 script basenames (with/without `.py`, bare and back
 
 - No changes to `campaignlib/`'s internal module split — it's already done and already the precedent this proposal follows.
 - No changes to `frontend/`, `server/`'s own internal structure (only the call sites that reference moved script paths), `config/`, `docs/` content beyond updating stale script references, or `specs/`.
-- No move for `llm-wiki/` or `scabard_sdk/`/`scabard_sync.py` — decided in §6 to leave both alone.
+- No move for `llm-wiki/` or `scabard_sdk/` — decided in §6 to leave both alone. `scabard_sync.py` is the one exception: per §6's revised decision it was later relocated *into* `scabard_sdk/`, a small follow-up distinct from the `pipelines/integrations/scabard/` migration this bullet still rules out — `scabard_sdk/` itself remains unmoved.
 - No deletion of `scrub_mechanics.py` itself — only filing the tracking issue is contemplated here (§6), and that hasn't happened yet either; the delete is separate follow-up work after the issue is filed.

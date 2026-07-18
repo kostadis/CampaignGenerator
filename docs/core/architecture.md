@@ -306,7 +306,7 @@ Deep dives: [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md), [`docs/rlm/rlm
 | [`new_workspace.py`](../../pipelines/workspace/new_workspace.py) | Skeleton: `config.yaml`, `docs/`, `voice/`, `examples/`, `summaries/` |
 | [`dnd_sheet.py`](../../pipelines/content_ingest/dnd_sheet.py) | D&D Beyond PDF → markdown (vision API) |
 | [`transform.py`](../../pipelines/session_prep/transform.py) | NotebookLLM dossier → prep beat format |
-| [`scabard_sync.py`](../../scabard_sync.py) | Sync workspace ↔ Scabard |
+| [`scabard_sync.py`](../../scabard_sdk/scabard_sync.py) | Sync workspace ↔ Scabard |
 
 ## Data flow — on-disk state
 
