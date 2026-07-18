@@ -80,6 +80,7 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/cli/session_prep_workflow.md` | End-to-end session-prep walkthrough |
 | `docs/cli/ensemble_extraction.md` | `ensemble` how-to: single-file, multi-file `--plan` YAML, key flags, output layout |
 | `docs/cli/ensemble_workflow.md` | End-to-end ensemble workflow: chapters → `ensemble_batch` → `facts_to_state` → synthesis (API + subscription paths); Phandalin worked example |
+| `docs/mcp/mcp_servers.md` | The four MCP servers a campaign can wire into `.mcp.json` (`campaign`, `5etools`, `registry`, `kanka`) — what each does, what gates it, how to wire one in via `configure_mcp` |
 | `docs/README.md` | Full doc index — every doc, organised by audience |
 
 ## Critical rules (apply to every task)

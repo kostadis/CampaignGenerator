@@ -20,6 +20,10 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [Ensemble extraction](cli/ensemble_extraction.md) — single-file and multi-file `ensemble` deep dive; `--plan` YAML format, key flags, output layout.
 - [planning workflow](cli/planning_pipeline.md) — the two-phase build-dossiers → synthesize design.
 
+## MCP servers
+
+- [MCP servers](mcp/mcp_servers.md) — the four servers a campaign can wire into its `.mcp.json` (`campaign`, `5etools`, `registry`, `kanka`): what each is for, what gates it, how to wire one in.
+
 ## Web UI
 
 - [Web UI overview](web/web_ui.md) — pages, stores, dev workflow.
