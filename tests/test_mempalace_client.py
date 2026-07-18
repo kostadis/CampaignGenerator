@@ -11,8 +11,8 @@ import sys
 
 import pytest
 
-import mempalace_client
-from mempalace_client import (
+import pipelines.rlm.mempalace_client as mempalace_client
+from pipelines.rlm.mempalace_client import (
     FakeMempalaceClient,
     MempalaceClient,
     MempalaceError,

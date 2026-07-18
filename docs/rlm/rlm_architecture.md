@@ -81,9 +81,9 @@ You can ask MemPalace for "give me an inset describing Candlekeep" and it should
 
 This is also why pdf-translators is heavyweight enough to need a real ML pipeline. PDFs without bookmarks (most scanned 1e/2e modules) are routed to **Marker** for ML-based layout extraction (~5 GB of model weights, GPU recommended). PDFs *with* bookmarks take the **PyMuPDF fast path** (~100× faster). Both paths feed into a Claude-API pass that imposes the 5etools schema on the chunked content. Statblocks are extracted in a separate `--extract-monsters` pass that writes a sibling `*-bestiary.json`.
 
-**The 5etools repo itself ships the canonical corpus**, and that's what makes the *cheap* ingest path viable. `~/src/5etools-kostadis/data/` already contains 4,454 monsters across 106 source files (`bestiary-mm.json`, `bestiary-oota.json`, …), 99 adventure files (`adventure-oota.json`, …), 60 sourcebooks, 936 spells, plus the full class / race / item / variant-rule / fluff catalog — schema-perfect 5etools JSON sitting on disk in ~106 MB. For any campaign running a published WotC adventure, recreating that JSON via PDF→ML→Claude reconversion is wasted work. The retriever surfaces canonical-JSON content as a **`candidate (cost: cheap)`** with a one-line `fivetools_ingest.py` command, and reserves pdf-translators for the *expensive* path — content that genuinely doesn't exist in canonical form yet (third-party PDFs, AD&D modules, homebrew). See §4 for how this routes through retrieval, and the [serene-harbor plan](file:///home/kroussos/.claude/plans/sorry-you-should-read-serene-harbor.md) "Three piles" table for the corpus split.
+**The 5etools repo itself ships the canonical corpus**, and that's what makes the *cheap* ingest path viable. `~/src/5etools-kostadis/data/` already contains 4,454 monsters across 106 source files (`bestiary-mm.json`, `bestiary-oota.json`, …), 99 adventure files (`adventure-oota.json`, …), 60 sourcebooks, 936 spells, plus the full class / race / item / variant-rule / fluff catalog — schema-perfect 5etools JSON sitting on disk in ~106 MB. For any campaign running a published WotC adventure, recreating that JSON via PDF→ML→Claude reconversion is wasted work. The retriever surfaces canonical-JSON content as a **`candidate (cost: cheap)`** with a one-line `fivetools_ingest` command, and reserves pdf-translators for the *expensive* path — content that genuinely doesn't exist in canonical form yet (third-party PDFs, AD&D modules, homebrew). See §4 for how this routes through retrieval, and the [serene-harbor plan](file:///home/kroussos/.claude/plans/sorry-you-should-read-serene-harbor.md) "Three piles" table for the corpus split.
 
-The schema is the contract that lets every downstream tool — MemPalace ingest, CG retrieval, the render pipeline — assume typed structure. **`fivetools_ingest.py` honors the full catalog-shape side of this contract** as of Step 1 of the serene-harbor plan (wrapper-key dispatch, `_copy` resolution, full statblock render); see [`docs/archive/fivetools_ingest_audit.md`](../archive/fivetools_ingest_audit.md) for what's shipped vs. what's deferred to enrichment-only post-MVP work.
+The schema is the contract that lets every downstream tool — MemPalace ingest, CG retrieval, the render pipeline — assume typed structure. **`fivetools_ingest` honors the full catalog-shape side of this contract** as of Step 1 of the serene-harbor plan (wrapper-key dispatch, `_copy` resolution, full statblock render); see [`docs/archive/fivetools_ingest_audit.md`](../archive/fivetools_ingest_audit.md) for what's shipped vs. what's deferred to enrichment-only post-MVP work.
 
 ---
 
@@ -106,7 +106,7 @@ graph TB
             RPGTOOLS["search_books · get_book ·<br/>find_books_by_tag · list_filters · get_stats"]
         end
 
-        subgraph CGMCP["CampaignGenerator-rlm MCP — mcp_server.py"]
+        subgraph CGMCP["CampaignGenerator-rlm MCP — mcp_server"]
             CGTOOLS["<b>rpg_search</b> · <b>propose_dossier</b> ·<br/><b>suggest_conversion</b>"]
         end
 
@@ -118,7 +118,7 @@ graph TB
     %% ── Awareness layer (catalogs the retriever consults) ─────────────
     subgraph Awareness["Awareness layer (queried, not stored in MemPalace)"]
         RPGDB[("rpg_library.db<br/>SQLite catalog of 14K+ PDFs<br/>HTTP API: /search /nlq /book/{id}")]
-        FIVECAT["<b>fivetools_catalog.py</b><br/>name index + mtime cache over<br/>~/src/5etools-kostadis/data/<br/>26,921 entities · pickle-cached"]
+        FIVECAT["<b>fivetools_catalog</b><br/>name index + mtime cache over<br/>~/src/5etools-kostadis/data/<br/>26,921 entities · pickle-cached"]
     end
 
     %% ── Persistent stores ────────────────────────────────────────────
@@ -145,21 +145,21 @@ graph TB
 
     %% ── CG-rlm Retrieve + Ingest ─────────────────────────────────────
     subgraph CGCore["CampaignGenerator-rlm core"]
-        RETR["<b>rpg_retriever.py</b><br/>tiered: drawer / statblock /<br/>candidate(cost: cheap | expensive)<br/>one ranked list, hard tier order"]
-        FTI["<b>fivetools_ingest.py</b><br/>5etools JSON → MemPalace drawers<br/>--filter (name=… / chapter=N)<br/>(idempotent via .fivetools_ingest/)"]
-        CONVBOOK["<b>convert_book.py</b><br/>wrapper over pdf-translators v2"]
-        SUGGEST["<b>suggest_conversion.py</b><br/>builds convert+ingest commands<br/>(targets pdf_to_5etools_v2.py)"]
-        PROPOSER["<b>dossier_proposer.py</b><br/>writes docs/dossier_proposal.md<br/>cheap vs expensive ingest blocks"]
-        MCLIENT["<b>mempalace_client.py</b><br/>stdio JSON-RPC"]
+        RETR["<b>rpg_retriever</b><br/>tiered: drawer / statblock /<br/>candidate(cost: cheap | expensive)<br/>one ranked list, hard tier order"]
+        FTI["<b>fivetools_ingest</b><br/>5etools JSON → MemPalace drawers<br/>--filter (name=… / chapter=N)<br/>(idempotent via .fivetools_ingest/)"]
+        CONVBOOK["<b>convert_book</b><br/>wrapper over pdf-translators v2"]
+        SUGGEST["<b>suggest_conversion</b><br/>builds convert+ingest commands<br/>(targets pdf_to_5etools_v2.py)"]
+        PROPOSER["<b>dossier_proposer</b><br/>writes docs/dossier_proposal.md<br/>cheap vs expensive ingest blocks"]
+        MCLIENT["<b>mempalace_client</b><br/>stdio JSON-RPC"]
     end
 
     %% ── Prep-time render layer ───────────────────────────────────────
     subgraph Render["Prep-time render (calls Claude)"]
         DOSSIER["<b>docs/dossier_proposal.md</b><br/>'candidates only' → 'approved by …'"]
-        LOADER["<b>proposal_loader.py</b><br/>require_approved_proposal()<br/>attach_proposal_to_documents()"]
-        PREP["<b>prep.py</b><br/>--require-proposal"]
-        SESSDOC["<b>sd_plan.py</b><br/>--require-proposal"]
-        PLANNING["<b>planning.py</b><br/>--require-proposal"]
+        LOADER["<b>proposal_loader</b><br/>require_approved_proposal()<br/>attach_proposal_to_documents()"]
+        PREP["<b>prep</b><br/>--require-proposal"]
+        SESSDOC["<b>sd_plan</b><br/>--require-proposal"]
+        PLANNING["<b>planning</b><br/>--require-proposal"]
     end
 
     %% ── CI guard ──────────────────────────────────────────────────────
@@ -224,7 +224,7 @@ The diagram has three horizontal bands:
 - **Middle:** the **awareness layer** (rpg-library catalog + 5etools-canonical catalog — both queried by the retriever, neither stored in MemPalace), the persistent stores (PDFs, canonical 5etools JSON, pdf-translators output, the per-campaign palace), and the on-demand pdf-translators pipeline that bridges *unconverted* PDFs into typed JSON.
 - **Bottom:** the prep-time render flow that consumes a human-approved dossier proposal, plus the CI guard that polices the retrieve/render separation.
 
-**One unified search, two awareness sources.** The retriever consults `rpg_library.db` (HTTP) **and** `fivetools_catalog.py` (in-process, mtime-cached over `~/src/5etools-kostadis/data/`) on every query, and merges their hits into a single ranked candidate pool. From the GM's and Claude's perspective there is one "search rpglib + 5etools" operation, not two. The cost tag (`cheap` for canonical 5etools JSON, `expensive` for PDFs that need pdf-translators) communicates ingest cost without exposing which awareness source surfaced the candidate.
+**One unified search, two awareness sources.** The retriever consults `rpg_library.db` (HTTP) **and** `fivetools_catalog` (in-process, mtime-cached over `~/src/5etools-kostadis/data/`) on every query, and merges their hits into a single ranked candidate pool. From the GM's and Claude's perspective there is one "search rpglib + 5etools" operation, not two. The cost tag (`cheap` for canonical 5etools JSON, `expensive` for PDFs that need pdf-translators) communicates ingest cost without exposing which awareness source surfaced the candidate.
 
 **Per-campaign MemPalace.** The same per-campaign palace at `~/.mempalace/palaces/<campaign>/` holds both the campaign's narrative content (`narrative` / `chronicle` / `<campaign>` wings per the [MEMPALACE_HOWTO](~/campaigns/MEMPALACE_HOWTO.md) pattern) **and** the 5etools-derived content the GM has chosen to ingest for that campaign (`wing_bestiary` / `wing_spells` / `wing_items` / `wing_classes` / `wing_rules` / `wing_rpglib` / `wing_lore`). There is no shared `dnd5e` palace — see §16 for why. The same Drow Priestess statblock gets re-ingested per campaign that asks for it; that's intentional, and at millisecond-scale cheap-path ingest cost it is the right trade.
 
@@ -252,7 +252,7 @@ Both pile 1 and pile 2 land in MemPalace as **5etools-shaped drawers** (because 
 2. `candidate (cost: cheap)` — 5etools-canonical hits from `fivetools_catalog`, sorted by catalog score.
 3. `candidate (cost: expensive)` — rpg-library hits, sorted by rpg-library's native order (NLQ relevance or `/search` ordering).
 
-Each candidate carries the exact one-liner that would ingest it. Cheap candidates carry a `fivetools_ingest.py --filter "name=…"` (or `chapter=N` for adventure-shape docs) command. Expensive candidates carry the `pdf_to_5etools_v2.py convert` + `fivetools_ingest.py` pair.
+Each candidate carries the exact one-liner that would ingest it. Cheap candidates carry a `fivetools_ingest --filter "name=…"` (or `chapter=N` for adventure-shape docs) command. Expensive candidates carry the `pdf_to_5etools_v2.py convert` + `fivetools_ingest` pair.
 
 The MCP layer (`rpg_search`) supports three call modes through one tool:
 
@@ -262,7 +262,7 @@ The MCP layer (`rpg_search`) supports three call modes through one tool:
 | **B — Scoped search** | `query` + `source="MM"` *or* `book_id=42` | Same ranking, narrower pool. `source` filters the cheap pool by 5etools source code; `book_id` filters the expensive pool. |
 | **C — Pin** | `file_path` + `filter` *or* `book_id` | No `query`. Returns one candidate with the fully-formed paste-ready one-liner. |
 
-The CLI surfaces (`fivetools_ingest.py`, `pdf_to_5etools_v2.py`) remain first-class — MCP is a discovery + ergonomics layer, not a single point of failure.
+The CLI surfaces (`fivetools_ingest`, `pdf_to_5etools_v2.py`) remain first-class — MCP is a discovery + ergonomics layer, not a single point of failure.
 
 ### 4.3 Walkthrough — *"tell me about Velkynvelve"*
 
@@ -277,11 +277,11 @@ OotA campaign, freshly-created palace:
 
 3. **The retriever assembles a tiered response:**
    - Tier 1 (drawer/statblock): empty.
-   - Tier 2 (cheap): one record — `{kind: "candidate", cost: "cheap", entity_type: "chapter", name: "Velkynvelve", source: "OotA", chapter_ordinal: 0, command_argv: [...], command: "python fivetools_ingest.py ~/src/5etools-kostadis/data/adventure/adventure-oota.json --palace <campaign> --filter 'chapter=0'"}`.
+   - Tier 2 (cheap): one record — `{kind: "candidate", cost: "cheap", entity_type: "chapter", name: "Velkynvelve", source: "OotA", chapter_ordinal: 0, command_argv: [...], command: "fivetools_ingest ~/src/5etools-kostadis/data/adventure/adventure-oota.json --palace <campaign> --filter 'chapter=0'"}`.
    - Tier 3 (expensive): zero or one record (the OotA hardcover PDF), depending on whether the GM wants prose-level redundancy. Since the cheap path already covers OotA, the GM normally skips it.
 
 4. **Claude reports back to the GM:**
-   > *"Velkynvelve isn't in the campaign palace yet, but it's a chapter-0 location in the canonical OotA adventure JSON sitting on disk. Cheap to ingest — one filter on `fivetools_ingest.py`. Want me to run it?"*
+   > *"Velkynvelve isn't in the campaign palace yet, but it's a chapter-0 location in the canonical OotA adventure JSON sitting on disk. Cheap to ingest — one filter on `fivetools_ingest`. Want me to run it?"*
 
 5. **GM says yes.** Claude (or the GM directly) runs the one-liner. The script reads `adventure-oota.json`, walks `_iter_top_level_entries` filtered to `chapter=0`, dispatches each entry to `wing_rpglib`, and writes drawers via `mempalace_client.add_drawer`. State sidecar at `<json_dir>/.fivetools_ingest/<digest>.json` keys on `(size, mtime, filter)` so re-running with a different filter is not a no-op. The room is marked dirty; `recursive_indexer.rebuild_dirty()` regenerates only the affected room and wing indices.
 
@@ -298,9 +298,9 @@ The same query against a third-party adventure that *isn't* in the canonical 5et
 - `fivetools_catalog.search` returns nothing.
 - rpg-library returns the PDF as a `BookSummary` with `filepath`, `relative_path`, `product_id`.
 - The retriever emits one `candidate (cost: expensive)` carrying:
-  - `command_argv: ["python", "pdf_to_5etools_v2.py", "convert", "/mnt/g/.../book.pdf", "--type", "<mapped from product_type>", ...]` followed by `["python", "fivetools_ingest.py", "<output.json>", "--palace", "<campaign>", "--book-id", "<id>"]`.
+  - `command_argv: ["python", "pdf_to_5etools_v2.py", "convert", "/mnt/g/.../book.pdf", "--type", "<mapped from product_type>", ...]` followed by `["fivetools_ingest", "<output.json>", "--palace", "<campaign>", "--book-id", "<id>"]`.
   - The identifier triple `(book_id, relative_path, product_id)` so persisted references survive a rpg-library re-index (per [`mytools/rpg-lib/ARCHITECTURE.md`](~/src/mytools/rpg-lib/ARCHITECTURE.md) §7).
-- The GM approves; conversion runs (minutes + API spend); the resulting JSON gets ingested via the same `fivetools_ingest.py` codepath that handles the cheap case.
+- The GM approves; conversion runs (minutes + API spend); the resulting JSON gets ingested via the same `fivetools_ingest` codepath that handles the cheap case.
 
 The retriever is the only component that has to know which awareness source surfaced the candidate. Everything downstream — `dossier_proposer`, `proposal_loader`, the render scripts — sees one shape: drawers, statblocks, and cost-tagged candidates.
 
@@ -316,9 +316,9 @@ This is the **dossier proposal** flow:
 
 1. **Propose:**
    ```bash
-   python dossier_proposer.py "party arrives at Icespire Hold"
+   dossier_proposer "party arrives at Icespire Hold"
    ```
-   `dossier_proposer.py` calls `rpg_retriever.retrieve()` and writes `<campaign-dir>/docs/dossier_proposal.md`. The first non-frontmatter line is a status banner:
+   `dossier_proposer` calls `rpg_retriever.retrieve()` and writes `<campaign-dir>/docs/dossier_proposal.md`. The first non-frontmatter line is a status banner:
    ```
    > **Status:** candidates only. Review, delete, reorder, and edit before approving.
    ```
@@ -330,14 +330,14 @@ This is the **dossier proposal** flow:
 
 3. **Render with the gate enforced:**
    ```bash
-   python prep.py --campaign-dir . --require-proposal --beat "..."
+   prep --campaign-dir . --require-proposal --beat "..."
    ```
    - `proposal_loader.require_approved_proposal()` reads the file. If the status still says `candidates only`, the script refuses with a non-zero exit code before any Claude API call is made.
    - `proposal_loader.attach_proposal_to_documents()` injects the approved excerpts into the user prompt alongside `world_state.md`, `campaign_state.md`, `party.md`.
 
 If `--require-proposal` is not passed but an approved proposal exists, the render scripts opportunistically attach it. The flag is the strict form: refuse to run without one.
 
-This flow exists because the heavyweight prep scripts (`prep.py`, `sd_plan.py` + `sd_narrate.py`, `planning.py`) make many Claude API calls each, and the cost of running them on bad grounding is high. The proposal is the human checkpoint that says "yes, *these* sources are the right ones for this session."
+This flow exists because the heavyweight prep scripts (`prep`, `sd_plan` + `sd_narrate`, `planning`) make many Claude API calls each, and the cost of running them on bad grounding is high. The proposal is the human checkpoint that says "yes, *these* sources are the right ones for this session."
 
 ---
 
@@ -353,7 +353,7 @@ It walks every `.py` file in the repo (`Path.rglob("*.py")`), parses each into a
 
 No function in the repo can call MemPalace and Claude in the same body. To do both you must split into two functions, with the dossier proposal between them. Because this is a test that runs in CI, the rule cannot be silently re-violated.
 
-It currently passes for 31 modules including `prep.py`, `planning.py`, `sd_*.py`, `polish.py`, `proposal_loader.py`, the `server/routers/*` family, and the `scabard_sdk/` modules absorbed from main during the rebase.
+It currently passes for 31 modules including `prep`, `planning`, `sd_*.py`, `polish`, `proposal_loader` (`pipelines/rlm/proposal_loader.py`), the `server/routers/*` family, and the `scabard_sdk/` modules absorbed from main during the rebase.
 
 This test is the operational expression of the rule from the global `~/.claude/CLAUDE.md`: *LLMs are renderers, not architects. Scope decisions need a human checkpoint.* The test prevents engineers from accidentally building "LLM extracts → LLM structures → LLM renders" pipelines that compound errors silently.
 
@@ -398,7 +398,7 @@ Indexes are kept fresh by a **dirty-flag mechanism**: `palace.py::mark_room_dirt
 
 **Gate 1 metric** (`tests/benchmarks/test_hierarchical_aaak_gate1.py`): 19.82× drawer-scored reduction at 0% recall@10 loss vs. flat baseline, indices under 50 MB on disk.
 
-### `CampaignGenerator-rlm` MCP — `mcp_server.py`
+### `CampaignGenerator-rlm` MCP — `pipelines/rlm/mcp_server.py`
 
 Orchestration tier. Knits the catalog and verbatim tiers together.
 
@@ -406,7 +406,7 @@ Orchestration tier. Knits the catalog and verbatim tiers together.
 |---|---|
 | `rpg_search` | Calls `rpg_retriever.retrieve`. Returns tiered JSON: `drawer` / `statblock` / `candidate`, where `candidate` carries `cost: cheap | expensive`. Args: `query`, `k_cheap`, `k_expensive`, `include_cheap`, `include_expensive`, `source`, `book_id`, `file_path`, `filter`, `palace`. |
 | `propose_dossier` | Calls `rpg_search` and writes `docs/dossier_proposal.md`. Cheap and expensive ingest blocks are formatted differently so the GM can see at a glance which approvals cost money. Returns a status string. |
-| `suggest_conversion` | For an unconverted book (by id or filepath), builds the `pdf_to_5etools_v2.py` convert command + the matching `fivetools_ingest.py` command. `product_type` maps to `--type` / `--monsters-only` per pdf-translators v2's CLI. |
+| `suggest_conversion` | For an unconverted book (by id or filepath), builds the `pdf_to_5etools_v2.py` convert command + the matching `fivetools_ingest` command. `product_type` maps to `--type` / `--monsters-only` per pdf-translators v2's CLI. |
 
 **None of these tools call Claude.** They are retrieval / slotting / command-building only. This is what makes the human checkpoint enforceable: an agent that "searches" via `rpg_search` cannot accidentally render off the raw results — it has to write a dossier proposal, and a human has to approve it, before any render script will accept it as grounding. And for the *expensive* path, the cost tag plus the explicit ingest command surface the financial commitment to the GM before any pdf-translators run starts.
 
@@ -430,7 +430,7 @@ The campaign palaces follow the [MEMPALACE_HOWTO](~/campaigns/MEMPALACE_HOWTO.md
 
 The room layout inside each wing is **one room per source book**: `room_<sanitized-book-title>`. This mirrors how content is naturally sharded in 5etools (per-source files for bestiary/spells/classes) and lets hierarchical retrieval prune at the book level — Depth 1 picks the 2–3 books most relevant to the query before descending into drawers.
 
-**Status:** as of Step 1 of the serene-harbor plan, `fivetools_ingest.py` dispatches on the 5etools wrapper key (`monster` / `spell` / `item` / `class` / `subclass` / `classFeature` / `subclassFeature` / `race` / `background` / `feat` / `*Fluff` / `data`) and writes to the typed wings above. Statblock content is rendered in full per `JSON_FORMAT.md §6.1`. Adventure prose lands in `wing_rpglib` with `chapter_ordinal` metadata. Cross-shard `_copy` resolution (`fivetools_copy.py`) handles inheritance via `_meta.dependencies`. The `{@tag}` cross-reference DSL is flattened to plain text at render time; per-tag metadata extraction (S3.1 in the audit) is the deferred enrichment. See [`docs/archive/fivetools_ingest_audit.md`](../archive/fivetools_ingest_audit.md) for what's shipped vs. what's still on the enrichment-only Batch C list.
+**Status:** as of Step 1 of the serene-harbor plan, `fivetools_ingest` dispatches on the 5etools wrapper key (`monster` / `spell` / `item` / `class` / `subclass` / `classFeature` / `subclassFeature` / `race` / `background` / `feat` / `*Fluff` / `data`) and writes to the typed wings above. Statblock content is rendered in full per `JSON_FORMAT.md §6.1`. Adventure prose lands in `wing_rpglib` with `chapter_ordinal` metadata. Cross-shard `_copy` resolution (`pipelines/content_ingest/fivetools_copy.py`) handles inheritance via `_meta.dependencies`. The `{@tag}` cross-reference DSL is flattened to plain text at render time; per-tag metadata extraction (S3.1 in the audit) is the deferred enrichment. See [`docs/archive/fivetools_ingest_audit.md`](../archive/fivetools_ingest_audit.md) for what's shipped vs. what's still on the enrichment-only Batch C list.
 
 ---
 
@@ -442,8 +442,8 @@ The room layout inside each wing is **one room per source book**: `room_<sanitiz
 |---|---|---|---|---|
 | `drawer` | — | Verbatim prose / section / inset / quote / table hit | Per-campaign palace (any prose-flavored wing) | Joined with awareness-derived metadata; rendered into the dossier proposal or returned to Claude in chat |
 | `statblock` | — | Compact creature reference | `wing_bestiary` | Same as drawer; bestiary-flavored excerpt with AC/HP/attacks/traits |
-| `candidate` | `cheap` | A 5etools-canonical entity sitting in `~/src/5etools-kostadis/data/` that is *not yet* in the campaign palace | `fivetools_catalog` | Carries a `fivetools_ingest.py --filter` one-liner; ingestion is millisecond-scale |
-| `candidate` | `expensive` | A PDF in the rpg-library catalog with no canonical-JSON equivalent | rpg-library HTTP API | Carries a `pdf_to_5etools_v2.py convert` + `fivetools_ingest.py` command pair plus the `(book_id, relative_path, product_id)` identifier triple; ingestion is minutes + API spend |
+| `candidate` | `cheap` | A 5etools-canonical entity sitting in `~/src/5etools-kostadis/data/` that is *not yet* in the campaign palace | `fivetools_catalog` | Carries a `fivetools_ingest --filter` one-liner; ingestion is millisecond-scale |
+| `candidate` | `expensive` | A PDF in the rpg-library catalog with no canonical-JSON equivalent | rpg-library HTTP API | Carries a `pdf_to_5etools_v2.py convert` + `fivetools_ingest` command pair plus the `(book_id, relative_path, product_id)` identifier triple; ingestion is minutes + API spend |
 
 Each candidate carries **both** `command_argv: list[str]` (machine-runnable via Bash / subprocess) and `command: str` (`shlex.join`-ed for chat display). The argv list is what gets executed; the string is what Claude shows the GM.
 
@@ -452,16 +452,16 @@ This tiered shape is the **load-bearing contract** between the awareness layer a
 The hard-tier ordering (drawer/statblock > cheap > expensive) is not score-normalized across sources. rpg-library `/search` doesn't return a relevance score; inventing a position-based pseudo-score to interleave against `fivetools_catalog`'s deterministic scoring would be faux precision. Cost asymmetry plus granularity asymmetry (cheap = one entity, expensive = one whole book) make the tiers legible without fake interleaving.
 
 Code pointers:
-- `rpg_retriever.py::retrieve` — the retrieval entry point.
-- `mcp_server.py::rpg_search` — the MCP tool with the discriminated record shape.
-- `dossier_proposer.py` — formats cheap-vs-expensive ingest blocks differently in `dossier_proposal.md`.
+- `pipelines/rlm/rpg_retriever.py::retrieve` — the retrieval entry point.
+- `pipelines/rlm/mcp_server.py::rpg_search` — the MCP tool with the discriminated record shape.
+- `pipelines/rlm/dossier_proposer.py` — formats cheap-vs-expensive ingest blocks differently in `dossier_proposal.md`.
 - `tests/benchmarks/test_rlm_benchmark_rpg_gate2.py` — Phase 2 Gate: top-3 correct on ≥90% of 15 RPG queries.
 
 ---
 
 ## 10. 5etools-specific concerns (must-handle at ingest)
 
-These are the gotchas baked into the 5etools format that any complete ingest pipeline must respect. Several are partially or wholly missing from the current `fivetools_ingest.py` — see the audit.
+These are the gotchas baked into the 5etools format that any complete ingest pipeline must respect. Several are partially or wholly missing from the current `pipelines/content_ingest/fivetools_ingest.py` — see the audit.
 
 ### 10.1 The wrapper-vs-`data`-tree dichotomy
 
@@ -583,7 +583,7 @@ The rebases that produced the current tree state are documented in `/home/krouss
 | `claude_api.py` | Shared API layer. Owns retry/validation/recovery logic + `COMMON_TAG_RULES` + `COMMON_NESTING_RULES` prompt fragments. |
 | `pdf_utils.py` | PyMuPDF bookmark/TOC extraction. `TocNode`, `parse_toc_tree`, `extract_pdf_toc`. |
 | `cli_args.py` | Shared argparse. Single source of truth for `--type`, `--batch`, `--extract-monsters`, etc. |
-| `adventure_model.py` | 5etools data model + structural validation. Imported by `fivetools_ingest.py` for pre-ingest validation. |
+| `adventure_model.py` | 5etools data model + structural validation. Imported by `pipelines/content_ingest/fivetools_ingest.py` for pre-ingest validation. |
 | `app.py` | Flask UI (port 5100). |
 | `marker-env/` | Marker virtualenv (gitignored, ~5 GB of model weights). |
 
@@ -618,16 +618,16 @@ Routing:
 
 | Path | Role |
 |---|---|
-| `mempalace_client.py` | Stdio JSON-RPC client; spawns `mempalace-mcp` and speaks its protocol. The only file in CG that knows how to talk to MemPalace. |
-| `rpg_retriever.py` | `retrieve(query)` → tiered result list (drawer / statblock / cost-tagged candidate). Merges MemPalace hits, `fivetools_catalog` cheap candidates, and rpg-library expensive candidates into a single ranked response. |
-| `fivetools_catalog.py` | Mtime-cached name index over `~/src/5etools-kostadis/data/`. 26,921 entities + chapters; pickle-cached, rebuilt on staleness. |
-| `convert_book.py` | Wrapper over `pdf-translators/pdf_to_5etools_v2.py`. |
-| `fivetools_ingest.py` | Idempotent ingest of 5etools JSON → MemPalace drawers. **Currently adventure-shape only and content-lossy for statblocks; full schema coverage is the audit's remediation list.** |
-| `suggest_conversion.py` | Builds `convert_book.py` + `fivetools_ingest.py` command payloads for unconverted books. |
-| `dossier_proposer.py` | Writes `docs/dossier_proposal.md` from a retrieval query. |
-| `proposal_loader.py` | `require_approved_proposal` / `attach_proposal_to_documents`. |
-| `mcp_server.py` | MCP server exposing `rpg_search`, `propose_dossier`, `suggest_conversion`. |
-| `prep.py`, `sd_plan.py`, `planning.py` | Render scripts that accept `--campaign-dir` + `--require-proposal`. (`sd_consistency` / `sd_narrate` inherit the gate transitively because they consume artefacts produced after the gate passes.) |
+| `pipelines/rlm/mempalace_client.py` | Stdio JSON-RPC client; spawns `mempalace-mcp` and speaks its protocol. The only file in CG that knows how to talk to MemPalace. |
+| `pipelines/rlm/rpg_retriever.py` | `retrieve(query)` → tiered result list (drawer / statblock / cost-tagged candidate). Merges MemPalace hits, `fivetools_catalog` cheap candidates, and rpg-library expensive candidates into a single ranked response. |
+| `pipelines/rlm/fivetools_catalog.py` | Mtime-cached name index over `~/src/5etools-kostadis/data/`. 26,921 entities + chapters; pickle-cached, rebuilt on staleness. |
+| `pipelines/content_ingest/convert_book.py` | Wrapper over `pdf-translators/pdf_to_5etools_v2.py`. |
+| `pipelines/content_ingest/fivetools_ingest.py` | Idempotent ingest of 5etools JSON → MemPalace drawers. **Currently adventure-shape only and content-lossy for statblocks; full schema coverage is the audit's remediation list.** |
+| `pipelines/rlm/suggest_conversion.py` | Builds `convert_book` + `fivetools_ingest` command payloads for unconverted books. |
+| `pipelines/rlm/dossier_proposer.py` | Writes `docs/dossier_proposal.md` from a retrieval query. |
+| `pipelines/rlm/proposal_loader.py` | `require_approved_proposal` / `attach_proposal_to_documents`. |
+| `pipelines/rlm/mcp_server.py` | MCP server exposing `rpg_search`, `propose_dossier`, `suggest_conversion`. |
+| `pipelines/session_prep/prep.py`, `session_doc/sd_plan.py`, `pipelines/grounding/planning.py` | Render scripts that accept `--campaign-dir` + `--require-proposal`. (`sd_consistency` / `sd_narrate` inherit the gate transitively because they consume artefacts produced after the gate passes.) |
 | `tests/test_retrieve_render_isolation.py` | The CI invariant. |
 | `tests/test_require_proposal_cli.py` | End-to-end CLI gate behavior. |
 | `tests/test_dossier_proposer.py`, `tests/test_proposal_loader.py`, `tests/test_mempalace_client.py`, `tests/test_fivetools_ingest.py`, `tests/test_suggest_conversion.py`, `tests/test_rpg_retriever.py` | Unit coverage per module. |
@@ -660,9 +660,9 @@ cd ~/src/mytools/rpg-lib && ./service.sh start
 
 # (one-time, per book) convert and ingest a PDF on demand
 cd ~/src/CampaignGenerator-rlm
-python convert_book.py /mnt/g/path/to/book.pdf
+convert_book /mnt/g/path/to/book.pdf
 # → produces /mnt/data/.../book.json + book-bestiary.json (if --extract-monsters)
-python fivetools_ingest.py /mnt/data/.../book.json --book-id 7421 --palace <campaign>
+fivetools_ingest /mnt/data/.../book.json --book-id 7421 --palace <campaign>
 # → adventure prose drawers land in wing_rpglib/room_<book>; statblocks land in wing_bestiary
 # → catalog files dispatch to wing_spells / wing_items / wing_classes / wing_lore / etc. by wrapper key
 
@@ -672,17 +672,17 @@ python fivetools_ingest.py /mnt/data/.../book.json --book-id 7421 --palace <camp
 # → if candidate(cost: expensive) comes back, Claude proposes pdf_to_5etools_v2 + ingest and waits for "yes"
 
 # (prep flow) propose a dossier for an upcoming session
-python dossier_proposer.py "party arrives at Icespire Hold"
+dossier_proposer "party arrives at Icespire Hold"
 # → opens docs/dossier_proposal.md
 # user reviews, edits, changes status banner to "approved by <name> on <date>"
 
 # (prep flow) render with the approved proposal as grounding
-python prep.py --campaign-dir . --require-proposal --beat "The party enters Icespire Hold"
-python sd_plan.py --scene-extractions scene_extractions/ --characters "…" --campaign-dir . --require-proposal …
-python planning.py --npc docs/npcs/*.md --output docs/planning.md --campaign-dir . --require-proposal
+prep --campaign-dir . --require-proposal --beat "The party enters Icespire Hold"
+sd_plan --scene-extractions scene_extractions/ --characters "…" --campaign-dir . --require-proposal …
+planning --npc docs/npcs/*.md --output docs/planning.md --campaign-dir . --require-proposal
 ```
 
-If the GM has not yet approved the proposal, every render script exits non-zero before any Claude API call is made. If a relevant book has not yet been converted, the live flow surfaces it as a `candidate (cost: expensive)` with the exact pdf-translators + ingest command pair to promote it. Candidates from the canonical 5etools tree appear instead as `candidate (cost: cheap)` with a one-line `fivetools_ingest.py --filter` command.
+If the GM has not yet approved the proposal, every render script exits non-zero before any Claude API call is made. If a relevant book has not yet been converted, the live flow surfaces it as a `candidate (cost: expensive)` with the exact pdf-translators + ingest command pair to promote it. Candidates from the canonical 5etools tree appear instead as `candidate (cost: cheap)` with a one-line `fivetools_ingest --filter` command.
 
 ---
 
@@ -698,7 +698,7 @@ Five rejected designs that the serene-harbor plan walked through and discarded. 
 - Cold content pollutes retrieval. Ranking degrades when irrelevant drawers crowd the search space; the same Drow Priestess statblock indexed across every D&D campaign the user has ever run would push the *current* campaign's NPCs out of the top-K.
 - The GM-as-checkpoint discipline keeps the system honest. If you didn't ingest it, you can't accidentally render off it. Bulk-ingest erases that boundary.
 
-The cheap-path on-demand mechanism (`candidate (cost: cheap)` → `fivetools_ingest.py --filter`) is the only supported way 5etools-canonical content reaches the palace.
+The cheap-path on-demand mechanism (`candidate (cost: cheap)` → `fivetools_ingest --filter`) is the only supported way 5etools-canonical content reaches the palace.
 
 ### 16.2 A shared `dnd5e` palace across campaigns
 

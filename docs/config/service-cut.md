@@ -34,13 +34,13 @@ flowchart TB
 | Service | Router / entry | ui_state section | CLI engine | Its config/state |
 |---|---|---|---|---|
 | Session Doc Editor | `scene_editor.py` + `scene_editor.CONFIG` | `ui.session_doc`, `ui.profiles` | narrate/scrub CLI | backend/dgx knobs, tokens, prose/reflections, session paths |
-| Ensemble | `ensemble.py` | `ui.ensemble` | `ensemble_extract`/`ensemble_merge`/`synthesise_*` | chapters, known_names, aliases, per-stage `BackendProfile`, `manifest.json`, `merge.yaml` |
-| VTT Summary | `session_workflow.py` | `ui.vtt_summary` | `vtt_summary.py` | input/output, extract_dir, reference_summaries |
-| Grounding / Search | `grounding.py`, `mcp_server.py` | `ui.grounding` | grounded_search, query_lore, rpg_retriever | summaries pointer; reads wiring |
-| Party | `config_routes` party-yaml | `ui.party` (loose) | `party.py` | `party.yaml` (roster, 3-state arc_score) |
-| Planning | `planning_routes` | (none - uses dedicated PlanningConfigService) | `planning.py` | `planning.yaml` (npcs/factions) |
-| Campaign State | (CLI-only page) | `ui.campaign_state` (loose) | `campaign_state.py` | `tracking.txt` |
-| Distill / NPC / Query / Prep / Connections / Experimental | generic `PUT /section/{name}` | `ui.<loose>` | `distill.py`, `npc_table.py`, `prep.py`, ... | under-modeled `extra='allow'` sections |
+| Ensemble | `pipelines/ensemble/ensemble.py` | `ui.ensemble` | `ensemble_extract`/`ensemble_merge`/`synthesise_*` | chapters, known_names, aliases, per-stage `BackendProfile`, `manifest.json`, `merge.yaml` |
+| VTT Summary | `session_workflow.py` | `ui.vtt_summary` | `session_doc/vtt_summary.py` | input/output, extract_dir, reference_summaries |
+| Grounding / Search | `grounding.py`, `pipelines/rlm/mcp_server.py` | `ui.grounding` | grounded_search, query_lore, rpg_retriever | summaries pointer; reads wiring |
+| Party | `config_routes` party-yaml | `ui.party` (loose) | `pipelines/grounding/party.py` | `party.yaml` (roster, 3-state arc_score) |
+| Planning | `planning_routes` | (none - uses dedicated PlanningConfigService) | `pipelines/grounding/planning.py` | `planning.yaml` (npcs/factions) |
+| Campaign State | (CLI-only page) | `ui.campaign_state` (loose) | `pipelines/grounding/campaign_state.py` | `tracking.txt` |
+| Distill / NPC / Query / Prep / Connections / Experimental | generic `PUT /section/{name}` | `ui.<loose>` | `pipelines/grounding/distill.py`, `pipelines/grounding/npc_table.py`, `pipelines/session_prep/prep.py`, ... | under-modeled `extra='allow'` sections |
 | Content Ingestion (5e) | `launch_5etools_mcp` / `apply_ingest_manifest` | (none) | `resolve_refs`, `fivetools_ingest` | `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`, runtime tree |
 
 ## Platform-global config (all services)

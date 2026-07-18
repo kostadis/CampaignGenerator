@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-import rpg_retriever as rpgr
-from mempalace_client import FakeMempalaceClient
+import pipelines.rlm.rpg_retriever as rpgr
+from pipelines.rlm.mempalace_client import FakeMempalaceClient
 
 
 # ── HTTP fixture for rpg-library API ─────────────────────────────────────
@@ -232,7 +232,8 @@ class TestReconcile:
         assert hit["cost"] == "expensive"
         assert hit["book_id"] == 7
         assert hit["convert_command"][1].endswith("pdf_to_5etools_v2.py")
-        assert hit["ingest_command"][1].endswith("fivetools_ingest.py")
+        # Console-script name, not a `<python> fivetools_ingest.py` invocation.
+        assert hit["ingest_command"][0] == "fivetools_ingest"
 
     def test_drawer_suppresses_expensive_for_same_book(self):
         mp = _fake_mp_result([
@@ -273,7 +274,7 @@ class TestReconcile:
         assert got.hits == []
 
     def test_cheap_candidates_emitted_in_order(self):
-        from fivetools_catalog import Candidate as FC
+        from pipelines.rlm.fivetools_catalog import Candidate as FC
         cheap = [
             FC(entity_type="monster", name="Drow Priestess of Lolth",
                source="MM", file_path="/d/bestiary-mm.json",
@@ -301,7 +302,7 @@ class TestReconcile:
         assert "chapter=0" in second["ingest_command"]
 
     def test_include_cheap_false_suppresses_cheap_tier(self):
-        from fivetools_catalog import Candidate as FC
+        from pipelines.rlm.fivetools_catalog import Candidate as FC
         cheap = [FC(entity_type="monster", name="X", source="MM",
                     file_path="/d/m.json", wrapper_key="monster", score=80)]
         mp = _fake_mp_result([])
@@ -358,7 +359,9 @@ def test_retrieve_mode_c_cheap_pin():
     assert hit["cost"] == "cheap"
     assert hit["score"] == 100
     cmd = hit["ingest_command"]
-    assert cmd[2].endswith("bestiary-mm.json")
+    # Console-script name, not a `<python> fivetools_ingest.py` invocation.
+    assert cmd[0] == "fivetools_ingest"
+    assert cmd[1].endswith("bestiary-mm.json")
     assert "--filter" in cmd
     assert cmd[cmd.index("--filter") + 1] == "name=Drow Priestess of Lolth"
     assert "--palace" in cmd

@@ -6,9 +6,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import campaignlib
-import prep
+from pipelines.session_prep import prep
 import session_doc
-import quote_ledger
+import session_doc.quote_ledger as quote_ledger
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -274,7 +274,7 @@ def test_sd_plan_writes_plan_md(tmp_path, monkeypatch):
     in memory but never wrote them to disk — per-scene Narrate then
     re-ran Pass 3 from scratch. The new sd_plan.py always writes.
     """
-    import sd_plan
+    import session_doc.sd_plan as sd_plan
 
     sx_dir = tmp_path / "scene_extractions"
     sx_dir.mkdir()

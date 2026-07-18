@@ -58,7 +58,7 @@ Sections, top to bottom:
 | **② Extract** | (no separate knobs — uses Batch + Backend; the Re-Extract button always forwards `--force`) |
 | **③ Plan & Check** | Reuse enhanced sections for downstream Narrate |
 | **④ Narrate** | Token limit · Prose mode · Reflections · Narration genre |
-| **⑤ Assemble** | (placeholder for a polish toggle once `polish.py` is wired) |
+| **⑤ Assemble** | (placeholder for a polish toggle once `polish` is wired) |
 
 Backend uses the existing `_TYPED_TO_CONFIG_KEY` mapping in `scene_editor.py`: typed `ui.session_doc.*` ↔ legacy `CONFIG[*]`. The path fields formerly under "Show overrides" (`extract_dir`, `roleplay_extract_dir`, `summary_extract_dir`) are gone from the UI — they're populated server-side by `derive_campaign_paths` and not part of the editor's PUT payload.
 
@@ -100,7 +100,7 @@ Paths are deliberately **not** in profiles — they're per-session and don't bel
 
 - **Input**: raw `.vtt` + `gm-assist.md`.
 - **Output**: `session-summary.md` in the session directory.
-- **Script**: `enhance_summary.py` (single LLM call, VTT cached as system prefix).
+- **Script**: `enhance_summary.py` (`session_doc/`; single LLM call, VTT cached as system prefix).
 
 Stop after this. Open `session-summary.md` and read it. Edit by hand if anything is wrong. This is the only structural human checkpoint; everything downstream inherits from this file.
 
@@ -108,7 +108,7 @@ Stop after this. Open `session-summary.md` and read it. Edit by hand if anything
 
 - **Input**: reviewed `session-summary.md` + the raw VTT.
 - **Output**: per-scene quote files `NN_<slug>.md` in `scene_extractions_new/`.
-- **Script**: `scene_extract.py`.
+- **Script**: `scene_extract.py` (`session_doc/`).
 
 After this runs, the scene list on the editor's left column populates and each row gets its **E** lifecycle dot.
 
@@ -118,7 +118,7 @@ After this runs, the scene list on the editor's left column populates and each r
 - **Output** in `narration/`:
   - `consistency_report.md` — Pass 1 flags contradictions / ambiguities.
   - `plan.md` — Pass 3 narrator assignments per scene.
-- **Scripts**: `sd_consistency.py` (if `--context` configured) followed by `sd_plan.py`. The editor chains them into one streaming response.
+- **Scripts**: `sd_consistency.py` (`session_doc/`; if `--context` configured) followed by `sd_plan.py` (`session_doc/`). The editor chains them into one streaming response.
 
 Review `consistency_report.md` before narrating — it flags anything the model thinks is contradictory in the recap.
 
@@ -136,7 +136,7 @@ The four lifecycle dots are green when complete, grey when cold. (Amber-when-the
 
 ### Stage 4½ — Scrub All
 
-Header button. Runs `scrub_mechanics.py` against the whole `narration_dir`, producing a `*.scrubbed.md` sibling for every per-scene narration. Already-scrubbed files are skipped.
+Header button. Runs `scrub_mechanics.py` (`session_doc/`) against the whole `narration_dir`, producing a `*.scrubbed.md` sibling for every per-scene narration. Already-scrubbed files are skipped.
 
 ### Final — Review & Assemble
 
@@ -240,6 +240,8 @@ summaries/YYYYMMDD/
 ---
 
 ## Backend pipeline scripts (reference)
+
+All six scripts below live in `session_doc/`:
 
 - `enhance_summary.py` — Stage 1
 - `scene_extract.py` — Stage 2

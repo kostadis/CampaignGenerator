@@ -36,7 +36,7 @@ flowchart TB
 
 | Surface | Writer path | Notes |
 |---|---|---|
-| `config.yaml` | none (human-only) | `new_workspace.py` creates; hand-edit |
+| `config.yaml` | none (human-only) | `pipelines/workspace/new_workspace.py` creates; hand-edit |
 | `ui_state.yaml` | `PUT /section/{name}`, `PUT /runtime`, boot `_normalize_stored_paths` | lazy on first write; atomic + write-lock |
 | `.campaigngenerator.local.yaml` | `PUT /local` | lazy on first write |
 | `scene_editor.CONFIG` | `PUT /api/editor/config` (+ writes session_doc) | in-memory; refreshed per request |
@@ -44,7 +44,7 @@ flowchart TB
 | `refs.yaml` / `ingest_manifest.yaml` | hand-authored | refs.local.yaml seedable via `launch --init-local` |
 | ensemble artifacts | ensemble_extract (manifest+facts), synthesize (drafts), promote (live) | per-run workdir; disk is truth |
 | `party.yaml` / `planning.yaml` | `PUT /party-yaml`, `PUT /planning-yaml` | UI editors or hand |
-| `docs/*.md` grounding | `party.py` / `campaign_state.py` / `planning.py` (+ ensemble) | non-clobbering `.candidate` on conflict |
+| `docs/*.md` grounding | `pipelines/grounding/party.py` / `pipelines/grounding/campaign_state.py` / `pipelines/grounding/planning.py` (+ ensemble) | non-clobbering `.candidate` on conflict |
 
 ## Mental model
 

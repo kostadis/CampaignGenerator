@@ -19,32 +19,32 @@ pass never silently propagates into the prose.
 ```
 summaries/<session>/session.vtt  +  gm-assist.md
         │
-vtt_summary.py    → session-summary.md
+session_doc/vtt_summary.py    → session-summary.md
         │            + vtt_extractions/, vtt_roleplay_extractions/
         ▼  (human review)
-enhance_summary.py → enriched gm-assist        (cached system prefix; --batch capable)
+session_doc/enhance_summary.py → enriched gm-assist        (cached system prefix; --batch capable)
         │
-scene_extract.py  → scene_extractions/NN_*.md  (per-scene verbatim; VTT cached in prompt)
+session_doc/scene_extract.py  → scene_extractions/NN_*.md  (per-scene verbatim; VTT cached in prompt)
         ▼  (human review)
-sd_consistency.py → consistency check across scenes
-sd_plan.py        → plan.md   (scene structure, pacing, arcs)
+session_doc/sd_consistency.py → consistency check across scenes
+session_doc/sd_plan.py        → plan.md   (scene structure, pacing, arcs)
         ▼  (human review)
-sd_narrate.py     → narration/session_doc_scene_NN_*.md   (per-character, per-scene;
+session_doc/sd_narrate.py     → narration/session_doc_scene_NN_*.md   (per-character, per-scene;
         │                                                   reads voice/<char>_voice.md)
         ▼  (human review)
-assemble.py       → session_doc.md   (final concatenation)
+session_doc/assemble.py       → session_doc.md   (final concatenation)
         ▼  (optional)
-polish.py         → agentic refinement loop (read/edit/insert/finish tools)
+pipelines/ensemble/polish.py         → agentic refinement loop (read/edit/insert/finish tools)
 ```
 
-Running alongside: `quote_ledger.py` fuzzy-matches VTT roleplay quotes to the
+Running alongside: `session_doc/quote_ledger.py` fuzzy-matches VTT roleplay quotes to the
 extracted scenes and stores the mapping in `quote_ledger.db`, which the Web UI
 uses to sync a replay scrubber.
 
 ## Why the `gm-assist.md` anchor matters
 
 `gm-assist.md` is the **authoritative** human record of what happened; the VTT
-is raw and noisy. `enhance_summary.py`/`scene_extract.py` treat the gm-assist as
+is raw and noisy. `session_doc/enhance_summary.py`/`session_doc/scene_extract.py` treat the gm-assist as
 the spine and use the VTT for verbatim color. See [`docs/cli/gmassist_anchor.md`](../cli/gmassist_anchor.md).
 
 ## Backends & batch

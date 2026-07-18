@@ -11,10 +11,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+ENSEMBLE_DIR = ROOT / "pipelines" / "ensemble"
 PY = sys.executable
-EXTRACT = ROOT / "ensemble_extract.py"
-MERGE = ROOT / "ensemble_merge.py"
-DRIVER = ROOT / "ensemble.py"
+EXTRACT = ENSEMBLE_DIR / "ensemble_extract.py"
+MERGE = ENSEMBLE_DIR / "ensemble_merge.py"
+DRIVER = ENSEMBLE_DIR / "ensemble.py"
 
 
 def _seed(workdir: Path) -> Path:

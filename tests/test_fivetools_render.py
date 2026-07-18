@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from fivetools_render import (
+from pipelines.content_ingest.fivetools_render import (
     render_class_feature,
     render_entity,
     render_entries_block,

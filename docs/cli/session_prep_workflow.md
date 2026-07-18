@@ -45,7 +45,7 @@ Assumptions:
 
 * The MemPalace palace (`/mnt/data/mempalace/palaces/<campaign>` or
   wherever `MEMPALACE_PALACE_PATH` points) already has drawers from the
-  books you care about — the ingest workflow (`fivetools_ingest.py`,
+  books you care about — the ingest workflow (`fivetools_ingest`,
   optionally preceded by `pdf_to_5etools_v2.py convert`) ran earlier.
   If not, retrieval will surface cost-tagged candidate suggestions
   (cheap = canonical 5etools JSON ready for one-shot ingest; expensive
@@ -66,7 +66,7 @@ Run:
 
 ```bash
 cd ~/campaigns/icespire
-python ~/src/CampaignGenerator/dossier_proposer.py \
+dossier_proposer \
     "party arrives at Icespire Hold, Cryovain absent, Grundar chained in main hall"
 ```
 
@@ -164,9 +164,9 @@ The file looks roughly like:
 ### 1. Fizban's Treasury of Dragons
 **book_id**: 4421
 **to convert:**
-python3 convert_book.py /mnt/g/Fizbans.pdf
+convert_book /mnt/g/Fizbans.pdf
 **then ingest:**
-python3 fivetools_ingest.py /mnt/g/Fizbans.json --book-id 4421
+fivetools_ingest /mnt/g/Fizbans.json --book-id 4421
 estimated: ~208,000 tokens  (~$0.17–$0.62)
 
 ---
@@ -228,9 +228,9 @@ is the moment to run those commands. They're printed verbatim in the
 proposal:
 
 ```bash
-python convert_book.py /mnt/g/Fizbans.pdf
+convert_book /mnt/g/Fizbans.pdf
 # review the JSON in adventure_editor
-python fivetools_ingest.py /mnt/g/Fizbans.json --book-id 4421
+fivetools_ingest /mnt/g/Fizbans.json --book-id 4421
 ```
 
 Then re-run Step 1 so the new drawers show up in the proposal. The
@@ -240,12 +240,12 @@ hood) a side effect of querying, which violates the scope rule.
 
 ## Step 3 — render with `--require-proposal`
 
-Now prep actually runs. `prep.py` is the primary render pipeline; the
-same convention works for `sd_plan.py` and `planning.py`.
+Now prep actually runs. `prep` is the primary render pipeline; the
+same convention works for `sd_plan` and `planning`.
 
 ```bash
 cd ~/campaigns/icespire
-python ~/src/CampaignGenerator/prep.py \
+prep \
     --campaign-dir . \
     --require-proposal \
     --mode pipeline \
@@ -259,7 +259,7 @@ What happens internally:
    fires:
    * Missing `docs/dossier_proposal.md` → `parser.error()` with
      "dossier proposal not found" and a hint to run
-     `dossier_proposer.py` first. Exit code 2, no tokens spent.
+     `dossier_proposer` first. Exit code 2, no tokens spent.
    * Proposal present but status banner still `candidates only` →
      `parser.error()` with "not been approved" and the edit hint.
      Exit code 2, no tokens spent.
@@ -291,7 +291,7 @@ and only has to do the rendering job.
 
 ## What gets saved
 
-`prep.py` writes a timestamped log to `logs/` (system prompt + user
+`prep` writes a timestamped log to `logs/` (system prompt + user
 prompt + response) unless you pass `--no-log`. The rendered encounter
 doc also goes to `--output FILE` if you pass one, or just streams to
 stdout otherwise. Nothing in this workflow writes to the MemPalace
@@ -329,7 +329,7 @@ history — the filename is configurable via `--output`).
   (`--game-system "D&D 5e"`, `--product-type "adventure"`).
 * **`rpg_search` / `propose_dossier` / `suggest_conversion` MCP
   tools** — the three live on the CampaignGenerator MCP server
-  (`mcp_server.py`). An LLM that's already talking to your campaign
+  (`mcp_server`). An LLM that's already talking to your campaign
   workspace can drive the retrieval side of this workflow directly;
   the human-review step still has to happen in an editor.
 

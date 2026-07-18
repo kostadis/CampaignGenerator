@@ -38,13 +38,13 @@ Users specify **campaign directory** + **session directory** on the Session Conf
 **Session Workflow** (wizard steps):
 1. **Session Config** — set campaign_dir and session_dir; all paths auto-derived
 2. **VTT Summary** — convert .vtt transcript to session summary + roleplay highlights
-3. **Scene Extraction** — run scene_extract.py + sd_consistency.py + sd_plan.py to produce per-scene extraction files, plan.md, and consistency_report.md
+3. **Scene Extraction** — run scene_extract + sd_consistency + sd_plan to produce per-scene extraction files, plan.md, and consistency_report.md
 4. **Session Doc Editor** — three-panel editor (scene list / extraction editor / VTT source + quote ledger)
 
 **Grounding Docs**: Campaign State, World State, Party Document, Planning Document
 
 **Ensemble** (four-stage extraction + synthesis workflow):
-- **Stage 1 — Extraction**: Runs `ensemble_batch.py` over the selected chapters.
+- **Stage 1 — Extraction**: Runs `ensemble_batch` over the selected chapters.
   - **Command bar**: Shows the exact, secret-free, copyable invocation emitted by the server. Paste it into a workspace terminal to reproduce the run. No API key ever appears in the command.
   - **Running state**: Button shows "Running…" while the stage is active; live output streams incrementally.
   - **Abort**: An Abort button appears while running. Clicking it closes the stream — the server group-kills the entire worker tree (including per-chapter `ensemble_extract` subprocesses) via SIGTERM → SIGKILL. A "connection lost" note appears if the browser drops the network mid-run (treated as an implicit abort; no unobserved token spending).
@@ -69,7 +69,7 @@ Three-panel layout for the extract → edit → narrate → assemble workflow:
 - **Centre**: extraction file editor with save/reload, token estimates, streaming narration output
 - **Right**: tabbed — VTT Source (roleplay extractions for reference) and Quote Ledger
 
-**Workflow**: click a scene → review/edit extraction → Narrate (streams `sd_narrate.py --plan plan.md --scene N`) → repeat → Assemble Doc.
+**Workflow**: click a scene → review/edit extraction → Narrate (streams `sd_narrate --plan plan.md --scene N`) → repeat → Assemble Doc.
 
 The editor has a config panel for setting paths (session recap, extract_dir, roleplay_extract_dir, etc.) that auto-populates from the Session Config page. The config panel also accepts characters, voice_dir, examples, and narrate_tokens.
 
@@ -85,11 +85,11 @@ The right panel's **Quote Ledger** tab tracks verbatim VTT dialogue and shows wh
 
 Unassigned quotes appear at the top — likely missing from extractions. Click to expand, use **Move** to reassign to a different scene. The ledger is read-only with respect to extraction files — copy quotes into the editor manually.
 
-`quote_ledger.py` contains the parsing, matching, and SQLite logic.
+`quote_ledger.py` (`session_doc/`) contains the parsing, matching, and SQLite logic.
 
 ## Connection Graph
 
-**Prep → Connection Graph** builds a queryable entity/relationship graph from campaign markdown. Fills the gap MemPalace can't: **multi-hop connection queries** ("how is A related to B?"). Use it for plot construction, not for narrative consistency checks — those still belong to MemPalace or `query.py`.
+**Prep → Connection Graph** builds a queryable entity/relationship graph from campaign markdown. Fills the gap MemPalace can't: **multi-hop connection queries** ("how is A related to B?"). Use it for plot construction, not for narrative consistency checks — those still belong to MemPalace or `query`.
 
 **Storage is per-campaign.** The cache file is always `<campaign_dir>/docs/connections.json` by default (derived from the Session Config `campaign_dir`). Every endpoint threads `cache_path` explicitly so switching campaigns in Session Config never mixes graphs across campaigns. The path is shown as a PathField — override it if you want a separate graph (e.g. one per session).
 
@@ -105,7 +105,7 @@ Unassigned quotes appear at the top — likely missing from extractions. Click t
    - Click any entity row to open the **Context Panel** — shows the entity, 1-hop neighbors (clickable to navigate), and which doc files mention it (via grep on label + aliases).
    - **Path Finder** — pick source and target from the dropdowns (or use the A/B buttons on any row), set max hops (default 4, capped at 8), click "Find Paths." Returns all simple paths, sorted shortest-first, with per-edge direction and labels. Undirected traversal — it'll find A↔B regardless of which side of the edge A was on.
 
-**Why alias + dossier_dir matters:** without it, "Xalvos" and "Xalvosh" become separate nodes and no path is found. With it, input docs are rewritten to canonical names before the LLM sees them, and the roster is appended to the system prompt. Same mechanism as `planning.py --synthesize` (see [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md)).
+**Why alias + dossier_dir matters:** without it, "Xalvos" and "Xalvosh" become separate nodes and no path is found. With it, input docs are rewritten to canonical names before the LLM sees them, and the roster is appended to the system prompt. Same mechanism as `planning --synthesize` (see [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md)).
 
 **Model choice matters — Haiku truncates full grounding-doc extractions.** Extraction is a single Claude call with `max_tokens=32000`, but the API clamps that to each model's actual output ceiling:
 

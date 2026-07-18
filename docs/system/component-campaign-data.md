@@ -17,32 +17,32 @@ from inside it and auto-detect `config.yaml` in the CWD.
 |---|---|
 | `config.yaml` | CLI config — absolute paths to prompts and the grounding docs. Bootstrap for every script. |
 | `ui_config.yaml` | Web-UI runtime settings (`campaign_dir`, `session_dir`). |
-| `.mcp.json` | Registers `mcp_server.py` for this campaign (with `CAMPAIGN_DIR`). |
-| `docs/campaign_state.md` | DONE/TODO state synthesized from summaries (`campaign_state.py`). |
-| `docs/world_state.md` | Lore, factions, geography (`distill.py`). |
-| `docs/planning.md` | Threat/forward-planning, from NPC dossiers + arc scores (`planning.py --synthesize`). |
-| `docs/party.md` | Party roster, character arcs (`party.py`). |
+| `.mcp.json` | Registers `pipelines/rlm/mcp_server.py` for this campaign (with `CAMPAIGN_DIR`). |
+| `docs/campaign_state.md` | DONE/TODO state synthesized from summaries (`pipelines/grounding/campaign_state.py`). |
+| `docs/world_state.md` | Lore, factions, geography (`pipelines/grounding/distill.py`). |
+| `docs/planning.md` | Threat/forward-planning, from NPC dossiers + arc scores (`pipelines/grounding/planning.py --synthesize`). |
+| `docs/party.md` | Party roster, character arcs (`pipelines/grounding/party.py`). |
 | `docs/mechanics.md` | Arc-score systems, house rules (manual). |
-| `docs/npcs/<npc>.md` | Per-NPC dossiers — directory created on-demand by `planning.py --build-dossiers`, not by `new_workspace.py`; frontmatter holds canonical name + aliases. |
+| `docs/npcs/<npc>.md` | Per-NPC dossiers — directory created on-demand by `pipelines/grounding/planning.py --build-dossiers`, not by `pipelines/workspace/new_workspace.py`; frontmatter holds canonical name + aliases. |
 | `docs/tracking/<arc>.md` | Quantified quest/threat/relationship trackers (also populated on-demand). |
 | `docs/dossier_proposal.md` | **The RLM human checkpoint** (on-demand, not scaffolded) — retrieval results; render pipelines refuse to run until its `**Status:**` banner is set to approved. |
-| `voice/<char>_voice.md` | Per-character speech/tone — read by `sd_narrate.py`. |
+| `voice/<char>_voice.md` | Per-character speech/tone — read by `session_doc/sd_narrate.py`. |
 | `examples/` | Handcrafted prose style exemplars (optional). |
 | `summaries/<date>/` | Session inputs: `session.vtt`, `gm-assist.md`, then pipeline outputs (`scene_extractions/`, `narration/`, …). |
-| `planning.yaml` | Binds `docs/npcs/*` ↔ `docs/tracking/*` for `planning.py`. |
+| `planning.yaml` | Binds `docs/npcs/*` ↔ `docs/tracking/*` for `pipelines/grounding/planning.py`. |
 | `mempalace.yaml` | Declares this campaign's palace wing/room schema. |
 | `refs.yaml` (+ `refs.local.yaml`) | Declares which 5etools books/PDFs/homebrew are in scope (next section). |
 | `quote_ledger.db`, `logs/`, `notes/` | VTT↔scene fuzzy match (on-demand), run logs, MCP write-only scratch. |
 
-> **Scaffold vs. on-demand.** `new_workspace.py` creates `config.yaml`,
+> **Scaffold vs. on-demand.** `pipelines/workspace/new_workspace.py` creates `config.yaml`,
 > `ui_config.yaml`, and the `docs/ logs/ voice/ examples/ summaries/` skeleton
 > (plus placeholder grounding docs). Everything else above — `docs/npcs/`,
 > `docs/tracking/`, `dossier_proposal.md`, `quote_ledger.db`, `characters/` — is
-> created on-demand by the tool that owns it (`planning.py`, the RLM pipeline,
-> `quote_ledger.py`, `dnd_sheet.py`). So a fresh workspace is smaller than the
+> created on-demand by the tool that owns it (`pipelines/grounding/planning.py`, the RLM pipeline,
+> `session_doc/quote_ledger.py`, `pipelines/content_ingest/dnd_sheet.py`). So a fresh workspace is smaller than the
 > full table; the table is the *mature* shape.
 
-**Creating one:** `new_workspace.py <dir> --name … [--world-state … --party … ]`
+**Creating one:** `pipelines/workspace/new_workspace.py <dir> --name … [--world-state … --party … ]`
 scaffolds the tree, writes `config.yaml`/`ui_config.yaml`, and creates
 placeholder docs for anything not supplied. See [`docs/cli/cli_tools.md`](../cli/cli_tools.md).
 
@@ -81,9 +81,9 @@ roots:
 Root resolution precedence: `refs.local.yaml` → env var
 (`FIVETOOLS_DATA_ROOT`, …) → built-in default.
 
-**Launch flow** — `launch_5etools_mcp.py --campaign-dir .`:
+**Launch flow** — `pipelines/rlm/launch_5etools_mcp.py --campaign-dir .`:
 
-1. `resolve_refs.py` parses both files → a `ResolvedScope` (canonical sources in
+1. `pipelines/rlm/resolve_refs.py` parses both files → a `ResolvedScope` (canonical sources in
    scope, excluded codes, concrete ref paths, resolved roots).
 2. Builds an idempotent symlink farm at `~/.5etools-mcp-runtime/<slug>/`
    (`data/` + `homebrew/`, with generated indices). A `.sources.sha256` sidecar
@@ -99,7 +99,7 @@ Full field reference: [`docs/rlm/refs_yaml_reference.md`](../rlm/refs_yaml_refer
 
 | Tree | Size | Role | Consumed by |
 |---|---|---|---|
-| `~/src/5etools-kostadis/` | ~6 GB tree | The fork. `data/` (~108 MB) is the canonical 5etools JSON (adventures, bestiary, spells, classes…); `mcp/` is the **sibling** Node MCP server that `launch_5etools_mcp.py` execs. | `fivetools_catalog.py` reads `data/` (in-process index, cached as `.fivetools_catalog.pkl`); `launch_5etools_mcp.py` execs `mcp/index.js` |
+| `~/src/5etools-kostadis/` | ~6 GB tree | The fork. `data/` (~108 MB) is the canonical 5etools JSON (adventures, bestiary, spells, classes…); `mcp/` is the **sibling** Node MCP server that `pipelines/rlm/launch_5etools_mcp.py` execs. | `pipelines/rlm/fivetools_catalog.py` reads `data/` (in-process index, cached as `.fivetools_catalog.pkl`); `pipelines/rlm/launch_5etools_mcp.py` execs `mcp/index.js` |
 | `~/src/5etools-img/` | ~12 GB | Image assets (adventure art, monster tokens). | Manual GM use — **not** in the core pipeline |
 | `~/src/5etools-src/` | ~772 MB | The 5etools web-UI source. | Reference/customization base — not consumed by CG |
 

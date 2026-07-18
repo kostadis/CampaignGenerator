@@ -27,8 +27,8 @@ pytest.importorskip("mempalace")
 from mempalace import palace as palace_mod  # noqa: E402
 from mempalace import recursive_indexer  # noqa: E402
 
-import rpg_retriever  # noqa: E402
-from mempalace_client import MempalaceClient  # noqa: E402
+from pipelines.rlm import rpg_retriever  # noqa: E402
+from pipelines.rlm.mempalace_client import MempalaceClient  # noqa: E402
 
 
 # ── Fixture materialization ──────────────────────────────────────────────

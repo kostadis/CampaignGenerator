@@ -7,7 +7,7 @@
 
 **Deep docs:** [`docs/cli/ensemble_workflow.md`](../cli/ensemble_workflow.md)
 (end-to-end, with the Phandalin worked example) ·
-[`docs/cli/ensemble_extraction.md`](../cli/ensemble_extraction.md) (`ensemble.py` flags)
+[`docs/cli/ensemble_extraction.md`](../cli/ensemble_extraction.md) (`pipelines/ensemble/ensemble.py` flags)
 
 ---
 
@@ -43,26 +43,26 @@ the reviewed structure.
 
 ```
 docs/chapters/chapter_*.md
-   │  ensemble_batch.py        (local, Spark — per-chapter fan-out, resumable)
+   │  pipelines/ensemble/ensemble_batch.py        (local, Spark — per-chapter fan-out, resumable)
    ▼
 docs/ensemble/per_chapter/<stem>/merged.json     atomic facts per chapter
-   │  facts_to_state.py --list  ◀── HUMAN CHECKPOINT: scope review (no model call)
-   │  facts_to_state.py --known-only   (local, Spark)
+   │  pipelines/ensemble/facts_to_state.py --list  ◀── HUMAN CHECKPOINT: scope review (no model call)
+   │  pipelines/ensemble/facts_to_state.py --known-only   (local, Spark)
    ▼
 docs/ensemble/state_dossiers/*.md                per-entity current-state dossiers
    │  Stage 2e: merge type-duplicate dossiers (npc_X + monster_X)  ◀── human step
    ▼
 docs/ensemble/merged_dossiers/*.md               ready for synthesis
-   │  synthesise_world_state.py        →  world_state_draft.md
-   │  campaign_state.py --synthesize-only  →  campaign_state_draft.md
-   │  party.py --synthesize-only       →  party_draft.md
-   │  planning.py --npc <cut>          →  planning_draft.md
+   │  pipelines/ensemble/synthesise_world_state.py        →  world_state_draft.md
+   │  pipelines/grounding/campaign_state.py --synthesize-only  →  campaign_state_draft.md
+   │  pipelines/grounding/party.py --synthesize-only       →  party_draft.md
+   │  pipelines/grounding/planning.py --npc <cut>          →  planning_draft.md
    ▼
 docs/*_draft.md   ◀── HUMAN CHECKPOINT: diff against the live doc, promote by hand
 ```
 
-Two zero-token side tracks feed synthesis: `facts_to_state.py --types thread`
-renders `threads.md` (plot threads, deterministic), and `build_recent_events.py`
+Two zero-token side tracks feed synthesis: `pipelines/ensemble/facts_to_state.py --types thread`
+renders `threads.md` (plot threads, deterministic), and `pipelines/grounding/build_recent_events.py`
 renders a chapter-ordered `recent_events.md` — the **chronological spine** that
 hands the synthesis model the timeline instead of making it reconstruct one
 (an LLM weak spot).
@@ -71,9 +71,9 @@ hands the synthesis model the timeline instead of making it reconstruct one
 
 | Stage | Tool | Runs on | Output |
 |---|---|---|---|
-| **1 — Extract** | `ensemble_batch.py` → `ensemble.py` per chapter, multiple lenses (a `plan.yaml` of passes) | **Spark (local)** | `per_chapter/<stem>/merged.json` |
-| **2 — Bundle** | `facts_to_state.py` groups facts by `(type, subject)`, collapses to one dossier each | **Spark (local)** | `state_dossiers/` → `merged_dossiers/` |
-| **3 — Synthesize** | `synthesise_world_state.py` + the `--synthesize-only` staging trick on `campaign_state.py` / `party.py` / `planning.py` | **API or subscription** | `*_draft.md` |
+| **1 — Extract** | `pipelines/ensemble/ensemble_batch.py` → `pipelines/ensemble/ensemble.py` per chapter, multiple lenses (a `plan.yaml` of passes) | **Spark (local)** | `per_chapter/<stem>/merged.json` |
+| **2 — Bundle** | `pipelines/ensemble/facts_to_state.py` groups facts by `(type, subject)`, collapses to one dossier each | **Spark (local)** | `state_dossiers/` → `merged_dossiers/` |
+| **3 — Synthesize** | `pipelines/ensemble/synthesise_world_state.py` + the `--synthesize-only` staging trick on `pipelines/grounding/campaign_state.py` / `pipelines/grounding/party.py` / `pipelines/grounding/planning.py` | **API or subscription** | `*_draft.md` |
 | **4 — Review** | human diff + promote | you | the live `docs/*.md` |
 
 ## Two ways to run synthesis (Stage 3)
@@ -90,14 +90,14 @@ hands the synthesis model the timeline instead of making it reconstruct one
 Extraction is deliberately greedy — it over-captures. Scope is decided by a human
 at several gates, never by a model feeding the next model:
 
-1. **`facts_to_state.py --list`** — prints the entity universe and the
+1. **`pipelines/ensemble/facts_to_state.py --list`** — prints the entity universe and the
    `[known]` vs `[location]`-scoped split; you confirm PCs/major NPCs are
    `[known]` and anonymous labels (guards, orcs) are location-scoped before
    spending any model time. No model call.
 2. **Alias review** (`aliases.json`) and **type-duplicate merge** (Stage 2e) —
    human-supervised consolidation; the model never decides identity.
 3. **`narrative_importance.yaml`** — GM `force_include` / `force_exclude` overrides
-   on the `planning.py` importance cut.
+   on the `pipelines/grounding/planning.py` importance cut.
 4. **`*_draft.md`** — *all* synthesis lands in `_draft` files; you diff against
    the live doc and promote by hand. **Never write the live docs directly.**
 
@@ -106,14 +106,14 @@ at several gates, never by a model feeding the next model:
 - **The Spark-enabled path for grounding docs.** Same destination docs as the
   per-tool API path, different extraction economics gated on hardware. With a
   Spark, ensemble extracts locally (Stages 1–2) and spends the API only on
-  synthesis; without one, the fallback is the per-tool path where `distill.py` /
-  `campaign_state.py` / `party.py` / `planning.py` each re-extract from the
+  synthesis; without one, the fallback is the per-tool path where `pipelines/grounding/distill.py` /
+  `pipelines/grounding/campaign_state.py` / `pipelines/grounding/party.py` / `pipelines/grounding/planning.py` each re-extract from the
   chapter bible ([`docs/cli/grounding_docs.md`](../cli/grounding_docs.md)). Those
   same tools are reused *here* as the `--synthesize-only` Stage-3 renderers.
 - **Orthogonal to RLM retrieval.** Ensemble mines *your own session history* into
   campaign state; RLM ([flow-rlm-retrieval](flow-rlm-retrieval.md)) retrieves
   *external reference* (monsters, adventure prose) from MemPalace / 5etools. They
-  meet only in that both ultimately ground the same `prep.py` / narration calls.
+  meet only in that both ultimately ground the same `pipelines/session_prep/prep.py` / narration calls.
 - **Feeds session prep.** Its outputs *are* the grounding docs that
   [flow-session-prep](flow-session-prep.md) consumes.
 

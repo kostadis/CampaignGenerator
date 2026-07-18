@@ -9,14 +9,20 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 import campaignlib  # noqa: E402
-import vtt_summary  # noqa: E402
+import session_doc.vtt_summary as vtt_summary  # noqa: E402
+
+# vtt_summary.py moved into session_doc/ and now runs as the `vtt_summary`
+# console script (pyproject.toml's [project.scripts]) rather than at a fixed
+# repo-root path — resolve next to the current interpreter, same rationale
+# as tests/test_require_proposal_cli.py's PREP_BIN / PLANNING_BIN / SD_PLAN_BIN.
+VTT_SUMMARY_BIN = str(Path(sys.executable).parent / "vtt_summary")
 
 
 # ── Subprocess-based tests (fast: no API calls required) ─────────────────────
 
 def _run_vtt(*args: str) -> subprocess.CompletedProcess:
     return subprocess.run(
-        [sys.executable, str(REPO_ROOT / "vtt_summary.py"), *args],
+        [VTT_SUMMARY_BIN, *args],
         capture_output=True, text=True, cwd=REPO_ROOT,
     )
 

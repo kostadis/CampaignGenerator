@@ -16,9 +16,9 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-import extract_facts as ef  # noqa: E402
+from pipelines.ensemble import extract_facts as ef  # noqa: E402
 
-SCRIPT = ROOT / "extract_facts.py"
+SCRIPT = ROOT / "pipelines" / "ensemble" / "extract_facts.py"
 
 
 def _fact(text: str) -> dict:

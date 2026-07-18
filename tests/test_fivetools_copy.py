@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from fivetools_copy import (
+from pipelines.content_ingest.fivetools_copy import (
     _CopyResolver,
     _path_get,
     _path_set,

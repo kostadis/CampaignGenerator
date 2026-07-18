@@ -21,7 +21,7 @@ All three are owned end-to-end by [`server/config_service.py:CampaignConfigServi
 1. **`config.yaml` is never written.** [`tests/test_config_service.py::TestConfigYamlNeverWritten`](../../tests/test_config_service.py) freezes this at the file level. Hand-edit it freely; comments survive forever.
 2. **All paths in `config.yaml` and `ui_state.yaml` resolve against `campaign_dir`.** Absolute paths and `~`-expansion pass through. The service exposes only resolved (absolute) paths to routers via `service.resolved()`.
 3. **Boot CLI flags do NOT persist to disk.** They flow through `CampaignConfigService(boot_overrides=...)` and override the resolved view for the process lifetime only. A second instance of the service against the same campaign sees only what's on disk.
-4. **CLI subprocesses get plain command-line flags.** When the server runs `sd_consistency.py` / `sd_plan.py` / `sd_narrate.py` (or other CLIs) it passes flags built from `service.resolved`. CLI scripts continue to read their own `config.yaml` for `documents:`/prompts. CLI scripts never read `ui_state.yaml`. (Per [CLAUDE.md](../../CLAUDE.md): "the subprocess should look the same as if a human had typed it.")
+4. **CLI subprocesses get plain command-line flags.** When the server runs `sd_consistency` / `sd_plan` / `sd_narrate` (or other CLIs) it passes flags built from `service.resolved`. CLI scripts continue to read their own `config.yaml` for `documents:`/prompts. CLI scripts never read `ui_state.yaml`. (Per [CLAUDE.md](../../CLAUDE.md): "the subprocess should look the same as if a human had typed it.")
 5. **Atomic writes.** Every persisting write goes through `_atomic_write` (temp file + `os.replace`). A crash mid-write leaves the existing file untouched.
 
 ## What's in each typed section
@@ -34,13 +34,13 @@ ui:
   session_doc:    # Session Doc Editor (post-session narrative)
   vtt_summary:    # VTT Summary page
   grounding:      # summaries pointer
-  campaign_state: # campaign_state.py UI page
-  distill:        # distill.py UI page
-  party:          # party.py UI page
-  planning:       # planning.py UI page
-  prep:           # prep.py UI page
-  npc:            # npc_table.py UI page
-  query:          # query.py UI page
+  campaign_state: # campaign_state UI page
+  distill:        # distill UI page
+  party:          # party UI page
+  planning:       # planning UI page
+  prep:           # prep UI page
+  npc:            # npc_table UI page
+  query:          # query UI page
   workflow:       # session-workflow wizard
   connections:    # connection-graph page
   experimental:

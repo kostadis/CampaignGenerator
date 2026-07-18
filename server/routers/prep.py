@@ -5,11 +5,9 @@ from pathlib import Path
 from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 
-from server.subprocess_runner import python_exe, stream_subprocess
+from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
-
-SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 def _cmd_opt(cmd: list[str], flag: str, value: str | int | None) -> None:
@@ -44,7 +42,7 @@ async def run_session_prep(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "prep.py")]
+    cmd = [console_script("prep")]
     cmd += ["--mode", prep_mode]
 
     if input_mode == "beat" and beat.strip():
@@ -72,7 +70,7 @@ async def run_npc_table(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "npc_table.py")]
+    cmd = [console_script("npc_table")]
 
     doc_list = [d.strip() for d in docs if d.strip()]
     if doc_list:
@@ -98,7 +96,7 @@ async def run_query(
     chunk_size: int = 40000,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "query.py")]
+    cmd = [console_script("query")]
 
     if input.strip():
         cmd.append(input.strip())

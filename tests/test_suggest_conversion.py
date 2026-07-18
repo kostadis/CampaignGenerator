@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-import convert_book
-import suggest_conversion as sc
+from pipelines.content_ingest import convert_book
+import pipelines.rlm.suggest_conversion as sc
 
 
 # ── build_suggestion ─────────────────────────────────────────────────────
@@ -41,6 +41,9 @@ def test_build_suggestion_fills_commands():
     assert s.convert_command[2] == "/mnt/g/Adventure.pdf"
     # adventure product_type → no `--type` flag (default)
     assert "--type" not in s.convert_command
+    # Ingest command is the fivetools_ingest console-script name, no
+    # `<python> fivetools_ingest.py` prefix.
+    assert s.ingest_command[0] == "fivetools_ingest"
     assert "--book-id" in s.ingest_command
     assert s.ingest_command[s.ingest_command.index("--book-id") + 1] == "101"
     assert s.page_count == 100
@@ -216,16 +219,16 @@ def test_suggest_from_rpglib_unreachable_server_returns_none():
 
 
 def test_convert_book_ingest_hint_contains_path_and_book_id():
-    hint = convert_book.format_ingest_hint(
-        Path("/mnt/g/adv.json"), book_id=42, python="/usr/bin/python3"
-    )
-    assert "fivetools_ingest.py" in hint
+    hint = convert_book.format_ingest_hint(Path("/mnt/g/adv.json"), book_id=42)
+    # Console-script name, not a `<python> fivetools_ingest.py` invocation.
+    assert hint.startswith("fivetools_ingest ")
+    assert "fivetools_ingest.py" not in hint
     assert "/mnt/g/adv.json" in hint
     assert "--book-id 42" in hint
 
 
 def test_convert_book_ingest_hint_omits_book_id_when_absent():
-    hint = convert_book.format_ingest_hint(Path("/tmp/x.json"), python="/usr/bin/python3")
+    hint = convert_book.format_ingest_hint(Path("/tmp/x.json"))
     assert "--book-id" not in hint
 
 

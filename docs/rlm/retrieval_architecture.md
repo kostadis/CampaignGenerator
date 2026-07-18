@@ -27,9 +27,9 @@ Three processes are involved in any retrieval. They communicate over stdio JSON-
 graph TB
     subgraph CG["CampaignGenerator process (rlm-phase2 / main)"]
         RR["rpg_retriever.retrieve(query)"]
-        MC["MempalaceClient<br/>mempalace_client.py<br/>(spawns subprocess on first use)"]
-        DOSS["dossier_proposer.py<br/>propose() → docs/dossier_proposal.md"]
-        MCP_CG["mcp_server.py<br/>rpg_search · propose_dossier"]
+        MC["MempalaceClient<br/>mempalace_client<br/>(spawns subprocess on first use)"]
+        DOSS["dossier_proposer<br/>propose() → docs/dossier_proposal.md"]
+        MCP_CG["mcp_server<br/>rpg_search · propose_dossier"]
     end
 
     subgraph MP["mempalace-mcp subprocess (rlm-phase1 / kostadis-dev)"]
@@ -79,7 +79,7 @@ graph TB
 **Rules the diagram encodes:**
 
 - ChromaDB collections live in **one location per palace**. The palace is selected by `--palace <name>` when CG spawns the subprocess (`MempalaceClient(palace=...)`). Per-campaign palaces are the standard since 2026-04 (`MEMPALACE_HOWTO`).
-- **CG never opens ChromaDB itself.** `grep -rn "chromadb\|PersistentClient" --include="*.py"` in CampaignGenerator returns zero hits. The only file in CG that touches mempalace is `mempalace_client.py`, and it only speaks JSON-RPC. This boundary is by design — see §5.
+- **CG never opens ChromaDB itself.** `grep -rn "chromadb\|PersistentClient" --include="*.py"` in CampaignGenerator returns zero hits. The only file in CG that touches mempalace is `pipelines/rlm/mempalace_client.py`, and it only speaks JSON-RPC. This boundary is by design — see §5.
 - The two **highlighted collections** (`wing_indices`, `room_indices`) are the Phase 1 deliverable. Drawers and closets pre-existed; the new collections add hierarchical pruning without changing storage of verbatim content.
 
 ---
@@ -148,7 +148,7 @@ The wing/room indices are **dirty-flag-driven**. Drawer writes don't trigger ind
 | `recursive_indexer.rebuild_all()` | nukes and regenerates every room and wing index for the palace. Used after a corruption / version bump / palace restore. |
 | Empty `wing_indices` collection | `tool_search_hierarchical` transparently falls back to flat `search_within` and sets `fallback=True` in the response (see §6). |
 
-**Who calls `rebuild_dirty()`?** Today, MemPalace's miners and the post-`add_drawer` hook in chat-mode operations call it under `mine_lock`. CG-side ingest (`fivetools_ingest.py`) writes drawers via the MCP `add_drawer` tool, so the dirty-flag plumbing happens server-side without CG having to know.
+**Who calls `rebuild_dirty()`?** Today, MemPalace's miners and the post-`add_drawer` hook in chat-mode operations call it under `mine_lock`. CG-side ingest (`pipelines/content_ingest/fivetools_ingest.py`) writes drawers via the MCP `add_drawer` tool, so the dirty-flag plumbing happens server-side without CG having to know.
 
 **No cron. No background worker.** Indices are rebuilt synchronously when something asks. If you ingest 1,000 drawers and then immediately query, you pay the rebuild cost on that first query (typically <1 s for a per-room rebuild; tens of ms for a wing aggregate). Subsequent queries are sub-100ms.
 
@@ -190,12 +190,12 @@ The retrieval path is designed to degrade in legible ways, never silently.
 
 | Condition | Behavior | Where it's logged / signaled |
 |---|---|---|
-| `mempalace-mcp` subprocess fails to start | CG sets `mempalace_result = {"results": [], "path": {}, "fallback": True, "fallback_reason": "mempalace unavailable: <exc>"}`. Cheap and expensive candidate tiers still flow. | `rpg_retriever.py:570–573` — `MemPalace start failed` warning |
+| `mempalace-mcp` subprocess fails to start | CG sets `mempalace_result = {"results": [], "path": {}, "fallback": True, "fallback_reason": "mempalace unavailable: <exc>"}`. Cheap and expensive candidate tiers still flow. | `pipelines/rlm/rpg_retriever.py:570–573` — `MemPalace start failed` warning |
 | Wing index collection empty (palace too fresh, `recursive_indexer` hasn't run) | `tool_search_hierarchical` calls `_shortcut_flat_search("wing indices empty — run recursive_indexer.rebuild_all")` and returns `fallback=True` with a real flat-search result. Recall is still correct, just slower. | `tool_search_hierarchical:670` — `fallback_reason` field on response |
 | Wing query raises (Chroma I/O error, schema mismatch) | Same as above — `_shortcut_flat_search` recovery; flat search runs. | `tool_search_hierarchical:683` |
 | Caller passes `wing_filter` or `room_filter` | `_shortcut_flat_search("explicit wing/room filter supplied")` — no point pruning twice. Returns scoped flat search results. | `tool_search_hierarchical:657` |
 | Room query raises after a successful wing prune | `fallback=True` on the response, but still returns the path of selected wings + an empty rooms list. | `tool_search_hierarchical:781–783` |
-| Any exception during `mp_client.search_hierarchical` in CG | CG sets `mempalace_result = {"results": [], "path": {}, "fallback": True, "fallback_reason": "mempalace search error: <exc>"}`. Tiered response continues with cheap/expensive candidates only. | `rpg_retriever.py:580–583` — `MemPalace search failed` warning |
+| Any exception during `mp_client.search_hierarchical` in CG | CG sets `mempalace_result = {"results": [], "path": {}, "fallback": True, "fallback_reason": "mempalace search error: <exc>"}`. Tiered response continues with cheap/expensive candidates only. | `pipelines/rlm/rpg_retriever.py:580–583` — `MemPalace search failed` warning |
 
 **There is no "fall back to flat search inside CG" path.** If the MCP server returns `fallback=True`, CG accepts those (correct, just-slower) results. If the MCP call itself raises, CG produces an empty drawer tier and surfaces the reason in the result envelope — it doesn't try to reach around to a different retrieval path.
 
@@ -247,11 +247,11 @@ flowchart LR
 ## 8. Concrete file references
 
 **CampaignGenerator side (`kostadis/CampaignGenerator` `main`, post `1f13f44`):**
-- `mempalace_client.py:175–176` — `MempalaceClient.search_hierarchical(query, **kwargs)` calls the `mempalace_search_hierarchical` tool.
-- `rpg_retriever.py:577–579` — the only call site in the retriever; `max_depth=2` default.
-- `rpg_retriever.py:580–583` — graceful fallback to empty drawer tier on any exception.
-- `mcp_server.py:725–726` — `propose_dossier` MCP tool plumbs `max_depth` through to the retriever for chat-driven proposals.
-- `dossier_proposer.py` — wraps the retriever; produces `docs/dossier_proposal.md` for human approval before any render runs.
+- `pipelines/rlm/mempalace_client.py:175–176` — `MempalaceClient.search_hierarchical(query, **kwargs)` calls the `mempalace_search_hierarchical` tool.
+- `pipelines/rlm/rpg_retriever.py:577–579` — the only call site in the retriever; `max_depth=2` default.
+- `pipelines/rlm/rpg_retriever.py:580–583` — graceful fallback to empty drawer tier on any exception.
+- `pipelines/rlm/mcp_server.py:725–726` — `propose_dossier` MCP tool plumbs `max_depth` through to the retriever for chat-driven proposals.
+- `pipelines/rlm/dossier_proposer.py` — wraps the retriever; produces `docs/dossier_proposal.md` for human approval before any render runs.
 - `tests/test_retrieve_render_isolation.py` — the CI invariant.
 - `tests/test_mempalace_client.py`, `tests/test_rpg_retriever.py` — unit coverage.
 
@@ -279,7 +279,7 @@ When something feels off, walk these in order:
 1. **Is `mempalace-mcp` on PATH and pointing at the right install?** `which mempalace-mcp` and `python -c "from mempalace.mcp_server import TOOLS; print(len(TOOLS), 'mempalace_search_hierarchical' in TOOLS)"`. After this PR pair, expect `30 True`.
 2. **Does the palace have the hierarchical collections?** `python -c "from mempalace.palace import get_wing_indices_collection; print(get_wing_indices_collection('<palace>', create=False).count())"`. Zero means a flat-search fallback — run `recursive_indexer.rebuild_all` once to seed.
 3. **Are dirty rooms backing up?** `python -c "from mempalace.palace import iter_dirty_rooms; print(list(iter_dirty_rooms('<palace>')))"`. Long lists mean writes are happening but indices aren't rebuilding — figure out who's supposed to be calling `rebuild_dirty()` and why they aren't.
-4. **Is CG actually reaching mempalace?** `python rpg_retriever.py "<query>" -v` and look for `MemPalace start failed` or `MemPalace search failed` warnings. The `fallback` field on the response carries the reason.
+4. **Is CG actually reaching mempalace?** `rpg_retriever "<query>" -v` and look for `MemPalace start failed` or `MemPalace search failed` warnings. The `fallback` field on the response carries the reason.
 5. **Is the storage warning firing?** Check `mempalace-mcp` startup logs for the DrvFs / 9P / CIFS / NFS warning. If it is, the palace lives on a filesystem where ChromaDB / SQLite semantics aren't reliable; move it to ext4.
 6. **Are drawers actually present?** `mempalace_status` over MCP returns total drawer counts per palace. Empty palace → no drawers to retrieve.
 

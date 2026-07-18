@@ -5,7 +5,7 @@ the campaign root alongside `config.yaml` and is git-tracked. Its per-machine
 companion `refs.local.yaml` is git-ignored and holds the root directory paths
 that vary between machines.
 
-`resolve_refs.py` reads both files; `launch_5etools_mcp.py` calls it to build
+`pipelines/rlm/resolve_refs.py` reads both files; `pipelines/rlm/launch_5etools_mcp.py` calls it to build
 the per-campaign runtime tree.
 
 ---
@@ -50,7 +50,7 @@ refs:
 | `[MM, PHB, OotA, …]` | Explicit whitelist. Only these source codes are in scope. `canonical_exclude:` is an error in this mode. |
 
 Source codes are uppercase identifiers like `MM`, `PHB`, `OotA`, `XPHB`. Run
-`python launch_5etools_mcp.py --campaign-dir . --status` to see all available
+`launch_5etools_mcp --campaign-dir . --status` to see all available
 source codes from your data tree.
 
 ---
@@ -63,11 +63,11 @@ optional shared fields.
 ### `rpglib:`
 
 Points at a PDF inside your rpg-library corpus. The resolver looks for a JSON
-sidecar at `<pdf-path-without-extension>.json` — produced by `convert_book.py`.
+sidecar at `<pdf-path-without-extension>.json` — produced by `pipelines/content_ingest/convert_book.py`.
 
 ```yaml
 - rpglib: "Wizards of the Coast/Adventures/T14.pdf"
-  book_id: 7421    # optional; used by fivetools_ingest.py for metadata lookup
+  book_id: 7421    # optional; used by pipelines/content_ingest/fivetools_ingest.py for metadata lookup
   note: "..."      # optional free-text label
 ```
 
@@ -97,8 +97,8 @@ Entries without `library:` fall back to the plain `roots.rpg_library` root
 To find the right path and `book_id`, use:
 
 ```bash
-python query_rpg_lib.py "tales yawning portal"   # search by title
-python query_rpg_lib.py --book-id 7421           # emit a paste-ready refs.yaml block
+query_rpg_lib "tales yawning portal"   # search by title
+query_rpg_lib --book-id 7421           # emit a paste-ready refs.yaml block
 ```
 
 Requires `roots.rpg_library` (or `roots.rpg_library_<name>` when using `library:`) in `refs.local.yaml`.
@@ -174,7 +174,7 @@ naming the missing root and telling you which key to set.
 To generate a starter `refs.local.yaml` with detected defaults:
 
 ```bash
-python launch_5etools_mcp.py --campaign-dir . --init-local
+launch_5etools_mcp --campaign-dir . --init-local
 ```
 
 ---

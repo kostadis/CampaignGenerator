@@ -1,6 +1,6 @@
-# planning.py — How the NPC Synthesize Workflow Works
+# planning — How the NPC Synthesize Workflow Works
 
-`planning.py` produces `planning.md` — the GM reference for active threats, NPC
+`planning` produces `planning.md` — the GM reference for active threats, NPC
 intentions, and plot threads. It runs in two separate phases that are designed to
 be done on different days:
 
@@ -18,7 +18,7 @@ extraction don't silently propagate into your planning document.
 ## Phase 1: Build Dossiers
 
 ```bash
-python planning.py \
+planning \
     --summaries summaries.md \
     --build-dossiers \
     --dossier-dir docs/npcs/
@@ -76,7 +76,7 @@ For large summaries where sessions are separated by a heading, splitting on that
 heading gives cleaner per-session extractions and avoids cutting mid-scene:
 
 ```bash
-python planning.py \
+planning \
     --summaries summaries.md \
     --build-dossiers \
     --dossier-dir docs/npcs/ \
@@ -104,7 +104,7 @@ These files are yours. The synthesize pass only reads them; it never overwrites 
 ## Phase 2: Synthesize
 
 ```bash
-python planning.py \
+planning \
     --npc docs/npcs/grundar_quartzvein.md docs/npcs/xalvosh.md \
     --arc-scores docs/arc_scores/brundar_echo.md docs/arc_scores/kraken_echoes.md \
     --summaries summaries.md \
@@ -115,7 +115,7 @@ Or, if you want to skip re-extracting summaries (they were already extracted in
 Phase 1 or a prior run):
 
 ```bash
-python planning.py \
+planning \
     --npc docs/npcs/grundar_quartzvein.md docs/npcs/xalvosh.md \
     --arc-scores docs/arc_scores/brundar_echo.md \
     --synthesize-only \
@@ -156,7 +156,7 @@ If `--output docs/planning.md`, extractions are loaded from `docs/planning_extra
 
 ```bash
 # Step 1: extract dossiers from the full summaries file
-python planning.py \
+planning \
     --summaries summaries.md \
     --build-dossiers \
     --dossier-dir docs/npcs/ \
@@ -166,14 +166,14 @@ python planning.py \
 #   - fix errors, add motivations, fill arc score values
 
 # Step 3: synthesize planning.md from edited dossiers
-python planning.py \
+planning \
     --npc docs/npcs/grundar_quartzvein.md docs/npcs/xalvosh.md docs/npcs/jena_roscoe.md \
     --arc-scores docs/arc_scores/brundar_echo.md docs/arc_scores/kraken_echoes.md \
     --context docs/campaign_state.md \
     --output docs/planning.md
 
 # Step 4 (later): re-synthesize after editing dossiers without re-extracting
-python planning.py \
+planning \
     --npc docs/npcs/*.md \
     --arc-scores docs/arc_scores/*.md \
     --synthesize-only \

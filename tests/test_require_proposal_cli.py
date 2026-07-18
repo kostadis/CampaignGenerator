@@ -19,10 +19,25 @@ from pathlib import Path
 
 import pytest
 
-import proposal_loader as pl
+import pipelines.rlm.proposal_loader as pl
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+
+# prep.py has moved into pipelines/session_prep/ and now runs as the `prep`
+# console script (pyproject.toml's [project.scripts]). Resolve it next to the
+# current interpreter (same venv bin/) rather than relying on $PATH, so this
+# test doesn't depend on the venv being "activated" in the process running
+# pytest — same rationale as server.subprocess_runner.console_script().
+PREP_BIN = str(Path(sys.executable).parent / "prep")
+
+# planning.py has moved into pipelines/grounding/ and now runs as the
+# `planning` console script — same rationale as PREP_BIN above.
+PLANNING_BIN = str(Path(sys.executable).parent / "planning")
+
+# sd_plan.py has moved into session_doc/ and now runs as the `sd_plan`
+# console script — same rationale as PREP_BIN above.
+SD_PLAN_BIN = str(Path(sys.executable).parent / "sd_plan")
 
 
 def _write_proposal(campaign_dir: Path, text: str) -> Path:
@@ -72,7 +87,7 @@ class TestPrepRequireProposal:
         config = _write_config(tmp_path)
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "prep.py"),
+                PREP_BIN,
                 "--config", str(config),
                 "--campaign-dir", str(tmp_path),
                 "--require-proposal",
@@ -87,7 +102,7 @@ class TestPrepRequireProposal:
         _write_proposal(tmp_path, "# X\n\n> **Status:** candidates only.\n")
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "prep.py"),
+                PREP_BIN,
                 "--config", str(config),
                 "--campaign-dir", str(tmp_path),
                 "--require-proposal",
@@ -105,7 +120,7 @@ class TestPrepRequireProposal:
         _write_proposal(tmp_path, "# X\n\n> **Status:** approved on 2026-04-24.\n")
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "prep.py"),
+                PREP_BIN,
                 "--config", str(config),
                 "--campaign-dir", str(tmp_path),
                 "--require-proposal",
@@ -134,7 +149,7 @@ class TestSdPlanRequireProposal:
         sx_dir.mkdir()
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "sd_plan.py"),
+                SD_PLAN_BIN,
                 "--scene-extractions", str(sx_dir),
                 "--characters", "Vukradin",
                 "--campaign-dir", str(tmp_path),
@@ -150,7 +165,7 @@ class TestSdPlanRequireProposal:
         _write_proposal(tmp_path, "# X\n\n> **Status:** candidates only.\n")
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "sd_plan.py"),
+                SD_PLAN_BIN,
                 "--scene-extractions", str(sx_dir),
                 "--characters", "Vukradin",
                 "--campaign-dir", str(tmp_path),
@@ -171,7 +186,7 @@ class TestPlanningRequireProposal:
         out = tmp_path / "planning.md"
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "planning.py"),
+                PLANNING_BIN,
                 "--npc", str(npc),
                 "--output", str(out),
                 "--campaign-dir", str(tmp_path),
@@ -188,7 +203,7 @@ class TestPlanningRequireProposal:
         _write_proposal(tmp_path, "# X\n\n> **Status:** candidates only.\n")
         result = _run(
             [
-                sys.executable, str(REPO_ROOT / "planning.py"),
+                PLANNING_BIN,
                 "--npc", str(npc),
                 "--output", str(tmp_path / "planning.md"),
                 "--campaign-dir", str(tmp_path),

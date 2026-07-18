@@ -49,13 +49,13 @@ Three surfaces; **CG uses the MCP one**:
 
 | Surface | Entry | Who uses it |
 |---|---|---|
-| **MCP server** (`mempalace-mcp`, stdio JSON-RPC) | 31 tools: `search_hierarchical`, `add_drawer`, `update_drawer`, `kg_query`, … | **CampaignGenerator**, via `mempalace_client.py` |
+| **MCP server** (`mempalace-mcp`, stdio JSON-RPC) | 31 tools: `search_hierarchical`, `add_drawer`, `update_drawer`, `kg_query`, … | **CampaignGenerator**, via `pipelines/rlm/mempalace_client.py` |
 | Python import | `get_collection`, `search_memories`, `KnowledgeGraph` | direct library use |
 | CLI | `mempalace mine / search / wake-up` | scripting, batch |
 
-> **The seam from CG:** `~/src/CampaignGenerator/mempalace_client.py` is the
+> **The seam from CG:** `~/src/CampaignGenerator/pipelines/rlm/mempalace_client.py` is the
 > *only* file that talks to MemPalace. It spawns the `mempalace-mcp` subprocess
-> and sends JSON-RPC. `rpg_retriever.py` and `mcp_server.py` call *it*, never
+> and sends JSON-RPC. `pipelines/rlm/rpg_retriever.py` and `pipelines/rlm/mcp_server.py` call *it*, never
 > MemPalace directly. Palace path resolves env → config → default
 > (`~/.mempalace/palaces/<name>`). If MemPalace isn't installed, CG degrades
 > gracefully (that pile just returns nothing).
@@ -106,6 +106,6 @@ Collections inside the palace: `mempalace_drawers` (verbatim content),
 ## Where it sits in the flows
 
 - **RLM retrieval** — pile #1. See [flow-rlm-retrieval](flow-rlm-retrieval.md).
-- **Ingest** — `fivetools_ingest.py` writes 5etools entities into palace drawers
+- **Ingest** — `pipelines/content_ingest/fivetools_ingest.py` writes 5etools entities into palace drawers
   (with metadata snapshotted from `rpg_library.db`). See
   [component-campaign-data](component-campaign-data.md).

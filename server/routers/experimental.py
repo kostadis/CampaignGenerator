@@ -5,11 +5,9 @@ from pathlib import Path
 from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 
-from server.subprocess_runner import python_exe, stream_subprocess
+from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
-
-SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 def _cmd_opt(cmd: list[str], flag: str, value: str | int | None) -> None:
@@ -49,7 +47,7 @@ async def run_enhance_recap(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "enhance_recap.py")]
+    cmd = [console_script("enhance_recap")]
 
     if recap.strip():
         cmd.append(recap.strip())
@@ -85,7 +83,7 @@ async def run_narrative(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "narrative.py")]
+    cmd = [console_script("narrative")]
 
     _cmd_opt(cmd, "--roleplay-extract-dir", roleplay_extract_dir)
     _cmd_opt(cmd, "--summary-extract-dir", summary_extract_dir)

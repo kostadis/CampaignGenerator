@@ -1,0 +1,91 @@
+[project]
+name = "campaigngenerator"
+version = "0.1.0"
+description = "D&D session-prep and post-session toolkit backed by the Claude API."
+requires-python = ">=3.9"
+dependencies = [
+    "anthropic",
+    "pyyaml",
+    "pyperclip",
+    "pyvis",
+    "fastapi",
+    "uvicorn",
+    "requests",
+    "mcp",
+    "aiofiles",
+]
+
+[project.urls]
+Repository = "https://github.com/kostadis/CampaignGenerator"
+
+[project.scripts]
+new_workspace = "pipelines.workspace.new_workspace:main"
+configure_mcp = "pipelines.workspace.configure_mcp:main"
+kanka_mcp = "pipelines.integrations.kanka.kanka_mcp:main"
+kanka_push = "pipelines.integrations.kanka.kanka_push:main"
+kanka_sync = "pipelines.integrations.kanka.kanka_sync:main"
+prep = "pipelines.session_prep.prep:main"
+transform = "pipelines.session_prep.transform:main"
+convert_book = "pipelines.content_ingest.convert_book:main"
+fivetools_ingest = "pipelines.content_ingest.fivetools_ingest:main"
+dnd_sheet = "pipelines.content_ingest.dnd_sheet:main"
+distill = "pipelines.grounding.distill:main"
+campaign_state = "pipelines.grounding.campaign_state:main"
+planning = "pipelines.grounding.planning:main"
+party = "pipelines.grounding.party:main"
+npc_table = "pipelines.grounding.npc_table:main"
+make_tracking = "pipelines.grounding.make_tracking:main"
+arc_triggers = "pipelines.grounding.arc_triggers:main"
+build_recent_events = "pipelines.grounding.build_recent_events:main"
+normalize_bible_headings = "pipelines.grounding.normalize_bible_headings:main"
+registry = "entity_registry.registry:main"
+spell_canon = "entity_registry.spell_canon:main"
+ensemble = "pipelines.ensemble.ensemble:main"
+ensemble_batch = "pipelines.ensemble.ensemble_batch:main"
+ensemble_extract = "pipelines.ensemble.ensemble_extract:main"
+ensemble_merge = "pipelines.ensemble.ensemble_merge:main"
+extract_facts = "pipelines.ensemble.extract_facts:main"
+facts_to_state = "pipelines.ensemble.facts_to_state:main"
+synthesise_facts = "pipelines.ensemble.synthesise_facts:main"
+synthesise_polish = "pipelines.ensemble.synthesise_polish:main"
+synthesise_world_state = "pipelines.ensemble.synthesise_world_state:main"
+split_chapters = "pipelines.ensemble.split_chapters:main"
+polish = "pipelines.ensemble.polish:main"
+rpg_retriever = "pipelines.rlm.rpg_retriever:main"
+fivetools_catalog = "pipelines.rlm.fivetools_catalog:main"
+dossier_proposer = "pipelines.rlm.dossier_proposer:main"
+mcp_server = "pipelines.rlm.mcp_server:main"
+launch_5etools_mcp = "pipelines.rlm.launch_5etools_mcp:main"
+suggest_conversion = "pipelines.rlm.suggest_conversion:main"
+query = "pipelines.rlm.query:main"
+query_rpg_lib = "pipelines.rlm.query_rpg_lib:main"
+apply_ingest_manifest = "pipelines.rlm.apply_ingest_manifest:main"
+sd_consistency = "session_doc.sd_consistency:main"
+sd_plan = "session_doc.sd_plan:main"
+sd_narrate = "session_doc.sd_narrate:main"
+assemble = "session_doc.assemble:main"
+narrative = "session_doc.narrative:main"
+scene_extract = "session_doc.scene_extract:main"
+enhance_recap = "session_doc.enhance_recap:main"
+enhance_summary = "session_doc.enhance_summary:main"
+check_consistency = "session_doc.check_consistency:main"
+voice_lint = "session_doc.voice_lint:main"
+vtt_voice_compare = "session_doc.vtt_voice_compare:main"
+vtt_summary = "session_doc.vtt_summary:main"
+scrub_mechanics = "session_doc.scrub_mechanics:main"
+scabard_sync = "scabard_sdk.scabard_sync:main"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+openrouter = [
+    "openai",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["campaignlib", "session_doc", "server", "pipelines", "entity_registry", "scabard_sdk"]

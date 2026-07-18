@@ -5,11 +5,9 @@ from pathlib import Path
 from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 
-from server.subprocess_runner import python_exe, stream_subprocess
+from server.subprocess_runner import console_script, stream_subprocess
 
-router = APIRouter()
-
-SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent  # CampaignGenerator/
+router = APIRouter()  # CampaignGenerator/
 
 
 def _resolve_session_path(path_str: str, session_dir: str) -> str:
@@ -58,7 +56,7 @@ async def run_vtt_summary(
     no_log: bool = False,
     model: str = "claude-sonnet-4-6",
 ):
-    cmd = [python_exe(), str(SCRIPT_DIR / "vtt_summary.py")]
+    cmd = [console_script("vtt_summary")]
 
     if not synthesize_only and vtt_input:
         cmd.append(vtt_input)

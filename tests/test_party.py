@@ -11,12 +11,19 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 import campaignlib  # noqa: E402
-import party  # noqa: E402
+from pipelines.grounding import party  # noqa: E402
+
+# party.py has moved into pipelines/grounding/ and now runs as the `party`
+# console script (pyproject.toml's [project.scripts]). Resolve it next to the
+# current interpreter (same venv bin/) rather than relying on $PATH, so this
+# test doesn't depend on the venv being "activated" in the process running
+# pytest — same rationale as server.subprocess_runner.console_script().
+PARTY_BIN = str(Path(sys.executable).parent / "party")
 
 
 def _run(*args: str) -> subprocess.CompletedProcess:
     return subprocess.run(
-        [sys.executable, str(REPO_ROOT / "party.py"), *args],
+        [PARTY_BIN, *args],
         capture_output=True, text=True, cwd=REPO_ROOT,
     )
 

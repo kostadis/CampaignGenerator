@@ -2,15 +2,15 @@
 
 Drives the four-stage pipeline:
 
-1. Stage 1 — `enhance_summary.py` produces the enriched session-summary.md.
-2. Stage 2 — `scene_extract.py` produces per-scene verbatim quote files
+1. Stage 1 — `enhance_summary` produces the enriched session-summary.md.
+2. Stage 2 — `scene_extract` produces per-scene verbatim quote files
    (NN_<slug>.md) under `scene_extractions_dir`.
 3. Stage 3 — `session_doc.py --per-scene-output` writes one narration file
    per scene (`session_doc_scene_NN_<slug>.md`) under `narration_dir`.
-4. Stage 4 — `assemble.py` concatenates the narrations into the final doc.
+4. Stage 4 — `assemble` concatenates the narrations into the final doc.
 
 `roleplay_extract_dir` (typed `roleplay_dir`) points at the kept
-`vtt_roleplay_extractions/` directory produced by `vtt_summary.py` — it
+`vtt_roleplay_extractions/` directory produced by `vtt_summary` — it
 feeds the VTT panel. It is NOT the deleted
 `session-roleplay.md` synthesised-summary chain.
 """
@@ -29,7 +29,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from server.backend_forwarding import backend_cli_args
 from server.subprocess_runner import (
-    python_exe,
+    console_script,
     sse_error_stream,
     stream_subprocess,
 )
@@ -92,7 +92,7 @@ def _refresh_config_from_service(request: Request) -> None:
     if "work_dir" not in CONFIG:
         CONFIG["work_dir"] = str(service.campaign_dir)
     # Forward the campaign root + config subdir so subprocesses (e.g.
-    # scrub_mechanics.py) can find per-service overrides under
+    # scrub_mechanics) can find per-service overrides under
     # <campaign>/<config_dir>/. The subprocess cwd is the launch dir, not the
     # campaign, so resolution must key off campaign_dir explicitly.
     CONFIG["campaign_dir"] = str(service.campaign_dir)
@@ -468,7 +468,7 @@ def _open_in_typora(filepath: Path) -> None:
 
 
 def _assembled_output_path() -> Path:
-    """Where assemble.py writes its output."""
+    """Where assemble writes its output."""
     session_stem = Path(CONFIG["session"]).stem
     sd = _session_dir() or Path.cwd()
     return sd / f"{session_stem}-doc.md"
@@ -489,7 +489,7 @@ def _model_args() -> list[str]:
     Skipped when backend is dgx or openrouter: the global picker holds an
     Anthropic model name, which is meaningless for either endpoint (that
     model is instead governed by _backend_flags's own --model). It would
-    also be actively wrong for scrub — scrub_mechanics.py passes --model
+    also be actively wrong for scrub — scrub_mechanics passes --model
     straight through as the OpenAI-compat model_override, so a "claude-*"
     name there 404s against a non-Anthropic backend.
     """
@@ -500,7 +500,7 @@ def _model_args() -> list[str]:
 
 
 def _build_enhance_cmd(batch: bool = False) -> list[str] | tuple[None, str]:
-    """Stage 1: enhance_summary.py {vtt} --gmassist {session} --output {summary}.
+    """Stage 1: enhance_summary {vtt} --gmassist {session} --output {summary}.
 
     Returns the command list, or (None, error_message) on misconfig.
     Pass `batch=True` to forward `--batch` so the script uses the Message
@@ -516,8 +516,7 @@ def _build_enhance_cmd(batch: bool = False) -> list[str] | tuple[None, str]:
     if summary is None:
         return None, "could not resolve session-summary.md output path"
     cmd = [
-        python_exe(),
-        str(SCRIPT_DIR / "enhance_summary.py"),
+        console_script("enhance_summary"),
         str(vtt),
         "--gmassist", CONFIG["session"],
         "--output", str(summary),
@@ -530,7 +529,7 @@ def _build_enhance_cmd(batch: bool = False) -> list[str] | tuple[None, str]:
 
 def _build_reextract_cmd(batch: bool = False,
                          force: bool = False) -> list[str] | tuple[None, str]:
-    """Stage 2: scene_extract.py {vtt} --summary {summary} --output-dir {sx_dir}.
+    """Stage 2: scene_extract {vtt} --summary {summary} --output-dir {sx_dir}.
 
     Pass `batch=True` to forward `--batch` so per-scene calls are submitted
     as one Message Batch (50% off + cache hits compound).
@@ -550,8 +549,7 @@ def _build_reextract_cmd(batch: bool = False,
     if sx_dir is None:
         return None, "scene_extractions_dir not configured"
     cmd = [
-        python_exe(),
-        str(SCRIPT_DIR / "scene_extract.py"),
+        console_script("scene_extract"),
         str(vtt),
         "--summary", str(summary),
         "--output-dir", str(sx_dir),
@@ -559,7 +557,7 @@ def _build_reextract_cmd(batch: bool = False,
     cmd += _model_args()
     if CONFIG.get("dossier_dir"):
         cmd += ["--dossier-dir", CONFIG["dossier_dir"]]
-    # Pass party.md so scene_extract.py can rewrite Zoom display names to
+    # Pass party.md so scene_extract can rewrite Zoom display names to
     # character / GM labels deterministically before the LLM sees the VTT.
     # `party` is the synthesized party.md path (set by the Party Document
     # page); the player→character map is parsed from its `**<Class>,
@@ -581,10 +579,10 @@ def _build_reextract_cmd(batch: bool = False,
 
 
 def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
-    """Stage 3: sd_narrate.py for a single scene.
+    """Stage 3: sd_narrate for a single scene.
 
     Phase 5 of SessionDocRefactor: session_doc.py is gone. We point at
-    sd_narrate.py and pass plan.md explicitly via --plan (instead of the
+    sd_narrate and pass plan.md explicitly via --plan (instead of the
     old --plan-file). --context lives on sd_consistency now; sd_narrate
     has --context for the --reflections code path only.
     """
@@ -604,8 +602,7 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
         return None, "plan.md not found — run Plan & Check first"
 
     cmd = [
-        python_exe(),
-        str(SCRIPT_DIR / "sd_narrate.py"),
+        console_script("sd_narrate"),
         str(summary),
         "--plan", str(plan_path),
         "--scene-extractions", str(sx_dir),
@@ -637,8 +634,8 @@ def _backend_flags(*, allow_openai_compat: bool = True) -> list[str]:
     """Translate the typed backend choice into subprocess CLI flags.
 
     Replaces the old env-var translator (`_llm_env`): every downstream
-    script this router shells out to (enhance_summary.py, scene_extract.py,
-    sd_narrate.py, sd_consistency.py, sd_plan.py, scrub_mechanics.py) now
+    script this router shells out to (enhance_summary, scene_extract,
+    sd_narrate, sd_consistency, sd_plan, scrub_mechanics) now
     accepts --backend/--endpoint/--model directly via
     campaignlib.api.client.add_backend_args, so forwarding is done as
     explicit flags via backend_cli_args, not env vars — see
@@ -815,7 +812,7 @@ async def api_save_extraction(n: int, request: Request):
 def api_get_prev_extraction(n: int):
     """Return the snapshotted prior extraction (`NN_<slug>.md.prev`), if any.
 
-    Written by `scene_extract.py --force` when a re-run produces content
+    Written by `scene_extract --force` when a re-run produces content
     that differs from what's already on disk. The frontend uses this to
     render a diff against the current extraction so the GM can see what
     changed across re-runs.
@@ -894,7 +891,7 @@ def api_vtt():
 
 @router.get("/enhance")
 async def api_enhance(batch: int = 0):
-    """Stage 1 — stream enhance_summary.py output.
+    """Stage 1 — stream enhance_summary output.
 
     `batch=1` forwards `--batch` to the script (Message Batches API; 50%
     off list price; replaces token streaming with poll-progress lines).
@@ -922,7 +919,7 @@ async def api_enhance(batch: int = 0):
 
 @router.get("/extract")
 async def api_extract(batch: int = 0, force: int = 0):
-    """Stage 2 (Re-Extract Quotes) — calls scene_extract.py.
+    """Stage 2 (Re-Extract Quotes) — calls scene_extract.
 
     `batch=1` forwards `--batch` to the script. `force=1` forwards `--force`
     so existing per-scene files are overwritten (with .prev snapshot) — the
@@ -981,7 +978,7 @@ async def api_scrub(n: int):
     """Scrub a single scene's narration.
 
     Resolves the scene file server-side via `_narration_file_for_scene` so
-    `scrub_mechanics.py` needs no scene-aware CLI surface. Explicitly
+    `scrub_mechanics` needs no scene-aware CLI surface. Explicitly
     refuses already-scrubbed files (the glob in `_narration_file_for_scene`
     matches both `*.md` and `*.scrubbed.md`; today lexicographic order puts
     the un-scrubbed source first but that's a fragile accident).
@@ -992,7 +989,7 @@ async def api_scrub(n: int):
     if path.name.endswith(".scrubbed.md"):
         return _sse_error(
             f"refusing to scrub already-scrubbed file: {path.name}")
-    cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(path)]
+    cmd = [console_script("scrub_mechanics"), str(path)]
     cmd += _model_args()
     cmd += _backend_flags()
     if CONFIG.get("scrub_tokens"):
@@ -1023,7 +1020,7 @@ async def api_scrub_all():
     nd = _narration_dir()
     if nd is None or not nd.is_dir():
         return _sse_error("narration_dir not configured")
-    cmd = [python_exe(), str(SCRIPT_DIR / "scrub_mechanics.py"), str(nd)]
+    cmd = [console_script("scrub_mechanics"), str(nd)]
     cmd += _model_args()
     cmd += _backend_flags()
     if CONFIG.get("scrub_tokens"):
@@ -1043,7 +1040,7 @@ async def api_scrub_all():
 
 
 def _build_consistency_cmd() -> list[str] | tuple[None, str]:
-    """Phase 5 — sd_consistency.py for Pass 1.
+    """Phase 5 — sd_consistency for Pass 1.
 
     Runs only if --context is configured; otherwise the editor skips
     consistency entirely and just runs sd_plan.
@@ -1061,13 +1058,12 @@ def _build_consistency_cmd() -> list[str] | tuple[None, str]:
         return None, "no --context files configured"
 
     cmd = [
-        python_exe(),
-        str(SCRIPT_DIR / "sd_consistency.py"),
+        console_script("sd_consistency"),
         str(summary),
         "--out", str(nd / "consistency_report.md"),
     ]
     cmd += _model_args()
-    # sd_consistency.py's --context is nargs="+" (now action="extend", so
+    # sd_consistency's --context is nargs="+" (now action="extend", so
     # repeated `--context A --context B` accumulates correctly too — see
     # server/routers/ensemble.py's _cmd_multi for that style). Still keep
     # this LAST: nargs="+" greedily swallows subsequent bare tokens
@@ -1077,7 +1073,7 @@ def _build_consistency_cmd() -> list[str] | tuple[None, str]:
 
 
 def _build_plan_cmd() -> list[str] | tuple[None, str]:
-    """Phase 5 — sd_plan.py for Pass 3.
+    """Phase 5 — sd_plan for Pass 3.
 
     --context no longer lives here — consistency is its own explicit
     stage (see _build_consistency_cmd). The /plan endpoint chains
@@ -1096,8 +1092,7 @@ def _build_plan_cmd() -> list[str] | tuple[None, str]:
         return None, "characters not configured (sd_plan needs --characters)"
 
     cmd = [
-        python_exe(),
-        str(SCRIPT_DIR / "sd_plan.py"),
+        console_script("sd_plan"),
         "--scene-extractions", str(sx_dir),
         "--characters", characters,
         "--out", str(nd / "plan.md"),
@@ -1114,7 +1109,7 @@ def _build_plan_cmd() -> list[str] | tuple[None, str]:
 
 @router.get("/plan")
 async def api_plan():
-    """Run sd_consistency.py (if --context configured) then sd_plan.py.
+    """Run sd_consistency (if --context configured) then sd_plan.
 
     Both subprocesses stream into the same SSE response; the user sees
     one "Plan & Check" run with consistency output appearing first when
@@ -1303,7 +1298,7 @@ def api_assembled_exists():
 
 @router.post("/assemble")
 def api_assemble():
-    """Stage 4 — shell out to assemble.py."""
+    """Stage 4 — shell out to assemble."""
     nd = _narration_dir()
     if nd is None or not nd.is_dir():
         return JSONResponse({"ok": False, "error": "narration_dir not configured"}, status_code=400)
@@ -1315,8 +1310,7 @@ def api_assemble():
     out_path = _assembled_output_path()
     session_stem = Path(CONFIG["session"]).stem
     cmd = [
-        python_exe(),
-        str(SCRIPT_DIR / "assemble.py"),
+        console_script("assemble"),
         str(nd),
         "--output", str(out_path),
         "--title", session_stem,
@@ -1325,7 +1319,7 @@ def api_assemble():
     if proc.returncode != 0:
         return JSONResponse({
             "ok": False,
-            "error": (proc.stderr or proc.stdout or "assemble.py failed").strip(),
+            "error": (proc.stderr or proc.stdout or "assemble failed").strip(),
         }, status_code=500)
 
     return {

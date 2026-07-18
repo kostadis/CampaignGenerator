@@ -22,8 +22,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-import apply_ingest_manifest as aim
-import fivetools_ingest as fti
+import pipelines.rlm.apply_ingest_manifest as aim
+from pipelines.content_ingest import fivetools_ingest as fti
 
 
 # ── Manifest loading ─────────────────────────────────────────────────────
@@ -136,6 +136,17 @@ class TestResolveSource:
 
 
 class TestBuildArgv:
+    """``build_argv``'s argv[0] is the installed ``fivetools_ingest`` console
+    script (resolved next to the running interpreter, mirroring
+    ``server.subprocess_runner.console_script()``), not a
+    ``<python> <script_dir>/fivetools_ingest.py`` invocation — fixed as
+    part of the ``rlm`` cluster migration (fivetools_ingest.py itself moved
+    to pipelines/content_ingest/ and gained a console-script entry point in
+    the earlier content_ingest cluster; this was the deferred follow-up).
+    ``script_dir`` is gone from the signature entirely — there's no longer a
+    script directory to resolve against.
+    """
+
     def test_minimal_entry(self, tmp_path: Path):
         f = tmp_path / "a.json"
         f.write_text("{}", encoding="utf-8")
@@ -143,10 +154,10 @@ class TestBuildArgv:
             {"source": str(f)},
             palace="abyss",
             manifest_dir=tmp_path,
-            script_dir=Path("/scripts"),
         )
+        assert argv[0] == aim._fivetools_ingest_command()
+        assert Path(argv[0]).name == "fivetools_ingest"
         assert argv[1:] == [
-            "/scripts/fivetools_ingest.py",
             str(f),
             "--palace",
             "abyss",
@@ -159,7 +170,6 @@ class TestBuildArgv:
             {"source": str(f), "filter": "chapter=0", "book_id": 42},
             palace="abyss",
             manifest_dir=tmp_path,
-            script_dir=Path("/scripts"),
         )
         assert "--filter" in argv and "chapter=0" in argv
         assert "--book-id" in argv and "42" in argv
@@ -171,14 +181,12 @@ class TestBuildArgv:
             {"source": str(f)},
             palace="abyss",
             manifest_dir=tmp_path,
-            script_dir=Path("/scripts"),
         )
         assert "--force" not in without
         with_ = aim.build_argv(
             {"source": str(f), "force": True},
             palace="abyss",
             manifest_dir=tmp_path,
-            script_dir=Path("/scripts"),
         )
         assert "--force" in with_
 
@@ -189,7 +197,6 @@ class TestBuildArgv:
             {"source": str(f)},
             palace="abyss",
             manifest_dir=tmp_path,
-            script_dir=Path("/scripts"),
             dry_run=True,
         )
         assert "--dry-run" in argv

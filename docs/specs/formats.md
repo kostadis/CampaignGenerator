@@ -9,31 +9,31 @@ When debugging or extending any tool, read this file first instead of re-reading
 
 | File Pattern | Reader | Writer | Purpose |
 |---|---|---|---|
-| `config.yaml` | All scripts | Manual / `new_workspace.py` | Central configuration |
-| `docs/campaign_state.md` | `prep.py`, `planning.py`, `party.py` | `campaign_state.py` P2 | Completed content tracker |
-| `docs/world_state.md` | `prep.py`, all tools | `distill.py` P2 | Living canon reference |
-| `docs/planning.md` | `prep.py` | `planning.py` P2 | NPC/faction prep tracker |
-| `docs/party.md` | `sd_*.py` | `party.py` P2 | Character state tracker |
-| `summaries.md` | `campaign_state.py`, `distill.py`, `planning.py`, `party.py` | `vtt_summary.py` P2 | Session record |
-| `vtt_extractions/extract_NNN.md` | `vtt_summary.py` P2, `sd_*.py` | `vtt_summary.py` P1 | Session action/event notes |
-| `vtt_roleplay_extractions/extract_NNN.md` | `sd_narrate.py` | `vtt_summary.py` P3 | Verbatim dialogue & voice |
-| `distill_extractions/extract_NNN.md` | `distill.py` P2 | `distill.py` P1 | Lore extraction notes |
-| `state_extractions/extract_NNN.md` | `campaign_state.py` P2 | `campaign_state.py` P1 | Campaign state notes |
-| `planning_extractions/extract_NNN.md` | `planning.py` P2 | `planning.py` P1 | NPC/faction notes |
-| `party_extractions/extract_NNN.md` | `party.py` P2 | `party.py` P1 | Character progression notes |
-| `docs/npcs/[slug].md` | `planning.py` P2 | `planning.py --build-dossiers` | Per-NPC dossier |
-| `scene_extractions/NN_narrator_scene.md` | `sd_narrate.py`, `server/routers/scene_editor.py` | `(deleted in PR #52)` | Scene-specific moments |
-| `scene_extractions/plan.md` | `sd_plan.py`, `server/routers/scene_editor.py` | `sd_plan.py` | Narrator section plan |
-| `voice/[character]_voice.md` | `sd_narrate.py` | Players (manual) | Player voice guide |
+| `config.yaml` | All scripts | Manual / `pipelines/workspace/new_workspace.py` | Central configuration |
+| `docs/campaign_state.md` | `pipelines/session_prep/prep.py`, `pipelines/grounding/planning.py`, `pipelines/grounding/party.py` | `pipelines/grounding/campaign_state.py` P2 | Completed content tracker |
+| `docs/world_state.md` | `pipelines/session_prep/prep.py`, all tools | `pipelines/grounding/distill.py` P2 | Living canon reference |
+| `docs/planning.md` | `pipelines/session_prep/prep.py` | `pipelines/grounding/planning.py` P2 | NPC/faction prep tracker |
+| `docs/party.md` | `sd_*.py` | `pipelines/grounding/party.py` P2 | Character state tracker |
+| `summaries.md` | `pipelines/grounding/campaign_state.py`, `pipelines/grounding/distill.py`, `pipelines/grounding/planning.py`, `pipelines/grounding/party.py` | `session_doc/vtt_summary.py` P2 | Session record |
+| `vtt_extractions/extract_NNN.md` | `session_doc/vtt_summary.py` P2, `sd_*.py` | `session_doc/vtt_summary.py` P1 | Session action/event notes |
+| `vtt_roleplay_extractions/extract_NNN.md` | `session_doc/sd_narrate.py` | `session_doc/vtt_summary.py` P3 | Verbatim dialogue & voice |
+| `distill_extractions/extract_NNN.md` | `pipelines/grounding/distill.py` P2 | `pipelines/grounding/distill.py` P1 | Lore extraction notes |
+| `state_extractions/extract_NNN.md` | `pipelines/grounding/campaign_state.py` P2 | `pipelines/grounding/campaign_state.py` P1 | Campaign state notes |
+| `planning_extractions/extract_NNN.md` | `pipelines/grounding/planning.py` P2 | `pipelines/grounding/planning.py` P1 | NPC/faction notes |
+| `party_extractions/extract_NNN.md` | `pipelines/grounding/party.py` P2 | `pipelines/grounding/party.py` P1 | Character progression notes |
+| `docs/npcs/[slug].md` | `pipelines/grounding/planning.py` P2 | `pipelines/grounding/planning.py --build-dossiers` | Per-NPC dossier |
+| `scene_extractions/NN_narrator_scene.md` | `session_doc/sd_narrate.py`, `server/routers/scene_editor.py` | `(deleted in PR #52)` | Scene-specific moments |
+| `scene_extractions/plan.md` | `session_doc/sd_plan.py`, `server/routers/scene_editor.py` | `session_doc/sd_plan.py` | Narrator section plan |
+| `voice/[character]_voice.md` | `session_doc/sd_narrate.py` | Players (manual) | Player voice guide |
 | `logs/YYYY-MM-DD_HHMMSS_*.md` | — | `campaignlib.save_log()` | Archive of all API calls |
-| `tracking.txt` | `campaign_state.py` | Manual / `make_tracking.py` | Event tracking list |
+| `tracking.txt` | `pipelines/grounding/campaign_state.py` | Manual / `pipelines/grounding/make_tracking.py` | Event tracking list |
 
 ---
 
 ## config.yaml
 
 **Reader:** All scripts via `campaignlib.load_config()`
-**Writer:** Manual or `new_workspace.py`
+**Writer:** Manual or `pipelines/workspace/new_workspace.py`
 
 ```yaml
 system_prompt: config/system_prompt.md
@@ -61,14 +61,14 @@ documents:
 Rules:
 - Paths resolved relative to config directory
 - `label` names are used by `assemble_docs()` to select which docs to load
-- `campaign_state` is listed first so it is the first context `prep.py` sees
+- `campaign_state` is listed first so it is the first context `pipelines/session_prep/prep.py` sees
 
 ---
 
 ## Session Summary (summaries.md)
 
-**Written by:** `vtt_summary.py` Pass 2
-**Read by:** `campaign_state.py`, `distill.py`, `planning.py`, `party.py`
+**Written by:** `session_doc/vtt_summary.py` Pass 2
+**Read by:** `pipelines/grounding/campaign_state.py`, `pipelines/grounding/distill.py`, `pipelines/grounding/planning.py`, `pipelines/grounding/party.py`
 
 Multiple sessions are appended; each session starts with a `# Session` heading.
 
@@ -102,8 +102,8 @@ One short paragraph: where are PCs, what is immediately at stake
 
 ### vtt_extractions/extract_NNN.md (Action/Event Notes)
 
-**Written by:** `vtt_summary.py` Pass 1
-**Read by:** `vtt_summary.py` Pass 2, `sd_*.py`
+**Written by:** `session_doc/vtt_summary.py` Pass 1
+**Read by:** `session_doc/vtt_summary.py` Pass 2, `sd_*.py`
 **Pattern:** `extract_001.md`, `extract_002.md` (zero-padded 3-digit index)
 **One file per ~50,000 chars of VTT input**
 
@@ -128,8 +128,8 @@ One short paragraph: where are PCs, what is immediately at stake
 
 ### vtt_roleplay_extractions/extract_NNN.md (Dialogue & Voice)
 
-**Written by:** `vtt_summary.py` (now sd_plan.py)
-**Read by:** `quote_ledger.py`, `enhance_recap.py`
+**Written by:** `session_doc/vtt_summary.py` (now session_doc/sd_plan.py)
+**Read by:** `session_doc/quote_ledger.py`, `session_doc/enhance_recap.py`
 **Pattern:** Same as above
 
 ```markdown
@@ -156,8 +156,8 @@ Rules:
 
 ### docs/campaign_state.md
 
-**Written by:** `campaign_state.py` Pass 2
-**Read by:** `prep.py` (first context), `planning.py`, `party.py`
+**Written by:** `pipelines/grounding/campaign_state.py` Pass 2
+**Read by:** `pipelines/session_prep/prep.py` (first context), `pipelines/grounding/planning.py`, `pipelines/grounding/party.py`
 
 ```markdown
 ## Completed Encounters & Quests
@@ -209,8 +209,8 @@ Rules:
 
 ### docs/world_state.md
 
-**Written by:** `distill.py` Pass 2
-**Read by:** `prep.py` and all tools as lore reference
+**Written by:** `pipelines/grounding/distill.py` Pass 2
+**Read by:** `pipelines/session_prep/prep.py` and all tools as lore reference
 
 **Intermediate: distill_extractions/extract_NNN.md**
 
@@ -254,8 +254,8 @@ Rules:
 
 ### docs/planning.md
 
-**Written by:** `planning.py` Pass 2
-**Read by:** `prep.py`
+**Written by:** `pipelines/grounding/planning.py` Pass 2
+**Read by:** `pipelines/session_prep/prep.py`
 
 ```markdown
 ## Threat Tracker
@@ -331,8 +331,8 @@ Rules:
 
 ### docs/party.md
 
-**Written by:** `party.py` Pass 2
-**Read by:** `sd_narrate.py` for character voice reference
+**Written by:** `pipelines/grounding/party.py` Pass 2
+**Read by:** `session_doc/sd_narrate.py` for character voice reference
 
 ```markdown
 ## Party Overview
@@ -375,12 +375,12 @@ Rules:
 
 ---
 
-## Session Narrative (sd_narrate.py)
+## Session Narrative (session_doc/sd_narrate.py)
 
 ### scene_extractions/plan.md
 
-**Written by:** `sd_plan.py`
-**Read by:** `sd_narrate.py`, `server/routers/scene_editor.py`
+**Written by:** `session_doc/sd_plan.py`
+**Read by:** `session_doc/sd_narrate.py`, `server/routers/scene_editor.py`
 
 **Scene mode:**
 
@@ -421,8 +421,8 @@ Rules:
 ### scene_extractions/NN_narrator_scene.md (Extraction Files)
 
 **Pattern:** `01_vukradin_the_stone_giants.md`, `02_soma_the_glacier.md`
-**Written by:** `sd_narrate.py`
-**Read by:** `sd_narrate.py`, edited in `server/routers/scene_editor.py`
+**Written by:** `session_doc/sd_narrate.py`
+**Read by:** `session_doc/sd_narrate.py`, edited in `server/routers/scene_editor.py`
 
 ```markdown
 tokens: 6000
@@ -449,7 +449,7 @@ Rules:
 ### voice/[character]_voice.md
 
 **Written by:** Players manually
-**Read by:** `sd_narrate.py` (injected into that character's narrator prompt only)
+**Read by:** `session_doc/sd_narrate.py` (injected into that character's narrator prompt only)
 
 ```markdown
 # Vukradin's Voice
@@ -475,8 +475,8 @@ and uses formal address. He is uncomfortable with moral ambiguity and prefers di
 
 ## Tracking File (tracking.txt)
 
-**Written by:** Manual or `make_tracking.py`
-**Read by:** `campaign_state.py --track-file`
+**Written by:** Manual or `pipelines/grounding/make_tracking.py`
+**Read by:** `pipelines/grounding/campaign_state.py --track-file`
 
 ```
 # Locations
@@ -499,7 +499,7 @@ Rules:
 
 ---
 
-## prep.py User Prompt (Assembled Document)
+## pipelines/session_prep/prep.py User Prompt (Assembled Document)
 
 Built by `assemble_docs()` and passed as the user turn to Claude:
 

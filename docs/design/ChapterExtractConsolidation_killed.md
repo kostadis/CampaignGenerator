@@ -2,13 +2,13 @@
 
 **Status:** Abandoned (2026-04-15). This records *why*, so the idea isn't re-attempted blind.
 **Origin:** `feature/chapter-extract-consolidation` (deleted after this writeup landed).
-**Related:** `distill.py`, `campaign_state.py`, `planning.py`, `TheFlow.md`, the global "LLMs render, humans decide" rule.
+**Related:** `pipelines/grounding/distill.py`, `pipelines/grounding/campaign_state.py`, `pipelines/grounding/planning.py`, `TheFlow.md`, the global "LLMs render, humans decide" rule.
 
 ---
 
 ## TL;DR
 
-Three scripts — `distill.py`, `campaign_state.py`, `planning.py` — each independently scan the same `summaries.md` during their extract phase. The experiment replaced those three narrow scans with **one rich structured extract per chapter**, consumed by three synthesizers (`1 × extract → 3 × synthesize` instead of `3 × (extract → synthesize)`).
+Three scripts — `pipelines/grounding/distill.py`, `pipelines/grounding/campaign_state.py`, `pipelines/grounding/planning.py` — each independently scan the same `summaries.md` during their extract phase. The experiment replaced those three narrow scans with **one rich structured extract per chapter**, consumed by three synthesizers (`1 × extract → 3 × synthesize` instead of `3 × (extract → synthesize)`).
 
 The hypothesis validated at the extract layer and **failed at the synthesize layer**. All three final documents regressed materially against their hand-tuned baselines. The branch was killed per its own pre-committed kill criteria. **Correctness took precedence over the ~3× token saving.**
 
@@ -43,7 +43,7 @@ Not truncation — outputs were well under the `max_tokens` cap.
 
 1. **Per-chapter extract breadth comes at a per-entity depth cost.** An 8-section schema makes each chapter's NPC section terser than a dedicated NPC-only extract would be. Synthesis across 36 chapters then reconstructs per-NPC views from fragments — and when told to "be concise," the model cuts the long tail. Breadth at extract time traded away depth that the focused extracts preserved.
 2. **Synthesize-from-chapters prompts were too compressing.** They *described* sections rather than *demanding enumeration*. Terser extracts + compressing prompts compounded the loss.
-3. **A concrete design error.** `distill.py`'s new prompt marked `## Party` as "incidental context." For `world_state.md` the Party block is the document's anchor — exactly the wrong thing to demote.
+3. **A concrete design error.** `pipelines/grounding/distill.py`'s new prompt marked `## Party` as "incidental context." For `world_state.md` the Party block is the document's anchor — exactly the wrong thing to demote.
 
 ## The transferable lesson
 

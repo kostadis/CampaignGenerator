@@ -1,0 +1,469 @@
+#!/usr/bin/env python3
+"""Generate a D&D session summary from a Zoom VTT transcript file.
+
+Parses Zoom's WebVTT format, strips timestamps and cue numbers to produce
+clean speaker dialogue, then runs a two-pass extract → synthesize pipeline
+to generate a structured session summary.
+
+Use --extract-only to stop after the extract pass(es) so you can review and
+edit the intermediate files before synthesis.
+
+Usage:
+  vtt_summary session.vtt --output docs/summaries/session_12.md
+  vtt_summary session.vtt -o session_12.md --date "2026-03-15"
+  vtt_summary session.vtt --output session_12.md --extract-only
+  vtt_summary session.vtt --synthesize-only --extract-dir vtt_extractions/ -o out.md
+
+Output is a structured markdown session summary suitable for:
+  - Appending to a session summaries file (fed to distill, campaign_state, etc.)
+  - Direct review after the session
+
+Options:
+  --date DATE           Session date to include in the summary header (default: today)
+  --session-name NAME   Session label (e.g. "Session 12 — Icespire Hold")
+  --chunk-size CHARS    Characters per extract chunk (default: 50000)
+  --extract-dir DIR     Where to save/load extract files (default: <output_dir>/vtt_extractions/)
+  --synthesize-only     Skip extract, synthesize from existing files in --extract-dir
+  --extract-only        Run both extract passes then stop (review before synthesizing)
+  --no-log              Skip saving a log file
+"""
+
+import argparse
+import re
+import sys
+from datetime import date
+from pathlib import Path
+
+from campaignlib import (
+    DEFAULT_MODEL,
+    add_backend_args,
+    build_alias_normalizer,
+    client_from_args,
+    format_npc_roster,
+    find_alias_registry,
+    load_alias_map,
+    load_file_optional,
+    run_extract_pipeline,
+    run_synthesize_pipeline,
+    save_log,
+)
+
+
+EXTRACT_SYSTEM_BASE = """\
+You are reading a portion of a Zoom transcript from a D&D tabletop RPG session.
+The speakers are the players (PCs) and the Game Master (GM/DM).
+{context_section}{reference_section}
+Extract a concise set of structured notes covering everything that happened in this portion:
+
+## Events
+Key story events, decisions, and plot developments. One bullet per event.
+Be specific — include names, locations, outcomes.
+
+## NPC Interactions
+Every named NPC that was spoken to or about: what was said or decided, what was revealed.
+
+## PC Actions & Decisions
+Significant player character choices, skill checks, combat outcomes, discoveries.
+
+## Out-of-Character Notes
+Any meta decisions about the campaign (schedule, house rules, retcons) if present.
+
+Rules:
+- Do not invent anything not present in the transcript.
+- Be exhaustive — it is better to over-extract than to miss something.
+- Ignore crosstalk, laughter, and off-topic chatter unless it contains a game decision.
+- Use the campaign context above to correctly identify NPC names and existing plot threads.
+- Output only the structured notes. No preamble or commentary.
+"""
+
+ROLEPLAY_EXTRACT_SYSTEM_BASE = """\
+You are reading a portion of a Zoom transcript from a D&D tabletop RPG session.
+The speakers are the players (PCs) and the Game Master (GM/DM).
+{context_section}
+{reference_section}
+Your job is to find the VERBATIM DIALOGUE for every significant moment in this transcript
+portion.
+
+{priority_block}
+
+WHAT TO EXTRACT:
+- In-character dialogue: a player speaking AS their character (not about them)
+- NPC portrayals: the GM giving voice to an NPC — their tone, speech patterns, threats, pleas
+- Dramatic exchanges: back-and-forth roleplay between a PC and an NPC or between PCs
+- Character-defining moments: a decision, revelation, or action that reveals who the character is
+- Emotional beats: fear, grief, triumph, betrayal, humour — moments with emotional weight
+- Memorable lines: a turn of phrase, a threat, a promise, a punchline that stands out
+- In-character jokes, item interactions, and moments that SOUND mechanical but have narrative
+  weight (e.g. "This is not my necklace. I am holding it until we find its rightful owner.")
+
+For each roleplay moment, record:
+- WHO is speaking (player name / character name if known, or "GM as [NPC name]")
+- The QUOTED TEXT or a close paraphrase if the exact wording is unclear
+- A brief NOTE on the context (one sentence: what was happening)
+
+Format each moment as:
+
+**[Speaker as Character/NPC]** — *[context note]*
+> [quoted or paraphrased dialogue]
+
+Group related moments together if they form a single exchange.
+
+Rules:
+- Prefer exact quotes over paraphrasing. If you must paraphrase, mark it with (paraphrase).
+- Ignore purely mechanical talk ONLY when it has no narrative or character weight.
+  If a player discusses an item, a spell, or a rule in a way that reveals character
+  (possessiveness, humour, fear, curiosity), capture it.
+- Ignore out-of-character scheduling and rules lookups.
+- Do not invent dialogue. Only record what is in the transcript.
+- Output only the roleplay moments. No preamble or commentary.
+"""
+
+# When a reference summary (GMassistant) is available, the extraction is anchored
+# on it — find dialogue for its scenes first, then catch anything it missed.
+_ROLEPLAY_PRIORITY_WITH_REF = """\
+PRIORITY ORDER:
+1. ANCHOR on the reference summary above. For every scene and character moment it describes,
+   find the corresponding verbatim dialogue in this transcript chunk. The reference summary
+   was generated from this same transcript, so if it mentions something, the dialogue IS here.
+   Look carefully — it may appear as casual or mechanical-sounding talk.
+2. BONUS: after covering all referenced moments, scan for any significant exchanges the
+   reference summary missed — side conversations that turned into character moments,
+   throwaway jokes with narrative weight, quiet interactions between PCs."""
+
+_ROLEPLAY_PRIORITY_NO_REF = """\
+Scan the transcript for every moment worth narrating. Cast a wide net — it is better to
+over-extract than to miss a quiet character moment or an in-character joke buried in
+mechanical discussion."""
+
+SYNTHESIZE_SYSTEM_BASE = """\
+You are a D&D session chronicler. You will receive structured extraction notes compiled
+from a single session's Zoom transcript. Your job is to synthesize them into a clean,
+readable session summary that a GM can use for future session prep.
+{context_section}
+The summary should:
+- Open with a one-paragraph narrative overview of what happened
+- Cover all major story beats, NPC interactions, and PC decisions
+- Note what changed relative to existing campaign context (new revelations, status changes, etc.)
+- Note any unresolved threads or open questions
+- Capture any retcons, rule clarifications, or out-of-character decisions
+- End with a "Next Session Setup" section: the immediate situation the party is in
+
+Format:
+# {session_name}
+
+## Overview
+(one paragraph narrative)
+
+## Session Events
+(bullet list of key events in chronological order)
+
+## NPC Interactions
+(named NPCs with what happened)
+
+## Open Threads
+(unresolved plot threads and open questions)
+
+## Out-of-Character
+(any meta decisions — skip section if none)
+
+## Next Session Setup
+(one short paragraph: where are the PCs, what is immediately at stake)
+
+Write clearly and concisely. This document will be used as a session record and
+fed to other AI tools as campaign context. Precision matters.
+Output only the session summary document. No preamble or commentary.
+"""
+
+
+def parse_vtt(text: str) -> str:
+    """Strip VTT headers, cue numbers, and timestamps. Return clean speaker dialogue."""
+    lines = text.splitlines()
+    dialogue: list[str] = []
+    header_re = re.compile(r"^WEBVTT", re.IGNORECASE)
+    timestamp_re = re.compile(r"^\d{2}:\d{2}:\d{2}[.,]\d{3}\s*-->\s*\d{2}:\d{2}:\d{2}[.,]\d{3}")
+    cue_re = re.compile(r"^\d+\s*$")
+    note_re = re.compile(r"^NOTE\b", re.IGNORECASE)
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if header_re.match(stripped):
+            continue
+        if timestamp_re.match(stripped):
+            continue
+        if cue_re.match(stripped):
+            continue
+        if note_re.match(stripped):
+            continue
+        dialogue.append(stripped)
+
+    return "\n".join(dialogue)
+
+
+def build_context_section(context_text: str) -> str:
+    """Return a formatted context block for injection into system prompts."""
+    if not context_text.strip():
+        return "\n"
+    return (
+        "\n\n# CAMPAIGN CONTEXT\n"
+        "The following documents describe the existing campaign state. "
+        "Use them to correctly identify NPC names, completed events, and ongoing plot threads.\n\n"
+        f"{context_text.strip()}\n\n"
+        "# END CAMPAIGN CONTEXT\n\n"
+    )
+
+
+def build_reference_section(reference_text: str) -> str:
+    """Return a formatted reference summary block for injection into system prompts."""
+    if not reference_text.strip():
+        return ""
+    return (
+        "\n\n# SESSION REFERENCE (authoritative — generated from this same transcript)\n"
+        "This is the definitive account of what happened in this session. Every scene and "
+        "character moment described below occurred in the transcript you are reading. "
+        "Your primary job is to find the verbatim dialogue for these moments.\n\n"
+        f"{reference_text.strip()}\n\n"
+        "# END SESSION REFERENCE\n\n"
+    )
+
+
+def build_summary_extract_system(context_text: str, reference_text: str) -> str:
+    return (EXTRACT_SYSTEM_BASE
+            .replace("{context_section}", build_context_section(context_text))
+            .replace("{reference_section}", build_reference_section(reference_text)))
+
+
+def build_roleplay_extract_system(context_text: str, reference_text: str) -> str:
+    priority = (_ROLEPLAY_PRIORITY_WITH_REF if reference_text.strip()
+                else _ROLEPLAY_PRIORITY_NO_REF)
+    return (ROLEPLAY_EXTRACT_SYSTEM_BASE
+            .replace("{context_section}", build_context_section(context_text))
+            .replace("{reference_section}", build_reference_section(reference_text))
+            .replace("{priority_block}", priority))
+
+
+def build_summary_synthesize_system(context_text: str, session_name: str) -> str:
+    return (SYNTHESIZE_SYSTEM_BASE
+            .replace("{context_section}", build_context_section(context_text))
+            .replace("{session_name}", session_name))
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Generate a D&D session summary from a Zoom VTT transcript."
+    )
+    parser.add_argument("input", nargs="?", metavar="FILE",
+                        help="Zoom .vtt transcript file (not needed with --synthesize-only)")
+    parser.add_argument("--output", "-o", required=True, metavar="FILE",
+                        help="Where to save the session summary")
+    parser.add_argument("--date", default=str(date.today()), metavar="DATE",
+                        help="Session date, e.g. 2026-03-15 (default: today)")
+    parser.add_argument("--session-name", default="", metavar="NAME",
+                        help='Session label, e.g. "Session 12 — Icespire Hold"')
+    parser.add_argument("--chunk-size", type=int, default=50000, metavar="CHARS",
+                        help="Max characters per extract chunk (default: 50000)")
+    parser.add_argument("--extract-dir", metavar="DIR", default=None,
+                        help="Where to save/load intermediate extractions "
+                             "(default: <output_dir>/vtt_extractions/)")
+    parser.add_argument("--roleplay-extract-dir", metavar="DIR", default=None,
+                        help="Where to save/load roleplay extractions "
+                             "(default: <output_dir>/vtt_roleplay_extractions/)")
+    parser.add_argument("--synthesize-only", action="store_true",
+                        help="Skip extraction, synthesize from existing files in --extract-dir "
+                             "(applies to both summary and roleplay passes)")
+    parser.add_argument("--extract-only", action="store_true",
+                        help="Run both extract passes, then stop so you can review "
+                             "per-chunk extractions before synthesis. Re-run with "
+                             "--synthesize-only against the same --extract-dir (and "
+                             "--roleplay-extract-dir if applicable) to produce the final "
+                             "document(s).")
+    parser.add_argument("--context", nargs="+", action="extend", metavar="FILE",
+                        help="Campaign context files to include (e.g. campaign_state.md "
+                             "world_state.md party.md). Helps identify NPCs and track changes.")
+    parser.add_argument("--reference-summaries", nargs="+", action="extend", metavar="FILE",
+                        help="Pre-existing summaries (GMassistant recap, Saga20 summary, etc.) "
+                             "to cross-reference during synthesis. The model will incorporate "
+                             "anything present in these that is missing from the VTT extractions.")
+    parser.add_argument("--dossier-dir", metavar="DIR", default=None,
+                        help="Directory of per-NPC dossier files (built by "
+                             "planning --build-dossiers). If given, every "
+                             "alias in dossier frontmatter is rewritten to its "
+                             "canonical name before extract/synth, and a "
+                             "'Known NPCs' roster seeds the system prompts.")
+    parser.add_argument("--no-log", action="store_true",
+                        help="Skip saving a log file")
+    parser.add_argument("--model", default=DEFAULT_MODEL,
+                        help="Claude model to use")
+    add_backend_args(parser)
+    args = parser.parse_args()
+
+    if args.synthesize_only and args.extract_only:
+        print("Error: --synthesize-only and --extract-only are mutually exclusive",
+              file=sys.stderr)
+        sys.exit(1)
+    if args.synthesize_only and not args.extract_dir:
+        print("Error: --synthesize-only requires --extract-dir", file=sys.stderr)
+        sys.exit(1)
+    if not args.synthesize_only and not args.input:
+        print("Error: input .vtt file required unless --synthesize-only", file=sys.stderr)
+        sys.exit(1)
+
+    output = Path(args.output).expanduser().resolve()
+    if output.is_dir():
+        print(f"Error: --output must be a file path, not a directory: {output}", file=sys.stderr)
+        print(f"  Try: --output {output / 'session_summary.md'}", file=sys.stderr)
+        sys.exit(1)
+    extract_dir = (
+        Path(args.extract_dir).expanduser().resolve()
+        if args.extract_dir
+        else output.parent / "vtt_extractions"
+    )
+    roleplay_extract_dir = (
+        Path(args.roleplay_extract_dir).expanduser().resolve()
+        if args.roleplay_extract_dir
+        else output.parent / "vtt_roleplay_extractions"
+    )
+    session_name = args.session_name or f"Session — {args.date}"
+
+    # Load optional context files
+    context_text = ""
+    if args.context:
+        parts = []
+        for ctx_path in args.context:
+            content = load_file_optional(ctx_path, "context file")
+            if content is not None:
+                parts.append(f"## {Path(ctx_path).name}\n\n{content.strip()}")
+        if parts:
+            context_text = "\n\n---\n\n".join(parts)
+            print(f"[Context: {len(parts)} file(s), {len(context_text):,} chars]")
+
+    # Load reference summaries — kept in two forms:
+    #   reference_text   — concatenated string injected into extract system prompts
+    #   reference_paths  — Path list handed to run_synthesize_pipeline as a source group
+    reference_text = ""
+    reference_paths: list[Path] = []
+    if args.reference_summaries:
+        parts = []
+        for ref_path in args.reference_summaries:
+            p = Path(ref_path).expanduser()
+            content = load_file_optional(ref_path, "reference summary")
+            if content is not None:
+                parts.append(f"### {p.name}\n\n{content.strip()}")
+                reference_paths.append(p.resolve())
+        if parts:
+            reference_text = "\n\n---\n\n".join(parts)
+            print(f"[Reference summaries: {len(parts)} file(s), {len(reference_text):,} chars]")
+
+    alias_map = load_alias_map(args.dossier_dir, registry_path=find_alias_registry(Path.cwd()))
+    normalize, _ = build_alias_normalizer(alias_map)
+    roster = format_npc_roster(alias_map)
+    if alias_map:
+        print(f"Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
+
+    client = client_from_args(args)
+
+    if not args.synthesize_only:
+        vtt_path = Path(args.input).expanduser()
+        if not vtt_path.exists():
+            print(f"Error: file not found: {vtt_path}", file=sys.stderr)
+            sys.exit(1)
+
+        raw = vtt_path.read_text(encoding="utf-8")
+        print(f"\n[Parsing VTT | {len(raw):,} raw chars | {vtt_path.name}]")
+        dialogue = parse_vtt(raw)
+        print(f"  → {len(dialogue):,} chars of clean dialogue\n")
+        if not dialogue.strip():
+            print(f"Error: no dialogue found in VTT file: {vtt_path.name}", file=sys.stderr)
+            sys.exit(1)
+
+        print(f"[Pass 1: Extract (summary) | model: {args.model}]")
+        print("=" * 60)
+        extract_files = run_extract_pipeline(
+            client, dialogue,
+            extract_system=build_summary_extract_system(context_text, reference_text),
+            model=args.model,
+            extract_dir=extract_dir,
+            chunk_size=args.chunk_size,
+            input_normalizer=normalize,
+            system_suffix=roster,
+        )
+        if not extract_files:
+            print("Error: no chunks were extracted — dialogue may be too short.", file=sys.stderr)
+            sys.exit(1)
+        print(f"Extractions saved to: {extract_dir}")
+
+        if args.extract_only:
+            print(f"\n[Pass 2: Extract (roleplay) | model: {args.model}]")
+            print("=" * 60)
+            run_extract_pipeline(
+                client, dialogue,
+                extract_system=build_roleplay_extract_system(context_text, reference_text),
+                model=args.model,
+                extract_dir=roleplay_extract_dir,
+                chunk_size=args.chunk_size,
+                input_normalizer=normalize,
+                system_suffix=roster,
+            )
+            print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
+
+            print(f"\n[Extract-only mode — stopping before synthesis]")
+            print(f"Review files in: {extract_dir}")
+            print(f"                 {roleplay_extract_dir}")
+            print(f"When ready, re-run with --synthesize-only to produce the final document.")
+            return
+    else:
+        extract_files = sorted(extract_dir.glob("extract_*.md"))
+        if not extract_files:
+            print(f"Error: no extract_*.md files found in {extract_dir}", file=sys.stderr)
+            sys.exit(1)
+        print(f"\n[Synthesize-only mode | {len(extract_files)} extraction(s) from {extract_dir}]")
+
+    print(f"\n[Pass 2: Synthesize (summary) | model: {args.model}]")
+    print("=" * 60)
+    summary = run_synthesize_pipeline(
+        client,
+        source_groups=[
+            ("", extract_files),
+            ("REFERENCE SUMMARIES", reference_paths),
+        ],
+        synthesize_system=build_summary_synthesize_system(context_text, session_name),
+        model=args.model,
+        input_normalizer=normalize,
+        system_suffix=roster,
+    )
+    print("=" * 60)
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(summary.strip() + "\n", encoding="utf-8")
+    print(f"\nSession summary saved to: {output}")
+
+    # ── Roleplay extract pass (feeds vtt_roleplay_extractions/ for quote_ledger / enhance_recap) ──
+    log_sections = [("Session Summary", summary)]
+
+    if not args.synthesize_only:
+        print(f"\n[Pass 3: Extract (roleplay) | model: {args.model}]")
+        print("=" * 60)
+        run_extract_pipeline(
+            client, dialogue,
+            extract_system=build_roleplay_extract_system(context_text, reference_text),
+            model=args.model,
+            extract_dir=roleplay_extract_dir,
+            chunk_size=args.chunk_size,
+            input_normalizer=normalize,
+            system_suffix=roster,
+        )
+        print(f"Roleplay extractions saved to: {roleplay_extract_dir}")
+
+    if not args.no_log:
+        log_dir = output.parent / "logs"
+        log_file = save_log(str(log_dir), log_sections, stem="vtt_summary")
+        print(f"Log saved to: {log_file}")
+
+    print(f"\nNext steps:")
+    print(f"  Append to your summaries file, then run:")
+    print(f"  campaign_state summaries.md --output docs/campaign_state.md")
+
+
+if __name__ == "__main__":
+    main()

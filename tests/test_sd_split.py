@@ -51,7 +51,12 @@ REEXPORTS = [
     ("SCENE_ANCHORED_DIRECTIVE",        "session_doc.narrate"),
 ]
 
-CLI_SHIMS = ["sd_consistency.py", "sd_plan.py", "sd_narrate.py"]
+# sd_consistency.py / sd_plan.py / sd_narrate.py moved into session_doc/ and
+# now run as console-script entry points (pyproject.toml's [project.scripts])
+# rather than at a fixed repo-root path — resolve next to the current
+# interpreter, same rationale as tests/test_require_proposal_cli.py's
+# PREP_BIN / PLANNING_BIN / SD_PLAN_BIN.
+CLI_SHIMS = ["sd_consistency", "sd_plan", "sd_narrate"]
 
 
 @pytest.mark.parametrize("module_name", HELPERS)
@@ -75,8 +80,9 @@ def test_session_doc_reexport_matches_source(name, source_module):
 def test_cli_shim_help_exits_zero(shim):
     """argparse --help should exit 0 — verifies the CLI is importable and
     the argument set is internally consistent."""
+    shim_bin = str(Path(sys.executable).parent / shim)
     result = subprocess.run(
-        [sys.executable, str(ROOT / shim), "--help"],
+        [shim_bin, "--help"],
         capture_output=True, text=True, timeout=15,
     )
     assert result.returncode == 0, (
@@ -85,6 +91,6 @@ def test_cli_shim_help_exits_zero(shim):
         f"stderr:\n{result.stderr[:400]}"
     )
     # Sanity: the help output mentions the shim's name (vs. random failure mode).
-    assert shim.replace(".py", "") in result.stdout.lower(), (
+    assert shim in result.stdout.lower(), (
         f"{shim} --help output didn't mention the shim name"
     )

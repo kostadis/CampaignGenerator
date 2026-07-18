@@ -13,7 +13,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import pytest
 import yaml
 
-import query_rpg_lib as qrl
+import pipelines.rlm.query_rpg_lib as qrl
 
 
 class _CannedRpgLibraryHandler(BaseHTTPRequestHandler):

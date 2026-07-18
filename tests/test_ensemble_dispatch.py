@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-import ensemble_extract as ee  # noqa: E402
+from pipelines.ensemble import ensemble_extract as ee  # noqa: E402
 
 MIN_AGE = 60.0
 MAX_COPIES = 2

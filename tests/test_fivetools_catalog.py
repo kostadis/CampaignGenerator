@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-import fivetools_catalog as fc
+import pipelines.rlm.fivetools_catalog as fc
 
 
 # ── Fixture data tree ─────────────────────────────────────────────────────

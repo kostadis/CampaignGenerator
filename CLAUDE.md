@@ -20,36 +20,38 @@ frontend/                   # Vue 3 + TypeScript + Pinia + Vue Router
 
 # ── CLI tools ──
 campaignlib.py              # Shared library — all scripts import from here
-prep.py                     # CLI: session beat / session arc prep
-sd_consistency.py           # CLI: Pass 1 — consistency check (sd_*.py replaced session_doc.py)
-sd_plan.py                  # CLI: Pass 3 — narrative plan
-sd_narrate.py               # CLI: Pass 5 — per-scene narration
-session_doc/                # Shared helpers (io, voice, roster, examples, narrate)
-narrative.py                # Standalone experimental: VTT-anchored narration CLI
-quote_ledger.py             # SQLite-backed VTT dialogue tracking
-npc_table.py                # CLI: generate NPC reference table
-distill.py                  # CLI: convert summaries → world_state.md
-campaign_state.py           # CLI: generate completed-content grounding doc
-make_tracking.py            # CLI: extract trackable events from a module
-query.py                    # CLI: search summaries
-vtt_summary.py              # CLI: Zoom .vtt → session summary
-planning.py                 # CLI: NPC dossiers + arc scores → planning.md
-party.py                    # CLI: character sheets + summaries → party.md
-dnd_sheet.py                # CLI: D&D Beyond PDF → markdown (vision API)
-new_workspace.py            # CLI: create a new campaign workspace
-transform.py                # CLI: NotebookLLM dossiers → prep.py input
+pipelines/session_prep/prep.py  # CLI: session beat / session arc prep
+session_doc/sd_consistency.py  # CLI: Pass 1 — consistency check (sd_*.py replaced session_doc.py)
+session_doc/sd_plan.py         # CLI: Pass 3 — narrative plan
+session_doc/sd_narrate.py      # CLI: Pass 5 — per-scene narration
+session_doc/                # Post-session pipeline CLIs (sd_*, assemble, scene_extract,
+                             #   enhance_*, vtt_summary, …) + shared helpers (io, voice,
+                             #   roster, examples, narrate)
+session_doc/narrative.py    # Standalone experimental: VTT-anchored narration CLI
+session_doc/quote_ledger.py # SQLite-backed VTT dialogue tracking
+pipelines/grounding/npc_table.py        # CLI: generate NPC reference table
+pipelines/grounding/distill.py          # CLI: convert summaries → world_state.md
+pipelines/grounding/campaign_state.py   # CLI: generate completed-content grounding doc
+pipelines/grounding/make_tracking.py    # CLI: extract trackable events from a module
+pipelines/rlm/query.py      # CLI: search summaries
+session_doc/vtt_summary.py  # CLI: Zoom .vtt → session summary
+pipelines/grounding/planning.py         # CLI: NPC dossiers + arc scores → planning.md
+pipelines/grounding/party.py            # CLI: character sheets + summaries → party.md
+pipelines/content_ingest/dnd_sheet.py  # CLI: D&D Beyond PDF → markdown (vision API)
+pipelines/workspace/new_workspace.py  # CLI: create a new campaign workspace
+pipelines/session_prep/transform.py  # CLI: NotebookLLM dossiers → prep input
 
 # ── RLM tools ──
-rpg_retriever.py            # Tiered retrieval (drawer / statblock / cost-tagged candidate)
-fivetools_catalog.py        # Mtime-cached name index over canonical 5etools data
-dossier_proposer.py         # Run retrieval → write docs/dossier_proposal.md
-proposal_loader.py          # Render pipelines consume approved proposals
-mempalace_client.py         # Writes via MemPalace MCP
-mcp_server.py               # MCP tools: rpg_search, propose_dossier, suggest_conversion
-convert_book.py             # PDF → 5etools JSON (pdf-translators)
-fivetools_ingest.py         # 5etools JSON → MemPalace drawers
-resolve_refs.py             # Resolve refs.yaml + refs.local.yaml → concrete JSON paths
-launch_5etools_mcp.py       # Per-campaign 5etools MCP server launcher (reads refs.yaml)
+pipelines/rlm/rpg_retriever.py    # Tiered retrieval (drawer / statblock / cost-tagged candidate)
+pipelines/rlm/fivetools_catalog.py # Mtime-cached name index over canonical 5etools data
+pipelines/rlm/dossier_proposer.py # Run retrieval → write docs/dossier_proposal.md
+pipelines/rlm/proposal_loader.py  # Render pipelines consume approved proposals
+pipelines/rlm/mempalace_client.py # Writes via MemPalace MCP
+pipelines/rlm/mcp_server.py       # MCP tools: rpg_search, propose_dossier, suggest_conversion
+pipelines/content_ingest/convert_book.py     # PDF → 5etools JSON (pdf-translators)
+pipelines/content_ingest/fivetools_ingest.py # 5etools JSON → MemPalace drawers
+pipelines/rlm/resolve_refs.py     # Resolve refs.yaml + refs.local.yaml → concrete JSON paths
+pipelines/rlm/launch_5etools_mcp.py # Per-campaign 5etools MCP server launcher (reads refs.yaml)
 
 # ── Config & docs ──
 config/
@@ -76,8 +78,8 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/rlm/rlm_architecture.md` | RLM architecture deep dive — three-pile model, MCP surface, retrieval contract |
 | `docs/rlm/retrieval_architecture.md` | Palace internals — hierarchical descent algorithm, dirty-flag index lifecycle, 100% recall guarantee, failure modes, operational checklist |
 | `docs/cli/session_prep_workflow.md` | End-to-end session-prep walkthrough |
-| `docs/cli/ensemble_extraction.md` | `ensemble.py` how-to: single-file, multi-file `--plan` YAML, key flags, output layout |
-| `docs/cli/ensemble_workflow.md` | End-to-end ensemble workflow: chapters → `ensemble_batch.py` → `facts_to_state.py` → synthesis (API + subscription paths); Phandalin worked example |
+| `docs/cli/ensemble_extraction.md` | `ensemble` how-to: single-file, multi-file `--plan` YAML, key flags, output layout |
+| `docs/cli/ensemble_workflow.md` | End-to-end ensemble workflow: chapters → `ensemble_batch` → `facts_to_state` → synthesis (API + subscription paths); Phandalin worked example |
 | `docs/README.md` | Full doc index — every doc, organised by audience |
 
 ## Critical rules (apply to every task)
@@ -116,18 +118,18 @@ All scripts look for `config.yaml` in the CWD first, then fall back to `config/c
 
 ### Entity registry (single authority for aliases)
 
-`docs/entity_registry.yaml` is the single source of truth for entity identity — canonical spelling, aliases, and the anti-merge guards (`distinct`, `rejected_aliases`). It supersedes the legacy scattered stores (dossier `aliases:` frontmatter, `aliases.json`, `.alias_decisions.json`, module inventories, `.dedup_state.json`). Managed via `registry.py` (`init`/`add`/`alias`/`import-*`/`triage-candidates`/`check`/`project`); loaded via `campaignlib.registry` (`load_registry`, `find_registry`, `resolve_registry_arg`).
+`docs/entity_registry.yaml` is the single source of truth for entity identity — canonical spelling, aliases, and the anti-merge guards (`distinct`, `rejected_aliases`). It supersedes the legacy scattered stores (dossier `aliases:` frontmatter, `aliases.json`, `.alias_decisions.json`, module inventories, `.dedup_state.json`). Managed via `registry` (`init`/`add`/`alias`/`import-*`/`triage-candidates`/`check`/`project`); loaded via `campaignlib.registry` (`load_registry`, `find_registry`, `resolve_registry_arg`).
 
 **Consumers auto-adopt it when present:**
-- `facts_to_state.py` and `synthesise_world_state`/`synthesise_facts`/`synthesise_polish` take `--registry` (an explicit dir/file wins; omit to auto-discover `docs/entity_registry.yaml` from the CWD). It supersedes the deprecated `--aliases`/`--known-names`, and errors if an explicit `--registry` is combined with them. The registry supplies **aliases only** — `--inventory` is separate human-authored module-canon grounding and is never substituted by it.
+- `facts_to_state` and `synthesise_world_state`/`synthesise_facts`/`synthesise_polish` take `--registry` (an explicit dir/file wins; omit to auto-discover `docs/entity_registry.yaml` from the CWD). It supersedes the deprecated `--aliases`/`--known-names`, and errors if an explicit `--registry` is combined with them. The registry supplies **aliases only** — `--inventory` is separate human-authored module-canon grounding and is never substituted by it.
 - The render CLIs (`distill`, `party`, `sd_narrate`, `vtt_summary`, `scene_extract`, `campaign_state`, `planning`) call `load_alias_map(dossier_dir, registry_path=…)`: a resolved registry **replaces** the `docs/npcs/` dossier scan (via `find_alias_registry`, which prints an adoption notice so a partial registry never silently drops hand-curated dossier aliases).
-- `planning.py --build-dossiers` seeds new dossiers' `aliases:` frontmatter from the registry.
+- `planning --build-dossiers` seeds new dossiers' `aliases:` frontmatter from the registry.
 
-**Building one:** there is no `import-source`. Produce a typed module inventory with the `gm-module-inventory` skill (published module → `docs/background/<module>-inventory.md`), then `registry.py import-inventory`. The `import-*` verbs fold the legacy stores in; `check` reports grouping drift + fuzzy near-dups for GM review.
+**Building one:** there is no `import-source`. Produce a typed module inventory with the `gm-module-inventory` skill (published module → `docs/background/<module>-inventory.md`), then `registry import-inventory`. The `import-*` verbs fold the legacy stores in; `check` reports grouping drift + fuzzy near-dups for GM review.
 
 ### Retrieval/render separation (RLM)
 
-Render pipelines (`prep.py`, `sd_narrate.py`, `planning.py`) must **not** consume raw `rpg_retriever` output. They consume a human-approved `docs/dossier_proposal.md` file instead. Retrieval is a scope decision; rendering is a prose decision; the proposal is the human checkpoint between them.
+Render pipelines (`prep`, `sd_narrate`, `planning`) must **not** consume raw `rpg_retriever` output. They consume a human-approved `docs/dossier_proposal.md` file instead. Retrieval is a scope decision; rendering is a prose decision; the proposal is the human checkpoint between them.
 
 A CI test (`tests/test_retrieve_render_isolation.py`) fails if any function body contains both a retrieval call (`retrieve`, `search_hierarchical`, `rpg_search`, …) and a render call (`stream_api`, `call_api`). Don't bypass this — fix the structure.
 
@@ -138,10 +140,10 @@ See `docs/rlm/rlm_pipeline.md` for the proposal workflow and MCP tools.
 Per the global rule in `~/.claude/CLAUDE.md`: scope/ordering/attribution are precision decisions and need a human checkpoint; rendering verified structure into prose is what LLMs do well. When designing new pipelines in this repo, the pattern is **LLM extracts → human reviews → LLM renders inside that structure** — never **LLM extracts → LLM structures → LLM renders**.
 
 Concrete examples already in the codebase:
-- `party.py` outputs candidate arc-score events with quoted triggers, never current values or thresholds
-- `planning.py --build-dossiers` writes per-NPC files for human review before `--synthesize`
+- `party` outputs candidate arc-score events with quoted triggers, never current values or thresholds
+- `planning --build-dossiers` writes per-NPC files for human review before `--synthesize`
 - The 4-stage `session_doc` pipeline (`docs/cli/session_doc_pipeline.md`) inserts a human review after each LLM pass
-- `dossier_proposer.py` writes a proposal file; the GM approves it before render pipelines consume it
+- `dossier_proposer` writes a proposal file; the GM approves it before render pipelines consume it
 
 ## Running tests
 

@@ -2,13 +2,13 @@
 
 **For:** Claude Code, working in `~/src/CampaignGenerator`.
 **Status:** Plan only. No code changes yet.
-**Related:** `CleanedVttConfigResolver.md` (sibling), `/staged-consistency` skill, `scene_extract.py`.
+**Related:** `CleanedVttConfigResolver.md` (sibling), `/staged-consistency` skill, `session_doc/scene_extract.py`.
 
 ---
 
 ## TL;DR — what's broken
 
-`scene_extract.py` produces per-scene files with two sections:
+`session_doc/scene_extract.py` produces per-scene files with two sections:
 
 1. `## Scene summary (from gm-assist, verbatim)` — copied verbatim from the file passed via `--summary` (today: `session-summary.md`).
 2. `## Verbatim moments` — LLM-built from the VTT, with two sub-shapes:
@@ -28,7 +28,7 @@ This is the *fix-propagation drift* mode the `/staged-consistency` skill descrip
 In `/home/kroussos/campaigns/out-of-the-abyss/summaries/20260518/scene_extractions_new/`, produced by:
 
 ```
-scene_extract.py GMT20260519-005755_Recording.transcript.cleaned.vtt \
+scene_extract GMT20260519-005755_Recording.transcript.cleaned.vtt \
   --summary session-summary.md \
   --output-dir scene_extractions_new \
   --party docs/party.md --gm-player Kostadis --batch --force
@@ -53,7 +53,7 @@ Verbatim quote re-injections (defensible, do NOT auto-fix):
 
 ## The narrow fix
 
-`scene_extract.py` already has the canonical names available — they're in the `--summary` file it's literally pasting into section 1 of each output file. The fix is **a prompt-level instruction** to the scene-extract LLM:
+`session_doc/scene_extract.py` already has the canonical names available — they're in the `--summary` file it's literally pasting into section 1 of each output file. The fix is **a prompt-level instruction** to the scene-extract LLM:
 
 > When you write paraphrase bullets under `## Verbatim moments`, prefer the proper nouns and descriptions used in the scene summary block above. Verbatim quotes (lines beginning `> "..."`) must remain unchanged — table speech is sacred. Section headers (`**[...]**`) should also use the scene-summary's canonical names.
 
@@ -68,7 +68,7 @@ This is a one-line behavioral change in the system prompt. No new context to loa
 
 ## What to change
 
-**`/home/kroussos/src/CampaignGenerator/scene_extract.py`** — the system prompt (find the multi-line `SYSTEM` / instructions constant near the top of the file; locate the section that tells the LLM how to format `## Verbatim moments`). Add the following clause:
+**`/home/kroussos/src/CampaignGenerator/session_doc/scene_extract.py`** — the system prompt (find the multi-line `SYSTEM` / instructions constant near the top of the file; locate the section that tells the LLM how to format `## Verbatim moments`). Add the following clause:
 
 > **Canon preference for your own prose.** When you write the short context bullets between header blocks (`- GM describes…`, `- Fembris points out…`) and when you compose section header text (`**[…]**`), use the proper nouns and descriptions exactly as they appear in the `## Scene summary` block above. If the scene summary calls a location "the Immortal Chambers" and the DM in the VTT calls it "the theology library," your bullet and header should say "Immortal Chambers" — the DM's words remain only inside `> "..."` quote blocks. Verbatim quotes are sacred and must be reproduced exactly from the VTT, including in-character fumbles, mispronunciations, and drift terms.
 
@@ -80,7 +80,7 @@ No CLI flag, no config option — the behavior is always-on. If a campaign needs
 
 The scene extractor's fix is one half of the staged-consistency story. The other half: a check that runs on the scene extraction files before narration runs, comparing canonical names in section 1 against the prose in section 2, and flagging any divergence (excluding verbatim `> "..."` lines).
 
-This is the same shape as `check_consistency.py` but with a different system prompt — one that knows about the two-section structure of scene extracts. Tentative name: `check_scene_canon.py`. Wire into `/staged-consistency` as the post-extraction, pre-narration gate.
+This is the same shape as `session_doc/check_consistency.py` but with a different system prompt — one that knows about the two-section structure of scene extracts. Tentative name: `check_scene_canon.py`. Wire into `/staged-consistency` as the post-extraction, pre-narration gate.
 
 Not in scope for this design doc — flagged here so the architectural fit stays visible.
 
@@ -92,7 +92,7 @@ Once the prompt change ships:
 
 1. Re-run the scene extractor against `summaries/20260518/`:
    ```
-   scene_extract.py .../transcript.cleaned.vtt \
+   scene_extract .../transcript.cleaned.vtt \
      --summary session-summary.md \
      --output-dir scene_extractions_new \
      --party docs/party.md --gm-player Kostadis --batch --force
@@ -105,6 +105,6 @@ Once the prompt change ships:
 
 ## Critical files for implementation
 
-- `/home/kroussos/src/CampaignGenerator/scene_extract.py` (system prompt only — find the instruction string that governs `## Verbatim moments` output)
+- `/home/kroussos/src/CampaignGenerator/session_doc/scene_extract.py` (system prompt only — find the instruction string that governs `## Verbatim moments` output)
 
 That's it. One file.

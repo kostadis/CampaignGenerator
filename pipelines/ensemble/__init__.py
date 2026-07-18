@@ -1,0 +1,1 @@
+"""Ensemble workflow CLIs: chapters -> batch extraction -> merge -> per-entity state -> synthesis (ensemble, ensemble_batch, ensemble_extract, ensemble_merge, extract_facts, facts_to_state, synthesise_facts, synthesise_polish, synthesise_world_state, split_chapters, polish)."""

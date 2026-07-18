@@ -15,7 +15,7 @@
 ### Medium priority
 - **Audit `arc_triggers.py` and `assemble.py`** — both flag all three dead-code signals; confirm abandoned or register as entry points
 - **Enable jdocmunch embeddings** — configure an embedding provider for semantic doc search (currently BM25-only)
-- **Kanka CE integration** (`kanka_sync.py`) — pull world_state from Kanka CE, push NPC/location updates post-session (see `/opt/proj/campaign-forge`)
+- **Kanka CE integration** (`kanka_sync` console script, `pipelines/integrations/kanka/kanka_sync.py`) — pull world_state from Kanka CE, push NPC/location updates post-session (see `/opt/proj/campaign-forge`)
 - **Extend `mcp_server.py`** — expose `run_prep`, `run_session_pipeline`, `get_world_state` tools for Claude Desktop orchestration
 
 ### Low priority / future

@@ -21,7 +21,7 @@ docs/campaign_state.md + world_state.md + planning.md + party.md
         │  (optional) RLM retrieval has already produced and you have approved
         │  docs/dossier_proposal.md  — see flow-rlm-retrieval
         ▼
-prep.py  --mode single | pipeline   [--session BEATS.md]   [--require-proposal]
+pipelines/session_prep/prep.py  --mode single | pipeline   [--session BEATS.md]   [--require-proposal]
         │   require_approved_proposal()  ← gate (only when --require-proposal set)
         │   make_client()  → Anthropic | DGX | Claude Code
         │   stream_api / call_api   (voice/ + examples/ injected for style)
@@ -33,7 +33,7 @@ prep beats / encounters / lore   → stdout (SSE to Web UI) + optional <output>.
 `world_state.md`, `planning.md`, `party.md`; per-NPC `voice/`; style `examples/`;
 and — if RLM is in play — an **approved** `docs/dossier_proposal.md`.
 
-**Modes** (`prep.py --mode`): `single` (default — one beat) or `pipeline` (three
+**Modes** (`pipelines/session_prep/prep.py --mode`): `single` (default — one beat) or `pipeline` (three
 sequential calls through the `lore_oracle` / `encounter_architect` /
 `voice_keeper` prompts in `config/agents/`). These are the *only* two modes.
 `--session BEATS.md` is a **separate** input flag, not a third mode: it repeats
@@ -45,17 +45,17 @@ This flow embodies the system's core rule (extract → **human review** →
 render):
 
 1. The grounding docs are themselves products of the grounding-docs refresh
-   (`distill.py`, `campaign_state.py`, `party.py`, `planning.py`), each reviewed
+   (`pipelines/grounding/distill.py`, `pipelines/grounding/campaign_state.py`, `pipelines/grounding/party.py`, `pipelines/grounding/planning.py`), each reviewed
    before it lands.
 2. If RLM retrieval feeds this, running with `--require-proposal` makes
-   `proposal_loader.require_approved_proposal()` hard-stop `prep.py` until you've
+   `proposal_loader.require_approved_proposal()` hard-stop `pipelines/session_prep/prep.py` until you've
    marked `docs/dossier_proposal.md` approved — so a scope decision is never
    inherited unreviewed.
 
 ## Where it runs
 
-CLI directly (`prep.py`), or the Web UI `/prep` router → `subprocess_runner` →
-`prep.py`, streaming output as SSE. Same code either way.
+CLI directly (`pipelines/session_prep/prep.py`), or the Web UI `/prep` router → `subprocess_runner` →
+`pipelines/session_prep/prep.py`, streaming output as SSE. Same code either way.
 
 ## Related
 

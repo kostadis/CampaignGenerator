@@ -44,14 +44,14 @@ The flow is run by these distinct actors. Each step below names which actor is d
 |---|---|---|---|
 | `campaign-prep` | `/campaign-prep` | Loads the 4 grounding docs (campaign_state, world_state, planning, party) so Claude has authoritative context before any prep | Pre-session prep |
 | `vtt-spell-pass` | `/vtt-spell-pass [vtt]` | Glossary replacements on the Zoom/Otter transcript + interactive prompts for unrecognised proper nouns | Transcript cleanup |
-| `gmassist-precheck` | `/gmassist-precheck [session-dir]` | Runs `enhance_summary.py` then `check_consistency.py` on the gm-assist + VTT *before* per-scene extraction, to catch canon problems while the artifact is still cheap | Right after gm-assist |
-| `consistency-check` | `/consistency-check [doc]` | One-shot `check_consistency.py` on any document vs the grounding docs | After any LLM extraction or narration pass |
+| `gmassist-precheck` | `/gmassist-precheck [session-dir]` | Runs `session_doc/enhance_summary.py` then `session_doc/check_consistency.py` on the gm-assist + VTT *before* per-scene extraction, to catch canon problems while the artifact is still cheap | Right after gm-assist |
+| `consistency-check` | `/consistency-check [doc]` | One-shot `session_doc/check_consistency.py` on any document vs the grounding docs | After any LLM extraction or narration pass |
 | `staged-consistency` | `/staged-consistency [session-dir]` | The multi-stage version: a `consistency-check` gated by a human-review/fix cycle at *every* LLM boundary (gm-assist → summary → scenes → narration). Prevents per-scene quotes silently re-injecting errors into the narrator | Across the whole session_doc pipeline |
 | `voice-file` | `/voice-file <char>` | Builds `{character}_voice.md` for `session_doc.py` Pass 5 by deeply reading source material | One-time per character |
 | `voice-examples` | `/voice-examples <names>` | Per-character `examples/<firstname>.md` files (Phase 1 routing). Makes narrators sound distinct instead of regressing to an average voice | One-time per character; refreshed when prose accumulates |
 | `style-examples` | `/style-examples` | Global verbatim-excerpt style pool for narration | One-time per campaign |
 | `voice-critic` | `/voice-critic <narration>` | Post-hoc critique of generated narration — flags generic prose / voice drift / wrong narrator. Never auto-rewrites | After Pass 5 |
-| `dossier-merge` | `/dossier-merge [dir]` | Deduplicates `docs/npcs/*.md` from `planning.py --build-dossiers` (typos, alias-as-filename, garbage filenames) into one canonical file per NPC. Also folds `.new_notes.NNN.md` sidecars back in via batch | Whenever `--build-dossiers` runs |
+| `dossier-merge` | `/dossier-merge [dir]` | Deduplicates `docs/npcs/*.md` from `pipelines/grounding/planning.py --build-dossiers` (typos, alias-as-filename, garbage filenames) into one canonical file per NPC. Also folds `.new_notes.NNN.md` sidecars back in via batch | Whenever `--build-dossiers` runs |
 | `mempalace-campaign` | (setup) | Stand up a per-campaign MemPalace palace over the curated content | One-time per campaign |
 
 ## The flow, end to end
@@ -67,8 +67,8 @@ The goal here is to walk into the session knowing what NPCs are around, what the
 | A1 | Load the 4 grounding docs into a Claude Code session | Skill: `/campaign-prep` | Pulls `campaign_state.md`, `world_state.md`, `planning.md`, `party.md` from CWD's `docs/` |
 | A2 | Optional: ask MemPalace for verbatim recall of past behavior ("is X behaving consistently with how Y was described in session 12?") | MemPalace MCP | Prose-retrieval question, not graph |
 | A3 | Optional: visualise NPC/faction connections | CG-UI → `ConnectionGraph` | Graph question — who is connected to whom |
-| A4 | Optional: brainstorm beats / encounters / NPC drafts | CG-UI → `SessionPrep` or CG-CLI `prep.py` | Single-mode or pipeline-mode with `lore_oracle`/`encounter_architect`/`voice_keeper` |
-| A5 | Optional: regenerate the NPC reference table | CG-UI → `NpcTable` or CG-CLI `npc_table.py` | Print-friendly index |
+| A4 | Optional: brainstorm beats / encounters / NPC drafts | CG-UI → `SessionPrep` or CG-CLI `pipelines/session_prep/prep.py` | Single-mode or pipeline-mode with `lore_oracle`/`encounter_architect`/`voice_keeper` |
+| A5 | Optional: regenerate the NPC reference table | CG-UI → `NpcTable` or CG-CLI `pipelines/grounding/npc_table.py` | Print-friendly index |
 
 **Human checkpoint:** I read whatever was generated, edit/discard, and decide what to bring to the table.
 
@@ -96,7 +96,7 @@ The boundary between session and post-session work. Two artifacts come out of Zo
 
 | # | Step | Actor | Notes |
 |---|---|---|---|
-| D1 | Generate enhanced summary from cleaned gm-assist + cleaned VTT | CG-CLI: `enhance_summary.py` (or via the precheck skill in C4) | `session-summary.md` |
+| D1 | Generate enhanced summary from cleaned gm-assist + cleaned VTT | CG-CLI: `session_doc/enhance_summary.py` (or via the precheck skill in C4) | `session-summary.md` |
 | D2 | Consistency check the enhanced summary | Skill: `/consistency-check session-summary.md` or `/staged-consistency` | Catches contradictions with grounding docs |
 | D3 | Review & edit | Manual | Hard checkpoint — this artifact is the spine of everything downstream |
 
@@ -106,7 +106,7 @@ The first place CG-UI is the centre of gravity.
 
 | # | Step | Actor | Notes |
 |---|---|---|---|
-| E1 | Scene-by-scene quote extraction from the VTT | CG-UI → `SessionDocEditor` (Scene Editor / `QuotePicker`) backed by `quote_ledger.py` | The UI surfaces candidate quotes per scene; I assign / reject |
+| E1 | Scene-by-scene quote extraction from the VTT | CG-UI → `SessionDocEditor` (Scene Editor / `QuotePicker`) backed by `session_doc/quote_ledger.py` | The UI surfaces candidate quotes per scene; I assign / reject |
 | E2 | Review every scene's quote list | Manual | Quotes are the layer that silently re-injects errors into the narrator — this is the highest-leverage review in the flow |
 | E3 | Consistency check at the scene-extraction boundary | Skill: `/consistency-check` or `/staged-consistency` | Specifically catches verbatim transcription errors before they reach narration |
 
@@ -114,7 +114,7 @@ The first place CG-UI is the centre of gravity.
 
 | # | Step | Actor | Notes |
 |---|---|---|---|
-| F1 | Assemble a per-scene document containing the events (from the enhanced summary) + the quotes (from E1) | CG-CLI: `session_doc.py` / `narrative.py` (Pass 1–4) | This is the input the narrator sees |
+| F1 | Assemble a per-scene document containing the events (from the enhanced summary) + the quotes (from E1) | CG-CLI: `session_doc.py` / `session_doc/narrative.py` (Pass 1–4) | This is the input the narrator sees |
 | F2 | Review the assembled per-scene doc | Manual | Last chance to fix scope/attribution before generation |
 
 ### Phase G — Narrate
@@ -137,12 +137,12 @@ This is the loop that makes the next session's prep precise.
 
 | # | Step | Actor | Notes |
 |---|---|---|---|
-| H1 | Distill the new memoir into world-state deltas | CG-CLI: `distill.py` → `world_state.md` | |
-| H2 | Update `campaign_state.md` (completed content) | CG-CLI: `campaign_state.py` | |
-| H3 | Update `party.md` (arc score candidate events, not values) | CG-CLI: `party.py` | LLM surfaces candidates; the GM accepts/rejects |
-| H4 | Build/refresh NPC dossiers from the new memoir | CG-CLI: `planning.py --build-dossiers` → `docs/npcs/*.md` | |
+| H1 | Distill the new memoir into world-state deltas | CG-CLI: `pipelines/grounding/distill.py` → `world_state.md` | |
+| H2 | Update `campaign_state.md` (completed content) | CG-CLI: `pipelines/grounding/campaign_state.py` | |
+| H3 | Update `party.md` (arc score candidate events, not values) | CG-CLI: `pipelines/grounding/party.py` | LLM surfaces candidates; the GM accepts/rejects |
+| H4 | Build/refresh NPC dossiers from the new memoir | CG-CLI: `pipelines/grounding/planning.py --build-dossiers` → `docs/npcs/*.md` | |
 | H5 | Deduplicate the dossier directory | Skill: `/dossier-merge` | Collapses typos / aliases / sidecars into one canonical file per NPC |
-| H6 | Synthesize the planning doc from the deduped dossiers | CG-CLI: `planning.py --synthesize` → `planning.md` | |
+| H6 | Synthesize the planning doc from the deduped dossiers | CG-CLI: `pipelines/grounding/planning.py --synthesize` → `planning.md` | |
 | H7 | (Optional) refresh the MemPalace palace over the curated content | Skill: `mempalace-campaign` or its update path | Keeps verbatim-retrieval fresh |
 
 After H, we're back at A for the next session.
@@ -154,10 +154,10 @@ The places the flow currently leaves the UI and falls back to a skill, CLI, or m
 - **C1 (gm-assist submit)** — fully external, no UI integration; I jump out to a browser.
 - **C2 (verify gm-assist)** — pure manual editing in a markdown editor; no in-UI editor for this artifact.
 - **C3 (VTT spell pass)** — only available as a skill. The UI has no glossary editor and no interactive unknown-proper-noun prompt. This is one of the most-touched per-session steps and it's invisible to the UI.
-- **C4 / D2 / E3 / G9 (consistency checks at boundaries)** — the *script* (`check_consistency.py`) is in the repo, but the **staged pattern** that prevents drift between stages lives only in the `/staged-consistency` skill. The UI runs the script; it doesn't orchestrate the staged human-review gates.
+- **C4 / D2 / E3 / G9 (consistency checks at boundaries)** — the *script* (`session_doc/check_consistency.py`) is in the repo, but the **staged pattern** that prevents drift between stages lives only in the `/staged-consistency` skill. The UI runs the script; it doesn't orchestrate the staged human-review gates.
 - **G1–G3 (voice / examples / style files)** — only available as skills. There is no UI for inspecting or refreshing the voice/example library a campaign depends on.
 - **G7 (voice-critic)** — only available as a skill. Post-narration critique is a flagged-sentences report, not a structured artifact the UI knows about.
-- **H5 (dossier-merge)** — only available as a skill. The UI runs `planning.py --build-dossiers`; the deduplication step that makes the output *usable* is outside the UI.
+- **H5 (dossier-merge)** — only available as a skill. The UI runs `pipelines/grounding/planning.py --build-dossiers`; the deduplication step that makes the output *usable* is outside the UI.
 - **A1 (campaign-prep load)** — a skill exclusively. The UI doesn't have a "drop me into a Claude Code session with these four docs preloaded" affordance.
 - **A2 (MemPalace prose query)** — runs in a Claude Code session via MCP, not in the UI.
 

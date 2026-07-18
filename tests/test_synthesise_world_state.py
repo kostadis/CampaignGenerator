@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-import synthesise_world_state as sws  # noqa: E402
+from pipelines.ensemble import synthesise_world_state as sws  # noqa: E402
 
 
 def _fact(t, subject, fact, quote=""):

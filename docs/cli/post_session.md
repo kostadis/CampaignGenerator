@@ -9,17 +9,17 @@ The recommended path is the **4-stage pipeline**:
 ```
 gm-assist.md (human-authored)
     │
-    ▼  Stage 1 — enhance_summary.py        ◄── Web UI: "Enhance Summary"
+    ▼  Stage 1 — enhance_summary            ◄── Web UI: "Enhance Summary"
 session-summary.md                           ◄── HUMAN REVIEW
     │
-    ▼  Stage 2 — scene_extract.py          ◄── Web UI: "Re-Extract Quotes"
+    ▼  Stage 2 — scene_extract              ◄── Web UI: "Re-Extract Quotes"
 scene_extractions/NN_<slug>.md               ◄── HUMAN REVIEW
     │
-    ▼  Stage 3 — sd_consistency.py + sd_plan.py + sd_narrate.py
+    ▼  Stage 3 — sd_consistency + sd_plan + sd_narrate
                                               ◄── Web UI: "Plan & Check" + per-scene "Narrate"
 narration/session_doc_scene_NN_<slug>.md     ◄── HUMAN REVIEW
     │
-    ▼  Stage 4 — assemble.py               ◄── Web UI: "Assemble Doc"
+    ▼  Stage 4 — assemble                   ◄── Web UI: "Assemble Doc"
 session_doc.md
 ```
 
@@ -53,9 +53,9 @@ when you don't need live streaming.
 
 Open [`session_doc_pipeline.md`](session_doc_pipeline.md). It
 covers every flag, voice files, dialogue handling, the three live
-LLM passes (now split across `sd_consistency.py` / `sd_plan.py` /
-`sd_narrate.py`), and batch mode (`--batch` / `--submit-only` /
-`--collect`) for the upstream `enhance_summary.py` and `scene_extract.py`
+LLM passes (now split across `sd_consistency` / `sd_plan` /
+`sd_narrate`), and batch mode (`--batch` / `--submit-only` /
+`--collect`) for the upstream `enhance_summary` and `scene_extract`
 stages.
 
 Minimal command-line tour:
@@ -64,17 +64,17 @@ Minimal command-line tour:
 SESS=summaries/20260414
 
 # Stage 1
-python enhance_summary.py "$SESS"/*.vtt \
+enhance_summary "$SESS"/*.vtt \
     --gmassist  "$SESS/gm-assist.md" \
     --output    "$SESS/session-summary.md"
 
 # Stage 2
-python scene_extract.py "$SESS"/*.vtt \
+scene_extract "$SESS"/*.vtt \
     --summary    "$SESS/session-summary.md" \
     --output-dir "$SESS/scene_extractions/"
 
 # Stage 3a — narrative plan (assigns one narrator per scene)
-python sd_plan.py \
+sd_plan \
     --scene-extractions "$SESS/scene_extractions/" \
     --characters "Vukradin, Valphine, Soma, Brewbarry" \
     --party docs/party.md \
@@ -83,7 +83,7 @@ python sd_plan.py \
 # REVIEW $SESS/narration/plan.md
 
 # Stage 3b — per-scene narration (one file per scene)
-python sd_narrate.py "$SESS/session-summary.md" \
+sd_narrate "$SESS/session-summary.md" \
     --plan              "$SESS/narration/plan.md" \
     --scene-extractions "$SESS/scene_extractions/" \
     --voice-dir         voice/ \
@@ -91,7 +91,7 @@ python sd_narrate.py "$SESS/session-summary.md" \
     --per-scene-output  "$SESS/narration/"
 
 # Stage 4
-python assemble.py "$SESS/narration/" \
+assemble "$SESS/narration/" \
     --output "$SESS/session_doc.md" \
     --title  "Chapter 37 — A Gem of a Problem"
 ```

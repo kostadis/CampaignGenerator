@@ -16,7 +16,7 @@ from typing import Any
 import pytest
 import yaml
 
-import resolve_refs as rr
+import pipelines.rlm.resolve_refs as rr
 
 
 # ── Fixtures ─────────────────────────────────────────────────────────────

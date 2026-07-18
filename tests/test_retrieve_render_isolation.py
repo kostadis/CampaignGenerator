@@ -52,9 +52,9 @@ RENDER_NAMES = frozenset({"stream_api", "call_api"})
 # explicitly own the MCP surface. The rule applies to higher-level
 # orchestration and script-level code.
 ALLOWED_FILES = {
-    "mempalace_client.py",   # the client exposes both surfaces by design
-    "rpg_retriever.py",      # pure retrieval; we still want the test to run on it
-    "dossier_proposer.py",   # slotting only, never calls render
+    "pipelines/rlm/mempalace_client.py",   # the client exposes both surfaces by design
+    "pipelines/rlm/rpg_retriever.py",      # pure retrieval; we still want the test to run on it
+    "pipelines/rlm/dossier_proposer.py",   # slotting only, never calls render
     "campaignlib/api/client.py",  # defines stream_api / call_api themselves
     "server/subprocess_runner.py",  # transport layer for CLIs
 }
