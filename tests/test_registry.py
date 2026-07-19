@@ -281,3 +281,40 @@ def test_known_names(tmp_path):
 
     # extra= adds out-of-band known names (e.g. PC names from party.yaml).
     assert norm_subject("Sirac") in known
+
+
+def test_event_type_skips_first_token_derivation(tmp_path):
+    """``event``-type entities store a descriptive phrase, not a proper name,
+    so their first token must NOT be registered as a short-form known name /
+    alias (OOTA's "spores of Zuggtmoy" wrongly promoted the bare "spores").
+    Non-event multi-word entities keep their first-token short form."""
+    from campaignlib.textproc import norm_subject
+
+    yaml_text = """
+version: 1
+campaign: test
+entities:
+  - name: spores of Zuggtmoy
+    type: event
+  - name: Sporehold Cavern
+    type: location
+  - name: Adabra Gwynn
+    type: npc
+"""
+    reg = load_registry(_write(tmp_path, yaml_text))
+    known = reg.known_names()
+    flat = reg.alias_to_canonical()
+
+    # Event first token "spores" is NOT derived into either projection.
+    assert norm_subject("spores") not in known
+    assert "spores" not in flat
+
+    # But the whole event phrase is still a known name.
+    assert norm_subject("spores of Zuggtmoy") in known
+
+    # Regression guard: non-event multi-word entities still get their
+    # first-token short form (so the exclusion isn't over-broadened).
+    assert norm_subject("Sporehold") in known
+    assert flat["Sporehold"] == "Sporehold Cavern"
+    assert norm_subject("Adabra") in known
+    assert flat["Adabra"] == "Adabra Gwynn"

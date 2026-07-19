@@ -111,6 +111,12 @@ class Registry:
         explicit_norms = {norm_subject(k) for k in flat}
         first_token: dict[str, tuple[str, str | None]] = {}  # norm -> (word, canonical|None)
         for e in self.entities:
+            # ``event``-type entities store a descriptive phrase, not a proper
+            # name ("spores of Zuggtmoy"), so their first token is not a
+            # short-form alias. Skip first-token derivation for them (must stay
+            # in sync with known_names() below).
+            if e.type == "event":
+                continue
             for s in [e.name, *e.aliases]:
                 parts = s.split()
                 if len(parts) <= 1 or len(parts[0]) < 4:
@@ -149,12 +155,17 @@ class Registry:
         """
         known: set[str] = set()
         for e in self.entities:
+            # ``event``-type entities store a descriptive phrase, not a proper
+            # name, so their first token is not a short-form known name. Still
+            # register the whole phrase; only skip first-token derivation (must
+            # stay in sync with alias_to_canonical() above).
+            derive_first_token = e.type != "event"
             for s in [e.name, *e.aliases]:
                 key = norm_subject(s)
                 if key:
                     known.add(key)
                 parts = s.split()
-                if len(parts) > 1 and len(parts[0]) >= 4:
+                if derive_first_token and len(parts) > 1 and len(parts[0]) >= 4:
                     known.add(norm_subject(parts[0]))
         for x in extra:
             known.add(norm_subject(x))

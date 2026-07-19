@@ -92,6 +92,39 @@ def test_select_does_not_waive_min_facts_for_excluded_names():
     assert selected == []
 
 
+def test_known_only_exempts_occurrence_scoped_types():
+    """--known-only strips anonymous npc/faction bundles (generic mob noise),
+    but object- and monster-typed bundles are occurrence-scoped: every distinct
+    encounter is tracked, so an anonymous (known=False) object or monster bundle
+    must survive the filter. Sibling to
+    test_select_does_not_waive_min_facts_for_excluded_names."""
+    def _anon(type_, key):
+        b = _bundle(type_, key, [(1, _fact(type_, key, f"f{i}"), key) for i in range(3)])
+        b.known = False
+        return b
+
+    bundles = {
+        "object\x00spores\x00cave": _anon("object", "spores"),
+        "monster\x00gray_ooze\x00sewer": _anon("monster", "gray ooze"),
+        "npc\x00bandit\x00road": _anon("npc", "bandit"),
+        "faction\x00cult\x00keep": _anon("faction", "cult"),
+    }
+    selected = fts.select(bundles, min_facts=3, only=None, top=None, known_only=True)
+    types = {b.type for b in selected}
+    assert types == {"object", "monster"}          # object/monster survive; npc/faction stripped
+
+
+def test_known_only_exemption_still_respects_min_facts():
+    """The occurrence-scoped exemption bypasses the known/anonymous filter only,
+    not the --min-facts floor: an anonymous object bundle below the floor is
+    still dropped."""
+    b = _bundle("object", "spores", [(1, _fact("object", "Spores", "f0"), "Spores")])
+    b.known = False
+    selected = fts.select({"object\x00spores\x00cave": b},
+                          min_facts=3, only=None, top=None, known_only=True)
+    assert selected == []
+
+
 def test_render_bundles_groups_and_chapter_tags():
     b = _bundle("thread", "themystery", [
         (4, _fact("thread", "the mystery", "clue A", "quote A"), "the mystery"),
@@ -194,6 +227,56 @@ def test_registry_aliases_and_known_names_agree_no_fragmentation(tmp_path):
     assert getattr(b, "known") is True
     assert b.display == "The Black Network"
     assert len(b.facts) == 2
+
+
+def test_spores_object_fragments_per_location_and_survives_known_only(tmp_path):
+    """Regression for the object/subject-collision bug shape.
+
+    Two `object` facts share the literal subject "Spores" but occur in
+    different chapters with different dominant locations. A registry holds an
+    unrelated `event`-typed entity "spores of Zuggtmoy" — mirroring the real
+    collision. The event's first token ("spores") must NOT be derived into
+    known_names/aliases (registry.py excludes type=="event" from first-token
+    derivation), so "Spores" stays anonymous and fragments into one
+    location-scoped object bundle per chapter. Both object bundles must then
+    survive select(known_only=True), because object is occurrence-scoped."""
+    (tmp_path / "gen-ch01").mkdir()
+    (tmp_path / "gen-ch02").mkdir()
+    (tmp_path / "gen-ch01" / "merged.json").write_text(json.dumps([
+        _fact("object", "Spores", "a cluster of spores clung to the wall"),
+        _fact("location", "Neverlight Grove", "the myconid colony"),
+    ]), encoding="utf-8")
+    (tmp_path / "gen-ch02" / "merged.json").write_text(json.dumps([
+        _fact("object", "Spores", "spores drifted through the tunnel"),
+        _fact("location", "Araumycos", "the vast fungal expanse"),
+    ]), encoding="utf-8")
+    paths = list(tmp_path.glob("gen-ch*/merged.json"))
+
+    registry_path = tmp_path / "entity_registry.yaml"
+    registry_path.write_text(
+        "version: 1\n"
+        "entities:\n"
+        "  - name: spores of Zuggtmoy\n"
+        "    type: event\n",
+        encoding="utf-8",
+    )
+    reg = load_registry(registry_path)
+
+    bundles = fts.load_bundles(
+        paths, reg.alias_to_canonical(), types=["object", "location"],
+        known_names=reg.known_names(),
+    )
+    object_bundles = [b for b in bundles.values() if b.type == "object"]
+    assert len(object_bundles) == 2                     # two separate location-scoped bundles
+    assert all(getattr(b, "known") is False for b in object_bundles)
+    # distinct location-scoped keys, not one merged bundle
+    assert len({k for k, b in bundles.items() if b.type == "object"}) == 2
+
+    # min_facts=1 so the 1-fact-per-location bundles aren't dropped by the floor;
+    # the point of this assertion is the known_only exemption, not the floor.
+    selected = fts.select(bundles, min_facts=1, only=None, top=None, known_only=True)
+    selected_objects = [b for b in selected if b.type == "object"]
+    assert len(selected_objects) == 2                   # both survive --known-only
 
 
 def test_main_rejects_explicit_registry_combined_with_legacy_aliases(tmp_path, monkeypatch):
