@@ -46,8 +46,11 @@ _campaign_dir_str = (
 )
 campaign_dir = Path(_campaign_dir_str).expanduser().resolve()
 
-# Load config
+# Load config: flat campaign_dir/config.yaml (legacy layout) → migrated
+# campaign_dir/config/config.yaml → packaged default as a last resort.
 _config_path = campaign_dir / "config.yaml"
+if not _config_path.exists():
+    _config_path = campaign_dir / "config" / "config.yaml"
 if not _config_path.exists():
     _config_path = REPO_ROOT / "config" / "config.yaml"
 
