@@ -67,6 +67,14 @@ AGGREGATE_SYSTEM = load_agent_prompt("state_aggregate")
 # separate track, not per-entity.
 STATEFUL_TYPES = ["npc", "faction", "location", "object", "monster"]
 
+# Types tracked per-occurrence rather than as one campaign-wide "current
+# state." An object ("Spores") or a generic creature ("gray ooze") recurs
+# across many separate encounters that each deserve their own bundle; unlike an
+# npc/faction/location, there's no single current-state to collapse them into.
+# These bypass the --known-only filter so every distinct anonymous
+# (location-scoped) encounter still gets aggregated (subject to --min-facts).
+OCCURRENCE_SCOPED_TYPES = {"object", "monster"}
+
 _INT_RE = re.compile(r"\d+")
 
 
@@ -383,7 +391,8 @@ def select(bundles: dict[str, Bundle], min_facts: int, only: str | None,
 
     items = [b for b in bundles.values() if meets_floor(b)]
     if known_only:
-        items = [b for b in items if getattr(b, "known", True)]
+        items = [b for b in items if b.type in OCCURRENCE_SCOPED_TYPES
+                 or getattr(b, "known", True)]
     if only is not None:
         target = _norm_subject(only)
         items = [b for b in items if b.key == target or b.key.startswith(target + "\x00")]
@@ -492,7 +501,11 @@ def build_parser() -> argparse.ArgumentParser:
                    help="With --known-names: synthesize dossiers only for known "
                         "(named) entities; print anonymous bundles in --list but "
                         "skip them for LLM aggregation. They remain available for "
-                        "a later dedup pass.")
+                        "a later dedup pass. Exception: object- and monster-typed "
+                        "bundles are occurrence-scoped (see OCCURRENCE_SCOPED_TYPES) "
+                        "and always aggregated regardless of known/anonymous status, "
+                        "since every distinct object/creature encounter is tracked "
+                        "separately rather than collapsed into one current-state.")
     p.add_argument("--only", metavar="NAME", default=None,
                    help="Aggregate only the entity whose normalised name matches NAME (prototype).")
     p.add_argument("--top", type=int, default=None, metavar="N",

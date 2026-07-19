@@ -384,6 +384,8 @@ The alias file lives at `docs/ensemble/aliases.json` in the Phandalin workspace.
 
 **What alias review does fix** — name variants where the same entity was extracted under two different surface forms (e.g. "Adabra" vs. "Adabra Gwynn", "Don-Jon" vs. "Don-Jon Raskin"). After adding the alias and re-running Stage 2b (resumable), delete the orphaned short-form dossier file by hand — the pipeline will not remove it automatically.
 
+**Distinct failure mode — different entities colliding on one `(type, subject)` key.** The case above is the *same* entity split across *different* types (`npc_glabbagool` + `monster_glabbagool`); the fix is to merge. The opposite symptom is *different* entities that collapse into *one* dossier because they normalise to the same `(type, subject)` string — e.g. two unrelated things each extracted as `object_spores`, wrongly aggregated into a single `object_spores.md`. That is a registry/normalisation defect (a first-token collision), not a type-duplicate, and merging is exactly the wrong response — the entities need to be kept apart, not joined. If a single dossier reads as two unrelated subjects fused together, you are looking at this failure mode, not the type-duplicate one above.
+
 ---
 
 ## Stage 2 — Fact bundling
@@ -443,6 +445,8 @@ Sources can be:
 ### 2c. Aggregation — known entities only
 
 Run aggregation with `--known-only` to skip anonymous location-scoped bundles. They appear in `--list` tagged `[location]` and can be addressed in a later dedup pass if needed.
+
+**`object` and `monster` bundles are exempt from the `--known-only` skip** — they are always aggregated when selected (still subject to `--min-facts`), even when location-scoped. Per-occurrence tracking is the intended behavior for those types: ten different `object` dossiers named "spores" from ten chapters is correct — each is a distinct time the party interacted with spores, not noise to collapse. For `npc`/`faction`/`location`, an anonymous location-scoped bundle really does mean skippable noise (`Orc (Phandalin)`), so those still honor `--known-only`.
 
 ```bash
 facts_to_state \
