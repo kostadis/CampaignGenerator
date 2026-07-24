@@ -8,6 +8,7 @@ general-purpose CampaignConfigService.
 from fastapi import HTTPException
 from pathlib import Path
 from typing import List
+import yaml
 from .planning_config_shared import PlanningConfig, PlanningEntry, load_planning_config, save_planning_config
 
 
@@ -22,6 +23,15 @@ class PlanningConfigService:
     def _load(self) -> PlanningConfig:
         """Load planning configuration, returning empty config if file doesn't exist."""
         if not self.planning_path.exists():
+            return PlanningConfig(npcs=[], factions=[])
+        try:
+            raw = yaml.safe_load(self.planning_path.read_text(encoding="utf-8")) or {}
+        except yaml.YAMLError as e:
+            raise HTTPException(status_code=400, detail=f"Failed to load planning config: {e}")
+        # An empty planning.yaml (e.g. after the last NPC/faction was deleted)
+        # is a valid empty config for the API, even though the CLI loader treats
+        # it as a hard error. Return empty rather than 400 on a subsequent read.
+        if not raw.get("npcs") and not raw.get("factions"):
             return PlanningConfig(npcs=[], factions=[])
         try:
             return load_planning_config(self.planning_path)

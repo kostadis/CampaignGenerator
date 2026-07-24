@@ -9,7 +9,10 @@ from typing import List
 from ..planning_config_service import PlanningConfigService, PlanningEntry
 from ..config import get_campaign_dir_from_request
 
-router = APIRouter(prefix="/api/planning", tags=["planning"])
+# NOTE: the "/api/planning" prefix is supplied by main.py's include_router,
+# matching every sibling router. Do not also set prefix= here or the routes
+# get mounted at /api/planning/api/planning/* (a 404 for all callers).
+router = APIRouter(tags=["planning"])
 
 
 def get_planning_service(request: Request) -> PlanningConfigService:

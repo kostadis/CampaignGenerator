@@ -41,7 +41,8 @@ flowchart LR
 | `PUT /api/config/runtime` | `put_config_runtime` → `update_runtime` | writes `ui_state.yaml` `runtime` |
 | `PUT /api/config/local` | `put_config_local` → `update_local` | writes `.campaigngenerator.local.yaml` |
 | `GET campaign-paths / session-paths / path-status` | `derive_*` + `path_exists` | read-only derivations |
-| `GET/PUT party-yaml, planning-yaml` | config_routes | read/write campaign YAML docs (see subsystems doc) |
+| `GET/PUT party-yaml` | config_routes | read/write `party.yaml` (see subsystems doc) |
+| `GET/POST/PUT/DELETE /api/planning/{npcs,factions}[/{name}]` | planning_routes | isolated `planning.yaml` CRUD (see planning-isolation doc) |
 | `GET models / status` | `get_models` / `get_status` | read-only |
 
 ## Invariants enforced in code
