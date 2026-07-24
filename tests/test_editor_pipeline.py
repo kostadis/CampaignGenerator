@@ -13,6 +13,36 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from server.routers import scene_editor  # noqa: E402
+from server.session_editor_config_service import ResolvedEditorConfig  # noqa: E402
+from server.session_editor_config_shared import (  # noqa: E402
+    Backends,
+    EditorPaths,
+    NarrateKnobs,
+    Roster,
+    ScrubKnobs,
+)
+
+
+def _cfg(*, vtt: str | None = None, work_dir: str = "", **path_overrides) -> ResolvedEditorConfig:
+    """Build a ResolvedEditorConfig directly (no service/platform needed) for
+    exercising the CONFIG-free helpers/command-builders — Phase 2 of
+    docs/config/session-editor-isolation.md. `path_overrides` are EditorPaths
+    fields (session_recap, session_summary, scene_extractions_dir, ...)."""
+    return ResolvedEditorConfig(
+        paths=EditorPaths(**path_overrides),
+        narrate=NarrateKnobs(),
+        scrub=ScrubKnobs(),
+        roster=Roster(),
+        backends=Backends(),
+        session_name=None,
+        profiles=[],
+        active_profile=None,
+        model=None,
+        work_dir=work_dir,
+        campaign_dir="",
+        config_dir="config",
+        vtt=vtt,
+    )
 
 
 def _seed_session_dir(tmp_path: Path, *, with_summary=True, with_sx=True, with_narration=True):
@@ -58,13 +88,8 @@ def _seed_session_dir(tmp_path: Path, *, with_summary=True, with_sx=True, with_n
 
 def test_load_scenes_new_flow(tmp_path, monkeypatch):
     sd, gm, sx, nd = _seed_session_dir(tmp_path)
-    scene_editor.CONFIG.clear()
-    scene_editor.CONFIG.update({
-        "session": str(gm),
-        "scene_extractions_dir": str(sx),
-        "narration_dir": str(nd),
-    })
-    scenes = scene_editor._load_scenes()
+    cfg = _cfg(session_recap=str(gm), scene_extractions_dir=str(sx), narration_dir=str(nd))
+    scenes = scene_editor._load_scenes(cfg)
     assert len(scenes) == 2
     assert scenes[0]["scene"] == "Scene One"
     assert scenes[0]["has_extraction"] is True
@@ -78,13 +103,8 @@ def test_load_scenes_falls_back_to_extractions_when_plan_missing(tmp_path):
     sd, gm, sx, _nd = _seed_session_dir(tmp_path, with_narration=False)
     nd = sd / "narration"
     nd.mkdir()  # empty — no plan.md
-    scene_editor.CONFIG.clear()
-    scene_editor.CONFIG.update({
-        "session": str(gm),
-        "scene_extractions_dir": str(sx),
-        "narration_dir": str(nd),
-    })
-    scenes = scene_editor._load_scenes()
+    cfg = _cfg(session_recap=str(gm), scene_extractions_dir=str(sx), narration_dir=str(nd))
+    scenes = scene_editor._load_scenes(cfg)
     assert len(scenes) == 2
     assert scenes[0]["scene"] == "Scene One"
     assert scenes[0]["narrator"] == ""  # not assigned yet
@@ -94,20 +114,19 @@ def test_load_scenes_falls_back_to_extractions_when_plan_missing(tmp_path):
 
 def test_narration_file_for_scene_globs_correctly(tmp_path):
     sd, gm, sx, nd = _seed_session_dir(tmp_path)
-    scene_editor.CONFIG.clear()
-    scene_editor.CONFIG.update({"narration_dir": str(nd)})
-    p = scene_editor._narration_file_for_scene(1)
+    cfg = _cfg(narration_dir=str(nd))
+    p = scene_editor._narration_file_for_scene(cfg, 1)
     assert p is not None
     assert p.name == "session_doc_scene_01_scene_one.md"
-    assert scene_editor._narration_file_for_scene(2) is None
+    assert scene_editor._narration_file_for_scene(cfg, 2) is None
 
 
 # ── Command builders ─────────────────────────────────────────────────────────
 
 
 def test_build_enhance_cmd_returns_error_when_misconfigured(tmp_path):
-    scene_editor.CONFIG.clear()
-    result = scene_editor._build_enhance_cmd()
+    cfg = _cfg()
+    result = scene_editor._build_enhance_cmd(cfg)
     assert isinstance(result, tuple) and result[0] is None
 
 
@@ -116,10 +135,12 @@ def test_build_enhance_cmd_resolves_paths(tmp_path):
     vtt = sd / "session.vtt"
     vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
 
-    scene_editor.CONFIG.clear()
-    scene_editor.CONFIG.update({"session": str(gm), "vtt": str(vtt),
-                                "session_summary": str(sd / "session-summary.md")})
-    cmd = scene_editor._build_enhance_cmd()
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        vtt=str(vtt),
+    )
+    cmd = scene_editor._build_enhance_cmd(cfg)
     assert isinstance(cmd, list)
     # enhance_summary.py moved into session_doc/ and now runs as the bare
     # `enhance_summary` console script (server.subprocess_runner.console_script()),
@@ -133,14 +154,13 @@ def test_build_enhance_cmd_resolves_paths(tmp_path):
 
 def test_build_narrate_cmd_uses_new_flags(tmp_path):
     sd, gm, sx, nd = _seed_session_dir(tmp_path)
-    scene_editor.CONFIG.clear()
-    scene_editor.CONFIG.update({
-        "session": str(gm),
-        "session_summary": str(sd / "session-summary.md"),
-        "scene_extractions_dir": str(sx),
-        "narration_dir": str(nd),
-    })
-    result = scene_editor._build_narrate_cmd(1)
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+    )
+    result = scene_editor._build_narrate_cmd(cfg, 1)
     assert isinstance(result, list)
     assert "--scene-extractions" in result
     assert "--per-scene-output" in result

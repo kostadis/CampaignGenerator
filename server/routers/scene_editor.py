@@ -24,10 +24,15 @@ from pathlib import Path
 
 from campaignlib import wiring_get
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from server.backend_forwarding import backend_cli_args
+from server.config_models import ProfileEntry
+from server.session_editor_config_service import (
+    ResolvedEditorConfig,
+    SessionEditorConfigService,
+)
 from server.subprocess_runner import (
     console_script,
     sse_error_stream,
@@ -47,103 +52,159 @@ def _sse_error(message: str):
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
 
-# ── Module-level state ──────────────────────────────────────────────────────
-# CONFIG is a derived view of the unified config service's resolved
-# session_doc state, refreshed before every editor request via the
-# _refresh_config_from_service router dependency.
+# ── Config dependencies ─────────────────────────────────────────────────────
+# Every route reads its config through a request-scoped ResolvedEditorConfig
+# (server/session_editor_config_service.py) injected via Depends — no
+# process-global mutable state. See docs/config/session-editor-isolation.md.
 
-CONFIG: dict = {}
 SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent  # CampaignGenerator/
 
-# Typed-field name → legacy CONFIG-dict-key. Used by _refresh and PUT to keep
-# the two namespaces in sync.
-_TYPED_TO_CONFIG_KEY: dict[str, str] = {
-    "roleplay_dir": "roleplay_extract_dir",
-    "summary_dir": "summary_extract_dir",
-    "examples_dir": "examples",
-}
-_CONFIG_TO_TYPED_KEY: dict[str, str] = {v: k for k, v in _TYPED_TO_CONFIG_KEY.items()}
 
+def get_editor_service(request: Request) -> SessionEditorConfigService:
+    """Build the session-editor config service for this request.
 
-def _refresh_config_from_service(request: Request) -> None:
-    """Sync CONFIG from the unified service before each request.
-
-    The service is the single source of truth; CONFIG is a back-compat
-    materialization so the existing helpers (and legacy scripts) keep reading
-    from a flat dict.
+    Mirrors ``config_routes._require_service``: 503 when the platform
+    config service hasn't been initialized (campaign_dir not resolved at
+    boot) rather than silently falling back to a default.
     """
-    service = getattr(request.app.state, "config_service", None)
-    if service is None:
-        return
-    resolved = service.resolved()
-    sd = resolved["ui"]["session_doc"]
-    for typed_key, value in sd.items():
-        if value is None:
-            continue
-        config_key = _TYPED_TO_CONFIG_KEY.get(typed_key, typed_key)
-        CONFIG[config_key] = value
-    # The global model lives in runtime.default_model (set by the sidebar model
-    # picker), not under ui.session_doc. Surface it as CONFIG["model"] so the
-    # command builders can forward it as --model to each pipeline script.
-    # Without this, every stage falls back to each script's hardcoded default.
-    default_model = resolved.get("runtime", {}).get("default_model")
-    if default_model:
-        CONFIG["model"] = default_model
-    if "work_dir" not in CONFIG:
-        CONFIG["work_dir"] = str(service.campaign_dir)
-    # Forward the campaign root + config subdir so subprocesses (e.g.
-    # scrub_mechanics) can find per-service overrides under
-    # <campaign>/<config_dir>/. The subprocess cwd is the launch dir, not the
-    # campaign, so resolution must key off campaign_dir explicitly.
-    CONFIG["campaign_dir"] = str(service.campaign_dir)
-    CONFIG["config_dir"] = service.config_dir
+    platform = getattr(request.app.state, "config_service", None)
+    if platform is None:
+        raise HTTPException(
+            status_code=503,
+            detail="config service not initialized — campaign_dir not resolved at boot",
+        )
+    return SessionEditorConfigService(platform)
 
 
-router = APIRouter(dependencies=[Depends(_refresh_config_from_service)])
+def get_editor_config(
+    service: SessionEditorConfigService = Depends(get_editor_service),
+) -> ResolvedEditorConfig:
+    """Request-scoped, read-only resolved editor config."""
+    return service.resolved_editor_config()
 
 
-def init_editor_config(config: dict) -> None:
-    """Seed CONFIG from main.py startup."""
-    CONFIG.update(config)
+router = APIRouter()
 
 
-
-def _config_to_typed_payload(payload: dict) -> dict:
-    """Translate a CONFIG-shaped PUT body into typed ui.session_doc keys."""
-    out: dict = {}
-    for k, v in payload.items():
-        typed_key = _CONFIG_TO_TYPED_KEY.get(k, k)
-        out[typed_key] = v
-    return out
+def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
+    """Wire shape for a resolved editor config — the single source of truth
+    for both ``GET /api/editor/config`` and the profile-activate response,
+    so the two never drift apart."""
+    return {
+        "paths": cfg.paths.model_dump(),
+        "narrate": cfg.narrate.model_dump(),
+        "scrub": cfg.scrub.model_dump(),
+        "roster": cfg.roster.model_dump(),
+        "backends": cfg.backends.model_dump(by_alias=True),
+        "session_name": cfg.session_name,
+        "profiles": [p.model_dump() for p in cfg.profiles],
+        "active_profile": cfg.active_profile,
+        "model": cfg.model,
+        "work_dir": cfg.work_dir,
+        "campaign_dir": cfg.campaign_dir,
+        "config_dir": cfg.config_dir,
+        "vtt": cfg.vtt,
+        "session_dir": cfg.session_dir,
+    }
 
 
 @router.get("/config")
-def api_get_config():
-    """Return the current editor CONFIG."""
-    return dict(CONFIG)
+def api_get_config(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    """Return the resolved editor config, grouped."""
+    return _serialize_resolved(cfg)
 
 
 @router.put("/config")
-async def api_put_config(request: Request):
-    """Update the editor CONFIG at runtime (from the frontend).
+async def api_put_config(
+    request: Request,
+    service: SessionEditorConfigService = Depends(get_editor_service),
+):
+    """Update the editor config at runtime (from the frontend).
 
-    Writes flow through the unified service when available so the typed
-    ``ui.session_doc`` section stays canonical and survives restarts.
-    The local CONFIG dict is still updated so module-level helpers see
-    the change immediately within this request lifetime.
+    The single editor-config write door: the body is a grouped
+    ``SessionEditorConfig`` partial (any nested subset of ``paths`` /
+    ``narrate`` / ``scrub`` / ``roster`` / ``backends`` / ``session_name`` /
+    ``profiles`` / ``active_profile``), merged into the stored config by
+    ``SessionEditorConfigService.update_config``.
     """
     data = await request.json()
-    CONFIG.update(data)
-    service = getattr(request.app.state, "config_service", None)
-    if service is not None:
-        try:
-            service.update_section("session_doc", _config_to_typed_payload(data))
-        except Exception as exc:
-            return JSONResponse(
-                {"ok": False, "error": str(exc)},
-                status_code=400,
-            )
+    try:
+        service.update_config(data)
+    except HTTPException as exc:
+        return JSONResponse(
+            {"ok": False, "error": str(exc.detail)},
+            status_code=exc.status_code,
+        )
+    except Exception as exc:
+        return JSONResponse(
+            {"ok": False, "error": str(exc)},
+            status_code=400,
+        )
     return {"ok": True}
+
+
+# ── Profile endpoints (the one sub-collection) ──────────────────────────────
+# Server-side profile activation (O2, locked decision): activating mirrors
+# the profile's narrate/backend knobs into the stored config on the server
+# (SessionEditorConfigService.activate_profile) and returns the re-resolved
+# editor config — the same shape GET /api/editor/config returns.
+
+
+@router.get("/profiles", response_model=list[ProfileEntry])
+def api_list_profiles(
+    service: SessionEditorConfigService = Depends(get_editor_service),
+):
+    """List all saved Narrate-knob presets."""
+    return service.list_profiles()
+
+
+@router.post(
+    "/profiles", response_model=ProfileEntry, status_code=status.HTTP_201_CREATED
+)
+def api_create_profile(
+    entry: ProfileEntry,
+    service: SessionEditorConfigService = Depends(get_editor_service),
+):
+    """Create a new profile. 409 if a profile with this name already exists."""
+    return service.create_profile(entry)
+
+
+@router.get("/profiles/{name}", response_model=ProfileEntry)
+def api_get_profile(
+    name: str, service: SessionEditorConfigService = Depends(get_editor_service)
+):
+    """Get a single profile by name. 404 if missing."""
+    return service.get_profile(name)
+
+
+@router.put("/profiles/{name}", response_model=ProfileEntry)
+def api_update_profile(
+    name: str,
+    entry: ProfileEntry,
+    service: SessionEditorConfigService = Depends(get_editor_service),
+):
+    """Replace an existing profile. 400 on URL/body name mismatch, 404 if missing."""
+    return service.update_profile(name, entry)
+
+
+@router.delete("/profiles/{name}", status_code=status.HTTP_204_NO_CONTENT)
+def api_delete_profile(
+    name: str, service: SessionEditorConfigService = Depends(get_editor_service)
+):
+    """Delete a profile by name. 404 if missing."""
+    service.delete_profile(name)
+    return None
+
+
+@router.post("/profiles/{name}/activate")
+def api_activate_profile(
+    name: str, service: SessionEditorConfigService = Depends(get_editor_service)
+):
+    """Mirror a profile's knobs into the stored config (server-side, O2) and
+    return the re-resolved editor config — same JSON shape as
+    ``GET /api/editor/config``. 404 if the profile doesn't exist."""
+    service.activate_profile(name)
+    return _serialize_resolved(service.resolved_editor_config())
 
 
 # ── Path helpers ────────────────────────────────────────────────────────────
@@ -153,30 +214,42 @@ def _slugify(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", s.lower()).strip("_")
 
 
-def _session_dir() -> Path | None:
-    """Directory holding the session's gm-assist + VTT + outputs."""
-    if CONFIG.get("session"):
-        return Path(CONFIG["session"]).expanduser().parent
-    if CONFIG.get("work_dir"):
-        return Path(CONFIG["work_dir"]).expanduser()
+def _session_dir(cfg: ResolvedEditorConfig) -> Path | None:
+    """Directory holding the session's gm-assist + VTT + outputs.
+
+    Prefers the parent of the saved gm-assist recap (``session_recap``) —
+    that's the directory the editor is actually working in. Falls back to
+    the platform's resolved ``runtime.session_dir`` (populated at boot via
+    ``--session-dir`` even before a recap has been saved), and only then to
+    ``work_dir`` (the campaign root) as a last resort — previously this
+    skipped straight from ``session_recap`` to ``work_dir``, so VTT/summary
+    auto-detection scanned the campaign root instead of the session dir
+    whenever no recap had been saved yet.
+    """
+    if cfg.paths.session_recap:
+        return Path(cfg.paths.session_recap).expanduser().parent
+    if cfg.session_dir:
+        return Path(cfg.session_dir).expanduser()
+    if cfg.work_dir:
+        return Path(cfg.work_dir).expanduser()
     return None
 
 
-def _session_summary_path() -> Path | None:
+def _session_summary_path(cfg: ResolvedEditorConfig) -> Path | None:
     """Path to the Stage-1 enriched summary."""
-    if CONFIG.get("session_summary"):
-        return Path(CONFIG["session_summary"]).expanduser()
-    sd = _session_dir()
+    if cfg.paths.session_summary:
+        return Path(cfg.paths.session_summary).expanduser()
+    sd = _session_dir(cfg)
     if sd:
         return sd / "session-summary.md"
     return None
 
 
-def _vtt_path() -> Path | None:
-    """Path to the raw .vtt — explicit CONFIG['vtt'] or first *.vtt in session dir."""
-    if CONFIG.get("vtt"):
-        return Path(CONFIG["vtt"]).expanduser()
-    sd = _session_dir()
+def _vtt_path(cfg: ResolvedEditorConfig) -> Path | None:
+    """Path to the raw .vtt — explicit cfg.vtt or first *.vtt in session dir."""
+    if cfg.vtt:
+        return Path(cfg.vtt).expanduser()
+    sd = _session_dir(cfg)
     if sd and sd.is_dir():
         vtts = sorted(sd.glob("*.vtt"))
         if vtts:
@@ -184,23 +257,23 @@ def _vtt_path() -> Path | None:
     return None
 
 
-def _scene_extractions_dir() -> Path | None:
+def _scene_extractions_dir(cfg: ResolvedEditorConfig) -> Path | None:
     """Stage 2 output dir."""
-    if CONFIG.get("scene_extractions_dir"):
-        return Path(CONFIG["scene_extractions_dir"]).expanduser()
+    if cfg.paths.scene_extractions_dir:
+        return Path(cfg.paths.scene_extractions_dir).expanduser()
     return None
 
 
-def _narration_dir() -> Path | None:
+def _narration_dir(cfg: ResolvedEditorConfig) -> Path | None:
     """Stage 3 output dir."""
-    if CONFIG.get("narration_dir"):
-        return Path(CONFIG["narration_dir"]).expanduser()
+    if cfg.paths.narration_dir:
+        return Path(cfg.paths.narration_dir).expanduser()
     return None
 
 
-def _narration_file_for_scene(n: int) -> Path | None:
+def _narration_file_for_scene(cfg: ResolvedEditorConfig, n: int) -> Path | None:
     """Glob the new-flow per-scene narration file for scene n."""
-    nd = _narration_dir()
+    nd = _narration_dir(cfg)
     if not nd or not nd.is_dir():
         return None
     matches = sorted(
@@ -210,23 +283,23 @@ def _narration_file_for_scene(n: int) -> Path | None:
     return matches[0] if matches else None
 
 
-def _scrubbed_for_scene(n: int) -> bool:
+def _scrubbed_for_scene(cfg: ResolvedEditorConfig, n: int) -> bool:
     """True iff a `.scrubbed.md` sibling exists for scene n's narration file."""
-    narr = _narration_file_for_scene(n)
+    narr = _narration_file_for_scene(cfg, n)
     if narr is None:
         return False
     return narr.with_name(narr.stem + ".scrubbed.md").exists()
 
 
-def _activity_jsonl_path() -> Path | None:
+def _activity_jsonl_path(cfg: ResolvedEditorConfig) -> Path | None:
     """``<session_dir>/.cg/activity.jsonl`` — created on first write."""
-    sd = _session_dir()
+    sd = _session_dir(cfg)
     if sd is None:
         return None
     return sd / ".cg" / "activity.jsonl"
 
 
-def _narrate_knobs_snapshot() -> dict:
+def _narrate_knobs_snapshot(cfg: ResolvedEditorConfig) -> dict:
     """Capture the Stage-④ knobs at the moment a narration is produced.
 
     Stashed alongside each narration file so the Review screen can show
@@ -234,15 +307,15 @@ def _narrate_knobs_snapshot() -> dict:
     activity log.
     """
     return {
-        "narrate_tokens": CONFIG.get("narrate_tokens"),
-        "prose_mode": bool(CONFIG.get("prose_mode")),
-        "reflections": bool(CONFIG.get("reflections")),
-        "narration_genre": CONFIG.get("narration_genre"),
-        "backend": CONFIG.get("backend") or "anthropic",
+        "narrate_tokens": cfg.narrate.tokens,
+        "prose_mode": bool(cfg.narrate.prose_mode),
+        "reflections": bool(cfg.narrate.reflections),
+        "narration_genre": cfg.narrate.genre,
+        "backend": cfg.backends.active or "anthropic",
     }
 
 
-def _record_activity(*, stage: str, rc: int | None,
+def _record_activity(cfg: ResolvedEditorConfig, *, stage: str, rc: int | None,
                      scene: int | None = None,
                      knobs: dict | None = None,
                      outputs: list[str] | None = None) -> None:
@@ -252,7 +325,7 @@ def _record_activity(*, stage: str, rc: int | None,
     stops the SSE stream from completing.
     """
     try:
-        path = _activity_jsonl_path()
+        path = _activity_jsonl_path(cfg)
         if path is None:
             return
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -326,13 +399,13 @@ def _stage_status(output: Path | None,
     }
 
 
-def _scene_extraction_file_new(n: int, scene_name: str) -> Path | None:
+def _scene_extraction_file_new(cfg: ResolvedEditorConfig, n: int, scene_name: str) -> Path | None:
     """New-flow scene file. Prefer the cleaned scaffold
     (`NN_<slug>.scaffold.md`) when it exists; otherwise return the
     Stage-2 source file (`NN_<slug>.md`). The scaffold is what the
     user edits and what Narrate consumes; the Stage-2 file is the
     expensive LLM source that we never overwrite."""
-    sx = _scene_extractions_dir()
+    sx = _scene_extractions_dir(cfg)
     if not sx:
         return None
     slug = _slugify(scene_name) or f"scene_{n}"
@@ -344,7 +417,7 @@ def _scene_extraction_file_new(n: int, scene_name: str) -> Path | None:
 
 # ── Helpers (ported from session_doc_ui.py) ──────────────────────────────────
 
-def _load_scenes() -> list[dict]:
+def _load_scenes(cfg: ResolvedEditorConfig) -> list[dict]:
     """Return scene metadata.
 
     New flow: if narration_dir/plan.md exists, parse it (scenes get narrators).
@@ -355,21 +428,21 @@ def _load_scenes() -> list[dict]:
     sys.path.insert(0, str(SCRIPT_DIR))
     from session_doc import parse_plan
 
-    nd = _narration_dir()
+    nd = _narration_dir(cfg)
     plan_path: Path | None = None
     if nd and (nd / "plan.md").exists():
         plan_path = nd / "plan.md"
 
     if plan_path is None:
-        return _scenes_from_extractions()
+        return _scenes_from_extractions(cfg)
 
     sections = parse_plan(plan_path.read_text(encoding="utf-8"), total_chunks=99)
     result = []
     for i, s in enumerate(sections, 1):
-        ext = _scene_extraction_file_new(i, s.get("scene", ""))
+        ext = _scene_extraction_file_new(cfg, i, s.get("scene", ""))
         ext_path = ext if ext else None
         ext_name = ext.name if ext else ""
-        narr_path = _narration_file_for_scene(i)
+        narr_path = _narration_file_for_scene(cfg, i)
         has_output = narr_path is not None and narr_path.exists()
         result.append({
             "index": i,
@@ -380,16 +453,16 @@ def _load_scenes() -> list[dict]:
             "chunk_end": s["chunk_end"],
             "has_extraction": bool(ext_path and ext_path.exists()),
             "has_output": has_output,
-            "has_scrubbed": _scrubbed_for_scene(i),
+            "has_scrubbed": _scrubbed_for_scene(cfg, i),
             "filename": ext_name,
             "reviewed": _reviewed_for_path(ext_path),
         })
     return result
 
 
-def _scenes_from_extractions() -> list[dict]:
+def _scenes_from_extractions(cfg: ResolvedEditorConfig) -> list[dict]:
     """Bare scene list derived from Stage-2 NN_<slug>.md files (no narrator)."""
-    sx = _scene_extractions_dir()
+    sx = _scene_extractions_dir(cfg)
     if not sx or not sx.is_dir():
         return []
     files = sorted(
@@ -411,7 +484,7 @@ def _scenes_from_extractions() -> list[dict]:
                     break
         if not scene_name:
             scene_name = f.stem[3:].replace("_", " ").title()
-        narr_path = _narration_file_for_scene(idx)
+        narr_path = _narration_file_for_scene(cfg, idx)
         result.append({
             "index": idx,
             "narrator": "",  # filled in once plan.md is generated
@@ -421,22 +494,22 @@ def _scenes_from_extractions() -> list[dict]:
             "chunk_end": idx,
             "has_extraction": True,
             "has_output": narr_path is not None and narr_path.exists(),
-            "has_scrubbed": _scrubbed_for_scene(idx),
+            "has_scrubbed": _scrubbed_for_scene(cfg, idx),
             "filename": f.name,
             "reviewed": _reviewed_for_path(f),
         })
     return result
 
 
-def _get_extraction_path(n: int) -> Path | None:
-    scenes = _load_scenes()
+def _get_extraction_path(cfg: ResolvedEditorConfig, n: int) -> Path | None:
+    scenes = _load_scenes(cfg)
     if n < 1 or n > len(scenes):
         return None
     s = scenes[n - 1]
-    return _scene_extraction_file_new(n, s.get("scene", ""))
+    return _scene_extraction_file_new(cfg, n, s.get("scene", ""))
 
 
-def _reviewed_marker_path(n: int) -> Path | None:
+def _reviewed_marker_path(cfg: ResolvedEditorConfig, n: int) -> Path | None:
     """Sidecar marker file capturing the GM's "order looks right" approval.
 
     Lives next to the extraction file as `<extraction>.reviewed`. The
@@ -444,7 +517,7 @@ def _reviewed_marker_path(n: int) -> Path | None:
     Sidecar (rather than frontmatter mutation) so the human-edited
     extraction never gets rewritten by the toggle.
     """
-    ext_path = _get_extraction_path(n)
+    ext_path = _get_extraction_path(cfg, n)
     if ext_path is None:
         return None
     return ext_path.with_name(ext_path.name + ".reviewed")
@@ -467,39 +540,41 @@ def _open_in_typora(filepath: Path) -> None:
         print(f"  Warning: could not open file: {e}", file=sys.stderr)
 
 
-def _assembled_output_path() -> Path:
+def _assembled_output_path(cfg: ResolvedEditorConfig) -> Path:
     """Where assemble writes its output."""
-    session_stem = Path(CONFIG["session"]).stem
-    sd = _session_dir() or Path.cwd()
+    session_stem = Path(cfg.paths.session_recap).stem
+    sd = _session_dir(cfg) or Path.cwd()
     return sd / f"{session_stem}-doc.md"
-
 
 
 
 
 # ── Command builders ────────────────────────────────────────────────────────
 
-def _model_args() -> list[str]:
-    """`--model <global default>` if a model is configured, else [].
+def _model_args(cfg: ResolvedEditorConfig) -> list[str]:
+    """`--model <resolved>` if a model is configured, else [].
 
-    Forwards the sidebar's runtime.default_model (synced into CONFIG["model"]
-    by _refresh_config_from_service) to every pipeline script, so the editor
-    stages honor the picker instead of each script's hardcoded default.
+    O3 — editor-local anthropic/claude-code model override: the active
+    backend's own remembered model (``cfg.backends.<active>.model``) wins
+    if set, else falls back to the global sidebar picker (``cfg.model`` ←
+    runtime.default_model).
 
-    Skipped when backend is dgx or openrouter: the global picker holds an
-    Anthropic model name, which is meaningless for either endpoint (that
+    Skipped when backend is dgx or openrouter: the anthropic/claude-code
+    model resolved here would be meaningless for either endpoint (that
     model is instead governed by _backend_flags's own --model). It would
     also be actively wrong for scrub — scrub_mechanics passes --model
     straight through as the OpenAI-compat model_override, so a "claude-*"
     name there 404s against a non-Anthropic backend.
     """
-    if CONFIG.get("backend") in ("dgx", "openrouter"):
+    active = cfg.backends.active
+    if active in ("dgx", "openrouter"):
         return []
-    model = (CONFIG.get("model") or "").strip()
+    prof = cfg.backends.anthropic if active == "anthropic" else cfg.backends.claude_code
+    model = (prof.model or cfg.model or "").strip()
     return ["--model", model] if model else []
 
 
-def _build_enhance_cmd(batch: bool = False) -> list[str] | tuple[None, str]:
+def _build_enhance_cmd(cfg: ResolvedEditorConfig, batch: bool = False) -> list[str] | tuple[None, str]:
     """Stage 1: enhance_summary {vtt} --gmassist {session} --output {summary}.
 
     Returns the command list, or (None, error_message) on misconfig.
@@ -507,27 +582,27 @@ def _build_enhance_cmd(batch: bool = False) -> list[str] | tuple[None, str]:
     Batches API (50% off list price; the script's poll-progress lines flow
     over the same SSE stream).
     """
-    vtt = _vtt_path()
+    vtt = _vtt_path(cfg)
     if vtt is None or not vtt.exists():
         return None, "no .vtt file resolved (set CONFIG['vtt'] or place a *.vtt in the session dir)"
-    if not CONFIG.get("session"):
+    if not cfg.paths.session_recap:
         return None, "CONFIG['session'] (gm-assist.md) is required"
-    summary = _session_summary_path()
+    summary = _session_summary_path(cfg)
     if summary is None:
         return None, "could not resolve session-summary.md output path"
     cmd = [
         console_script("enhance_summary"),
         str(vtt),
-        "--gmassist", CONFIG["session"],
+        "--gmassist", cfg.paths.session_recap,
         "--output", str(summary),
     ]
-    cmd += _model_args()
+    cmd += _model_args(cfg)
     if batch:
         cmd.append("--batch")
     return cmd
 
 
-def _build_reextract_cmd(batch: bool = False,
+def _build_reextract_cmd(cfg: ResolvedEditorConfig, batch: bool = False,
                          force: bool = False) -> list[str] | tuple[None, str]:
     """Stage 2: scene_extract {vtt} --summary {summary} --output-dir {sx_dir}.
 
@@ -539,13 +614,13 @@ def _build_reextract_cmd(batch: bool = False,
     when the user clicks the Re-Extract button — clicking it should mean
     "do the work."
     """
-    vtt = _vtt_path()
+    vtt = _vtt_path(cfg)
     if vtt is None or not vtt.exists():
         return None, "no .vtt file resolved"
-    summary = _session_summary_path()
+    summary = _session_summary_path(cfg)
     if summary is None or not summary.exists():
         return None, "session-summary.md not found — run Stage 1 (Enhance Summary) first"
-    sx_dir = _scene_extractions_dir()
+    sx_dir = _scene_extractions_dir(cfg)
     if sx_dir is None:
         return None, "scene_extractions_dir not configured"
     cmd = [
@@ -554,21 +629,17 @@ def _build_reextract_cmd(batch: bool = False,
         "--summary", str(summary),
         "--output-dir", str(sx_dir),
     ]
-    cmd += _model_args()
-    if CONFIG.get("dossier_dir"):
-        cmd += ["--dossier-dir", CONFIG["dossier_dir"]]
+    cmd += _model_args(cfg)
     # Pass party.md so scene_extract can rewrite Zoom display names to
     # character / GM labels deterministically before the LLM sees the VTT.
     # `party` is the synthesized party.md path (set by the Party Document
     # page); the player→character map is parsed from its `**<Class>,
     # Player: <Player>**` lines.
-    if CONFIG.get("party"):
-        cmd += ["--party", CONFIG["party"]]
-    # GM player name lives in ui.session_doc.gm_player (typed). The
-    # _refresh_config_from_service router dependency syncs CONFIG before
-    # this handler runs, so reading from CONFIG always sees the
-    # service-resolved value — no separate ui_config.yaml load needed.
-    gm_player = (CONFIG.get("gm_player") or "").strip()
+    if cfg.paths.party:
+        cmd += ["--party", cfg.paths.party]
+    # GM player name lives in cfg.roster.gm_player, resolved per-request
+    # from the session editor config service — always the current value.
+    gm_player = (cfg.roster.gm_player or "").strip()
     if gm_player:
         cmd += ["--gm-player", gm_player]
     if batch:
@@ -578,7 +649,7 @@ def _build_reextract_cmd(batch: bool = False,
     return cmd
 
 
-def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
+def _build_narrate_cmd(cfg: ResolvedEditorConfig, scene_num: int) -> list[str] | tuple[None, str]:
     """Stage 3: sd_narrate for a single scene.
 
     Phase 5 of SessionDocRefactor: session_doc.py is gone. We point at
@@ -586,13 +657,13 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
     old --plan-file). --context lives on sd_consistency now; sd_narrate
     has --context for the --reflections code path only.
     """
-    summary = _session_summary_path()
+    summary = _session_summary_path(cfg)
     if summary is None or not summary.exists():
         return None, "session-summary.md not found — run Stage 1 first"
-    sx_dir = _scene_extractions_dir()
+    sx_dir = _scene_extractions_dir(cfg)
     if sx_dir is None:
         return None, "scene_extractions_dir not configured"
-    nd = _narration_dir()
+    nd = _narration_dir(cfg)
     if nd is None:
         return None, "narration_dir not configured"
     nd.mkdir(parents=True, exist_ok=True)
@@ -609,28 +680,28 @@ def _build_narrate_cmd(scene_num: int) -> list[str] | tuple[None, str]:
         "--per-scene-output", str(nd),
         "--scene", str(scene_num),
     ]
-    cmd += _model_args()
-    for flag, key in [("--party", "party"), ("--voice-dir", "voice_dir"),
-                      ("--characters", "characters"),
-                      ("--examples", "examples_dir")]:
-        if CONFIG.get(key):
-            cmd += [flag, CONFIG[key]]
-    if CONFIG.get("narrate_tokens"):
-        cmd += ["--narrate-tokens", str(CONFIG["narrate_tokens"])]
-    if CONFIG.get("prose_mode"):
+    cmd += _model_args(cfg)
+    for flag, value in [("--party", cfg.paths.party), ("--voice-dir", cfg.paths.voice_dir),
+                        ("--characters", cfg.roster.characters),
+                        ("--examples", cfg.paths.examples_dir)]:
+        if value:
+            cmd += [flag, value]
+    if cfg.narrate.tokens:
+        cmd += ["--narrate-tokens", str(cfg.narrate.tokens)]
+    if cfg.narrate.prose_mode:
         cmd += ["--prose-mode"]
-    if CONFIG.get("reflections"):
+    if cfg.narrate.reflections:
         cmd += ["--reflections"]
         # --reflections needs --context to draw on; without it the flag is a no-op
-        for ctx in CONFIG.get("context") or []:
+        for ctx in cfg.narrate.context or []:
             if ctx:
                 cmd += ["--context", ctx]
-    if CONFIG.get("narration_genre"):
-        cmd += ["--narration-genre", CONFIG["narration_genre"]]
+    if cfg.narrate.genre:
+        cmd += ["--narration-genre", cfg.narrate.genre]
     return cmd
 
 
-def _backend_flags(*, allow_openai_compat: bool = True) -> list[str]:
+def _backend_flags(cfg: ResolvedEditorConfig, *, allow_openai_compat: bool = True) -> list[str]:
     """Translate the typed backend choice into subprocess CLI flags.
 
     Replaces the old env-var translator (`_llm_env`): every downstream
@@ -656,34 +727,34 @@ def _backend_flags(*, allow_openai_compat: bool = True) -> list[str]:
     --model is forwarded either), but a subscription or openrouter selection
     is honored in full.
     """
-    backend = CONFIG.get("backend")
-    if backend == "dgx":
+    active = cfg.backends.active
+    if active == "dgx":
         if not allow_openai_compat:
             return []
         return backend_cli_args(
-            backend,
-            model=CONFIG.get("dgx_model") or wiring_get("dgx_model"),
-            endpoint=CONFIG.get("dgx_endpoint") or wiring_get("dgx_endpoint"),
+            "dgx",
+            model=cfg.backends.dgx.model or wiring_get("dgx_model"),
+            endpoint=cfg.backends.dgx.endpoint or wiring_get("dgx_endpoint"),
         )
-    if backend == "openrouter":
-        return backend_cli_args(backend, model=CONFIG.get("openrouter_model"))
-    return backend_cli_args(backend)  # anthropic -> [], claude-code -> ["--backend", "claude-code"]
+    if active == "openrouter":
+        return backend_cli_args("openrouter", model=cfg.backends.openrouter.model)
+    return backend_cli_args(active)  # anthropic -> [], claude-code -> ["--backend", "claude-code"]
 
 
 # ── Routes ──────────────────────────────────────────────────────────────────
 
 @router.get("/pipeline-status")
-def api_pipeline_status():
+def api_pipeline_status(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Per-stage readiness based on output-vs-input mtimes.
 
     Read-only; cheap (just a handful of file stats). The frontend
     renders these as the header status strip.
     """
-    summary = _session_summary_path()
-    vtt = _vtt_path()
-    gm = Path(CONFIG["session"]).expanduser() if CONFIG.get("session") else None
-    sx = _scene_extractions_dir()
-    nd = _narration_dir()
+    summary = _session_summary_path(cfg)
+    vtt = _vtt_path(cfg)
+    gm = Path(cfg.paths.session_recap).expanduser() if cfg.paths.session_recap else None
+    sx = _scene_extractions_dir(cfg)
+    nd = _narration_dir(cfg)
 
     # ① Enhance: inputs are VTT + gm-assist; output is session-summary.md.
     enhance_inputs: list[Path] = []
@@ -730,7 +801,7 @@ def api_pipeline_status():
     # count_total = number of scenes in the plan (or extraction count if
     # no plan yet). Status is the "stalest" of all narrated scenes vs.
     # their per-scene extraction mtimes.
-    scenes = _load_scenes()
+    scenes = _load_scenes(cfg)
     count_total = len(scenes)
     count_done = sum(1 for s in scenes if s.get("has_output"))
     narrate_status: dict = {
@@ -745,11 +816,11 @@ def api_pipeline_status():
         for s in scenes:
             if not s.get("has_output"):
                 continue
-            narr = _narration_file_for_scene(s["index"])
+            narr = _narration_file_for_scene(cfg, s["index"])
             if narr is None or not narr.exists():
                 continue
             narr_files.append(narr)
-            ext_path = _scene_extraction_file_new(s["index"], s.get("scene", ""))
+            ext_path = _scene_extraction_file_new(cfg, s["index"], s.get("scene", ""))
             if ext_path and ext_path.exists():
                 if ext_path.stat().st_mtime > narr.stat().st_mtime:
                     any_stale = True
@@ -769,20 +840,20 @@ def api_pipeline_status():
 
 
 @router.get("/scenes")
-def api_scenes():
-    return _load_scenes()
+def api_scenes(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    return _load_scenes(cfg)
 
 
 @router.get("/extraction/{n}")
-def api_get_extraction(n: int):
+def api_get_extraction(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     sys.path.insert(0, str(SCRIPT_DIR))
     from session_doc import estimate_narration_tokens
 
-    scenes = _load_scenes()
+    scenes = _load_scenes(cfg)
     if n < 1 or n > len(scenes):
         return JSONResponse({"exists": False, "content": ""}, status_code=404)
     s = scenes[n - 1]
-    path = _get_extraction_path(n)
+    path = _get_extraction_path(cfg, n)
     label = s.get("narrator", "")
     if s.get("scene"):
         label += f" — {s['scene']}"
@@ -798,8 +869,8 @@ def api_get_extraction(n: int):
 
 
 @router.put("/extraction/{n}")
-async def api_save_extraction(n: int, request: Request):
-    path = _get_extraction_path(n)
+async def api_save_extraction(n: int, request: Request, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    path = _get_extraction_path(cfg, n)
     if path is None:
         return JSONResponse({"ok": False}, status_code=404)
     data = await request.json()
@@ -809,7 +880,7 @@ async def api_save_extraction(n: int, request: Request):
 
 
 @router.get("/extraction/{n}/prev")
-def api_get_prev_extraction(n: int):
+def api_get_prev_extraction(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Return the snapshotted prior extraction (`NN_<slug>.md.prev`), if any.
 
     Written by `scene_extract --force` when a re-run produces content
@@ -821,10 +892,10 @@ def api_get_prev_extraction(n: int):
     (never the user-edited `NN_<slug>.scaffold.md`) — the diff view shows
     what the LLM changed across runs, not what the GM edited locally.
     """
-    sx = _scene_extractions_dir()
+    sx = _scene_extractions_dir(cfg)
     if sx is None:
         return JSONResponse({"exists": False, "content": ""}, status_code=404)
-    scenes = _load_scenes()
+    scenes = _load_scenes(cfg)
     if n < 1 or n > len(scenes):
         return JSONResponse({"exists": False, "content": ""}, status_code=404)
     s = scenes[n - 1]
@@ -841,22 +912,22 @@ def api_get_prev_extraction(n: int):
 
 
 @router.get("/reviewed/{n}")
-def api_get_reviewed(n: int):
+def api_get_reviewed(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """True iff the GM has marked scene n's extraction as order-reviewed."""
-    marker = _reviewed_marker_path(n)
+    marker = _reviewed_marker_path(cfg, n)
     if marker is None:
         return JSONResponse({"reviewed": False}, status_code=404)
     return {"reviewed": marker.exists()}
 
 
 @router.put("/reviewed/{n}")
-async def api_set_reviewed(n: int, request: Request):
+async def api_set_reviewed(n: int, request: Request, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Toggle the order-reviewed marker for scene n.
 
     Body: ``{ "reviewed": bool }``. When true the sidecar file is
     created (empty); when false it is removed if present. Idempotent.
     """
-    marker = _reviewed_marker_path(n)
+    marker = _reviewed_marker_path(cfg, n)
     if marker is None:
         return JSONResponse({"ok": False}, status_code=404)
     data = await request.json()
@@ -870,18 +941,18 @@ async def api_set_reviewed(n: int, request: Request):
 
 
 @router.get("/output/{n}")
-def api_get_output(n: int):
-    path = _narration_file_for_scene(n)
+def api_get_output(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    path = _narration_file_for_scene(cfg, n)
     if path is None or not path.exists():
         return JSONResponse({"exists": False}, status_code=404)
     return {"exists": True}
 
 
 @router.get("/vtt")
-def api_vtt():
-    if not CONFIG.get("roleplay_extract_dir"):
+def api_vtt(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    if not cfg.paths.roleplay_extractions_dir:
         return {"chunks": []}
-    vtt_dir = Path(CONFIG["roleplay_extract_dir"])
+    vtt_dir = Path(cfg.paths.roleplay_extractions_dir)
     chunks = [
         {"name": f.stem, "content": f.read_text(encoding="utf-8")}
         for f in sorted(vtt_dir.glob("extract_*.md"))
@@ -890,27 +961,27 @@ def api_vtt():
 
 
 @router.get("/enhance")
-async def api_enhance(batch: int = 0):
+async def api_enhance(batch: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Stage 1 — stream enhance_summary output.
 
     `batch=1` forwards `--batch` to the script (Message Batches API; 50%
     off list price; replaces token streaming with poll-progress lines).
     """
-    result = _build_enhance_cmd(batch=bool(batch))
+    result = _build_enhance_cmd(cfg, batch=bool(batch))
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
-    cmd = result + _backend_flags()
-    summary = _session_summary_path()
+    cmd = result + _backend_flags(cfg)
+    summary = _session_summary_path(cfg)
     outputs = [str(summary)] if summary else []
 
     def _done(rc: int | None) -> None:
-        _record_activity(stage="enhance", rc=rc,
+        _record_activity(cfg, stage="enhance", rc=rc,
                          knobs={"batch": bool(batch)},
                          outputs=outputs)
 
     return StreamingResponse(
-        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
+        stream_subprocess(cmd, cwd=cfg.work_dir,
                           on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
@@ -918,7 +989,7 @@ async def api_enhance(batch: int = 0):
 
 
 @router.get("/extract")
-async def api_extract(batch: int = 0, force: int = 0):
+async def api_extract(batch: int = 0, force: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Stage 2 (Re-Extract Quotes) — calls scene_extract.
 
     `batch=1` forwards `--batch` to the script. `force=1` forwards `--force`
@@ -927,21 +998,21 @@ async def api_extract(batch: int = 0, force: int = 0):
     Pass-1-to-4 command (no batch / no force support) when the workspace
     is on the legacy flow.
     """
-    result = _build_reextract_cmd(batch=bool(batch), force=bool(force))
+    result = _build_reextract_cmd(cfg, batch=bool(batch), force=bool(force))
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
-    cmd = result + _backend_flags()
-    sx = _scene_extractions_dir()
+    cmd = result + _backend_flags(cfg)
+    sx = _scene_extractions_dir(cfg)
 
     def _done(rc: int | None) -> None:
         outputs = [str(sx)] if sx else []
-        _record_activity(stage="extract", rc=rc,
+        _record_activity(cfg, stage="extract", rc=rc,
                          knobs={"batch": bool(batch), "force": bool(force)},
                          outputs=outputs)
 
     return StreamingResponse(
-        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
+        stream_subprocess(cmd, cwd=cfg.work_dir,
                           on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
@@ -949,24 +1020,24 @@ async def api_extract(batch: int = 0, force: int = 0):
 
 
 @router.get("/narrate/{n}")
-async def api_narrate(n: int):
-    result = _build_narrate_cmd(n)
+async def api_narrate(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    result = _build_narrate_cmd(cfg, n)
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
-    cmd = result + _backend_flags()
-    knobs = _narrate_knobs_snapshot()
+    cmd = result + _backend_flags(cfg)
+    knobs = _narrate_knobs_snapshot(cfg)
 
     def _done(rc: int | None) -> None:
-        narr = _narration_file_for_scene(n)
+        narr = _narration_file_for_scene(cfg, n)
         if rc == 0:
             _write_knobs_sidecar(narr, knobs)
         outputs = [str(narr)] if narr else []
-        _record_activity(stage="narrate", rc=rc, scene=n,
+        _record_activity(cfg, stage="narrate", rc=rc, scene=n,
                          knobs=knobs, outputs=outputs)
 
     return StreamingResponse(
-        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
+        stream_subprocess(cmd, cwd=cfg.work_dir,
                           on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
@@ -974,7 +1045,7 @@ async def api_narrate(n: int):
 
 
 @router.get("/scrub/{n}")
-async def api_scrub(n: int):
+async def api_scrub(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Scrub a single scene's narration.
 
     Resolves the scene file server-side via `_narration_file_for_scene` so
@@ -983,27 +1054,27 @@ async def api_scrub(n: int):
     matches both `*.md` and `*.scrubbed.md`; today lexicographic order puts
     the un-scrubbed source first but that's a fragile accident).
     """
-    path = _narration_file_for_scene(n)
+    path = _narration_file_for_scene(cfg, n)
     if path is None or not path.exists():
         return _sse_error(f"no narration file for scene {n}")
     if path.name.endswith(".scrubbed.md"):
         return _sse_error(
             f"refusing to scrub already-scrubbed file: {path.name}")
     cmd = [console_script("scrub_mechanics"), str(path)]
-    cmd += _model_args()
-    cmd += _backend_flags()
-    if CONFIG.get("scrub_tokens"):
-        cmd += ["--max-tokens", str(CONFIG["scrub_tokens"])]
+    cmd += _model_args(cfg)
+    cmd += _backend_flags(cfg)
+    if cfg.scrub.tokens:
+        cmd += ["--max-tokens", str(cfg.scrub.tokens)]
 
     def _done(rc: int | None) -> None:
         scrubbed = path.with_name(path.stem + ".scrubbed.md")
-        _record_activity(stage="scrub", rc=rc, scene=n,
+        _record_activity(cfg, stage="scrub", rc=rc, scene=n,
                          outputs=[str(scrubbed)])
 
     return StreamingResponse(
-        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
-                          env_extra={"CG_CAMPAIGN_DIR": CONFIG.get("campaign_dir", ""),
-                                     "CG_CONFIG_DIR": CONFIG.get("config_dir", "config")},
+        stream_subprocess(cmd, cwd=cfg.work_dir,
+                          env_extra={"CG_CAMPAIGN_DIR": cfg.campaign_dir,
+                                     "CG_CONFIG_DIR": cfg.config_dir},
                           on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
@@ -1011,49 +1082,49 @@ async def api_scrub(n: int):
 
 
 @router.get("/scrub-all")
-async def api_scrub_all():
+async def api_scrub_all(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Scrub every session_doc_scene_*.md in narration_dir.
 
     `scrub_mechanics.collect_targets` already filters out `.scrubbed.md`
     files so re-runs don't recurse into their own output.
     """
-    nd = _narration_dir()
+    nd = _narration_dir(cfg)
     if nd is None or not nd.is_dir():
         return _sse_error("narration_dir not configured")
     cmd = [console_script("scrub_mechanics"), str(nd)]
-    cmd += _model_args()
-    cmd += _backend_flags()
-    if CONFIG.get("scrub_tokens"):
-        cmd += ["--max-tokens", str(CONFIG["scrub_tokens"])]
+    cmd += _model_args(cfg)
+    cmd += _backend_flags(cfg)
+    if cfg.scrub.tokens:
+        cmd += ["--max-tokens", str(cfg.scrub.tokens)]
 
     def _done(rc: int | None) -> None:
-        _record_activity(stage="scrub_all", rc=rc, outputs=[str(nd)])
+        _record_activity(cfg, stage="scrub_all", rc=rc, outputs=[str(nd)])
 
     return StreamingResponse(
-        stream_subprocess(cmd, cwd=CONFIG.get("work_dir"),
-                          env_extra={"CG_CAMPAIGN_DIR": CONFIG.get("campaign_dir", ""),
-                                     "CG_CONFIG_DIR": CONFIG.get("config_dir", "config")},
+        stream_subprocess(cmd, cwd=cfg.work_dir,
+                          env_extra={"CG_CAMPAIGN_DIR": cfg.campaign_dir,
+                                     "CG_CONFIG_DIR": cfg.config_dir},
                           on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
 
 
-def _build_consistency_cmd() -> list[str] | tuple[None, str]:
+def _build_consistency_cmd(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     """Phase 5 — sd_consistency for Pass 1.
 
     Runs only if --context is configured; otherwise the editor skips
     consistency entirely and just runs sd_plan.
     """
-    summary = _session_summary_path()
+    summary = _session_summary_path(cfg)
     if summary is None or not summary.exists():
         return None, "session-summary.md not found — run Stage 1 first"
-    nd = _narration_dir()
+    nd = _narration_dir(cfg)
     if nd is None:
         return None, "narration_dir not configured"
     nd.mkdir(parents=True, exist_ok=True)
 
-    context = [c for c in (CONFIG.get("context") or []) if c]
+    context = [c for c in (cfg.narrate.context or []) if c]
     if not context:
         return None, "no --context files configured"
 
@@ -1062,7 +1133,7 @@ def _build_consistency_cmd() -> list[str] | tuple[None, str]:
         str(summary),
         "--out", str(nd / "consistency_report.md"),
     ]
-    cmd += _model_args()
+    cmd += _model_args(cfg)
     # sd_consistency's --context is nargs="+" (now action="extend", so
     # repeated `--context A --context B` accumulates correctly too — see
     # server/routers/ensemble.py's _cmd_multi for that style). Still keep
@@ -1072,22 +1143,22 @@ def _build_consistency_cmd() -> list[str] | tuple[None, str]:
     return cmd
 
 
-def _build_plan_cmd() -> list[str] | tuple[None, str]:
+def _build_plan_cmd(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     """Phase 5 — sd_plan for Pass 3.
 
     --context no longer lives here — consistency is its own explicit
     stage (see _build_consistency_cmd). The /plan endpoint chains
     consistency → plan when context files are configured.
     """
-    sx_dir = _scene_extractions_dir()
+    sx_dir = _scene_extractions_dir(cfg)
     if sx_dir is None:
         return None, "scene_extractions_dir not configured"
-    nd = _narration_dir()
+    nd = _narration_dir(cfg)
     if nd is None:
         return None, "narration_dir not configured"
     nd.mkdir(parents=True, exist_ok=True)
 
-    characters = CONFIG.get("characters")
+    characters = cfg.roster.characters
     if not characters:
         return None, "characters not configured (sd_plan needs --characters)"
 
@@ -1097,25 +1168,25 @@ def _build_plan_cmd() -> list[str] | tuple[None, str]:
         "--characters", characters,
         "--out", str(nd / "plan.md"),
     ]
-    cmd += _model_args()
-    if CONFIG.get("party"):
-        cmd += ["--party", CONFIG["party"]]
+    cmd += _model_args(cfg)
+    if cfg.paths.party:
+        cmd += ["--party", cfg.paths.party]
     # session-summary.md as the authoritative event log when present
-    summary = _session_summary_path()
+    summary = _session_summary_path(cfg)
     if summary is not None and summary.exists():
         cmd += ["--session-summary", str(summary)]
     return cmd
 
 
 @router.get("/plan")
-async def api_plan():
+async def api_plan(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Run sd_consistency (if --context configured) then sd_plan.
 
     Both subprocesses stream into the same SSE response; the user sees
     one "Plan & Check" run with consistency output appearing first when
     relevant. Phase 5's chosen consistency-UX option A: auto-chain.
     """
-    plan_result = _build_plan_cmd()
+    plan_result = _build_plan_cmd(cfg)
     if isinstance(plan_result, tuple):
         _, err = plan_result
         return _sse_error(err)
@@ -1123,16 +1194,16 @@ async def api_plan():
     # bills that backend instead of falling back to the metered API), but
     # suppress the DGX OpenAI-compat path — see
     # _backend_flags(allow_openai_compat=...).
-    backend_flags = _backend_flags(allow_openai_compat=False)
+    backend_flags = _backend_flags(cfg, allow_openai_compat=False)
     plan_cmd = plan_result + backend_flags
-    consistency_result = _build_consistency_cmd()
+    consistency_result = _build_consistency_cmd(cfg)
     # consistency is optional — a tuple here means "skip, no --context"
     consistency_cmd = (
         consistency_result + backend_flags
         if not isinstance(consistency_result, tuple)
         else consistency_result
     )
-    nd = _narration_dir()
+    nd = _narration_dir(cfg)
 
     def _done(rc: int | None) -> None:
         outputs: list[str] = []
@@ -1141,7 +1212,7 @@ async def api_plan():
                 p = nd / name
                 if p.exists():
                     outputs.append(str(p))
-        _record_activity(stage="plan", rc=rc, outputs=outputs)
+        _record_activity(cfg, stage="plan", rc=rc, outputs=outputs)
 
     async def _stream_chained():
         """Stream consistency stdout (if applicable), then plan stdout."""
@@ -1154,11 +1225,11 @@ async def api_plan():
             # client and group-kill the plan subprocess before it writes
             # plan.md. Only the final (plan) stream emits `done`.
             async for chunk in _stream(consistency_cmd,
-                                        cwd=CONFIG.get("work_dir"),
+                                        cwd=cfg.work_dir,
                                         emit_done=False):
                 yield chunk
         async for chunk in _stream(plan_cmd,
-                                    cwd=CONFIG.get("work_dir"),
+                                    cwd=cfg.work_dir,
                                     on_complete=_done):
             yield chunk
 
@@ -1204,9 +1275,9 @@ def _narration_preview(narration_path: Path | None, *, max_chars: int = 120) -> 
 
 
 @router.get("/activity")
-def api_activity(limit: int = 200):
+def api_activity(limit: int = 200, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Return the most recent N rows from ``activity.jsonl``."""
-    path = _activity_jsonl_path()
+    path = _activity_jsonl_path(cfg)
     if path is None or not path.exists():
         return {"entries": []}
     try:
@@ -1227,7 +1298,7 @@ def api_activity(limit: int = 200):
 
 
 @router.get("/scene-roster")
-def api_scene_roster():
+def api_scene_roster(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Per-scene roster used by the Review-before-Assemble screen.
 
     For each scene:
@@ -1242,12 +1313,12 @@ def api_scene_roster():
     except Exception:
         estimate_narration_tokens = None  # type: ignore
 
-    scenes = _load_scenes()
+    scenes = _load_scenes(cfg)
     roster: list[dict] = []
     for s in scenes:
         idx = s["index"]
-        narr_path = _narration_file_for_scene(idx)
-        ext_path = _scene_extraction_file_new(idx, s.get("scene", ""))
+        narr_path = _narration_file_for_scene(cfg, idx)
+        ext_path = _scene_extraction_file_new(cfg, idx, s.get("scene", ""))
         knobs = _read_knobs_sidecar(narr_path)
         tokens: int | None = None
         if ext_path and ext_path.exists() and estimate_narration_tokens is not None:
@@ -1273,8 +1344,8 @@ def api_scene_roster():
 
 
 @router.get("/raw/{n}")
-def api_raw(n: int):
-    path = _narration_file_for_scene(n)
+def api_raw(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    path = _narration_file_for_scene(cfg, n)
     if path is None or not path.exists():
         return {"exists": False}
     text = path.read_text(encoding="utf-8")
@@ -1292,14 +1363,14 @@ def api_raw(n: int):
 
 
 @router.get("/assembled-exists")
-def api_assembled_exists():
-    return {"exists": _assembled_output_path().exists()}
+def api_assembled_exists(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    return {"exists": _assembled_output_path(cfg).exists()}
 
 
 @router.post("/assemble")
-def api_assemble():
+def api_assemble(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Stage 4 — shell out to assemble."""
-    nd = _narration_dir()
+    nd = _narration_dir(cfg)
     if nd is None or not nd.is_dir():
         return JSONResponse({"ok": False, "error": "narration_dir not configured"}, status_code=400)
 
@@ -1307,15 +1378,15 @@ def api_assemble():
     if not matches:
         return JSONResponse({"ok": False, "error": "no narrated scenes found"}, status_code=400)
 
-    out_path = _assembled_output_path()
-    session_stem = Path(CONFIG["session"]).stem
+    out_path = _assembled_output_path(cfg)
+    session_stem = Path(cfg.paths.session_recap).stem
     cmd = [
         console_script("assemble"),
         str(nd),
         "--output", str(out_path),
         "--title", session_stem,
     ]
-    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=CONFIG.get("work_dir"))
+    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=cfg.work_dir)
     if proc.returncode != 0:
         return JSONResponse({
             "ok": False,
@@ -1331,15 +1402,15 @@ def api_assemble():
 
 
 @router.post("/open/{file_type}/{n}")
-def api_open(file_type: str, n: int):
+def api_open(file_type: str, n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     if file_type == "extraction":
-        path = _get_extraction_path(n)
+        path = _get_extraction_path(cfg, n)
     elif file_type == "output" or file_type == "narration":
-        path = _narration_file_for_scene(n)
+        path = _narration_file_for_scene(cfg, n)
     elif file_type == "summary":
-        path = _session_summary_path()
+        path = _session_summary_path(cfg)
     elif file_type == "assembled":
-        path = _assembled_output_path()
+        path = _assembled_output_path(cfg)
     else:
         return JSONResponse({"ok": False}, status_code=400)
 

@@ -24,16 +24,27 @@ const vttSessionName = ref('')
 const summaries = ref('')
 const showOverrides = ref(false)
 
+// Not directly editable on this page — carried through so persistTypedSections
+// doesn't clobber the Session Doc Editor drawer's session_summary/party
+// overrides with a default. Sourced from store.editorConfig (paths.*), the
+// session-editor's single source of truth (session_doc's sd_* flat overlay
+// was retired — see docs/config/session-editor-isolation.md).
+const sessionSummaryPath = ref('')
+const partyPath = ref('')
+
 function loadFromConfig() {
   const v = config.values
+  const ec = config.editorConfig
   campaignDir.value = v.campaign_dir || ''
   sessionDir.value = v.session_dir || ''
   vttInput.value = v.vtt_input || ''
-  sdSession.value = v.sd_session || ''
-  characters.value = v.sd_characters || v.session_doc_characters || ''
-  gmPlayer.value = v.sd_gm_player || ''
-  voiceDir.value = v.sd_voice_dir || v.session_doc_voice_dir || ''
-  examplesDir.value = v.sd_examples_dir || v.session_doc_examples_dir || ''
+  sdSession.value = ec?.paths?.session_recap || ''
+  characters.value = ec?.roster?.characters || ''
+  gmPlayer.value = ec?.roster?.gm_player || ''
+  voiceDir.value = ec?.paths?.voice_dir || ''
+  examplesDir.value = ec?.paths?.examples_dir || ''
+  sessionSummaryPath.value = ec?.paths?.session_summary || 'session-summary.md'
+  partyPath.value = ec?.paths?.party || ''
   vttContext.value = v.vtt_context || ''
   vttDate.value = v.vtt_date || ''
   vttSessionName.value = v.vtt_session_name || ''
@@ -48,11 +59,6 @@ function saveToConfig() {
     campaign_dir: campaignDir.value,
     session_dir: sessionDir.value,
     vtt_input: vttInput.value,
-    sd_session: sdSession.value,
-    sd_characters: characters.value,
-    sd_gm_player: gmPlayer.value,
-    sd_voice_dir: voiceDir.value,
-    sd_examples_dir: examplesDir.value,
     vtt_context: vttContext.value,
     vtt_date: vttDate.value,
     vtt_session_name: vttSessionName.value,
@@ -66,17 +72,21 @@ async function persistTypedSections() {
     .map((s) => s.trim())
     .filter((s) => s)
   await Promise.all([
-    config.updateSection('session_doc', {
-      session: sdSession.value || null,
-      characters: characters.value || null,
-      gm_player: gmPlayer.value || null,
-      voice_dir: voiceDir.value || null,
-      examples_dir: examplesDir.value || null,
-      // scene_extractions_dir / narration_dir are owned exclusively by the
-      // Session Doc Editor drawer. Do NOT seed them here — doing so clobbers
-      // any override the user set in the editor.
-      session_summary: config.values.sd_session_summary || 'session-summary.md',
-      party: config.values.sd_party || null,
+    config.updateEditor({
+      paths: {
+        session_recap: sdSession.value || null,
+        // scene_extractions_dir / narration_dir are owned exclusively by the
+        // Session Doc Editor drawer. Do NOT seed them here — doing so clobbers
+        // any override the user set in the editor.
+        session_summary: sessionSummaryPath.value || 'session-summary.md',
+        party: partyPath.value || null,
+        voice_dir: voiceDir.value || null,
+        examples_dir: examplesDir.value || null,
+      },
+      roster: {
+        characters: characters.value || null,
+        gm_player: gmPlayer.value || null,
+      },
     }),
     config.updateSection('vtt_summary', {
       input: vttInput.value || null,
@@ -127,17 +137,15 @@ async function deriveAll() {
       vttContext.value = d.context.join('\n')
     }
 
-    // Downstream pages pick these up from the config store
+    // Downstream pages pick these up from the config store. session_doc
+    // paths (party/session_summary) are carried via sessionSummaryPath /
+    // partyPath instead — the sd_* flat overlay was retired, and
+    // scene_extractions_dir / narration_dir stay the Session Doc Editor
+    // drawer's sole ownership (never seeded here).
     Object.assign(config.values, {
       // Session-level (relative — resolvePath adds session_dir prefix)
       vtt_output: 'session-summary.md',
-      // scene_extractions_dir / narration_dir intentionally omitted — the
-      // Session Doc Editor drawer is their sole owner.
-      sd_roleplay_dir: 'vtt_roleplay_extractions',
-      sd_summary_dir: 'vtt_extractions',
-      sd_output_dir: sd,
       // Campaign-level (absolute)
-      sd_party: d.party || '',
       cs_output: d.campaign_state || '',
       distill_output: d.world_state || '',
       campaign_state_output: d.campaign_state || '',
@@ -150,8 +158,9 @@ async function deriveAll() {
       planning_output: d.planning || '',
     })
 
+    partyPath.value = d.party || ''
     if (d.session_summary)
-      config.values.sd_session_summary = stripPrefix(d.session_summary, sd)
+      sessionSummaryPath.value = stripPrefix(d.session_summary, sd)
 
     saveToConfig()
   } catch (e) {

@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { apiFetch, apiPut } from '../api/client'
+import { apiFetch, apiPut, apiPost, apiDelete } from '../api/client'
 
 export const useConfigStore = defineStore('config', () => {
   // Legacy flat-key mirror of the response. Still populated from the server
   // response (which includes a flat-key overlay for back-compat) so views
-  // that read ``config.values.sd_*`` keep working until they're migrated.
+  // that read ``config.values.<prefix>_*`` keep working until they're
+  // migrated. session_doc's `sd_*` slice of this overlay was retired in the
+  // session-editor config isolation — see ``editorConfig`` below.
   const values = ref<Record<string, any>>({})
 
   // Typed/resolved view from the unified config service. Path fields are
@@ -16,6 +18,14 @@ export const useConfigStore = defineStore('config', () => {
   // Surface migration warnings so the UI can render a banner when an old
   // ui_config.yaml was migrated and any keys were coerced or quarantined.
   const migrationWarnings = ref<string[]>([])
+
+  // The Session Doc Editor's grouped, resolved configuration — the single
+  // source of truth for the editor (GET /api/editor/config):
+  // paths/narrate/scrub/roster/backends/session_name/profiles/
+  // active_profile plus read-only platform extras (model, work_dir,
+  // campaign_dir, config_dir, vtt). See
+  // docs/config/session-editor-isolation.md.
+  const editorConfig = ref<Record<string, any> | null>(null)
 
   const models = ref<string[]>([])
   const defaultModel = ref('claude-sonnet-4-6')
@@ -28,10 +38,11 @@ export const useConfigStore = defineStore('config', () => {
   async function load() {
     if (loadPromise) return loadPromise
     loadPromise = (async () => {
-      const [cfg, modelsData, status] = await Promise.all([
+      const [cfg, modelsData, status, editorCfg] = await Promise.all([
         apiFetch('/api/config/'),
         apiFetch('/api/config/models'),
         apiFetch('/api/config/status'),
+        apiFetch('/api/editor/config'),
       ])
       values.value = cfg
       resolved.value = cfg.resolved ?? {}
@@ -41,6 +52,7 @@ export const useConfigStore = defineStore('config', () => {
       model.value = cfg.global_model || modelsData.default
       apiKeyPresent.value = status.api_key_present
       cwd.value = status.cwd
+      editorConfig.value = editorCfg
       loaded.value = true
     })()
     return loadPromise
@@ -52,6 +64,12 @@ export const useConfigStore = defineStore('config', () => {
     values.value = cfg
     resolved.value = cfg.resolved ?? {}
     migrationWarnings.value = cfg.migration_warnings ?? []
+  }
+
+  // Refetch the resolved editor config — call after any write that touches
+  // the session-editor slice so ``editorConfig`` stays in sync.
+  async function refreshEditor() {
+    editorConfig.value = await apiFetch('/api/editor/config')
   }
 
   // Typed-section update — preferred over the legacy bulk save for any
@@ -77,10 +95,50 @@ export const useConfigStore = defineStore('config', () => {
     await refresh()
   }
 
+  // ── Session Doc Editor — the single write door ────────────────────
+  // Grouped, possibly-nested SessionEditorConfig partial, e.g.
+  // ``{narrate: {tokens: 8000}}`` or ``{backends: {active: 'dgx'}}``.
+  // PUT /api/editor/config, then re-fetch so editorConfig reflects the
+  // server's resolved view (paths absolute, boot overrides applied).
+  async function updateEditor(partial: Record<string, any>) {
+    await apiPut('/api/editor/config', partial)
+    await refreshEditor()
+  }
+
+  // ── Profiles (Stage-④ knob presets) — /api/editor/profiles ────────
+  // The list/active profile live on editorConfig.profiles/active_profile;
+  // these mutate server-side and re-hydrate editorConfig afterward.
+  async function createProfile(entry: { name: string; knobs: Record<string, any> }) {
+    const created = await apiPost('/api/editor/profiles', entry)
+    await refreshEditor()
+    return created
+  }
+
+  async function updateProfile(name: string, entry: { name: string; knobs: Record<string, any> }) {
+    const updated = await apiPut(`/api/editor/profiles/${encodeURIComponent(name)}`, entry)
+    await refreshEditor()
+    return updated
+  }
+
+  async function deleteProfile(name: string) {
+    await apiDelete(`/api/editor/profiles/${encodeURIComponent(name)}`)
+    await refreshEditor()
+  }
+
+  // Server-side activation (O2): mirrors the profile's narrate/backend
+  // knobs into the stored config and marks it active, returning the
+  // re-resolved editor config — same shape as GET /api/editor/config.
+  async function activateProfile(name: string) {
+    const cfg = await apiPost(`/api/editor/profiles/${encodeURIComponent(name)}/activate`)
+    editorConfig.value = cfg
+    return cfg
+  }
+
   return {
     values,
     resolved,
     migrationWarnings,
+    editorConfig,
     models,
     defaultModel,
     model,
@@ -92,5 +150,11 @@ export const useConfigStore = defineStore('config', () => {
     updateLocal,
     updateRuntime,
     refresh,
+    refreshEditor,
+    updateEditor,
+    createProfile,
+    updateProfile,
+    deleteProfile,
+    activateProfile,
   }
 })

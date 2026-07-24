@@ -7,19 +7,23 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib import wiring_get
 from server.backend_forwarding import backend_cli_args
+from server.session_editor_config_service import SessionEditorConfigService
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
 
 
 # ── LLM backend selection → subprocess CLI flags ────────────────────────────
-# The global backend chosen in the sidebar lives at ui.session_doc.backend in
-# the unified config service. Grounding runs (campaign_state / distill / party /
-# planning) must forward it exactly like scene_editor and ensemble do — otherwise
-# a selection (e.g. "openrouter") is silently dropped and every run bills the
-# metered Anthropic API. All four scripts now accept the shared --backend/
-# --endpoint/--model vocabulary (campaignlib.api.client.add_backend_args), so
-# forwarding is done as explicit CLI flags via backend_cli_args, not env vars.
+# The global backend chosen in the sidebar is persisted as backends.active in
+# the Session Doc Editor's own <config>/session_doc.yaml (GET/PUT
+# /api/editor/config — see docs/config/session-editor-isolation.md; the
+# sidebar button writes there since Phase 3b). Grounding runs (campaign_state
+# / distill / party / planning) must forward it exactly like scene_editor and
+# ensemble do — otherwise a selection (e.g. "openrouter") is silently dropped
+# and every run bills the metered Anthropic API. All four scripts now accept
+# the shared --backend/--endpoint/--model vocabulary
+# (campaignlib.api.client.add_backend_args), so forwarding is done as
+# explicit CLI flags via backend_cli_args, not env vars.
 
 def _backend_flags(request: Request) -> list[str]:
     """Translate the campaign's global backend choice into subprocess CLI flags.
@@ -30,15 +34,15 @@ def _backend_flags(request: Request) -> list[str]:
     service = getattr(request.app.state, "config_service", None)
     if service is None:
         return []
-    sd = service.resolved()["ui"]["session_doc"]
-    backend = sd.get("backend")
-    if backend == "dgx":
+    backends = SessionEditorConfigService(service).resolved_editor_config().backends
+    active = backends.active
+    if active == "dgx":
         return backend_cli_args(
-            backend, model=sd.get("dgx_model") or wiring_get("dgx_model"),
-            endpoint=sd.get("dgx_endpoint") or wiring_get("dgx_endpoint"))
-    if backend == "openrouter":
-        return backend_cli_args(backend, model=sd.get("openrouter_model"))
-    return backend_cli_args(backend)  # anthropic -> [], claude-code -> ["--backend", "claude-code"]
+            active, model=backends.dgx.model or wiring_get("dgx_model"),
+            endpoint=backends.dgx.endpoint or wiring_get("dgx_endpoint"))
+    if active == "openrouter":
+        return backend_cli_args(active, model=backends.openrouter.model)
+    return backend_cli_args(active)  # anthropic -> [], claude-code -> ["--backend", "claude-code"]
 
 
 def _cmd_opt(cmd: list[str], flag: str, value: str | int | None) -> None:

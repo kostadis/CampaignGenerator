@@ -5,6 +5,16 @@ docs/configuration.md (``sd_narrate_tokens: '4000'`` shadowing the
 in-code default ``16000``) becomes structurally impossible: a stringy
 int is coerced at the type boundary, an empty string falls back to
 the default.
+
+The session-editor config isolation (Phase 5,
+docs/config/session-editor-isolation.md) removed ``session_doc``/
+``profiles`` from ``UISection`` — that data now lives in the Session Doc
+Editor's own ``<config>/session_doc.yaml`` (see
+``server/session_editor_config_shared.py`` /
+``tests/test_session_editor_config_service.py``), not in
+``server/config_models.py``. The stringy-int / empty-string-path coercion
+behavior this module's motivating example describes is demonstrated below
+against fields that are still part of ``UISection``/``LocalConfig``.
 """
 
 from __future__ import annotations
@@ -20,41 +30,30 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from server.config_models import (
     SCHEMA_VERSION,
     LocalConfig,
-    SessionDocSection,
+    ServerSection,
     UIState,
     UI_SECTION_NAMES,
     VttSummarySection,
 )
 
 
-class TestSessionDocCoercion:
+class TestIntCoercion:
+    """The same native string->int coercion the removed
+    ``SessionDocSection.narrate_tokens`` example demonstrated, exercised
+    here against ``ServerSection.port`` — still a plain, currently-used
+    typed int field."""
+
     def test_stringy_int_becomes_int(self):
-        s = SessionDocSection(narrate_tokens="4000")
-        assert s.narrate_tokens == 4000
-        assert isinstance(s.narrate_tokens, int)
+        s = ServerSection(port="6001")
+        assert s.port == 6001
+        assert isinstance(s.port, int)
 
-    def test_empty_narrate_tokens_falls_to_default(self):
+    def test_empty_int_string_raises(self):
         # Empty string would normally fail int validation. The custom
-        # _empty_to_none BeforeValidator on path-style fields handles
-        # empty strings, but narrate_tokens is a plain int — pydantic
-        # will reject "". Confirm the behaviour and document it.
+        # _empty_to_none BeforeValidator handles empty strings only on
+        # path-style (OptStr) fields — a plain int field still rejects "".
         with pytest.raises(ValidationError):
-            SessionDocSection(narrate_tokens="")
-
-    def test_empty_string_path_becomes_none(self):
-        s = SessionDocSection(voice_dir="   ")
-        assert s.voice_dir is None
-
-    def test_default_narrate_tokens_is_16000(self):
-        s = SessionDocSection()
-        assert s.narrate_tokens == 16000
-
-    def test_unknown_field_preserved_as_extra(self):
-        # extra="allow" lets sections grow without model edits during
-        # transition. Pages can read both typed and extra fields.
-        s = SessionDocSection(some_new_field="hi")
-        dumped = s.model_dump()
-        assert dumped["some_new_field"] == "hi"
+            ServerSection(port="")
 
 
 class TestVttSummaryCoercion:
@@ -64,6 +63,13 @@ class TestVttSummaryCoercion:
         assert s.output is None
         assert s.extract_dir == "x"
 
+    def test_unknown_field_preserved_as_extra(self):
+        # extra="allow" lets sections grow without model edits during
+        # transition. Pages can read both typed and extra fields.
+        s = VttSummarySection(some_new_field="hi")
+        dumped = s.model_dump()
+        assert dumped["some_new_field"] == "hi"
+
 
 class TestUIState:
     def test_default_version_is_schema_version(self):
@@ -72,22 +78,44 @@ class TestUIState:
     def test_section_names_match_ui_attributes(self):
         # The migrator validates section names against UI_SECTION_NAMES;
         # they must stay in sync with the model fields.
-        assert "session_doc" in UI_SECTION_NAMES
         assert "vtt_summary" in UI_SECTION_NAMES
         assert "experimental" in UI_SECTION_NAMES
+        # session_doc/profiles moved out of ui_state.yaml entirely in the
+        # session-editor config isolation (Phase 5) — they now live in the
+        # Session Doc Editor's own <config>/session_doc.yaml, so they must
+        # NOT be writable typed UI sections any more.
+        assert "session_doc" not in UI_SECTION_NAMES
+        assert "profiles" not in UI_SECTION_NAMES
 
     def test_round_trip_preserves_typed_values(self):
         original = UIState()
-        original.ui.session_doc.narrate_tokens = 12000
-        original.ui.session_doc.voice_dir = "voice/"
+        original.ui.vtt_summary.session_summary = "session-summary.md"
+        original.ui.grounding.summaries = "summaries.md"
         dumped = original.model_dump(mode="json")
         round_tripped = UIState.model_validate(dumped)
-        assert round_tripped.ui.session_doc.narrate_tokens == 12000
-        assert round_tripped.ui.session_doc.voice_dir == "voice/"
+        assert round_tripped.ui.vtt_summary.session_summary == "session-summary.md"
+        assert round_tripped.ui.grounding.summaries == "summaries.md"
 
     def test_legacy_unmigrated_quarantine_preserved(self):
         s = UIState(legacy={"unmigrated": {"weird_key": "value"}})
         assert s.legacy.unmigrated == {"weird_key": "value"}
+
+    def test_old_ui_state_with_session_doc_loads_and_drops_it(self):
+        # extra="ignore" (pydantic v2 default) on UISection means an old
+        # ui_state.yaml carrying ui.session_doc / ui.profiles still loads
+        # without error — those keys are just dropped, not preserved.
+        raw = {
+            "version": 2,
+            "ui": {
+                "session_doc": {"narrate_tokens": 4000},
+                "profiles": {"profiles": [{"name": "Fast"}], "active": "Fast"},
+                "vtt_summary": {"input": "x.vtt"},
+            },
+        }
+        state = UIState.model_validate(raw)
+        assert state.ui.vtt_summary.input == "x.vtt"
+        assert not hasattr(state.ui, "session_doc")
+        assert not hasattr(state.ui, "profiles")
 
 
 class TestLocalConfig:

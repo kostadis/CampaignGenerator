@@ -11,6 +11,16 @@ The hard invariants this file freezes:
   - Concurrent updates serialize on the section lock.
   - A `--session-dir` boot override rebases stale absolute paths persisted
     under the prior session dir.
+
+Session-editor config isolation (Phase 5,
+docs/config/session-editor-isolation.md): ``session_doc`` is no longer a UI
+section at all — that data lives in the Session Doc Editor's own
+``<config>/session_doc.yaml`` now (see
+``tests/test_session_editor_config_service.py``). These generic
+``CampaignConfigService`` mechanism tests, which used to exercise
+``session_doc`` purely as a convenient stand-in typed section, now use
+``vtt_summary`` (session-scoped path fields) and ``grounding`` (a
+campaign-scoped path field) instead — both remain real, live UI sections.
 """
 
 from __future__ import annotations
@@ -96,7 +106,7 @@ class TestConfigYamlNeverWritten:
     def test_config_yaml_unchanged_after_updates(self, fresh_campaign):
         original = (fresh_campaign / CONFIG_SUBDIR / TRACKED_CONFIG_NAME).read_bytes()
         svc = CampaignConfigService(fresh_campaign)
-        svc.update_section("session_doc", {"narrate_tokens": 12000})
+        svc.update_section("vtt_summary", {"session_name": "Session 12"})
         svc.update_local({"server": {"port": 6001}})
         assert (fresh_campaign / CONFIG_SUBDIR / TRACKED_CONFIG_NAME).read_bytes() == original
 
@@ -149,22 +159,22 @@ class TestBootOverrides:
     def test_boot_override_visible_in_resolved(self, fresh_campaign):
         svc = CampaignConfigService(
             fresh_campaign,
-            boot_overrides={"session_doc.narrate_tokens": 8000},
+            boot_overrides={"vtt_summary.session_name": "Boot Session"},
         )
         resolved = svc.resolved()
-        assert resolved["ui"]["session_doc"]["narrate_tokens"] == 8000
+        assert resolved["ui"]["vtt_summary"]["session_name"] == "Boot Session"
 
     def test_boot_override_does_not_persist(self, fresh_campaign):
         # First instance with override.
         CampaignConfigService(
             fresh_campaign,
-            boot_overrides={"session_doc.narrate_tokens": 8000},
+            boot_overrides={"vtt_summary.session_name": "Boot Session"},
         )
         # Second instance with no override sees the file's value (default).
         second = CampaignConfigService(fresh_campaign)
         resolved = second.resolved()
-        # narrate_tokens default is 16000 from SessionDocSection.
-        assert resolved["ui"]["session_doc"]["narrate_tokens"] == 16000
+        # session_name default is None from VttSummarySection.
+        assert resolved["ui"]["vtt_summary"]["session_name"] is None
 
     def test_runtime_dotted_override_lands_in_runtime(self, fresh_campaign):
         svc = CampaignConfigService(
@@ -183,25 +193,26 @@ class TestFreshCampaign:
         svc = CampaignConfigService(fresh_campaign)
         assert svc.load_warnings == []
         # Defaults applied from the schema.
-        assert svc.ui_state.ui.session_doc.narrate_tokens == 16000
-        # Bool defaults survive a YAML round-trip even when persisted as null.
-        assert svc.ui_state.ui.session_doc.prose_mode is False
+        assert svc.ui_state.ui.vtt_summary.session_summary is None
+        assert svc.ui_state.ui.vtt_summary.context == []
 
-    def test_null_bool_in_persisted_file_does_not_block_load(self, fresh_campaign):
-        # The exact failure mode that triggered the --session-dir bug: a
-        # ui_state.yaml with `prose_mode: null` from a prior write.
+    def test_old_ui_state_with_stale_session_doc_loads_fine(self, fresh_campaign):
+        # A pre-Phase-5 ui_state.yaml still carrying a ui.session_doc /
+        # ui.profiles block (nobody has run the manual data lift yet, or
+        # the one-shot server/migrate_session_doc.py CLI). UISection's
+        # default extra="ignore" means construction must NOT fail — the
+        # stale block is just dropped; SessionEditorConfigService reads
+        # its own session_doc.yaml instead.
         (fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).write_text(
-            "version: 2\nui:\n  session_doc:\n    prose_mode: null\n"
-            "    reflections: null\n"
-            "    batch: null\n    scrub_enabled: null\n",
+            "version: 2\nui:\n  session_doc:\n    narrate_tokens: 4000\n"
+            "    prose_mode: null\n"
+            "  profiles:\n    profiles: []\n    active: null\n",
             encoding="utf-8",
         )
         svc = CampaignConfigService(fresh_campaign)
-        sd = svc.ui_state.ui.session_doc
-        assert sd.prose_mode is False
-        assert sd.reflections is False
-        assert sd.batch is False
-        assert sd.scrub_enabled is False
+        assert svc.load_warnings == []
+        assert "session_doc" not in svc.resolved()["ui"]
+        assert "profiles" not in svc.resolved()["ui"]
 
 
 # ── update_section / update_local ─────────────────────────────────────────
@@ -210,24 +221,31 @@ class TestFreshCampaign:
 class TestUpdateSection:
     def test_update_section_persists(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
-        svc.update_section("session_doc", {"narrate_tokens": 12000})
+        svc.update_section("vtt_summary", {"session_name": "Session 12"})
 
         # Re-read from disk.
         on_disk = yaml.safe_load((fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_text())
-        assert on_disk["ui"]["session_doc"]["narrate_tokens"] == 12000
+        assert on_disk["ui"]["vtt_summary"]["session_name"] == "Session 12"
 
     def test_update_section_merges_not_replaces(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
-        svc.update_section("session_doc", {"narrate_tokens": 12000})
-        svc.update_section("session_doc", {"voice_dir": "voice/"})
+        svc.update_section("vtt_summary", {"session_name": "Session 12"})
+        svc.update_section("vtt_summary", {"input": "session.vtt"})
         # Both fields present after the second call.
-        assert svc.ui_state.ui.session_doc.narrate_tokens == 12000
-        assert svc.ui_state.ui.session_doc.voice_dir == "voice/"
+        assert svc.ui_state.ui.vtt_summary.session_name == "Session 12"
+        assert svc.ui_state.ui.vtt_summary.input == "session.vtt"
 
     def test_unknown_section_rejected(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
         with pytest.raises(ValueError, match="unknown UI section"):
             svc.update_section("server", {"port": 6001})
+
+    def test_session_doc_section_rejected(self, fresh_campaign):
+        # Phase 5: session_doc left ui_state.yaml entirely, so it's no
+        # longer among UI_SECTION_NAMES.
+        svc = CampaignConfigService(fresh_campaign)
+        with pytest.raises(ValueError, match="unknown UI section"):
+            svc.update_section("session_doc", {"narrate_tokens": 12000})
 
     def test_update_local(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
@@ -244,7 +262,7 @@ class TestAtomicWrites:
         self, fresh_campaign, monkeypatch
     ):
         svc = CampaignConfigService(fresh_campaign)
-        svc.update_section("session_doc", {"narrate_tokens": 11111})
+        svc.update_section("vtt_summary", {"session_name": "11111"})
         before = (fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_bytes()
 
         original_replace = os.replace
@@ -255,7 +273,7 @@ class TestAtomicWrites:
         monkeypatch.setattr(os, "replace", boom)
 
         with pytest.raises(OSError, match="simulated"):
-            svc.update_section("session_doc", {"narrate_tokens": 22222})
+            svc.update_section("vtt_summary", {"session_name": "22222"})
 
         # Original file unchanged.
         assert (fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_bytes() == before
@@ -269,7 +287,7 @@ class TestAtomicWrites:
 
         def writer(value: int) -> None:
             try:
-                svc.update_section("session_doc", {"narrate_tokens": value})
+                svc.update_section("vtt_summary", {"session_name": str(value)})
             except BaseException as e:
                 errors.append(e)
 
@@ -284,7 +302,7 @@ class TestAtomicWrites:
         on_disk = yaml.safe_load((fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_text())
         assert isinstance(on_disk, dict)
         # Whatever the last writer was, it's a valid value from our range.
-        assert 100 <= on_disk["ui"]["session_doc"]["narrate_tokens"] < 200
+        assert 100 <= int(on_disk["ui"]["vtt_summary"]["session_name"]) < 200
 
 
 # ── Resolved view ────────────────────────────────────────────────────────
@@ -294,13 +312,13 @@ class TestResolvedView:
     def test_campaign_relative_path_resolves_against_campaign_dir(
         self, fresh_campaign
     ):
-        # voice_dir is campaign-scoped (lives at <campaign>/voice/).
+        # summaries is campaign-scoped (lives at <campaign>/summaries.md).
         svc = CampaignConfigService(fresh_campaign)
-        svc.update_section("session_doc", {"voice_dir": "voice/"})
+        svc.update_section("grounding", {"summaries": "summaries.md"})
         resolved = svc.resolved()
-        voice = resolved["ui"]["session_doc"]["voice_dir"]
-        assert Path(voice).is_absolute()
-        assert voice == str((fresh_campaign / "voice").resolve())
+        summaries = resolved["ui"]["grounding"]["summaries"]
+        assert Path(summaries).is_absolute()
+        assert summaries == str((fresh_campaign / "summaries.md").resolve())
 
     def test_session_relative_path_resolves_against_session_dir(
         self, fresh_campaign
@@ -308,12 +326,12 @@ class TestResolvedView:
         # The user-reported bug: a relative `session_summary` was landing
         # in the campaign root instead of the session dir.
         svc = CampaignConfigService(fresh_campaign)
-        svc.update_section("session_doc", {"session_summary": "session-summary.md"})
+        svc.update_section("vtt_summary", {"session_summary": "session-summary.md"})
         svc.update_section("grounding", {"summaries": "summaries.md"})
         # Without a session_dir set, the legacy fallback to campaign_dir
         # still applies.
         no_sd = svc.resolved()
-        assert no_sd["ui"]["session_doc"]["session_summary"] == \
+        assert no_sd["ui"]["vtt_summary"]["session_summary"] == \
             str((fresh_campaign / "session-summary.md").resolve())
 
         # With session_dir set, session-scoped paths resolve there.
@@ -322,12 +340,12 @@ class TestResolvedView:
             boot_overrides={"runtime.session_dir": "summaries/sess1"},
         )
         svc2.update_section(
-            "session_doc", {"session_summary": "session-summary.md"}
+            "vtt_summary", {"session_summary": "session-summary.md"}
         )
         svc2.update_section("grounding", {"summaries": "summaries.md"})
         with_sd = svc2.resolved()
         # session-scoped → resolves against session_dir
-        assert with_sd["ui"]["session_doc"]["session_summary"] == str(
+        assert with_sd["ui"]["vtt_summary"]["session_summary"] == str(
             (fresh_campaign / "summaries" / "sess1" / "session-summary.md").resolve()
         )
         # campaign-scoped → still campaign root, even with session_dir set
@@ -339,17 +357,19 @@ class TestResolvedView:
         # Absolute paths pass through regardless of base hint.
         elsewhere = tmp_path / "elsewhere" / "file.md"
         svc = CampaignConfigService(fresh_campaign)
-        svc.update_section("session_doc", {"session_summary": str(elsewhere)})
+        svc.update_section("vtt_summary", {"session_summary": str(elsewhere)})
         resolved = svc.resolved()
-        assert resolved["ui"]["session_doc"]["session_summary"] == \
+        assert resolved["ui"]["vtt_summary"]["session_summary"] == \
             str(elsewhere.resolve())
 
     def test_non_path_fields_pass_through(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
-        svc.update_section("session_doc", {"narrate_tokens": 12000, "narration_genre": "lyric"})
+        svc.update_section(
+            "vtt_summary", {"date": "2026-07-01", "session_name": "Session 12"}
+        )
         resolved = svc.resolved()
-        assert resolved["ui"]["session_doc"]["narrate_tokens"] == 12000
-        assert resolved["ui"]["session_doc"]["narration_genre"] == "lyric"
+        assert resolved["ui"]["vtt_summary"]["date"] == "2026-07-01"
+        assert resolved["ui"]["vtt_summary"]["session_name"] == "Session 12"
 
     def test_resolved_includes_campaign_dir(self, fresh_campaign):
         svc = CampaignConfigService(fresh_campaign)
@@ -360,7 +380,7 @@ class TestResolvedView:
         """The user-reported bug: ``ui_state.yaml`` had session-scoped fields
         persisted as absolute paths under the previous session dir. Booting
         with ``--session-dir`` overrode ``runtime.session_dir`` but the
-        absolute paths in ``ui.session_doc.*`` passed through unchanged. The
+        absolute paths in ``ui.vtt_summary.*`` passed through unchanged. The
         rebase pass in ``resolved()`` is the fix."""
         old_sd = fresh_campaign / "summaries" / "20260505"
         new_sd = fresh_campaign / "summaries" / "20260512"
@@ -371,13 +391,16 @@ class TestResolvedView:
         # behind in ui_state.yaml.
         svc_init = CampaignConfigService(fresh_campaign)
         svc_init.update_section(
-            "session_doc",
+            "vtt_summary",
             {
-                "scene_extractions_dir": str(old_sd / "scene_extractions_new"),
-                "narration_dir": str(old_sd / "narration"),
+                "extract_dir": str(old_sd / "scene_extractions_new"),
+                "output": str(old_sd / "narration"),
                 "session_summary": str(old_sd / "session-summary.md"),
-                "voice_dir": str(fresh_campaign / "voice"),  # campaign-scoped — must NOT rebase
             },
+        )
+        svc_init.update_section(
+            # campaign-scoped — must NOT rebase
+            "grounding", {"summaries": str(fresh_campaign / "summaries.md")},
         )
         svc_init.update_runtime({"session_dir": str(old_sd)})
 
@@ -389,25 +412,25 @@ class TestResolvedView:
         r = svc.resolved()
 
         assert r["runtime"]["session_dir"] == str(new_sd.resolve())
-        assert r["ui"]["session_doc"]["scene_extractions_dir"] == str(
+        assert r["ui"]["vtt_summary"]["extract_dir"] == str(
             (new_sd / "scene_extractions_new").resolve()
         )
-        assert r["ui"]["session_doc"]["narration_dir"] == str(
+        assert r["ui"]["vtt_summary"]["output"] == str(
             (new_sd / "narration").resolve()
         )
-        assert r["ui"]["session_doc"]["session_summary"] == str(
+        assert r["ui"]["vtt_summary"]["session_summary"] == str(
             (new_sd / "session-summary.md").resolve()
         )
         # Campaign-scoped path stays put.
-        assert r["ui"]["session_doc"]["voice_dir"] == str(
-            (fresh_campaign / "voice").resolve()
+        assert r["ui"]["grounding"]["summaries"] == str(
+            (fresh_campaign / "summaries.md").resolve()
         )
 
     def test_rebase_handles_persisted_paths_under_unrelated_session(
         self, fresh_campaign
     ):
         """The Phandalin failure mode: persisted runtime.session_dir was
-        ``summaries/20260429`` but session_doc fields were under
+        ``summaries/20260429`` but vtt_summary fields were under
         ``summaries/20260505`` (different historical save). The rebase pass
         must key off the path PATTERN, not the persisted runtime value."""
         for d in (
@@ -422,8 +445,8 @@ class TestResolvedView:
 
         svc_init = CampaignConfigService(fresh_campaign)
         svc_init.update_section(
-            "session_doc",
-            {"narration_dir": str(wrong_sd / "narration")},
+            "vtt_summary",
+            {"output": str(wrong_sd / "narration")},
         )
         svc_init.update_runtime({"session_dir": str(stale_runtime_sd)})
 
@@ -432,7 +455,7 @@ class TestResolvedView:
             boot_overrides={"runtime.session_dir": str(new_sd)},
         )
         r = svc.resolved()
-        assert r["ui"]["session_doc"]["narration_dir"] == str(
+        assert r["ui"]["vtt_summary"]["output"] == str(
             (new_sd / "narration").resolve()
         )
 
@@ -450,14 +473,14 @@ class TestResolvedView:
 
         svc_init = CampaignConfigService(fresh_campaign)
         svc_init.update_section(
-            "session_doc", {"narration_dir": str(old_sd / "narration")}
+            "vtt_summary", {"output": str(old_sd / "narration")}
         )
         svc_init.update_runtime({"session_dir": str(runtime_sd)})
 
         # No boot override.
         svc = CampaignConfigService(fresh_campaign)
         r = svc.resolved()
-        assert r["ui"]["session_doc"]["narration_dir"] == str(
+        assert r["ui"]["vtt_summary"]["output"] == str(
             (old_sd / "narration").resolve()
         )
 
@@ -472,7 +495,7 @@ class TestResolvedView:
 
         svc_init = CampaignConfigService(fresh_campaign)
         svc_init.update_section(
-            "session_doc", {"narration_dir": str(old_sd / "narration")}
+            "vtt_summary", {"output": str(old_sd / "narration")}
         )
         svc_init.update_runtime({"session_dir": str(old_sd)})
 
@@ -480,11 +503,11 @@ class TestResolvedView:
             fresh_campaign,
             boot_overrides={
                 "runtime.session_dir": str(new_sd),
-                "session_doc.narration_dir": str(custom),
+                "vtt_summary.output": str(custom),
             },
         )
         r = svc.resolved()
-        assert r["ui"]["session_doc"]["narration_dir"] == str(custom.resolve())
+        assert r["ui"]["vtt_summary"]["output"] == str(custom.resolve())
 
 
 # ── update_runtime ────────────────────────────────────────────────────────
@@ -523,14 +546,14 @@ class TestRelativizeOnWrite:
         svc = CampaignConfigService(fresh_campaign)
         svc.update_runtime({"session_dir": str(session_dir)})
         svc.update_section(
-            "session_doc",
-            {"scene_extractions_dir": str(session_dir / "scene_extractions")},
+            "vtt_summary",
+            {"extract_dir": str(session_dir / "scene_extractions")},
         )
         # Raw stored value is relative, even though an absolute path was sent.
-        assert svc.ui_state.ui.session_doc.scene_extractions_dir == "scene_extractions"
+        assert svc.ui_state.ui.vtt_summary.extract_dir == "scene_extractions"
         # resolved() still reports it absolute, anchored under the session dir.
         resolved = svc.resolved()
-        assert resolved["ui"]["session_doc"]["scene_extractions_dir"] == str(
+        assert resolved["ui"]["vtt_summary"]["extract_dir"] == str(
             (session_dir / "scene_extractions").resolve()
         )
 
@@ -540,11 +563,11 @@ class TestRelativizeOnWrite:
         svc = CampaignConfigService(fresh_campaign)
         svc.update_runtime({"session_dir": str(session_dir)})
         svc.update_section(
-            "session_doc", {"scene_extractions_dir": "/totally/other/place"}
+            "vtt_summary", {"extract_dir": "/totally/other/place"}
         )
         # A genuine out-of-tree override has no relative form — stored as-is.
         assert (
-            svc.ui_state.ui.session_doc.scene_extractions_dir
+            svc.ui_state.ui.vtt_summary.extract_dir
             == "/totally/other/place"
         )
 
@@ -556,11 +579,11 @@ class TestRelativizeOnWrite:
 
         svc = CampaignConfigService(fresh_campaign)
         svc.update_section(
-            "session_doc", {"scene_extractions_dir": "scene_extractions"}
+            "vtt_summary", {"extract_dir": "scene_extractions"}
         )
         svc.update_runtime({"session_dir": str(session_a)})
         resolved_a = svc.resolved()
-        assert resolved_a["ui"]["session_doc"]["scene_extractions_dir"] == str(
+        assert resolved_a["ui"]["vtt_summary"]["extract_dir"] == str(
             (session_a / "scene_extractions").resolve()
         )
 
@@ -568,6 +591,6 @@ class TestRelativizeOnWrite:
         # exact behavior that broke when the value was stored absolute.
         svc.update_runtime({"session_dir": str(session_b)})
         resolved_b = svc.resolved()
-        assert resolved_b["ui"]["session_doc"]["scene_extractions_dir"] == str(
+        assert resolved_b["ui"]["vtt_summary"]["extract_dir"] == str(
             (session_b / "scene_extractions").resolve()
         )

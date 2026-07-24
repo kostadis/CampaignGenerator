@@ -49,42 +49,6 @@ class _LooseSection(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
-class SessionDocSection(BaseModel):
-    """``ui.session_doc`` — Session Doc Editor (post-session narrative)."""
-
-    model_config = ConfigDict(extra="allow")
-
-    session: OptStr = None
-    extract_dir: OptStr = None
-    roleplay_dir: OptStr = None
-    output_dir: OptStr = None
-    summary_dir: OptStr = None
-    session_summary: OptStr = None
-    scene_extractions_dir: OptStr = None
-    narration_dir: OptStr = None
-    party: OptStr = None
-    voice_dir: OptStr = None
-    examples_dir: OptStr = None
-    characters: OptStr = None
-    gm_player: OptStr = None
-    narrate_tokens: int = 16000
-    prose_mode: OptBool = False
-    reflections: OptBool = False
-    narration_genre: OptStr = None
-    batch: OptBool = False
-    session_name: OptStr = None
-    context: list[str] = Field(default_factory=list)
-    # LLM backend selector + DGX overrides. Endpoint/model defaults are
-    # applied at the route boundary in `scene_editor._backend_flags()` so a
-    # null value here means "use the runtime default", not "unset".
-    backend: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
-    dgx_endpoint: OptStr = None
-    dgx_model: OptStr = None
-    openrouter_model: OptStr = None
-    scrub_enabled: OptBool = False
-    scrub_tokens: int = 16000
-
-
 class VttSummarySection(BaseModel):
     """``ui.vtt_summary`` — VTT Summary page."""
 
@@ -123,20 +87,6 @@ class ProfileEntry(BaseModel):
 
     name: str
     knobs: dict[str, Any] = Field(default_factory=dict)
-
-
-class ProfilesSection(BaseModel):
-    """``ui.profiles`` — named knob presets for the Session Doc Editor.
-
-    The active profile's knobs are mirrored into ``ui.session_doc`` at the
-    moment of activation, so the rest of the system keeps reading from the
-    flat overlay unchanged.
-    """
-
-    model_config = ConfigDict(extra="allow")
-
-    profiles: list[ProfileEntry] = Field(default_factory=list)
-    active: OptStr = None
 
 
 class BackendProfile(BaseModel):
@@ -181,11 +131,9 @@ class EnsembleSection(BaseModel):
 class UISection(BaseModel):
     """All per-page state, one attribute per page or group of pages."""
 
-    session_doc: SessionDocSection = Field(default_factory=SessionDocSection)
     vtt_summary: VttSummarySection = Field(default_factory=VttSummarySection)
     grounding: GroundingSection = Field(default_factory=GroundingSection)
     ensemble: EnsembleSection = Field(default_factory=EnsembleSection)
-    profiles: ProfilesSection = Field(default_factory=ProfilesSection)
     campaign_state: _LooseSection = Field(default_factory=_LooseSection)
     distill: _LooseSection = Field(default_factory=_LooseSection)
     party: _LooseSection = Field(default_factory=_LooseSection)
