@@ -222,8 +222,10 @@ def main() -> None:
         "work_dir": str(Path(".").resolve()),
     }
 
-    # Initialize editor with config
-    scene_editor.init_editor_config(config)
+    # (Phase 2) The editor's live config is now served per-request by
+    # SessionEditorConfigService via a Depends, not seeded into a module
+    # global here. Boot-flag -> editor path derivation is unified in Phase 4;
+    # the `config` dict above now only feeds the boot log below.
 
     # Construct the unified config service. Routers read everything through
     # it; if no campaign directory can be determined, fail loudly rather
