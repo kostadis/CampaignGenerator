@@ -3,46 +3,53 @@
 ``docs/config/platform-isolation.md`` splits the old ``CampaignConfigService``
 (610 lines) into two roles that were previously fused: the permanent
 **platform** — path resolution, ``campaign_dir``/``config_dir``, boot
-overrides, the read-only ``config.yaml``/wiring view, and (with one
-temporary wrinkle below) ``runtime.{default_model, session_dir}`` — and the
-transitional **residual landlord** of ten un-isolated ``ui.<section>`` blobs,
-which keeps the (renamed, no-alias) ``UIStateService``.
+overrides, the read-only ``config.yaml``/wiring view, and (as of Phase 3, O3)
+``runtime.{default_model, session_dir}`` outright — and the transitional
+**residual landlord** of ten un-isolated ``ui.<section>`` blobs, which keeps
+the (renamed, no-alias) ``UIStateService``.
 
 ``PlatformConfigService`` is the foundational object: it resolves and
 validates ``campaign_dir``, creates ``config_path_base``, loads the
-human-owned ``config.yaml`` (``tracked``) and the machine-local
-``.campaigngenerator.local.yaml`` (``local``) — and, as the LAST step of its
-own construction, builds ``self.uis = UIStateService(self)``. Every other
+human-owned ``config.yaml`` (``tracked``), the machine-local
+``.campaigngenerator.local.yaml`` (``local``), and its own ``<config>/
+platform.yaml`` (``runtime``) — and, as the LAST step of its own
+construction, builds ``self.uis = UIStateService(self)``. Every other
 per-page config service (``SessionEditorConfigService``,
 ``PlanningConfigService``) composes THIS class the same way
 ``UIStateService`` does — one platform, several tenants.
 
-## Why ``runtime`` is delegated, not owned outright, this phase
+## Why ``platform.yaml`` must load before ``UIStateService`` is constructed
 
-``runtime.{default_model, session_dir}`` is conceptually platform data (the
-sidebar model picker, the session-resolution anchor), but it is still
-physically persisted INSIDE ``<config>/ui_state.yaml`` — the single document
-``UIStateService`` reads and writes whole (atomic temp+replace, one write
-lock covering every ``ui.<section>`` write). Splitting ``runtime`` into its
-own file is Phase 3 (O3 in the design doc); until then, this class cannot
-read or write it without going through the object that owns that document.
-So: ``update_runtime``/``runtime`` delegate to ``self.uis.update_runtime``/
-``self.uis.ui_state.runtime``. Phase 3 inverts this — ``runtime`` moves into
-its own ``<config>/platform.yaml`` that THIS class owns outright, and
-``UIStateService`` stops knowing ``runtime`` ever lived next to it.
+Load order is load-bearing here, not incidental. ``UIStateService.__init__``
+calls ``_normalize_stored_paths()``, which relativizes any absolute
+``ui.vtt_summary``/``ui.grounding`` path fields against the CURRENTLY
+PERSISTED ``runtime.session_dir`` — and that value now lives in
+``platform.yaml``, a different document from the one ``UIStateService``
+itself owns. If ``self._doc`` (this class's in-memory copy of
+``platform.yaml``) were populated AFTER ``self.uis = UIStateService(self)``,
+that normalize pass would read stale/default ``runtime`` data (whatever
+``PlatformRuntime()``'s bare defaults are) instead of the real persisted
+session dir — silently re-anchoring session-scoped paths rather than
+erroring, exactly the failure mode the design doc's Phase 3 risk section
+warns about. So ``self._doc`` is loaded in ``__init__`` BEFORE the
+``UIStateService(self)`` call, alongside ``self._tracked``/``self._local``.
 
-## Construction-order invariant for ``resolve_path``/``relativize_path``
+## No more construction-order coupling on ``resolve_path``/``relativize_path``
 
-``self.uis`` does not exist until ``UIStateService(self)`` returns, so
-``resolve_path``/``relativize_path``'s ``base="session"`` fallback (which
-reads ``self.uis.ui_state.runtime.session_dir`` when the caller doesn't pass
-``session_dir`` explicitly) would raise ``AttributeError`` if it fired
-*during* that construction call. It never does: every call
-``UIStateService.__init__`` makes back into ``self.resolve_path``/
-``self.relativize_path`` (via ``_normalize_stored_paths``) passes
-``session_dir`` explicitly, so the fallback branch is unreachable until
-after ``self.uis`` is assigned. Do not remove that explicit argument from
-``UIStateService`` without re-checking this invariant.
+Through Phase 2, ``resolve_path``/``relativize_path``'s ``base="session"``
+fallback read ``self.uis.ui_state.runtime.session_dir`` — data owned by the
+object under construction — which meant the fallback branch had to stay
+provably unreachable during ``UIStateService.__init__`` (see that class's
+git history for the invariant this used to require). Phase 3 dissolves that
+coupling entirely: the fallback now reads ``self._doc.runtime.session_dir``,
+platform-local state that exists before ``self.uis`` is ever touched. There
+is no invariant left to violate — ``UIStateService`` could call
+``self.platform.resolve_path`` from the first line of its own ``__init__``
+and it would still be safe. (It still passes ``session_dir`` explicitly in
+``_normalize_stored_paths``, matching the boot-override plumbing used
+everywhere else — not because it has to, but because that is the
+established pattern for making the effective session_dir explicit at each
+call site.)
 """
 
 from __future__ import annotations
@@ -52,15 +59,20 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from pydantic import ValidationError
 
 from server.config_service import ConfigError, UIStateService
 from server.platform_config_shared import (
     LOCAL_CONFIG_NAME,
+    PLATFORM_CONFIG_NAME,
     PlatformConfig,
+    PlatformDocument,
     PlatformLocalConfig,
     PlatformRuntime,
     load_local_config,
+    load_platform_config,
     save_local_config,
+    save_platform_config,
 )
 
 # ── Filenames ──────────────────────────────────────────────────────────────
@@ -107,8 +119,14 @@ class PlatformConfigService:
         self._tracked: dict = self._load_tracked()
         self._local, local_warnings = load_local_config(self.local_config_path)
         self.load_warnings.extend(local_warnings)
+        # Must precede `UIStateService(self)` below — see class docstring's
+        # "Why platform.yaml must load before UIStateService is constructed".
+        self._doc: PlatformDocument = self._load_platform_doc()
 
-        # Last step — see class docstring's construction-order invariant.
+        # Last step — this used to carry a construction-order invariant
+        # (resolve_path's session fallback reading data owned by the object
+        # under construction); that coupling no longer exists, see class
+        # docstring.
         self.uis: UIStateService = UIStateService(self)
 
     # ── Path properties ────────────────────────────────────────────────
@@ -120,6 +138,10 @@ class PlatformConfigService:
     @property
     def local_config_path(self) -> Path:
         return self.config_path_base / LOCAL_CONFIG_NAME
+
+    @property
+    def platform_config_path(self) -> Path:
+        return self.config_path_base / PLATFORM_CONFIG_NAME
 
     # ── Loaders ────────────────────────────────────────────────────────
 
@@ -142,6 +164,21 @@ class PlatformConfigService:
             )
         return data
 
+    def _load_platform_doc(self) -> PlatformDocument:
+        """Load ``platform.yaml``, converting the shared loader's
+        ``ValueError``/``ValidationError`` into ``ConfigError`` so a
+        construction-time failure surfaces through the one error type
+        ``server/main.py`` already catches and reports — same treatment
+        ``_load_tracked`` and ``UIStateService._load_ui_state`` give their
+        own documents. See ``load_platform_config``'s docstring for why this
+        file is NOT warn-and-drop like the local config."""
+        try:
+            return load_platform_config(self.platform_config_path)
+        except (ValueError, ValidationError) as exc:
+            raise ConfigError(
+                f"{PLATFORM_CONFIG_NAME} failed to load: {exc}"
+            ) from exc
+
     # ── Read views ──────────────────────────────────────────────────────
 
     @property
@@ -155,12 +192,10 @@ class PlatformConfigService:
 
     @property
     def runtime(self) -> PlatformRuntime:
-        """Current PERSISTED runtime values — see module docstring for why
-        this reads through ``self.uis`` rather than owning storage
-        outright this phase."""
-        return PlatformRuntime.model_validate(
-            self.uis.ui_state.runtime.model_dump(mode="json")
-        )
+        """Current PERSISTED runtime values, read straight from this
+        service's own in-memory copy of ``platform.yaml`` — no delegation,
+        as of Phase 3 (O3)."""
+        return self._doc.runtime
 
     @property
     def wiring(self) -> dict:
@@ -173,10 +208,11 @@ class PlatformConfigService:
         return load_wiring()
 
     def snapshot(self) -> PlatformConfig:
-        """A single strict, validated view combining ``runtime`` and
-        ``local``'s ``server``/``nav`` — the target shape of Phase 3's
-        ``<config>/platform.yaml`` for the ``runtime`` portion, assembled
-        fresh from today's two stores. See ``PlatformConfig``'s docstring."""
+        """A single strict, validated view combining ``runtime`` (from
+        ``platform.yaml``) and ``local``'s ``server``/``nav`` (from
+        ``.campaigngenerator.local.yaml``) — assembled fresh from today's
+        two stores. See ``PlatformConfig``'s docstring for why this spans
+        two files rather than being one document's literal shape."""
         return PlatformConfig(
             runtime=self.runtime, server=self._local.server, nav=self._local.nav
         )
@@ -199,14 +235,22 @@ class PlatformConfigService:
         return new_local
 
     def update_runtime(self, partial: dict[str, Any]) -> PlatformRuntime:
-        """Merge ``partial`` into ``runtime`` and persist atomically.
-
-        Delegates the actual write to ``self.uis.update_runtime`` — see
-        module docstring for why. Used by the sidebar model picker
-        (``default_model``) and SessionConfig (``session_dir``).
+        """Merge ``partial`` into ``runtime`` and persist atomically to
+        ``platform.yaml`` — owned outright as of Phase 3 (O3), no delegation
+        to ``UIStateService``. Used by the sidebar model picker
+        (``default_model``) and SessionConfig (``session_dir``). Guarded by
+        the same ``self._write_lock`` as ``update_local``: two independent
+        files, one lock, matching the pre-Phase-3 shape where a single lock
+        already covered unrelated writers on this class.
         """
-        new_state = self.uis.update_runtime(partial)
-        return PlatformRuntime.model_validate(new_state.runtime.model_dump(mode="json"))
+        with self._write_lock:
+            current = self._doc.runtime.model_dump(mode="json")
+            current.update(partial)
+            new_runtime = PlatformRuntime.model_validate(current)
+            new_doc = self._doc.model_copy(update={"runtime": new_runtime})
+            save_platform_config(self.platform_config_path, new_doc)
+            self._doc = new_doc
+        return new_runtime
 
     # ── Path resolution (single implementation) ─────────────────────────
 
@@ -229,9 +273,10 @@ class PlatformConfigService:
         ``session_dir`` lets the caller pass an explicit session-dir
         override (used by :meth:`UIStateService.resolved` to ensure boot
         CLI overrides of ``runtime.session_dir`` win without persisting).
-        When omitted, the value from the persisted ui_state is used — see
-        this class's docstring for the construction-order invariant that
-        makes that fallback safe.
+        When omitted, the value falls back to this service's own persisted
+        ``platform.yaml`` (``self._doc.runtime.session_dir``) — platform-local
+        state, so this fallback carries no construction-order hazard (see
+        class docstring).
         """
         if value is None:
             return None
@@ -242,7 +287,7 @@ class PlatformConfigService:
         if p.is_absolute():
             return str(p.resolve())
         if base == "session":
-            sd = session_dir or self.uis.ui_state.runtime.session_dir
+            sd = session_dir or self._doc.runtime.session_dir
             if sd:
                 base_path = Path(sd).expanduser()
                 if not base_path.is_absolute():
@@ -294,7 +339,7 @@ class PlatformConfigService:
             return value
 
         if base == "session":
-            sd = session_dir or self.uis.ui_state.runtime.session_dir
+            sd = session_dir or self._doc.runtime.session_dir
             if not sd:
                 return value
             base_path = Path(sd).expanduser()
@@ -315,9 +360,18 @@ class PlatformConfigService:
     def resolved(self) -> dict[str, Any]:
         """The combined ``{campaign_dir, ui, runtime, server, nav}`` view.
 
-        Stays implemented on ``UIStateService`` this phase (design doc's
-        "hard design question": minimal churn, Phase 3 revisits) — this is
-        a thin passthrough so ``app.state.platform.resolved()`` is the one
-        canonical call site regardless of which object does the work.
+        Stays implemented on ``UIStateService`` even after Phase 3 (design
+        doc's "hard design question", resolved in favor of minimal churn):
+        the boot-override application, the sibling-session rebase, and the
+        per-field path resolution over ``ui.<section>`` all still need
+        ``UIStateService``'s own ``_PATH_FIELDS`` knowledge, so moving just
+        the ``runtime`` slice's *source* (now ``self.platform.runtime``
+        instead of ``self._ui_state.runtime``) into that same method was the
+        smaller change. This is a thin passthrough so
+        ``app.state.platform.resolved()`` is the one canonical call site
+        regardless of which object does the work. The wire shape this
+        returns is unchanged by Phase 3 — see
+        ``docs/config/platform-isolation.md``'s "hard requirement" that the
+        frontend's ``resolved.runtime.*`` reads keep working.
         """
         return self.uis.resolved()

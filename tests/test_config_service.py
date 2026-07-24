@@ -15,14 +15,26 @@ The hard invariants this file freezes:
 Per docs/config/platform-isolation.md Phase 2, the old ``CampaignConfigService``
 is split into ``PlatformConfigService`` (path resolution, ``config.yaml``,
 ``.campaigngenerator.local.yaml``, boot overrides) and ``UIStateService``
-(the residual ``ui.<section>`` blobs + ``runtime``, this module). These
-tests construct the ``PlatformConfigService`` — the only public entry point
-now — and reach the residual service through ``platform.uis`` wherever a
-test exercises ``update_section``/``ui_state`` directly; everything else
-(``resolve_path``, ``resolved()``, ``update_runtime``) is called straight on
-the platform instance, since those either live there now or are thin
-passthroughs to ``uis``. Local-file and load-warnings coverage lives in
+(the residual ``ui.<section>`` blobs, this module). These tests construct
+the ``PlatformConfigService`` — the only public entry point now — and reach
+the residual service through ``platform.uis`` wherever a test exercises
+``update_section``/``ui_state`` directly; everything else (``resolve_path``,
+``resolved()``, ``update_runtime``) is called straight on the platform
+instance, since those either live there now or are thin passthroughs to
+``uis``. Local-file and load-warnings coverage lives in
 ``tests/test_platform_config_service.py``.
+
+Phase 3 of the same doc (O3) relocates ``runtime`` out of ``ui_state.yaml``
+entirely, into its own ``<config>/platform.yaml`` that
+``PlatformConfigService`` owns outright — ``UIState`` no longer has a
+``runtime`` field at all, so ``svc.uis.ui_state.runtime`` no longer exists;
+read it via ``svc.runtime`` instead. ``update_runtime``'s persisted-storage
+coverage (what file it writes, that it merges rather than replaces) moved to
+``tests/test_platform_config_service.py`` alongside the rest of Phase 3's
+runtime-ownership tests; what stays here is ``update_runtime``'s effect on
+THIS module's own concerns — session-scoped path resolution/relativization
+and the sibling-session rebase in ``resolved()`` — via calls to
+``svc.update_runtime(...)`` used purely to set up scenario state.
 
 Session-editor config isolation (Phase 5,
 docs/config/session-editor-isolation.md): ``session_doc`` is no longer a UI
@@ -532,22 +544,12 @@ class TestResolvedView:
 
 
 # ── update_runtime ────────────────────────────────────────────────────────
-
-
-class TestUpdateRuntime:
-    def test_update_runtime_persists(self, fresh_campaign):
-        svc = PlatformConfigService(fresh_campaign)
-        svc.update_runtime({"session_dir": "summaries/sess1", "default_model": "claude-opus-4-6"})
-        on_disk = yaml.safe_load((fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).read_text())
-        assert on_disk["runtime"]["session_dir"] == "summaries/sess1"
-        assert on_disk["runtime"]["default_model"] == "claude-opus-4-6"
-
-    def test_update_runtime_merges(self, fresh_campaign):
-        svc = PlatformConfigService(fresh_campaign)
-        svc.update_runtime({"session_dir": "summaries/sess1"})
-        svc.update_runtime({"default_model": "claude-opus-4-6"})
-        assert svc.uis.ui_state.runtime.session_dir == "summaries/sess1"
-        assert svc.uis.ui_state.runtime.default_model == "claude-opus-4-6"
+# Persisted-storage coverage (what file it writes, that it merges rather
+# than replaces) moved to tests/test_platform_config_service.py's
+# TestRuntimeOwnership, alongside Phase 3's other runtime-ownership tests —
+# ``svc.uis.ui_state.runtime`` no longer exists at all (UIState dropped the
+# field), so this module's own use of update_runtime is confined to setup
+# calls inside the resolved()/rebase scenarios above.
 
 
 # ── Write-time relativization (issue #120 split-brain fix) ─────────────────

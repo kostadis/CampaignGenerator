@@ -18,14 +18,17 @@ shape) for everything platform-owned: ``campaign_dir``/``config_dir``/
 ``resolved()``) ``boot_overrides``/``local``. It never re-derives any of
 those.
 
-One remaining wrinkle: ``runtime.{default_model, session_dir}`` still lives
-INSIDE ``ui_state.yaml`` this phase (Phase 3 relocates it to its own
-``<config>/platform.yaml`` per O3) — so ``PlatformConfigService`` cannot
-physically read or write it without going through the object that owns the
-whole-document atomic read/write, which is this one.
-``PlatformConfigService.update_runtime``/``.runtime`` delegate to
-``UIStateService.update_runtime``/``.ui_state.runtime`` for exactly that
-reason; see that class's docstring. That inverts in Phase 3.
+As of Phase 3 (O3), that composition now also covers ``runtime``:
+``runtime.{default_model, session_dir}`` moved out of ``ui_state.yaml`` into
+its own ``<config>/platform.yaml`` that ``PlatformConfigService`` owns
+outright (see that class's module docstring). ``UIStateService`` no longer
+stores ``runtime`` at all — ``UIState`` dropped the field entirely — and
+reads it exclusively through ``self.platform.runtime`` wherever it used to
+read ``self._ui_state.runtime`` (the load-time normalize pass in
+``_normalize_stored_paths`` and the read view in ``resolved()``). There is
+no more write-delegation the other direction either: ``PlatformConfigService.
+update_runtime`` writes ``platform.yaml`` directly now, and the
+``update_runtime`` method that used to live on THIS class is gone.
 """
 
 from __future__ import annotations
@@ -68,6 +71,13 @@ _PATH_FIELDS: dict[str, dict[str, str]] = {
     "grounding": {"summaries": "campaign"},
 }
 
+# session_dir is itself a campaign-based path (it lives under
+# <campaign>/summaries/..., so it resolves against the campaign root, not
+# against itself). Consumed inside resolved() below to path-resolve the
+# runtime slice the same way _PATH_FIELDS resolves ui.<section> — the
+# knowledge stays here (rather than moving to platform_config_service.py
+# alongside runtime's storage) because resolved() is the only consumer and
+# already owns the sibling _PATH_FIELDS table it's applied alongside.
 _RUNTIME_PATH_FIELDS: dict[str, str] = {"session_dir": "campaign"}
 
 
@@ -140,9 +150,17 @@ class UIStateService:
         guard as :meth:`PlatformConfigService.relativize_path` itself, for
         the same reason: there is no base to relativize against yet.
         Persists only if at least one field actually changed.
+
+        Reads ``self.platform.runtime.session_dir`` rather than a field on
+        ``self._ui_state`` (Phase 3, O3: ``runtime`` no longer lives in
+        ``ui_state.yaml`` at all). This is exactly why
+        ``PlatformConfigService.__init__`` loads ``platform.yaml`` BEFORE
+        constructing this service — see that class's docstring — otherwise
+        this read would see stale/default runtime data instead of the real
+        persisted session dir.
         """
         sections_to_check = ("vtt_summary", "grounding")
-        persisted_session_dir = self._ui_state.runtime.session_dir
+        persisted_session_dir = self.platform.runtime.session_dir
 
         ui_dict = self._ui_state.ui.model_dump(mode="json")
         changed = False
@@ -216,27 +234,6 @@ class UIStateService:
             self._ui_state = new_state
         return new_state
 
-    def update_runtime(self, partial: dict[str, Any]) -> UIState:
-        """Merge ``partial`` into ``runtime`` and persist atomically.
-
-        Called directly by ``PlatformConfigService.update_runtime``, which
-        owns ``runtime`` conceptually but delegates the actual write here
-        because ``runtime`` still lives inside the same document this
-        service already reads/writes whole — see this module's docstring
-        and ``PlatformConfigService``'s. Boot overrides for the same keys
-        still win at ``resolved()`` time for the lifetime of the process;
-        this writer just keeps the on-disk value in sync with the UI for
-        next launch.
-        """
-        with self._write_lock:
-            current = self._ui_state.runtime.model_dump(mode="json")
-            current.update(partial)
-            new_runtime = self._ui_state.runtime.__class__.model_validate(current)
-            new_state = self._ui_state.model_copy(update={"runtime": new_runtime})
-            self._persist_ui_state(new_state)
-            self._ui_state = new_state
-        return new_state
-
     # ── Read views ──────────────────────────────────────────────────────
 
     @property
@@ -248,15 +245,18 @@ class UIStateService:
         overrides applied. Returned as plain dicts for JSON friendliness.
 
         Still the fused ``{campaign_dir, ui, runtime, server, nav}`` shape
-        the old ``CampaignConfigService.resolved()`` returned — left here
-        for this phase (docs/config/platform-isolation.md's "hard design
-        question": minimal churn, Phase 3 revisits) even though ``server``/
-        ``nav`` are now platform-owned data, read through
-        ``self.platform.local`` rather than a field this class stores
-        itself.
+        the old ``CampaignConfigService.resolved()`` returned — kept here
+        after Phase 3 too (docs/config/platform-isolation.md's "hard design
+        question", resolved in favor of minimal churn: this method already
+        needs ``_PATH_FIELDS`` knowledge for the ``ui.<section>`` resolution
+        and the sibling-session rebase, so moving just ``runtime``'s source
+        was the smaller change). ``runtime``/``server``/``nav`` are now ALL
+        platform-owned data, read through ``self.platform.runtime`` /
+        ``self.platform.local`` rather than fields this class stores itself
+        — as of Phase 3, this class stores none of the three.
         """
         ui_raw = self._ui_state.ui.model_dump(mode="json")
-        runtime_raw = self._ui_state.runtime.model_dump(mode="json")
+        runtime_raw = self.platform.runtime.model_dump(mode="json")
         local_raw = self.platform.local.model_dump(mode="json")
 
         # Boot overrides must be applied to the path-resolution context BEFORE
