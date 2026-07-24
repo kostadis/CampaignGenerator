@@ -1,8 +1,7 @@
 """API tests for the unified config endpoints.
 
 Covers:
-  - ``GET /api/config/`` returns the typed view AND a flat-key overlay so
-    the un-reshaped frontend keeps working.
+  - ``GET /api/config/`` returns the typed/resolved view plus metadata.
   - ``PUT /api/config/section/{name}`` rejects unknown sections.
   - ``PUT /api/config/runtime`` writes session_dir / default_model.
   - ``PUT /api/config/local`` cannot write ``ui.*`` keys.
@@ -20,8 +19,8 @@ from fastapi.testclient import TestClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from server.config_service import (
-    CampaignConfigService,
+from server.platform_config_service import (
+    PlatformConfigService,
     TRACKED_CONFIG_NAME,
 )
 from server.routers import config_routes
@@ -48,9 +47,9 @@ def _make_app(campaign_dir: Path | None) -> FastAPI:
     app = FastAPI()
     app.include_router(config_routes.router, prefix="/api/config")
     if campaign_dir is not None:
-        app.state.config_service = CampaignConfigService(campaign_dir)
+        app.state.platform = PlatformConfigService(campaign_dir)
     else:
-        app.state.config_service = None
+        app.state.platform = None
     return app
 
 
@@ -74,38 +73,13 @@ class TestGetConfig:
         ):
             assert key in body, f"missing {key} in GET / response"
 
-    def test_legacy_flat_keys_present_for_unmigrated_frontend(self, fresh_campaign):
-        # Set values through typed endpoints, confirm flat overlay surfaces
-        # them. session_doc's `sd_` overlay entry was retired in the
-        # session-editor config isolation (Phase 3b,
-        # docs/config/session-editor-isolation.md) — the Session Doc
-        # Editor reads/writes GET/PUT /api/editor/config exclusively now,
-        # and (Phase 5) `session_doc` isn't even a UI section any more (it
-        # lives in its own session_doc.yaml) — so it's asserted absent
-        # here, while another still-live prefix (vtt_summary -> vtt_)
-        # demonstrates the overlay mechanism still works for sections that
-        # keep it.
+    def test_session_doc_not_a_ui_section(self, fresh_campaign):
+        # Phase 5 (docs/config/session-editor-isolation.md): session_doc
+        # left ui_state.yaml entirely for its own session_doc.yaml, so it's
+        # no longer among the resolved ui sections at all.
         client = TestClient(_make_app(fresh_campaign))
-        client.put(
-            "/api/config/section/vtt_summary",
-            json={"values": {"input": "session.vtt"}},
-        )
-        client.put(
-            "/api/config/runtime",
-            json={"values": {"default_model": "claude-opus-4-6"}},
-        )
         body = client.get("/api/config/").json()
-        # session_doc no longer exists as a UI section at all.
         assert "session_doc" not in body["resolved"]["ui"]
-        assert "sd_narrate_tokens" not in body
-        assert "sd_voice_dir" not in body
-        # vtt_summary's flat overlay (`vtt_`) is untouched by the retirement.
-        # Path-resolved to absolute (against campaign_dir) — the overlay is
-        # computed from service.resolved().
-        assert body["vtt_input"].endswith("session.vtt")
-        # The flat overlay lets the unreshaped Pinia store keep reading
-        # ``cfg.global_model`` directly.
-        assert body["global_model"] == "claude-opus-4-6"
 
     def test_no_service_returns_503(self):
         # The hostile fallback is gone — with no campaign_dir, GET / refuses.
@@ -131,7 +105,7 @@ class TestPutSection:
         # typed view.
         body = client.get("/api/config/").json()
         assert body["resolved"]["ui"]["vtt_summary"]["session_name"] == "Session 12"
-        assert body["vtt_input"].endswith("session.vtt")
+        assert body["resolved"]["ui"]["vtt_summary"]["input"].endswith("session.vtt")
 
     def test_unknown_section_rejected_404(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
@@ -190,10 +164,18 @@ class TestPutLocal:
 
     def test_local_rejects_ui_top_level_key(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
-        # ``ui`` is not a valid LocalConfig top-level key; pydantic rejects.
-        # ``extra="allow"`` on LocalConfig means stranger top-level keys are
-        # accepted but stored without further validation. The important
-        # invariant is that ``ui`` keys do not land in the typed
+        # ``ui`` is not a valid PlatformLocalConfig top-level key. Unlike the
+        # retired ``extra="allow"`` LocalConfig, PlatformLocalConfig is
+        # strict (extra="forbid") per docs/config/platform-isolation.md's
+        # "Strictness rule" — but that rule is about LOAD (a pre-existing,
+        # possibly hand-edited file must not block boot), not WRITE. A live
+        # PUT with an unrecognized key is a real caller bug, so
+        # update_local now rejects it (400) the same way update_runtime/
+        # update_section already do for a bad partial — this one response
+        # code is a deliberate, narrow exception to "no behavior change",
+        # required by tightening the model as the design doc asks. This
+        # test doesn't pin the PUT's status; the invariant that matters
+        # either way is that ``ui`` keys never land in the typed
         # ``server``/``nav`` slots — verify by reading back.
         client.put("/api/config/local", json={"values": {"ui": {"vtt_summary": {}}}})
         body = client.get("/api/config/").json()
@@ -223,9 +205,6 @@ class TestPutRuntime:
         # session_dir is path-resolved to absolute against campaign_dir.
         assert body["resolved"]["runtime"]["session_dir"].endswith("summaries/s1")
         assert body["resolved"]["runtime"]["default_model"] == "claude-opus-4-6"
-        # Flat overlay carries the runtime values too.
-        assert body["session_dir"].endswith("summaries/s1")
-        assert body["global_model"] == "claude-opus-4-6"
 
     def test_no_service_503(self):
         client = TestClient(_make_app(None))

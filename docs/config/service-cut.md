@@ -2,16 +2,21 @@
 
 Re-slicing the config map along service boundaries. CampaignGenerator is effectively a UI + thin
 routers over a set of independent workflows (session doc editor, ensemble, planning, party, ...).
-Config splits into platform-global vs service-local — but the split is a convention, with no
-enforced hierarchy or management layer.
+Config splits into platform-global vs service-local. That split **used to be** a convention with
+no enforced hierarchy or management layer; `docs/config/platform-isolation.md` (Phases 0–5a) made
+the platform tier an actual owned, validated, physically separate thing —
+`PlatformConfigService` — rather than a description of where some values happened to live inside
+a class that also owned ten unrelated `ui.<section>` blobs. See [Where the monolith
+shows](#where-the-monolith-shows-no-hierarchy--management) below for exactly what that closed and
+what — services other than the platform itself — remains open.
 
 ```mermaid
 flowchart TB
-  subgraph Platform[Platform-global config]
+  subgraph Platform["Platform-global config (PlatformConfigService, isolated)"]
     WI[wiring.yaml]
     CY[config.yaml prompts/agents/documents]
-    RT[runtime.default_model + session_dir]
-    SRV[server host/port]
+    RT["platform.yaml<br/>runtime.default_model + session_dir"]
+    SRV[".campaigngenerator.local.yaml<br/>server host/port"]
     ROOT[campaign_dir + boot_overrides]
   end
   subgraph Services[Services - behavior boundaries]
@@ -51,10 +56,10 @@ below for what that closed and what's still open.
 
 | Concern | Where | Why global |
 |---|---|---|
-| Platform identity/roots | `config/wiring.yaml` (mneme) | external endpoints + data roots shared by every service |
+| Platform identity/roots | `config/wiring.yaml` (mneme) | external endpoints + data roots shared by every service. Does not yet include the model registry — Phase 5b, deferred, [issue #177](https://github.com/kostadis/CampaignGenerator/issues/177) |
 | Repo prompts/agents/docs | `config.yaml` (system_prompt, agents, documents[], log_dir) | shared inputs for prep + doc-reading services |
-| Runtime model + session | `ui_state.runtime.{default_model, session_dir}` | cross-service defaults |
-| Server binding | `local.yaml` server.{host,port} | the monolith process |
+| Runtime model + session | `platform.yaml`'s `runtime.{default_model, session_dir}` — **its own file since Phase 3 (O3)**, not a section of `ui_state.yaml` | cross-service defaults; also the fallback every one of the fourteen `/run/*` router model fields resolves through (Phase 5a, `resolve_default_model`) |
+| Server binding | `.campaigngenerator.local.yaml` server.{host,port} | the monolith process |
 | Campaign root + boot ctx | `campaign_dir` + `boot_overrides` | process-wide context |
 | Grounding docs (shared state) | `docs/{world_state,campaign_state,party,planning}.md` | produced by some services, consumed by others as shared truth |
 
@@ -73,17 +78,19 @@ below for what that closed and what's still open.
 
 ## Where the monolith shows (no hierarchy / management)
 
-Two of the gaps below are now **closed for two services** (Session Doc Editor, Planning) and
-**still open for the rest** — noted per-row rather than papered over, since "closed for the
-largest service" is not the same claim as "closed":
+Three of the gaps below are now **closed or partially closed** — two by service-level isolation
+(Session Doc Editor, Planning), one by the platform-level isolation this doc's sibling,
+`platform-isolation.md`, describes — and the rest **still open**, noted per-row rather than
+papered over, since "closed for the largest pieces" is not the same claim as "closed":
 
 | Gap | Evidence |
 |---|---|
-| No service ownership | **Partially closed.** Session Doc Editor (`SessionEditorConfigService` → `session_doc.yaml`) and Planning (`PlanningConfigService` → `planning.yaml`) each own+validate their own file now. The remaining ~7 services (Ensemble, VTT Summary, Grounding/Search, Party's UI slice, Campaign State, the loose pages) still share one `ui_state.yaml`, with the flat config service as their only authority |
-| No config hierarchy | Still open. Global vs service-local remains convention for everything except the two isolated services above. `config.yaml` mixes global (prompts) + service (`mempalace`); `ui_state` mixes runtime (global) + the remaining service sections |
-| Duplicated backend/model selection | **Not closed — relocated, not unified.** The isolation moved the field (`session_doc.backend` → `session_doc.yaml`'s `backends.active` + per-backend `BackendProfile` memory), and Phase 5 even *added* an editor-local model override (O3) on top of the global picker — a deliberate, named step *toward* the eventual central provider (pre-shapes it), but a fourth independently-configured backend selector today, not fewer. Still: ensemble `extract`/`synthesize` `BackendProfile`, `dgx_*` in wiring, `runtime.default_model`, `session_doc.yaml` `backends.*` — no central model/backend manager; each service still re-picks |
+| No service ownership | **Partially closed.** Session Doc Editor (`SessionEditorConfigService` → `session_doc.yaml`) and Planning (`PlanningConfigService` → `planning.yaml`) each own+validate their own file now. The remaining ~7 services (Ensemble, VTT Summary, Grounding/Search, Party's UI slice, Campaign State, the loose pages) still share one `ui_state.yaml`, now under `UIStateService` — the Phase 2 rename that made the "residual landlord" role explicit and countable rather than implicit inside a class that also did platform work |
+| Fused platform + residual roles | **Closed** (`platform-isolation.md`, new gap named and closed in the same effort). Through this branch's Phase 1, `CampaignConfigService` was simultaneously the permanent platform (paths, `runtime.*`, boot overrides, wiring/`config.yaml` access) AND the residual landlord of the ten loose `ui.<section>` blobs — one 610-line class, one write lock, one `ui_state.yaml`, so a `ui.distill` save could corrupt `runtime.default_model`/`session_dir`, the values every other service composes. Phase 2 split the class; Phase 3 (O3) went further and gave `runtime` its own file, `platform.yaml`, so the two roles can no longer share a write path even in principle — regression-tested by `test_ui_section_write_cannot_touch_platform_yaml[_via_route]` |
+| No config hierarchy | **Narrowed, not closed.** Global vs service-local is an enforced split for the platform tier now (`platform.yaml`/`.campaigngenerator.local.yaml` vs `ui_state.yaml`), on top of the two isolated services above. `config.yaml` still mixes global (prompts) + service (`mempalace`); `ui_state.yaml` still mixes the remaining ~7 services' sections in one file with one schema version |
+| Duplicated backend/model selection | **Not closed — relocated, not unified; the *registry* half is now unified.** Backend *selection* is still four independently-configured selectors (ensemble `BackendProfile`, `session_doc.yaml` `backends.*`, grounding's global picker, connections' per-request field) — explicitly deferred, this doc's gap #3. But Phase 5a of `platform-isolation.md` did close the narrower "which models exist, and which one is the default" question: one `DEFAULT_MODEL` definition (`campaignlib.constants`), one `MODELS` registry (`server/config.py`, refreshed), and all fourteen router request-body model fields now resolve through `resolve_default_model` (explicit → `platform.runtime.default_model` → literal) instead of each hardcoding its own copy of the literal. The registry's *source* moving into `wiring.yaml` (so a new model needs no release) is Phase 5b — deferred, cross-repo, [issue #177](https://github.com/kostadis/CampaignGenerator/issues/177) |
 | Coupling via shared files, not APIs | Still open. Services integrate by reading/writing the same `docs/*.md` and palace, not versioned contracts. Disk is the bus |
-| No schema-per-service enforcement | **Partially closed.** `SessionEditorConfig` and `PlanningConfig` are both strict (`extra="forbid"`/validated) now — the first two typed, enforced, per-service schemas in the codebase. The remaining 10 loose `ui.<section>` sections are still `extra='allow'`, unmodeled, unvalidated |
+| No schema-per-service enforcement | **Partially closed.** `SessionEditorConfig`, `PlanningConfig`, and now `PlatformDocument`/`PlatformLocalConfig` are strict (`extra="forbid"`/validated) — four typed, enforced schemas in the codebase now, up from two. The remaining 10 loose `ui.<section>` sections are still `extra='allow'`, unmodeled, unvalidated |
 | No dependency ordering / registry | Still open. Ensemble → grounding → prep/search is implicit through file mtimes; no declared service graph |
 
 ## The cut, stated plainly
@@ -91,26 +98,35 @@ largest service" is not the same claim as "closed":
 There are two real config tiers: **PLATFORM** (mneme wiring, repo prompts/agents/documents, runtime
 model + session, server binding, campaign root) and **SERVICE** (one typed-or-loose ui section per
 workflow, plus that service's own YAML/artifacts — or, for two services now, a dedicated owned file
-instead of a `ui_state.yaml` section at all). Most of the system is still physically co-mingled —
-`ui_state.yaml` is one document holding most services' sections, `config.yaml` holds both global and
-`mempalace` keys, and most services don't validate or own their slice. Session Doc Editor and
-Planning are the exceptions that prove the pattern is buildable, not evidence the pattern is
-finished: two services out of roughly nine. Services still communicate through shared on-disk docs
-and the palace rather than contracts. The system is a set of microservices wearing a monolith's
-clothes, with two services that have started changing: the boundaries mostly exist in behavior
-(routers + CLI engines + sections) but not yet in ownership, schema enforcement, model/backend
-management, or dependency orchestration — except where Session Doc Editor and Planning now stand
-apart from the rest.
+instead of a `ui_state.yaml` section at all). The PLATFORM tier is no longer just a description —
+`platform-isolation.md` (Phases 0–5a) made it a real, owned, physically separate thing
+(`PlatformConfigService` + `platform.yaml` + `.campaigngenerator.local.yaml`), closing the "fused
+roles" gap this doc used to name and leave open. What's still co-mingled is the SERVICE tier:
+`ui_state.yaml` is one document holding ~7 services' sections under `UIStateService`, `config.yaml`
+holds both global and `mempalace` keys, and most services still don't validate or own their slice.
+Session Doc Editor and Planning are the exceptions that prove the pattern is buildable, not evidence
+the pattern is finished: two services out of roughly nine. Services still communicate through
+shared on-disk docs and the palace rather than contracts. The system is a set of microservices
+wearing a monolith's clothes, with a platform tier that has been extracted and two services that
+have started changing: the boundaries mostly exist in behavior (routers + CLI engines + sections)
+but not yet in per-service ownership, schema enforcement, model/backend *selection* management, or
+dependency orchestration — except where the platform itself, and Session Doc Editor and Planning
+within it, now stand apart from the rest.
 
 ## If you wanted to manage it
 
 Step (1) below is no longer purely hypothetical — Session Doc Editor and Planning are worked
-examples of it, each shipped as a designed schema → an owning service → a dedicated file. Steps
-(2)–(4) remain undone for every service, including these two.
+examples of it, each shipped as a designed schema → an owning service → a dedicated file. The
+platform tier itself went through the same shape of change (design schema → owning service →
+dedicated file) via `platform-isolation.md`, but it isn't one of the ~9 rows in step (1) — it's
+the foundation those rows sit on, and closing its own "fused roles" problem was this branch's
+whole point. Steps (2)–(4) remain undone for every *service*, including the two already isolated.
 
 A managing hierarchy would: (1) give each service its own owned+validated config namespace (split
 `ui_state` per service, or a per-service file — **done for 2 of ~9 services**: Session Doc Editor's
-`session_doc.yaml`, Planning's `planning.yaml`), (2) centralize model/backend selection into one
-platform provider the services request from, (3) replace file-mtime coupling with declared
+`session_doc.yaml`, Planning's `planning.yaml`), (2) centralize model/backend *selection* into one
+platform provider the services request from (Phase 5a narrowed this to "which models exist and
+what's the default" — the *registry* — while selection itself, gap #3's four independent
+selectors, is still open and explicitly deferred), (3) replace file-mtime coupling with declared
 producer/consumer contracts for the grounding docs, and (4) add a service registry so ordering
 (ensemble then grounding then prep/search) is explicit rather than implied.

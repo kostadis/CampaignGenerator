@@ -33,11 +33,17 @@ const sessionSummaryPath = ref('')
 const partyPath = ref('')
 
 function loadFromConfig() {
+  // `v` (config.values) still carries this page's OWN client-side-only
+  // derive broadcast (see saveToConfig/deriveAll below) for any field a
+  // sibling page may have written to it earlier in the session. Everything
+  // else is read from the persisted, typed view.
   const v = config.values
+  const r = config.resolved
+  const vs = r.ui?.vtt_summary || {}
   const ec = config.editorConfig
-  campaignDir.value = v.campaign_dir || ''
-  sessionDir.value = v.session_dir || ''
-  vttInput.value = v.vtt_input || ''
+  campaignDir.value = r.campaign_dir || v.campaign_dir || ''
+  sessionDir.value = r.runtime?.session_dir || v.session_dir || ''
+  vttInput.value = vs.input || v.vtt_input || ''
   sdSession.value = ec?.paths?.session_recap || ''
   characters.value = ec?.roster?.characters || ''
   gmPlayer.value = ec?.roster?.gm_player || ''
@@ -45,16 +51,17 @@ function loadFromConfig() {
   examplesDir.value = ec?.paths?.examples_dir || ''
   sessionSummaryPath.value = ec?.paths?.session_summary || 'session-summary.md'
   partyPath.value = ec?.paths?.party || ''
-  vttContext.value = v.vtt_context || ''
-  vttDate.value = v.vtt_date || ''
-  vttSessionName.value = v.vtt_session_name || ''
-  summaries.value = v.summaries || ''
+  vttContext.value = (vs.context || []).join('\n') || v.vtt_context || ''
+  vttDate.value = vs.date || v.vtt_date || ''
+  vttSessionName.value = vs.session_name || v.vtt_session_name || ''
+  summaries.value = r.ui?.grounding?.summaries || v.summaries || ''
 }
 
 function saveToConfig() {
-  // Mirror into the legacy overlay so other views still on the flat
-  // shape see updates immediately. Persistence happens in saveConfig()
-  // (typed sections) and onBlur (debounced auto-save below).
+  // Mirror onto config.values (client-side only) so sibling pages still
+  // reading the flat-key fallback see this page's edits immediately, without
+  // a round trip. Persistence happens in saveConfig() (typed sections) and
+  // onBlur (debounced auto-save below).
   Object.assign(config.values, {
     campaign_dir: campaignDir.value,
     session_dir: sessionDir.value,
@@ -112,6 +119,23 @@ function stripPrefix(absPath: string, dir: string): string {
 
 /**
  * Derive everything from campaign_dir + session_dir.
+ *
+ * `/api/config/campaign-paths` (PlatformConfigService.discover_campaign_paths,
+ * docs/config/platform-isolation.md O2) returns only genuine filesystem
+ * DISCOVERY — a probe for something whose name or presence can't be known in
+ * advance: vtt_input, gm_recap, summaries, party_config, plan_npc,
+ * session_summary, voice_dir/examples_dir, and the docs/*.md exist-checks
+ * (campaign_state, world_state, party, planning). Every one of those is `""`
+ * or absent when nothing is found, which is why each read below is guarded —
+ * this function runs on a debounced watch, so an unguarded assignment would
+ * overwrite the GM's own entry on every campaign/session edit.
+ *
+ * It deliberately does NOT return the context/plan_context aggregates: those
+ * are pure joins over fields this function already holds, so computing them
+ * here avoids a second server-side expression of the same thing. Nor does it
+ * return output_dir or the scene/roleplay/summary extraction dirs — that was
+ * layout DERIVATION duplicating PlatformConfigService.resolve_path, and O2
+ * deleted it (those paths belong to the Session Doc Editor).
  */
 async function deriveAll() {
   const cd = campaignDir.value.trim()
@@ -123,18 +147,25 @@ async function deriveAll() {
       `/api/config/campaign-paths?campaign_dir=${encodeURIComponent(cd)}&session_dir=${encodeURIComponent(sd)}`
     )
 
-    // Session-level files (relative to session_dir)
+    // Session-level files (relative to session_dir) — genuine discovery.
     if (d.vtt_input) vttInput.value = stripPrefix(d.vtt_input, sd)
     if (d.gm_recap) sdSession.value = stripPrefix(d.gm_recap, sd)
 
-    // Campaign-level paths (absolute — not relative to session_dir)
+    // Campaign-level directories (absolute). Guarded because the server
+    // returns "" when the conventional directory is absent — this function
+    // fires on a debounced watch, so an unguarded assignment would wipe a
+    // GM's custom path on every session switch.
     if (d.voice_dir) voiceDir.value = d.voice_dir
     if (d.examples_dir) examplesDir.value = d.examples_dir
     if (d.summaries) summaries.value = d.summaries
 
-    // Context files (absolute paths, one per line)
-    if (d.context && d.context.length) {
-      vttContext.value = d.context.join('\n')
+    // Context files: whichever of campaign_state/world_state/party the
+    // server found to exist. The join is pure computation over
+    // already-discovered facts, so it happens here rather than as a
+    // separate server-computed aggregate field.
+    const contextFiles = [d.campaign_state, d.world_state, d.party].filter(Boolean)
+    if (contextFiles.length) {
+      vttContext.value = contextFiles.join('\n')
     }
 
     // Downstream pages pick these up from the config store. session_doc
@@ -154,7 +185,7 @@ async function deriveAll() {
       party_config_path: d.party_config || '',
       summaries: d.summaries || '',
       plan_npc: d.plan_npc || '',
-      plan_context: d.plan_context || '',
+      plan_context: contextFiles.join('\n'),
       planning_output: d.planning || '',
     })
 

@@ -2,10 +2,10 @@
 
 from pathlib import Path
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import StreamingResponse
 
-from campaignlib import DEFAULT_MODEL
+from server.platform_config_service import resolve_default_model
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
@@ -28,11 +28,18 @@ def _sse_response(cmd: list[str]) -> StreamingResponse:
 
 @router.get("/run/dnd-sheet")
 async def run_dnd_sheet(
+    request: Request,
     pdfs: list[str] = Query(default=[]),
     output: str = "",
     output_dir: str = "",
-    model: str = DEFAULT_MODEL,
+    model: str | None = None,
 ):
+    # Same defect class as the twelve request-body defaults Phase 5a fixed,
+    # just wearing a constant instead of a bareword literal — so a
+    # "claude-sonnet-4-6" grep never surfaced it. Defaulting to
+    # DEFAULT_MODEL here meant an omitted `model` silently took the module
+    # constant rather than the operator's persisted runtime.default_model.
+    model = resolve_default_model(model, request)
     cmd = [console_script("dnd_sheet")]
 
     for pdf in pdfs:
@@ -54,10 +61,14 @@ async def run_dnd_sheet(
 
 @router.get("/run/make-tracking")
 async def run_make_tracking(
+    request: Request,
     input: str = "",
     output: str = "",
-    model: str = DEFAULT_MODEL,
+    model: str | None = None,
 ):
+    # See run_dnd_sheet above — same constant-shaped instance of the
+    # omitted-model defect.
+    model = resolve_default_model(model, request)
     cmd = [console_script("make_tracking")]
 
     if input.strip():

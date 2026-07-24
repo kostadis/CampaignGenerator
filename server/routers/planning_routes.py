@@ -4,10 +4,10 @@ Provides resource-oriented endpoints for managing NPCs and factions
 in the planning configuration, isolated from the general config service.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, Request, status
 from typing import List
 from ..planning_config_service import PlanningConfigService, PlanningEntry
-from ..config import get_campaign_dir_from_request
+from ..platform_config_service import require_platform
 
 # NOTE: the "/api/planning" prefix is supplied by main.py's include_router,
 # matching every sibling router. Do not also set prefix= here or the routes
@@ -16,11 +16,16 @@ router = APIRouter(tags=["planning"])
 
 
 def get_planning_service(request: Request) -> PlanningConfigService:
-    """Dependency to get the planning config service for a request."""
-    campaign_dir = get_campaign_dir_from_request(request)
-    config_service = getattr(request.app.state, "config_service", None)
-    config_dir = config_service.config_dir if config_service else "config"
-    return PlanningConfigService(campaign_dir, config_dir)
+    """Dependency to get the planning config service for a request.
+
+    ``require_platform`` (server/platform_config_service.py) is the one
+    shared "fetch app.state.platform or 503" accessor. This function used
+    to duplicate that check inline — before that, via the now-deleted
+    ``server.config.get_campaign_dir_from_request`` — see
+    ``docs/config/platform-isolation.md`` Phase 4.
+    """
+    platform = require_platform(request)
+    return PlanningConfigService(platform)
 
 
 # ============================================================================

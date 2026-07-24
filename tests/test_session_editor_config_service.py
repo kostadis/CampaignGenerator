@@ -3,7 +3,7 @@ docs/config/session-editor-isolation.md.
 
 Storage is a dedicated ``<config>/session_doc.yaml`` this service owns
 exclusively — ``ui_state.yaml`` is never touched by an editor write. Most
-tests exercise the service against a real ``CampaignConfigService`` (for
+tests exercise the service against a real ``PlatformConfigService`` (for
 path resolution) and assert the value actually landed in
 ``session_doc.yaml`` on disk. The shared-module tests near the bottom
 exercise ``save_/load_session_editor_config`` directly, without going
@@ -26,7 +26,8 @@ from fastapi import HTTPException
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server.config_models import BackendProfile, ProfileEntry  # noqa: E402
-from server.config_service import CampaignConfigService, UI_STATE_NAME  # noqa: E402
+from server.config_service import UI_STATE_NAME  # noqa: E402
+from server.platform_config_service import PlatformConfigService  # noqa: E402
 from server.session_editor_config_service import (  # noqa: E402
     SessionEditorConfigService,
 )
@@ -46,7 +47,7 @@ def _service(tmp_path: Path) -> SessionEditorConfigService:
         "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
         encoding="utf-8",
     )
-    platform = CampaignConfigService(str(tmp_path))
+    platform = PlatformConfigService(str(tmp_path))
     return SessionEditorConfigService(platform)
 
 
@@ -305,7 +306,7 @@ def test_resolved_editor_config_absolute_path_passes_through(tmp_path, tmp_path_
 # update_config must collapse an absolute-but-under-base session path back
 # to relative storage before writing session_doc.yaml, so the value
 # re-tracks a later runtime.session_dir change — mirrors
-# CampaignConfigService.update_section's write-time relativize_path choke
+# UIStateService.update_section's write-time relativize_path choke
 # point, now re-implemented here since the data no longer lives in
 # ui_state.yaml.
 
@@ -374,7 +375,7 @@ class TestRelativizeOnWrite:
 
     def test_relativize_does_not_use_boot_override_session_dir(self, tmp_path):
         # A --session-dir boot override must NOT be baked into on-disk
-        # relative storage — mirrors CampaignConfigService's
+        # relative storage — mirrors UIStateService's
         # _normalize_stored_paths persisted-only rule. Only the PERSISTED
         # runtime.session_dir (set via update_runtime, i.e. what the UI
         # actually saved) is the relativization base.
@@ -388,7 +389,7 @@ class TestRelativizeOnWrite:
             "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
             encoding="utf-8",
         )
-        platform = CampaignConfigService(
+        platform = PlatformConfigService(
             str(tmp_path), boot_overrides={"runtime.session_dir": str(boot_dir)}
         )
         svc = SessionEditorConfigService(platform)

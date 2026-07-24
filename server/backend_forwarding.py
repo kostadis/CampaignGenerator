@@ -7,7 +7,7 @@ silently billing the metered Anthropic API instead of the user's choice.
 
 Config *resolution* (where the backend/model/endpoint values come from)
 stays per-router, since the three routers genuinely have different config
-shapes (a FastAPI Request's config_service, a module-level CONFIG dict,
+shapes (a FastAPI Request's app.state.platform, a module-level CONFIG dict,
 explicit per-call params from the ensemble UI). Only flag *building* is
 shared here, mirroring campaignlib.api.client.add_backend_args's vocabulary
 so every downstream script (which all now accept --backend/--endpoint(s)/

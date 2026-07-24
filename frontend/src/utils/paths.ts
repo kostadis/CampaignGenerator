@@ -12,8 +12,8 @@ export function resolvePathWithBase(raw: string, base: ResolveBase = 'session'):
   if (trimmed.startsWith('/') || trimmed.startsWith('~')) return trimmed
   const config = useConfigStore()
   const dir = base === 'campaign'
-    ? (config.values.campaign_dir || '').trim()
-    : (config.values.session_dir || '').trim()
+    ? (config.resolved.campaign_dir || '').trim()
+    : (config.resolved.runtime?.session_dir || '').trim()
   if (dir) return `${dir.replace(/\/+$/, '')}/${trimmed}`
   return trimmed
 }

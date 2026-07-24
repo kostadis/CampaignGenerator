@@ -273,7 +273,7 @@ watch(cachePath, () => {
 
 onMounted(() => {
   // Default paths from campaign config — always per-campaign, never the server CWD.
-  const cd = config.values.campaign_dir || ''
+  const cd = config.resolved.campaign_dir || ''
   if (cd) {
     const base = cd.replace(/\/+$/, '')
     docsDir.value = base + '/docs'

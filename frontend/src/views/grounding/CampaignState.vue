@@ -17,13 +17,19 @@ const noLog = ref(false)
 const showAdvanced = ref(false)
 
 function loadFromConfig() {
+  // `v` (config.values) still carries SessionConfig.vue's client-side-only
+  // derive broadcast for the fields it seeds (output, summaries) — see
+  // stores/config.ts. Everything else lives solely in the persisted, typed
+  // `ui.campaign_state` section.
   const v = config.values
-  input.value = v.cs_input || v.summaries || ''
-  output.value = v.cs_output || v.campaign_state_output || v.campaign_state || ''
-  trackFile.value = v.cs_track_file || v.tracking_file || ''
-  trackFilesExtra.value = v.cs_track_files_extra || ''
-  extractDir.value = v.cs_extract_dir || ''
-  splitChapters.value = v.cs_split_chapters || '# Chapter'
+  const r = config.resolved.ui?.campaign_state || {}
+  const g = config.resolved.ui?.grounding || {}
+  input.value = r.input || g.summaries || v.summaries || ''
+  output.value = r.output || v.cs_output || v.campaign_state_output || ''
+  trackFile.value = r.track_file || ''
+  trackFilesExtra.value = r.track_files_extra || ''
+  extractDir.value = r.extract_dir || ''
+  splitChapters.value = r.split_chapters || '# Chapter'
 }
 
 const ready = computed(() =>

@@ -7,21 +7,25 @@ Test-only references omitted; only runtime code paths listed.
 
 ```mermaid
 flowchart LR
-  Page[Vue page save] -->|PUT /api/config/section/:name| US["update_section writes ui_state.yaml"]
+  Page[Vue page save] -->|PUT /api/config/section/:name| US["UIStateService.update_section writes ui_state.yaml"]
   Editor[Session Doc Editor] -->|PUT /api/editor/config| SES["SessionEditorConfigService writes session_doc.yaml"]
   Editor -->|POST /api/editor/profiles/:name/activate| SES
-  Picker["model picker / SessionConfig"] -->|PUT /api/config/runtime| RT[update_runtime]
-  LocalUI["server/nav"] -->|PUT /api/config/local| LOC[update_local]
+  Picker["model picker / SessionConfig"] -->|PUT /api/config/runtime| RT["PlatformConfigService.update_runtime writes platform.yaml"]
+  LocalUI["server/nav"] -->|PUT /api/config/local| LOC["PlatformConfigService.update_local writes .campaigngenerator.local.yaml"]
+  RunReq["a /run/* request that omits model"] -->|resolve_default_model| RT
 ```
 
 Every `ui.<section>` is written through the one generic route `PUT /api/config/section/:name`
-→ `CampaignConfigService.update_section` (each Vue page saves its own section) — `session_doc`
-is **not** among them; `PUT /api/config/section/session_doc` 404s ("unknown section"). The
-Session Doc Editor writes its own dedicated `session_doc.yaml` exclusively through
-`SessionEditorConfigService`, via `PUT /api/editor/config` (the single grouped write door) and
-`POST /api/editor/profiles[/{name}[/activate]]` (the profiles sub-collection). `config.yaml` has
-no writer; `wiring.yaml` is mneme-only. See
-[Session-editor isolation](./session-editor-isolation.md) for the full design and
+→ `UIStateService.update_section` (each Vue page saves its own section; `UIStateService` is the
+Phase 2 rename of the old `CampaignConfigService`'s residual role — see
+[schema.md](./schema.md)) — `session_doc` is **not** among them; `PUT /api/config/section/session_doc`
+404s ("unknown section"). The Session Doc Editor writes its own dedicated `session_doc.yaml`
+exclusively through `SessionEditorConfigService`, via `PUT /api/editor/config` (the single grouped
+write door) and `POST /api/editor/profiles[/{name}[/activate]]` (the profiles sub-collection).
+`PUT /api/config/runtime` and `PUT /api/config/local` go straight to `PlatformConfigService` —
+neither delegates to `UIStateService` any more (Phase 3, O3, relocated `runtime` out of
+`ui_state.yaml` into its own `platform.yaml`). `config.yaml` has no writer; `wiring.yaml` is
+mneme-only. See [Session-editor isolation](./session-editor-isolation.md) for the full design and
 [schema.md](./schema.md#session_docyaml--sessioneditorconfig-grouped-strict) for the shape.
 
 ## config.yaml (writer: human / pipelines/workspace/new_workspace.py)
@@ -35,10 +39,12 @@ no writer; `wiring.yaml` is mneme-only. See
 | `mempalace.canon_wing` / `index_wings` | `pipelines/rlm/mcp_server.py` |
 | `mempalace.palace` | `apply_ingest_manifest.resolve_palace` (fallback) |
 
-## ui_state.yaml — other sections + runtime
+## ui_state.yaml — other sections
 
 `ui.session_doc` and `ui.profiles` are **gone** — the Session Doc Editor's config left
-`ui_state.yaml` entirely for its own `session_doc.yaml`; see the next section.
+`ui_state.yaml` entirely for its own `session_doc.yaml`. `runtime` is also gone — Phase 3 (O3)
+relocated it to its own `platform.yaml`, owned outright by `PlatformConfigService`; see the next
+section for its values.
 
 | Value | Read by | Written by |
 |---|---|---|
@@ -46,9 +52,24 @@ no writer; `wiring.yaml` is mneme-only. See
 | `ui.grounding.summaries` | `pipelines/rlm/mcp_server.py` (`_find_summaries_file`, `query_lore`, `grounded_search`) | `PUT /section/grounding` |
 | `ui.ensemble.*` | ensemble router + `ensemble_merge`/`extract_facts` | `PUT /section/ensemble` |
 | `ui.<loose>` (campaign_state, distill, prep, npc, query, workflow, connections, experimental) | their Vue pages via `GET /api/config` flat overlay | `PUT /section/<name>` |
-| `runtime.default_model` | model picker / run scripts default model; also the fallback source for `session_doc.yaml`'s editor-local `backends.<active>.model` override (O3) | `PUT /runtime` |
-| `runtime.session_dir` | `resolved()` session base for session-scoped paths; also read by `SessionEditorConfigService.resolved_editor_config()` for `session_doc.yaml`'s session-based path fields | `PUT /runtime`; boot `--session-dir` wins for process |
 | `legacy.unmigrated` | migrator quarantine only | migration path only |
+
+## platform.yaml — runtime (Phase 3, O3)
+
+Owned outright by `PlatformConfigService`, physically separate from `ui_state.yaml`. A write to
+any loose `ui.<section>` above re-serializes only `ui_state.yaml` and can no longer touch these
+two values — the isolation `docs/config/platform-isolation.md` Phase 3 exists to guarantee
+(regression-tested by `test_ui_section_write_cannot_touch_platform_yaml[_via_route]`).
+
+| Value | Read by | Written by |
+|---|---|---|
+| `runtime.default_model` | the sidebar model picker's persisted choice; the fallback source for all fourteen `/run/*` request-body `model` fields via `resolve_default_model` (Phase 5a, `server/platform_config_service.py`) — explicit request `model` wins, then this value, then the `campaignlib.constants.DEFAULT_MODEL` literal; also the fallback source for `session_doc.yaml`'s editor-local `backends.<active>.model` override (O3) | `PUT /runtime` → `PlatformConfigService.update_runtime` |
+| `runtime.session_dir` | `resolved()` session base for session-scoped paths (`resolve_path`/`relativize_path`, `base="session"`); also read by `SessionEditorConfigService.resolved_editor_config()` for `session_doc.yaml`'s session-based path fields. Must be loaded before `UIStateService` is constructed — see `PlatformConfigService`'s module docstring | `PUT /runtime` → `PlatformConfigService.update_runtime`; boot `--session-dir` wins for process |
+
+`server/config.py::MODELS` (the selectable-model list `GET /api/config/models` serves) is a
+hardcoded Python list, not a `runtime` value — relocating its *source* into `wiring.yaml` is
+Phase 5b, deferred pending a cross-repo change (tracked as
+[issue #177](https://github.com/kostadis/CampaignGenerator/issues/177)).
 
 ## session_doc.yaml (Session Doc Editor's own document)
 
@@ -71,11 +92,15 @@ There is no `scene_editor.CONFIG` mirror and no `sd_*` flat overlay anymore (bot
 Phase 3b of the isolation) — every read above goes through the request-scoped
 `ResolvedEditorConfig` injected by `Depends(get_editor_config)`, not a process-global.
 
-## .campaigngenerator.local.yaml (writer: PUT /local)
+## .campaigngenerator.local.yaml (writer: PUT /local → PlatformConfigService.update_local)
+
+Typed by `PlatformLocalConfig` (strict `extra="forbid"`, `server/platform_config_shared.py`) —
+the pre-Phase-2 untyped `config_models.LocalConfig` is retired. A parse error or unknown key
+warns and drops rather than raising (machine-written file, nobody hand-edits it).
 
 | Value | Read by |
 |---|---|
-| `server.host` / `server.port` | LocalConfig defaults (host `127.0.0.1`, port `5000`); startup |
+| `server.host` / `server.port` | `PlatformLocalConfig` defaults (host `127.0.0.1`, port `5000`); startup |
 | `nav.last_page` | frontend nav restore |
 
 ## config/wiring.yaml (writer: mneme render)

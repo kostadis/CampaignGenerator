@@ -3,10 +3,11 @@
 Phase 5 of ``docs/config/session-editor-isolation.md``: storage is a
 dedicated ``<config>/session_doc.yaml`` this service owns exclusively —
 ``ui_state.yaml`` is never touched by an editor write. The service still
-composes the platform (:class:`~server.config_service.CampaignConfigService`)
-for path resolution and platform-owned reads (``runtime.default_model``,
-``runtime.session_dir``, ``campaign_dir``, ``config_dir``) rather than
-re-implementing them — see ``docs/config/session-editor-isolation.md``'s
+composes the platform (:class:`~server.platform_config_service.
+PlatformConfigService`, per ``docs/config/platform-isolation.md`` Phase 2 —
+formerly ``CampaignConfigService``) for path resolution and platform-owned
+reads (``runtime.default_model``, ``runtime.session_dir``, ``campaign_dir``,
+``config_dir``) rather than re-implementing them — see that design doc's
 "ownership boundary".
 """
 
@@ -14,12 +15,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import HTTPException
 
 from server.config_models import ProfileEntry
-from server.config_service import CampaignConfigService
 from server.session_editor_config_shared import (
     Backends,
     EditorPaths,
@@ -30,6 +30,9 @@ from server.session_editor_config_shared import (
     load_session_editor_config,
     save_session_editor_config,
 )
+
+if TYPE_CHECKING:
+    from server.platform_config_service import PlatformConfigService
 
 SESSION_DOC_FILENAME = "session_doc.yaml"
 
@@ -105,13 +108,13 @@ class SessionEditorConfigService:
 
     Storage is a dedicated ``<config>/session_doc.yaml`` (see
     :attr:`session_doc_path`) — a bad write here cannot corrupt
-    ``ui_state.yaml``. Composes a :class:`CampaignConfigService` ("platform")
-    for path resolution and platform-owned reads rather than re-implementing
-    them — see ``docs/config/session-editor-isolation.md``'s "ownership
-    boundary".
+    ``ui_state.yaml``. Composes a :class:`~server.platform_config_service.
+    PlatformConfigService` ("platform") for path resolution and
+    platform-owned reads rather than re-implementing them — see
+    ``docs/config/session-editor-isolation.md``'s "ownership boundary".
     """
 
-    def __init__(self, platform: CampaignConfigService) -> None:
+    def __init__(self, platform: "PlatformConfigService") -> None:
         self.platform = platform
 
     @property
@@ -120,18 +123,18 @@ class SessionEditorConfigService:
 
     # ── Path relativization (write-time choke point) ────────────────────
     # The frontend sends absolute paths (it calls resolvePath client-side).
-    # Mirrors CampaignConfigService.update_section's write-time
-    # relativize_path call, so session-scoped fields re-point when
-    # runtime.session_dir changes later — see relativize_path's docstring
-    # for why a stale absolute value would otherwise stick. Keyed off the
-    # PERSISTED runtime.session_dir only (self.platform.ui_state, not
+    # Mirrors UIStateService.update_section's write-time relativize_path
+    # call, so session-scoped fields re-point when runtime.session_dir
+    # changes later — see relativize_path's docstring for why a stale
+    # absolute value would otherwise stick. Keyed off the PERSISTED
+    # runtime.session_dir only (self.platform.runtime, not
     # resolved()/boot_overrides) — mirrors the persisted-only rule in
-    # CampaignConfigService._normalize_stored_paths, for the same reason: a
+    # UIStateService._normalize_stored_paths, for the same reason: a
     # boot-override session_dir is process-lifetime-only and must never be
     # baked into on-disk relative storage.
 
     def _relativized_paths(self, paths: EditorPaths) -> EditorPaths:
-        session_dir = self.platform.ui_state.runtime.session_dir
+        session_dir = self.platform.runtime.session_dir
         paths_dict = paths.model_dump(mode="json")
         for f in _SESSION_PATH_FIELDS:
             paths_dict[f] = self.platform.relativize_path(
@@ -268,7 +271,8 @@ class SessionEditorConfigService:
         ``session_dir`` argument is given. This is the "one derivation" the
         Phase 4 boot unification promises: the boot override reaches this
         service's path resolution the same way it reaches
-        ``CampaignConfigService.resolved()``, with no second, independent
+        ``UIStateService.resolved()`` (via ``PlatformConfigService.
+        resolved()``, which delegates to it), with no second, independent
         derivation of session paths anywhere else.
         """
         platform_resolved = self.platform.resolved()

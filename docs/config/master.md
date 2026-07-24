@@ -9,44 +9,54 @@ own `session_doc.yaml`, and the ensemble + grounding subsystems.
 ```mermaid
 flowchart TB
   HY["mneme hypostasis.yaml<br/>single authority"] -->|renders| WI["config/wiring.yaml<br/>external"]
-  WI --> SVC
-  CY["config.yaml<br/>internal, human"] --> SVC[CampaignConfigService]
-  US[ui_state.yaml] --> SVC
+  WI --> PLAT
+  CY["config.yaml<br/>internal, human"] --> PLAT[PlatformConfigService]
+  PY["platform.yaml<br/>runtime.default_model, session_dir"] --> PLAT
+  PLAT -->|last construction step| UIS[UIStateService]
+  US[ui_state.yaml] --> UIS
   BO[boot_overrides] --> RES[resolved]
-  SVC --> RES
+  PLAT --> RES
+  UIS --> RES
   BO --> RESE[resolved_editor_config]
   RES -->|runtime.session_dir, default_model,<br/>campaign_dir| RESE
   SD["session_doc.yaml<br/>SessionEditorConfigService"] --> RESE
+  RES -->|runtime.default_model| RDM["resolve_default_model()<br/>14 /run/* endpoints"]
   UIE["ui.ensemble + party.yaml + planning.yaml"] --> GD["docs/*.md grounding"]
-  GD -->|documents list| SVC
+  GD -->|documents list| PLAT
 ```
 
 `scene_editor.CONFIG` — the old in-memory session-doc mirror — no longer exists; the Session Doc
-Editor's own `SessionEditorConfigService` composes `CampaignConfigService` (platform reads only,
+Editor's own `SessionEditorConfigService` composes `PlatformConfigService` (platform reads only,
 via `resolved()`) rather than being mirrored into it. See
-[session-editor-isolation.md](./session-editor-isolation.md).
+[session-editor-isolation.md](./session-editor-isolation.md). The old fused
+`CampaignConfigService` itself no longer exists either — `docs/config/platform-isolation.md`
+(Phases 0–5a) split it into `PlatformConfigService` (layer 1's consumer + layers 2/3b below) and
+the renamed `UIStateService` (layer 3, the residual `ui.<section>` landlord).
 
 | Layer | Surface(s) | Owner | Format / persistence | Holds |
 |---|---|---|---|---|
-| 1. External wiring | `config/wiring.yaml` | mneme (rendered) | YAML, do-not-edit, hash-stamped | endpoints + roots |
+| 1. External wiring | `config/wiring.yaml` | mneme (rendered) | YAML, do-not-edit, hash-stamped | endpoints + roots. Does **not** yet include the model registry — Phase 5b, deferred ([issue #177](https://github.com/kostadis/CampaignGenerator/issues/177)) |
 | 2. Internal tracked | `config.yaml` | human | YAML, read-only to app | system_prompt, log_dir, agents, documents[], mempalace.* |
-| 3. Server-owned UI state | `ui_state.yaml` | server (config service) | YAML, UIState v2, atomic writes | ui.<13 sections> + runtime + legacy — `session_doc`/`profiles` no longer live here (see layer 3b) |
+| 2b. Platform runtime | `platform.yaml` | server (`PlatformConfigService`, exclusively — no delegation) | YAML, `PlatformDocument`, strict (`extra="forbid"`), atomic writes | `runtime.{default_model, session_dir}` — the sidebar model picker and the session-resolution anchor every session-scoped path resolves against. New in Phase 3 (O3); previously lived inside `ui_state.yaml` |
+| 3. Server-owned UI state | `ui_state.yaml` | server (`UIStateService` — Phase 2's rename of the config-service's residual role) | YAML, UIState v3, atomic writes | ui.<13 sections> + legacy — `session_doc`/`profiles` (Phase 5 of session-editor isolation) and `runtime` (Phase 3 here) no longer live here (see layers 2b/3b) |
 | 3b. Session Doc Editor | `<config>/session_doc.yaml` | server (`SessionEditorConfigService`) | YAML, `SessionEditorConfig`, strict (`extra="forbid"`), atomic writes | `paths`/`narrate`/`scrub`/`roster`/`backends`/`session_name`/`profiles`/`active_profile` — its own document, not a `ui_state.yaml` section or an in-memory mirror |
-| 4. Machine-local | `.campaigngenerator.local.yaml` | server | YAML, gitignored | server.{host,port}, nav.last_page |
-| 5. Boot overrides | CLI flags to `server.main` | operator | in-memory only | session/campaign dirs; reach both `resolved()` and `resolved_editor_config()` from the same `boot_overrides` derivation |
+| 4. Machine-local | `.campaigngenerator.local.yaml` | server (`PlatformConfigService`) | YAML, `PlatformLocalConfig`, strict, gitignored | server.{host,port}, nav.last_page |
+| 5. Boot overrides | CLI flags to `server.main` | operator | in-memory only | `--campaign-dir`/`--session-dir`/`--config-dir`/`--host`/`--port` — the five survivors of Phase 0 (O1), which deleted twelve dead `session_doc.*` flags that reached no consumer; reach both `resolved()` and `resolved_editor_config()` from the same `boot_overrides` derivation |
 | 6. Content / refs | `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`, `~/.5etools-mcp-runtime/` | human (+ `launch --init-local`) | YAML + generated symlink farm | 5e content scope, roots, ingest list, built MCP tree |
 | 7. Ensemble subsystem | `ui.ensemble`, `manifest.json`, `merge.yaml`, `docs/*_draft.md` | server + ensemble CLI | persisted section + per-run artifacts | chapters/known_names/aliases/backends |
 | 8. Planning subsystem | `planning.yaml` | human + planning service | YAML, planning service owned | npcs[], factions[] |
 | 9. Grounding docs | `party.yaml`, `tracking.txt`, `docs/*.md` | human + generators | YAML config + generated md | rosters/dossiers → world/campaign/party docs |
+| 10. Router model defaults | fourteen `/run/*` request fields (`grounding.py` ×5, `prep.py` ×3, `experimental.py` ×2, `session_workflow.py` ×1, `connections.py` ×1, `setup.py` ×2) | server (`resolve_default_model`, `server/platform_config_service.py`) | in-memory, per-request | resolves `model` per request: explicit value → layer 2b's `runtime.default_model` → `campaignlib.constants.DEFAULT_MODEL` literal. Phase 5a — closes the gap where a request omitting `model` silently got a hardcoded literal instead of the sidebar's pick |
 
 ## Who writes what
 
 | Surface | Writer path | Notes |
 |---|---|---|
 | `config.yaml` | none (human-only) | `pipelines/workspace/new_workspace.py` creates; hand-edit |
-| `ui_state.yaml` | `PUT /section/{name}`, `PUT /runtime`, boot `_normalize_stored_paths` | lazy on first write; atomic + write-lock; `PUT /section/session_doc` 404s (unknown section) |
+| `platform.yaml` | `PUT /runtime` → `PlatformConfigService.update_runtime` | lazy on first write; atomic + write-lock; owned outright, no delegation to `UIStateService` — a `ui.<section>` write physically cannot touch this file (Phase 3, O3) |
+| `ui_state.yaml` | `PUT /section/{name}` → `UIStateService.update_section`, boot `_normalize_stored_paths` | lazy on first write; atomic + write-lock; `PUT /section/session_doc` 404s (unknown section); no longer holds `runtime` |
 | `session_doc.yaml` | `PUT /api/editor/config`, `/api/editor/profiles` CRUD + `/activate` | lazy on first editor write; atomic write, own file — cannot corrupt `ui_state.yaml` |
-| `.campaigngenerator.local.yaml` | `PUT /local` | lazy on first write |
+| `.campaigngenerator.local.yaml` | `PUT /local` → `PlatformConfigService.update_local` | lazy on first write |
 | `config/wiring.yaml` | mneme render only | not written by CampaignGenerator |
 | `refs.yaml` / `ingest_manifest.yaml` | hand-authored | refs.local.yaml seedable via `launch --init-local` |
 | ensemble artifacts | ensemble_extract (manifest+facts), synthesize (drafts), promote (live) | per-run workdir; disk is truth |
@@ -61,17 +71,27 @@ campaign](./session-editor-isolation.md#migrating-an-existing-campaign).
 
 ## Mental model
 
-Two owners, three persistence classes.
+Two owners, three persistence classes, and (new as of `docs/config/platform-isolation.md`) two
+kinds of server ownership: the **permanent platform tier** and the **transitional residual
+landlord**.
 
 - **Owners:** the human (`config.yaml`, refs, `party`/`planning.yaml`, grounding docs) and the
-  server (`ui_state.yaml`, `session_doc.yaml`, `local.yaml`) — with mneme owning the external
-  `wiring.yaml` above them.
-- **Persistence classes:** tracked+portable (`config.yaml`, `refs.yaml`, `ui_state.yaml`,
-  `session_doc.yaml`, `planning.yaml`), machine-local (`refs.local.yaml`, `.local.yaml`), and
-  generated/derived (`wiring.yaml`, 5etools runtime, ensemble manifests+drafts, `resolved()`,
-  `resolved_editor_config()`).
+  server — split, since Phase 2, into `PlatformConfigService` (`platform.yaml`,
+  `.campaigngenerator.local.yaml`, plus read-only access to `config.yaml`/wiring/paths — the
+  permanent role) and `UIStateService` (`ui_state.yaml`'s ten remaining `ui.<section>` blobs —
+  the transitional role every other service will eventually take back, one at a time, the way
+  Session Doc Editor and Planning already did). Mneme owns the external `wiring.yaml` above both.
+- **Persistence classes:** tracked+portable (`config.yaml`, `refs.yaml`, `platform.yaml`,
+  `ui_state.yaml`, `session_doc.yaml`, `planning.yaml`), machine-local (`refs.local.yaml`,
+  `.campaigngenerator.local.yaml`), and generated/derived (`wiring.yaml`, 5etools runtime,
+  ensemble manifests+drafts, `resolved()`, `resolved_editor_config()`).
 - **Invariant:** `config.yaml` is never machine-written, boot flags never persist, external
-  endpoints live only in mneme-rendered wiring, and disk is the source of truth for the content
-  pipelines.
+  endpoints live only in mneme-rendered wiring, disk is the source of truth for the content
+  pipelines, and (Phase 3, O3) a write to any `ui.<section>` cannot reach `platform.yaml` even by
+  accident — they are two separate files with two separate locks, not two views onto one document.
+
+See [platform-isolation.md](./platform-isolation.md) for the full before/after of this split
+(Phases 0–5a shipped; Phase 5b — moving the model registry's source into `wiring.yaml` — deferred,
+tracked as [issue #177](https://github.com/kostadis/CampaignGenerator/issues/177)).
 
 See also [service-cut.md](./service-cut.md) for the multi-service reading of this same map.

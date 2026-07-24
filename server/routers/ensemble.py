@@ -86,8 +86,9 @@ def _is_live_doc(path: Path) -> bool:
 
 
 def _default_party_config() -> Path | None:
-    """Conventional party.yaml location (mirrors server/config.py's
-    derive_campaign_paths) — used when the caller doesn't specify one."""
+    """Conventional party.yaml location (mirrors the party_config sniff in
+    PlatformConfigService.discover_campaign_paths) — used when the caller
+    doesn't specify one."""
     cwd = Path.cwd()
     for rel in ("config/party.yaml", "party.yaml"):
         p = cwd / rel

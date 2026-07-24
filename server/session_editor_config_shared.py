@@ -33,8 +33,11 @@ from server.config_models import BackendProfile, OptStr, ProfileEntry
 class EditorPaths(BaseModel):
     """Path selector fields. Session-based vs campaign-based split is
     service-owned metadata (see ``SessionEditorConfigService``), not stored
-    per-field here — mirrors ``CampaignConfigService._PATH_FIELDS
-    ["session_doc"]``."""
+    per-field here — mirrors the pre-Phase-5 ``CampaignConfigService.
+    _PATH_FIELDS["session_doc"]`` (that class is now split into
+    ``PlatformConfigService``/``UIStateService`` per
+    ``docs/config/platform-isolation.md``; the still-live analogue is
+    ``UIStateService._PATH_FIELDS``)."""
 
     model_config = ConfigDict(extra="forbid")
 

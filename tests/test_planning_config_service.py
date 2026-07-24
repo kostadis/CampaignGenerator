@@ -27,9 +27,21 @@ from server.planning_config_shared import (  # noqa: E402
 )
 
 
+class _StubPlatform:
+    """Minimal stand-in exposing exactly the one attribute
+    ``PlanningConfigService`` reads — ``config_path_base`` — since
+    docs/config/platform-isolation.md Phase 2 made it compose
+    ``PlatformConfigService`` instead of resolving campaign_dir/config_dir
+    itself. A real ``PlatformConfigService`` would require a ``config.yaml``
+    fixture on disk that these tests don't need."""
+
+    def __init__(self, campaign_dir: Path, config_dir: str = "config"):
+        self.config_path_base = Path(campaign_dir) / config_dir
+
+
 def _service(tmp_path: Path) -> PlanningConfigService:
     (tmp_path / "config").mkdir(exist_ok=True)
-    return PlanningConfigService(str(tmp_path), "config")
+    return PlanningConfigService(_StubPlatform(tmp_path, "config"))
 
 
 def _touch(tmp_path: Path, rel: str) -> Path:

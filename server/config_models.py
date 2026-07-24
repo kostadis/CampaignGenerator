@@ -1,9 +1,27 @@
 """Typed pydantic models for CampaignGenerator configuration.
 
-Three documents:
     UIState           — <campaign>/ui_state.yaml         (tracked, server-owned)
-    LocalConfig       — <campaign>/.campaigngenerator.local.yaml (gitignored)
     TrackedConfig     — <campaign>/config.yaml           (tracked, human-only)
+
+The third document, ``<campaign>/.campaigngenerator.local.yaml``, used to be
+modelled here too (``LocalConfig``/``ServerSection``/``NavSection``). Per
+``docs/config/platform-isolation.md`` Phase 2 it moved to
+``server/platform_config_shared.py`` (``PlatformLocalConfig``/
+``PlatformServer``/``PlatformNav``, now strict) alongside the
+``PlatformConfigService`` that exclusively owns it — that file has never
+overlapped with ``ui_state.yaml``, so there was no reason to keep modelling
+it next to ``UIState``.
+
+Phase 3 of the same doc (O3) does the same thing to ``runtime``:
+``RuntimeSection`` (``default_model``, ``session_dir``) is retired from this
+module entirely and its data relocates to a dedicated ``<config>/
+platform.yaml`` that ``PlatformConfigService`` owns outright — see
+``server/platform_config_shared.py``'s ``PlatformRuntime``/
+``PlatformDocument`` and ``server/migrate_platform_config.py`` for the
+one-shot data lift. ``UIState`` stays ``extra="allow"``, so a pre-migration
+file's leftover top-level ``runtime:`` block loads harmlessly and is simply
+ignored — the same precedent Phase 5 of the session-editor isolation set for
+a stale ``ui.session_doc``/``ui.profiles`` block.
 
 Path fields stay relative; resolution against campaign_dir happens in the
 service layer. Numeric fields rely on pydantic's native string→int coercion
@@ -13,12 +31,15 @@ never shadow an in-code default again.
 
 from __future__ import annotations
 
-import os
 from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
-SCHEMA_VERSION = 2
+# Bumped 2 -> 3 for Phase 3 of docs/config/platform-isolation.md (O3): this
+# is the second structural removal from UIState (after Phase 5's
+# session_doc/profiles), which is why the field carries information again —
+# Phase 5 left it at 2 while removing two sections.
+SCHEMA_VERSION = 3
 
 
 def _empty_to_none(v: Any) -> Any:
@@ -146,17 +167,6 @@ class UISection(BaseModel):
     experimental: _LooseSection = Field(default_factory=_LooseSection)
 
 
-class RuntimeSection(BaseModel):
-    """Cross-page runtime state."""
-
-    model_config = ConfigDict(extra="allow")
-
-    default_model: str = Field(
-        default_factory=lambda: os.environ.get("CAMPAIGN_MODEL") or "claude-sonnet-4-6"
-    )
-    session_dir: OptStr = None
-
-
 class LegacySection(BaseModel):
     """Quarantine for keys the migrator could not place into a typed slot."""
 
@@ -172,28 +182,7 @@ class UIState(BaseModel):
 
     version: int = SCHEMA_VERSION
     ui: UISection = Field(default_factory=UISection)
-    runtime: RuntimeSection = Field(default_factory=RuntimeSection)
     legacy: LegacySection = Field(default_factory=LegacySection)
-
-
-class ServerSection(BaseModel):
-    host: str = "127.0.0.1"
-    port: int = 5000
-
-
-class NavSection(BaseModel):
-    model_config = ConfigDict(extra="allow")
-
-    last_page: OptStr = None
-
-
-class LocalConfig(BaseModel):
-    """Root model for ``<campaign>/.campaigngenerator.local.yaml``."""
-
-    model_config = ConfigDict(extra="allow")
-
-    server: ServerSection = Field(default_factory=ServerSection)
-    nav: NavSection = Field(default_factory=NavSection)
 
 
 # ── Public list of typed UI section names ──────────────────────────────────

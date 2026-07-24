@@ -1,10 +1,11 @@
 """Config API routes — typed section/runtime/local updates, path helpers.
 
-All persistence flows through ``CampaignConfigService``. There is no
-fallback to a raw ``ui_config.yaml`` — when the service is not initialized
-the routes return ``503``. The flat-key overlay in ``GET /`` keeps the
-un-reshaped Pinia store working; it's computed per-request from the
-service's resolved view, not read from disk.
+All persistence flows through ``PlatformConfigService`` (``app.state.
+platform``) and, for the ten un-isolated ``ui.<section>`` blobs, the
+``UIStateService`` it composes (``platform.uis`` — see
+``docs/config/platform-isolation.md``). There is no fallback to a raw
+``ui_config.yaml`` — when the service is not initialized the routes return
+``503``.
 """
 
 from pathlib import Path
@@ -14,49 +15,32 @@ import yaml
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
-from server.config import (
-    DEFAULT_MODEL,
-    MODELS,
-    api_key_present,
-    derive_campaign_paths,
-    derive_session_paths,
-    path_exists,
-)
-from server.config_service import flatten_resolved_to_legacy
+from server.config import DEFAULT_MODEL, MODELS, api_key_present, path_exists
 from server.config_models import SCHEMA_VERSION, UI_SECTION_NAMES
+from server.platform_config_service import PlatformConfigService, require_platform
 
 router = APIRouter()
 
-
-def _require_service(request: Request):
-    service = getattr(request.app.state, "config_service", None)
-    if service is None:
-        raise HTTPException(
-            status_code=503,
-            detail="config service not initialized — campaign_dir not resolved at boot",
-        )
-    return service
+# require_platform (server/platform_config_service.py) is the one shared
+# "fetch app.state.platform or 503" accessor — see its docstring for the
+# duplicate copies it replaced. Kept as a local alias here so the four
+# in-file call sites below don't need touching; new routers should import
+# require_platform directly instead of adding a fifth copy of this alias.
+_require_service = require_platform
 
 
-# ── GET / — typed view + flat-key overlay for legacy frontend code ─────────
+# ── GET / — typed/resolved view + metadata ─────────────────────────────────
 
 
 @router.get("/")
 def get_config(request: Request):
-    """Return current configuration.
-
-    Includes both the typed/resolved view and a flat overlay of legacy keys
-    at the top level for un-reshaped frontend code. The overlay is computed
-    per-request from ``service.resolved()`` so boot overrides flow through
-    without disk persistence.
-    """
+    """Return current configuration: the typed/resolved view plus metadata."""
     service = _require_service(request)
     resolved = service.resolved()
-    legacy = flatten_resolved_to_legacy(resolved)
-    new_shape = {
+    return {
         "campaign_dir": str(service.campaign_dir),
         "config_path": str(service.config_path),
-        "ui_state_path": str(service.ui_state_path),
+        "ui_state_path": str(service.uis.ui_state_path),
         "local_config_path": str(service.local_config_path),
         "schema_version": SCHEMA_VERSION,
         "resolved": resolved,
@@ -64,9 +48,6 @@ def get_config(request: Request):
         "local": service.local.model_dump(mode="json"),
         "migration_warnings": list(service.load_warnings),
     }
-    # Spread legacy flat keys first; new-shape fields take precedence on any
-    # collision so the authoritative paths and metadata win.
-    return {**legacy, **new_shape}
 
 
 # ── Typed section update ───────────────────────────────────────────────────
@@ -85,7 +66,7 @@ def put_config_section(name: str, update: SectionUpdate, request: Request):
             status_code=404,
             detail=f"unknown UI section {name!r}; valid: {', '.join(UI_SECTION_NAMES)}",
         )
-    service.update_section(name, update.values)
+    service.uis.update_section(name, update.values)
     return {"ok": True}
 
 
@@ -129,19 +110,25 @@ def put_config_local(update: LocalUpdate, request: Request):
     return {"ok": True}
 
 
-# ── Path-derivation helpers (unchanged) ────────────────────────────────────
+# ── Path discovery (narrowed, O2) ───────────────────────────────────────────
 
 
 @router.get("/campaign-paths")
 def get_campaign_paths(campaign_dir: str, session_dir: str):
-    """Derive all paths from campaign directory + session directory."""
-    return derive_campaign_paths(campaign_dir, session_dir)
+    """Filesystem discovery for the Session Config screen — see
+    ``PlatformConfigService.discover_campaign_paths`` (O2, docs/config/
+    platform-isolation.md) for what this does and does not return.
 
+    Note this is a bare ``@staticmethod`` call, not ``_require_service`` —
+    this endpoint is how ``SessionConfig.vue`` discovers paths for a
+    campaign BEFORE it becomes ``app.state.platform`` (there may be no live
+    service for this ``campaign_dir`` yet).
 
-@router.get("/session-paths")
-def get_session_paths(session_dir: str):
-    """Derive sub-paths from a session directory (legacy)."""
-    return derive_session_paths(session_dir)
+    ``GET /api/config/session-paths`` (a one-line wrapper with no frontend
+    caller — verified by grepping ``apiFetch`` call sites) was deleted
+    alongside this narrowing.
+    """
+    return PlatformConfigService.discover_campaign_paths(campaign_dir, session_dir)
 
 
 @router.get("/path-status")

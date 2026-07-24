@@ -7,9 +7,11 @@ import sys
 import tempfile
 from pathlib import Path
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
+
+from server.platform_config_service import resolve_default_model
 
 # Make campaignlib importable regardless of CWD.
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -397,14 +399,19 @@ def list_docs(docs_dir: str = ""):
 
 class ExtractRequest(BaseModel):
     files: list[str]
-    model: str = "claude-sonnet-4-6"
+    # None (the FastAPI/pydantic default) means "no explicit pick" — the
+    # handler falls back to the platform's runtime.default_model via
+    # resolve_default_model. Used to be a hardcoded "claude-sonnet-4-6"
+    # literal, which meant a request that omitted `model` silently bypassed
+    # the sidebar picker (docs/config/platform-isolation.md, Phase 5a).
+    model: str | None = None
     cache_path: str = ""
     dossier_dir: str = ""
     replace: bool = False
 
 
 @router.post("/extract")
-def extract_connections(req: ExtractRequest):
+def extract_connections(req: ExtractRequest, request: Request):
     """Call Claude to extract entities/relationships, canonicalize IDs, merge into cache."""
     CHAR_LIMIT = 600_000
 
@@ -442,9 +449,10 @@ def extract_connections(req: ExtractRequest):
     # req has no backend/endpoint fields, so this resolves identically to the
     # old bare make_client() — just routed through the one approved seam.
     client = client_from_args(req)
+    resolved_model = resolve_default_model(req.model, request)
     # 32K output gives room for ~300 entities + ~500 edges. 4K truncates large
     # campaigns mid-string and produces unparseable JSON.
-    raw = stream_api(client, system, combined, req.model, max_tokens=32000, silent=True)
+    raw = stream_api(client, system, combined, resolved_model, max_tokens=32000, silent=True)
 
     raw = raw.strip()
     if raw.startswith("```"):

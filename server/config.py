@@ -1,135 +1,63 @@
-"""Model registry, default model, and campaign-path derivation helpers."""
+"""Model registry, default model, and stateless environment/filesystem probes.
+
+Phase 4 (``docs/config/platform-isolation.md`` O2) moved this module's other
+two roles out: ``derive_campaign_paths``'s discovery half became
+``PlatformConfigService.discover_campaign_paths`` (its derivation half —
+``output_dir``, ``DERIVED_SUBDIRS``, the hardcoded ``docs/``/``voice/``/
+``examples/`` layout — was deleted outright: it duplicated
+``resolve_path``/``_PATH_FIELDS`` and had already drifted, still emitting
+``roleplay_extract_dir``/``summary_extract_dir``, the pre-Phase-5 names the
+session editor renamed to ``*_extractions_dir``). ``derive_session_paths``
+(a one-line wrapper with no caller) and ``get_campaign_dir_from_request``
+(folded into ``platform_config_service.require_platform``, the one "give me
+the live PlatformConfigService or 503" accessor every router now shares) are
+both gone too.
+
+What is left has no natural service ownership boundary: ``MODELS``/
+``DEFAULT_MODEL`` and the two probes below are free functions with no
+persisted state to isolate.
+
+Phase 5a (``docs/config/platform-isolation.md`` O4's non-wiring half)
+removes the second independent ``DEFAULT_MODEL`` definition that used to
+live here: this module now imports ``campaignlib.constants.DEFAULT_MODEL``
+— the single definition every CLI script reads, and the one
+``server/platform_config_shared.py``'s ``PlatformRuntime.default_model``
+field also now reads via its ``default_factory`` — instead of re-deriving
+``os.environ.get("CAMPAIGN_MODEL") or "claude-sonnet-4-6"`` a third time.
+Re-exported here (not renamed/removed) because ``server/routers/
+config_routes.py`` and ``server/routers/setup.py`` already import it as
+``from server.config import DEFAULT_MODEL`` / ``from campaignlib import
+DEFAULT_MODEL`` respectively — both now resolve to the same object.
+
+``MODELS`` is refreshed to the current model family — it had drifted to
+missing Opus 5 / Sonnet 5 / Fable 5 entirely, while still carrying
+``claude-sonnet-4-20250514`` (deprecated, retiring 2026-06-15) and a
+needlessly date-suffixed ``claude-haiku-4-5-20251001`` (the bare alias
+``claude-haiku-4-5`` is the correct id — model ids in this list are never
+date-suffixed). ``claude-mythos-5`` is deliberately excluded: it is
+available only to Project Glasswing participants, not general release.
+
+``MODELS`` stays a hardcoded Python list, deliberately: relocating its
+*source* into ``wiring.yaml`` (mneme-rendered per-install config, so adding
+a model needs no CampaignGenerator release) is Phase 5b — deferred, needs a
+template change in the separate ``mneme`` repo, not done here.
+"""
 
 import os
 from pathlib import Path
-from fastapi import HTTPException, Request
+
+from campaignlib import DEFAULT_MODEL
 
 MODELS = [
-    "claude-sonnet-4-6",
-    "claude-sonnet-4-20250514",
+    "claude-opus-5",
+    "claude-fable-5",
     "claude-opus-4-8",
+    "claude-opus-4-7",
     "claude-opus-4-6",
-    "claude-haiku-4-5-20251001",
+    "claude-sonnet-5",
+    "claude-sonnet-4-6",
+    "claude-haiku-4-5",
 ]
-
-# Mirror campaignlib's CAMPAIGN_MODEL override so the UI's default model
-# matches whatever the CLI scripts default to.
-DEFAULT_MODEL = os.environ.get("CAMPAIGN_MODEL") or "claude-sonnet-4-6"
-
-# Session directory derived sub-paths
-DERIVED_SUBDIRS = {
-    "scene_extractions_dir": "scene_extractions",
-    "roleplay_extract_dir":  "vtt_roleplay_extractions",
-    "summary_extract_dir":   "vtt_extractions",
-}
-
-
-def derive_campaign_paths(campaign_dir: str, session_dir: str) -> dict:
-    """Derive all paths from campaign_dir + session_dir.
-
-    Campaign layout:
-        <campaign>/
-            docs/               → campaign_state.md, world_state.md, party.md
-            voice/              → per-character voice files
-            examples/           → handcrafted style references
-            summaries/
-                <session>/      → VTT, GM recap, extractions, outputs
-    """
-    cd = Path(campaign_dir).expanduser().resolve()
-    sd = Path(session_dir).expanduser().resolve()
-    result: dict = {}
-
-    # ── Campaign-level paths ──
-    docs = cd / "docs"
-    result["campaign_dir"] = str(cd)
-
-    # docs/ files (exist-check each)
-    for name, key in [
-        ("campaign_state.md", "campaign_state"),
-        ("world_state.md", "world_state"),
-        ("party.md", "party"),
-        ("planning.md", "planning"),
-    ]:
-        p = docs / name
-        result[key] = str(p) if p.exists() else ""
-
-    # summaries file (the big concatenated file)
-    for name in ("summaries.md", "all_summaries.md"):
-        p = cd / name
-        if p.exists():
-            result["summaries"] = str(p)
-            break
-    if "summaries" not in result:
-        # Check docs/
-        for name in ("summaries.md",):
-            p = docs / name
-            if p.exists():
-                result["summaries"] = str(p)
-                break
-
-    # voice/ and examples/ directories
-    voice = cd / "voice"
-    result["voice_dir"] = str(voice) if voice.is_dir() else ""
-    examples = cd / "examples"
-    result["examples_dir"] = str(examples) if examples.is_dir() else ""
-
-    # Party config YAML — preferred over flat character/backstory/arc-score flags
-    for rel in ("config/party.yaml", "party.yaml"):
-        p = cd / rel
-        if p.exists():
-            result["party_config"] = str(p)
-            break
-    else:
-        result["party_config"] = ""
-
-    # NPC dossier files (individual files, not directory)
-    npcs_dir = docs / "npcs"
-    if npcs_dir.is_dir():
-        npc_files = sorted(npcs_dir.glob("*.md"))
-        if npc_files:
-            result["plan_npc"] = "\n".join(str(f) for f in npc_files)
-
-    # Context files (campaign_state + world_state + party if they exist)
-    ctx = [result[k] for k in ("campaign_state", "world_state", "party") if result.get(k)]
-    result["context"] = ctx
-
-    # Planning context: grounding docs for synthesis
-    if ctx:
-        result["plan_context"] = "\n".join(ctx)
-
-    # ── Session-level paths ──
-    result["session_dir"] = str(sd)
-    result["output_dir"] = str(sd)
-
-    # Sub-directories
-    for key, subdir in DERIVED_SUBDIRS.items():
-        result[key] = str(sd / subdir)
-
-    # Auto-detect VTT file
-    vtt_files = list(sd.glob("*.vtt"))
-    if vtt_files:
-        result["vtt_input"] = str(vtt_files[0])
-
-    # Auto-detect GM recap
-    for name in ("gm-assist.md", "gm_assist.md", "gmassistant.md", "recap.md"):
-        candidate = sd / name
-        if candidate.exists():
-            result["gm_recap"] = str(candidate)
-            break
-
-    # Auto-detect session summary
-    for name in ("session-summary.md", "session-clean.md", "session_summary.md"):
-        candidate = sd / name
-        if candidate.exists():
-            result["session_summary"] = str(candidate)
-            break
-
-    return result
-
-
-def derive_session_paths(session_dir: str) -> dict:
-    """Legacy: derive sub-paths from a session directory only."""
-    return derive_campaign_paths("", session_dir)
 
 
 def api_key_present() -> bool:
@@ -142,17 +70,3 @@ def path_exists(path_str: str) -> bool:
     if not path_str or not path_str.strip():
         return False
     return Path(path_str).expanduser().exists()
-
-
-def get_campaign_dir_from_request(request: Request) -> str:
-    """Extract the campaign directory from the app state.
-    
-    Mirrors the pattern used in config_routes._require_service().
-    """
-    config_service = getattr(request.app.state, "config_service", None)
-    if config_service is None:
-        raise HTTPException(
-            status_code=503,
-            detail="config service not initialized — campaign_dir not resolved at boot",
-        )
-    return str(config_service.campaign_dir)

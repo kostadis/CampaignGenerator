@@ -3,11 +3,12 @@ import { ref } from 'vue'
 import { apiFetch, apiPut, apiPost, apiDelete } from '../api/client'
 
 export const useConfigStore = defineStore('config', () => {
-  // Legacy flat-key mirror of the response. Still populated from the server
-  // response (which includes a flat-key overlay for back-compat) so views
-  // that read ``config.values.<prefix>_*`` keep working until they're
-  // migrated. session_doc's `sd_*` slice of this overlay was retired in the
-  // session-editor config isolation — see ``editorConfig`` below.
+  // Raw mirror of the last GET /api/config/ response, plus a client-side-only
+  // scratch bag: SessionConfig.vue broadcasts derived paths onto this object
+  // (Object.assign) so sibling pages not yet migrated to ``resolved`` can
+  // pick them up without a round trip. It is replaced wholesale — not
+  // merged — on every load()/refresh(), so anything Object.assign'd onto it
+  // evaporates on the next config fetch.
   const values = ref<Record<string, any>>({})
 
   // Typed/resolved view from the unified config service. Path fields are
@@ -49,7 +50,7 @@ export const useConfigStore = defineStore('config', () => {
       migrationWarnings.value = cfg.migration_warnings ?? []
       models.value = modelsData.models
       defaultModel.value = modelsData.default
-      model.value = cfg.global_model || modelsData.default
+      model.value = cfg.resolved?.runtime?.default_model || modelsData.default
       apiKeyPresent.value = status.api_key_present
       cwd.value = status.cwd
       editorConfig.value = editorCfg
