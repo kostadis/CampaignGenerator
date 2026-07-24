@@ -35,11 +35,13 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
-# Bumped 2 -> 3 for Phase 3 of docs/config/platform-isolation.md (O3): this
-# is the second structural removal from UIState (after Phase 5's
-# session_doc/profiles), which is why the field carries information again —
-# Phase 5 left it at 2 while removing two sections.
-SCHEMA_VERSION = 3
+# Bumped 3 -> 4 for Phase 5 of docs/config/ensemble-isolation.md: the third
+# structural removal from UIState, after Phase 5 of session-editor isolation
+# (session_doc/profiles) and Phase 3 of platform isolation (runtime). As with
+# those, UIState stays extra="allow", so a pre-migration file's leftover
+# ui.ensemble block loads harmlessly and is ignored — migrate it with
+# `python -m server.migrate_ensemble_config` before relying on it.
+SCHEMA_VERSION = 4
 
 
 def _empty_to_none(v: Any) -> Any:
@@ -126,46 +128,11 @@ class BackendProfile(BaseModel):
     model: OptStr = None
 
 
-class EnsembleSection(BaseModel):
-    """``ui.ensemble`` — the ensemble grounding-doc workflow page.
-
-    Per-stage backend choice (extract vs synthesize are independent) plus the
-    scope inputs (known-names sources, aliases file) the bundle stage and the
-    alias-correction gate consume. Files on disk remain the source of truth;
-    this only records the operator's selections.
-
-    **Being retired.** ``docs/config/ensemble-isolation.md`` replaces this
-    section with a strict ``EnsembleConfig`` in its own ``<config>/
-    ensemble.yaml`` (``server/ensemble_config_shared.py``). Phase 5 of that
-    doc removes ``ensemble`` from :class:`UISection` entirely; until the
-    migration CLI ships, this stays so a pre-migration campaign keeps loading.
-
-    Phase 0 deleted the ``campaign_dir`` field: the frontend persisted it and
-    read it back, but no ensemble run has ever consumed it, and the platform
-    tier (``PlatformConfigService``) is its real owner. A leftover
-    ``campaign_dir`` in an existing ``ui_state.yaml`` is harmless — this model
-    is ``extra="allow"``, so it loads and is ignored.
-    """
-
-    model_config = ConfigDict(extra="allow")
-
-    chapters_glob: str = "docs/chapters/chapter_*.md"
-    # The explicit set of chapters chosen in the picker (relative paths).
-    # Principle X — there is no silent "all": empty means *nothing selected*
-    # and extraction refuses to run; "Select all" materializes every path here.
-    chapters_selected: list[str] = Field(default_factory=list)
-    extract: BackendProfile = Field(default_factory=BackendProfile)
-    synthesize: BackendProfile = Field(default_factory=BackendProfile)
-    known_names: list[str] = Field(default_factory=list)
-    aliases_path: OptStr = None
-
-
 class UISection(BaseModel):
     """All per-page state, one attribute per page or group of pages."""
 
     vtt_summary: VttSummarySection = Field(default_factory=VttSummarySection)
     grounding: GroundingSection = Field(default_factory=GroundingSection)
-    ensemble: EnsembleSection = Field(default_factory=EnsembleSection)
     campaign_state: _LooseSection = Field(default_factory=_LooseSection)
     distill: _LooseSection = Field(default_factory=_LooseSection)
     party: _LooseSection = Field(default_factory=_LooseSection)

@@ -148,12 +148,15 @@ class TestIsolationInvariant:
         )
         platform.uis.update_section("vtt_summary", {"session_name": "Session 12"})
 
+        # BOTH live under <campaign>/config/ — ui_state.yaml is NOT at the
+        # campaign root. Getting this wrong made an earlier cut of this test
+        # silently guard only platform.yaml while claiming to cover both.
         platform_yaml = fresh_campaign / CONFIG_SUBDIR / "platform.yaml"
-        ui_state_yaml = fresh_campaign / "ui_state.yaml"
-        before = {
-            p: p.read_bytes() for p in (platform_yaml, ui_state_yaml) if p.exists()
-        }
-        assert before, "fixture wrote neither file — the test would prove nothing"
+        ui_state_yaml = fresh_campaign / CONFIG_SUBDIR / "ui_state.yaml"
+        assert platform_yaml.exists() and ui_state_yaml.exists(), (
+            "fixture did not create both files — the guard below would be vacuous"
+        )
+        before = {p: p.read_bytes() for p in (platform_yaml, ui_state_yaml)}
 
         EnsembleConfigService(platform.config_path_base).update_config(
             {"extract": {"backend": "dgx", "endpoints": ["http://spark:8001/v1"]},
@@ -176,13 +179,15 @@ class TestIsolationInvariant:
         app.state.platform.uis.update_section("distill", {"some_field": "value"})
         client = TestClient(app)
 
+        # BOTH live under <campaign>/config/ — ui_state.yaml is NOT at the
+        # campaign root. Getting this wrong made an earlier cut of this test
+        # silently guard only platform.yaml while claiming to cover both.
         platform_yaml = fresh_campaign / CONFIG_SUBDIR / "platform.yaml"
-        ui_state_yaml = fresh_campaign / "ui_state.yaml"
-        before = {
-            p: p.read_bytes() for p in (platform_yaml, ui_state_yaml) if p.exists()
-        }
-        assert before
-
+        ui_state_yaml = fresh_campaign / CONFIG_SUBDIR / "ui_state.yaml"
+        assert platform_yaml.exists() and ui_state_yaml.exists(), (
+            "fixture did not create both files — the guard below would be vacuous"
+        )
+        before = {p: p.read_bytes() for p in (platform_yaml, ui_state_yaml)}
         resp = client.put("/api/ensemble/config", json={"known_names": ["x.md"]})
         assert resp.status_code == 200
 
@@ -236,3 +241,53 @@ class TestRoutes:
         client.put("/api/ensemble/config", json={"known_names": ["docs/names.md"]})
         raw = (fresh_campaign / CONFIG_SUBDIR / ENSEMBLE_CONFIG_FILENAME).read_text()
         assert yaml.safe_load(raw)["known_names"] == ["docs/names.md"]
+
+
+# ── Phase 5: the ui.ensemble section is retired ────────────────────────────
+
+class TestSectionRetired:
+    def test_put_section_ensemble_404s(self, fresh_campaign):
+        """`ensemble` is no longer a UISection field, so the generic section
+        route must reject it — the same contract Phase 5 of the session-editor
+        isolation set for `PUT /section/session_doc`."""
+        from server.routers import config_routes
+
+        app = FastAPI()
+        app.include_router(config_routes.router, prefix="/api/config")
+        app.state.platform = PlatformConfigService(fresh_campaign)
+        c = TestClient(app)
+
+        assert c.put("/api/config/section/ensemble",
+                     json={"values": {"known_names": ["x.md"]}}).status_code == 404
+        # A surviving loose section still works — this isn't a blanket break.
+        assert c.put("/api/config/section/distill",
+                     json={"values": {"x": 1}}).status_code == 200
+
+    def test_ensemble_is_not_a_ui_section_name(self):
+        from server.config_models import UI_SECTION_NAMES
+
+        assert "ensemble" not in UI_SECTION_NAMES
+
+    def test_a_pre_migration_ui_state_still_loads(self, fresh_campaign):
+        """UIState stays extra="allow", so a leftover ui.ensemble block from a
+        campaign that hasn't run the migration CLI loads harmlessly and is
+        ignored rather than failing the server's boot."""
+        import yaml as _yaml
+
+        ui_state = fresh_campaign / CONFIG_SUBDIR / "ui_state.yaml"
+        ui_state.parent.mkdir(parents=True, exist_ok=True)
+        ui_state.write_text(_yaml.safe_dump({
+            "version": 3,
+            "ui": {"ensemble": {"chapters_glob": "old/*.md", "campaign_dir": "/old"},
+                   "distill": {"x": 1}},
+        }), encoding="utf-8")
+
+        platform = PlatformConfigService(fresh_campaign)
+        resolved = platform.resolved()
+        assert resolved["ui"]["distill"]["x"] == 1
+        assert "ensemble" not in resolved["ui"]
+
+    def test_schema_version_bumped(self):
+        from server.config_models import SCHEMA_VERSION
+
+        assert SCHEMA_VERSION == 4
