@@ -1,15 +1,53 @@
 # Session Editor Configuration Isolation Design
 
-> **Status: 📝 Draft / proposed (2026-07-23).** Not yet implemented. This is
-> the design only; no code has changed. It follows the pattern established by
-> [planning-isolation.md](./planning-isolation.md) but the session editor is a
-> materially harder case — see [Why this is not planning](#why-this-is-not-planning).
-> **Scope is decided** ([Resolved decision](#resolved-decision)): all five
-> phases ship, ending with the data in its own `session_doc.yaml` (Option B).
-> The single user handles the data lift by hand, so no automated migration
-> tooling is in scope — and because the lift is manual, Phase 5 also
-> **redesigns** the schema into a cleaner model instead of carrying the current
-> `ui.session_doc` shape forward (see [Data model](#data-model)).
+> **Status: ✅ Done (2026-07-24).** Shipped and verified end-to-end across five
+> commits on branch `session-editor-config-isolation` (`1862c8b` Phase 1 …
+> `b05d944` Phase 5). All five implementation phases landed; see
+> [Implementation status](#implementation-status) for the per-phase record and
+> [Deviations / fixes found while implementing](#deviations--fixes-found-while-implementing)
+> for three bugs found and fixed along the way. It followed the pattern
+> established by [planning-isolation.md](./planning-isolation.md), though the
+> session editor was a materially harder case — see
+> [Why this is not planning](#why-this-is-not-planning). One notable deviation
+> from the plan below: the data lift shipped as an **automated** one-shot CLI
+> (`server/migrate_session_doc.py`) rather than the by-hand single-file edit
+> originally scoped — see
+> [Migrating an existing campaign](#migrating-an-existing-campaign).
+> The [Resolved decision](#resolved-decision) and
+> [Design decisions (O1–O3)](#design-decisions-o1o3) sections record the final
+> calls, including two (O2, O3) that landed the **opposite** of this doc's
+> original recommendation.
+
+## Migrating an existing campaign
+
+Any campaign whose `<config>/ui_state.yaml` still carries a pre-Phase-5
+`ui.session_doc` / `ui.profiles` fragment needs one one-shot run before the
+Session Doc Editor sees that data again — Phase 5 dropped both fields from
+`UISection` (see [Data model](#data-model)), so the server now silently
+ignores them instead of reading them.
+
+```bash
+python -m server.migrate_session_doc --campaign-dir /path/to/campaign
+```
+
+- `--config-dir` (default `config`) — the config subdirectory to read from /
+  write to within the campaign, matching the server's own `--config-dir`
+  convention.
+- `--force` — overwrite an existing `session_doc.yaml` at the destination.
+  Without it the command refuses to touch an existing file, so a second,
+  accidental run can't clobber real data.
+- If there is nothing to migrate — no non-empty `ui.session_doc` /
+  `ui.profiles` in the source — it prints `nothing to migrate` and exits `0`.
+  Safe to run against a campaign that never had session-editor state, or one
+  that's already been migrated.
+- Reads `ui_state.yaml` **raw** (`yaml.safe_load`, not the typed `UIState`
+  model) specifically so it can rescue fields the current schema no longer
+  declares. Writes `<config>/session_doc.yaml` through the same grouped,
+  strict `SessionEditorConfig` shape the service owns — path values are
+  copied as-is (no re-resolution or re-relativization; they were already
+  stored relative).
+- Run it once per campaign, then launch the server normally — the Session
+  Doc Editor picks up the migrated file on its own.
 
 ## Overview
 
@@ -28,7 +66,11 @@ optionally moving the data to its own file second.
 
 ## Current state
 
-The editor's config lives in three places at once:
+*(Historical — describes the pre-isolation state this design replaced. All
+three representations below are gone as of Phase 5; see
+[Implementation status](#implementation-status).)*
+
+The editor's config lived in three places at once:
 
 | # | Representation | Where | Owner | Populated by |
 |---|---|---|---|---|
@@ -103,8 +145,11 @@ Two derivations of one truth that can drift.
 
 ## Problems
 
+*(Historical — all three are resolved as of Phase 5; see
+[Benefits](#benefits) for what replaced each.)*
+
 Beyond the four planning cited (coupling, blast radius, inefficiency, no
-ownership), the session editor adds three of its own:
+ownership), the session editor added three of its own:
 
 1. **Split-brain / fragmented state.** `CONFIG` is a second live copy of
    `ui.session_doc`, reconciled per-request by `_refresh_config_from_service`.
@@ -261,16 +306,26 @@ shared mutable dict.
 
 ## Data model
 
-Because the migration is manual and one-time, the new schema is **not** bound to
-the current `ui.session_doc` shape. Phases 1–4 keep the existing field names (so
-the split-brain removal stays low-risk and mechanical); **Phase 5 redesigns**
-the schema as it relocates the data — the reshape and the manual data lift are
-the same pass.
+**Shipped exactly as designed below** — `server/session_editor_config_shared.py`'s
+`SessionEditorConfig` matches this shape field-for-field (verified against
+source 2026-07-24). The rename table lives on as
+`TYPED_SESSION_DOC_TO_GROUPED`, now consumed only by
+`server/migrate_session_doc.py` (see [Migrating an existing
+campaign](#migrating-an-existing-campaign)) rather than by a live adapter.
 
-Today's `SessionDocSection` is a flat bag of ~25 fields that mixes path
-selectors, narrate knobs, scrub knobs, backend selection, and roster; carries
-two names for several fields (the `_TYPED_TO_CONFIG_KEY` legacy); and is
-`extra="allow"` (unenforced). Proposed `session_doc.yaml` shape
+Because the migration was one-time (whether by hand or, as shipped, via a
+script — see [Deviations](#deviations--fixes-found-while-implementing) item
+4), the new schema was **not** bound to the old `ui.session_doc` shape.
+Phases 1–4 kept the existing field names (so the split-brain removal stayed
+low-risk and mechanical); **Phase 5 redesigned** the schema as it relocated
+the data — the reshape and the data lift were the same pass.
+
+The old `SessionDocSection` was a flat bag of ~25 fields that mixed path
+selectors, narrate knobs, scrub knobs, backend selection, and roster; carried
+two names for several fields (the `_TYPED_TO_CONFIG_KEY` legacy); and was
+`extra="allow"` (unenforced) — deleted from `config_models.py` in Phase 5
+(`ProfileEntry`/`BackendProfile` were kept; both are still used elsewhere).
+The `session_doc.yaml` shape it was replaced with
 (`SessionEditorConfig`, **strict** — `extra="forbid"`):
 
 ```yaml
@@ -310,19 +365,23 @@ active_profile:
 ```
 
 **Per-backend model memory — decided: the `backends` map above** (2026-07-23).
-It keeps each backend's remembered model/endpoint across switches (the current
+It keeps each backend's remembered model/endpoint across switches (the old
 flat `dgx_model` / `openrouter_model` behavior), reuses `BackendProfile`, and
 pre-shapes the eventual central backend provider (service-cut gap #3). The
-anthropic/claude-code entries stay empty — their model still comes from the
-global `runtime.default_model` picker (open question O3 below).
+anthropic/claude-code entries were left empty in this design pass pending O3
+— **as shipped, O3 resolved the other way**: `backends.anthropic.model` /
+`backends.claude-code.model` are real, settable overrides that win over the
+global `runtime.default_model` picker when set (see [Design decisions
+(O1–O3)](#design-decisions-o1o3)).
 
-The remaining schema choices (grouping granularity, dead-field audit) are
-tracked under [Open questions](#open-questions).
+The remaining schema choices (grouping granularity, dead-field audit) landed
+as recorded under [Design decisions (O1–O3)](#design-decisions-o1o3) and
+[Open questions](#open-questions-historical--resolved-above) below.
 
-A **dead-field audit** rides with the reshape: e.g. `extract_dir` looks
-vestigial next to `scene_extractions_dir` (boot maps `--extract-dir` →
-`scene_extractions_dir`). The reshape is the moment to drop such fields rather
-than copy them forward — confirm each before pruning.
+A **dead-field audit** rode with the reshape: `extract_dir` was confirmed
+vestigial next to `scene_extractions_dir` (boot mapped `--extract-dir` →
+`scene_extractions_dir`) and dropped rather than carried forward — see
+[S4](#settled-with-a-recommendation--confirmed-as-shipped).
 
 `ResolvedEditorConfig` stays a separate **read-only** dataclass (not persisted):
 the stored `SessionEditorConfig` with paths resolved absolute and the platform
@@ -330,19 +389,20 @@ extras layered in (`model` ← `runtime.default_model`; `work_dir` /
 `campaign_dir` / `config_dir`; optional `vtt`). Those extras are **never**
 written to `session_doc.yaml`.
 
-## API surface
+## API surface (as shipped)
 
-Mostly unchanged — this is the biggest departure from planning, which added a
-whole REST surface. Here the surface is nearly stable and the win is internal.
+Mostly unchanged, as predicted — the biggest departure from planning, which
+added a whole REST surface. Here the surface stayed nearly stable and the win
+was internal.
 
-| Method | Path | Change |
-|---|---|---|
-| `GET` | `/api/editor/config` | unchanged shape; now served from the resolved view |
-| `PUT` | `/api/editor/config` | **now the only** editor-config write; absorbs backend/dgx/batch/openrouter |
-| `GET/PUT` | `/api/config/section/session_doc` | **removed** as a session-editor write path (breaking; acceptable per the planning precedent) |
-| `GET` | `/api/editor/profiles` | new — list presets |
-| `POST/DELETE` | `/api/editor/profiles[/{name}]` | new — manage presets |
-| `POST` | `/api/editor/profiles/{name}/activate` | new — server-side mirror into session_doc |
+| Method | Path | Change | Shipped |
+|---|---|---|---|
+| `GET` | `/api/editor/config` | unchanged shape; now served from the resolved view | ✅ Phase 2 |
+| `PUT` | `/api/editor/config` | **the only** editor-config write; absorbs backend/dgx/batch/openrouter | ✅ Phase 3b |
+| `GET/PUT` | `/api/config/section/session_doc` | **removed** as a session-editor write path — `session_doc` left `UISection` in Phase 5, so this now 404s ("unknown section") rather than silently no-op-ing | ✅ Phase 5 |
+| `GET` | `/api/editor/profiles` | list presets | ✅ Phase 3a |
+| `POST/GET/PUT/DELETE` | `/api/editor/profiles[/{name}]` | manage presets (201/200/200/204; 404/409/400 contract mirrors `planning_routes`) | ✅ Phase 3a |
+| `POST` | `/api/editor/profiles/{name}/activate` | server-side mirror into `session_doc.yaml`, returns the re-resolved config (same shape as `GET /api/editor/config`) | ✅ Phase 3a |
 
 ## Implementation phases
 
@@ -354,6 +414,58 @@ whole REST surface. Here the surface is nearly stable and the win is internal.
 | 4 | Delete `init_editor_config`; unify boot to `boot_overrides` only (one derivation of the session paths). | medium |
 | 5 | Move `session_doc` + `profiles` out of `ui_state.yaml` into a dedicated `<config>/session_doc.yaml` the service owns exclusively, **reshaped to the logical `SessionEditorConfig` model** (rename consumers to the final field names in the same pass); carry the write-time relativization + load-time normalize for its path fields (delegating to the platform's `relativize_path`/`resolve_path`). Data lift is a documented **manual** field-by-field remap (single user). | medium (path-resolution re-expression + reshape; migration itself is manual) |
 | 6 | Docs: update `schema.md`, `values.md`, `service-cut.md`, `master.md`; add this doc's "as shipped" section. | low |
+
+## Implementation status
+
+| Phase | Work | Status |
+|---|---|---|
+| 1 | `session_editor_config_shared.py` (grouped strict model) + `session_editor_config_service.py` (`SessionEditorConfigService`, temp adapter over `ui_state.yaml`) | ✅ done (`1862c8b`) |
+| 2 | Kill `scene_editor.CONFIG`, `_refresh_config_from_service`, `init_editor_config`; `GET/PUT /api/editor/config` via `Depends`-injected `ResolvedEditorConfig`; ~20 helpers converted to take `cfg` explicitly | ✅ done (`fbaeab8`) |
+| 3a | `/api/editor/profiles` CRUD + `/activate`; grouped-or-flat `PUT` (temp compat shim) | ✅ done (`fd5742a`) |
+| 3b | Frontend (`SessionDocEditor.vue`, `SessionConfig.vue`, `AppSidebar.vue`, `config.ts`) switches to `/api/editor`; flat PUT shim and `sd_*` overlay retired | ✅ done (`ff440c1`) |
+| 4 | Boot unification — `main.py`'s vestigial session-dir/seed-dict code deleted; `--session-dir` reaches the editor only via `boot_overrides` → `resolved_editor_config()` (one derivation) | ✅ done (`13d856f`) |
+| 5 | Relocate to dedicated `<config>/session_doc.yaml` (`SessionEditorConfigService` owns it exclusively, write-time relativize + read-time resolve delegating to the platform); `config_models.py` drops `SessionDocSection`/`ProfilesSection`; `migrate_session_doc.py` CLI; `grounding.py` backend-read fix | ✅ done (`b05d944`) |
+| 6 | Docs: this doc + `schema.md` / `values.md` / `subsystems.md` / `service-cut.md` / `master.md` / `cli_tools.md` / `CLAUDE.md` | ✅ done (this pass) |
+
+**Tests:** `tests/test_session_editor_config_service.py` (22 tests, Phase 1),
+`tests/test_editor_service_integration.py` and `tests/test_editor_pipeline.py`
+(rewritten across Phases 2–4), `tests/test_editor_profiles_routes.py` (Phase
+3a, mirrors `test_planning_routes.py`'s status-code contract). Net: +24
+passing tests by Phase 5, same 35 pre-existing unrelated failures, none new.
+
+## Deviations / fixes found while implementing
+
+Three bugs were found and fixed along the way (none pre-dated this refactor
+in a way that blocked it — each was caught by the refactor forcing every
+`CONFIG` read site to be re-examined):
+
+1. **Latent `--examples` bug (fixed Phase 2, `fbaeab8`).** The old code read
+   `CONFIG["examples_dir"]` when building the `sd_narrate` command, but only
+   `CONFIG["examples"]` was ever populated (the `_TYPED_TO_CONFIG_KEY` rename
+   table mapped `examples_dir` → `examples`) — so `--examples` was silently
+   never forwarded to `sd_narrate`, regardless of what the editor had
+   configured. Fixed by reading `cfg.paths.examples_dir` directly once the
+   key-rename layer was deleted.
+2. **Dead `dossier_dir` branch (dropped Phase 2, `fbaeab8`).** `CONFIG` carried
+   a `dossier_dir` key that nothing in boot or the frontend ever populated —
+   confirmed dead per the design doc's
+   [S4](#settled-with-a-recommendation--confirmed-as-shipped) audit and
+   dropped rather than carried into `ResolvedEditorConfig`.
+3. **Stale `grounding.py` backend read (fixed Phase 5, `b05d944`).**
+   `server/routers/grounding.py`'s global-backend `_backend_flags()` read
+   `ui.session_doc.backend` directly — this had already gone stale in Phase
+   3b once the `sd_*` overlay retired, and would have raised a `KeyError`
+   once `session_doc` left `UISection` entirely in Phase 5. Fixed to read the
+   active backend via `SessionEditorConfigService(service)
+   .resolved_editor_config().backends` instead, matching how `scene_editor.py`
+   and the ensemble router already resolve it.
+4. **Migration shipped automated, not manual.** The original scope (see
+   [Resolved decision](#resolved-decision)) assumed the sole user would
+   hand-edit `ui_state.yaml` → `session_doc.yaml` once. It shipped instead as
+   `server/migrate_session_doc.py`, a proper one-shot CLI — see
+   [Migrating an existing campaign](#migrating-an-existing-campaign). Not a
+   bug, but a deviation worth flagging since it changes the operational story
+   for every future campaign, not just the first one.
 
 ## Benefits
 
@@ -428,21 +540,53 @@ The two options considered were:
   `ui.profiles` out of `ui_state.yaml`) and re-expressing session-based path
   resolution against the platform's `runtime.session_dir`.
 
-**Sequencing:** Phases 1–4 still land first — they deliver the real prize
-(killing the split-brain) independent of file location and keep each step
-reviewable — and Phase 5 then completes the physical isolation. The data lift is
-a **manual** step: the sole user relocates the `session_doc:` / `profiles:`
-fragments from `ui_state.yaml` into `session_doc.yaml` by hand, so no automated
-migration code is written. And because the lift is manual and one-time, Phase 5
-also takes the opportunity to **redesign** the schema (see
-[Data model](#data-model)) rather than carry the current shape forward — the
-hand-migration is a field-by-field remap, cheap because it is one file, one
-user, done once.
+**Sequencing:** Phases 1–4 landed first — they delivered the real prize
+(killing the split-brain) independent of file location and kept each step
+reviewable — and Phase 5 then completed the physical isolation. The data lift
+ended up **automated** rather than manual: instead of the sole user
+hand-editing `session_doc:` / `profiles:` fragments out of `ui_state.yaml`,
+Phase 5 shipped `server/migrate_session_doc.py`, a one-shot CLI — see
+[Migrating an existing campaign](#migrating-an-existing-campaign) and item 4
+under [Deviations](#deviations--fixes-found-while-implementing). The
+opportunity to **redesign** the schema rather than carry the current shape
+forward (see [Data model](#data-model)) was taken as planned; the CLI
+performs the same field-by-field remap the manual process would have, just
+scripted and repeatable across campaigns instead of one-off.
 
-## Open questions
+## Design decisions (O1–O3)
 
-**Decided so far:** file location → Option B (`session_doc.yaml`), all five
-phases; schema → redesigned; backend storage → `backends` map (O-resolved).
+The three questions this doc originally left open were called during
+implementation. **O2 and O3 both landed the opposite of this doc's original
+recommendation** — flagged explicitly below since a reader skimming only the
+"recommend" lines from the design phase would now be misled.
+
+- **O1 — Schema grouping granularity → grouped.** *Matches* the
+  recommendation. `session_doc.yaml` is `paths` / `narrate` / `scrub` /
+  `roster` / `backends` (see [Data model](#data-model)), not a
+  flattened-but-cleaned single section — enforced by `SessionEditorConfig`
+  (`extra="forbid"`) in `server/session_editor_config_shared.py`.
+- **O2 — Profiles activation location → server-side.** *Opposite* of the
+  original "recommend: keep client-side" call.
+  `SessionEditorConfigService.activate_profile()` mirrors a profile's
+  narrate/backend knobs into the stored `session_doc.yaml` and records
+  `active_profile`, all server-side; `POST
+  /api/editor/profiles/{name}/activate` returns the re-resolved config so the
+  frontend never computes the merge itself.
+- **O3 — Anthropic/claude-code model source → editor-local override.**
+  *Opposite* of the original "recommend: keep the global picker as the
+  source" call. `backends.anthropic.model` / `backends.claude-code.model` are
+  real, rememberable overrides: `_model_args()` in `scene_editor.py` uses the
+  active backend's own remembered model first, falling back to the global
+  `runtime.default_model` picker only when unset.
+
+## Open questions (historical — resolved above)
+
+*(Kept for context: this is what was actually open going into Phase 5, and
+what was recommended at the time. See [Design decisions
+(O1–O3)](#design-decisions-o1o3) above for the final calls.)*
+
+**Decided before Phase 5:** file location → Option B (`session_doc.yaml`),
+all five phases; schema → redesigned; backend storage → `backends` map.
 
 ### Genuinely open — need a call before Phase 5
 
@@ -465,27 +609,31 @@ phases; schema → redesigned; backend storage → `backends` map (O-resolved).
   source — do not introduce a new session-local-vs-global split; revisit under
   the deferred central backend provider (service-cut gap #3).*
 
-### Settled with a recommendation (flag if you disagree)
+### Settled with a recommendation — confirmed as shipped
 
-- **S1 — `sd_*` legacy overlay retires.** `flatten_resolved_to_legacy` projects
-  `session_doc` → `sd_*` flat keys for the un-reshaped frontend, and a few
-  `config.values.sd_*` reads remain (e.g. `sd_batch`). Phase 3 migrates those to
-  the editor config and drops the `sd_` projection. A grouped schema cannot
-  flatten to `sd_<field>` anyway, so this retirement is forced by O1-grouped.
-- **S2 — Boot-override plumbing moves in Phase 5.** Boot flags currently reach
-  `session_doc` via the platform's `resolved()` override pass over `ui_state`
-  sections. Once `session_doc` leaves `ui_state`, the new service applies its own
-  boot overrides — still fed from `main.py`'s single `boot_overrides` derivation
-  (the Phase 4 unification), just consumed by `SessionEditorConfigService`
-  instead of `CampaignConfigService.resolved()`.
-- **S3 — Path resolution stays in the platform; the new service delegates**
-  (`resolve_path` / `relativize_path` / `_normalize_stored_paths`), keyed off the
-  platform's `runtime.session_dir`. Do not re-implement it.
-- **S4 — Dead-field / latent-override audit.** Confirm-then-drop during the
-  reshape: `extract_dir` (appears to duplicate `scene_extractions_dir`), and the
-  CONFIG-only `vtt` / `dossier_dir` overrides that nothing in the current boot or
-  frontend paths populates. If confirmed dead, they do not enter
-  `SessionEditorConfig`; `vtt` stays a resolved-view-only optional override.
+- **S1 — `sd_*` legacy overlay retired (Phase 3b, `ff440c1`).**
+  `flatten_resolved_to_legacy` used to project `session_doc` → `sd_*` flat
+  keys for the un-reshaped frontend. Phase 3 migrated those reads to the
+  editor config and dropped the `sd_` projection — forced by O1-grouped,
+  since a grouped schema cannot flatten to `sd_<field>` anyway.
+- **S2 — Boot-override plumbing moved in Phase 5 (`b05d944`, building on the
+  Phase 4 unification in `13d856f`).** Boot flags now reach
+  `SessionEditorConfigService.resolved_editor_config()` by threading the
+  boot-override-resolved `runtime.session_dir` into each session-based
+  `resolve_path()` call — still fed from `main.py`'s single `boot_overrides`
+  derivation, just consumed by the new service instead of
+  `CampaignConfigService.resolved()`.
+- **S3 — Path resolution stayed in the platform; the new service delegates**
+  (`resolve_path` / `relativize_path`), keyed off the platform's
+  `runtime.session_dir` — confirmed in `session_editor_config_service.py`'s
+  `_relativized_paths` / `resolved_editor_config`. Not re-implemented.
+- **S4 — Dead-field / latent-override audit — confirmed and dropped.**
+  `extract_dir` was confirmed a dead duplicate of `scene_extractions_dir` and
+  is deliberately not in `TYPED_SESSION_DOC_TO_GROUPED`; the CONFIG-only
+  `dossier_dir` override was confirmed dead and dropped in Phase 2 (see
+  [Deviations](#deviations--fixes-found-while-implementing) item 2). `vtt`
+  stayed a resolved-view-only optional override — it is not a
+  `SessionEditorConfig` field.
 
 ## Contrast with planning-isolation
 

@@ -29,6 +29,7 @@ session_doc/                # Post-session pipeline CLIs (sd_*, assemble, scene_
                              #   roster, examples, narrate)
 session_doc/narrative.py    # Standalone experimental: VTT-anchored narration CLI
 session_doc/quote_ledger.py # SQLite-backed VTT dialogue tracking
+server/migrate_session_doc.py # CLI: one-shot ui_state.yaml → session_doc.yaml — python -m server.migrate_session_doc --campaign-dir /path/to/campaign
 pipelines/grounding/npc_table.py        # CLI: generate NPC reference table
 pipelines/grounding/distill.py          # CLI: convert summaries → world_state.md
 pipelines/grounding/campaign_state.py   # CLI: generate completed-content grounding doc

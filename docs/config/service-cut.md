@@ -14,8 +14,8 @@ flowchart TB
     SRV[server host/port]
     ROOT[campaign_dir + boot_overrides]
   end
-  subgraph Services[Services - behavior boundaries, not owned config]
-    SD["Session Doc Editor<br/>ui.session_doc + CONFIG"]
+  subgraph Services[Services - behavior boundaries]
+    SD["Session Doc Editor<br/>session_doc.yaml (own file, own service)"]
     EN["Ensemble<br/>ui.ensemble + manifest/merge"]
     VT["VTT Summary<br/>ui.vtt_summary"]
     GR["Grounding/Search<br/>ui.grounding"]
@@ -29,14 +29,18 @@ flowchart TB
   GR --> SD
 ```
 
+Session Doc Editor and Planning are now drawn with **owned config**, not just a behavior
+boundary — see [Where the monolith shows](#where-the-monolith-shows-no-hierarchy--management)
+below for what that closed and what's still open.
+
 ## Implied services
 
-| Service | Router / entry | ui_state section | CLI engine | Its config/state |
+| Service | Router / entry | Config | CLI engine | Its config/state |
 |---|---|---|---|---|
-| Session Doc Editor | `scene_editor.py` + `scene_editor.CONFIG` | `ui.session_doc`, `ui.profiles` | narrate/scrub CLI | backend/dgx knobs, tokens, prose/reflections, session paths |
+| Session Doc Editor | `scene_editor.py` + `SessionEditorConfigService` | own file: `session_doc.yaml` (grouped, strict) | narrate/scrub CLI | backend/dgx knobs, tokens, prose/reflections, session paths, `profiles[]` |
 | Ensemble | `pipelines/ensemble/ensemble.py` | `ui.ensemble` | `ensemble_extract`/`ensemble_merge`/`synthesise_*` | chapters, known_names, aliases, per-stage `BackendProfile`, `manifest.json`, `merge.yaml` |
 | VTT Summary | `session_workflow.py` | `ui.vtt_summary` | `session_doc/vtt_summary.py` | input/output, extract_dir, reference_summaries |
-| Grounding / Search | `grounding.py`, `pipelines/rlm/mcp_server.py` | `ui.grounding` | grounded_search, query_lore, rpg_retriever | summaries pointer; reads wiring |
+| Grounding / Search | `grounding.py`, `pipelines/rlm/mcp_server.py` | `ui.grounding` | grounded_search, query_lore, rpg_retriever | summaries pointer; reads wiring; also reads `SessionEditorConfigService` for the global backend selector |
 | Party | `config_routes` party-yaml | `ui.party` (loose) | `pipelines/grounding/party.py` | `party.yaml` (roster, 3-state arc_score) |
 | Planning | `planning_routes` | (none - uses dedicated PlanningConfigService) | `pipelines/grounding/planning.py` | `planning.yaml` (npcs/factions) |
 | Campaign State | (CLI-only page) | `ui.campaign_state` (loose) | `pipelines/grounding/campaign_state.py` | `tracking.txt` |
@@ -58,41 +62,55 @@ flowchart TB
 
 | Service | Owns |
 |---|---|
-| Session Doc Editor | `ui.session_doc`, `ui.profiles`, `scene_editor.CONFIG` |
+| Session Doc Editor | `session_doc.yaml` — own file, own service (`SessionEditorConfigService`); no `ui_state.yaml` section and no `scene_editor.CONFIG` process-global anymore |
 | Ensemble | `ui.ensemble`, `manifest.json`, `merge.yaml`, aliases file, `*_draft.md` |
 | VTT Summary | `ui.vtt_summary` |
 | Grounding/Search | `ui.grounding.summaries` |
 | Party | `party.yaml` |
-| Planning | `planning.yaml` |
+| Planning | `planning.yaml` (own file, own service — `PlanningConfigService`) |
 | Campaign State | `tracking.txt` |
 | Content Ingestion | `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`, `~/.5etools-mcp-runtime/` |
 
 ## Where the monolith shows (no hierarchy / management)
 
+Two of the gaps below are now **closed for two services** (Session Doc Editor, Planning) and
+**still open for the rest** — noted per-row rather than papered over, since "closed for the
+largest service" is not the same claim as "closed":
+
 | Gap | Evidence |
 |---|---|
-| No service ownership | All service sections share one `ui_state.yaml`; no service owns/validates its config lifecycle. Config service is a flat single authority |
-| No config hierarchy | Global vs service-local is convention, not enforced. `config.yaml` mixes global (prompts) + service (`mempalace`); `ui_state` mixes runtime (global) + 15 service sections |
-| Duplicated backend/model selection | `session_doc.backend`, ensemble `extract`/`synthesize` `BackendProfile`, `dgx_*` in wiring, `runtime.default_model` — no central model/backend manager; each service re-picks |
-| Coupling via shared files, not APIs | Services integrate by reading/writing the same `docs/*.md` and palace, not versioned contracts. Disk is the bus |
-| No schema-per-service enforcement | 10 loose sections use `extra='allow'`; typed and unmodeled sections coexist; no per-service validation gate |
-| No dependency ordering / registry | Ensemble → grounding → prep/search is implicit through file mtimes; no declared service graph |
+| No service ownership | **Partially closed.** Session Doc Editor (`SessionEditorConfigService` → `session_doc.yaml`) and Planning (`PlanningConfigService` → `planning.yaml`) each own+validate their own file now. The remaining ~7 services (Ensemble, VTT Summary, Grounding/Search, Party's UI slice, Campaign State, the loose pages) still share one `ui_state.yaml`, with the flat config service as their only authority |
+| No config hierarchy | Still open. Global vs service-local remains convention for everything except the two isolated services above. `config.yaml` mixes global (prompts) + service (`mempalace`); `ui_state` mixes runtime (global) + the remaining service sections |
+| Duplicated backend/model selection | **Not closed — relocated, not unified.** The isolation moved the field (`session_doc.backend` → `session_doc.yaml`'s `backends.active` + per-backend `BackendProfile` memory), and Phase 5 even *added* an editor-local model override (O3) on top of the global picker — a deliberate, named step *toward* the eventual central provider (pre-shapes it), but a fourth independently-configured backend selector today, not fewer. Still: ensemble `extract`/`synthesize` `BackendProfile`, `dgx_*` in wiring, `runtime.default_model`, `session_doc.yaml` `backends.*` — no central model/backend manager; each service still re-picks |
+| Coupling via shared files, not APIs | Still open. Services integrate by reading/writing the same `docs/*.md` and palace, not versioned contracts. Disk is the bus |
+| No schema-per-service enforcement | **Partially closed.** `SessionEditorConfig` and `PlanningConfig` are both strict (`extra="forbid"`/validated) now — the first two typed, enforced, per-service schemas in the codebase. The remaining 10 loose `ui.<section>` sections are still `extra='allow'`, unmodeled, unvalidated |
+| No dependency ordering / registry | Still open. Ensemble → grounding → prep/search is implicit through file mtimes; no declared service graph |
 
 ## The cut, stated plainly
 
 There are two real config tiers: **PLATFORM** (mneme wiring, repo prompts/agents/documents, runtime
 model + session, server binding, campaign root) and **SERVICE** (one typed-or-loose ui section per
-workflow, plus that service's own YAML/artifacts). But they are physically co-mingled — `ui_state.yaml`
-is one document holding every service's section, `config.yaml` holds both global and `mempalace` keys,
-and no service validates or owns its slice. Services communicate through shared on-disk docs and the
-palace rather than contracts. The system is a set of microservices wearing a monolith's clothes: the
-boundaries exist in behavior (routers + CLI engines + sections) but not in ownership, schema
-enforcement, model/backend management, or dependency orchestration.
+workflow, plus that service's own YAML/artifacts — or, for two services now, a dedicated owned file
+instead of a `ui_state.yaml` section at all). Most of the system is still physically co-mingled —
+`ui_state.yaml` is one document holding most services' sections, `config.yaml` holds both global and
+`mempalace` keys, and most services don't validate or own their slice. Session Doc Editor and
+Planning are the exceptions that prove the pattern is buildable, not evidence the pattern is
+finished: two services out of roughly nine. Services still communicate through shared on-disk docs
+and the palace rather than contracts. The system is a set of microservices wearing a monolith's
+clothes, with two services that have started changing: the boundaries mostly exist in behavior
+(routers + CLI engines + sections) but not yet in ownership, schema enforcement, model/backend
+management, or dependency orchestration — except where Session Doc Editor and Planning now stand
+apart from the rest.
 
 ## If you wanted to manage it
 
+Step (1) below is no longer purely hypothetical — Session Doc Editor and Planning are worked
+examples of it, each shipped as a designed schema → an owning service → a dedicated file. Steps
+(2)–(4) remain undone for every service, including these two.
+
 A managing hierarchy would: (1) give each service its own owned+validated config namespace (split
-`ui_state` per service, or a per-service file), (2) centralize model/backend selection into one
+`ui_state` per service, or a per-service file — **done for 2 of ~9 services**: Session Doc Editor's
+`session_doc.yaml`, Planning's `planning.yaml`), (2) centralize model/backend selection into one
 platform provider the services request from, (3) replace file-mtime coupling with declared
 producer/consumer contracts for the grounding docs, and (4) add a service registry so ordering
 (ensemble then grounding then prep/search) is explicit rather than implied.

@@ -345,6 +345,31 @@ Editor to surface quotes that didn't make it into a `scene_extractions/`
 file. Not typically run from the CLI; see
 [`docs/web/web_ui.md`](../web/web_ui.md) for the editor workflow.
 
+## migrate_session_doc
+
+One-shot migration: moves a pre-isolation campaign's `ui.session_doc` / `ui.profiles` fragment out
+of `<config>/ui_state.yaml` into its own `<config>/session_doc.yaml`, now owned exclusively by
+`SessionEditorConfigService`. Only needed for a campaign whose config predates the Session Doc
+Editor config isolation — see
+[`docs/config/session-editor-isolation.md`](../config/session-editor-isolation.md#migrating-an-existing-campaign).
+Run once per campaign, then launch the server normally.
+
+```bash
+python -m server.migrate_session_doc --campaign-dir /path/to/campaign
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `--campaign-dir` | required | Campaign root directory (contains `<config-dir>/ui_state.yaml`) |
+| `--config-dir` | `config` | Configuration subdirectory within the campaign |
+| `--force` | off | Overwrite an existing `session_doc.yaml` at the destination |
+
+Prints `nothing to migrate` and exits `0` if the source has no non-empty `ui.session_doc` /
+`ui.profiles` data — safe to run against a campaign that never had session-editor state, or one
+that's already been migrated. Reads `ui_state.yaml` raw (not through the typed `UIState` model,
+which no longer declares these fields) so it can rescue data the current schema would otherwise
+silently drop.
+
 ## new_workspace
 
 Creates a new campaign workspace.
