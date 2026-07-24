@@ -75,23 +75,39 @@ class TestGetConfig:
             assert key in body, f"missing {key} in GET / response"
 
     def test_legacy_flat_keys_present_for_unmigrated_frontend(self, fresh_campaign):
-        # Set values through typed endpoints, confirm flat overlay surfaces them.
+        # Set values through typed endpoints, confirm flat overlay surfaces
+        # them. session_doc's `sd_` overlay entry was retired in the
+        # session-editor config isolation (Phase 3b,
+        # docs/config/session-editor-isolation.md) — the Session Doc
+        # Editor reads/writes GET/PUT /api/editor/config exclusively now —
+        # so it's asserted absent here, while another still-live prefix
+        # (vtt_summary -> vtt_) demonstrates the overlay mechanism still
+        # works for sections that keep it.
         client = TestClient(_make_app(fresh_campaign))
         client.put(
             "/api/config/section/session_doc",
             json={"values": {"narrate_tokens": 4000, "voice_dir": "voice/"}},
         )
         client.put(
+            "/api/config/section/vtt_summary",
+            json={"values": {"input": "session.vtt"}},
+        )
+        client.put(
             "/api/config/runtime",
             json={"values": {"default_model": "claude-opus-4-6"}},
         )
         body = client.get("/api/config/").json()
+        # session_doc's typed value still round-trips through `resolved`,
+        # just not a flat `sd_*` mirror.
+        assert body["resolved"]["ui"]["session_doc"]["narrate_tokens"] == 4000
+        assert "sd_narrate_tokens" not in body
+        assert "sd_voice_dir" not in body
+        # vtt_summary's flat overlay (`vtt_`) is untouched by the retirement.
+        # Path-resolved to absolute (against campaign_dir), like voice_dir
+        # above — the overlay is computed from service.resolved().
+        assert body["vtt_input"].endswith("session.vtt")
         # The flat overlay lets the unreshaped Pinia store keep reading
-        # ``cfg.sd_narrate_tokens`` and ``cfg.global_model`` directly.
-        # Path fields are resolved to absolute (against campaign_dir)
-        # because the overlay is computed from service.resolved().
-        assert body["sd_narrate_tokens"] == 4000
-        assert body["sd_voice_dir"].endswith("/voice")
+        # ``cfg.global_model`` directly.
         assert body["global_model"] == "claude-opus-4-6"
 
     def test_no_service_returns_503(self):
@@ -114,11 +130,13 @@ class TestPutSection:
         )
         assert resp.status_code == 200
 
-        # Read back via GET / and confirm the values are visible.
+        # Read back via GET / and confirm the values are visible in the
+        # typed view. session_doc's flat `sd_` overlay was retired in the
+        # session-editor config isolation (Phase 3b) — the Session Doc
+        # Editor reads/writes GET/PUT /api/editor/config exclusively now.
         body = client.get("/api/config/").json()
         assert body["resolved"]["ui"]["session_doc"]["narrate_tokens"] == 12000
-        # And the flat overlay reflects them too.
-        assert body["sd_narrate_tokens"] == 12000
+        assert "sd_narrate_tokens" not in body
 
     def test_unknown_section_rejected_404(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))

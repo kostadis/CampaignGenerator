@@ -42,31 +42,39 @@ const openrouterModel = ref('')
 // click (it would close an already-open drawer).
 const drawerOpen = ref(false)
 
-// ── Field → config-store key map (legacy flat-key overlay) ───────
+// ── Field ← store.editorConfig (grouped GET /api/editor/config) ──
+// Coerce an arbitrary backends.active value to one of the four known
+// backends — shared by the initial hydration and profile activation.
+function normalizeBackend(value: any): 'anthropic' | 'dgx' | 'openrouter' | 'claude-code' {
+  return value === 'dgx' || value === 'openrouter' || value === 'claude-code' ? value : 'anthropic'
+}
+
 function loadConfigFields() {
-  const v = config.values
-  session.value = v.sd_session || ''
-  outputDir.value = v.sd_output_dir || v.session_dir || ''
-  sessionSummary.value = v.sd_session_summary || 'session-summary.md'
-  sceneExtractionsDir.value = v.sd_scene_extractions_dir || 'scene_extractions'
-  narrationDir.value = v.sd_narration_dir || 'narration'
-  party.value = v.sd_party || ''
-  voiceDir.value = v.sd_voice_dir || v.session_doc_voice_dir || ''
-  examplesDir.value = v.sd_examples_dir || v.session_doc_examples_dir || ''
-  characters.value = v.sd_characters || v.session_doc_characters || ''
-  context.value = v.vtt_context || ''
-  narrateTokens.value = v.sd_narrate_tokens || v.session_doc_narrate_tokens || 16000
-  proseMode.value = v.sd_prose_mode || false
-  reflections.value = v.sd_reflections || false
-  narrationGenre.value = v.sd_narration_genre || ''
-  useBatch.value = v.sd_batch === true
-  backend.value = v.sd_backend === 'dgx' ? 'dgx'
-    : v.sd_backend === 'openrouter' ? 'openrouter'
-    : v.sd_backend === 'claude-code' ? 'claude-code'
-    : 'anthropic'
-  dgxEndpoint.value = v.sd_dgx_endpoint || ''
-  dgxModel.value = v.sd_dgx_model || ''
-  openrouterModel.value = v.sd_openrouter_model || ''
+  const ec = config.editorConfig
+  const paths = ec?.paths ?? {}
+  const narrate = ec?.narrate ?? {}
+  const roster = ec?.roster ?? {}
+  const backends = ec?.backends ?? {}
+
+  session.value = paths.session_recap || ''
+  outputDir.value = paths.output_dir || config.resolved?.runtime?.session_dir || ''
+  sessionSummary.value = paths.session_summary || 'session-summary.md'
+  sceneExtractionsDir.value = paths.scene_extractions_dir || 'scene_extractions'
+  narrationDir.value = paths.narration_dir || 'narration'
+  party.value = paths.party || ''
+  voiceDir.value = paths.voice_dir || ''
+  examplesDir.value = paths.examples_dir || ''
+  characters.value = roster.characters || ''
+  context.value = (narrate.context ?? []).join('\n')
+  narrateTokens.value = narrate.tokens || 16000
+  proseMode.value = !!narrate.prose_mode
+  reflections.value = !!narrate.reflections
+  narrationGenre.value = narrate.genre || ''
+  useBatch.value = narrate.batch === true
+  backend.value = normalizeBackend(backends.active)
+  dgxEndpoint.value = backends.dgx?.endpoint || ''
+  dgxModel.value = backends.dgx?.model || ''
+  openrouterModel.value = backends.openrouter?.model || ''
 }
 
 // ── Auto-apply: debounce-PUT changes to /api/editor/config ───────
@@ -85,26 +93,31 @@ let configHydrated = false
 
 function buildEditorConfigPayload() {
   return {
-    session: resolvePath(session.value),
-    session_summary: resolvePath(sessionSummary.value) || undefined,
-    scene_extractions_dir: resolvePath(sceneExtractionsDir.value) || undefined,
-    narration_dir: resolvePath(narrationDir.value) || undefined,
-    party: resolvePath(party.value) || undefined,
-    voice_dir: resolvePath(voiceDir.value) || undefined,
-    examples: resolvePath(examplesDir.value) || undefined,
-    characters: characters.value || undefined,
-    context: contextFiles.value.length ? contextFiles.value : [],
-    narrate_tokens: narrateTokens.value || undefined,
-    prose_mode: proseMode.value || undefined,
-    reflections: reflections.value || undefined,
-    narration_genre: narrationGenre.value.trim() || undefined,
-    work_dir: config.cwd,
+    paths: {
+      session_recap: resolvePath(session.value),
+      session_summary: resolvePath(sessionSummary.value) || undefined,
+      scene_extractions_dir: resolvePath(sceneExtractionsDir.value) || undefined,
+      narration_dir: resolvePath(narrationDir.value) || undefined,
+      party: resolvePath(party.value) || undefined,
+      voice_dir: resolvePath(voiceDir.value) || undefined,
+      examples_dir: resolvePath(examplesDir.value) || undefined,
+    },
+    roster: {
+      characters: characters.value || undefined,
+    },
+    narrate: {
+      context: contextFiles.value.length ? contextFiles.value : [],
+      tokens: narrateTokens.value || undefined,
+      prose_mode: proseMode.value || undefined,
+      reflections: reflections.value || undefined,
+      genre: narrationGenre.value.trim() || undefined,
+    },
   }
 }
 
 async function applyConfig() {
   try {
-    await apiPut('/api/editor/config', buildEditorConfigPayload())
+    await config.updateEditor(buildEditorConfigPayload())
     if (configReady.value) {
       await loadScenes()
       await checkAssembled()
@@ -129,9 +142,8 @@ watch(
 )
 
 async function persistBatchToggle() {
-  config.values.sd_batch = useBatch.value
   try {
-    await config.updateSection('session_doc', { batch: useBatch.value })
+    await config.updateEditor({ narrate: { batch: useBatch.value } })
   } catch {
     /* non-fatal: toggle will still apply to in-flight calls */
   }
@@ -139,28 +151,29 @@ async function persistBatchToggle() {
 watch(useBatch, persistBatchToggle)
 
 async function persistBackend() {
-  config.values.sd_backend = backend.value
   try {
-    await config.updateSection('session_doc', { backend: backend.value })
+    await config.updateEditor({ backends: { active: backend.value } })
   } catch {
-    /* non-fatal — the next subprocess will still read the in-memory CONFIG */
+    /* non-fatal — the next subprocess will still read the resolved config */
   }
 }
 watch(backend, persistBackend)
 
 // DGX endpoint/model are free-text — debounce so per-keystroke edits don't
-// spam updateSection. Empty string persists as null ("use the runtime default").
+// spam updateEditor. Empty string persists as null ("use the runtime default").
 let dgxPersistTimer: ReturnType<typeof setTimeout> | undefined
 async function persistDgx() {
-  config.values.sd_dgx_endpoint = dgxEndpoint.value
-  config.values.sd_dgx_model = dgxModel.value
   try {
-    await config.updateSection('session_doc', {
-      dgx_endpoint: dgxEndpoint.value.trim() || null,
-      dgx_model: dgxModel.value.trim() || null,
+    await config.updateEditor({
+      backends: {
+        dgx: {
+          endpoint: dgxEndpoint.value.trim() || null,
+          model: dgxModel.value.trim() || null,
+        },
+      },
     })
   } catch {
-    /* non-fatal — the next subprocess will still read the in-memory CONFIG */
+    /* non-fatal — the next subprocess will still read the resolved config */
   }
 }
 watch([dgxEndpoint, dgxModel], () => {
@@ -172,13 +185,12 @@ watch([dgxEndpoint, dgxModel], () => {
 // user-configurable endpoint (OpenRouter uses its own fixed base URL).
 let openrouterPersistTimer: ReturnType<typeof setTimeout> | undefined
 async function persistOpenrouter() {
-  config.values.sd_openrouter_model = openrouterModel.value
   try {
-    await config.updateSection('session_doc', {
-      openrouter_model: openrouterModel.value.trim() || null,
+    await config.updateEditor({
+      backends: { openrouter: { model: openrouterModel.value.trim() || null } },
     })
   } catch {
-    /* non-fatal — the next subprocess will still read the in-memory CONFIG */
+    /* non-fatal — the next subprocess will still read the resolved config */
   }
 }
 watch(openrouterModel, () => {
@@ -247,14 +259,9 @@ const profiles = ref<ProfileEntry[]>([])
 const activeProfileName = ref<string | null>(null)
 
 function loadProfilesFromStore() {
-  const ps = config.resolved?.ui?.profiles
-  if (ps && typeof ps === 'object') {
-    profiles.value = Array.isArray(ps.profiles) ? ps.profiles : []
-    activeProfileName.value = ps.active ?? null
-  } else {
-    profiles.value = []
-    activeProfileName.value = null
-  }
+  const ec = config.editorConfig
+  profiles.value = Array.isArray(ec?.profiles) ? ec.profiles : []
+  activeProfileName.value = ec?.active_profile ?? null
 }
 
 const currentKnobs = computed(() => ({
@@ -281,25 +288,28 @@ const profileDirty = computed(() => {
     || (k.backend ?? 'anthropic') !== c.backend
 })
 
-async function persistProfilesSection() {
-  try {
-    await config.updateSection('profiles', {
-      profiles: profiles.value,
-      active: activeProfileName.value,
-    })
-    loadProfilesFromStore()
-  } catch (e: any) {
-    setStatus(`Profile save failed: ${e?.message ?? 'unknown error'}`)
-  }
+// Re-hydrate the knob refs (never paths — profiles don't own paths, see
+// ProfileEntry) from a resolved editor config, e.g. after server-side
+// profile activation. Replaces the old client-side applyProfileKnobs
+// watcher-mirror.
+function hydrateKnobsFromEditorConfig(ec: any) {
+  const narrate = ec?.narrate ?? {}
+  const backends = ec?.backends ?? {}
+  narrateTokens.value = narrate.tokens ?? 16000
+  proseMode.value = !!narrate.prose_mode
+  reflections.value = !!narrate.reflections
+  narrationGenre.value = narrate.genre || ''
+  backend.value = normalizeBackend(backends.active)
 }
 
-function applyProfileKnobs(p: ProfileEntry) {
-  const k = p.knobs
-  if (typeof k.narrate_tokens === 'number') narrateTokens.value = k.narrate_tokens
-  if (typeof k.prose_mode === 'boolean') proseMode.value = k.prose_mode
-  if (typeof k.reflections === 'boolean') reflections.value = k.reflections
-  if (typeof k.narration_genre === 'string') narrationGenre.value = k.narration_genre
-  if (k.backend === 'anthropic' || k.backend === 'dgx' || k.backend === 'openrouter' || k.backend === 'claude-code') backend.value = k.backend
+async function activateProfileByName(name: string) {
+  try {
+    const ec = await config.activateProfile(name)
+    hydrateKnobsFromEditorConfig(ec)
+    loadProfilesFromStore()
+  } catch (e: any) {
+    setStatus(`Profile activation failed: ${e?.message ?? 'unknown error'}`)
+  }
 }
 
 async function selectProfile(name: string) {
@@ -312,37 +322,41 @@ async function selectProfile(name: string) {
       setStatus(`Profile "${trimmed}" already exists.`)
       return
     }
-    profiles.value = [...profiles.value, { name: trimmed, knobs: { ...currentKnobs.value } }]
-    activeProfileName.value = trimmed
-    await persistProfilesSection()
-    setStatus(`Saved profile "${trimmed}".`)
+    try {
+      await config.createProfile({ name: trimmed, knobs: { ...currentKnobs.value } })
+      await activateProfileByName(trimmed)
+      setStatus(`Saved profile "${trimmed}".`)
+    } catch (e: any) {
+      setStatus(`Profile save failed: ${e?.message ?? 'unknown error'}`)
+    }
     return
   }
   if (name === '') {
-    activeProfileName.value = null
-    await persistProfilesSection()
+    try {
+      await config.updateEditor({ active_profile: null })
+      loadProfilesFromStore()
+    } catch (e: any) {
+      setStatus(`Profile save failed: ${e?.message ?? 'unknown error'}`)
+    }
     return
   }
-  const p = profiles.value.find(prof => prof.name === name)
-  if (!p) return
-  activeProfileName.value = name
-  applyProfileKnobs(p)
-  await persistProfilesSection()
+  await activateProfileByName(name)
 }
 
 async function saveProfileChanges() {
-  if (!activeProfile.value) return
-  profiles.value = profiles.value.map(p =>
-    p.name === activeProfileName.value
-      ? { ...p, knobs: { ...currentKnobs.value } }
-      : p,
-  )
-  await persistProfilesSection()
-  setStatus(`Updated profile "${activeProfileName.value}".`)
+  if (!activeProfile.value || !activeProfileName.value) return
+  const name = activeProfileName.value
+  try {
+    await config.updateProfile(name, { name, knobs: { ...currentKnobs.value } })
+    loadProfilesFromStore()
+    setStatus(`Updated profile "${name}".`)
+  } catch (e: any) {
+    setStatus(`Profile save failed: ${e?.message ?? 'unknown error'}`)
+  }
 }
 
 function revertProfile() {
-  if (activeProfile.value) applyProfileKnobs(activeProfile.value)
+  if (activeProfileName.value) activateProfileByName(activeProfileName.value)
 }
 
 // ── Scene navigation ─────────────────────────────────────────────

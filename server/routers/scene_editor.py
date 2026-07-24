@@ -86,67 +86,6 @@ def get_editor_config(
 router = APIRouter()
 
 
-# TEMP — removed in Phase 3, once the frontend writes the grouped shape
-# directly. Maps today's flat PUT /api/editor/config payload keys to a
-# grouped SessionEditorConfig partial (dotted path into the nested shape).
-_FLAT_TO_GROUPED: dict[str, tuple[str, ...]] = {
-    "session": ("paths", "session_recap"),
-    "session_summary": ("paths", "session_summary"),
-    "scene_extractions_dir": ("paths", "scene_extractions_dir"),
-    "narration_dir": ("paths", "narration_dir"),
-    "party": ("paths", "party"),
-    "voice_dir": ("paths", "voice_dir"),
-    "examples": ("paths", "examples_dir"),
-    "characters": ("roster", "characters"),
-    "context": ("narrate", "context"),
-    "narrate_tokens": ("narrate", "tokens"),
-    "prose_mode": ("narrate", "prose_mode"),
-    "reflections": ("narrate", "reflections"),
-    "narration_genre": ("narrate", "genre"),
-    "backend": ("backends", "active"),
-    "batch": ("narrate", "batch"),
-    "dgx_endpoint": ("backends", "dgx", "endpoint"),
-    "dgx_model": ("backends", "dgx", "model"),
-    "openrouter_model": ("backends", "openrouter", "model"),
-    "scrub_enabled": ("scrub", "enabled"),
-    "scrub_tokens": ("scrub", "tokens"),
-}
-# work_dir/output_dir are derived/unused-as-stored — ignored on write, same
-# as before (they were never part of ui.session_doc's typed shape either).
-_IGNORED_FLAT_KEYS = {"work_dir", "output_dir"}
-
-
-def _flat_body_to_grouped(body: dict) -> dict:
-    """TEMP — removed in Phase 3b.
-
-    Map a flat PUT /api/editor/config body to a grouped, possibly-nested
-    partial matching SessionEditorConfig. Keys with no mapping (and
-    work_dir/output_dir) are silently dropped.
-    """
-    grouped: dict = {}
-    for key, value in body.items():
-        if key in _IGNORED_FLAT_KEYS:
-            continue
-        target = _FLAT_TO_GROUPED.get(key)
-        if target is None:
-            continue
-        cur = grouped
-        for part in target[:-1]:
-            cur = cur.setdefault(part, {})
-        cur[target[-1]] = value
-    return grouped
-
-
-# Grouped SessionEditorConfig top-level keys — used by api_put_config to
-# detect whether an incoming PUT body is already grouped (Phase 3a: the
-# not-yet-migrated frontend still sends flat; a grouped-aware caller, e.g.
-# a future frontend or a test, can send the real shape straight through).
-_GROUPED_TOP_LEVEL_KEYS = {
-    "paths", "narrate", "scrub", "roster", "backends",
-    "session_name", "profiles", "active_profile",
-}
-
-
 def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
     """Wire shape for a resolved editor config — the single source of truth
     for both ``GET /api/editor/config`` and the profile-activate response,
@@ -181,21 +120,15 @@ async def api_put_config(
 ):
     """Update the editor config at runtime (from the frontend).
 
-    Accepts EITHER shape (non-breaking while the frontend still sends
-    flat): if the body has any grouped top-level key
-    (``_GROUPED_TOP_LEVEL_KEYS``) it is passed straight through to
-    ``SessionEditorConfigService.update_config`` as a grouped partial;
-    otherwise it's treated as today's flat payload and mapped via the TEMP
-    ``_flat_body_to_grouped`` shim. Either way this stays the single write
-    door.
+    The single editor-config write door: the body is a grouped
+    ``SessionEditorConfig`` partial (any nested subset of ``paths`` /
+    ``narrate`` / ``scrub`` / ``roster`` / ``backends`` / ``session_name`` /
+    ``profiles`` / ``active_profile``), merged into the stored config by
+    ``SessionEditorConfigService.update_config``.
     """
     data = await request.json()
-    if isinstance(data, dict) and _GROUPED_TOP_LEVEL_KEYS.intersection(data):
-        grouped_partial = data
-    else:
-        grouped_partial = _flat_body_to_grouped(data)
     try:
-        service.update_config(grouped_partial)
+        service.update_config(data)
     except HTTPException as exc:
         return JSONResponse(
             {"ok": False, "error": str(exc.detail)},

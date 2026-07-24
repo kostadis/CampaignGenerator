@@ -1,13 +1,18 @@
 """Integration tests for the Session Doc Editor router + config service.
 
-Phase 2 of ``docs/config/session-editor-isolation.md``: the module-global
-``scene_editor.CONFIG`` is gone. Every route now reads a request-scoped
-``ResolvedEditorConfig`` (``server/session_editor_config_service.py``)
-injected via FastAPI ``Depends``. These tests verify:
+Phase 3b of ``docs/config/session-editor-isolation.md``: the flat-body
+compat shim (``_flat_body_to_grouped`` / ``_FLAT_TO_GROUPED`` /
+``_IGNORED_FLAT_KEYS``) and the grouped-or-flat detection branch
+(``_GROUPED_TOP_LEVEL_KEYS``) in ``api_put_config`` are gone — the frontend
+now writes the grouped shape directly, so the router just forwards the
+request body to ``SessionEditorConfigService.update_config``. Phase 2's
+module-global ``scene_editor.CONFIG`` removal still holds: every route
+reads a request-scoped ``ResolvedEditorConfig``
+(``server/session_editor_config_service.py``) injected via FastAPI
+``Depends``. These tests verify:
 
   - ``GET /api/editor/config`` returns the grouped, resolved shape.
-  - ``PUT /api/editor/config`` accepts today's flat payload (mapped to a
-    grouped partial by the TEMP ``_flat_body_to_grouped``), writes through
+  - ``PUT /api/editor/config`` accepts a grouped partial, writes through
     ``SessionEditorConfigService``, and the value survives a simulated
     restart (a second app / service instance reading the same campaign
     dir) — the bug from VttSummary.vue:70-71 that nothing-without-an-
@@ -98,12 +103,13 @@ class TestGetEditorConfig:
 
 class TestPutPersistsViaService:
     def test_put_editor_config_persists_through_service(self, fresh_campaign):
-        # First server: PUT a value via the editor endpoint (flat payload —
-        # still backward-compatible per _flat_body_to_grouped).
+        # First server: PUT a grouped partial via the editor endpoint — the
+        # single write door (the flat-body compat shim was retired in
+        # Phase 3b, now that the frontend sends the grouped shape).
         client_a = TestClient(_make_app(fresh_campaign))
         resp = client_a.put(
             "/api/editor/config",
-            json={"narrate_tokens": 12000, "voice_dir": "voice/"},
+            json={"narrate": {"tokens": 12000}, "paths": {"voice_dir": "voice/"}},
         )
         assert resp.status_code == 200
         assert resp.json() == {"ok": True}
@@ -123,12 +129,12 @@ class TestPutPersistsViaService:
         resp = client.put(
             "/api/editor/config",
             json={
-                "backend": "dgx",
-                "dgx_endpoint": "http://localhost:8000",
-                "dgx_model": "llama-3-70b",
-                "scrub_enabled": True,
-                "scrub_tokens": 8000,
-                "batch": True,
+                "backends": {
+                    "active": "dgx",
+                    "dgx": {"endpoint": "http://localhost:8000", "model": "llama-3-70b"},
+                },
+                "scrub": {"enabled": True, "tokens": 8000},
+                "narrate": {"batch": True},
             },
         )
         assert resp.status_code == 200
@@ -141,33 +147,36 @@ class TestPutPersistsViaService:
         assert editor_cfg["scrub"]["tokens"] == 8000
         assert editor_cfg["narrate"]["batch"] is True
 
-    def test_put_editor_config_ignores_work_dir_and_output_dir(self, fresh_campaign):
-        # work_dir/output_dir are derived/unused-as-stored — must not error
-        # and must not appear anywhere persisted.
+    def test_put_editor_config_rejects_extraneous_top_level_keys(self, fresh_campaign):
+        # The flat compat shim (_flat_body_to_grouped / _IGNORED_FLAT_KEYS)
+        # used to silently drop CONFIG-only keys like work_dir/output_dir.
+        # Now that the router forwards the body straight to
+        # SessionEditorConfig's strict (extra="forbid") schema, unknown
+        # top-level keys are a validation error instead.
         client = TestClient(_make_app(fresh_campaign))
         resp = client.put(
             "/api/editor/config",
             json={"work_dir": "/somewhere", "output_dir": "/elsewhere"},
         )
-        assert resp.status_code == 200
-        assert resp.json() == {"ok": True}
+        assert resp.status_code == 400
+        body = resp.json()
+        assert body["ok"] is False
 
     def test_put_editor_config_invalid_shape_returns_400(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
         resp = client.put(
             "/api/editor/config",
-            json={"narrate_tokens": "not-an-int"},
+            json={"narrate": {"tokens": "not-an-int"}},
         )
         assert resp.status_code == 400
         body = resp.json()
         assert body["ok"] is False
 
 
-class TestPutAcceptsGroupedOrFlat:
-    """Phase 3a: PUT /api/editor/config accepts EITHER the grouped shape
-    (a not-yet-migrated frontend won't send this until Phase 3b, but the
-    API must already accept it) or today's flat shape — both write through
-    the same SessionEditorConfigService.update_config door."""
+class TestPutGroupedBody:
+    """Phase 3b: the flat-body compat shim (_flat_body_to_grouped) is gone —
+    PUT /api/editor/config only accepts a grouped SessionEditorConfig
+    partial, written through SessionEditorConfigService.update_config."""
 
     def test_put_editor_config_grouped_body_persists(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
@@ -181,19 +190,23 @@ class TestPutAcceptsGroupedOrFlat:
         editor_cfg = client.get("/api/editor/config").json()
         assert editor_cfg["narrate"]["tokens"] == 9000
 
-    def test_put_editor_config_flat_body_still_works(self, fresh_campaign):
-        # The pre-existing flat shim keeps working unchanged alongside the
-        # new grouped-body support.
+    def test_put_editor_config_grouped_body_merges_multiple_groups(self, fresh_campaign):
+        # A partial touching two different top-level groups in one PUT
+        # merges into both without clobbering the rest of the config.
         client = TestClient(_make_app(fresh_campaign))
         resp = client.put(
             "/api/editor/config",
-            json={"narrate_tokens": 7000},
+            json={
+                "scrub": {"enabled": True},
+                "roster": {"characters": "Zalthir, Grygum"},
+            },
         )
         assert resp.status_code == 200
         assert resp.json() == {"ok": True}
 
         editor_cfg = client.get("/api/editor/config").json()
-        assert editor_cfg["narrate"]["tokens"] == 7000
+        assert editor_cfg["scrub"]["enabled"] is True
+        assert editor_cfg["roster"]["characters"] == "Zalthir, Grygum"
 
 
 class TestSectionDoorReflectedInEditorGet:

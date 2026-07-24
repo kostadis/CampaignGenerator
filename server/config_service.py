@@ -556,13 +556,17 @@ class CampaignConfigService:
 
 
 # ── Flat-key overlay for the un-reshaped frontend ──────────────────────────
-# The Vue store still reads `config.values.sd_narrate_tokens`, `config.values.
+# The Vue store still reads `config.values.vtt_input`, `config.values.
 # session_dir`, etc. The route handler builds this projection from the
 # resolved view and folds it into the GET /api/config/ response. Removed once
 # every frontend view has migrated to `config.resolved`.
+#
+# `session_doc` retired its entry here in the session-editor config
+# isolation (Phase 3b, docs/config/session-editor-isolation.md) — the
+# Session Doc Editor now reads/writes GET/PUT /api/editor/config
+# exclusively and no longer needs a flat `sd_*` mirror.
 
 _SECTION_TO_PREFIX: dict[str, str] = {
-    "session_doc": "sd_",
     "vtt_summary": "vtt_",
     "campaign_state": "cs_",
     "distill": "distill_",

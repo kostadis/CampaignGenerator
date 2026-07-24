@@ -7,19 +7,19 @@ const config = useConfigStore()
 const router = useRouter()
 const route = useRoute()
 
-// LLM backend selector (global). Persisted to ui.session_doc.backend — the same
-// field _llm_env() reads server-side — so the Session Doc Editor's own toggle
-// stays in sync. 'claude-code' routes generation through the Claude Code CLI,
+// LLM backend selector (global). Persisted to the Session Doc Editor's
+// backends.active (GET/PUT /api/editor/config) — the same field
+// _llm_env() reads server-side — so the editor's own toggle stays in
+// sync. 'claude-code' routes generation through the Claude Code CLI,
 // billing the Pro/Max subscription instead of the metered Anthropic API.
 type Backend = 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
 const currentBackend = computed<Backend>(() => {
-  const b = config.values.sd_backend
+  const b = config.editorConfig?.backends?.active
   return b === 'dgx' || b === 'openrouter' || b === 'claude-code' ? b : 'anthropic'
 })
 async function setBackend(b: Backend) {
   if (currentBackend.value === b) return
-  config.values.sd_backend = b
-  await config.updateSection('session_doc', { backend: b })
+  await config.updateEditor({ backends: { active: b } })
 }
 
 interface NavItem {
