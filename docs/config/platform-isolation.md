@@ -107,15 +107,33 @@ every wiring read currently takes its fallback. The mneme template
 flat scalars. This constrains O4's sequencing — see
 [Risks](#risks).
 
-### The flat-key overlay is ~95% dead
+### The flat-key overlay is live in 8 frontend files
 
 `flatten_resolved_to_legacy` projects 10 section prefixes plus 4 experimental
-sub-prefixes. Remaining genuine frontend **reads**: `values.session_dir`
-(`utils/paths.ts:16`) and `global_model` (`stores/config.ts:52`).
-`values.campaign_dir` comes from `new_shape`, not the overlay. The four
-`values.party_*` / `values.plan_*` sites are **writes** — an optimistic
-client-side mirror beside the real `updateSection` call. No prefixed key is
-read anywhere.
+sub-prefixes.
+
+> **Correction (found during Phase 1 implementation).** This section
+> originally claimed the overlay was "~95% dead", with only two genuine reads
+> (`utils/paths.ts:16`, `stores/config.ts:52`). **That was wrong**, and the
+> error was methodological: the audit grepped `config\.values\.<prefix>`, which
+> matches only direct property access. The dominant pattern in this codebase is
+> aliased — `const v = config.values` on one line, `v.<field>` on later ones —
+> and it appears in **eight** view files (`CampaignState`, `DistillWorldState`,
+> `QuerySummaries`, `MakeTracking`, `SessionNarrative`, `SessionConfig`,
+> `PartyDocument`, `PlanningDocument`). Any future audit of this store must
+> grep the alias form too.
+
+The consequential case is `SessionConfig.vue`, which both reads
+`v.session_dir` on mount **and** runs a client-side broadcast:
+`Object.assign(config.values, {...})` in `saveToConfig()` / `deriveAll()`
+pushes ~17 flat-prefixed derived paths onto the shared Pinia object so sibling
+pages pick them up without a round trip. Deleting the backend overlay without
+migrating that read would have broken cold-start recovery of `session_dir` on
+every server restart.
+
+The four `values.party_*` / `values.plan_*` sites named in the original audit
+are indeed **writes** — an optimistic mirror beside a real `updateSection`
+call — and were safely removed.
 
 ## Problems
 
@@ -322,6 +340,16 @@ gated on a change in another repo and should not block 0–4.
   synthesis-capable is a separate call.
 - **Isolating the remaining ~7 services** out of `ui_state.yaml`.
   `UIStateService` exists to make that debt countable, not to discharge it.
+- **`SessionConfig.vue`'s client-side broadcast.** Phase 1 removes the
+  *server-side* overlay, but `Object.assign(config.values, {...})` survives as
+  a client-only scratch bag that sibling pages read as a fallback. It is the
+  same fragmented-state shape this project removes on the backend, one layer
+  up — two representations of a derived path, reconciled by a convention.
+  Retiring it means migrating every sibling page to `resolved` and giving the
+  derive step a real persistence path, which is a frontend state-management
+  change, not config isolation. Named here so it is not mistaken for finished
+  work: after Phase 1, `config.values` is no longer *fed by the server*, but it
+  is not *gone*.
 - **Splitting `config.yaml`** (mixes platform keys with `mempalace.*`) — human-
   owned, no writer, and a split costs a migration for every campaign.
 - **Grounding-doc producer/consumer contracts** (gap #4) and the service

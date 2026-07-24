@@ -14,8 +14,13 @@ const output = ref('')
 const showAdvanced = ref(false)
 
 function loadFromConfig() {
+  // `v` (config.values) still carries SessionConfig.vue's client-side-only
+  // derive broadcast for `summaries` — see stores/config.ts. `query_input`
+  // lives solely in the persisted, typed `ui.query` section.
   const v = config.values
-  input.value = v.query_input || v.summaries || ''
+  const r = config.resolved.ui?.query || {}
+  const g = config.resolved.ui?.grounding || {}
+  input.value = r.input || g.summaries || v.summaries || ''
 }
 
 const ready = computed(() =>

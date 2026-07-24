@@ -33,11 +33,17 @@ const sessionSummaryPath = ref('')
 const partyPath = ref('')
 
 function loadFromConfig() {
+  // `v` (config.values) still carries this page's OWN client-side-only
+  // derive broadcast (see saveToConfig/deriveAll below) for any field a
+  // sibling page may have written to it earlier in the session. Everything
+  // else is read from the persisted, typed view.
   const v = config.values
+  const r = config.resolved
+  const vs = r.ui?.vtt_summary || {}
   const ec = config.editorConfig
-  campaignDir.value = v.campaign_dir || ''
-  sessionDir.value = v.session_dir || ''
-  vttInput.value = v.vtt_input || ''
+  campaignDir.value = r.campaign_dir || v.campaign_dir || ''
+  sessionDir.value = r.runtime?.session_dir || v.session_dir || ''
+  vttInput.value = vs.input || v.vtt_input || ''
   sdSession.value = ec?.paths?.session_recap || ''
   characters.value = ec?.roster?.characters || ''
   gmPlayer.value = ec?.roster?.gm_player || ''
@@ -45,16 +51,17 @@ function loadFromConfig() {
   examplesDir.value = ec?.paths?.examples_dir || ''
   sessionSummaryPath.value = ec?.paths?.session_summary || 'session-summary.md'
   partyPath.value = ec?.paths?.party || ''
-  vttContext.value = v.vtt_context || ''
-  vttDate.value = v.vtt_date || ''
-  vttSessionName.value = v.vtt_session_name || ''
-  summaries.value = v.summaries || ''
+  vttContext.value = (vs.context || []).join('\n') || v.vtt_context || ''
+  vttDate.value = vs.date || v.vtt_date || ''
+  vttSessionName.value = vs.session_name || v.vtt_session_name || ''
+  summaries.value = r.ui?.grounding?.summaries || v.summaries || ''
 }
 
 function saveToConfig() {
-  // Mirror into the legacy overlay so other views still on the flat
-  // shape see updates immediately. Persistence happens in saveConfig()
-  // (typed sections) and onBlur (debounced auto-save below).
+  // Mirror onto config.values (client-side only) so sibling pages still
+  // reading the flat-key fallback see this page's edits immediately, without
+  // a round trip. Persistence happens in saveConfig() (typed sections) and
+  // onBlur (debounced auto-save below).
   Object.assign(config.values, {
     campaign_dir: campaignDir.value,
     session_dir: sessionDir.value,

@@ -10,8 +10,11 @@ const input = ref('')
 const output = ref('docs/tracking.txt')
 
 function loadFromConfig() {
-  const v = config.values
-  output.value = v.mt_output || v.tracking_file || 'docs/tracking.txt'
+  // `mt_output` (ui.experimental.make_tracking.output) is not part of
+  // SessionConfig.vue's derive broadcast, so this reads only the persisted,
+  // typed view.
+  const r = config.resolved.ui?.experimental?.make_tracking || {}
+  output.value = r.output || 'docs/tracking.txt'
 }
 
 const ready = computed(() =>

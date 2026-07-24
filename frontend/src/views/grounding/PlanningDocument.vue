@@ -36,25 +36,31 @@ const dossierSplitChapters = ref('# Chapter')
 const dossierSince = ref(0)
 
 function loadFromConfig() {
+  // `v` (config.values) still carries SessionConfig.vue's client-side-only
+  // derive broadcast for the fields it seeds (npc, context, output,
+  // summaries) — see stores/config.ts. Everything else lives solely in the
+  // persisted, typed `ui.planning` section.
   const v = config.values
-  npcFiles.value = v.plan_npc || ''
-  arcScores.value = v.plan_arc_scores || ''
-  summaries.value = v.plan_summaries || v.summaries || ''
-  context.value = v.plan_context || ''
-  output.value = v.plan_output || v.planning_output || v.planning || ''
-  extractDir.value = v.plan_extract_dir || ''
-  splitChapters.value = v.plan_split_chapters || '# Chapter'
+  const r = config.resolved.ui?.planning || {}
+  const g = config.resolved.ui?.grounding || {}
+  npcFiles.value = r.npc || v.plan_npc || ''
+  arcScores.value = r.arc_scores || ''
+  summaries.value = r.summaries || g.summaries || v.summaries || ''
+  context.value = r.context || v.plan_context || ''
+  output.value = r.output || v.planning_output || ''
+  extractDir.value = r.extract_dir || ''
+  splitChapters.value = r.split_chapters || '# Chapter'
 
-  dossierSummaries.value = v.plan_build_summaries || v.summaries || ''
-  dossierDir.value = v.plan_dossier_dir || 'docs/npcs/'
-  dossierExtractDir.value = v.plan_build_extract_dir || ''
-  dossierSplitChapters.value = v.plan_build_split_chapters || '# Chapter'
+  dossierSummaries.value = r.build_summaries || g.summaries || v.summaries || ''
+  dossierDir.value = r.dossier_dir || 'docs/npcs/'
+  dossierExtractDir.value = r.build_extract_dir || ''
+  dossierSplitChapters.value = r.build_split_chapters || '# Chapter'
 
-  planningConfigPath.value = v.plan_config_path || ''
+  planningConfigPath.value = r.config_path || ''
   // Persisted mode wins; default to 'config' if a yaml path is set,
   // else stay on 'flat' so legacy workspaces are unaffected.
-  if (v.plan_synth_mode === 'config' || v.plan_synth_mode === 'flat') {
-    synthMode.value = v.plan_synth_mode
+  if (r.synth_mode === 'config' || r.synth_mode === 'flat') {
+    synthMode.value = r.synth_mode
   } else {
     synthMode.value = planningConfigPath.value ? 'config' : 'flat'
   }
@@ -69,15 +75,13 @@ function schedulePlanPersist() {
     config.updateSection('planning', {
       synth_mode: synthMode.value,
       config_path: planningConfigPath.value,
-    }).catch(() => { /* non-fatal — overlay still has the values */ })
+    }).catch(() => { /* non-fatal — the local ref still has the value */ })
   }, 500)
 }
-watch(synthMode, (m) => {
-  config.values.plan_synth_mode = m
+watch(synthMode, () => {
   schedulePlanPersist()
 })
-watch(planningConfigPath, (p) => {
-  config.values.plan_config_path = p
+watch(planningConfigPath, () => {
   schedulePlanPersist()
 })
 

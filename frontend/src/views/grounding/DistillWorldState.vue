@@ -14,11 +14,17 @@ const noLog = ref(false)
 const showAdvanced = ref(false)
 
 function loadFromConfig() {
+  // `v` (config.values) still carries SessionConfig.vue's client-side-only
+  // derive broadcast for the fields it seeds (output, summaries) — see
+  // stores/config.ts. Everything else lives solely in the persisted, typed
+  // `ui.distill` section.
   const v = config.values
-  input.value = v.distill_input || v.summaries || ''
-  output.value = v.distill_output || v.world_state_output || v.world_state || ''
-  extractDir.value = v.distill_extract_dir || ''
-  splitChapters.value = v.distill_split_chapters || '# Chapter'
+  const r = config.resolved.ui?.distill || {}
+  const g = config.resolved.ui?.grounding || {}
+  input.value = r.input || g.summaries || v.summaries || ''
+  output.value = r.output || v.distill_output || v.world_state_output || ''
+  extractDir.value = r.extract_dir || ''
+  splitChapters.value = r.split_chapters || '# Chapter'
 }
 
 const ready = computed(() =>

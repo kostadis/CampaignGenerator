@@ -2,9 +2,7 @@
 
 All persistence flows through ``CampaignConfigService``. There is no
 fallback to a raw ``ui_config.yaml`` — when the service is not initialized
-the routes return ``503``. The flat-key overlay in ``GET /`` keeps the
-un-reshaped Pinia store working; it's computed per-request from the
-service's resolved view, not read from disk.
+the routes return ``503``.
 """
 
 from pathlib import Path
@@ -22,7 +20,6 @@ from server.config import (
     derive_session_paths,
     path_exists,
 )
-from server.config_service import flatten_resolved_to_legacy
 from server.config_models import SCHEMA_VERSION, UI_SECTION_NAMES
 
 router = APIRouter()
@@ -38,22 +35,15 @@ def _require_service(request: Request):
     return service
 
 
-# ── GET / — typed view + flat-key overlay for legacy frontend code ─────────
+# ── GET / — typed/resolved view + metadata ─────────────────────────────────
 
 
 @router.get("/")
 def get_config(request: Request):
-    """Return current configuration.
-
-    Includes both the typed/resolved view and a flat overlay of legacy keys
-    at the top level for un-reshaped frontend code. The overlay is computed
-    per-request from ``service.resolved()`` so boot overrides flow through
-    without disk persistence.
-    """
+    """Return current configuration: the typed/resolved view plus metadata."""
     service = _require_service(request)
     resolved = service.resolved()
-    legacy = flatten_resolved_to_legacy(resolved)
-    new_shape = {
+    return {
         "campaign_dir": str(service.campaign_dir),
         "config_path": str(service.config_path),
         "ui_state_path": str(service.ui_state_path),
@@ -64,9 +54,6 @@ def get_config(request: Request):
         "local": service.local.model_dump(mode="json"),
         "migration_warnings": list(service.load_warnings),
     }
-    # Spread legacy flat keys first; new-shape fields take precedence on any
-    # collision so the authoritative paths and metadata win.
-    return {**legacy, **new_shape}
 
 
 # ── Typed section update ───────────────────────────────────────────────────

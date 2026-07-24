@@ -25,20 +25,26 @@ const noLog = ref(false)
 const showAdvanced = ref(false)
 
 function loadFromConfig() {
+  // `v` (config.values) still carries SessionConfig.vue's client-side-only
+  // derive broadcast for the fields it seeds (output, config_path,
+  // summaries) — see stores/config.ts. Everything else lives solely in the
+  // persisted, typed `ui.party` section.
   const v = config.values
-  partyConfigPath.value = v.party_config_path || ''
-  characters.value = v.party_chars || ''
-  summaries.value = v.party_summaries || v.summaries || ''
-  backstory.value = v.party_backstory || ''
-  arcScores.value = v.party_arc_scores || ''
-  context.value = v.party_context || ''
-  output.value = v.party_output || v.party || ''
-  extractDir.value = v.party_extract_dir || ''
-  splitChapters.value = v.party_split_chapters || '# Chapter'
+  const r = config.resolved.ui?.party || {}
+  const g = config.resolved.ui?.grounding || {}
+  partyConfigPath.value = r.config_path || v.party_config_path || ''
+  characters.value = r.chars || ''
+  summaries.value = r.summaries || g.summaries || v.summaries || ''
+  backstory.value = r.backstory || ''
+  arcScores.value = r.arc_scores || ''
+  context.value = r.context || ''
+  output.value = r.output || v.party_output || ''
+  extractDir.value = r.extract_dir || ''
+  splitChapters.value = r.split_chapters || '# Chapter'
   // Persisted mode wins; otherwise default to 'config' if a YAML path is set,
   // else fall back to 'flat' so legacy workspaces still see the old form.
-  if (v.party_mode === 'config' || v.party_mode === 'flat') {
-    mode.value = v.party_mode
+  if (r.mode === 'config' || r.mode === 'flat') {
+    mode.value = r.mode
   } else {
     mode.value = partyConfigPath.value ? 'config' : 'flat'
   }
@@ -55,15 +61,13 @@ function schedulePartyPersist() {
     config.updateSection('party', {
       mode: mode.value,
       config_path: partyConfigPath.value,
-    }).catch(() => { /* non-fatal — overlay still has the values */ })
+    }).catch(() => { /* non-fatal — the local ref still has the value */ })
   }, 500)
 }
-watch(mode, (m) => {
-  config.values.party_mode = m
+watch(mode, () => {
   schedulePartyPersist()
 })
-watch(partyConfigPath, (p) => {
-  config.values.party_config_path = p
+watch(partyConfigPath, () => {
   schedulePartyPersist()
 })
 

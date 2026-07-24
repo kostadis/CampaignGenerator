@@ -23,8 +23,12 @@ const fast = ref(false)
 const noLog = ref(false)
 
 function loadFromConfig() {
+  // `v` (config.values) still carries SessionConfig.vue's client-side-only
+  // derive broadcast for `party_output` — see stores/config.ts. `narr_party`
+  // lives solely in the persisted, typed `ui.experimental.narrative` section.
   const v = config.values
-  party.value = v.narr_party || v.party_output || ''
+  const r = config.resolved.ui?.experimental?.narrative || {}
+  party.value = r.party || v.party_output || ''
 }
 
 const exampleFiles = computed(() =>
