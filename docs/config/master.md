@@ -43,7 +43,8 @@ flowchart TB
 | `config/wiring.yaml` | mneme render only | not written by CampaignGenerator |
 | `refs.yaml` / `ingest_manifest.yaml` | hand-authored | refs.local.yaml seedable via `launch --init-local` |
 | ensemble artifacts | ensemble_extract (manifest+facts), synthesize (drafts), promote (live) | per-run workdir; disk is truth |
-| `party.yaml` / `planning.yaml` | `PUT /party-yaml`, `PUT /planning-yaml` | UI editors or hand |
+| `party.yaml` | `PUT /party-yaml` | UI editor or hand |
+| `planning.yaml` | `/api/planning/*` CRUD (`PlanningConfigService`) | UI editor or hand |
 | `docs/*.md` grounding | `pipelines/grounding/party.py` / `pipelines/grounding/campaign_state.py` / `pipelines/grounding/planning.py` (+ ensemble) | non-clobbering `.candidate` on conflict |
 
 ## Mental model

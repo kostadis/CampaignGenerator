@@ -1,5 +1,12 @@
 # Planning Configuration Isolation Design
 
+> **Status: ✅ Done (2026-07-23).** Shipped and verified end-to-end. All three
+> implementation phases are complete; the delivered API is documented under
+> [API Reference (as shipped)](#api-reference-as-shipped) and the per-step
+> status is tracked in [Implementation Status](#implementation-status). Two
+> bugs found while finishing the work — a double-mounted router prefix and an
+> emptied-file read error — were fixed and are covered by regression tests.
+
 ## Overview
 This document describes the design for isolating the planning configuration in CampaignGenerator, moving it from the shared configuration service to a dedicated planning service with its own API and data model.
 
@@ -130,3 +137,79 @@ From code-graph analysis:
 3. How to handle validation errors?
    - Return 400 with descriptive message for invalid input
    - Return 409 for conflicts (e.g., duplicate NPC name)
+
+## API Reference (as shipped)
+
+All endpoints live under the `/api/planning` prefix. The prefix is supplied by
+`server/main.py`'s `include_router(planning_routes.router, prefix="/api/planning")`
+— matching every sibling router, the `APIRouter()` itself declares **no** prefix.
+Each request resolves `planning.yaml` at `<campaign_dir>/<config_dir>/planning.yaml`,
+where `campaign_dir` comes from `app.state.config_service` (see
+`server/routers/planning_routes.py::get_planning_service`).
+
+**Entry shape** (single unified model `PlanningEntry`, used for both NPCs and factions):
+
+```json
+{
+  "name": "string (required)",
+  "dossier": "string | null (required for NPCs, optional for factions)",
+  "arc_score": "string | null (path to a tracking file)",
+  "trackless": false
+}
+```
+
+`arc_score` / `trackless` encode the 3-state tracking model: absent → untracked,
+`trackless: true` (serialized as `arc_score: null`) → intentionally untracked,
+path → tracked. `dossier` / `arc_score` paths are resolved **and must exist**
+relative to `planning.yaml`'s directory when read back.
+
+| Method | Path | Success | Errors |
+|---|---|---|---|
+| `GET` | `/api/planning/npcs` | 200 `[PlanningEntry]` | — |
+| `POST` | `/api/planning/npcs` | 201 `PlanningEntry` | 409 duplicate name |
+| `GET` | `/api/planning/npcs/{name}` | 200 `PlanningEntry` | 404 not found |
+| `PUT` | `/api/planning/npcs/{name}` | 200 `PlanningEntry` | 404 not found, 400 URL/body name mismatch |
+| `DELETE` | `/api/planning/npcs/{name}` | 204 | 404 not found |
+| `GET/POST/GET/PUT/DELETE` | `/api/planning/factions[/{name}]` | mirror of the NPC endpoints | same |
+
+`400` is also returned when `planning.yaml` fails to load (malformed YAML or a
+referenced file that no longer exists). An **empty** `planning.yaml` (e.g. after
+the last entry is deleted) reads back as an empty config, not an error.
+
+## Implementation Status
+
+| Phase | Item | Status |
+|---|---|---|
+| 1 | `planning_config_shared.py` (models + load/save) | ✅ done |
+| 1 | `planning_config_service.py` (`PlanningConfigService`) | ✅ done |
+| 1 | `planning_routes.py` (REST endpoints) | ✅ done |
+| 1 | App startup registration | ✅ done (per-request DI via `Depends`, not an app.state singleton) |
+| 2 | Remove old `GET/PUT /planning-yaml` from `config_routes.py` | ✅ done |
+| 2 | CLI `pipelines/grounding/planning.py` uses shared load/save | ✅ done (delegates; back-compat wrapper kept) |
+| 2 | Dependency injection in route handlers | ✅ done |
+| 3 | Update `subsystems.md` / `service-cut.md` / `values.md` | ✅ done |
+| 3 | Add API documentation to this doc | ✅ done (above) |
+
+**Design deviation:** the spec listed separate `NPC` and `Faction` models; the
+implementation uses a single unified `PlanningEntry` (dossier required for NPCs,
+optional for factions).
+
+**Frontend:** `frontend/src/components/shared/PlanningConfigEditor.vue` consumes
+the API with GET/POST/DELETE, persisting edits via a full delete-all-then-recreate
+sync. The `PUT /{name}` update endpoints are shipped and tested but not currently
+used by the UI.
+
+**Tests:** `tests/test_planning_config_service.py` (service CRUD, the 404/409/400
+contract, the 3-state `arc_score` round-trip, and the delete-last-entry edge) and
+`tests/test_planning_routes.py` (HTTP status-code contract + a guard that routes
+mount at `/api/planning/*`, not the double-prefixed path).
+
+**Bugs fixed while completing the plan:**
+1. **Double-mounted prefix** — `planning_routes.py` set `prefix="/api/planning"` on
+   its `APIRouter` *and* `main.py` added it again, so routes were mounted at
+   `/api/planning/api/planning/*` and every frontend call 404'd. Removed the
+   router-level prefix to match the sibling convention.
+2. **Emptied-file read error** — deleting the last NPC/faction wrote `{}`, which the
+   strict CLI loader rejected, so a subsequent `GET` returned 400 instead of an
+   empty list. `PlanningConfigService._load` now treats an empty planning file as an
+   empty config (the CLI loader keeps its strict behavior).
