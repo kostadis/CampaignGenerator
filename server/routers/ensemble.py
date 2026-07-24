@@ -18,6 +18,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib.registry import find_registry
 from server.backend_forwarding import backend_cli_args
+from server.config import MODELS
 from server.ensemble_config_service import EnsembleConfigService
 from server.ensemble_config_shared import EnsembleConfig
 from server.party_config_shared import load_party_config
@@ -57,12 +58,33 @@ GROUNDING_DOCS = {
 
 # Models considered capable enough for synthesis (FR-014 / R6). Anything else
 # selected for the synthesize stage triggers a non-fatal warning.
-SYNTHESIS_CAPABLE = {
-    "claude-sonnet-4-6", "claude-sonnet-4-20250514",
-    "claude-opus-4-8", "claude-opus-4-6", "claude-opus-4-7",
+#
+# Derived from the registry, not snapshotted. The original literal froze the
+# Claude ids of the day and went stale as soon as the registry moved: after
+# platform-isolation Phase 5a refreshed ``MODELS`` this set still listed the
+# retired ``claude-sonnet-4-20250514`` and knew nothing of Opus 5 / Sonnet 5 /
+# Fable 5 — so picking the strongest model on offer earned a "may be too weak"
+# warning. specs/001-ensemble-workflow-ui/research.md R6 always described the
+# allow-list as "the Claude MODELS and a small set of frontier OpenRouter ids";
+# this restores that, so it can no longer drift from the registry.
+#
+# The judgment that is genuinely ours — and the one a human should revisit — is
+# the *exclusion*, not the inclusion. The stated bar is "at least as capable as
+# Sonnet", which rules out the Haiku tier and nothing else currently in the
+# registry. Matched as a substring so a future Haiku id is excluded on arrival
+# rather than silently promoted.
+_SUB_SONNET_TIER = "haiku"
+
+# Frontier non-Anthropic ids. Not derivable — MODELS is the Anthropic registry
+# — so these stay an explicit, hand-maintained set.
+_THIRD_PARTY_SYNTHESIS_CAPABLE = {
     "anthropic/claude-sonnet-4", "anthropic/claude-opus-4",
     "openai/gpt-5", "google/gemini-2.5-pro",
 }
+
+SYNTHESIS_CAPABLE = {
+    m for m in MODELS if _SUB_SONNET_TIER not in m
+} | _THIRD_PARTY_SYNTHESIS_CAPABLE
 
 
 # ── Command-building helpers (mirror grounding.py) ──────────────────────────

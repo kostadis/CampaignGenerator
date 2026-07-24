@@ -13,11 +13,15 @@
 > quickstart validation) was completed by the operator; Phases 0–2 were scoped
 > additive so they could land before it, and Phases 3–6 followed after.
 >
-> **Parallel work:** the `fix/ui-model-config-drift` branch has uncommitted
-> edits to `server/routers/ensemble.py`, deriving `SYNTHESIS_CAPABLE` from the
-> `MODELS` registry instead of a frozen literal. It touches only that module
-> constant, not route signatures — no conflict with anything here, and it makes
-> Phase 4's "leave `SYNTHESIS_CAPABLE` alone" decision doubly correct.
+> **Parallel work, now merged:** `fix/ui-model-config-drift`
+> ([PR #179](https://github.com/kostadis/CampaignGenerator/pull/179)) landed on
+> `main` mid-effort, deriving `SYNTHESIS_CAPABLE` from the `MODELS` registry
+> instead of a frozen literal. It touched only that module constant, not route
+> signatures, so merging `main` in produced exactly one conflict — the import
+> block — and it makes Phase 4's "leave `SYNTHESIS_CAPABLE` alone" decision
+> doubly correct. Phase 4's own model check is deliberately a `claude-` prefix
+> rather than `MODELS` membership even though `MODELS` is now imported here;
+> see `_backend_args`'s docstring for why.
 
 ## Overview
 

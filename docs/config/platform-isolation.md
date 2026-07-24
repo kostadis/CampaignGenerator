@@ -123,6 +123,32 @@ silently bypassed on those paths.
 > defect defined by its *behavior* cannot be inventoried by grepping one of its
 > *spellings*.** Third instance of that lesson in this effort (see the flat-key
 > overlay and constructor call-site corrections above).
+>
+> **Follow-up (2026-07-24, post-merge UI audit — branch
+> `fix/ui-model-config-drift`).** A sweep of the UI's model surfaces after
+> #178 merged found two of the rows above still standing, and reversed part of
+> the severity correction:
+>
+> - **`frontend/src/stores/config.ts`** — the seeded `ref('claude-sonnet-4-6')`
+>   is not inert. `App.vue` swallows a `config.load()` failure and `load()`
+>   memoises its rejected promise, so after one failed boot the seed sticks for
+>   the life of the page, `models` stays `[]` (the picker is empty and the GM
+>   cannot correct it), and the 13 views forward the stale seed. Because an
+>   explicit request `model` is **level 1** in `resolve_default_model`, that
+>   seed *beats* `runtime.default_model` rather than falling through to it. So
+>   "the web UI never relies on a router default" is true, and precisely why
+>   this mattered: the UI overrides the platform instead of deferring to it.
+>   Fixed by seeding `''` — `RunPanel` drops empty params from the query string
+>   and `resolve_default_model` treats `''` as falsy, so omission now reaches
+>   the intended precedence chain.
+> - **`ensemble.py::SYNTHESIS_CAPABLE`** — discharged, see "Out of scope" below.
+>
+> Not fixed here: the ensemble router's three model-calling routes
+> (`/run/extract`, `/run/bundle`, `/run/synthesize`) declare `model: str = ""`
+> and never call `resolve_default_model`, and `backend_cli_args` discards the
+> model outright for `backend in (None, "anthropic")` — so the Anthropic path
+> can never honour `runtime.default_model`. A **fourth** spelling of the same
+> defect. Owned by a separate change.
 
 ### `wiring.yaml` does not exist here
 
@@ -414,10 +440,20 @@ gated on a change in another repo and should not block 0–4.
 - **Central backend/model provider** (gap #3) — deferred by the maintainer.
   The four backend selectors stay four. This plan unifies the *registry* and
   the *default value*, not *selection*.
-- **`ensemble.py::SYNTHESIS_CAPABLE`** — also stale, but it encodes a
+- ~~**`ensemble.py::SYNTHESIS_CAPABLE`** — also stale, but it encodes a
   *capability judgment* ("good enough to synthesize"), not a registry. It
   should consume the registry once one exists; deciding which models are
-  synthesis-capable is a separate call.
+  synthesis-capable is a separate call.~~
+  **Discharged 2026-07-24** (`fix/ui-model-config-drift`). The condition this
+  bullet set — "once a registry exists" — was met by Phase 5a, and the
+  separate call turned out to be small and already implicit in the old
+  literal: the stated bar is "at least as capable as Sonnet", which excludes
+  the Haiku tier and nothing else in `MODELS`. `SYNTHESIS_CAPABLE` is now
+  `{m for m in MODELS if "haiku" not in m}` plus an explicit set of frontier
+  non-Anthropic ids (not derivable — `MODELS` is the Anthropic registry).
+  That restores what `specs/001-ensemble-workflow-ui/research.md` R6 described
+  all along, and confines the human judgment to one named exclusion instead of
+  a frozen snapshot. Pinned by `tests/test_synthesis_capable_registry.py`.
 - **Isolating the remaining ~7 services** out of `ui_state.yaml`.
   `UIStateService` exists to make that debt countable, not to discharge it.
 - **`SessionConfig.vue`'s client-side broadcast.** Phase 1 removes the
