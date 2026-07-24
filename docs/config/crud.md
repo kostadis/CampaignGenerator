@@ -10,10 +10,13 @@ flowchart LR
   Human[human edits] --> CY
   Human --> REFS[refs.yaml / ingest_manifest.yaml]
   MNEME[mneme render] --> WIRING[config/wiring.yaml]
-  MAIN[server/main.py] -->|constructs| SVC[CampaignConfigService]
-  SVC -->|lazy write| US[ui_state.yaml]
-  SVC -->|lazy write| LC[.campaigngenerator.local.yaml]
-  HTTP[config_routes PUT] --> SVC
+  MAIN[server/main.py] -->|constructs| PLAT[PlatformConfigService]
+  PLAT -->|last step, constructs| UIS[UIStateService]
+  PLAT -->|lazy write| PY[platform.yaml]
+  PLAT -->|lazy write| LC[.campaigngenerator.local.yaml]
+  UIS -->|lazy write| US[ui_state.yaml]
+  HTTP[config_routes PUT] --> PLAT
+  HTTP --> UIS
   LAUNCH[launch_5etools_mcp] -->|build| RT[~/.5etools-mcp-runtime]
 ```
 
@@ -21,42 +24,67 @@ flowchart LR
 
 | Config | What it is | Created by | Read by | Updated by |
 |---|---|---|---|---|
-| `config.yaml` | tracked, human-only internal config | `pipelines/workspace/new_workspace.py` (CONFIG_TEMPLATE); else hand | `campaignlib.load_config`; `CampaignConfigService._load_tracked` (required, `ConfigError` if missing); `pipelines/session_prep/prep.py`, `pipelines/rlm/mcp_server.py`, `session_doc/check_consistency.py`, `pipelines/rlm/apply_ingest_manifest.py`, `assemble_docs` | NONE by app — human edits only |
-| `ui_state.yaml` | tracked, server-owned `UIState` v2 | Lazily on first `_persist_ui_state` (`_atomic_write`); boot `_normalize_stored_paths` may write | `_load_ui_state` (missing → `UIState()`); routers via `service.ui_state` / `resolved()` | `update_section` (PUT `/section/{name}`), `update_runtime` (PUT `/runtime`), boot self-heal. Atomic, write-lock serialized |
-| `.campaigngenerator.local.yaml` | gitignored `LocalConfig` | Lazily on first `update_local` | `_load_local` (bad → default, warns, non-fatal) | `update_local` (PUT `/local`) |
-| `config/wiring.yaml` | external, mneme-rendered | mneme (do-not-edit, hash-stamped) | `campaignlib.wiring.*` (lru-cached); resolve_refs; launch_5etools_mcp | mneme only |
+| `config.yaml` | tracked, human-only internal config | `pipelines/workspace/new_workspace.py` (CONFIG_TEMPLATE); else hand | `campaignlib.load_config`; `PlatformConfigService._load_tracked` (required, `ConfigError` if missing); `pipelines/session_prep/prep.py`, `pipelines/rlm/mcp_server.py`, `session_doc/check_consistency.py`, `pipelines/rlm/apply_ingest_manifest.py`, `assemble_docs` | NONE by app — human edits only |
+| `platform.yaml` | tracked, `PlatformDocument` (strict), owned outright by `PlatformConfigService` | Lazily on first `update_runtime` | `_load_platform_doc` (missing → all-defaults `PlatformDocument()`; malformed → `ConfigError`, unlike the local file below); loaded BEFORE `UIStateService` is constructed — see `PlatformConfigService`'s module docstring for why load order is load-bearing here | `update_runtime` (PUT `/runtime`). Atomic, write-lock serialized |
+| `ui_state.yaml` | tracked, `UIStateService`-owned `UIState` v3 | Lazily on first `_persist_ui_state` (`_atomic_write`); boot `_normalize_stored_paths` may write | `_load_ui_state` (missing → `UIState()`); routers via `service.uis.ui_state` / `resolved()` | `update_section` (PUT `/section/{name}`), boot self-heal. Atomic, write-lock serialized. No longer holds `runtime` — see `platform.yaml` above |
+| `.campaigngenerator.local.yaml` | gitignored `PlatformLocalConfig` (strict), owned by `PlatformConfigService` | Lazily on first `update_local` | `load_local_config` (bad → default, warns, non-fatal) | `update_local` (PUT `/local`) |
+| `config/wiring.yaml` | external, mneme-rendered | mneme (do-not-edit, hash-stamped) | `campaignlib.wiring.*` (lru-cached); resolve_refs; launch_5etools_mcp | mneme only. Does **not** yet supply the model registry — `server/config.py::MODELS` stays a hardcoded list until Phase 5b ([issue #177](https://github.com/kostadis/CampaignGenerator/issues/177)) |
 | `refs.yaml` | tracked per-campaign content refs | human | `resolve_refs.load_refs`/`resolve`; fivetools_ingest, fivetools_catalog, launch | human |
 | `refs.local.yaml` | gitignored per-machine root mappings | `launch_5etools_mcp --init-local` (non-destructive); else human | `resolve_refs.load_local`/`resolve_roots` | human |
 | `ingest_manifest.yaml` | per-campaign ingest curation | human | `apply_ingest_manifest.load_manifest`/`resolve_palace`/`check_status` | human (replay writes no config; spawns `pipelines/content_ingest/fivetools_ingest.py`) |
 | `~/.5etools-mcp-runtime/<slug>/` + `.sources.sha256` | generated 5etools symlink farm + rebuild hash | `launch_5etools_mcp.build_runtime_tree` + `_write_sidecar` | 5etools MCP server via `DATA_DIRS`; `_is_up_to_date` | rebuilt when `sha256(refs+refs.local)` changes |
 | fivetools_ingest sidecars | per-(source,palace,filter) idempotence state | `fivetools_ingest` on ingest | `apply_ingest_manifest.check_status` | rewritten on re-ingest |
-| `boot_overrides` (in-memory) | CLI flags to `server.main` | `_boot_overrides_from_args(args)` at boot | `resolved()` (win over persisted for process life) | never persisted |
+| `boot_overrides` (in-memory) | CLI flags to `server.main` | `_boot_overrides_from_args(args)` at boot | `resolved()` (win over persisted for process life) | never persisted. Phase 0 (O1) deleted the twelve dead `session_doc.*` flags this table used to route into a phantom key — only `--campaign-dir`/`--session-dir`/`--config-dir`/`--host`/`--port` remain, and `test_main_boot_overrides.py` now asserts each reaches a real consumer, not just that a mapping dict is produced |
 
 ## HTTP surface (`config_routes.py`)
 
+All routes reach `app.state.platform` (a `PlatformConfigService`) via the shared
+`require_platform(request)` accessor — the one implementation that replaced three independent
+"getattr app.state.platform, 503 if missing" copies in Phase 4.
+
 | Endpoint | Handler → service | Effect |
 |---|---|---|
-| `GET /api/config/` | `get_config` | resolved view + flat legacy overlay + tracked + local + paths |
-| `PUT /api/config/section/{name}` | `put_config_section` → `update_section` | writes `ui_state.yaml` `ui.<name>` |
-| `PUT /api/config/runtime` | `put_config_runtime` → `update_runtime` | writes `ui_state.yaml` `runtime` |
-| `PUT /api/config/local` | `put_config_local` → `update_local` | writes `.campaigngenerator.local.yaml` |
-| `GET campaign-paths / session-paths / path-status` | `derive_*` + `path_exists` | read-only derivations |
+| `GET /api/config/` | `get_config` | resolved view (`platform.resolved()`, a thin passthrough to `platform.uis.resolved()`) + flat legacy overlay + tracked + local + paths |
+| `PUT /api/config/section/{name}` | `put_config_section` → `platform.uis.update_section` | writes `ui_state.yaml` `ui.<name>` |
+| `PUT /api/config/runtime` | `put_config_runtime` → `platform.update_runtime` | writes `platform.yaml` `runtime` — **no longer touches `ui_state.yaml` at all** (Phase 3, O3) |
+| `PUT /api/config/local` | `put_config_local` → `platform.update_local` | writes `.campaigngenerator.local.yaml` |
+| `GET campaign-paths` | `get_campaign_paths` → `PlatformConfigService.discover_campaign_paths` (`@staticmethod`) | read-only filesystem **discovery** only (VTT glob, gm-assist/recap sniff, summaries sniff, `docs/*.md` exist-checks) — narrowed in Phase 4 (O2); the old **derivation** half (`output_dir`, `DERIVED_SUBDIRS`) was deleted, not migrated, because it duplicated `_PATH_FIELDS` and had already drifted |
+| `GET session-paths` | — | **deleted** in Phase 4 — a one-line wrapper with no caller |
+| `GET path-status` | `get_path_status` → `path_exists` | read-only existence check |
 | `GET/PUT party-yaml` | config_routes | read/write `party.yaml` (see subsystems doc) |
 | `GET/POST/PUT/DELETE /api/planning/{npcs,factions}[/{name}]` | planning_routes | isolated `planning.yaml` CRUD (see planning-isolation doc) |
-| `GET models / status` | `get_models` / `get_status` | read-only |
+| `GET models` | `get_models` → `server.config.MODELS` / `DEFAULT_MODEL` | read-only; refreshed in Phase 5a to the current model family (still a hardcoded list — Phase 5b, deferred, would source it from wiring) |
+| `GET status` | `get_status` | read-only |
 
 ## Invariants enforced in code
 
-- `config.yaml` read-only to the app; `_load_tracked` reads it, no writer exists; missing is fatal.
-- `ui_state`/`local` created lazily; first update materializes them via atomic temp+`os.replace`.
-- Boot flags never persist — live only in `resolved()` for the process (`main.py` marks the old persist path as a fixed bug).
+- `config.yaml` read-only to the app; `PlatformConfigService._load_tracked` reads it, no writer exists; missing is fatal.
+- `platform.yaml` must load before `UIStateService` is constructed — `_normalize_stored_paths`
+  (run during `UIStateService.__init__`) relativizes session-scoped `ui.*` fields against the
+  CURRENTLY PERSISTED `runtime.session_dir`, which now lives in a different document than the one
+  being constructed. See `PlatformConfigService`'s module docstring.
+- `platform.yaml`/`ui_state`/`local` created lazily; first update materializes them via atomic temp+`os.replace`.
+- Boot flags never persist — live only in `resolved()` for the process. Phase 0 (O1) deleted the
+  twelve dead `session_doc.*` boot flags; the five that remain (`--campaign-dir`, `--session-dir`,
+  `--config-dir`, `--host`, `--port`) all reach a real consumer.
 - Write-time relativization (`update_section`) + load-time `_normalize_stored_paths` heal legacy absolute values.
-- Per-section last-writer-wins under `_write_lock`; readers never see a torn file.
-- External vs internal: `wiring.yaml` (mneme) holds endpoints/roots; `config.yaml` (human) holds prompts/agents/docs.
+- Per-section last-writer-wins under `_write_lock`; readers never see a torn file. `PlatformConfigService`
+  and `UIStateService` each hold their own lock, guarding their own file(s).
+- External vs internal: `wiring.yaml` (mneme) holds endpoints/roots; `config.yaml` (human) holds
+  prompts/agents/docs. The model registry (`server/config.py::MODELS`) has NOT crossed that line
+  yet — it's still internal/hardcoded pending Phase 5b.
+- A `/run/*` request that omits `model` resolves through `resolve_default_model` (explicit request
+  value → `platform.runtime.default_model` → `campaignlib.constants.DEFAULT_MODEL` literal), not a
+  hardcoded per-router default — Phase 5a, closing the gap where the sidebar model picker was
+  silently bypassed on fourteen endpoints.
 
 ## Boot path
 
 `server/main.py::main` resolves campaign_dir (`--campaign-dir` / `--session-dir` / CWD `config.yaml`),
-then constructs `CampaignConfigService(campaign_dir, boot_overrides=_boot_overrides_from_args(args))`.
-Init loads tracked (required), ui_state (default if absent), runs `_normalize_stored_paths`, loads
-local. A malformed `config.yaml` or `ui_state.yaml` is fatal; a bad local file only warns.
+then constructs `PlatformConfigService(campaign_dir, boot_overrides=_boot_overrides_from_args(args))`.
+Init loads tracked (required), `platform.yaml` (default if absent, `ConfigError` if malformed —
+load-bearing, since `runtime.session_dir` must be correct before anything else resolves a
+session-scoped path), local (bad → warns, non-fatal), and — as the LAST construction step —
+builds `self.uis = UIStateService(self)`, which loads `ui_state.yaml` and runs
+`_normalize_stored_paths` against the already-loaded `platform.yaml`. A malformed `config.yaml`,
+`platform.yaml`, or `ui_state.yaml` is fatal; a bad local file only warns.

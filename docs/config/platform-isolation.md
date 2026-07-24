@@ -1,14 +1,22 @@
 # Platform (Global) Configuration Isolation Design
 
-> **Status: 📝 Proposed — nothing implemented. O1–O4 decided 2026-07-24.**
-> Third in the series after [planning-isolation.md](./planning-isolation.md)
+> **Status: 🟡 Phases 0–5a done (2026-07-24); Phase 5b deferred.** Third in
+> the series after [planning-isolation.md](./planning-isolation.md)
 > (✅ 2026-07-23) and [session-editor-isolation.md](./session-editor-isolation.md)
 > (✅ 2026-07-24). Those two carved *services* out of the shared config; this
 > one addresses what they left behind — the **platform tier** itself. The four
 > open questions are resolved under [Design decisions
 > (O1–O4)](#design-decisions-o1o4); **O3 landed larger than this doc's first
 > draft assumed** and turned a zero-migration plan into a Phase-5-shaped one.
-> All "current state" claims are code-verified against source at `1caa583`.
+> **O4 itself split during implementation** into 5a (shipped — see the note
+> under O4) and 5b (deferred — needs a template change in the separate
+> `mneme` repo; tracked as
+> [issue #177](https://github.com/kostadis/CampaignGenerator/issues/177), not
+> blocking anything here). See [Implementation
+> status](#implementation-status) for the per-phase commit record. All
+> "current state" claims are code-verified against source at `1caa583`
+> (pre-Phase-0); phase-by-phase deviations are recorded inline as "as
+> implemented" callouts and in that section.
 
 ## Overview
 
@@ -427,6 +435,29 @@ gated on a change in another repo and should not block 0–4.
 - **Grounding-doc producer/consumer contracts** (gap #4) and the service
   registry (gap #6).
 
+## Implementation status
+
+| Phase | Work | Commit | Status |
+|---|---|---|---|
+| 0 | Delete the 12 dead boot flags (O1) | `e32ad08` | ✅ Done |
+| 1 | Retire `flatten_resolved_to_legacy` | `803f665` | ✅ Done |
+| 2 | `PlatformConfigService` + strict `PlatformConfig`; rename remainder `UIStateService` | `d46d223` | ✅ Done |
+| 3 | Relocate `runtime` → `<config>/platform.yaml` (O3) + `migrate_platform_config.py` | `e6d7a83` | ✅ Done |
+| 4 | Fold `server/config.py` in — discovery-only `derive_campaign_paths` (O2), delete `derive_session_paths` | `412a7cc` | ✅ Done |
+| 5a | Unify default-model resolution, refresh the registry (O4, non-wiring half) | `25ece07` | ✅ Done |
+| 5b | Model registry → `wiring.yaml` (O4, wiring half) | — | ⏸ Deferred — [issue #177](https://github.com/kostadis/CampaignGenerator/issues/177) |
+| 6 | Docs: `schema.md`, `values.md`, `crud.md`, `master.md`, `service-cut.md`; this "as shipped" section | (uncommitted) | ✅ Done |
+
+Phase 5a fixed thirteen more call sites than the twelve named in the original Phase 5 scope line —
+`server/routers/setup.py` had two request-body `model` fields defaulting to the *imported*
+`DEFAULT_MODEL` constant rather than a bareword `"claude-sonnet-4-6"` literal, so the grep that
+found the twelve never saw them; same defect (bypasses `runtime.default_model` on an omitted
+`model`), different spelling. Fourteen total router sites fixed, not twelve — see the "Severity
+correction" callout under O4 above for the full account, and the fourth instance in this effort of
+"a defect defined by its behavior can't be inventoried by grepping one of its spellings" (after the
+flat-key overlay correction, the Phase 2 constructor call-site correction, and O2's `voice_dir`/
+`examples_dir` correction).
+
 ## Contrast with the prior two isolations
 
 | | Planning | Session editor | Platform |
@@ -434,5 +465,5 @@ gated on a change in another repo and should not block 0–4.
 | New service LoC | 137 | 303 + 212 | ~150 (mostly moved) |
 | Net code change | additive | −1 global, −1 rename table | **net deletion** (`server/config.py`, the overlay, 12 flags) |
 | Migration | none | one-shot CLI | **one-shot CLI** (O3) |
-| Cross-repo dependency | none | none | **yes** (mneme render, Phase 5) |
-| Bugs surfaced during design | 2 (while finishing) | 3 (while implementing) | **4, while planning** — dead flags, drifted derivation names, stale registry, 12 literal model defaults |
+| Cross-repo dependency | none | none | **Phase 5b only** (mneme render) — Phases 0–5a, everything actually shipped, needed none |
+| Bugs surfaced during design | 2 (while finishing) | 3 (while implementing) | **4 while planning, 1 more while implementing** — dead flags, drifted derivation names, stale registry, and (at design time) 12 literal model defaults, which turned out to be 14 once `setup.py`'s constant-defaulted pair was found during Phase 5a |
