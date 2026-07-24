@@ -3,22 +3,37 @@
 Phase 2 of ``docs/config/ensemble-isolation.md``: storage is a dedicated
 ``<config>/ensemble.yaml`` this service owns exclusively — ``ui_state.yaml``
 is never touched by an ensemble write, and an ensemble write cannot corrupt
-``platform.yaml``. Composes :class:`~server.platform_config_service.
-PlatformConfigService` for path resolution and platform-owned reads rather
-than re-implementing them, the same ownership boundary
-``SessionEditorConfigService`` and ``PlanningConfigService`` use.
+``platform.yaml``.
 
 The distinguishing problem this service solves, relative to its two siblings:
 the ensemble *router* never read ``ui.ensemble`` at all. Its defaults were
 literals in route signatures, duplicated in ``config_models.EnsembleSection``
 and again in TypeScript. :meth:`resolved` is the single source Phase 3 points
 all three at.
+
+**Why this takes a directory, not a PlatformConfigService.**
+``SessionEditorConfigService`` and ``PlanningConfigService`` both compose the
+platform, and the obvious move was to copy that. But they compose it because
+they *use* it — the session editor needs ``resolve_path``/``relativize_path``/
+``runtime``, planning resolves dossier paths. Ensemble needs exactly one
+thing: the directory ``ensemble.yaml`` lives in. Demanding a whole
+``PlatformConfigService`` for that would be cargo-culting the sibling shape,
+and it has a concrete cost — the ensemble router is cwd-rooted throughout
+(``_resolve_ensemble_path`` confines to ``Path.cwd()``, ``find_registry(Path.
+cwd())``, and ``_default_party_config``/``_default_planning_config`` read
+``config/party.yaml``/``config/planning.yaml`` straight off cwd). Taking a
+platform here would make read-only routes like ``/chapters`` and ``/status``
+503 without one, which they never did before. Reading ``config/ensemble.yaml``
+the same way this router already reads its two sibling config files is the
+consistent choice, not a degraded fallback. In a booted server the two are the
+same path anyway: ``main`` chdirs to ``campaign_dir``, so ``Path.cwd() /
+"config"`` *is* ``platform.config_path_base``.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from fastapi import HTTPException
 
@@ -28,9 +43,6 @@ from server.ensemble_config_shared import (
     load_ensemble_config,
     save_ensemble_config,
 )
-
-if TYPE_CHECKING:
-    from server.platform_config_service import PlatformConfigService
 
 
 def _deep_merge(base: dict[str, Any], partial: dict[str, Any]) -> dict[str, Any]:
@@ -59,12 +71,12 @@ class EnsembleConfigService:
     ``ui_state.yaml`` or ``platform.yaml``.
     """
 
-    def __init__(self, platform: "PlatformConfigService") -> None:
-        self.platform = platform
+    def __init__(self, config_path_base: Path | str) -> None:
+        self.config_path_base = Path(config_path_base)
 
     @property
     def ensemble_config_path(self) -> Path:
-        return self.platform.config_path_base / ENSEMBLE_CONFIG_FILENAME
+        return self.config_path_base / ENSEMBLE_CONFIG_FILENAME
 
     # ── Read ──────────────────────────────────────────────────────────
 

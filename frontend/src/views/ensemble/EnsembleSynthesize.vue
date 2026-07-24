@@ -2,13 +2,13 @@
 import { ref, onMounted, reactive, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import { apiFetch, apiPost } from '../../api/client'
-import { useEnsembleRun, readEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
+import { useEnsembleRun, fetchEnsembleConfig, saveEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
 import StreamOutput from '../../components/shared/StreamOutput.vue'
 import EnsemblePlanningFields from '../../components/ensemble/EnsemblePlanningFields.vue'
 
 const emit = defineEmits<{ changed: [] }>()
 const config = useConfigStore()
-const cfg = ref<EnsembleConfig>(readEnsembleConfig({}))
+const cfg = ref<EnsembleConfig | null>(null)
 const run = useEnsembleRun()
 
 function statusLabel(s: string, rc: number | null): string {
@@ -55,38 +55,45 @@ const planningForceInclude = ref('')
 
 onMounted(async () => {
   await config.load()
-  cfg.value = readEnsembleConfig(config.resolved)
+  const loaded = await fetchEnsembleConfig()
+  cfg.value = loaded
   partyConfigPath.value = config.resolved?.ui?.party?.config_path || ''
   planningConfigPath.value = config.resolved?.ui?.planning?.config_path || ''
-  const e = config.resolved?.ui?.ensemble || {}
-  if (e.planning_synth_mode === 'config' || e.planning_synth_mode === 'flat') {
-    planningSynthMode.value = e.planning_synth_mode
-  }
-  planningNpcFiles.value = e.planning_npc || ''
-  planningArcScores.value = e.planning_arc_scores || ''
-  planningContextFiles.value = e.planning_context || ''
-  if (e.planning_depth === 'full') planningDepth.value = 'full'
-  planningForceInclude.value = e.planning_force_include || ''
+  // Phase 3: these come from ensemble.yaml's typed `planning` group. They
+  // used to be six undeclared keys riding on ui.ensemble's extra="allow".
+  const pl = loaded.planning
+  planningSynthMode.value = pl.synth_mode
+  planningNpcFiles.value = pl.npc.join('\n')
+  planningArcScores.value = pl.arc_scores.join('\n')
+  planningContextFiles.value = pl.context.join('\n')
+  planningDepth.value = pl.depth
+  planningForceInclude.value = pl.force_include.join('\n')
 })
+
+const lines = (t: string): string[] =>
+  t.split('\n').map(l => l.trim()).filter(Boolean)
 
 // Auto-persist planning field edits — mirrors PlanningDocument.vue's own
 // debounced persist. planningConfigPath goes to the shared ui.planning
 // section (same field the standalone page writes); the rest are
-// ensemble-specific overrides and live under ui.ensemble so they don't
-// collide with the standalone page's own npc/arc-score/context lists.
+// ensemble-specific overrides and live in ensemble.yaml's own `planning`
+// group so they don't collide with the standalone page's npc/arc-score/
+// context lists.
 let planPersistTimer: ReturnType<typeof setTimeout> | null = null
 function schedulePlanPersist() {
   if (planPersistTimer) clearTimeout(planPersistTimer)
   planPersistTimer = setTimeout(() => {
     config.updateSection('planning', { config_path: planningConfigPath.value }).catch(() => {})
-    config.updateSection('ensemble', {
-      planning_synth_mode: planningSynthMode.value,
-      planning_npc: planningNpcFiles.value,
-      planning_arc_scores: planningArcScores.value,
-      planning_context: planningContextFiles.value,
-      planning_depth: planningDepth.value,
-      planning_force_include: planningForceInclude.value,
-    }).catch(() => {})
+    saveEnsembleConfig({
+      planning: {
+        synth_mode: planningSynthMode.value,
+        npc: lines(planningNpcFiles.value),
+        arc_scores: lines(planningArcScores.value),
+        context: lines(planningContextFiles.value),
+        depth: planningDepth.value,
+        force_include: lines(planningForceInclude.value),
+      },
+    }).then(c => { cfg.value = c }).catch(() => {})
   }, 500)
 }
 watch([planningConfigPath, planningSynthMode, planningNpcFiles, planningArcScores, planningContextFiles,
@@ -94,11 +101,13 @@ watch([planningConfigPath, planningSynthMode, planningNpcFiles, planningArcScore
   schedulePlanPersist)
 
 function synthesize() {
+  // backend/endpoint/model come from ensemble.yaml's `synthesize` group, which
+  // the server reads itself (Phase 3). Only what this page actually chooses is
+  // sent. The planning fields below are still passed explicitly: the debounced
+  // persist may not have landed yet when Run is clicked, so the request — not
+  // the stored config — is the authority on this run's planning scope.
   const params: Record<string, unknown> = {
     doc: selectedDoc.value,
-    backend: cfg.value.synthesize.backend,
-    endpoint: cfg.value.synthesize.endpoints[0] ?? '',
-    model: cfg.value.synthesize.model,
     party: partyConfigPath.value,
   }
   if (selectedDoc.value === 'planning') {
@@ -149,7 +158,7 @@ async function promote(doc: string) {
     <h2>Stage 3 — Synthesis &amp; promotion</h2>
     <p class="hint">
       Synthesis writes <code>*_draft.md</code> only — never a live doc. Backend:
-      <strong>{{ cfg.synthesize.backend }}</strong>. Review the diff, then promote by hand.
+      <strong>{{ cfg?.synthesize.backend ?? '' }}</strong>. Review the diff, then promote by hand.
     </p>
     <p v-if="selectedDoc === 'party'" class="hint">
       Uses <code>{{ partyConfigPath || 'config/party.yaml (auto-detected if present)' }}</code>

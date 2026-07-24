@@ -81,6 +81,12 @@ class EnsemblePaths(BaseModel):
     merged_out: str = "docs/ensemble/merged.json"
     state_dossiers_dir: str = "docs/ensemble/state_dossiers"
     dossiers_glob: str = "docs/ensemble/merged_dossiers/*.md"
+    # The npc_-prefixed subset of the same directory. A separate field rather
+    # than a derivation of `dossiers_glob`: the two are passed to different
+    # things (``dossiers_glob`` is synthesise_world_state's --dossiers value;
+    # this one drives planning's NPC auto-detect in the router's helpers), and
+    # deriving one from the other would make overriding either surprising.
+    npc_dossiers_glob: str = "docs/ensemble/merged_dossiers/npc_*.md"
     threads_out: str = "docs/ensemble/threads.md"
     recent_events_out: str = "docs/recent_events.md"
 

@@ -45,7 +45,7 @@ def fresh_campaign(tmp_path):
 
 @pytest.fixture
 def service(fresh_campaign):
-    return EnsembleConfigService(PlatformConfigService(fresh_campaign))
+    return EnsembleConfigService(fresh_campaign / CONFIG_SUBDIR)
 
 
 @pytest.fixture
@@ -155,7 +155,7 @@ class TestIsolationInvariant:
         }
         assert before, "fixture wrote neither file — the test would prove nothing"
 
-        EnsembleConfigService(platform).update_config(
+        EnsembleConfigService(platform.config_path_base).update_config(
             {"extract": {"backend": "dgx", "endpoints": ["http://spark:8001/v1"]},
              "tuning": {"chapter_parallel": 6}}
         )

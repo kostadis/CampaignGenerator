@@ -136,7 +136,7 @@ Web-over-CLI layout (plan.md "Structure Decision"). Shared seam: `server/subproc
 - [X] T030 [P] Update `docs/web/web_ui.md` (ensemble page: copyable command, abort button, aborted + "connection lost" states) and add an "Observability & abort" note to `docs/cli/ensemble_workflow.md` (disconnect = implicit abort; reconnect does not restart; per-run logs under `logs/`).
 - [X] T031 **(I2 regression)** Add a regression test (e.g. in `tests/test_subprocess_abort.py` or a sibling) that a **non-ensemble** SSE route's run (a `grounding.py`-style invocation through `stream_subprocess`) is also group-killed on disconnect and leaves no orphan — proving the shared-seam change is safe app-wide, not just for ensemble.
 - [X] T032 Run `python -m pytest tests/` — confirm green, especially `tests/test_retrieve_render_isolation.py` (no retrieval/render mixing introduced) and existing `tests/test_ensemble_*.py` (no regression).
-- [ ] T033 Execute `quickstart.md` Scenarios A–E manually against a real campaign workspace; confirm SC-001…SC-006 (Scenario E now also asserts no auto-restart after the tab is closed / network dropped).
+- [X] T033 Execute `quickstart.md` Scenarios A–E manually against a real campaign workspace; confirm SC-001…SC-006 (Scenario E now also asserts no auto-restart after the tab is closed / network dropped). — validated by the operator (2026-07-24); this was the gate on Phase 3 of `docs/config/ensemble-isolation.md`.
 
 ---
 

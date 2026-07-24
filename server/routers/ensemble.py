@@ -22,7 +22,6 @@ from server.ensemble_config_service import EnsembleConfigService
 from server.ensemble_config_shared import EnsembleConfig
 from server.party_config_shared import load_party_config
 from server.planning_config_shared import load_planning_config
-from server.platform_config_service import require_platform
 from server.subprocess_runner import console_script, stream_subprocess, sse_error_stream
 
 router = APIRouter()
@@ -32,11 +31,19 @@ def get_ensemble_service(request: Request) -> EnsembleConfigService:
     """Per-request DI for the ensemble config service (Planning's shipped
     shape — not an ``app.state`` singleton).
 
-    ``require_platform`` is the one shared "fetch app.state.platform or 503"
-    accessor every router uses; see ``docs/config/platform-isolation.md``
-    Phase 4.
+    Uses the platform's config dir when the server booted with a campaign, and
+    otherwise falls back to ``<cwd>/config`` — the same convention
+    ``_default_party_config``/``_default_planning_config`` below already use
+    for this router's two sibling config files. Deliberately NOT
+    ``require_platform``: that would make read-only routes like ``/chapters``
+    and ``/status`` 503 without a platform, which they never did before, and
+    the service needs a directory rather than a platform anyway (see
+    ``server/ensemble_config_service.py``'s module docstring). In a booted
+    server the two paths are identical — ``main`` chdirs to ``campaign_dir``.
     """
-    return EnsembleConfigService(require_platform(request))
+    platform = getattr(request.app.state, "platform", None)
+    base = platform.config_path_base if platform is not None else Path.cwd() / "config"
+    return EnsembleConfigService(base)
 
 # The four grounding docs the workflow targets. live = promote target; draft =
 # what synthesis writes. Nothing else may be promoted (FR-013).
@@ -122,26 +129,32 @@ def _default_planning_config() -> Path | None:
     return None
 
 
-def _default_threads_file() -> Path | None:
-    """The ensemble threads track's conventional output location (see the
-    /run/threads route) — used when the caller doesn't specify --threads
-    explicitly, for both world_state and planning synthesis."""
-    p = Path.cwd() / "docs/ensemble/threads.md"
+def _default_threads_file(threads_out: str) -> Path | None:
+    """The ensemble threads track's output location (see the /run/threads
+    route) — used when the caller doesn't specify --threads explicitly, for
+    both world_state and planning synthesis.
+
+    ``threads_out`` comes from ``EnsemblePaths.threads_out`` so this and the
+    /run/threads route that writes the file cannot disagree about where it is.
+    """
+    p = Path.cwd() / threads_out
     return p if p.exists() else None
 
 
-def _all_planning_npc_files(exclude: set[Path] = frozenset()) -> list[str]:
+def _all_planning_npc_files(npc_glob: str, exclude: set[Path] = frozenset()) -> list[str]:
     """Every merged NPC dossier — the "flat" planning mode's auto-detect
     fallback when no explicit --npc list is given and no planning.yaml is in
     play (no config to bind against, unlike _planning_npc_passthrough, so
     `exclude` — PC dossiers, see _party_pc_dossier_files — is the only
     filter)."""
     cwd = Path.cwd()
-    return [str(p) for p in sorted(cwd.glob("docs/ensemble/merged_dossiers/npc_*.md"))
+    return [str(p) for p in sorted(cwd.glob(npc_glob))
             if p.resolve() not in exclude]
 
 
-def _planning_npc_passthrough(config_path: Path, exclude: set[Path] = frozenset()) -> list[str]:
+def _planning_npc_passthrough(
+    config_path: Path, npc_glob: str, exclude: set[Path] = frozenset()
+) -> list[str]:
     """Merged NPC dossiers not already bound in planning.yaml and not in
     `exclude` (PC dossiers, see _party_pc_dossier_files).
 
@@ -152,7 +165,7 @@ def _planning_npc_passthrough(config_path: Path, exclude: set[Path] = frozenset(
     excluded so planning.py's own overlap guard (each NPC in exactly one
     place) doesn't trip."""
     cwd = Path.cwd()
-    npc_files = sorted(cwd.glob("docs/ensemble/merged_dossiers/npc_*.md"))
+    npc_files = sorted(cwd.glob(npc_glob))
     if not npc_files:
         return []
     config = load_planning_config(config_path)
@@ -297,11 +310,17 @@ async def put_ensemble_config(
 # ── Status (disk-derived, FR-002) ───────────────────────────────────────────
 
 @router.get("/status")
-def status(chapters: str = "docs/chapters/chapter_*.md"):
-    """Pipeline state computed entirely from artifacts on disk — no caching."""
+def status(service: EnsembleConfigService = Depends(get_ensemble_service)):
+    """Pipeline state computed entirely from artifacts on disk — no caching.
+
+    Phase 3 dropped a dead ``chapters`` query parameter: it carried its own
+    copy of the chapter glob and the body never referenced it. The frontend
+    (``EnsembleWorkflow.vue``) has always called this with no params.
+    """
+    cfg = service.resolved()
     cwd = Path.cwd()
-    per_chapter = sorted(glob.glob(str(cwd / "docs/ensemble/per_chapter/*/merged.json")))
-    dossiers = sorted(glob.glob(str(cwd / "docs/ensemble/state_dossiers/*.md")))
+    per_chapter = sorted(glob.glob(str(cwd / cfg.paths.corpus_glob)))
+    dossiers = sorted(glob.glob(str(cwd / cfg.paths.state_dossiers_dir / "*.md")))
     drafts = [name for name, (_, draft_rel) in GROUNDING_DOCS.items()
               if (cwd / draft_rel).exists()]
     promoted = [name for name, (live_rel, draft_rel) in GROUNDING_DOCS.items()
@@ -335,13 +354,21 @@ def list_files(dir: str, pattern: str = "*.md"):
 
 @router.get("/chapters")
 def list_chapters(
-    glob: list[str] = Query(default=["docs/chapters/chapter_*.md"]),
-    per_chapter_dir: str = "docs/ensemble/per_chapter",
+    glob: list[str] = Query(default=[]),
+    per_chapter_dir: str = "",
+    service: EnsembleConfigService = Depends(get_ensemble_service),
 ):
     """Resolve one or more chapter globs/paths to the concrete file list the
     extraction stage would run over (FR: chapter selection). Each entry is
     flagged `extracted` when its per-chapter merged.json already exists on disk
-    (Principle I — the picker reflects truth, not a cached selection)."""
+    (Principle I — the picker reflects truth, not a cached selection).
+
+    Omitted parameters fall back to ``ensemble.yaml`` rather than to literals
+    declared here — see docs/config/ensemble-isolation.md Phase 3.
+    """
+    cfg = service.resolved()
+    glob = glob or [cfg.paths.chapters_glob]
+    per_chapter_dir = per_chapter_dir or cfg.paths.per_chapter_dir
     cwd = Path.cwd().resolve()
     pc_dir = (cwd / per_chapter_dir).resolve()
     matched: dict[str, Path] = {}
@@ -428,19 +455,36 @@ async def promote(request: Request):
 @router.get("/run/extract")
 def run_extract(
     chapters: list[str] = Query(default=[]),
-    per_chapter_dir: str = "docs/ensemble/per_chapter",
-    out: str = "docs/ensemble/merged.json",
+    per_chapter_dir: str = "",
+    out: str = "",
     plan: str = "",
     endpoints: list[str] = Query(default=[]),
     model: str = "",
-    backend: str = "anthropic",
-    chapter_parallel: int = 3,
-    chunk_parallel: int = 4,
+    backend: str = "",
+    chapter_parallel: int | None = None,
+    chunk_parallel: int | None = None,
     no_speculative: bool = False,
+    service: EnsembleConfigService = Depends(get_ensemble_service),
 ):
+    cfg = service.resolved()
+    per_chapter_dir = per_chapter_dir or cfg.paths.per_chapter_dir
+    out = out or cfg.paths.merged_out
+    backend = backend or cfg.extract.backend
+    model = model or cfg.extract.model or ""
+    endpoints = endpoints or cfg.extract.endpoints
+    # `is None`, not `or`: 0 is a legitimate value for these, so a falsy-test
+    # would silently substitute the config value for an explicit 0.
+    if chapter_parallel is None:
+        chapter_parallel = cfg.tuning.chapter_parallel
+    if chunk_parallel is None:
+        chunk_parallel = cfg.tuning.chunk_parallel
+
     # Principle X: no silent "all". An empty selection is refused, never
     # expanded to the full glob — "Select all" must be an explicit choice the
     # caller makes (the UI sends every resolved path; a CLI user types a glob).
+    # Deliberately NOT defaulted from cfg.chapters_selected: the request is the
+    # authority on what this run covers, and a persisted selection quietly
+    # standing in for an omitted one is exactly the silent "all" this forbids.
     picked = [c.strip() for c in (chapters or []) if c and c.strip()]
     if not picked:
         return StreamingResponse(
@@ -463,18 +507,32 @@ def run_extract(
 
 @router.get("/run/bundle")
 def run_bundle(
-    corpus: str = "docs/ensemble/per_chapter/*/merged.json",
+    corpus: str = "",
     aliases: str = "",
     known_names: list[str] = Query(default=[]),
-    min_facts: int = 3,
+    min_facts: int | None = None,
     known_only: bool = False,
-    out_dir: str = "docs/ensemble/state_dossiers",
+    out_dir: str = "",
     list: bool = False,
     endpoints: list[str] = Query(default=[]),
     model: str = "",
-    backend: str = "anthropic",
-    entity_parallel: int = 0,
+    backend: str = "",
+    entity_parallel: int | None = None,
+    service: EnsembleConfigService = Depends(get_ensemble_service),
 ):
+    cfg = service.resolved()
+    corpus = corpus or cfg.paths.corpus_glob
+    out_dir = out_dir or cfg.paths.state_dossiers_dir
+    aliases = aliases or cfg.aliases_path or ""
+    known_names = known_names or cfg.known_names
+    backend = backend or cfg.extract.backend
+    model = model or cfg.extract.model or ""
+    endpoints = endpoints or cfg.extract.endpoints
+    if min_facts is None:
+        min_facts = cfg.tuning.bundle_min_facts
+    if entity_parallel is None:
+        entity_parallel = cfg.tuning.entity_parallel
+
     cmd = [console_script("facts_to_state"), "--corpus", corpus]
     # A campaign that has migrated to docs/entity_registry.yaml supersedes the
     # UI's persisted legacy aliases/known-names fields (Principle: single
@@ -502,10 +560,16 @@ def run_bundle(
 
 @router.get("/run/recent-events")
 def run_recent_events(
-    corpus: str = "docs/ensemble/per_chapter/*/merged.json",
-    output: str = "docs/recent_events.md",
-    window: int = 0,
+    corpus: str = "",
+    output: str = "",
+    window: int | None = None,
+    service: EnsembleConfigService = Depends(get_ensemble_service),
 ):
+    cfg = service.resolved()
+    corpus = corpus or cfg.paths.corpus_glob
+    output = output or cfg.paths.recent_events_out
+    if window is None:
+        window = cfg.tuning.recent_events_window
     cmd = [console_script("build_recent_events"),
            "--corpus", corpus, "--output", output, "--window", str(window)]
     return _run_locked("recent-events", cmd)
@@ -513,13 +577,20 @@ def run_recent_events(
 
 @router.get("/run/threads")
 def run_threads(
-    corpus: str = "docs/ensemble/per_chapter/*/merged.json",
+    corpus: str = "",
     aliases: str = "",
-    output: str = "docs/ensemble/threads.md",
-    min_facts: int = 2,
+    output: str = "",
+    min_facts: int | None = None,
+    service: EnsembleConfigService = Depends(get_ensemble_service),
 ):
     """(M1) Deterministic threads-track render — the chronological-spine input
     fed to synthesis. No model call."""
+    cfg = service.resolved()
+    corpus = corpus or cfg.paths.corpus_glob
+    output = output or cfg.paths.threads_out
+    aliases = aliases or cfg.aliases_path or ""
+    if min_facts is None:
+        min_facts = cfg.tuning.threads_min_facts
     cmd = [console_script("facts_to_state"),
            "--corpus", corpus, "--types", "thread",
            "--min-facts", str(min_facts), "--render-only", output]
@@ -535,12 +606,12 @@ def run_threads(
 def run_synthesize(
     doc: str,
     output: str = "",
-    backend: str = "anthropic",
+    backend: str = "",
     endpoint: str = "",
     model: str = "",
     # world_state
-    dossiers: str = "docs/ensemble/merged_dossiers/*.md",
-    dossier_min_facts: int = 10,
+    dossiers: str = "",
+    dossier_min_facts: int | None = None,
     # party.yaml — anchors the Party section for world_state, and is the
     # preferred (human-authored) source for the party doc's own synthesis.
     # Falls back to the conventional config/party.yaml / party.yaml path
@@ -553,15 +624,30 @@ def run_synthesize(
     synthesize_only: bool = True,
     # planning
     planning_config: str = "",
-    planning_mode: str = "config",
+    planning_mode: str = "",
     npc: list[str] = Query(default=[]),
     arc_scores: list[str] = Query(default=[]),
     context: list[str] = Query(default=[]),
-    depth: str = "scene",
+    depth: str = "",
     force_include: list[str] = Query(default=[]),
+    service: EnsembleConfigService = Depends(get_ensemble_service),
 ):
     if doc not in GROUNDING_DOCS:
         raise HTTPException(status_code=400, detail=f"unknown doc '{doc}'")
+
+    cfg = service.resolved()
+    dossiers = dossiers or cfg.paths.dossiers_glob
+    backend = backend or cfg.synthesize.backend
+    model = model or cfg.synthesize.model or ""
+    endpoint = endpoint or (cfg.synthesize.endpoints[0] if cfg.synthesize.endpoints else "")
+    if dossier_min_facts is None:
+        dossier_min_facts = cfg.tuning.dossier_min_facts
+    planning_mode = planning_mode or cfg.planning.synth_mode
+    depth = depth or cfg.planning.depth
+    npc = npc or cfg.planning.npc
+    arc_scores = arc_scores or cfg.planning.arc_scores
+    context = context or cfg.planning.context
+    force_include = force_include or cfg.planning.force_include
     out = output or GROUNDING_DOCS[doc][1]  # default to the draft path
     # FR-013: never let synthesis target a live grounding doc.
     if _is_live_doc(_resolve_ensemble_path(out)):
@@ -573,9 +659,9 @@ def run_synthesize(
                "--dossiers", dossiers, "--dossier-min-facts", str(dossier_min_facts),
                "--output", out]
         _cmd_opt(cmd, "--party", party)
-        # Auto-detect docs/ensemble/threads.md the same way planning_config /
+        # Auto-detect the threads track the same way planning_config /
         # party_config auto-detect — an explicit --threads override still wins.
-        threads_path = _resolve_ensemble_path(threads) if threads else _default_threads_file()
+        threads_path = _resolve_ensemble_path(threads) if threads else _default_threads_file(cfg.paths.threads_out)
         _cmd_opt(cmd, "--threads", threads_path)
         _cmd_multi(cmd, "--backstories", backstories)
     elif doc == "campaign_state":
@@ -636,7 +722,7 @@ def run_synthesize(
             # majority") — without this, every NPC not in planning.yaml is
             # silently absent from planning.md.
             try:
-                npc_passthrough = npc or _planning_npc_passthrough(planning_config_path, exclude=pc_dossiers)
+                npc_passthrough = npc or _planning_npc_passthrough(planning_config_path, cfg.paths.npc_dossiers_glob, exclude=pc_dossiers)
             except ValueError as e:
                 # load_planning_config raises on a missing/invalid dossier
                 # reference — surface it as a real SSE error (below) instead
@@ -645,13 +731,13 @@ def run_synthesize(
                 return _sse_error_response(f"planning config error: {e}")
             _cmd_multi(cmd, "--npc", npc_passthrough)
         else:
-            _cmd_multi(cmd, "--npc", npc or _all_planning_npc_files(exclude=pc_dossiers))
+            _cmd_multi(cmd, "--npc", npc or _all_planning_npc_files(cfg.paths.npc_dossiers_glob, exclude=pc_dossiers))
             _cmd_multi(cmd, "--arc-scores", arc_scores)
         _cmd_multi(cmd, "--context", context)
         # Same auto-detect as the world_state branch: without this, Active
         # Plots has nothing but scattered NPC-dossier snapshots to infer
         # threads from, and the model has to guess chapter ordering.
-        threads_path = _resolve_ensemble_path(threads) if threads else _default_threads_file()
+        threads_path = _resolve_ensemble_path(threads) if threads else _default_threads_file(cfg.paths.threads_out)
         _cmd_opt(cmd, "--threads", threads_path)
         # "scene" is planning.py --depth's own default — only pass it through
         # when overridden so the reproducible command stays minimal.

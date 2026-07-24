@@ -1,47 +1,46 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useConfigStore } from '../../stores/config'
-import { useEnsembleRun, readEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
+import { useEnsembleRun, fetchEnsembleConfig, saveEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
 import StreamOutput from '../../components/shared/StreamOutput.vue'
 import RunCommandBar from '../../components/shared/RunCommandBar.vue'
 import ChapterPicker from './ChapterPicker.vue'
 
 const emit = defineEmits<{ changed: [] }>()
-const config = useConfigStore()
-const cfg = ref<EnsembleConfig>(readEnsembleConfig({}))
+const cfg = ref<EnsembleConfig | null>(null)
 const { output, status, returnCode, command, run, abort, clear } = useEnsembleRun()
 
 onMounted(async () => {
-  await config.load()
-  cfg.value = readEnsembleConfig(config.resolved)
+  cfg.value = await fetchEnsembleConfig()
 })
 
-const backendLabel = computed(() => cfg.value.extract.backend)
+const backendLabel = computed(() => cfg.value?.extract.backend ?? '')
 // Principle X — what runs is exactly what was explicitly selected. No glob
 // fallback: an empty selection cannot start a run.
-const selectedCount = computed(() => cfg.value.chapters_selected.length)
+const selectedCount = computed(() => cfg.value?.chapters_selected.length ?? 0)
 const canRun = computed(() => selectedCount.value > 0)
 
 async function persistChapters() {
-  await config.updateSection('ensemble', {
-    chapters_glob: cfg.value.chapters_glob,
+  if (!cfg.value) return
+  cfg.value = await saveEnsembleConfig({
     chapters_selected: cfg.value.chapters_selected,
+    paths: { chapters_glob: cfg.value.paths.chapters_glob },
   })
 }
 
 function start() {
-  if (!canRun.value) return
+  if (!canRun.value || !cfg.value) return
+  // Only the per-run choice is sent. Backend/model/endpoints and every path
+  // come from ensemble.yaml, which the server reads itself — sending our own
+  // copy would reintroduce the drift Phase 3 removed. The echoed command is
+  // still fully explicit: the server resolves before building argv.
   run('/api/ensemble/run/extract', {
     chapters: cfg.value.chapters_selected,
-    backend: cfg.value.extract.backend,
-    endpoints: cfg.value.extract.endpoints,
-    model: cfg.value.extract.model,
   }, (rc) => { if (rc === 0) emit('changed') })
 }
 </script>
 
 <template>
-  <div class="step">
+  <div class="step" v-if="cfg">
     <h2>Stage 1 — Extraction</h2>
     <p class="hint">
       Runs <code>ensemble_batch.py</code> over the chapters you pick below. Resumable:
@@ -51,7 +50,7 @@ function start() {
     </p>
 
     <ChapterPicker
-      v-model:glob="cfg.chapters_glob"
+      v-model:glob="cfg.paths.chapters_glob"
       v-model:selected="cfg.chapters_selected"
       @update:glob="persistChapters"
       @update:selected="persistChapters" />
