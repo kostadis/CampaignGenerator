@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useConfigStore } from '../../stores/config'
 import { apiFetch, apiPut } from '../../api/client'
-import { useEnsembleRun, readEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
+import { useEnsembleRun, fetchEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
 import StreamOutput from '../../components/shared/StreamOutput.vue'
 
 const emit = defineEmits<{ changed: [] }>()
-const config = useConfigStore()
-const cfg = ref<EnsembleConfig>(readEnsembleConfig({}))
+const cfg = ref<EnsembleConfig | null>(null)
 const listRun = useEnsembleRun()
 const aggRun = useEnsembleRun()
 const threadsRun = useEnsembleRun()
@@ -32,18 +30,15 @@ const aliasContent = ref('')
 const aliasLoaded = ref(false)
 
 onMounted(async () => {
-  await config.load()
-  cfg.value = readEnsembleConfig(config.resolved)
+  cfg.value = await fetchEnsembleConfig()
   await loadAliases()
 })
 
-function commonParams() {
-  return {
-    corpus: 'docs/ensemble/per_chapter/*/merged.json',
-    aliases: cfg.value.aliases_path,
-    known_names: cfg.value.known_names,
-    min_facts: 3,
-  }
+// Empty on purpose: corpus, aliases, known_names and min_facts are all
+// resolved server-side from ensemble.yaml (Phase 3). Kept as a function so
+// the two call sites still read as "the shared bundle arguments".
+function commonParams(): Record<string, unknown> {
+  return {}
 }
 
 function runList() {
@@ -51,7 +46,7 @@ function runList() {
 }
 
 async function loadAliases() {
-  if (!cfg.value.aliases_path) { aliasLoaded.value = false; return }
+  if (!cfg.value?.aliases_path) { aliasLoaded.value = false; return }
   try {
     const r = await apiFetch(`/api/ensemble/file?path=${encodeURIComponent(cfg.value.aliases_path)}`)
     aliasContent.value = r.content ?? ''
@@ -63,6 +58,7 @@ async function loadAliases() {
 }
 
 async function saveAliases() {
+  if (!cfg.value?.aliases_path) return
   await apiPut(`/api/ensemble/file?path=${encodeURIComponent(cfg.value.aliases_path)}`,
               { content: aliasContent.value })
 }
@@ -72,24 +68,16 @@ function runAggregate() {
   aggRun.run('/api/ensemble/run/bundle', {
     ...commonParams(),
     known_only: true,
-    out_dir: 'docs/ensemble/state_dossiers',
-    backend: cfg.value.extract.backend,
-    endpoints: cfg.value.extract.endpoints,
-    model: cfg.value.extract.model,
   }, (rc) => { if (rc === 0) emit('changed') })
 }
 
 function runThreads() {
-  threadsRun.run('/api/ensemble/run/threads', {
-    corpus: 'docs/ensemble/per_chapter/*/merged.json',
-    aliases: cfg.value.aliases_path,
-    output: 'docs/ensemble/threads.md',
-  })
+  threadsRun.run('/api/ensemble/run/threads', {})
 }
 </script>
 
 <template>
-  <div class="step">
+  <div class="step" v-if="cfg">
     <h2>Stage 2 — Fact bundling</h2>
 
     <!-- Gate 1: scope review (--list, no model) -->

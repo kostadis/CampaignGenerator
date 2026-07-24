@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { apiFetch, apiPut } from '../../api/client'
 import { connectSSE } from '../../api/sse'
 
 /** Run an ensemble stage over SSE. Unlike RunPanel this does NOT gate on
@@ -88,38 +89,75 @@ export function useEnsembleRun() {
   return { output, status, returnCode, command, run, abort, clear }
 }
 
+// ── Ensemble config ────────────────────────────────────────────────────────
+//
+// Mirrors server/ensemble_config_shared.py's EnsembleConfig exactly. Phase 3
+// of docs/config/ensemble-isolation.md: this file no longer declares ANY
+// default of its own — it fetches them from GET /api/ensemble/config, which
+// reads <config>/ensemble.yaml. Fallbacks here would be a third copy of the
+// defaults, which is the drift the isolation work exists to remove.
+
 export interface BackendProfile {
   backend: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
   endpoints: string[]
   model: string
 }
 
-export interface EnsembleConfig {
-  campaign_dir: string
+export interface EnsemblePaths {
   chapters_glob: string
-  chapters_selected: string[]
-  extract: BackendProfile
-  synthesize: BackendProfile
-  known_names: string[]
-  aliases_path: string
+  per_chapter_dir: string
+  corpus_glob: string
+  merged_out: string
+  state_dossiers_dir: string
+  dossiers_glob: string
+  npc_dossiers_glob: string
+  threads_out: string
+  recent_events_out: string
 }
 
-/** Read ui.ensemble from the resolved config with safe defaults. */
-export function readEnsembleConfig(resolved: any): EnsembleConfig {
-  const e = resolved?.ui?.ensemble ?? {}
-  const prof = (p: any): BackendProfile => ({
-    backend: p?.backend ?? 'anthropic',
-    // Migration shim: older campaigns persisted a single `endpoint` string.
-    endpoints: Array.isArray(p?.endpoints) ? p.endpoints : (p?.endpoint ? [p.endpoint] : []),
-    model: p?.model ?? '',
-  })
-  return {
-    campaign_dir: e.campaign_dir ?? '',
-    chapters_glob: e.chapters_glob ?? 'docs/chapters/chapter_*.md',
-    chapters_selected: Array.isArray(e.chapters_selected) ? e.chapters_selected : [],
-    extract: prof(e.extract),
-    synthesize: prof(e.synthesize),
-    known_names: Array.isArray(e.known_names) ? e.known_names : [],
-    aliases_path: e.aliases_path ?? '',
-  }
+export interface EnsembleTuning {
+  chapter_parallel: number
+  chunk_parallel: number
+  bundle_min_facts: number
+  threads_min_facts: number
+  dossier_min_facts: number
+  entity_parallel: number
+  recent_events_window: number
+}
+
+export interface EnsemblePlanning {
+  synth_mode: 'config' | 'flat'
+  npc: string[]
+  arc_scores: string[]
+  context: string[]
+  depth: 'scene' | 'full'
+  force_include: string[]
+}
+
+export interface EnsembleConfig {
+  chapters_selected: string[]
+  known_names: string[]
+  aliases_path: string
+  extract: BackendProfile
+  synthesize: BackendProfile
+  paths: EnsemblePaths
+  tuning: EnsembleTuning
+  planning: EnsemblePlanning
+}
+
+/** GET the campaign's ensemble.yaml. The server fills in every default. */
+export async function fetchEnsembleConfig(): Promise<EnsembleConfig> {
+  const cfg = await apiFetch<EnsembleConfig>('/api/ensemble/config')
+  // The server models aliases_path as optional (null when unset); the UI binds
+  // it to a text input, which needs a string.
+  return { ...cfg, aliases_path: cfg.aliases_path ?? '' }
+}
+
+/** PUT a partial into ensemble.yaml; returns the merged, validated result.
+ *  The body is the grouped partial itself — no {"values": …} envelope. */
+export async function saveEnsembleConfig(
+  partial: Record<string, unknown>,
+): Promise<EnsembleConfig> {
+  const cfg = await apiPut<EnsembleConfig>('/api/ensemble/config', partial)
+  return { ...cfg, aliases_path: cfg.aliases_path ?? '' }
 }

@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useConfigStore } from '../../stores/config'
-import { readEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
+import { fetchEnsembleConfig, saveEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
 import ChapterPicker from './ChapterPicker.vue'
 
-const config = useConfigStore()
-const cfg = ref<EnsembleConfig>(readEnsembleConfig({}))
+// Populated by the GET below; the server owns every default.
+const cfg = ref<EnsembleConfig | null>(null)
 const knownNamesText = ref('')
 const extractEndpointsText = ref('')
 const saved = ref(false)
@@ -13,34 +12,37 @@ const saved = ref(false)
 // Synthesis is a single non-parallelized call, so it keeps one endpoint —
 // bind the array's first slot as if it were a plain string field.
 const synthEndpoint = computed({
-  get: () => cfg.value.synthesize.endpoints[0] ?? '',
-  set: (v: string) => { cfg.value.synthesize.endpoints = v ? [v] : [] },
+  get: () => cfg.value?.synthesize.endpoints[0] ?? '',
+  set: (v: string) => { if (cfg.value) cfg.value.synthesize.endpoints = v ? [v] : [] },
 })
 
 onMounted(async () => {
-  await config.load()
-  cfg.value = readEnsembleConfig(config.resolved)
-  knownNamesText.value = cfg.value.known_names.join('\n')
-  extractEndpointsText.value = cfg.value.extract.endpoints.join('\n')
+  const loaded = await fetchEnsembleConfig()
+  cfg.value = loaded
+  knownNamesText.value = loaded.known_names.join('\n')
+  extractEndpointsText.value = loaded.extract.endpoints.join('\n')
 })
 
 async function save() {
+  if (!cfg.value) return
   cfg.value.known_names = knownNamesText.value.split('\n').map(s => s.trim()).filter(Boolean)
   cfg.value.extract.endpoints = extractEndpointsText.value.split('\n').map(s => s.trim()).filter(Boolean)
-  await config.updateSection('ensemble', {
-    campaign_dir: cfg.value.campaign_dir,
-    chapters_glob: cfg.value.chapters_glob,
+  // Send only what this page owns — chapters_glob now lives under `paths`,
+  // and the untouched groups (tuning, planning) are left to merge server-side.
+  cfg.value = await saveEnsembleConfig({
     chapters_selected: cfg.value.chapters_selected,
     extract: cfg.value.extract,
     synthesize: cfg.value.synthesize,
     known_names: cfg.value.known_names,
     aliases_path: cfg.value.aliases_path,
+    paths: { chapters_glob: cfg.value.paths.chapters_glob },
   })
   saved.value = true
   setTimeout(() => (saved.value = false), 1500)
 }
 
 function resetBackend(stage: 'extract' | 'synthesize') {
+  if (!cfg.value) return
   cfg.value[stage].endpoints = []
   cfg.value[stage].model = ''
   if (stage === 'extract') extractEndpointsText.value = ''
@@ -48,7 +50,7 @@ function resetBackend(stage: 'extract' | 'synthesize') {
 </script>
 
 <template>
-  <div class="step">
+  <div class="step" v-if="cfg">
     <h2>Ensemble Setup</h2>
     <p class="hint">
       Point at your inputs and pick a backend for each LLM-bearing stage. Extraction
@@ -59,7 +61,7 @@ function resetBackend(stage: 'extract' | 'synthesize') {
     <div class="fld">
       <span>Chapters</span>
       <ChapterPicker
-        v-model:glob="cfg.chapters_glob"
+        v-model:glob="cfg.paths.chapters_glob"
         v-model:selected="cfg.chapters_selected" />
     </div>
 

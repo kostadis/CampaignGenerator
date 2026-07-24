@@ -1,8 +1,12 @@
 # Config Subsystems — Ensemble Workflow & Grounding Docs
 
 Two configuration subsystems beyond the core config service: the ensemble grounding-doc
-pipeline and the party / campaign_state / world_state grounding-doc system. Both mix persisted
-`ui_state` sections, hand-authored YAML, and generated run artifacts.
+pipeline and the party / campaign_state / world_state grounding-doc system.
+
+Ensemble no longer uses a `ui_state` section at all — [ensemble-isolation.md](./ensemble-isolation.md)
+gave it its own owned, strict `<config>/ensemble.yaml` (`EnsembleConfigService`), the third
+service to take its config out of `ui_state.yaml` after Session Doc Editor and Planning. The
+grounding-doc subsystem below still mixes hand-authored YAML and generated run artifacts.
 
 ## Ensemble workflow (extract → bundle → synthesize → review)
 
@@ -11,7 +15,7 @@ Only 4 docs are promotable: `world_state`, `campaign_state`, `party`, `planning`
 
 ```mermaid
 flowchart LR
-  UIE["ui.ensemble<br/>chapters, known_names, aliases, backends"] --> EX[pipelines/ensemble/ensemble_extract.py]
+  UIE["ensemble.yaml<br/>chapters, known_names, aliases,<br/>backends, paths, tuning, planning"] --> EX[pipelines/ensemble/ensemble_extract.py]
   EX -->|manifest.json + per-pass facts| WD[(run workdir)]
   WD --> MG["pipelines/ensemble/ensemble_merge.py<br/>merge.yaml"]
   MG --> SY[synthesise_*]
@@ -21,21 +25,23 @@ flowchart LR
 
 | Config source | Kind | Read by | Written by |
 |---|---|---|---|
-| `ui.ensemble` (EnsembleSection) | ui_state.yaml (persisted) | ensemble router (`chapters_glob`, `chapters_selected[]`, extract/synthesize `BackendProfile`, `known_names[]`, `aliases_path`, `campaign_dir`) | `PUT /section/ensemble` |
+| `ensemble.yaml` (`EnsembleConfig`, strict) | own file, `EnsembleConfigService` | every `/api/ensemble/*` route via `resolved()` — `chapters_selected[]`, `known_names[]`, `aliases_path`, `extract`/`synthesize` (`EnsembleBackend`, plural `endpoints`), `paths.*`, `tuning.*`, `planning.*` | `PUT /api/ensemble/config` |
 | merge-config YAML (`--config merge.yaml`) | hand-authored, per-run | `pipelines/ensemble/ensemble_merge.py` (method, similarity, threshold) | human; precedence CLI flag > `--config` > default |
 | `manifest.json` (run workdir) | generated per run | `ensemble_merge.load_manifest` / `load_pass_outputs` | `pipelines/ensemble/ensemble_extract.py` |
 | per-pass fact JSON (workdir) | generated | `ensemble_merge.load_pass_outputs` | `pipelines/ensemble/ensemble_extract.py` |
 | aliases file (`aliases_path`) | hand-authored | alias-correction gate (bundle stage) | human |
-| known_names sources | referenced files | bundle stage / alias gate | human (selected in `ui.ensemble`) |
+| known_names sources | referenced files | bundle stage / alias gate | human (selected in `ensemble.yaml`) |
 | GROUNDING_DOCS live/draft pairs | `docs/*.md` + `docs/*_draft.md` | ensemble router promote/diff; synthesis writes draft | synthesize writes `*_draft.md`; promote copies draft → live |
 
 Stage/model knobs:
 
 | Knob | Type | Rule |
 |---|---|---|
-| extract stage | BackendProfile | any backend; OpenRouter via env seam |
-| synthesize stage | BackendProfile | warns if model not in `SYNTHESIS_CAPABLE` |
-| `chapters_selected` | explicit list | empty = nothing (no silent "all"); extraction refuses to run |
+| extract stage | `EnsembleBackend` | any backend; OpenRouter via env seam |
+| synthesize stage | `EnsembleBackend` | warns if model not in `SYNTHESIS_CAPABLE` |
+| `chapters_selected` | explicit list | empty = nothing (no silent "all"); extraction refuses to run, and the stored value never stands in for an omitted `chapters` request param |
+| `paths.*` / `tuning.*` | per-campaign | were route-signature literals before Phase 3 — a differently laid-out `docs/` needed a code edit |
+| Anthropic `--model` | resolved | explicit request → per-stage config → `platform.runtime.default_model` → `campaignlib` literal (Phase 4). A stale non-Anthropic id is dropped, not forwarded |
 
 ## Grounding docs (party / campaign_state / world_state / planning)
 
@@ -68,7 +74,7 @@ flowchart TB
 
 ## How they connect
 
-`ui.ensemble` selects inputs (chapters, known_names, aliases, per-stage backends); the ensemble
+`ensemble.yaml` selects inputs (chapters, known_names, aliases, per-stage backends, paths, tuning); the ensemble
 CLI produces `manifest.json` + per-pass facts in a run workdir, merges them (merge-config YAML),
 synthesizes `*_draft.md`, and promotes drafts into the four live grounding docs. `party.yaml` and
 `planning.yaml` declare rosters/dossiers with 3-state arc tracking; `pipelines/grounding/party.py` / `pipelines/grounding/planning.py` /
