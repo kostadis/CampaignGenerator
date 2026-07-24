@@ -1,23 +1,23 @@
 # Ensemble Configuration Isolation Design
 
-> **Status: 🚧 Phases 0–2 shipped; 3–6 planned.** The fourth service-isolation
-> effort in the series after `platform-isolation.md` (Phases 0–5a, done),
-> `session-editor-isolation.md` (done), and `planning-isolation.md` (done). It
-> takes Ensemble — the largest remaining `ui.<section>` tenant — out of
-> `ui_state.yaml` and gives it an owned, validated file and service.
-> Per-phase status in [Implementation Status](#implementation-status).
+> **Status: ✅ Done (2026-07-24).** All six phases shipped on
+> `feat/ensemble-config-isolation`. Ensemble — the largest remaining
+> `ui.<section>` tenant — now owns a strict `<config>/ensemble.yaml` through
+> `EnsembleConfigService`, the third service to take its config out of
+> `ui_state.yaml` after `session-editor-isolation.md` and
+> `planning-isolation.md`, on top of the platform tier
+> `platform-isolation.md` extracted. Per-phase detail and the delivered API are
+> in [Implementation Status](#implementation-status).
 >
-> **Sequencing note:** `specs/002-ensemble-run-observability` rewrote large parts
-> of `server/routers/ensemble.py` and is complete except T033 (manual quickstart
-> validation against a real workspace). Phases 0–2 were deliberately scoped to be
-> additive so they could land before T033; **Phase 3 must wait for it**, because
-> it edits the same route bodies T033 validates.
+> **Gate cleared:** `specs/002-ensemble-run-observability` T033 (manual
+> quickstart validation) was completed by the operator; Phases 0–2 were scoped
+> additive so they could land before it, and Phases 3–6 followed after.
 >
-> **Parallel work:** the `fix/ui-model-config-drift` branch has uncommitted edits
-> to `server/routers/ensemble.py`, deriving `SYNTHESIS_CAPABLE` from the `MODELS`
-> registry instead of a frozen literal. It touches only that module constant, not
-> route signatures — no conflict with any phase here, and it makes Phase 4's
-> "leave `SYNTHESIS_CAPABLE` alone" note doubly correct.
+> **Parallel work:** the `fix/ui-model-config-drift` branch has uncommitted
+> edits to `server/routers/ensemble.py`, deriving `SYNTHESIS_CAPABLE` from the
+> `MODELS` registry instead of a frozen literal. It touches only that module
+> constant, not route signatures — no conflict with anything here, and it makes
+> Phase 4's "leave `SYNTHESIS_CAPABLE` alone" decision doubly correct.
 
 ## Overview
 
@@ -358,10 +358,10 @@ gap goes from **2 of ~9** to **3 of ~9**), and mark this doc Done.
 | 2 | `server/ensemble_config_service.py` (`EnsembleConfigService`) | ✅ done |
 | 2 | `GET`/`PUT /api/ensemble/config` + per-request DI | ✅ done |
 | 2 | Isolation regression test | ✅ done |
-| 3 | Router + frontend read from the service; delete duplicate literals | ⬜ blocked on spec-002 T033 |
-| 4 | `resolve_default_model` for ensemble's five run routes | ⬜ |
-| 5 | `migrate_ensemble_config` CLI; drop `ensemble` from `UISection`; bump schema 3 → 4 | ⬜ |
-| 6 | Reconcile the six config docs | ⬜ |
+| 3 | Router + frontend read from the service; delete duplicate literals | ✅ done |
+| 4 | `resolve_default_model` for ensemble's LLM-bearing run routes | ✅ done |
+| 5 | `migrate_ensemble_config` CLI; drop `ensemble` from `UISection`; bump schema 3 → 4 | ✅ done |
+| 6 | Reconcile the six config docs | ✅ done |
 
 **Shipped surface (Phases 1–2).** `<config>/ensemble.yaml`, lazy on first write,
 atomic (`campaignlib.util.atomic_write_text`), strict (`extra="forbid"`):
@@ -403,5 +403,5 @@ end-to-end validation) has not been run. Two orderings:
 Recommendation: **(b)**. It gets the schema and service landed without touching
 the code under validation.
 
-**Resolved: (b).** Phases 0–2 are shipped on `feat/ensemble-config-isolation`.
-Phase 3 is the next step and is gated on T033.
+**Resolved: (b), and now complete.** Phases 0–2 landed first (additive only), T033
+was run by the operator, then Phases 3–6 followed.

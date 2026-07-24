@@ -5,7 +5,7 @@ old fused `CampaignConfigService` is now two classes: `server/platform_config_se
 ::PlatformConfigService` owns the permanent **platform** tier (paths, `runtime.*`, wiring,
 `config.yaml`) and, as its last construction step, builds `server/config_service.py::UIStateService`
 — the renamed residual landlord of the ten un-isolated `ui.<section>` blobs. Both are typed by
-`server/config_models.py` (`UIState`, schema v3) and `server/platform_config_shared.py`
+`server/config_models.py` (`UIState`, schema v4) and `server/platform_config_shared.py`
 (`PlatformDocument`, `PlatformLocalConfig`). Per-campaign. Distinct from the external wiring layer
 (`config/wiring.yaml`) and the 5e content refs. Also distinct from the Session Doc Editor's own
 `session_doc.yaml`, owned by `SessionEditorConfigService` — see
@@ -38,7 +38,7 @@ flowchart TB
 |---|---|---|---|
 | `config.yaml` | tracked, human-only | raw dict (`_tracked`) | `PlatformConfigService` never writes it; comments/order safe |
 | `platform.yaml` | tracked, server-owned | `PlatformDocument` (strict `extra="forbid"`) | `runtime.{default_model, session_dir}` — the sidebar model picker and the session-resolution anchor. Owned exclusively by `PlatformConfigService`; loaded BEFORE `UIStateService` is constructed (load-order is load-bearing — see `PlatformConfigService`'s module docstring) |
-| `ui_state.yaml` | tracked, server-owned | `UIState` (v3) | Per-page UI state only — `runtime` left this document in Phase 3 (O3) |
+| `ui_state.yaml` | tracked, server-owned | `UIState` (v4) | Per-page UI state only — `runtime` left this document in Phase 3 (O3) |
 | `.campaigngenerator.local.yaml` | gitignored, machine-local | `PlatformLocalConfig` (strict) | host/port + nav; owned by `PlatformConfigService` |
 | `session_doc.yaml` | tracked, owned by `SessionEditorConfigService` | `SessionEditorConfig` (grouped, strict `extra="forbid"`) | Session Doc Editor's own slice; not part of `PlatformConfigService`/`UIStateService`/`UIState` at all — see below |
 | `boot_overrides` | in-memory only | dict | CLI flags to `server.main`; not persisted. Phase 0 (O1) deleted the twelve dead `session_doc.*` flags — only `--campaign-dir`, `--session-dir`, `--config-dir`, `--host`, `--port` remain, and all five reach a real consumer |
@@ -64,7 +64,7 @@ data loss on a bad file would be worse than refusing to boot. Migrated from a pr
 (modelled on `migrate_session_doc.py`: raw `yaml.safe_load`, `--config-dir`, `--force`, "nothing to
 migrate" + exit 0 when clean).
 
-## ui_state.yaml → UIState (v3)
+## ui_state.yaml → UIState (v4)
 
 | Field | Type | Role |
 |---|---|---|
@@ -78,13 +78,40 @@ and is simply ignored, the same precedent Phase 5 of the session-editor isolatio
 `ui.session_doc`/`ui.profiles` block.
 
 ### Typed UI sections
-`ui.vtt_summary` (VttSummarySection), `ui.grounding` (GroundingSection), `ui.ensemble`
-(EnsembleSection). **`ui.session_doc` (`SessionDocSection`) and `ui.profiles` (`ProfilesSection`)
-no longer exist** — both were deleted from `UISection` and from `config_models.py` when the
-Session Doc Editor's config moved to its own `session_doc.yaml` (see below). Run
-`python -m server.migrate_session_doc --campaign-dir DIR` once per campaign to recover that data
-— see [Session-editor isolation § Migrating an existing
-campaign](./session-editor-isolation.md#migrating-an-existing-campaign).
+`ui.vtt_summary` (VttSummarySection), `ui.grounding` (GroundingSection) — two left.
+**`ui.session_doc`/`ui.profiles` and `ui.ensemble` no longer exist**: all three were deleted from
+`UISection` and from `config_models.py` when their services took their config into dedicated
+files (`session_doc.yaml`, `ensemble.yaml`). Run the matching one-shot CLI once per campaign to
+recover the data:
+
+| Was | Now | Migrate with |
+|---|---|---|
+| `ui.session_doc` + `ui.profiles` | `session_doc.yaml` (`SessionEditorConfig`) | `python -m server.migrate_session_doc --campaign-dir DIR` |
+| `ui.ensemble` | `ensemble.yaml` (`EnsembleConfig`) | `python -m server.migrate_ensemble_config --campaign-dir DIR` |
+
+See [session-editor-isolation.md](./session-editor-isolation.md#migrating-an-existing-campaign)
+and [ensemble-isolation.md](./ensemble-isolation.md).
+
+## ensemble.yaml → EnsembleConfig (grouped, strict)
+
+`<config>/ensemble.yaml`, owned outright by `EnsembleConfigService`
+(`server/ensemble_config_shared.py`). Strict (`extra="forbid"`), atomic writes, lazy on first
+write; a missing or empty file loads as an all-defaults `EnsembleConfig`, not an error.
+
+| Group | Fields |
+|---|---|
+| *(root)* | `chapters_selected[]`, `known_names[]`, `aliases_path` |
+| `extract` / `synthesize` | `EnsembleBackend`: backend (`anthropic\|dgx\|openrouter\|claude-code`), **`endpoints[]`** (plural — the extract stage fans out across DGX hosts), model |
+| `paths` | chapters_glob, per_chapter_dir, corpus_glob, merged_out, state_dossiers_dir, dossiers_glob, npc_dossiers_glob, threads_out, recent_events_out |
+| `tuning` | chapter_parallel, chunk_parallel, bundle_min_facts, threads_min_facts, dossier_min_facts, entity_parallel, recent_events_window |
+| `planning` | synth_mode (`config\|flat`), npc[], arc_scores[], context[], depth (`scene\|full`), force_include[] |
+
+`paths` and `tuning` were Python literals in `server/routers/ensemble.py`'s route signatures
+before Phase 3 of [ensemble-isolation.md](./ensemble-isolation.md) — unreachable without editing
+code. `planning` holds the six `planning_*` keys that used to ride on `ui.ensemble`'s
+`extra="allow"` overflow, undeclared and unvalidated. `campaign_dir` is deliberately absent: it is
+platform-tier. `bundle_min_facts` and `threads_min_facts` are separate fields because the shipped
+defaults genuinely differ (3 vs 2).
 
 ### Loose UI sections (live, under-modeled; `extra='allow'`)
 `campaign_state`, `distill`, `party`, `planning`, `prep`, `npc`, `query`, `workflow`, `connections`, `experimental`
@@ -96,8 +123,7 @@ day (see [service-cut.md](./service-cut.md)).
 |---|---|
 | `vtt_summary` | input, output, context[], date, session_name, extract_dir, reference_summaries, session_summary |
 | `grounding` | summaries (path → campaign) |
-| `ensemble` | campaign_dir, chapters_glob (`docs/chapters/chapter_*.md`), chapters_selected[], extract/synthesize (BackendProfile), known_names[], aliases_path |
-| `BackendProfile` | backend (`anthropic\|dgx\|openrouter\|claude-code`), endpoint, model — **API key never stored**, read from env |
+| `BackendProfile` | backend (`anthropic\|dgx\|openrouter\|claude-code`), endpoint, model — **API key never stored**, read from env. Used by `session_doc.yaml`'s `backends` only; ensemble has its own `EnsembleBackend` with a plural `endpoints` list |
 | `PlatformLocalConfig.server` (`.campaigngenerator.local.yaml`) | host = `127.0.0.1`, port = `5000` |
 | `PlatformLocalConfig.nav` | last_page |
 
@@ -196,4 +222,5 @@ belongs in `_PATH_FIELDS`, not here.
 - Boot flags never persist — overlaid in `resolved()` (or, for the editor, in
   `resolved_editor_config()`) for the process only.
 - No secrets in config — LLM keys from env; `claude-code` uses the local `claude` CLI.
-- No silent "all" — `ensemble.chapters_selected` empty means nothing runs.
+- No silent "all" — `ensemble.yaml`'s `chapters_selected` empty means nothing runs, and the
+  config value deliberately does **not** stand in for an omitted `chapters` request parameter.

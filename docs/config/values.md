@@ -42,7 +42,8 @@ mneme-only. See [Session-editor isolation](./session-editor-isolation.md) for th
 ## ui_state.yaml — other sections
 
 `ui.session_doc` and `ui.profiles` are **gone** — the Session Doc Editor's config left
-`ui_state.yaml` entirely for its own `session_doc.yaml`. `runtime` is also gone — Phase 3 (O3)
+`ui_state.yaml` entirely for its own `session_doc.yaml`, and `ui.ensemble` likewise for its own
+`ensemble.yaml` (see [ensemble-isolation.md](./ensemble-isolation.md)). `runtime` is also gone — Phase 3 (O3)
 relocated it to its own `platform.yaml`, owned outright by `PlatformConfigService`; see the next
 section for its values.
 
@@ -50,9 +51,28 @@ section for its values.
 |---|---|---|
 | `ui.vtt_summary.*` | `session_doc/vtt_summary.py` / session_workflow router | `PUT /section/vtt_summary` (router also writes `session_summary` after a run) |
 | `ui.grounding.summaries` | `pipelines/rlm/mcp_server.py` (`_find_summaries_file`, `query_lore`, `grounded_search`) | `PUT /section/grounding` |
-| `ui.ensemble.*` | ensemble router + `ensemble_merge`/`extract_facts` | `PUT /section/ensemble` |
 | `ui.<loose>` (campaign_state, distill, prep, npc, query, workflow, connections, experimental) | their Vue pages via `GET /api/config` flat overlay | `PUT /section/<name>` |
 | `legacy.unmigrated` | migrator quarantine only | migration path only |
+
+## ensemble.yaml — the ensemble workflow (ensemble-isolation Phases 1-5)
+
+Owned outright by `EnsembleConfigService`, physically separate from `ui_state.yaml`. Read through
+`resolved()` by every `/api/ensemble/*` route; written only by `PUT /api/ensemble/config`.
+
+| Value | Read by | Written by |
+|---|---|---|
+| `chapters_selected[]` | Extract page (the picker's state) — **not** a fallback for an omitted `chapters` request param | `PUT /api/ensemble/config` |
+| `known_names[]`, `aliases_path` | `/run/bundle`, `/run/threads` (→ `facts_to_state`) | `PUT /api/ensemble/config` |
+| `extract.{backend,endpoints,model}` | `/run/extract`, `/run/bundle` | `PUT /api/ensemble/config` |
+| `synthesize.{backend,endpoints,model}` | `/run/synthesize` | `PUT /api/ensemble/config` |
+| `paths.*` | every `/api/ensemble/*` route + `/chapters`, `/status` | `PUT /api/ensemble/config` |
+| `tuning.*` | `/run/extract`, `/run/bundle`, `/run/threads`, `/run/recent-events`, `/run/synthesize` | `PUT /api/ensemble/config` |
+| `planning.*` | `/run/synthesize?doc=planning` | `PUT /api/ensemble/config` |
+
+Model resolution for the Anthropic branch is `explicit request → ensemble.yaml's per-stage model →
+platform.runtime.default_model → campaignlib DEFAULT_MODEL` (`ensemble._backend_args`, Phase 4).
+A non-Anthropic id left over from a dgx/openrouter selection is discarded before resolution rather
+than forwarded.
 
 ## platform.yaml — runtime (Phase 3, O3)
 
