@@ -119,6 +119,23 @@ function stripPrefix(absPath: string, dir: string): string {
 
 /**
  * Derive everything from campaign_dir + session_dir.
+ *
+ * `/api/config/campaign-paths` (PlatformConfigService.discover_campaign_paths,
+ * docs/config/platform-isolation.md O2) returns only genuine filesystem
+ * DISCOVERY — a probe for something whose name or presence can't be known in
+ * advance: vtt_input, gm_recap, summaries, party_config, plan_npc,
+ * session_summary, voice_dir/examples_dir, and the docs/*.md exist-checks
+ * (campaign_state, world_state, party, planning). Every one of those is `""`
+ * or absent when nothing is found, which is why each read below is guarded —
+ * this function runs on a debounced watch, so an unguarded assignment would
+ * overwrite the GM's own entry on every campaign/session edit.
+ *
+ * It deliberately does NOT return the context/plan_context aggregates: those
+ * are pure joins over fields this function already holds, so computing them
+ * here avoids a second server-side expression of the same thing. Nor does it
+ * return output_dir or the scene/roleplay/summary extraction dirs — that was
+ * layout DERIVATION duplicating PlatformConfigService.resolve_path, and O2
+ * deleted it (those paths belong to the Session Doc Editor).
  */
 async function deriveAll() {
   const cd = campaignDir.value.trim()
@@ -130,18 +147,25 @@ async function deriveAll() {
       `/api/config/campaign-paths?campaign_dir=${encodeURIComponent(cd)}&session_dir=${encodeURIComponent(sd)}`
     )
 
-    // Session-level files (relative to session_dir)
+    // Session-level files (relative to session_dir) — genuine discovery.
     if (d.vtt_input) vttInput.value = stripPrefix(d.vtt_input, sd)
     if (d.gm_recap) sdSession.value = stripPrefix(d.gm_recap, sd)
 
-    // Campaign-level paths (absolute — not relative to session_dir)
+    // Campaign-level directories (absolute). Guarded because the server
+    // returns "" when the conventional directory is absent — this function
+    // fires on a debounced watch, so an unguarded assignment would wipe a
+    // GM's custom path on every session switch.
     if (d.voice_dir) voiceDir.value = d.voice_dir
     if (d.examples_dir) examplesDir.value = d.examples_dir
     if (d.summaries) summaries.value = d.summaries
 
-    // Context files (absolute paths, one per line)
-    if (d.context && d.context.length) {
-      vttContext.value = d.context.join('\n')
+    // Context files: whichever of campaign_state/world_state/party the
+    // server found to exist. The join is pure computation over
+    // already-discovered facts, so it happens here rather than as a
+    // separate server-computed aggregate field.
+    const contextFiles = [d.campaign_state, d.world_state, d.party].filter(Boolean)
+    if (contextFiles.length) {
+      vttContext.value = contextFiles.join('\n')
     }
 
     // Downstream pages pick these up from the config store. session_doc
@@ -161,7 +185,7 @@ async function deriveAll() {
       party_config_path: d.party_config || '',
       summaries: d.summaries || '',
       plan_npc: d.plan_npc || '',
-      plan_context: d.plan_context || '',
+      plan_context: contextFiles.join('\n'),
       planning_output: d.planning || '',
     })
 

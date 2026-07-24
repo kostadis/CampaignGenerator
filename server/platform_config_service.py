@@ -59,6 +59,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from fastapi import HTTPException, Request
 from pydantic import ValidationError
 
 from server.config_service import ConfigError, UIStateService
@@ -78,6 +79,40 @@ from server.platform_config_shared import (
 # ── Filenames ──────────────────────────────────────────────────────────────
 
 TRACKED_CONFIG_NAME = "config.yaml"
+
+
+def require_platform(request: Request) -> "PlatformConfigService":
+    """Fetch this process's ``PlatformConfigService`` from ``app.state.platform``,
+    or raise ``503`` if the server booted without a resolved ``campaign_dir``.
+
+    Every router that needs the platform used to duplicate this same
+    "getattr, then raise if missing" check independently. Before Phase 4
+    (``docs/config/platform-isolation.md``) there were at least three
+    copies: ``config_routes._require_service`` (the canonical one, per its
+    own docstring), ``planning_routes.get_planning_service``'s inline
+    block, and ``server/config.py``'s ``get_campaign_dir_from_request`` —
+    whose own docstring admitted it "mirrors the pattern used in
+    ``config_routes._require_service``" rather than sharing it. This
+    function is the one implementation; ``config_routes.py`` and
+    ``planning_routes.py`` both call it now instead of restating the
+    ``getattr(..., "platform", None)`` + 503 branch.
+
+    (``scene_editor.get_editor_service`` and ``grounding._backend_flags``
+    carry two more copies of the same shape. Not folded here — out of
+    Phase 4's named scope — but a candidate for the same treatment later.)
+
+    Returns the live service object, not just ``campaign_dir``, since every
+    known caller needs the object anyway (to construct a per-page service,
+    or to call a method on it) and a bare string would just be re-derived
+    from ``platform.campaign_dir`` a line later.
+    """
+    platform = getattr(request.app.state, "platform", None)
+    if platform is None:
+        raise HTTPException(
+            status_code=503,
+            detail="config service not initialized — campaign_dir not resolved at boot",
+        )
+    return platform
 
 
 class PlatformConfigService:
@@ -375,3 +410,111 @@ class PlatformConfigService:
         frontend's ``resolved.runtime.*`` reads keep working.
         """
         return self.uis.resolved()
+
+    # ── Filesystem discovery (O2) ────────────────────────────────────────
+
+    @staticmethod
+    def discover_campaign_paths(campaign_dir: str, session_dir: str) -> dict[str, str]:
+        """Probe the filesystem for files whose name or presence cannot be
+        known in advance — the sole surviving half of the old
+        ``server/config.py::derive_campaign_paths`` (O2,
+        ``docs/config/platform-isolation.md``). Backs
+        ``GET /api/config/campaign-paths``, whose only caller is
+        ``SessionConfig.vue``'s ``deriveAll()`` on the first screen a GM
+        sees, before ``session_dir`` is even persisted — hence a
+        ``@staticmethod`` rather than an instance method: there may be no
+        live ``PlatformConfigService`` for this ``campaign_dir`` yet.
+
+        The deleted half was **derivation**: ``output_dir = session_dir``
+        and the ``DERIVED_SUBDIRS`` map (``scene_extractions_dir`` and the
+        pre-Phase-5 ``roleplay_extract_dir``/``summary_extract_dir`` names
+        the session editor renamed to ``*_extractions_dir``). That duplicated
+        ``resolve_path``/``_PATH_FIELDS`` — a second, undeclared
+        implementation of the same layout convention — and had already
+        drifted out of sync with the renamed fields, which is exactly why
+        O2 kills the whole derivation half rather than patching the
+        two stale names: a function that emits no path *formula* cannot go
+        stale when a path field is renamed elsewhere.
+
+        What survives is **discovery**: every field below is either an
+        existence probe across multiple candidate names/locations (the
+        caller cannot guess which one is real — e.g. ``summaries.md`` vs.
+        the legacy ``all_summaries.md``) or a glob (the caller cannot guess
+        *what* the matching filenames are, only where to look — e.g.
+        ``docs/npcs/*.md``). A field is omitted or ``""`` when nothing is
+        found; callers treat that as "nothing to prefill", never as an
+        error — see ``deriveAll()``'s ``if (d.<field>) ...`` guards.
+        """
+        cd = Path(campaign_dir).expanduser().resolve()
+        sd = Path(session_dir).expanduser().resolve()
+        docs = cd / "docs"
+        result: dict[str, str] = {}
+
+        # docs/*.md — presence, not content, decides whether a grounding
+        # doc "exists yet" for this campaign.
+        for name, key in (
+            ("campaign_state.md", "campaign_state"),
+            ("world_state.md", "world_state"),
+            ("party.md", "party"),
+            ("planning.md", "planning"),
+        ):
+            p = docs / name
+            result[key] = str(p) if p.exists() else ""
+
+        # voice/ and examples/ — single-candidate, but the is_dir() check is
+        # a genuine probe, not layout arithmetic, and it is load-bearing:
+        # deriveAll() runs on a debounced watch of campaign_dir/session_dir,
+        # so an unconditional value would silently overwrite a GM's custom
+        # voice_dir with a non-existent path every time they switch session.
+        # Returning "" when the conventional directory is absent is what
+        # makes deriveAll()'s `if (d.voice_dir)` guard preserve their entry.
+        for rel, key in (("voice", "voice_dir"), ("examples", "examples_dir")):
+            p = cd / rel
+            result[key] = str(p) if p.is_dir() else ""
+
+        # summaries.md — the master narrative bible; older campaigns used
+        # all_summaries.md, and some keep it under docs/ instead of the
+        # campaign root.
+        for p in (cd / "summaries.md", cd / "all_summaries.md", docs / "summaries.md"):
+            if p.exists():
+                result["summaries"] = str(p)
+                break
+
+        # party.yaml — config/party.yaml is the current location;
+        # party.yaml at the campaign root is the legacy one.
+        for rel in ("config/party.yaml", "party.yaml"):
+            p = cd / rel
+            if p.exists():
+                result["party_config"] = str(p)
+                break
+        else:
+            result["party_config"] = ""
+
+        # docs/npcs/*.md — one file per NPC dossier; the set of filenames
+        # IS the answer, there is no fixed name to check for.
+        npcs_dir = docs / "npcs"
+        if npcs_dir.is_dir():
+            npc_files = sorted(npcs_dir.glob("*.md"))
+            if npc_files:
+                result["plan_npc"] = "\n".join(str(f) for f in npc_files)
+
+        # session_dir contents — VTT transcript (glob, no fixed name),
+        # GM recap and session summary (sniffed by candidate filename,
+        # same reasoning as summaries.md/party.yaml above).
+        vtt_files = list(sd.glob("*.vtt"))
+        if vtt_files:
+            result["vtt_input"] = str(vtt_files[0])
+
+        for name in ("gm-assist.md", "gm_assist.md", "gmassistant.md", "recap.md"):
+            candidate = sd / name
+            if candidate.exists():
+                result["gm_recap"] = str(candidate)
+                break
+
+        for name in ("session-summary.md", "session-clean.md", "session_summary.md"):
+            candidate = sd / name
+            if candidate.exists():
+                result["session_summary"] = str(candidate)
+                break
+
+        return result

@@ -346,6 +346,146 @@ class TestReadOnlyAccessors:
         assert platform.wiring == {} or isinstance(platform.wiring, dict)
 
 
+# ── discover_campaign_paths — O2's narrowed, discovery-only helper ─────────
+# docs/config/platform-isolation.md O2: this is what survives from the old
+# server/config.py::derive_campaign_paths after its derivation half
+# (output_dir, DERIVED_SUBDIRS, the hardcoded voice/examples layout) was
+# deleted outright. A bare @staticmethod — no config.yaml, no live
+# PlatformConfigService instance required — matching how SessionConfig.vue's
+# deriveAll() calls it: on a campaign_dir that may not even be
+# app.state.platform yet.
+
+
+class TestDiscoverCampaignPaths:
+    def test_voice_and_examples_are_probes_not_formulas(self, tmp_path):
+        """``voice_dir``/``examples_dir`` must stay an ``is_dir()`` probe that
+        yields ``""`` when the conventional directory is absent — NOT an
+        unconditional ``<campaign>/voice`` string.
+
+        ``SessionConfig.vue``'s ``deriveAll()`` runs on a debounced watch of
+        campaign_dir/session_dir and guards each assignment with
+        ``if (d.voice_dir)``. If this returned a path unconditionally, that
+        guard would always pass and every session switch would silently
+        overwrite a GM's custom voice directory with one that doesn't exist.
+        The single-candidate path looks like layout arithmetic; the existence
+        check is what makes it discovery, and it is load-bearing.
+        """
+        campaign = tmp_path / "campaign"
+        session = campaign / "summaries" / "s1"
+        session.mkdir(parents=True)
+        (campaign / "voice").mkdir()  # present; examples/ deliberately absent
+
+        result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
+
+        assert result["voice_dir"] == str(campaign / "voice")
+        assert result["examples_dir"] == "", (
+            "examples/ does not exist, so discovery must report nothing rather "
+            "than a path — see this test's docstring"
+        )
+
+    def test_finds_vtt_gm_recap_and_summaries(self, tmp_path):
+        campaign = tmp_path / "campaign"
+        session = campaign / "summaries" / "20260318"
+        session.mkdir(parents=True)
+        (session / "session.vtt").write_text("x", encoding="utf-8")
+        (session / "gm-assist.md").write_text("x", encoding="utf-8")
+        (campaign / "summaries.md").write_text("x", encoding="utf-8")
+
+        result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
+
+        assert result["vtt_input"] == str(session / "session.vtt")
+        assert result["gm_recap"] == str(session / "gm-assist.md")
+        assert result["summaries"] == str(campaign / "summaries.md")
+
+    def test_sniffs_recap_and_summary_filename_variants(self, tmp_path):
+        # gm_assist.md (underscore) is the second candidate tried, after
+        # gm-assist.md (hyphen); session-clean.md is the second
+        # session_summary candidate. Exercise the non-first-choice branch
+        # of each sniff loop.
+        campaign = tmp_path / "campaign"
+        session = campaign / "summaries" / "s1"
+        session.mkdir(parents=True)
+        (session / "gm_assist.md").write_text("x", encoding="utf-8")
+        (session / "session-clean.md").write_text("x", encoding="utf-8")
+
+        result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
+        assert result["gm_recap"] == str(session / "gm_assist.md")
+        assert result["session_summary"] == str(session / "session-clean.md")
+
+    def test_sniffs_legacy_all_summaries_name(self, tmp_path):
+        campaign = tmp_path / "campaign"
+        session = campaign / "summaries" / "s1"
+        session.mkdir(parents=True)
+        (campaign / "all_summaries.md").write_text("x", encoding="utf-8")
+
+        result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
+        assert result["summaries"] == str(campaign / "all_summaries.md")
+
+    def test_docs_md_exist_checks_mixed_present_and_absent(self, tmp_path):
+        campaign = tmp_path / "campaign"
+        session = campaign / "summaries" / "s1"
+        docs = campaign / "docs"
+        docs.mkdir(parents=True)
+        session.mkdir(parents=True)
+        (docs / "campaign_state.md").write_text("x", encoding="utf-8")
+        (docs / "world_state.md").write_text("x", encoding="utf-8")
+        # party.md and planning.md deliberately absent.
+
+        result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
+        assert result["campaign_state"] == str(docs / "campaign_state.md")
+        assert result["world_state"] == str(docs / "world_state.md")
+        assert result["party"] == ""
+        assert result["planning"] == ""
+
+    def test_finds_party_config_and_npc_dossiers(self, tmp_path):
+        campaign = tmp_path / "campaign"
+        session = campaign / "summaries" / "s1"
+        session.mkdir(parents=True)
+        (campaign / "config").mkdir(parents=True)
+        (campaign / "config" / "party.yaml").write_text("x", encoding="utf-8")
+        npcs = campaign / "docs" / "npcs"
+        npcs.mkdir(parents=True)
+        (npcs / "npc_a.md").write_text("x", encoding="utf-8")
+        (npcs / "npc_b.md").write_text("x", encoding="utf-8")
+
+        result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
+        assert result["party_config"] == str(campaign / "config" / "party.yaml")
+        assert str(npcs / "npc_a.md") in result["plan_npc"]
+        assert str(npcs / "npc_b.md") in result["plan_npc"]
+
+    def test_missing_files_degrade_gracefully_rather_than_raise(self, tmp_path):
+        # A brand-new campaign with nothing on disk yet must not raise —
+        # SessionConfig.vue's deriveAll() calls this on every debounced
+        # keystroke in the campaign/session dir fields, well before
+        # anything has been created.
+        campaign = tmp_path / "campaign"
+        session = campaign / "summaries" / "s1"
+        session.mkdir(parents=True)
+
+        result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
+        assert result["campaign_state"] == ""
+        assert result["world_state"] == ""
+        assert result["party"] == ""
+        assert result["planning"] == ""
+        assert result["party_config"] == ""
+        for absent_key in ("vtt_input", "gm_recap", "summaries", "plan_npc", "session_summary"):
+            assert absent_key not in result
+
+    def test_nonexistent_session_dir_does_not_raise(self, tmp_path):
+        # session_dir itself need not exist yet (the user may still be
+        # typing a not-yet-created directory) — glob()/exists() on a
+        # missing directory just report nothing found, per Python's Path
+        # semantics; this pins that we rely on it rather than pre-checking.
+        campaign = tmp_path / "campaign"
+        campaign.mkdir()
+        session = campaign / "summaries" / "does-not-exist-yet"
+
+        result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
+        assert "vtt_input" not in result
+        assert "gm_recap" not in result
+        assert "session_summary" not in result
+
+
 # ── platform_config_shared.py — strict models + module-level I/O ───────────
 # Moved from tests/test_config_models.py's TestLocalConfig/TestIntCoercion:
 # LocalConfig/ServerSection moved here (as PlatformLocalConfig/

@@ -212,6 +212,28 @@ the plan.
   `docs/*.md` exist-checks. **This kills the drift class permanently** — a
   function that emits no path fields cannot go stale when a path field is
   renamed.
+
+  > **As implemented — the "what survives" list above was incomplete.**
+  > `SessionConfig.vue`'s `deriveAll()` also consumes `party_config`,
+  > `plan_npc`, `session_summary` and `voice_dir`/`examples_dir`; all are the
+  > same *kind* of probe (multi-candidate sniff, glob, or `is_dir()` check),
+  > and dropping them would have silently lost party-config, NPC-dossier and
+  > session-summary prefill on the session-setup screen.
+  >
+  > `voice_dir`/`examples_dir` are the subtle case and were briefly moved
+  > client-side as "a fixed layout convention, not a probe." That is wrong in
+  > a way worth recording: the path is single-candidate, but the `is_dir()`
+  > check **is** the discovery, and it is load-bearing. `deriveAll()` runs on
+  > a debounced watch of campaign_dir/session_dir and guards each assignment
+  > with `if (d.voice_dir)`; returning a path unconditionally makes that guard
+  > always pass, so every session switch would overwrite a GM's custom voice
+  > directory with one that may not exist. Restored server-side, with a
+  > regression test (`test_voice_and_examples_are_probes_not_formulas`).
+  >
+  > The rule that generalises: **single-candidate does not mean derived.** If
+  > the answer depends on what is on disk, it is discovery — however short the
+  > path formula looks. What was genuinely deleted is `output_dir` and
+  > `DERIVED_SUBDIRS`, confirmed unread by `deriveAll()`.
 - **O3 — Extract, rename, *and* relocate.** `PlatformConfigService` is
   extracted; the remainder is renamed `UIStateService`; and
   `runtime.{default_model, session_dir}` moves out of `ui_state.yaml` into a
