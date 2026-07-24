@@ -168,6 +168,29 @@ only through `campaignlib/api` (`make_client(backend="openrouter")`); select it 
 a CLI with `--backend openrouter --model <openrouter-id>`, or via the
 `CG_BACKEND=openrouter` env var.
 
+### The package MUST be editable-installed into the server's venv
+
+The web UI runs every pipeline as a subprocess via `console_script(name)`
+(`server/subprocess_runner.py`), which resolves to
+`<server's python dir>/<name>` — an installed `pyproject.toml [project.scripts]`
+console script, **not** a `$PATH` lookup or a repo-relative `*.py`. So after any
+source-tree restructure, a `[project.scripts]` change, or a fresh venv you MUST
+(re)install:
+
+```bash
+# venv is uv-managed (its python has no pip). Install into the SAME venv the
+# server runs under — verify with: cat /proc/<server-pid>/environ | tr '\0' '\n' | grep VIRTUAL_ENV
+uv pip install -e . --python "$VIRTUAL_ENV/bin/python"   # e.g. ~/.venv
+```
+
+**Symptom when missing:** a `/run/*` action fails and the Session Doc Editor
+shows `Stream error — check terminal.` — the subprocess tried to spawn a
+non-existent `<venv>/bin/sd_narrate` (or `scene_extract`, `enhance_summary`, …).
+The server itself still boots fine because `startup` puts the repo on
+`PYTHONPATH`, so imports resolve without the install — only the console scripts
+are missing. **No server restart is needed** after installing; `console_script()`
+resolves the path per-request.
+
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
