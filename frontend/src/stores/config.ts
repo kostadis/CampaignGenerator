@@ -29,8 +29,19 @@ export const useConfigStore = defineStore('config', () => {
   const editorConfig = ref<Record<string, any> | null>(null)
 
   const models = ref<string[]>([])
-  const defaultModel = ref('claude-sonnet-4-6')
-  const model = ref('claude-sonnet-4-6')
+  // Empty until GET /api/config/models answers — deliberately NOT seeded with
+  // a model id. A seed here is a second source for the default model, and a
+  // live one: App.vue swallows a load() failure and load() memoizes its
+  // rejected promise, so after one failed boot the seed sticks for the life
+  // of the page. Every run view forwards `model: config.model`, and an
+  // explicit request model is level 1 in resolve_default_model — it *beats*
+  // runtime.default_model rather than falling through to it, so a stale seed
+  // would silently override the GM's persisted pick. Empty is dropped from
+  // the query string by RunPanel and is falsy in resolve_default_model, which
+  // is exactly the fall-through we want. See docs/config/platform-isolation.md
+  // ("one default-model source").
+  const defaultModel = ref('')
+  const model = ref('')
   const apiKeyPresent = ref(false)
   const cwd = ref('')
   const loaded = ref(false)
