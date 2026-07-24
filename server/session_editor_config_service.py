@@ -131,6 +131,7 @@ class ResolvedEditorConfig:
     campaign_dir: str
     config_dir: str
     vtt: str | None = None
+    session_dir: str | None = None
 
 
 def _set_nested(target: dict[str, Any], path: tuple[str, ...], value: Any) -> None:
@@ -326,17 +327,35 @@ class SessionEditorConfigService:
     def resolved_editor_config(self) -> ResolvedEditorConfig:
         """Grouped config with path fields resolved absolute (delegating to
         ``platform.resolve_path`` per the session/campaign split) plus
-        injected, read-only platform extras. Never persisted."""
+        injected, read-only platform extras. Never persisted.
+
+        ``runtime.session_dir`` is read once from ``platform.resolved()``
+        (which already folds in any ``--session-dir`` boot override — see
+        ``main._boot_overrides_from_args``) and threaded explicitly into
+        every session-based ``resolve_path`` call below. Without this, a
+        relative session-scoped field (e.g. a persisted
+        ``scene_extractions_dir``) would resolve against the *persisted*
+        ``runtime.session_dir`` instead of a boot-override one, since
+        ``resolve_path`` falls back to the persisted value when no
+        ``session_dir`` argument is given. This is the "one derivation" the
+        Phase 4 boot unification promises: the boot override reaches this
+        service's path resolution the same way it reaches
+        ``CampaignConfigService.resolved()``, with no second, independent
+        derivation of session paths anywhere else.
+        """
+        platform_resolved = self.platform.resolved()
+        model = platform_resolved.get("runtime", {}).get("default_model")
+        session_dir = platform_resolved.get("runtime", {}).get("session_dir")
+
         cfg = self._from_platform()
         paths_dict = cfg.paths.model_dump(mode="json")
         for f in _SESSION_PATH_FIELDS:
-            paths_dict[f] = self.platform.resolve_path(paths_dict.get(f), base="session")
+            paths_dict[f] = self.platform.resolve_path(
+                paths_dict.get(f), base="session", session_dir=session_dir
+            )
         for f in _CAMPAIGN_PATH_FIELDS:
             paths_dict[f] = self.platform.resolve_path(paths_dict.get(f), base="campaign")
         resolved_paths = EditorPaths.model_validate(paths_dict)
-
-        platform_resolved = self.platform.resolved()
-        model = platform_resolved.get("runtime", {}).get("default_model")
 
         return ResolvedEditorConfig(
             paths=resolved_paths,
@@ -352,4 +371,5 @@ class SessionEditorConfigService:
             campaign_dir=str(self.platform.campaign_dir),
             config_dir=self.platform.config_dir,
             vtt=None,
+            session_dir=session_dir,
         )

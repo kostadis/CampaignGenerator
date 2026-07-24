@@ -104,6 +104,7 @@ def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
         "campaign_dir": cfg.campaign_dir,
         "config_dir": cfg.config_dir,
         "vtt": cfg.vtt,
+        "session_dir": cfg.session_dir,
     }
 
 
@@ -214,9 +215,21 @@ def _slugify(s: str) -> str:
 
 
 def _session_dir(cfg: ResolvedEditorConfig) -> Path | None:
-    """Directory holding the session's gm-assist + VTT + outputs."""
+    """Directory holding the session's gm-assist + VTT + outputs.
+
+    Prefers the parent of the saved gm-assist recap (``session_recap``) —
+    that's the directory the editor is actually working in. Falls back to
+    the platform's resolved ``runtime.session_dir`` (populated at boot via
+    ``--session-dir`` even before a recap has been saved), and only then to
+    ``work_dir`` (the campaign root) as a last resort — previously this
+    skipped straight from ``session_recap`` to ``work_dir``, so VTT/summary
+    auto-detection scanned the campaign root instead of the session dir
+    whenever no recap had been saved yet.
+    """
     if cfg.paths.session_recap:
         return Path(cfg.paths.session_recap).expanduser().parent
+    if cfg.session_dir:
+        return Path(cfg.session_dir).expanduser()
     if cfg.work_dir:
         return Path(cfg.work_dir).expanduser()
     return None

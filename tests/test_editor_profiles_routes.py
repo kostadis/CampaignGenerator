@@ -135,7 +135,7 @@ def test_activate_profile_mirrors_knobs_into_resolved_config(client):
     assert set(body.keys()) == {
         "paths", "narrate", "scrub", "roster", "backends",
         "session_name", "profiles", "active_profile", "model",
-        "work_dir", "campaign_dir", "config_dir", "vtt",
+        "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
     }
     assert body["narrate"]["tokens"] == 9000
     assert body["narrate"]["prose_mode"] is True

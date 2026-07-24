@@ -10,7 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from server.config import derive_campaign_paths, derive_session_paths
 from server.config_service import CampaignConfigService, ConfigError
 from server.routers import (
     config_routes, connections, ensemble, experimental, grounding, prep,
@@ -163,69 +162,10 @@ def main() -> None:
     # reason --host/--port are excluded inside _boot_overrides_from_args).
     boot_overrides = _boot_overrides_from_args(args)
 
-    # Derive paths from campaign-dir + session-dir
-    if args.session_dir:
-        sd = Path(args.session_dir).expanduser().resolve()
-        cd = ""
-        if args.campaign_dir:
-            cd = str(Path(args.campaign_dir).expanduser().resolve())
-        derived = derive_campaign_paths(cd, str(sd))
-
-        if not args.session:
-            args.session = derived.get("gm_recap") or derived.get("session", "")
-        if not args.extract_dir:
-            args.extract_dir = derived.get("scene_extractions_dir", "")
-        if not args.roleplay_extract_dir:
-            args.roleplay_extract_dir = derived.get("roleplay_extract_dir", "")
-        if not args.summary_extract_dir:
-            args.summary_extract_dir = derived.get("summary_extract_dir", "")
-        if not args.output_dir:
-            args.output_dir = derived.get("output_dir", "")
-        if not args.session_summary and derived.get("session_summary"):
-            args.session_summary = derived["session_summary"]
-        if not args.party and derived.get("party"):
-            args.party = derived["party"]
-        if not args.voice_dir and derived.get("voice_dir"):
-            args.voice_dir = derived["voice_dir"]
-        if not args.examples and derived.get("examples_dir"):
-            args.examples = derived["examples_dir"]
-        if not args.context and derived.get("context"):
-            args.context = derived["context"]
-        if not args.characters:
-            args.characters = derived.get("characters")
-
-        # Note: pre-refactor this also persisted {session_dir, campaign_dir}
-        # to ui_config.yaml so the frontend picked them up. That violated the
-        # boot-flag-doesn't-persist invariant. Boot flags now flow through
-        # CampaignConfigService(boot_overrides=...) and the legacy_values
-        # overlay surfaces them to any unmigrated frontend view for the
-        # process lifetime.
-
-    def _resolve(val: str | None) -> str | None:
-        if not val:
-            return None
-        return str(Path(val).expanduser().resolve())
-
-    config = {
-        "session": _resolve(args.session) or "",
-        "scene_extractions_dir": _resolve(args.extract_dir) or "",
-        "roleplay_extract_dir": _resolve(args.roleplay_extract_dir) or "",
-        "output_dir": _resolve(args.output_dir) or str(Path(".").resolve()),
-        "party": _resolve(args.party),
-        "voice_dir": _resolve(args.voice_dir),
-        "summary_extract_dir": _resolve(args.summary_extract_dir),
-        "session_summary": _resolve(args.session_summary),
-        "context": [str(Path(f).expanduser().resolve()) for f in args.context] if args.context else [],
-        "characters": args.characters,
-        "examples": _resolve(args.examples),
-        "narrate_tokens": args.narrate_tokens,
-        "work_dir": str(Path(".").resolve()),
-    }
-
-    # (Phase 2) The editor's live config is now served per-request by
-    # SessionEditorConfigService via a Depends, not seeded into a module
-    # global here. Boot-flag -> editor path derivation is unified in Phase 4;
-    # the `config` dict above now only feeds the boot log below.
+    # Session-path derivation from --session-dir happens once, inside
+    # CampaignConfigService.resolved() / SessionEditorConfigService — driven
+    # entirely by the `runtime.session_dir` boot override captured above.
+    # There is no second, main.py-local derivation to keep in sync.
 
     # Construct the unified config service. Routers read everything through
     # it; if no campaign directory can be determined, fail loudly rather
@@ -263,12 +203,10 @@ def main() -> None:
     os.chdir(app.state.config_service.campaign_dir)
 
     print(f"  CampaignGenerator UI")
-    if config["session"]:
-        print(f"  Session:     {config['session']}")
-    if config["scene_extractions_dir"]:
-        print(f"  Extractions: {config['scene_extractions_dir']}")
-    if config["output_dir"]:
-        print(f"  Output:      {config['output_dir']}")
+    print(f"  Campaign:    {app.state.config_service.campaign_dir}")
+    resolved_session_dir = app.state.config_service.resolved()["runtime"].get("session_dir")
+    if resolved_session_dir:
+        print(f"  Session:     {resolved_session_dir}")
     print(f"  Open http://{args.host}:{args.port} in your browser")
     if FRONTEND_DIST.is_dir():
         print(f"  Serving frontend from {FRONTEND_DIST}")

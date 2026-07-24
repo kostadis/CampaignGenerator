@@ -31,6 +31,7 @@ reads a request-scoped ``ResolvedEditorConfig``
 
 from __future__ import annotations
 
+import dataclasses
 import sys
 from pathlib import Path
 
@@ -89,7 +90,7 @@ class TestGetEditorConfig:
         assert set(body.keys()) == {
             "paths", "narrate", "scrub", "roster", "backends",
             "session_name", "profiles", "active_profile", "model",
-            "work_dir", "campaign_dir", "config_dir", "vtt",
+            "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
         }
         # Defaults: strict grouped schema, backends keyed by name (incl.
         # the hyphenated claude-code alias).
@@ -236,6 +237,70 @@ class TestSectionDoorReflectedInEditorGet:
         assert editor_cfg["paths"]["roleplay_extractions_dir"].endswith(
             "vtt_roleplay_extractions"
         )
+
+
+# ── Phase 4 — boot unification: --session-dir populates the editor ──────────
+# server/main.py no longer builds a second, main.py-local derivation of
+# session paths (the old `config` dict + `init_editor_config` seed). The
+# only boot-time input is `runtime.session_dir` (via boot_overrides), and
+# SessionEditorConfigService.resolved_editor_config() is responsible for
+# threading it through its own path resolution — see the docstring on
+# resolved_editor_config() for why that must be explicit rather than
+# relying on CampaignConfigService's persisted-value fallback.
+
+
+class TestSessionDirBootOverride:
+    def test_relative_scene_extractions_dir_resolves_under_boot_session_dir(
+        self, fresh_campaign
+    ):
+        session_dir = fresh_campaign / "summaries" / "session1"
+        session_dir.mkdir(parents=True)
+        _write(
+            fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME,
+            "ui:\n  session_doc:\n    scene_extractions_dir: scene_extractions\n",
+        )
+
+        platform = CampaignConfigService(
+            fresh_campaign,
+            boot_overrides={"runtime.session_dir": str(session_dir)},
+        )
+        service = SessionEditorConfigService(platform)
+        cfg = service.resolved_editor_config()
+
+        expected_session_dir = str(session_dir.resolve())
+        assert cfg.session_dir == expected_session_dir
+        assert cfg.paths.scene_extractions_dir == str(
+            (session_dir / "scene_extractions").resolve()
+        )
+
+
+class TestSessionDirFallback:
+    """``scene_editor._session_dir`` fallback order: ``session_recap``'s
+    parent, then ``cfg.session_dir`` (populated at boot from
+    ``runtime.session_dir`` even before any recap has been saved), then
+    ``cfg.work_dir`` (the campaign root) as a last resort."""
+
+    def test_falls_back_to_cfg_session_dir_when_no_recap(self, fresh_campaign):
+        platform = CampaignConfigService(fresh_campaign)
+        service = SessionEditorConfigService(platform)
+        cfg = service.resolved_editor_config()
+        assert cfg.paths.session_recap is None
+
+        cfg = dataclasses.replace(cfg, session_dir="/some/session/dir")
+        assert scene_editor._session_dir(cfg) == Path("/some/session/dir")
+
+    def test_prefers_session_recap_parent_over_session_dir(self, fresh_campaign):
+        platform = CampaignConfigService(fresh_campaign)
+        service = SessionEditorConfigService(platform)
+        cfg = service.resolved_editor_config()
+        cfg = dataclasses.replace(
+            cfg,
+            paths=cfg.paths.model_copy(
+                update={"session_recap": "/recap/dir/gm-assist.md"}
+            ),
+            session_dir="/some/other/dir",
+        )
+        assert scene_editor._session_dir(cfg) == Path("/recap/dir")
 
 
 # ── No config service wired → 503, not a silent in-memory default ───────────
