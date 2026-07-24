@@ -15,10 +15,18 @@ This is possible because every script these routes invoke
 --backend/--endpoint/--model directly through
 campaignlib.api.client.add_backend_args — see server/routers/grounding.py's
 `_backend_flags` for the per-route translation.
+
+Session-editor config isolation (Phase 5): the sidebar's backend choice is
+now `backends.active` in the Session Doc Editor's own
+`<config>/session_doc.yaml` (there is no more `ui.session_doc` in
+`ui_state.yaml`), so `_backend_flags` reads it through
+`SessionEditorConfigService`. The test harness below builds a real
+`CampaignConfigService` per test (in `tmp_path`) and seeds the backend via
+`SessionEditorConfigService.update_config` instead of a bare fake
+`resolved()` stub.
 """
 
 import sys
-import types
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -26,7 +34,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from fastapi.testclient import TestClient
 
 from server.backend_forwarding import backend_cli_args
+from server.config_service import CampaignConfigService, TRACKED_CONFIG_NAME
 from server.main import app
+from server.session_editor_config_service import SessionEditorConfigService
 
 client = TestClient(app)
 
@@ -46,24 +56,49 @@ def _capture_cmd(monkeypatch):
     return captured
 
 
-def _set_backend(monkeypatch, session_doc: dict | None):
-    """Point app.state.config_service at a fake whose resolved() carries the
-    given ui.session_doc block. Pass None to simulate no config service."""
+def _session_doc_to_backends_partial(session_doc: dict) -> dict:
+    """Translate the old flat `ui.session_doc` shape the tests below were
+    written against into a grouped `backends` partial for
+    `SessionEditorConfigService.update_config`."""
+    backends: dict = {"active": session_doc.get("backend", "anthropic")}
+    dgx: dict = {}
+    if "dgx_endpoint" in session_doc:
+        dgx["endpoint"] = session_doc["dgx_endpoint"]
+    if "dgx_model" in session_doc:
+        dgx["model"] = session_doc["dgx_model"]
+    if dgx:
+        backends["dgx"] = dgx
+    if "openrouter_model" in session_doc:
+        backends["openrouter"] = {"model": session_doc["openrouter_model"]}
+    return {"backends": backends}
+
+
+def _set_backend(monkeypatch, tmp_path: Path, session_doc: dict | None):
+    """Point app.state.config_service at a real CampaignConfigService seeded
+    (via SessionEditorConfigService) with the given backend choice. Pass
+    None to simulate no config service."""
     if session_doc is None:
         monkeypatch.setattr(app.state, "config_service", None, raising=False)
         return
-    fake = types.SimpleNamespace(
-        resolved=lambda: {"ui": {"session_doc": session_doc}},
+    config_subdir = tmp_path / "config"
+    config_subdir.mkdir(parents=True, exist_ok=True)
+    (config_subdir / TRACKED_CONFIG_NAME).write_text(
+        "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        encoding="utf-8",
     )
-    monkeypatch.setattr(app.state, "config_service", fake, raising=False)
+    platform = CampaignConfigService(tmp_path)
+    SessionEditorConfigService(platform).update_config(
+        _session_doc_to_backends_partial(session_doc)
+    )
+    monkeypatch.setattr(app.state, "config_service", platform, raising=False)
 
 
-def _run(monkeypatch, path: str, session_doc: dict | None, params: dict) -> dict:
+def _run(monkeypatch, tmp_path: Path, path: str, session_doc: dict | None, params: dict) -> dict:
     """Call a grounding route with a fake backend + fake subprocess, and
     return the captured {"cmd", "env_extra"} (draining the SSE body so the
     fake subprocess actually runs)."""
     captured = _capture_cmd(monkeypatch)
-    _set_backend(monkeypatch, session_doc)
+    _set_backend(monkeypatch, tmp_path, session_doc)
     r = client.get(path, params=params)
     assert r.status_code == 200
     _ = r.text  # drain the SSE generator so fake_stream_subprocess runs
@@ -85,9 +120,9 @@ def _flag_value(cmd: list[str], flag: str) -> str | None:
 
 # ── claude-code (subscription) is forwarded as --backend on every route ─────
 
-def test_campaign_state_forwards_subscription_flag(monkeypatch):
+def test_campaign_state_forwards_subscription_flag(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/campaign-state",
+        monkeypatch, tmp_path, "/api/grounding/run/campaign-state",
         {"backend": "claude-code"},
         {"input": "docs/x.md", "output": "docs/cs.md", "model": "claude-sonnet-4-6"},
     )
@@ -97,9 +132,9 @@ def test_campaign_state_forwards_subscription_flag(monkeypatch):
     assert captured["env_extra"] is None
 
 
-def test_distill_forwards_subscription_flag(monkeypatch):
+def test_distill_forwards_subscription_flag(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/distill",
+        monkeypatch, tmp_path, "/api/grounding/run/distill",
         {"backend": "claude-code"},
         {"input": "docs/x.md", "output": "docs/ws.md"},
     )
@@ -107,27 +142,27 @@ def test_distill_forwards_subscription_flag(monkeypatch):
     assert captured["cmd"][-2:] == backend_cli_args("claude-code")
 
 
-def test_party_forwards_subscription_flag(monkeypatch):
+def test_party_forwards_subscription_flag(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/party",
+        monkeypatch, tmp_path, "/api/grounding/run/party",
         {"backend": "claude-code"},
         {"output": "docs/party.md"},
     )
     assert _flag_value(captured["cmd"], "--backend") == "claude-code"
 
 
-def test_planning_forwards_subscription_flag(monkeypatch):
+def test_planning_forwards_subscription_flag(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/planning",
+        monkeypatch, tmp_path, "/api/grounding/run/planning",
         {"backend": "claude-code"},
         {"output": "docs/planning.md"},
     )
     assert _flag_value(captured["cmd"], "--backend") == "claude-code"
 
 
-def test_build_dossiers_forwards_subscription_flag(monkeypatch):
+def test_build_dossiers_forwards_subscription_flag(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/build-dossiers",
+        monkeypatch, tmp_path, "/api/grounding/run/build-dossiers",
         {"backend": "claude-code"},
         {"summaries": "docs/s"},
     )
@@ -138,9 +173,9 @@ def test_build_dossiers_forwards_subscription_flag(monkeypatch):
 # the old env-only translator silently dropped "openrouter" entirely, so a
 # GM's openrouter pick quietly ran against the metered Anthropic API. ───────
 
-def test_campaign_state_forwards_openrouter_flag(monkeypatch):
+def test_campaign_state_forwards_openrouter_flag(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/campaign-state",
+        monkeypatch, tmp_path, "/api/grounding/run/campaign-state",
         {"backend": "openrouter", "openrouter_model": "anthropic/claude-sonnet-4"},
         {"input": "docs/x.md"},
     )
@@ -150,9 +185,9 @@ def test_campaign_state_forwards_openrouter_flag(monkeypatch):
     assert _flag_value(captured["cmd"], "--model") == "anthropic/claude-sonnet-4"
 
 
-def test_party_forwards_openrouter_flag(monkeypatch):
+def test_party_forwards_openrouter_flag(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/party",
+        monkeypatch, tmp_path, "/api/grounding/run/party",
         {"backend": "openrouter", "openrouter_model": "anthropic/claude-sonnet-4"},
         {"output": "docs/party.md"},
     )
@@ -162,9 +197,9 @@ def test_party_forwards_openrouter_flag(monkeypatch):
 
 # ── dgx is forwarded as --backend/--endpoint/--model ─────────────────────────
 
-def test_campaign_state_forwards_dgx_flags_from_session_doc(monkeypatch):
+def test_campaign_state_forwards_dgx_flags_from_session_doc(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/campaign-state",
+        monkeypatch, tmp_path, "/api/grounding/run/campaign-state",
         {"backend": "dgx", "dgx_endpoint": "http://box:8001", "dgx_model": "Qwen-X"},
         {"input": "docs/x.md"},
     )
@@ -174,7 +209,7 @@ def test_campaign_state_forwards_dgx_flags_from_session_doc(monkeypatch):
     assert _flag_value(captured["cmd"], "--model") == "Qwen-X"
 
 
-def test_campaign_state_dgx_falls_back_to_wiring(monkeypatch):
+def test_campaign_state_dgx_falls_back_to_wiring(monkeypatch, tmp_path):
     """When the session_doc doesn't pin dgx_endpoint/dgx_model (global
     default, nothing overridden in the sidebar), the router falls back to
     campaignlib.wiring_get — NOT a hardcoded model literal. This replaces
@@ -189,7 +224,7 @@ def test_campaign_state_dgx_falls_back_to_wiring(monkeypatch):
         }.get(key, default),
     )
     captured = _run(
-        monkeypatch, "/api/grounding/run/campaign-state",
+        monkeypatch, tmp_path, "/api/grounding/run/campaign-state",
         {"backend": "dgx"},
         {"input": "docs/x.md"},
     )
@@ -200,9 +235,9 @@ def test_campaign_state_dgx_falls_back_to_wiring(monkeypatch):
 
 # ── anthropic / no config service → no --backend flag (default API path) ────
 
-def test_anthropic_backend_yields_no_flag(monkeypatch):
+def test_anthropic_backend_yields_no_flag(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/campaign-state",
+        monkeypatch, tmp_path, "/api/grounding/run/campaign-state",
         {"backend": "anthropic"},
         {"input": "docs/x.md"},
     )
@@ -211,9 +246,9 @@ def test_anthropic_backend_yields_no_flag(monkeypatch):
     assert captured["cmd"][-2:] == ["--model", "claude-sonnet-4-6"]
 
 
-def test_missing_config_service_yields_no_flag(monkeypatch):
+def test_missing_config_service_yields_no_flag(monkeypatch, tmp_path):
     captured = _run(
-        monkeypatch, "/api/grounding/run/campaign-state",
+        monkeypatch, tmp_path, "/api/grounding/run/campaign-state",
         None,
         {"input": "docs/x.md"},
     )

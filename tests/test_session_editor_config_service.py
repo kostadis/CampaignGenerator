@@ -1,14 +1,13 @@
-"""Unit tests for SessionEditorConfigService — Phase 1 of
+"""Unit tests for SessionEditorConfigService — Phase 5 of
 docs/config/session-editor-isolation.md.
 
-In this phase storage is still the platform's ``ui.session_doc`` +
-``ui.profiles`` (via the internal ``_from_platform``/``_persist_partial``
-adapter, marked TEMP — deleted in Phase 5), so most tests exercise the
-service against a real ``CampaignConfigService`` and assert both the
-grouped view AND that the value actually landed in platform storage.
-The shared-module tests near the bottom exercise ``save_/load_
-session_editor_config`` directly (the file-backed round trip Phase 5 will
-rely on) without going through the service or the platform adapter at all.
+Storage is a dedicated ``<config>/session_doc.yaml`` this service owns
+exclusively — ``ui_state.yaml`` is never touched by an editor write. Most
+tests exercise the service against a real ``CampaignConfigService`` (for
+path resolution) and assert the value actually landed in
+``session_doc.yaml`` on disk. The shared-module tests near the bottom
+exercise ``save_/load_session_editor_config`` directly, without going
+through the service at all.
 
 Mirrors the structure of ``tests/test_planning_config_service.py``: no
 conftest, a local ``_service(tmp_path)`` helper, the 404/409/400 contract
@@ -21,12 +20,13 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 from fastapi import HTTPException
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server.config_models import BackendProfile, ProfileEntry  # noqa: E402
-from server.config_service import CampaignConfigService  # noqa: E402
+from server.config_service import CampaignConfigService, UI_STATE_NAME  # noqa: E402
 from server.session_editor_config_service import (  # noqa: E402
     SessionEditorConfigService,
 )
@@ -58,6 +58,12 @@ def test_empty_campaign_returns_grouped_defaults(tmp_path):
     assert svc.get_config() == SessionEditorConfig()
 
 
+def test_no_session_doc_yaml_written_for_empty_campaign(tmp_path):
+    svc = _service(tmp_path)
+    svc.get_config()
+    assert not svc.session_doc_path.exists()
+
+
 # ── update_config: merge + persist ──────────────────────────────────────
 
 
@@ -69,9 +75,15 @@ def test_update_config_round_trips_and_persists(tmp_path):
     # Untouched fields keep their defaults after a partial update.
     assert updated.narrate.prose_mode is False
 
-    # Landed in the platform's typed session_doc section under its
-    # (temporary) flat name.
-    assert svc.platform.ui_state.ui.session_doc.narrate_tokens == 8000
+    # Landed in the service's OWN file, not ui_state.yaml.
+    assert svc.session_doc_path.exists()
+    assert svc.session_doc_path.name == "session_doc.yaml"
+    on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+    assert on_disk["narrate"]["tokens"] == 8000
+
+    # ui_state.yaml is untouched by an editor write (Phase 5's whole point).
+    ui_state_path = tmp_path / "config" / UI_STATE_NAME
+    assert not ui_state_path.exists()
 
     # A fresh read through the service sees the persisted value.
     assert svc.get_config().narrate.tokens == 8000
@@ -89,6 +101,15 @@ def test_update_config_unknown_field_raises_400(tmp_path):
     with pytest.raises(HTTPException) as exc:
         svc.update_config({"bogus_top_level_field": True})
     assert exc.value.status_code == 400
+
+
+def test_invalid_update_does_not_corrupt_stored_file(tmp_path):
+    svc = _service(tmp_path)
+    svc.update_config({"narrate": {"tokens": 8000}})
+    with pytest.raises(HTTPException):
+        svc.update_config({"narrate": {"tokens": "nope"}})
+    # The bad partial never got written — prior value survives.
+    assert svc.get_config().narrate.tokens == 8000
 
 
 # ── per-backend model memory (O1) ───────────────────────────────────────
@@ -127,6 +148,10 @@ def test_create_list_get_profile(tmp_path):
     assert [p.name for p in svc.list_profiles()] == ["Fast Draft"]
     got = svc.get_profile("Fast Draft")
     assert got.knobs["narrate_tokens"] == 8000
+
+    # Persisted to session_doc.yaml.
+    on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+    assert on_disk["profiles"][0]["name"] == "Fast Draft"
 
 
 def test_create_duplicate_profile_conflicts(tmp_path):
@@ -260,9 +285,9 @@ def test_resolved_editor_config_resolves_session_and_campaign_paths(tmp_path):
 
     # resolved_editor_config never writes anything back: the stored
     # (relative) value is untouched by resolving a second time.
-    before = svc.platform.ui_state.ui.session_doc.session
+    before = svc.get_config().paths.session_recap
     svc.resolved_editor_config()
-    assert svc.platform.ui_state.ui.session_doc.session == before == "recap.md"
+    assert svc.get_config().paths.session_recap == before == "recap.md"
 
 
 def test_resolved_editor_config_absolute_path_passes_through(tmp_path, tmp_path_factory):
@@ -274,7 +299,116 @@ def test_resolved_editor_config_absolute_path_passes_through(tmp_path, tmp_path_
     assert resolved.paths.session_recap == str(elsewhere.resolve())
 
 
-# ── shared-module load/save round trip (file-backed shape, for Phase 5) ─
+# ── relativize-on-write (Task 1b — parity with the old update_section) ──
+#
+# The frontend sends absolute paths (it calls resolvePath client-side).
+# update_config must collapse an absolute-but-under-base session path back
+# to relative storage before writing session_doc.yaml, so the value
+# re-tracks a later runtime.session_dir change — mirrors
+# CampaignConfigService.update_section's write-time relativize_path choke
+# point, now re-implemented here since the data no longer lives in
+# ui_state.yaml.
+
+
+class TestRelativizeOnWrite:
+    def test_absolute_session_path_stored_relative(self, tmp_path):
+        session_dir = tmp_path / "summaries" / "sess1"
+        session_dir.mkdir(parents=True)
+        svc = _service(tmp_path)
+        svc.platform.update_runtime({"session_dir": str(session_dir)})
+
+        svc.update_config(
+            {"paths": {"scene_extractions_dir": str(session_dir / "scene_extractions")}}
+        )
+
+        # Raw stored value is relative, even though an absolute path was sent.
+        on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+        assert on_disk["paths"]["scene_extractions_dir"] == "scene_extractions"
+        assert svc.get_config().paths.scene_extractions_dir == "scene_extractions"
+
+        # resolved_editor_config() still reports it absolute, anchored
+        # under the session dir.
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths.scene_extractions_dir == str(
+            (session_dir / "scene_extractions").resolve()
+        )
+
+    def test_absolute_campaign_path_stored_relative(self, tmp_path):
+        svc = _service(tmp_path)
+        svc.update_config({"paths": {"voice_dir": str(tmp_path / "voice")}})
+
+        on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+        assert on_disk["paths"]["voice_dir"] == "voice"
+
+    def test_out_of_tree_absolute_path_stored_as_is(self, tmp_path):
+        session_dir = tmp_path / "summaries" / "sess1"
+        session_dir.mkdir(parents=True)
+        svc = _service(tmp_path)
+        svc.platform.update_runtime({"session_dir": str(session_dir)})
+
+        svc.update_config({"paths": {"scene_extractions_dir": "/totally/other/place"}})
+
+        on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+        assert on_disk["paths"]["scene_extractions_dir"] == "/totally/other/place"
+
+    def test_session_path_retracks_after_session_dir_change(self, tmp_path):
+        session_a = tmp_path / "summaries" / "sessA"
+        session_b = tmp_path / "summaries" / "sessB"
+        session_a.mkdir(parents=True)
+        session_b.mkdir(parents=True)
+
+        svc = _service(tmp_path)
+        svc.update_config({"paths": {"scene_extractions_dir": "scene_extractions"}})
+        svc.platform.update_runtime({"session_dir": str(session_a)})
+        resolved_a = svc.resolved_editor_config()
+        assert resolved_a.paths.scene_extractions_dir == str(
+            (session_a / "scene_extractions").resolve()
+        )
+
+        # Switching session_dir alone must retrack the relative value.
+        svc.platform.update_runtime({"session_dir": str(session_b)})
+        resolved_b = svc.resolved_editor_config()
+        assert resolved_b.paths.scene_extractions_dir == str(
+            (session_b / "scene_extractions").resolve()
+        )
+
+    def test_relativize_does_not_use_boot_override_session_dir(self, tmp_path):
+        # A --session-dir boot override must NOT be baked into on-disk
+        # relative storage — mirrors CampaignConfigService's
+        # _normalize_stored_paths persisted-only rule. Only the PERSISTED
+        # runtime.session_dir (set via update_runtime, i.e. what the UI
+        # actually saved) is the relativization base.
+        persisted_dir = tmp_path / "summaries" / "persisted"
+        boot_dir = tmp_path / "summaries" / "boot"
+        persisted_dir.mkdir(parents=True)
+        boot_dir.mkdir(parents=True)
+
+        (tmp_path / "config").mkdir(exist_ok=True)
+        (tmp_path / "config" / "config.yaml").write_text(
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+            encoding="utf-8",
+        )
+        platform = CampaignConfigService(
+            str(tmp_path), boot_overrides={"runtime.session_dir": str(boot_dir)}
+        )
+        svc = SessionEditorConfigService(platform)
+        # Persist the "real" session_dir (what's actually saved to disk).
+        platform.update_runtime({"session_dir": str(persisted_dir)})
+
+        svc.update_config(
+            {"paths": {"scene_extractions_dir": str(boot_dir / "scene_extractions")}}
+        )
+
+        on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+        # Not relative to persisted_dir (out-of-tree relative to that base)
+        # and not silently accepted as relative to boot_dir either — the
+        # value stays absolute, since it isn't under the persisted base.
+        assert on_disk["paths"]["scene_extractions_dir"] == str(
+            (boot_dir / "scene_extractions").resolve()
+        )
+
+
+# ── shared-module load/save round trip (file-backed shape) ──────────────
 
 
 def test_save_load_round_trip_grouped_shape(tmp_path):

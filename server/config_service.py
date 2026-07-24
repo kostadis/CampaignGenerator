@@ -53,19 +53,6 @@ LOCAL_CONFIG_NAME = ".campaigngenerator.local.yaml"
 # canonical timeline summaries.md) live under the campaign root.
 
 _PATH_FIELDS: dict[str, dict[str, str]] = {
-    "session_doc": {
-        "session": "session",
-        "extract_dir": "session",
-        "roleplay_dir": "session",
-        "output_dir": "session",
-        "summary_dir": "session",
-        "session_summary": "session",
-        "scene_extractions_dir": "session",
-        "narration_dir": "session",
-        "party": "campaign",
-        "voice_dir": "campaign",
-        "examples_dir": "campaign",
-    },
     "vtt_summary": {
         "input": "session",
         "output": "session",
@@ -228,7 +215,7 @@ class CampaignConfigService:
         is no base to relativize against yet. Persists only if at least one
         field actually changed.
         """
-        sections_to_check = ("session_doc", "vtt_summary", "grounding")
+        sections_to_check = ("vtt_summary", "grounding")
         persisted_session_dir = self._ui_state.runtime.session_dir
 
         ui_dict = self._ui_state.ui.model_dump(mode="json")

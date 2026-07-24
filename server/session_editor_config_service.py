@@ -1,19 +1,19 @@
 """Service owning the Session Doc Editor's configuration slice.
 
-Phase 1 of ``docs/config/session-editor-isolation.md``: the grouped, strict
-``SessionEditorConfig`` model exists (``session_editor_config_shared.py``)
-and this service exposes the CRUD/resolution API the router will eventually
-depend on — but storage is still the platform's ``ui.session_doc`` +
-``ui.profiles`` (via the internal adapter below), and the service is **not**
-wired into any request path yet. Zero behavior change to the running app.
-
-Phase 5 flips storage to a dedicated ``<config>/session_doc.yaml`` the
-service owns exclusively and deletes the adapter.
+Phase 5 of ``docs/config/session-editor-isolation.md``: storage is a
+dedicated ``<config>/session_doc.yaml`` this service owns exclusively —
+``ui_state.yaml`` is never touched by an editor write. The service still
+composes the platform (:class:`~server.config_service.CampaignConfigService`)
+for path resolution and platform-owned reads (``runtime.default_model``,
+``runtime.session_dir``, ``campaign_dir``, ``config_dir``) rather than
+re-implementing them — see ``docs/config/session-editor-isolation.md``'s
+"ownership boundary".
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from fastapi import HTTPException
@@ -27,66 +27,15 @@ from server.session_editor_config_shared import (
     Roster,
     ScrubKnobs,
     SessionEditorConfig,
+    load_session_editor_config,
+    save_session_editor_config,
 )
 
-# ── TEMP — removed in Phase 5 ────────────────────────────────────────────
-# Typed `ui.session_doc` field name -> grouped-schema location, expressed as
-# a tuple path into the nested SessionEditorConfig shape. This is the
-# `_TYPED_TO_CONFIG_KEY`-equivalent for the grouped model; it collapses once
-# the service owns `session_doc.yaml` directly and reads/writes the grouped
-# shape natively.
-#
-# Two entries (`anthropic_model` / `claude_code_model`) have no counterpart
-# in today's `SessionDocSection` — that flat model was never asked to
-# remember an editor-local anthropic/claude-code model override (the
-# locked O3 decision is new). They ride along as extra keys absorbed by
-# `SessionDocSection`'s `extra="allow"`, purely so a value written through
-# `update_config` survives a round trip through the platform store in this
-# phase; nothing reads them back out yet (that's Phase 2's O3 work). This
-# is a deliberate, minimal addition beyond the phase-1 spec's remap table,
-# needed so `update_config({"backends": {"anthropic": {"model": ...}}})`
-# doesn't silently drop the value on the next read.
-_TYPED_TO_GROUPED: dict[str, tuple[str, ...]] = {
-    "session": ("paths", "session_recap"),
-    "session_summary": ("paths", "session_summary"),
-    "scene_extractions_dir": ("paths", "scene_extractions_dir"),
-    "roleplay_dir": ("paths", "roleplay_extractions_dir"),
-    "summary_dir": ("paths", "summary_extractions_dir"),
-    "narration_dir": ("paths", "narration_dir"),
-    "output_dir": ("paths", "output_dir"),
-    "party": ("paths", "party"),
-    "voice_dir": ("paths", "voice_dir"),
-    "examples_dir": ("paths", "examples_dir"),
-    "characters": ("roster", "characters"),
-    "gm_player": ("roster", "gm_player"),
-    "narrate_tokens": ("narrate", "tokens"),
-    "prose_mode": ("narrate", "prose_mode"),
-    "reflections": ("narrate", "reflections"),
-    "narration_genre": ("narrate", "genre"),
-    "batch": ("narrate", "batch"),
-    "context": ("narrate", "context"),
-    "session_name": ("session_name",),
-    "backend": ("backends", "active"),
-    "dgx_endpoint": ("backends", "dgx", "endpoint"),
-    "dgx_model": ("backends", "dgx", "model"),
-    "openrouter_model": ("backends", "openrouter", "model"),
-    "scrub_enabled": ("scrub", "enabled"),
-    "scrub_tokens": ("scrub", "tokens"),
-    # -- extras, no typed source field (see docstring above) --
-    "anthropic_model": ("backends", "anthropic", "model"),
-    "claude_code_model": ("backends", "claude_code", "model"),
-    # NOTE: the legacy typed `extract_dir` is a dead duplicate of
-    # `scene_extractions_dir` (S4 in the design doc) — deliberately not
-    # mapped; audited-and-dropped for real in Phase 5.
-}
-_GROUPED_TO_TYPED: dict[tuple[str, ...], str] = {
-    v: k for k, v in _TYPED_TO_GROUPED.items()
-}
+SESSION_DOC_FILENAME = "session_doc.yaml"
 
 # session_doc path fields, session-based vs campaign-based, expressed in
-# EditorPaths attribute names — mirrors
-# CampaignConfigService._PATH_FIELDS["session_doc"] (typed key names) via
-# the rename table above.
+# EditorPaths attribute names — the service-owned metadata described in
+# session_editor_config_shared.EditorPaths's docstring.
 _SESSION_PATH_FIELDS: tuple[str, ...] = (
     "session_recap",
     "session_summary",
@@ -114,8 +63,7 @@ class ResolvedEditorConfig:
     path fields resolved to absolute and platform extras layered in.
 
     Never persisted — ``model``/``work_dir``/``campaign_dir``/``config_dir``/
-    ``vtt`` are injected read-only context, not stored config. This is the
-    contract Phase 2's router `Depends` will consume.
+    ``vtt`` are injected read-only context, not stored config.
     """
 
     paths: EditorPaths
@@ -155,87 +103,74 @@ def _deep_merge(base: dict[str, Any], partial: dict[str, Any]) -> dict[str, Any]
 class SessionEditorConfigService:
     """Owns the Session Doc Editor's configuration slice.
 
-    Composes a :class:`CampaignConfigService` ("platform") for path
-    resolution and platform-owned reads (``runtime.default_model``,
-    ``campaign_dir``, ``config_dir``) rather than re-implementing them —
-    see ``docs/config/session-editor-isolation.md``'s "ownership boundary".
+    Storage is a dedicated ``<config>/session_doc.yaml`` (see
+    :attr:`session_doc_path`) — a bad write here cannot corrupt
+    ``ui_state.yaml``. Composes a :class:`CampaignConfigService` ("platform")
+    for path resolution and platform-owned reads rather than re-implementing
+    them — see ``docs/config/session-editor-isolation.md``'s "ownership
+    boundary".
     """
 
     def __init__(self, platform: CampaignConfigService) -> None:
         self.platform = platform
 
-    # ── TEMP adapter — removed in Phase 5 ────────────────────────────────
+    @property
+    def session_doc_path(self) -> Path:
+        return self.platform.config_path_base / SESSION_DOC_FILENAME
 
-    def _from_platform(self) -> SessionEditorConfig:
-        """Read platform storage (``ui.session_doc`` + ``ui.profiles``) and
-        map flat typed fields -> the grouped shape."""
-        sd = self.platform.ui_state.ui.session_doc.model_dump(mode="json")
-        profiles_section = self.platform.ui_state.ui.profiles
+    # ── Path relativization (write-time choke point) ────────────────────
+    # The frontend sends absolute paths (it calls resolvePath client-side).
+    # Mirrors CampaignConfigService.update_section's write-time
+    # relativize_path call, so session-scoped fields re-point when
+    # runtime.session_dir changes later — see relativize_path's docstring
+    # for why a stale absolute value would otherwise stick. Keyed off the
+    # PERSISTED runtime.session_dir only (self.platform.ui_state, not
+    # resolved()/boot_overrides) — mirrors the persisted-only rule in
+    # CampaignConfigService._normalize_stored_paths, for the same reason: a
+    # boot-override session_dir is process-lifetime-only and must never be
+    # baked into on-disk relative storage.
 
-        grouped: dict[str, Any] = {}
-        for typed_key, target in _TYPED_TO_GROUPED.items():
-            if typed_key not in sd:
-                continue
-            _set_nested(grouped, target, sd[typed_key])
+    def _relativized_paths(self, paths: EditorPaths) -> EditorPaths:
+        session_dir = self.platform.ui_state.runtime.session_dir
+        paths_dict = paths.model_dump(mode="json")
+        for f in _SESSION_PATH_FIELDS:
+            paths_dict[f] = self.platform.relativize_path(
+                paths_dict.get(f), base="session", session_dir=session_dir
+            )
+        for f in _CAMPAIGN_PATH_FIELDS:
+            paths_dict[f] = self.platform.relativize_path(
+                paths_dict.get(f), base="campaign"
+            )
+        return EditorPaths.model_validate(paths_dict)
 
-        grouped["profiles"] = [
-            p.model_dump(mode="json") for p in profiles_section.profiles
-        ]
-        grouped["active_profile"] = profiles_section.active
-
-        return SessionEditorConfig.model_validate(grouped)
-
-    def _persist_partial(self, grouped_partial: dict[str, Any]) -> None:
-        """Map a grouped partial -> flat typed keys and write through the
-        platform's ``session_doc`` / ``profiles`` sections.
-
-        ``profiles`` / ``active_profile`` at the top level route to the
-        ``profiles`` section (list-replace semantics); everything else
-        routes to ``session_doc`` via the leaf-level rename table.
-        """
-        flat: dict[str, Any] = {}
-        profiles_partial: dict[str, Any] = {}
-
-        def _walk(prefix: tuple[str, ...], node: Any) -> None:
-            if isinstance(node, dict):
-                for k, v in node.items():
-                    _walk(prefix + (k,), v)
-                return
-            typed_key = _GROUPED_TO_TYPED.get(prefix)
-            if typed_key is not None:
-                flat[typed_key] = node
-
-        for top_key, value in grouped_partial.items():
-            if top_key == "profiles":
-                profiles_partial["profiles"] = value
-                continue
-            if top_key == "active_profile":
-                profiles_partial["active"] = value
-                continue
-            _walk((top_key,), value)
-
-        if flat:
-            self.platform.update_section("session_doc", flat)
-        if profiles_partial:
-            self.platform.update_section("profiles", profiles_partial)
+    def _save(self, cfg: SessionEditorConfig) -> SessionEditorConfig:
+        to_store = cfg.model_copy(
+            update={"paths": self._relativized_paths(cfg.paths)}
+        )
+        save_session_editor_config(self.session_doc_path, to_store)
+        return cfg
 
     # ── Config ────────────────────────────────────────────────────────
 
     def get_config(self) -> SessionEditorConfig:
         """Return the stored grouped config. Paths are NOT resolved."""
-        return self._from_platform()
+        return load_session_editor_config(self.session_doc_path)
 
     def update_config(self, partial: dict[str, Any]) -> SessionEditorConfig:
         """Merge a grouped, possibly-nested ``partial`` into the stored
-        config and persist it.
+        config and persist it to ``session_doc.yaml``.
 
         ``partial`` may be any subset of the grouped shape, e.g.
         ``{"narrate": {"tokens": 8000}}`` or
         ``{"backends": {"dgx": {"model": "llama"}}}``. Raises
         ``HTTPException(400)`` if the merged result fails schema
-        validation (mirrors planning's error contract).
+        validation. Path fields are relativized (write-time choke point,
+        see :meth:`_relativized_paths`) before the write; the value
+        returned to the caller is the validated, UN-relativized config
+        (whatever paths were passed in), mirroring the old adapter's
+        contract.
         """
-        current = self._from_platform().model_dump(mode="json")
+        current = self.get_config().model_dump(mode="json")
         merged = _deep_merge(current, partial)
         try:
             validated = SessionEditorConfig.model_validate(merged)
@@ -243,13 +178,13 @@ class SessionEditorConfigService:
             raise HTTPException(
                 status_code=400, detail=f"invalid session editor config: {exc}"
             )
-        self._persist_partial(partial)
+        self._save(validated)
         return validated
 
     # ── Profiles ──────────────────────────────────────────────────────
 
     def list_profiles(self) -> list[ProfileEntry]:
-        return list(self.platform.ui_state.ui.profiles.profiles)
+        return list(self.get_config().profiles)
 
     def get_profile(self, name: str) -> ProfileEntry:
         for p in self.list_profiles():
@@ -258,15 +193,12 @@ class SessionEditorConfigService:
         raise HTTPException(status_code=404, detail=f"profile '{name}' not found")
 
     def create_profile(self, entry: ProfileEntry) -> ProfileEntry:
-        profiles = self.list_profiles()
-        if any(p.name == entry.name for p in profiles):
+        cfg = self.get_config()
+        if any(p.name == entry.name for p in cfg.profiles):
             raise HTTPException(
                 status_code=409, detail=f"profile '{entry.name}' already exists"
             )
-        profiles.append(entry)
-        self._persist_partial(
-            {"profiles": [p.model_dump(mode="json") for p in profiles]}
-        )
+        self._save(cfg.model_copy(update={"profiles": [*cfg.profiles, entry]}))
         return entry
 
     def update_profile(self, name: str, entry: ProfileEntry) -> ProfileEntry:
@@ -274,39 +206,35 @@ class SessionEditorConfigService:
             raise HTTPException(
                 status_code=400, detail="profile name mismatch between URL and body"
             )
-        profiles = self.list_profiles()
+        cfg = self.get_config()
+        profiles = list(cfg.profiles)
         for i, p in enumerate(profiles):
             if p.name == name:
                 profiles[i] = entry
-                self._persist_partial(
-                    {"profiles": [q.model_dump(mode="json") for q in profiles]}
-                )
+                self._save(cfg.model_copy(update={"profiles": profiles}))
                 return entry
         raise HTTPException(status_code=404, detail=f"profile '{name}' not found")
 
     def upsert_profile(self, entry: ProfileEntry) -> ProfileEntry:
         """Create-or-replace a profile by name — no 409 on an existing
         name, unlike :meth:`create_profile`."""
-        profiles = self.list_profiles()
+        cfg = self.get_config()
+        profiles = list(cfg.profiles)
         for i, p in enumerate(profiles):
             if p.name == entry.name:
                 profiles[i] = entry
                 break
         else:
             profiles.append(entry)
-        self._persist_partial(
-            {"profiles": [p.model_dump(mode="json") for p in profiles]}
-        )
+        self._save(cfg.model_copy(update={"profiles": profiles}))
         return entry
 
     def delete_profile(self, name: str) -> None:
-        profiles = self.list_profiles()
-        remaining = [p for p in profiles if p.name != name]
-        if len(remaining) == len(profiles):
+        cfg = self.get_config()
+        remaining = [p for p in cfg.profiles if p.name != name]
+        if len(remaining) == len(cfg.profiles):
             raise HTTPException(status_code=404, detail=f"profile '{name}' not found")
-        self._persist_partial(
-            {"profiles": [p.model_dump(mode="json") for p in remaining]}
-        )
+        self._save(cfg.model_copy(update={"profiles": remaining}))
 
     def activate_profile(self, name: str) -> SessionEditorConfig:
         """Copy a profile's narrate/backend knobs into the stored config
@@ -347,7 +275,7 @@ class SessionEditorConfigService:
         model = platform_resolved.get("runtime", {}).get("default_model")
         session_dir = platform_resolved.get("runtime", {}).get("session_dir")
 
-        cfg = self._from_platform()
+        cfg = self.get_config()
         paths_dict = cfg.paths.model_dump(mode="json")
         for f in _SESSION_PATH_FIELDS:
             paths_dict[f] = self.platform.resolve_path(

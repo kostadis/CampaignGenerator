@@ -79,15 +79,13 @@ class TestGetConfig:
         # them. session_doc's `sd_` overlay entry was retired in the
         # session-editor config isolation (Phase 3b,
         # docs/config/session-editor-isolation.md) — the Session Doc
-        # Editor reads/writes GET/PUT /api/editor/config exclusively now —
-        # so it's asserted absent here, while another still-live prefix
-        # (vtt_summary -> vtt_) demonstrates the overlay mechanism still
-        # works for sections that keep it.
+        # Editor reads/writes GET/PUT /api/editor/config exclusively now,
+        # and (Phase 5) `session_doc` isn't even a UI section any more (it
+        # lives in its own session_doc.yaml) — so it's asserted absent
+        # here, while another still-live prefix (vtt_summary -> vtt_)
+        # demonstrates the overlay mechanism still works for sections that
+        # keep it.
         client = TestClient(_make_app(fresh_campaign))
-        client.put(
-            "/api/config/section/session_doc",
-            json={"values": {"narrate_tokens": 4000, "voice_dir": "voice/"}},
-        )
         client.put(
             "/api/config/section/vtt_summary",
             json={"values": {"input": "session.vtt"}},
@@ -97,14 +95,13 @@ class TestGetConfig:
             json={"values": {"default_model": "claude-opus-4-6"}},
         )
         body = client.get("/api/config/").json()
-        # session_doc's typed value still round-trips through `resolved`,
-        # just not a flat `sd_*` mirror.
-        assert body["resolved"]["ui"]["session_doc"]["narrate_tokens"] == 4000
+        # session_doc no longer exists as a UI section at all.
+        assert "session_doc" not in body["resolved"]["ui"]
         assert "sd_narrate_tokens" not in body
         assert "sd_voice_dir" not in body
         # vtt_summary's flat overlay (`vtt_`) is untouched by the retirement.
-        # Path-resolved to absolute (against campaign_dir), like voice_dir
-        # above — the overlay is computed from service.resolved().
+        # Path-resolved to absolute (against campaign_dir) — the overlay is
+        # computed from service.resolved().
         assert body["vtt_input"].endswith("session.vtt")
         # The flat overlay lets the unreshaped Pinia store keep reading
         # ``cfg.global_model`` directly.
@@ -125,18 +122,16 @@ class TestPutSection:
         app = _make_app(fresh_campaign)
         client = TestClient(app)
         resp = client.put(
-            "/api/config/section/session_doc",
-            json={"values": {"narrate_tokens": 12000, "voice_dir": "voice/"}},
+            "/api/config/section/vtt_summary",
+            json={"values": {"session_name": "Session 12", "input": "session.vtt"}},
         )
         assert resp.status_code == 200
 
         # Read back via GET / and confirm the values are visible in the
-        # typed view. session_doc's flat `sd_` overlay was retired in the
-        # session-editor config isolation (Phase 3b) — the Session Doc
-        # Editor reads/writes GET/PUT /api/editor/config exclusively now.
+        # typed view.
         body = client.get("/api/config/").json()
-        assert body["resolved"]["ui"]["session_doc"]["narrate_tokens"] == 12000
-        assert "sd_narrate_tokens" not in body
+        assert body["resolved"]["ui"]["vtt_summary"]["session_name"] == "Session 12"
+        assert body["vtt_input"].endswith("session.vtt")
 
     def test_unknown_section_rejected_404(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
@@ -148,11 +143,32 @@ class TestPutSection:
         # and must not be writable through this endpoint.
         assert resp.status_code == 404
 
-    def test_no_service_503(self, fresh_campaign):
-        client = TestClient(_make_app(None))
+    def test_session_doc_section_rejected_404(self, fresh_campaign):
+        # Phase 5 (docs/config/session-editor-isolation.md): session_doc
+        # left ui_state.yaml entirely for its own session_doc.yaml, so it's
+        # no longer among UI_SECTION_NAMES — the generic section door must
+        # now 404 it exactly like any other unknown name.
+        client = TestClient(_make_app(fresh_campaign))
         resp = client.put(
             "/api/config/section/session_doc",
             json={"values": {"narrate_tokens": 12000}},
+        )
+        assert resp.status_code == 404
+
+    def test_profiles_section_rejected_404(self, fresh_campaign):
+        # ui.profiles moved out alongside session_doc — same fate.
+        client = TestClient(_make_app(fresh_campaign))
+        resp = client.put(
+            "/api/config/section/profiles",
+            json={"values": {"active": "Fast"}},
+        )
+        assert resp.status_code == 404
+
+    def test_no_service_503(self, fresh_campaign):
+        client = TestClient(_make_app(None))
+        resp = client.put(
+            "/api/config/section/vtt_summary",
+            json={"values": {"input": "x.vtt"}},
         )
         assert resp.status_code == 503
 
@@ -179,11 +195,11 @@ class TestPutLocal:
         # accepted but stored without further validation. The important
         # invariant is that ``ui`` keys do not land in the typed
         # ``server``/``nav`` slots — verify by reading back.
-        client.put("/api/config/local", json={"values": {"ui": {"session_doc": {}}}})
+        client.put("/api/config/local", json={"values": {"ui": {"vtt_summary": {}}}})
         body = client.get("/api/config/").json()
         # Whatever happened, the service-resolved ui section stays empty
-        # of any session_doc state we didn't put there via /section/.
-        assert body["resolved"]["ui"]["session_doc"]["narrate_tokens"] == 16000
+        # of any vtt_summary state we didn't put there via /section/.
+        assert body["resolved"]["ui"]["vtt_summary"]["session_name"] is None
 
     def test_no_service_503(self, fresh_campaign):
         client = TestClient(_make_app(None))

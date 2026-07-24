@@ -1,25 +1,24 @@
 """Integration tests for the Session Doc Editor router + config service.
 
-Phase 3b of ``docs/config/session-editor-isolation.md``: the flat-body
-compat shim (``_flat_body_to_grouped`` / ``_FLAT_TO_GROUPED`` /
-``_IGNORED_FLAT_KEYS``) and the grouped-or-flat detection branch
-(``_GROUPED_TOP_LEVEL_KEYS``) in ``api_put_config`` are gone — the frontend
-now writes the grouped shape directly, so the router just forwards the
-request body to ``SessionEditorConfigService.update_config``. Phase 2's
-module-global ``scene_editor.CONFIG`` removal still holds: every route
-reads a request-scoped ``ResolvedEditorConfig``
+Phase 5 of ``docs/config/session-editor-isolation.md``: storage is a
+dedicated ``<config>/session_doc.yaml`` the service owns exclusively — an
+editor write never touches ``ui_state.yaml``. Phase 3b's single write door
+(the flat-body compat shim is gone; the router just forwards the request
+body to ``SessionEditorConfigService.update_config``) and Phase 2's
+module-global ``scene_editor.CONFIG`` removal still hold: every route reads
+a request-scoped ``ResolvedEditorConfig``
 (``server/session_editor_config_service.py``) injected via FastAPI
 ``Depends``. These tests verify:
 
   - ``GET /api/editor/config`` returns the grouped, resolved shape.
   - ``PUT /api/editor/config`` accepts a grouped partial, writes through
-    ``SessionEditorConfigService``, and the value survives a simulated
-    restart (a second app / service instance reading the same campaign
-    dir) — the bug from VttSummary.vue:70-71 that nothing-without-an-
-    explicit-save-call goes to disk.
-  - A write through the generic ``/api/config/section/session_doc`` door
-    is reflected in ``GET /api/editor/config`` (both doors write the same
-    underlying platform storage in this phase).
+    ``SessionEditorConfigService`` to ``session_doc.yaml`` (NOT
+    ``ui_state.yaml``), and the value survives a simulated restart (a
+    second app / service instance reading the same campaign dir) — the bug
+    from VttSummary.vue:70-71 that nothing-without-an-explicit-save-call
+    goes to disk.
+  - ``session_doc`` is no longer a valid section on the generic
+    ``/api/config/section/{name}`` door (404 — Task 3).
   - Without a config service wired (``app.state.config_service is None``),
     editor routes return 503 (mirrors ``config_routes._require_service``)
     rather than silently falling back to an in-memory default.
@@ -36,6 +35,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
@@ -48,6 +48,11 @@ from server.config_service import (
 )
 from server.routers import config_routes, scene_editor
 from server.session_editor_config_service import SessionEditorConfigService
+from server.session_editor_config_shared import (
+    EditorPaths,
+    SessionEditorConfig,
+    save_session_editor_config,
+)
 
 # Service reads/writes its documents under <campaign>/<config_dir>/ (config_dir="config").
 CONFIG_SUBDIR = "config"
@@ -115,11 +120,12 @@ class TestPutPersistsViaService:
         assert resp.status_code == 200
         assert resp.json() == {"ok": True}
 
-        # Verify the service wrote it to disk.
-        assert (fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).exists()
+        # Verify the service wrote it to its OWN file, not ui_state.yaml.
+        assert (fresh_campaign / CONFIG_SUBDIR / "session_doc.yaml").exists()
+        assert not (fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME).exists()
 
         # Second server (simulates a restart): no in-memory state carried
-        # over, but the service reloads ui_state.yaml.
+        # over, but the service reloads session_doc.yaml.
         client_b = TestClient(_make_app(fresh_campaign))
         editor_cfg = client_b.get("/api/editor/config").json()
         assert editor_cfg["narrate"]["tokens"] == 12000
@@ -210,33 +216,30 @@ class TestPutGroupedBody:
         assert editor_cfg["roster"]["characters"] == "Zalthir, Grygum"
 
 
-class TestSectionDoorReflectedInEditorGet:
-    def test_get_editor_config_reflects_service_writes_via_section_endpoint(
-        self, fresh_campaign
-    ):
-        # Write to the typed section endpoint directly — bypasses the
-        # editor PUT — and confirm the editor GET still sees the value
-        # (both doors write the same underlying platform storage today).
+class TestSectionDoorNoLongerHandlesSessionDoc:
+    """Phase 5: session_doc left ui_state.yaml entirely, so the generic
+    `/api/config/section/{name}` door no longer recognizes it — the editor
+    is reachable ONLY through GET/PUT /api/editor/config now (single write
+    door, single read door)."""
+
+    def test_section_session_doc_is_404(self, fresh_campaign):
+        client = TestClient(_make_app(fresh_campaign))
+        resp = client.put(
+            "/api/config/section/session_doc",
+            json={"values": {"narrate_tokens": 9999}},
+        )
+        assert resp.status_code == 404
+
+    def test_section_door_write_does_not_reach_editor_config(self, fresh_campaign):
+        # Even though the section door 404s, confirm the editor config is
+        # untouched (defense in depth — no silent partial write).
         client = TestClient(_make_app(fresh_campaign))
         client.put(
             "/api/config/section/session_doc",
             json={"values": {"narrate_tokens": 9999}},
         )
         editor_cfg = client.get("/api/editor/config").json()
-        assert editor_cfg["narrate"]["tokens"] == 9999
-
-    def test_get_editor_config_reflects_typed_roleplay_dir_rename(self, fresh_campaign):
-        # The typed field is `roleplay_dir`; the grouped shape renames it
-        # to `paths.roleplay_extractions_dir`.
-        client = TestClient(_make_app(fresh_campaign))
-        client.put(
-            "/api/config/section/session_doc",
-            json={"values": {"roleplay_dir": "summaries/sess1/vtt_roleplay_extractions"}},
-        )
-        editor_cfg = client.get("/api/editor/config").json()
-        assert editor_cfg["paths"]["roleplay_extractions_dir"].endswith(
-            "vtt_roleplay_extractions"
-        )
+        assert editor_cfg["narrate"]["tokens"] == 16000
 
 
 # ── Phase 4 — boot unification: --session-dir populates the editor ──────────
@@ -255,9 +258,11 @@ class TestSessionDirBootOverride:
     ):
         session_dir = fresh_campaign / "summaries" / "session1"
         session_dir.mkdir(parents=True)
-        _write(
-            fresh_campaign / CONFIG_SUBDIR / UI_STATE_NAME,
-            "ui:\n  session_doc:\n    scene_extractions_dir: scene_extractions\n",
+        save_session_editor_config(
+            fresh_campaign / CONFIG_SUBDIR / "session_doc.yaml",
+            SessionEditorConfig(
+                paths=EditorPaths(scene_extractions_dir="scene_extractions")
+            ),
         )
 
         platform = CampaignConfigService(

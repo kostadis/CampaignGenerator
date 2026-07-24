@@ -3,19 +3,19 @@
 This module holds the grouped, **strict** (``extra="forbid"``) pydantic
 models for the Session Doc Editor's configuration — the target shape from
 ``docs/config/session-editor-isolation.md`` — plus the YAML load/save pair
-that will eventually own ``<config>/session_doc.yaml`` (Phase 5).
+that owns ``<config>/session_doc.yaml`` (Phase 5: this IS the storage
+format; ``SessionEditorConfigService`` reads/writes through
+``load_/save_session_editor_config`` directly, no adapter).
 
-In Phase 1 these models are not yet the storage format: the service still
-reads/writes through the platform's ``ui.session_doc`` (flat, ``extra=
-"allow"``) via an internal adapter. This module is the destination shape
-that adapter maps onto, and ``load_/save_session_editor_config`` are
-exercised directly (round-trip only) so Phase 5 can flip storage without
-touching the model definitions.
+Also holds ``TYPED_SESSION_DOC_TO_GROUPED``, the flat-legacy (old
+``ui.session_doc``) -> grouped remap table used only by the one-shot
+``server/migrate_session_doc.py`` CLI to read pre-Phase-5 ``ui_state.yaml``
+data.
 
 Mirrors the structural pattern of ``server/planning_config_shared.py`` /
 ``server/party_config_shared.py`` (module-level load/save functions used by
-both the service layer and, eventually, CLI tooling) but uses pydantic
-instead of dataclasses so ``config_models.BackendProfile`` and
+both the service layer and CLI tooling) but uses pydantic instead of
+dataclasses so ``config_models.BackendProfile`` and
 ``config_models.ProfileEntry`` can be reused directly.
 """
 
@@ -125,6 +125,55 @@ class SessionEditorConfig(BaseModel):
     session_name: OptStr = None
     profiles: list[ProfileEntry] = Field(default_factory=list)
     active_profile: OptStr = None
+
+
+# Typed `ui.session_doc` field name -> grouped-schema location, expressed as
+# a tuple path into the nested SessionEditorConfig shape. The single
+# authority for the flat-legacy -> grouped remap, consumed by
+# ``server/migrate_session_doc.py`` (the one-shot CLI that moves
+# ``ui.session_doc``/``ui.profiles`` out of a pre-Phase-5 ``ui_state.yaml``
+# into a dedicated ``session_doc.yaml``). This used to live as the service's
+# internal ``_TYPED_TO_GROUPED`` adapter table (deleted when the service
+# flipped storage) — it survives here because the migration CLI still needs
+# it to read OLD-shape data.
+TYPED_SESSION_DOC_TO_GROUPED: dict[str, tuple[str, ...]] = {
+    "session": ("paths", "session_recap"),
+    "session_summary": ("paths", "session_summary"),
+    "scene_extractions_dir": ("paths", "scene_extractions_dir"),
+    "roleplay_dir": ("paths", "roleplay_extractions_dir"),
+    "summary_dir": ("paths", "summary_extractions_dir"),
+    "narration_dir": ("paths", "narration_dir"),
+    "output_dir": ("paths", "output_dir"),
+    "party": ("paths", "party"),
+    "voice_dir": ("paths", "voice_dir"),
+    "examples_dir": ("paths", "examples_dir"),
+    "characters": ("roster", "characters"),
+    "gm_player": ("roster", "gm_player"),
+    "narrate_tokens": ("narrate", "tokens"),
+    "prose_mode": ("narrate", "prose_mode"),
+    "reflections": ("narrate", "reflections"),
+    "narration_genre": ("narrate", "genre"),
+    "batch": ("narrate", "batch"),
+    "context": ("narrate", "context"),
+    "session_name": ("session_name",),
+    "backend": ("backends", "active"),
+    "dgx_endpoint": ("backends", "dgx", "endpoint"),
+    "dgx_model": ("backends", "dgx", "model"),
+    "openrouter_model": ("backends", "openrouter", "model"),
+    "scrub_enabled": ("scrub", "enabled"),
+    "scrub_tokens": ("scrub", "tokens"),
+    # -- extras, no typed source field --
+    # The old typed `ui.session_doc` model never had a slot for an
+    # editor-local anthropic/claude-code model override (O3 was a new
+    # decision, not carried forward from the flat shape) — nothing in a
+    # pre-Phase-5 ui_state.yaml can populate these, but they're listed for
+    # completeness / documentation of the full grouped target shape.
+    "anthropic_model": ("backends", "anthropic", "model"),
+    "claude_code_model": ("backends", "claude_code", "model"),
+    # NOTE: the legacy typed `extract_dir` is a dead duplicate of
+    # `scene_extractions_dir` (S4 in the design doc) — deliberately not
+    # mapped.
+}
 
 
 def load_session_editor_config(path: Path) -> SessionEditorConfig:
