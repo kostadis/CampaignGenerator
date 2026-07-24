@@ -65,6 +65,7 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from campaignlib import DEFAULT_MODEL
 from server.config_models import OptStr
 
 LOCAL_CONFIG_NAME = ".campaigngenerator.local.yaml"
@@ -76,13 +77,21 @@ class PlatformRuntime(BaseModel):
     model picker) and ``session_dir`` (the session-resolution anchor every
     session-scoped path resolves against). Physically persisted as the
     ``runtime:`` key of ``<config>/platform.yaml`` (Phase 3, O3) — see module
-    docstring for the pre-Phase-3 shape this replaced."""
+    docstring for the pre-Phase-3 shape this replaced.
+
+    ``default_model``'s ``default_factory`` reads ``campaignlib.constants.
+    DEFAULT_MODEL`` (Phase 5a,
+    ``docs/config/platform-isolation.md``) rather than re-deriving
+    ``os.environ.get("CAMPAIGN_MODEL") or "claude-sonnet-4-6"`` independently
+    — this was the second of three copies of that expression (the third
+    was ``server/config.py``'s own ``DEFAULT_MODEL``, also now consolidated).
+    Behaviorally identical: ``campaignlib.constants.DEFAULT_MODEL`` is
+    computed from the same env lookup at import time, and ``CAMPAIGN_MODEL``
+    does not change mid-process."""
 
     model_config = ConfigDict(extra="forbid")
 
-    default_model: str = Field(
-        default_factory=lambda: os.environ.get("CAMPAIGN_MODEL") or "claude-sonnet-4-6"
-    )
+    default_model: str = Field(default_factory=lambda: DEFAULT_MODEL)
     session_dir: OptStr = None
 
 

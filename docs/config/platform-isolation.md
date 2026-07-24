@@ -98,6 +98,24 @@ The routers' defaults are the dangerous ones: a request that omits `model` gets
 the literal, **not** `runtime.default_model` — so the sidebar picker is
 silently bypassed on those paths.
 
+> **Severity correction (found during Phase 5a).** This was first written as
+> though the shipped UI were affected — "you pick Opus in the sidebar and some
+> runs still use Sonnet." **That overstates it.** All 14 Vue views that trigger
+> a run send `model: config.model` explicitly, so the web UI never relies on a
+> router default. The defect is real for anything bypassing the frontend (curl,
+> scripts, a future view that forgets the field) and for the pre-load window
+> before `GET /api/config/models` resolves — a latent footgun on a public HTTP
+> surface, not an active misrouting of GM runs.
+>
+> **The count was also short.** `server/routers/setup.py` carries two more
+> instances (`run_dnd_sheet`, `run_make_tracking`) that default to the imported
+> `DEFAULT_MODEL` **constant** rather than a bareword literal — so the
+> `"claude-sonnet-4-6"` grep that found the twelve could not see them. Same
+> defect, different spelling. Fourteen total, all fixed. **Audit rule: a
+> defect defined by its *behavior* cannot be inventoried by grepping one of its
+> *spellings*.** Third instance of that lesson in this effort (see the flat-key
+> overlay and constructor call-site corrections above).
+
 ### `wiring.yaml` does not exist here
 
 `config/wiring.yaml` is **gitignored and absent** on this machine;
@@ -246,6 +264,26 @@ the plan.
   adding a model needs no CampaignGenerator release. Consistent with the
   existing external/internal split (`dgx_model` already sets that precedent).
   **Carries a cross-repo prerequisite** — see [Risks](#risks).
+
+  > **Split during implementation into 5a (shipped) and 5b (deferred).** O4 as
+  > written bundled two separable changes, and only one needs mneme:
+  >
+  > - **5a — unify resolution, refresh the registry.** One `DEFAULT_MODEL`
+  >   definition (`campaignlib.constants`), the stale `MODELS` list replaced,
+  >   and all 14 router defaults routed through `resolve_default_model()`
+  >   (explicit `model` → `runtime.default_model` → literal). No cross-repo
+  >   dependency. **Shipped.**
+  > - **5b — move the registry's *source* into `wiring.yaml`.** Needs a
+  >   `models:` key in `hypostasis.yaml`, a template change in
+  >   `campaigngenerator.wiring.yaml.j2` (its first list-valued key), and a
+  >   re-render. **Deferred.**
+  >
+  > The split is worth its own note because 5b currently buys **nothing
+  > observable**: `config/wiring.yaml` is gitignored and absent on this
+  > machine, so `load_wiring()` returns `{}` and the literal fallback is the
+  > only live path regardless. Doing 5b today would be pure cost. Because 5a
+  > built the fallback first and treats wiring as the override, adopting it
+  > later is a one-line source swap.
 
 ## Data model
 

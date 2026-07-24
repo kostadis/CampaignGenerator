@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib import wiring_get
 from server.backend_forwarding import backend_cli_args
+from server.platform_config_service import resolve_default_model
 from server.session_editor_config_service import SessionEditorConfigService
 from server.subprocess_runner import console_script, stream_subprocess
 
@@ -85,7 +86,7 @@ async def run_campaign_state(
     synthesize_only: bool = False,
     extract_only: bool = False,
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("campaign_state")]
 
@@ -106,7 +107,7 @@ async def run_campaign_state(
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
     return _sse_response(cmd)
@@ -125,7 +126,7 @@ async def run_distill(
     synthesize_only: bool = False,
     extract_only: bool = False,
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("distill")]
 
@@ -143,7 +144,7 @@ async def run_distill(
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
     return _sse_response(cmd)
@@ -167,7 +168,7 @@ async def run_party(
     synthesize_only: bool = False,
     extract_only: bool = False,
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("party")]
 
@@ -190,7 +191,7 @@ async def run_party(
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
     return _sse_response(cmd)
@@ -213,7 +214,7 @@ async def run_planning(
     synthesize_only: bool = False,
     extract_only: bool = False,
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("planning")]
 
@@ -238,7 +239,7 @@ async def run_planning(
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
     return _sse_response(cmd)
@@ -255,7 +256,7 @@ async def run_build_dossiers(
     since: int = 0,
     extract_only: bool = False,
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("planning")]
 
@@ -274,7 +275,7 @@ async def run_build_dossiers(
 
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
     return _sse_response(cmd)

@@ -2,9 +2,10 @@
 
 from pathlib import Path
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import StreamingResponse
 
+from server.platform_config_service import resolve_default_model
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
@@ -32,6 +33,7 @@ def _sse_response(cmd: list[str]) -> StreamingResponse:
 
 @router.get("/run/session-prep")
 async def run_session_prep(
+    request: Request,
     input_mode: str = "beat",
     beat: str = "",
     session_file: str = "",
@@ -40,7 +42,7 @@ async def run_session_prep(
     config: str = "",
     output: str = "",
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("prep")]
     cmd += ["--mode", prep_mode]
@@ -55,7 +57,7 @@ async def run_session_prep(
     _cmd_opt(cmd, "--config", config)
     _cmd_opt(cmd, "--output", output)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
 
     return _sse_response(cmd)
 
@@ -64,11 +66,12 @@ async def run_session_prep(
 
 @router.get("/run/npc-table")
 async def run_npc_table(
+    request: Request,
     docs: list[str] = Query(default=["world_state"]),
     config: str = "",
     output: str = "",
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("npc_table")]
 
@@ -79,7 +82,7 @@ async def run_npc_table(
     _cmd_opt(cmd, "--config", config)
     _cmd_opt(cmd, "--output", output)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
 
     return _sse_response(cmd)
 
@@ -88,13 +91,14 @@ async def run_npc_table(
 
 @router.get("/run/query")
 async def run_query(
+    request: Request,
     input: str = "",
     query: str = "",
     hits_only: bool = False,
     verbose: bool = False,
     output: str = "",
     chunk_size: int = 40000,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("query")]
 
@@ -110,6 +114,6 @@ async def run_query(
     if chunk_size and chunk_size != 40000:
         cmd += ["--chunk-size", str(chunk_size)]
 
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
 
     return _sse_response(cmd)

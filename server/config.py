@@ -15,25 +15,49 @@ both gone too.
 
 What is left has no natural service ownership boundary: ``MODELS``/
 ``DEFAULT_MODEL`` and the two probes below are free functions with no
-persisted state to isolate. ``MODELS``/``DEFAULT_MODEL`` stay untouched
-deliberately — Phase 5 (O4) relocates the model registry to ``wiring.yaml``,
-and this module shrinks further then.
+persisted state to isolate.
+
+Phase 5a (``docs/config/platform-isolation.md`` O4's non-wiring half)
+removes the second independent ``DEFAULT_MODEL`` definition that used to
+live here: this module now imports ``campaignlib.constants.DEFAULT_MODEL``
+— the single definition every CLI script reads, and the one
+``server/platform_config_shared.py``'s ``PlatformRuntime.default_model``
+field also now reads via its ``default_factory`` — instead of re-deriving
+``os.environ.get("CAMPAIGN_MODEL") or "claude-sonnet-4-6"`` a third time.
+Re-exported here (not renamed/removed) because ``server/routers/
+config_routes.py`` and ``server/routers/setup.py`` already import it as
+``from server.config import DEFAULT_MODEL`` / ``from campaignlib import
+DEFAULT_MODEL`` respectively — both now resolve to the same object.
+
+``MODELS`` is refreshed to the current model family — it had drifted to
+missing Opus 5 / Sonnet 5 / Fable 5 entirely, while still carrying
+``claude-sonnet-4-20250514`` (deprecated, retiring 2026-06-15) and a
+needlessly date-suffixed ``claude-haiku-4-5-20251001`` (the bare alias
+``claude-haiku-4-5`` is the correct id — model ids in this list are never
+date-suffixed). ``claude-mythos-5`` is deliberately excluded: it is
+available only to Project Glasswing participants, not general release.
+
+``MODELS`` stays a hardcoded Python list, deliberately: relocating its
+*source* into ``wiring.yaml`` (mneme-rendered per-install config, so adding
+a model needs no CampaignGenerator release) is Phase 5b — deferred, needs a
+template change in the separate ``mneme`` repo, not done here.
 """
 
 import os
 from pathlib import Path
 
-MODELS = [
-    "claude-sonnet-4-6",
-    "claude-sonnet-4-20250514",
-    "claude-opus-4-8",
-    "claude-opus-4-6",
-    "claude-haiku-4-5-20251001",
-]
+from campaignlib import DEFAULT_MODEL
 
-# Mirror campaignlib's CAMPAIGN_MODEL override so the UI's default model
-# matches whatever the CLI scripts default to.
-DEFAULT_MODEL = os.environ.get("CAMPAIGN_MODEL") or "claude-sonnet-4-6"
+MODELS = [
+    "claude-opus-5",
+    "claude-fable-5",
+    "claude-opus-4-8",
+    "claude-opus-4-7",
+    "claude-opus-4-6",
+    "claude-sonnet-5",
+    "claude-sonnet-4-6",
+    "claude-haiku-4-5",
+]
 
 
 def api_key_present() -> bool:

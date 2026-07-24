@@ -2,9 +2,10 @@
 
 from pathlib import Path
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import StreamingResponse
 
+from server.platform_config_service import resolve_default_model
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
@@ -38,6 +39,7 @@ def _sse_response(cmd: list[str]) -> StreamingResponse:
 
 @router.get("/run/enhance-recap")
 async def run_enhance_recap(
+    request: Request,
     recap: str = "",
     output: str = "",
     roleplay_extract_dir: str = "",
@@ -45,7 +47,7 @@ async def run_enhance_recap(
     context: list[str] = Query(default=[]),
     party: str = "",
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("enhance_recap")]
 
@@ -58,7 +60,7 @@ async def run_enhance_recap(
     _cmd_multi(cmd, "--context", context)
     _cmd_opt(cmd, "--party", party)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
 
     return _sse_response(cmd)
 
@@ -67,6 +69,7 @@ async def run_enhance_recap(
 
 @router.get("/run/narrative")
 async def run_narrative(
+    request: Request,
     roleplay_extract_dir: str = "",
     summary_extract_dir: str = "",
     examples: list[str] = Query(default=[]),
@@ -81,7 +84,7 @@ async def run_narrative(
     plan_only: bool = False,
     fast: bool = False,
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("narrative")]
 
@@ -99,6 +102,6 @@ async def run_narrative(
     _cmd_flag(cmd, "--plan-only", plan_only)
     _cmd_flag(cmd, "--fast", fast)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
 
     return _sse_response(cmd)

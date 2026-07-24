@@ -2,9 +2,10 @@
 
 from pathlib import Path
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import StreamingResponse
 
+from server.platform_config_service import resolve_default_model
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()  # CampaignGenerator/
@@ -43,6 +44,7 @@ def _cmd_flag(cmd: list[str], flag: str, condition: bool) -> None:
 
 @router.get("/run/vtt-summary")
 async def run_vtt_summary(
+    request: Request,
     session_dir: str = "",
     vtt_input: str = "",
     output: str = "",
@@ -54,7 +56,7 @@ async def run_vtt_summary(
     chunk_size: int = 50000,
     synthesize_only: bool = False,
     no_log: bool = False,
-    model: str = "claude-sonnet-4-6",
+    model: str | None = None,
 ):
     cmd = [console_script("vtt_summary")]
 
@@ -81,7 +83,7 @@ async def run_vtt_summary(
 
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", model]
+    cmd += ["--model", resolve_default_model(model, request)]
 
     return StreamingResponse(
         stream_subprocess(cmd, cwd=str(Path.cwd())),
