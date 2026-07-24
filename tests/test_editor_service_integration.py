@@ -163,6 +163,39 @@ class TestPutPersistsViaService:
         assert body["ok"] is False
 
 
+class TestPutAcceptsGroupedOrFlat:
+    """Phase 3a: PUT /api/editor/config accepts EITHER the grouped shape
+    (a not-yet-migrated frontend won't send this until Phase 3b, but the
+    API must already accept it) or today's flat shape — both write through
+    the same SessionEditorConfigService.update_config door."""
+
+    def test_put_editor_config_grouped_body_persists(self, fresh_campaign):
+        client = TestClient(_make_app(fresh_campaign))
+        resp = client.put(
+            "/api/editor/config",
+            json={"narrate": {"tokens": 9000}},
+        )
+        assert resp.status_code == 200
+        assert resp.json() == {"ok": True}
+
+        editor_cfg = client.get("/api/editor/config").json()
+        assert editor_cfg["narrate"]["tokens"] == 9000
+
+    def test_put_editor_config_flat_body_still_works(self, fresh_campaign):
+        # The pre-existing flat shim keeps working unchanged alongside the
+        # new grouped-body support.
+        client = TestClient(_make_app(fresh_campaign))
+        resp = client.put(
+            "/api/editor/config",
+            json={"narrate_tokens": 7000},
+        )
+        assert resp.status_code == 200
+        assert resp.json() == {"ok": True}
+
+        editor_cfg = client.get("/api/editor/config").json()
+        assert editor_cfg["narrate"]["tokens"] == 7000
+
+
 class TestSectionDoorReflectedInEditorGet:
     def test_get_editor_config_reflects_service_writes_via_section_endpoint(
         self, fresh_campaign

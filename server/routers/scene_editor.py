@@ -24,10 +24,11 @@ from pathlib import Path
 
 from campaignlib import wiring_get
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from server.backend_forwarding import backend_cli_args
+from server.config_models import ProfileEntry
 from server.session_editor_config_service import (
     ResolvedEditorConfig,
     SessionEditorConfigService,
@@ -116,7 +117,7 @@ _IGNORED_FLAT_KEYS = {"work_dir", "output_dir"}
 
 
 def _flat_body_to_grouped(body: dict) -> dict:
-    """TEMP — removed in Phase 3.
+    """TEMP — removed in Phase 3b.
 
     Map a flat PUT /api/editor/config body to a grouped, possibly-nested
     partial matching SessionEditorConfig. Keys with no mapping (and
@@ -136,9 +137,20 @@ def _flat_body_to_grouped(body: dict) -> dict:
     return grouped
 
 
-@router.get("/config")
-def api_get_config(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
-    """Return the resolved editor config, grouped."""
+# Grouped SessionEditorConfig top-level keys — used by api_put_config to
+# detect whether an incoming PUT body is already grouped (Phase 3a: the
+# not-yet-migrated frontend still sends flat; a grouped-aware caller, e.g.
+# a future frontend or a test, can send the real shape straight through).
+_GROUPED_TOP_LEVEL_KEYS = {
+    "paths", "narrate", "scrub", "roster", "backends",
+    "session_name", "profiles", "active_profile",
+}
+
+
+def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
+    """Wire shape for a resolved editor config — the single source of truth
+    for both ``GET /api/editor/config`` and the profile-activate response,
+    so the two never drift apart."""
     return {
         "paths": cfg.paths.model_dump(),
         "narrate": cfg.narrate.model_dump(),
@@ -156,6 +168,12 @@ def api_get_config(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     }
 
 
+@router.get("/config")
+def api_get_config(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    """Return the resolved editor config, grouped."""
+    return _serialize_resolved(cfg)
+
+
 @router.put("/config")
 async def api_put_config(
     request: Request,
@@ -163,12 +181,19 @@ async def api_put_config(
 ):
     """Update the editor config at runtime (from the frontend).
 
-    Stays backward-compatible with today's flat payload shape (mapped to a
-    grouped partial by ``_flat_body_to_grouped``) while writing through
-    ``SessionEditorConfigService.update_config`` — the single write door.
+    Accepts EITHER shape (non-breaking while the frontend still sends
+    flat): if the body has any grouped top-level key
+    (``_GROUPED_TOP_LEVEL_KEYS``) it is passed straight through to
+    ``SessionEditorConfigService.update_config`` as a grouped partial;
+    otherwise it's treated as today's flat payload and mapped via the TEMP
+    ``_flat_body_to_grouped`` shim. Either way this stays the single write
+    door.
     """
     data = await request.json()
-    grouped_partial = _flat_body_to_grouped(data)
+    if isinstance(data, dict) and _GROUPED_TOP_LEVEL_KEYS.intersection(data):
+        grouped_partial = data
+    else:
+        grouped_partial = _flat_body_to_grouped(data)
     try:
         service.update_config(grouped_partial)
     except HTTPException as exc:
@@ -182,6 +207,70 @@ async def api_put_config(
             status_code=400,
         )
     return {"ok": True}
+
+
+# ── Profile endpoints (the one sub-collection) ──────────────────────────────
+# Server-side profile activation (O2, locked decision): activating mirrors
+# the profile's narrate/backend knobs into the stored config on the server
+# (SessionEditorConfigService.activate_profile) and returns the re-resolved
+# editor config — the same shape GET /api/editor/config returns.
+
+
+@router.get("/profiles", response_model=list[ProfileEntry])
+def api_list_profiles(
+    service: SessionEditorConfigService = Depends(get_editor_service),
+):
+    """List all saved Narrate-knob presets."""
+    return service.list_profiles()
+
+
+@router.post(
+    "/profiles", response_model=ProfileEntry, status_code=status.HTTP_201_CREATED
+)
+def api_create_profile(
+    entry: ProfileEntry,
+    service: SessionEditorConfigService = Depends(get_editor_service),
+):
+    """Create a new profile. 409 if a profile with this name already exists."""
+    return service.create_profile(entry)
+
+
+@router.get("/profiles/{name}", response_model=ProfileEntry)
+def api_get_profile(
+    name: str, service: SessionEditorConfigService = Depends(get_editor_service)
+):
+    """Get a single profile by name. 404 if missing."""
+    return service.get_profile(name)
+
+
+@router.put("/profiles/{name}", response_model=ProfileEntry)
+def api_update_profile(
+    name: str,
+    entry: ProfileEntry,
+    service: SessionEditorConfigService = Depends(get_editor_service),
+):
+    """Replace an existing profile. 400 on URL/body name mismatch, 404 if missing."""
+    return service.update_profile(name, entry)
+
+
+@router.delete("/profiles/{name}", status_code=status.HTTP_204_NO_CONTENT)
+def api_delete_profile(
+    name: str, service: SessionEditorConfigService = Depends(get_editor_service)
+):
+    """Delete a profile by name. 404 if missing."""
+    service.delete_profile(name)
+    return None
+
+
+@router.post("/profiles/{name}/activate")
+def api_activate_profile(
+    name: str, service: SessionEditorConfigService = Depends(get_editor_service)
+):
+    """Mirror a profile's knobs into the stored config (server-side, O2) and
+    return the re-resolved editor config — same JSON shape as
+    ``GET /api/editor/config``. 404 if the profile doesn't exist."""
+    service.activate_profile(name)
+    return _serialize_resolved(service.resolved_editor_config())
 
 
 # ── Path helpers ────────────────────────────────────────────────────────────
