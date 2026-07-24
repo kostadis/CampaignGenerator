@@ -30,6 +30,7 @@ session_doc/                # Post-session pipeline CLIs (sd_*, assemble, scene_
 session_doc/narrative.py    # Standalone experimental: VTT-anchored narration CLI
 session_doc/quote_ledger.py # SQLite-backed VTT dialogue tracking
 server/migrate_session_doc.py # CLI: one-shot ui_state.yaml → session_doc.yaml — python -m server.migrate_session_doc --campaign-dir /path/to/campaign
+server/migrate_ensemble_config.py # CLI: one-shot ui.ensemble → ensemble.yaml — python -m server.migrate_ensemble_config --campaign-dir /path/to/campaign
 pipelines/grounding/npc_table.py        # CLI: generate NPC reference table
 pipelines/grounding/distill.py          # CLI: convert summaries → world_state.md
 pipelines/grounding/campaign_state.py   # CLI: generate completed-content grounding doc
@@ -117,6 +118,22 @@ response = stream_api(client, SYSTEM_PROMPT, docs, args.model)
 ### Config auto-detection
 
 All scripts look for `config.yaml` in the CWD first, then fall back to `config/config.yaml` in the script directory. Run any script from a campaign workspace directory without passing `--config`.
+
+### Per-service config files (don't reach for `ui_state.yaml`)
+
+Three services own a dedicated, strict (`extra="forbid"`) config file instead of a `ui.<section>` blob in `ui_state.yaml`. Writing to their retired section returns **404** — use the service's own route.
+
+| Service | File | Route | Migrate an existing campaign |
+|---|---|---|---|
+| Session Doc Editor | `<config>/session_doc.yaml` | `GET`/`PUT /api/editor/config` | `python -m server.migrate_session_doc --campaign-dir DIR` |
+| Ensemble | `<config>/ensemble.yaml` | `GET`/`PUT /api/ensemble/config` | `python -m server.migrate_ensemble_config --campaign-dir DIR` |
+| Planning | `<config>/planning.yaml` | `/api/planning/*` CRUD | *(no migration — same file all along)* |
+
+Plus the platform tier: `<config>/platform.yaml` (`runtime.default_model`, `session_dir`) via `PUT /runtime`.
+
+The migrations are one-shot and idempotent-ish (they refuse to clobber without `--force`) and report unrecognised keys rather than dropping them. **Skipping one is safe but not free:** `UIState` is `extra="allow"`, so a stale `ui.ensemble`/`ui.session_doc` block loads and is silently ignored — the page then starts from schema defaults, quietly losing hand-tuned selections like per-stage DGX backends and endpoint lists. Run the migration once per campaign before relying on those.
+
+**Never add a default literal to `server/routers/ensemble.py`.** Every ensemble path and tuning knob is declared once, in `server/ensemble_config_shared.py`'s `EnsemblePaths`/`EnsembleTuning`; routes take a sentinel (`""`, or `None` for ints where `0` is meaningful) and resolve from `EnsembleConfigService.resolved()` at the route edge. `tests/test_ensemble_config_defaults.py` fails the build if a `docs/ensemble/`-shaped literal or `backend: str = "anthropic"` reappears there. Resolution happens *before* argv is built, so the copyable command `specs/002-ensemble-run-observability` promises stays fully explicit. See `docs/config/ensemble-isolation.md`.
 
 ### Entity registry (single authority for aliases)
 
