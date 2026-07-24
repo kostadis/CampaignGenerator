@@ -1,9 +1,16 @@
 """Typed pydantic models for CampaignGenerator configuration.
 
-Three documents:
     UIState           — <campaign>/ui_state.yaml         (tracked, server-owned)
-    LocalConfig       — <campaign>/.campaigngenerator.local.yaml (gitignored)
     TrackedConfig     — <campaign>/config.yaml           (tracked, human-only)
+
+The third document, ``<campaign>/.campaigngenerator.local.yaml``, used to be
+modelled here too (``LocalConfig``/``ServerSection``/``NavSection``). Per
+``docs/config/platform-isolation.md`` Phase 2 it moved to
+``server/platform_config_shared.py`` (``PlatformLocalConfig``/
+``PlatformServer``/``PlatformNav``, now strict) alongside the
+``PlatformConfigService`` that exclusively owns it — that file has never
+overlapped with ``ui_state.yaml``, so there was no reason to keep modelling
+it next to ``UIState``.
 
 Path fields stay relative; resolution against campaign_dir happens in the
 service layer. Numeric fields rely on pydantic's native string→int coercion
@@ -174,26 +181,6 @@ class UIState(BaseModel):
     ui: UISection = Field(default_factory=UISection)
     runtime: RuntimeSection = Field(default_factory=RuntimeSection)
     legacy: LegacySection = Field(default_factory=LegacySection)
-
-
-class ServerSection(BaseModel):
-    host: str = "127.0.0.1"
-    port: int = 5000
-
-
-class NavSection(BaseModel):
-    model_config = ConfigDict(extra="allow")
-
-    last_page: OptStr = None
-
-
-class LocalConfig(BaseModel):
-    """Root model for ``<campaign>/.campaigngenerator.local.yaml``."""
-
-    model_config = ConfigDict(extra="allow")
-
-    server: ServerSection = Field(default_factory=ServerSection)
-    nav: NavSection = Field(default_factory=NavSection)
 
 
 # ── Public list of typed UI section names ──────────────────────────────────

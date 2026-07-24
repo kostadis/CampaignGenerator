@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from server.config_service import CampaignConfigService, ConfigError
+from server.platform_config_service import ConfigError, PlatformConfigService
 from server.routers import (
     config_routes, connections, ensemble, experimental, grounding, prep,
     scene_editor, session_workflow, setup, planning_routes,
@@ -140,14 +140,15 @@ def main() -> None:
     # only, as of O1 in docs/config/platform-isolation.md).
     #
     # Session-path derivation from --session-dir happens once, inside
-    # CampaignConfigService.resolved() / SessionEditorConfigService — driven
+    # PlatformConfigService.resolved() / SessionEditorConfigService — driven
     # entirely by the `runtime.session_dir` boot override captured above.
     # There is no second, main.py-local derivation to keep in sync.
     boot_overrides = _boot_overrides_from_args(args)
 
-    # Construct the unified config service. Routers read everything through
-    # it; if no campaign directory can be determined, fail loudly rather
-    # than fall back to a synthetic default.
+    # Construct the platform service. Every router reaches it (and, through
+    # it, the residual UIStateService) via app.state.platform; if no
+    # campaign directory can be determined, fail loudly rather than fall
+    # back to a synthetic default.
     campaign_dir_for_service = _resolve_campaign_dir_for_service(args)
     if campaign_dir_for_service is None:
         print(
@@ -159,7 +160,7 @@ def main() -> None:
         sys.exit(1)
 
     try:
-        app.state.config_service = CampaignConfigService(
+        app.state.platform = PlatformConfigService(
             campaign_dir_for_service,
             config_dir=args.config_dir,
             boot_overrides=boot_overrides,
@@ -175,14 +176,14 @@ def main() -> None:
             file=sys.stderr,
         )
         sys.exit(1)
-    for warning in app.state.config_service.load_warnings:
+    for warning in app.state.platform.load_warnings:
         print(f"  config: {warning}")
 
-    os.chdir(app.state.config_service.campaign_dir)
+    os.chdir(app.state.platform.campaign_dir)
 
     print(f"  CampaignGenerator UI")
-    print(f"  Campaign:    {app.state.config_service.campaign_dir}")
-    resolved_session_dir = app.state.config_service.resolved()["runtime"].get("session_dir")
+    print(f"  Campaign:    {app.state.platform.campaign_dir}")
+    resolved_session_dir = app.state.platform.resolved()["runtime"].get("session_dir")
     if resolved_session_dir:
         print(f"  Session:     {resolved_session_dir}")
     print(f"  Open http://{args.host}:{args.port} in your browser")

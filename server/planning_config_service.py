@@ -1,12 +1,14 @@
 """Service for managing isolated planning configuration.
 
-This service provides exclusive access to planning.yaml through a 
-resource-oriented API, separating planning configuration from the 
-general-purpose CampaignConfigService.
+This service provides exclusive access to planning.yaml through a
+resource-oriented API, separating planning configuration from the
+general-purpose platform config. Composes ``PlatformConfigService``
+(``docs/config/platform-isolation.md``) for ``config_path_base`` rather than
+resolving campaign_dir/config_dir itself — the same shape
+``SessionEditorConfigService`` uses.
 """
 
 from fastapi import HTTPException
-from pathlib import Path
 from typing import List
 import yaml
 from .planning_config_shared import PlanningConfig, PlanningEntry, load_planning_config, save_planning_config
@@ -14,11 +16,10 @@ from .planning_config_shared import PlanningConfig, PlanningEntry, load_planning
 
 class PlanningConfigService:
     """Service for managing planning configuration with exclusive ownership of planning.yaml."""
-    
-    def __init__(self, campaign_dir: str, config_dir: str = "config"):
-        self.campaign_dir = Path(campaign_dir)
-        self.config_dir = config_dir
-        self.planning_path = self.campaign_dir / self.config_dir / "planning.yaml"
+
+    def __init__(self, platform) -> None:
+        self.platform = platform
+        self.planning_path = self.platform.config_path_base / "planning.yaml"
     
     def _load(self) -> PlanningConfig:
         """Load planning configuration, returning empty config if file doesn't exist."""

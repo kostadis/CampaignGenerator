@@ -329,6 +329,18 @@ gated on a change in another repo and should not block 0–4.
   `app.state.config_service` attribute name. Keep logic identical; change only
   which object holds it.
 
+  > **As implemented:** 14 server files (12 modified + 2 new) and 11 test
+  > files. The reference-grep method missed a real breakage class:
+  > `tests/test_planning_config_service.py` called
+  > `PlanningConfigService(str(tmp_path), "config")` — the old two-arg
+  > constructor — with **no textual reference** to `CampaignConfigService` or
+  > `config_service` anywhere in the file, so no grep for the renamed class
+  > would ever have found it. It broke only because the constructor signature
+  > changed. **Audit rule: grep constructor call-sites of every changed class,
+  > not just references to the old owning class's name.** This is the second
+  > time in this effort a single-form grep underreported scope (see the
+  > flat-key overlay correction above).
+
 ## Out of scope (named, deferred)
 
 - **Central backend/model provider** (gap #3) — deferred by the maintainer.

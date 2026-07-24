@@ -8,7 +8,9 @@ Twelve CLI flags used to map to dotted ``session_doc.*`` boot-override keys:
 ``--party``, ``--voice-dir``, ``--examples``, ``--characters``,
 ``--narrate-tokens``, ``--context``. All twelve were silent no-ops:
 ``session_doc`` left ``UISection`` in Phase 5 of the session-editor
-isolation, so ``CampaignConfigService.resolved()`` was routing every one of
+isolation, so ``CampaignConfigService.resolved()`` (now split into
+``PlatformConfigService``/``UIStateService`` per
+``docs/config/platform-isolation.md``) was routing every one of
 them into ``ui_raw.setdefault("session_doc", {})`` — a phantom key nothing
 downstream ever read. ``SessionEditorConfigService`` (the only place those
 fields have meaning) reads exclusively from its own persisted
@@ -34,7 +36,7 @@ e.g. ``overrides["session_doc.scene_extractions_dir"] == "/custom/scenes"``.
 Nothing asserted that any consumer ever read that key back out, so all
 twelve flags could (and did) rot into no-ops without a single test
 failing. ``test_session_dir_boot_override_reaches_resolved_editor_paths``
-below closes that gap: it builds a real ``CampaignConfigService`` +
+below closes that gap: it builds a real ``PlatformConfigService`` +
 ``SessionEditorConfigService`` pair with a boot override in place and
 asserts the override changes a *resolved path* on the consumer side,
 proving the value actually propagates rather than merely appearing in a
@@ -67,7 +69,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import server.main as server_main
-from server.config_service import CampaignConfigService
+from server.platform_config_service import PlatformConfigService
 from server.main import _boot_overrides_from_args
 from server.session_editor_config_service import SessionEditorConfigService
 
@@ -94,12 +96,12 @@ def _boot_wired_editor_service(tmp_path: Path, session_dir: Path) -> SessionEdit
 
     Reuses ``_service``'s tmp-campaign scaffolding (writes
     ``config/config.yaml``) for its side effect, then wraps a *second*
-    ``CampaignConfigService`` — this time with ``boot_overrides`` set — over
+    ``PlatformConfigService`` — this time with ``boot_overrides`` set — over
     the same ``tmp_path``, mirroring how ``main()`` constructs the one real
     service from CLI-derived overrides.
     """
     _service(tmp_path)  # side effect only: seeds config/config.yaml on disk
-    platform = CampaignConfigService(
+    platform = PlatformConfigService(
         str(tmp_path), boot_overrides={"runtime.session_dir": str(session_dir)}
     )
     return SessionEditorConfigService(platform)
@@ -182,7 +184,7 @@ def test_session_dir_boot_override_reaches_resolved_editor_paths(tmp_path):
     unnoticed: a boot override must be provably read by a consumer, not
     merely present in the dict ``_boot_overrides_from_args`` builds.
 
-    Wires a ``CampaignConfigService`` with a ``runtime.session_dir`` boot
+    Wires a ``PlatformConfigService`` with a ``runtime.session_dir`` boot
     override (the surviving flag) into a ``SessionEditorConfigService`` and
     asserts a session-scoped field in ``resolved_editor_config()`` — the
     Session Doc Editor's actual read path — resolves under the

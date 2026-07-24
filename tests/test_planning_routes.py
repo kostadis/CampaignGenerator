@@ -21,15 +21,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from server.routers import planning_routes  # noqa: E402
 
 
-class _StubConfigService:
-    """Minimal stand-in exposing exactly the two attributes the planning
-    router reads from ``app.state.config_service`` — ``campaign_dir`` (via
-    config.get_campaign_dir_from_request) and ``config_dir`` (via
-    planning_routes.get_planning_service)."""
+class _StubPlatform:
+    """Minimal stand-in exposing exactly the one attribute the planning
+    router reads from ``app.state.platform`` — ``config_path_base`` (via
+    planning_routes.get_planning_service / PlanningConfigService)."""
 
     def __init__(self, campaign_dir: Path, config_dir: str = "config"):
         self.campaign_dir = Path(campaign_dir)
         self.config_dir = config_dir
+        self.config_path_base = self.campaign_dir / self.config_dir
 
 
 @pytest.fixture
@@ -38,7 +38,7 @@ def client(tmp_path):
     app = FastAPI()
     # Mirror main.py: the "/api/planning" prefix comes from include_router.
     app.include_router(planning_routes.router, prefix="/api/planning")
-    app.state.config_service = _StubConfigService(tmp_path)
+    app.state.platform = _StubPlatform(tmp_path)
     return TestClient(app), tmp_path
 
 

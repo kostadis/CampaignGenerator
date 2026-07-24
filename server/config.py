@@ -146,13 +146,13 @@ def path_exists(path_str: str) -> bool:
 
 def get_campaign_dir_from_request(request: Request) -> str:
     """Extract the campaign directory from the app state.
-    
+
     Mirrors the pattern used in config_routes._require_service().
     """
-    config_service = getattr(request.app.state, "config_service", None)
-    if config_service is None:
+    platform = getattr(request.app.state, "platform", None)
+    if platform is None:
         raise HTTPException(
             status_code=503,
             detail="config service not initialized — campaign_dir not resolved at boot",
         )
-    return str(config_service.campaign_dir)
+    return str(platform.campaign_dir)

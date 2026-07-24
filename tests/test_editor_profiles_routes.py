@@ -4,8 +4,8 @@
 
 Mirrors ``tests/test_planning_routes.py``'s status-code contract (200/201/
 204/404/409/400 via an isolated ``FastAPI()`` + ``include_router(prefix=
-...)``), but — unlike planning's stub — wires ``app.state.config_service``
-to a real ``CampaignConfigService``: the editor router's dependency chain
+...)``), but — unlike planning's stub — wires ``app.state.platform`` to a
+real ``PlatformConfigService``: the editor router's dependency chain
 (``get_editor_service`` -> ``get_editor_config``) calls
 ``.resolved_editor_config()``, which a stub can't satisfy. Scaffold
 (``fresh_campaign`` / minimal ``config.yaml``) copied from
@@ -23,7 +23,7 @@ from fastapi.testclient import TestClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from server.config_service import CampaignConfigService, TRACKED_CONFIG_NAME
+from server.platform_config_service import PlatformConfigService, TRACKED_CONFIG_NAME
 from server.routers import scene_editor
 
 CONFIG_SUBDIR = "config"
@@ -48,7 +48,7 @@ def client(fresh_campaign):
     app = FastAPI()
     # Mirror main.py: the "/api/editor" prefix comes from include_router.
     app.include_router(scene_editor.router, prefix="/api/editor")
-    app.state.config_service = CampaignConfigService(fresh_campaign)
+    app.state.platform = PlatformConfigService(fresh_campaign)
     return TestClient(app), fresh_campaign
 
 

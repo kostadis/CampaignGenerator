@@ -19,8 +19,8 @@ from fastapi.testclient import TestClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from server.config_service import (
-    CampaignConfigService,
+from server.platform_config_service import (
+    PlatformConfigService,
     TRACKED_CONFIG_NAME,
 )
 from server.routers import config_routes
@@ -47,9 +47,9 @@ def _make_app(campaign_dir: Path | None) -> FastAPI:
     app = FastAPI()
     app.include_router(config_routes.router, prefix="/api/config")
     if campaign_dir is not None:
-        app.state.config_service = CampaignConfigService(campaign_dir)
+        app.state.platform = PlatformConfigService(campaign_dir)
     else:
-        app.state.config_service = None
+        app.state.platform = None
     return app
 
 
@@ -164,10 +164,18 @@ class TestPutLocal:
 
     def test_local_rejects_ui_top_level_key(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
-        # ``ui`` is not a valid LocalConfig top-level key; pydantic rejects.
-        # ``extra="allow"`` on LocalConfig means stranger top-level keys are
-        # accepted but stored without further validation. The important
-        # invariant is that ``ui`` keys do not land in the typed
+        # ``ui`` is not a valid PlatformLocalConfig top-level key. Unlike the
+        # retired ``extra="allow"`` LocalConfig, PlatformLocalConfig is
+        # strict (extra="forbid") per docs/config/platform-isolation.md's
+        # "Strictness rule" — but that rule is about LOAD (a pre-existing,
+        # possibly hand-edited file must not block boot), not WRITE. A live
+        # PUT with an unrecognized key is a real caller bug, so
+        # update_local now rejects it (400) the same way update_runtime/
+        # update_section already do for a bad partial — this one response
+        # code is a deliberate, narrow exception to "no behavior change",
+        # required by tightening the model as the design doc asks. This
+        # test doesn't pin the PUT's status; the invariant that matters
+        # either way is that ``ui`` keys never land in the typed
         # ``server``/``nav`` slots — verify by reading back.
         client.put("/api/config/local", json={"values": {"ui": {"vtt_summary": {}}}})
         body = client.get("/api/config/").json()

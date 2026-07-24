@@ -1,8 +1,11 @@
 """Config API routes — typed section/runtime/local updates, path helpers.
 
-All persistence flows through ``CampaignConfigService``. There is no
-fallback to a raw ``ui_config.yaml`` — when the service is not initialized
-the routes return ``503``.
+All persistence flows through ``PlatformConfigService`` (``app.state.
+platform``) and, for the ten un-isolated ``ui.<section>`` blobs, the
+``UIStateService`` it composes (``platform.uis`` — see
+``docs/config/platform-isolation.md``). There is no fallback to a raw
+``ui_config.yaml`` — when the service is not initialized the routes return
+``503``.
 """
 
 from pathlib import Path
@@ -21,18 +24,19 @@ from server.config import (
     path_exists,
 )
 from server.config_models import SCHEMA_VERSION, UI_SECTION_NAMES
+from server.platform_config_service import PlatformConfigService
 
 router = APIRouter()
 
 
-def _require_service(request: Request):
-    service = getattr(request.app.state, "config_service", None)
-    if service is None:
+def _require_service(request: Request) -> PlatformConfigService:
+    platform = getattr(request.app.state, "platform", None)
+    if platform is None:
         raise HTTPException(
             status_code=503,
             detail="config service not initialized — campaign_dir not resolved at boot",
         )
-    return service
+    return platform
 
 
 # ── GET / — typed/resolved view + metadata ─────────────────────────────────
@@ -46,7 +50,7 @@ def get_config(request: Request):
     return {
         "campaign_dir": str(service.campaign_dir),
         "config_path": str(service.config_path),
-        "ui_state_path": str(service.ui_state_path),
+        "ui_state_path": str(service.uis.ui_state_path),
         "local_config_path": str(service.local_config_path),
         "schema_version": SCHEMA_VERSION,
         "resolved": resolved,
@@ -72,7 +76,7 @@ def put_config_section(name: str, update: SectionUpdate, request: Request):
             status_code=404,
             detail=f"unknown UI section {name!r}; valid: {', '.join(UI_SECTION_NAMES)}",
         )
-    service.update_section(name, update.values)
+    service.uis.update_section(name, update.values)
     return {"ok": True}
 
 

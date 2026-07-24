@@ -19,7 +19,7 @@ a request-scoped ``ResolvedEditorConfig``
     goes to disk.
   - ``session_doc`` is no longer a valid section on the generic
     ``/api/config/section/{name}`` door (404 — Task 3).
-  - Without a config service wired (``app.state.config_service is None``),
+  - Without a config service wired (``app.state.platform is None``),
     editor routes return 503 (mirrors ``config_routes._require_service``)
     rather than silently falling back to an in-memory default.
   - A double-prefix regression guard for the router mount.
@@ -41,11 +41,8 @@ from fastapi.testclient import TestClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from server.config_service import (
-    CampaignConfigService,
-    TRACKED_CONFIG_NAME,
-    UI_STATE_NAME,
-)
+from server.config_service import UI_STATE_NAME
+from server.platform_config_service import PlatformConfigService, TRACKED_CONFIG_NAME
 from server.routers import config_routes, scene_editor
 from server.session_editor_config_service import SessionEditorConfigService
 from server.session_editor_config_shared import (
@@ -77,9 +74,9 @@ def _make_app(campaign_dir: Path | None) -> FastAPI:
     app.include_router(scene_editor.router, prefix="/api/editor")
     app.include_router(config_routes.router, prefix="/api/config")
     if campaign_dir is not None:
-        app.state.config_service = CampaignConfigService(campaign_dir)
+        app.state.platform = PlatformConfigService(campaign_dir)
     else:
-        app.state.config_service = None
+        app.state.platform = None
     return app
 
 
@@ -249,7 +246,7 @@ class TestSectionDoorNoLongerHandlesSessionDoc:
 # SessionEditorConfigService.resolved_editor_config() is responsible for
 # threading it through its own path resolution — see the docstring on
 # resolved_editor_config() for why that must be explicit rather than
-# relying on CampaignConfigService's persisted-value fallback.
+# relying on PlatformConfigService's persisted-value fallback.
 
 
 class TestSessionDirBootOverride:
@@ -265,7 +262,7 @@ class TestSessionDirBootOverride:
             ),
         )
 
-        platform = CampaignConfigService(
+        platform = PlatformConfigService(
             fresh_campaign,
             boot_overrides={"runtime.session_dir": str(session_dir)},
         )
@@ -286,7 +283,7 @@ class TestSessionDirFallback:
     ``cfg.work_dir`` (the campaign root) as a last resort."""
 
     def test_falls_back_to_cfg_session_dir_when_no_recap(self, fresh_campaign):
-        platform = CampaignConfigService(fresh_campaign)
+        platform = PlatformConfigService(fresh_campaign)
         service = SessionEditorConfigService(platform)
         cfg = service.resolved_editor_config()
         assert cfg.paths.session_recap is None
@@ -295,7 +292,7 @@ class TestSessionDirFallback:
         assert scene_editor._session_dir(cfg) == Path("/some/session/dir")
 
     def test_prefers_session_recap_parent_over_session_dir(self, fresh_campaign):
-        platform = CampaignConfigService(fresh_campaign)
+        platform = PlatformConfigService(fresh_campaign)
         service = SessionEditorConfigService(platform)
         cfg = service.resolved_editor_config()
         cfg = dataclasses.replace(
@@ -345,7 +342,7 @@ class TestRouteMounting:
 
 class TestO3ModelResolution:
     def test_anthropic_override_wins_then_falls_back_to_default_model(self, fresh_campaign):
-        platform = CampaignConfigService(fresh_campaign)
+        platform = PlatformConfigService(fresh_campaign)
         service = SessionEditorConfigService(platform)
 
         # Editor-local override (backends.anthropic.model) wins when set.
@@ -365,7 +362,7 @@ class TestO3ModelResolution:
     def test_dgx_and_openrouter_suppress_model_args(self, fresh_campaign):
         # _model_args() is skipped entirely for dgx/openrouter — that model
         # is governed by _backend_flags instead (unchanged O1 behavior).
-        platform = CampaignConfigService(fresh_campaign)
+        platform = PlatformConfigService(fresh_campaign)
         service = SessionEditorConfigService(platform)
         service.update_config({"backends": {"active": "dgx"}})
         cfg = service.resolved_editor_config()

@@ -14,7 +14,12 @@ Editor's own ``<config>/session_doc.yaml`` (see
 ``tests/test_session_editor_config_service.py``), not in
 ``server/config_models.py``. The stringy-int / empty-string-path coercion
 behavior this module's motivating example describes is demonstrated below
-against fields that are still part of ``UISection``/``LocalConfig``.
+against fields that are still part of ``UISection``.
+
+The platform config isolation (Phase 2, docs/config/platform-isolation.md)
+moved ``LocalConfig``/``ServerSection``/``NavSection`` out of this module
+entirely, to ``server/platform_config_shared.py`` — see
+``tests/test_platform_config_service.py`` for their (now strict) coverage.
 """
 
 from __future__ import annotations
@@ -29,31 +34,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server.config_models import (
     SCHEMA_VERSION,
-    LocalConfig,
-    ServerSection,
     UIState,
     UI_SECTION_NAMES,
     VttSummarySection,
 )
-
-
-class TestIntCoercion:
-    """The same native string->int coercion the removed
-    ``SessionDocSection.narrate_tokens`` example demonstrated, exercised
-    here against ``ServerSection.port`` — still a plain, currently-used
-    typed int field."""
-
-    def test_stringy_int_becomes_int(self):
-        s = ServerSection(port="6001")
-        assert s.port == 6001
-        assert isinstance(s.port, int)
-
-    def test_empty_int_string_raises(self):
-        # Empty string would normally fail int validation. The custom
-        # _empty_to_none BeforeValidator handles empty strings only on
-        # path-style (OptStr) fields — a plain int field still rejects "".
-        with pytest.raises(ValidationError):
-            ServerSection(port="")
 
 
 class TestVttSummaryCoercion:
@@ -116,20 +100,3 @@ class TestUIState:
         assert state.ui.vtt_summary.input == "x.vtt"
         assert not hasattr(state.ui, "session_doc")
         assert not hasattr(state.ui, "profiles")
-
-
-class TestLocalConfig:
-    def test_default_server_settings(self):
-        local = LocalConfig()
-        assert local.server.host == "127.0.0.1"
-        assert local.server.port == 5000
-
-    def test_overrides(self):
-        local = LocalConfig(server={"port": 6001})
-        assert local.server.port == 6001
-        assert local.server.host == "127.0.0.1"
-
-    def test_nav_extras_allowed(self):
-        local = LocalConfig(nav={"last_page": "/workflow/editor", "scroll": 42})
-        assert local.nav.last_page == "/workflow/editor"
-        assert local.nav.model_dump()["scroll"] == 42

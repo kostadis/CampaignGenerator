@@ -67,7 +67,7 @@ def get_editor_service(request: Request) -> SessionEditorConfigService:
     config service hasn't been initialized (campaign_dir not resolved at
     boot) rather than silently falling back to a default.
     """
-    platform = getattr(request.app.state, "config_service", None)
+    platform = getattr(request.app.state, "platform", None)
     if platform is None:
         raise HTTPException(
             status_code=503,

@@ -31,7 +31,7 @@ def _backend_flags(request: Request) -> list[str]:
     Empty list (backend == "anthropic", or no config service) means "no
     overrides — the script's own argparse default (Anthropic API) applies".
     """
-    service = getattr(request.app.state, "config_service", None)
+    service = getattr(request.app.state, "platform", None)
     if service is None:
         return []
     backends = SessionEditorConfigService(service).resolved_editor_config().backends

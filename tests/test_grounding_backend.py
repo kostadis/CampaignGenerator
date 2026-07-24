@@ -21,7 +21,7 @@ now `backends.active` in the Session Doc Editor's own
 `<config>/session_doc.yaml` (there is no more `ui.session_doc` in
 `ui_state.yaml`), so `_backend_flags` reads it through
 `SessionEditorConfigService`. The test harness below builds a real
-`CampaignConfigService` per test (in `tmp_path`) and seeds the backend via
+`PlatformConfigService` per test (in `tmp_path`) and seeds the backend via
 `SessionEditorConfigService.update_config` instead of a bare fake
 `resolved()` stub.
 """
@@ -34,7 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from fastapi.testclient import TestClient
 
 from server.backend_forwarding import backend_cli_args
-from server.config_service import CampaignConfigService, TRACKED_CONFIG_NAME
+from server.platform_config_service import PlatformConfigService, TRACKED_CONFIG_NAME
 from server.main import app
 from server.session_editor_config_service import SessionEditorConfigService
 
@@ -74,11 +74,11 @@ def _session_doc_to_backends_partial(session_doc: dict) -> dict:
 
 
 def _set_backend(monkeypatch, tmp_path: Path, session_doc: dict | None):
-    """Point app.state.config_service at a real CampaignConfigService seeded
+    """Point app.state.platform at a real PlatformConfigService seeded
     (via SessionEditorConfigService) with the given backend choice. Pass
     None to simulate no config service."""
     if session_doc is None:
-        monkeypatch.setattr(app.state, "config_service", None, raising=False)
+        monkeypatch.setattr(app.state, "platform", None, raising=False)
         return
     config_subdir = tmp_path / "config"
     config_subdir.mkdir(parents=True, exist_ok=True)
@@ -86,11 +86,11 @@ def _set_backend(monkeypatch, tmp_path: Path, session_doc: dict | None):
         "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
         encoding="utf-8",
     )
-    platform = CampaignConfigService(tmp_path)
+    platform = PlatformConfigService(tmp_path)
     SessionEditorConfigService(platform).update_config(
         _session_doc_to_backends_partial(session_doc)
     )
-    monkeypatch.setattr(app.state, "config_service", platform, raising=False)
+    monkeypatch.setattr(app.state, "platform", platform, raising=False)
 
 
 def _run(monkeypatch, tmp_path: Path, path: str, session_doc: dict | None, params: dict) -> dict:
