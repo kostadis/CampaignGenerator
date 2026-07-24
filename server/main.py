@@ -95,19 +95,17 @@ def _boot_overrides_from_args(args) -> dict:
     These overrides are in-memory only — per the unification plan, CLI
     flags must NOT persist to disk. The service applies them on top of
     the loaded ui_state for the lifetime of this process.
+
+    ``--session-dir`` is the only flag left that produces an override (per
+    O1 in docs/config/platform-isolation.md): the twelve ``session_doc.*``
+    flags this used to map were silent no-ops — ``session_doc`` left
+    ``UISection`` in Phase 5 of the session-editor isolation, so
+    ``resolved()`` was routing them into a phantom key nothing ever read.
+    They were deleted from argparse rather than wired to a real consumer,
+    since the Session Doc Editor already has its own per-campaign
+    persisted config (``session_doc.yaml``) for exactly these fields.
     """
     flag_map = {
-        "session": "session_doc.session",
-        "extract_dir": "session_doc.scene_extractions_dir",
-        "roleplay_extract_dir": "session_doc.roleplay_dir",
-        "output_dir": "session_doc.output_dir",
-        "summary_extract_dir": "session_doc.summary_dir",
-        "session_summary": "session_doc.session_summary",
-        "party": "session_doc.party",
-        "voice_dir": "session_doc.voice_dir",
-        "examples": "session_doc.examples_dir",
-        "characters": "session_doc.characters",
-        "narrate_tokens": "session_doc.narrate_tokens",
         "session_dir": "runtime.session_dir",
         # ``--host`` / ``--port`` stay in args for uvicorn but are NOT
         # boot-overrides — argparse can't tell "user typed --port 5000"
@@ -120,8 +118,6 @@ def _boot_overrides_from_args(args) -> dict:
         if value is None or value == "":
             continue
         overrides[dotted] = value
-    if getattr(args, "context", None):
-        overrides["session_doc.context"] = list(args.context)
     return overrides
 
 
@@ -133,39 +129,21 @@ def main() -> None:
                         help="Campaign root directory (contains docs/, voice/, examples/, summaries/)")
     parser.add_argument("--session-dir", metavar="DIR",
                         help="Session directory inside summaries/ — auto-derives all paths")
-    parser.add_argument("--session", metavar="FILE",
-                        help="Session recap file")
-    parser.add_argument("--extract-dir", metavar="DIR")
-    parser.add_argument("--roleplay-extract-dir", metavar="DIR")
-    parser.add_argument("--output-dir", metavar="DIR")
-    parser.add_argument("--party", metavar="FILE")
-    parser.add_argument("--voice-dir", metavar="DIR")
-    parser.add_argument("--summary-extract-dir", metavar="DIR")
-    parser.add_argument("--session-summary", metavar="FILE")
-    parser.add_argument("--context", nargs="+", metavar="FILE")
-    parser.add_argument("--characters", metavar="NAMES")
-    parser.add_argument("--examples", metavar="DIR")
-    parser.add_argument("--narrate-tokens", type=int, metavar="N")
     parser.add_argument("--port", type=int, default=5000)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--config-dir", metavar="DIR", default="config",
                         help="Configuration subdirectory within campaign (default: 'config')")
     args = parser.parse_args()
 
-    # Capture boot overrides from the RAW, user-typed flags BEFORE the
-    # session-dir derivation block below backfills defaults into args. A value
-    # derived from --session-dir is NOT a user override, and boot overrides win
-    # permanently at resolved() time — so promoting derived paths to overrides
-    # makes every session_doc field (scene_extractions_dir, party, voice_dir,
-    # …) impossible to change from the UI: the persisted ui_state value is
-    # clobbered on every read. Only genuinely-typed flags belong here (the same
-    # reason --host/--port are excluded inside _boot_overrides_from_args).
-    boot_overrides = _boot_overrides_from_args(args)
-
+    # Boot overrides are computed once, up front, from the parsed CLI args —
+    # see _boot_overrides_from_args for which flags qualify (--session-dir
+    # only, as of O1 in docs/config/platform-isolation.md).
+    #
     # Session-path derivation from --session-dir happens once, inside
     # CampaignConfigService.resolved() / SessionEditorConfigService — driven
     # entirely by the `runtime.session_dir` boot override captured above.
     # There is no second, main.py-local derivation to keep in sync.
+    boot_overrides = _boot_overrides_from_args(args)
 
     # Construct the unified config service. Routers read everything through
     # it; if no campaign directory can be determined, fail loudly rather
