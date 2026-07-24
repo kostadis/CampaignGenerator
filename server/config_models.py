@@ -133,11 +133,22 @@ class EnsembleSection(BaseModel):
     scope inputs (known-names sources, aliases file) the bundle stage and the
     alias-correction gate consume. Files on disk remain the source of truth;
     this only records the operator's selections.
+
+    **Being retired.** ``docs/config/ensemble-isolation.md`` replaces this
+    section with a strict ``EnsembleConfig`` in its own ``<config>/
+    ensemble.yaml`` (``server/ensemble_config_shared.py``). Phase 5 of that
+    doc removes ``ensemble`` from :class:`UISection` entirely; until the
+    migration CLI ships, this stays so a pre-migration campaign keeps loading.
+
+    Phase 0 deleted the ``campaign_dir`` field: the frontend persisted it and
+    read it back, but no ensemble run has ever consumed it, and the platform
+    tier (``PlatformConfigService``) is its real owner. A leftover
+    ``campaign_dir`` in an existing ``ui_state.yaml`` is harmless — this model
+    is ``extra="allow"``, so it loads and is ignored.
     """
 
     model_config = ConfigDict(extra="allow")
 
-    campaign_dir: OptStr = None
     chapters_glob: str = "docs/chapters/chapter_*.md"
     # The explicit set of chapters chosen in the picker (relative paths).
     # Principle X — there is no silent "all": empty means *nothing selected*

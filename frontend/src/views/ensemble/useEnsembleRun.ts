@@ -95,7 +95,6 @@ export interface BackendProfile {
 }
 
 export interface EnsembleConfig {
-  campaign_dir: string
   chapters_glob: string
   chapters_selected: string[]
   extract: BackendProfile
@@ -114,7 +113,6 @@ export function readEnsembleConfig(resolved: any): EnsembleConfig {
     model: p?.model ?? '',
   })
   return {
-    campaign_dir: e.campaign_dir ?? '',
     chapters_glob: e.chapters_glob ?? 'docs/chapters/chapter_*.md',
     chapters_selected: Array.isArray(e.chapters_selected) ? e.chapters_selected : [],
     extract: prof(e.extract),

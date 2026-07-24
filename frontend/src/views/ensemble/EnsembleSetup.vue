@@ -28,7 +28,6 @@ async function save() {
   cfg.value.known_names = knownNamesText.value.split('\n').map(s => s.trim()).filter(Boolean)
   cfg.value.extract.endpoints = extractEndpointsText.value.split('\n').map(s => s.trim()).filter(Boolean)
   await config.updateSection('ensemble', {
-    campaign_dir: cfg.value.campaign_dir,
     chapters_glob: cfg.value.chapters_glob,
     chapters_selected: cfg.value.chapters_selected,
     extract: cfg.value.extract,

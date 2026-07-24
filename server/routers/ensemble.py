@@ -13,16 +13,30 @@ import glob
 import shutil
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib.registry import find_registry
 from server.backend_forwarding import backend_cli_args
+from server.ensemble_config_service import EnsembleConfigService
+from server.ensemble_config_shared import EnsembleConfig
 from server.party_config_shared import load_party_config
 from server.planning_config_shared import load_planning_config
+from server.platform_config_service import require_platform
 from server.subprocess_runner import console_script, stream_subprocess, sse_error_stream
 
 router = APIRouter()
+
+
+def get_ensemble_service(request: Request) -> EnsembleConfigService:
+    """Per-request DI for the ensemble config service (Planning's shipped
+    shape — not an ``app.state`` singleton).
+
+    ``require_platform`` is the one shared "fetch app.state.platform or 503"
+    accessor every router uses; see ``docs/config/platform-isolation.md``
+    Phase 4.
+    """
+    return EnsembleConfigService(require_platform(request))
 
 # The four grounding docs the workflow targets. live = promote target; draft =
 # what synthesis writes. Nothing else may be promoted (FR-013).
@@ -241,6 +255,43 @@ def _run_locked(stage: str, cmd: list[str], env_extra: dict[str, str] | None = N
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
+
+
+# ── Config (owned document, docs/config/ensemble-isolation.md) ──────────────
+#
+# Ensemble config is one grouped document, not a collection, so this takes the
+# Session Doc Editor's document shape (GET/PUT of the whole thing) rather than
+# Planning's per-resource CRUD.
+#
+# NOTE: the "/api/ensemble" prefix is supplied by main.py's include_router,
+# matching every sibling router. Do not set prefix= on the APIRouter above or
+# these mount at /api/ensemble/api/ensemble/* — the bug planning-isolation.md
+# shipped and had to fix.
+
+@router.get("/config", response_model=EnsembleConfig)
+def get_ensemble_config(
+    service: EnsembleConfigService = Depends(get_ensemble_service),
+):
+    """The stored ensemble.yaml, all-defaults if the file does not exist yet."""
+    return service.get_config()
+
+
+@router.put("/config", response_model=EnsembleConfig)
+async def put_ensemble_config(
+    request: Request,
+    service: EnsembleConfigService = Depends(get_ensemble_service),
+):
+    """Merge a partial into ensemble.yaml and return the validated result.
+
+    Body is the grouped partial itself (e.g. ``{"tuning": {"chapter_parallel":
+    6}}``), not a ``{"values": …}`` envelope — the envelope belongs to the
+    generic ``PUT /api/config/section/{name}`` this endpoint replaces.
+    400 on validation failure, including an unknown key (the schema is strict).
+    """
+    partial = await request.json()
+    if not isinstance(partial, dict):
+        raise HTTPException(status_code=400, detail="body must be a JSON object")
+    return service.update_config(partial)
 
 
 # ── Status (disk-derived, FR-002) ───────────────────────────────────────────
