@@ -1,5 +1,6 @@
-"""Phase 3 of docs/config/ensemble-isolation.md: ensemble.yaml is the ONLY
-source of the router's defaults.
+"""Phases 3 and 4 of docs/config/ensemble-isolation.md: ensemble.yaml is the
+ONLY source of the router's defaults, and the sidebar model pick finally
+reaches an ensemble run (TestModelResolution, at the bottom).
 
 Two things are tested here:
 
@@ -271,3 +272,119 @@ class TestReadRoutes:
         assert stages["extract"]["status"] == "complete"
         assert stages["extract"]["artifacts"] == 1
         assert stages["bundle"]["status"] == "not_started"
+
+
+# ── Phase 4: the sidebar model pick reaches ensemble ───────────────────────
+
+class TestModelResolution:
+    """server/routers/ensemble.py was the only /run/* router outside
+    resolve_default_model. On the Anthropic branch backend_cli_args emits
+    nothing at all, so the subprocess fell back to campaignlib's literal and
+    platform.runtime.default_model never reached an ensemble run."""
+
+    def _model_of(self, cmd):
+        return cmd[cmd.index("--model") + 1] if "--model" in cmd else None
+
+    def test_extract_uses_the_platform_default_model(self, client, captured, campaign):
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.get("/api/ensemble/run/extract", params={"chapters": ["ch01.md"]})
+        assert self._model_of(captured[-1]) == "claude-opus-5"
+
+    def test_bundle_uses_the_platform_default_model(self, client, captured):
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.get("/api/ensemble/run/bundle")
+        assert self._model_of(captured[-1]) == "claude-opus-5"
+
+    def test_synthesize_uses_the_platform_default_model(self, client, captured):
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.get("/api/ensemble/run/synthesize", params={"doc": "world_state"})
+        assert self._model_of(captured[-1]) == "claude-opus-5"
+
+    def test_ensemble_yaml_model_beats_the_platform_default(self, client, captured):
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.put("/api/ensemble/config",
+                   json={"extract": {"backend": "anthropic", "model": "claude-sonnet-5"}})
+        client.get("/api/ensemble/run/extract", params={"chapters": ["ch01.md"]})
+        assert self._model_of(captured[-1]) == "claude-sonnet-5"
+
+    def test_explicit_request_model_beats_everything(self, client, captured):
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.put("/api/ensemble/config",
+                   json={"extract": {"model": "claude-sonnet-5"}})
+        client.get("/api/ensemble/run/extract",
+                   params={"chapters": ["ch01.md"], "model": "claude-haiku-4-5"})
+        assert self._model_of(captured[-1]) == "claude-haiku-4-5"
+
+    def test_non_anthropic_backend_is_not_given_a_claude_model(self, client, captured):
+        """A DGX model name and a Claude id are not interchangeable —
+        substituting the platform default here would be a bug, not a default."""
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.put("/api/ensemble/config", json={
+            "extract": {"backend": "dgx", "model": "", "endpoints": ["http://spark:8001/v1"]},
+        })
+        client.get("/api/ensemble/run/extract", params={"chapters": ["ch01.md"]})
+        cmd = captured[-1]
+        assert "claude-opus-5" not in cmd
+        assert "--backend" in cmd and cmd[cmd.index("--backend") + 1] == "dgx"
+
+    def test_dgx_model_is_still_forwarded_untouched(self, client, captured):
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.put("/api/ensemble/config", json={
+            "extract": {"backend": "dgx", "model": "qwen3-next",
+                        "endpoints": ["http://spark:8001/v1"]},
+        })
+        client.get("/api/ensemble/run/extract", params={"chapters": ["ch01.md"]})
+        assert self._model_of(captured[-1]) == "qwen3-next"
+
+    def test_bundle_list_does_no_model_work(self, client, captured):
+        """--list is a scope report with no model call; it must not acquire a
+        --model (or the backend env) just because resolution now exists."""
+        client.get("/api/ensemble/run/bundle", params={"list": True})
+        cmd = captured[-1]
+        assert "--list" in cmd
+        assert "--model" not in cmd
+
+    def test_threads_and_recent_events_get_no_model(self, client, captured):
+        """Deterministic renders — no model call, so no --model."""
+        client.get("/api/ensemble/run/threads")
+        assert "--model" not in captured[-1]
+        client.get("/api/ensemble/run/recent-events")
+        assert "--model" not in captured[-1]
+
+    def test_stale_non_anthropic_model_is_dropped_not_forwarded(self, client, captured):
+        """The Setup page keeps a per-stage model across a backend switch, so
+        an Anthropic run can arrive carrying a Qwen id. It must be discarded
+        before resolution — never forwarded, never left as 'no model'."""
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.get("/api/ensemble/run/extract", params={
+            "chapters": ["ch01.md"],
+            "backend": "anthropic",
+            "model": "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
+        })
+        cmd = captured[-1]
+        assert "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8" not in cmd
+        assert self._model_of(cmd) == "claude-opus-5"
+
+    def test_openrouter_style_id_is_also_treated_as_foreign(self, client, captured):
+        """`anthropic/claude-sonnet-4` is an OpenRouter id, not an Anthropic
+        API one — the `claude-` prefix check must not be fooled by the vendor
+        segment."""
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.get("/api/ensemble/run/extract", params={
+            "chapters": ["ch01.md"],
+            "backend": "anthropic",
+            "model": "anthropic/claude-sonnet-4",
+        })
+        assert self._model_of(captured[-1]) == "claude-opus-5"
+
+    def test_a_claude_id_absent_from_the_registry_is_still_honoured(self, client, captured):
+        """Deliberately a prefix check, not MODELS membership: swapping in the
+        platform default for a legitimate-but-unlisted Claude id would quietly
+        run a model the caller did not ask for."""
+        client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
+        client.get("/api/ensemble/run/extract", params={
+            "chapters": ["ch01.md"],
+            "backend": "anthropic",
+            "model": "claude-not-in-the-registry-yet",
+        })
+        assert self._model_of(captured[-1]) == "claude-not-in-the-registry-yet"

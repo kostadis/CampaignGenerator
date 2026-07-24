@@ -91,7 +91,14 @@ def test_synthesize_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
     })
     assert r.status_code == 200
     _ = r.text  # drain the SSE generator so fake_stream_subprocess actually runs
-    assert "--model" not in captured["cmd"]
+    # Phase 4 of docs/config/ensemble-isolation.md: the invariant is unchanged
+    # -- a stale non-Anthropic id must never reach an Anthropic run -- but the
+    # assertion is no longer "no --model at all". The router now resolves the
+    # sidebar's platform default for Anthropic runs (ensemble was the last
+    # /run/* route outside resolve_default_model), so the stale id is dropped
+    # and a Claude id takes its place. See ensemble._backend_args.
+    assert "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8" not in captured["cmd"]
+    assert captured["cmd"][captured["cmd"].index("--model") + 1].startswith("claude-")
     assert "--backend" not in captured["cmd"]
     assert "--endpoint" not in captured["cmd"]
     assert not captured["env_extra"]
@@ -107,7 +114,14 @@ def test_bundle_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
     })
     assert r.status_code == 200
     _ = r.text
-    assert "--model" not in captured["cmd"]
+    # Phase 4 of docs/config/ensemble-isolation.md: the invariant is unchanged
+    # -- a stale non-Anthropic id must never reach an Anthropic run -- but the
+    # assertion is no longer "no --model at all". The router now resolves the
+    # sidebar's platform default for Anthropic runs (ensemble was the last
+    # /run/* route outside resolve_default_model), so the stale id is dropped
+    # and a Claude id takes its place. See ensemble._backend_args.
+    assert "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8" not in captured["cmd"]
+    assert captured["cmd"][captured["cmd"].index("--model") + 1].startswith("claude-")
     assert "--endpoints" not in captured["cmd"]
     assert not captured["env_extra"]
 
@@ -123,7 +137,14 @@ def test_extract_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
     })
     assert r.status_code == 200
     _ = r.text
-    assert "--model" not in captured["cmd"]
+    # Phase 4 of docs/config/ensemble-isolation.md: the invariant is unchanged
+    # -- a stale non-Anthropic id must never reach an Anthropic run -- but the
+    # assertion is no longer "no --model at all". The router now resolves the
+    # sidebar's platform default for Anthropic runs (ensemble was the last
+    # /run/* route outside resolve_default_model), so the stale id is dropped
+    # and a Claude id takes its place. See ensemble._backend_args.
+    assert "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8" not in captured["cmd"]
+    assert captured["cmd"][captured["cmd"].index("--model") + 1].startswith("claude-")
     assert "--backend" not in captured["cmd"]
     assert "--endpoints" not in captured["cmd"]
     assert not captured["env_extra"]

@@ -22,6 +22,7 @@ from server.ensemble_config_service import EnsembleConfigService
 from server.ensemble_config_shared import EnsembleConfig
 from server.party_config_shared import load_party_config
 from server.planning_config_shared import load_planning_config
+from server.platform_config_service import resolve_default_model
 from server.subprocess_runner import console_script, stream_subprocess, sse_error_stream
 
 router = APIRouter()
@@ -80,6 +81,64 @@ def _cmd_multi(cmd: list[str], flag: str, values: list[str]) -> None:
 def _cmd_flag(cmd: list[str], flag: str, condition: bool) -> None:
     if condition:
         cmd.append(flag)
+
+
+def _backend_args(backend: str, model: str, request: Request, *,
+                  endpoint: str | None = None,
+                  endpoints: list[str] | None = None) -> list[str]:
+    """``backend_cli_args`` plus the ``--model`` the Anthropic branch needs.
+
+    Phase 4 of ``docs/config/ensemble-isolation.md``. ``backend_cli_args``
+    returns ``[]`` for ``anthropic`` on purpose — "the script's own argparse
+    default applies" — which is right for backend/endpoint but meant the
+    ensemble router emitted no ``--model`` at all on that path. The
+    subprocess then fell back to ``campaignlib``'s literal, so
+    ``platform.runtime.default_model`` (the sidebar model picker) reached
+    every other ``/run/*`` route in the app and none of ensemble's. Phase 5a
+    of ``docs/config/platform-isolation.md`` routed fourteen request fields
+    through ``resolve_default_model``; ensemble's were not among them.
+
+    Resolution order, extending that function's table by one level at the
+    front (the caller has already folded in the per-stage config value):
+
+    1. an explicit ``model`` on the request
+    2. ``ensemble.yaml``'s per-stage ``extract``/``synthesize`` model
+    3. ``platform.runtime.default_model`` — the sidebar pick
+    4. ``campaignlib.constants.DEFAULT_MODEL``
+
+    Only the Anthropic branch is resolved. dgx/openrouter/claude-code carry
+    their own model ids (a DGX model name is meaningless to the Anthropic
+    API and vice versa), and for those ``backend_cli_args`` already forwards
+    ``--model`` when one is set — substituting a Claude id when it is not
+    would be a bug, not a default. This is why the ensemble case can't just
+    be folded into ``backend_cli_args``: that helper is shared with
+    ``grounding.py``/``scene_editor.py`` and is deliberately model-agnostic.
+
+    **The stale-model guard.** The Setup page keeps a per-stage model string
+    across a backend switch, so selecting dgx, typing a Qwen id, then
+    switching back to Anthropic leaves a foreign id in ``model``. Forwarding
+    that to an Anthropic run is the bug
+    ``test_extract_ignores_stale_model_for_anthropic`` (and its bundle /
+    synthesize siblings) exist to prevent — they predate this function and
+    asserted it by requiring that no ``--model`` reach an Anthropic run at
+    all, which was a sound proxy while the router had no model resolution.
+    Phase 4 keeps the invariant and drops the proxy: a non-Anthropic id is
+    discarded *before* resolution, so the run gets the sidebar's pick rather
+    than either a foreign id or nothing.
+
+    The check is a ``claude-`` prefix rather than membership of
+    ``server.config.MODELS`` on purpose. MODELS is a hand-maintained snapshot;
+    testing against it would silently swap the platform default in for a
+    legitimate Claude id that simply hadn't been added yet — quietly running a
+    model the caller did not ask for. The prefix only rejects ids that
+    *cannot* be Anthropic API ids (``Qwen/…``, ``openai/…``, and OpenRouter's
+    own ``anthropic/claude-…`` form), and never second-guesses one that could.
+    """
+    args = backend_cli_args(backend, model, endpoint=endpoint, endpoints=endpoints)
+    if not backend or backend == "anthropic":
+        anthropic_model = model if (model or "").startswith("claude-") else None
+        args += ["--model", resolve_default_model(anthropic_model, request)]
+    return args
 
 
 def _resolve_ensemble_path(path: str) -> Path:
@@ -454,6 +513,7 @@ async def promote(request: Request):
 
 @router.get("/run/extract")
 def run_extract(
+    request: Request,
     chapters: list[str] = Query(default=[]),
     per_chapter_dir: str = "",
     out: str = "",
@@ -498,7 +558,7 @@ def run_extract(
            "--per-chapter-dir", per_chapter_dir,
            "--out", out]
     _cmd_opt(cmd, "--plan", plan)
-    cmd += backend_cli_args(backend, model, endpoints=endpoints)
+    cmd += _backend_args(backend, model, request, endpoints=endpoints)
     _cmd_opt(cmd, "--chapter-parallel", chapter_parallel)
     _cmd_opt(cmd, "--chunk-parallel", chunk_parallel)
     _cmd_flag(cmd, "--no-speculative", no_speculative)
@@ -507,6 +567,7 @@ def run_extract(
 
 @router.get("/run/bundle")
 def run_bundle(
+    request: Request,
     corpus: str = "",
     aliases: str = "",
     known_names: list[str] = Query(default=[]),
@@ -550,7 +611,7 @@ def run_bundle(
     else:
         _cmd_opt(cmd, "--out-dir", out_dir)
         _cmd_flag(cmd, "--known-only", known_only)
-        cmd += backend_cli_args(backend, model, endpoints=endpoints)
+        cmd += _backend_args(backend, model, request, endpoints=endpoints)
         _cmd_opt(cmd, "--entity-parallel", entity_parallel)
     # --list does no model work, so it never needs the lock or backend env.
     if list:
@@ -604,6 +665,7 @@ def run_threads(
 
 @router.get("/run/synthesize")
 def run_synthesize(
+    request: Request,
     doc: str,
     output: str = "",
     backend: str = "",
@@ -745,7 +807,7 @@ def run_synthesize(
             _cmd_opt(cmd, "--depth", depth)
         _cmd_multi(cmd, "--force-include", force_include)
 
-    cmd += backend_cli_args(backend, model, endpoint=endpoint)
+    cmd += _backend_args(backend, model, request, endpoint=endpoint)
 
     prelude_parts = []
     # Surface auto-detected party.yaml / context so picking them up isn't
