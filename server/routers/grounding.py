@@ -1,17 +1,60 @@
-"""Grounding document API routes — campaign_state, distill, party, planning."""
+"""Grounding document API routes — campaign_state, distill, party, planning.
+
+Run endpoints build their commands from ``<config>/grounding.yaml`` via
+``GroundingConfigService`` (Phase 8 of ``docs/config/grounding-isolation.md``).
+An explicit request parameter still wins over the stored value; what changed is
+that omitting one now falls back to per-campaign config instead of a literal
+baked into the route signature.
+"""
 
 from pathlib import Path
+from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib import wiring_get
 from server.backend_forwarding import backend_cli_args
+from server.grounding_config_service import GroundingConfigService
+from server.grounding_config_shared import DEFAULT_CHUNK_SIZE, GroundingConfig
 from server.platform_config_service import resolve_default_model
 from server.session_editor_config_service import SessionEditorConfigService
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
+
+
+# ── Config (own document, own service) ──────────────────────────────────────
+
+def _service(request: Request) -> GroundingConfigService:
+    """Resolve the service for this request.
+
+    Prefers the live platform's config dir; falls back to ``cwd/config`` like
+    the ensemble router, so read-only routes work in contexts without a booted
+    platform (see ``GroundingConfigService``'s module docstring).
+    """
+    platform = getattr(request.app.state, "platform", None)
+    base = platform.config_path_base if platform else Path.cwd() / "config"
+    return GroundingConfigService(base)
+
+
+@router.get("/config")
+def get_grounding_config(request: Request) -> GroundingConfig:
+    return _service(request).get_config()
+
+
+@router.put("/config")
+async def put_grounding_config(request: Request) -> GroundingConfig:
+    """Merge a grouped partial into ``grounding.yaml``.
+
+    The body IS the partial (no ``{"values": …}`` envelope), matching
+    ``PUT /api/ensemble/config``. An unknown key is a 400 — the schema is
+    strict.
+    """
+    partial: Any = await request.json()
+    if not isinstance(partial, dict):
+        raise HTTPException(status_code=400, detail="body must be a JSON object")
+    return _service(request).update_config(partial)
 
 
 # ── LLM backend selection → subprocess CLI flags ────────────────────────────
@@ -51,6 +94,52 @@ def _cmd_opt(cmd: list[str], flag: str, value: str | int | None) -> None:
         cmd += [flag, str(value)]
 
 
+def _pick(explicit: str | int | None, stored: str | int | None) -> Any:
+    """Explicit request value wins; otherwise the stored config value.
+
+    An empty string / 0 from a query param means "not supplied" — FastAPI
+    gives those defaults when the caller omits the parameter entirely, so they
+    cannot be distinguished from a deliberate blank. Treating them as "unset"
+    is what makes the stored config reachable at all.
+    """
+    if explicit not in (None, "", 0):
+        return explicit
+    return stored
+
+
+def _pick_list(explicit: list[str], stored: list[str]) -> list[str]:
+    return explicit if explicit else list(stored)
+
+
+def _chunking(cmd: list[str], split_chapters: str, chunk_size: int) -> None:
+    """``--split-chapters`` and ``--chunk-size`` are mutually exclusive at the
+    CLI; splitting wins when both are set. This was four copies of the same
+    ``if/elif`` across the run endpoints."""
+    if split_chapters:
+        cmd += ["--split-chapters", split_chapters]
+    elif chunk_size and chunk_size != DEFAULT_CHUNK_SIZE:
+        cmd += ["--chunk-size", str(chunk_size)]
+
+
+def _require_input(cfg: GroundingConfig, doc: str, explicit: str) -> str:
+    """The run's input document: explicit → the doc's stored ``input`` → the
+    shared ``summaries``.
+
+    Refuses rather than guessing when none is set — the "no silent all"
+    invariant ``ensemble.yaml``'s ``chapters_selected`` established.
+    """
+    value = (explicit or "").strip() or cfg.input_for(doc)
+    if not value:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"no input for {doc}: pass ?input=, or set grounding.yaml's "
+                f"{doc}.input or the shared summaries pointer"
+            ),
+        )
+    return value
+
+
 def _cmd_multi(cmd: list[str], flag: str, values: list[str]) -> None:
     for v in values:
         if v.strip():
@@ -81,32 +170,35 @@ async def run_campaign_state(
     track_file_extra: list[str] = Query(default=[]),
     track: list[str] = Query(default=[]),
     extract_dir: str = "",
-    chunk_size: int = 60000,
+    chunk_size: int = 0,
     split_chapters: str = "",
     synthesize_only: bool = False,
     extract_only: bool = False,
     no_log: bool = False,
     model: str | None = None,
 ):
+    cfg = _service(request).resolved()
+    run = cfg.campaign_state
     cmd = [console_script("campaign_state")]
 
-    if not synthesize_only and input:
-        cmd.append(input)
+    if not synthesize_only:
+        cmd.append(_require_input(cfg, "campaign_state", input))
 
-    _cmd_opt(cmd, "--output", output)
-    _cmd_opt(cmd, "--track-file", track_file)
-    _cmd_multi(cmd, "--track-file", track_file_extra)
-    _cmd_multi(cmd, "--track", track)
-    _cmd_opt(cmd, "--extract-dir", extract_dir)
-
-    if split_chapters:
-        cmd += ["--split-chapters", split_chapters]
-    elif chunk_size and chunk_size != 60000:
-        cmd += ["--chunk-size", str(chunk_size)]
+    _cmd_opt(cmd, "--output", _pick(output, run.output))
+    # track_file (singular) + track_file_extra (list) are one list in the
+    # config; the CLI has always taken --track-file as action="append".
+    _cmd_multi(
+        cmd, "--track-file",
+        _pick_list([t for t in [track_file, *track_file_extra] if t], run.track_files),
+    )
+    _cmd_multi(cmd, "--track", _pick_list(track, run.track_items))
+    _cmd_opt(cmd, "--extract-dir", _pick(extract_dir, run.extract_dir))
+    _chunking(cmd, _pick(split_chapters, run.split_chapters),
+              _pick(chunk_size, run.chunk_size))
 
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
-    _cmd_flag(cmd, "--no-log", no_log)
+    _cmd_flag(cmd, "--no-log", no_log or run.no_log)
     cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
@@ -121,29 +213,28 @@ async def run_distill(
     input: str = "",
     output: str = "",
     extract_dir: str = "",
-    chunk_size: int = 60000,
+    chunk_size: int = 0,
     split_chapters: str = "",
     synthesize_only: bool = False,
     extract_only: bool = False,
     no_log: bool = False,
     model: str | None = None,
 ):
+    cfg = _service(request).resolved()
+    run = cfg.distill
     cmd = [console_script("distill")]
 
-    if not synthesize_only and input:
-        cmd.append(input)
+    if not synthesize_only:
+        cmd.append(_require_input(cfg, "distill", input))
 
-    _cmd_opt(cmd, "--output", output)
-    _cmd_opt(cmd, "--extract-dir", extract_dir)
-
-    if split_chapters:
-        cmd += ["--split-chapters", split_chapters]
-    elif chunk_size and chunk_size != 60000:
-        cmd += ["--chunk-size", str(chunk_size)]
+    _cmd_opt(cmd, "--output", _pick(output, run.output))
+    _cmd_opt(cmd, "--extract-dir", _pick(extract_dir, run.extract_dir))
+    _chunking(cmd, _pick(split_chapters, run.split_chapters),
+              _pick(chunk_size, run.chunk_size))
 
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
-    _cmd_flag(cmd, "--no-log", no_log)
+    _cmd_flag(cmd, "--no-log", no_log or run.no_log)
     cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
@@ -163,34 +254,44 @@ async def run_party(
     context: list[str] = Query(default=[]),
     output: str = "",
     extract_dir: str = "",
-    chunk_size: int = 60000,
+    chunk_size: int = 0,
     split_chapters: str = "",
     synthesize_only: bool = False,
     extract_only: bool = False,
     no_log: bool = False,
     model: str | None = None,
 ):
+    cfg = _service(request).resolved()
+    run = cfg.party
     cmd = [console_script("party")]
 
-    if party_config:
-        _cmd_opt(cmd, "--party-config", party_config)
+    # config mode reads the roster from party.yaml (PartyConfigService's
+    # document); flat mode passes per-file lists. The stored mode decides only
+    # when the request supplies neither shape.
+    cfg_path = _pick(party_config, run.config_path)
+    use_config = bool(party_config) or (
+        not character and run.mode == "config" and cfg_path
+    )
+    if use_config:
+        _cmd_opt(cmd, "--party-config", cfg_path)
     else:
-        _cmd_multi(cmd, "--character", character)
-        _cmd_multi(cmd, "--backstory", backstory)
-        _cmd_multi(cmd, "--arc-scores", arc_scores)
-    _cmd_opt(cmd, "--summaries", summaries)
-    _cmd_multi(cmd, "--context", context)
-    _cmd_opt(cmd, "--output", output)
-    _cmd_opt(cmd, "--extract-dir", extract_dir)
+        _cmd_multi(cmd, "--character", _pick_list(character, run.characters))
+        _cmd_multi(cmd, "--backstory", _pick_list(backstory, run.backstory))
+        _cmd_multi(cmd, "--arc-scores", _pick_list(arc_scores, run.arc_scores))
 
-    if split_chapters:
-        cmd += ["--split-chapters", split_chapters]
-    elif chunk_size and chunk_size != 60000:
-        cmd += ["--chunk-size", str(chunk_size)]
+    # --summaries is optional for party (characters-only mode is legitimate),
+    # so unlike the other three this one does not go through _require_input.
+    _cmd_opt(cmd, "--summaries",
+             (summaries or "").strip() or cfg.input_for("party") or "")
+    _cmd_multi(cmd, "--context", _pick_list(context, run.context))
+    _cmd_opt(cmd, "--output", _pick(output, run.output))
+    _cmd_opt(cmd, "--extract-dir", _pick(extract_dir, run.extract_dir))
+    _chunking(cmd, _pick(split_chapters, run.split_chapters),
+              _pick(chunk_size, run.chunk_size))
 
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
-    _cmd_flag(cmd, "--no-log", no_log)
+    _cmd_flag(cmd, "--no-log", no_log or run.no_log)
     cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
@@ -209,36 +310,41 @@ async def run_planning(
     context: list[str] = Query(default=[]),
     output: str = "",
     extract_dir: str = "",
-    chunk_size: int = 60000,
+    chunk_size: int = 0,
     split_chapters: str = "",
     synthesize_only: bool = False,
     extract_only: bool = False,
     no_log: bool = False,
     model: str | None = None,
 ):
+    cfg = _service(request).resolved()
+    run = cfg.planning
     cmd = [console_script("planning")]
 
-    if planning_config:
-        _cmd_opt(cmd, "--planning-config", planning_config)
+    cfg_path = _pick(planning_config, run.config_path)
+    use_config = bool(planning_config) or (
+        not npc and run.synth_mode == "config" and cfg_path
+    )
+    if use_config:
+        _cmd_opt(cmd, "--planning-config", cfg_path)
         # planning.py rejects --planning-config + --arc-scores; --npc extras
         # are allowed (pass-through dossiers for trackless NPCs).
-        _cmd_multi(cmd, "--npc", npc)
+        _cmd_multi(cmd, "--npc", _pick_list(npc, run.npc))
     else:
-        _cmd_multi(cmd, "--npc", npc)
-        _cmd_multi(cmd, "--arc-scores", arc_scores)
-    _cmd_opt(cmd, "--summaries", summaries)
-    _cmd_multi(cmd, "--context", context)
-    _cmd_opt(cmd, "--output", output)
-    _cmd_opt(cmd, "--extract-dir", extract_dir)
+        _cmd_multi(cmd, "--npc", _pick_list(npc, run.npc))
+        _cmd_multi(cmd, "--arc-scores", _pick_list(arc_scores, run.arc_scores))
 
-    if split_chapters:
-        cmd += ["--split-chapters", split_chapters]
-    elif chunk_size and chunk_size != 60000:
-        cmd += ["--chunk-size", str(chunk_size)]
+    _cmd_opt(cmd, "--summaries",
+             (summaries or "").strip() or cfg.input_for("planning") or "")
+    _cmd_multi(cmd, "--context", _pick_list(context, run.context))
+    _cmd_opt(cmd, "--output", _pick(output, run.output))
+    _cmd_opt(cmd, "--extract-dir", _pick(extract_dir, run.extract_dir))
+    _chunking(cmd, _pick(split_chapters, run.split_chapters),
+              _pick(chunk_size, run.chunk_size))
 
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
-    _cmd_flag(cmd, "--no-log", no_log)
+    _cmd_flag(cmd, "--no-log", no_log or run.no_log)
     cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
@@ -251,30 +357,32 @@ async def run_build_dossiers(
     summaries: str = "",
     dossier_dir: str = "",
     extract_dir: str = "",
-    chunk_size: int = 60000,
+    chunk_size: int = 0,
     split_chapters: str = "",
     since: int = 0,
     extract_only: bool = False,
     no_log: bool = False,
     model: str | None = None,
 ):
+    cfg = _service(request).resolved()
+    build = cfg.planning.dossiers
     cmd = [console_script("planning")]
 
-    _cmd_opt(cmd, "--summaries", summaries)
+    _cmd_opt(cmd, "--summaries",
+             (summaries or "").strip() or build.summaries
+             or (cfg.summaries or "").strip() or "")
     cmd.append("--build-dossiers")
-    _cmd_opt(cmd, "--dossier-dir", dossier_dir)
-    _cmd_opt(cmd, "--extract-dir", extract_dir)
+    _cmd_opt(cmd, "--dossier-dir", _pick(dossier_dir, build.dossier_dir))
+    _cmd_opt(cmd, "--extract-dir", _pick(extract_dir, build.extract_dir))
+    _chunking(cmd, _pick(split_chapters, build.split_chapters),
+              _pick(chunk_size, cfg.planning.chunk_size))
 
-    if split_chapters:
-        cmd += ["--split-chapters", split_chapters]
-    elif chunk_size and chunk_size != 60000:
-        cmd += ["--chunk-size", str(chunk_size)]
-
-    if since > 0:
-        cmd += ["--since", str(since)]
+    effective_since = _pick(since, build.since) or 0
+    if effective_since > 0:
+        cmd += ["--since", str(effective_since)]
 
     _cmd_flag(cmd, "--extract-only", extract_only)
-    _cmd_flag(cmd, "--no-log", no_log)
+    _cmd_flag(cmd, "--no-log", no_log or cfg.planning.no_log)
     cmd += ["--model", resolve_default_model(model, request)]
     cmd += _backend_flags(request)
 
