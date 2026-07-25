@@ -5,7 +5,7 @@ import { useConfigStore } from '../../stores/config'
 import StreamOutput from './StreamOutput.vue'
 
 const props = defineProps<{
-  /** SSE endpoint URL (e.g. '/api/workflow/run/vtt-summary') */
+  /** SSE endpoint URL (e.g. '/api/prep/run/session-prep') */
   endpoint: string
   /** Query parameters to send */
   params: Record<string, any>

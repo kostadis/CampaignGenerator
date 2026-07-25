@@ -125,7 +125,9 @@ source of truth for a platform-tier value.
 Phase 5a of `platform-isolation.md` routed fourteen `/run/*` model fields through
 `resolve_default_model` (`platform_config_service.py:119`) — `grounding.py` ×5,
 `prep.py` ×3, `experimental.py` ×2, `session_workflow.py` ×1, `connections.py` ×1,
-`setup.py` ×2. Ensemble's five LLM-bearing routes were not included; they hardcode
+`setup.py` ×2 (three of those — `experimental.py` ×2 and `session_workflow.py` ×1 — have
+since been deleted with the VTT Summary chain, leaving eleven). Ensemble's five LLM-bearing
+routes were not included; they hardcode
 `backend="anthropic", model=""`. **The sidebar model picker
 (`platform.runtime.default_model`) has no effect on any ensemble run.**
 

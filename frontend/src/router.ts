@@ -136,23 +136,6 @@ const routes = [
     ],
   },
   {
-    path: '/experimental',
-    component: () => import('./views/ExperimentalTools.vue'),
-    children: [
-      { path: '', redirect: '/experimental/enhance-recap' },
-      {
-        path: 'enhance-recap',
-        name: 'enhance-recap',
-        component: () => import('./views/experimental/EnhanceRecap.vue'),
-      },
-      {
-        path: 'narrative',
-        name: 'session-narrative',
-        component: () => import('./views/experimental/SessionNarrative.vue'),
-      },
-    ],
-  },
-  {
     path: '/settings',
     name: 'settings',
     component: () => import('./views/Settings.vue'),

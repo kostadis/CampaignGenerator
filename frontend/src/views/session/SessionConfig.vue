@@ -3,7 +3,6 @@ import { ref, watch, onMounted } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import { apiFetch } from '../../api/client'
 import PathField from '../../components/shared/PathField.vue'
-import MultiPathField from '../../components/shared/MultiPathField.vue'
 
 const config = useConfigStore()
 
@@ -12,15 +11,11 @@ const campaignDir = ref('')
 const sessionDir = ref('')
 
 // ── Derived / overridable fields ──
-const vttInput = ref('')
 const sdSession = ref('')
 const characters = ref('')
 const gmPlayer = ref('')
 const voiceDir = ref('')
 const examplesDir = ref('')
-const vttContext = ref('')
-const vttDate = ref('')
-const vttSessionName = ref('')
 const summaries = ref('')
 const showOverrides = ref(false)
 
@@ -39,11 +34,9 @@ function loadFromConfig() {
   // else is read from the persisted, typed view.
   const v = config.values
   const r = config.resolved
-  const vs = r.ui?.vtt_summary || {}
   const ec = config.editorConfig
   campaignDir.value = r.campaign_dir || v.campaign_dir || ''
   sessionDir.value = r.runtime?.session_dir || v.session_dir || ''
-  vttInput.value = vs.input || v.vtt_input || ''
   sdSession.value = ec?.paths?.session_recap || ''
   characters.value = ec?.roster?.characters || ''
   gmPlayer.value = ec?.roster?.gm_player || ''
@@ -51,9 +44,6 @@ function loadFromConfig() {
   examplesDir.value = ec?.paths?.examples_dir || ''
   sessionSummaryPath.value = ec?.paths?.session_summary || 'session-summary.md'
   partyPath.value = ec?.paths?.party || ''
-  vttContext.value = (vs.context || []).join('\n') || v.vtt_context || ''
-  vttDate.value = vs.date || v.vtt_date || ''
-  vttSessionName.value = vs.session_name || v.vtt_session_name || ''
   summaries.value = r.ui?.grounding?.summaries || v.summaries || ''
 }
 
@@ -65,19 +55,11 @@ function saveToConfig() {
   Object.assign(config.values, {
     campaign_dir: campaignDir.value,
     session_dir: sessionDir.value,
-    vtt_input: vttInput.value,
-    vtt_context: vttContext.value,
-    vtt_date: vttDate.value,
-    vtt_session_name: vttSessionName.value,
     summaries: summaries.value,
   })
 }
 
 async function persistTypedSections() {
-  const contextList = vttContext.value
-    .split('\n')
-    .map((s) => s.trim())
-    .filter((s) => s)
   await Promise.all([
     config.updateEditor({
       paths: {
@@ -94,12 +76,6 @@ async function persistTypedSections() {
         characters: characters.value || null,
         gm_player: gmPlayer.value || null,
       },
-    }),
-    config.updateSection('vtt_summary', {
-      input: vttInput.value || null,
-      context: contextList,
-      date: vttDate.value || null,
-      session_name: vttSessionName.value || null,
     }),
     config.updateSection('grounding', {
       summaries: summaries.value || null,
@@ -123,7 +99,7 @@ function stripPrefix(absPath: string, dir: string): string {
  * `/api/config/campaign-paths` (PlatformConfigService.discover_campaign_paths,
  * docs/config/platform-isolation.md O2) returns only genuine filesystem
  * DISCOVERY — a probe for something whose name or presence can't be known in
- * advance: vtt_input, gm_recap, summaries, party_config, plan_npc,
+ * advance: gm_recap, summaries, party_config, plan_npc,
  * session_summary, voice_dir/examples_dir, and the docs/*.md exist-checks
  * (campaign_state, world_state, party, planning). Every one of those is `""`
  * or absent when nothing is found, which is why each read below is guarded —
@@ -133,9 +109,10 @@ function stripPrefix(absPath: string, dir: string): string {
  * It deliberately does NOT return the context/plan_context aggregates: those
  * are pure joins over fields this function already holds, so computing them
  * here avoids a second server-side expression of the same thing. Nor does it
- * return output_dir or the scene/roleplay/summary extraction dirs — that was
- * layout DERIVATION duplicating PlatformConfigService.resolve_path, and O2
- * deleted it (those paths belong to the Session Doc Editor).
+ * return output_dir or the scene extractions dir — that was layout DERIVATION
+ * duplicating PlatformConfigService.resolve_path, and O2 deleted it (those
+ * paths belong to the Session Doc Editor). The raw *.vtt is likewise not
+ * discovered here any more: the editor globs for it itself.
  */
 async function deriveAll() {
   const cd = campaignDir.value.trim()
@@ -148,7 +125,6 @@ async function deriveAll() {
     )
 
     // Session-level files (relative to session_dir) — genuine discovery.
-    if (d.vtt_input) vttInput.value = stripPrefix(d.vtt_input, sd)
     if (d.gm_recap) sdSession.value = stripPrefix(d.gm_recap, sd)
 
     // Campaign-level directories (absolute). Guarded because the server
@@ -162,11 +138,9 @@ async function deriveAll() {
     // Context files: whichever of campaign_state/world_state/party the
     // server found to exist. The join is pure computation over
     // already-discovered facts, so it happens here rather than as a
-    // separate server-computed aggregate field.
+    // separate server-computed aggregate field. Consumed downstream as
+    // `plan_context` (PlanningDocument.vue's fallback).
     const contextFiles = [d.campaign_state, d.world_state, d.party].filter(Boolean)
-    if (contextFiles.length) {
-      vttContext.value = contextFiles.join('\n')
-    }
 
     // Downstream pages pick these up from the config store. session_doc
     // paths (party/session_summary) are carried via sessionSummaryPath /
@@ -174,8 +148,6 @@ async function deriveAll() {
     // scene_extractions_dir / narration_dir stay the Session Doc Editor
     // drawer's sole ownership (never seeded here).
     Object.assign(config.values, {
-      // Session-level (relative — resolvePath adds session_dir prefix)
-      vtt_output: 'session-summary.md',
       // Campaign-level (absolute)
       cs_output: d.campaign_state || '',
       distill_output: d.world_state || '',
@@ -260,11 +232,6 @@ onMounted(async () => {
       <div class="form-section">
         <h3 class="section-title">Auto-detected</h3>
         <PathField
-          v-model="vttInput"
-          label="VTT transcript file"
-          help="Auto-detected .vtt file from session directory."
-        />
-        <PathField
           v-model="sdSession"
           label="GMassistant recap file"
           help="Auto-detected gm-assist.md from session directory."
@@ -300,20 +267,6 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Session metadata -->
-      <div class="form-section">
-        <div class="form-row">
-          <div class="field">
-            <label class="field-label">Session date</label>
-            <input type="text" class="field-input" v-model="vttDate" placeholder="2026-03-15" />
-          </div>
-          <div class="field">
-            <label class="field-label">Session name</label>
-            <input type="text" class="field-input" v-model="vttSessionName" placeholder="Session 12 — Icespire Hold" />
-          </div>
-        </div>
-      </div>
-
       <!-- Overrides (collapsed) -->
       <div class="form-section">
         <button class="btn-neutral btn-sm" @click="showOverrides = !showOverrides">
@@ -339,11 +292,6 @@ onMounted(async () => {
             label="Canonical timeline"
             absolute
             help="The master narrative bible (one big file) consumed by all grounding tools."
-          />
-          <MultiPathField
-            v-model="vttContext"
-            label="Campaign context files"
-            help="Default: campaign_state.md, world_state.md, party.md from docs/."
           />
         </div>
       </div>

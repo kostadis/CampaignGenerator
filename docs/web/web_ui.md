@@ -37,9 +37,11 @@ Users specify **campaign directory** + **session directory** on the Session Conf
 
 **Session Workflow** (wizard steps):
 1. **Session Config** — set campaign_dir and session_dir; all paths auto-derived
-2. **VTT Summary** — convert .vtt transcript to session summary + roleplay highlights
-3. **Scene Extraction** — run scene_extract + sd_consistency + sd_plan to produce per-scene extraction files, plan.md, and consistency_report.md
-4. **Session Doc Editor** — three-panel editor (scene list / extraction editor / VTT source + quote ledger)
+2. **Editor Config** — the Session Doc Editor's own knobs (`session_doc.yaml`)
+3. **Enhance Summary** — run `enhance_summary` over the .vtt + gm-assist to produce `session-summary.md`
+4. **Extract Quotes** — run `scene_extract` to produce per-scene extraction files
+5. **Plan & Check** — run `sd_consistency` + `sd_plan` to produce `plan.md` and `consistency_report.md`
+6. **Session Doc Editor** — two-panel editor (scene list / extraction editor)
 
 **Grounding Docs**: Campaign State, World State, Party Document, Planning Document
 
@@ -57,35 +59,24 @@ Users specify **campaign directory** + **session directory** on the Session Conf
 
 **Setup**: D&D Sheet, Make Tracking
 
-**Experimental**: Enhance Recap, Session Narrative
-
 **Settings**: Raw YAML editor for ui_config.yaml
 
 ## Session Doc Editor
 
-Three-panel layout for the extract → edit → narrate → assemble workflow:
+Two-panel layout for the extract → edit → narrate → assemble workflow:
 
-- **Left**: scene list with Extracted / Narrated badges
+- **Left**: scene list with the four lifecycle dots (E/R/N/S)
 - **Centre**: extraction file editor with save/reload, token estimates, streaming narration output
-- **Right**: tabbed — VTT Source (roleplay extractions for reference) and Quote Ledger
 
 **Workflow**: click a scene → review/edit extraction → Narrate (streams `sd_narrate --plan plan.md --scene N`) → repeat → Assemble Doc.
 
-The editor has a config panel for setting paths (session recap, extract_dir, roleplay_extract_dir, etc.) that auto-populates from the Session Config page. The config panel also accepts characters, voice_dir, examples, and narrate_tokens.
+The editor has a config panel for setting paths (session recap, scene extractions dir, narration dir, etc.) that auto-populates from the Session Config page. The config panel also accepts characters, voice_dir, examples, and narrate_tokens.
 
 **Typora integration**: Edit in Typora / Open narration buttons work on WSL via `wslpath -w` + `powershell.exe Start-Process`.
 
 ### Token estimates
 
 Each extraction file shows an estimated output token count. If it exceeds narrate_tokens, the estimate turns orange. Override per-scene by adding `tokens: 6000` as the first line of an extraction file.
-
-## Quote Ledger
-
-The right panel's **Quote Ledger** tab tracks verbatim VTT dialogue and shows which quotes made it into scene extractions. **Sync** parses `vtt_roleplay_extractions/extract_*.md`, stores every quoted block in SQLite (`quote_ledger.db`), and fuzzy-matches against scene extraction dialogue (0.6 threshold).
-
-Unassigned quotes appear at the top — likely missing from extractions. Click to expand, use **Move** to reassign to a different scene. The ledger is read-only with respect to extraction files — copy quotes into the editor manually.
-
-`quote_ledger.py` (`session_doc/`) contains the parsing, matching, and SQLite logic.
 
 ## Connection Graph
 

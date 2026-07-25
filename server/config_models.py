@@ -72,23 +72,6 @@ class _LooseSection(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
-class VttSummarySection(BaseModel):
-    """``ui.vtt_summary`` — VTT Summary page."""
-
-    model_config = ConfigDict(extra="allow")
-
-    input: OptStr = None
-    output: OptStr = None
-    context: list[str] = Field(default_factory=list)
-    date: OptStr = None
-    session_name: OptStr = None
-    extract_dir: OptStr = None
-    reference_summaries: OptStr = None
-    # Set by the workflow router after a successful run so future page loads
-    # see the produced path without a manual save (fixes VttSummary.vue:70-71).
-    session_summary: OptStr = None
-
-
 class GroundingSection(BaseModel):
     """``ui.grounding`` — top-level pointer to the concatenated summaries file."""
 
@@ -131,7 +114,6 @@ class BackendProfile(BaseModel):
 class UISection(BaseModel):
     """All per-page state, one attribute per page or group of pages."""
 
-    vtt_summary: VttSummarySection = Field(default_factory=VttSummarySection)
     grounding: GroundingSection = Field(default_factory=GroundingSection)
     campaign_state: _LooseSection = Field(default_factory=_LooseSection)
     distill: _LooseSection = Field(default_factory=_LooseSection)

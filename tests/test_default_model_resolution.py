@@ -9,6 +9,11 @@ omitted ``model`` silently got the literal instead of the platform's
 ``runtime.default_model`` — the sidebar model picker was bypassed on every
 one of those paths regardless of what the GM had selected.
 
+Three of those twelve sites no longer exist: ``experimental.py`` (2) and
+``session_workflow.py`` (1) were deleted with the vtt_summary chain, so
+this file now covers nine. The remaining ``setup.py`` pair below was
+never part of the original twelve — see its own note.
+
 Phase 5a's fix: every one of the twelve fields now defaults to ``None``,
 and each handler resolves the value through
 ``server.platform_config_service.resolve_default_model`` (explicit request
@@ -125,20 +130,6 @@ def test_prep_routes_omitted_model_uses_platform_default(monkeypatch, tmp_path, 
     assert _flag_value(captured["cmd"], "--model") == SENTINEL_MODEL
 
 
-# ── experimental.py — 2 sites ────────────────────────────────────────────
-
-EXPERIMENTAL_ROUTES = [
-    ("/api/experimental/run/enhance-recap", {"recap": "docs/recap.md"}),
-    ("/api/experimental/run/narrative", {}),
-]
-
-
-@pytest.mark.parametrize("path,params", EXPERIMENTAL_ROUTES)
-def test_experimental_routes_omitted_model_uses_platform_default(monkeypatch, tmp_path, path, params):
-    captured = _run(monkeypatch, tmp_path, "server.routers.experimental", path, params)
-    assert _flag_value(captured["cmd"], "--model") == SENTINEL_MODEL
-
-
 # ── setup.py — 2 sites ───────────────────────────────────────────────────
 # These two are the same defect as the twelve above, but they defaulted to
 # the imported ``DEFAULT_MODEL`` constant rather than a bareword
@@ -156,16 +147,6 @@ SETUP_ROUTES = [
 @pytest.mark.parametrize("path,params", SETUP_ROUTES)
 def test_setup_routes_omitted_model_uses_platform_default(monkeypatch, tmp_path, path, params):
     captured = _run(monkeypatch, tmp_path, "server.routers.setup", path, params)
-    assert _flag_value(captured["cmd"], "--model") == SENTINEL_MODEL
-
-
-# ── session_workflow.py — 1 site ─────────────────────────────────────────
-
-def test_vtt_summary_omitted_model_uses_platform_default(monkeypatch, tmp_path):
-    captured = _run(
-        monkeypatch, tmp_path, "server.routers.session_workflow",
-        "/api/workflow/run/vtt-summary", {"vtt_input": "session.vtt"},
-    )
     assert _flag_value(captured["cmd"], "--model") == SENTINEL_MODEL
 
 

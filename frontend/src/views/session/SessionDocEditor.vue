@@ -9,7 +9,6 @@ import SceneList from '../../components/scene-editor/SceneList.vue'
 import type { Scene } from '../../components/scene-editor/SceneList.vue'
 import ExtractionEditor from '../../components/scene-editor/ExtractionEditor.vue'
 import NarrationOutput from '../../components/scene-editor/NarrationOutput.vue'
-import VttPanel from '../../components/scene-editor/VttPanel.vue'
 import KnobDrawer from '../../components/scene-editor/KnobDrawer.vue'
 
 const config = useConfigStore()
@@ -776,10 +775,6 @@ onMounted(async () => {
           @clear="clearOutput"
         />
       </div>
-
-      <div class="right-panel">
-        <VttPanel />
-      </div>
     </div>
 
     <!-- Empty state — drives the user to fill in the drawer -->
@@ -943,20 +938,12 @@ onMounted(async () => {
 
 .columns {
   display: grid;
-  grid-template-columns: 220px 1fr 320px;
+  grid-template-columns: 220px 1fr;
   flex: 1;
   overflow: hidden;
 }
 
 .center-col {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.right-panel {
-  background: var(--bg-mantle);
-  border-left: 1px solid var(--bg-surface0);
   display: flex;
   flex-direction: column;
   overflow: hidden;

@@ -14,9 +14,7 @@ When debugging or extending any tool, read this file first instead of re-reading
 | `docs/world_state.md` | `pipelines/session_prep/prep.py`, all tools | `pipelines/grounding/distill.py` P2 | Living canon reference |
 | `docs/planning.md` | `pipelines/session_prep/prep.py` | `pipelines/grounding/planning.py` P2 | NPC/faction prep tracker |
 | `docs/party.md` | `sd_*.py` | `pipelines/grounding/party.py` P2 | Character state tracker |
-| `summaries.md` | `pipelines/grounding/campaign_state.py`, `pipelines/grounding/distill.py`, `pipelines/grounding/planning.py`, `pipelines/grounding/party.py` | `session_doc/vtt_summary.py` P2 | Session record |
-| `vtt_extractions/extract_NNN.md` | `session_doc/vtt_summary.py` P2, `sd_*.py` | `session_doc/vtt_summary.py` P1 | Session action/event notes |
-| `vtt_roleplay_extractions/extract_NNN.md` | `session_doc/sd_narrate.py` | `session_doc/vtt_summary.py` P3 | Verbatim dialogue & voice |
+| `summaries.md` | `pipelines/grounding/campaign_state.py`, `pipelines/grounding/distill.py`, `pipelines/grounding/planning.py`, `pipelines/grounding/party.py` | hand (append `session-summary.md`) | Session record |
 | `distill_extractions/extract_NNN.md` | `pipelines/grounding/distill.py` P2 | `pipelines/grounding/distill.py` P1 | Lore extraction notes |
 | `state_extractions/extract_NNN.md` | `pipelines/grounding/campaign_state.py` P2 | `pipelines/grounding/campaign_state.py` P1 | Campaign state notes |
 | `planning_extractions/extract_NNN.md` | `pipelines/grounding/planning.py` P2 | `pipelines/grounding/planning.py` P1 | NPC/faction notes |
@@ -67,7 +65,7 @@ Rules:
 
 ## Session Summary (summaries.md)
 
-**Written by:** `session_doc/vtt_summary.py` Pass 2
+**Written by:** hand — append each session's `session-summary.md` (produced by `session_doc/enhance_summary.py`)
 **Read by:** `pipelines/grounding/campaign_state.py`, `pipelines/grounding/distill.py`, `pipelines/grounding/planning.py`, `pipelines/grounding/party.py`
 
 Multiple sessions are appended; each session starts with a `# Session` heading.
@@ -98,57 +96,6 @@ One short paragraph: where are PCs, what is immediately at stake
 
 ---
 
-## VTT Extractions
-
-### vtt_extractions/extract_NNN.md (Action/Event Notes)
-
-**Written by:** `session_doc/vtt_summary.py` Pass 1
-**Read by:** `session_doc/vtt_summary.py` Pass 2, `sd_*.py`
-**Pattern:** `extract_001.md`, `extract_002.md` (zero-padded 3-digit index)
-**One file per ~50,000 chars of VTT input**
-
-```markdown
-## Events
-- Party decided to interrogate Sister Kaella after she regained consciousness
-- Xanth the centaur was healed by Soma and provided exposition
-
-## NPC Interactions
-- **Xanth the Centaur**: Healed, gave exposition about dragon situation
-- **Sister Kaella**: Regained consciousness, revealed betrayal
-
-## PC Actions & Decisions
-- Soma cast Cure Wounds for 12 points
-- Valphine performed medicine check (15) to revive Sister Kaella
-- Party decided to take Kaella to Phandalin first
-
-## Out-of-Character Notes
-- Extended discussion about AI usage tools
-- Gary announced 3-month unpaid leave
-```
-
-### vtt_roleplay_extractions/extract_NNN.md (Dialogue & Voice)
-
-**Written by:** `session_doc/vtt_summary.py` (now session_doc/sd_plan.py)
-**Read by:** `session_doc/quote_ledger.py`, `session_doc/enhance_recap.py`
-**Pattern:** Same as above
-
-```markdown
-**[Speaker as Character/NPC]** — *[context note]*
-> "quoted or paraphrased dialogue"
-
-**Kostadis Roussos as Brewbarry** — *Remembering past trauma from his exile*
-> "Good berries. I remember something about good berries."
-
-**David Mendenhall as Vukradin** — *Maintaining his principles about stolen goods*
-> "This is not my necklace. I am holding the necklace until we can find its rightful owner."
-```
-
-Rules:
-- One moment per block
-- Bold: `[Speaker as Character]` or `[Speaker as NPC Name]`
-- Italics: one-sentence context
-- Blockquote: exact quote or `(paraphrase)`
-- No mechanical detail (rolls, HP, spell slots)
 
 ---
 
@@ -563,4 +510,4 @@ Built by `assemble_docs()` and passed as the user turn to Claude:
 [content]
 ```
 
-Stem values: `session_arc` (full session), `session` (single beat), `vtt_summary`, `distill`, `campaign_state`, `planning`, `party`
+Stem values: `session_arc` (full session), `session` (single beat), `distill`, `campaign_state`, `planning`, `party`

@@ -64,7 +64,6 @@ These read `config.values` on mount and stuff form refs from it. They have no
 - `views/grounding/PartyDocument.vue`
 - `views/grounding/PlanningDocument.vue`
 - `views/grounding/CampaignState.vue`
-- `views/session/VttSummary.vue`
 - `views/prep/QuerySummaries.vue`
 - `views/prep/SessionPrep.vue`
 - `views/prep/NpcTable.vue`

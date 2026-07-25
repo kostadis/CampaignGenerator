@@ -32,14 +32,14 @@ from inside it and auto-detect `config.yaml` in the CWD.
 | `planning.yaml` | Binds `docs/npcs/*` ↔ `docs/tracking/*` for `pipelines/grounding/planning.py`. |
 | `mempalace.yaml` | Declares this campaign's palace wing/room schema. |
 | `refs.yaml` (+ `refs.local.yaml`) | Declares which 5etools books/PDFs/homebrew are in scope (next section). |
-| `quote_ledger.db`, `logs/`, `notes/` | VTT↔scene fuzzy match (on-demand), run logs, MCP write-only scratch. |
+| `logs/`, `notes/` | Run logs, MCP write-only scratch. |
 
 > **Scaffold vs. on-demand.** `pipelines/workspace/new_workspace.py` creates `config.yaml`,
 > `ui_config.yaml`, and the `docs/ logs/ voice/ examples/ summaries/` skeleton
 > (plus placeholder grounding docs). Everything else above — `docs/npcs/`,
-> `docs/tracking/`, `dossier_proposal.md`, `quote_ledger.db`, `characters/` — is
+> `docs/tracking/`, `dossier_proposal.md`, `characters/` — is
 > created on-demand by the tool that owns it (`pipelines/grounding/planning.py`, the RLM pipeline,
-> `session_doc/quote_ledger.py`, `pipelines/content_ingest/dnd_sheet.py`). So a fresh workspace is smaller than the
+> `pipelines/content_ingest/dnd_sheet.py`). So a fresh workspace is smaller than the
 > full table; the table is the *mature* shape.
 
 **Creating one:** `pipelines/workspace/new_workspace.py <dir> --name … [--world-state … --party … ]`
@@ -112,7 +112,7 @@ Full field reference: [`docs/rlm/refs_yaml_reference.md`](../rlm/refs_yaml_refer
 | `docs/*.md`, `voice/`, `examples/`, `summaries/` | `~/src/5etools-kostadis/data/` (canonical JSON) |
 | `refs.yaml` (+ `refs.local.yaml`) | `~/.mempalace/palaces/<name>/` (one palace per campaign, shared root) |
 | `config.yaml`, `ui_config.yaml`, `.mcp.json`, `planning.yaml`, `mempalace.yaml` | `~/src/mytools/rpg-lib/rpg_library.db` (enriched PDF index) |
-| `quote_ledger.db`, `logs/`, `notes/` | `~/src/homebrew-private/`, `~/src/5etools-img/`, `dgxlib` model registry, `~/.5etools-mcp-runtime/<slug>/` |
+| `logs/`, `notes/` | `~/src/homebrew-private/`, `~/src/5etools-img/`, `dgxlib` model registry, `~/.5etools-mcp-runtime/<slug>/` |
 
 **Why the split:** game-world state is campaign-specific and git-tracked per
 campaign; bulk reference data and the model registry are deduplicated once per

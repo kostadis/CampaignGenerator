@@ -292,7 +292,6 @@ def list_sessions() -> str:
             "gm-recap": ["gm-assist.md", "gm_assist.md", "gmassist.md"],
             "plan": ["plan.md", "scene_extractions/plan.md"],
             "extractions": ["scene_extractions/"],
-            "roleplay": ["vtt_roleplay_extractions/"],
             "vtt": list(session.glob("*.vtt")),
         }
         for name, candidates in checks.items():

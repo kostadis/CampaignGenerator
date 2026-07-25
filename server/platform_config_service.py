@@ -22,7 +22,7 @@ per-page config service (``SessionEditorConfigService``,
 
 Load order is load-bearing here, not incidental. ``UIStateService.__init__``
 calls ``_normalize_stored_paths()``, which relativizes any absolute
-``ui.vtt_summary``/``ui.grounding`` path fields against the CURRENTLY
+``ui.grounding`` path fields against the CURRENTLY
 PERSISTED ``runtime.session_dir`` — and that value now lives in
 ``platform.yaml``, a different document from the one ``UIStateService``
 itself owns. If ``self._doc`` (this class's in-memory copy of
@@ -548,13 +548,11 @@ class PlatformConfigService:
             if npc_files:
                 result["plan_npc"] = "\n".join(str(f) for f in npc_files)
 
-        # session_dir contents — VTT transcript (glob, no fixed name),
-        # GM recap and session summary (sniffed by candidate filename,
-        # same reasoning as summaries.md/party.yaml above).
-        vtt_files = list(sd.glob("*.vtt"))
-        if vtt_files:
-            result["vtt_input"] = str(vtt_files[0])
-
+        # session_dir contents — GM recap and session summary, sniffed by
+        # candidate filename (same reasoning as summaries.md/party.yaml
+        # above). The raw *.vtt is NOT discovered here: the Session Doc
+        # Editor globs for it itself (``scene_editor._vtt_path``), and the
+        # page that consumed a discovered ``vtt_input`` is gone.
         for name in ("gm-assist.md", "gm_assist.md", "gmassistant.md", "recap.md"):
             candidate = sd / name
             if candidate.exists():

@@ -62,12 +62,6 @@ UI_STATE_NAME = "ui_state.yaml"
 # canonical timeline summaries.md) live under the campaign root.
 
 _PATH_FIELDS: dict[str, dict[str, str]] = {
-    "vtt_summary": {
-        "input": "session",
-        "output": "session",
-        "extract_dir": "session",
-        "session_summary": "session",
-    },
     "grounding": {"summaries": "campaign"},
 }
 
@@ -142,13 +136,13 @@ class UIStateService:
         files written before the write-time relativization choke point in
         :meth:`update_section` existed.
 
-        Rewrites absolute ``session_doc`` / ``vtt_summary`` / ``grounding``
-        path fields to relative storage when they already sit under the
-        applicable base, using the CURRENTLY PERSISTED ``runtime.session_dir``
-        (not any boot override) as the session base. Session-scoped fields
-        are left untouched when ``runtime.session_dir`` is unset — same
-        guard as :meth:`PlatformConfigService.relativize_path` itself, for
-        the same reason: there is no base to relativize against yet.
+        Rewrites absolute ``grounding`` path fields to relative storage when
+        they already sit under the applicable base, using the CURRENTLY
+        PERSISTED ``runtime.session_dir`` (not any boot override) as the
+        session base. Session-scoped fields are left untouched when
+        ``runtime.session_dir`` is unset — same guard as
+        :meth:`PlatformConfigService.relativize_path` itself, for the same
+        reason: there is no base to relativize against yet.
         Persists only if at least one field actually changed.
 
         Reads ``self.platform.runtime.session_dir`` rather than a field on
@@ -159,7 +153,7 @@ class UIStateService:
         this read would see stale/default runtime data instead of the real
         persisted session dir.
         """
-        sections_to_check = ("vtt_summary", "grounding")
+        sections_to_check = ("grounding",)
         persisted_session_dir = self.platform.runtime.session_dir
 
         ui_dict = self._ui_state.ui.model_dump(mode="json")

@@ -230,7 +230,7 @@ For single-scene re-runs (`--scene N`), the handoff is empty; the contrast signa
 
 The VTT contains verbatim roleplay quotes that are higher fidelity than what the LLM summary alone produces. These need to be matched to scenes so the narration can use the actual words, not a paraphrase.
 
-**Solution**: scene-anchored extraction happens at Stage 2 (`scene_extract`), not inside the `sd_narrate` loop. Each `NN_*.md` already pairs `## Scene summary` with `## Verbatim moments`. The Quote Ledger ([`quote_ledger.py`](../../session_doc/quote_ledger.py)) is the inspection / re-matching tool the Web UI uses to drag quotes between scenes.
+**Solution**: scene-anchored extraction happens at Stage 2 (`scene_extract`), not inside the `sd_narrate` loop. Each `NN_*.md` already pairs `## Scene summary` with `## Verbatim moments`.
 
 ### 7. Speaker labels in extractions
 

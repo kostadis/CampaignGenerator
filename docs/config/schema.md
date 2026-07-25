@@ -78,8 +78,8 @@ and is simply ignored, the same precedent Phase 5 of the session-editor isolatio
 `ui.session_doc`/`ui.profiles` block.
 
 ### Typed UI sections
-`ui.vtt_summary` (VttSummarySection), `ui.grounding` (GroundingSection) — two left.
-**`ui.session_doc`/`ui.profiles` and `ui.ensemble` no longer exist**: all three were deleted from
+`ui.grounding` (GroundingSection) — one left.
+**`ui.session_doc`/`ui.profiles`, `ui.ensemble` and `ui.vtt_summary` no longer exist**: the first three were deleted from
 `UISection` and from `config_models.py` when their services took their config into dedicated
 files (`session_doc.yaml`, `ensemble.yaml`). Run the matching one-shot CLI once per campaign to
 recover the data:
@@ -88,6 +88,7 @@ recover the data:
 |---|---|---|
 | `ui.session_doc` + `ui.profiles` | `session_doc.yaml` (`SessionEditorConfig`) | `python -m server.migrate_session_doc --campaign-dir DIR` |
 | `ui.ensemble` | `ensemble.yaml` (`EnsembleConfig`) | `python -m server.migrate_ensemble_config --campaign-dir DIR` |
+| `ui.vtt_summary` | *(nothing — the VTT Summary service was retired outright)* | no migration; a stale block loads and is ignored |
 
 See [session-editor-isolation.md](./session-editor-isolation.md#migrating-an-existing-campaign)
 and [ensemble-isolation.md](./ensemble-isolation.md).
@@ -121,7 +122,6 @@ day (see [service-cut.md](./service-cut.md)).
 ### Other models
 | Model | Fields |
 |---|---|
-| `vtt_summary` | input, output, context[], date, session_name, extract_dir, reference_summaries, session_summary |
 | `grounding` | summaries (path → campaign) |
 | `BackendProfile` | backend (`anthropic\|dgx\|openrouter\|claude-code`), endpoint, model — **API key never stored**, read from env. Used by `session_doc.yaml`'s `backends` only; ensemble has its own `EnsembleBackend` with a plural `endpoints` list |
 | `PlatformLocalConfig.server` (`.campaigngenerator.local.yaml`) | host = `127.0.0.1`, port = `5000` |
@@ -166,10 +166,11 @@ own remembered model when set), `work_dir`/`campaign_dir`/`config_dir`, `session
 ## Router request-body model defaults (Phase 5a)
 
 Every router that runs a subprocess CLI needing a `--model` flag declares `model: str | None =
-None` on its request (twelve sites — five in `grounding.py`, three in `prep.py`, two in
-`experimental.py`, one each in `session_workflow.py` and `connections.py`'s `ExtractRequest`
-pydantic body — plus two more in `setup.py` that used to default to the `DEFAULT_MODEL`
-*constant*, same defect, different spelling; fourteen total) and calls
+None` on its request (nine sites — five in `grounding.py`, three in `prep.py`, one in
+`connections.py`'s `ExtractRequest` pydantic body — plus two more in `setup.py` that used to
+default to the `DEFAULT_MODEL` *constant*, same defect, different spelling; eleven total.
+Phase 5a covered fourteen; `experimental.py` ×2 and `session_workflow.py` ×1 were deleted with
+the VTT Summary chain) and calls
 `server/platform_config_service.py::resolve_default_model(model, request)` instead of hardcoding
 a literal. Precedence: explicit request `model` → `platform.runtime.default_model` →
 `campaignlib.constants.DEFAULT_MODEL` literal (reached only if no live `PlatformConfigService`
@@ -185,11 +186,13 @@ Two independent mechanisms, both owned by `PlatformConfigService`/`UIStateServic
 be confused (Phase 4, O2, drew this line sharply after `server/config.py::derive_campaign_paths`
 drifted by conflating them):
 
-**`_PATH_FIELDS`** (formula — which base a stored relative path resolves against):
+**`_PATH_FIELDS`** (formula — which base a stored relative path resolves against). Retiring
+`ui.vtt_summary` took the last **session**-scoped entry with it, so every surviving row is
+campaign-scoped; the `base="session"` machinery is still live but reached only through
+`SessionEditorConfigService`:
 
 | Field(s) | Resolves against |
 |---|---|
-| vtt_summary.input / output / extract_dir / session_summary | `session` (→ `platform.runtime.session_dir`) |
 | grounding.summaries | `campaign` |
 | `platform.yaml`'s own `runtime.session_dir` | `campaign` (a separate one-entry table, `_RUNTIME_PATH_FIELDS`, since `UIState` no longer stores `runtime` at all) |
 

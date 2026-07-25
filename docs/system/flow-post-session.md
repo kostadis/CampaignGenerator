@@ -19,11 +19,8 @@ pass never silently propagates into the prose.
 ```
 summaries/<session>/session.vtt  +  gm-assist.md
         │
-session_doc/vtt_summary.py    → session-summary.md
-        │            + vtt_extractions/, vtt_roleplay_extractions/
+session_doc/enhance_summary.py → session-summary.md        (cached system prefix; --batch capable)
         ▼  (human review)
-session_doc/enhance_summary.py → enriched gm-assist        (cached system prefix; --batch capable)
-        │
 session_doc/scene_extract.py  → scene_extractions/NN_*.md  (per-scene verbatim; VTT cached in prompt)
         ▼  (human review)
 session_doc/sd_consistency.py → consistency check across scenes
@@ -36,10 +33,6 @@ session_doc/assemble.py       → session_doc.md   (final concatenation)
         ▼  (optional)
 pipelines/ensemble/polish.py         → agentic refinement loop (read/edit/insert/finish tools)
 ```
-
-Running alongside: `session_doc/quote_ledger.py` fuzzy-matches VTT roleplay quotes to the
-extracted scenes and stores the mapping in `quote_ledger.db`, which the Web UI
-uses to sync a replay scrubber.
 
 ## Why the `gm-assist.md` anchor matters
 

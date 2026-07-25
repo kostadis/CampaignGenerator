@@ -50,7 +50,7 @@ All routes reach `app.state.platform` (a `PlatformConfigService`) via the shared
 | `GET`/`PUT /api/ensemble/config` | `get_ensemble_config`/`put_ensemble_config` → `EnsembleConfigService` | reads/writes `<config>/ensemble.yaml`; PUT body is the grouped partial itself (no `{"values": …}` envelope), 400 on an unknown key |
 | `PUT /api/config/runtime` | `put_config_runtime` → `platform.update_runtime` | writes `platform.yaml` `runtime` — **no longer touches `ui_state.yaml` at all** (Phase 3, O3) |
 | `PUT /api/config/local` | `put_config_local` → `platform.update_local` | writes `.campaigngenerator.local.yaml` |
-| `GET campaign-paths` | `get_campaign_paths` → `PlatformConfigService.discover_campaign_paths` (`@staticmethod`) | read-only filesystem **discovery** only (VTT glob, gm-assist/recap sniff, summaries sniff, `docs/*.md` exist-checks) — narrowed in Phase 4 (O2); the old **derivation** half (`output_dir`, `DERIVED_SUBDIRS`) was deleted, not migrated, because it duplicated `_PATH_FIELDS` and had already drifted |
+| `GET campaign-paths` | `get_campaign_paths` → `PlatformConfigService.discover_campaign_paths` (`@staticmethod`) | read-only filesystem **discovery** only (gm-assist/recap sniff, summaries sniff, `docs/npcs/*.md` glob, `docs/*.md` exist-checks; the VTT glob went with the retired VTT Summary page) — narrowed in Phase 4 (O2); the old **derivation** half (`output_dir`, `DERIVED_SUBDIRS`) was deleted, not migrated, because it duplicated `_PATH_FIELDS` and had already drifted |
 | `GET session-paths` | — | **deleted** in Phase 4 — a one-line wrapper with no caller |
 | `GET path-status` | `get_path_status` → `path_exists` | read-only existence check |
 | `GET/PUT party-yaml` | config_routes | read/write `party.yaml` (see subsystems doc) |

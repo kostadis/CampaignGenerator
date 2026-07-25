@@ -71,19 +71,6 @@ const navGroups: NavGroup[] = [
       { label: 'Make Tracking', path: '/setup/make-tracking' },
     ],
   },
-  {
-    title: 'EXPERIMENTAL',
-    items: [
-      { label: 'Enhance Recap', path: '/experimental/enhance-recap' },
-      { label: 'Session Narrative', path: '/experimental/narrative' },
-    ],
-  },
-  {
-    title: 'LEGACY',
-    items: [
-      { label: 'VTT Summary', path: '/workflow/vtt' },
-    ],
-  },
 ]
 
 function isActive(path: string): boolean {

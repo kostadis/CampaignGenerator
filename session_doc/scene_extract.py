@@ -58,7 +58,7 @@ from campaignlib import (
     utc_now_iso,
     write_batch_sidecar,
 )
-from .vtt_summary import parse_vtt
+from .io import parse_vtt
 
 
 SCENE_EXTRACT_SYSTEM_PREFIX = load_agent_prompt("scene_extract")
@@ -386,8 +386,9 @@ def main() -> None:
     scenes = parse_gmassist_scenes(summary_text)
     if not scenes:
         print(f"Error: no '## Scenes' section (with ### scene headings) found in {summary_path}.\n"
-              f"Scene-anchored extraction requires human-verified scene structure. "
-              f"Use vtt_summary for unstructured chunk extraction instead.",
+              f"Scene-anchored extraction requires human-verified scene structure — "
+              f"run Stage 1 (enhance_summary) to produce it, then review the scene "
+              f"headings before re-running.",
               file=sys.stderr)
         sys.exit(1)
     print(f"\n[summary | {summary_path.name}: {len(scenes)} scene(s)]")

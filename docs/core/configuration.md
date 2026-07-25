@@ -11,7 +11,7 @@ This document describes the new design. A small amount of legacy scaffolding is 
 | File | Tracked? | Writer | Reader | Purpose |
 |---|---|---|---|---|
 | `<campaign>/config.yaml` | yes | **human only** | CLI scripts + server (read-only) | `documents:`, prompt paths, model defaults. Server never opens for write — comments and ordering are protected by virtue of no writer existing. |
-| `<campaign>/ui_state.yaml` | yes | **server only** (atomic-rename) | server + migration | Typed sections under `version: 2`: `ui.session_doc`, `ui.vtt_summary`, `ui.grounding`, `ui.prep`, `ui.npc`, `ui.distill`, `ui.party`, `ui.connections`, `ui.experimental`, `ui.workflow`, `runtime.default_model`, `runtime.session_dir`, `legacy.unmigrated`. |
+| `<campaign>/ui_state.yaml` | yes | **server only** (atomic-rename) | server + migration | Typed sections under `version: 2`: `ui.grounding`, `ui.prep`, `ui.npc`, `ui.distill`, `ui.party`, `ui.connections`, `ui.experimental`, `ui.workflow`, `runtime.default_model`, `runtime.session_dir`, `legacy.unmigrated`. |
 | `<campaign>/.campaigngenerator.local.yaml` | gitignored | server | server | `server.host`, `server.port`, transient `nav.*` browser state, anything machine-specific. |
 
 All three are owned end-to-end by [`server/config_service.py:CampaignConfigService`](../../server/config_service.py). Routers receive the service through `request.app.state.config_service` and never touch YAML files directly.
@@ -31,8 +31,6 @@ All three are owned end-to-end by [`server/config_service.py:CampaignConfigServi
 ```yaml
 version: 2
 ui:
-  session_doc:    # Session Doc Editor (post-session narrative)
-  vtt_summary:    # VTT Summary page
   grounding:      # summaries pointer
   campaign_state: # campaign_state UI page
   distill:        # distill UI page
@@ -44,8 +42,6 @@ ui:
   workflow:       # session-workflow wizard
   connections:    # connection-graph page
   experimental:
-    narrative:    # narr_*
-    enhance_recap:# er_*
     dnd_sheet:    # dnd_*
     make_tracking:# mt_*
 runtime:
@@ -55,7 +51,7 @@ legacy:
   unmigrated: {}                      # quarantined keys from migration
 ```
 
-[`server/config_models.py`](../../server/config_models.py) defines the pydantic v2 models. `SessionDocSection` and `VttSummarySection` are fully typed; the rest are loose-extras (untyped fields) so pages can grow without model edits during the transition.
+[`server/config_models.py`](../../server/config_models.py) defines the pydantic v2 models. `GroundingSection` is typed; the rest are loose-extras (untyped fields) so pages can grow without model edits during the transition.
 
 ## API surface
 
@@ -85,9 +81,8 @@ The pre-refactor `GET/PUT /api/config/raw` endpoints (raw YAML editor) **have be
 | `updateLocal(partial)` | `PUT /api/config/local` then `refresh()`. |
 | `save()` | Legacy bulk save. Used only by `SessionConfig.vue` for top-level keys. |
 
-The two anti-pattern bugs from the original `configuration.md` are fixed:
-- `VttSummary.vue` after a successful run now calls `config.updateSection('vtt_summary', {session_summary, roleplay_summary})` so the produced paths survive a restart.
-- `SessionDocEditor.vue`'s Batch toggle persists via `updateSection('session_doc', {batch})` instead of mutating `config.values` and bulk-saving.
+The anti-pattern bug from the original `configuration.md` is fixed:
+- `SessionDocEditor.vue`'s Batch toggle persists via its own `session_doc.yaml` write instead of mutating `config.values` and bulk-saving.
 
 ## What's still legacy (in-progress sweep)
 
@@ -109,7 +104,7 @@ Search with `grep -rn 'config\.values' frontend/src` to track sweep progress.
 
 - **Adding a typed field** — add it to the appropriate model in `server/config_models.py`. If it's a path, list it in `_PATH_FIELDS` in `server/config_service.py` so the resolved view absolutizes it.
 - **Adding a new UI section** — add an attribute on `UISection` (in `config_models.py`); the migrator and `UI_SECTION_NAMES` pick it up automatically.
-- **Reading config in a router handler** — use `request.app.state.config_service.resolved`. For routers that need the legacy `CONFIG` dict (`scene_editor`, `ledger`), the `_refresh_config_from_service` router dependency keeps it in sync before every request.
+- **Reading config in a router handler** — use `request.app.state.config_service.resolved`. For routers that need the legacy `CONFIG` dict (`scene_editor`), the `_refresh_config_from_service` router dependency keeps it in sync before every request.
 - **Reading config in a CLI subprocess** — DON'T. Pass values via command-line flags. CLI scripts are independent of the web server's config layer.
 - **Persisting a value from the frontend** — call `config.updateSection('<name>', {...})` for typed sections, `config.updateLocal({...})` for machine-only. Don't mutate `config.values` and walk away.
 
@@ -122,7 +117,6 @@ Search with `grep -rn 'config\.values' frontend/src` to track sweep progress.
 | [`server/config.py`](../../server/config.py) | Path-derivation helpers (`derive_campaign_paths`); legacy `load_ui_config` / `save_ui_config` (still used by `PUT /api/config/`) |
 | [`server/routers/config_routes.py`](../../server/routers/config_routes.py) | `/api/config/*` endpoints |
 | [`server/routers/scene_editor.py`](../../server/routers/scene_editor.py) | Uses `_refresh_config_from_service` router dependency |
-| [`server/routers/ledger.py`](../../server/routers/ledger.py) | Same; reads `CONFIG` populated by the dependency |
 | [`server/main.py`](../../server/main.py) | Constructs the service at boot; `_boot_overrides_from_args` builds the dotted-key map |
 | [`frontend/src/stores/config.ts`](../../frontend/src/stores/config.ts) | Pinia store with `resolved`, `updateSection`, `updateLocal`, plus legacy `values` mirror |
 | [`tests/test_config_models.py`](../../tests/test_config_models.py) | Coercion / defaults / extras |

@@ -25,17 +25,14 @@ session_doc/sd_consistency.py  # CLI: Pass 1 — consistency check (sd_*.py repl
 session_doc/sd_plan.py         # CLI: Pass 3 — narrative plan
 session_doc/sd_narrate.py      # CLI: Pass 5 — per-scene narration
 session_doc/                # Post-session pipeline CLIs (sd_*, assemble, scene_extract,
-                             #   enhance_*, vtt_summary, …) + shared helpers (io, voice,
+                             #   enhance_summary, …) + shared helpers (io, voice,
                              #   roster, examples, narrate)
-session_doc/narrative.py    # Standalone experimental: VTT-anchored narration CLI
-session_doc/quote_ledger.py # SQLite-backed VTT dialogue tracking
 server/migrate_session_doc.py # CLI: one-shot ui_state.yaml → session_doc.yaml — python -m server.migrate_session_doc --campaign-dir /path/to/campaign
 pipelines/grounding/npc_table.py        # CLI: generate NPC reference table
 pipelines/grounding/distill.py          # CLI: convert summaries → world_state.md
 pipelines/grounding/campaign_state.py   # CLI: generate completed-content grounding doc
 pipelines/grounding/make_tracking.py    # CLI: extract trackable events from a module
 pipelines/rlm/query.py      # CLI: search summaries
-session_doc/vtt_summary.py  # CLI: Zoom .vtt → session summary
 pipelines/grounding/planning.py         # CLI: NPC dossiers + arc scores → planning.md
 pipelines/grounding/party.py            # CLI: character sheets + summaries → party.md
 pipelines/content_ingest/dnd_sheet.py  # CLI: D&D Beyond PDF → markdown (vision API)
@@ -124,7 +121,7 @@ All scripts look for `config.yaml` in the CWD first, then fall back to `config/c
 
 **Consumers auto-adopt it when present:**
 - `facts_to_state` and `synthesise_world_state`/`synthesise_facts`/`synthesise_polish` take `--registry` (an explicit dir/file wins; omit to auto-discover `docs/entity_registry.yaml` from the CWD). It supersedes the deprecated `--aliases`/`--known-names`, and errors if an explicit `--registry` is combined with them. The registry supplies **aliases only** — `--inventory` is separate human-authored module-canon grounding and is never substituted by it.
-- The render CLIs (`distill`, `party`, `sd_narrate`, `vtt_summary`, `scene_extract`, `campaign_state`, `planning`) call `load_alias_map(dossier_dir, registry_path=…)`: a resolved registry **replaces** the `docs/npcs/` dossier scan (via `find_alias_registry`, which prints an adoption notice so a partial registry never silently drops hand-curated dossier aliases).
+- The render CLIs (`distill`, `party`, `sd_narrate`, `scene_extract`, `campaign_state`, `planning`) call `load_alias_map(dossier_dir, registry_path=…)`: a resolved registry **replaces** the `docs/npcs/` dossier scan (via `find_alias_registry`, which prints an adoption notice so a partial registry never silently drops hand-curated dossier aliases).
 - `planning --build-dossiers` seeds new dossiers' `aliases:` frontmatter from the registry.
 
 **Building one:** there is no `import-source`. Produce a typed module inventory with the `gm-module-inventory` skill (published module → `docs/background/<module>-inventory.md`), then `registry import-inventory`. The `import-*` verbs fold the legacy stores in; `check` reports grouping drift + fuzzy near-dups for GM review.

@@ -136,7 +136,7 @@ class TestLocalOwnership:
         # for the route-level version of this same contract.
         platform = PlatformConfigService(fresh_campaign)
         with pytest.raises(ValidationError):
-            platform.update_local({"ui": {"vtt_summary": {}}})
+            platform.update_local({"ui": {"grounding": {}}})
         # Rejected outright — nothing partially written.
         assert platform.local.server.port == 5000
 
@@ -229,7 +229,7 @@ class TestIsolationInvariant:
         # CampaignConfigService re-serialized the WHOLE document for,
         # including runtime.
         platform.uis.update_section("distill", {"some_field": "value"})
-        platform.uis.update_section("vtt_summary", {"session_name": "Session 12"})
+        platform.uis.update_section("grounding", {"summaries": "summaries.md"})
 
         after = platform_yaml_path.read_bytes()
         assert after == before, (
@@ -383,7 +383,7 @@ class TestDiscoverCampaignPaths:
             "than a path — see this test's docstring"
         )
 
-    def test_finds_vtt_gm_recap_and_summaries(self, tmp_path):
+    def test_finds_gm_recap_and_summaries(self, tmp_path):
         campaign = tmp_path / "campaign"
         session = campaign / "summaries" / "20260318"
         session.mkdir(parents=True)
@@ -393,7 +393,10 @@ class TestDiscoverCampaignPaths:
 
         result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
 
-        assert result["vtt_input"] == str(session / "session.vtt")
+        # The raw *.vtt is deliberately NOT discovered: the page that used
+        # it went with the vtt_summary chain, and the Session Doc Editor
+        # globs the session dir itself (scene_editor._vtt_path).
+        assert "vtt_input" not in result
         assert result["gm_recap"] == str(session / "gm-assist.md")
         assert result["summaries"] == str(campaign / "summaries.md")
 
@@ -468,7 +471,7 @@ class TestDiscoverCampaignPaths:
         assert result["party"] == ""
         assert result["planning"] == ""
         assert result["party_config"] == ""
-        for absent_key in ("vtt_input", "gm_recap", "summaries", "plan_npc", "session_summary"):
+        for absent_key in ("gm_recap", "summaries", "plan_npc", "session_summary"):
             assert absent_key not in result
 
     def test_nonexistent_session_dir_does_not_raise(self, tmp_path):
@@ -481,7 +484,6 @@ class TestDiscoverCampaignPaths:
         session = campaign / "summaries" / "does-not-exist-yet"
 
         result = PlatformConfigService.discover_campaign_paths(str(campaign), str(session))
-        assert "vtt_input" not in result
         assert "gm_recap" not in result
         assert "session_summary" not in result
 
@@ -529,7 +531,7 @@ class TestPlatformLocalConfig:
 
     def test_top_level_unknown_key_rejected(self):
         with pytest.raises(ValidationError):
-            PlatformLocalConfig(ui={"vtt_summary": {}})
+            PlatformLocalConfig(ui={"grounding": {}})
 
 
 class TestLoadSaveLocalConfig:
