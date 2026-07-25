@@ -25,7 +25,7 @@ app-wide backend — the sidebar toggle re-points here from `PUT /api/editor/con
 { "default_backend": "dgx" }
 ```
 
-Validation: must be one of the four backend literals. Unknown value → 422.
+Validation: must be one of the four backend literals. An unknown value is rejected by `PlatformRuntime`'s `Literal` and surfaces as the **400** this handler already returns for any invalid runtime value — not a 422, which would make this one field inconsistent with every other key the same endpoint accepts.
 
 ### `GET /api/models` (existing, extended)
 
@@ -87,7 +87,7 @@ returns `model_origin: "platform"` always, which is exactly what the operator ne
 
 ## 4. Refusal on run endpoints
 
-All 17 token-spending endpoints gain one failure mode: **409 Conflict** when the resolved pair is
+All 22 token-spending endpoints gain one failure mode: **409 Conflict** when the resolved pair is
 incompatible. No subprocess is spawned and no SSE stream opens.
 
 Body shape is defined in [resolution.md](./resolution.md#refusal).

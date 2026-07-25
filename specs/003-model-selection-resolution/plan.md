@@ -7,7 +7,7 @@
 ## Summary
 
 Enforce one model/backend resolution rule — *explicit request → service override → platform default
-→ literal* — across all 17 token-spending endpoints, replacing the five independent spellings that
+→ literal* — across all 22 token-spending endpoints, replacing the five independent spellings that
 exist today. The platform tier gains `default_backend` so the sidebar's two controls are owned by
 the same thing; the five config-owning services (Ensemble, Session Doc Editor, Grounding, Party,
 Planning) hold overrides in documents they already own; the five stateless services inherit and
@@ -42,7 +42,7 @@ metric is economic: zero metered API spend when a local backend is selected (SC-
 shims. The CLI must stay independently invocable (Principle VI). `PlatformRuntime` is
 `extra="forbid"`, so adding a field requires a migration.
 
-**Scale/Scope**: 6 routers, 17 token-spending endpoints, 5 override-capable services, 5 inheriting
+**Scale/Scope**: 6 routers, 22 token-spending endpoints (15 `/run/*`, 6 session-editor, 1 connections), 5 override-capable services, 5 inheriting
 services, 1 platform tier. 5 existing resolution implementations collapse to 1. 3 existing tests
 are deliberately reversed.
 

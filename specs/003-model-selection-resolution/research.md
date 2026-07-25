@@ -173,6 +173,35 @@ Tests that must keep passing unchanged (they encode the resolution chain this fe
 **Rationale**: naming these up front prevents the reversal from being discovered as a "broken test"
 during implementation and silently re-reverted to make the suite green.
 
+## R10 — The endpoint count was wrong (correction)
+
+**Decision**: The feature covers **22** token-spending endpoints, not the 17 quoted in the first
+draft of the spec, plan and contracts. All artifacts have been corrected.
+
+The undercount came from treating the Session Doc Editor as two endpoints (narrate, scrub). It has
+**six**, and they are spread across more command builders than any other router:
+
+| Router | Endpoints | Count |
+|---|---|---|
+| `grounding.py` | campaign-state, distill, party, planning, build-dossiers | 5 |
+| `ensemble.py` | extract, bundle, recent-events, threads, synthesize | 5 |
+| `prep.py` | session-prep, npc-table, query | 3 |
+| `setup.py` | dnd-sheet, make-tracking | 2 |
+| `scene_editor.py` | enhance, extract, narrate/{n}, scrub/{n}, scrub-all, plan | **6** |
+| `connections.py` | extract | 1 |
+| | | **22** |
+
+Within `scene_editor.py`, `_model_args` has **7** call sites and `_backend_flags` **6**, spread over
+`_build_enhance_cmd` (:599), `_build_reextract_cmd` (:632), `_build_narrate_cmd` (:683),
+`_build_consistency_cmd` (:1124), `_build_plan_cmd` (:1159) and the handlers `api_enhance` (:962),
+`api_extract` (:993), `api_narrate` (:1016), `api_scrub` (:1052-53), `api_scrub_all` (:1083-84),
+`api_plan` (:1184-85).
+
+**Rationale for recording it**: T013 was written as "narrate and scrub" and would have left four
+session-editor endpoints on the old two-level chain — a silent partial migration that the
+characterization test (T002/T020) would not have caught, because the test's endpoint list was
+derived from the same wrong count. Both were corrected together.
+
 ## R9 — Technical context resolved
 
 No `NEEDS CLARIFICATION` items remain.
@@ -182,7 +211,7 @@ No `NEEDS CLARIFICATION` items remain.
 - **Storage**: YAML documents in the campaign workspace — `platform.yaml`, `ensemble.yaml`,
   `session_doc.yaml`, `grounding.yaml`, `party.yaml`, `planning.yaml`. No database.
 - **Testing**: pytest (`python -m pytest tests/`).
-- **Scale/scope**: 6 routers, 17 token-spending endpoints, 5 override-capable services, 5
+- **Scale/scope**: 6 routers, 22 token-spending endpoints, 5 override-capable services, 5
   inheriting services, 1 platform tier.
 - **Constraint**: single-user deployment. Per the standing project rule, migrate-and-delete rather
   than dual-location probes or back-compat shims.

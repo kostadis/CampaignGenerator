@@ -18,6 +18,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
 from server.config import DEFAULT_MODEL, MODELS, api_key_present, path_exists
+from server.platform_config_shared import BACKENDS
 from server.platform_config_service import PlatformConfigService, require_platform
 
 router = APIRouter()
@@ -54,7 +55,15 @@ def get_config(request: Request):
 # latter versioned a document that no longer exists.
 
 
-# ── Runtime updates (session_dir, default_model) ───────────────────────────
+# ── Runtime updates (session_dir, default_model, default_backend) ─────────
+# ``default_backend`` joined the runtime slice with feature 003. It is the
+# app-wide backend the sidebar toggle sets; before 003 that toggle wrote
+# ``session_doc.yaml``'s ``backends.active`` — the Session Doc Editor's own
+# config — which is how ``grounding.py`` ended up reading another service's
+# selection. This is now the ONLY write path for the app-wide backend.
+#
+# An unknown backend value is rejected by ``PlatformRuntime``'s Literal and
+# surfaces as the 400 this handler already returns for every invalid value.
 
 
 class RuntimeUpdate(BaseModel):
@@ -132,9 +141,26 @@ def get_path_status(path: str):
 
 
 @router.get("/models")
-def get_models():
-    """Return the list of available Claude models."""
-    return {"models": MODELS, "default": DEFAULT_MODEL}
+def get_models(request: Request):
+    """Return the model registry plus the backend dimension (feature 003).
+
+    ``models`` stays Anthropic-specific on purpose: DGX and OpenRouter ids are
+    free-form and not enumerable from this repo, so the UI must accept a typed
+    id for those backends rather than constrain to this list. Without that,
+    picking a local backend would leave the platform pair permanently
+    incompatible — every listed model is a ``claude-*`` id.
+    """
+    try:
+        runtime = require_platform(request).runtime
+        default_backend = runtime.default_backend
+    except HTTPException:
+        default_backend = "anthropic"
+    return {
+        "models": MODELS,
+        "default": DEFAULT_MODEL,
+        "backends": list(BACKENDS),
+        "default_backend": default_backend,
+    }
 
 
 @router.get("/status")

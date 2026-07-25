@@ -7,10 +7,14 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from server.platform_config_service import ConfigError, PlatformConfigService
+from server.platform_config_service import (
+    ConfigError,
+    IncompatibleSelection,
+    PlatformConfigService,
+)
 from server.routers import (
     config_routes, connections, ensemble, grounding, prep,
     scene_editor, setup, planning_routes, party_routes,
@@ -25,6 +29,24 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ── Selection refusal (feature 003) ─────────────────────────────────────────
+# A run whose resolved model cannot be served by its resolved backend is
+# refused BEFORE any subprocess is spawned, rather than being silently
+# retargeted at a model the operator did not choose. 409 (not 400) because
+# the request is well formed — it is the stored selection that conflicts.
+#
+# Refusing here, at resolution time, is deliberate: doing it inside
+# subprocess_runner would mean the command was already built and the
+# structured reason lost, leaving the operator with a stream error instead of
+# an actionable message — the exact failure mode specs/002 exists to remove.
+
+
+@app.exception_handler(IncompatibleSelection)
+async def _incompatible_selection_handler(request: Request, exc: IncompatibleSelection):
+    return JSONResponse(status_code=409, content={"detail": exc.as_detail()})
+
 
 # ── API routers ──────────────────────────────────────────────────────────────
  

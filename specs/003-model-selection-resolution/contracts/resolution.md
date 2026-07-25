@@ -18,13 +18,13 @@ resolve_selection(
 **Location**: `server/platform_config_service.py`, replacing `resolve_default_model` (which
 resolves the model alone and has no concept of a backend or a service tier).
 
-**Callers** — all 17 token-spending endpoints, with no other resolution logic between the call and
+**Callers** — all 22 token-spending endpoints, with no other resolution logic between the call and
 the built command:
 
 | Router | Endpoints | Service tier passed |
 |---|---|---|
 | `ensemble.py` | extract, bundle, recent-events, threads, synthesize | per-stage `EnsembleBackend` |
-| `scene_editor.py` | narrate, scrub | active `BackendProfile` |
+| `scene_editor.py` | enhance, extract, narrate/{n}, scrub/{n}, scrub-all, plan | active `BackendProfile` |
 | `grounding.py` | distill, campaign-state, build-dossiers | `grounding.yaml` `selection` |
 | `grounding.py` | party | `party.yaml` `selection` |
 | `grounding.py` | planning | `planning.yaml` `selection` |
@@ -48,7 +48,7 @@ correctly scoped to formatting, not resolution.
 | ID | Guarantee |
 |---|---|
 | C1 | Exactly one `--model` flag reaches any subprocess. Two flags (today's Grounding + DGX case) is a contract violation. |
-| C2 | `--backend` is emitted for every non-`anthropic` resolved backend, on every one of the 17 endpoints. |
+| C2 | `--backend` is emitted for every non-`anthropic` resolved backend, on every one of the 22 endpoints. |
 | C3 | The resolver never returns a model the operator did not select. When resolution yields an incompatible pair it returns a refusal, never a substitute. |
 | C4 | No router reads another service's configuration document. |
 | C5 | `model` and `backend` come from the same tier when that tier supplies either (the pairing rule). |
