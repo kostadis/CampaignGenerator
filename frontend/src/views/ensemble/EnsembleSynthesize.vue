@@ -83,7 +83,9 @@ let planPersistTimer: ReturnType<typeof setTimeout> | null = null
 function schedulePlanPersist() {
   if (planPersistTimer) clearTimeout(planPersistTimer)
   planPersistTimer = setTimeout(() => {
-    config.updateSection('planning', { config_path: planningConfigPath.value }).catch(() => {})
+    // config_path used to be mirrored into ui.planning as well; that section
+    // is retired (grounding.yaml owns the standalone page's copy) and the
+    // ensemble's own override is written to ensemble.yaml just below.
     saveEnsembleConfig({
       planning: {
         synth_mode: planningSynthMode.value,
