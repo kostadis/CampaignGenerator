@@ -867,3 +867,29 @@ def run_synthesize(
             f"degrade. Proceeding anyway.\n\n")
     prelude = "".join(prelude_parts)
     return _run_locked(f"synthesize-{doc}", cmd, prelude=prelude)
+
+
+# ── Resolved-selection preview (feature 003, FR-012) ───────────────────────
+
+
+@router.get("/selection/resolved")
+def get_ensemble_resolved_selection(
+    request: Request,
+    stage: str = "extract",
+    service: EnsembleConfigService = Depends(get_ensemble_service),
+):
+    """What a run of ``stage`` would use, and where each half came from.
+
+    Per-stage because ensemble's selection is: the canonical workflow runs
+    extract on DGX and synthesize on Anthropic within one campaign, so a
+    single answer for "the ensemble" would be wrong for one of them.
+    """
+    cfg = service.resolved()
+    stage_cfg = getattr(cfg, stage, None) or cfg.extract
+    return resolve_selection(
+        request,
+        request_model=(stage_cfg.model or None),
+        request_backend=(stage_cfg.backend or None),
+        service_name="ensemble",
+        raise_on_incompatible=False,
+    ).as_dict()

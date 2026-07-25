@@ -137,55 +137,6 @@ def require_platform(request: Request) -> "PlatformConfigService":
     return platform
 
 
-def resolve_default_model(model: str | None, request: Request) -> str:
-    """Resolve the ``--model`` a subprocess run should use, per the
-    precedence table in ``docs/config/platform-isolation.md``'s "Model
-    resolution precedence (O4)" (the first three of its six levels; levels
-    4–6 collapse into a single "platform or literal" step here since Phase
-    5a does not touch backend-remembered-model or wiring):
-
-    1. An explicit ``model`` — the per-run value a request actually supplied
-       (the frontend forwards the sidebar's pick here; a caller that omits
-       it wants the platform default, not this function's opinion).
-    2. ``runtime.default_model`` — the platform's persisted sidebar pick
-       (``PlatformConfigService.runtime.default_model``, see
-       ``platform_config_shared.PlatformRuntime``).
-    3. ``campaignlib.constants.DEFAULT_MODEL`` — the literal fallback, used
-       only if ``runtime.default_model`` is somehow falsy (it has a
-       ``default_factory`` that itself resolves to this same literal, so
-       this branch should be unreachable in practice) or if no live
-       ``PlatformConfigService`` exists for this request at all.
-
-    This is the fix for the bug the design doc's Phase 5a exists to close:
-    twelve router request-body fields independently hardcoded
-    ``model: str = "claude-sonnet-4-6"`` as their FastAPI default, so a
-    request that omitted ``model`` silently got that literal instead of
-    ``runtime.default_model`` — the sidebar model picker was bypassed on
-    every one of those paths. Callers now declare ``model: str | None =
-    None`` and call this function instead of hardcoding a default.
-
-    The "no live platform" branch (``require_platform`` raising) is caught
-    rather than left to propagate as a 503: on a normally booted server this
-    can't happen (``server/main.py`` refuses to boot without resolving
-    ``app.state.platform``), so this is defense for a request handled
-    outside that lifecycle — mirroring ``grounding.py``'s ``_backend_flags``,
-    which treats a missing platform as "no overrides" for the exact same
-    reason rather than erroring. Silently returning the literal is safe
-    specifically because the caller already asked for the platform's value
-    and got "no platform to ask", not "a value the platform doesn't want" —
-    it is not the shortcut the design doc's Phase 5a warns against (which is
-    hardcoding this literal as the FastAPI field default *instead of* ever
-    asking the platform, which is what this function replaces).
-    """
-    if model:
-        return model
-    try:
-        platform = require_platform(request)
-    except HTTPException:
-        return DEFAULT_MODEL
-    return platform.runtime.default_model or DEFAULT_MODEL
-
-
 # ── The resolution seam (feature 003) ─────────────────────────────────────
 
 

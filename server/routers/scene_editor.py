@@ -1405,3 +1405,20 @@ def api_open(file_type: str, n: int, cfg: ResolvedEditorConfig = Depends(get_edi
         _open_in_typora(path)
         return {"ok": True}
     return JSONResponse({"ok": False, "error": "file not found"}, status_code=404)
+
+
+# ── Resolved-selection preview (feature 003, FR-012) ───────────────────────
+
+
+@router.get("/selection/resolved")
+def get_editor_resolved_selection(request: Request,
+                                  service: SessionEditorConfigService = Depends(get_editor_service)):
+    """What an editor run would use, and where each half came from."""
+    cfg = service.resolved_editor_config()
+    sel, _endpoint = _editor_service_selection(cfg)
+    return resolve_selection(
+        request,
+        service=None if sel.is_empty() else sel,
+        service_name="session_doc",
+        raise_on_incompatible=False,
+    ).as_dict()

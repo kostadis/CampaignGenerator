@@ -235,3 +235,30 @@ def test_incompatible_platform_pair_refuses_every_run_endpoint(monkeypatch, tmp_
     assert r.status_code == 409, r.text
     assert r.json()["detail"]["error"] == "incompatible_selection"
     assert "cmd" not in captured, "no subprocess may be spawned on a refusal"
+
+
+# ── FR-014: the run record proves what actually ran ────────────────────────
+
+def test_run_log_records_the_resolved_selection(tmp_path):
+    """FR-014 is satisfied by existing infrastructure, not new code.
+
+    `specs/002-ensemble-run-observability` already writes a durable run record
+    whose `command` block is the full invocation. Because the resolved model
+    and backend reach the subprocess *as flags on that command line*, the
+    record contains them for free. This test pins that inference so a future
+    change to `_save_run_log`'s format cannot quietly break the guarantee.
+    """
+    from server.subprocess_runner import _save_run_log
+
+    cmd = ["distill", "--input", "docs/x.md", "--backend", "dgx",
+           "--endpoint", "http://box:8001", "--model", "Qwen3-Next-80B"]
+    _save_run_log(cmd, str(tmp_path), "done", 0, "succeeded", 1.5)
+
+    logs = list((tmp_path / "logs").glob("*.md"))
+    assert len(logs) == 1
+    body = logs[0].read_text(encoding="utf-8")
+    assert "--model" in body and "Qwen3-Next-80B" in body
+    assert "--backend" in body and "dgx" in body
+    assert "result: `succeeded`" in body
+    # secret-free (SC-002 of specs/002): keys are inherited env, never argv
+    assert "API_KEY" not in body

@@ -11,13 +11,13 @@ flowchart TB
   HY["mneme hypostasis.yaml<br/>single authority"] -->|renders| WI["config/wiring.yaml<br/>external"]
   WI --> PLAT
   CY["config.yaml<br/>internal, human"] --> PLAT[PlatformConfigService]
-  PY["platform.yaml<br/>runtime.default_model, session_dir"] --> PLAT
+  PY["platform.yaml<br/>runtime.default_model, default_backend,<br/>session_dir"] --> PLAT
   BO[boot_overrides] --> RES[resolved]
   PLAT --> RES
   BO --> RESE[resolved_editor_config]
   RES -->|runtime.session_dir, default_model,<br/>campaign_dir| RESE
   SD["session_doc.yaml<br/>SessionEditorConfigService"] --> RESE
-  RES -->|runtime.default_model| RDM["resolve_default_model()<br/>14 /run/* endpoints"]
+  RES -->|runtime.default_model,<br/>runtime.default_backend| RDM["resolve_selection()<br/>22 token-spending endpoints"]
   ENS["ensemble.yaml<br/>EnsembleConfigService"] --> RESE2["/api/ensemble/config"]
   RES -->|runtime.default_model| ENS
   UIE["ensemble.yaml + party.yaml + planning.yaml"] --> GD["docs/*.md grounding"]
@@ -50,7 +50,7 @@ with `ui_state.yaml`, its models and its route. What is left is one owner per do
 | 7. Ensemble subsystem | `manifest.json`, `merge.yaml`, `docs/*_draft.md` | ensemble CLI | per-run artifacts | the run outputs; its *config* moved up to layer 3c |
 | 8. Planning subsystem | `planning.yaml` | human + planning service | YAML, planning service owned | npcs[], factions[] |
 | 9. Grounding docs | `party.yaml`, `tracking.txt`, `docs/*.md` | human + generators | YAML config + generated md | rosters/dossiers → world/campaign/party docs |
-| 10. Router model defaults | eleven `/run/*` request fields (`grounding.py` ×5, `prep.py` ×3, `connections.py` ×1, `setup.py` ×2 — `experimental.py` ×2 and `session_workflow.py` ×1 went with the retired VTT Summary chain) | server (`resolve_default_model`, `server/platform_config_service.py`) | in-memory, per-request | resolves `model` per request: explicit value → layer 2b's `runtime.default_model` → `campaignlib.constants.DEFAULT_MODEL` literal. Phase 5a — closes the gap where a request omitting `model` silently got a hardcoded literal instead of the sidebar's pick |
+| 10. Router model/backend selection | all 22 token-spending endpoints (`grounding.py` ×5, `ensemble.py` ×5, `scene_editor.py` ×6, `prep.py` ×3, `setup.py` ×2, `connections.py` ×1) | server (`resolve_selection`, `server/platform_config_service.py`) | in-memory, per-request | resolves model **and** backend per run: request → service override → platform → literal, with the pairing rule and a 409 refusal instead of substitution. Feature 003 — closes the five independent spellings this row used to describe as one. see [values.md § The model/backend resolution rule](./values.md#the-modelbackend-resolution-rule-feature-003--the-single-statement) |
 
 ## Who writes what
 
