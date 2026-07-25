@@ -19,7 +19,7 @@ from fastapi import HTTPException
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server.planning_config_service import PlanningConfigService  # noqa: E402
-from server.planning_config_shared import (  # noqa: E402
+from campaignlib.planning_config import (  # noqa: E402
     PlanningConfig,
     PlanningEntry,
     load_planning_config,
@@ -70,7 +70,12 @@ def test_create_and_get_npc(tmp_path):
 
     got = svc.get_npc("Adabra")
     assert got.name == "Adabra"
-    assert got.dossier is not None and got.dossier.name == "adabra.md"
+    # Paths come back exactly as authored, not resolved — the service stores
+    # what it was given. Before Phase 1 of docs/config/grounding-isolation.md
+    # the loader resolved to an absolute Path on read and save_planning_config
+    # wrote that absolute straight back, so every edit through this service
+    # silently rewrote the GM's references as machine-specific ones.
+    assert got.dossier == str(dossier)
     assert [n.name for n in svc.get_npcs()] == ["Adabra"]
 
 
@@ -101,7 +106,7 @@ def test_update_npc_replaces_arc_score(tmp_path):
     )
     assert updated.arc_score is not None
     got = svc.get_npc("Adabra")
-    assert got.arc_score is not None and got.arc_score.name == "adabra.md"
+    assert got.arc_score == str(arc)
 
 
 def test_update_npc_name_mismatch_400(tmp_path):
@@ -193,5 +198,5 @@ def test_save_load_arc_score_three_state(tmp_path):
     reloaded = {f.name: f for f in load_planning_config(cfg_path).factions}
     assert reloaded["Absent"].arc_score is None and reloaded["Absent"].trackless is False
     assert reloaded["Trackless"].arc_score is None and reloaded["Trackless"].trackless is True
-    assert reloaded["Tracked"].arc_score == track.resolve()
+    assert reloaded["Tracked"].arc_score == str(track.resolve())
     assert reloaded["Tracked"].trackless is False

@@ -80,12 +80,10 @@ from campaignlib import (
     stream_api,
 )
 
-# Import shared planning config logic
-from server.planning_config_shared import (
-    PlanningConfig,
-    PlanningEntry,
-    load_planning_config as shared_load_planning_config,
-    save_planning_config as shared_save_planning_config,
+from campaignlib.planning_config import (
+    ResolvedEntry as PlanningEntry,
+    load_planning_config as _load_planning_config,
+    resolve_entries,
 )
 
 
@@ -96,27 +94,40 @@ from server.planning_config_shared import (
 # so the LLM can't lose the dossier-↔-score binding the way it can with the
 # legacy flat-group rendering.
 
-@dataclass
-class PlanningEntry:
-    name: str
-    dossier: Path | None = None       # NPC entries only; None for factions
-    arc_score: Path | None = None
-    trackless: bool = False           # True when arc_score is explicitly null
+# PlanningEntry / PlanningConfig used to be declared here as local dataclasses
+# *and* imported from server.planning_config_shared, so the imports were
+# shadowed and dead. Both copies are gone — campaignlib.planning_config is the
+# one definition (Phase 1 of docs/config/grounding-isolation.md).
 
 
 @dataclass
-class PlanningConfig:
+class ResolvedPlanningConfig:
+    """Resolved NPC/faction entries, the shape this CLI renders from."""
+
     npcs: list[PlanningEntry] = field(default_factory=list)
     factions: list[PlanningEntry] = field(default_factory=list)
 
 
-def load_planning_config(path: Path) -> PlanningConfig:
-    """Read a planning config YAML, validate referenced files, return PlanningConfig.
-    
-    Delegates to the shared implementation in server.planning_config_shared.
+def load_planning_config(path: Path) -> ResolvedPlanningConfig:
+    """CLI wrapper around ``campaignlib.planning_config`` that prints to stderr
+    and exits instead of raising.
+
+    Returns the **resolved** view — absolute paths, every reference verified —
+    matching ``party.py``'s wrapper. The non-empty check lives here rather than
+    in the loader for the same reason it does there: an empty planning config
+    is a legitimate file state (the API can produce one by deleting the last
+    entry) but a useless CLI input.
     """
     try:
-        return shared_load_planning_config(path)
+        cfg = _load_planning_config(path)
+        if not cfg.npcs and not cfg.factions:
+            raise ValueError(
+                f"{path} must define a non-empty 'npcs' or 'factions' list"
+            )
+        return ResolvedPlanningConfig(
+            npcs=resolve_entries(cfg.npcs, path.parent),
+            factions=resolve_entries(cfg.factions, path.parent),
+        )
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
@@ -174,7 +185,7 @@ def _render_threads_block(threads_file: Path | None, normalize=None) -> str:
 
 
 def _render_planning_blocks(
-    config: PlanningConfig,
+    config: ResolvedPlanningConfig,
     extra_npc_files: list[Path] | None = None,
     normalize=None,
 ) -> tuple[str, dict[str, list[str]]]:
@@ -583,7 +594,7 @@ def run_synthesize(
     return result
 
 
-def _check_npc_overlap(config: PlanningConfig, extra_npc_files: list[Path]) -> None:
+def _check_npc_overlap(config: ResolvedPlanningConfig, extra_npc_files: list[Path]) -> None:
     """Reject if any --npc dossier's canonical name matches a config NPC entry.
     Otherwise the same NPC would render twice (once with arc-score nested,
     once without)."""
@@ -613,7 +624,7 @@ def _check_npc_overlap(config: PlanningConfig, extra_npc_files: list[Path]) -> N
 
 def run_synthesize_with_config(
     client,
-    config: PlanningConfig,
+    config: ResolvedPlanningConfig,
     extra_npc_files: list[Path],
     extract_files: list[Path],
     context_files: list[Path],
@@ -836,7 +847,7 @@ def main() -> None:
               file=sys.stderr)
         sys.exit(1)
 
-    planning_config: PlanningConfig | None = None
+    planning_config: ResolvedPlanningConfig | None = None
     if args.planning_config:
         planning_config = load_planning_config(
             Path(args.planning_config).expanduser().resolve()

@@ -10,8 +10,14 @@ resolving campaign_dir/config_dir itself — the same shape
 
 from fastapi import HTTPException
 from typing import List
-import yaml
-from .planning_config_shared import PlanningConfig, PlanningEntry, load_planning_config, save_planning_config
+
+from campaignlib.planning_config import (
+    PLANNING_CONFIG_FILENAME,
+    PlanningConfig,
+    PlanningEntry,
+    load_planning_config,
+    save_planning_config,
+)
 
 
 class PlanningConfigService:
@@ -19,28 +25,32 @@ class PlanningConfigService:
 
     def __init__(self, platform) -> None:
         self.platform = platform
-        self.planning_path = self.platform.config_path_base / "planning.yaml"
-    
+        self.planning_path = self.platform.config_path_base / PLANNING_CONFIG_FILENAME
+
     def _load(self) -> PlanningConfig:
-        """Load planning configuration, returning empty config if file doesn't exist."""
-        if not self.planning_path.exists():
-            return PlanningConfig(npcs=[], factions=[])
-        try:
-            raw = yaml.safe_load(self.planning_path.read_text(encoding="utf-8")) or {}
-        except yaml.YAMLError as e:
-            raise HTTPException(status_code=400, detail=f"Failed to load planning config: {e}")
-        # An empty planning.yaml (e.g. after the last NPC/faction was deleted)
-        # is a valid empty config for the API, even though the CLI loader treats
-        # it as a hard error. Return empty rather than 400 on a subsequent read.
-        if not raw.get("npcs") and not raw.get("factions"):
-            return PlanningConfig(npcs=[], factions=[])
+        """Load planning configuration; a missing or empty file is an empty config.
+
+        The emptiness special-case that used to live here — a raw
+        ``yaml.safe_load`` pre-check, because the CLI loader treated an empty
+        file as a hard error — is gone: ``campaignlib.planning_config``'s
+        loader returns an empty config for a missing/empty document, and the
+        CLI keeps its strict behavior in its own wrapper where it belongs
+        (Phase 1 of ``docs/config/grounding-isolation.md``).
+
+        Entries come back with paths **as authored**, not resolved. The old
+        loader resolved to absolute paths on read and ``save_planning_config``
+        wrote those absolutes straight back, so every edit through this service
+        rewrote the GM's relative references as machine-specific ones.
+        """
         try:
             return load_planning_config(self.planning_path)
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Failed to load planning config: {str(e)}")
-    
+        except ValueError as e:
+            raise HTTPException(
+                status_code=400, detail=f"Failed to load planning config: {e}"
+            ) from e
+
     def _save(self, config: PlanningConfig) -> None:
-        """Save planning configuration."""
+        """Save planning configuration (atomic — see ``save_planning_config``)."""
         try:
             save_planning_config(self.planning_path, config)
         except Exception as e:

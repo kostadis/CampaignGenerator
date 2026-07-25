@@ -12,8 +12,8 @@ Also holds ``TYPED_SESSION_DOC_TO_GROUPED``, the flat-legacy (old
 ``server/migrate_session_doc.py`` CLI to read pre-Phase-5 ``ui_state.yaml``
 data.
 
-Mirrors the structural pattern of ``server/planning_config_shared.py`` /
-``server/party_config_shared.py`` (module-level load/save functions used by
+Mirrors the structural pattern of ``campaignlib/planning_config.py`` /
+``campaignlib/party_config.py`` (module-level load/save functions used by
 both the service layer and CLI tooling) but uses pydantic instead of
 dataclasses so ``config_models.BackendProfile`` and
 ``config_models.ProfileEntry`` can be reused directly.

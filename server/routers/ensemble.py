@@ -21,8 +21,14 @@ from server.backend_forwarding import backend_cli_args
 from server.config import MODELS
 from server.ensemble_config_service import EnsembleConfigService
 from server.ensemble_config_shared import EnsembleConfig
-from server.party_config_shared import load_party_config
-from server.planning_config_shared import load_planning_config
+from campaignlib.party_config import (
+    load_party_config,
+    resolve_party_config,
+)
+from campaignlib.planning_config import (
+    load_planning_config,
+    resolve_entries,
+)
 from server.platform_config_service import resolve_default_model
 from server.subprocess_runner import console_script, stream_subprocess, sse_error_stream
 
@@ -250,7 +256,8 @@ def _planning_npc_passthrough(
     if not npc_files:
         return []
     config = load_planning_config(config_path)
-    bound = {e.dossier.resolve() for e in config.npcs if e.dossier is not None}
+    npcs = resolve_entries(config.npcs, config_path.parent)
+    bound = {e.dossier.resolve() for e in npcs if e.dossier is not None}
     return [str(p) for p in npc_files if p.resolve() not in bound and p.resolve() not in exclude]
 
 
@@ -273,7 +280,9 @@ def _party_pc_dossier_files(party_config_path: Path | None) -> tuple[set[Path], 
     if party_config_path is None:
         return set(), None
     try:
-        config = load_party_config(party_config_path)
+        config = resolve_party_config(
+            load_party_config(party_config_path), party_config_path.parent
+        )
     except ValueError as e:
         return set(), f"could not read {party_config_path} for PC exclusion: {e}"
     return {pc.dossier.resolve() for pc in config.characters if pc.dossier is not None}, None
