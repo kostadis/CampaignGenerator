@@ -44,7 +44,9 @@ function loadFromConfig() {
   examplesDir.value = ec?.paths?.examples_dir || ''
   sessionSummaryPath.value = ec?.paths?.session_summary || 'session-summary.md'
   partyPath.value = ec?.paths?.party || ''
-  summaries.value = r.ui?.grounding?.summaries || v.summaries || ''
+  // Shared canonical-timeline pointer — grounding.yaml's root (ui.grounding
+  // is retired; see docs/config/grounding-isolation.md).
+  summaries.value = config.groundingConfig?.summaries || v.summaries || ''
 }
 
 function saveToConfig() {
@@ -77,9 +79,11 @@ async function persistTypedSections() {
         gm_player: gmPlayer.value || null,
       },
     }),
-    config.updateSection('grounding', {
-      summaries: summaries.value || null,
-    }),
+    // The shared canonical-timeline pointer now lives at grounding.yaml's
+    // root, owned by GroundingConfigService — `ui.grounding` is retired
+    // (docs/config/grounding-isolation.md). All four grounding runs inherit
+    // this when their own `input` is blank.
+    config.updateGrounding({ summaries: summaries.value || null }),
   ])
 }
 

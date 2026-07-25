@@ -1,54 +1,54 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import ExtractSynthesizePanel from '../../components/shared/ExtractSynthesizePanel.vue'
+import { useGroundingRun } from '../../composables/useGroundingRun'
 
 const config = useConfigStore()
 
 const input = ref('')
 const output = ref('')
-const trackFile = ref('')
-const trackFilesExtra = ref('')
-const trackInline = ref('')
+// One list, not three fields. track_file (singular) + track_files_extra
+// (textarea) + track (inline) collapsed in Phase 8 — the CLI has always taken
+// --track-file as action="append", so the split existed only in the UI.
+const trackFilesText = ref('')
+const trackItemsText = ref('')
 const extractDir = ref('')
 const splitChapters = ref('# Chapter')
 const noLog = ref(false)
 const showAdvanced = ref(false)
 
-function loadFromConfig() {
-  // `v` (config.values) still carries SessionConfig.vue's client-side-only
-  // derive broadcast for the fields it seeds (output, summaries) — see
-  // stores/config.ts. Everything else lives solely in the persisted, typed
-  // `ui.campaign_state` section.
-  const v = config.values
-  const r = config.resolved.ui?.campaign_state || {}
-  const g = config.resolved.ui?.grounding || {}
-  input.value = r.input || g.summaries || v.summaries || ''
-  output.value = r.output || v.cs_output || v.campaign_state_output || ''
-  trackFile.value = r.track_file || ''
-  trackFilesExtra.value = r.track_files_extra || ''
-  extractDir.value = r.extract_dir || ''
-  splitChapters.value = r.split_chapters || '# Chapter'
-}
+// Everything on this page now loads from and persists to grounding.yaml.
+// `ui.campaign_state` was a WRITE-NEVER section: this page read six keys on
+// mount and never called updateSection, so every value evaporated on reload.
+const trackFiles = computed({
+  get: () => trackFilesText.value.split('\n').map(l => l.trim()).filter(Boolean),
+  set: (v: string[]) => { trackFilesText.value = v.join('\n') },
+})
+const trackItems = computed({
+  get: () => trackItemsText.value.split('\n').map(l => l.trim()).filter(Boolean),
+  set: (v: string[]) => { trackItemsText.value = v.join('\n') },
+})
+
+const { sharedSummaries } = useGroundingRun('campaign_state', {
+  input, output, extract_dir: extractDir, split_chapters: splitChapters,
+  no_log: noLog, track_files: trackFiles, track_items: trackItems,
+})
+
+// An empty `input` inherits the shared canonical-timeline pointer server-side,
+// so the page is ready either way.
+const effectiveInput = computed(() => input.value.trim() || sharedSummaries.value)
 
 const ready = computed(() =>
-  !!(input.value.trim() && output.value.trim())
-)
-
-const trackItems = computed(() =>
-  trackInline.value.split('\n').map(l => l.trim()).filter(Boolean)
-)
-
-const trackFilesExtraList = computed(() =>
-  trackFilesExtra.value.split('\n').map(l => l.trim()).filter(Boolean)
+  !!(effectiveInput.value && output.value.trim())
 )
 
 const runParams = computed(() => ({
   input: input.value,
   output: output.value,
-  track_file: trackFile.value,
-  track_file_extra: trackFilesExtraList.value,
+  track_file: '',
+  track_file_extra: trackFiles.value,
   track: trackItems.value,
   extract_dir: extractDir.value,
   split_chapters: splitChapters.value,
@@ -63,8 +63,6 @@ watch(output, (newOutput) => {
     extractDir.value = parent ? `${parent}/state_extractions` : 'state_extractions'
   }
 })
-
-onMounted(() => { loadFromConfig() })
 </script>
 
 <template>
@@ -78,8 +76,10 @@ onMounted(() => { loadFromConfig() })
 
     <div class="form-grid">
       <div class="form-section">
-        <PathField v-model="input" label="Canonical timeline" required resolve-base="campaign"
-          help="The master narrative bible (one big chronologically-ordered file). Gets chunked and extracted into per-chunk state notes." />
+        <PathField v-model="input" label="Canonical timeline" resolve-base="campaign"
+          :help="sharedSummaries
+            ? `Leave blank to use the campaign's shared timeline (${sharedSummaries}).`
+            : 'The master narrative bible (one big chronologically-ordered file). Gets chunked and extracted into per-chunk state notes.'" />
       </div>
 
       <div class="form-section">
@@ -88,16 +88,11 @@ onMounted(() => { loadFromConfig() })
       </div>
 
       <div class="form-section">
-        <PathField v-model="trackFile" label="Adventure module tracking list" resolve-base="campaign"
-          help="Events from your adventure module to explicitly verify (done or not done). Generate with Make Tracking List, or write your own. Not for PC arc scores — those belong in Party Document." />
-      </div>
-
-      <div class="form-section">
         <div class="field">
-          <label class="field-label">Additional tracking files</label>
-          <textarea class="field-textarea" v-model="trackFilesExtra" rows="3"
-            placeholder="One file path per line — e.g. notes/sessions/tracking_arc_x.txt" />
-          <span class="field-help">Per-arc or homebrew tracking files to merge with the module baseline. Each line becomes another --track-file. Use for prep that isn't in the published module.</span>
+          <label class="field-label">Adventure module tracking lists</label>
+          <textarea class="field-textarea" v-model="trackFilesText" rows="4"
+            placeholder="One file path per line — e.g. notes/oota_module_tracking.txt" />
+          <span class="field-help">Events from your adventure module to explicitly verify (done or not done), plus any per-arc or homebrew tracking files. Generate with Make Tracking List, or write your own. Each line becomes another --track-file. Not for PC arc scores — those belong in Party Document.</span>
         </div>
       </div>
 
@@ -106,13 +101,12 @@ onMounted(() => { loadFromConfig() })
           help="Where intermediate state_extractions/ files live. Review these between Extract and Synthesize." />
       </div>
 
-      <!-- Advanced -->
       <div class="form-section">
         <div class="field">
           <label class="field-label">Additional events to track (inline)</label>
-          <textarea class="field-textarea" v-model="trackInline" rows="4"
+          <textarea class="field-textarea" v-model="trackItemsText" rows="4"
             placeholder="One item per line — added to the tracking list above" />
-          <span class="field-help">Extra event descriptions typed directly (NOT file paths — for paths use "Additional tracking files" above).</span>
+          <span class="field-help">Extra event descriptions typed directly (NOT file paths — for paths use the tracking lists above).</span>
         </div>
       </div>
 

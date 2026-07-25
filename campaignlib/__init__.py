@@ -8,7 +8,7 @@ the ``api`` subpackage). This ``__init__`` re-exports the full public surface,
 so ``from campaignlib import X`` and ``campaignlib.X`` keep working unchanged.
 """
 
-from .constants import DEFAULT_MODEL
+from .constants import CONFIG_DIR_NAME, DEFAULT_MODEL, config_path
 from .wiring import load_wiring, wiring_get, wiring_path
 from .textproc import (
     strip_base64_images,

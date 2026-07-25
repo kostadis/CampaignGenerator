@@ -85,7 +85,7 @@ def setup_local(campaign: Path, fivetools_root: Path, homebrew_root: Path, tmp_p
     rpg = tmp_path / "rpg-library"
     rpg.mkdir()
     return _write_yaml(
-        campaign / rr.LOCAL_FILENAME,
+        campaign / "config" / rr.LOCAL_FILENAME,
         {
             "roots": {
                 "fivetools_data": str(fivetools_root),
@@ -232,7 +232,7 @@ class TestCanonicalFastPath:
     def test_no_exclude_symlinks_whole_tree(
         self, campaign: Path, fivetools_root: Path, setup_local: Path, runtime: Path
     ):
-        _write_yaml(campaign / rr.REFS_FILENAME, {"canonical": "all"})
+        _write_yaml(campaign / "config" / rr.REFS_FILENAME, {"canonical": "all"})
         scope = rr.resolve(campaign)
         rt = launcher.runtime_dir_for(campaign)
         launcher.build_runtime_tree(rt, scope)
@@ -251,7 +251,7 @@ class TestCanonicalFilteredMirror:
         self, campaign: Path, fivetools_root: Path, setup_local: Path, runtime: Path
     ):
         _write_yaml(
-            campaign / rr.REFS_FILENAME,
+            campaign / "config" / rr.REFS_FILENAME,
             {"canonical": "all", "canonical_exclude": ["MM"]},
         )
         scope = rr.resolve(campaign)
@@ -305,7 +305,7 @@ class TestHomebrew:
             encoding="utf-8",
         )
         _write_yaml(
-            campaign / rr.REFS_FILENAME,
+            campaign / "config" / rr.REFS_FILENAME,
             {
                 "canonical": "all",
                 "refs": [{"homebrew_private": "bestiary-myhb.json"}],
@@ -336,7 +336,7 @@ class TestHomebrew:
             encoding="utf-8",
         )
         _write_yaml(
-            campaign / rr.REFS_FILENAME,
+            campaign / "config" / rr.REFS_FILENAME,
             {
                 "canonical": "all",
                 "refs": [
@@ -365,7 +365,7 @@ class TestHomebrew:
             json.dumps({"strange": "thing"}), encoding="utf-8"
         )
         _write_yaml(
-            campaign / rr.REFS_FILENAME,
+            campaign / "config" / rr.REFS_FILENAME,
             {
                 "canonical": "all",
                 "refs": [{"homebrew_private": "mystery.json"}],
@@ -384,7 +384,7 @@ class TestIdempotence:
     def test_unchanged_refs_skip_rebuild(
         self, campaign: Path, fivetools_root: Path, setup_local: Path, runtime: Path
     ):
-        _write_yaml(campaign / rr.REFS_FILENAME, {"canonical": "all"})
+        _write_yaml(campaign / "config" / rr.REFS_FILENAME, {"canonical": "all"})
         scope = rr.resolve(campaign)
         rt = launcher.runtime_dir_for(campaign)
 
@@ -401,7 +401,7 @@ class TestIdempotence:
     def test_changed_refs_trigger_rebuild(
         self, campaign: Path, fivetools_root: Path, setup_local: Path, runtime: Path
     ):
-        _write_yaml(campaign / rr.REFS_FILENAME, {"canonical": "all"})
+        _write_yaml(campaign / "config" / rr.REFS_FILENAME, {"canonical": "all"})
         scope = rr.resolve(campaign)
         rt = launcher.runtime_dir_for(campaign)
         launcher.build_runtime_tree(rt, scope)
@@ -410,7 +410,7 @@ class TestIdempotence:
 
         # Change refs and re-resolve.
         _write_yaml(
-            campaign / rr.REFS_FILENAME,
+            campaign / "config" / rr.REFS_FILENAME,
             {"canonical": "all", "canonical_exclude": ["MM"]},
         )
         scope2 = rr.resolve(campaign)
@@ -424,12 +424,13 @@ class TestIdempotence:
 class TestInitLocal:
     def test_writes_starter(self, campaign: Path):
         launcher.cmd_init_local(campaign)
-        body = yaml.safe_load((campaign / rr.LOCAL_FILENAME).read_text())
+        body = yaml.safe_load((campaign / "config" / rr.LOCAL_FILENAME).read_text())
         assert "roots" in body
         assert body["roots"]["rpg_library"] == ""  # intentionally blank
 
     def test_refuses_to_overwrite(self, campaign: Path):
-        (campaign / rr.LOCAL_FILENAME).write_text("existing: true\n", encoding="utf-8")
+        (campaign / "config").mkdir(parents=True, exist_ok=True)
+        (campaign / "config" / rr.LOCAL_FILENAME).write_text("existing: true\n", encoding="utf-8")
         with pytest.raises(SystemExit, match="already exists"):
             launcher.cmd_init_local(campaign)
 
@@ -446,7 +447,7 @@ class TestApplyEnvConstruction:
         runtime: Path,
         capsys: pytest.CaptureFixture,
     ):
-        _write_yaml(campaign / rr.REFS_FILENAME, {"canonical": "all"})
+        _write_yaml(campaign / "config" / rr.REFS_FILENAME, {"canonical": "all"})
         scope = rr.resolve(campaign)
         rt = launcher.runtime_dir_for(campaign)
         rc = launcher.cmd_apply(scope, rt, Path("/nonexistent/index.js"), {}, no_exec=True)

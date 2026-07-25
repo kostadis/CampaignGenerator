@@ -21,8 +21,17 @@ from server.backend_forwarding import backend_cli_args
 from server.config import MODELS
 from server.ensemble_config_service import EnsembleConfigService
 from server.ensemble_config_shared import EnsembleConfig
-from server.party_config_shared import load_party_config
-from server.planning_config_shared import load_planning_config
+from campaignlib.constants import config_path
+from campaignlib.party_config import (
+    PARTY_CONFIG_FILENAME,
+    load_party_config,
+    resolve_party_config,
+)
+from campaignlib.planning_config import (
+    PLANNING_CONFIG_FILENAME,
+    load_planning_config,
+    resolve_entries,
+)
 from server.platform_config_service import resolve_default_model
 from server.subprocess_runner import console_script, stream_subprocess, sse_error_stream
 
@@ -188,26 +197,22 @@ def _is_live_doc(path: Path) -> bool:
 
 
 def _default_party_config() -> Path | None:
-    """Conventional party.yaml location (mirrors the party_config sniff in
-    PlatformConfigService.discover_campaign_paths) — used when the caller
-    doesn't specify one."""
-    cwd = Path.cwd()
-    for rel in ("config/party.yaml", "party.yaml"):
-        p = cwd / rel
-        if p.exists():
-            return p
-    return None
+    """The campaign's ``config/party.yaml``, or None if it doesn't exist.
+
+    Used when the caller doesn't specify one. This used to probe ``config/``
+    then the campaign root; there is one declared location now (Track 0 of
+    docs/config/grounding-isolation.md) — ``./migrate_config.sh`` moves a
+    stray copy into it.
+    """
+    p = config_path(Path.cwd(), PARTY_CONFIG_FILENAME)
+    return p if p.exists() else None
 
 
 def _default_planning_config() -> Path | None:
-    """Conventional planning.yaml location (mirrors _default_party_config) —
-    used when the caller doesn't specify one."""
-    cwd = Path.cwd()
-    for rel in ("config/planning.yaml", "planning.yaml"):
-        p = cwd / rel
-        if p.exists():
-            return p
-    return None
+    """The campaign's ``config/planning.yaml``, or None (mirrors
+    :func:`_default_party_config`)."""
+    p = config_path(Path.cwd(), PLANNING_CONFIG_FILENAME)
+    return p if p.exists() else None
 
 
 def _default_threads_file(threads_out: str) -> Path | None:
@@ -250,7 +255,12 @@ def _planning_npc_passthrough(
     if not npc_files:
         return []
     config = load_planning_config(config_path)
-    bound = {e.dossier.resolve() for e in config.npcs if e.dossier is not None}
+    # Resolve against the campaign root (this router is cwd-rooted throughout —
+    # see _resolve_ensemble_path and _default_planning_config), NOT against
+    # planning.yaml's own directory. Track A′ of docs/config/
+    # grounding-isolation.md; issues #145/#146.
+    npcs = resolve_entries(config.npcs, cwd)
+    bound = {e.dossier.resolve() for e in npcs if e.dossier is not None}
     return [str(p) for p in npc_files if p.resolve() not in bound and p.resolve() not in exclude]
 
 
@@ -273,7 +283,9 @@ def _party_pc_dossier_files(party_config_path: Path | None) -> tuple[set[Path], 
     if party_config_path is None:
         return set(), None
     try:
-        config = load_party_config(party_config_path)
+        config = resolve_party_config(
+            load_party_config(party_config_path), Path.cwd()
+        )
     except ValueError as e:
         return set(), f"could not read {party_config_path} for PC exclusion: {e}"
     return {pc.dossier.resolve() for pc in config.characters if pc.dossier is not None}, None

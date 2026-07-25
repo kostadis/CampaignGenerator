@@ -31,6 +31,7 @@ from typing import Any
 import yaml
 
 from campaignlib import wiring_path
+from campaignlib.constants import config_path
 
 
 REFS_FILENAME = "refs.yaml"
@@ -125,7 +126,10 @@ def _load_yaml(path: Path) -> Any:
 
 def load_refs(campaign_dir: Path) -> tuple[dict, Path]:
     """Load and validate refs.yaml. Returns (raw_dict, resolved_path)."""
-    refs_path = (campaign_dir / REFS_FILENAME).resolve()
+    # <campaign>/config/refs.yaml — the one declared location (Track 0 of
+    # docs/config/grounding-isolation.md). Previously the campaign root;
+    # ./migrate_config.sh moves it.
+    refs_path = config_path(campaign_dir, REFS_FILENAME).resolve()
     if not refs_path.is_file():
         raise SystemExit(f"resolve_refs: {refs_path} not found")
     raw = _load_yaml(refs_path)
@@ -140,7 +144,7 @@ def load_refs(campaign_dir: Path) -> tuple[dict, Path]:
 
 def load_local(campaign_dir: Path) -> tuple[dict, Path | None]:
     """Load refs.local.yaml if present. Returns (raw_dict, path_or_None)."""
-    local_path = (campaign_dir / LOCAL_FILENAME).resolve()
+    local_path = config_path(campaign_dir, LOCAL_FILENAME).resolve()
     if not local_path.is_file():
         return {}, None
     raw = _load_yaml(local_path)

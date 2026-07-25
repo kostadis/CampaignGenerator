@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import MultiPathField from '../../components/shared/MultiPathField.vue'
 import ExtractSynthesizePanel from '../../components/shared/ExtractSynthesizePanel.vue'
 import PlanningConfigEditor from '../../components/shared/PlanningConfigEditor.vue'
 import { resolvePathWithBase } from '../../utils/paths'
+import { useGroundingRun } from '../../composables/useGroundingRun'
 
 const config = useConfigStore()
 
@@ -35,65 +36,47 @@ const dossierExtractDir = ref('')
 const dossierSplitChapters = ref('# Chapter')
 const dossierSince = ref(0)
 
-function loadFromConfig() {
-  // `v` (config.values) still carries SessionConfig.vue's client-side-only
-  // derive broadcast for the fields it seeds (npc, context, output,
-  // summaries) — see stores/config.ts. Everything else lives solely in the
-  // persisted, typed `ui.planning` section.
-  const v = config.values
-  const r = config.resolved.ui?.planning || {}
-  const g = config.resolved.ui?.grounding || {}
-  npcFiles.value = r.npc || v.plan_npc || ''
-  arcScores.value = r.arc_scores || ''
-  summaries.value = r.summaries || g.summaries || v.summaries || ''
-  context.value = r.context || v.plan_context || ''
-  output.value = r.output || v.planning_output || ''
-  extractDir.value = r.extract_dir || ''
-  splitChapters.value = r.split_chapters || '# Chapter'
-
-  dossierSummaries.value = r.build_summaries || g.summaries || v.summaries || ''
-  dossierDir.value = r.dossier_dir || 'docs/npcs/'
-  dossierExtractDir.value = r.build_extract_dir || ''
-  dossierSplitChapters.value = r.build_split_chapters || '# Chapter'
-
-  planningConfigPath.value = r.config_path || ''
-  // Persisted mode wins; default to 'config' if a yaml path is set,
-  // else stay on 'flat' so legacy workspaces are unaffected.
-  if (r.synth_mode === 'config' || r.synth_mode === 'flat') {
-    synthMode.value = r.synth_mode
-  } else {
-    synthMode.value = planningConfigPath.value ? 'config' : 'flat'
-  }
+// Newline textareas <-> the config's string lists.
+function linesOf(r: typeof npcFiles) {
+  return computed<string[]>({
+    get: () => r.value.split('\n').map(l => l.trim()).filter(Boolean),
+    set: (v: string[]) => { r.value = v.join('\n') },
+  })
 }
+const npcList = linesOf(npcFiles)
+const arcScoreList = linesOf(arcScores)
+const contextList = linesOf(context)
 
-// Persist synth-mode + planning-config path through the typed planning
-// section so the choice survives a reload (mirrors PartyDocument).
-let planPersistTimer: ReturnType<typeof setTimeout> | null = null
-function schedulePlanPersist() {
-  if (planPersistTimer) clearTimeout(planPersistTimer)
-  planPersistTimer = setTimeout(() => {
-    config.updateSection('planning', {
-      synth_mode: synthMode.value,
-      config_path: planningConfigPath.value,
-    }).catch(() => { /* non-fatal — the local ref still has the value */ })
-  }, 500)
-}
-watch(synthMode, () => {
-  schedulePlanPersist()
-})
-watch(planningConfigPath, () => {
-  schedulePlanPersist()
+// This page previously persisted 2 of the 12 fields it read (synth_mode and
+// config_path). The whole build-dossiers sub-form (build_summaries,
+// dossier_dir, build_extract_dir, build_split_chapters) was a dead read
+// against keys nothing wrote; it is now the nested `dossiers` group.
+const dossiers = computed({
+  get: () => ({
+    summaries: dossierSummaries.value,
+    dossier_dir: dossierDir.value,
+    extract_dir: dossierExtractDir.value,
+    split_chapters: dossierSplitChapters.value,
+    since: dossierSince.value,
+  }),
+  set: (v: Record<string, any>) => {
+    dossierSummaries.value = v.summaries ?? ''
+    dossierDir.value = v.dossier_dir ?? 'docs/npcs/'
+    dossierExtractDir.value = v.extract_dir ?? ''
+    dossierSplitChapters.value = v.split_chapters ?? '# Chapter'
+    dossierSince.value = v.since ?? 0
+  },
 })
 
-const npcList = computed(() =>
-  npcFiles.value.split('\n').map(l => l.trim()).filter(Boolean)
-)
-const arcScoreList = computed(() =>
-  arcScores.value.split('\n').map(l => l.trim()).filter(Boolean)
-)
-const contextList = computed(() =>
-  context.value.split('\n').map(l => l.trim()).filter(Boolean)
-)
+const { sharedSummaries } = useGroundingRun('planning', {
+  synth_mode: synthMode, config_path: planningConfigPath,
+  input: summaries, output, extract_dir: extractDir,
+  split_chapters: splitChapters, no_log: noLog,
+  npc: npcList, arc_scores: arcScoreList, context: contextList,
+  dossiers,
+})
+
+const effectiveSummaries = computed(() => summaries.value.trim() || sharedSummaries.value)
 
 const synthReady = computed(() => {
   if (!output.value.trim()) return false
@@ -103,7 +86,7 @@ const synthReady = computed(() => {
 })
 
 const dossierReady = computed(() =>
-  !!(dossierSummaries.value.trim() && dossierDir.value.trim())
+  !!((dossierSummaries.value.trim() || sharedSummaries.value) && dossierDir.value.trim())
 )
 
 const synthParams = computed(() => {
@@ -128,7 +111,8 @@ const synthParams = computed(() => {
   return base
 })
 
-const synthHasSummaries = computed(() => !!summaries.value.trim())
+// Extract needs a timeline; an empty local field inherits the shared one.
+const synthHasSummaries = computed(() => !!effectiveSummaries.value)
 
 const resolvedPlanningConfigPath = computed(() =>
   resolvePathWithBase(planningConfigPath.value, 'campaign')
@@ -161,7 +145,6 @@ watch(dossierDir, (newDir) => {
   }
 })
 
-onMounted(() => { loadFromConfig() })
 </script>
 
 <template>

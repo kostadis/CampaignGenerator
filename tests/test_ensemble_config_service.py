@@ -146,7 +146,7 @@ class TestIsolationInvariant:
         platform.update_runtime(
             {"session_dir": "summaries/sess1", "default_model": "claude-opus-4-6"}
         )
-        platform.uis.update_section("grounding", {"summaries": "summaries.md"})
+        platform.uis.update_section("query", {"summaries": "summaries.md"})
 
         # BOTH live under <campaign>/config/ — ui_state.yaml is NOT at the
         # campaign root. Getting this wrong made an earlier cut of this test
@@ -176,7 +176,7 @@ class TestIsolationInvariant:
         app.include_router(ensemble.router, prefix="/api/ensemble")
         app.state.platform = PlatformConfigService(fresh_campaign)
         app.state.platform.update_runtime({"default_model": "claude-opus-4-6"})
-        app.state.platform.uis.update_section("distill", {"some_field": "value"})
+        app.state.platform.uis.update_section("query", {"some_field": "value"})
         client = TestClient(app)
 
         # BOTH live under <campaign>/config/ — ui_state.yaml is NOT at the
@@ -260,7 +260,7 @@ class TestSectionRetired:
         assert c.put("/api/config/section/ensemble",
                      json={"values": {"known_names": ["x.md"]}}).status_code == 404
         # A surviving loose section still works — this isn't a blanket break.
-        assert c.put("/api/config/section/distill",
+        assert c.put("/api/config/section/query",
                      json={"values": {"x": 1}}).status_code == 200
 
     def test_ensemble_is_not_a_ui_section_name(self):
@@ -279,15 +279,17 @@ class TestSectionRetired:
         ui_state.write_text(_yaml.safe_dump({
             "version": 3,
             "ui": {"ensemble": {"chapters_glob": "old/*.md", "campaign_dir": "/old"},
-                   "distill": {"x": 1}},
+                   "query": {"x": 1}},
         }), encoding="utf-8")
 
         platform = PlatformConfigService(fresh_campaign)
         resolved = platform.resolved()
-        assert resolved["ui"]["distill"]["x"] == 1
+        assert resolved["ui"]["query"]["x"] == 1
         assert "ensemble" not in resolved["ui"]
 
     def test_schema_version_bumped(self):
         from server.config_models import SCHEMA_VERSION
 
-        assert SCHEMA_VERSION == 4
+        # 4 at ensemble isolation; 5 since Phase 10 of the grounding
+        # isolation removed five more sections from UIState.
+        assert SCHEMA_VERSION >= 4

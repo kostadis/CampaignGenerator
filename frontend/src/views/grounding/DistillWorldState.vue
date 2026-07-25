@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import ExtractSynthesizePanel from '../../components/shared/ExtractSynthesizePanel.vue'
+import { useGroundingRun } from '../../composables/useGroundingRun'
 
 const config = useConfigStore()
 
@@ -13,22 +14,18 @@ const splitChapters = ref('# Chapter')
 const noLog = ref(false)
 const showAdvanced = ref(false)
 
-function loadFromConfig() {
-  // `v` (config.values) still carries SessionConfig.vue's client-side-only
-  // derive broadcast for the fields it seeds (output, summaries) — see
-  // stores/config.ts. Everything else lives solely in the persisted, typed
-  // `ui.distill` section.
-  const v = config.values
-  const r = config.resolved.ui?.distill || {}
-  const g = config.resolved.ui?.grounding || {}
-  input.value = r.input || g.summaries || v.summaries || ''
-  output.value = r.output || v.distill_output || v.world_state_output || ''
-  extractDir.value = r.extract_dir || ''
-  splitChapters.value = r.split_chapters || '# Chapter'
-}
+// `ui.distill` was a WRITE-NEVER section — this page read four keys on mount
+// and never called updateSection, so everything typed here was lost on reload.
+const { sharedSummaries } = useGroundingRun('distill', {
+  input, output, extract_dir: extractDir, split_chapters: splitChapters,
+  no_log: noLog,
+})
+
+// An empty `input` inherits the shared canonical-timeline pointer server-side.
+const effectiveInput = computed(() => input.value.trim() || sharedSummaries.value)
 
 const ready = computed(() =>
-  !!(input.value.trim() && output.value.trim())
+  !!(effectiveInput.value && output.value.trim())
 )
 
 const runParams = computed(() => ({
@@ -48,7 +45,6 @@ watch(output, (newOutput) => {
   }
 })
 
-onMounted(() => { loadFromConfig() })
 </script>
 
 <template>
@@ -62,7 +58,7 @@ onMounted(() => { loadFromConfig() })
 
     <div class="form-grid">
       <div class="form-section">
-        <PathField v-model="input" label="Canonical timeline" required resolve-base="campaign"
+        <PathField v-model="input" label="Canonical timeline" resolve-base="campaign"
           help="The master narrative bible (one big chronologically-ordered file). Gets chunked and distilled." />
       </div>
 

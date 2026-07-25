@@ -68,7 +68,7 @@ migrate" + exit 0 when clean).
 
 | Field | Type | Role |
 |---|---|---|
-| `version` | int | `SCHEMA_VERSION = 3` — bumped from 2 in Phase 3 (O3), the second structural removal from `UIState` after Phase 5 of the session-editor isolation (which removed `session_doc`/`profiles`); this is the first version bump that actually carries information again |
+| `version` | int | `SCHEMA_VERSION = 5` — bumped from 4 in Phase 10 of the grounding isolation (five sections out at once); previously 3→4 in Phase 3 (O3), the second structural removal from `UIState` after Phase 5 of the session-editor isolation (which removed `session_doc`/`profiles`); this is the first version bump that actually carries information again |
 | `ui` | UISection | All per-page state (typed + loose) |
 | `legacy` | LegacySection | `unmigrated` quarantine |
 
@@ -78,7 +78,10 @@ and is simply ignored, the same precedent Phase 5 of the session-editor isolatio
 `ui.session_doc`/`ui.profiles` block.
 
 ### Typed UI sections
-`ui.grounding` (GroundingSection) — one left.
+**None left.** `ui.grounding` (`GroundingSection`) was the last one; it and the four loose
+grounding sections moved to `<config>/grounding.yaml` in Phase 10 of
+[grounding-isolation.md](./grounding-isolation.md). `GroundingSection` is deleted from
+`config_models.py`.
 **`ui.session_doc`/`ui.profiles`, `ui.ensemble` and `ui.vtt_summary` no longer exist**: the first three were deleted from
 `UISection` and from `config_models.py` when their services took their config into dedicated
 files (`session_doc.yaml`, `ensemble.yaml`). Run the matching one-shot CLI once per campaign to
@@ -88,6 +91,7 @@ recover the data:
 |---|---|---|
 | `ui.session_doc` + `ui.profiles` | `session_doc.yaml` (`SessionEditorConfig`) | `python -m server.migrate_session_doc --campaign-dir DIR` |
 | `ui.ensemble` | `ensemble.yaml` (`EnsembleConfig`) | `python -m server.migrate_ensemble_config --campaign-dir DIR` |
+| `ui.grounding` + `ui.campaign_state` + `ui.distill` + `ui.party` + `ui.planning` | `grounding.yaml` (`GroundingConfig`) | `python -m server.migrate_grounding_config --campaign-dir DIR` |
 | `ui.vtt_summary` | *(nothing — the VTT Summary service was retired outright)* | no migration; a stale block loads and is ignored |
 
 See [session-editor-isolation.md](./session-editor-isolation.md#migrating-an-existing-campaign)
@@ -115,9 +119,32 @@ platform-tier. `bundle_min_facts` and `threads_min_facts` are separate fields be
 defaults genuinely differ (3 vs 2).
 
 ### Loose UI sections (live, under-modeled; `extra='allow'`)
-`campaign_state`, `distill`, `party`, `planning`, `prep`, `npc`, `query`, `workflow`, `connections`, `experimental`
-— ten sections, each a bare `_LooseSection`, still the residual `UIStateService`'s to isolate one
-day (see [service-cut.md](./service-cut.md)).
+`prep`, `npc`, `query`, `workflow`, `connections`, `experimental` — **six** sections (down from
+ten), each a bare `_LooseSection`, still the residual `UIStateService`'s to isolate one day
+(see [service-cut.md](./service-cut.md)).
+
+## grounding.yaml → GroundingConfig (grouped, strict)
+
+`<config>/grounding.yaml`, owned outright by `GroundingConfigService`
+(`server/grounding_config_shared.py`). Strict (`extra="forbid"`), atomic writes, lazy on first
+write; a missing or empty file loads as all-defaults.
+
+One document for four pages because `campaign_state`/`distill`/`party`/`planning` are one
+pipeline (extract → human review → synthesize) run four times through one router with a
+near-identical parameter block — not four services.
+
+| Group | Fields |
+|---|---|
+| *(root)* | `summaries` — the shared canonical-timeline pointer all four runs inherit |
+| `campaign_state` | `GroundingRun` + `track_files[]`, `track_items[]` |
+| `distill` | `GroundingRun` |
+| `party` | `GroundingRun` + `mode`, `config_path`, `characters[]`, `backstory[]`, `arc_scores[]` |
+| `planning` | `GroundingRun` + `synth_mode`, `config_path`, `npc[]`, `arc_scores[]`, `dossiers` |
+
+`GroundingRun` (shared base): `input`, `output`, `extract_dir`, `split_chapters`,
+`chunk_size`, `context[]`, `no_log`. Before Phase 8 every one of these was a literal in a
+route signature — `chunk_size: int = 60000` appeared five times, and `split_chapters`
+defaulted to `""` in Python but `'# Chapter'` in all four Vue pages.
 
 ### Other models
 | Model | Fields |
@@ -193,7 +220,7 @@ campaign-scoped; the `base="session"` machinery is still live but reached only t
 
 | Field(s) | Resolves against |
 |---|---|
-| grounding.summaries | `campaign` |
+| *(none)* | `_PATH_FIELDS` is **empty** as of Phase 10 — `grounding.summaries` was its last row. The machinery still runs; it has no rows to act on. Kept and flagged rather than deleted: retiring it belongs with retiring `UIStateService` itself. A table that silently does nothing is how `derive_campaign_paths` drifted |
 | `platform.yaml`'s own `runtime.session_dir` | `campaign` (a separate one-entry table, `_RUNTIME_PATH_FIELDS`, since `UIState` no longer stores `runtime` at all) |
 
 `session_doc` retired its `_PATH_FIELDS` entry in Phase 5 of the session-editor isolation — its

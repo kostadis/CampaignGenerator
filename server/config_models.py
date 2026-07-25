@@ -35,13 +35,16 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
-# Bumped 3 -> 4 for Phase 5 of docs/config/ensemble-isolation.md: the third
+# Bumped 4 -> 5 for Phase 10 of docs/config/grounding-isolation.md: the fourth
 # structural removal from UIState, after Phase 5 of session-editor isolation
-# (session_doc/profiles) and Phase 3 of platform isolation (runtime). As with
-# those, UIState stays extra="allow", so a pre-migration file's leftover
-# ui.ensemble block loads harmlessly and is ignored — migrate it with
-# `python -m server.migrate_ensemble_config` before relying on it.
-SCHEMA_VERSION = 4
+# (session_doc/profiles), Phase 3 of platform isolation (runtime) and Phase 5 of
+# ensemble isolation (ensemble). This one takes five sections at once —
+# grounding, campaign_state, distill, party, planning — into <config>/
+# grounding.yaml. As with the others, UIState stays extra="allow", so a
+# pre-migration file's leftover blocks load harmlessly and are ignored —
+# migrate them with `python -m server.migrate_grounding_config` before relying
+# on them.
+SCHEMA_VERSION = 5
 
 
 def _empty_to_none(v: Any) -> Any:
@@ -70,14 +73,6 @@ class _LooseSection(BaseModel):
     """
 
     model_config = ConfigDict(extra="allow")
-
-
-class GroundingSection(BaseModel):
-    """``ui.grounding`` — top-level pointer to the concatenated summaries file."""
-
-    model_config = ConfigDict(extra="allow")
-
-    summaries: OptStr = None
 
 
 class ProfileEntry(BaseModel):
@@ -112,13 +107,16 @@ class BackendProfile(BaseModel):
 
 
 class UISection(BaseModel):
-    """All per-page state, one attribute per page or group of pages."""
+    """All per-page state, one attribute per page or group of pages.
 
-    grounding: GroundingSection = Field(default_factory=GroundingSection)
-    campaign_state: _LooseSection = Field(default_factory=_LooseSection)
-    distill: _LooseSection = Field(default_factory=_LooseSection)
-    party: _LooseSection = Field(default_factory=_LooseSection)
-    planning: _LooseSection = Field(default_factory=_LooseSection)
+    Down from eleven fields to six: ``grounding``, ``campaign_state``,
+    ``distill``, ``party`` and ``planning`` left for the Grounding service's
+    own ``<config>/grounding.yaml`` (see ``docs/config/grounding-isolation.md``
+    and ``server/migrate_grounding_config.py``). Two of those were *write-never*
+    — read on mount, never persisted — which is the class of bug an unmodelled
+    ``extra="allow"`` section makes invisible.
+    """
+
     prep: _LooseSection = Field(default_factory=_LooseSection)
     npc: _LooseSection = Field(default_factory=_LooseSection)
     query: _LooseSection = Field(default_factory=_LooseSection)

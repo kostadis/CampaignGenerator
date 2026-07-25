@@ -357,7 +357,7 @@ factions:
   - name: Kraken Society
     arc_score: kraken_score.md
 """)
-    config = planning.load_planning_config(cfg)
+    config = planning.load_planning_config(cfg, campaign_root=tmp_path)
     assert len(config.npcs) == 1
     assert config.npcs[0].name == "Adabra"
     assert config.npcs[0].dossier.name == "adabra.md"
@@ -380,7 +380,7 @@ npcs:
   - name: Omit
     dossier: omit.md
 """)
-    config = planning.load_planning_config(cfg)
+    config = planning.load_planning_config(cfg, campaign_root=tmp_path)
     lyra, omit = config.npcs
     assert lyra.arc_score is None and lyra.trackless is True
     assert omit.arc_score is None and omit.trackless is False
@@ -393,7 +393,7 @@ npcs:
     dossier: missing.md
 """)
     with pytest.raises(SystemExit):
-        planning.load_planning_config(cfg)
+        planning.load_planning_config(cfg, campaign_root=tmp_path)
 
 
 def test_load_planning_config_npc_without_dossier_fails(tmp_path):
@@ -402,13 +402,13 @@ npcs:
   - name: NoDossier
 """)
     with pytest.raises(SystemExit):
-        planning.load_planning_config(cfg)
+        planning.load_planning_config(cfg, campaign_root=tmp_path)
 
 
 def test_load_planning_config_empty_fails(tmp_path):
     cfg = _write_planning_config(tmp_path, "npcs: []\nfactions: []\n")
     with pytest.raises(SystemExit):
-        planning.load_planning_config(cfg)
+        planning.load_planning_config(cfg, campaign_root=tmp_path)
 
 
 def test_planning_config_rejects_arc_scores_flag(tmp_path):
@@ -430,6 +430,10 @@ npcs:
 
 
 def test_planning_config_coexists_with_unbound_npc_flag(monkeypatch, fake_stream_api, tmp_path):
+    # Paths inside planning.yaml resolve against the campaign root, which
+    # for a CLI run is the CWD (docs/config/grounding-isolation.md Track
+    # A'). Run from the workspace the way a GM actually does.
+    monkeypatch.chdir(tmp_path)
     """--planning-config + --npc renders bound entities (with score nested)
     AND unbound NPCs (plain dossier blocks) in one # NPC DOSSIERS section."""
     _write_dossier(tmp_path / "adabra.md", "Adabra", "Adabra dossier prose")
@@ -496,6 +500,10 @@ npcs:
 
 
 def test_planning_config_renders_per_entity_block(monkeypatch, fake_stream_api, tmp_path):
+    # Paths inside planning.yaml resolve against the campaign root, which
+    # for a CLI run is the CWD (docs/config/grounding-isolation.md Track
+    # A'). Run from the workspace the way a GM actually does.
+    monkeypatch.chdir(tmp_path)
     _write_dossier(tmp_path / "adabra.md", "Adabra", "Adabra dossier prose")
     _write(tmp_path / "adabra_arc.md", "Fury of the Wild track mechanics")
     _write_dossier(tmp_path / "lyra.md", "Lyra", "Lyra dossier prose")
@@ -555,6 +563,10 @@ factions:
 def test_planning_config_synthesize_only_works_without_summaries(
     monkeypatch, fake_stream_api, tmp_path
 ):
+    # Paths inside planning.yaml resolve against the campaign root, which
+    # for a CLI run is the CWD (docs/config/grounding-isolation.md Track
+    # A'). Run from the workspace the way a GM actually does.
+    monkeypatch.chdir(tmp_path)
     """A planning-config-only invocation (no --summaries) should succeed and
     produce planning.md from just the bound entity blocks."""
     _write_dossier(tmp_path / "adabra.md", "Adabra")
@@ -665,6 +677,10 @@ def test_final_document_gets_sources_section(monkeypatch, citing_stream_api, tmp
 def test_planning_config_synthesis_also_numbers_extract_citation_tags(
     monkeypatch, citing_stream_api, tmp_path
 ):
+    # Paths inside planning.yaml resolve against the campaign root, which
+    # for a CLI run is the CWD (docs/config/grounding-isolation.md Track
+    # A'). Run from the workspace the way a GM actually does.
+    monkeypatch.chdir(tmp_path)
     # Same grounding chain, but through run_synthesize_with_config's own
     # _render_flat_section("SESSION EXTRACTIONS", ...) call rather than
     # run_synthesize's inline loop — both branches must share the one
@@ -723,7 +739,7 @@ npcs:
   - name: Adabra
     dossier: adabra.md
 """)
-    config = planning.load_planning_config(cfg)
+    config = planning.load_planning_config(cfg, campaign_root=tmp_path)
     extract_dir1 = tmp_path / "extractions1"
     extract1 = _write_tagged_extract(extract_dir1, "Adabra sealed the rift")
     planning.run_synthesize_with_config(

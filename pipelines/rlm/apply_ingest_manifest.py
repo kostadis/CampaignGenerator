@@ -47,6 +47,7 @@ from typing import Iterable
 import yaml
 
 from campaignlib import find_default_config, load_config
+from campaignlib.constants import config_path as campaign_config_path
 from pipelines.content_ingest.fivetools_ingest import (
     _state_path,
     file_signature,
@@ -325,7 +326,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--manifest",
         type=Path,
         default=None,
-        help=f"Override path to the manifest. Default: <campaign-dir>/{MANIFEST_FILENAME}.",
+        help=f"Override path to the manifest. Default: <campaign-dir>/config/{MANIFEST_FILENAME}.",
     )
     parser.add_argument(
         "--config",
@@ -358,7 +359,9 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
-    manifest_path = args.manifest or (args.campaign_dir / MANIFEST_FILENAME)
+    manifest_path = args.manifest or campaign_config_path(
+        args.campaign_dir, MANIFEST_FILENAME
+    )
     manifest = load_manifest(manifest_path)
 
     config = None

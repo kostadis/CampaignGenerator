@@ -9,8 +9,8 @@ consolidated home for "get the PC names for this campaign" lives here, and
 ``facts_to_state`` / ``registry`` both fold the result into ``known_names``.
 
 ``load_party_names`` is the path-level parser (one party.yaml file);
-``load_pc_names`` is the campaign-level convenience (find the campaign's
-party.yaml under docs/ or config/ and parse it).
+``load_pc_names`` is the campaign-level convenience (read the campaign's
+``config/party.yaml`` and parse it).
 """
 
 from __future__ import annotations
@@ -18,6 +18,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import yaml
+
+from campaignlib.constants import config_path
+from campaignlib.party_config import PARTY_CONFIG_FILENAME
 
 
 def load_party_names(path: "Path | None") -> list[str]:
@@ -37,12 +40,16 @@ def load_party_names(path: "Path | None") -> list[str]:
 
 
 def load_pc_names(campaign_dir: "Path | str") -> list[str]:
-    """PC names for a campaign: ``<campaign_dir>/docs/party.yaml`` if present,
-    else ``<campaign_dir>/config/party.yaml``. Returns [] if neither exists.
+    """PC names for a campaign, from ``<campaign_dir>/config/party.yaml``.
+    Returns [] if it does not exist.
+
+    This used to probe ``docs/party.yaml`` first and ``config/party.yaml``
+    second — a candidate list that no other reader shared. ``discover_campaign_
+    paths`` and the ensemble router both checked ``config/`` then the campaign
+    root and never looked in ``docs/`` at all, so the obelisk campaign (whose
+    roster is ``docs/party.yaml``) had PC-name filtering find a roster while
+    the Party page and ensemble PC-exclusion found nothing. One declared
+    location now — see ``campaignlib.constants.config_path``.
     """
-    campaign_dir = Path(campaign_dir)
-    for rel in ("docs/party.yaml", "config/party.yaml"):
-        candidate = campaign_dir / rel
-        if candidate.exists():
-            return load_party_names(candidate)
-    return []
+    candidate = config_path(campaign_dir, PARTY_CONFIG_FILENAME)
+    return load_party_names(candidate) if candidate.exists() else []

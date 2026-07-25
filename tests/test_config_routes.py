@@ -96,7 +96,7 @@ class TestPutSection:
         app = _make_app(fresh_campaign)
         client = TestClient(app)
         resp = client.put(
-            "/api/config/section/grounding",
+            "/api/config/section/query",
             json={"values": {"summaries": "summaries.md", "label": "Session 12"}},
         )
         assert resp.status_code == 200
@@ -104,8 +104,8 @@ class TestPutSection:
         # Read back via GET / and confirm the values are visible in the
         # typed view.
         body = client.get("/api/config/").json()
-        assert body["resolved"]["ui"]["grounding"]["label"] == "Session 12"
-        assert body["resolved"]["ui"]["grounding"]["summaries"].endswith("summaries.md")
+        assert body["resolved"]["ui"]["query"]["label"] == "Session 12"
+        assert body["resolved"]["ui"]["query"]["summaries"] == "summaries.md"
 
     def test_retired_vtt_summary_section_rejected_404(self, fresh_campaign):
         """``ui.vtt_summary`` retired with the vtt_summary chain — a PUT to
@@ -152,7 +152,7 @@ class TestPutSection:
     def test_no_service_503(self, fresh_campaign):
         client = TestClient(_make_app(None))
         resp = client.put(
-            "/api/config/section/grounding",
+            "/api/config/section/query",
             json={"values": {"summaries": "summaries.md"}},
         )
         assert resp.status_code == 503
@@ -188,11 +188,11 @@ class TestPutLocal:
         # test doesn't pin the PUT's status; the invariant that matters
         # either way is that ``ui`` keys never land in the typed
         # ``server``/``nav`` slots — verify by reading back.
-        client.put("/api/config/local", json={"values": {"ui": {"grounding": {}}}})
+        client.put("/api/config/local", json={"values": {"ui": {"query": {}}}})
         body = client.get("/api/config/").json()
         # Whatever happened, the service-resolved ui section stays empty
-        # of any grounding state we didn't put there via /section/.
-        assert body["resolved"]["ui"]["grounding"]["summaries"] is None
+        # of any ui.<section> state we didn't put there via /section/.
+        assert body["resolved"]["ui"]["query"] == {}
 
     def test_no_service_503(self, fresh_campaign):
         client = TestClient(_make_app(None))

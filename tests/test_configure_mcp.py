@@ -55,7 +55,8 @@ def test_registry_server_gated_on_entity_registry_yaml(tmp_path):
 
 
 def test_5etools_server_gated_on_refs_yaml(tmp_path):
-    (tmp_path / "refs.yaml").write_text("sources: []\n")
+    (tmp_path / "config").mkdir(exist_ok=True)
+    (tmp_path / "config" / "refs.yaml").write_text("sources: []\n")
 
     servers = build_server_block(tmp_path, kanka_token="", kanka_url="")
     assert servers["5etools"]["command"] == "launch_5etools_mcp"

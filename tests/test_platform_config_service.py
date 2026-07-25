@@ -136,7 +136,7 @@ class TestLocalOwnership:
         # for the route-level version of this same contract.
         platform = PlatformConfigService(fresh_campaign)
         with pytest.raises(ValidationError):
-            platform.update_local({"ui": {"grounding": {}}})
+            platform.update_local({"ui": {"query": {}}})
         # Rejected outright — nothing partially written.
         assert platform.local.server.port == 5000
 
@@ -190,7 +190,7 @@ class TestRuntimeOwnership:
 
     def test_resolved_is_a_passthrough_to_uis(self, fresh_campaign):
         platform = PlatformConfigService(fresh_campaign)
-        platform.uis.update_section("grounding", {"summaries": "summaries.md"})
+        platform.uis.update_section("query", {"summaries": "summaries.md"})
         assert platform.resolved() == platform.uis.resolved()
 
     def test_resolved_wire_shape_still_carries_runtime(self, fresh_campaign):
@@ -228,8 +228,8 @@ class TestIsolationInvariant:
         # A loose ui.<section> write — the kind the old fused
         # CampaignConfigService re-serialized the WHOLE document for,
         # including runtime.
-        platform.uis.update_section("distill", {"some_field": "value"})
-        platform.uis.update_section("grounding", {"summaries": "summaries.md"})
+        platform.uis.update_section("prep", {"some_field": "value"})
+        platform.uis.update_section("query", {"summaries": "summaries.md"})
 
         after = platform_yaml_path.read_bytes()
         assert after == before, (
@@ -257,7 +257,7 @@ class TestIsolationInvariant:
         before = platform_yaml_path.read_bytes()
 
         resp = client.put(
-            "/api/config/section/distill",
+            "/api/config/section/prep",
             json={"values": {"some_field": "value"}},
         )
         assert resp.status_code == 200
@@ -531,7 +531,7 @@ class TestPlatformLocalConfig:
 
     def test_top_level_unknown_key_rejected(self):
         with pytest.raises(ValidationError):
-            PlatformLocalConfig(ui={"grounding": {}})
+            PlatformLocalConfig(ui={"query": {}})
 
 
 class TestLoadSaveLocalConfig:

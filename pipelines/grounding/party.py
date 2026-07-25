@@ -72,28 +72,48 @@ from campaignlib import (
     stream_api,
 )
 
-# Import shared party config logic
-from server.party_config_shared import (
-    PartyCharacter,
-    PartyConfig,
-    load_party_config as _shared_load_party_config,
+from campaignlib.party_config import (
+    ResolvedCharacter as PartyCharacter,
+    ResolvedPartyConfig,
+    load_party_config as _load_party_config,
+    resolve_party_config,
 )
 
 
-def load_party_config(path: Path) -> PartyConfig:
-    """CLI wrapper around server.party_config_shared.load_party_config that
-    prints to stderr and exits instead of raising, matching this script's
-    other error-handling. See the shared function's docstring for the YAML
-    shape and field semantics.
+def load_party_config(
+    path: Path, campaign_root: Path | None = None
+) -> ResolvedPartyConfig:
+    """CLI wrapper around ``campaignlib.party_config`` that prints to stderr
+    and exits instead of raising, matching this script's other error-handling.
+
+    Returns the **resolved** view — absolute paths, every referenced file
+    verified to exist — because that is the CLI's contract: rendering a party
+    doc from a roster pointing at files that are not there should fail before
+    the API call, not halfway through it. The API's lenient counterpart lives
+    in ``PartyConfigService`` (see ``docs/config/grounding-isolation.md`` D4).
+
+    ``campaign_root`` defaults to the CWD, which is this repo's documented CLI
+    invariant ("run any script from a campaign workspace directory" — see
+    ``CLAUDE.md``). References inside ``party.yaml`` resolve against **it**,
+    not against the file's own parent directory, so moving ``party.yaml`` into
+    ``config/`` does not change what its contents mean (Track A′ of
+    ``docs/config/grounding-isolation.md``; issues #145/#146).
+
+    The empty-roster check is here rather than in the loader for the same
+    reason: "you asked me to render a party document with no party" is a CLI
+    usage error, not a malformed file.
     """
     try:
-        return _shared_load_party_config(path)
+        cfg = _load_party_config(path)
+        if not cfg.characters:
+            raise ValueError(f"{path} must define a non-empty 'characters' list")
+        return resolve_party_config(cfg, campaign_root or Path.cwd())
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
 
 
-def _render_party_block(party_config: PartyConfig, input_normalizer=None) -> str:
+def _render_party_block(party_config: ResolvedPartyConfig, input_normalizer=None) -> str:
     """Render the PARTY source group as `# PARTY` with one `## {name}`
     subsection per PC, nesting sheet / backstory / dossier / arc_score files
     with source-comment labels.
@@ -237,7 +257,7 @@ def main() -> None:
         else output.parent / "party_extractions"
     )
 
-    party_config: PartyConfig | None = None
+    party_config: ResolvedPartyConfig | None = None
     if args.party_config:
         party_config = load_party_config(Path(args.party_config).expanduser().resolve())
 

@@ -22,10 +22,10 @@ flowchart TB
   subgraph Services[Services - behavior boundaries]
     SD["Session Doc Editor<br/>session_doc.yaml (own file, own service)"]
     EN["Ensemble<br/>ensemble.yaml (own file, own service)"]
-    GR["Grounding/Search<br/>ui.grounding"]
-    PA["Party<br/>party.yaml"]
+    GR["Grounding/Search<br/>grounding.yaml (own file, own service)"]
+    PA["Party<br/>party.yaml (own file, own service)"]
     PL["Planning<br/>planning.yaml"]
-    CST["Campaign State<br/>tracking.txt"]
+    CST["Campaign State<br/>grounding.yaml + tracking.txt"]
     CI["Content Ingestion<br/>refs/ingest/runtime"]
   end
   Platform --> Services
@@ -43,11 +43,11 @@ below for what that closed and what's still open.
 |---|---|---|---|---|
 | Session Doc Editor | `scene_editor.py` + `SessionEditorConfigService` | own file: `session_doc.yaml` (grouped, strict) | narrate/scrub CLI | backend/dgx knobs, tokens, prose/reflections, session paths, `profiles[]` |
 | Ensemble | `server/routers/ensemble.py` + `EnsembleConfigService` | own file: `ensemble.yaml` (grouped, strict) | `ensemble_extract`/`ensemble_merge`/`synthesise_*` | chapters, known_names, aliases, per-stage `EnsembleBackend`, artifact `paths`, `tuning`, planning overrides, `manifest.json`, `merge.yaml` |
-| Grounding / Search | `grounding.py`, `pipelines/rlm/mcp_server.py` | `ui.grounding` | grounded_search, query_lore, rpg_retriever | summaries pointer; reads wiring; also reads `SessionEditorConfigService` for the global backend selector |
-| Party | `config_routes` party-yaml | `ui.party` (loose) | `pipelines/grounding/party.py` | `party.yaml` (roster, 3-state arc_score) |
-| Planning | `planning_routes` | (none - uses dedicated PlanningConfigService) | `pipelines/grounding/planning.py` | `planning.yaml` (npcs/factions) |
-| Campaign State | (CLI-only page) | `ui.campaign_state` (loose) | `pipelines/grounding/campaign_state.py` | `tracking.txt` |
-| Distill / NPC / Query / Prep / Connections / Experimental | generic `PUT /section/{name}` | `ui.<loose>` | `pipelines/grounding/distill.py`, `pipelines/grounding/npc_table.py`, `pipelines/session_prep/prep.py`, ... | under-modeled `extra='allow'` sections |
+| Grounding / Search | `grounding.py` + `GroundingConfigService` | own file: `grounding.yaml` (grouped, strict) | campaign_state, distill, party, planning CLIs | shared `summaries` pointer + a run profile per doc |
+| Party | `party_routes` + `PartyConfigService` | own file: `party.yaml` | `pipelines/grounding/party.py` | roster, 3-state arc_score |
+| Planning | `planning_routes` + `PlanningConfigService` | own file: `planning.yaml` | `pipelines/grounding/planning.py` | npcs/factions |
+| Campaign State | `grounding.py` (`/run/campaign-state`) | `grounding.yaml`'s `campaign_state` group | `pipelines/grounding/campaign_state.py` | `tracking.txt` |
+| NPC / Query / Prep / Connections / Experimental | generic `PUT /section/{name}` | `ui.<loose>` | `pipelines/grounding/npc_table.py`, `pipelines/session_prep/prep.py`, ... | under-modeled `extra='allow'` sections |
 | Content Ingestion (5e) | `launch_5etools_mcp` / `apply_ingest_manifest` | (none) | `resolve_refs`, `fivetools_ingest` | `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`, runtime tree |
 
 ## Platform-global config (all services)
@@ -67,10 +67,10 @@ below for what that closed and what's still open.
 |---|---|
 | Session Doc Editor | `session_doc.yaml` — own file, own service (`SessionEditorConfigService`); no `ui_state.yaml` section and no `scene_editor.CONFIG` process-global anymore |
 | Ensemble | `ensemble.yaml` — own file, own service (`EnsembleConfigService`) — plus `manifest.json`, `merge.yaml`, aliases file, `*_draft.md` |
-| Grounding/Search | `ui.grounding.summaries` |
-| Party | `party.yaml` |
+| Grounding/Search | `grounding.yaml` — own file, own service (`GroundingConfigService`) |
+| Party | `party.yaml` — own file, own service (`PartyConfigService`) |
 | Planning | `planning.yaml` (own file, own service — `PlanningConfigService`) |
-| Campaign State | `tracking.txt` |
+| Campaign State | `grounding.yaml`'s `campaign_state` group + `tracking.txt` |
 | Content Ingestion | `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`, `~/.5etools-mcp-runtime/` |
 
 ## Where the monolith shows (no hierarchy / management)
@@ -82,12 +82,12 @@ papered over, since "closed for the largest pieces" is not the same claim as "cl
 
 | Gap | Evidence |
 |---|---|
-| No service ownership | **Partially closed.** Session Doc Editor (`SessionEditorConfigService` → `session_doc.yaml`), Planning (`PlanningConfigService` → `planning.yaml`) and Ensemble (`EnsembleConfigService` → `ensemble.yaml`) each own+validate their own file now — three of roughly eight. The remaining ~5 services (Grounding/Search, Party's UI slice, Campaign State, the loose pages) still share one `ui_state.yaml`, now under `UIStateService` — the Phase 2 rename that made the "residual landlord" role explicit and countable rather than implicit inside a class that also did platform work |
+| No service ownership | **Mostly closed.** Session Doc Editor (`session_doc.yaml`), Planning (`planning.yaml`), Ensemble (`ensemble.yaml`), Grounding (`grounding.yaml`) and Party (`party.yaml`) each own+validate their own file — **five services**, up from three. `UIStateService` is down to six loose sections (`prep`, `npc`, `query`, `workflow`, `connections`, `experimental`), none of which is a real service boundary. The grounding isolation also closed two defects the shared document had hidden: `ui.campaign_state` and `ui.distill` were **write-never** — read on mount, never persisted — and `ui.party`/`ui.planning` persisted 2 of the 9 and 12 fields they read |
 | Fused platform + residual roles | **Closed** (`platform-isolation.md`, new gap named and closed in the same effort). Through this branch's Phase 1, `CampaignConfigService` was simultaneously the permanent platform (paths, `runtime.*`, boot overrides, wiring/`config.yaml` access) AND the residual landlord of the ten loose `ui.<section>` blobs — one 610-line class, one write lock, one `ui_state.yaml`, so a `ui.distill` save could corrupt `runtime.default_model`/`session_dir`, the values every other service composes. Phase 2 split the class; Phase 3 (O3) went further and gave `runtime` its own file, `platform.yaml`, so the two roles can no longer share a write path even in principle — regression-tested by `test_ui_section_write_cannot_touch_platform_yaml[_via_route]` |
 | No config hierarchy | **Narrowed, not closed.** Global vs service-local is an enforced split for the platform tier now (`platform.yaml`/`.campaigngenerator.local.yaml` vs `ui_state.yaml`), on top of the two isolated services above. `config.yaml` still mixes global (prompts) + service (`mempalace`); `ui_state.yaml` still mixes the remaining ~6 services' sections in one file with one schema version |
 | Duplicated backend/model selection | **Not closed — relocated, not unified; the *registry* half is now unified.** Backend *selection* is still four independently-configured selectors (ensemble `BackendProfile`, `session_doc.yaml` `backends.*`, grounding's global picker, connections' per-request field) — explicitly deferred, this doc's gap #3. Ensemble's *default-model* half closed separately in Phase 4 of [ensemble-isolation.md](./ensemble-isolation.md) — it was the last `/run/*` router outside `resolve_default_model`, because `backend_cli_args` emits nothing on the Anthropic branch, so the sidebar pick had never reached an ensemble run. But Phase 5a of `platform-isolation.md` did close the narrower "which models exist, and which one is the default" question: one `DEFAULT_MODEL` definition (`campaignlib.constants`), one `MODELS` registry (`server/config.py`, refreshed), and all fourteen router request-body model fields now resolve through `resolve_default_model` (explicit → `platform.runtime.default_model` → literal) instead of each hardcoding its own copy of the literal. The registry's *source* moving into `wiring.yaml` (so a new model needs no release) is Phase 5b — deferred, cross-repo, [issue #177](https://github.com/kostadis/CampaignGenerator/issues/177) |
 | Coupling via shared files, not APIs | Still open. Services integrate by reading/writing the same `docs/*.md` and palace, not versioned contracts. Disk is the bus |
-| No schema-per-service enforcement | **Partially closed.** `SessionEditorConfig`, `PlanningConfig`, `PlatformDocument`/`PlatformLocalConfig` and now `EnsembleConfig` are strict (`extra="forbid"`/validated) — five typed, enforced schemas, up from two. The remaining 10 loose `ui.<section>` sections are still `extra='allow'`, unmodeled, unvalidated |
+| No schema-per-service enforcement | **Mostly closed.** `SessionEditorConfig`, `PlanningConfig`, `PlatformDocument`/`PlatformLocalConfig`, `EnsembleConfig`, `GroundingConfig` and `PartyConfig` are strict (`extra="forbid"`) — seven typed, enforced schemas, up from two. Six loose `ui.<section>` sections remain, down from ten |
 | No dependency ordering / registry | Still open. Ensemble → grounding → prep/search is implicit through file mtimes; no declared service graph |
 
 ## The cut, stated plainly

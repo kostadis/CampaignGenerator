@@ -28,6 +28,14 @@ export const useConfigStore = defineStore('config', () => {
   // docs/config/session-editor-isolation.md.
   const editorConfig = ref<Record<string, any> | null>(null)
 
+  // ── Grounding docs — /api/grounding/config ────────────────────────
+  // The four grounding pages' own document (<config>/grounding.yaml, owned by
+  // GroundingConfigService). Replaces ui.grounding + ui.campaign_state +
+  // ui.distill + ui.party + ui.planning — two of which were WRITE-NEVER
+  // sections whose values evaporated on reload, and two of which persisted a
+  // handful of the fields they read. See docs/config/grounding-isolation.md.
+  const groundingConfig = ref<Record<string, any> | null>(null)
+
   const models = ref<string[]>([])
   // Empty until GET /api/config/models answers — deliberately NOT seeded with
   // a model id. A seed here is a second source for the default model, and a
@@ -50,11 +58,15 @@ export const useConfigStore = defineStore('config', () => {
   async function load() {
     if (loadPromise) return loadPromise
     loadPromise = (async () => {
-      const [cfg, modelsData, status, editorCfg] = await Promise.all([
+      const [cfg, modelsData, status, editorCfg, groundingCfg] = await Promise.all([
         apiFetch('/api/config/'),
         apiFetch('/api/config/models'),
         apiFetch('/api/config/status'),
         apiFetch('/api/editor/config'),
+        // Boot-loaded like editorConfig: SessionConfig.vue and
+        // QuerySummaries.vue read the shared `summaries` pointer off it on
+        // mount, so a lazy first fetch would leave those fields blank.
+        apiFetch('/api/grounding/config'),
       ])
       values.value = cfg
       resolved.value = cfg.resolved ?? {}
@@ -65,6 +77,7 @@ export const useConfigStore = defineStore('config', () => {
       apiKeyPresent.value = status.api_key_present
       cwd.value = status.cwd
       editorConfig.value = editorCfg
+      groundingConfig.value = groundingCfg
       loaded.value = true
     })()
     return loadPromise
@@ -146,11 +159,26 @@ export const useConfigStore = defineStore('config', () => {
     return cfg
   }
 
+  async function refreshGrounding() {
+    groundingConfig.value = await apiFetch('/api/grounding/config')
+    return groundingConfig.value
+  }
+
+  /** Merge a grouped partial into grounding.yaml. The body IS the partial —
+   *  no {values: ...} envelope (matches PUT /api/ensemble/config). */
+  async function updateGrounding(partial: Record<string, any>) {
+    groundingConfig.value = await apiPut('/api/grounding/config', partial)
+    return groundingConfig.value
+  }
+
   return {
     values,
     resolved,
     migrationWarnings,
     editorConfig,
+    groundingConfig,
+    refreshGrounding,
+    updateGrounding,
     models,
     defaultModel,
     model,

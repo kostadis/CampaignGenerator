@@ -175,7 +175,7 @@ characters:
     backstory: brew_back.md
     arc_score: brew_score.md
 """)
-    config = party.load_party_config(cfg)
+    config = party.load_party_config(cfg, campaign_root=tmp_path)
     assert len(config.characters) == 1
     pc = config.characters[0]
     assert pc.name == "Brewbarry"
@@ -194,7 +194,7 @@ characters:
     sheet: zephyr.md
     dossier: npc_zephyr.md
 """)
-    config = party.load_party_config(cfg)
+    config = party.load_party_config(cfg, campaign_root=tmp_path)
     pc = config.characters[0]
     assert pc.dossier.name == "npc_zephyr.md"
 
@@ -206,7 +206,7 @@ characters:
   - name: Omit
     sheet: omit.md
 """)
-    config = party.load_party_config(cfg)
+    config = party.load_party_config(cfg, campaign_root=tmp_path)
     assert config.characters[0].dossier is None
 
 
@@ -221,7 +221,7 @@ characters:
   - name: Omit
     sheet: omit.md
 """)
-    config = party.load_party_config(cfg)
+    config = party.load_party_config(cfg, campaign_root=tmp_path)
     vuk, omit = config.characters
     assert vuk.arc_score is None and vuk.trackless is True
     assert omit.arc_score is None and omit.trackless is False
@@ -234,13 +234,13 @@ characters:
     sheet: does_not_exist.md
 """)
     with pytest.raises(SystemExit):
-        party.load_party_config(cfg)
+        party.load_party_config(cfg, campaign_root=tmp_path)
 
 
 def test_load_party_config_empty_characters_fails(tmp_path):
     cfg = _write_party_config(tmp_path, "characters: []\n")
     with pytest.raises(SystemExit):
-        party.load_party_config(cfg)
+        party.load_party_config(cfg, campaign_root=tmp_path)
 
 
 def test_party_config_is_mutex_with_flat_flags(tmp_path):
@@ -260,6 +260,10 @@ characters:
 
 
 def test_party_config_renders_per_character_block(monkeypatch, fake_stream_api, tmp_path):
+    # Paths inside party/planning.yaml resolve against the campaign root,
+    # which for a CLI run is the CWD (docs/config/grounding-isolation.md
+    # Track A'). Run from the workspace the way a GM actually does.
+    monkeypatch.chdir(tmp_path)
     _write(tmp_path / "brew.md", "Brewbarry sheet content")
     _write(tmp_path / "brew_back.md", "Brewbarry backstory content")
     _write(tmp_path / "brew_score.md", "Brewbarry arc score content")
@@ -303,6 +307,10 @@ characters:
 
 
 def test_party_config_renders_dossier_block(monkeypatch, fake_stream_api, tmp_path):
+    # Paths inside party/planning.yaml resolve against the campaign root,
+    # which for a CLI run is the CWD (docs/config/grounding-isolation.md
+    # Track A'). Run from the workspace the way a GM actually does.
+    monkeypatch.chdir(tmp_path)
     _write(tmp_path / "zephyr.md", "Zephyr sheet content")
     _write(tmp_path / "npc_zephyr.md", "Zephyr ensemble dossier content")
     cfg = _write_party_config(tmp_path, """
@@ -326,6 +334,10 @@ characters:
 
 
 def test_party_config_no_dossier_omits_block(monkeypatch, fake_stream_api, tmp_path):
+    # Paths inside party/planning.yaml resolve against the campaign root,
+    # which for a CLI run is the CWD (docs/config/grounding-isolation.md
+    # Track A'). Run from the workspace the way a GM actually does.
+    monkeypatch.chdir(tmp_path)
     _write(tmp_path / "soma.md", "Tortle Druid")
     cfg = _write_party_config(tmp_path, """
 characters:
@@ -345,6 +357,10 @@ characters:
 
 
 def test_party_config_trackless_character_gets_no_arc_file_block(monkeypatch, fake_stream_api, tmp_path):
+    # Paths inside party/planning.yaml resolve against the campaign root,
+    # which for a CLI run is the CWD (docs/config/grounding-isolation.md
+    # Track A'). Run from the workspace the way a GM actually does.
+    monkeypatch.chdir(tmp_path)
     _write(tmp_path / "vuk.md", "Vukradin sheet")
     cfg = _write_party_config(tmp_path, """
 characters:
@@ -530,6 +546,10 @@ def test_candidate_file_receives_sources_augmented_text(monkeypatch, citing_stre
 
 
 def test_party_config_synthesis_also_numbers_extract_citation_tags(monkeypatch, citing_stream_api, tmp_path):
+    # Paths inside party/planning.yaml resolve against the campaign root,
+    # which for a CLI run is the CWD (docs/config/grounding-isolation.md
+    # Track A'). Run from the workspace the way a GM actually does.
+    monkeypatch.chdir(tmp_path)
     # Same grounding chain, but through the --party-config branch's own
     # _render_source_group("SESSION EXTRACTIONS", ...) call rather than
     # run_synthesize_pipeline's input_normalizer — both branches must share

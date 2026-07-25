@@ -19,8 +19,8 @@ function loadFromConfig() {
   // lives solely in the persisted, typed `ui.query` section.
   const v = config.values
   const r = config.resolved.ui?.query || {}
-  const g = config.resolved.ui?.grounding || {}
-  input.value = r.input || g.summaries || v.summaries || ''
+  // The shared timeline pointer moved to grounding.yaml's root.
+  input.value = r.input || config.groundingConfig?.summaries || v.summaries || ''
 }
 
 const ready = computed(() =>

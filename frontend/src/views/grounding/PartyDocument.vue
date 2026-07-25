@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import MultiPathField from '../../components/shared/MultiPathField.vue'
 import ExtractSynthesizePanel from '../../components/shared/ExtractSynthesizePanel.vue'
 import PartyConfigEditor from '../../components/shared/PartyConfigEditor.vue'
-import { resolvePathWithBase } from '../../utils/paths'
+import { useGroundingRun } from '../../composables/useGroundingRun'
 
 const config = useConfigStore()
 
@@ -24,65 +24,30 @@ const splitChapters = ref('# Chapter')
 const noLog = ref(false)
 const showAdvanced = ref(false)
 
-function loadFromConfig() {
-  // `v` (config.values) still carries SessionConfig.vue's client-side-only
-  // derive broadcast for the fields it seeds (output, config_path,
-  // summaries) — see stores/config.ts. Everything else lives solely in the
-  // persisted, typed `ui.party` section.
-  const v = config.values
-  const r = config.resolved.ui?.party || {}
-  const g = config.resolved.ui?.grounding || {}
-  partyConfigPath.value = r.config_path || v.party_config_path || ''
-  characters.value = r.chars || ''
-  summaries.value = r.summaries || g.summaries || v.summaries || ''
-  backstory.value = r.backstory || ''
-  arcScores.value = r.arc_scores || ''
-  context.value = r.context || ''
-  output.value = r.output || v.party_output || ''
-  extractDir.value = r.extract_dir || ''
-  splitChapters.value = r.split_chapters || '# Chapter'
-  // Persisted mode wins; otherwise default to 'config' if a YAML path is set,
-  // else fall back to 'flat' so legacy workspaces still see the old form.
-  if (r.mode === 'config' || r.mode === 'flat') {
-    mode.value = r.mode
-  } else {
-    mode.value = partyConfigPath.value ? 'config' : 'flat'
-  }
+// Newline textareas <-> the config's string lists.
+function linesOf(r: typeof characters) {
+  return computed<string[]>({
+    get: () => r.value.split('\n').map(l => l.trim()).filter(Boolean),
+    set: (v: string[]) => { r.value = v.join('\n') },
+  })
 }
+const charFiles = linesOf(characters)
+const backstoryFiles = linesOf(backstory)
+const arcScoreFiles = linesOf(arcScores)
+const contextFiles = linesOf(context)
 
-// Persist mode + config-path through the typed party section so the
-// values survive a server restart (these used to mutate config.values
-// without saving, evaporating on reload). Debounced to avoid a write
-// per keystroke on the path field.
-let partyPersistTimer: ReturnType<typeof setTimeout> | null = null
-function schedulePartyPersist() {
-  if (partyPersistTimer) clearTimeout(partyPersistTimer)
-  partyPersistTimer = setTimeout(() => {
-    config.updateSection('party', {
-      mode: mode.value,
-      config_path: partyConfigPath.value,
-    }).catch(() => { /* non-fatal — the local ref still has the value */ })
-  }, 500)
-}
-watch(mode, () => {
-  schedulePartyPersist()
-})
-watch(partyConfigPath, () => {
-  schedulePartyPersist()
+// This page previously persisted 2 of the 9 fields it read (mode and
+// config_path); `chars`, `summaries`, `backstory`, `arc_scores`, `context`,
+// `output`, `extract_dir` and `split_chapters` were dead reads against keys
+// nothing ever wrote. All nine persist now.
+const { sharedSummaries } = useGroundingRun('party', {
+  mode, config_path: partyConfigPath, input: summaries, output,
+  extract_dir: extractDir, split_chapters: splitChapters, no_log: noLog,
+  characters: charFiles, backstory: backstoryFiles,
+  arc_scores: arcScoreFiles, context: contextFiles,
 })
 
-const charFiles = computed(() =>
-  characters.value.split('\n').map(l => l.trim()).filter(Boolean)
-)
-const backstoryFiles = computed(() =>
-  backstory.value.split('\n').map(l => l.trim()).filter(Boolean)
-)
-const arcScoreFiles = computed(() =>
-  arcScores.value.split('\n').map(l => l.trim()).filter(Boolean)
-)
-const contextFiles = computed(() =>
-  context.value.split('\n').map(l => l.trim()).filter(Boolean)
-)
+const effectiveSummaries = computed(() => summaries.value.trim() || sharedSummaries.value)
 
 const ready = computed(() => {
   if (!output.value.trim()) return false
@@ -114,11 +79,8 @@ const runParams = computed(() => {
   return base
 })
 
-const hasSummaries = computed(() => !!summaries.value.trim())
-
-const resolvedPartyConfigPath = computed(() =>
-  resolvePathWithBase(partyConfigPath.value, 'campaign')
-)
+// Extract needs a timeline; an empty local field inherits the shared one.
+const hasSummaries = computed(() => !!effectiveSummaries.value)
 
 watch(output, (newOutput) => {
   if (!extractDir.value && newOutput) {
@@ -128,7 +90,6 @@ watch(output, (newOutput) => {
   }
 })
 
-onMounted(() => { loadFromConfig() })
 </script>
 
 <template>
@@ -162,7 +123,7 @@ onMounted(() => { loadFromConfig() })
       <div v-if="mode === 'config'" class="form-section">
         <PathField v-model="partyConfigPath" label="Party config file" required resolve-base="campaign"
           help="Path to party.yaml. Maps each PC to their sheet, backstory, and arc_score (use null for trackless). See config/party.example.yaml." />
-        <PartyConfigEditor :config-path="resolvedPartyConfigPath" />
+        <PartyConfigEditor />
       </div>
 
       <!-- Required: character sheets (mode = flat) -->

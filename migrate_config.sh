@@ -6,7 +6,7 @@
 #
 # Behavior:
 #   - Recursively searches the campaign directory for known config files
-#     (config.yaml, ui_state.yaml, .campaigngenerator.local.yaml, planning.yaml).
+#     (see CONFIG_NAMES below).
 #   - Moves each one into <campaign_directory>/config/.
 #   - If a file with the same name already exists in config/, the INCOMING file
 #     is moved under a versioned name (e.g. config.yaml.v1, config.yaml.v2, ...)
@@ -35,8 +35,37 @@ echo "Campaign directory: $CAMPAIGN_DIR"
 echo "Target config directory: $CONFIG_DIR"
 echo ""
 
-# Config filenames we know how to migrate
-CONFIG_NAMES=("config.yaml" "ui_state.yaml" ".campaigngenerator.local.yaml" "planning.yaml")
+# Config filenames we know how to migrate.
+#
+# <campaign>/config/ is THE location for every one of these — there are no
+# fallback probes any more (docs/config/grounding-isolation.md Track 0). A file
+# left outside config/ is simply not found by the app.
+#
+# party.yaml joins the list per issue #144. The search below is recursive, so
+# the obelisk campaign's docs/party.yaml is picked up without needing docs/ as
+# an explicit search root. Safe to move only because Phase 2 made its contents
+# resolve against the campaign root rather than against its own directory
+# (issues #145/#146) — before that, moving it broke every path inside it.
+#
+# refs.yaml / refs.local.yaml / ingest_manifest.yaml were campaign-root files
+# that resolve_refs.py, launch_5etools_mcp.py and apply_ingest_manifest.py read
+# from <campaign>/<name>. Those readers move to <campaign>/config/<name> in the
+# same change, so run this script only on a tree whose CampaignGenerator is at
+# or past that commit.
+#
+# Deliberately NOT here: docs/entity_registry.yaml (campaign DATA, not config —
+# config/ holds how a pipeline runs, docs/ holds what it operates on), and the
+# tool-owned root files .mcp.json / .gitignore / .mempalaceignore.
+CONFIG_NAMES=(
+  "config.yaml"
+  "ui_state.yaml"
+  ".campaigngenerator.local.yaml"
+  "planning.yaml"
+  "party.yaml"
+  "refs.yaml"
+  "refs.local.yaml"
+  "ingest_manifest.yaml"
+)
 
 # Build the -name predicate group for find: \( -name a -o -name b ... \)
 find_name_args=()
