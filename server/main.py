@@ -26,6 +26,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# ── Selection refusal (feature 003) ─────────────────────────────────────────
+# A run whose resolved model cannot be served by its resolved backend is
+# refused BEFORE any subprocess is spawned, rather than being retargeted at a
+# model the operator did not choose.
+#
+# There is no handler to register here: IncompatibleSelection subclasses
+# HTTPException(409), so FastAPI's built-in handler renders it wherever the
+# router is mounted. An app-level handler in this module would only cover apps
+# this module builds — several test fixtures mount routers on a bare FastAPI()
+# and would have got an unhandled 500 instead of a refusal.
+
+
 # ── API routers ──────────────────────────────────────────────────────────────
  
 app.include_router(config_routes.router, prefix="/api/config", tags=["config"])

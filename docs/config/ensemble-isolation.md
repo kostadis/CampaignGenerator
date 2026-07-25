@@ -1,5 +1,12 @@
 # Ensemble Configuration Isolation Design
 
+> **Superseded in part by feature 003** (`specs/003-model-selection-resolution/`): Phase 4's
+> `_backend_args`, and specifically its stale-model guard that *discarded* a foreign model id and
+> substituted the platform's, now refuse the run with a 409 instead. The rule survives; the silent
+> substitution does not. This document records Phase 4 as it was; for current behaviour see
+> [values.md § The model/backend resolution rule](./values.md#the-modelbackend-resolution-rule-feature-003--the-single-statement).
+
+
 > **Status: ✅ Done (2026-07-24).** All six phases shipped on
 > `feat/ensemble-config-isolation`. Ensemble — the largest remaining
 > `ui.<section>` tenant — now owns a strict `<config>/ensemble.yaml` through

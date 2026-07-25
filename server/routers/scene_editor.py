@@ -28,6 +28,8 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from server.backend_forwarding import backend_cli_args
+from server.platform_config_service import resolve_selection
+from server.platform_config_shared import ModelSelection
 from server.session_editor_config_shared import ProfileEntry
 from server.session_editor_config_service import (
     ResolvedEditorConfig,
@@ -551,30 +553,69 @@ def _assembled_output_path(cfg: ResolvedEditorConfig) -> Path:
 
 # ── Command builders ────────────────────────────────────────────────────────
 
-def _model_args(cfg: ResolvedEditorConfig) -> list[str]:
-    """`--model <resolved>` if a model is configured, else [].
+def _editor_service_selection(cfg: ResolvedEditorConfig):
+    """The Session Doc Editor's own selection, as a ModelSelection-shaped view.
 
-    O3 — editor-local anthropic/claude-code model override: the active
-    backend's own remembered model (``cfg.backends.<active>.model``) wins
-    if set, else falls back to the global sidebar picker (``cfg.model`` ←
-    runtime.default_model).
+    The editor stores a profile per backend (``backends.<name>``) plus which
+    one is ``active``; feature 003's service tier is that active profile. The
+    dgx profile falls back to wiring for model/endpoint, as it always has.
 
-    Skipped when backend is dgx or openrouter: the anthropic/claude-code
-    model resolved here would be meaningless for either endpoint (that
-    model is instead governed by _backend_flags's own --model). It would
-    also be actively wrong for scrub — scrub_mechanics passes --model
-    straight through as the OpenAI-compat model_override, so a "claude-*"
-    name there 404s against a non-Anthropic backend.
+    Returns ``None`` when the editor has nothing of its own to say, so the
+    seam falls straight through to the platform selection.
     """
     active = cfg.backends.active
-    if active in ("dgx", "openrouter"):
+    prof = {
+        "anthropic": cfg.backends.anthropic,
+        "claude-code": cfg.backends.claude_code,
+        "dgx": cfg.backends.dgx,
+        "openrouter": cfg.backends.openrouter,
+    }[active]
+
+    model = (prof.model or "").strip() or None
+    endpoint = (prof.endpoint or "").strip() or None
+    if active == "dgx":
+        model = model or wiring_get("dgx_model")
+        endpoint = endpoint or wiring_get("dgx_endpoint")
+
+    return ModelSelection(backend=active, model=model), endpoint
+
+
+def _selection_args(request, cfg: ResolvedEditorConfig, *,
+                    allow_openai_compat: bool = True) -> list[str]:
+    """Resolve this editor run's selection and render it as CLI flags.
+
+    Feature 003 replaced the ``_model_args`` + ``_backend_flags`` pair with
+    one seam call. Those two split the job by backend — ``_model_args``
+    emitted ``--model`` for anthropic/claude-code and deliberately nothing
+    for dgx/openrouter, where ``_backend_flags`` supplied its own — which
+    worked, but meant the rule lived in two places and neither could see the
+    whole pair. ``resolve_selection`` sees both halves and emits exactly one
+    ``--model`` (contract guarantee C1).
+
+    ``allow_openai_compat=False`` (the plan routes) still suppresses the DGX
+    OpenAI-compat adapter, whose shape can't serve routes that may use
+    tool-use. Preserved exactly: those routes fall back to the script's own
+    argparse default rather than being retargeted, which is what they did
+    before 003. This is the one path that deliberately does not forward a
+    resolved selection, and it is a behaviour-preserving carve-out rather
+    than an oversight.
+    """
+    service, endpoint = _editor_service_selection(cfg)
+
+    if service.backend == "dgx" and not allow_openai_compat:
         return []
-    prof = cfg.backends.anthropic if active == "anthropic" else cfg.backends.claude_code
-    model = (prof.model or cfg.model or "").strip()
-    return ["--model", model] if model else []
+
+    resolved = resolve_selection(
+        request,
+        service=service,
+        service_name="session_doc",
+    )
+    args = backend_cli_args(resolved.backend, endpoint=endpoint)
+    return args + (["--model", resolved.model] if resolved.model else [])
 
 
-def _build_enhance_cmd(cfg: ResolvedEditorConfig, batch: bool = False) -> list[str] | tuple[None, str]:
+
+def _build_enhance_cmd(request, cfg: ResolvedEditorConfig, batch: bool = False) -> list[str] | tuple[None, str]:
     """Stage 1: enhance_summary {vtt} --gmassist {session} --output {summary}.
 
     Returns the command list, or (None, error_message) on misconfig.
@@ -596,13 +637,13 @@ def _build_enhance_cmd(cfg: ResolvedEditorConfig, batch: bool = False) -> list[s
         "--gmassist", cfg.paths.session_recap,
         "--output", str(summary),
     ]
-    cmd += _model_args(cfg)
+    cmd += _selection_args(request, cfg)
     if batch:
         cmd.append("--batch")
     return cmd
 
 
-def _build_reextract_cmd(cfg: ResolvedEditorConfig, batch: bool = False,
+def _build_reextract_cmd(request, cfg: ResolvedEditorConfig, batch: bool = False,
                          force: bool = False) -> list[str] | tuple[None, str]:
     """Stage 2: scene_extract {vtt} --summary {summary} --output-dir {sx_dir}.
 
@@ -629,7 +670,7 @@ def _build_reextract_cmd(cfg: ResolvedEditorConfig, batch: bool = False,
         "--summary", str(summary),
         "--output-dir", str(sx_dir),
     ]
-    cmd += _model_args(cfg)
+    cmd += _selection_args(request, cfg)
     # Pass party.md so scene_extract can rewrite Zoom display names to
     # character / GM labels deterministically before the LLM sees the VTT.
     # `party` is the synthesized party.md path (set by the Party Document
@@ -649,7 +690,7 @@ def _build_reextract_cmd(cfg: ResolvedEditorConfig, batch: bool = False,
     return cmd
 
 
-def _build_narrate_cmd(cfg: ResolvedEditorConfig, scene_num: int) -> list[str] | tuple[None, str]:
+def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> list[str] | tuple[None, str]:
     """Stage 3: sd_narrate for a single scene.
 
     Phase 5 of SessionDocRefactor: session_doc.py is gone. We point at
@@ -680,7 +721,7 @@ def _build_narrate_cmd(cfg: ResolvedEditorConfig, scene_num: int) -> list[str] |
         "--per-scene-output", str(nd),
         "--scene", str(scene_num),
     ]
-    cmd += _model_args(cfg)
+    cmd += _selection_args(request, cfg)
     for flag, value in [("--party", cfg.paths.party), ("--voice-dir", cfg.paths.voice_dir),
                         ("--characters", cfg.roster.characters),
                         ("--examples", cfg.paths.examples_dir)]:
@@ -699,46 +740,6 @@ def _build_narrate_cmd(cfg: ResolvedEditorConfig, scene_num: int) -> list[str] |
     if cfg.narrate.genre:
         cmd += ["--narration-genre", cfg.narrate.genre]
     return cmd
-
-
-def _backend_flags(cfg: ResolvedEditorConfig, *, allow_openai_compat: bool = True) -> list[str]:
-    """Translate the typed backend choice into subprocess CLI flags.
-
-    Replaces the old env-var translator (`_llm_env`): every downstream
-    script this router shells out to (enhance_summary, scene_extract,
-    sd_narrate, sd_consistency, sd_plan, scrub_mechanics) now
-    accepts --backend/--endpoint/--model directly via
-    campaignlib.api.client.add_backend_args, so forwarding is done as
-    explicit flags via backend_cli_args, not env vars — see
-    server/backend_forwarding.py for why (one of three independently
-    reimplemented env translators silently dropped "openrouter").
-
-    Empty list (backend == "anthropic", or unset) means "no overrides — the
-    script's own argparse default (Anthropic API) applies". Every
-    LLM-calling route must append this to its subprocess cmd so the selected
-    backend actually reaches the subprocess.
-
-    `allow_openai_compat=False` suppresses only the DGX (OpenAI-compat)
-    path — its adapter can't serve routes that may use tool-use — while
-    still forwarding claude-code and openrouter, which speak native
-    Anthropic-shaped protocols (or route to hosted frontier models) and are
-    always safe. Plan routes pass False: a DGX selection there falls back to
-    the Anthropic API (and _model_args() also yields [] in that case, so no
-    --model is forwarded either), but a subscription or openrouter selection
-    is honored in full.
-    """
-    active = cfg.backends.active
-    if active == "dgx":
-        if not allow_openai_compat:
-            return []
-        return backend_cli_args(
-            "dgx",
-            model=cfg.backends.dgx.model or wiring_get("dgx_model"),
-            endpoint=cfg.backends.dgx.endpoint or wiring_get("dgx_endpoint"),
-        )
-    if active == "openrouter":
-        return backend_cli_args("openrouter", model=cfg.backends.openrouter.model)
-    return backend_cli_args(active)  # anthropic -> [], claude-code -> ["--backend", "claude-code"]
 
 
 # ── Routes ──────────────────────────────────────────────────────────────────
@@ -955,11 +956,11 @@ async def api_enhance(batch: int = 0, cfg: ResolvedEditorConfig = Depends(get_ed
     `batch=1` forwards `--batch` to the script (Message Batches API; 50%
     off list price; replaces token streaming with poll-progress lines).
     """
-    result = _build_enhance_cmd(cfg, batch=bool(batch))
+    result = _build_enhance_cmd(request, cfg, batch=bool(batch))
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
-    cmd = result + _backend_flags(cfg)
+    cmd = result + _selection_args(request, cfg)
     summary = _session_summary_path(cfg)
     outputs = [str(summary)] if summary else []
 
@@ -986,11 +987,11 @@ async def api_extract(batch: int = 0, force: int = 0, cfg: ResolvedEditorConfig 
     Pass-1-to-4 command (no batch / no force support) when the workspace
     is on the legacy flow.
     """
-    result = _build_reextract_cmd(cfg, batch=bool(batch), force=bool(force))
+    result = _build_reextract_cmd(request, cfg, batch=bool(batch), force=bool(force))
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
-    cmd = result + _backend_flags(cfg)
+    cmd = result + _selection_args(request, cfg)
     sx = _scene_extractions_dir(cfg)
 
     def _done(rc: int | None) -> None:
@@ -1009,11 +1010,11 @@ async def api_extract(batch: int = 0, force: int = 0, cfg: ResolvedEditorConfig 
 
 @router.get("/narrate/{n}")
 async def api_narrate(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
-    result = _build_narrate_cmd(cfg, n)
+    result = _build_narrate_cmd(request, cfg, n)
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
-    cmd = result + _backend_flags(cfg)
+    cmd = result + _selection_args(request, cfg)
     knobs = _narrate_knobs_snapshot(cfg)
 
     def _done(rc: int | None) -> None:
@@ -1049,8 +1050,7 @@ async def api_scrub(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_confi
         return _sse_error(
             f"refusing to scrub already-scrubbed file: {path.name}")
     cmd = [console_script("scrub_mechanics"), str(path)]
-    cmd += _model_args(cfg)
-    cmd += _backend_flags(cfg)
+    cmd += _selection_args(request, cfg)
     if cfg.scrub.tokens:
         cmd += ["--max-tokens", str(cfg.scrub.tokens)]
 
@@ -1080,8 +1080,7 @@ async def api_scrub_all(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     if nd is None or not nd.is_dir():
         return _sse_error("narration_dir not configured")
     cmd = [console_script("scrub_mechanics"), str(nd)]
-    cmd += _model_args(cfg)
-    cmd += _backend_flags(cfg)
+    cmd += _selection_args(request, cfg)
     if cfg.scrub.tokens:
         cmd += ["--max-tokens", str(cfg.scrub.tokens)]
 
@@ -1098,7 +1097,7 @@ async def api_scrub_all(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     )
 
 
-def _build_consistency_cmd(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
+def _build_consistency_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     """Phase 5 — sd_consistency for Pass 1.
 
     Runs only if --context is configured; otherwise the editor skips
@@ -1121,7 +1120,7 @@ def _build_consistency_cmd(cfg: ResolvedEditorConfig) -> list[str] | tuple[None,
         str(summary),
         "--out", str(nd / "consistency_report.md"),
     ]
-    cmd += _model_args(cfg)
+    cmd += _selection_args(request, cfg)
     # sd_consistency's --context is nargs="+" (now action="extend", so
     # repeated `--context A --context B` accumulates correctly too — see
     # server/routers/ensemble.py's _cmd_multi for that style). Still keep
@@ -1131,7 +1130,7 @@ def _build_consistency_cmd(cfg: ResolvedEditorConfig) -> list[str] | tuple[None,
     return cmd
 
 
-def _build_plan_cmd(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
+def _build_plan_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     """Phase 5 — sd_plan for Pass 3.
 
     --context no longer lives here — consistency is its own explicit
@@ -1156,7 +1155,7 @@ def _build_plan_cmd(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
         "--characters", characters,
         "--out", str(nd / "plan.md"),
     ]
-    cmd += _model_args(cfg)
+    cmd += _selection_args(request, cfg)
     if cfg.paths.party:
         cmd += ["--party", cfg.paths.party]
     # session-summary.md as the authoritative event log when present
@@ -1174,7 +1173,7 @@ async def api_plan(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     one "Plan & Check" run with consistency output appearing first when
     relevant. Phase 5's chosen consistency-UX option A: auto-chain.
     """
-    plan_result = _build_plan_cmd(cfg)
+    plan_result = _build_plan_cmd(request, cfg)
     if isinstance(plan_result, tuple):
         _, err = plan_result
         return _sse_error(err)
@@ -1182,9 +1181,9 @@ async def api_plan(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     # bills that backend instead of falling back to the metered API), but
     # suppress the DGX OpenAI-compat path — see
     # _backend_flags(allow_openai_compat=...).
-    backend_flags = _backend_flags(cfg, allow_openai_compat=False)
+    backend_flags = _selection_args(request, cfg, allow_openai_compat=False)
     plan_cmd = plan_result + backend_flags
-    consistency_result = _build_consistency_cmd(cfg)
+    consistency_result = _build_consistency_cmd(request, cfg)
     # consistency is optional — a tuple here means "skip, no --context"
     consistency_cmd = (
         consistency_result + backend_flags
@@ -1406,3 +1405,20 @@ def api_open(file_type: str, n: int, cfg: ResolvedEditorConfig = Depends(get_edi
         _open_in_typora(path)
         return {"ok": True}
     return JSONResponse({"ok": False, "error": "file not found"}, status_code=404)
+
+
+# ── Resolved-selection preview (feature 003, FR-012) ───────────────────────
+
+
+@router.get("/selection/resolved")
+def get_editor_resolved_selection(request: Request,
+                                  service: SessionEditorConfigService = Depends(get_editor_service)):
+    """What an editor run would use, and where each half came from."""
+    cfg = service.resolved_editor_config()
+    sel, _endpoint = _editor_service_selection(cfg)
+    return resolve_selection(
+        request,
+        service=None if sel.is_empty() else sel,
+        service_name="session_doc",
+        raise_on_incompatible=False,
+    ).as_dict()

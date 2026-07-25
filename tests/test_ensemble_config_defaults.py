@@ -351,31 +351,44 @@ class TestModelResolution:
         client.get("/api/ensemble/run/recent-events")
         assert "--model" not in captured[-1]
 
-    def test_stale_non_anthropic_model_is_dropped_not_forwarded(self, client, captured):
+    def test_stale_non_anthropic_model_is_refused_not_substituted(self, client, captured):
         """The Setup page keeps a per-stage model across a backend switch, so
-        an Anthropic run can arrive carrying a Qwen id. It must be discarded
-        before resolution — never forwarded, never left as 'no model'."""
+        an Anthropic run can arrive carrying a Qwen id.
+
+        **Reversed by feature 003.** This used to assert the id was discarded
+        and the platform's model swapped in — so the run proceeded on a model
+        the operator had not chosen. FR-011 forbids that substitution; the run
+        is now refused and the operator clears or corrects the stale value.
+        The foreign id must still never reach an Anthropic run, and it does
+        not: no subprocess is spawned at all.
+        """
         client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
-        client.get("/api/ensemble/run/extract", params={
+        before = len(captured)
+        r = client.get("/api/ensemble/run/extract", params={
             "chapters": ["ch01.md"],
             "backend": "anthropic",
             "model": "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
         })
-        cmd = captured[-1]
-        assert "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8" not in cmd
-        assert self._model_of(cmd) == "claude-opus-5"
+        assert r.status_code == 409, r.text
+        assert r.json()["detail"]["error"] == "incompatible_selection"
+        assert len(captured) == before, "no subprocess may be spawned on a refusal"
 
     def test_openrouter_style_id_is_also_treated_as_foreign(self, client, captured):
         """`anthropic/claude-sonnet-4` is an OpenRouter id, not an Anthropic
         API one — the `claude-` prefix check must not be fooled by the vendor
-        segment."""
+        segment.
+
+        Reversed alongside its sibling above: the id is still recognised as
+        foreign, but the outcome is a refusal rather than a substitution.
+        """
         client.app.state.platform.update_runtime({"default_model": "claude-opus-5"})
-        client.get("/api/ensemble/run/extract", params={
+        r = client.get("/api/ensemble/run/extract", params={
             "chapters": ["ch01.md"],
             "backend": "anthropic",
             "model": "anthropic/claude-sonnet-4",
         })
-        assert self._model_of(captured[-1]) == "claude-opus-5"
+        assert r.status_code == 409, r.text
+        assert r.json()["detail"]["model"] == "anthropic/claude-sonnet-4"
 
     def test_a_claude_id_absent_from_the_registry_is_still_honoured(self, client, captured):
         """Deliberately a prefix check, not MODELS membership: swapping in the

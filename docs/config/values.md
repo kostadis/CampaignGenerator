@@ -11,7 +11,7 @@ flowchart LR
   Editor -->|POST /api/editor/profiles/:name/activate| SES
   Picker["model picker / SessionConfig"] -->|PUT /api/config/runtime| RT["PlatformConfigService.update_runtime writes platform.yaml"]
   LocalUI["server/nav"] -->|PUT /api/config/local| LOC["PlatformConfigService.update_local writes .campaigngenerator.local.yaml"]
-  RunReq["a /run/* request that omits model"] -->|resolve_default_model| RT
+  RunReq["a token-spending request that omits model/backend"] -->|resolve_selection| RT
 ```
 
 **Every write door above is service-specific.** There is no generic one: the `PUT
@@ -104,8 +104,44 @@ write).
 
 | Value | Read by | Written by |
 |---|---|---|
-| `runtime.default_model` | the sidebar model picker's persisted choice; the fallback source for all fourteen `/run/*` request-body `model` fields via `resolve_default_model` (Phase 5a, `server/platform_config_service.py`) — explicit request `model` wins, then this value, then the `campaignlib.constants.DEFAULT_MODEL` literal; also the fallback source for `session_doc.yaml`'s editor-local `backends.<active>.model` override (O3) | `PUT /runtime` → `PlatformConfigService.update_runtime` |
+| `runtime.default_model` | the sidebar MODEL picker's persisted choice; the platform tier of the one resolution rule (see below) | `PUT /runtime` → `PlatformConfigService.update_runtime` |
+| `runtime.default_backend` | the sidebar BACKEND toggle's persisted choice (feature 003). Before 003 that toggle wrote `session_doc.yaml`'s `backends.active` — the Session Doc Editor's own config — while MODEL wrote here: two controls presented as global, owned by different tiers. That asymmetry is why `grounding.py` read another service's document to find a backend. Migrated by `python -m server.migrate_default_backend` | `PUT /runtime` → `PlatformConfigService.update_runtime` |
 | `runtime.session_dir` | `resolved()` session base for session-scoped paths (`resolve_path`/`relativize_path`, `base="session"`); also read by `SessionEditorConfigService.resolved_editor_config()` for `session_doc.yaml`'s session-based path fields. Loaded during `PlatformConfigService.__init__` | `PUT /runtime` → `PlatformConfigService.update_runtime`; boot `--session-dir` wins for process |
+
+### The model/backend resolution rule (feature 003) — the single statement
+
+**This is the one place the rule is written down. Every other mention links here rather than
+restating it** (FR-015); five independent restatements in code is what feature 003 existed to
+remove, and five in prose would re-create the same drift one layer up.
+
+```
+model   := request ?? service ?? platform.default_model  ?? DEFAULT_MODEL
+backend := request ?? service ?? platform.default_backend
+```
+
+Resolved once per run by `server/platform_config_service.py::resolve_selection`, which every one
+of the 22 token-spending endpoints calls and none re-derives.
+
+- **The pairing rule.** Model and backend come from the *same tier* whenever that tier supplies
+  either. A tier that picks a *different backend* does not inherit the tier above's model — a
+  Claude id chosen for the Anthropic API is meaningless on a DGX box, and inheriting it across a
+  backend boundary would manufacture a conflict out of two individually valid choices. In that
+  case no `--model` is emitted and the downstream script's own default applies.
+- **No substitution.** An incompatible pair is refused with HTTP 409, never silently swapped
+  (`IncompatibleSelection`, which subclasses `HTTPException` so it renders wherever the router is
+  mounted). This reversed ensemble's earlier behaviour, which discarded a foreign model id and ran
+  on the platform's instead.
+- **Compatibility** is a `claude-` prefix test, deliberately *not* membership of
+  `server/config.py::MODELS` — that list is a hand-maintained snapshot and testing against it would
+  reject a legitimate new Claude id the day it ships.
+- **Who may override**: the five services that own a configuration document — Ensemble
+  (`ensemble.yaml`, per stage), Session Doc Editor (`session_doc.yaml`, per backend), Grounding,
+  Party and Planning (`selection` in the file each already owned). Setup, Session Prep, NPC Table,
+  Query and Connection Graph own no document and always inherit; they get a read-only
+  `GET /api/<service>/selection/resolved` preview but nowhere to set anything.
+- **Endpoint** for a dgx run resolves from `wiring.yaml` (`dgx_endpoint`) when the service pins
+  none. The *model* deliberately does not fall back to wiring's `dgx_model` — that would be a
+  substitution of the operator's pick.
 
 `server/config.py::MODELS` (the selectable-model list `GET /api/config/models` serves) is a
 hardcoded Python list, not a `runtime` value — relocating its *source* into `wiring.yaml` is

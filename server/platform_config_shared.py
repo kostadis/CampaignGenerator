@@ -61,12 +61,18 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 import yaml
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, ValidationError
 
 from campaignlib import DEFAULT_MODEL
+from campaignlib.selection import (  # noqa: F401  (re-exported)
+    BACKENDS,
+    Backend,
+    ModelSelection,
+    compatible,
+)
 
 LOCAL_CONFIG_NAME = ".campaigngenerator.local.yaml"
 PLATFORM_CONFIG_NAME = "platform.yaml"
@@ -107,12 +113,32 @@ class ConfigError(RuntimeError):
     """Raised at startup when a required config file is missing or malformed."""
 
 
+# ── Model/backend selection (feature 003) ─────────────────────────────────
+# Defined in campaignlib.selection and re-exported here. That module is the
+# lower layer — it is where the backends are actually spoken to
+# (campaignlib/api/client.py declares the same four names as its --backend
+# choices) and where DEFAULT_MODEL already lives. The forcing function is
+# PartyConfig/PlanningConfig: they are campaignlib models, and a service
+# document carrying a `selection` field cannot import one from `server`
+# without inverting the layering.
+
 class PlatformRuntime(BaseModel):
-    """The platform-owned ``runtime`` slice — ``default_model`` (the sidebar
-    model picker) and ``session_dir`` (the session-resolution anchor every
-    session-scoped path resolves against). Physically persisted as the
-    ``runtime:`` key of ``<config>/platform.yaml`` (Phase 3, O3) — see module
-    docstring for the pre-Phase-3 shape this replaced.
+    """The platform-owned ``runtime`` slice — ``default_model`` and
+    ``default_backend`` (the sidebar's two pickers) and ``session_dir`` (the
+    session-resolution anchor every session-scoped path resolves against).
+    Physically persisted as the ``runtime:`` key of
+    ``<config>/platform.yaml`` (Phase 3, O3) — see module docstring for the
+    pre-Phase-3 shape this replaced.
+
+    ``default_backend`` arrived with feature 003. Before it, the sidebar's
+    BACKEND toggle wrote ``session_doc.yaml``'s ``backends.active`` — the
+    Session Doc Editor's *own* config — while the MODEL picker beside it
+    wrote here. Two controls presented as global, owned by different tiers:
+    that asymmetry is why ``grounding.py`` had to reach into the editor's
+    service to find a backend, and why a Grounding run could carry a model
+    from one owner and a backend from another. The default is ``anthropic``
+    because ``backend_cli_args`` emits nothing for that value, so a campaign
+    that never touches the toggle behaves exactly as it did before.
 
     ``default_model``'s ``default_factory`` reads ``campaignlib.constants.
     DEFAULT_MODEL`` (Phase 5a,
@@ -127,6 +153,7 @@ class PlatformRuntime(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     default_model: str = Field(default_factory=lambda: DEFAULT_MODEL)
+    default_backend: Backend = "anthropic"
     session_dir: OptStr = None
 
 

@@ -58,6 +58,7 @@ const runParams = computed(() => ({
       </div>
 
       <RunPanel
+        selection-service="prep"
         endpoint="/api/prep/run/npc-table"
         :params="runParams"
         :disabled="!ready"

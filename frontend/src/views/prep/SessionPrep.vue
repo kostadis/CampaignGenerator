@@ -111,6 +111,7 @@ const runParams = computed(() => ({
       </div>
 
       <RunPanel
+        selection-service="prep"
         endpoint="/api/prep/run/session-prep"
         :params="runParams"
         :disabled="!ready"

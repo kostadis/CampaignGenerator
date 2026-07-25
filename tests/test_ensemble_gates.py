@@ -80,8 +80,27 @@ def _capture_cmd(monkeypatch):
     return captured
 
 
-def test_synthesize_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
-    captured = _capture_cmd(monkeypatch)
+def test_synthesize_refuses_stale_model_for_anthropic(tmp_path, monkeypatch):
+    """FR-009/FR-011 (feature 003): a stale non-Anthropic id on an Anthropic
+    run is REFUSED, not silently replaced.
+
+    This test is the deliberate reversal of
+    ``test_synthesize_ignores_stale_model_for_anthropic``. The invariant it
+    guarded is unchanged and still holds — a foreign id must never reach an
+    Anthropic run — but the *remedy* changed. Phase 4 of
+    ``docs/config/ensemble-isolation.md`` dropped the stale id and swapped in
+    the platform's model, so the run proceeded on something the operator had
+    not chosen. The Setup page keeps a per-stage model across a backend
+    switch, so this is easy to reach: pick dgx, type a Qwen id, switch back to
+    Anthropic.
+
+    Under 003 the operator is told, and clears or corrects the override —
+    see ``specs/003-model-selection-resolution/spec.md`` Clarifications.
+
+    If this test ever passes while asserting the old silent substitution, the
+    reversal has been undone rather than implemented.
+    """
+    _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
     r = client.get("/api/ensemble/run/synthesize", params={
         "doc": "world_state",
@@ -89,45 +108,68 @@ def test_synthesize_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
         "model": "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
         "endpoint": "http://192.168.1.147:8001/v1",
     })
-    assert r.status_code == 200
-    _ = r.text  # drain the SSE generator so fake_stream_subprocess actually runs
-    # Phase 4 of docs/config/ensemble-isolation.md: the invariant is unchanged
-    # -- a stale non-Anthropic id must never reach an Anthropic run -- but the
-    # assertion is no longer "no --model at all". The router now resolves the
-    # sidebar's platform default for Anthropic runs (ensemble was the last
-    # /run/* route outside resolve_default_model), so the stale id is dropped
-    # and a Claude id takes its place. See ensemble._backend_args.
-    assert "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8" not in captured["cmd"]
-    assert captured["cmd"][captured["cmd"].index("--model") + 1].startswith("claude-")
-    assert "--backend" not in captured["cmd"]
-    assert "--endpoint" not in captured["cmd"]
-    assert not captured["env_extra"]
+    assert r.status_code == 409, r.text
+    detail = r.json()["detail"]
+    assert detail["error"] == "incompatible_selection"
+    assert detail["model"] == "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8"
+    assert detail["backend"] == "anthropic"
+    assert detail["service"] == "ensemble"
 
+def test_bundle_refuses_stale_model_for_anthropic(tmp_path, monkeypatch):
+    """FR-009/FR-011 (feature 003): a stale non-Anthropic id on an Anthropic
+    run is REFUSED, not silently replaced.
 
-def test_bundle_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
-    captured = _capture_cmd(monkeypatch)
+    This test is the deliberate reversal of
+    ``test_bundle_ignores_stale_model_for_anthropic``. The invariant it
+    guarded is unchanged and still holds — a foreign id must never reach an
+    Anthropic run — but the *remedy* changed. Phase 4 of
+    ``docs/config/ensemble-isolation.md`` dropped the stale id and swapped in
+    the platform's model, so the run proceeded on something the operator had
+    not chosen. The Setup page keeps a per-stage model across a backend
+    switch, so this is easy to reach: pick dgx, type a Qwen id, switch back to
+    Anthropic.
+
+    Under 003 the operator is told, and clears or corrects the override —
+    see ``specs/003-model-selection-resolution/spec.md`` Clarifications.
+
+    If this test ever passes while asserting the old silent substitution, the
+    reversal has been undone rather than implemented.
+    """
+    _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
     r = client.get("/api/ensemble/run/bundle", params={
         "backend": "anthropic",
         "model": "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
         "endpoints": ["http://192.168.1.147:8001/v1"],
     })
-    assert r.status_code == 200
-    _ = r.text
-    # Phase 4 of docs/config/ensemble-isolation.md: the invariant is unchanged
-    # -- a stale non-Anthropic id must never reach an Anthropic run -- but the
-    # assertion is no longer "no --model at all". The router now resolves the
-    # sidebar's platform default for Anthropic runs (ensemble was the last
-    # /run/* route outside resolve_default_model), so the stale id is dropped
-    # and a Claude id takes its place. See ensemble._backend_args.
-    assert "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8" not in captured["cmd"]
-    assert captured["cmd"][captured["cmd"].index("--model") + 1].startswith("claude-")
-    assert "--endpoints" not in captured["cmd"]
-    assert not captured["env_extra"]
+    assert r.status_code == 409, r.text
+    detail = r.json()["detail"]
+    assert detail["error"] == "incompatible_selection"
+    assert detail["model"] == "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8"
+    assert detail["backend"] == "anthropic"
+    assert detail["service"] == "ensemble"
 
+def test_extract_refuses_stale_model_for_anthropic(tmp_path, monkeypatch):
+    """FR-009/FR-011 (feature 003): a stale non-Anthropic id on an Anthropic
+    run is REFUSED, not silently replaced.
 
-def test_extract_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
-    captured = _capture_cmd(monkeypatch)
+    This test is the deliberate reversal of
+    ``test_extract_ignores_stale_model_for_anthropic``. The invariant it
+    guarded is unchanged and still holds — a foreign id must never reach an
+    Anthropic run — but the *remedy* changed. Phase 4 of
+    ``docs/config/ensemble-isolation.md`` dropped the stale id and swapped in
+    the platform's model, so the run proceeded on something the operator had
+    not chosen. The Setup page keeps a per-stage model across a backend
+    switch, so this is easy to reach: pick dgx, type a Qwen id, switch back to
+    Anthropic.
+
+    Under 003 the operator is told, and clears or corrects the override —
+    see ``specs/003-model-selection-resolution/spec.md`` Clarifications.
+
+    If this test ever passes while asserting the old silent substitution, the
+    reversal has been undone rather than implemented.
+    """
+    _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
     r = client.get("/api/ensemble/run/extract", params={
         "chapters": ["docs/chapters/chapter_01.md"],
@@ -135,20 +177,12 @@ def test_extract_ignores_stale_model_for_anthropic(tmp_path, monkeypatch):
         "model": "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
         "endpoints": ["http://192.168.1.147:8001/v1"],
     })
-    assert r.status_code == 200
-    _ = r.text
-    # Phase 4 of docs/config/ensemble-isolation.md: the invariant is unchanged
-    # -- a stale non-Anthropic id must never reach an Anthropic run -- but the
-    # assertion is no longer "no --model at all". The router now resolves the
-    # sidebar's platform default for Anthropic runs (ensemble was the last
-    # /run/* route outside resolve_default_model), so the stale id is dropped
-    # and a Claude id takes its place. See ensemble._backend_args.
-    assert "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8" not in captured["cmd"]
-    assert captured["cmd"][captured["cmd"].index("--model") + 1].startswith("claude-")
-    assert "--backend" not in captured["cmd"]
-    assert "--endpoints" not in captured["cmd"]
-    assert not captured["env_extra"]
-
+    assert r.status_code == 409, r.text
+    detail = r.json()["detail"]
+    assert detail["error"] == "incompatible_selection"
+    assert detail["model"] == "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8"
+    assert detail["backend"] == "anthropic"
+    assert detail["service"] == "ensemble"
 
 def test_extract_forwards_backend_and_endpoints_when_non_anthropic(tmp_path, monkeypatch):
     """run_extract previously had no way to forward a backend choice at all

@@ -53,6 +53,15 @@ export const useConfigStore = defineStore('config', () => {
   // ("one default-model source").
   const defaultModel = ref('')
   const model = ref('')
+  // The app-wide backend. Feature 003 moved it out of the Session Doc
+  // Editor's backends.active (session_doc.yaml) and up to the platform tier
+  // beside default_model, so the sidebar's two controls are owned by the same
+  // thing. Before that, editing the Session Doc Editor silently re-targeted
+  // every Grounding run, and a command could carry a model from one owner and
+  // a backend from another. The editor keeps its own backends block — it is a
+  // legitimate per-service override now, just no longer the global value.
+  const backend = ref<string>('anthropic')
+  const backends = ref<string[]>([])
   const apiKeyPresent = ref(false)
   const cwd = ref('')
   const loaded = ref(false)
@@ -76,6 +85,8 @@ export const useConfigStore = defineStore('config', () => {
       migrationWarnings.value = cfg.migration_warnings ?? []
       models.value = modelsData.models
       defaultModel.value = modelsData.default
+      backends.value = modelsData.backends || ['anthropic', 'dgx', 'openrouter', 'claude-code']
+      backend.value = cfg.resolved?.runtime?.default_backend || modelsData.default_backend || 'anthropic'
       model.value = cfg.resolved?.runtime?.default_model || modelsData.default
       apiKeyPresent.value = status.api_key_present
       cwd.value = status.cwd
@@ -114,7 +125,8 @@ export const useConfigStore = defineStore('config', () => {
     await refresh()
   }
 
-  // Runtime update — session_dir, default_model. Backed by platform.yaml.
+  // Runtime update — session_dir, default_model, default_backend.
+  // Backed by platform.yaml; the ONLY write path for the app-wide backend.
   async function updateRuntime(partial: Record<string, any>) {
     if (!loaded.value) return
     await apiPut('/api/config/runtime', { values: partial })
@@ -181,6 +193,8 @@ export const useConfigStore = defineStore('config', () => {
     refreshGrounding,
     updateGrounding,
     models,
+    backend,
+    backends,
     defaultModel,
     model,
     apiKeyPresent,

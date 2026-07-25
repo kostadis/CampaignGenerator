@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import yaml
+from campaignlib.selection import ModelSelection
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from server.platform_config_shared import OptStr
@@ -55,7 +56,7 @@ class ProfileEntry(BaseModel):
     knobs: dict[str, Any] = Field(default_factory=dict)
 
 
-class BackendProfile(BaseModel):
+class BackendProfile(ModelSelection):
     """A selectable execution target for one LLM-bearing stage.
 
     The API key is NEVER stored here — it is read from the environment
@@ -68,11 +69,21 @@ class BackendProfile(BaseModel):
     stays singular; the Session Doc Editor targets one host at a time.
     """
 
+    # extra="allow" is preserved deliberately: unlike its ensemble twin this
+    # profile has always tolerated stray keys, and tightening it here would be
+    # an unrelated behaviour change riding along with feature 003.
     model_config = ConfigDict(extra="allow")
 
+    # Inherits `backend` and `model` from ModelSelection (feature 003); the
+    # only field genuinely its own is the SINGULAR `endpoint` — the Session
+    # Doc Editor targets one host at a time, where the ensemble fans out.
     backend: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
     endpoint: OptStr = None
-    model: OptStr = None
+
+    def is_empty(self) -> bool:
+        """See EnsembleBackend.is_empty — `backend` is non-optional here, so
+        the base class's null test never fires."""
+        return self.backend == "anthropic" and not self.model and not self.endpoint
 
 
 # Dropped with the ``vtt_summary`` chain: the extraction directories it

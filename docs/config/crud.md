@@ -73,8 +73,8 @@ All routes reach `app.state.platform` (a `PlatformConfigService`) via the shared
 - External vs internal: `wiring.yaml` (mneme) holds endpoints/roots; `config.yaml` (human) holds
   prompts/agents/docs. The model registry (`server/config.py::MODELS`) has NOT crossed that line
   yet — it's still internal/hardcoded pending Phase 5b.
-- A `/run/*` request that omits `model` resolves through `resolve_default_model` (explicit request
-  value → `platform.runtime.default_model` → `campaignlib.constants.DEFAULT_MODEL` literal), not a
+- A `/run/*` request that omits `model`/`backend` resolves through `resolve_selection` —
+  see [values.md § The model/backend resolution rule](./values.md#the-modelbackend-resolution-rule-feature-003--the-single-statement) — not a
   hardcoded per-router default — Phase 5a, closing the gap where the sidebar model picker was
   silently bypassed on fourteen endpoints.
 

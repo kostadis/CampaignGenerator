@@ -4,10 +4,11 @@ Provides resource-oriented endpoints for managing NPCs and factions
 in the planning configuration, isolated from the general config service.
 """
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from typing import List
 from ..planning_config_service import PlanningConfigService, PlanningEntry
-from ..platform_config_service import require_platform
+from campaignlib.selection import ModelSelection
+from ..platform_config_service import require_platform, resolve_selection
 
 # NOTE: the "/api/planning" prefix is supplied by main.py's include_router,
 # matching every sibling router. Do not also set prefix= here or the routes
@@ -96,3 +97,46 @@ def delete_faction(name: str, service: PlanningConfigService = Depends(get_plann
     """Delete a faction by name."""
     service.delete_faction(name)
     return None
+
+
+# ── Model/backend selection (feature 003) ──────────────────────────────────
+# GET/PUT/DELETE this service's own override, plus a read-only "what would a
+# run actually use" preview. The preview makes the resolved selection and its
+# ORIGIN visible before tokens are spent (FR-012), and reports an incompatible
+# pair WITHOUT raising, so the UI can show the reason and offer the fix rather
+# than the operator discovering it as a failed run.
+
+
+@router.get("/selection")
+def get_planning_selection(service: PlanningConfigService = Depends(get_planning_service)):
+    return service.get_selection().model_dump()
+
+
+@router.put("/selection")
+async def put_planning_selection(request: Request, service: PlanningConfigService = Depends(get_planning_service)):
+    partial = await request.json()
+    if not isinstance(partial, dict):
+        raise HTTPException(status_code=400, detail="body must be a JSON object")
+    try:
+        selection = ModelSelection.model_validate(partial)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return service.set_selection(selection).model_dump()
+
+
+@router.delete("/selection")
+def delete_planning_selection(service: PlanningConfigService = Depends(get_planning_service)):
+    """Clear the override — the service returns to the platform selection with
+    no further operator action (FR-013)."""
+    return service.set_selection(ModelSelection()).model_dump()
+
+
+@router.get("/selection/resolved")
+def get_planning_resolved_selection(request: Request, service: PlanningConfigService = Depends(get_planning_service)):
+    sel = service.get_selection()
+    return resolve_selection(
+        request,
+        service=None if sel.is_empty() else sel,
+        service_name="planning",
+        raise_on_incompatible=False,
+    ).as_dict()

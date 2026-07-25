@@ -1,5 +1,13 @@
 # Platform (Global) Configuration Isolation Design
 
+> **Superseded in part by feature 003** (`specs/003-model-selection-resolution/`):
+> `resolve_default_model` — Phase 5a's model-only resolver, described throughout this document —
+> was replaced by `resolve_selection`, which resolves model *and* backend together across all 22
+> token-spending endpoints. This document is kept as the record of what Phase 5a did at the time;
+> for current behaviour see
+> [values.md § The model/backend resolution rule](./values.md#the-modelbackend-resolution-rule-feature-003--the-single-statement).
+
+
 > **Status: 🟡 Phases 0–5a done (2026-07-24); Phase 5b deferred.** Third in
 > the series after [planning-isolation.md](./planning-isolation.md)
 > (✅ 2026-07-23) and [session-editor-isolation.md](./session-editor-isolation.md)

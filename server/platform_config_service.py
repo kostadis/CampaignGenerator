@@ -51,6 +51,7 @@ platform state during its own construction.
 from __future__ import annotations
 
 import threading
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -58,17 +59,19 @@ import yaml
 from fastapi import HTTPException, Request
 from pydantic import ValidationError
 
-from campaignlib import DEFAULT_MODEL
+from campaignlib import DEFAULT_MODEL, wiring_get
 from campaignlib.constants import config_path
 from campaignlib.party_config import PARTY_CONFIG_FILENAME
 from server.platform_config_shared import (
     LOCAL_CONFIG_NAME,
     PLATFORM_CONFIG_NAME,
     ConfigError,
+    ModelSelection,
     PlatformConfig,
     PlatformDocument,
     PlatformLocalConfig,
     PlatformRuntime,
+    compatible,
     load_local_config,
     load_platform_config,
     save_local_config,
@@ -134,53 +137,230 @@ def require_platform(request: Request) -> "PlatformConfigService":
     return platform
 
 
-def resolve_default_model(model: str | None, request: Request) -> str:
-    """Resolve the ``--model`` a subprocess run should use, per the
-    precedence table in ``docs/config/platform-isolation.md``'s "Model
-    resolution precedence (O4)" (the first three of its six levels; levels
-    4–6 collapse into a single "platform or literal" step here since Phase
-    5a does not touch backend-remembered-model or wiring):
+# ── The resolution seam (feature 003) ─────────────────────────────────────
 
-    1. An explicit ``model`` — the per-run value a request actually supplied
-       (the frontend forwards the sidebar's pick here; a caller that omits
-       it wants the platform default, not this function's opinion).
-    2. ``runtime.default_model`` — the platform's persisted sidebar pick
-       (``PlatformConfigService.runtime.default_model``, see
-       ``platform_config_shared.PlatformRuntime``).
-    3. ``campaignlib.constants.DEFAULT_MODEL`` — the literal fallback, used
-       only if ``runtime.default_model`` is somehow falsy (it has a
-       ``default_factory`` that itself resolves to this same literal, so
-       this branch should be unreachable in practice) or if no live
-       ``PlatformConfigService`` exists for this request at all.
 
-    This is the fix for the bug the design doc's Phase 5a exists to close:
-    twelve router request-body fields independently hardcoded
-    ``model: str = "claude-sonnet-4-6"`` as their FastAPI default, so a
-    request that omitted ``model`` silently got that literal instead of
-    ``runtime.default_model`` — the sidebar model picker was bypassed on
-    every one of those paths. Callers now declare ``model: str | None =
-    None`` and call this function instead of hardcoding a default.
+class IncompatibleSelection(HTTPException):
+    """Raised when the resolved model cannot be served by the resolved
+    backend — the run is refused before any subprocess is spawned.
 
-    The "no live platform" branch (``require_platform`` raising) is caught
-    rather than left to propagate as a 503: on a normally booted server this
-    can't happen (``server/main.py`` refuses to boot without resolving
-    ``app.state.platform``), so this is defense for a request handled
-    outside that lifecycle — mirroring ``grounding.py``'s ``_backend_flags``,
-    which treats a missing platform as "no overrides" for the exact same
-    reason rather than erroring. Silently returning the literal is safe
-    specifically because the caller already asked for the platform's value
-    and got "no platform to ask", not "a value the platform doesn't want" —
-    it is not the shortcut the design doc's Phase 5a warns against (which is
-    hardcoding this literal as the FastAPI field default *instead of* ever
-    asking the platform, which is what this function replaces).
+    409 rather than 400 because the *request* is well formed; it is the
+    stored state that conflicts. The ``service`` and ``remedy`` fields are
+    what let the UI offer "Clear override" at the point of refusal instead of
+    sending the operator hunting for which service holds the stale value.
+
+    **Subclassing HTTPException is deliberate.** This began as a bare
+    ``Exception`` with a handler registered in ``server/main.py``, which meant
+    the 409 only existed for apps built by that module — any app that included
+    a router directly (as several test fixtures do) got an unhandled 500
+    instead. A refusal that degrades to a crash depending on how the app was
+    assembled is worse than no refusal at all, because it looks like a bug in
+    the run rather than a decision about the selection. As an HTTPException
+    subclass it renders through FastAPI's built-in handler wherever the router
+    is mounted, with no registration to forget.
     """
-    if model:
-        return model
+
+    def __init__(self, resolved: "ResolvedSelection", service: str | None = None) -> None:
+        self.resolved = resolved
+        self.service = service
+        super().__init__(status_code=409, detail=self._detail(resolved, service))
+
+    @staticmethod
+    def _detail(r: "ResolvedSelection", service: str | None) -> dict[str, Any]:
+        return {
+            "error": "incompatible_selection",
+            "message": r.refusal,
+            "model": r.model,
+            "model_origin": r.model_origin,
+            "backend": r.backend,
+            "backend_origin": r.backend_origin,
+            "service": service,
+            "remedy": "clear_override" if r.model_origin == "service" else "change_platform",
+        }
+
+    def as_detail(self) -> dict[str, Any]:
+        return self._detail(self.resolved, self.service)
+
+
+@dataclass(frozen=True)
+class ResolvedSelection:
+    """What a single run will actually use, and where each half came from.
+
+    Computed per request and discarded — it is deliberately NOT persisted.
+    The durable record of what a run used is the run log written by
+    ``server/subprocess_runner.py::_save_run_log``, whose ``command`` line
+    already carries the ``--model``/``--backend`` flags built from this.
+    """
+
+    model: str
+    backend: str
+    model_origin: str  # request | service | platform | literal
+    backend_origin: str  # request | service | platform
+    endpoint: str | None = None
+    endpoints: tuple[str, ...] = ()
+    refusal: str | None = None
+
+    @property
+    def compatible(self) -> bool:
+        return self.refusal is None
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "model": self.model,
+            "backend": self.backend,
+            "model_origin": self.model_origin,
+            "backend_origin": self.backend_origin,
+            "compatible": self.compatible,
+            "refusal": self.refusal,
+        }
+
+
+def resolve_selection(
+    request: Request,
+    *,
+    request_model: str | None = None,
+    request_backend: str | None = None,
+    service: ModelSelection | Any | None = None,
+    service_name: str | None = None,
+    raise_on_incompatible: bool = True,
+) -> ResolvedSelection:
+    """The single place model/backend resolution happens.
+
+    ``model   := request ?? service ?? platform.default_model  ?? DEFAULT_MODEL``
+    ``backend := request ?? service ?? platform.default_backend``
+
+    **The pairing rule.** Model and backend are taken from the *same tier*
+    whenever that tier supplies either. A service that sets only ``model``
+    inherits the platform's backend, and the resulting pair is then checked
+    by ``compatible()``. Resolving the two fields independently is exactly
+    what produced the pre-003 defect: ``grounding.py`` took its model from
+    the platform and its backend from the Session Doc Editor's config, so a
+    run could carry a Claude id and a DGX backend and still "work" — because
+    the DGX adapter silently substituted its own default.
+
+    **No substitution.** When the resolved pair is incompatible this raises
+    (or, with ``raise_on_incompatible=False``, returns a selection carrying
+    a ``refusal``). It never quietly swaps in a model the operator did not
+    choose. That reverses the behaviour ``ensemble.py::_backend_args`` used
+    to have, deliberately — see the spec's Clarifications.
+
+    ``service`` accepts any object with ``backend``/``model`` attributes, so
+    the two pre-existing shapes (``EnsembleBackend`` with plural
+    ``endpoints``, ``BackendProfile`` with singular ``endpoint``) pass
+    through unchanged and keep their endpoint fields.
+    """
     try:
         platform = require_platform(request)
-    except HTTPException:
-        return DEFAULT_MODEL
-    return platform.runtime.default_model or DEFAULT_MODEL
+        runtime = platform.runtime
+    except (HTTPException, AttributeError):
+        # No live platform. Two ways to get here, both tolerated rather than
+        # turned into a 503: a request handled outside the normal boot
+        # lifecycle (HTTPException, mirroring resolve_default_model), and a
+        # caller that has no Request at all (AttributeError) — command
+        # builders are unit-tested directly, and refusing to resolve without
+        # a live server would make them untestable in isolation.
+        runtime = None
+
+    plat_model = (getattr(runtime, "default_model", None) or DEFAULT_MODEL) if runtime else DEFAULT_MODEL
+    plat_backend = (getattr(runtime, "default_backend", None) or "anthropic") if runtime else "anthropic"
+
+    svc_model = (getattr(service, "model", None) or "").strip() or None if service is not None else None
+    svc_backend = (getattr(service, "backend", None) or "").strip() or None if service is not None else None
+
+    # A service whose backend is the schema default ("anthropic") while its
+    # model is unset is indistinguishable from "unset" — treat it as deferring.
+    if service is not None and svc_model is None and svc_backend == "anthropic":
+        svc_backend = None
+
+    if request_backend:
+        backend, backend_origin = request_backend, "request"
+    elif svc_backend:
+        backend, backend_origin = svc_backend, "service"
+    else:
+        backend, backend_origin = plat_backend, "platform"
+
+    if request_model:
+        model, model_origin = request_model, "request"
+    elif svc_model:
+        model, model_origin = svc_model, "service"
+    elif backend_origin != "platform" and backend != plat_backend:
+        # THE PAIRING RULE, the half that is easy to get wrong.
+        #
+        # The tier that chose the backend did not choose a model, and the
+        # platform's model belongs to the *platform's* backend — a Claude id
+        # picked for the Anthropic API is meaningless on a DGX box. Inheriting
+        # it across a backend boundary would manufacture an incompatible pair
+        # out of two individually valid choices, and then refuse a run the
+        # operator configured correctly.
+        #
+        # So: no model. The downstream script applies its own default (dgxlib's
+        # registry for dgx, OpenRouter's for openrouter), which is what
+        # happened before 003 and is a *tool* default rather than a
+        # substitution of anybody's pick.
+        model, model_origin = "", backend_origin
+    elif plat_model:
+        model, model_origin = plat_model, "platform"
+    else:
+        model, model_origin = DEFAULT_MODEL, "literal"
+
+    endpoint = getattr(service, "endpoint", None) if service is not None else None
+    endpoints = tuple(getattr(service, "endpoints", ()) or ()) if service is not None else ()
+
+    # A dgx run needs an endpoint, and the platform tier has no field for one
+    # — wiring.yaml is already the platform's source for external endpoints
+    # and data roots (docs/config/service-cut.md), so an inheriting service
+    # resolves it from there. Before 003 this reached grounding.py only by way
+    # of the Session Doc Editor's dgx profile, which is the cross-service read
+    # FR-005 removes.
+    #
+    # Note the *model* deliberately does NOT fall back to wiring's dgx_model:
+    # that would be a substitution of the operator's pick (FR-011). If the
+    # platform backend is dgx while its model is a claude-* id, the pair is
+    # incompatible and the run is refused — the operator picks a dgx model.
+    if backend == "dgx" and not endpoint and not endpoints:
+        endpoint = wiring_get("dgx_endpoint")
+
+    refusal = None
+    if not compatible(model, backend):
+        refusal = f'"{model}" is not a valid model for the {backend} backend.'
+
+    resolved = ResolvedSelection(
+        model=model,
+        backend=backend,
+        model_origin=model_origin,
+        backend_origin=backend_origin,
+        endpoint=endpoint,
+        endpoints=endpoints,
+        refusal=refusal,
+    )
+    if refusal and raise_on_incompatible:
+        raise IncompatibleSelection(resolved, service_name)
+    return resolved
+
+
+def selection_cli_args(resolved: ResolvedSelection) -> list[str]:
+    """Build the ``--model``/``--backend``/``--endpoint(s)`` flags for a run.
+
+    Exactly ONE ``--model`` is emitted, always. The pre-003 Grounding path
+    emitted two (one from the platform, one from ``backend_cli_args``) and
+    relied on argparse last-wins; that is contract guarantee C1's target.
+
+    ``backend_cli_args`` is reused for the backend half so the flag
+    vocabulary stays defined in one place — it is correctly scoped to
+    *formatting* and only the *resolving* half was broken.
+    """
+    from server.backend_forwarding import backend_cli_args
+
+    args = backend_cli_args(
+        resolved.backend,
+        endpoint=resolved.endpoint,
+        endpoints=list(resolved.endpoints),
+    )
+    # An empty model means "the tier that chose the backend chose no model" —
+    # see the pairing rule in resolve_selection. Emitting no --model lets the
+    # downstream script apply its own default, which is a tool default rather
+    # than a substitution of the operator's pick.
+    return args + (["--model", resolved.model] if resolved.model else [])
 
 
 class PlatformConfigService:

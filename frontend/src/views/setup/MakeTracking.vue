@@ -51,6 +51,7 @@ const runParams = computed(() => ({
       </div>
 
       <RunPanel
+        selection-service="setup"
         endpoint="/api/setup/run/make-tracking"
         :params="runParams"
         :disabled="!ready"

@@ -187,6 +187,8 @@ watch(output, (newOutput) => {
 
       <ExtractSynthesizePanel
         endpoint="/api/grounding/run/party"
+        selection-service="party"
+        :selection-can-override="true"
         :params="runParams"
         :extract-dir="extractDir"
         :disabled="!ready"

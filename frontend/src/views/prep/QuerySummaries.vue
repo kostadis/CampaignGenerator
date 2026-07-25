@@ -90,6 +90,7 @@ onMounted(() => { loadFromConfig() })
       </div>
 
       <RunPanel
+        selection-service="prep"
         endpoint="/api/prep/run/query"
         :params="runParams"
         :disabled="!ready"

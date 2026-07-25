@@ -10,11 +10,12 @@ mounts everything at ``/api/party/api/party/*``), and an emptied roster reads
 back as ``[]`` rather than a 400.
 """
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from campaignlib.party_config import PartyCharacter
 from ..party_config_service import PartyConfigService
-from ..platform_config_service import require_platform
+from campaignlib.selection import ModelSelection
+from ..platform_config_service import require_platform, resolve_selection
 
 # NOTE: the "/api/party" prefix comes from main.py's include_router, matching
 # every sibling router. Do not also set prefix= here.
@@ -73,3 +74,46 @@ def delete_character(
 ):
     service.delete_character(name)
     return None
+
+
+# ── Model/backend selection (feature 003) ──────────────────────────────────
+# GET/PUT/DELETE this service's own override, plus a read-only "what would a
+# run actually use" preview. The preview makes the resolved selection and its
+# ORIGIN visible before tokens are spent (FR-012), and reports an incompatible
+# pair WITHOUT raising, so the UI can show the reason and offer the fix rather
+# than the operator discovering it as a failed run.
+
+
+@router.get("/selection")
+def get_party_selection(service: PartyConfigService = Depends(get_party_service)):
+    return service.get_selection().model_dump()
+
+
+@router.put("/selection")
+async def put_party_selection(request: Request, service: PartyConfigService = Depends(get_party_service)):
+    partial = await request.json()
+    if not isinstance(partial, dict):
+        raise HTTPException(status_code=400, detail="body must be a JSON object")
+    try:
+        selection = ModelSelection.model_validate(partial)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return service.set_selection(selection).model_dump()
+
+
+@router.delete("/selection")
+def delete_party_selection(service: PartyConfigService = Depends(get_party_service)):
+    """Clear the override — the service returns to the platform selection with
+    no further operator action (FR-013)."""
+    return service.set_selection(ModelSelection()).model_dump()
+
+
+@router.get("/selection/resolved")
+def get_party_resolved_selection(request: Request, service: PartyConfigService = Depends(get_party_service)):
+    sel = service.get_selection()
+    return resolve_selection(
+        request,
+        service=None if sel.is_empty() else sel,
+        service_name="party",
+        raise_on_incompatible=False,
+    ).as_dict()

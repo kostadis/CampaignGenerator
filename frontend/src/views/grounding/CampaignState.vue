@@ -133,6 +133,9 @@ watch(output, (newOutput) => {
 
       <ExtractSynthesizePanel
         endpoint="/api/grounding/run/campaign-state"
+        selection-service="grounding"
+        selection-doc="campaign_state"
+        :selection-can-override="true"
         :params="runParams"
         :extract-dir="extractDir"
         :disabled="!ready"

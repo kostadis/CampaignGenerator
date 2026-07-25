@@ -39,7 +39,7 @@ flowchart TB
 | Source | Ownership | Model | Notes |
 |---|---|---|---|
 | `config.yaml` | tracked, human-only | raw dict (`_tracked`) | `PlatformConfigService` never writes it; comments/order safe |
-| `platform.yaml` | tracked, server-owned | `PlatformDocument` (strict `extra="forbid"`) | `runtime.{default_model, session_dir}` — the sidebar model picker and the session-resolution anchor. Owned exclusively by `PlatformConfigService`. The "must load before `UIStateService`" ordering constraint this row used to carry went with that class |
+| `platform.yaml` | tracked, server-owned | `PlatformDocument` (strict `extra="forbid"`) | `runtime.{default_model, default_backend, session_dir}` — the sidebar's two pickers and the session-resolution anchor (`default_backend` added by feature 003; see [values.md § The model/backend resolution rule](./values.md#the-modelbackend-resolution-rule-feature-003--the-single-statement)). Owned exclusively by `PlatformConfigService`. The "must load before `UIStateService`" ordering constraint this row used to carry went with that class |
 | ~~`ui_state.yaml`~~ | **deleted** | — | Retired by [ui-state-retirement.md](./ui-state-retirement.md). Still read RAW by the four `server/migrate_*.py` CLIs, which exist to rescue an unmigrated campaign's data — never by the server |
 | `.campaigngenerator.local.yaml` | gitignored, machine-local | `PlatformLocalConfig` (strict) | host/port + nav; owned by `PlatformConfigService` |
 | `session_doc.yaml` | tracked, owned by `SessionEditorConfigService` | `SessionEditorConfig` (grouped, strict `extra="forbid"`) | Session Doc Editor's own slice, plus (since the retirement) `ProfileEntry`/`BackendProfile`, which used to be declared beside `UIState` — see below |
@@ -206,14 +206,9 @@ None` on its request (nine sites — five in `grounding.py`, three in `prep.py`,
 default to the `DEFAULT_MODEL` *constant*, same defect, different spelling; eleven total.
 Phase 5a covered fourteen; `experimental.py` ×2 and `session_workflow.py` ×1 were deleted with
 the VTT Summary chain) and calls
-`server/platform_config_service.py::resolve_default_model(model, request)` instead of hardcoding
-a literal. Precedence: explicit request `model` → `platform.runtime.default_model` →
-`campaignlib.constants.DEFAULT_MODEL` literal (reached only if no live `PlatformConfigService`
-exists for the request at all — can't happen on a normally booted server). Fixes the bug where a
-request that omitted `model` silently got a hardcoded `"claude-sonnet-4-6"` instead of the
-sidebar's pick. See `docs/config/platform-isolation.md`'s O4/Phase-5a section for the full
-before/after and the severity correction (the shipped Vue frontend always sends `model` explicitly,
-so this was a latent defect on the HTTP surface, not an active misrouting of GM runs).
+`server/platform_config_service.py::resolve_selection` instead of hardcoding
+a literal — one seam for all 22 token-spending endpoints, model and backend together. For the
+precedence and the pairing rule, see [values.md § The model/backend resolution rule](./values.md#the-modelbackend-resolution-rule-feature-003--the-single-statement).
 
 ## Path resolution base
 
