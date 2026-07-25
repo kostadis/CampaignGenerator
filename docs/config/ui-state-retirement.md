@@ -14,9 +14,9 @@
 > live mempalace test, two env-dependent `resolve_roots`, one benchmark gate, one extract_facts
 > CLI) — zero regressions. `vue-tsc` clean. Net **−629 lines**.
 >
-> **D1 settled by the GM (2026-07-25): delete only** — the prep pages stay stateless, and that is
-> now recorded rather than incidental. **D2 taken as an implementation call.** **D3 open** — the
-> orphaned `ui_state.yaml` in `out-of-the-abyss` is drained but not yet deleted.
+> **All three decisions settled by the GM (2026-07-25).** D1: delete only — the prep pages stay
+> stateless, and that is now recorded rather than incidental. D2: taken as an implementation call.
+> D3: delete the drained file — done.
 >
 > See [Implementation notes](#implementation-notes-as-shipped) for what the work turned up that
 > the plan did not predict. Every "current state" claim below was code-verified against `main` at
@@ -271,7 +271,7 @@ and the line to draw is the one `ensemble.yaml` already draws: stored
 | 1 | B | Three stale reads repointed; `EnsembleSynthesize` prefill defect closed | ✅ |
 | 2 | A | `resolved()` moved to `PlatformConfigService`; `ui` key dropped; dead `_PATH_FIELDS` machinery deleted | ✅ |
 | 3 | A | `config_service.py`, `config_models.py`, `PUT /section/{name}`, `updateSection`, the `Settings.vue` block and the `migrate_config.sh` entry deleted; D2 relocations | ✅ |
-| 4 | A | Delete `~/campaigns/out-of-the-abyss/config/ui_state.yaml` | ⏸ **pending D3** |
+| 4 | A | Delete `~/campaigns/out-of-the-abyss/config/ui_state.yaml` | ✅ |
 | 5 | — | Docs reconciled; the gap row goes **Mostly closed → Closed** | ✅ |
 
 Phase 1 is independent of everything. Phases 2–3 must not be one commit: Phase 2
@@ -365,6 +365,14 @@ and the "assert both files exist or this guard is vacuous" line the ensemble tes
 turned out to be exactly the right instinct, since the naive edit would have left it guarding a
 file nothing creates.
 
+**The orphaned file was untracked, not tracked.** D3's recommendation leaned on `~/campaigns`
+being a git repo, so a deleted config file could be recovered from history. It is a git repo — but
+`ui_state.yaml` had never been committed, so the recovery path the recommendation assumed did not
+exist. Caught by checking `git ls-files` before the `rm` rather than after. The decision was sound
+on its real basis (four migration reports showing the file fully drained); the stated basis was
+not. Worth recording because "it's in a git repo" is a reflex, and per-file tracking status is the
+thing that actually matters.
+
 **`SCHEMA_VERSION` was the tell, in hindsight.** The document reached `version: 5` through five
 bumps — four of which recorded a section's *departure*. Nothing ever arrived. A version number
 that only ever counts subtractions is describing a document being dismantled, and four prior
@@ -376,7 +384,7 @@ efforts read it as a document being migrated.
 |---|---|---|
 | **D1** | Do the four prep/setup pages get real persistence, or does the tier close by deletion alone? | **Delete only** (GM, 2026-07-25). They are one-shot run forms; the GM does not retype into them across sessions. Track C struck, Phase 5 removed. The statelessness gets **recorded** in `service-cut.md` and in the four components, so it reads as a position rather than an oversight |
 | **D2** | Where do `ProfileEntry`, `BackendProfile`, `OptStr`, `OptBool`, `ConfigError` and `UI_STATE_NAME` land when `config_models.py` empties? | **Split each symbol to its owner** — validators + `ConfigError` → `platform_config_shared.py`; `ProfileEntry`/`BackendProfile` → `session_editor_config_shared.py` (their only consumer); `UI_STATE_NAME` → a new `server/migrate_common.py` shared by the four migration CLIs. Taken as an implementation call: internal organization, no data at stake, and "each symbol lands with its owner" is the series' own rule. Costs one new file |
-| **D3** | The orphaned 57 KB `out-of-the-abyss/config/ui_state.yaml` | **Still open — needs a GM call, and it is the destructive one.** The file is now fully drained (all four migrations run; only `runtime` held anything real), so deleting it loses nothing — but it is campaign data, so the call is the GM's. (a) delete in Phase 4 after the prerequisite migrations; (b) leave it as an unread record of pre-isolation state. Recommend (a): `~/campaigns` is git-tracked so history keeps the record, and an unread config file on disk is the exact "multiple authorities" smell the series exists to remove |
+| **D3** | The orphaned 57 KB `out-of-the-abyss/config/ui_state.yaml` | **Deleted** (GM, 2026-07-25), after all four migrations had drained it — only `runtime` had held anything real. **Correction to this row's original reasoning:** it recommended deletion partly because "`~/campaigns` is git-tracked so history keeps the record". That premise was false for this file — `ui_state.yaml` was **untracked**, so deletion was permanent rather than recoverable. The decision stands on the migration evidence instead, which is the argument that actually carried it; a copy was set aside out-of-tree before the `rm` rather than relying on a recovery path that did not exist |
 
 ## Effort
 
