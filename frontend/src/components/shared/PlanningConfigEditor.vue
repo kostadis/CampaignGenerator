@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import { apiFetch, apiPost, apiDelete } from '../../api/client'
+import { useConfigStore } from '../../stores/config'
 import PathField from './PathField.vue'
 
 interface PlanningEntry {
@@ -37,12 +38,14 @@ const canSave = computed(() => {
   return npcOk && factionOk
 })
 
-const yamlParentDir = computed(() => {
-  const p = props.configPath.trim()
-  if (!p) return ''
-  const i = p.lastIndexOf('/')
-  return i >= 0 ? p.slice(0, i) : ''
-})
+// Dossier/arc-score references resolve against the CAMPAIGN ROOT, not against
+// planning.yaml's own directory — see docs/config/grounding-isolation.md Track
+// A' (issues #145/#146). This used to derive the base from props.configPath,
+// which meant the editor's green existence check silently disagreed with the
+// loader the moment planning.yaml moved into config/.
+const yamlParentDir = computed(() =>
+  (useConfigStore().resolved.campaign_dir || '').trim()
+)
 
 async function load() {
   if (!props.configPath.trim()) {
@@ -203,7 +206,7 @@ watch(() => props.configPath, () => {
               label="Dossier (required)"
               required
               :base-dir="yamlParentDir"
-              help="Path relative to planning.yaml (e.g. docs/npcs/adabra.md)."
+              help="Path relative to the campaign root (e.g. docs/npcs/adabra.md)."
             />
 
             <div class="arc-row">
@@ -223,7 +226,7 @@ watch(() => props.configPath, () => {
                 @update:model-value="(v: string) => (e.arc_score = v)"
                 label="Arc score mechanic"
                 :base-dir="yamlParentDir"
-                help="Optional. Path relative to planning.yaml (e.g. docs/tracking/adabra-quest.md)."
+                help="Optional. Path relative to the campaign root (e.g. docs/tracking/adabra-quest.md)."
               />
             </div>
           </div>
@@ -264,7 +267,7 @@ watch(() => props.configPath, () => {
               @update:model-value="(v: string) => (e.dossier = v)"
               label="Faction overview"
               :base-dir="yamlParentDir"
-              help="Optional. Path relative to planning.yaml."
+              help="Optional. Path relative to the campaign root."
             />
 
             <div class="arc-row">
@@ -284,7 +287,7 @@ watch(() => props.configPath, () => {
                 @update:model-value="(v: string) => (e.arc_score = v)"
                 label="Arc score mechanic"
                 :base-dir="yamlParentDir"
-                help="Optional. Path relative to planning.yaml."
+                help="Optional. Path relative to the campaign root."
               />
             </div>
           </div>

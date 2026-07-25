@@ -80,7 +80,9 @@ from campaignlib.party_config import (
 )
 
 
-def load_party_config(path: Path) -> ResolvedPartyConfig:
+def load_party_config(
+    path: Path, campaign_root: Path | None = None
+) -> ResolvedPartyConfig:
     """CLI wrapper around ``campaignlib.party_config`` that prints to stderr
     and exits instead of raising, matching this script's other error-handling.
 
@@ -90,6 +92,13 @@ def load_party_config(path: Path) -> ResolvedPartyConfig:
     the API call, not halfway through it. The API's lenient counterpart lives
     in ``PartyConfigService`` (see ``docs/config/grounding-isolation.md`` D4).
 
+    ``campaign_root`` defaults to the CWD, which is this repo's documented CLI
+    invariant ("run any script from a campaign workspace directory" — see
+    ``CLAUDE.md``). References inside ``party.yaml`` resolve against **it**,
+    not against the file's own parent directory, so moving ``party.yaml`` into
+    ``config/`` does not change what its contents mean (Track A′ of
+    ``docs/config/grounding-isolation.md``; issues #145/#146).
+
     The empty-roster check is here rather than in the loader for the same
     reason: "you asked me to render a party document with no party" is a CLI
     usage error, not a malformed file.
@@ -98,7 +107,7 @@ def load_party_config(path: Path) -> ResolvedPartyConfig:
         cfg = _load_party_config(path)
         if not cfg.characters:
             raise ValueError(f"{path} must define a non-empty 'characters' list")
-        return resolve_party_config(cfg, path.parent)
+        return resolve_party_config(cfg, campaign_root or Path.cwd())
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

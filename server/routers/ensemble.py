@@ -256,7 +256,11 @@ def _planning_npc_passthrough(
     if not npc_files:
         return []
     config = load_planning_config(config_path)
-    npcs = resolve_entries(config.npcs, config_path.parent)
+    # Resolve against the campaign root (this router is cwd-rooted throughout —
+    # see _resolve_ensemble_path and _default_planning_config), NOT against
+    # planning.yaml's own directory. Track A′ of docs/config/
+    # grounding-isolation.md; issues #145/#146.
+    npcs = resolve_entries(config.npcs, cwd)
     bound = {e.dossier.resolve() for e in npcs if e.dossier is not None}
     return [str(p) for p in npc_files if p.resolve() not in bound and p.resolve() not in exclude]
 
@@ -281,7 +285,7 @@ def _party_pc_dossier_files(party_config_path: Path | None) -> tuple[set[Path], 
         return set(), None
     try:
         config = resolve_party_config(
-            load_party_config(party_config_path), party_config_path.parent
+            load_party_config(party_config_path), Path.cwd()
         )
     except ValueError as e:
         return set(), f"could not read {party_config_path} for PC exclusion: {e}"

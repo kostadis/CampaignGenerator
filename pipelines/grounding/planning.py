@@ -108,15 +108,21 @@ class ResolvedPlanningConfig:
     factions: list[PlanningEntry] = field(default_factory=list)
 
 
-def load_planning_config(path: Path) -> ResolvedPlanningConfig:
+def load_planning_config(
+    path: Path, campaign_root: Path | None = None
+) -> ResolvedPlanningConfig:
     """CLI wrapper around ``campaignlib.planning_config`` that prints to stderr
     and exits instead of raising.
 
     Returns the **resolved** view — absolute paths, every reference verified —
-    matching ``party.py``'s wrapper. The non-empty check lives here rather than
-    in the loader for the same reason it does there: an empty planning config
-    is a legitimate file state (the API can produce one by deleting the last
-    entry) but a useless CLI input.
+    matching ``party.py``'s wrapper, including its ``campaign_root`` contract:
+    references resolve against the campaign root (default CWD), not against
+    this file's own parent directory. See that wrapper's docstring.
+
+    The non-empty check lives here rather than in the loader for the same
+    reason it does there: an empty planning config is a legitimate file state
+    (the API can produce one by deleting the last entry) but a useless CLI
+    input.
     """
     try:
         cfg = _load_planning_config(path)
@@ -124,9 +130,10 @@ def load_planning_config(path: Path) -> ResolvedPlanningConfig:
             raise ValueError(
                 f"{path} must define a non-empty 'npcs' or 'factions' list"
             )
+        base = campaign_root or Path.cwd()
         return ResolvedPlanningConfig(
-            npcs=resolve_entries(cfg.npcs, path.parent),
-            factions=resolve_entries(cfg.factions, path.parent),
+            npcs=resolve_entries(cfg.npcs, base),
+            factions=resolve_entries(cfg.factions, base),
         )
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)

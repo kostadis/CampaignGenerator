@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import { apiFetch, apiPut } from '../../api/client'
+import { useConfigStore } from '../../stores/config'
 import PathField from './PathField.vue'
 
 interface PartyChar {
@@ -34,15 +35,14 @@ const canSave = computed(() => {
   return characters.value.every(c => c.name.trim() && c.sheet.trim())
 })
 
-// party.py's load_party_config resolves child paths against the YAML's
-// parent directory, so the UI must do the same — otherwise the green
-// existence check will pass for a path that the loader will reject.
-const yamlParentDir = computed(() => {
-  const p = props.configPath.trim()
-  if (!p) return ''
-  const i = p.lastIndexOf('/')
-  return i >= 0 ? p.slice(0, i) : ''
-})
+// Sheet/backstory/dossier/arc-score references resolve against the CAMPAIGN
+// ROOT, not against party.yaml's own directory — see docs/config/
+// grounding-isolation.md Track A' (issues #145/#146). The UI must use the same
+// base as the loader, otherwise the green existence check passes for a path
+// the loader will reject (or vice versa, once party.yaml lives in config/).
+const yamlParentDir = computed(() =>
+  (useConfigStore().resolved.campaign_dir || '').trim()
+)
 
 async function load() {
   if (!props.configPath.trim()) {
@@ -166,14 +166,14 @@ watch(() => props.configPath, () => {
               label="Sheet (required)"
               required
               :base-dir="yamlParentDir"
-              help="Path relative to the party.yaml directory (e.g. soma.md, or party/soma.md)."
+              help="Path relative to the campaign root (e.g. docs/party/soma.md)."
             />
             <PathField
               :model-value="c.backstory"
               @update:model-value="(v: string) => (c.backstory = v)"
               label="Backstory"
               :base-dir="yamlParentDir"
-              help="Optional. Path relative to the party.yaml directory."
+              help="Optional. Path relative to the campaign root."
             />
             <PathField
               :model-value="c.dossier"
@@ -200,7 +200,7 @@ watch(() => props.configPath, () => {
                 @update:model-value="(v: string) => (c.arc_score = v)"
                 label="Arc score mechanic"
                 :base-dir="yamlParentDir"
-                help="Optional. Path relative to the party.yaml directory."
+                help="Optional. Path relative to the campaign root."
               />
             </div>
           </div>
