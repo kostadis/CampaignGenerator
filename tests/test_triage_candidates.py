@@ -187,7 +187,13 @@ def test_triage_candidates_drops_pc_names_from_party_yaml(tmp_path):
     campaign_dir = _make_campaign(tmp_path)
     # A PC named "Grygum" lives in party.yaml, not the registry — the union of
     # known_names + PC names must suppress it (it would otherwise be queued).
-    (campaign_dir / "docs" / "party.yaml").write_text(
+    #
+    # config/party.yaml, not docs/party.yaml: this fixture used to pin the one
+    # layout only load_pc_names understood, which is exactly the Split-Brain
+    # Track 0 removed — the Party page and ensemble PC-exclusion never looked
+    # in docs/ at all (docs/config/grounding-isolation.md, problem 6).
+    (campaign_dir / "config").mkdir(parents=True, exist_ok=True)
+    (campaign_dir / "config" / "party.yaml").write_text(
         "characters:\n  - name: Grygum\n  - name: Zalthir\n",
         encoding="utf-8",
     )

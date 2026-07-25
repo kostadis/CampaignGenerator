@@ -52,7 +52,8 @@ RUNTIME_BASE = Path("~/.5etools-mcp-runtime").expanduser()
 # 5etools MCP index is EXTERNAL config (mneme-owned). Used as the --mcp-index
 # default; None when unwired, in which case main() derives it from the resolved
 # fivetools_data root (single-source-of-truth fallback).
-from campaignlib import wiring_path  # noqa: E402  (5etools MCP index is EXTERNAL — mneme-owned)
+from campaignlib import wiring_path  # noqa: E402
+from campaignlib.constants import config_path  # noqa: E402  (5etools MCP index is EXTERNAL — mneme-owned)
 DEFAULT_MCP_INDEX = wiring_path("fivetools_mcp_index")
 SHA_FILENAME = ".sources.sha256"
 
@@ -438,7 +439,11 @@ def cmd_dry_run(scope: rr.ResolvedScope, runtime: Path) -> int:
 
 
 def cmd_init_local(campaign_dir: Path) -> int:
-    local_path = campaign_dir / rr.LOCAL_FILENAME
+    local_path = config_path(campaign_dir, rr.LOCAL_FILENAME)
+    # config/ may not exist yet — this command is often the first thing run in
+    # a fresh workspace, and the file moved there from the campaign root in
+    # Track 0 of docs/config/grounding-isolation.md.
+    local_path.parent.mkdir(parents=True, exist_ok=True)
     if local_path.exists():
         raise SystemExit(
             f"launch_5etools_mcp: {local_path} already exists. "

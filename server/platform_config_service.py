@@ -63,6 +63,8 @@ from fastapi import HTTPException, Request
 from pydantic import ValidationError
 
 from campaignlib import DEFAULT_MODEL
+from campaignlib.constants import config_path
+from campaignlib.party_config import PARTY_CONFIG_FILENAME
 from server.config_service import ConfigError, UIStateService
 from server.platform_config_shared import (
     LOCAL_CONFIG_NAME,
@@ -530,15 +532,13 @@ class PlatformConfigService:
                 result["summaries"] = str(p)
                 break
 
-        # party.yaml — config/party.yaml is the current location;
-        # party.yaml at the campaign root is the legacy one.
-        for rel in ("config/party.yaml", "party.yaml"):
-            p = cd / rel
-            if p.exists():
-                result["party_config"] = str(p)
-                break
-        else:
-            result["party_config"] = ""
+        # party.yaml lives at config/party.yaml — one declared location, no
+        # probe (Track 0 of docs/config/grounding-isolation.md). Kept in this
+        # discovery result only because SessionConfig.vue's deriveAll() reads
+        # it alongside the genuine probes; it is a declared path, so it can
+        # move out when that page stops needing it.
+        p = config_path(cd, PARTY_CONFIG_FILENAME)
+        result["party_config"] = str(p) if p.exists() else ""
 
         # docs/npcs/*.md — one file per NPC dossier; the set of filenames
         # IS the answer, there is no fixed name to check for.

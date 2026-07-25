@@ -21,11 +21,14 @@ from server.backend_forwarding import backend_cli_args
 from server.config import MODELS
 from server.ensemble_config_service import EnsembleConfigService
 from server.ensemble_config_shared import EnsembleConfig
+from campaignlib.constants import config_path
 from campaignlib.party_config import (
+    PARTY_CONFIG_FILENAME,
     load_party_config,
     resolve_party_config,
 )
 from campaignlib.planning_config import (
+    PLANNING_CONFIG_FILENAME,
     load_planning_config,
     resolve_entries,
 )
@@ -194,26 +197,22 @@ def _is_live_doc(path: Path) -> bool:
 
 
 def _default_party_config() -> Path | None:
-    """Conventional party.yaml location (mirrors the party_config sniff in
-    PlatformConfigService.discover_campaign_paths) — used when the caller
-    doesn't specify one."""
-    cwd = Path.cwd()
-    for rel in ("config/party.yaml", "party.yaml"):
-        p = cwd / rel
-        if p.exists():
-            return p
-    return None
+    """The campaign's ``config/party.yaml``, or None if it doesn't exist.
+
+    Used when the caller doesn't specify one. This used to probe ``config/``
+    then the campaign root; there is one declared location now (Track 0 of
+    docs/config/grounding-isolation.md) — ``./migrate_config.sh`` moves a
+    stray copy into it.
+    """
+    p = config_path(Path.cwd(), PARTY_CONFIG_FILENAME)
+    return p if p.exists() else None
 
 
 def _default_planning_config() -> Path | None:
-    """Conventional planning.yaml location (mirrors _default_party_config) —
-    used when the caller doesn't specify one."""
-    cwd = Path.cwd()
-    for rel in ("config/planning.yaml", "planning.yaml"):
-        p = cwd / rel
-        if p.exists():
-            return p
-    return None
+    """The campaign's ``config/planning.yaml``, or None (mirrors
+    :func:`_default_party_config`)."""
+    p = config_path(Path.cwd(), PLANNING_CONFIG_FILENAME)
+    return p if p.exists() else None
 
 
 def _default_threads_file(threads_out: str) -> Path | None:

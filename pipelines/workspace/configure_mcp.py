@@ -42,6 +42,8 @@ import json
 import sys
 from pathlib import Path
 
+from campaignlib.constants import config_path
+
 CAMPAIGNS_ROOT = Path("~/src/campaigns").expanduser()
 # mcp_server.py and launch_5etools_mcp.py have moved to pipelines/rlm/ and
 # gained `mcp_server` / `launch_5etools_mcp` console-script entry points (see
@@ -99,7 +101,7 @@ def build_server_block(campaign_dir: Path, kanka_token: str, kanka_url: str) -> 
         "args": ["--campaign-dir", str(campaign_dir)],
     }
 
-    if (campaign_dir / "refs.yaml").exists():
+    if config_path(campaign_dir, "refs.yaml").exists():
         servers["5etools"] = {
             "command": "launch_5etools_mcp",
             "args": ["--campaign-dir", str(campaign_dir)],

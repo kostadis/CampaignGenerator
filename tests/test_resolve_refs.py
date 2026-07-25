@@ -87,7 +87,7 @@ def local_with_roots(campaign: Path, fivetools_root: Path, tmp_path: Path) -> Pa
     hb = tmp_path / "homebrew-private"
     hb.mkdir()
     return _write_yaml(
-        campaign / rr.LOCAL_FILENAME,
+        campaign / "config" / rr.LOCAL_FILENAME,
         {
             "roots": {
                 "fivetools_data": str(fivetools_root),
@@ -107,20 +107,20 @@ class TestLoadRefs:
             rr.load_refs(campaign)
 
     def test_empty_file_raises(self, campaign: Path):
-        _write_yaml(campaign / rr.REFS_FILENAME, "")
+        _write_yaml(campaign / "config" / rr.REFS_FILENAME, "")
         with pytest.raises(SystemExit, match="is empty"):
             rr.load_refs(campaign)
 
     def test_top_level_not_mapping(self, campaign: Path):
-        _write_yaml(campaign / rr.REFS_FILENAME, "- nope\n")
+        _write_yaml(campaign / "config" / rr.REFS_FILENAME, "- nope\n")
         with pytest.raises(SystemExit, match="top level must be a mapping"):
             rr.load_refs(campaign)
 
     def test_valid_minimal(self, campaign: Path):
-        _write_yaml(campaign / rr.REFS_FILENAME, {"canonical": "all"})
+        _write_yaml(campaign / "config" / rr.REFS_FILENAME, {"canonical": "all"})
         raw, p = rr.load_refs(campaign)
         assert raw == {"canonical": "all"}
-        assert p == (campaign / rr.REFS_FILENAME).resolve()
+        assert p == (campaign / "config" / rr.REFS_FILENAME).resolve()
 
 
 class TestLoadLocal:
@@ -130,13 +130,13 @@ class TestLoadLocal:
         assert p is None
 
     def test_empty_is_ok(self, campaign: Path):
-        _write_yaml(campaign / rr.LOCAL_FILENAME, "")
+        _write_yaml(campaign / "config" / rr.LOCAL_FILENAME, "")
         raw, p = rr.load_local(campaign)
         assert raw == {}
         assert p is not None
 
     def test_not_mapping_raises(self, campaign: Path):
-        _write_yaml(campaign / rr.LOCAL_FILENAME, "- nope\n")
+        _write_yaml(campaign / "config" / rr.LOCAL_FILENAME, "- nope\n")
         with pytest.raises(SystemExit, match="top level must be a mapping"):
             rr.load_local(campaign)
 
@@ -510,7 +510,7 @@ class TestResolve:
     def test_minimal_canonical_all(
         self, campaign: Path, fivetools_root: Path, local_with_roots: Path
     ):
-        _write_yaml(campaign / rr.REFS_FILENAME, {"canonical": "all"})
+        _write_yaml(campaign / "config" / rr.REFS_FILENAME, {"canonical": "all"})
         scope = rr.resolve(campaign)
         assert scope.canonical_mode == "all"
         assert set(scope.canonical_sources) >= {"OotA", "MM"}
@@ -525,11 +525,11 @@ class TestResolve:
         tmp_path: Path,
     ):
         # Set up a homebrew file the resolver should pick up.
-        hb_root = Path(yaml.safe_load((campaign / rr.LOCAL_FILENAME).read_text())["roots"]["homebrew_private"])
+        hb_root = Path(yaml.safe_load((campaign / "config" / rr.LOCAL_FILENAME).read_text())["roots"]["homebrew_private"])
         (hb_root / "my-homebrew.json").write_text("{}", encoding="utf-8")
 
         _write_yaml(
-            campaign / rr.REFS_FILENAME,
+            campaign / "config" / rr.REFS_FILENAME,
             {
                 "canonical": "all",
                 "canonical_exclude": ["MM"],
@@ -547,7 +547,7 @@ class TestResolve:
     ):
         # Point the env var at our test fixture so the default-fallback hits something real.
         monkeypatch.setenv("FIVETOOLS_DATA_ROOT", str(fivetools_root))
-        _write_yaml(campaign / rr.REFS_FILENAME, {"canonical": "all"})
+        _write_yaml(campaign / "config" / rr.REFS_FILENAME, {"canonical": "all"})
         scope = rr.resolve(campaign)
         assert scope.local_path is None
         assert scope.roots["fivetools_data"].path == fivetools_root.resolve()
@@ -558,7 +558,7 @@ class TestResolve:
         monkeypatch.setenv("FIVETOOLS_DATA_ROOT", str(fivetools_root))
         monkeypatch.delenv("RPG_LIBRARY_ROOT", raising=False)
         _write_yaml(
-            campaign / rr.REFS_FILENAME,
+            campaign / "config" / rr.REFS_FILENAME,
             {
                 "canonical": "all",
                 "refs": [{"rpglib": "x/y.pdf"}],
