@@ -5,8 +5,11 @@ pipeline and the party / campaign_state / world_state grounding-doc system.
 
 Ensemble no longer uses a `ui_state` section at all — [ensemble-isolation.md](./ensemble-isolation.md)
 gave it its own owned, strict `<config>/ensemble.yaml` (`EnsembleConfigService`), the third
-service to take its config out of `ui_state.yaml` after Session Doc Editor and Planning. The
-grounding-doc subsystem below still mixes hand-authored YAML and generated run artifacts.
+service to take its config out of `ui_state.yaml` after Session Doc Editor and Planning.
+Neither does the grounding-doc subsystem: [grounding-isolation.md](./grounding-isolation.md)
+gave it `<config>/grounding.yaml` (`GroundingConfigService`) and gave the PC roster its own
+owner (`PartyConfigService`). Its *content* documents (`party.yaml`, `planning.yaml`,
+`tracking.txt`) remain hand-authored — that separation is the design, not a gap.
 
 ## Ensemble workflow (extract → bundle → synthesize → review)
 
@@ -56,7 +59,7 @@ flowchart TB
 
 | File | Shape | Read by | Written by |
 |---|---|---|---|
-| `party.yaml` (`config/party.yaml`) | `characters[]`: name, sheet, backstory?, dossier?, arc_score (3-state), trackless | `config_routes.get_party_yaml` (UI); `pipelines/grounding/party.py --party-config` | `config_routes.put_party_yaml` (UI); hand |
+| `party.yaml` (`config/party.yaml`) | `characters[]`: name, sheet, backstory?, dossier?, arc_score (3-state), trackless | `PartyConfigService` (UI, `/api/party/characters`); `pipelines/grounding/party.py --party-config` | `PartyConfigService`; hand |
 | `planning.yaml` | `npcs[]` + `factions[]`: name, dossier, arc_score (3-state), trackless | `PlanningConfigService` (UI); `pipelines/grounding/planning.py` | `PlanningConfigService` (UI); hand |
 | tracking file (`--track-file tracking.txt`) | one item per line; `#` comments ignored | `pipelines/grounding/campaign_state.py` | hand |
 | `world_state.md` | lore / history / canon | prep, mcp_server, ensemble (extract input) | hand (+ ensemble synthesis draft); referenced by `config.yaml` `documents[]` |

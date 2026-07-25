@@ -45,12 +45,19 @@ mneme-only. See [Session-editor isolation](./session-editor-isolation.md) for th
 `ui_state.yaml` entirely for its own `session_doc.yaml`, and `ui.ensemble` likewise for its own
 `ensemble.yaml` (see [ensemble-isolation.md](./ensemble-isolation.md)). `runtime` is also gone — Phase 3 (O3)
 relocated it to its own `platform.yaml`, owned outright by `PlatformConfigService`; see the next
-section for its values.
+section for its values. **`ui.grounding`, `ui.campaign_state`, `ui.distill`, `ui.party` and
+`ui.planning` are gone too** — all five moved to `<config>/grounding.yaml`
+([grounding-isolation.md](./grounding-isolation.md)), leaving six loose sections.
+
+> **Correction.** This table used to claim `ui.grounding.summaries` was read by
+> `pipelines/rlm/mcp_server.py` (`_find_summaries_file`, `query_lore`, `grounded_search`).
+> It never was: that function probes three hardcoded paths and never touches config
+> (`mcp_server.py:531-542`). In fact **no file outside `server/` reads `ui_state.yaml`** at all.
+> Its real consumers were three Vue pages using it as a seed default.
 
 | Value | Read by | Written by |
 |---|---|---|
-| `ui.grounding.summaries` | `pipelines/rlm/mcp_server.py` (`_find_summaries_file`, `query_lore`, `grounded_search`) | `PUT /section/grounding` |
-| `ui.<loose>` (campaign_state, distill, prep, npc, query, workflow, connections, experimental) | their Vue pages via `GET /api/config` flat overlay | `PUT /section/<name>` |
+| `ui.<loose>` (prep, npc, query, workflow, connections, experimental) | their Vue pages via `GET /api/config` flat overlay | `PUT /section/<name>` |
 | `legacy.unmigrated` | migrator quarantine only | migration path only |
 
 ## ensemble.yaml — the ensemble workflow (ensemble-isolation Phases 1-5)
@@ -72,6 +79,24 @@ Model resolution for the Anthropic branch is `explicit request → ensemble.yaml
 platform.runtime.default_model → campaignlib DEFAULT_MODEL` (`ensemble._backend_args`, Phase 4).
 A non-Anthropic id left over from a dgx/openrouter selection is discarded before resolution rather
 than forwarded.
+
+## grounding.yaml — the four grounding docs (grounding-isolation Phases 6-10)
+
+Owned outright by `GroundingConfigService`, physically separate from `ui_state.yaml`. Read
+through `resolved()` by every `/api/grounding/run/*` route; written by
+`PUT /api/grounding/config`.
+
+| Value | Read by | Written by |
+|---|---|---|
+| `summaries` (root) | all four runs, when their own `input` is blank; `SessionConfig.vue`, `QuerySummaries.vue` | `PUT /api/grounding/config` |
+| `campaign_state.*` (+ `track_files`, `track_items`) | `/run/campaign-state` | as above |
+| `distill.*` | `/run/distill` | as above |
+| `party.*` (+ `mode`, `config_path`, flat lists) | `/run/party` | as above |
+| `planning.*` (+ `synth_mode`, `config_path`, `dossiers.*`) | `/run/planning`, `/run/build-dossiers` | as above |
+
+Input resolution is `explicit request param → that doc's stored input → the root
+`summaries` → 400`. No silent fallback — the same "no silent all" rule
+`ensemble.yaml`'s `chapters_selected` follows.
 
 ## platform.yaml — runtime (Phase 3, O3)
 

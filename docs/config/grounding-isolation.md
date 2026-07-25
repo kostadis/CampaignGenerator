@@ -1,6 +1,13 @@
 # Grounding Configuration Isolation Design
 
-> **Status: 📋 Proposed — design settled, not implemented.** This is the fourth
+> **Status: ✅ Done (2026-07-24).** All eleven phases shipped on
+> `worktree-config-isolation`. Verified against a pristine baseline worktree at `7a58c99`:
+> 6 failed / 5 errors before, 6 failed / 5 errors after, same IDs (missing `dgxlib`, a live
+> mempalace test, two env-dependent `resolve_roots` tests) — **zero regressions**, +96 tests.
+> `vue-tsc` and `vite build` clean. See [Implementation notes](#implementation-notes-as-shipped)
+> for what the work turned up that the plan didn't predict.
+>
+> This is the fourth
 > service-isolation effort, after [session-editor-isolation.md](./session-editor-isolation.md),
 > [planning-isolation.md](./planning-isolation.md) and
 > [ensemble-isolation.md](./ensemble-isolation.md), and it closes the three services
@@ -415,19 +422,21 @@ values nobody reads.
 
 ## Phases
 
-| Phase | Track | Deliverable | Depends on |
+All eleven shipped 2026-07-24; commit per row-group.
+
+| Phase | Track | Deliverable | Status |
 |---|---|---|---|
-| 1 | A | `campaignlib/party_config.py` + `campaignlib/planning_config.py` — models lifted, dataclasses → strict pydantic, `save_party_config` added; `pipelines/` and `server/` both import down | — |
-| 2 | A′ | Both loaders take an explicit campaign-root `base`; `PlanningConfigService` updated; existence-disambiguating migration; editor help text + docstring contracts rewritten | 1 |
-| 3 | 0 | `migrate_config.sh` gains `party.yaml` (searching `docs/` **and** the root), `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`; campaigns migrated — **#144** | 2 |
-| 4 | 0 | All four probes deleted; paths declared off `config_path_base`; `_default_party_config`/`_default_planning_config` retired; stray-file boot check added | 3 |
-| 5 | A | `PartyConfigService` + `party_routes.py`; delete `config_routes.py:140-234`; rewire `PartyConfigEditor.vue` | 4 |
-| 6 | B | `server/grounding_config_shared.py` — `GroundingConfig` + load/save | — |
-| 7 | B | `GroundingConfigService` + `GET/PUT /api/grounding/config` | 6 |
-| 8 | B | `grounding.py` routes read `resolved()`; delete route-signature literals | 7 |
-| 9 | B | Four Vue pages read/write `grounding.yaml`; `SessionConfig.vue`'s `summaries` write moves here | 8 |
-| 10 | C | `migrate_grounding_config.py`; `UISection` 11 → 6; `SCHEMA_VERSION` 5 | 5, 9 |
-| 11 | C | Docs reconciled; this doc's status table completed | 10 |
+| 1 | A | `campaignlib/party_config.py` + `campaignlib/planning_config.py` — models lifted, dataclasses → strict pydantic, `save_party_config` added; `pipelines/` and `server/` both import down | ✅ |
+| 2 | A′ | Both loaders take an explicit campaign-root `base`; `PlanningConfigService` updated; existence-disambiguating migration; editor help text + docstring contracts rewritten | ✅ |
+| 3 | 0 | `migrate_config.sh` gains `party.yaml` (searching `docs/` **and** the root), `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`; campaigns migrated — **#144** | ✅ |
+| 4 | 0 | All four probes deleted; paths declared off `config_path_base` via `campaignlib.constants.config_path`; `_default_party_config`/`_default_planning_config` retired; `refs.yaml`/`refs.local.yaml`/`ingest_manifest.yaml` readers moved to `config/`. **No** stray-file boot check — orphaning is out of scope per the GM directive | ✅ |
+| 5 | A | `PartyConfigService` + `party_routes.py`; delete `config_routes.py:140-234`; rewire `PartyConfigEditor.vue` | ✅ |
+| 6 | B | `server/grounding_config_shared.py` — `GroundingConfig` + load/save | ✅ |
+| 7 | B | `GroundingConfigService` + `GET/PUT /api/grounding/config` | ✅ |
+| 8 | B | `grounding.py` routes read `resolved()`; delete route-signature literals | ✅ |
+| 9 | B | Four Vue pages read/write `grounding.yaml`; `SessionConfig.vue`'s `summaries` write moves here | ✅ |
+| 10 | C | `migrate_grounding_config.py`; `UISection` 11 → 6; `SCHEMA_VERSION` 5 | ✅ |
+| 11 | C | Docs reconciled; this doc's status table completed | ✅ |
 
 **Phase 2 must precede Phase 3.** Moving `party.yaml`/`planning.yaml` into `config/` under
 the current config-parent-relative convention breaks every path inside them — #146
@@ -492,6 +501,41 @@ file retargets to the new API), `test_config_routes.py:99,155`, `test_config_mod
 - **Issue #137** (content-derived freshness stamps in grounding docs) and **#128**
   (transient artifacts vs canonical outputs). Both touch these files; neither is a config
   ownership question.
+
+## Implementation notes (as shipped)
+
+Five things the work turned up that the plan above did not predict.
+
+**A round-trip bug in `save_planning_config`.** It wrote back the *absolute* paths its own
+loader had resolved (`str(entry.dossier)` where `dossier` was already resolved), so every
+edit through `PlanningConfigService` silently rewrote the GM's relative references as
+machine-specific ones. Fixed by the authored-vs-resolved split in Phase 1: the models hold
+paths as written, and resolution is an explicit step the save path cannot reach.
+
+**`planning.py` had three copies of its own models.** It declared `PlanningEntry`/
+`PlanningConfig` as local dataclasses *and* imported the server's — so the imports were
+shadowed and dead. Both copies are gone.
+
+**A worktree can silently import the main checkout.** `_editable_impl_campaigngenerator.pth`
+puts `/home/kroussos/src/CampaignGenerator` on `sys.path`, so inside a git worktree
+`import campaignlib` may resolve to the *other* tree depending on import order. This
+surfaced as a phantom test failure that passed in isolation and failed in a suite run. The
+`test_config_location.py` guard therefore reads `constants.py` off `REPO_ROOT` rather than
+importing it. Relevant to any worktree work in this repo: a green run is not automatically
+a run against the branch's code.
+
+**A TDZ error the typechecker cannot see.** `groundingConfig` is a `const` in the Pinia
+store referenced from `load()`. Declared after `load()` it type-checks fine and throws at
+runtime; it now sits beside `editorConfig`.
+
+**`_PATH_FIELDS` is now empty.** `grounding.summaries` was its last row. The table is kept
+and flagged rather than deleted — retiring it belongs with retiring `UIStateService` itself,
+and a table that silently does nothing is exactly how `derive_campaign_paths` drifted.
+
+**On the migration returning almost nothing:** running it against `out-of-the-abyss`
+migrated one field total (`party`), with `campaign_state`, `distill` and `planning` at zero.
+That is the write-never finding confirmed on real data, not a broken migrator — which is
+why the CLI says so in its own output.
 
 ## Decisions (settled 2026-07-24)
 

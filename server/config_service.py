@@ -61,9 +61,19 @@ UI_STATE_NAME = "ui_state.yaml"
 # session dir; campaign-wide assets (party.md, voice/, examples/, the
 # canonical timeline summaries.md) live under the campaign root.
 
-_PATH_FIELDS: dict[str, dict[str, str]] = {
-    "grounding": {"summaries": "campaign"},
-}
+# EMPTY as of Phase 10 of docs/config/grounding-isolation.md. `grounding.
+# summaries` was its last row, and it left with the other four grounding
+# sections for <config>/grounding.yaml.
+#
+# Deliberately kept rather than deleted, and deliberately flagged rather than
+# left to look load-bearing: the normalization/relativization machinery below
+# still runs, it just has no rows to act on. Retiring it belongs with retiring
+# UIStateService itself — the next isolation that empties UISection — not with
+# this one. A table that silently does nothing is exactly how
+# `derive_campaign_paths` drifted (see docs/config/schema.md's "Path resolution
+# base"), so if you are here because you added a `ui.<section>` path field:
+# add its row, don't work around the emptiness.
+_PATH_FIELDS: dict[str, dict[str, str]] = {}
 
 # session_dir is itself a campaign-based path (it lives under
 # <campaign>/summaries/..., so it resolves against the campaign root, not
