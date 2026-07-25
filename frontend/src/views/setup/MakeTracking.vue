@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import PathField from '../../components/shared/PathField.vue'
 import RunPanel from '../../components/shared/RunPanel.vue'
 
 const config = useConfigStore()
 
+// Deliberately stateless — see docs/config/ui-state-retirement.md D1. This
+// page used to seed `output` from `ui.experimental.make_tracking.output`, a
+// section nothing ever wrote (the generic PUT /section/{name} route had no
+// client), so the read always returned {} and the literal default below was
+// always what shipped. The GM's call: these are one-shot run forms, so the
+// values stay in-component and reset on navigation rather than gaining a
+// persistence tier of their own.
 const input = ref('')
 const output = ref('docs/tracking.txt')
-
-function loadFromConfig() {
-  // `mt_output` (ui.experimental.make_tracking.output) is not part of
-  // SessionConfig.vue's derive broadcast, so this reads only the persisted,
-  // typed view.
-  const r = config.resolved.ui?.experimental?.make_tracking || {}
-  output.value = r.output || 'docs/tracking.txt'
-}
 
 const ready = computed(() =>
   !!(input.value.trim() && output.value.trim())
@@ -26,8 +25,6 @@ const runParams = computed(() => ({
   output: output.value,
   model: config.model,
 }))
-
-onMounted(() => { loadFromConfig() })
 </script>
 
 <template>

@@ -36,7 +36,7 @@ from typing import Any
 
 import yaml
 
-from server.config_service import UI_STATE_NAME
+from server.migrate_common import UI_STATE_NAME
 from server.session_editor_config_service import SESSION_DOC_FILENAME
 from server.session_editor_config_shared import (
     SessionEditorConfig,

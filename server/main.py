@@ -92,17 +92,21 @@ def _boot_overrides_from_args(args) -> dict:
     """Translate CLI flags into dotted-key overrides for the service.
 
     These overrides are in-memory only — per the unification plan, CLI
-    flags must NOT persist to disk. The service applies them on top of
-    the loaded ui_state for the lifetime of this process.
+    flags must NOT persist to disk. ``PlatformConfigService.resolved()``
+    applies them on top of the persisted values for this process only.
 
     ``--session-dir`` is the only flag left that produces an override (per
     O1 in docs/config/platform-isolation.md): the twelve ``session_doc.*``
-    flags this used to map were silent no-ops — ``session_doc`` left
-    ``UISection`` in Phase 5 of the session-editor isolation, so
-    ``resolved()`` was routing them into a phantom key nothing ever read.
-    They were deleted from argparse rather than wired to a real consumer,
-    since the Session Doc Editor already has its own per-campaign
-    persisted config (``session_doc.yaml``) for exactly these fields.
+    flags this used to map were silent no-ops — the section they targeted had
+    left the shared config document, so ``resolved()`` was routing them into
+    a phantom key nothing ever read. They were deleted from argparse rather
+    than wired to a real consumer, since the Session Doc Editor already has
+    its own per-campaign persisted config (``session_doc.yaml``) for exactly
+    these fields.
+
+    An override aimed at a section with no consumer is now a boot-time
+    ``ConfigError`` rather than a value quietly swept aside — see
+    ``platform_config_service._BOOT_OVERRIDE_SECTIONS``.
     """
     flag_map = {
         "session_dir": "runtime.session_dir",
@@ -170,8 +174,13 @@ def main() -> None:
             f"\n{bar}\nERROR: config service failed to initialize.\n"
             f"  campaign_dir: {campaign_dir_for_service}\n"
             f"  cause: {exc}\n"
-            f"Fix the offending file (likely {campaign_dir_for_service}/ui_state.yaml) "
-            f"and relaunch.\n{bar}\n",
+            # The documents a ConfigError can actually come from, in the
+            # order the service loads them. This used to name ui_state.yaml,
+            # which the server has not read since
+            # docs/config/ui-state-retirement.md — pointing a GM at a file
+            # that cannot be the cause is worse than naming none.
+            f"Fix the offending file in {campaign_dir_for_service}/{args.config_dir}/ "
+            f"(config.yaml or platform.yaml) and relaunch.\n{bar}\n",
             file=sys.stderr,
         )
         sys.exit(1)

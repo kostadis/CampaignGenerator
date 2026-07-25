@@ -2,7 +2,7 @@
 
 Covers:
   - ``GET /api/config/`` returns the typed/resolved view plus metadata.
-  - ``PUT /api/config/section/{name}`` rejects unknown sections.
+  - ``PUT /api/config/section/{name}`` is gone entirely — every name 404s.
   - ``PUT /api/config/runtime`` writes session_dir / default_model.
   - ``PUT /api/config/local`` cannot write ``ui.*`` keys.
   - Every route returns 503 when no service is wired (no silent fallback).
@@ -63,23 +63,31 @@ class TestGetConfig:
         for key in (
             "campaign_dir",
             "config_path",
-            "ui_state_path",
             "local_config_path",
-            "schema_version",
             "resolved",
             "tracked",
             "local",
             "migration_warnings",
         ):
             assert key in body, f"missing {key} in GET / response"
+        # ``ui_state_path`` and ``schema_version`` left with ui_state.yaml
+        # itself (docs/config/ui-state-retirement.md). Asserted absent, not
+        # merely dropped from the list above: Settings.vue rendered the path,
+        # and a body key that reappears without a document behind it is how a
+        # dead surface comes back.
+        assert "ui_state_path" not in body
+        assert "schema_version" not in body
 
-    def test_session_doc_not_a_ui_section(self, fresh_campaign):
-        # Phase 5 (docs/config/session-editor-isolation.md): session_doc
-        # left ui_state.yaml entirely for its own session_doc.yaml, so it's
-        # no longer among the resolved ui sections at all.
+    def test_resolved_has_no_ui_key_at_all(self, fresh_campaign):
+        # This assertion used to read "session_doc is no longer among the
+        # resolved ui sections" (Phase 5, session-editor-isolation). Every
+        # other section has since followed it out, and
+        # docs/config/ui-state-retirement.md retired the empty remainder — so
+        # the stronger claim now holds: there is no `ui` key.
         client = TestClient(_make_app(fresh_campaign))
         body = client.get("/api/config/").json()
-        assert "session_doc" not in body["resolved"]["ui"]
+        assert "ui" not in body["resolved"]
+        assert set(body["resolved"]) == {"campaign_dir", "runtime", "server", "nav"}
 
     def test_no_service_returns_503(self):
         # The hostile fallback is gone — with no campaign_dir, GET / refuses.
@@ -88,74 +96,43 @@ class TestGetConfig:
         assert resp.status_code == 503
 
 
-# ── PUT /section/{name} ────────────────────────────────────────────────────
+# ── PUT /section/{name} — the route itself is gone ────────────────────────
 
 
-class TestPutSection:
-    def test_typed_section_update_persists(self, fresh_campaign):
-        app = _make_app(fresh_campaign)
-        client = TestClient(app)
-        resp = client.put(
-            "/api/config/section/query",
-            json={"values": {"summaries": "summaries.md", "label": "Session 12"}},
-        )
-        assert resp.status_code == 200
+class TestPutSectionIsRetired:
+    """The generic ``ui.<section>`` write door is deleted, not merely emptied.
 
-        # Read back via GET / and confirm the values are visible in the
-        # typed view.
-        body = client.get("/api/config/").json()
-        assert body["resolved"]["ui"]["query"]["label"] == "Session 12"
-        assert body["resolved"]["ui"]["query"]["summaries"] == "summaries.md"
+    This class used to hold one 404 test per retired section name
+    (``session_doc``, ``profiles``, ``ensemble``, ``vtt_summary``,
+    ``grounding`` …) — each a checkpoint that a service which had taken its
+    config into its own document could no longer write back through the
+    shared one. ``docs/config/ui-state-retirement.md`` removes the door
+    itself, so the per-name assertions collapse into this: no name works,
+    including one that was live until now.
+    """
 
-    def test_retired_vtt_summary_section_rejected_404(self, fresh_campaign):
-        """``ui.vtt_summary`` retired with the vtt_summary chain — a PUT to
-        it must 404 like ``session_doc``/``ensemble``, not quietly persist
-        state nothing reads."""
+    def test_every_section_name_404s(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
-        resp = client.put(
-            "/api/config/section/vtt_summary",
-            json={"values": {"input": "session.vtt"}},
-        )
-        assert resp.status_code == 404
-
-    def test_unknown_section_rejected_404(self, fresh_campaign):
-        client = TestClient(_make_app(fresh_campaign))
-        resp = client.put(
-            "/api/config/section/server",
-            json={"values": {"port": 6001}},
-        )
-        # Sections come from UISection model fields; ``server`` is local-only
-        # and must not be writable through this endpoint.
-        assert resp.status_code == 404
-
-    def test_session_doc_section_rejected_404(self, fresh_campaign):
-        # Phase 5 (docs/config/session-editor-isolation.md): session_doc
-        # left ui_state.yaml entirely for its own session_doc.yaml, so it's
-        # no longer among UI_SECTION_NAMES — the generic section door must
-        # now 404 it exactly like any other unknown name.
-        client = TestClient(_make_app(fresh_campaign))
-        resp = client.put(
-            "/api/config/section/session_doc",
-            json={"values": {"narrate_tokens": 12000}},
-        )
-        assert resp.status_code == 404
-
-    def test_profiles_section_rejected_404(self, fresh_campaign):
-        # ui.profiles moved out alongside session_doc — same fate.
-        client = TestClient(_make_app(fresh_campaign))
-        resp = client.put(
-            "/api/config/section/profiles",
-            json={"values": {"active": "Fast"}},
-        )
-        assert resp.status_code == 404
-
-    def test_no_service_503(self, fresh_campaign):
-        client = TestClient(_make_app(None))
-        resp = client.put(
-            "/api/config/section/query",
-            json={"values": {"summaries": "summaries.md"}},
-        )
-        assert resp.status_code == 503
+        for name in (
+            "prep",          # was a live UISection field until this effort
+            "npc",
+            "query",
+            "workflow",
+            "connections",
+            "experimental",
+            "session_doc",   # retired by session-editor isolation
+            "profiles",
+            "ensemble",      # retired by ensemble isolation
+            "grounding",     # retired by grounding isolation
+            "party",
+            "planning",
+            "vtt_summary",   # retired with the VTT Summary chain
+            "server",        # local-only, never writable here
+        ):
+            resp = client.put(
+                f"/api/config/section/{name}", json={"values": {"x": 1}}
+            )
+            assert resp.status_code == 404, f"{name} should 404, got {resp.status_code}"
 
 
 # ── PUT /local ────────────────────────────────────────────────────────────
@@ -190,9 +167,12 @@ class TestPutLocal:
         # ``server``/``nav`` slots — verify by reading back.
         client.put("/api/config/local", json={"values": {"ui": {"query": {}}}})
         body = client.get("/api/config/").json()
-        # Whatever happened, the service-resolved ui section stays empty
-        # of any ui.<section> state we didn't put there via /section/.
-        assert body["resolved"]["ui"]["query"] == {}
+        # Whatever happened, a stray `ui` key never lands in the typed
+        # server/nav slots — and there is no `ui` key in the resolved view at
+        # all any more (docs/config/ui-state-retirement.md).
+        assert "ui" not in body["resolved"]
+        assert "ui" not in body["resolved"]["server"]
+        assert "ui" not in body["resolved"]["nav"]
 
     def test_no_service_503(self, fresh_campaign):
         client = TestClient(_make_app(None))

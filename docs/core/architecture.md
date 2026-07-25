@@ -24,7 +24,7 @@ flowchart TB
         Main["main.py — mounts /api/* + Vue dist"]
         Routers["routers/* — one per domain (including /api/experimental, /api/setup, /api/editor)"]
     SubRun["subprocess_runner.py — SSE stream of CLI output"]
-    Cfg["CampaignConfigService (config_service.py) — reads/writes config.yaml, ui_state.yaml, .campaigngenerator.local.yaml"]
+    Cfg["PlatformConfigService — config.yaml, platform.yaml,<br/>.campaigngenerator.local.yaml + per-service config services"]
     end
 
     subgraph Core["Core library"]
@@ -222,7 +222,9 @@ Entry point: [`startup`](../../startup) builds the frontend then runs `python -m
 
 Long-running endpoints spawn the underlying CLI script via [`server/subprocess_runner.py`](../../server/subprocess_runner.py) and stream stdout as Server-Sent Events. Each run is also persisted as a markdown log in `<cwd>/logs/`.
 
-[`server/config_service.py:CampaignConfigService`](../../server/config_service.py) is the single authority for configuration. It owns three on-disk files per campaign — `config.yaml` (tracked, human-only), `ui_state.yaml` (tracked, server-owned, typed via pydantic v2), `.campaigngenerator.local.yaml` (gitignored). The service is constructed at boot in [`server/main.py`](../../server/main.py) and stashed on `app.state.config_service`. Routers reach it through the request. Path resolution and atomic-rename writes live in the service; routers never touch YAML files. Helpers from the older [`server/config.py`](../../server/config.py) (`derive_campaign_paths`) are still used for path discovery; the legacy `load_ui_config` / `save_ui_config` and an allowlist of key prefixes also remain during the in-progress frontend sweep. Full design: [`docs/core/configuration.md`](configuration.md).
+[`server/platform_config_service.py:PlatformConfigService`](../../server/platform_config_service.py) owns the **platform** tier: `config.yaml` (tracked, human-only, never machine-written), `platform.yaml` (`runtime.default_model` + `session_dir`) and `.campaigngenerator.local.yaml` (gitignored). It is constructed at boot in [`server/main.py`](../../server/main.py) and stashed on `app.state.platform`; routers reach it through the request, and `resolve_default_model` resolves every `/run/*` model field through it. Path resolution and atomic-rename writes live in the service; routers never touch YAML files.
+
+Each **service** owns its own strict document beside it — `session_doc.yaml`, `ensemble.yaml`, `grounding.yaml`, `party.yaml`, `planning.yaml` — with its own service class and typed route. There is no shared UI-state document and no generic section route: both were retired once the last six `ui.<section>` blobs turned out to be empty and unwritten. Full design: [`docs/core/configuration.md`](configuration.md); the series history is in [`docs/config/`](../config/README.md).
 
 ## Layer 3 — Frontend (Vue 3 + Pinia)
 

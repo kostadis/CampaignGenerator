@@ -11,12 +11,9 @@ flowchart LR
   Human --> REFS[refs.yaml / ingest_manifest.yaml]
   MNEME[mneme render] --> WIRING[config/wiring.yaml]
   MAIN[server/main.py] -->|constructs| PLAT[PlatformConfigService]
-  PLAT -->|last step, constructs| UIS[UIStateService]
   PLAT -->|lazy write| PY[platform.yaml]
   PLAT -->|lazy write| LC[.campaigngenerator.local.yaml]
-  UIS -->|lazy write| US[ui_state.yaml]
   HTTP[config_routes PUT] --> PLAT
-  HTTP --> UIS
   LAUNCH[launch_5etools_mcp] -->|build| RT[~/.5etools-mcp-runtime]
 ```
 
@@ -25,8 +22,8 @@ flowchart LR
 | Config | What it is | Created by | Read by | Updated by |
 |---|---|---|---|---|
 | `config.yaml` | tracked, human-only internal config | `pipelines/workspace/new_workspace.py` (CONFIG_TEMPLATE); else hand | `campaignlib.load_config`; `PlatformConfigService._load_tracked` (required, `ConfigError` if missing); `pipelines/session_prep/prep.py`, `pipelines/rlm/mcp_server.py`, `session_doc/check_consistency.py`, `pipelines/rlm/apply_ingest_manifest.py`, `assemble_docs` | NONE by app — human edits only |
-| `platform.yaml` | tracked, `PlatformDocument` (strict), owned outright by `PlatformConfigService` | Lazily on first `update_runtime` | `_load_platform_doc` (missing → all-defaults `PlatformDocument()`; malformed → `ConfigError`, unlike the local file below); loaded BEFORE `UIStateService` is constructed — see `PlatformConfigService`'s module docstring for why load order is load-bearing here | `update_runtime` (PUT `/runtime`). Atomic, write-lock serialized |
-| `ui_state.yaml` | tracked, `UIStateService`-owned `UIState` v4 | Lazily on first `_persist_ui_state` (`_atomic_write`); boot `_normalize_stored_paths` may write | `_load_ui_state` (missing → `UIState()`); routers via `service.uis.ui_state` / `resolved()` | `update_section` (PUT `/section/{name}`), boot self-heal. Atomic, write-lock serialized. No longer holds `runtime` — see `platform.yaml` above |
+| `platform.yaml` | tracked, `PlatformDocument` (strict), owned outright by `PlatformConfigService` | Lazily on first `update_runtime` | `_load_platform_doc` (missing → all-defaults `PlatformDocument()`; malformed → `ConfigError`, unlike the local file below); loaded during `__init__`; the "must load before `UIStateService`" ordering constraint went with that class | `update_runtime` (PUT `/runtime`). Atomic, write-lock serialized |
+| ~~`ui_state.yaml`~~ | **retired** ([ui-state-retirement.md](./ui-state-retirement.md)) | nothing creates it | **nothing in the server reads it.** The four `server/migrate_*.py` CLIs read it RAW — that is the whole remaining relationship | nothing writes it. `UIStateService`, `UIState` and `PUT /section/{name}` are deleted |
 | `grounding.yaml` | tracked, `GroundingConfig` (strict), owned outright by `GroundingConfigService` | Lazily on first `PUT /api/grounding/config` | `load_grounding_config` (missing or empty → all-defaults; malformed YAML → 400); every `/api/grounding/run/*` route via `resolved()` | `update_config` (PUT `/api/grounding/config`). Atomic |
 | `ensemble.yaml` | tracked, `EnsembleConfig` (strict), owned outright by `EnsembleConfigService` | Lazily on first `PUT /api/ensemble/config` | `load_ensemble_config` (missing or empty → all-defaults `EnsembleConfig()`; malformed YAML → 400, never a crash); every `/api/ensemble/*` route via `resolved()` | `update_config` (PUT `/api/ensemble/config`). Atomic (`campaignlib.util.atomic_write_text`) |
 | `.campaigngenerator.local.yaml` | gitignored `PlatformLocalConfig` (strict), owned by `PlatformConfigService` | Lazily on first `update_local` | `load_local_config` (bad → default, warns, non-fatal) | `update_local` (PUT `/local`) |
@@ -46,11 +43,11 @@ All routes reach `app.state.platform` (a `PlatformConfigService`) via the shared
 
 | Endpoint | Handler → service | Effect |
 |---|---|---|
-| `GET /api/config/` | `get_config` | resolved view (`platform.resolved()`, a thin passthrough to `platform.uis.resolved()`) + flat legacy overlay + tracked + local + paths |
-| `PUT /api/config/section/{name}` | `put_config_section` → `platform.uis.update_section` | writes `ui_state.yaml` `ui.<name>`. `session_doc`, `profiles`, `ensemble`, `grounding`, `campaign_state`, `distill`, `party` and `planning` 404 — retired sections, now `session_doc.yaml` / `ensemble.yaml` / `grounding.yaml` |
+| `GET /api/config/` | `get_config` | `platform.resolved()` (`{campaign_dir, runtime, server, nav}`) + tracked + local + paths. `ui_state_path` and `schema_version` left this body with the document they described |
+| ~~`PUT /api/config/section/{name}`~~ | — | **deleted.** The generic `ui.<section>` write door had no client; every service writes its own document through its own typed route |
 | `GET`/`PUT /api/grounding/config` | `get_grounding_config`/`put_grounding_config` → `GroundingConfigService` | reads/writes `<config>/grounding.yaml`; PUT body is the grouped partial itself (no `{"values": …}` envelope), 400 on an unknown key |
 | `GET`/`PUT /api/ensemble/config` | `get_ensemble_config`/`put_ensemble_config` → `EnsembleConfigService` | reads/writes `<config>/ensemble.yaml`; PUT body is the grouped partial itself (no `{"values": …}` envelope), 400 on an unknown key |
-| `PUT /api/config/runtime` | `put_config_runtime` → `platform.update_runtime` | writes `platform.yaml` `runtime` — **no longer touches `ui_state.yaml` at all** (Phase 3, O3) |
+| `PUT /api/config/runtime` | `put_config_runtime` → `platform.update_runtime` | writes `platform.yaml` `runtime` (Phase 3, O3 moved it out of the old shared document, which no longer exists) |
 | `PUT /api/config/local` | `put_config_local` → `platform.update_local` | writes `.campaigngenerator.local.yaml` |
 | `GET campaign-paths` | `get_campaign_paths` → `PlatformConfigService.discover_campaign_paths` (`@staticmethod`) | read-only filesystem **discovery** only (gm-assist/recap sniff, summaries sniff, `docs/npcs/*.md` glob, `docs/*.md` exist-checks; the VTT glob went with the retired VTT Summary page) — narrowed in Phase 4 (O2); the old **derivation** half (`output_dir`, `DERIVED_SUBDIRS`) was deleted, not migrated, because it duplicated `_PATH_FIELDS` and had already drifted |
 | `GET session-paths` | — | **deleted** in Phase 4 — a one-line wrapper with no caller |
@@ -63,17 +60,16 @@ All routes reach `app.state.platform` (a `PlatformConfigService`) via the shared
 ## Invariants enforced in code
 
 - `config.yaml` read-only to the app; `PlatformConfigService._load_tracked` reads it, no writer exists; missing is fatal.
-- `platform.yaml` must load before `UIStateService` is constructed — `_normalize_stored_paths`
-  (run during `UIStateService.__init__`) relativizes session-scoped `ui.*` fields against the
-  CURRENTLY PERSISTED `runtime.session_dir`, which now lives in a different document than the one
-  being constructed. See `PlatformConfigService`'s module docstring.
-- `platform.yaml`/`ui_state`/`local` created lazily; first update materializes them via atomic temp+`os.replace`.
+- `platform.yaml`/`local` created lazily; first update materializes them via atomic temp+`os.replace`.
+- A boot override targeting a section with no consumer is a **`ConfigError` at construction**, not a
+  silent drop — `resolved()`'s old catch-all `else` branch is where twelve dead `session_doc.*`
+  flags hid (O1), and it went with the `ui` key it swept them into.
 - Boot flags never persist — live only in `resolved()` for the process. Phase 0 (O1) deleted the
   twelve dead `session_doc.*` boot flags; the five that remain (`--campaign-dir`, `--session-dir`,
   `--config-dir`, `--host`, `--port`) all reach a real consumer.
-- Write-time relativization (`update_section`) + load-time `_normalize_stored_paths` heal legacy absolute values.
+- Each owning service relativizes its own path fields at write time, delegating to the platform's `relativize_path` rather than re-implementing it.
 - Per-section last-writer-wins under `_write_lock`; readers never see a torn file. `PlatformConfigService`
-  and `UIStateService` each hold their own lock, guarding their own file(s).
+  holds its own lock, guarding its own file(s).
 - External vs internal: `wiring.yaml` (mneme) holds endpoints/roots; `config.yaml` (human) holds
   prompts/agents/docs. The model registry (`server/config.py::MODELS`) has NOT crossed that line
   yet — it's still internal/hardcoded pending Phase 5b.
@@ -84,11 +80,14 @@ All routes reach `app.state.platform` (a `PlatformConfigService`) via the shared
 
 ## Boot path
 
-`server/main.py::main` resolves campaign_dir (`--campaign-dir` / `--session-dir` / CWD `config.yaml`),
-then constructs `PlatformConfigService(campaign_dir, boot_overrides=_boot_overrides_from_args(args))`.
-Init loads tracked (required), `platform.yaml` (default if absent, `ConfigError` if malformed —
+`server/main.py::main` resolves campaign_dir (`--campaign-dir` / `--session-dir` / CWD
+`config.yaml`), then constructs `PlatformConfigService(campaign_dir,
+boot_overrides=_boot_overrides_from_args(args))`. Init validates the boot-override keys, then
+loads tracked (required), `platform.yaml` (default if absent, `ConfigError` if malformed —
 load-bearing, since `runtime.session_dir` must be correct before anything else resolves a
-session-scoped path), local (bad → warns, non-fatal), and — as the LAST construction step —
-builds `self.uis = UIStateService(self)`, which loads `ui_state.yaml` and runs
-`_normalize_stored_paths` against the already-loaded `platform.yaml`. A malformed `config.yaml`,
-`platform.yaml`, or `ui_state.yaml` is fatal; a bad local file only warns.
+session-scoped path), and local (bad → warns, non-fatal). A malformed `config.yaml` or
+`platform.yaml` is fatal; a bad local file only warns.
+
+There is no fourth step. `self.uis = UIStateService(self)` used to be the last one, and its
+`_normalize_stored_paths` pass is why `platform.yaml` had to be loaded first — see
+[ui-state-retirement.md](./ui-state-retirement.md).

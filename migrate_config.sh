@@ -58,7 +58,6 @@ echo ""
 # tool-owned root files .mcp.json / .gitignore / .mempalaceignore.
 CONFIG_NAMES=(
   "config.yaml"
-  "ui_state.yaml"
   ".campaigngenerator.local.yaml"
   "planning.yaml"
   "party.yaml"

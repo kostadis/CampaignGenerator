@@ -28,7 +28,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from server.backend_forwarding import backend_cli_args
-from server.config_models import ProfileEntry
+from server.session_editor_config_shared import ProfileEntry
 from server.session_editor_config_service import (
     ResolvedEditorConfig,
     SessionEditorConfigService,

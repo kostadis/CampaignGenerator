@@ -6,6 +6,8 @@ import RunPanel from '../../components/shared/RunPanel.vue'
 
 const config = useConfigStore()
 
+// Deliberately stateless — see docs/config/ui-state-retirement.md D1 (the
+// reserved `ui.npc` section was never written by anything and is retired).
 const docsStr = ref('world_state')
 const configFile = ref('')
 const output = ref('')

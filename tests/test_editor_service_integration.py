@@ -41,7 +41,7 @@ from fastapi.testclient import TestClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from server.config_service import UI_STATE_NAME
+from server.migrate_common import UI_STATE_NAME
 from server.platform_config_service import PlatformConfigService, TRACKED_CONFIG_NAME
 from server.routers import config_routes, scene_editor
 from server.session_editor_config_service import SessionEditorConfigService

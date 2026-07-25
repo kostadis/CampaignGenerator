@@ -17,7 +17,6 @@ const localJson = computed(() =>
 )
 
 const configPath = computed(() => (config.values as any).config_path || '')
-const uiStatePath = computed(() => (config.values as any).ui_state_path || '')
 const localPath = computed(() => (config.values as any).local_config_path || '')
 
 const lineCount = computed(() => {
@@ -52,10 +51,6 @@ onMounted(async () => {
       <div v-if="configPath" class="config-path">
         <span class="path-label">config.yaml</span>
         <code>{{ configPath }}</code>
-      </div>
-      <div v-if="uiStatePath" class="config-path">
-        <span class="path-label">ui_state.yaml</span>
-        <code>{{ uiStatePath }}</code>
       </div>
       <div v-if="localPath" class="config-path">
         <span class="path-label">.campaigngenerator.local.yaml</span>

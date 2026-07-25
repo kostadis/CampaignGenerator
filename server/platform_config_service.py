@@ -1,55 +1,51 @@
 """Service owning the permanent platform tier.
 
-``docs/config/platform-isolation.md`` splits the old ``CampaignConfigService``
+``docs/config/platform-isolation.md`` split the old ``CampaignConfigService``
 (610 lines) into two roles that were previously fused: the permanent
 **platform** — path resolution, ``campaign_dir``/``config_dir``, boot
 overrides, the read-only ``config.yaml``/wiring view, and (as of Phase 3, O3)
 ``runtime.{default_model, session_dir}`` outright — and the transitional
-**residual landlord** of ten un-isolated ``ui.<section>`` blobs, which keeps
+**residual landlord** of the un-isolated ``ui.<section>`` blobs, which kept
 the (renamed, no-alias) ``UIStateService``.
 
-``PlatformConfigService`` is the foundational object: it resolves and
-validates ``campaign_dir``, creates ``config_path_base``, loads the
-human-owned ``config.yaml`` (``tracked``), the machine-local
-``.campaigngenerator.local.yaml`` (``local``), and its own ``<config>/
-platform.yaml`` (``runtime``) — and, as the LAST step of its own
-construction, builds ``self.uis = UIStateService(self)``. Every other
-per-page config service (``SessionEditorConfigService``,
-``PlanningConfigService``) composes THIS class the same way
-``UIStateService`` does — one platform, several tenants.
+**The residual half no longer exists.** ``docs/config/ui-state-retirement.md``
+retired ``UIStateService``, ``ui_state.yaml`` and the six loose sections it
+held: they were empty in every campaign and had no writer — the generic
+``PUT /api/config/section/{name}`` route that was their only write door had no
+client. This class is what the split was always converging on: one object,
+one role, owning every value it serves.
 
-## Why ``platform.yaml`` must load before ``UIStateService`` is constructed
+``PlatformConfigService`` resolves and validates ``campaign_dir``, creates
+``config_path_base``, and loads three documents — the human-owned
+``config.yaml`` (``tracked``), the machine-local
+``.campaigngenerator.local.yaml`` (``local``), and its own
+``<config>/platform.yaml`` (``runtime``). Every per-service config service
+(``SessionEditorConfigService``, ``PlanningConfigService``,
+``EnsembleConfigService``, ``GroundingConfigService``, ``PartyConfigService``)
+composes it — one platform, several tenants.
 
-Load order is load-bearing here, not incidental. ``UIStateService.__init__``
-calls ``_normalize_stored_paths()``, which relativizes any absolute
-``ui.grounding`` path fields against the CURRENTLY
-PERSISTED ``runtime.session_dir`` — and that value now lives in
-``platform.yaml``, a different document from the one ``UIStateService``
-itself owns. If ``self._doc`` (this class's in-memory copy of
-``platform.yaml``) were populated AFTER ``self.uis = UIStateService(self)``,
-that normalize pass would read stale/default ``runtime`` data (whatever
-``PlatformRuntime()``'s bare defaults are) instead of the real persisted
-session dir — silently re-anchoring session-scoped paths rather than
-erroring, exactly the failure mode the design doc's Phase 3 risk section
-warns about. So ``self._doc`` is loaded in ``__init__`` BEFORE the
-``UIStateService(self)`` call, alongside ``self._tracked``/``self._local``.
+## Construction order is no longer load-bearing
 
-## No more construction-order coupling on ``resolve_path``/``relativize_path``
+Two coupling hazards used to live here and are both gone with the tenant that
+created them.
 
-Through Phase 2, ``resolve_path``/``relativize_path``'s ``base="session"``
+``platform.yaml`` had to load BEFORE ``UIStateService`` was constructed,
+because that class's ``_normalize_stored_paths`` relativized ``ui.*`` path
+fields against the currently persisted ``runtime.session_dir`` — a value
+living in a different document from the one being constructed. Loading in the
+wrong order would have silently re-anchored session-scoped paths rather than
+erroring.
+
+Earlier still, ``resolve_path``/``relativize_path``'s ``base="session"``
 fallback read ``self.uis.ui_state.runtime.session_dir`` — data owned by the
-object under construction — which meant the fallback branch had to stay
-provably unreachable during ``UIStateService.__init__`` (see that class's
-git history for the invariant this used to require). Phase 3 dissolves that
-coupling entirely: the fallback now reads ``self._doc.runtime.session_dir``,
-platform-local state that exists before ``self.uis`` is ever touched. There
-is no invariant left to violate — ``UIStateService`` could call
-``self.platform.resolve_path`` from the first line of its own ``__init__``
-and it would still be safe. (It still passes ``session_dir`` explicitly in
-``_normalize_stored_paths``, matching the boot-override plumbing used
-everywhere else — not because it has to, but because that is the
-established pattern for making the effective session_dir explicit at each
-call site.)
+object under construction — so that branch had to stay provably unreachable
+during ``UIStateService.__init__``. Phase 3 of the platform isolation
+dissolved that by pointing the fallback at ``self._doc.runtime.session_dir``.
+
+Both notes are kept as history rather than deleted outright: they explain why
+``self._doc`` is still assigned last among the three loaded documents, and
+they are the reason to think twice before adding a new tenant that reads
+platform state during its own construction.
 """
 
 from __future__ import annotations
@@ -65,10 +61,10 @@ from pydantic import ValidationError
 from campaignlib import DEFAULT_MODEL
 from campaignlib.constants import config_path
 from campaignlib.party_config import PARTY_CONFIG_FILENAME
-from server.config_service import ConfigError, UIStateService
 from server.platform_config_shared import (
     LOCAL_CONFIG_NAME,
     PLATFORM_CONFIG_NAME,
+    ConfigError,
     PlatformConfig,
     PlatformDocument,
     PlatformLocalConfig,
@@ -82,6 +78,26 @@ from server.platform_config_shared import (
 # ── Filenames ──────────────────────────────────────────────────────────────
 
 TRACKED_CONFIG_NAME = "config.yaml"
+
+# ── Boot-override targets ──────────────────────────────────────────────────
+# The dotted-key sections :meth:`PlatformConfigService.resolved` knows how to
+# apply. An override aimed anywhere else reaches no consumer — and per O1 of
+# ``docs/config/platform-isolation.md`` a boot flag that reaches no consumer is
+# a defect, not a no-op. So an unknown section is a ``ConfigError`` at
+# construction rather than a value silently dropped at read time.
+#
+# This closes the assertion gap that let twelve dead ``session_doc.*`` flags
+# survive unnoticed: ``resolved()`` used to have an ``else`` branch that swept
+# any unrecognised section into ``ui_raw``, where nothing ever read it. That
+# branch went with ``ui_raw`` itself (docs/config/ui-state-retirement.md); it is
+# replaced by this check rather than by nothing, so the next dead flag fails
+# loudly at boot instead of being quietly absorbed.
+_BOOT_OVERRIDE_SECTIONS: tuple[str, ...] = ("runtime", "server")
+
+# session_dir is itself a campaign-based path (it lives under
+# <campaign>/summaries/...), so it resolves against the campaign root, not
+# against itself. Applied in resolved() below.
+_RUNTIME_PATH_FIELDS: dict[str, str] = {"session_dir": "campaign"}
 
 
 def require_platform(request: Request) -> "PlatformConfigService":
@@ -171,9 +187,8 @@ class PlatformConfigService:
     """Owns the platform tier for a single campaign workspace.
 
     One instance per server process, held as ``app.state.platform`` — the
-    canonical handle (there is no ``app.state.config_service`` any more).
-    ``self.uis`` reaches the residual ``UIStateService`` for the ten
-    ``ui.<section>`` blobs it still owns.
+    canonical handle (there is no ``app.state.config_service`` any more, and
+    no ``self.uis`` sub-service: see the module docstring).
     """
 
     def __init__(
@@ -188,6 +203,16 @@ class PlatformConfigService:
         self.boot_overrides: dict[str, Any] = dict(boot_overrides or {})
         self.load_warnings: list[str] = []
         self._write_lock = threading.Lock()
+
+        # Fail loudly on an override with no consumer — see
+        # _BOOT_OVERRIDE_SECTIONS for why this is a raise and not a drop.
+        for key in self.boot_overrides:
+            section, dot, _ = key.partition(".")
+            if dot and section not in _BOOT_OVERRIDE_SECTIONS:
+                raise ConfigError(
+                    f"boot override {key!r} targets unknown section {section!r}; "
+                    f"valid sections: {', '.join(_BOOT_OVERRIDE_SECTIONS)}"
+                )
 
         if not self.campaign_dir.is_dir():
             raise ConfigError(
@@ -206,15 +231,7 @@ class PlatformConfigService:
         self._tracked: dict = self._load_tracked()
         self._local, local_warnings = load_local_config(self.local_config_path)
         self.load_warnings.extend(local_warnings)
-        # Must precede `UIStateService(self)` below — see class docstring's
-        # "Why platform.yaml must load before UIStateService is constructed".
         self._doc: PlatformDocument = self._load_platform_doc()
-
-        # Last step — this used to carry a construction-order invariant
-        # (resolve_path's session fallback reading data owned by the object
-        # under construction); that coupling no longer exists, see class
-        # docstring.
-        self.uis: UIStateService = UIStateService(self)
 
     # ── Path properties ────────────────────────────────────────────────
 
@@ -442,26 +459,58 @@ class PlatformConfigService:
         # Genuine out-of-tree override — no relative form preserves it.
         return value
 
-    # ── Combined resolved view (delegated — see UIStateService.resolved) ──
+    # ── Combined resolved view ──────────────────────────────────────────
 
     def resolved(self) -> dict[str, Any]:
-        """The combined ``{campaign_dir, ui, runtime, server, nav}`` view.
+        """The combined ``{campaign_dir, runtime, server, nav}`` read view —
+        boot overrides applied on top of persisted values, path fields
+        absolute. Returned as plain dicts for JSON friendliness.
 
-        Stays implemented on ``UIStateService`` even after Phase 3 (design
-        doc's "hard design question", resolved in favor of minimal churn):
-        the boot-override application, the sibling-session rebase, and the
-        per-field path resolution over ``ui.<section>`` all still need
-        ``UIStateService``'s own ``_PATH_FIELDS`` knowledge, so moving just
-        the ``runtime`` slice's *source* (now ``self.platform.runtime``
-        instead of ``self._ui_state.runtime``) into that same method was the
-        smaller change. This is a thin passthrough so
-        ``app.state.platform.resolved()`` is the one canonical call site
-        regardless of which object does the work. The wire shape this
-        returns is unchanged by Phase 3 — see
-        ``docs/config/platform-isolation.md``'s "hard requirement" that the
-        frontend's ``resolved.runtime.*`` reads keep working.
+        **The ``ui`` key is gone** (docs/config/ui-state-retirement.md). It
+        carried the six loose ``ui.<section>`` blobs, all of which were empty
+        in every campaign and unreachable-by-write from the shipped UI —
+        ``PUT /api/config/section/{name}`` had no client. Three frontend sites
+        read keys off it; all three read sections that no longer existed or
+        had never been written, and all three now read the owning service's
+        own document instead. The four keys below are the live ones — see the
+        design doc's "resolved() is still needed" table for each one's
+        consumers.
+
+        This method lived on ``UIStateService`` through the platform
+        isolation, on the reasoning that it needed that class's
+        ``_PATH_FIELDS`` knowledge for the ``ui.<section>`` resolution and the
+        sibling-session rebase. Both went with the ``ui`` key:
+        ``_PATH_FIELDS`` had been empty since Phase 10 of the grounding
+        isolation, so the rebase loop and the per-field resolution were
+        iterating an empty table. What is left needs nothing ``UIStateService``
+        owned, so it comes home to the object that owns every value in it.
         """
-        return self.uis.resolved()
+        runtime_raw = self.runtime.model_dump(mode="json")
+        local_raw = self._local.model_dump(mode="json")
+
+        # Boot overrides apply BEFORE path resolution — an override of
+        # runtime.session_dir has to be in place before anything resolves
+        # against it. Unknown dotted sections cannot reach here: __init__
+        # rejects them (see _BOOT_OVERRIDE_SECTIONS).
+        for key, value in self.boot_overrides.items():
+            section, dot, field = key.partition(".")
+            if not dot:
+                runtime_raw[key] = value
+            elif section == "runtime":
+                runtime_raw[field] = value
+            else:  # "server"
+                local_raw.setdefault("server", {})[field] = value
+
+        for fname, base in _RUNTIME_PATH_FIELDS.items():
+            if fname in runtime_raw:
+                runtime_raw[fname] = self.resolve_path(runtime_raw[fname], base=base)
+
+        return {
+            "campaign_dir": str(self.campaign_dir),
+            "runtime": runtime_raw,
+            "server": local_raw.get("server", {}),
+            "nav": local_raw.get("nav", {}),
+        }
 
     # ── Filesystem discovery (O2) ────────────────────────────────────────
 

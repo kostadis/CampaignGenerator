@@ -3,13 +3,14 @@
 Two configuration subsystems beyond the core config service: the ensemble grounding-doc
 pipeline and the party / campaign_state / world_state grounding-doc system.
 
-Ensemble no longer uses a `ui_state` section at all — [ensemble-isolation.md](./ensemble-isolation.md)
-gave it its own owned, strict `<config>/ensemble.yaml` (`EnsembleConfigService`), the third
-service to take its config out of `ui_state.yaml` after Session Doc Editor and Planning.
-Neither does the grounding-doc subsystem: [grounding-isolation.md](./grounding-isolation.md)
-gave it `<config>/grounding.yaml` (`GroundingConfigService`) and gave the PC roster its own
-owner (`PartyConfigService`). Its *content* documents (`party.yaml`, `planning.yaml`,
-`tracking.txt`) remain hand-authored — that separation is the design, not a gap.
+Neither subsystem uses a `ui_state` section — nothing does.
+[ensemble-isolation.md](./ensemble-isolation.md) gave Ensemble its own owned, strict
+`<config>/ensemble.yaml` (`EnsembleConfigService`), and
+[grounding-isolation.md](./grounding-isolation.md) gave the grounding docs
+`<config>/grounding.yaml` (`GroundingConfigService`) plus a real owner for the PC roster
+(`PartyConfigService`). [ui-state-retirement.md](./ui-state-retirement.md) then deleted
+`ui_state.yaml` itself. Their *content* documents (`party.yaml`, `planning.yaml`, `tracking.txt`)
+remain hand-authored — that separation is the design, not a gap.
 
 ## Ensemble workflow (extract → bundle → synthesize → review)
 

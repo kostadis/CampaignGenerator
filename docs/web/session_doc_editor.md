@@ -83,7 +83,7 @@ A profile is a named set of Stage-④ knobs:
 }
 ```
 
-Stored in `ui_state.yaml` under `ui.profiles`. Two operations:
+Stored in `session_doc.yaml` under `profiles` (owned by `SessionEditorConfigService`; they left `ui_state.yaml` in Phase 5 of the session-editor isolation). Two operations:
 
 - **Pick a profile** — rewrites the drawer's Stage-④ knobs. The editor's normal auto-apply watcher carries them through to the server.
 - **Save current as new** — appended via the same dropdown; the new profile becomes active.

@@ -152,7 +152,7 @@ This wiki is a *map*. The territory is documented in each repo:
 
 **CampaignGenerator**
 - [`docs/core/architecture.md`](../core/architecture.md) — CG-internal layers & flows (start here for CG)
-- [`docs/core/configuration.md`](../core/configuration.md) — config.yaml / ui_state.yaml resolution
+- [`docs/core/configuration.md`](../core/configuration.md) — config.yaml / platform.yaml / per-service config resolution
 - [`docs/cli/cli_tools.md`](../cli/cli_tools.md) — per-script invocations & flags
 - [`docs/cli/session_doc_pipeline.md`](../cli/session_doc_pipeline.md) — post-session deep dive
 - [`docs/cli/ensemble_workflow.md`](../cli/ensemble_workflow.md) · [`ensemble_extraction.md`](../cli/ensemble_extraction.md) — ensemble grounding-doc generation

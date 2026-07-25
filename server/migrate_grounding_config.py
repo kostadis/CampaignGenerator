@@ -53,7 +53,7 @@ from typing import Any
 
 import yaml
 
-from server.config_service import UI_STATE_NAME
+from server.migrate_common import UI_STATE_NAME
 from server.grounding_config_shared import (
     GROUNDING_CONFIG_FILENAME,
     GroundingConfig,

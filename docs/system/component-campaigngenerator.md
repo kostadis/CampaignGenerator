@@ -76,7 +76,7 @@ model is a one-line edit to `dgxlib/models.yaml`, not code surgery here. See
 The UI **never reimplements logic**. A router takes an HTTP request, calls
 `subprocess_runner.stream_subprocess()` to run the matching CLI script, and
 streams stdout back as Server-Sent Events. State lives in `config.yaml` /
-`ui_state.yaml` (server-owned, pydantic) and Pinia stores. See [`docs/web/web_ui.md`](../web/web_ui.md).
+per-service server-owned YAML documents (`platform.yaml`, `session_doc.yaml`, `ensemble.yaml`, `grounding.yaml`, …; each strict pydantic) and Pinia stores. See [`docs/web/web_ui.md`](../web/web_ui.md).
 
 ### Boundary — `pipelines/rlm/mcp_server.py`
 

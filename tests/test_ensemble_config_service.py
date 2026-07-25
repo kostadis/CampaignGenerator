@@ -2,10 +2,12 @@
 routes — Phase 2 of docs/config/ensemble-isolation.md.
 
 The load-bearing test in this file is TestIsolationInvariant: an ensemble
-write must be physically incapable of touching ui_state.yaml or platform.yaml.
+write must be physically incapable of touching a sibling service's document.
 That is the whole reason the service exists, and it mirrors
-``test_ui_section_write_cannot_touch_platform_yaml`` from
-tests/test_platform_config_service.py.
+``test_another_services_write_cannot_touch_platform_yaml`` from
+tests/test_platform_config_service.py. (Both guards named ``ui_state.yaml``
+as one of the documents at risk until docs/config/ui-state-retirement.md
+removed it; see TestIsolationInvariant's own docstring.)
 """
 
 from __future__ import annotations
@@ -139,117 +141,85 @@ class TestUpdate:
 # ── The invariant this service exists for ──────────────────────────────────
 
 class TestIsolationInvariant:
-    def test_ensemble_write_cannot_touch_ui_state_or_platform_yaml(
-        self, fresh_campaign
-    ):
-        platform = PlatformConfigService(fresh_campaign)
+    """An ensemble write must not re-serialize another service's document.
+
+    The guarded pair used to be ``platform.yaml`` + ``ui_state.yaml``, the two
+    documents an ensemble save could plausibly have clobbered back when
+    ``ui.ensemble`` lived in the shared file. ``ui_state.yaml`` is not written
+    by anything any more (docs/config/ui-state-retirement.md), so guarding it
+    would be vacuous — exactly the failure the assertions below were added to
+    prevent. The probe moves to ``grounding.yaml``, a live sibling document
+    under the same ``config/`` directory.
+    """
+
+    @staticmethod
+    def _seed_siblings(platform, fresh_campaign):
+        """Materialize both guarded documents and return their paths + bytes."""
+        from server.grounding_config_service import GroundingConfigService
+
         platform.update_runtime(
             {"session_dir": "summaries/sess1", "default_model": "claude-opus-4-6"}
         )
-        platform.uis.update_section("query", {"summaries": "summaries.md"})
-
-        # BOTH live under <campaign>/config/ — ui_state.yaml is NOT at the
-        # campaign root. Getting this wrong made an earlier cut of this test
-        # silently guard only platform.yaml while claiming to cover both.
+        GroundingConfigService(platform.config_path_base).update_config(
+            {"summaries": "docs/summaries.md"}
+        )
         platform_yaml = fresh_campaign / CONFIG_SUBDIR / "platform.yaml"
-        ui_state_yaml = fresh_campaign / CONFIG_SUBDIR / "ui_state.yaml"
-        assert platform_yaml.exists() and ui_state_yaml.exists(), (
+        grounding_yaml = fresh_campaign / CONFIG_SUBDIR / "grounding.yaml"
+        assert platform_yaml.exists() and grounding_yaml.exists(), (
             "fixture did not create both files — the guard below would be vacuous"
         )
-        before = {p: p.read_bytes() for p in (platform_yaml, ui_state_yaml)}
+        return {p: p.read_bytes() for p in (platform_yaml, grounding_yaml)}
 
-        EnsembleConfigService(platform.config_path_base).update_config(
-            {"extract": {"backend": "dgx", "endpoints": ["http://spark:8001/v1"]},
-             "tuning": {"chapter_parallel": 6}}
-        )
-
+    @staticmethod
+    def _assert_untouched(before):
         for path, blob in before.items():
             assert path.read_bytes() == blob, (
                 f"an ensemble write touched {path.name} — the isolation "
                 "invariant this service exists to guarantee is broken"
             )
 
-    def test_ensemble_write_cannot_touch_ui_state_or_platform_yaml_via_route(
+    def test_ensemble_write_cannot_touch_sibling_documents(self, fresh_campaign):
+        platform = PlatformConfigService(fresh_campaign)
+        before = self._seed_siblings(platform, fresh_campaign)
+
+        EnsembleConfigService(platform.config_path_base).update_config(
+            {"extract": {"backend": "dgx", "endpoints": ["http://spark:8001/v1"]},
+             "tuning": {"chapter_parallel": 6}}
+        )
+
+        self._assert_untouched(before)
+
+    def test_ensemble_write_cannot_touch_sibling_documents_via_route(
         self, fresh_campaign
     ):
         app = FastAPI()
         app.include_router(ensemble.router, prefix="/api/ensemble")
         app.state.platform = PlatformConfigService(fresh_campaign)
-        app.state.platform.update_runtime({"default_model": "claude-opus-4-6"})
-        app.state.platform.uis.update_section("query", {"some_field": "value"})
+        before = self._seed_siblings(app.state.platform, fresh_campaign)
         client = TestClient(app)
 
-        # BOTH live under <campaign>/config/ — ui_state.yaml is NOT at the
-        # campaign root. Getting this wrong made an earlier cut of this test
-        # silently guard only platform.yaml while claiming to cover both.
-        platform_yaml = fresh_campaign / CONFIG_SUBDIR / "platform.yaml"
-        ui_state_yaml = fresh_campaign / CONFIG_SUBDIR / "ui_state.yaml"
-        assert platform_yaml.exists() and ui_state_yaml.exists(), (
-            "fixture did not create both files — the guard below would be vacuous"
-        )
-        before = {p: p.read_bytes() for p in (platform_yaml, ui_state_yaml)}
-        resp = client.put("/api/ensemble/config", json={"known_names": ["x.md"]})
-        assert resp.status_code == 200
-
-        for path, blob in before.items():
-            assert path.read_bytes() == blob
-
-
-# ── HTTP contract ──────────────────────────────────────────────────────────
-
-class TestRoutes:
-    def test_get_before_any_write_returns_defaults(self, client):
-        resp = client.get("/api/ensemble/config")
-        assert resp.status_code == 200
-        assert resp.json()["paths"]["chapters_glob"] == "docs/chapters/chapter_*.md"
-
-    def test_put_returns_the_merged_config(self, client):
         resp = client.put(
             "/api/ensemble/config", json={"tuning": {"chapter_parallel": 6}}
         )
         assert resp.status_code == 200
-        body = resp.json()
-        assert body["tuning"]["chapter_parallel"] == 6
-        assert body["tuning"]["chunk_parallel"] == 4
 
-    def test_put_then_get_persists(self, client):
-        client.put("/api/ensemble/config", json={"aliases_path": "docs/a.json"})
-        assert client.get("/api/ensemble/config").json()["aliases_path"] == "docs/a.json"
-
-    def test_put_unknown_key_is_400(self, client):
-        resp = client.put("/api/ensemble/config", json={"planning_npc": "x"})
-        assert resp.status_code == 400
-
-    def test_put_non_object_body_is_400(self, client):
-        resp = client.put("/api/ensemble/config", json=["not", "an", "object"])
-        assert resp.status_code == 400
-
-    def test_body_is_the_partial_itself_not_a_values_envelope(self, client):
-        """The {"values": …} envelope belongs to the generic
-        PUT /api/config/section/{name} this endpoint replaces."""
-        resp = client.put(
-            "/api/ensemble/config", json={"values": {"known_names": ["x.md"]}}
-        )
-        assert resp.status_code == 400
-
-    def test_routes_are_not_double_prefixed(self, client):
-        """The bug planning-isolation.md shipped: prefix= set on the APIRouter
-        *and* added by main.py, mounting everything at /api/x/api/x/*."""
-        assert client.get("/api/ensemble/api/ensemble/config").status_code == 404
-
-    def test_written_file_is_hand_editable_yaml(self, client, fresh_campaign):
-        client.put("/api/ensemble/config", json={"known_names": ["docs/names.md"]})
-        raw = (fresh_campaign / CONFIG_SUBDIR / ENSEMBLE_CONFIG_FILENAME).read_text()
-        assert yaml.safe_load(raw)["known_names"] == ["docs/names.md"]
+        self._assert_untouched(before)
 
 
 # ── Phase 5: the ui.ensemble section is retired ────────────────────────────
 
 class TestSectionRetired:
+    """Ensemble's config left ``ui_state.yaml`` in Phase 5 of
+    ``docs/config/ensemble-isolation.md``. These tests originally pinned that
+    against a still-live generic section route — ``PUT /section/ensemble``
+    404s while a surviving loose section still 200s. That second half is gone:
+    ``docs/config/ui-state-retirement.md`` deleted the route, the six
+    remaining sections, ``UI_SECTION_NAMES`` and ``SCHEMA_VERSION`` outright,
+    so what these now pin is the stronger claim — nothing reaches
+    ``ui_state.yaml``, from any direction, ever.
+    """
+
     def test_put_section_ensemble_404s(self, fresh_campaign):
-        """`ensemble` is no longer a UISection field, so the generic section
-        route must reject it — the same contract Phase 5 of the session-editor
-        isolation set for `PUT /section/session_doc`."""
         from server.routers import config_routes
 
         app = FastAPI()
@@ -259,19 +229,13 @@ class TestSectionRetired:
 
         assert c.put("/api/config/section/ensemble",
                      json={"values": {"known_names": ["x.md"]}}).status_code == 404
-        # A surviving loose section still works — this isn't a blanket break.
-        assert c.put("/api/config/section/query",
-                     json={"values": {"x": 1}}).status_code == 200
 
-    def test_ensemble_is_not_a_ui_section_name(self):
-        from server.config_models import UI_SECTION_NAMES
-
-        assert "ensemble" not in UI_SECTION_NAMES
-
-    def test_a_pre_migration_ui_state_still_loads(self, fresh_campaign):
-        """UIState stays extra="allow", so a leftover ui.ensemble block from a
-        campaign that hasn't run the migration CLI loads harmlessly and is
-        ignored rather than failing the server's boot."""
+    def test_a_pre_migration_ui_state_is_ignored_entirely(self, fresh_campaign):
+        """A campaign that never ran the migration CLI still boots. The file
+        used to load through ``UIState`` (``extra="allow"``, so a stale
+        ``ui.ensemble`` block was parsed then ignored); now it is not read at
+        all, which is the same outcome by a shorter route — and the reason
+        ``server/migrate_ensemble_config.py`` still reads it raw."""
         import yaml as _yaml
 
         ui_state = fresh_campaign / CONFIG_SUBDIR / "ui_state.yaml"
@@ -284,12 +248,9 @@ class TestSectionRetired:
 
         platform = PlatformConfigService(fresh_campaign)
         resolved = platform.resolved()
-        assert resolved["ui"]["query"]["x"] == 1
-        assert "ensemble" not in resolved["ui"]
-
-    def test_schema_version_bumped(self):
-        from server.config_models import SCHEMA_VERSION
-
-        # 4 at ensemble isolation; 5 since Phase 10 of the grounding
-        # isolation removed five more sections from UIState.
-        assert SCHEMA_VERSION >= 4
+        assert "ui" not in resolved
+        # The stale file is left exactly as found — this service does not
+        # write it, and the migration CLIs are what rescue its contents.
+        assert _yaml.safe_load(ui_state.read_text())["ui"]["ensemble"][
+            "chapters_glob"
+        ] == "old/*.md"

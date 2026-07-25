@@ -33,15 +33,14 @@ const DOCS = [
 
 const selectedDoc = ref<typeof DOCS[number]['id']>('world_state')
 const diffs = reactive<Record<string, string>>({})
-// Party config path set via the Party Document page (ui.party.config_path).
-// Passed through as-is — the server falls back to config/party.yaml or
-// party.yaml at the campaign root when this is blank.
+// Party config path set via the Party Document page — read from
+// grounding.yaml's `party.config_path`. Passed through as-is; the server
+// falls back to config/party.yaml when this is blank.
 const partyConfigPath = ref('')
-// Planning config path set via the Planning Document page
-// (ui.planning.config_path). Same fallback pattern as party: the server
-// falls back to config/planning.yaml or planning.yaml when this is blank.
-// Shared with the standalone Planning Document page on purpose — both
-// pages should point at the same campaign planning.yaml.
+// Planning config path set via the Planning Document page — grounding.yaml's
+// `planning.config_path`. Same fallback pattern as party. Shared with the
+// standalone Planning Document page on purpose: both should point at the
+// same campaign planning.yaml.
 const planningConfigPath = ref('')
 const planningSynthMode = ref<'config' | 'flat'>('config')
 const planningNpcFiles = ref('')
@@ -57,8 +56,14 @@ onMounted(async () => {
   await config.load()
   const loaded = await fetchEnsembleConfig()
   cfg.value = loaded
-  partyConfigPath.value = config.resolved?.ui?.party?.config_path || ''
-  planningConfigPath.value = config.resolved?.ui?.planning?.config_path || ''
+  // These read grounding.yaml, not ui_state.yaml. They used to read
+  // `config.resolved.ui.party/planning.config_path`; Phase 10 of
+  // docs/config/grounding-isolation.md deleted both sections, so from that
+  // point on both prefills were permanently blank and the two warn-hints
+  // below always fired. GroundingConfigService owns these values now, and
+  // the store boot-loads the document alongside the editor config.
+  partyConfigPath.value = config.groundingConfig?.party?.config_path || ''
+  planningConfigPath.value = config.groundingConfig?.planning?.config_path || ''
   // Phase 3: these come from ensemble.yaml's typed `planning` group. They
   // used to be six undeclared keys riding on ui.ensemble's extra="allow".
   const pl = loaded.planning
@@ -74,11 +79,11 @@ const lines = (t: string): string[] =>
   t.split('\n').map(l => l.trim()).filter(Boolean)
 
 // Auto-persist planning field edits — mirrors PlanningDocument.vue's own
-// debounced persist. planningConfigPath goes to the shared ui.planning
-// section (same field the standalone page writes); the rest are
-// ensemble-specific overrides and live in ensemble.yaml's own `planning`
-// group so they don't collide with the standalone page's npc/arc-score/
-// context lists.
+// debounced persist. These are ensemble-specific overrides and live in
+// ensemble.yaml's own `planning` group so they don't collide with the
+// standalone page's npc/arc-score/context lists. `planningConfigPath` is
+// read-only here: grounding.yaml owns it and the standalone Planning
+// Document page is its writer.
 let planPersistTimer: ReturnType<typeof setTimeout> | null = null
 function schedulePlanPersist() {
   if (planPersistTimer) clearTimeout(planPersistTimer)
