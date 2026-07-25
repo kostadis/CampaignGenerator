@@ -11,7 +11,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
-from server.platform_config_service import resolve_default_model
+from server.platform_config_service import resolve_selection
 
 # Make campaignlib importable regardless of CWD.
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -400,8 +400,8 @@ def list_docs(docs_dir: str = ""):
 class ExtractRequest(BaseModel):
     files: list[str]
     # None (the FastAPI/pydantic default) means "no explicit pick" — the
-    # handler falls back to the platform's runtime.default_model via
-    # resolve_default_model. Used to be a hardcoded "claude-sonnet-4-6"
+    # handler falls back to the platform's selection via
+    # resolve_selection. Used to be a hardcoded "claude-sonnet-4-6"
     # literal, which meant a request that omitted `model` silently bypassed
     # the sidebar picker (docs/config/platform-isolation.md, Phase 5a).
     model: str | None = None
@@ -446,10 +446,18 @@ def extract_connections(req: ExtractRequest, request: Request):
 
     system = CONNECTIONS_SYSTEM + (("\n\n" + roster) if roster else "")
 
-    # req has no backend/endpoint fields, so this resolves identically to the
-    # old bare make_client() — just routed through the one approved seam.
-    client = client_from_args(req)
-    resolved_model = resolve_default_model(req.model, request)
+    # Feature 003: an *inheriting* service — Connection Graph owns no config
+    # document, so it always runs on the platform selection. Before 003 this
+    # resolved a model but never a backend, so `client_from_args(req)` (req
+    # has no `backend` field) always built an Anthropic client: picking DGX or
+    # OpenRouter in the sidebar silently billed the metered API anyway.
+    #
+    # ResolvedSelection exposes .backend/.model/.endpoint, which is exactly
+    # client_from_args' duck-typed contract, so it can be passed straight in.
+    selection = resolve_selection(request, request_model=req.model,
+                                  service_name="connections")
+    client = client_from_args(selection)
+    resolved_model = selection.model
     # 32K output gives room for ~300 entities + ~500 edges. 4K truncates large
     # campaigns mid-string and produces unparseable JSON.
     raw = stream_api(client, system, combined, resolved_model, max_tokens=32000, silent=True)

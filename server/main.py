@@ -7,14 +7,10 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from server.platform_config_service import (
-    ConfigError,
-    IncompatibleSelection,
-    PlatformConfigService,
-)
+from server.platform_config_service import ConfigError, PlatformConfigService
 from server.routers import (
     config_routes, connections, ensemble, grounding, prep,
     scene_editor, setup, planning_routes, party_routes,
@@ -33,19 +29,14 @@ app.add_middleware(
 
 # ── Selection refusal (feature 003) ─────────────────────────────────────────
 # A run whose resolved model cannot be served by its resolved backend is
-# refused BEFORE any subprocess is spawned, rather than being silently
-# retargeted at a model the operator did not choose. 409 (not 400) because
-# the request is well formed — it is the stored selection that conflicts.
+# refused BEFORE any subprocess is spawned, rather than being retargeted at a
+# model the operator did not choose.
 #
-# Refusing here, at resolution time, is deliberate: doing it inside
-# subprocess_runner would mean the command was already built and the
-# structured reason lost, leaving the operator with a stream error instead of
-# an actionable message — the exact failure mode specs/002 exists to remove.
-
-
-@app.exception_handler(IncompatibleSelection)
-async def _incompatible_selection_handler(request: Request, exc: IncompatibleSelection):
-    return JSONResponse(status_code=409, content={"detail": exc.as_detail()})
+# There is no handler to register here: IncompatibleSelection subclasses
+# HTTPException(409), so FastAPI's built-in handler renders it wherever the
+# router is mounted. An app-level handler in this module would only cover apps
+# this module builds — several test fixtures mount routers on a bare FastAPI()
+# and would have got an unhandled 500 instead of a refusal.
 
 
 # ── API routers ──────────────────────────────────────────────────────────────

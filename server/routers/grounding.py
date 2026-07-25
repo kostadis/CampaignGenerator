@@ -13,12 +13,9 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from campaignlib import wiring_get
-from server.backend_forwarding import backend_cli_args
 from server.grounding_config_service import GroundingConfigService
 from server.grounding_config_shared import DEFAULT_CHUNK_SIZE, GroundingConfig
-from server.platform_config_service import resolve_default_model
-from server.session_editor_config_service import SessionEditorConfigService
+from server.platform_config_service import resolve_selection, selection_cli_args
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
@@ -58,36 +55,21 @@ async def put_grounding_config(request: Request) -> GroundingConfig:
 
 
 # ── LLM backend selection → subprocess CLI flags ────────────────────────────
-# The global backend chosen in the sidebar is persisted as backends.active in
-# the Session Doc Editor's own <config>/session_doc.yaml (GET/PUT
-# /api/editor/config — see docs/config/session-editor-isolation.md; the
-# sidebar button writes there since Phase 3b). Grounding runs (campaign_state
-# / distill / party / planning) must forward it exactly like scene_editor and
-# ensemble do — otherwise a selection (e.g. "openrouter") is silently dropped
-# and every run bills the metered Anthropic API. All four scripts now accept
-# the shared --backend/--endpoint/--model vocabulary
-# (campaignlib.api.client.add_backend_args), so forwarding is done as
-# explicit CLI flags via backend_cli_args, not env vars.
-
-def _backend_flags(request: Request) -> list[str]:
-    """Translate the campaign's global backend choice into subprocess CLI flags.
-
-    Empty list (backend == "anthropic", or no config service) means "no
-    overrides — the script's own argparse default (Anthropic API) applies".
-    """
-    service = getattr(request.app.state, "platform", None)
-    if service is None:
-        return []
-    backends = SessionEditorConfigService(service).resolved_editor_config().backends
-    active = backends.active
-    if active == "dgx":
-        return backend_cli_args(
-            active, model=backends.dgx.model or wiring_get("dgx_model"),
-            endpoint=backends.dgx.endpoint or wiring_get("dgx_endpoint"))
-    if active == "openrouter":
-        return backend_cli_args(active, model=backends.openrouter.model)
-    return backend_cli_args(active)  # anthropic -> [], claude-code -> ["--backend", "claude-code"]
-
+# `_backend_flags` lived here until feature 003. It constructed a
+# SessionEditorConfigService and read that service's `backends.active` — so
+# Grounding runs took their backend from the Session Doc Editor's own config
+# while taking their model from the platform tier. Two owners, one command:
+# `cmd += ["--model", <platform>]` followed by `cmd += _backend_flags(...)`,
+# which appended a SECOND `--model` from session_doc.yaml whenever the editor
+# had one stored. argparse last-wins made that work by accident, and when the
+# editor had none stored a claude-* id went to a DGX endpoint, where the
+# adapter silently substituted its own default.
+#
+# Both halves now come from `resolve_selection` — one tier, one `--model`,
+# and no reading of another service's document (contract guarantees C1/C4).
+# Grounding's own override lands in grounding.yaml/party.yaml/planning.yaml
+# in Phase 4; until then these endpoints inherit the platform selection,
+# which is correct behaviour rather than a gap.
 
 def _cmd_opt(cmd: list[str], flag: str, value: str | int | None) -> None:
     if value:
@@ -199,8 +181,7 @@ async def run_campaign_state(
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log or run.no_log)
-    cmd += ["--model", resolve_default_model(model, request)]
-    cmd += _backend_flags(request)
+    cmd += selection_cli_args(resolve_selection(request, request_model=model))
 
     return _sse_response(cmd)
 
@@ -235,8 +216,7 @@ async def run_distill(
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log or run.no_log)
-    cmd += ["--model", resolve_default_model(model, request)]
-    cmd += _backend_flags(request)
+    cmd += selection_cli_args(resolve_selection(request, request_model=model))
 
     return _sse_response(cmd)
 
@@ -292,8 +272,7 @@ async def run_party(
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log or run.no_log)
-    cmd += ["--model", resolve_default_model(model, request)]
-    cmd += _backend_flags(request)
+    cmd += selection_cli_args(resolve_selection(request, request_model=model))
 
     return _sse_response(cmd)
 
@@ -345,8 +324,7 @@ async def run_planning(
     _cmd_flag(cmd, "--synthesize-only", synthesize_only)
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log or run.no_log)
-    cmd += ["--model", resolve_default_model(model, request)]
-    cmd += _backend_flags(request)
+    cmd += selection_cli_args(resolve_selection(request, request_model=model))
 
     return _sse_response(cmd)
 
@@ -383,8 +361,7 @@ async def run_build_dossiers(
 
     _cmd_flag(cmd, "--extract-only", extract_only)
     _cmd_flag(cmd, "--no-log", no_log or cfg.planning.no_log)
-    cmd += ["--model", resolve_default_model(model, request)]
-    cmd += _backend_flags(request)
+    cmd += selection_cli_args(resolve_selection(request, request_model=model))
 
     return _sse_response(cmd)
 

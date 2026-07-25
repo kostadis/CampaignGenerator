@@ -1,11 +1,18 @@
-"""Prep API routes — session prep, NPC table, query summaries."""
+"""Prep API routes — session prep, NPC table, query summaries.
+
+These three are *inheriting* services (feature 003): they own no config
+document, so they always run on the platform selection and have no override
+of their own. Until 003 they also emitted no ``--backend`` at all — picking
+DGX or OpenRouter in the sidebar left every one of them billing the metered
+Anthropic API, silently. ``selection_cli_args`` now emits both halves.
+"""
 
 from pathlib import Path
 
 from fastapi import APIRouter, Query, Request
 from fastapi.responses import StreamingResponse
 
-from server.platform_config_service import resolve_default_model
+from server.platform_config_service import resolve_selection, selection_cli_args
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
@@ -57,7 +64,7 @@ async def run_session_prep(
     _cmd_opt(cmd, "--config", config)
     _cmd_opt(cmd, "--output", output)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", resolve_default_model(model, request)]
+    cmd += selection_cli_args(resolve_selection(request, request_model=model))
 
     return _sse_response(cmd)
 
@@ -82,7 +89,7 @@ async def run_npc_table(
     _cmd_opt(cmd, "--config", config)
     _cmd_opt(cmd, "--output", output)
     _cmd_flag(cmd, "--no-log", no_log)
-    cmd += ["--model", resolve_default_model(model, request)]
+    cmd += selection_cli_args(resolve_selection(request, request_model=model))
 
     return _sse_response(cmd)
 
@@ -114,6 +121,6 @@ async def run_query(
     if chunk_size and chunk_size != 40000:
         cmd += ["--chunk-size", str(chunk_size)]
 
-    cmd += ["--model", resolve_default_model(model, request)]
+    cmd += selection_cli_args(resolve_selection(request, request_model=model))
 
     return _sse_response(cmd)

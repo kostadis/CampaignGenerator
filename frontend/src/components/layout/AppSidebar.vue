@@ -7,19 +7,35 @@ const config = useConfigStore()
 const router = useRouter()
 const route = useRoute()
 
-// LLM backend selector (global). Persisted to the Session Doc Editor's
-// backends.active (GET/PUT /api/editor/config) — the same field
-// _llm_env() reads server-side — so the editor's own toggle stays in
-// sync. 'claude-code' routes generation through the Claude Code CLI,
-// billing the Pro/Max subscription instead of the metered Anthropic API.
+// LLM backend selector (app-wide). Feature 003 moved this from the Session
+// Doc Editor's backends.active (PUT /api/editor/config) to the platform tier
+// (PUT /api/config/runtime), beside the MODEL picker below. The two controls
+// sit together and are presented as global, so they must be owned by the same
+// thing: while BACKEND lived in session_doc.yaml, grounding.py had to read
+// another service's config to find it, and editing the Session Doc Editor
+// silently re-targeted every Grounding run.
+// 'claude-code' routes generation through the Claude Code CLI, billing the
+// Pro/Max subscription instead of the metered Anthropic API.
 type Backend = 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
 const currentBackend = computed<Backend>(() => {
-  const b = config.editorConfig?.backends?.active
+  const b = config.backend
   return b === 'dgx' || b === 'openrouter' || b === 'claude-code' ? b : 'anthropic'
 })
 async function setBackend(b: Backend) {
   if (currentBackend.value === b) return
-  await config.updateEditor({ backends: { active: b } })
+  await config.updateRuntime({ default_backend: b })
+}
+
+// The MODELS registry is Anthropic-only — DGX and OpenRouter ids are
+// free-form and not enumerable from the repo. So the dropdown can only
+// express a valid pair for anthropic/claude-code; on the other two the
+// operator must be able to type an id. Without this the platform pair is
+// permanently incompatible on a local backend (every listed model is a
+// claude-* id) and the 003 refusal would block every run.
+const modelIsFreeText = computed(() => currentBackend.value === 'dgx' || currentBackend.value === 'openrouter')
+async function setModel(value: string) {
+  config.model = value
+  await config.updateRuntime({ default_model: value })
 }
 
 interface NavItem {
@@ -146,7 +162,15 @@ function navigate(path: string) {
       </div>
       <div class="model-selector">
         <label class="model-label">MODEL</label>
-        <select v-model="config.model" class="model-select" @change="config.updateRuntime({ default_model: config.model })">
+        <input
+          v-if="modelIsFreeText"
+          :value="config.model"
+          class="model-select"
+          :placeholder="currentBackend === 'dgx' ? 'e.g. Qwen3-Next-80B' : 'e.g. qwen/qwen3-next-80b'"
+          title="This backend's model ids are free-form — type the id your endpoint serves"
+          @change="setModel(($event.target as HTMLInputElement).value)"
+        />
+        <select v-else :value="config.model" class="model-select" @change="setModel(($event.target as HTMLSelectElement).value)">
           <option v-for="m in config.models" :key="m" :value="m">{{ m }}</option>
         </select>
       </div>

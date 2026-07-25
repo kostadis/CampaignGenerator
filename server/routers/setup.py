@@ -1,11 +1,21 @@
-"""Setup API routes — D&D sheet conversion, make tracking list."""
+"""Setup API routes — D&D sheet conversion, make tracking list.
+
+An *inheriting* service (feature 003): Setup owns no config document — there
+is no ``SetupConfigService`` and no ``setup.yaml`` — so it always runs on the
+platform selection and has no override of its own. This is deliberate; the
+scope decision in ``specs/003-model-selection-resolution/spec.md`` keeps
+config away from services that were purposely left stateless (D1).
+
+Like ``prep.py`` and ``connections.py``, these two emitted no ``--backend``
+before 003 and so ignored the sidebar toggle entirely.
+"""
 
 from pathlib import Path
 
 from fastapi import APIRouter, Query, Request
 from fastapi.responses import StreamingResponse
 
-from server.platform_config_service import resolve_default_model
+from server.platform_config_service import resolve_selection, selection_cli_args
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
@@ -39,7 +49,7 @@ async def run_dnd_sheet(
     # "claude-sonnet-4-6" grep never surfaced it. Defaulting to
     # DEFAULT_MODEL here meant an omitted `model` silently took the module
     # constant rather than the operator's persisted runtime.default_model.
-    model = resolve_default_model(model, request)
+    selection = resolve_selection(request, request_model=model)
     cmd = [console_script("dnd_sheet")]
 
     for pdf in pdfs:
@@ -52,7 +62,7 @@ async def run_dnd_sheet(
     elif output_dir.strip():
         cmd += ["--output-dir", output_dir.strip()]
 
-    cmd += ["--model", model]
+    cmd += selection_cli_args(selection)
 
     return _sse_response(cmd)
 
@@ -68,13 +78,13 @@ async def run_make_tracking(
 ):
     # See run_dnd_sheet above — same constant-shaped instance of the
     # omitted-model defect.
-    model = resolve_default_model(model, request)
+    selection = resolve_selection(request, request_model=model)
     cmd = [console_script("make_tracking")]
 
     if input.strip():
         cmd.append(input.strip())
 
     _cmd_opt(cmd, "--output", output)
-    cmd += ["--model", model]
+    cmd += selection_cli_args(selection)
 
     return _sse_response(cmd)

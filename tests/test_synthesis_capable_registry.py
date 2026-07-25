@@ -124,10 +124,16 @@ def test_warning_fires_for_the_haiku_tier(monkeypatch, tmp_path):
 
 
 def test_anthropic_backend_never_warns(monkeypatch, tmp_path):
-    """Pre-existing behaviour, pinned so this change doesn't alter it: the
-    warning is gated on ``backend != "anthropic"`` because the anthropic path
-    drops the model entirely (see test_ensemble_gates.py's
-    ``test_synthesize_ignores_stale_model_for_anthropic``)."""
-    body = _synthesize(monkeypatch, tmp_path, backend="anthropic",
-                       model="Qwen/Qwen3-Next-80B-A3B-Instruct-FP8")
+    """The warning is gated on ``backend != "anthropic"``, so the Anthropic
+    path never emits it whatever model is chosen.
+
+    Updated by feature 003. This used to demonstrate the gate by passing a
+    *Qwen* id on the anthropic backend and relying on the router silently
+    dropping it — the substitution FR-011 removed, so that request is now a
+    409 and cannot reach the warning logic at all. The gate itself is
+    unchanged; the test now shows it with a model that legitimately belongs
+    to the backend, which is what it was always trying to assert.
+    """
+    haiku = next((m for m in MODELS if "haiku" in m), "claude-haiku-4-5")
+    body = _synthesize(monkeypatch, tmp_path, backend="anthropic", model=haiku)
     assert WARNING_FRAGMENT not in body

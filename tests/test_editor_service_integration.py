@@ -341,6 +341,15 @@ class TestRouteMounting:
 
 
 class TestO3ModelResolution:
+    """O3's editor-local model override, preserved through feature 003.
+
+    003 replaced ``_model_args`` + ``_backend_flags`` with a single
+    ``_selection_args`` call into the one resolution seam. The *reach* of the
+    editor's override is unchanged — its own backend profile still wins over
+    the platform's pick — so these assertions are the same guarantee against
+    the new helper.
+    """
+
     def test_anthropic_override_wins_then_falls_back_to_default_model(self, fresh_campaign):
         platform = PlatformConfigService(fresh_campaign)
         service = SessionEditorConfigService(platform)
@@ -350,20 +359,40 @@ class TestO3ModelResolution:
             {"backends": {"active": "anthropic", "anthropic": {"model": "claude-opus-4-9"}}}
         )
         cfg = service.resolved_editor_config()
-        assert scene_editor._model_args(cfg) == ["--model", "claude-opus-4-9"]
+        assert scene_editor._selection_args(None, cfg) == ["--model", "claude-opus-4-9"]
 
         # Falls back to runtime.default_model (the global sidebar picker)
         # when the editor-local override is unset.
         service.update_config({"backends": {"active": "anthropic", "anthropic": {"model": None}}})
         cfg2 = service.resolved_editor_config()
         default_model = platform.resolved()["runtime"]["default_model"]
-        assert scene_editor._model_args(cfg2) == ["--model", default_model]
+        assert scene_editor._selection_args(None, cfg2) == ["--model", default_model]
 
-    def test_dgx_and_openrouter_suppress_model_args(self, fresh_campaign):
-        # _model_args() is skipped entirely for dgx/openrouter — that model
-        # is governed by _backend_flags instead (unchanged O1 behavior).
+    def test_dgx_selection_forwards_backend_and_no_claude_model(self, fresh_campaign):
+        """Pre-003 this asserted ``_model_args(cfg) == []`` — the anthropic
+        model was suppressed for dgx because ``_backend_flags`` supplied its
+        own. One helper now emits both halves, so the assertion moves from
+        "no model args" to what actually matters: the dgx backend is
+        forwarded, and no Claude id rides along with it (the pairing rule —
+        a tier that picks a different backend does not inherit the platform's
+        model).
+        """
         platform = PlatformConfigService(fresh_campaign)
         service = SessionEditorConfigService(platform)
         service.update_config({"backends": {"active": "dgx"}})
         cfg = service.resolved_editor_config()
-        assert scene_editor._model_args(cfg) == []
+        args = scene_editor._selection_args(None, cfg)
+        assert "--backend" in args and args[args.index("--backend") + 1] == "dgx"
+        assert not any(a.startswith("claude-") for a in args)
+
+    def test_plan_routes_still_suppress_the_dgx_adapter(self, fresh_campaign):
+        """``allow_openai_compat=False`` is preserved verbatim: the plan
+        routes fall back to the script's own default rather than being
+        retargeted at DGX, whose OpenAI-compat shape cannot serve routes that
+        may use tool-use.
+        """
+        platform = PlatformConfigService(fresh_campaign)
+        service = SessionEditorConfigService(platform)
+        service.update_config({"backends": {"active": "dgx"}})
+        cfg = service.resolved_editor_config()
+        assert scene_editor._selection_args(None, cfg, allow_openai_compat=False) == []

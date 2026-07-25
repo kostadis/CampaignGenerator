@@ -32,7 +32,7 @@ from campaignlib.planning_config import (
     load_planning_config,
     resolve_entries,
 )
-from server.platform_config_service import resolve_default_model
+from server.platform_config_service import resolve_selection
 from server.subprocess_runner import console_script, stream_subprocess, sse_error_stream
 
 router = APIRouter()
@@ -117,59 +117,48 @@ def _cmd_flag(cmd: list[str], flag: str, condition: bool) -> None:
 def _backend_args(backend: str, model: str, request: Request, *,
                   endpoint: str | None = None,
                   endpoints: list[str] | None = None) -> list[str]:
-    """``backend_cli_args`` plus the ``--model`` the Anthropic branch needs.
+    """Resolve this stage's selection and render it as CLI flags.
 
-    Phase 4 of ``docs/config/ensemble-isolation.md``. ``backend_cli_args``
-    returns ``[]`` for ``anthropic`` on purpose — "the script's own argparse
-    default applies" — which is right for backend/endpoint but meant the
-    ensemble router emitted no ``--model`` at all on that path. The
-    subprocess then fell back to ``campaignlib``'s literal, so
-    ``platform.runtime.default_model`` (the sidebar model picker) reached
-    every other ``/run/*`` route in the app and none of ensemble's. Phase 5a
-    of ``docs/config/platform-isolation.md`` routed fourteen request fields
-    through ``resolve_default_model``; ensemble's were not among them.
+    Feature 003 replaced this function's body with a call to the one seam,
+    ``server.platform_config_service.resolve_selection``. Callers already
+    fold the per-stage ``ensemble.yaml`` value into ``backend``/``model``
+    before calling (``backend = backend or cfg.extract.backend``), so what
+    arrives here is "request-or-service" already collapsed; the seam sees it
+    as the explicit tier and falls back to the platform when it is empty.
 
-    Resolution order, extending that function's table by one level at the
-    front (the caller has already folded in the per-stage config value):
+    Resolution order, unchanged in effect:
 
-    1. an explicit ``model`` on the request
-    2. ``ensemble.yaml``'s per-stage ``extract``/``synthesize`` model
-    3. ``platform.runtime.default_model`` — the sidebar pick
+    1. an explicit ``model``/``backend`` on the request
+    2. ``ensemble.yaml``'s per-stage value (folded in by the caller)
+    3. ``platform.runtime.default_model`` / ``default_backend``
     4. ``campaignlib.constants.DEFAULT_MODEL``
 
-    Only the Anthropic branch is resolved. dgx/openrouter/claude-code carry
-    their own model ids (a DGX model name is meaningless to the Anthropic
-    API and vice versa), and for those ``backend_cli_args`` already forwards
-    ``--model`` when one is set — substituting a Claude id when it is not
-    would be a bug, not a default. This is why the ensemble case can't just
-    be folded into ``backend_cli_args``: that helper is shared with
-    ``grounding.py``/``scene_editor.py`` and is deliberately model-agnostic.
+    **What changed: the stale-model guard no longer substitutes.** This used
+    to read
 
-    **The stale-model guard.** The Setup page keeps a per-stage model string
-    across a backend switch, so selecting dgx, typing a Qwen id, then
-    switching back to Anthropic leaves a foreign id in ``model``. Forwarding
-    that to an Anthropic run is the bug
-    ``test_extract_ignores_stale_model_for_anthropic`` (and its bundle /
-    synthesize siblings) exist to prevent — they predate this function and
-    asserted it by requiring that no ``--model`` reach an Anthropic run at
-    all, which was a sound proxy while the router had no model resolution.
-    Phase 4 keeps the invariant and drops the proxy: a non-Anthropic id is
-    discarded *before* resolution, so the run gets the sidebar's pick rather
-    than either a foreign id or nothing.
-
-    The check is a ``claude-`` prefix rather than membership of
-    ``server.config.MODELS`` on purpose. MODELS is a hand-maintained snapshot;
-    testing against it would silently swap the platform default in for a
-    legitimate Claude id that simply hadn't been added yet — quietly running a
-    model the caller did not ask for. The prefix only rejects ids that
-    *cannot* be Anthropic API ids (``Qwen/…``, ``openai/…``, and OpenRouter's
-    own ``anthropic/claude-…`` form), and never second-guesses one that could.
-    """
-    args = backend_cli_args(backend, model, endpoint=endpoint, endpoints=endpoints)
-    if not backend or backend == "anthropic":
         anthropic_model = model if (model or "").startswith("claude-") else None
         args += ["--model", resolve_default_model(anthropic_model, request)]
-    return args
+
+    — i.e. a model id that could not belong to the Anthropic backend was
+    silently discarded and the platform's model swapped in. The Setup page
+    keeps a per-stage model across a backend switch, so selecting dgx, typing
+    a Qwen id, then switching back to Anthropic left a foreign id in
+    ``model``; the old code quietly ran something the operator had not
+    chosen. Under 003 that pair raises ``IncompatibleSelection`` (HTTP 409)
+    and the operator clears or corrects it. The *rule* survives in
+    ``platform_config_shared.compatible``; only the substitution is gone.
+
+    ``endpoint``/``endpoints`` still come from the caller — extract fans out
+    across several DGX hosts (plural), synthesize targets one (singular).
+    """
+    resolved = resolve_selection(
+        request,
+        request_model=model or None,
+        request_backend=backend or None,
+        service_name="ensemble",
+    )
+    args = backend_cli_args(resolved.backend, endpoint=endpoint, endpoints=endpoints)
+    return args + (["--model", resolved.model] if resolved.model else [])
 
 
 def _resolve_ensemble_path(path: str) -> Path:

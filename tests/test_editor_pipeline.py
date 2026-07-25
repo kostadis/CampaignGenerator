@@ -126,7 +126,7 @@ def test_narration_file_for_scene_globs_correctly(tmp_path):
 
 def test_build_enhance_cmd_returns_error_when_misconfigured(tmp_path):
     cfg = _cfg()
-    result = scene_editor._build_enhance_cmd(cfg)
+    result = scene_editor._build_enhance_cmd(None, cfg)
     assert isinstance(result, tuple) and result[0] is None
 
 
@@ -140,7 +140,7 @@ def test_build_enhance_cmd_resolves_paths(tmp_path):
         session_summary=str(sd / "session-summary.md"),
         vtt=str(vtt),
     )
-    cmd = scene_editor._build_enhance_cmd(cfg)
+    cmd = scene_editor._build_enhance_cmd(None, cfg)
     assert isinstance(cmd, list)
     # enhance_summary.py moved into session_doc/ and now runs as the bare
     # `enhance_summary` console script (server.subprocess_runner.console_script()),
@@ -160,7 +160,7 @@ def test_build_narrate_cmd_uses_new_flags(tmp_path):
         scene_extractions_dir=str(sx),
         narration_dir=str(nd),
     )
-    result = scene_editor._build_narrate_cmd(cfg, 1)
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
     assert isinstance(result, list)
     assert "--scene-extractions" in result
     assert "--per-scene-output" in result
