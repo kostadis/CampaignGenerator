@@ -135,12 +135,12 @@ description: "Task list for Model Selection Resolution"
 - [X] T024 [P] [US2] Add `selection: ModelSelection` to the party config schema in `server/party_config_shared.py` / `server/party_config_service.py`.
 - [X] T025 [P] [US2] Add `selection: ModelSelection` to the planning config schema in `server/planning_config_shared.py` / `server/planning_config_service.py`.
 - [X] T026 [US2] Pass the owning service's selection into `resolve_selection` from `server/routers/grounding.py`: `grounding.yaml`'s for distill / campaign-state / build-dossiers, `party.yaml`'s for `/run/party`, `planning.yaml`'s for `/run/planning`. Three different service tiers behind one router — this is why the resolver takes `service` as a parameter rather than deriving it.
-- [ ] T027 (NOT DONE) [P] [US2] Re-express `EnsembleBackend` (`server/ensemble_config_shared.py:62`) in terms of the shared `ModelSelection` core, **keeping `endpoints` (plural)**. Per data-model.md, the plural/singular split is load-bearing: extract fans out across both Sparks. This is a refactor toward the shared shape, not a merge.
-- [ ] T028 (NOT DONE) [P] [US2] Re-express `BackendProfile` (`server/session_editor_config_shared.py:73`) in terms of the shared core, **keeping `endpoint` (singular)**. Note this model is `extra="allow"` unlike its ensemble twin — preserve that, or justify tightening it separately.
+- [X] T027 [P] [US2] Re-express `EnsembleBackend` (`server/ensemble_config_shared.py:62`) in terms of the shared `ModelSelection` core, **keeping `endpoints` (plural)**. Per data-model.md, the plural/singular split is load-bearing: extract fans out across both Sparks. This is a refactor toward the shared shape, not a merge.
+- [X] T028 [P] [US2] Re-express `BackendProfile` (`server/session_editor_config_shared.py:73`) in terms of the shared core, **keeping `endpoint` (singular)**. Note this model is `extra="allow"` unlike its ensemble twin — preserve that, or justify tightening it separately.
 - [X] T029 [P] [US2] Add `GET`/`PUT`/`DELETE /api/grounding/selection` in `server/routers/grounding.py` per `contracts/api.md` § 2. `DELETE`, or `PUT` with both fields null, MUST restore platform inheritance (FR-013).
 - [X] T030 [P] [US2] Add `GET`/`PUT`/`DELETE /api/party/selection` in `server/routers/party_routes.py`.
 - [X] T031 [P] [US2] Add `GET`/`PUT`/`DELETE /api/planning/selection` in `server/routers/planning_routes.py`.
-- [ ] T032 (NOT DONE) [US2] Add per-service override controls to the Grounding, Party and Planning pages in `frontend/src/`, each showing the inherited platform value when unset and offering an explicit clear action.
+- [X] T032 [US2] Add per-service override controls to the Grounding, Party and Planning pages in `frontend/src/`, each showing the inherited platform value when unset and offering an explicit clear action.
 - [X] T033 [P] [US2] Test: an override on one service changes only that service's runs, and clearing restores inheritance (SC-004, SC-007, quickstart V4/V5). New file `tests/test_service_selection_override.py`.
 - [X] T034 [P] [US2] Test: **no override surface exists** for Setup, Session Prep, NPC Table, Query or Connection Graph, and no new config file was created — assert `setup.yaml` does not exist (FR-004, quickstart V10). Add to `tests/test_service_selection_override.py`.
 - [X] T035 [P] [US2] Verify `tests/test_ensemble_config_defaults.py::TestModelResolution` and `tests/test_editor_service_integration.py::TestO3ModelResolution` still pass unchanged — they encode the two services whose override reach must not narrow (spec Assumptions).
@@ -161,10 +161,10 @@ description: "Task list for Model Selection Resolution"
 - [X] T037 [P] [US3] Add the same `/selection/resolved` endpoint for party and planning in `server/routers/party_routes.py` and `server/routers/planning_routes.py`.
 - [X] T038 [P] [US3] Add `/selection/resolved` for ensemble (`server/routers/ensemble.py`) and the session editor (`server/routers/scene_editor.py`). Ensemble's is per-stage, since its selection is.
 - [X] T039 [P] [US3] Add `/selection/resolved` for the three inheriting routers — `server/routers/prep.py`, `server/routers/setup.py`, `server/routers/connections.py`. These always report `model_origin: "platform"`, which is exactly what the operator needs to see; omitting them would leave the four historically-silent routers still opaque.
-- [ ] T040 (NOT DONE) [US3] Display the resolved model, backend and origin on each service's run surface in `frontend/src/`, reading from `/selection/resolved`. Origin must be visible, not just the value — "claude-sonnet-4-6 (platform default)" vs "(this service)".
-- [ ] T041 (NOT DONE) [US3] Surface an incompatible selection **before** the run, on each service's run surface in `frontend/src/`, with the reason — US3 acceptance scenario 3. The Run control is disabled while incompatible, matching the decision recorded in spec Clarifications.
-- [ ] T042 (NOT DONE) [US3] Offer "Clear override" and "Edit" directly at the point of refusal in `frontend/src/` (the same components as T041), driven by the `service` and `remedy` fields of the 409 body (FR-010). The operator must not have to go hunting for which service holds the stale value.
-- [ ] T043 (NOT DONE) [P] [US3] Test: `/selection/resolved` reports correct values and origins for all ten services across platform-only, override, and incompatible states (SC-005). New file `tests/test_selection_preview.py`.
+- [X] T040 [US3] Display the resolved model, backend and origin on each service's run surface in `frontend/src/`, reading from `/selection/resolved`. Origin must be visible, not just the value — "claude-sonnet-4-6 (platform default)" vs "(this service)".
+- [X] T041 [US3] Surface an incompatible selection **before** the run, on each service's run surface in `frontend/src/`, with the reason — US3 acceptance scenario 3. The Run control is disabled while incompatible, matching the decision recorded in spec Clarifications.
+- [X] T042 [US3] Offer "Clear override" and "Edit" directly at the point of refusal in `frontend/src/` (the same components as T041), driven by the `service` and `remedy` fields of the 409 body (FR-010). The operator must not have to go hunting for which service holds the stale value.
+- [X] T043 [P] [US3] Test: `/selection/resolved` reports correct values and origins for all ten services across platform-only, override, and incompatible states (SC-005). New file `tests/test_selection_preview.py`.
 
 **Checkpoint**: All three user stories independently functional.
 
@@ -178,7 +178,7 @@ description: "Task list for Model Selection Resolution"
 - [X] T047 Document the resolution rule once in `docs/config/values.md` (FR-015) and replace every other mention — in `docs/config/service-cut.md`, `docs/config/schema.md`, `docs/config/crud.md`, `CLAUDE.md` — with a link to it rather than a restatement. The five-way divergence this feature removes was mirrored by the same rule being described in several docs at once.
 - [X] T048 Delete `tests/test_selection_characterization.py` — its inverted form (T020) is now the permanent assertion, and keeping the snapshot would freeze a description of the old behaviour.
 - [X] T049 Confirm FR-014 needs no code: verify the run log at `<campaign>/logs/<timestamp>_<script>.md` already carries the resolved `--model`/`--backend` on its `command` line with no API key present (quickstart V9, research.md R7). This is inherited from `specs/002` — the task is verification, not implementation.
-- [ ] T050 (NOT DONE) Run the full V1–V10 suite from `specs/003-model-selection-resolution/quickstart.md` end to end against a real campaign workspace and record results in that file.
+- [X] T050 Run the full V1–V10 suite from `specs/003-model-selection-resolution/quickstart.md` end to end against a real campaign workspace and record results in that file.
 - [X] T051 Run `python -m pytest tests/` and confirm green, with `tests/test_retrieve_render_isolation.py` among the passes. Re-confirm T001's import check first — a green run whose imports resolved to the main checkout proves nothing about this branch.
 
 ---
@@ -265,31 +265,35 @@ That alone closes the money bug (SC-006) and the cross-service leak (SC-009). Ov
 
 ## Implementation status (2026-07-25)
 
-**43 of 51 complete.** Backend and contract layer done end to end; suite at the pre-003 baseline
-(7 failed / 5 errors, all environmental — missing `dgxlib`, unconfigured `fivetools_data`, live
-MemPalace) with **1827 passed, +83 over baseline**. Frontend builds clean.
+**51 of 51 complete.** Suite at the pre-003 baseline (7 failed / 5 errors, all environmental —
+missing `dgxlib`, unconfigured `fivetools_data`, live MemPalace) with **1872 passed, +128 over
+baseline**. Frontend builds clean. Quickstart V1–V10 executed against a booted server; results and
+evidence recorded in `quickstart.md`.
 
-### Not done — 8 tasks, all UI or cosmetic
+### Defects found by implementing, not predicted by planning
 
-| Task | Why it is outstanding |
+| Found by | Defect |
 |---|---|
-| T027, T028 | Re-express `EnsembleBackend`/`BackendProfile` in terms of the shared core. **Cosmetic only** — both already satisfy the seam's duck-typed contract (`backend`/`model`/`endpoint(s)`) and are exercised by passing tests. This is a tidy-up, not a behaviour change. |
-| T032 | Per-service override controls on the Grounding/Party/Planning pages. The API is complete and tested (`GET`/`PUT`/`DELETE /api/<svc>/selection`); only the Vue controls are missing. Overrides are settable via the API today. |
-| T040, T041, T042 | US3's pre-run display, the incompatibility banner, and the clear-at-point-of-refusal affordance. The data all exists: `GET /api/<svc>/selection/resolved` is live for **all eight** services and returns model, backend, both origins, `compatible` and `refusal`; the 409 body carries `service` + `remedy`. Only the Vue rendering is missing. |
-| T043 | Preview test — partially covered by `test_resolved_preview_reports_incompatibility_without_raising` and the roundtrip tests; a full 10-service sweep is not written. |
-| T050 | The quickstart V1–V10 sweep against a live campaign. Not run: it needs the server restarted against a real workspace, and the server currently running (pid 39635, out-of-the-abyss) is on `main`, not this branch. Every V-check has an automated equivalent that does pass — see the mapping below. |
+| Writing T013 | The endpoint count was 17; it is **22**. The Session Doc Editor has six token-spending endpoints, not two — T013 as written would have left four on the old chain (research.md R10). |
+| Running the reversed tests | The pairing rule was implemented wrong: model and backend resolved independently, so a service picking `dgx` with no model inherited the platform's *Claude* id and was then refused — a conflict manufactured from two valid choices. |
+| A bare-`FastAPI()` test fixture | The 409 only existed for apps built by `server/main.py`. `IncompatibleSelection` now subclasses `HTTPException`. |
+| Writing T033 | `party.yaml`/`planning.yaml` round-tripped `selection` to nothing — loader *and* saver hand-build their dicts, so a new field is dropped unless named in both. PUT returned 200, GET came back empty. |
+| The T043 preview sweep | Ensemble never honoured the platform backend. `EnsembleBackend.backend` defaults to the literal `"anthropic"` and `_backend_args` passed it as the *request* tier, pinning every unconfigured stage to Anthropic — a direct FR-008 violation. |
+| **Running V10 live** | The migration moved the backend but not the model, leaving a local backend paired with the Anthropic default. Seven of eight services reported `compatible: false`; a working DGX campaign would have been wholly blocked. The unit test passed throughout — it asserted the migration did what it was written to do, and it did; the specification was wrong. |
 
-### Quickstart coverage by automated test
+The reversal was also 7× larger than research.md R8 predicted: **21 tests**, not 3.
 
-| Check | Covered by |
-|---|---|
-| V1 backend reaches all routers | `test_selection_isolation.py::test_platform_backend_reaches_every_run_endpoint` |
-| V2 exactly one `--model` | `::test_exactly_one_model_flag_everywhere`, `test_grounding_backend.py::test_exactly_one_model_flag` |
-| V3 no cross-service read | `::test_router_reads_only_its_own_service`, `::test_grounding_no_longer_defines_backend_flags` |
-| V4 override wins, scoped | `test_service_selection_override.py::test_grounding_override_wins_for_its_own_runs`, `::test_one_services_override_does_not_touch_another` |
-| V5 clearing restores inheritance | `::test_clearing_restores_platform_inheritance` |
-| V6 incompatible → 409, no run | `::test_stale_service_override_is_refused_not_substituted`, `test_selection_isolation.py::test_incompatible_platform_pair_refuses_every_run_endpoint` |
-| V7 ensemble reversal | `test_ensemble_gates.py::test_*_refuses_stale_model_for_anthropic` (3) |
-| V8 pre-run visibility | `::test_resolved_preview_reports_incompatibility_without_raising` |
-| V9 run record | `test_selection_isolation.py::test_run_log_records_the_resolved_selection` |
-| V10 migration, no new file | `test_service_selection_override.py::test_no_new_config_file_is_created`; migration verified manually (dry-run → apply → idempotent re-run, `session_doc.yaml` preserved) |
+### Deviations from the task list, all deliberate
+
+- **T001** — did *not* re-install the editable package. The `.pth` hardcodes the main checkout and
+  the live server (pid 39635, out-of-the-abyss) runs under that same venv, so re-installing would
+  have re-pointed a running system at this branch. Ran pytest from the worktree root instead, where
+  CWD precedence resolves correctly; the failure set matches `main` exactly.
+- **T002/T020/T048** — collapsed. The throwaway characterization file would have added a step
+  without adding proof; the "before" state is already captured with file:line evidence in
+  research.md R1/R2. Permanent assertions were written directly.
+- **T008** — new CLI (`server/migrate_default_backend.py`) rather than extending
+  `migrate_platform_config.py`, whose `ui_state.yaml` input no longer exists.
+- **T050** — run against a scratch campaign, not a live one, and the subprocess it spawned resolved
+  to the main checkout's console script (the same `.pth` shadowing). The command the *router built*
+  is branch code and is what V1/V2 assert; the script that ran it is not.

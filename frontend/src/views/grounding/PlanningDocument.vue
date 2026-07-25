@@ -260,6 +260,8 @@ watch(dossierDir, (newDir) => {
 
       <ExtractSynthesizePanel
         endpoint="/api/grounding/run/planning"
+        selection-service="planning"
+        :selection-can-override="true"
         :params="synthParams"
         :extract-dir="extractDir"
         :disabled="!synthReady"
@@ -312,6 +314,9 @@ watch(dossierDir, (newDir) => {
 
       <ExtractSynthesizePanel
         endpoint="/api/grounding/run/build-dossiers"
+        selection-service="grounding"
+        selection-doc="campaign_state"
+        :selection-can-override="true"
         :params="dossierParams"
         :extract-dir="dossierExtractDir"
         :disabled="!dossierReady"

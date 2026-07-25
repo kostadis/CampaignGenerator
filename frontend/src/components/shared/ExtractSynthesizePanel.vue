@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { connectSSE } from '../../api/sse'
 import { useConfigStore } from '../../stores/config'
 import StreamOutput from './StreamOutput.vue'
+import SelectionPanel from './SelectionPanel.vue'
 
 const props = defineProps<{
   /** SSE endpoint (e.g. '/api/grounding/run/distill') */
@@ -20,6 +21,12 @@ const props = defineProps<{
   synthesizeDisabled?: boolean
   /** Disable the extract step (e.g. no summaries supplied — nothing to extract). */
   extractDisabled?: boolean
+  /** Feature 003 — service key for the pre-run selection display. */
+  selectionService?: string
+  /** Grounding only — which owning tier to preview (party/planning/…). */
+  selectionDoc?: string
+  /** Whether this service owns a config document and may hold an override. */
+  selectionCanOverride?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -52,14 +59,20 @@ const synthButtonLabel = computed(() => {
   return props.synthLabel || '2. Synthesize'
 })
 
+// Feature 003 — an incompatible selection blocks BOTH phases here, before
+// tokens are spent, rather than surfacing as a 409 mid-stream.
+const selectionCompatible = ref(true)
+
 const canExtract = computed(() =>
   !props.disabled
+  && selectionCompatible.value
   && !props.extractDisabled
   && extractStatus.value !== 'running'
   && synthStatus.value !== 'running'
 )
 const canSynthesize = computed(() =>
   !props.disabled
+  && selectionCompatible.value
   && !props.synthesizeDisabled
   && extractStatus.value !== 'running'
   && synthStatus.value !== 'running'
@@ -207,6 +220,15 @@ if (props.extractDir) refreshFiles()
 
 <template>
   <div class="esp">
+    <!-- Feature 003 — what these runs will actually use, and where it came from -->
+    <SelectionPanel
+      v-if="selectionService"
+      :service="selectionService"
+      :doc="selectionDoc"
+      :can-override="selectionCanOverride"
+      @compatible="(ok: boolean) => (selectionCompatible = ok)"
+    />
+
     <!-- Two columns: Extract on the left, Synthesize on the right. -->
     <div class="esp-grid">
       <!-- ── Phase 1: Extract ──────────────────────────────── -->

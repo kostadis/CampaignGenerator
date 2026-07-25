@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { connectSSE } from '../../api/sse'
 import { useConfigStore } from '../../stores/config'
 import StreamOutput from './StreamOutput.vue'
+import SelectionPanel from './SelectionPanel.vue'
 
 const props = defineProps<{
   /** SSE endpoint URL (e.g. '/api/prep/run/session-prep') */
@@ -13,6 +14,16 @@ const props = defineProps<{
   disabled?: boolean
   /** Label for the run button */
   label?: string
+  /**
+   * Feature 003 — service key for the pre-run selection display
+   * (grounding | party | planning | prep | setup | connections | …).
+   * Omit to hide the panel entirely.
+   */
+  selectionService?: string
+  /** Grounding only — which owning tier to preview (party/planning/…) */
+  selectionDoc?: string
+  /** Whether this service owns a config document and may hold an override */
+  selectionCanOverride?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -23,6 +34,10 @@ const config = useConfigStore()
 const output = ref('')
 const status = ref<'idle' | 'running' | 'done' | 'error'>('idle')
 const returnCode = ref<number | null>(null)
+// Feature 003 — an incompatible selection blocks the run HERE, before any
+// tokens are spent, instead of surfacing as a 409 the operator has to
+// interpret mid-stream (FR-009/FR-012).
+const selectionCompatible = ref(true)
 
 const buttonLabel = computed(() => {
   if (status.value === 'running') return 'Running\u2026'
@@ -51,6 +66,7 @@ const commandPreview = computed(() => {
 
 function run() {
   if (status.value === 'running' || props.disabled) return
+  if (!selectionCompatible.value) return
   if (!config.apiKeyPresent) return
 
   status.value = 'running'
@@ -96,6 +112,15 @@ function clear() {
 
 <template>
   <div class="run-panel">
+    <!-- Feature 003 — what this run will actually use, and where it came from -->
+    <SelectionPanel
+      v-if="selectionService"
+      :service="selectionService"
+      :doc="selectionDoc"
+      :can-override="selectionCanOverride"
+      @compatible="(ok: boolean) => (selectionCompatible = ok)"
+    />
+
     <!-- Command preview -->
     <div v-if="commandPreview" class="cmd-preview">
       <pre>{{ commandPreview }}</pre>
@@ -105,12 +130,16 @@ function clear() {
     <div class="run-controls">
       <button
         class="btn-success"
-        :disabled="disabled || status === 'running' || !config.apiKeyPresent"
+        :disabled="disabled || status === 'running' || !config.apiKeyPresent || !selectionCompatible"
         @click="run"
       >{{ buttonLabel }}</button>
 
       <span v-if="!config.apiKeyPresent" class="warning">
         ANTHROPIC_API_KEY not set
+      </span>
+
+      <span v-if="!selectionCompatible" class="warning">
+        Fix the selection above before running
       </span>
 
       <span v-if="returnCode !== null" class="rc" :class="returnCode === 0 ? 'rc-ok' : 'rc-err'">

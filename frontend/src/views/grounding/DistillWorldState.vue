@@ -96,6 +96,9 @@ watch(output, (newOutput) => {
 
       <ExtractSynthesizePanel
         endpoint="/api/grounding/run/distill"
+        selection-service="grounding"
+        selection-doc="distill"
+        :selection-can-override="true"
         :params="runParams"
         :extract-dir="extractDir"
         :disabled="!ready"

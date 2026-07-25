@@ -39,6 +39,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import yaml
+from campaignlib.selection import ModelSelection
 from pydantic import BaseModel, ConfigDict, Field
 
 from campaignlib.util import atomic_write_text
@@ -47,7 +48,7 @@ from server.platform_config_shared import OptStr
 ENSEMBLE_CONFIG_FILENAME = "ensemble.yaml"
 
 
-class EnsembleBackend(BaseModel):
+class EnsembleBackend(ModelSelection):
     """A selectable execution target for one LLM-bearing ensemble stage.
 
     The API key is NEVER stored here — it is read from the environment
@@ -59,9 +60,25 @@ class EnsembleBackend(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
+    # Inherits `backend` and `model` from ModelSelection (feature 003); the
+    # only field that is genuinely ensemble's own is the PLURAL `endpoints`,
+    # because the extract stage fans out across several DGX hosts. That
+    # plural/singular split from session_doc.yaml's BackendProfile is
+    # load-bearing and deliberately not unified — see
+    # specs/003-model-selection-resolution/data-model.md.
+    #
+    # `backend` is re-declared only to keep the non-optional "anthropic"
+    # default this schema has always had. resolve_selection recognises that
+    # default as "deferring" when no model is set, so an unconfigured stage
+    # still inherits the platform's backend.
     backend: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
     endpoints: list[str] = Field(default_factory=list)
-    model: OptStr = None
+
+    def is_empty(self) -> bool:
+        """`backend` is non-optional here, so the base class's "backend is
+        None" test never fires. For this schema "nothing chosen" means the
+        default backend, no model and no endpoints."""
+        return self.backend == "anthropic" and not self.model and not self.endpoints
 
 
 class EnsemblePaths(BaseModel):

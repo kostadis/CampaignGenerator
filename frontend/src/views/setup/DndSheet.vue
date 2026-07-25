@@ -50,6 +50,7 @@ const runParams = computed(() => ({
       </div>
 
       <RunPanel
+        selection-service="setup"
         endpoint="/api/setup/run/dnd-sheet"
         :params="runParams"
         :disabled="!ready"

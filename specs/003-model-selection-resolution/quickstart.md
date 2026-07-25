@@ -152,3 +152,49 @@ Must keep passing unchanged: `tests/test_default_model_resolution.py`,
 
 > Worktree caveat: the editable-install `.pth` hardcodes the main checkout, so `import campaignlib`
 > in a worktree can resolve to main's copy. A green worktree run is not proof you tested the branch.
+
+---
+
+## Results — executed 2026-07-25
+
+Run against a scratch campaign (not a live one) with the branch's server booted on port 5055, so
+no real campaign data was mutated and no metered tokens were spent. The pre-existing server on
+`main` (pid 39635, out-of-the-abyss, port 5000) was left untouched.
+
+| Check | Result | Evidence |
+|---|---|---|
+| V1 backend reaches every router | **PASS** | `npc_table` — one of the routers that emitted no `--backend` at all before 003 — ran with `--backend dgx` in its persisted command |
+| V2 exactly one `--model` | **PASS** | `grep -c -- --model` on the run log = 1 |
+| V3 no cross-service read | **PASS** | no `SessionEditorConfigService` import in `grounding.py`; the only textual match is a comment recording its removal (the AST test is the authority) |
+| V4 override wins, scoped | **PASS** | grounding → `Qwen-Grounding-Only` (service); party and prep unchanged at `Qwen3-Next-80B` (platform) |
+| V5 clearing restores inheritance | **PASS** | after `DELETE`, grounding → `Qwen3-Next-80B` (platform) |
+| V6 incompatible → 409, no run | **PASS** | 409 with `remedy: clear_override`, `service: distill`; no log written |
+| V7 ensemble reversal | **PASS** | 3 `test_*_refuses_stale_model_for_anthropic` green |
+| V8 pre-run visibility | **PASS** | all 8 services report model, backend, both origins and `compatible` |
+| V9 run record | **PASS** | `result`/`returncode`/`duration`/`cwd` present, no `API_KEY` anywhere |
+| V10 migration, no new file | **PASS** (after a fix — see below) | `platform.yaml` gained the backend *and* model; `session_doc.yaml` untouched; no `setup.yaml`/`prep.yaml`/`connections.yaml` |
+
+### V10 found a defect the unit tests could not
+
+The first live migration moved `backends.active` → `runtime.default_backend` and stopped there. On
+a campaign whose backend was dgx, that left the platform's **Anthropic default model** paired with
+a **local backend** — an incompatible pair, so `/selection/resolved` reported `compatible: false`
+for **seven of the eight services** and every run would have been refused. A campaign that worked
+before the migration would have been wholly blocked after it.
+
+The migration now carries the model with the backend when the platform's own model cannot serve
+it, and warns loudly when `session_doc.yaml` names a backend but pins no model for it (nothing can
+be carried, and inventing one would be the substitution FR-011 forbids). Pinned by
+`tests/test_migrate_default_backend.py`.
+
+This is why V10 was worth running against a booted server rather than trusting the unit test: the
+unit test asserted the migration did what it was written to do, and it did — the specification of
+what it *should* do was what was wrong.
+
+### Not exercised
+
+The subprocess in V1 resolved to `/home/kroussos/.venv/bin/npc_table` — the **main checkout's**
+editable install, per the `.pth` shadowing noted in T001. The command the *router built* is branch
+code and is what V1/V2 assert; the script that then ran it is not. A full end-to-end run on branch
+code needs either a dedicated venv or a re-install, and re-installing would re-point the live
+server on `main`.

@@ -53,6 +53,7 @@ import yaml
 
 from server.platform_config_shared import (
     BACKENDS,
+    compatible,
     PLATFORM_CONFIG_NAME,
     load_platform_config,
     save_platform_config,
@@ -61,8 +62,17 @@ from server.platform_config_shared import (
 SESSION_DOC_FILENAME = "session_doc.yaml"
 
 
-def read_active_backend(session_doc_path: Path) -> str | None:
-    """Return ``backends.active`` from a raw ``session_doc.yaml``, or None.
+def read_active_selection(session_doc_path: Path) -> tuple[str | None, str | None]:
+    """Return ``(backends.active, backends.<active>.model)`` from a raw
+    ``session_doc.yaml``.
+
+    The **model matters as much as the backend**. Before 003 a Grounding run on
+    dgx got its backend AND its model from this document (via the cross-service
+    read); migrating only the backend would leave the platform's Anthropic
+    default paired with a local backend — an incompatible pair that refuses
+    every run. A campaign that was working before the migration would be wholly
+    blocked after it. Carrying the model across is not a substitution: it is the
+    selection that was already in effect.
 
     Read raw via ``yaml.safe_load`` rather than through
     ``SessionEditorConfig``: a campaign whose document fails strict validation
@@ -70,20 +80,27 @@ def read_active_backend(session_doc_path: Path) -> str | None:
     must not depend on the editor schema staying loadable.
     """
     if not session_doc_path.is_file():
-        return None
+        return None, None
     try:
         raw: Any = yaml.safe_load(session_doc_path.read_text(encoding="utf-8")) or {}
     except yaml.YAMLError:
-        return None
+        return None, None
     if not isinstance(raw, dict):
-        return None
+        return None, None
     backends = raw.get("backends")
     if not isinstance(backends, dict):
-        return None
+        return None, None
     active = backends.get("active")
-    if isinstance(active, str) and active.strip() in BACKENDS:
-        return active.strip()
-    return None
+    if not (isinstance(active, str) and active.strip() in BACKENDS):
+        return None, None
+    active = active.strip()
+    profile = backends.get(active)
+    model = None
+    if isinstance(profile, dict):
+        candidate = profile.get("model")
+        if isinstance(candidate, str) and candidate.strip():
+            model = candidate.strip()
+    return active, model
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -100,25 +117,50 @@ def main(argv: list[str] | None = None) -> int:
     session_doc_path = config_base / SESSION_DOC_FILENAME
     platform_path = config_base / PLATFORM_CONFIG_NAME
 
-    active = read_active_backend(session_doc_path)
+    active, active_model = read_active_selection(session_doc_path)
     if active is None:
         print(f"nothing to migrate: no usable backends.active in {session_doc_path}")
         return 0
 
     doc = load_platform_config(platform_path)
     current = doc.runtime.default_backend
+    current_model = doc.runtime.default_model
 
-    if current == active:
-        print(f"nothing to migrate: runtime.default_backend is already {active!r}")
+    # Carry the model across too, but only when the one already on the platform
+    # cannot serve the incoming backend. An operator who has deliberately set a
+    # compatible model keeps it; one whose platform still holds the Anthropic
+    # default gets the model that was actually in effect for this backend.
+    update: dict[str, str] = {}
+    if current != active:
+        update["default_backend"] = active
+    if active_model and not compatible(current_model, active):
+        update["default_model"] = active_model
+
+    if not update:
+        print(f"nothing to migrate: runtime.default_backend is already {active!r} "
+              f"and {current_model!r} can serve it")
         return 0
 
     if args.dry_run:
-        print(f"would set runtime.default_backend: {current!r} -> {active!r} in {platform_path}")
+        for key, value in update.items():
+            was = current if key == "default_backend" else current_model
+            print(f"would set runtime.{key}: {was!r} -> {value!r} in {platform_path}")
+        if "default_model" not in update and not compatible(current_model, active):
+            print(f"WARNING: {current_model!r} cannot run on {active!r} and "
+                  f"{session_doc_path.name} pins no model for it — set one in the "
+                  f"sidebar or every run will be refused")
         return 0
 
-    new_runtime = doc.runtime.model_copy(update={"default_backend": active})
+    new_runtime = doc.runtime.model_copy(update=update)
     save_platform_config(platform_path, doc.model_copy(update={"runtime": new_runtime}))
-    print(f"migrated runtime.default_backend: {current!r} -> {active!r} in {platform_path}")
+    for key, value in update.items():
+        was = current if key == "default_backend" else current_model
+        print(f"migrated runtime.{key}: {was!r} -> {value!r} in {platform_path}")
+    if not compatible(new_runtime.default_model, new_runtime.default_backend):
+        print(f"WARNING: {new_runtime.default_model!r} cannot run on "
+              f"{new_runtime.default_backend!r} — {session_doc_path.name} pinned no "
+              f"model for that backend. Set one in the sidebar or every run will "
+              f"be refused.")
     print(f"left {session_doc_path.name}'s backends block intact "
           f"(it remains the Session Doc Editor's own override)")
     return 0

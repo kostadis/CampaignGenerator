@@ -32,6 +32,7 @@ from campaignlib.planning_config import (
     load_planning_config,
     resolve_entries,
 )
+from campaignlib.selection import ModelSelection
 from server.platform_config_service import resolve_selection
 from server.subprocess_runner import console_script, stream_subprocess, sse_error_stream
 
@@ -151,10 +152,17 @@ def _backend_args(backend: str, model: str, request: Request, *,
     ``endpoint``/``endpoints`` still come from the caller — extract fans out
     across several DGX hosts (plural), synthesize targets one (singular).
     """
+    # Passed as the SERVICE tier, not the request tier. The callers fold the
+    # per-stage ensemble.yaml value into these arguments, and that value's
+    # schema default for `backend` is the literal "anthropic" — so treating it
+    # as an explicit request would pin every unconfigured stage to Anthropic
+    # and the platform's backend would never reach the ensemble at all
+    # (FR-008). As a service tier, resolve_selection's "backend is the schema
+    # default and no model is set" rule recognises it as deferring, while a
+    # stage that genuinely names dgx/openrouter still wins.
     resolved = resolve_selection(
         request,
-        request_model=model or None,
-        request_backend=backend or None,
+        service=ModelSelection(backend=backend or None, model=model or None),
         service_name="ensemble",
     )
     args = backend_cli_args(resolved.backend, endpoint=endpoint, endpoints=endpoints)
@@ -888,8 +896,8 @@ def get_ensemble_resolved_selection(
     stage_cfg = getattr(cfg, stage, None) or cfg.extract
     return resolve_selection(
         request,
-        request_model=(stage_cfg.model or None),
-        request_backend=(stage_cfg.backend or None),
+        service=ModelSelection(backend=stage_cfg.backend or None,
+                               model=stage_cfg.model or None),
         service_name="ensemble",
         raise_on_incompatible=False,
     ).as_dict()
