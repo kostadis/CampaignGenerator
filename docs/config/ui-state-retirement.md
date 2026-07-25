@@ -1,19 +1,26 @@
 # UI State Retirement — closing the last "no service ownership" row
 
-> **Status: 📋 Proposed (2026-07-25); D1 settled by the GM 2026-07-25.** Fifth and final entry in the
-> service-isolation series, after
+> **Status: ✅ Done (2026-07-25).** All five phases shipped on
+> `feat/ui-state-retirement`. Fifth and final entry in the service-isolation series, after
 > [planning-isolation.md](./planning-isolation.md),
 > [session-editor-isolation.md](./session-editor-isolation.md),
 > [platform-isolation.md](./platform-isolation.md),
 > [ensemble-isolation.md](./ensemble-isolation.md) and
 > [grounding-isolation.md](./grounding-isolation.md). It closes the row
-> [service-cut.md](./service-cut.md) still marks **"Mostly closed"** — the six
-> loose `ui.<section>` blobs and the `UIStateService` that landlords them.
+> [service-cut.md](./service-cut.md) had marked **"Mostly closed"** — and closes it by deleting a
+> tier rather than extracting a sixth service.
 >
-> **D1 is settled: delete only — the prep pages stay stateless** (GM, 2026-07-25).
-> Track C and its phase are struck; see [Decisions](#decisions). **D2 and D3 are
-> still open**, D3 destructively so. Every "current state" claim below is
-> code-verified against `main` at `09cbfa4` with a file:line citation.
+> **Verified:** full suite 12 failures/errors, **identical IDs to `main`** (dgxlib absent ×7, one
+> live mempalace test, two env-dependent `resolve_roots`, one benchmark gate, one extract_facts
+> CLI) — zero regressions. `vue-tsc` clean. Net **−629 lines**.
+>
+> **D1 settled by the GM (2026-07-25): delete only** — the prep pages stay stateless, and that is
+> now recorded rather than incidental. **D2 taken as an implementation call.** **D3 open** — the
+> orphaned `ui_state.yaml` in `out-of-the-abyss` is drained but not yet deleted.
+>
+> See [Implementation notes](#implementation-notes-as-shipped) for what the work turned up that
+> the plan did not predict. Every "current state" claim below was code-verified against `main` at
+> `09cbfa4` with a file:line citation.
 
 ## Thesis
 
@@ -258,14 +265,14 @@ and the line to draw is the one `ensemble.yaml` already draws: stored
 
 ## Phases
 
-| # | Track | Deliverable | Risk |
+| # | Track | Deliverable | Status |
 |---|---|---|---|
-| 0 | — | **Prerequisite:** the three migrations on `out-of-the-abyss` | none (additive) |
-| 1 | B | Three stale reads repointed; `EnsembleSynthesize` prefill defect closed | low |
-| 2 | A | `resolved()` + helpers move to `PlatformConfigService`; `ui` key dropped from its return; dead `_PATH_FIELDS` machinery deleted. `UIStateService` still exists but is unreferenced | **medium** — touches the boot path and the session-base resolution |
-| 3 | A | Delete `config_service.py`, the `ui.*` models, `PUT /section/{name}`, `updateSection`, the `Settings.vue` block, `migrate_config.sh`'s entry. Relocate `ProfileEntry`/`BackendProfile`/`OptStr`/`OptBool`/`ConfigError` per D2 | medium — wide but mechanical; 14 test files reference these names |
-| 4 | A | Delete `~/campaigns/out-of-the-abyss/config/ui_state.yaml` (per D3) | low |
-| 5 | — | Docs: `schema.md`, `crud.md`, `values.md`, `subsystems.md`, `master.md`, `service-cut.md` (the gap row goes **Mostly closed → Closed**, plus the D1 statelessness note), `CLAUDE.md`; the four components get their "deliberately stateless" comment; mark this doc Done | low |
+| 0 | — | **Prerequisite:** the four migrations on `out-of-the-abyss` | ✅ (`platform` by the GM; `ensemble`/`grounding` in-effort — defaults only, as predicted) |
+| 1 | B | Three stale reads repointed; `EnsembleSynthesize` prefill defect closed | ✅ |
+| 2 | A | `resolved()` moved to `PlatformConfigService`; `ui` key dropped; dead `_PATH_FIELDS` machinery deleted | ✅ |
+| 3 | A | `config_service.py`, `config_models.py`, `PUT /section/{name}`, `updateSection`, the `Settings.vue` block and the `migrate_config.sh` entry deleted; D2 relocations | ✅ |
+| 4 | A | Delete `~/campaigns/out-of-the-abyss/config/ui_state.yaml` | ⏸ **pending D3** |
+| 5 | — | Docs reconciled; the gap row goes **Mostly closed → Closed** | ✅ |
 
 Phase 1 is independent of everything. Phases 2–3 must not be one commit: Phase 2
 is a behavior-preserving move of the session-base resolution and deserves its own
@@ -329,13 +336,47 @@ or inline the literal in each. See D2.
   rows close outright; those two, plus gap #3 and "coupling via shared files",
   remain the honest open list.
 
+## Implementation notes (as shipped)
+
+Five things the work turned up that the plan above did not predict.
+
+**The guard test found a live defect while being written.** `server/main.py`'s boot-failure
+message told the GM to go fix `ui_state.yaml` — a file the server had stopped reading one phase
+earlier. Pointing someone at a file that cannot be the cause is worse than naming none; it now
+names the two documents that can actually raise a `ConfigError`. This is the fourth time in the
+series that a mechanical guard caught something a manual audit had walked past.
+
+**And the guard's own first cut was wrong in the series' signature way.** It stripped comments by
+skipping lines that *start* with a quote — which reported 40 false positives, every one a
+continuation line inside a multi-line docstring, while keeping the one true positive above. Rewrote
+it to find Python docstrings with `ast`. Same lesson `platform-isolation.md` records three times:
+a thing defined by its structure cannot be inventoried by grepping one of its spellings.
+
+**Deleting the `else` branch would have been a silent no-op.** `resolved()`'s boot-override loop
+swept any unrecognised dotted section into `ui_raw`, where nothing read it — that is precisely
+where twelve dead `session_doc.*` flags hid for months (O1). Dropping the branch along with
+`ui_raw` would have restored the same silence by a different route, so it is replaced by a
+construction-time `ConfigError`: an override with no consumer now fails the boot.
+
+**Two isolation-invariant tests needed re-expressing, not deleting.** Both used a `ui.<section>`
+write as their probe for "one service's write must not touch another's document". The probe
+ceased to exist; the invariant did not. They now use `grounding.yaml` as the sibling document —
+and the "assert both files exist or this guard is vacuous" line the ensemble test already carried
+turned out to be exactly the right instinct, since the naive edit would have left it guarding a
+file nothing creates.
+
+**`SCHEMA_VERSION` was the tell, in hindsight.** The document reached `version: 5` through five
+bumps — four of which recorded a section's *departure*. Nothing ever arrived. A version number
+that only ever counts subtractions is describing a document being dismantled, and four prior
+efforts read it as a document being migrated.
+
 ## Decisions
 
 | # | Question | Call |
 |---|---|---|
 | **D1** | Do the four prep/setup pages get real persistence, or does the tier close by deletion alone? | **Delete only** (GM, 2026-07-25). They are one-shot run forms; the GM does not retype into them across sessions. Track C struck, Phase 5 removed. The statelessness gets **recorded** in `service-cut.md` and in the four components, so it reads as a position rather than an oversight |
 | **D2** | Where do `ProfileEntry`, `BackendProfile`, `OptStr`, `OptBool`, `ConfigError` and `UI_STATE_NAME` land when `config_models.py` empties? | **Split each symbol to its owner** — validators + `ConfigError` → `platform_config_shared.py`; `ProfileEntry`/`BackendProfile` → `session_editor_config_shared.py` (their only consumer); `UI_STATE_NAME` → a new `server/migrate_common.py` shared by the four migration CLIs. Taken as an implementation call: internal organization, no data at stake, and "each symbol lands with its owner" is the series' own rule. Costs one new file |
-| **D3** | The orphaned 57 KB `out-of-the-abyss/config/ui_state.yaml` | **Open — needs a GM call, and it is the destructive one.** (a) delete in Phase 4 after the prerequisite migrations; (b) leave it as an unread record of pre-isolation state. Recommend (a): `~/campaigns` is git-tracked so history keeps the record, and an unread config file on disk is the exact "multiple authorities" smell the series exists to remove |
+| **D3** | The orphaned 57 KB `out-of-the-abyss/config/ui_state.yaml` | **Still open — needs a GM call, and it is the destructive one.** The file is now fully drained (all four migrations run; only `runtime` held anything real), so deleting it loses nothing — but it is campaign data, so the call is the GM's. (a) delete in Phase 4 after the prerequisite migrations; (b) leave it as an unread record of pre-isolation state. Recommend (a): `~/campaigns` is git-tracked so history keeps the record, and an unread config file on disk is the exact "multiple authorities" smell the series exists to remove |
 
 ## Effort
 

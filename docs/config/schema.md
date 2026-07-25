@@ -1,15 +1,18 @@
 # CampaignGenerator Configuration — Schema
 
-The app's own runtime configuration. Per `docs/config/platform-isolation.md` (Phases 0–5a), the
-old fused `CampaignConfigService` is now two classes: `server/platform_config_service.py
-::PlatformConfigService` owns the permanent **platform** tier (paths, `runtime.*`, wiring,
-`config.yaml`) and, as its last construction step, builds `server/config_service.py::UIStateService`
-— the renamed residual landlord of the ten un-isolated `ui.<section>` blobs. Both are typed by
-`server/config_models.py` (`UIState`, schema v4) and `server/platform_config_shared.py`
-(`PlatformDocument`, `PlatformLocalConfig`). Per-campaign. Distinct from the external wiring layer
-(`config/wiring.yaml`) and the 5e content refs. Also distinct from the Session Doc Editor's own
-`session_doc.yaml`, owned by `SessionEditorConfigService` — see
-[Session-editor isolation](./session-editor-isolation.md).
+The app's own runtime configuration. `server/platform_config_service.py::PlatformConfigService`
+owns the permanent **platform** tier (paths, `runtime.*`, wiring, `config.yaml`), typed by
+`server/platform_config_shared.py` (`PlatformDocument`, `PlatformLocalConfig`). Per-campaign.
+Distinct from the external wiring layer (`config/wiring.yaml`) and the 5e content refs.
+
+`docs/config/platform-isolation.md` (Phases 0–5a) split that class out of the old fused
+`CampaignConfigService`, leaving a residual `UIStateService` as landlord of the un-isolated
+`ui.<section>` blobs. **That residual half no longer exists** — see
+[ui-state-retirement.md](./ui-state-retirement.md). `server/config_service.py`,
+`server/config_models.py`, `UIState`/`UISection`, `SCHEMA_VERSION` and `<config>/ui_state.yaml`
+are all deleted: the six sections that remained were empty in every campaign, had no writer, and
+had no reader that wasn't already broken. Every service with config owns its own document, listed
+below.
 
 ## Documents & layers
 
@@ -18,9 +21,9 @@ flowchart TB
   subgraph disk[On-disk, per-campaign]
     CY["config.yaml<br/>tracked, human-only"]
     PY["platform.yaml<br/>tracked, PlatformConfigService-owned"]
-    US["ui_state.yaml<br/>tracked, UIStateService-owned"]
     LC[".campaigngenerator.local.yaml<br/>gitignored"]
     SD["session_doc.yaml<br/>tracked, editor-service-owned"]
+    EN["ensemble.yaml · grounding.yaml<br/>party.yaml · planning.yaml<br/>each its own service"]
   end
   subgraph mem[In-memory]
     BO["boot_overrides<br/>CLI flags"]
@@ -28,7 +31,6 @@ flowchart TB
   end
   CY --> RES
   PY -->|runtime.default_model,<br/>runtime.session_dir| RES
-  US --> RES
   BO --> RES
   LC --> RES
   BO -.->|session_dir, default_model, campaign_dir| SD
@@ -37,19 +39,19 @@ flowchart TB
 | Source | Ownership | Model | Notes |
 |---|---|---|---|
 | `config.yaml` | tracked, human-only | raw dict (`_tracked`) | `PlatformConfigService` never writes it; comments/order safe |
-| `platform.yaml` | tracked, server-owned | `PlatformDocument` (strict `extra="forbid"`) | `runtime.{default_model, session_dir}` — the sidebar model picker and the session-resolution anchor. Owned exclusively by `PlatformConfigService`; loaded BEFORE `UIStateService` is constructed (load-order is load-bearing — see `PlatformConfigService`'s module docstring) |
-| `ui_state.yaml` | tracked, server-owned | `UIState` (v4) | Per-page UI state only — `runtime` left this document in Phase 3 (O3) |
+| `platform.yaml` | tracked, server-owned | `PlatformDocument` (strict `extra="forbid"`) | `runtime.{default_model, session_dir}` — the sidebar model picker and the session-resolution anchor. Owned exclusively by `PlatformConfigService`. The "must load before `UIStateService`" ordering constraint this row used to carry went with that class |
+| ~~`ui_state.yaml`~~ | **deleted** | — | Retired by [ui-state-retirement.md](./ui-state-retirement.md). Still read RAW by the four `server/migrate_*.py` CLIs, which exist to rescue an unmigrated campaign's data — never by the server |
 | `.campaigngenerator.local.yaml` | gitignored, machine-local | `PlatformLocalConfig` (strict) | host/port + nav; owned by `PlatformConfigService` |
-| `session_doc.yaml` | tracked, owned by `SessionEditorConfigService` | `SessionEditorConfig` (grouped, strict `extra="forbid"`) | Session Doc Editor's own slice; not part of `PlatformConfigService`/`UIStateService`/`UIState` at all — see below |
+| `session_doc.yaml` | tracked, owned by `SessionEditorConfigService` | `SessionEditorConfig` (grouped, strict `extra="forbid"`) | Session Doc Editor's own slice, plus (since the retirement) `ProfileEntry`/`BackendProfile`, which used to be declared beside `UIState` — see below |
 | `boot_overrides` | in-memory only | dict | CLI flags to `server.main`; not persisted. Phase 0 (O1) deleted the twelve dead `session_doc.*` flags — only `--campaign-dir`, `--session-dir`, `--config-dir`, `--host`, `--port` remain, and all five reach a real consumer |
-| `resolved` | in-memory (derived) | typed view | Path fields absolute vs campaign_dir; what routers read. Thin passthrough — `PlatformConfigService.resolved()` calls `self.uis.resolved()`, since the boot-override application, sibling-session rebase, and per-field path resolution over `ui.<section>` still need `UIStateService`'s own `_PATH_FIELDS` knowledge |
+| `resolved` | in-memory (derived) | typed view | `{campaign_dir, runtime, server, nav}` — boot overrides applied, path fields absolute. Implemented on `PlatformConfigService` itself since the retirement; it used to be a passthrough to `UIStateService.resolved()` and to carry a fifth key, `ui`. The `_PATH_FIELDS` machinery and sibling-session rebase that justified living there had been iterating an empty table since grounding-isolation Phase 10 |
 
 ## platform.yaml → PlatformDocument (strict)
 
 New in Phase 3 (O3) of `docs/config/platform-isolation.md`. A single `runtime:` key, matching the
-strictness of `SessionEditorConfig`/`PlanningConfig`. Owned outright by `PlatformConfigService` —
-no delegation to `UIStateService` for either read or write, unlike the pre-Phase-3 shape where
-`runtime` physically lived inside `ui_state.yaml` and had to be reached through it.
+strictness of `SessionEditorConfig`/`PlanningConfig`. Owned outright by `PlatformConfigService`;
+before Phase 3 `runtime` physically lived inside `ui_state.yaml` and had to be reached through the
+class that owned that file.
 
 | Field | Type | Role |
 |---|---|---|
@@ -64,38 +66,42 @@ data loss on a bad file would be worse than refusing to boot. Migrated from a pr
 (modelled on `migrate_session_doc.py`: raw `yaml.safe_load`, `--config-dir`, `--force`, "nothing to
 migrate" + exit 0 when clean).
 
-## ui_state.yaml → UIState (v4)
+## ~~ui_state.yaml → UIState~~ — retired
 
-| Field | Type | Role |
-|---|---|---|
-| `version` | int | `SCHEMA_VERSION = 5` — bumped from 4 in Phase 10 of the grounding isolation (five sections out at once); previously 3→4 in Phase 3 (O3), the second structural removal from `UIState` after Phase 5 of the session-editor isolation (which removed `session_doc`/`profiles`); this is the first version bump that actually carries information again |
-| `ui` | UISection | All per-page state (typed + loose) |
-| `legacy` | LegacySection | `unmigrated` quarantine |
+**The document, its models and its route are deleted** —
+[ui-state-retirement.md](./ui-state-retirement.md), 2026-07-25. Gone with it:
+`server/config_service.py` (`UIStateService`), `server/config_models.py`
+(`UIState`/`UISection`/`_LooseSection`/`LegacySection`/`UI_SECTION_NAMES`/`SCHEMA_VERSION`),
+`PUT /api/config/section/{name}`, the store's `updateSection`, and the `ui_state_path` +
+`schema_version` keys of `GET /api/config/`.
 
-`runtime` is **gone** — relocated to `platform.yaml` (see above). `UIState` stays
-`extra="allow"`, so a pre-migration file's leftover top-level `runtime:` block loads harmlessly
-and is simply ignored, the same precedent Phase 5 of the session-editor isolation set for a stale
-`ui.session_doc`/`ui.profiles` block.
+It was retired rather than re-homed because the six sections it still held — `prep`, `npc`,
+`query`, `workflow`, `connections`, `experimental` — were **empty in every campaign** and had
+**no writer**: `updateSection` had no callers, so the only write door into the file was unreachable
+from the shipped UI. The four pages those names were reserved for keep their in-component state and
+persist nothing, by decision (D1).
 
-### Typed UI sections
-**None left.** `ui.grounding` (`GroundingSection`) was the last one; it and the four loose
-grounding sections moved to `<config>/grounding.yaml` in Phase 10 of
-[grounding-isolation.md](./grounding-isolation.md). `GroundingSection` is deleted from
-`config_models.py`.
-**`ui.session_doc`/`ui.profiles`, `ui.ensemble` and `ui.vtt_summary` no longer exist**: the first three were deleted from
-`UISection` and from `config_models.py` when their services took their config into dedicated
-files (`session_doc.yaml`, `ensemble.yaml`). Run the matching one-shot CLI once per campaign to
-recover the data:
+The eventual `version: 5` is the tell in hindsight: five schema bumps, four of them recording a
+section's *departure*. Nothing ever arrived.
+
+### Migrating a campaign that still has one
+
+Any `ui_state.yaml` left on disk is now inert — the server does not open it. Its data is recovered
+by the four one-shot CLIs, which read the file RAW (never through a typed model) precisely so they
+can rescue fields no live schema declares. **Retiring the reader did not retire the rescuers.**
 
 | Was | Now | Migrate with |
 |---|---|---|
+| `runtime` | `platform.yaml` (`PlatformDocument`) | `python -m server.migrate_platform_config --campaign-dir DIR` |
 | `ui.session_doc` + `ui.profiles` | `session_doc.yaml` (`SessionEditorConfig`) | `python -m server.migrate_session_doc --campaign-dir DIR` |
 | `ui.ensemble` | `ensemble.yaml` (`EnsembleConfig`) | `python -m server.migrate_ensemble_config --campaign-dir DIR` |
 | `ui.grounding` + `ui.campaign_state` + `ui.distill` + `ui.party` + `ui.planning` | `grounding.yaml` (`GroundingConfig`) | `python -m server.migrate_grounding_config --campaign-dir DIR` |
-| `ui.vtt_summary` | *(nothing — the VTT Summary service was retired outright)* | no migration; a stale block loads and is ignored |
+| `ui.vtt_summary` | *(nothing — the VTT Summary service was retired outright)* | no migration |
+| `ui.{prep,npc,query,workflow,connections,experimental}` | *(nothing — never held data)* | no migration |
 
-See [session-editor-isolation.md](./session-editor-isolation.md#migrating-an-existing-campaign)
-and [ensemble-isolation.md](./ensemble-isolation.md).
+Run them before deleting the file. `tests/test_no_ui_state.py` guards both directions: no live code
+may reference the retired tier, **and** each migration CLI must still name the document it exists to
+rescue.
 
 ## ensemble.yaml → EnsembleConfig (grouped, strict)
 
@@ -118,10 +124,9 @@ code. `planning` holds the six `planning_*` keys that used to ride on `ui.ensemb
 platform-tier. `bundle_min_facts` and `threads_min_facts` are separate fields because the shipped
 defaults genuinely differ (3 vs 2).
 
-### Loose UI sections (live, under-modeled; `extra='allow'`)
-`prep`, `npc`, `query`, `workflow`, `connections`, `experimental` — **six** sections (down from
-ten), each a bare `_LooseSection`, still the residual `UIStateService`'s to isolate one day
-(see [service-cut.md](./service-cut.md)).
+### ~~Loose UI sections~~ — none
+There are no `ui.<section>` blobs and no `_LooseSection` type. The last six were deleted with
+`ui_state.yaml` (see above); `service-cut.md`'s "no service ownership" gap is **closed**.
 
 ## grounding.yaml → GroundingConfig (grouped, strict)
 
@@ -154,9 +159,12 @@ defaulted to `""` in Python but `'# Chapter'` in all four Vue pages.
 | `PlatformLocalConfig.server` (`.campaigngenerator.local.yaml`) | host = `127.0.0.1`, port = `5000` |
 | `PlatformLocalConfig.nav` | last_page |
 
-`ProfileEntry` (`{name, knobs}`) and `BackendProfile` stayed in `config_models.py` — they're
-reused by `session_doc.yaml`'s `profiles`/`backends` fields below — but neither is a `UIState`
-field anymore.
+`ProfileEntry` (`{name, knobs}`) and `BackendProfile` now live in
+`server/session_editor_config_shared.py`, their only consumer. They were declared beside `UIState`
+back when the editor's config *was* a `ui_state.yaml` section; Phase 5 of the session-editor
+isolation moved the data out and left the models behind, and D2 of
+[ui-state-retirement.md](./ui-state-retirement.md) finished the move when that module was
+deleted.
 
 ## session_doc.yaml → SessionEditorConfig (grouped, strict)
 
@@ -209,24 +217,24 @@ so this was a latent defect on the HTTP surface, not an active misrouting of GM 
 
 ## Path resolution base
 
-Two independent mechanisms, both owned by `PlatformConfigService`/`UIStateService`, that must not
-be confused (Phase 4, O2, drew this line sharply after `server/config.py::derive_campaign_paths`
-drifted by conflating them):
+Two independent mechanisms, both owned by `PlatformConfigService`, that must not be confused
+(Phase 4, O2, drew this line sharply after `server/config.py::derive_campaign_paths` drifted by
+conflating them):
 
-**`_PATH_FIELDS`** (formula — which base a stored relative path resolves against). Retiring
-`ui.vtt_summary` took the last **session**-scoped entry with it, so every surviving row is
-campaign-scoped; the `base="session"` machinery is still live but reached only through
-`SessionEditorConfigService`:
+**Path-base formulas** — which base a stored relative path resolves against.
 
-| Field(s) | Resolves against |
-|---|---|
-| *(none)* | `_PATH_FIELDS` is **empty** as of Phase 10 — `grounding.summaries` was its last row. The machinery still runs; it has no rows to act on. Kept and flagged rather than deleted: retiring it belongs with retiring `UIStateService` itself. A table that silently does nothing is how `derive_campaign_paths` drifted |
-| `platform.yaml`'s own `runtime.session_dir` | `campaign` (a separate one-entry table, `_RUNTIME_PATH_FIELDS`, since `UIState` no longer stores `runtime` at all) |
+| Field(s) | Resolves against | Owner |
+|---|---|---|
+| `platform.yaml`'s `runtime.session_dir` | `campaign` | `_RUNTIME_PATH_FIELDS`, a one-entry table in `platform_config_service.py`, applied in `resolved()` |
+| `session_doc.yaml`'s `EditorPaths` | `session` or `campaign`, per field | `SessionEditorConfigService` (`_relativized_paths` / `resolved_editor_config`), delegating to the platform's `resolve_path`/`relativize_path` rather than duplicating them |
+| `grounding.yaml`, `party.yaml`, `planning.yaml` | `campaign` root | their own services (Track A′ of [grounding-isolation.md](./grounding-isolation.md) unified this) |
 
-`session_doc` retired its `_PATH_FIELDS` entry in Phase 5 of the session-editor isolation — its
-path resolution now lives in `SessionEditorConfigService` (`_relativized_paths` /
-`resolved_editor_config`), which delegates to the platform's `resolve_path`/`relativize_path`
-rather than duplicating the table above. See the `EditorPaths` split above.
+`UIStateService`'s `_PATH_FIELDS` — the general per-section table these grew out of — is **gone**.
+It had been empty since Phase 10 of the grounding isolation took its last row
+(`grounding.summaries`), so the normalize pass, the write-time relativize choke point and the
+sibling-session rebase were all iterating an empty dict. It was kept and flagged at the time on the
+grounds that "retiring it belongs with retiring `UIStateService` itself" — which is exactly what
+[ui-state-retirement.md](./ui-state-retirement.md) did.
 
 **`PlatformConfigService.discover_campaign_paths`** (filesystem probe — Phase 4, O2): a
 `@staticmethod` that globs/sniffs for files whose name or presence can't be known in advance

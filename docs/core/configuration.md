@@ -1,125 +1,137 @@
 # Configuration architecture
 
-How CampaignGenerator's configuration is stored, loaded, and saved after the unification refactor. Read this when you need to answer "where does the value of X come from?" or "what file should I edit to change Y?"
+How CampaignGenerator's configuration is stored, loaded, and saved. Read this when you need to
+answer "where does the value of X come from?" or "what file should I edit to change Y?"
 
-The pre-refactor design had five overlapping layers (CLI config, UI persistence, server boot dict, per-router in-memory dict, frontend store) where the same logical setting could have different shapes. The worked example `sd_narrate_tokens: '4000'` shadowing an in-code default of `16000` was the canonical bug — see the [archived unification plan](../archive/configuration_unification_plan.md) for the original analysis.
+**This is the orientation page. The authoritative, code-verified maps live in
+[`docs/config/`](../config/README.md)** — one document per question, kept current alongside the
+code that owns each config surface. This page deliberately does *not* restate their tables: an
+earlier cut of it did, and drifted a full five refactors out of date (it described
+`CampaignConfigService`, `ui_state.yaml` v2, a flat-key legacy overlay and an in-progress frontend
+sweep, none of which had existed for months). A second copy of a map is a second authority, which
+is the exact anti-pattern the config work below spent five efforts removing.
 
-This document describes the new design. A small amount of legacy scaffolding is still in place during the in-progress frontend sweep (see [What's still legacy](#whats-still-legacy)).
+| Question | Go to |
+|---|---|
+| What files exist, what shape is each, what's strict? | [`docs/config/schema.md`](../config/schema.md) |
+| Who creates / reads / updates each one? | [`docs/config/crud.md`](../config/crud.md) |
+| Which code reads this specific key? | [`docs/config/values.md`](../config/values.md) |
+| How do the layers stack, from mneme wiring down to grounding docs? | [`docs/config/master.md`](../config/master.md) |
+| Why is it shaped this way, and what's still open? | [`docs/config/service-cut.md`](../config/service-cut.md) |
+| The ensemble + grounding subsystems specifically | [`docs/config/subsystems.md`](../config/subsystems.md) |
 
-## Three files, one service
+## The shape, in one page
 
-| File | Tracked? | Writer | Reader | Purpose |
-|---|---|---|---|---|
-| `<campaign>/config.yaml` | yes | **human only** | CLI scripts + server (read-only) | `documents:`, prompt paths, model defaults. Server never opens for write — comments and ordering are protected by virtue of no writer existing. |
-| `<campaign>/ui_state.yaml` | yes | **server only** (atomic-rename) | server + migration | Typed sections under `version: 2`: `ui.grounding`, `ui.prep`, `ui.npc`, `ui.distill`, `ui.party`, `ui.connections`, `ui.experimental`, `ui.workflow`, `runtime.default_model`, `runtime.session_dir`, `legacy.unmigrated`. |
-| `<campaign>/.campaigngenerator.local.yaml` | gitignored | server | server | `server.host`, `server.port`, transient `nav.*` browser state, anything machine-specific. |
+Two tiers. **Platform** is global to the campaign; **service** config belongs to exactly one
+workflow.
 
-All three are owned end-to-end by [`server/config_service.py:CampaignConfigService`](../../server/config_service.py). Routers receive the service through `request.app.state.config_service` and never touch YAML files directly.
+| Tier | File | Owner |
+|---|---|---|
+| Platform | `config.yaml` (tracked, **human-only** — no writer exists) | read-only via `PlatformConfigService` |
+| Platform | `platform.yaml` — `runtime.default_model`, `runtime.session_dir` | `PlatformConfigService` |
+| Platform | `.campaigngenerator.local.yaml` — host/port, nav (gitignored) | `PlatformConfigService` |
+| Platform | `config/wiring.yaml` — external endpoints + data roots | mneme (rendered; do not edit) |
+| Service | `session_doc.yaml` | `SessionEditorConfigService` |
+| Service | `ensemble.yaml` | `EnsembleConfigService` |
+| Service | `grounding.yaml` | `GroundingConfigService` |
+| Service | `party.yaml` | `PartyConfigService` |
+| Service | `planning.yaml` | `PlanningConfigService` |
+
+Everything lives in `<campaign>/config/`. One location, no probes — a config file found anywhere
+else is a migration input, not a supported alternative
+([grounding-isolation.md](../config/grounding-isolation.md) Track 0, guarded by
+`tests/test_config_location.py`).
+
+Each service document is **strict** (`extra="forbid"`), lazily created, atomically written, and
+reachable through exactly one typed route. There is no shared UI-state document and no generic
+`PUT /section/{name}`: those were retired once the last six `ui.<section>` blobs turned out to be
+empty and unwritten ([ui-state-retirement.md](../config/ui-state-retirement.md)).
 
 ## Hard rules (enforced in code or tests)
 
-1. **`config.yaml` is never written.** [`tests/test_config_service.py::TestConfigYamlNeverWritten`](../../tests/test_config_service.py) freezes this at the file level. Hand-edit it freely; comments survive forever.
-2. **All paths in `config.yaml` and `ui_state.yaml` resolve against `campaign_dir`.** Absolute paths and `~`-expansion pass through. The service exposes only resolved (absolute) paths to routers via `service.resolved()`.
-3. **Boot CLI flags do NOT persist to disk.** They flow through `CampaignConfigService(boot_overrides=...)` and override the resolved view for the process lifetime only. A second instance of the service against the same campaign sees only what's on disk.
-4. **CLI subprocesses get plain command-line flags.** When the server runs `sd_consistency` / `sd_plan` / `sd_narrate` (or other CLIs) it passes flags built from `service.resolved`. CLI scripts continue to read their own `config.yaml` for `documents:`/prompts. CLI scripts never read `ui_state.yaml`. (Per [CLAUDE.md](../../CLAUDE.md): "the subprocess should look the same as if a human had typed it.")
-5. **Atomic writes.** Every persisting write goes through `_atomic_write` (temp file + `os.replace`). A crash mid-write leaves the existing file untouched.
+1. **`config.yaml` is never machine-written.** Hand-edit it freely; comments and ordering survive
+   because no writer exists.
+2. **One authority per value.** If you find yourself adding a second place to set something, that
+   is the bug — see `service-cut.md` for the five efforts that removed the last ones.
+3. **Boot CLI flags never persist.** They flow through `PlatformConfigService(boot_overrides=…)`
+   and overlay the resolved view for the process only. An override naming a section with no
+   consumer is a **`ConfigError` at boot**, not a silent no-op — twelve dead flags once survived
+   for months behind exactly that silence.
+4. **CLI subprocesses get plain command-line flags.** The server builds an argv and shells out;
+   CLI scripts read their own `config.yaml` for `documents:`/prompts and nothing else from the web
+   layer. Per [CLAUDE.md](../../CLAUDE.md): "the subprocess should look the same as if a human had
+   typed it."
+5. **Atomic writes.** Every persisting write is temp-file + `os.replace`. A crash mid-write leaves
+   the existing file untouched.
+6. **A service write cannot touch a sibling's document.** Separate files, separate locks —
+   regression-tested per service (`test_another_services_write_cannot_touch_platform_yaml`,
+   `test_ensemble_write_cannot_touch_sibling_documents`).
+7. **No secrets in config.** API keys come from the environment; `claude-code` bills the local
+   `claude` CLI instead.
 
-## What's in each typed section
+## Model resolution
 
-`ui_state.yaml` v2 layout:
+Which model a run uses, in precedence order:
 
-```yaml
-version: 2
-ui:
-  grounding:      # summaries pointer
-  campaign_state: # campaign_state UI page
-  distill:        # distill UI page
-  party:          # party UI page
-  planning:       # planning UI page
-  prep:           # prep UI page
-  npc:            # npc_table UI page
-  query:          # query UI page
-  workflow:       # session-workflow wizard
-  connections:    # connection-graph page
-  experimental:
-    dnd_sheet:    # dnd_*
-    make_tracking:# mt_*
-runtime:
-  default_model: claude-sonnet-4-6
-  session_dir: summaries/20260318    # relative to campaign_dir
-legacy:
-  unmigrated: {}                      # quarantined keys from migration
+1. An explicit `--model` / request `model` field.
+2. The active backend's remembered model (`session_doc.yaml`'s `backends.<active>.model`, or
+   `ensemble.yaml`'s per-stage model).
+3. `platform.yaml`'s `runtime.default_model` — the sidebar picker.
+4. `campaignlib.constants.DEFAULT_MODEL` (env `CAMPAIGN_MODEL`, else the literal).
+
+Every `/run/*` router resolves through
+`server/platform_config_service.py::resolve_default_model` rather than hardcoding a default. Which
+*backend* a service runs against is still four independent selectors — `service-cut.md` gap #3,
+deliberately deferred.
+
+## Migrating a pre-isolation campaign
+
+A campaign whose `config/` still has `ui_state.yaml` has undrained data. Run all four one-shot
+CLIs, then delete the file:
+
+```bash
+python -m server.migrate_platform_config  --campaign-dir DIR   # runtime.* -> platform.yaml
+python -m server.migrate_session_doc      --campaign-dir DIR   # ui.session_doc/profiles
+python -m server.migrate_ensemble_config  --campaign-dir DIR   # ui.ensemble
+python -m server.migrate_grounding_config --campaign-dir DIR   # the five grounding sections
 ```
 
-[`server/config_models.py`](../../server/config_models.py) defines the pydantic v2 models. `GroundingSection` is typed; the rest are loose-extras (untyped fields) so pages can grow without model edits during the transition.
-
-## API surface
-
-All under `/api/config/`. Defined in [`server/routers/config_routes.py`](../../server/routers/config_routes.py).
-
-| Method + path | Purpose |
-|---|---|
-| `GET /api/config/` | Returns `{campaign_dir, config_path, ui_state_path, local_config_path, schema_version, resolved, tracked, local, migration_warnings, ...legacy_overlay}`. The `resolved` view has paths absolute against `campaign_dir` and boot overrides applied. The legacy flat-key overlay is merged in at the top level for un-migrated frontend views. |
-| `PUT /api/config/section/{name}` | Merges `{values: {...}}` into `ui.<name>` and persists atomically. Validates that `name` is a real `UISection` field; rejects unknown sections with 404. |
-| `PUT /api/config/local` | Merges `{values: {...}}` into `.campaigngenerator.local.yaml`. |
-| `PUT /api/config/` | **Legacy bulk merge.** Still present for `SessionConfig.vue`'s top-level `campaign_dir`/`session_dir` saves. Removed once the full frontend sweep finishes. |
-| `GET /api/config/campaign-paths`, `/session-paths`, `/path-status`, `/party-yaml`, `PUT /party-yaml`, `/models`, `/status` | Path discovery + party YAML editing — unchanged by the refactor. |
-
-The pre-refactor `GET/PUT /api/config/raw` endpoints (raw YAML editor) **have been removed**. `Settings.vue` now shows a read-only collapsible JSON view of `resolved`, `tracked`, and `local` plus the migration banner.
-
-## Frontend store
-
-[`frontend/src/stores/config.ts`](../../frontend/src/stores/config.ts) — Pinia store with:
-
-| Field / method | Purpose |
-|---|---|
-| `resolved` | Typed read-only view from `service.resolved()`. New views read `config.resolved.ui.session_doc.narrate_tokens` etc. |
-| `values` | **Legacy flat-key mirror** (sd_*, vtt_*, …). Still populated from the `GET /` legacy overlay so unmigrated views keep working. |
-| `migrationWarnings` | List of strings to render as a dismissible banner. |
-| `loaded`, `loadPromise` | Race guard from commit `c253d56` — prevents double-fetch and prevents `save()` from racing the initial fetch. **Preserve verbatim** when reshaping the store further. |
-| `updateSection(name, partial)` | `PUT /api/config/section/<name>` then `refresh()`. Use this from migrated views. |
-| `updateLocal(partial)` | `PUT /api/config/local` then `refresh()`. |
-| `save()` | Legacy bulk save. Used only by `SessionConfig.vue` for top-level keys. |
-
-The anti-pattern bug from the original `configuration.md` is fixed:
-- `SessionDocEditor.vue`'s Batch toggle persists via its own `session_doc.yaml` write instead of mutating `config.values` and bulk-saving.
-
-## What's still legacy (in-progress sweep)
-
-These are deliberately left in place during the transition. They can be removed in a follow-up PR once every view consumes `config.resolved`:
-
-- **`PUT /api/config/`** (bulk merge) — `SessionConfig.vue` uses it for `campaign_dir`/`session_dir` (top-level keys without typed homes).
-- **`load_ui_config` / `save_ui_config` / `_SAVE_KEY_PREFIXES`** in [`server/config.py`](../../server/config.py) — used by `PUT /api/config/`.
-- **`legacy_values` overlay** in `GET /api/config/` — computed by `flatten_resolved_to_legacy()`. Read by 11 frontend views that haven't been converted to `config.resolved` yet:
-  - `prep/ConnectionGraph.vue`, `prep/QuerySummaries.vue`
-  - `session/SceneExtraction.vue`
-  - `grounding/PlanningDocument.vue`, `DistillWorldState.vue`, `CampaignState.vue`
-  - `setup/MakeTracking.vue`
-  - `experimental/SessionNarrative.vue`
-  - `utils/paths.ts` (helper that reads `campaign_dir` / `session_dir`)
-
-Search with `grep -rn 'config\.values' frontend/src` to track sweep progress.
+The first is the one that usually matters: a missing `platform.yaml` loads as all-defaults, so an
+unmigrated campaign silently boots on the literal default model with no session anchor. Each CLI
+is idempotent, refuses to overwrite without `--force`, exits 0 with `nothing to migrate` when
+clean, and reports unrecognised keys as skipped rather than dropping them.
 
 ## When you're touching this code
 
-- **Adding a typed field** — add it to the appropriate model in `server/config_models.py`. If it's a path, list it in `_PATH_FIELDS` in `server/config_service.py` so the resolved view absolutizes it.
-- **Adding a new UI section** — add an attribute on `UISection` (in `config_models.py`); the migrator and `UI_SECTION_NAMES` pick it up automatically.
-- **Reading config in a router handler** — use `request.app.state.config_service.resolved`. For routers that need the legacy `CONFIG` dict (`scene_editor`), the `_refresh_config_from_service` router dependency keeps it in sync before every request.
-- **Reading config in a CLI subprocess** — DON'T. Pass values via command-line flags. CLI scripts are independent of the web server's config layer.
-- **Persisting a value from the frontend** — call `config.updateSection('<name>', {...})` for typed sections, `config.updateLocal({...})` for machine-only. Don't mutate `config.values` and walk away.
+- **Adding a field to a service's config** — add it to that service's model in
+  `server/<service>_config_shared.py`. The model is strict, so the write path validates it for
+  free; add a default that matches whatever literal the route used before.
+- **Adding a path field** — resolve it against the campaign root unless it is genuinely
+  session-scoped, and let the owning service delegate to `PlatformConfigService.resolve_path` /
+  `relativize_path` rather than re-implementing the base rule.
+- **Reading config in a router handler** — take the owning service via `Depends`, or
+  `require_platform(request)` for platform values. Never reach into another service's document.
+- **Reading config in a CLI subprocess** — DON'T. Pass values as command-line flags.
+- **Persisting a value from the frontend** — call that service's store method (`updateEditor`,
+  `updateGrounding`, `updateRuntime`, `updateLocal`, or the party/planning/ensemble resource
+  APIs). There is no generic section writer.
+- **Adding a new config surface** — read `service-cut.md` first. The shipped pattern is: designed
+  strict schema → an owning service → a dedicated file → one typed route → a migration CLI if
+  there is existing data.
 
 ## Reference
 
 | File | Role |
 |---|---|
-| [`server/config_models.py`](../../server/config_models.py) | Pydantic v2 models for `UIState`, `LocalConfig`, all sections |
-| [`server/config_service.py`](../../server/config_service.py) | `CampaignConfigService` — the single authority |
-| [`server/config.py`](../../server/config.py) | Path-derivation helpers (`derive_campaign_paths`); legacy `load_ui_config` / `save_ui_config` (still used by `PUT /api/config/`) |
-| [`server/routers/config_routes.py`](../../server/routers/config_routes.py) | `/api/config/*` endpoints |
-| [`server/routers/scene_editor.py`](../../server/routers/scene_editor.py) | Uses `_refresh_config_from_service` router dependency |
-| [`server/main.py`](../../server/main.py) | Constructs the service at boot; `_boot_overrides_from_args` builds the dotted-key map |
-| [`frontend/src/stores/config.ts`](../../frontend/src/stores/config.ts) | Pinia store with `resolved`, `updateSection`, `updateLocal`, plus legacy `values` mirror |
-| [`tests/test_config_models.py`](../../tests/test_config_models.py) | Coercion / defaults / extras |
-| [`tests/test_config_service.py`](../../tests/test_config_service.py) | `config.yaml` never written, atomic writes, boot-overrides-don't-persist, concurrent updates |
-| [`tests/test_config_routes.py`](../../tests/test_config_routes.py) | `GET /` shape, typed-section PUT, local PUT, removed raw endpoints |
-| [`tests/test_editor_service_integration.py`](../../tests/test_editor_service_integration.py) | `PUT /api/editor/config` round-trips through the service; field-name translation |
+| [`server/platform_config_service.py`](../../server/platform_config_service.py) | `PlatformConfigService` — the platform tier; `resolved()`, `resolve_path`, `resolve_default_model`, `require_platform` |
+| [`server/platform_config_shared.py`](../../server/platform_config_shared.py) | `PlatformDocument` / `PlatformLocalConfig`, the shared validators (`OptStr`/`OptBool`) and `ConfigError` |
+| `server/{session_editor,ensemble,grounding,party,planning}_config_service.py` | One owning service per document |
+| `server/{session_editor,ensemble,grounding}_config_shared.py` | Their strict pydantic schemas |
+| [`server/routers/config_routes.py`](../../server/routers/config_routes.py) | `/api/config/*` — runtime, local, path discovery, model registry |
+| [`server/main.py`](../../server/main.py) | Constructs the platform at boot; `_boot_overrides_from_args` builds the dotted-key map |
+| [`server/migrate_common.py`](../../server/migrate_common.py) + `server/migrate_*.py` | The four one-shot drains; the only readers of `ui_state.yaml` |
+| [`frontend/src/stores/config.ts`](../../frontend/src/stores/config.ts) | Pinia store — `resolved`, `editorConfig`, `groundingConfig` + the per-service write methods |
+| [`tests/test_platform_config_service.py`](../../tests/test_platform_config_service.py) | Platform ownership, atomic writes, boot overrides, the isolation invariant |
+| [`tests/test_config_location.py`](../../tests/test_config_location.py) | No source file probes a second location for a config document |
+| [`tests/test_no_ui_state.py`](../../tests/test_no_ui_state.py) | The retired tier stays retired — and the migration CLIs keep working |
+| [`tests/test_layering.py`](../../tests/test_layering.py) | Nothing under `pipelines/`, `session_doc/`, `campaignlib/` imports `server.*` |
