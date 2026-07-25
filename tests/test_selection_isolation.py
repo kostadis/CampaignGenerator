@@ -39,9 +39,28 @@ ROUTERS = Path(__file__).resolve().parent.parent / "server" / "routers"
 # ── C4 / FR-005: no router reads another service's config ──────────────────
 
 # Which config service each router is allowed to import. A router may compose
-# the *platform* (every service does) and its own service — nothing else.
+# the *platform* (every service does) and the service whose work its endpoints
+# actually run — nothing else.
+#
+# grounding.py is allowed three because it *hosts* three services' run
+# endpoints: /run/campaign-state and /run/distill are Grounding's own, but
+# /run/party runs the Party service and /run/planning runs Planning. Reading
+# party.yaml to run party.py is reading the document of the service whose work
+# you are doing; that is not the coupling FR-005 forbids.
+#
+# The coupling FR-005 forbids is reading a service's document to configure a
+# DIFFERENT service's run — which is exactly what grounding.py did with
+# SessionEditorConfigService, taking the editor's backend to decide grounding's
+# own. SessionEditorConfigService is therefore absent from every allowlist
+# below and asserted against by name in
+# test_grounding_no_longer_defines_backend_flags.
+#
+# The underlying misalignment — that /run/party lives in grounding.py while
+# party.yaml belongs to PartyConfigService — predates this feature and is left
+# alone deliberately: moving those endpoints would change API paths the
+# frontend depends on, which is a different change from unifying selection.
 OWN_SERVICE = {
-    "grounding.py": {"GroundingConfigService"},
+    "grounding.py": {"GroundingConfigService", "PartyConfigService", "PlanningConfigService"},
     "ensemble.py": {"EnsembleConfigService"},
     "scene_editor.py": {"SessionEditorConfigService"},
     "party_routes.py": {"PartyConfigService"},

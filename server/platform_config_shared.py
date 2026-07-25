@@ -67,6 +67,12 @@ import yaml
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, ValidationError
 
 from campaignlib import DEFAULT_MODEL
+from campaignlib.selection import (  # noqa: F401  (re-exported)
+    BACKENDS,
+    Backend,
+    ModelSelection,
+    compatible,
+)
 
 LOCAL_CONFIG_NAME = ".campaigngenerator.local.yaml"
 PLATFORM_CONFIG_NAME = "platform.yaml"
@@ -108,82 +114,13 @@ class ConfigError(RuntimeError):
 
 
 # ── Model/backend selection (feature 003) ─────────────────────────────────
-# The shared vocabulary for "which model, on which backend". Lives here
-# because the platform tier is the one tier every service already composes,
-# so a service schema can import this without importing "upward" (the same
-# rule the validators above landed under).
-
-Backend = Literal["anthropic", "dgx", "openrouter", "claude-code"]
-
-BACKENDS: tuple[str, ...] = ("anthropic", "dgx", "openrouter", "claude-code")
-
-
-class ModelSelection(BaseModel):
-    """A chosen model and the backend that serves it. Both optional; both
-    absent means "no selection here — defer to the tier above".
-
-    This is the *common core* of the two selection shapes that already
-    existed when feature 003 landed — ``ensemble_config_shared.
-    EnsembleBackend`` (which adds ``endpoints``, plural, for the extract
-    stage's two-Spark fan-out) and ``session_editor_config_shared.
-    BackendProfile`` (which adds ``endpoint``, singular). That plural/
-    singular split is load-bearing and deliberately NOT unified here; see
-    ``specs/003-model-selection-resolution/data-model.md``.
-
-    An incompatible pair (a DGX model id with an Anthropic backend, say) is
-    *storable* but not *runnable*: the write is allowed so the operator can
-    switch the platform backend and come back to fix the override later,
-    while ``resolve_selection`` refuses the run and says why. Rejecting the
-    write instead would make the refusal message unreachable.
-    """
-
-    model_config = ConfigDict(extra="forbid")
-
-    backend: Backend | None = None
-    model: OptStr = None
-
-    def is_empty(self) -> bool:
-        """True when this selection defers entirely to the tier above.
-
-        An empty selection MUST be indistinguishable from an absent one, so
-        every consumer tests this rather than ``is None``.
-        """
-        return not self.backend and not self.model
-
-
-def compatible(model: str | None, backend: str | None) -> bool:
-    """Can ``backend`` serve ``model``?
-
-    The check is a ``claude-`` prefix rather than membership of
-    ``server.config.MODELS`` on purpose. MODELS is a hand-maintained
-    snapshot; testing against it would silently reject a legitimate Claude id
-    that simply hadn't been added yet — quietly refusing a model the caller
-    is entitled to run. The prefix only rejects ids that *cannot* be Anthropic
-    API ids (``Qwen/…``, ``openai/…``, and OpenRouter's own
-    ``anthropic/claude-…`` form), and never second-guesses one that could.
-
-    (This rationale is carried forward verbatim from the inline guard that
-    used to live in ``server/routers/ensemble.py::_backend_args``, which
-    feature 003 replaced. The *rule* survives here; the silent substitution
-    that accompanied it did not — see ``resolve_selection``.)
-
-    An absent model is vacuously compatible: it means "nothing chosen", which
-    resolution handles by falling back, not by refusing.
-    """
-    if not model:
-        return True
-    is_claude = model.startswith("claude-")
-    if backend in ("anthropic", "claude-code", None, ""):
-        return is_claude
-    if backend == "dgx":
-        return not is_claude
-    if backend == "openrouter":
-        # OpenRouter ids are vendor-namespaced ("anthropic/claude-sonnet-4.6",
-        # "qwen/qwen3-next-80b"). A bare "claude-…" is an Anthropic API id and
-        # would 404 there.
-        return "/" in model
-    return True
-
+# Defined in campaignlib.selection and re-exported here. That module is the
+# lower layer — it is where the backends are actually spoken to
+# (campaignlib/api/client.py declares the same four names as its --backend
+# choices) and where DEFAULT_MODEL already lives. The forcing function is
+# PartyConfig/PlanningConfig: they are campaignlib models, and a service
+# document carrying a `selection` field cannot import one from `server`
+# without inverting the layering.
 
 class PlatformRuntime(BaseModel):
     """The platform-owned ``runtime`` slice — ``default_model`` and

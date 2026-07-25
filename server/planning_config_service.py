@@ -11,6 +11,7 @@ resolving campaign_dir/config_dir itself — the same shape
 from fastapi import HTTPException
 from typing import List
 
+from campaignlib.selection import ModelSelection
 from campaignlib.planning_config import (
     PLANNING_CONFIG_FILENAME,
     PlanningConfig,
@@ -60,6 +61,21 @@ class PlanningConfigService:
     # NPC Operations
     # ============================================================================
     
+    # ── Model/backend selection (feature 003) ──────────────────────────
+    # This service's own override. Empty means "defer to the platform".
+    # Kept as a pair of small accessors rather than exposing the whole
+    # document, so the selection routes never have to touch unrelated keys.
+
+    def get_selection(self) -> ModelSelection:
+        return self._load().selection
+
+    def set_selection(self, selection: ModelSelection) -> ModelSelection:
+        """Persist this service's override. An empty selection is a legitimate
+        value meaning "inherit" — that is how clearing works (FR-013)."""
+        cfg = self._load()
+        self._save(cfg.model_copy(update={"selection": selection}))
+        return selection
+
     def get_npcs(self) -> List[PlanningEntry]:
         """Get all NPCs."""
         return self._load().npcs

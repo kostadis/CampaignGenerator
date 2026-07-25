@@ -19,6 +19,7 @@ from typing import Any
 
 from fastapi import HTTPException
 
+from campaignlib.selection import ModelSelection
 from server.grounding_config_shared import (
     GROUNDING_CONFIG_FILENAME,
     GroundingConfig,
@@ -67,6 +68,17 @@ class GroundingConfigService:
             raise HTTPException(
                 status_code=400, detail=f"invalid grounding config: {exc}"
             ) from exc
+
+    # ── Model/backend selection (feature 003) ──────────────────────────
+
+    def get_selection(self) -> ModelSelection:
+        return self.get_config().selection
+
+    def set_selection(self, selection: ModelSelection) -> ModelSelection:
+        """Persist Grounding's override. An empty selection means "inherit" —
+        that is how clearing works (FR-013)."""
+        self.update_config({"selection": selection.model_dump()})
+        return selection
 
     def resolved(self) -> GroundingConfig:
         """What the router builds commands from.

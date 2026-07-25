@@ -131,19 +131,19 @@ description: "Task list for Model Selection Resolution"
 
 ### Implementation for User Story 2
 
-- [ ] T023 [P] [US2] Add `selection: ModelSelection` to `GroundingConfig` in `server/grounding_config_shared.py:149`, defaulting to an empty selection. The document is `extra="forbid"`, so also confirm existing campaign `grounding.yaml` files still load.
-- [ ] T024 [P] [US2] Add `selection: ModelSelection` to the party config schema in `server/party_config_shared.py` / `server/party_config_service.py`.
-- [ ] T025 [P] [US2] Add `selection: ModelSelection` to the planning config schema in `server/planning_config_shared.py` / `server/planning_config_service.py`.
-- [ ] T026 [US2] Pass the owning service's selection into `resolve_selection` from `server/routers/grounding.py`: `grounding.yaml`'s for distill / campaign-state / build-dossiers, `party.yaml`'s for `/run/party`, `planning.yaml`'s for `/run/planning`. Three different service tiers behind one router — this is why the resolver takes `service` as a parameter rather than deriving it.
+- [X] T023 [P] [US2] Add `selection: ModelSelection` to `GroundingConfig` in `server/grounding_config_shared.py:149`, defaulting to an empty selection. The document is `extra="forbid"`, so also confirm existing campaign `grounding.yaml` files still load.
+- [X] T024 [P] [US2] Add `selection: ModelSelection` to the party config schema in `server/party_config_shared.py` / `server/party_config_service.py`.
+- [X] T025 [P] [US2] Add `selection: ModelSelection` to the planning config schema in `server/planning_config_shared.py` / `server/planning_config_service.py`.
+- [X] T026 [US2] Pass the owning service's selection into `resolve_selection` from `server/routers/grounding.py`: `grounding.yaml`'s for distill / campaign-state / build-dossiers, `party.yaml`'s for `/run/party`, `planning.yaml`'s for `/run/planning`. Three different service tiers behind one router — this is why the resolver takes `service` as a parameter rather than deriving it.
 - [ ] T027 [P] [US2] Re-express `EnsembleBackend` (`server/ensemble_config_shared.py:62`) in terms of the shared `ModelSelection` core, **keeping `endpoints` (plural)**. Per data-model.md, the plural/singular split is load-bearing: extract fans out across both Sparks. This is a refactor toward the shared shape, not a merge.
 - [ ] T028 [P] [US2] Re-express `BackendProfile` (`server/session_editor_config_shared.py:73`) in terms of the shared core, **keeping `endpoint` (singular)**. Note this model is `extra="allow"` unlike its ensemble twin — preserve that, or justify tightening it separately.
-- [ ] T029 [P] [US2] Add `GET`/`PUT`/`DELETE /api/grounding/selection` in `server/routers/grounding.py` per `contracts/api.md` § 2. `DELETE`, or `PUT` with both fields null, MUST restore platform inheritance (FR-013).
-- [ ] T030 [P] [US2] Add `GET`/`PUT`/`DELETE /api/party/selection` in `server/routers/party_routes.py`.
-- [ ] T031 [P] [US2] Add `GET`/`PUT`/`DELETE /api/planning/selection` in `server/routers/planning_routes.py`.
+- [X] T029 [P] [US2] Add `GET`/`PUT`/`DELETE /api/grounding/selection` in `server/routers/grounding.py` per `contracts/api.md` § 2. `DELETE`, or `PUT` with both fields null, MUST restore platform inheritance (FR-013).
+- [X] T030 [P] [US2] Add `GET`/`PUT`/`DELETE /api/party/selection` in `server/routers/party_routes.py`.
+- [X] T031 [P] [US2] Add `GET`/`PUT`/`DELETE /api/planning/selection` in `server/routers/planning_routes.py`.
 - [ ] T032 [US2] Add per-service override controls to the Grounding, Party and Planning pages in `frontend/src/`, each showing the inherited platform value when unset and offering an explicit clear action.
-- [ ] T033 [P] [US2] Test: an override on one service changes only that service's runs, and clearing restores inheritance (SC-004, SC-007, quickstart V4/V5). New file `tests/test_service_selection_override.py`.
-- [ ] T034 [P] [US2] Test: **no override surface exists** for Setup, Session Prep, NPC Table, Query or Connection Graph, and no new config file was created — assert `setup.yaml` does not exist (FR-004, quickstart V10). Add to `tests/test_service_selection_override.py`.
-- [ ] T035 [P] [US2] Verify `tests/test_ensemble_config_defaults.py::TestModelResolution` and `tests/test_editor_service_integration.py::TestO3ModelResolution` still pass unchanged — they encode the two services whose override reach must not narrow (spec Assumptions).
+- [X] T033 [P] [US2] Test: an override on one service changes only that service's runs, and clearing restores inheritance (SC-004, SC-007, quickstart V4/V5). New file `tests/test_service_selection_override.py`.
+- [X] T034 [P] [US2] Test: **no override surface exists** for Setup, Session Prep, NPC Table, Query or Connection Graph, and no new config file was created — assert `setup.yaml` does not exist (FR-004, quickstart V10). Add to `tests/test_service_selection_override.py`.
+- [X] T035 [P] [US2] Verify `tests/test_ensemble_config_defaults.py::TestModelResolution` and `tests/test_editor_service_integration.py::TestO3ModelResolution` still pass unchanged — they encode the two services whose override reach must not narrow (spec Assumptions).
 
 **Checkpoint**: US1 and US2 both work independently. Five services can override; five cannot and correctly inherit.
 
@@ -157,10 +157,10 @@ description: "Task list for Model Selection Resolution"
 
 ### Implementation for User Story 3
 
-- [ ] T036 [P] [US3] Add `GET /api/grounding/selection/resolved` returning the `ResolvedSelection` (model, backend, both origins, `compatible`, `refusal`) without starting a run, per `contracts/api.md` § 3.
-- [ ] T037 [P] [US3] Add the same `/selection/resolved` endpoint for party and planning in `server/routers/party_routes.py` and `server/routers/planning_routes.py`.
+- [X] T036 [P] [US3] Add `GET /api/grounding/selection/resolved` returning the `ResolvedSelection` (model, backend, both origins, `compatible`, `refusal`) without starting a run, per `contracts/api.md` § 3.
+- [X] T037 [P] [US3] Add the same `/selection/resolved` endpoint for party and planning in `server/routers/party_routes.py` and `server/routers/planning_routes.py`.
 - [ ] T038 [P] [US3] Add `/selection/resolved` for ensemble (`server/routers/ensemble.py`) and the session editor (`server/routers/scene_editor.py`). Ensemble's is per-stage, since its selection is.
-- [ ] T039 [P] [US3] Add `/selection/resolved` for the three inheriting routers — `server/routers/prep.py`, `server/routers/setup.py`, `server/routers/connections.py`. These always report `model_origin: "platform"`, which is exactly what the operator needs to see; omitting them would leave the four historically-silent routers still opaque.
+- [X] T039 [P] [US3] Add `/selection/resolved` for the three inheriting routers — `server/routers/prep.py`, `server/routers/setup.py`, `server/routers/connections.py`. These always report `model_origin: "platform"`, which is exactly what the operator needs to see; omitting them would leave the four historically-silent routers still opaque.
 - [ ] T040 [US3] Display the resolved model, backend and origin on each service's run surface in `frontend/src/`, reading from `/selection/resolved`. Origin must be visible, not just the value — "claude-sonnet-4-6 (platform default)" vs "(this service)".
 - [ ] T041 [US3] Surface an incompatible selection **before** the run, on each service's run surface in `frontend/src/`, with the reason — US3 acceptance scenario 3. The Run control is disabled while incompatible, matching the decision recorded in spec Clarifications.
 - [ ] T042 [US3] Offer "Clear override" and "Edit" directly at the point of refusal in `frontend/src/` (the same components as T041), driven by the `service` and `remedy` fields of the 409 body (FR-010). The operator must not have to go hunting for which service holds the stale value.

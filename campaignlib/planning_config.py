@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import yaml
+from campaignlib.selection import ModelSelection
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
 from campaignlib.util import atomic_write_text
@@ -75,6 +76,12 @@ class PlanningConfig(BaseModel):
 
     npcs: list[PlanningEntry] = Field(default_factory=list)
     factions: list[PlanningEntry] = Field(default_factory=list)
+
+    #: Feature 003 — this service's own model/backend override. Empty means
+    #: "defer to the platform selection", which is the default and the common
+    #: case. Set it to run this document's generation on a different model or
+    #: backend from the rest of the app, affecting only this service's runs.
+    selection: ModelSelection = Field(default_factory=ModelSelection)
 
 
 class ResolvedEntry(BaseModel):
@@ -140,6 +147,11 @@ def load_planning_config(path: Path) -> PlanningConfig:
     return PlanningConfig(
         npcs=[_parse_entry(e, "npc", path) for e in npcs_raw],
         factions=[_parse_entry(e, "faction", path) for e in factions_raw],
+        # Both loader and saver hand-build their dicts, so a new field has to
+        # be named in BOTH or it round-trips to nothing. Feature 003 added
+        # `selection` and hit exactly that: the write returned 200 and the
+        # read came back empty.
+        selection=ModelSelection.model_validate(raw.get("selection") or {}),
     )
 
 
@@ -161,6 +173,9 @@ def save_planning_config(path: Path, cfg: PlanningConfig) -> None:
         return out
 
     data: dict[str, Any] = {}
+    # See save_party_config: this builder drops any field not named here.
+    if not cfg.selection.is_empty():
+        data["selection"] = cfg.selection.model_dump(exclude_none=True)
     if cfg.npcs:
         data["npcs"] = [_entry_dict(e) for e in cfg.npcs]
     if cfg.factions:

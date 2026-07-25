@@ -36,6 +36,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import yaml
+from campaignlib.selection import ModelSelection
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
 from campaignlib.util import atomic_write_text
@@ -97,6 +98,12 @@ class PartyConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     characters: list[PartyCharacter] = Field(default_factory=list)
+
+    #: Feature 003 — this service's own model/backend override. Empty means
+    #: "defer to the platform selection", which is the default and the common
+    #: case. Set it to run this document's generation on a different model or
+    #: backend from the rest of the app, affecting only this service's runs.
+    selection: ModelSelection = Field(default_factory=ModelSelection)
 
 
 class ResolvedCharacter(BaseModel):
@@ -189,7 +196,12 @@ def load_party_config(path: Path) -> PartyConfig:
                 trackless=trackless,
             )
         )
-    return PartyConfig(characters=characters)
+    # See load_planning_config: loader and saver both hand-build, so a new
+    # field must be named in both or it round-trips to nothing.
+    return PartyConfig(
+        characters=characters,
+        selection=ModelSelection.model_validate(raw.get("selection") or {}),
+    )
 
 
 def save_party_config(path: Path, cfg: PartyConfig) -> None:
@@ -215,10 +227,17 @@ def save_party_config(path: Path, cfg: PartyConfig) -> None:
         elif pc.arc_score:
             entry["arc_score"] = pc.arc_score
         entries.append(entry)
+    # `selection` is written only when set. These savers hand-build the YAML
+    # dict rather than dumping the model, so a new field is silently dropped
+    # unless added here — which is exactly what happened when feature 003 first
+    # added it, and the write appeared to succeed while persisting nothing.
+    doc: dict[str, Any] = {"characters": entries}
+    if not cfg.selection.is_empty():
+        doc["selection"] = cfg.selection.model_dump(exclude_none=True)
     atomic_write_text(
         path,
         yaml.safe_dump(
-            {"characters": entries},
+            doc,
             default_flow_style=False,
             sort_keys=False,
             allow_unicode=True,

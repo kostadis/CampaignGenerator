@@ -42,6 +42,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import yaml
+from campaignlib.selection import ModelSelection
 from pydantic import BaseModel, ConfigDict, Field
 
 from campaignlib.util import atomic_write_text
@@ -154,6 +155,12 @@ class GroundingConfig(BaseModel):
     #: the root because all four consume it (D2); a per-doc ``input`` overrides
     #: it. SessionConfig.vue writes it here instead of ``ui.grounding``.
     summaries: OptStr = None
+
+    #: Feature 003 — this service's own model/backend override. Empty means
+    #: "defer to the platform selection", which is the default and the common
+    #: case. Set it to run this document's generation on a different model or
+    #: backend from the rest of the app, affecting only this service's runs.
+    selection: ModelSelection = Field(default_factory=ModelSelection)
 
     campaign_state: CampaignStateRun = Field(default_factory=CampaignStateRun)
     distill: DistillRun = Field(default_factory=DistillRun)

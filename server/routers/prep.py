@@ -124,3 +124,22 @@ async def run_query(
     cmd += selection_cli_args(resolve_selection(request, request_model=model))
 
     return _sse_response(cmd)
+
+
+# ── Resolved-selection preview (feature 003, FR-012) ───────────────────────
+# Read-only: what a run here would actually use, and where each half came
+# from. This service owns no configuration, so the answer is always the
+# platform's — which is exactly what the operator needs to see, and precisely
+# what was invisible before 003 (these endpoints forwarded no backend at all,
+# so a DGX selection silently billed the metered API).
+#
+# Providing the preview is NOT a config surface: it stores nothing and has no
+# PUT. FR-004 forbids giving an inheriting service somewhere to SET a
+# selection, not somewhere to read the one it inherits.
+
+
+@router.get("/selection/resolved")
+def get_prep_resolved_selection(request: Request):
+    return resolve_selection(
+        request, service_name="prep", raise_on_incompatible=False,
+    ).as_dict()
