@@ -188,10 +188,15 @@ class TestRuntimeOwnership:
         )
         assert platform.runtime == reloaded.runtime
 
-    def test_resolved_is_a_passthrough_to_uis(self, fresh_campaign):
+    def test_resolved_carries_no_ui_key(self, fresh_campaign):
+        """``resolved()`` came home to the platform and dropped ``ui`` with the
+        move — docs/config/ui-state-retirement.md. It used to be a passthrough
+        to ``UIStateService.resolved()``, whose extra ``ui`` key held six
+        sections that were empty in every campaign and had no writer."""
         platform = PlatformConfigService(fresh_campaign)
-        platform.uis.update_section("query", {"summaries": "summaries.md"})
-        assert platform.resolved() == platform.uis.resolved()
+        resolved = platform.resolved()
+        assert "ui" not in resolved
+        assert set(resolved) == {"campaign_dir", "runtime", "server", "nav"}
 
     def test_resolved_wire_shape_still_carries_runtime(self, fresh_campaign):
         # Requirement 1 of Phase 3: relocating runtime's STORAGE must not

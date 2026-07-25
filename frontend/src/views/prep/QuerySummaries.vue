@@ -15,12 +15,15 @@ const showAdvanced = ref(false)
 
 function loadFromConfig() {
   // `v` (config.values) still carries SessionConfig.vue's client-side-only
-  // derive broadcast for `summaries` — see stores/config.ts. `query_input`
-  // lives solely in the persisted, typed `ui.query` section.
+  // derive broadcast for `summaries` — see stores/config.ts.
+  //
+  // The `ui.query` read that used to lead this chain is gone (see
+  // docs/config/ui-state-retirement.md): nothing ever wrote that section, so
+  // it always resolved to {} and the grounding pointer below was always what
+  // actually populated the field. Everything else on this page is
+  // deliberately stateless per D1.
   const v = config.values
-  const r = config.resolved.ui?.query || {}
-  // The shared timeline pointer moved to grounding.yaml's root.
-  input.value = r.input || config.groundingConfig?.summaries || v.summaries || ''
+  input.value = config.groundingConfig?.summaries || v.summaries || ''
 }
 
 const ready = computed(() =>

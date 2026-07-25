@@ -6,6 +6,12 @@ import RunPanel from '../../components/shared/RunPanel.vue'
 
 const config = useConfigStore()
 
+// Deliberately stateless — see docs/config/ui-state-retirement.md D1. There
+// was a `ui.prep` section reserved for this page; nothing ever wrote it (the
+// generic PUT /section/{name} route had no client), and it was retired with
+// the rest of ui_state.yaml. The GM's call: prep tools are one-shot run
+// forms — you type a value and run it in the same breath — so these reset on
+// navigation by decision, not by omission.
 const inputMode = ref<'beat' | 'session_file' | 'session_text'>('beat')
 const beat = ref('')
 const sessionFile = ref('')

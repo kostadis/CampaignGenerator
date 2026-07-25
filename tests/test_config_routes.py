@@ -73,13 +73,16 @@ class TestGetConfig:
         ):
             assert key in body, f"missing {key} in GET / response"
 
-    def test_session_doc_not_a_ui_section(self, fresh_campaign):
-        # Phase 5 (docs/config/session-editor-isolation.md): session_doc
-        # left ui_state.yaml entirely for its own session_doc.yaml, so it's
-        # no longer among the resolved ui sections at all.
+    def test_resolved_has_no_ui_key_at_all(self, fresh_campaign):
+        # This assertion used to read "session_doc is no longer among the
+        # resolved ui sections" (Phase 5, session-editor-isolation). Every
+        # other section has since followed it out, and
+        # docs/config/ui-state-retirement.md retired the empty remainder — so
+        # the stronger claim now holds: there is no `ui` key.
         client = TestClient(_make_app(fresh_campaign))
         body = client.get("/api/config/").json()
-        assert "session_doc" not in body["resolved"]["ui"]
+        assert "ui" not in body["resolved"]
+        assert set(body["resolved"]) == {"campaign_dir", "runtime", "server", "nav"}
 
     def test_no_service_returns_503(self):
         # The hostile fallback is gone — with no campaign_dir, GET / refuses.
@@ -92,20 +95,10 @@ class TestGetConfig:
 
 
 class TestPutSection:
-    def test_typed_section_update_persists(self, fresh_campaign):
-        app = _make_app(fresh_campaign)
-        client = TestClient(app)
-        resp = client.put(
-            "/api/config/section/query",
-            json={"values": {"summaries": "summaries.md", "label": "Session 12"}},
-        )
-        assert resp.status_code == 200
-
-        # Read back via GET / and confirm the values are visible in the
-        # typed view.
-        body = client.get("/api/config/").json()
-        assert body["resolved"]["ui"]["query"]["label"] == "Session 12"
-        assert body["resolved"]["ui"]["query"]["summaries"] == "summaries.md"
+    # test_typed_section_update_persists is gone: it asserted a section write
+    # was visible at resolved()["ui"], and resolved() no longer carries a
+    # `ui` key (docs/config/ui-state-retirement.md). The route it exercised
+    # follows in the same effort.
 
     def test_retired_vtt_summary_section_rejected_404(self, fresh_campaign):
         """``ui.vtt_summary`` retired with the vtt_summary chain — a PUT to
@@ -190,9 +183,12 @@ class TestPutLocal:
         # ``server``/``nav`` slots — verify by reading back.
         client.put("/api/config/local", json={"values": {"ui": {"query": {}}}})
         body = client.get("/api/config/").json()
-        # Whatever happened, the service-resolved ui section stays empty
-        # of any ui.<section> state we didn't put there via /section/.
-        assert body["resolved"]["ui"]["query"] == {}
+        # Whatever happened, a stray `ui` key never lands in the typed
+        # server/nav slots — and there is no `ui` key in the resolved view at
+        # all any more (docs/config/ui-state-retirement.md).
+        assert "ui" not in body["resolved"]
+        assert "ui" not in body["resolved"]["server"]
+        assert "ui" not in body["resolved"]["nav"]
 
     def test_no_service_503(self, fresh_campaign):
         client = TestClient(_make_app(None))

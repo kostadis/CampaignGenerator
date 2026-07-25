@@ -7,6 +7,10 @@ import FileTree from '../../components/shared/FileTree.vue'
 
 const config = useConfigStore()
 
+// Form state is deliberately stateless — see docs/config/ui-state-retirement.md
+// D1 (the reserved `ui.connections` section was never written by anything and
+// is retired). The extracted graph itself IS persisted, but on disk via
+// `cachePath`, which is the durable artifact here — not this form.
 const docsDir = ref('')
 const dossierDir = ref('')
 const cachePath = ref('')

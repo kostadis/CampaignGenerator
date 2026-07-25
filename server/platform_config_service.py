@@ -83,6 +83,26 @@ from server.platform_config_shared import (
 
 TRACKED_CONFIG_NAME = "config.yaml"
 
+# ── Boot-override targets ──────────────────────────────────────────────────
+# The dotted-key sections :meth:`PlatformConfigService.resolved` knows how to
+# apply. An override aimed anywhere else reaches no consumer — and per O1 of
+# ``docs/config/platform-isolation.md`` a boot flag that reaches no consumer is
+# a defect, not a no-op. So an unknown section is a ``ConfigError`` at
+# construction rather than a value silently dropped at read time.
+#
+# This closes the assertion gap that let twelve dead ``session_doc.*`` flags
+# survive unnoticed: ``resolved()`` used to have an ``else`` branch that swept
+# any unrecognised section into ``ui_raw``, where nothing ever read it. That
+# branch went with ``ui_raw`` itself (docs/config/ui-state-retirement.md); it is
+# replaced by this check rather than by nothing, so the next dead flag fails
+# loudly at boot instead of being quietly absorbed.
+_BOOT_OVERRIDE_SECTIONS: tuple[str, ...] = ("runtime", "server")
+
+# session_dir is itself a campaign-based path (it lives under
+# <campaign>/summaries/...), so it resolves against the campaign root, not
+# against itself. Applied in resolved() below.
+_RUNTIME_PATH_FIELDS: dict[str, str] = {"session_dir": "campaign"}
+
 
 def require_platform(request: Request) -> "PlatformConfigService":
     """Fetch this process's ``PlatformConfigService`` from ``app.state.platform``,
@@ -188,6 +208,16 @@ class PlatformConfigService:
         self.boot_overrides: dict[str, Any] = dict(boot_overrides or {})
         self.load_warnings: list[str] = []
         self._write_lock = threading.Lock()
+
+        # Fail loudly on an override with no consumer — see
+        # _BOOT_OVERRIDE_SECTIONS for why this is a raise and not a drop.
+        for key in self.boot_overrides:
+            section, dot, _ = key.partition(".")
+            if dot and section not in _BOOT_OVERRIDE_SECTIONS:
+                raise ConfigError(
+                    f"boot override {key!r} targets unknown section {section!r}; "
+                    f"valid sections: {', '.join(_BOOT_OVERRIDE_SECTIONS)}"
+                )
 
         if not self.campaign_dir.is_dir():
             raise ConfigError(
@@ -442,26 +472,58 @@ class PlatformConfigService:
         # Genuine out-of-tree override — no relative form preserves it.
         return value
 
-    # ── Combined resolved view (delegated — see UIStateService.resolved) ──
+    # ── Combined resolved view ──────────────────────────────────────────
 
     def resolved(self) -> dict[str, Any]:
-        """The combined ``{campaign_dir, ui, runtime, server, nav}`` view.
+        """The combined ``{campaign_dir, runtime, server, nav}`` read view —
+        boot overrides applied on top of persisted values, path fields
+        absolute. Returned as plain dicts for JSON friendliness.
 
-        Stays implemented on ``UIStateService`` even after Phase 3 (design
-        doc's "hard design question", resolved in favor of minimal churn):
-        the boot-override application, the sibling-session rebase, and the
-        per-field path resolution over ``ui.<section>`` all still need
-        ``UIStateService``'s own ``_PATH_FIELDS`` knowledge, so moving just
-        the ``runtime`` slice's *source* (now ``self.platform.runtime``
-        instead of ``self._ui_state.runtime``) into that same method was the
-        smaller change. This is a thin passthrough so
-        ``app.state.platform.resolved()`` is the one canonical call site
-        regardless of which object does the work. The wire shape this
-        returns is unchanged by Phase 3 — see
-        ``docs/config/platform-isolation.md``'s "hard requirement" that the
-        frontend's ``resolved.runtime.*`` reads keep working.
+        **The ``ui`` key is gone** (docs/config/ui-state-retirement.md). It
+        carried the six loose ``ui.<section>`` blobs, all of which were empty
+        in every campaign and unreachable-by-write from the shipped UI —
+        ``PUT /api/config/section/{name}`` had no client. Three frontend sites
+        read keys off it; all three read sections that no longer existed or
+        had never been written, and all three now read the owning service's
+        own document instead. The four keys below are the live ones — see the
+        design doc's "resolved() is still needed" table for each one's
+        consumers.
+
+        This method lived on ``UIStateService`` through the platform
+        isolation, on the reasoning that it needed that class's
+        ``_PATH_FIELDS`` knowledge for the ``ui.<section>`` resolution and the
+        sibling-session rebase. Both went with the ``ui`` key:
+        ``_PATH_FIELDS`` had been empty since Phase 10 of the grounding
+        isolation, so the rebase loop and the per-field resolution were
+        iterating an empty table. What is left needs nothing ``UIStateService``
+        owned, so it comes home to the object that owns every value in it.
         """
-        return self.uis.resolved()
+        runtime_raw = self.runtime.model_dump(mode="json")
+        local_raw = self._local.model_dump(mode="json")
+
+        # Boot overrides apply BEFORE path resolution — an override of
+        # runtime.session_dir has to be in place before anything resolves
+        # against it. Unknown dotted sections cannot reach here: __init__
+        # rejects them (see _BOOT_OVERRIDE_SECTIONS).
+        for key, value in self.boot_overrides.items():
+            section, dot, field = key.partition(".")
+            if not dot:
+                runtime_raw[key] = value
+            elif section == "runtime":
+                runtime_raw[field] = value
+            else:  # "server"
+                local_raw.setdefault("server", {})[field] = value
+
+        for fname, base in _RUNTIME_PATH_FIELDS.items():
+            if fname in runtime_raw:
+                runtime_raw[fname] = self.resolve_path(runtime_raw[fname], base=base)
+
+        return {
+            "campaign_dir": str(self.campaign_dir),
+            "runtime": runtime_raw,
+            "server": local_raw.get("server", {}),
+            "nav": local_raw.get("nav", {}),
+        }
 
     # ── Filesystem discovery (O2) ────────────────────────────────────────
 
