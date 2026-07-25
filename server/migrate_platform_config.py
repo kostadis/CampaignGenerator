@@ -53,7 +53,7 @@ from typing import Any
 
 import yaml
 
-from server.config_service import UI_STATE_NAME
+from server.migrate_common import UI_STATE_NAME
 from server.platform_config_service import PLATFORM_CONFIG_NAME
 from server.platform_config_shared import (
     PlatformDocument,

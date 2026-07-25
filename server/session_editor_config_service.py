@@ -19,7 +19,7 @@ from typing import TYPE_CHECKING, Any
 
 from fastapi import HTTPException
 
-from server.config_models import ProfileEntry
+from server.session_editor_config_shared import ProfileEntry
 from server.session_editor_config_shared import (
     Backends,
     EditorPaths,

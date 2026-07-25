@@ -11,9 +11,12 @@ export const useConfigStore = defineStore('config', () => {
   // evaporates on the next config fetch.
   const values = ref<Record<string, any>>({})
 
-  // Typed/resolved view from the unified config service. Path fields are
-  // absolute against campaign_dir. Views migrating off the flat overlay
-  // should read from here: ``config.resolved.ui.session_doc.narrate_tokens``.
+  // Typed/resolved view from the platform config service — path fields
+  // absolute against campaign_dir. Four keys: campaign_dir, runtime, server,
+  // nav. It carried a fifth, `ui`, until
+  // docs/config/ui-state-retirement.md; per-service config now comes from
+  // that service's own document (editorConfig / groundingConfig below, or a
+  // dedicated fetch), never from here.
   const resolved = ref<Record<string, any>>({})
 
   // Surface migration warnings so the UI can render a banner when an old
@@ -97,14 +100,12 @@ export const useConfigStore = defineStore('config', () => {
     editorConfig.value = await apiFetch('/api/editor/config')
   }
 
-  // Typed-section update — preferred over the legacy bulk save for any
-  // value that lives in ui.<section>.<field>. Persists atomically through
-  // the unified service, then refreshes the local mirror.
-  async function updateSection(name: string, partial: Record<string, any>) {
-    if (!loaded.value) return
-    await apiPut(`/api/config/section/${name}`, { values: partial })
-    await refresh()
-  }
+  // `updateSection` lived here — a generic PUT /api/config/section/{name}
+  // writer for ui_state.yaml's ui.<section> blobs. It had no callers, and the
+  // sections it wrote were empty in every campaign, so the tier it served was
+  // retired wholesale (docs/config/ui-state-retirement.md). Each service now
+  // writes its own document: updateEditor, updateGrounding, updateRuntime,
+  // updateLocal below, plus the ensemble/party/planning resource APIs.
 
   // Local (machine-only) update — server.host/port, transient nav state.
   async function updateLocal(partial: Record<string, any>) {
@@ -113,7 +114,7 @@ export const useConfigStore = defineStore('config', () => {
     await refresh()
   }
 
-  // Runtime update — session_dir, default_model. Backed by ui_state.runtime.
+  // Runtime update — session_dir, default_model. Backed by platform.yaml.
   async function updateRuntime(partial: Record<string, any>) {
     if (!loaded.value) return
     await apiPut('/api/config/runtime', { values: partial })
@@ -186,7 +187,6 @@ export const useConfigStore = defineStore('config', () => {
     cwd,
     loaded,
     load,
-    updateSection,
     updateLocal,
     updateRuntime,
     refresh,

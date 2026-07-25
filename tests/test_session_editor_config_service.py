@@ -25,8 +25,8 @@ from fastapi import HTTPException
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from server.config_models import BackendProfile, ProfileEntry  # noqa: E402
-from server.config_service import UI_STATE_NAME  # noqa: E402
+from server.session_editor_config_shared import BackendProfile, ProfileEntry  # noqa: E402
+from server.migrate_common import UI_STATE_NAME  # noqa: E402
 from server.platform_config_service import PlatformConfigService  # noqa: E402
 from server.session_editor_config_service import (  # noqa: E402
     SessionEditorConfigService,

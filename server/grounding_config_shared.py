@@ -45,7 +45,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
 from campaignlib.util import atomic_write_text
-from server.config_models import OptStr
+from server.platform_config_shared import OptStr
 
 GROUNDING_CONFIG_FILENAME = "grounding.yaml"
 

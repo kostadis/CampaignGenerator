@@ -28,7 +28,51 @@ from typing import Any, Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from server.config_models import BackendProfile, OptStr, ProfileEntry
+from server.platform_config_shared import OptStr
+
+
+# ── Editor-owned models that used to live in server/config_models.py ──────
+# ``ProfileEntry`` and ``BackendProfile`` were declared next to ``UIState``
+# back when the editor's config WAS a ``ui_state.yaml`` section. Phase 5 of
+# the session-editor isolation moved the data into ``session_doc.yaml`` but
+# left these two models behind; ``docs/config/ui-state-retirement.md`` D2
+# finishes the job, since this file — ``session_doc.yaml``'s schema — is the
+# only place either is used.
+
+
+class ProfileEntry(BaseModel):
+    """A named preset of Stage-④ Narrate knobs.
+
+    Paths are NOT part of a profile — they are per-session. Only the knobs
+    that change between runs (token budget, prose mode, reflections, the
+    enhanced-sections toggle, the genre directive, the backend choice) are
+    captured.
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+    name: str
+    knobs: dict[str, Any] = Field(default_factory=dict)
+
+
+class BackendProfile(BaseModel):
+    """A selectable execution target for one LLM-bearing stage.
+
+    The API key is NEVER stored here — it is read from the environment
+    (ANTHROPIC_API_KEY / OPENROUTER_API_KEY) at run time. ``endpoint`` is used
+    for the dgx backend; openrouter uses its own base URL; claude-code bills
+    the Pro/Max subscription via the local ``claude`` CLI instead of a key.
+
+    Note ``ensemble.yaml`` has its own ``EnsembleBackend`` with a *plural*
+    ``endpoints`` list — the extract stage fans out across DGX hosts. This one
+    stays singular; the Session Doc Editor targets one host at a time.
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+    backend: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
+    endpoint: OptStr = None
+    model: OptStr = None
 
 
 # Dropped with the ``vtt_summary`` chain: the extraction directories it

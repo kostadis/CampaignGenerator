@@ -45,7 +45,7 @@ from typing import Any
 
 import yaml
 
-from server.config_service import UI_STATE_NAME
+from server.migrate_common import UI_STATE_NAME
 from server.ensemble_config_shared import (
     ENSEMBLE_CONFIG_FILENAME,
     EnsembleConfig,

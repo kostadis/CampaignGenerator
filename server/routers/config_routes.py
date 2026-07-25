@@ -1,11 +1,15 @@
-"""Config API routes — typed section/runtime/local updates, path helpers.
+"""Config API routes — runtime/local updates, path helpers, model registry.
 
 All persistence flows through ``PlatformConfigService`` (``app.state.
-platform``) and, for the ten un-isolated ``ui.<section>`` blobs, the
-``UIStateService`` it composes (``platform.uis`` — see
-``docs/config/platform-isolation.md``). There is no fallback to a raw
-``ui_config.yaml`` — when the service is not initialized the routes return
-``503``.
+platform``). There is no fallback to a raw ``ui_config.yaml`` — when the
+service is not initialized the routes return ``503``.
+
+``PUT /section/{name}`` used to live here: the generic write door into
+``ui_state.yaml``'s ``ui.<section>`` blobs. It is gone with the rest of that
+tier (``docs/config/ui-state-retirement.md``) — it had no client. Every
+service that once wrote through it owns its own document now
+(``session_doc.yaml``, ``ensemble.yaml``, ``grounding.yaml``, ``party.yaml``,
+``planning.yaml``, ``platform.yaml``), each with its own typed route.
 """
 
 from typing import Any
@@ -14,7 +18,6 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
 from server.config import DEFAULT_MODEL, MODELS, api_key_present, path_exists
-from server.config_models import SCHEMA_VERSION, UI_SECTION_NAMES
 from server.platform_config_service import PlatformConfigService, require_platform
 
 router = APIRouter()
@@ -38,9 +41,7 @@ def get_config(request: Request):
     return {
         "campaign_dir": str(service.campaign_dir),
         "config_path": str(service.config_path),
-        "ui_state_path": str(service.uis.ui_state_path),
         "local_config_path": str(service.local_config_path),
-        "schema_version": SCHEMA_VERSION,
         "resolved": resolved,
         "tracked": service.tracked,
         "local": service.local.model_dump(mode="json"),
@@ -48,24 +49,9 @@ def get_config(request: Request):
     }
 
 
-# ── Typed section update ───────────────────────────────────────────────────
-
-
-class SectionUpdate(BaseModel):
-    values: dict
-
-
-@router.put("/section/{name}")
-def put_config_section(name: str, update: SectionUpdate, request: Request):
-    """Merge ``update.values`` into ``ui.<name>`` and persist."""
-    service = _require_service(request)
-    if name not in UI_SECTION_NAMES:
-        raise HTTPException(
-            status_code=404,
-            detail=f"unknown UI section {name!r}; valid: {', '.join(UI_SECTION_NAMES)}",
-        )
-    service.uis.update_section(name, update.values)
-    return {"ok": True}
+# ``ui_state_path`` and ``schema_version`` left this body with
+# ``ui_state.yaml`` itself. The former was rendered by Settings.vue; the
+# latter versioned a document that no longer exists.
 
 
 # ── Runtime updates (session_dir, default_model) ───────────────────────────

@@ -8,12 +8,15 @@ warn-and-drop-on-bad-YAML load precedent moved here from
 ``tests/test_config_service.py`` and the now-strict-model tests moved here
 from ``tests/test_config_models.py``), and — as of Phase 3 — ``<config>/
 platform.yaml`` (``runtime``/``update_runtime``) outright, no delegation to
-``UIStateService`` any more. ``.resolved()`` stays a thin passthrough to
-``UIStateService.resolved()`` (see that method's docstring for why); this
-file covers ``runtime`` storage itself, not the resolved/rebase mechanics
-that live in ``tests/test_config_service.py``. Construction, path
-resolution, and ``ui.<section>`` mechanics that don't touch
-``local``/``runtime`` stay in ``tests/test_config_service.py``.
+``UIStateService`` any more.
+
+As of ``docs/config/ui-state-retirement.md`` this file is the whole story:
+``UIStateService`` and ``tests/test_config_service.py`` are both deleted, and
+``.resolved()`` — previously a thin passthrough to that class — is implemented
+here and covered here. The ``ui.<section>`` mechanics that used to live in
+that file (per-field path resolution, the sibling-session rebase, the
+write-time relativize choke point) went with the sections themselves; the
+surviving boot-override and path-resolution coverage moved into this file.
 """
 
 from __future__ import annotations
@@ -27,7 +30,6 @@ from pydantic import ValidationError
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from server.config_service import UIStateService
 from server.platform_config_service import (
     ConfigError,
     PlatformConfigService,
@@ -66,14 +68,36 @@ def fresh_campaign(tmp_path):
     return tmp_path
 
 
-# ── Construction wires UIStateService as the last step ──────────────────────
+# ── Construction ────────────────────────────────────────────────────────────
 
 
 class TestConstruction:
-    def test_uis_is_a_uistateservice_composing_this_platform(self, fresh_campaign):
+    def test_no_uistateservice_sub_service(self, fresh_campaign):
+        """``self.uis`` is gone — docs/config/ui-state-retirement.md. The
+        construction-order hazard it created (platform.yaml had to load first,
+        or the normalize pass re-anchored session-scoped paths against default
+        runtime data) went with it."""
         platform = PlatformConfigService(fresh_campaign)
-        assert isinstance(platform.uis, UIStateService)
-        assert platform.uis.platform is platform
+        assert not hasattr(platform, "uis")
+
+    def test_boot_override_for_unknown_section_is_fatal(self, fresh_campaign):
+        """An override with no consumer fails loudly at boot rather than being
+        swept into a dict nothing reads. This is the assertion gap that let
+        twelve dead ``session_doc.*`` flags survive (O1); ``resolved()``'s
+        catch-all ``else`` branch is what hid them, and it is gone."""
+        with pytest.raises(ConfigError, match="unknown section"):
+            PlatformConfigService(
+                fresh_campaign, boot_overrides={"query.label": "Boot Session"}
+            )
+
+    def test_known_boot_override_sections_still_apply(self, fresh_campaign):
+        platform = PlatformConfigService(
+            fresh_campaign,
+            boot_overrides={"runtime.session_dir": "summaries/booted", "server.port": 6100},
+        )
+        resolved = platform.resolved()
+        assert resolved["runtime"]["session_dir"].endswith("summaries/booted")
+        assert resolved["server"]["port"] == 6100
 
     def test_local_yaml_syntax_error_does_not_block_startup(self, fresh_campaign):
         # Moved from tests/test_config_service.py: local is now
@@ -214,15 +238,24 @@ class TestRuntimeOwnership:
         assert resolved["runtime"]["session_dir"].endswith("summaries/sess1")
 
 
-# ── The isolation invariant: a ui.<section> write cannot touch platform.yaml ┐
+# ── The isolation invariant: no other service's write reaches platform.yaml ┐
 # The whole point of O3 — see docs/config/platform-isolation.md problem #2
 # ("a write to any of ten loose UI sections re-serializes the same
-# ui_state.yaml that holds runtime"). Phase 3 fixes this by construction
-# (separate files, separate writers); this test is the regression guard.
+# ui_state.yaml that holds runtime"). Phase 3 fixed it by construction:
+# separate files, separate writers.
+#
+# The original guard used a ui.<section> write as its probe, because that was
+# the write with the largest blast radius. There is no such write any more
+# (docs/config/ui-state-retirement.md), so the probe moves to the service that
+# now has the widest reach into <config>/ — Grounding, which owns the document
+# five former ui.<section> tenants collapsed into. The invariant under test is
+# unchanged: one service's persist must never re-serialize another's document.
 
 
 class TestIsolationInvariant:
-    def test_ui_section_write_cannot_touch_platform_yaml(self, fresh_campaign):
+    def test_another_services_write_cannot_touch_platform_yaml(self, fresh_campaign):
+        from server.grounding_config_service import GroundingConfigService
+
         platform = PlatformConfigService(fresh_campaign)
         platform.update_runtime(
             {"session_dir": "summaries/sess1", "default_model": "claude-opus-4-6"}
@@ -230,45 +263,28 @@ class TestIsolationInvariant:
         platform_yaml_path = fresh_campaign / CONFIG_SUBDIR / PLATFORM_CONFIG_NAME
         before = platform_yaml_path.read_bytes()
 
-        # A loose ui.<section> write — the kind the old fused
-        # CampaignConfigService re-serialized the WHOLE document for,
-        # including runtime.
-        platform.uis.update_section("prep", {"some_field": "value"})
-        platform.uis.update_section("query", {"summaries": "summaries.md"})
+        grounding = GroundingConfigService(platform.config_path_base)
+        grounding.update_config({"summaries": "docs/summaries.md"})
+        grounding.update_config({"distill": {"chunk_size": 40000}})
 
         after = platform_yaml_path.read_bytes()
         assert after == before, (
-            "a ui.<section> write touched platform.yaml — the isolation "
+            "a grounding write touched platform.yaml — the isolation "
             "invariant O3 exists to guarantee is broken"
         )
 
-    def test_ui_section_write_cannot_touch_platform_yaml_via_route(self, fresh_campaign):
-        # Same invariant, exercised through the HTTP route a real UI save
-        # goes through — PUT /api/config/section/{name}.
-        from fastapi import FastAPI
-        from fastapi.testclient import TestClient
-
-        from server.routers import config_routes
-
-        app = FastAPI()
-        app.include_router(config_routes.router, prefix="/api/config")
-        app.state.platform = PlatformConfigService(fresh_campaign)
-        app.state.platform.update_runtime(
-            {"session_dir": "summaries/sess1", "default_model": "claude-opus-4-6"}
-        )
-        client = TestClient(app)
-
+    def test_local_write_cannot_touch_platform_yaml(self, fresh_campaign):
+        """The two documents this one service owns are still two documents:
+        ``update_local`` and ``update_runtime`` share a lock, not a file."""
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_model": "claude-opus-4-6"})
         platform_yaml_path = fresh_campaign / CONFIG_SUBDIR / PLATFORM_CONFIG_NAME
         before = platform_yaml_path.read_bytes()
 
-        resp = client.put(
-            "/api/config/section/prep",
-            json={"values": {"some_field": "value"}},
-        )
-        assert resp.status_code == 200
+        platform.update_local({"server": {"port": 6001}})
 
-        after = platform_yaml_path.read_bytes()
-        assert after == before
+        assert platform_yaml_path.read_bytes() == before
+        assert platform.runtime.default_model == "claude-opus-4-6"
 
 
 # ── Boot-override precedence ─────────────────────────────────────────────

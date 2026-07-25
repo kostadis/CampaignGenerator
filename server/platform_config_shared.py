@@ -61,15 +61,50 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Annotated, Any
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, ValidationError
 
 from campaignlib import DEFAULT_MODEL
-from server.config_models import OptStr
 
 LOCAL_CONFIG_NAME = ".campaigngenerator.local.yaml"
 PLATFORM_CONFIG_NAME = "platform.yaml"
+
+
+# ── Shared validators and the config error type ───────────────────────────
+# These lived in ``server/config_models.py`` alongside ``UIState`` until
+# ``docs/config/ui-state-retirement.md`` retired that module with the rest of
+# the ``ui_state.yaml`` tier. They are not platform-specific in themselves,
+# but the platform is the one tier every other config service already composes
+# — so this is the module they can live in without anything importing
+# "upward". Per D2: each orphaned symbol lands with its owner.
+#
+# ``ConfigError`` in particular belongs here rather than where it was defined
+# (``UIStateService``): ``server/main.py`` catches it to report a fatal
+# boot-time config failure, and the documents that can trigger one
+# (``config.yaml``, ``platform.yaml``) are both platform-owned.
+
+
+def _empty_to_none(v: Any) -> Any:
+    """Treat empty/whitespace strings as 'unset' so type defaults take over."""
+    if isinstance(v, str) and not v.strip():
+        return None
+    return v
+
+
+def _none_to_false(v: Any) -> Any:
+    """Coerce a YAML/JSON ``null`` to ``False`` so a write that leaves a bool
+    field unset never breaks schema validation."""
+    return False if v is None else v
+
+
+OptStr = Annotated[str | None, BeforeValidator(_empty_to_none)]
+OptBool = Annotated[bool, BeforeValidator(_none_to_false)]
+
+
+class ConfigError(RuntimeError):
+    """Raised at startup when a required config file is missing or malformed."""
 
 
 class PlatformRuntime(BaseModel):
