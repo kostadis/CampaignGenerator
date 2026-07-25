@@ -2,12 +2,44 @@
 
 Loads scene-extraction files written by scene_extract.py, splits them into
 gm-assist scene summaries and verbatim moments, parses the narrative plan
-file produced by Pass 3, and extracts named scenes from a recap's ``##
-Scenes`` section.
+file produced by Pass 3, extracts named scenes from a recap's ``## Scenes``
+section, and reduces a raw WebVTT transcript to clean speaker dialogue.
 """
 
 import re
 from pathlib import Path
+
+
+def parse_vtt(text: str) -> str:
+    """Strip VTT headers, cue numbers, and timestamps. Return clean speaker dialogue.
+
+    Shared by the two VTT-reading stages, ``enhance_summary`` (Stage 1) and
+    ``scene_extract`` (Stage 2). Lived in ``vtt_summary.py`` until that
+    pipeline was retired; it is the one piece of it the live flow still
+    needs, so it moved here rather than dying with its old home.
+    """
+    lines = text.splitlines()
+    dialogue: list[str] = []
+    header_re = re.compile(r"^WEBVTT", re.IGNORECASE)
+    timestamp_re = re.compile(r"^\d{2}:\d{2}:\d{2}[.,]\d{3}\s*-->\s*\d{2}:\d{2}:\d{2}[.,]\d{3}")
+    cue_re = re.compile(r"^\d+\s*$")
+    note_re = re.compile(r"^NOTE\b", re.IGNORECASE)
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if header_re.match(stripped):
+            continue
+        if timestamp_re.match(stripped):
+            continue
+        if cue_re.match(stripped):
+            continue
+        if note_re.match(stripped):
+            continue
+        dialogue.append(stripped)
+
+    return "\n".join(dialogue)
 
 
 def load_extractions(path: Path) -> list[tuple[str, str]]:

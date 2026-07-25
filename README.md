@@ -73,8 +73,8 @@ prep --session "1. Travel to Hold 2. Confront boss 3. Dragon reveal"
 ### 3. After a session — documentation pipeline
 
 ```bash
-# Convert Zoom transcript to summary
-vtt_summary session.vtt -o summaries/session_12.md
+# Turn the Zoom transcript + GM recap into a session summary
+enhance_summary session.vtt --gmassist gm-assist.md -o session-summary.md
 
 # Regenerate grounding docs
 campaign_state summaries.md -o docs/campaign_state.md
@@ -124,16 +124,12 @@ Each script is standalone — run it, review the output, then proceed. See [`doc
 
 | Script | What it does |
 |---|---|
-| `vtt_summary.py` (`session_doc/`) | Zoom `.vtt` transcript → structured session summary |
-| `enhance_summary.py` (`session_doc/`) | Enhance a raw session summary before extraction |
-| `enhance_recap.py` (`session_doc/`) | Enhance a raw session recap |
+| `enhance_summary.py` (`session_doc/`) | Zoom `.vtt` + gm-assist recap → structured `session-summary.md` |
 | `scene_extract.py` (`session_doc/`) | Extract per-scene dialogue and action beats from VTT |
 | `sd_consistency.py` (`session_doc/`) | Pipeline Pass 1 — consistency check vs. campaign docs |
 | `sd_plan.py` (`session_doc/`) | Pipeline Pass 3 — narrative plan: assign characters to scene chunks |
 | `sd_narrate.py` (`session_doc/`) | Pipeline Pass 5 — per-scene first-person narration |
 | `assemble.py` (`session_doc/`) | Assemble narrated scenes into the final session document |
-| `quote_ledger.py` (`session_doc/`) | SQLite-backed VTT dialogue tracking and speaker review |
-| `narrative.py` (`session_doc/`) | Standalone experimental VTT-anchored narration CLI |
 
 ### Grounding docs
 

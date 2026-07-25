@@ -9,10 +9,10 @@ Drives the four-stage pipeline:
    per scene (`session_doc_scene_NN_<slug>.md`) under `narration_dir`.
 4. Stage 4 — `assemble` concatenates the narrations into the final doc.
 
-`roleplay_extract_dir` (typed `roleplay_dir`) points at the kept
-`vtt_roleplay_extractions/` directory produced by `vtt_summary` — it
-feeds the VTT panel. It is NOT the deleted
-`session-roleplay.md` synthesised-summary chain.
+The raw `.vtt` is an INPUT to stages 1 and 2 (`_vtt_path` resolves it from
+`cfg.vtt` or globs the session dir). The retired `vtt_summary` chain —
+`vtt_roleplay_extractions/`, the `/vtt` route and its read-only panel —
+is gone; nothing here reads a pre-extracted roleplay directory.
 """
 
 import json
@@ -946,18 +946,6 @@ def api_get_output(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config
     if path is None or not path.exists():
         return JSONResponse({"exists": False}, status_code=404)
     return {"exists": True}
-
-
-@router.get("/vtt")
-def api_vtt(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
-    if not cfg.paths.roleplay_extractions_dir:
-        return {"chunks": []}
-    vtt_dir = Path(cfg.paths.roleplay_extractions_dir)
-    chunks = [
-        {"name": f.stem, "content": f.read_text(encoding="utf-8")}
-        for f in sorted(vtt_dir.glob("extract_*.md"))
-    ]
-    return {"chunks": chunks}
 
 
 @router.get("/enhance")

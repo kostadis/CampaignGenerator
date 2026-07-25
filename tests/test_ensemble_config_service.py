@@ -146,7 +146,7 @@ class TestIsolationInvariant:
         platform.update_runtime(
             {"session_dir": "summaries/sess1", "default_model": "claude-opus-4-6"}
         )
-        platform.uis.update_section("vtt_summary", {"session_name": "Session 12"})
+        platform.uis.update_section("grounding", {"summaries": "summaries.md"})
 
         # BOTH live under <campaign>/config/ — ui_state.yaml is NOT at the
         # campaign root. Getting this wrong made an earlier cut of this test

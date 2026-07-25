@@ -320,30 +320,6 @@ assemble narration/ \
     --title  "Chapter 37 — A Gem of a Problem"
 ```
 
-### vtt_summary
-
-Convert a Zoom `.vtt` transcript into a structured session summary using
-the same two-pass extract → synthesize pipeline as `distill`. Use
-this to seed `summaries.md` from a recording before running grounding
-docs. The Stage 1 / Stage 2 flow above is preferred when you have a
-`gm-assist.md` recap.
-
-```bash
-vtt_summary session.vtt --output summaries/session_12.md
-
-# With a pre-existing recap as anchor (recommended when available)
-vtt_summary session.vtt \
-    --output           session-summary.md \
-    --reference-summaries gm-assist.md \
-    --context docs/campaign_state.md docs/world_state.md docs/party.md
-```
-
-### quote_ledger.py
-
-SQLite-backed VTT-quote ↔ scene matching. Used by the Web UI's Scene
-Editor to surface quotes that didn't make it into a `scene_extractions/`
-file. Not typically run from the CLI; see
-[`docs/web/web_ui.md`](../web/web_ui.md) for the editor workflow.
 
 ## migrate_session_doc
 

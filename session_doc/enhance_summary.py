@@ -44,7 +44,7 @@ from campaignlib import (
     utc_now_iso,
     write_batch_sidecar,
 )
-from .vtt_summary import parse_vtt
+from .io import parse_vtt
 
 
 ENHANCE_SYSTEM_PREFIX = load_agent_prompt("enhance_summary")

@@ -22,7 +22,6 @@ flowchart TB
   subgraph Services[Services - behavior boundaries]
     SD["Session Doc Editor<br/>session_doc.yaml (own file, own service)"]
     EN["Ensemble<br/>ensemble.yaml (own file, own service)"]
-    VT["VTT Summary<br/>ui.vtt_summary"]
     GR["Grounding/Search<br/>ui.grounding"]
     PA["Party<br/>party.yaml"]
     PL["Planning<br/>planning.yaml"]
@@ -44,7 +43,6 @@ below for what that closed and what's still open.
 |---|---|---|---|---|
 | Session Doc Editor | `scene_editor.py` + `SessionEditorConfigService` | own file: `session_doc.yaml` (grouped, strict) | narrate/scrub CLI | backend/dgx knobs, tokens, prose/reflections, session paths, `profiles[]` |
 | Ensemble | `server/routers/ensemble.py` + `EnsembleConfigService` | own file: `ensemble.yaml` (grouped, strict) | `ensemble_extract`/`ensemble_merge`/`synthesise_*` | chapters, known_names, aliases, per-stage `EnsembleBackend`, artifact `paths`, `tuning`, planning overrides, `manifest.json`, `merge.yaml` |
-| VTT Summary | `session_workflow.py` | `ui.vtt_summary` | `session_doc/vtt_summary.py` | input/output, extract_dir, reference_summaries |
 | Grounding / Search | `grounding.py`, `pipelines/rlm/mcp_server.py` | `ui.grounding` | grounded_search, query_lore, rpg_retriever | summaries pointer; reads wiring; also reads `SessionEditorConfigService` for the global backend selector |
 | Party | `config_routes` party-yaml | `ui.party` (loose) | `pipelines/grounding/party.py` | `party.yaml` (roster, 3-state arc_score) |
 | Planning | `planning_routes` | (none - uses dedicated PlanningConfigService) | `pipelines/grounding/planning.py` | `planning.yaml` (npcs/factions) |
@@ -69,7 +67,6 @@ below for what that closed and what's still open.
 |---|---|
 | Session Doc Editor | `session_doc.yaml` — own file, own service (`SessionEditorConfigService`); no `ui_state.yaml` section and no `scene_editor.CONFIG` process-global anymore |
 | Ensemble | `ensemble.yaml` — own file, own service (`EnsembleConfigService`) — plus `manifest.json`, `merge.yaml`, aliases file, `*_draft.md` |
-| VTT Summary | `ui.vtt_summary` |
 | Grounding/Search | `ui.grounding.summaries` |
 | Party | `party.yaml` |
 | Planning | `planning.yaml` (own file, own service — `PlanningConfigService`) |
@@ -85,9 +82,9 @@ papered over, since "closed for the largest pieces" is not the same claim as "cl
 
 | Gap | Evidence |
 |---|---|
-| No service ownership | **Partially closed.** Session Doc Editor (`SessionEditorConfigService` → `session_doc.yaml`), Planning (`PlanningConfigService` → `planning.yaml`) and Ensemble (`EnsembleConfigService` → `ensemble.yaml`) each own+validate their own file now — three of roughly nine. The remaining ~6 services (VTT Summary, Grounding/Search, Party's UI slice, Campaign State, the loose pages) still share one `ui_state.yaml`, now under `UIStateService` — the Phase 2 rename that made the "residual landlord" role explicit and countable rather than implicit inside a class that also did platform work |
+| No service ownership | **Partially closed.** Session Doc Editor (`SessionEditorConfigService` → `session_doc.yaml`), Planning (`PlanningConfigService` → `planning.yaml`) and Ensemble (`EnsembleConfigService` → `ensemble.yaml`) each own+validate their own file now — three of roughly eight. The remaining ~5 services (Grounding/Search, Party's UI slice, Campaign State, the loose pages) still share one `ui_state.yaml`, now under `UIStateService` — the Phase 2 rename that made the "residual landlord" role explicit and countable rather than implicit inside a class that also did platform work |
 | Fused platform + residual roles | **Closed** (`platform-isolation.md`, new gap named and closed in the same effort). Through this branch's Phase 1, `CampaignConfigService` was simultaneously the permanent platform (paths, `runtime.*`, boot overrides, wiring/`config.yaml` access) AND the residual landlord of the ten loose `ui.<section>` blobs — one 610-line class, one write lock, one `ui_state.yaml`, so a `ui.distill` save could corrupt `runtime.default_model`/`session_dir`, the values every other service composes. Phase 2 split the class; Phase 3 (O3) went further and gave `runtime` its own file, `platform.yaml`, so the two roles can no longer share a write path even in principle — regression-tested by `test_ui_section_write_cannot_touch_platform_yaml[_via_route]` |
-| No config hierarchy | **Narrowed, not closed.** Global vs service-local is an enforced split for the platform tier now (`platform.yaml`/`.campaigngenerator.local.yaml` vs `ui_state.yaml`), on top of the two isolated services above. `config.yaml` still mixes global (prompts) + service (`mempalace`); `ui_state.yaml` still mixes the remaining ~7 services' sections in one file with one schema version |
+| No config hierarchy | **Narrowed, not closed.** Global vs service-local is an enforced split for the platform tier now (`platform.yaml`/`.campaigngenerator.local.yaml` vs `ui_state.yaml`), on top of the two isolated services above. `config.yaml` still mixes global (prompts) + service (`mempalace`); `ui_state.yaml` still mixes the remaining ~6 services' sections in one file with one schema version |
 | Duplicated backend/model selection | **Not closed — relocated, not unified; the *registry* half is now unified.** Backend *selection* is still four independently-configured selectors (ensemble `BackendProfile`, `session_doc.yaml` `backends.*`, grounding's global picker, connections' per-request field) — explicitly deferred, this doc's gap #3. Ensemble's *default-model* half closed separately in Phase 4 of [ensemble-isolation.md](./ensemble-isolation.md) — it was the last `/run/*` router outside `resolve_default_model`, because `backend_cli_args` emits nothing on the Anthropic branch, so the sidebar pick had never reached an ensemble run. But Phase 5a of `platform-isolation.md` did close the narrower "which models exist, and which one is the default" question: one `DEFAULT_MODEL` definition (`campaignlib.constants`), one `MODELS` registry (`server/config.py`, refreshed), and all fourteen router request-body model fields now resolve through `resolve_default_model` (explicit → `platform.runtime.default_model` → literal) instead of each hardcoding its own copy of the literal. The registry's *source* moving into `wiring.yaml` (so a new model needs no release) is Phase 5b — deferred, cross-repo, [issue #177](https://github.com/kostadis/CampaignGenerator/issues/177) |
 | Coupling via shared files, not APIs | Still open. Services integrate by reading/writing the same `docs/*.md` and palace, not versioned contracts. Disk is the bus |
 | No schema-per-service enforcement | **Partially closed.** `SessionEditorConfig`, `PlanningConfig`, `PlatformDocument`/`PlatformLocalConfig` and now `EnsembleConfig` are strict (`extra="forbid"`/validated) — five typed, enforced schemas, up from two. The remaining 10 loose `ui.<section>` sections are still `extra='allow'`, unmodeled, unvalidated |
@@ -102,10 +99,10 @@ instead of a `ui_state.yaml` section at all). The PLATFORM tier is no longer jus
 `platform-isolation.md` (Phases 0–5a) made it a real, owned, physically separate thing
 (`PlatformConfigService` + `platform.yaml` + `.campaigngenerator.local.yaml`), closing the "fused
 roles" gap this doc used to name and leave open. What's still co-mingled is the SERVICE tier:
-`ui_state.yaml` is one document holding ~7 services' sections under `UIStateService`, `config.yaml`
+`ui_state.yaml` is one document holding ~6 services' sections under `UIStateService`, `config.yaml`
 holds both global and `mempalace` keys, and most services still don't validate or own their slice.
 Session Doc Editor, Planning and Ensemble are the exceptions that prove the pattern is buildable,
-not evidence the pattern is finished: three services out of roughly nine. Services still communicate through
+not evidence the pattern is finished: three services out of roughly eight. Services still communicate through
 shared on-disk docs and the palace rather than contracts. The system is a set of microservices
 wearing a monolith's clothes, with a platform tier that has been extracted and two services that
 have started changing: the boundaries mostly exist in behavior (routers + CLI engines + sections)
@@ -123,7 +120,7 @@ the foundation those rows sit on, and closing its own "fused roles" problem was 
 whole point. Steps (2)–(4) remain undone for every *service*, including the two already isolated.
 
 A managing hierarchy would: (1) give each service its own owned+validated config namespace (split
-`ui_state` per service, or a per-service file — **done for 3 of ~9 services**: Session Doc Editor's
+`ui_state` per service, or a per-service file — **done for 3 of ~8 services**: Session Doc Editor's
 `session_doc.yaml`, Planning's `planning.yaml`, Ensemble's `ensemble.yaml`), (2) centralize model/backend *selection* into one
 platform provider the services request from (Phase 5a narrowed this to "which models exist and
 what's the default" — the *registry* — while selection itself, gap #3's four independent

@@ -4,8 +4,8 @@ Phase 4 carved these out of the old monolithic session_doc.py into flat
 session_doc_*.py modules; Phase 5 deletes session_doc.py and moves the
 helpers into this package. The flat __init__ re-export block preserves
 every public name the old module exposed so external imports
-(polish.py, server/routers/scene_editor.py, quote_ledger.py, the test
-suite) keep working without edits.
+(polish.py, server/routers/scene_editor.py, the test suite) keep working
+without edits.
 """
 
 from campaignlib import load_agent_prompt
@@ -23,6 +23,7 @@ from session_doc.io import (
     load_extractions,
     load_scene_extractions,
     parse_plan,
+    parse_vtt,
 )
 from session_doc.narrate import (
     DIALOGUE_INSTRUCTION_CONDITIONAL,
@@ -72,4 +73,5 @@ __all__ = [
     "load_scene_extractions",
     "load_voice_files",
     "parse_plan",
+    "parse_vtt",
 ]

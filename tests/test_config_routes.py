@@ -96,16 +96,27 @@ class TestPutSection:
         app = _make_app(fresh_campaign)
         client = TestClient(app)
         resp = client.put(
-            "/api/config/section/vtt_summary",
-            json={"values": {"session_name": "Session 12", "input": "session.vtt"}},
+            "/api/config/section/grounding",
+            json={"values": {"summaries": "summaries.md", "label": "Session 12"}},
         )
         assert resp.status_code == 200
 
         # Read back via GET / and confirm the values are visible in the
         # typed view.
         body = client.get("/api/config/").json()
-        assert body["resolved"]["ui"]["vtt_summary"]["session_name"] == "Session 12"
-        assert body["resolved"]["ui"]["vtt_summary"]["input"].endswith("session.vtt")
+        assert body["resolved"]["ui"]["grounding"]["label"] == "Session 12"
+        assert body["resolved"]["ui"]["grounding"]["summaries"].endswith("summaries.md")
+
+    def test_retired_vtt_summary_section_rejected_404(self, fresh_campaign):
+        """``ui.vtt_summary`` retired with the vtt_summary chain — a PUT to
+        it must 404 like ``session_doc``/``ensemble``, not quietly persist
+        state nothing reads."""
+        client = TestClient(_make_app(fresh_campaign))
+        resp = client.put(
+            "/api/config/section/vtt_summary",
+            json={"values": {"input": "session.vtt"}},
+        )
+        assert resp.status_code == 404
 
     def test_unknown_section_rejected_404(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
@@ -141,8 +152,8 @@ class TestPutSection:
     def test_no_service_503(self, fresh_campaign):
         client = TestClient(_make_app(None))
         resp = client.put(
-            "/api/config/section/vtt_summary",
-            json={"values": {"input": "x.vtt"}},
+            "/api/config/section/grounding",
+            json={"values": {"summaries": "summaries.md"}},
         )
         assert resp.status_code == 503
 
@@ -177,11 +188,11 @@ class TestPutLocal:
         # test doesn't pin the PUT's status; the invariant that matters
         # either way is that ``ui`` keys never land in the typed
         # ``server``/``nav`` slots — verify by reading back.
-        client.put("/api/config/local", json={"values": {"ui": {"vtt_summary": {}}}})
+        client.put("/api/config/local", json={"values": {"ui": {"grounding": {}}}})
         body = client.get("/api/config/").json()
         # Whatever happened, the service-resolved ui section stays empty
-        # of any vtt_summary state we didn't put there via /section/.
-        assert body["resolved"]["ui"]["vtt_summary"]["session_name"] is None
+        # of any grounding state we didn't put there via /section/.
+        assert body["resolved"]["ui"]["grounding"]["summaries"] is None
 
     def test_no_service_503(self, fresh_campaign):
         client = TestClient(_make_app(None))

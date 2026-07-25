@@ -1,4 +1,4 @@
-"""Tests for campaignlib, prep.py, session_doc, and quote_ledger logic."""
+"""Tests for campaignlib, prep.py, and session_doc logic."""
 
 import sys
 import pytest
@@ -8,7 +8,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import campaignlib
 from pipelines.session_prep import prep
 import session_doc
-import session_doc.quote_ledger as quote_ledger
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -644,26 +643,6 @@ def test_normalize_vtt_speakers_rewrites_player_to_character():
     assert out.startswith("Daz: We can put her")
     # Existing character-named line is untouched
     assert "Thorin: Let's roll." in out
-
-
-# ── quote_ledger.parse_roleplay_quotes ─────────────────────────────────────
-
-
-def test_parse_roleplay_quotes_extracts_character_after_as():
-    text = '**GM as Brewbarry** — *at the bar*\n> "Welcome in, travellers."\n'
-    quotes = quote_ledger.parse_roleplay_quotes(text, "session.md")
-    assert len(quotes) == 1
-    assert quotes[0]["speaker"] == "GM as Brewbarry"
-    assert quotes[0]["character"] == "Brewbarry"
-
-
-def test_parse_roleplay_quotes_strips_player_name_parenthetical():
-    """A "Name (Player)" speaker with no "as" clause keeps only the character name."""
-    text = '**Daz (Mike Hall)** — *mid-fight*\n> "We move at dawn."\n'
-    quotes = quote_ledger.parse_roleplay_quotes(text, "session.md")
-    assert len(quotes) == 1
-    assert quotes[0]["speaker"] == "Daz (Mike Hall)"
-    assert quotes[0]["character"] == "Daz"
 
 
 def test_normalize_vtt_speakers_rewrites_gm_player_to_GM():

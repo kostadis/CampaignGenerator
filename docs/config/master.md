@@ -49,7 +49,7 @@ the renamed `UIStateService` (layer 3, the residual `ui.<section>` landlord).
 | 7. Ensemble subsystem | `manifest.json`, `merge.yaml`, `docs/*_draft.md` | ensemble CLI | per-run artifacts | the run outputs; its *config* moved up to layer 3c |
 | 8. Planning subsystem | `planning.yaml` | human + planning service | YAML, planning service owned | npcs[], factions[] |
 | 9. Grounding docs | `party.yaml`, `tracking.txt`, `docs/*.md` | human + generators | YAML config + generated md | rosters/dossiers → world/campaign/party docs |
-| 10. Router model defaults | fourteen `/run/*` request fields (`grounding.py` ×5, `prep.py` ×3, `experimental.py` ×2, `session_workflow.py` ×1, `connections.py` ×1, `setup.py` ×2) | server (`resolve_default_model`, `server/platform_config_service.py`) | in-memory, per-request | resolves `model` per request: explicit value → layer 2b's `runtime.default_model` → `campaignlib.constants.DEFAULT_MODEL` literal. Phase 5a — closes the gap where a request omitting `model` silently got a hardcoded literal instead of the sidebar's pick |
+| 10. Router model defaults | eleven `/run/*` request fields (`grounding.py` ×5, `prep.py` ×3, `connections.py` ×1, `setup.py` ×2 — `experimental.py` ×2 and `session_workflow.py` ×1 went with the retired VTT Summary chain) | server (`resolve_default_model`, `server/platform_config_service.py`) | in-memory, per-request | resolves `model` per request: explicit value → layer 2b's `runtime.default_model` → `campaignlib.constants.DEFAULT_MODEL` literal. Phase 5a — closes the gap where a request omitting `model` silently got a hardcoded literal instead of the sidebar's pick |
 
 ## Who writes what
 

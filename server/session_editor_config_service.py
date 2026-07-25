@@ -43,8 +43,6 @@ _SESSION_PATH_FIELDS: tuple[str, ...] = (
     "session_recap",
     "session_summary",
     "scene_extractions_dir",
-    "roleplay_extractions_dir",
-    "summary_extractions_dir",
     "narration_dir",
     "output_dir",
 )

@@ -21,13 +21,27 @@ dataclasses so ``config_models.BackendProfile`` and
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from typing import Any, Literal
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from server.config_models import BackendProfile, OptStr, ProfileEntry
+
+
+# Dropped with the ``vtt_summary`` chain: the extraction directories it
+# produced now have neither a producer nor a consumer. They are stripped on
+# load rather than rejected — ``EditorPaths`` is ``extra="forbid"``, so a
+# campaign whose ``session_doc.yaml`` still carries them (every campaign
+# migrated by ``server/migrate_session_doc.py``, which mapped the old
+# ``roleplay_dir``/``summary_dir`` into them) would otherwise fail schema
+# validation and take the whole Session Doc Editor down on boot.
+RETIRED_PATH_FIELDS: tuple[str, ...] = (
+    "roleplay_extractions_dir",
+    "summary_extractions_dir",
+)
 
 
 class EditorPaths(BaseModel):
@@ -44,13 +58,33 @@ class EditorPaths(BaseModel):
     session_recap: OptStr = None
     session_summary: OptStr = None
     scene_extractions_dir: OptStr = None
-    roleplay_extractions_dir: OptStr = None
-    summary_extractions_dir: OptStr = None
     narration_dir: OptStr = None
     output_dir: OptStr = None
     party: OptStr = None
     voice_dir: OptStr = None
     examples_dir: OptStr = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _drop_retired_fields(cls, data: Any) -> Any:
+        """Strip retired keys before ``extra="forbid"`` sees them.
+
+        Announced on stderr rather than dropped silently: the value is
+        being discarded from disk on the next write, and a GM who hand-set
+        one of these paths should be told it stopped meaning anything.
+        """
+        if not isinstance(data, dict):
+            return data
+        retired = [k for k in RETIRED_PATH_FIELDS if k in data]
+        if not retired:
+            return data
+        print(
+            f"  config: dropping retired session_doc.yaml path field(s) "
+            f"{', '.join(retired)} — the vtt_summary chain that produced "
+            f"those directories has been removed.",
+            file=sys.stderr,
+        )
+        return {k: v for k, v in data.items() if k not in RETIRED_PATH_FIELDS}
 
 
 class NarrateKnobs(BaseModel):
@@ -143,8 +177,10 @@ TYPED_SESSION_DOC_TO_GROUPED: dict[str, tuple[str, ...]] = {
     "session": ("paths", "session_recap"),
     "session_summary": ("paths", "session_summary"),
     "scene_extractions_dir": ("paths", "scene_extractions_dir"),
-    "roleplay_dir": ("paths", "roleplay_extractions_dir"),
-    "summary_dir": ("paths", "summary_extractions_dir"),
+    # ``roleplay_dir``/``summary_dir`` are deliberately absent: they mapped
+    # into the now-retired RETIRED_PATH_FIELDS. The migration reports them
+    # as unrecognised (visible) instead of migrating them into a field that
+    # no longer exists (silently lost).
     "narration_dir": ("paths", "narration_dir"),
     "output_dir": ("paths", "output_dir"),
     "party": ("paths", "party"),

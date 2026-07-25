@@ -11,7 +11,7 @@ Where the two overlap (Optimistic Lies, Split-Brain, Fragmented State), the anti
 
 ### I. Disk is Truth, the Model is a Draft
 
-Markdown and YAML files on disk are the single source of truth. Every database in the system — the MemPalace palace, the vector DB behind it, `quote_ledger.db`, the rpg-library index — is an *index over* or *cache of* that truth, never the truth itself. A database may be deleted and rebuilt from disk; disk may never be rebuilt from a database.
+Markdown and YAML files on disk are the single source of truth. Every database in the system — the MemPalace palace, the vector DB behind it, the rpg-library index, the 5etools name catalog — is an *index over* or *cache of* that truth, never the truth itself. A database may be deleted and rebuilt from disk; disk may never be rebuilt from a database.
 
 LLM output is a **draft** until a human has reviewed it. Generated text is not fact, not canon, and not input to the next step until a human has read it and let it through. The rough extraction pass is the ceiling of what the model can do unaided, not the floor.
 

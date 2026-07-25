@@ -140,7 +140,7 @@ you end up re-ingesting the same book five times.
 | `voice/`, `examples/`, `summaries/{session}/` | `~/.mempalace/palaces/<name>/` — one palace per campaign, under the shared root |
 | `refs.yaml` (+ git-ignored `refs.local.yaml`) | `~/src/mytools/rpg-lib/rpg_library.db` — the enriched PDF index |
 | `config.yaml`, `ui_config.yaml`, `.mcp.json` | `~/src/homebrew-private/` — shared homebrew JSON |
-| `quote_ledger.db`, `logs/`, `notes/` | `~/src/5etools-img/` — image assets; `dgxlib` model registry |
+| `logs/`, `notes/` | `~/src/5etools-img/` — image assets; `dgxlib` model registry |
 
 Full breakdown: [component-campaign-data](component-campaign-data.md).
 

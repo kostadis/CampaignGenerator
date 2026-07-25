@@ -166,7 +166,7 @@ ownership), the session editor added three of its own:
 3. **Whole-file write blast radius.** `update_section("session_doc", …)`
    re-serializes the **entire** `ui_state.yaml` (a full `model_copy` +
    `_persist_ui_state`). A serialization bug on a session_doc write can corrupt
-   `ui.ensemble`, `ui.grounding`, `ui.vtt_summary`, `runtime`, etc. This is
+   `ui.ensemble`, `ui.grounding`, `runtime`, etc. This is
    exactly planning's problem #2 — and it is *not* fixed by an in-code service
    alone; the dedicated `session_doc.yaml` in Phase 5 is what fixes it.
 
@@ -485,7 +485,7 @@ in a way that blocked it — each was caught by the refactor forcing every
 6. **Bounded write blast radius.** With `session_doc` + `profiles` in their own
    `session_doc.yaml` (Phase 5), an editor write no longer re-serializes
    `ui_state.yaml`, so it can no longer corrupt `ui.ensemble` / `ui.grounding` /
-   `ui.vtt_summary` / `runtime` — the same isolation guarantee planning gained.
+   `runtime` — the same isolation guarantee planning gained.
 7. **A schema worth enforcing.** The Phase 5 reshape replaces a flat,
    `extra="allow"` bag that carries two names per field with a grouped, **strict**
    `SessionEditorConfig` — closing the service-cut "no per-service schema

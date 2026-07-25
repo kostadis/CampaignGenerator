@@ -65,7 +65,13 @@ class TestBuildGroupedConfig:
         assert cfg is not None
         assert cfg.paths.session_recap == "gm-assist.md"
         assert cfg.paths.scene_extractions_dir == "scene_extractions"
-        assert cfg.paths.roleplay_extractions_dir == "vtt_roleplay_extractions"
+        # `roleplay_dir` is still in OLD_UI_STATE above (real campaigns have
+        # it) but was dropped from TYPED_SESSION_DOC_TO_GROUPED when the
+        # vtt_summary chain retired: it has no grouped target any more, so
+        # the migration must leave it behind rather than write it into a
+        # field EditorPaths no longer declares.
+        assert not hasattr(cfg.paths, "roleplay_extractions_dir")
+        assert "roleplay" not in cfg.model_dump_json()
         assert cfg.roster.characters == "Zalthir, Grygum"
         assert cfg.narrate.tokens == 12000
         assert cfg.narrate.prose_mode is True

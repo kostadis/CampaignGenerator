@@ -400,10 +400,12 @@ gated on a change in another repo and should not block 0–4.
   rebase in `resolved()` reads it, and `SessionEditorConfigService` reads it
   both for `_relativized_paths` (persisted) and `resolved_editor_config`
   (boot-overridden). Once it lives in a different file, **load order becomes
-  load-bearing**: `platform.yaml` must be read before any path resolution,
-  including `ui_state.yaml`'s own `vtt_summary` session fields — which will now
-  resolve against a base held in another document. The editor's Phase 5 had no
-  equivalent hazard.
+  load-bearing**: `platform.yaml` must be read before any path resolution that
+  needs a session base — which now resolves against a base held in another
+  document. (`ui_state.yaml` had its own session-scoped fields under
+  `ui.vtt_summary` at the time; retiring that service left
+  `SessionEditorConfigService` as the only session-base consumer.) The editor's
+  Phase 5 had no equivalent hazard.
 - **Phase 5 depends on another repo.** `config/wiring.yaml` does not exist on
   this machine and is gitignored; the mneme template renders 8 flat scalars.
   A model registry needs a `models:` source in `hypostasis.yaml`, a template

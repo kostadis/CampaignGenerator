@@ -53,7 +53,6 @@ Every extractor that calls the shared pipeline accepts `--dossier-dir` and plumb
 | `pipelines/grounding/distill.py` | `input_normalizer` rewrites aliases in summaries before extract + synthesize; roster appended to both system prompts. |
 | `pipelines/grounding/campaign_state.py` | Same as distill. |
 | `pipelines/grounding/party.py` | Legacy flat-flag path uses `run_synthesize_pipeline`'s kwargs; `--party-config` path routes the normalizer through `_render_party_block` / `_render_source_group` and appends the roster to `SYNTHESIZE_SYSTEM` manually. Both extract and synthesize passes covered. |
-| `session_doc/vtt_summary.py` | Both extract passes (summary + roleplay) and both synthesize passes. Reference summaries are normalized along with the VTT dialogue. |
 | `session_doc/sd_narrate.py` | `--dossier-dir` loads the alias map once at startup. Recap + scene_extractions are normalised before the per-scene loop; the roster is appended to the narrate prompt. |
 | `pipelines/grounding/planning.py --build-dossiers` | Self-seeds: reads its own `--dossier-dir` to assemble the roster, passes it as `system_suffix` to the Phase 1 extract prompt so re-builds don't re-fragment NPCs already merged. |
 

@@ -1,6 +1,6 @@
 """Async subprocess runner with SSE streaming output.
 
-Shared seam used by ALL SSE routes (ensemble, grounding, prep, session_workflow,
+Shared seam used by ALL SSE routes (ensemble, grounding, prep, setup,
 scene_editor, …). The termination behaviour added here (T020–T021: start_new_session
 + group-kill on disconnect) is intentionally global — no route should leak a runaway
 subprocess when the client disconnects. Non-ensemble routes' request/response shapes
