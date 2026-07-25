@@ -8,10 +8,8 @@ platform``) and, for the ten un-isolated ``ui.<section>`` blobs, the
 ``503``.
 """
 
-from pathlib import Path
 from typing import Any
 
-import yaml
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
@@ -137,103 +135,13 @@ def get_path_status(path: str):
     return {"exists": path_exists(path)}
 
 
-@router.get("/party-yaml")
-def get_party_yaml(path: str):
-    """Load a party config YAML.
-
-    Returns the parsed `characters` list (with arc_score=null preserved as
-    null, and `dossier` — the PC's ensemble-built merged_dossiers/npc_*.md
-    file, if mapped) and the resolved file path. If the file does not
-    exist, returns an empty character list so the UI can offer a
-    'create new' flow.
-    """
-    p = Path(path).expanduser().resolve() if path else None
-    if not p or not path:
-        raise HTTPException(status_code=400, detail="path is required")
-    if not p.exists():
-        return {"path": str(p), "exists": False, "characters": []}
-    try:
-        raw = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
-    except yaml.YAMLError as e:
-        raise HTTPException(status_code=400, detail=f"invalid YAML: {e}")
-    chars = raw.get("characters") or []
-    if not isinstance(chars, list):
-        raise HTTPException(status_code=400,
-                            detail="'characters' must be a list")
-
-    # Normalize: arc_score key always present (null when trackless / unspecified).
-    out = []
-    for c in chars:
-        if not isinstance(c, dict):
-            continue
-        out.append({
-            "name": c.get("name", ""),
-            "sheet": c.get("sheet", ""),
-            "backstory": c.get("backstory") or "",
-            "dossier": c.get("dossier") or "",
-            # Distinguish three cases for arc_score on the wire:
-            #   present + null → trackless=True
-            #   present + path → trackless=False, arc_score=path
-            #   absent         → trackless=False, arc_score=""
-            "arc_score": c.get("arc_score") if c.get("arc_score") else "",
-            "trackless": "arc_score" in c and c.get("arc_score") is None,
-        })
-    return {"path": str(p), "exists": True, "characters": out}
-
-
-class PartyYamlSave(BaseModel):
-    path: str
-    characters: list[dict]
-
-
-@router.put("/party-yaml")
-def put_party_yaml(update: PartyYamlSave):
-    """Write a party config YAML.
-
-    Each character dict must contain `name` and `sheet`. `backstory` and
-    `dossier` (the PC's ensemble-built merged_dossiers/npc_*.md file) are
-    optional. `arc_score` is three-state:
-        trackless=True            → emits `arc_score: null`
-        arc_score truthy          → emits `arc_score: <path>`
-        otherwise                 → arc_score key omitted entirely
-    Validates only the shape of the YAML — does NOT verify referenced
-    files exist (party.py's loader does that at run time).
-    """
-    p = Path(update.path).expanduser().resolve()
-    if not update.characters:
-        raise HTTPException(status_code=400,
-                            detail="characters list cannot be empty")
-
-    out_chars = []
-    for i, c in enumerate(update.characters):
-        name = (c.get("name") or "").strip()
-        sheet = (c.get("sheet") or "").strip()
-        if not name or not sheet:
-            raise HTTPException(
-                status_code=400,
-                detail=f"character #{i + 1}: 'name' and 'sheet' are required",
-            )
-        entry: dict = {"name": name, "sheet": sheet}
-        backstory = (c.get("backstory") or "").strip()
-        if backstory:
-            entry["backstory"] = backstory
-        dossier = (c.get("dossier") or "").strip()
-        if dossier:
-            entry["dossier"] = dossier
-        if c.get("trackless"):
-            entry["arc_score"] = None
-        else:
-            arc_score = (c.get("arc_score") or "").strip()
-            if arc_score:
-                entry["arc_score"] = arc_score
-        out_chars.append(entry)
-
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(yaml.safe_dump({"characters": out_chars}, sort_keys=False),
-                 encoding="utf-8")
-    return {"ok": True, "path": str(p)}
-
-
+# GET/PUT /party-yaml lived here until Phase 5 of docs/config/
+# grounding-isolation.md. They took the target file as a browser-supplied
+# `path` parameter, re-implemented the three-state arc_score encoding in raw
+# YAML, validated nothing beyond "name and sheet are non-empty", and wrote via
+# a bare write_text. The roster is now owned by PartyConfigService and served
+# at /api/party/characters — one implementation, a declared path, atomic
+# writes.
 
 
 

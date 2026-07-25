@@ -5,7 +5,6 @@ import PathField from '../../components/shared/PathField.vue'
 import MultiPathField from '../../components/shared/MultiPathField.vue'
 import ExtractSynthesizePanel from '../../components/shared/ExtractSynthesizePanel.vue'
 import PartyConfigEditor from '../../components/shared/PartyConfigEditor.vue'
-import { resolvePathWithBase } from '../../utils/paths'
 
 const config = useConfigStore()
 
@@ -116,10 +115,6 @@ const runParams = computed(() => {
 
 const hasSummaries = computed(() => !!summaries.value.trim())
 
-const resolvedPartyConfigPath = computed(() =>
-  resolvePathWithBase(partyConfigPath.value, 'campaign')
-)
-
 watch(output, (newOutput) => {
   if (!extractDir.value && newOutput) {
     const idx = newOutput.lastIndexOf('/')
@@ -162,7 +157,7 @@ onMounted(() => { loadFromConfig() })
       <div v-if="mode === 'config'" class="form-section">
         <PathField v-model="partyConfigPath" label="Party config file" required resolve-base="campaign"
           help="Path to party.yaml. Maps each PC to their sheet, backstory, and arc_score (use null for trackless). See config/party.example.yaml." />
-        <PartyConfigEditor :config-path="resolvedPartyConfigPath" />
+        <PartyConfigEditor />
       </div>
 
       <!-- Required: character sheets (mode = flat) -->

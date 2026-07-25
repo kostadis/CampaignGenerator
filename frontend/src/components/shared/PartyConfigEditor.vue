@@ -11,15 +11,16 @@ interface PartyChar {
   dossier: string
   arc_score: string
   trackless: boolean
+  /** Fields whose referenced file doesn't exist. Server-reported (D4). */
+  missing_files?: string[]
 }
 
-const props = defineProps<{
-  /** Absolute path to the party.yaml file. */
-  configPath: string
-}>()
-
+// No `configPath` prop any more: party.yaml has ONE declared location and
+// PartyConfigService owns it (docs/config/grounding-isolation.md Track 0 +
+// Phase 5). The old /api/config/party-yaml pair took the target path as a
+// browser-supplied parameter.
 const emit = defineEmits<{
-  saved: [path: string]
+  saved: []
 }>()
 
 const open = ref(false)
@@ -30,10 +31,16 @@ const status = ref<{ kind: 'ok' | 'err'; text: string } | null>(null)
 const fileExists = ref<boolean | null>(null)
 
 const canSave = computed(() => {
-  if (!props.configPath.trim()) return false
   if (!characters.value.length) return false
   return characters.value.every(c => c.name.trim() && c.sheet.trim())
 })
+
+// Referenced files the server reports as absent. Saving is still allowed —
+// naming a sheet before writing it is a legitimate workflow (D4) — so this is
+// a warning, not a gate.
+const missingCount = computed(() =>
+  characters.value.reduce((n, c) => n + (c.missing_files?.length ? 1 : 0), 0)
+)
 
 // Sheet/backstory/dossier/arc-score references resolve against the CAMPAIGN
 // ROOT, not against party.yaml's own directory — see docs/config/
@@ -44,22 +51,29 @@ const yamlParentDir = computed(() =>
   (useConfigStore().resolved.campaign_dir || '').trim()
 )
 
+function normalize(rows: PartyChar[]): PartyChar[] {
+  // The API omits optional fields rather than sending ""; the form binds to
+  // strings.
+  return rows.map(c => ({
+    name: c.name ?? '',
+    sheet: c.sheet ?? '',
+    backstory: c.backstory ?? '',
+    dossier: c.dossier ?? '',
+    arc_score: c.arc_score ?? '',
+    trackless: !!c.trackless,
+    missing_files: c.missing_files ?? [],
+  }))
+}
+
 async function load() {
-  if (!props.configPath.trim()) {
-    status.value = { kind: 'err', text: 'Set the party config path first.' }
-    return
-  }
   loading.value = true
   status.value = null
   try {
-    const url = `/api/config/party-yaml?path=${encodeURIComponent(props.configPath)}`
-    const data = await apiFetch<{ exists: boolean; characters: PartyChar[] }>(url)
-    fileExists.value = data.exists
-    characters.value = data.characters.length
-      ? data.characters
-      : []
-    if (!data.exists) {
-      status.value = { kind: 'ok', text: 'New file — add characters and Save to create.' }
+    const rows = await apiFetch<PartyChar[]>('/api/party/characters')
+    characters.value = normalize(rows)
+    fileExists.value = rows.length > 0
+    if (!rows.length) {
+      status.value = { kind: 'ok', text: 'No roster yet — add characters and Save to create one.' }
     }
   } catch (e: any) {
     status.value = { kind: 'err', text: e?.message || 'Failed to load' }
@@ -73,13 +87,16 @@ async function save() {
   saving.value = true
   status.value = null
   try {
-    await apiPut('/api/config/party-yaml', {
-      path: props.configPath,
-      characters: characters.value,
-    })
+    // One atomic PUT of the whole roster, not delete-all-then-recreate: row
+    // order is meaningful here and the file is never briefly empty.
+    const rows = await apiPut<PartyChar[]>('/api/party/characters', characters.value)
+    characters.value = normalize(rows)
     fileExists.value = true
-    status.value = { kind: 'ok', text: 'Saved.' }
-    emit('saved', props.configPath)
+    const missing = missingCount.value
+    status.value = missing
+      ? { kind: 'ok', text: `Saved. ${missing} character(s) reference a file that doesn't exist yet.` }
+      : { kind: 'ok', text: 'Saved.' }
+    emit('saved')
   } catch (e: any) {
     status.value = { kind: 'err', text: e?.message || 'Save failed' }
   } finally {
@@ -89,7 +106,8 @@ async function save() {
 
 function addChar() {
   characters.value.push({
-    name: '', sheet: '', backstory: '', dossier: '', arc_score: '', trackless: false,
+    name: '', sheet: '', backstory: '', dossier: '', arc_score: '',
+    trackless: false, missing_files: [],
   })
 }
 
@@ -112,13 +130,6 @@ function toggleTrackless(c: PartyChar) {
 watch(() => open.value, (o) => {
   if (o && !characters.value.length) load()
 })
-
-watch(() => props.configPath, () => {
-  // Path changed; clear loaded state so the next open re-loads.
-  characters.value = []
-  fileExists.value = null
-  status.value = null
-})
 </script>
 
 <template>
@@ -127,10 +138,14 @@ watch(() => props.configPath, () => {
       <button class="btn-neutral btn-sm" @click="open = !open" type="button">
         {{ open ? 'Hide' : 'Edit' }} party config
       </button>
-      <button v-if="open" class="btn-neutral btn-sm" :disabled="loading || !configPath" @click="load" type="button">
+      <button v-if="open" class="btn-neutral btn-sm" :disabled="loading" @click="load" type="button">
         Reload
       </button>
       <span v-if="open && fileExists === false" class="status-pill status-new">New file</span>
+      <span v-if="open && missingCount" class="status-pill status-missing"
+        :title="'These are saved, but the referenced files do not exist yet.'">
+        {{ missingCount }} with missing file(s)
+      </span>
       <span v-if="status" :class="['status-text', status.kind === 'err' ? 'err' : 'ok']">
         {{ status.text }}
       </span>
@@ -230,6 +245,7 @@ watch(() => props.configPath, () => {
   background: var(--bg-surface1); color: var(--text-sub);
 }
 .status-pill.status-new { background: var(--peach); color: var(--bg-base); }
+.status-pill.status-missing { background: var(--yellow); color: var(--bg-base); }
 .status-text { font-size: 11px; }
 .status-text.ok { color: var(--green); }
 .status-text.err { color: var(--red); }
