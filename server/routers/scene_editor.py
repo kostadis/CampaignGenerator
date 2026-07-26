@@ -950,7 +950,7 @@ def api_get_output(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config
 
 
 @router.get("/enhance")
-async def api_enhance(batch: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+async def api_enhance(request: Request, batch: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Stage 1 — stream enhance_summary output.
 
     `batch=1` forwards `--batch` to the script (Message Batches API; 50%
@@ -978,7 +978,7 @@ async def api_enhance(batch: int = 0, cfg: ResolvedEditorConfig = Depends(get_ed
 
 
 @router.get("/extract")
-async def api_extract(batch: int = 0, force: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+async def api_extract(request: Request, batch: int = 0, force: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Stage 2 (Re-Extract Quotes) — calls scene_extract.
 
     `batch=1` forwards `--batch` to the script. `force=1` forwards `--force`
@@ -1009,7 +1009,7 @@ async def api_extract(batch: int = 0, force: int = 0, cfg: ResolvedEditorConfig 
 
 
 @router.get("/narrate/{n}")
-async def api_narrate(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+async def api_narrate(n: int, request: Request, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     result = _build_narrate_cmd(request, cfg, n)
     if isinstance(result, tuple):
         _, err = result
@@ -1034,7 +1034,7 @@ async def api_narrate(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_con
 
 
 @router.get("/scrub/{n}")
-async def api_scrub(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+async def api_scrub(n: int, request: Request, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Scrub a single scene's narration.
 
     Resolves the scene file server-side via `_narration_file_for_scene` so
@@ -1070,7 +1070,7 @@ async def api_scrub(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_confi
 
 
 @router.get("/scrub-all")
-async def api_scrub_all(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+async def api_scrub_all(request: Request, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Scrub every session_doc_scene_*.md in narration_dir.
 
     `scrub_mechanics.collect_targets` already filters out `.scrubbed.md`
@@ -1166,7 +1166,7 @@ def _build_plan_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[Non
 
 
 @router.get("/plan")
-async def api_plan(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+async def api_plan(request: Request, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Run sd_consistency (if --context configured) then sd_plan.
 
     Both subprocesses stream into the same SSE response; the user sees
