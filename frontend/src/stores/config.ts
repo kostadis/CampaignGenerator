@@ -103,6 +103,8 @@ export const useConfigStore = defineStore('config', () => {
     values.value = cfg
     resolved.value = cfg.resolved ?? {}
     migrationWarnings.value = cfg.migration_warnings ?? []
+    if (resolved.value.runtime?.default_backend) backend.value = resolved.value.runtime.default_backend
+    if (resolved.value.runtime?.default_model) model.value = resolved.value.runtime.default_model
   }
 
   // Refetch the resolved editor config — call after any write that touches
