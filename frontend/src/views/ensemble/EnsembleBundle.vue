@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { apiFetch, apiPut } from '../../api/client'
-import { useEnsembleRun, fetchEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
+import { ref, onMounted, watch } from 'vue'
+import {
+  useEnsembleRun, fetchEnsembleConfig, fetchRegistrySummary,
+  type EnsembleConfig, type RegistrySummary,
+} from './useEnsembleRun'
 import StreamOutput from '../../components/shared/StreamOutput.vue'
 
 const emit = defineEmits<{ changed: [] }>()
@@ -24,43 +26,38 @@ function statusClass(s: string): string {
 }
 
 // Gate state — aggregation is blocked until the operator confirms they reviewed
-// scope + aliases (Principle II: no precision decision auto-fed downstream).
+// scope + the registry checkpoint (Principle II: no precision decision auto-fed
+// downstream). `registry` also directly disables the checkbox: an invalid/
+// missing registry can't be armed at all, not just unchecked-by-default.
 const gateConfirmed = ref(false)
-const aliasContent = ref('')
-const aliasLoaded = ref(false)
+const registry = ref<RegistrySummary | null>(null)
 
 onMounted(async () => {
   cfg.value = await fetchEnsembleConfig()
-  await loadAliases()
+  await loadRegistry()
 })
 
-// Empty on purpose: corpus, aliases, known_names and min_facts are all
-// resolved server-side from ensemble.yaml (Phase 3). Kept as a function so
-// the two call sites still read as "the shared bundle arguments".
+async function loadRegistry() {
+  registry.value = await fetchRegistrySummary()
+}
+
+// If the registry becomes invalid/missing after the operator already checked
+// the confirm box (e.g. a re-check after editing the registry on disk),
+// un-arm it rather than leaving a stale confirmation in place.
+watch(registry, (r) => {
+  if (!r?.found || r?.error) gateConfirmed.value = false
+})
+
+// Empty on purpose: corpus, the registry path, and min_facts are all resolved
+// server-side from ensemble.yaml / docs/entity_registry.yaml (Phase 3). Kept
+// as a function so the two call sites still read as "the shared bundle
+// arguments".
 function commonParams(): Record<string, unknown> {
   return {}
 }
 
 function runList() {
   listRun.run('/api/ensemble/run/bundle', { ...commonParams(), list: true })
-}
-
-async function loadAliases() {
-  if (!cfg.value?.aliases_path) { aliasLoaded.value = false; return }
-  try {
-    const r = await apiFetch(`/api/ensemble/file?path=${encodeURIComponent(cfg.value.aliases_path)}`)
-    aliasContent.value = r.content ?? ''
-    aliasLoaded.value = true
-  } catch {
-    aliasContent.value = ''
-    aliasLoaded.value = false
-  }
-}
-
-async function saveAliases() {
-  if (!cfg.value?.aliases_path) return
-  await apiPut(`/api/ensemble/file?path=${encodeURIComponent(cfg.value.aliases_path)}`,
-              { content: aliasContent.value })
 }
 
 function runAggregate() {
@@ -102,30 +99,52 @@ function runThreads() {
       <StreamOutput v-if="listRun.output.value" :text="listRun.output.value" />
     </section>
 
-    <!-- Gate 2: alias correction -->
+    <!-- Gate 2: entity registry checkpoint -->
     <section class="gate">
-      <h3>② Alias correction <span class="tag">human checkpoint</span></h3>
-      <p class="hint" v-if="cfg.aliases_path">
-        Edit <code>{{ cfg.aliases_path }}</code> here, or in the CLI/chat and click
-        Reload — changes are reflected without re-running any LLM step.
-      </p>
-      <p class="hint warn" v-else>Set an aliases path on the Setup step to use this gate.</p>
-      <template v-if="cfg.aliases_path">
-        <textarea v-model="aliasContent" rows="6" class="alias-box"
-                  placeholder='{ "Canonical Name": ["variant1", "variant2"] }'></textarea>
-        <div class="controls">
-          <button class="btn-neutral btn-sm" @click="loadAliases">↻ Reload from disk</button>
-          <button class="btn-success btn-sm" @click="saveAliases">Save aliases</button>
-        </div>
+      <h3>② Entity registry <span class="tag">human checkpoint</span></h3>
+      <template v-if="registry?.found && !registry.error">
+        <p class="hint">
+          <code>{{ registry.path }}</code> — {{ registry.entity_count }} entities, {{ registry.alias_count }} aliases
+        </p>
+        <template v-if="registry.check">
+          <p v-if="registry.check.grouping.length" class="hint warn">
+            Grouping drift ({{ registry.check.grouping.length }}) — review before aggregating:
+          </p>
+          <ul v-if="registry.check.grouping.length" class="findings">
+            <li v-for="(f, i) in registry.check.grouping" :key="i">{{ f }}</li>
+          </ul>
+          <p v-if="registry.check.clean" class="hint ok-note">✓ No drift against legacy stores.</p>
+
+          <details v-if="registry.check.fuzzy.length">
+            <summary>Fuzzy near-dups ({{ registry.check.fuzzy.length }}) — review material, not errors</summary>
+            <ul class="findings"><li v-for="(f, i) in registry.check.fuzzy" :key="i">{{ f }}</li></ul>
+          </details>
+          <details v-if="registry.check.missing_from_registry.length">
+            <summary>Missing from registry ({{ registry.check.missing_from_registry.length }})</summary>
+            <ul class="findings"><li v-for="(f, i) in registry.check.missing_from_registry" :key="i">{{ f }}</li></ul>
+          </details>
+          <details v-if="registry.check.missing_from_legacy.length">
+            <summary>Missing from legacy stores ({{ registry.check.missing_from_legacy.length }})</summary>
+            <ul class="findings"><li v-for="(f, i) in registry.check.missing_from_legacy" :key="i">{{ f }}</li></ul>
+          </details>
+        </template>
       </template>
+      <p v-else class="hint warn">{{ registry?.error || 'no entity registry found' }}</p>
+      <p class="hint">
+        Curate via the <code>registry</code> CLI, <code>/entity-triage</code>, or
+        <code>/ensemble-alias-review</code> — not from this page.
+      </p>
+      <div class="controls">
+        <button class="btn-neutral btn-sm" @click="loadRegistry">↻ Re-check</button>
+      </div>
     </section>
 
     <!-- Gate confirm + aggregate -->
     <section class="gate">
       <h3>③ Aggregate dossiers</h3>
       <label class="confirm">
-        <input type="checkbox" v-model="gateConfirmed" />
-        I reviewed the scope list and corrected aliases.
+        <input type="checkbox" v-model="gateConfirmed" :disabled="!registry?.found || !!registry?.error" />
+        I reviewed the scope list and the registry checkpoint.
       </label>
       <p class="hint">
         Runs <code>facts_to_state.py --known-only</code> → <code>state_dossiers/*.md</code>.
@@ -161,7 +180,12 @@ h3 { font-size: 13px; margin-bottom: 4px; }
 .tag { font-size: 9px; background: var(--peach); color: var(--bg-mantle); border-radius: 8px; padding: 1px 7px; margin-left: 6px; font-weight: 700; vertical-align: middle; }
 .hint { font-size: 12px; color: var(--text-muted); margin: 4px 0 8px; max-width: 64ch; }
 .hint.warn { color: var(--peach); }
-.alias-box { width: 100%; max-width: 640px; font-family: var(--mono); font-size: 12px; padding: 6px 8px; background: var(--bg-surface0); color: var(--text); border: 1px solid var(--bg-surface1); border-radius: 4px; }
+.hint.ok-note { color: var(--green); }
+.findings { margin: 0 0 8px; padding-left: 18px; font-size: 12px; color: var(--text); max-width: 64ch; }
+.findings li { margin-bottom: 2px; }
+details { margin-bottom: 8px; }
+details summary { font-size: 12px; color: var(--text-sub); cursor: pointer; }
+details .findings { margin-top: 6px; }
 .controls { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
 .confirm { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-bottom: 6px; }
 .ok { color: var(--green); font-size: 12px; font-weight: 600; }

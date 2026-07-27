@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { fetchEnsembleConfig, saveEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
+import {
+  fetchEnsembleConfig, saveEnsembleConfig, fetchRegistrySummary,
+  type EnsembleConfig, type RegistrySummary,
+} from './useEnsembleRun'
 import ChapterPicker from './ChapterPicker.vue'
 
 // Populated by the GET below; the server owns every default.
 const cfg = ref<EnsembleConfig | null>(null)
-const knownNamesText = ref('')
 const extractEndpointsText = ref('')
 const saved = ref(false)
+// Read-only — the entity registry (docs/entity_registry.yaml) replaced the
+// known-names/aliases inputs this page used to own. Curated via the
+// `registry` CLI / /entity-triage / /ensemble-alias-review, never here.
+const registry = ref<RegistrySummary | null>(null)
 
 // Synthesis is a single non-parallelized call, so it keeps one endpoint —
 // bind the array's first slot as if it were a plain string field.
@@ -19,13 +25,12 @@ const synthEndpoint = computed({
 onMounted(async () => {
   const loaded = await fetchEnsembleConfig()
   cfg.value = loaded
-  knownNamesText.value = loaded.known_names.join('\n')
   extractEndpointsText.value = loaded.extract.endpoints.join('\n')
+  registry.value = await fetchRegistrySummary()
 })
 
 async function save() {
   if (!cfg.value) return
-  cfg.value.known_names = knownNamesText.value.split('\n').map(s => s.trim()).filter(Boolean)
   cfg.value.extract.endpoints = extractEndpointsText.value.split('\n').map(s => s.trim()).filter(Boolean)
   // Send only what this page owns — chapters_glob now lives under `paths`,
   // and the untouched groups (tuning, planning) are left to merge server-side.
@@ -33,8 +38,6 @@ async function save() {
     chapters_selected: cfg.value.chapters_selected,
     extract: cfg.value.extract,
     synthesize: cfg.value.synthesize,
-    known_names: cfg.value.known_names,
-    aliases_path: cfg.value.aliases_path,
     paths: { chapters_glob: cfg.value.paths.chapters_glob },
   })
   saved.value = true
@@ -65,16 +68,13 @@ function resetBackend(stage: 'extract' | 'synthesize') {
         v-model:selected="cfg.chapters_selected" />
     </div>
 
-    <label class="fld">
-      <span>Known-names sources (one path per line — module inventory, <code>.dedup_state.json</code>)</span>
-      <textarea v-model="knownNamesText" rows="3"
-                placeholder="docs/background/module-inventory.md&#10;docs/npcs/.dedup_state.json"></textarea>
-    </label>
-
-    <label class="fld">
-      <span>Aliases file (the alias-correction gate edits this)</span>
-      <input v-model="cfg.aliases_path" type="text" placeholder="docs/ensemble/aliases.json" />
-    </label>
+    <div class="fld">
+      <span>Entity registry</span>
+      <p v-if="registry?.found && !registry.error" class="hint">
+        <code>{{ registry.path }}</code> — {{ registry.entity_count }} entities, {{ registry.alias_count }} aliases
+      </p>
+      <p v-else-if="registry" class="warn-note">{{ registry.error }}</p>
+    </div>
 
     <div class="profiles">
       <fieldset v-for="stage in (['extract','synthesize'] as const)" :key="stage">

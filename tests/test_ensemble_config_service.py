@@ -75,7 +75,7 @@ class TestStorage:
         assert service.get_config() == EnsembleConfig()
 
     def test_first_write_creates_the_file(self, service):
-        service.update_config({"known_names": ["docs/names.md"]})
+        service.update_config({"paths": {"inventory": "docs/background/inv.md"}})
         assert service.ensemble_config_path.exists()
 
     def test_resolved_matches_get_config(self, service):
@@ -116,6 +116,20 @@ class TestUpdate:
     def test_unknown_key_is_a_400(self, service):
         with pytest.raises(HTTPException) as exc:
             service.update_config({"planning_depth": "full"})
+        assert exc.value.status_code == 400
+
+    def test_legacy_known_names_key_is_a_400(self, service):
+        """known_names/aliases_path are retired in favor of the entity
+        registry (docs/entity_registry.yaml) — a write must not resurrect
+        them, even though load_ensemble_config prunes them from a
+        pre-migration file on read."""
+        with pytest.raises(HTTPException) as exc:
+            service.update_config({"known_names": ["docs/names.md"]})
+        assert exc.value.status_code == 400
+
+    def test_legacy_aliases_path_key_is_a_400(self, service):
+        with pytest.raises(HTTPException) as exc:
+            service.update_config({"aliases_path": "docs/ensemble/aliases.json"})
         assert exc.value.status_code == 400
 
     def test_bad_value_is_a_400(self, service):
@@ -228,7 +242,7 @@ class TestSectionRetired:
         c = TestClient(app)
 
         assert c.put("/api/config/section/ensemble",
-                     json={"values": {"known_names": ["x.md"]}}).status_code == 404
+                     json={"values": {"chapters_selected": ["x.md"]}}).status_code == 404
 
     def test_a_pre_migration_ui_state_is_ignored_entirely(self, fresh_campaign):
         """A campaign that never ran the migration CLI still boots. The file

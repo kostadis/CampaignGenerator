@@ -113,6 +113,7 @@ export interface EnsemblePaths {
   npc_dossiers_glob: string
   threads_out: string
   recent_events_out: string
+  inventory: string
 }
 
 export interface EnsembleTuning {
@@ -136,8 +137,6 @@ export interface EnsemblePlanning {
 
 export interface EnsembleConfig {
   chapters_selected: string[]
-  known_names: string[]
-  aliases_path: string
   extract: BackendProfile
   synthesize: BackendProfile
   paths: EnsemblePaths
@@ -147,10 +146,7 @@ export interface EnsembleConfig {
 
 /** GET the campaign's ensemble.yaml. The server fills in every default. */
 export async function fetchEnsembleConfig(): Promise<EnsembleConfig> {
-  const cfg = await apiFetch<EnsembleConfig>('/api/ensemble/config')
-  // The server models aliases_path as optional (null when unset); the UI binds
-  // it to a text input, which needs a string.
-  return { ...cfg, aliases_path: cfg.aliases_path ?? '' }
+  return apiFetch<EnsembleConfig>('/api/ensemble/config')
 }
 
 /** PUT a partial into ensemble.yaml; returns the merged, validated result.
@@ -158,6 +154,36 @@ export async function fetchEnsembleConfig(): Promise<EnsembleConfig> {
 export async function saveEnsembleConfig(
   partial: Record<string, unknown>,
 ): Promise<EnsembleConfig> {
-  const cfg = await apiPut<EnsembleConfig>('/api/ensemble/config', partial)
-  return { ...cfg, aliases_path: cfg.aliases_path ?? '' }
+  return apiPut<EnsembleConfig>('/api/ensemble/config', partial)
+}
+
+// ── Entity registry status (GET /api/ensemble/registry) ─────────────────────
+//
+// Mirrors server/routers/ensemble.py's ensemble_registry_status() response
+// shape exactly. Consumed by EnsembleSetup (read-only summary), EnsembleBundle
+// (the ② checkpoint + ③ gate), and EnsembleSynthesize (world_state pre-flight
+// hint).
+
+export interface RegistryCheck {
+  grouping: string[]
+  fuzzy: string[]
+  missing_from_registry: string[]
+  missing_from_legacy: string[]
+  clean: boolean
+}
+
+export interface RegistrySummary {
+  found: boolean
+  path: string | null
+  error: string | null
+  entity_count?: number
+  alias_count?: number
+  types?: Record<string, number>
+  check?: RegistryCheck
+}
+
+/** GET the campaign's entity-registry status. Always resolves — the route
+ *  never 4xxs, "not found" and "invalid" are both states to render. */
+export async function fetchRegistrySummary(): Promise<RegistrySummary> {
+  return apiFetch<RegistrySummary>('/api/ensemble/registry')
 }

@@ -50,18 +50,29 @@ class TestBuildEnsembleConfig:
     def test_scalars_carry_over(self):
         cfg, _ = build_ensemble_config({"ui": {"ensemble": {
             "chapters_selected": ["a.md", "b.md"],
+        }}})
+        assert cfg.chapters_selected == ["a.md", "b.md"]
+
+    def test_known_names_and_aliases_path_are_dropped_silently(self):
+        """Retired in favor of the entity registry (docs/entity_registry.yaml)
+        — an intended drop, so they must NOT show up in the 'unrecognised
+        keys' warning the operator is asked to review, and must not survive
+        onto the built config."""
+        cfg, skipped = build_ensemble_config({"ui": {"ensemble": {
+            "chapters_selected": ["a.md"],
             "known_names": ["docs/inv.md"],
             "aliases_path": "docs/ensemble/aliases.json",
         }}})
-        assert cfg.chapters_selected == ["a.md", "b.md"]
-        assert cfg.known_names == ["docs/inv.md"]
-        assert cfg.aliases_path == "docs/ensemble/aliases.json"
+        assert "known_names" not in skipped
+        assert "aliases_path" not in skipped
+        assert not hasattr(cfg, "known_names")
+        assert not hasattr(cfg, "aliases_path")
 
     def test_empty_chapter_selection_is_preserved_not_dropped(self):
         """Principle X: an empty selection means 'nothing selected', which is
         a real state, not 'unset'."""
         cfg, _ = build_ensemble_config({"ui": {"ensemble": {
-            "chapters_selected": [], "known_names": ["x.md"],
+            "chapters_selected": [],
         }}})
         assert cfg.chapters_selected == []
 
@@ -69,14 +80,14 @@ class TestBuildEnsembleConfig:
         """Platform-tier (Phase 0) — an intended drop, so it must NOT show up
         in the 'unrecognised keys' warning the operator is asked to review."""
         cfg, skipped = build_ensemble_config({"ui": {"ensemble": {
-            "campaign_dir": "/home/x/campaign", "known_names": ["x.md"],
+            "campaign_dir": "/home/x/campaign", "chapters_selected": ["a.md"],
         }}})
         assert "campaign_dir" not in skipped
         assert not hasattr(cfg, "campaign_dir")
 
     def test_unrecognised_keys_are_reported_not_discarded_quietly(self):
         _, skipped = build_ensemble_config({"ui": {"ensemble": {
-            "known_names": ["x.md"], "some_stale_key": 1, "another": 2,
+            "chapters_selected": ["a.md"], "some_stale_key": 1, "another": 2,
         }}})
         assert sorted(skipped) == ["another", "some_stale_key"]
 
@@ -147,6 +158,9 @@ class TestBuildEnsembleConfig:
             build_ensemble_config({"ui": {"ensemble": {"planning_depth": "deep"}}})
 
     def test_a_full_pre_migration_section_round_trips(self):
+        """known_names/aliases_path are included here too, to prove a section
+        that still carries the retired legacy keys migrates cleanly rather
+        than tripping the 'unrecognised keys' warning."""
         cfg, skipped = build_ensemble_config({"ui": {"ensemble": {
             "campaign_dir": "/home/x/c",
             "chapters_glob": "docs/chapters/chapter_*.md",
@@ -164,19 +178,21 @@ class TestBuildEnsembleConfig:
         assert isinstance(cfg, EnsembleConfig)
         assert cfg.extract.endpoints == ["http://spark:8001/v1"]
         assert cfg.planning.npc == ["docs/npcs/a.md", "docs/npcs/b.md"]
+        assert not hasattr(cfg, "known_names")
+        assert not hasattr(cfg, "aliases_path")
 
 
 # ── The CLI itself ─────────────────────────────────────────────────────────
 
 class TestCli:
     def test_writes_ensemble_yaml(self, tmp_path, capsys):
-        _ui_state(tmp_path, {"known_names": ["docs/inv.md"], "chapters_glob": "b/*.md"})
+        _ui_state(tmp_path, {"chapters_selected": ["a.md"], "chapters_glob": "b/*.md"})
         assert main(["--campaign-dir", str(tmp_path)]) == 0
 
         dest = tmp_path / CONFIG_SUBDIR / "ensemble.yaml"
         assert dest.exists()
         cfg = load_ensemble_config(dest)
-        assert cfg.known_names == ["docs/inv.md"]
+        assert cfg.chapters_selected == ["a.md"]
         assert cfg.paths.chapters_glob == "b/*.md"
         assert "migrated ensemble config" in capsys.readouterr().out
 
@@ -186,32 +202,34 @@ class TestCli:
         assert not (tmp_path / CONFIG_SUBDIR / "ensemble.yaml").exists()
 
     def test_refuses_to_clobber_without_force(self, tmp_path, capsys):
-        _ui_state(tmp_path, {"known_names": ["docs/inv.md"]})
+        _ui_state(tmp_path, {"chapters_selected": ["a.md"]})
         dest = tmp_path / CONFIG_SUBDIR / "ensemble.yaml"
-        dest.write_text("known_names: [existing.md]\n", encoding="utf-8")
+        dest.write_text("chapters_selected: [existing.md]\n", encoding="utf-8")
 
         assert main(["--campaign-dir", str(tmp_path)]) == 1
         assert "refusing to overwrite" in capsys.readouterr().err
-        assert load_ensemble_config(dest).known_names == ["existing.md"]
+        assert load_ensemble_config(dest).chapters_selected == ["existing.md"]
 
     def test_force_overwrites(self, tmp_path):
-        _ui_state(tmp_path, {"known_names": ["docs/inv.md"]})
+        _ui_state(tmp_path, {"chapters_selected": ["a.md"]})
         dest = tmp_path / CONFIG_SUBDIR / "ensemble.yaml"
-        dest.write_text("known_names: [existing.md]\n", encoding="utf-8")
+        dest.write_text("chapters_selected: [existing.md]\n", encoding="utf-8")
 
         assert main(["--campaign-dir", str(tmp_path), "--force"]) == 0
-        assert load_ensemble_config(dest).known_names == ["docs/inv.md"]
+        assert load_ensemble_config(dest).chapters_selected == ["a.md"]
 
     def test_skipped_keys_are_surfaced_to_the_operator(self, tmp_path, capsys):
-        _ui_state(tmp_path, {"known_names": ["docs/inv.md"], "mystery_key": 1})
+        _ui_state(tmp_path, {"chapters_selected": ["a.md"], "mystery_key": 1})
         assert main(["--campaign-dir", str(tmp_path)]) == 0
         assert "mystery_key" in capsys.readouterr().out
 
     def test_honours_a_custom_config_dir(self, tmp_path):
         p = tmp_path / "cfgdir" / "ui_state.yaml"
         p.parent.mkdir(parents=True)
-        p.write_text(yaml.safe_dump({"ui": {"ensemble": {"known_names": ["x.md"]}}}),
-                     encoding="utf-8")
+        p.write_text(
+            yaml.safe_dump({"ui": {"ensemble": {"chapters_selected": ["x.md"]}}}),
+            encoding="utf-8",
+        )
         assert main(["--campaign-dir", str(tmp_path), "--config-dir", "cfgdir"]) == 0
         assert (tmp_path / "cfgdir" / "ensemble.yaml").exists()
 

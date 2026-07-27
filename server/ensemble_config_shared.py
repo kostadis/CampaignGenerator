@@ -43,7 +43,6 @@ from campaignlib.selection import ModelSelection
 from pydantic import BaseModel, ConfigDict, Field
 
 from campaignlib.util import atomic_write_text
-from server.platform_config_shared import OptStr
 
 ENSEMBLE_CONFIG_FILENAME = "ensemble.yaml"
 
@@ -106,6 +105,9 @@ class EnsemblePaths(BaseModel):
     npc_dossiers_glob: str = "docs/ensemble/merged_dossiers/npc_*.md"
     threads_out: str = "docs/ensemble/threads.md"
     recent_events_out: str = "docs/recent_events.md"
+    # Module inventory passed as --inventory to synthesise_world_state;
+    # empty = don't pass.
+    inventory: str = ""
 
 
 class EnsembleTuning(BaseModel):
@@ -164,8 +166,6 @@ class EnsembleConfig(BaseModel):
     # Kept at the root rather than under `paths` because it is an operator
     # selection, not a layout declaration.
     chapters_selected: list[str] = Field(default_factory=list)
-    known_names: list[str] = Field(default_factory=list)
-    aliases_path: OptStr = None
     extract: EnsembleBackend = Field(default_factory=EnsembleBackend)
     synthesize: EnsembleBackend = Field(default_factory=EnsembleBackend)
     paths: EnsemblePaths = Field(default_factory=EnsemblePaths)
@@ -185,6 +185,13 @@ def load_ensemble_config(path: Path) -> EnsembleConfig:
 
     Malformed YAML still raises ``ValueError``, mirroring
     ``load_session_editor_config`` / ``load_planning_config``.
+
+    Migrate-and-delete shim: ``known_names``/``aliases_path`` were retired in
+    favor of the entity registry (``docs/entity_registry.yaml``). A
+    pre-migration ``ensemble.yaml`` may still carry them, and the model is
+    ``extra="forbid"``, so they are pruned from ``raw`` here, read-only —
+    this never rewrites the file; the next ``save_ensemble_config`` (a PUT)
+    is what leaves it clean.
     """
     if not path.exists():
         return EnsembleConfig()
@@ -194,6 +201,8 @@ def load_ensemble_config(path: Path) -> EnsembleConfig:
         raise ValueError(f"invalid YAML in {path}: {exc}") from exc
     if not raw:
         return EnsembleConfig()
+    for key in ("known_names", "aliases_path"):
+        raw.pop(key, None)
     return EnsembleConfig.model_validate(raw)
 
 

@@ -50,6 +50,12 @@ def campaign(tmp_path):
         tmp_path / CONFIG_SUBDIR / "config.yaml",
         "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
     )
+    # /run/bundle, /run/threads, and world_state synthesis all require an
+    # entity registry now (Phase 2 of the registry migration) — this file's
+    # tests are about ensemble.yaml defaults reaching those commands, not
+    # about the registry gate itself (see tests/test_ensemble_gates.py for
+    # that), so every test gets a minimal valid one for free.
+    _write(tmp_path / "docs" / "entity_registry.yaml", "version: 1\nentities: []\n")
     return tmp_path
 
 

@@ -58,8 +58,6 @@ from server.ensemble_config_shared import (
 SCALAR_REMAP: dict[str, tuple[str, ...]] = {
     "chapters_glob": ("paths", "chapters_glob"),
     "chapters_selected": ("chapters_selected",),
-    "known_names": ("known_names",),
-    "aliases_path": ("aliases_path",),
 }
 
 # ui.ensemble planning_* key -> field in the `planning` group, with a flag for
@@ -73,10 +71,12 @@ PLANNING_REMAP: dict[str, tuple[str, bool]] = {
     "planning_force_include": ("force_include", True),
 }
 
-# Deliberately not migrated. campaign_dir is platform-tier (Phase 0); listing
-# it here keeps it out of the "unrecognised keys" warning, since dropping it is
-# an intended outcome rather than something the operator should review.
-DROPPED_KEYS = frozenset({"campaign_dir"})
+# Deliberately not migrated. Listing a key here keeps it out of the
+# "unrecognised keys" warning, since dropping it is an intended outcome rather
+# than something the operator should review: campaign_dir is platform-tier
+# (Phase 0); known_names/aliases_path are retired in favor of the entity
+# registry (docs/entity_registry.yaml).
+DROPPED_KEYS = frozenset({"campaign_dir", "known_names", "aliases_path"})
 
 
 def _set_nested(target: dict[str, Any], path: tuple[str, ...], value: Any) -> None:
@@ -217,7 +217,6 @@ def main(argv: list[str] | None = None) -> int:
         f"  source:       {ui_state_path}",
         f"  destination:  {dest_path}",
         f"  chapters:     {len(cfg.chapters_selected)} selected",
-        f"  known names:  {len(cfg.known_names)} source(s)",
         f"  backends:     extract={cfg.extract.backend}, "
         f"synthesize={cfg.synthesize.backend}",
     ]))

@@ -29,8 +29,6 @@ class TestDefaults:
     def test_all_defaults_construct(self):
         cfg = EnsembleConfig()
         assert cfg.chapters_selected == []
-        assert cfg.known_names == []
-        assert cfg.aliases_path is None
 
     def test_path_defaults_match_the_shipped_route_literals(self):
         """Phase 1 must not change behavior — these are transcribed from
@@ -46,6 +44,10 @@ class TestDefaults:
         assert p.dossiers_glob == "docs/ensemble/merged_dossiers/*.md"
         assert p.threads_out == "docs/ensemble/threads.md"
         assert p.recent_events_out == "docs/recent_events.md"
+
+    def test_inventory_path_defaults_to_empty_string(self):
+        """Empty means 'don't pass --inventory', not 'unset'."""
+        assert EnsembleConfig().paths.inventory == ""
 
     def test_tuning_defaults_match_the_shipped_route_literals(self):
         t = EnsembleConfig().tuning
@@ -142,12 +144,11 @@ class TestLoadSave:
         p = tmp_path / "cfg" / "ensemble.yaml"
         cfg = EnsembleConfig.model_validate({
             "chapters_selected": ["docs/chapters/chapter_01.md"],
-            "known_names": ["docs/names.md"],
-            "aliases_path": "docs/ensemble/aliases.json",
             "extract": {"backend": "dgx", "endpoints": ["http://spark:8001/v1",
                                                         "http://spark2:8001/v1"]},
             "synthesize": {"backend": "anthropic", "model": "claude-opus-5"},
-            "paths": {"chapters_glob": "book/ch_*.md"},
+            "paths": {"chapters_glob": "book/ch_*.md",
+                      "inventory": "docs/background/inv.md"},
             "tuning": {"chapter_parallel": 6},
             "planning": {"synth_mode": "flat", "depth": "full",
                          "npc": ["docs/npcs/npc_a.md"]},
@@ -173,3 +174,44 @@ class TestLoadSave:
         p = tmp_path / "ensemble.yaml"
         save_ensemble_config(p, EnsembleConfig())
         assert list(tmp_path.glob("*.tmp")) == []
+
+    def test_inventory_path_round_trips(self, tmp_path):
+        p = tmp_path / "ensemble.yaml"
+        cfg = EnsembleConfig.model_validate(
+            {"paths": {"inventory": "docs/background/inv.md"}}
+        )
+        save_ensemble_config(p, cfg)
+        assert load_ensemble_config(p).paths.inventory == "docs/background/inv.md"
+
+
+# ── Legacy pruning: the migrate-and-delete shim for pre-migration files ────
+
+class TestLegacyPruning:
+    def test_legacy_known_names_and_aliases_path_load_successfully(self, tmp_path):
+        """A pre-migration ensemble.yaml carrying the retired known_names/
+        aliases_path keys must still load — the model is extra="forbid", so
+        without pruning this would 400 every config/run route."""
+        p = tmp_path / "ensemble.yaml"
+        p.write_text(
+            "known_names: [docs/names.md]\n"
+            "aliases_path: docs/ensemble/aliases.json\n",
+            encoding="utf-8",
+        )
+        cfg = load_ensemble_config(p)
+        assert not hasattr(cfg, "known_names")
+        assert not hasattr(cfg, "aliases_path")
+
+    def test_saving_a_pruned_legacy_config_writes_a_clean_file(self, tmp_path):
+        """Read-only prune: load doesn't rewrite the file, but the next save
+        (a PUT) leaves it without the retired keys."""
+        p = tmp_path / "ensemble.yaml"
+        p.write_text(
+            "known_names: [docs/names.md]\n"
+            "aliases_path: docs/ensemble/aliases.json\n",
+            encoding="utf-8",
+        )
+        cfg = load_ensemble_config(p)
+        save_ensemble_config(p, cfg)
+        raw = yaml.safe_load(p.read_text(encoding="utf-8"))
+        assert "known_names" not in raw
+        assert "aliases_path" not in raw
