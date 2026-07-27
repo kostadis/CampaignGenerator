@@ -59,7 +59,6 @@ path resolved at construction time — see
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
@@ -67,6 +66,7 @@ import yaml
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, ValidationError
 
 from campaignlib import DEFAULT_MODEL
+from campaignlib.util import atomic_write_text
 from campaignlib.selection import (  # noqa: F401  (re-exported)
     BACKENDS,
     Backend,
@@ -258,16 +258,13 @@ def save_local_config(path: Path, cfg: PlatformLocalConfig) -> None:
     a reader never observes a torn file) — the same crash-safety guarantee
     ``CampaignConfigService`` gave ``ui_state.yaml``, preserved here now that
     ``local`` has moved to its own owner."""
-    path.parent.mkdir(parents=True, exist_ok=True)
     text = yaml.safe_dump(
         cfg.model_dump(mode="json"),
         default_flow_style=False,
         sort_keys=False,
         allow_unicode=True,
     )
-    tmp = path.with_suffix(path.suffix + f".tmp.{os.getpid()}")
-    tmp.write_text(text, encoding="utf-8")
-    os.replace(tmp, path)
+    atomic_write_text(path, text)
 
 
 def load_platform_config(path: Path) -> PlatformDocument:
@@ -311,13 +308,10 @@ def save_platform_config(path: Path, cfg: PlatformDocument) -> None:
     ``_atomic_write`` gives ``ui_state.yaml``. Caller (``PlatformConfigService.
     update_runtime``) holds its write lock around this call, matching the
     other two writers in this module/service pair."""
-    path.parent.mkdir(parents=True, exist_ok=True)
     text = yaml.safe_dump(
         cfg.model_dump(mode="json"),
         default_flow_style=False,
         sort_keys=False,
         allow_unicode=True,
     )
-    tmp = path.with_suffix(path.suffix + f".tmp.{os.getpid()}")
-    tmp.write_text(text, encoding="utf-8")
-    os.replace(tmp, path)
+    atomic_write_text(path, text)

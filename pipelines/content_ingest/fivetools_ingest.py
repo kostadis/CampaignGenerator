@@ -53,7 +53,6 @@ import argparse
 import hashlib
 import json
 import logging
-import os
 import re
 import sys
 import time
@@ -79,6 +78,7 @@ logger = logging.getLogger(__name__)
 # These are EXTERNAL config (rpg-lib URL, pdf-translators, 5etools root) —
 # owned by mneme, read from the rendered wiring.
 from campaignlib import wiring_get, wiring_path  # noqa: E402
+from campaignlib.util import atomic_write_text  # noqa: E402
 
 _DEFAULT_RPGLIB_URL = wiring_get("rpg_library_url")
 _DEFAULT_PDF_TRANSLATORS = wiring_path("pdf_translators")
@@ -725,10 +725,7 @@ def write_state(
     filter_key: str = "{}",
 ) -> None:
     p = _state_path(json_path, palace=palace, filter_key=filter_key)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.with_suffix(".tmp")
-    tmp.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
-    os.replace(tmp, p)
+    atomic_write_text(p, json.dumps(payload, indent=2, sort_keys=True))
 
 
 def file_signature(json_path: Path) -> dict:

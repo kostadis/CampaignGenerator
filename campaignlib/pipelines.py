@@ -6,7 +6,7 @@ from pathlib import Path
 from .textproc import prepare_chunks
 from .api.client import stream_api
 from .api.batch import build_batch_request, run_batch, run_single_batch
-from .io_atomic import atomic_write_text as _atomic_write_text
+from .util import atomic_write_text as _atomic_write_text
 
 # Default per-chunk extraction output budget — matches stream_api's own
 # default. Most extract_system prompts produce compact notes well under this;

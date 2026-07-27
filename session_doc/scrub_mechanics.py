@@ -49,7 +49,7 @@ from campaignlib import (  # noqa: E402
     run_batch,
     stream_api,
 )
-from campaignlib.io_atomic import atomic_write_text  # noqa: E402
+from campaignlib.util import atomic_write_text  # noqa: E402
 
 
 def resolve_prompt_path() -> Path:
@@ -114,7 +114,7 @@ def finalize_scrub_response(path: Path, frontmatter: str, response: str,
     `.scan.md`). Shared by the serial (`stream_api`) and batch (`run_batch`)
     paths so a successful batch item lands byte-identical to what the serial
     loop would have written for the same response text. Writes go through
-    `campaignlib.io_atomic.atomic_write_text` (tmp + os.replace) rather than
+    `campaignlib.util.atomic_write_text` (tmp + os.replace) rather than
     a raw `Path.write_text` so a killed process never leaves a torn file —
     the written bytes are unchanged either way.
     """

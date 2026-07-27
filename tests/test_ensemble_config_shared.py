@@ -173,7 +173,7 @@ class TestLoadSave:
     def test_save_leaves_no_tmp_file_behind(self, tmp_path):
         p = tmp_path / "ensemble.yaml"
         save_ensemble_config(p, EnsembleConfig())
-        assert list(tmp_path.glob("*.tmp")) == []
+        assert list(tmp_path.glob("*.tmp*")) == []
 
     def test_inventory_path_round_trips(self, tmp_path):
         p = tmp_path / "ensemble.yaml"

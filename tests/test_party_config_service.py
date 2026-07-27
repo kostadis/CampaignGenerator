@@ -263,4 +263,4 @@ def test_save_is_atomic_leaving_no_tmp_file(tmp_path):
     svc.create_character(
         PartyCharacter(name="A", sheet=_touch(tmp_path, "docs/party/a.md"))
     )
-    assert not list(svc.party_path.parent.glob("*.tmp"))
+    assert not list(svc.party_path.parent.glob("*.tmp*"))

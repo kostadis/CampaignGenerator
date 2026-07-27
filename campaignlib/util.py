@@ -12,12 +12,20 @@ def atomic_write_text(path: Path | str, text: str, encoding: str = "utf-8") -> N
 
     Writes to a temp file in the same directory as `path`, then renames via
     os.replace — a POSIX atomic rename on the same filesystem. A SIGKILL during
-    write leaves at most a discardable .tmp file; the destination is always either
+    write leaves at most a discardable tmp file; the destination is always either
     the complete new content or the previous version, never a partial write.
+
+    The tmp name carries the writer's PID because two processes can race on the
+    same destination: the ensemble's speculative re-execution runs a duplicate
+    of the same unit in another process sharing the cache dir and terminates
+    the loser. A fixed tmp name would let those two interleave writes into the
+    *same* tmp file before either rename; a per-writer name confines the race
+    to the atomic rename, where last-writer-wins is harmless (both wrote the
+    same content).
     """
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp = path.with_name(f"{path.name}.tmp.{os.getpid()}")
     try:
         tmp.write_text(text, encoding=encoding)
         os.replace(tmp, path)
