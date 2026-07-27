@@ -75,8 +75,10 @@ def test_selection_roundtrips(platform, service):
     r = client.put(f"/api/{service}/selection",
                    json={"backend": "dgx", "model": "Qwen3-Next-80B"})
     assert r.status_code == 200, r.text
+    # `batch` (005-ui-batch-selection) rides along on every ModelSelection
+    # response now — None here since this PUT didn't set it.
     assert client.get(f"/api/{service}/selection").json() == {
-        "backend": "dgx", "model": "Qwen3-Next-80B",
+        "backend": "dgx", "model": "Qwen3-Next-80B", "batch": None,
     }
 
 
@@ -87,7 +89,11 @@ def test_clearing_restores_platform_inheritance(platform, service):
     client.put(f"/api/{service}/selection", json={"backend": "dgx", "model": "Qwen3-Next-80B"})
     r = client.delete(f"/api/{service}/selection")
     assert r.status_code == 200, r.text
-    assert client.get(f"/api/{service}/selection").json() == {"backend": None, "model": None}
+    # `batch` (005-ui-batch-selection) rides along too — DELETE clears it
+    # back to None ("defer"), same as backend/model.
+    assert client.get(f"/api/{service}/selection").json() == {
+        "backend": None, "model": None, "batch": None,
+    }
 
     resolved = client.get(f"/api/{service}/selection/resolved").json()
     assert resolved["model"] == PLATFORM_MODEL

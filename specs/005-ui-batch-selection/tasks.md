@@ -57,11 +57,11 @@ Feature 003 split services into two classes, and this feature must preserve the 
 
 **Independent Test**: quickstart §1 — on Distill World State, batch on → run → streamed output opens with `Batch submitted: …`, progress lines follow, normal draft artifact appears, billing shows the batch rate.
 
-- [ ] T011 [US1] Add `batch: bool | null` to the per-service selection store schema (the model/backend selection shape in `server/platform_config_shared.py`), where `null` means defer to platform
-- [ ] T012 [US1] Accept and persist `batch` on `PUT /api/{service}/selection` for the settable services (grounding, party, planning, editor) — stored even when currently unsatisfiable, so the operator's intent stays visible and fixable (`contracts/selection-api.md`)
-- [ ] T013 [US1] Include `batch` and `batch_origin` in every settable service's `GET /api/{service}/selection/resolved` payload
+- [X] T011 [US1] Add `batch: bool | null` to the per-service selection store schema (the model/backend selection shape in `server/platform_config_shared.py`), where `null` means defer to platform
+- [X] T012 [US1] Accept and persist `batch` on `PUT /api/{service}/selection` for the settable services (grounding, party, planning, editor) — stored even when currently unsatisfiable, so the operator's intent stays visible and fixable (`contracts/selection-api.md`)
+- [X] T013 [US1] Include `batch` and `batch_origin` in every settable service's `GET /api/{service}/selection/resolved` payload
 - [ ] T014 [US1] Add the batch control to `frontend/src/components/shared/SelectionPanel.vue`: effective state, origin label using the existing origin vocabulary, and the shipped copy *"Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)"*
-- [ ] T015 [P] [US1] Server tests: `--batch` appears in the built command for a grounding run when batch resolves true, and is absent when false (`tests/test_grounding_*.py` or nearest)
+- [X] T015 [P] [US1] Server tests: `--batch` appears in the built command for a grounding run when batch resolves true, and is absent when false (`tests/test_grounding_*.py` or nearest)
 - [ ] T016 [P] [US1] Frontend gate: `cd frontend && npm run build` passes with the new control
 
 **Checkpoint**: the P1 cost saving is reachable from at least one page, end to end.

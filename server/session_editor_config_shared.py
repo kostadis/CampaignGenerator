@@ -79,11 +79,23 @@ class BackendProfile(ModelSelection):
     # Doc Editor targets one host at a time, where the ensemble fans out.
     backend: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
     endpoint: OptStr = None
+    # `batch` (005-ui-batch-selection) is inherited from ModelSelection —
+    # this profile IS the editor's per-service selection store, so its
+    # `backends.<name>.batch` is what `PUT /api/editor/config` persists and
+    # `_editor_service_selection`/`resolve_selection` read back.
 
     def is_empty(self) -> bool:
         """See EnsembleBackend.is_empty — `backend` is non-optional here, so
-        the base class's null test never fires."""
-        return self.backend == "anthropic" and not self.model and not self.endpoint
+        the base class's null test never fires. `batch` participates for the
+        same reason it does on the base class's override: a profile that sets
+        only `batch` (backend still the default "anthropic", no model/endpoint)
+        is not empty — see `ModelSelection.is_empty`."""
+        return (
+            self.backend == "anthropic"
+            and not self.model
+            and not self.endpoint
+            and self.batch is None
+        )
 
 
 # Dropped with the ``vtt_summary`` chain: the extraction directories it

@@ -577,7 +577,13 @@ def _editor_service_selection(cfg: ResolvedEditorConfig):
         model = model or wiring_get("dgx_model")
         endpoint = endpoint or wiring_get("dgx_endpoint")
 
-    return ModelSelection(backend=active, model=model), endpoint
+    # `prof.batch` (005-ui-batch-selection) must ride along here — this is
+    # the ONE place the active profile is translated into the ModelSelection
+    # shape `resolve_selection` consumes, for both the actual run
+    # (`_selection_args`) and the preview (`get_editor_resolved_selection`).
+    # Dropping it here would silently discard the operator's stored batch
+    # choice from every editor run and its own preview alike.
+    return ModelSelection(backend=active, model=model, batch=prof.batch), endpoint
 
 
 def _selection_args(request, cfg: ResolvedEditorConfig, *,
