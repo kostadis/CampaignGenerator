@@ -2,9 +2,13 @@
 import { ref, onMounted, reactive, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
 import { apiFetch, apiPost } from '../../api/client'
-import { useEnsembleRun, fetchEnsembleConfig, saveEnsembleConfig, type EnsembleConfig } from './useEnsembleRun'
+import {
+  useEnsembleRun, fetchEnsembleConfig, saveEnsembleConfig, fetchRegistrySummary,
+  type EnsembleConfig, type RegistrySummary,
+} from './useEnsembleRun'
 import StreamOutput from '../../components/shared/StreamOutput.vue'
 import EnsemblePlanningFields from '../../components/ensemble/EnsemblePlanningFields.vue'
+import PathField from '../../components/shared/PathField.vue'
 
 const emit = defineEmits<{ changed: [] }>()
 const config = useConfigStore()
@@ -51,6 +55,14 @@ const planningContextFiles = ref('')
 // reproduces prior behavior. See EnsemblePlanningFields.vue.
 const planningDepth = ref<'scene' | 'full'>('scene')
 const planningForceInclude = ref('')
+// Module inventory — authoritative module-canon spellings, passed as
+// synthesise_world_state's --inventory. Separate from the entity registry
+// (which supplies aliases only); lives in ensemble.yaml's `paths.inventory`.
+const inventoryPath = ref('')
+// Entity registry status — world_state's run is gated server-side on this
+// existing (see /run/synthesize's registry requirement); surfaced here so the
+// operator sees the problem before clicking Run rather than from a failed SSE.
+const registry = ref<RegistrySummary | null>(null)
 
 onMounted(async () => {
   await config.load()
@@ -73,6 +85,8 @@ onMounted(async () => {
   planningContextFiles.value = pl.context.join('\n')
   planningDepth.value = pl.depth
   planningForceInclude.value = pl.force_include.join('\n')
+  inventoryPath.value = loaded.paths.inventory
+  registry.value = await fetchRegistrySummary()
 })
 
 const lines = (t: string): string[] =>
@@ -107,6 +121,22 @@ watch([planningConfigPath, planningSynthMode, planningNpcFiles, planningArcScore
        planningDepth, planningForceInclude],
   schedulePlanPersist)
 
+// Same debounced-persist shape as the planning fields above, but for
+// `paths.inventory` — a sibling field of `paths.chapters_glob`, which
+// EnsembleSetup.vue already persists as a lone key inside `paths` (the
+// service's update_config does a recursive deep-merge, so sending only
+// `{ paths: { inventory } }` updates that one key and leaves the rest of
+// `paths` — chapters_glob, dossiers_glob, etc. — untouched).
+let inventoryPersistTimer: ReturnType<typeof setTimeout> | null = null
+function scheduleInventoryPersist() {
+  if (inventoryPersistTimer) clearTimeout(inventoryPersistTimer)
+  inventoryPersistTimer = setTimeout(() => {
+    saveEnsembleConfig({ paths: { inventory: inventoryPath.value } })
+      .then(c => { cfg.value = c }).catch(() => {})
+  }, 500)
+}
+watch(inventoryPath, scheduleInventoryPersist)
+
 function synthesize() {
   // backend/endpoint/model come from ensemble.yaml's `synthesize` group, which
   // the server reads itself (Phase 3). Only what this page actually chooses is
@@ -116,6 +146,11 @@ function synthesize() {
   const params: Record<string, unknown> = {
     doc: selectedDoc.value,
     party: partyConfigPath.value,
+  }
+  if (selectedDoc.value === 'world_state') {
+    // Same request-is-the-authority rationale as the planning params below —
+    // the debounced persist for `paths.inventory` may not have landed yet.
+    params.inventory = inventoryPath.value
   }
   if (selectedDoc.value === 'planning') {
     // planning_mode tells the server which branch to run. In 'flat' mode
@@ -167,6 +202,18 @@ async function promote(doc: string) {
       Synthesis writes <code>*_draft.md</code> only — never a live doc. Backend:
       <strong>{{ cfg?.synthesize.backend ?? '' }}</strong>. Review the diff, then promote by hand.
     </p>
+    <template v-if="selectedDoc === 'world_state'">
+      <p v-if="registry?.found && !registry.error" class="hint">
+        Registry: <code>{{ registry.path }}</code> ({{ registry.entity_count }} entities)
+      </p>
+      <p v-else class="hint warn-hint">
+        ⚠ {{ registry?.error || 'no entity registry found' }} — world_state synthesis
+        requires one (see the Bundle step's ② checkpoint).
+      </p>
+      <PathField v-model="inventoryPath" label="Module inventory (optional)" resolve-base="campaign"
+        placeholder="docs/background/module-inventory.md"
+        help="Authoritative module-canon spellings — separate from the registry, which supplies aliases only." />
+    </template>
     <p v-if="selectedDoc === 'party'" class="hint">
       Uses <code>{{ partyConfigPath || 'config/party.yaml (auto-detected if present)' }}</code>
       — the human-maintained PC roster (see the Party Document page to create or edit
