@@ -12,6 +12,7 @@ import difflib
 import glob
 import shutil
 from collections import Counter
+from dataclasses import replace
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -35,7 +36,7 @@ from campaignlib.planning_config import (
     resolve_entries,
 )
 from campaignlib.selection import ModelSelection
-from server.platform_config_service import resolve_selection
+from server.platform_config_service import resolve_selection, selection_cli_args
 from server.subprocess_runner import console_script, stream_subprocess, sse_error_stream
 
 router = APIRouter()
@@ -119,7 +120,8 @@ def _cmd_flag(cmd: list[str], flag: str, condition: bool) -> None:
 
 def _backend_args(backend: str, model: str, request: Request, *,
                   endpoint: str | None = None,
-                  endpoints: list[str] | None = None) -> list[str]:
+                  endpoints: list[str] | None = None,
+                  batch: bool | None = None) -> list[str]:
     """Resolve this stage's selection and render it as CLI flags.
 
     Feature 003 replaced this function's body with a call to the one seam,
@@ -128,13 +130,18 @@ def _backend_args(backend: str, model: str, request: Request, *,
     before calling (``backend = backend or cfg.extract.backend``), so what
     arrives here is "request-or-service" already collapsed; the seam sees it
     as the explicit tier and falls back to the platform when it is empty.
+    ``batch`` (feature 005-ui-batch-selection) is folded the same way —
+    callers pass ``batch if batch is not None else cfg.<stage>.batch`` (the
+    null-vs-false distinction matters: ``False`` is a sticky per-stage "off",
+    unlike the unset ``None`` that defers — see ``data-model.md``).
 
     Resolution order, unchanged in effect:
 
-    1. an explicit ``model``/``backend`` on the request
+    1. an explicit ``model``/``backend``/``batch`` on the request
     2. ``ensemble.yaml``'s per-stage value (folded in by the caller)
-    3. ``platform.runtime.default_model`` / ``default_backend``
-    4. ``campaignlib.constants.DEFAULT_MODEL``
+    3. ``platform.runtime.default_model`` / ``default_backend`` / ``default_batch``
+    4. ``campaignlib.constants.DEFAULT_MODEL`` (batch has no literal fallback —
+       ``PlatformRuntime.default_batch`` defaults to ``False``)
 
     **What changed: the stale-model guard no longer substitutes.** This used
     to read
@@ -149,10 +156,24 @@ def _backend_args(backend: str, model: str, request: Request, *,
     ``model``; the old code quietly ran something the operator had not
     chosen. Under 003 that pair raises ``IncompatibleSelection`` (HTTP 409)
     and the operator clears or corrects it. The *rule* survives in
-    ``platform_config_shared.compatible``; only the substitution is gone.
+    ``platform_config_shared.compatible``; only the substitution is gone. A
+    batch selection that resolves incompatible (batch true + a non-anthropic
+    backend) raises the same way, naming batch as the cause (005's FR-006) —
+    before this function builds any args, so no subprocess ever sees it.
 
     ``endpoint``/``endpoints`` still come from the caller — extract fans out
-    across several DGX hosts (plural), synthesize targets one (singular).
+    across several DGX hosts (plural), synthesize targets one (singular) —
+    and are rendered via ``backend_cli_args`` directly, NOT via
+    ``selection_cli_args``: ``ModelSelection`` (the service tier below) has no
+    endpoint field, so ``resolved.endpoint``/``resolved.endpoints`` never
+    carry these values — only the platform's dgx-wiring fallback would, which
+    is the wrong shape for a plural fan-out. The ``--model`` flag and the
+    batch flag DO come from ``selection_cli_args`` (Constitution V; a
+    guardrail test greps ``server/routers/`` for the batch flag's literal
+    spelling built anywhere outside that one function), via a throwaway copy
+    of ``resolved`` with ``backend`` forced to ``"anthropic"`` so that
+    delegate call contributes only the model and batch flags — not a
+    duplicate or wrongly-shaped ``--backend``/``--endpoint``.
     """
     # Passed as the SERVICE tier, not the request tier. The callers fold the
     # per-stage ensemble.yaml value into these arguments, and that value's
@@ -164,11 +185,12 @@ def _backend_args(backend: str, model: str, request: Request, *,
     # stage that genuinely names dgx/openrouter still wins.
     resolved = resolve_selection(
         request,
-        service=ModelSelection(backend=backend or None, model=model or None),
+        service=ModelSelection(backend=backend or None, model=model or None, batch=batch),
         service_name="ensemble",
     )
     args = backend_cli_args(resolved.backend, endpoint=endpoint, endpoints=endpoints)
-    return args + (["--model", resolved.model] if resolved.model else [])
+    args += selection_cli_args(replace(resolved, backend="anthropic"))
+    return args
 
 
 def _resolve_ensemble_path(path: str) -> Path:
@@ -628,6 +650,7 @@ def run_extract(
     endpoints: list[str] = Query(default=[]),
     model: str = "",
     backend: str = "",
+    batch: bool | None = None,
     chapter_parallel: int | None = None,
     chunk_parallel: int | None = None,
     no_speculative: bool = False,
@@ -639,6 +662,12 @@ def run_extract(
     backend = backend or cfg.extract.backend
     model = model or cfg.extract.model or ""
     endpoints = endpoints or cfg.extract.endpoints
+    # `is None`, not `or`: False is a genuine, sticky per-stage "batch off"
+    # (005-ui-batch-selection) and must not be clobbered by cfg.extract.batch
+    # the way an `or` fold would — same reasoning as chapter/chunk_parallel
+    # below, applied to a bool instead of an int.
+    if batch is None:
+        batch = cfg.extract.batch
     # `is None`, not `or`: 0 is a legitimate value for these, so a falsy-test
     # would silently substitute the config value for an explicit 0.
     if chapter_parallel is None:
@@ -665,7 +694,7 @@ def run_extract(
            "--per-chapter-dir", per_chapter_dir,
            "--out", out]
     _cmd_opt(cmd, "--plan", plan)
-    cmd += _backend_args(backend, model, request, endpoints=endpoints)
+    cmd += _backend_args(backend, model, request, endpoints=endpoints, batch=batch)
     _cmd_opt(cmd, "--chapter-parallel", chapter_parallel)
     _cmd_opt(cmd, "--chunk-parallel", chunk_parallel)
     _cmd_flag(cmd, "--no-speculative", no_speculative)
@@ -683,6 +712,7 @@ def run_bundle(
     endpoints: list[str] = Query(default=[]),
     model: str = "",
     backend: str = "",
+    batch: bool | None = None,
     entity_parallel: int | None = None,
     service: EnsembleConfigService = Depends(get_ensemble_service),
 ):
@@ -692,6 +722,11 @@ def run_bundle(
     backend = backend or cfg.extract.backend
     model = model or cfg.extract.model or ""
     endpoints = endpoints or cfg.extract.endpoints
+    # `is None`, not `or` — bundle reuses the extract stage's selection
+    # (there is no separate "bundle" tier in ensemble.yaml), and `False` is a
+    # sticky per-stage "batch off" that an `or` fold would clobber.
+    if batch is None:
+        batch = cfg.extract.batch
     if min_facts is None:
         min_facts = cfg.tuning.bundle_min_facts
     if entity_parallel is None:
@@ -713,7 +748,7 @@ def run_bundle(
     else:
         _cmd_opt(cmd, "--out-dir", out_dir)
         _cmd_flag(cmd, "--known-only", known_only)
-        cmd += _backend_args(backend, model, request, endpoints=endpoints)
+        cmd += _backend_args(backend, model, request, endpoints=endpoints, batch=batch)
         _cmd_opt(cmd, "--entity-parallel", entity_parallel)
     # --list does no model work, so it never needs the lock or backend env.
     if list:
@@ -774,6 +809,7 @@ def run_synthesize(
     backend: str = "",
     endpoint: str = "",
     model: str = "",
+    batch: bool | None = None,
     # world_state
     dossiers: str = "",
     dossier_min_facts: int | None = None,
@@ -806,6 +842,10 @@ def run_synthesize(
     backend = backend or cfg.synthesize.backend
     model = model or cfg.synthesize.model or ""
     endpoint = endpoint or (cfg.synthesize.endpoints[0] if cfg.synthesize.endpoints else "")
+    # `is None`, not `or` — `False` is a sticky per-stage "batch off" that an
+    # `or` fold would clobber with cfg.synthesize.batch (005-ui-batch-selection).
+    if batch is None:
+        batch = cfg.synthesize.batch
     if dossier_min_facts is None:
         dossier_min_facts = cfg.tuning.dossier_min_facts
     inventory = inventory or cfg.paths.inventory
@@ -927,7 +967,7 @@ def run_synthesize(
             _cmd_opt(cmd, "--depth", depth)
         _cmd_multi(cmd, "--force-include", force_include)
 
-    cmd += _backend_args(backend, model, request, endpoint=endpoint)
+    cmd += _backend_args(backend, model, request, endpoint=endpoint, batch=batch)
 
     prelude_parts = []
     # Surface auto-detected party.yaml / context so picking them up isn't
@@ -980,13 +1020,19 @@ def get_ensemble_resolved_selection(
     Per-stage because ensemble's selection is: the canonical workflow runs
     extract on DGX and synthesize on Anthropic within one campaign, so a
     single answer for "the ensemble" would be wrong for one of them.
+
+    ``stage_cfg.batch`` (005-ui-batch-selection) rides along here the same
+    way ``backend``/``model`` already do — omitting it would blind this
+    preview to a stored per-stage batch choice even though the run itself
+    (``_backend_args``) already honours it.
     """
     cfg = service.resolved()
     stage_cfg = getattr(cfg, stage, None) or cfg.extract
     return resolve_selection(
         request,
         service=ModelSelection(backend=stage_cfg.backend or None,
-                               model=stage_cfg.model or None),
+                               model=stage_cfg.model or None,
+                               batch=stage_cfg.batch),
         service_name="ensemble",
         raise_on_incompatible=False,
     ).as_dict()

@@ -38,6 +38,17 @@ async function setModel(value: string) {
   await config.updateRuntime({ default_model: value })
 }
 
+// Batch selector (app-wide, 005-ui-batch-selection). Platform tier, same
+// write path as backend/model above — PUT /api/config/runtime is the ONLY
+// app-wide write door (feature 003's design; this feature reuses it rather
+// than inventing a second one). Every SelectionPanel on every page re-
+// resolves when this changes, so it shows up everywhere as "inherited"
+// without a reload (T023's sidebar<->page round trip).
+async function setBatch(b: boolean) {
+  if (config.batch === b) return
+  await config.updateRuntime({ default_batch: b })
+}
+
 interface NavItem {
   label: string
   path: string
@@ -158,6 +169,25 @@ function navigate(path: string) {
             title="OpenRouter — hosted gateway, billed to OPENROUTER_API_KEY"
             @click="setBackend('openrouter')"
           >OR</button>
+        </div>
+      </div>
+      <div class="batch-selector">
+        <label class="model-label">BATCH</label>
+        <div class="backend-toggle">
+          <button
+            class="backend-btn"
+            :class="{ active: !config.batch }"
+            @click="setBatch(false)"
+          >Off</button>
+          <button
+            class="backend-btn"
+            :class="{ active: config.batch }"
+            title="Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)"
+            @click="setBatch(true)"
+          >On</button>
+        </div>
+        <div class="batch-help">
+          Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)
         </div>
       </div>
       <div class="model-selector">
@@ -282,6 +312,18 @@ function navigate(path: string) {
   background: var(--bg-surface1);
   color: var(--text);
   font-weight: 600;
+}
+
+.batch-selector {
+  margin-bottom: 10px;
+}
+
+.batch-help {
+  margin-top: 4px;
+  font-size: 9px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .model-select {

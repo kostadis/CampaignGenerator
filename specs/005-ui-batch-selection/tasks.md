@@ -60,9 +60,9 @@ Feature 003 split services into two classes, and this feature must preserve the 
 - [X] T011 [US1] Add `batch: bool | null` to the per-service selection store schema (the model/backend selection shape in `server/platform_config_shared.py`), where `null` means defer to platform
 - [X] T012 [US1] Accept and persist `batch` on `PUT /api/{service}/selection` for the settable services (grounding, party, planning, editor) — stored even when currently unsatisfiable, so the operator's intent stays visible and fixable (`contracts/selection-api.md`)
 - [X] T013 [US1] Include `batch` and `batch_origin` in every settable service's `GET /api/{service}/selection/resolved` payload
-- [ ] T014 [US1] Add the batch control to `frontend/src/components/shared/SelectionPanel.vue`: effective state, origin label using the existing origin vocabulary, and the shipped copy *"Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)"*
+- [X] T014 [US1] Add the batch control to `frontend/src/components/shared/SelectionPanel.vue`: effective state, origin label using the existing origin vocabulary, and the shipped copy *"Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)"*
 - [X] T015 [P] [US1] Server tests: `--batch` appears in the built command for a grounding run when batch resolves true, and is absent when false (`tests/test_grounding_*.py` or nearest)
-- [ ] T016 [P] [US1] Frontend gate: `cd frontend && npm run build` passes with the new control
+- [X] T016 [P] [US1] Frontend gate: `cd frontend && npm run build` passes with the new control
 
 **Checkpoint**: the P1 cost saving is reachable from at least one page, end to end.
 
@@ -74,13 +74,13 @@ Feature 003 split services into two classes, and this feature must preserve the 
 
 **Independent Test**: quickstart §2–§3 — batch on app-wide shows as inherited on every in-scope page; overriding one service changes only that service; app-wide changes don't disturb the overrider.
 
-- [ ] T017 [US2] Add the app-wide batch control to `frontend/src/components/layout/AppSidebar.vue` alongside the existing model and backend pickers, writing the platform tier through the existing app-wide write path
-- [ ] T018 [P] [US2] Surface batch state on the **inheriting** services' previews (`server/routers/prep.py`, `server/routers/setup.py`) — read-only display only. **Do not add a `PUT /selection` route to either** (003 FR-004; T002's guard now enforces this)
-- [ ] T019 [P] [US2] Render the inherited batch value read-only wherever `SelectionPanel` appears on an inheriting service's page, so the operator can see it without being offered a control that cannot exist
-- [ ] T020 [US2] Add per-stage `batch` to the ensemble tier: schema in `server/ensemble_config_shared.py` (`extract` / `synthesize`), passed through the existing `resolve_selection(service=…)` call in `server/routers/ensemble.py`
-- [ ] T021 [US2] Add the per-stage batch control to `frontend/src/views/ensemble/EnsembleSetup.vue` and the config plumbing in `frontend/src/views/ensemble/useEnsembleRun.ts`
-- [ ] T022 [P] [US2] Tests: `--batch` forwarded on the ensemble run routes per stage (`tests/test_ensemble_gates.py`); inheriting-service previews expose batch without exposing a write path
-- [ ] T023 [P] [US2] Store `config.ts` platform batch state in `frontend/src/stores/config.ts` and confirm the sidebar↔page round trip
+- [X] T017 [US2] Add the app-wide batch control to `frontend/src/components/layout/AppSidebar.vue` alongside the existing model and backend pickers, writing the platform tier through the existing app-wide write path
+- [X] T018 [P] [US2] Surface batch state on the **inheriting** services' previews (`server/routers/prep.py`, `server/routers/setup.py`) — read-only display only. **Do not add a `PUT /selection` route to either** (003 FR-004; T002's guard now enforces this)
+- [X] T019 [P] [US2] Render the inherited batch value read-only wherever `SelectionPanel` appears on an inheriting service's page, so the operator can see it without being offered a control that cannot exist
+- [X] T020 [US2] Add per-stage `batch` to the ensemble tier: schema in `server/ensemble_config_shared.py` (`extract` / `synthesize`), passed through the existing `resolve_selection(service=…)` call in `server/routers/ensemble.py`
+- [X] T021 [US2] Add the per-stage batch control to `frontend/src/views/ensemble/EnsembleSetup.vue` and the config plumbing in `frontend/src/views/ensemble/useEnsembleRun.ts`
+- [X] T022 [P] [US2] Tests: `--batch` forwarded on the ensemble run routes per stage (`tests/test_ensemble_gates.py`); inheriting-service previews expose batch without exposing a write path
+- [X] T023 [P] [US2] Store `config.ts` platform batch state in `frontend/src/stores/config.ts` and confirm the sidebar↔page round trip
 
 **Checkpoint**: SC-002 met for every in-scope surface; origin visible everywhere.
 
@@ -92,11 +92,11 @@ Feature 003 split services into two classes, and this feature must preserve the 
 
 **Independent Test**: quickstart §4 — batch + a non-Claude backend blocks the Run button with a batch-naming reason; attempting the run anyway fails with `incompatible_selection`; the offered remedy restores the run; identical behaviour whether batch was inherited or overridden.
 
-- [ ] T024 [US3] Ensure the batch refusal renders through the existing refusal block in `frontend/src/components/shared/SelectionPanel.vue` (reason + `compatible` emit that disables the parent's Run button) with no new UI mechanism
-- [ ] T025 [US3] Extend the existing refusal remedy actions in `SelectionPanel.vue` to offer clearing the batch selection (alongside the existing clear-override remedy), per FR-006a
-- [ ] T026 [US3] Add the degradation notice for `degraded`-capability services (session prep, sd_narrate): state before the run that steps run one at a time — slower for the same discount (FR-010)
-- [ ] T027 [P] [US3] Tests: a run route with batch + a non-anthropic backend raises `incompatible_selection` and spawns **no subprocess**; the refusal message names batch; the same holds for platform-inherited batch
-- [ ] T028 [P] [US3] Test that no code path exists which strips batch and runs anyway — assert `selection_cli_args` emits `--batch` for every compatible batch-true selection, and that no route builds a command from a batch-true-but-incompatible selection
+- [X] T024 [US3] Ensure the batch refusal renders through the existing refusal block in `frontend/src/components/shared/SelectionPanel.vue` (reason + `compatible` emit that disables the parent's Run button) with no new UI mechanism
+- [X] T025 [US3] Extend the existing refusal remedy actions in `SelectionPanel.vue` to offer clearing the batch selection (alongside the existing clear-override remedy), per FR-006a
+- [X] T026 [US3] Add the degradation notice for `degraded`-capability services (session prep, sd_narrate): state before the run that steps run one at a time — slower for the same discount (FR-010)
+- [X] T027 [P] [US3] Tests: a run route with batch + a non-anthropic backend raises `incompatible_selection` and spawns **no subprocess**; the refusal message names batch; the same holds for platform-inherited batch
+- [X] T028 [P] [US3] Test that no code path exists which strips batch and runs anyway — assert `selection_cli_args` emits `--batch` for every compatible batch-true selection, and that no route builds a command from a batch-true-but-incompatible selection
 
 **Checkpoint**: SC-004 met — no run can execute at full price after batch was selected.
 

@@ -101,6 +101,16 @@ export interface BackendProfile {
   backend: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
   endpoints: string[]
   model: string
+  // Per-stage batch selection (005-ui-batch-selection) — the ensemble's own
+  // parallel tier, alongside backend/model above. Mirrors
+  // server/ensemble_config_shared.py's EnsembleBackend.batch, which inherits
+  // straight from ModelSelection: `bool | null`, not a plain bool. `null`
+  // means "defer to the platform's default_batch"; `false` is a genuine,
+  // sticky per-stage "off" that does NOT follow an app-wide change — same
+  // three-state distinction as the per-service tier (grounding/party/
+  // planning/editor), just scoped to one ensemble stage instead of one
+  // service. See data-model.md's "Batch selection, by tier".
+  batch: boolean | null
 }
 
 export interface EnsemblePaths {

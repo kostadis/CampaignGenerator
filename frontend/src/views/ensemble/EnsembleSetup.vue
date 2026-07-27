@@ -50,6 +50,22 @@ function resetBackend(stage: 'extract' | 'synthesize') {
   cfg.value[stage].model = ''
   if (stage === 'extract') extractEndpointsText.value = ''
 }
+
+// Batch is a per-stage `bool | null` (005-ui-batch-selection — see the
+// `batch` field doc on BackendProfile in useEnsembleRun.ts): `null` defers
+// to the platform's app-wide batch flag, `false` is a sticky per-stage off
+// that does NOT follow an app-wide change. A plain checkbox can't express
+// "defer" separately from "explicitly off", so this stage control is a
+// three-option select instead — same treatment as SelectionPanel.vue's
+// per-service batch override, one level down at the ensemble-stage tier.
+function batchSelectValue(stage: 'extract' | 'synthesize'): '' | 'on' | 'off' {
+  const b = cfg.value?.[stage].batch
+  return b === true ? 'on' : b === false ? 'off' : ''
+}
+function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
+  if (!cfg.value) return
+  cfg.value[stage].batch = value === 'on' ? true : value === 'off' ? false : null
+}
 </script>
 
 <template>
@@ -110,6 +126,26 @@ function resetBackend(stage: 'extract' | 'synthesize') {
           Synthesis assumes a model at least as capable as Sonnet; a weak or
           local model underperforms here (you'll get a warning at run time, not a block).
         </p>
+        <label class="fld batch-fld">
+          <span>Batch</span>
+          <select
+            :value="batchSelectValue(stage)"
+            @change="setBatchSelect(stage, ($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">(inherit platform)</option>
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+          <div class="field-help">
+            Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)
+          </div>
+        </label>
+        <p v-if="batchSelectValue(stage) === 'on' && cfg[stage].backend !== 'anthropic'" class="warn-note">
+          Batch is a Claude API option — this stage is set to the
+          {{ cfg[stage].backend }} backend, so the run will refuse rather
+          than run at full price. Switch this stage to Anthropic, or turn
+          batch off.
+        </p>
       </fieldset>
     </div>
 
@@ -130,6 +166,11 @@ h2 { font-size: 16px; margin-bottom: 6px; }
   width: 100%; max-width: 560px; font-size: 12px; padding: 5px 7px;
   background: var(--bg-surface0); color: var(--text);
   border: 1px solid var(--bg-surface1); border-radius: 4px; font-family: var(--mono);
+}
+.batch-fld { margin-top: 8px; }
+.batch-fld .field-help {
+  font-size: 10px; color: var(--text-muted); font-style: italic;
+  margin-top: 3px; line-height: 1.4; max-width: 40ch;
 }
 .profiles { display: flex; gap: 16px; flex-wrap: wrap; margin: 10px 0; }
 fieldset { border: 1px solid var(--bg-surface1); border-radius: 6px; padding: 10px 12px; min-width: 280px; }

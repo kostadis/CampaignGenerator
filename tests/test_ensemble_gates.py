@@ -273,6 +273,224 @@ def test_threads_passes_registry(tmp_path, monkeypatch):
     assert "--aliases" not in cmd
 
 
+# ── Per-stage batch forwarding (005-ui-batch-selection, T020/T022) ──────────
+#
+# The ensemble stage tier (extract/synthesize) is duck-typed into
+# resolve_selection via _backend_args, which — unlike every other router —
+# builds its own args instead of delegating wholesale to selection_cli_args
+# (endpoint/endpoints are a per-stage fan-out shape ModelSelection cannot
+# carry). These tests exercise the seam end to end: a stage's stored `batch`
+# reaches the actual subprocess command, a request-level override wins over
+# it, an incompatible combination refuses before any subprocess spawns
+# (mirroring test_ui_batch_service_selection.py's grounding/party/planning
+# coverage for T027, extended here to the newly-wired ensemble path per
+# T028's "no route builds a command from a batch-true-but-incompatible
+# selection" backstop), and the per-stage preview reflects it independently
+# for extract vs. synthesize.
+
+import pytest
+from server.platform_config_service import PlatformConfigService, TRACKED_CONFIG_NAME
+
+
+@pytest.fixture
+def ensemble_platform(monkeypatch, tmp_path):
+    """A live platform for the ensemble tests that need platform-tier
+    inheritance (mirrors tests/test_ui_batch_service_selection.py's
+    `platform` fixture) — most of this file's tests run with no live
+    platform at all (resolve_selection tolerates that), so this is opt-in
+    rather than file-wide."""
+    config_subdir = tmp_path / "config"
+    config_subdir.mkdir(parents=True, exist_ok=True)
+    (config_subdir / TRACKED_CONFIG_NAME).write_text(
+        "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        encoding="utf-8",
+    )
+    svc = PlatformConfigService(tmp_path)
+    svc.update_runtime({"default_model": "claude-opus-5", "default_backend": "anthropic"})
+    monkeypatch.setattr(app.state, "platform", svc, raising=False)
+    monkeypatch.chdir(tmp_path)
+    return svc
+
+
+def test_extract_batch_forwarded_when_stage_config_batch_true(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    r = client.put("/api/ensemble/config", json={"extract": {"batch": True}})
+    assert r.status_code == 200, r.text
+
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/extract",
+                   params={"chapters": ["docs/chapters/chapter_01.md"]})
+    assert r.status_code == 200, r.text
+    _ = r.text
+    assert "--batch" in captured["cmd"]
+
+
+def test_extract_batch_omitted_by_default(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/extract",
+                   params={"chapters": ["docs/chapters/chapter_01.md"]})
+    assert r.status_code == 200, r.text
+    _ = r.text
+    assert "--batch" not in captured["cmd"]
+
+
+def test_extract_request_batch_overrides_stored_stage_config(tmp_path, monkeypatch):
+    """The request tier still wins over the stored per-stage value — the
+    per-stage `batch` query param on /run/extract is folded the same
+    null-vs-false-aware way as backend/model."""
+    monkeypatch.chdir(tmp_path)
+    client.put("/api/ensemble/config", json={"extract": {"batch": True}})
+
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/extract", params={
+        "chapters": ["docs/chapters/chapter_01.md"], "batch": False,
+    })
+    assert r.status_code == 200, r.text
+    _ = r.text
+    assert "--batch" not in captured["cmd"]
+
+
+def test_bundle_batch_forwarded_from_extract_stage(tmp_path, monkeypatch):
+    """/run/bundle has no tier of its own — it reuses the extract stage's
+    selection (same as backend/model already do, see run_bundle)."""
+    monkeypatch.chdir(tmp_path)
+    _write_registry(tmp_path)
+    client.put("/api/ensemble/config", json={"extract": {"batch": True}})
+
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/bundle")
+    assert r.status_code == 200, r.text
+    _ = r.text
+    assert "--batch" in captured["cmd"]
+
+
+def test_synthesize_batch_forwarded_when_stage_config_batch_true(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    client.put("/api/ensemble/config", json={"synthesize": {"batch": True}})
+
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "campaign_state"})
+    assert r.status_code == 200, r.text
+    _ = r.text
+    assert "--batch" in captured["cmd"]
+
+
+def test_synthesize_batch_omitted_by_default(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "campaign_state"})
+    assert r.status_code == 200, r.text
+    _ = r.text
+    assert "--batch" not in captured["cmd"]
+
+
+def test_extract_and_synthesize_batch_are_independent_stages(tmp_path, monkeypatch):
+    """Setting batch on one stage must not leak onto the other — matching how
+    backend/model already differ per stage in the canonical DGX-extract /
+    Anthropic-synthesize workflow."""
+    monkeypatch.chdir(tmp_path)
+    client.put("/api/ensemble/config", json={"extract": {"batch": True},
+                                             "synthesize": {"batch": False}})
+
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/extract",
+                   params={"chapters": ["docs/chapters/chapter_01.md"]})
+    _ = r.text
+    assert "--batch" in captured["cmd"]
+
+    captured2 = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "campaign_state"})
+    _ = r.text
+    assert "--batch" not in captured2["cmd"]
+
+
+# ── Incompatible batch refuses before any subprocess spawns (T027 backstop
+# ── for the ensemble path specifically; T028's "no route builds a command
+# ── from a batch-true-but-incompatible selection") ──────────────────────────
+
+
+def test_extract_incompatible_batch_refuses_and_spawns_nothing(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    r = client.put("/api/ensemble/config", json={
+        "extract": {"backend": "dgx", "model": "Qwen3-Next-80B",
+                    "endpoints": ["http://box:8001/v1"], "batch": True},
+    })
+    assert r.status_code == 200, r.text
+
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/extract",
+                   params={"chapters": ["docs/chapters/chapter_01.md"]})
+    assert r.status_code == 409, r.text
+    detail = r.json()["detail"]
+    assert detail["error"] == "incompatible_selection"
+    assert "batch" in detail["message"]
+    assert "cmd" not in captured, "an incompatible selection must not reach the subprocess"
+
+
+def test_synthesize_incompatible_batch_refuses_and_spawns_nothing(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    r = client.put("/api/ensemble/config", json={
+        "synthesize": {"backend": "openrouter", "model": "anthropic/claude-sonnet-4",
+                       "batch": True},
+    })
+    assert r.status_code == 200, r.text
+
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "campaign_state"})
+    assert r.status_code == 409, r.text
+    detail = r.json()["detail"]
+    assert detail["error"] == "incompatible_selection"
+    assert "batch" in detail["message"]
+    assert "cmd" not in captured
+
+
+def test_platform_inherited_batch_refuses_identically_for_ensemble(ensemble_platform, monkeypatch):
+    """D3, extended to ensemble: an app-wide batch inherited by an
+    unconfigured stage refuses exactly as a per-stage override does."""
+    ensemble_platform.update_runtime({
+        "default_backend": "dgx", "default_model": "Qwen3-Next-80B", "default_batch": True,
+    })
+    captured = _capture_cmd(monkeypatch)
+    r = client.get("/api/ensemble/run/extract",
+                   params={"chapters": ["docs/chapters/chapter_01.md"]})
+    assert r.status_code == 409, r.text
+    assert "batch" in r.json()["detail"]["message"]
+    assert "cmd" not in captured
+
+
+# ── Per-stage preview exposes batch independently (T022) ───────────────────
+
+
+def test_ensemble_preview_exposes_batch_per_stage(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    client.put("/api/ensemble/config", json={
+        "extract": {"batch": True}, "synthesize": {"batch": False},
+    })
+
+    extract_preview = client.get("/api/ensemble/selection/resolved",
+                                 params={"stage": "extract"}).json()
+    assert extract_preview["batch"] is True
+    assert extract_preview["batch_origin"] == "service"
+
+    synth_preview = client.get("/api/ensemble/selection/resolved",
+                               params={"stage": "synthesize"}).json()
+    assert synth_preview["batch"] is False
+    assert synth_preview["batch_origin"] == "service"
+
+
+def test_ensemble_preview_unsatisfiable_batch_reports_without_raising(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    client.put("/api/ensemble/config", json={
+        "extract": {"backend": "dgx", "model": "Qwen3-Next-80B", "batch": True},
+    })
+    r = client.get("/api/ensemble/selection/resolved", params={"stage": "extract"})
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["compatible"] is False
+    assert "batch" in body["refusal"]
+
+
 def test_threads_errors_without_registry(tmp_path, monkeypatch):
     captured = _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)

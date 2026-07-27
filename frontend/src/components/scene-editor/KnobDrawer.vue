@@ -223,6 +223,17 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
       <!-- Stage 4 — Narrate -->
       <section class="drawer-section">
         <h3>④ Narrate</h3>
+        <!-- 005-ui-batch-selection, FR-010: narrate's handoff-threaded scenes
+             can only submit as sequential one-item batches — same 50%
+             discount as any other stage, but not the parallel speedup batch
+             usually gives. Stated here, before the run, whether or not batch
+             is currently forwarded to this stage (see KnobDrawer's Enhance
+             checkbox above and specs/005-ui-batch-selection/data-model.md's
+             "Batch capability map" — session_doc is classified `degraded`). -->
+        <div v-if="useBatch" class="degraded-note">
+          Batch runs narration one scene at a time — same discount, slower
+          than a normal run.
+        </div>
         <div class="field">
           <label class="field-label">Token limit</label>
           <input
@@ -369,6 +380,15 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
   padding: 6px 8px;
   background: var(--bg-base);
   border-radius: 3px;
+}
+.degraded-note {
+  padding: 6px 8px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text);
+  background: color-mix(in srgb, var(--peach, #f9b874) 14%, transparent);
 }
 
 .field { margin-bottom: 10px; }
