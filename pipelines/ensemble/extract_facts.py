@@ -57,7 +57,7 @@ from campaignlib import (
     stream_api,
     wiring_get,
 )
-from campaignlib.io_atomic import atomic_write_text as _atomic_write_text
+from campaignlib.util import atomic_write_text as _atomic_write_text
 
 # DGX endpoint + model are EXTERNAL config (they name the DGX) — owned by mneme and
 # rendered into config/wiring.yaml. Read them from there; an env var still overrides.

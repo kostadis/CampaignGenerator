@@ -157,7 +157,7 @@ def test_malformed_file_is_400_not_crash(tmp_path):
 def test_save_is_atomic_leaving_no_tmp_file(tmp_path):
     svc = _service(tmp_path)
     svc.update_config({"summaries": "docs/summaries.md"})
-    assert not list(svc.grounding_config_path.parent.glob("*.tmp"))
+    assert not list(svc.grounding_config_path.parent.glob("*.tmp*"))
 
 
 # ── Isolation: the point of the whole exercise ─────────────────────────────
