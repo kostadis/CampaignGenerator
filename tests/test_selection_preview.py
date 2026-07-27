@@ -53,14 +53,38 @@ def platform(monkeypatch, tmp_path):
     return svc
 
 
-@pytest.mark.parametrize("service", ALL_SERVICES)
+# 005-ui-batch-selection: every in-scope service's preview grows `batch`/
+# `batch_origin` (contracts/selection-api.md). The Connection Graph is the
+# one documented exception (FR-013/FR-014, see
+# test_connections_preview_omits_batch_fields below) — its preview must NOT
+# grow them at all, so it is excluded from this parametrization rather than
+# asserting a different key set inline.
+BATCH_VISIBLE_SERVICES = [s for s in ALL_SERVICES if s != "connections"]
+
+
+@pytest.mark.parametrize("service", BATCH_VISIBLE_SERVICES)
 def test_every_service_exposes_a_preview(platform, service):
     r = client.get(f"/api/{service}/selection/resolved")
     assert r.status_code == 200, f"{service}: {r.text}"
     body = r.json()
     assert set(body) == {
-        "model", "backend", "model_origin", "backend_origin", "compatible", "refusal",
+        "model", "backend", "model_origin", "backend_origin",
+        "batch", "batch_origin", "compatible", "refusal",
     }, f"{service} returned {sorted(body)}"
+
+
+def test_connections_preview_omits_batch_fields(platform):
+    """FR-013/FR-014 (005-ui-batch-selection): the Connection Graph is the
+    one service explicitly out of scope for batch (issue #192 — it is the
+    only in-process, non-streamed run). Its preview must not include
+    `batch`/`batch_origin` at all — their absence is what tells the frontend
+    to render no control here, rather than a disabled or dead one."""
+    r = client.get("/api/connections/selection/resolved")
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert set(body) == {
+        "model", "backend", "model_origin", "backend_origin", "compatible", "refusal",
+    }, f"connections returned {sorted(body)}"
 
 
 @pytest.mark.parametrize("service", ALL_SERVICES)

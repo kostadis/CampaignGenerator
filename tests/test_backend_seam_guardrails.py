@@ -251,3 +251,43 @@ def test_no_out_of_seam_messages_batches_reference():
         if "messages.batches" in text:
             offenders.append(str(rp.relative_to(REPO_ROOT)))
     assert not offenders, f"messages.batches referenced outside campaignlib/api/: {offenders}"
+
+
+# ── Check 5: --batch is only ever built by selection_cli_args (spec 005) ────
+#
+# 005-ui-batch-selection's resolution seam
+# (server/platform_config_service.py::resolve_selection +
+# selection_cli_args) is the one place a router may learn whether a run
+# should carry --batch, and selection_cli_args is the one place that flag is
+# ever built (mirrors Check 4's messages.batches guard for the equivalent
+# 004 seam, one layer up the stack).
+
+# The Session Doc Editor's bespoke batch checkbox
+# (KnobDrawer.vue's `?batch=1` -> scene_editor.py's own
+# `cmd.append("--batch")` in _build_enhance_cmd/_build_reextract_cmd)
+# predates the unified selection seam and is retired by
+# 005-ui-batch-selection's T029 (FR-011), not by this guard — until that
+# task removes the bespoke `batch` parameter and its two `cmd.append`
+# call sites, this is a known, narrowly-scoped exception rather than a
+# guard failure. Delete this entry in the same change that removes them.
+ALLOWED_BESPOKE_BATCH_FILES = {"scene_editor.py"}
+
+
+def test_batch_flag_only_built_by_selection_cli_args():
+    """No module under server/routers/ may append the literal ``"--batch"``
+    or otherwise build the flag itself — every occurrence must originate in
+    ``platform_config_service.selection_cli_args``, so a run's command line
+    can never disagree with what the resolved selection says (Constitution
+    V/VI)."""
+    offenders = []
+    routers_dir = (REPO_ROOT / "server" / "routers").resolve()
+    for py in sorted(routers_dir.glob("*.py")):
+        if py.name in ALLOWED_BESPOKE_BATCH_FILES:
+            continue
+        text = py.read_text(encoding="utf-8", errors="ignore")
+        if "--batch" in text:
+            offenders.append(str(py.relative_to(REPO_ROOT)))
+    assert not offenders, (
+        f"server/routers/*.py builds '--batch' directly: {offenders} — "
+        "route it through selection_cli_args instead."
+    )

@@ -628,6 +628,25 @@ def get_context(
 
 @router.get("/selection/resolved")
 def get_connections_resolved_selection(request: Request):
-    return resolve_selection(
+    """Model/backend only — batch is deliberately absent (005-ui-batch-selection,
+    FR-013/FR-014).
+
+    The Connection Graph is the one service whose "run" happens in-process
+    inside a single web request (``extract_connections`` above calls
+    ``stream_api`` directly) rather than as a streamed subprocess — a batch
+    run polls for minutes and could outlive the request, stranding the
+    operator (tracked as issue #192). So it is the one documented exception
+    to "every UI surface that offers model/backend also offers batch": its
+    preview must not grow ``batch``/``batch_origin`` at all, which is what
+    tells the frontend to render no control here rather than a dead one.
+    Popping the two keys after the fact (rather than never resolving them)
+    keeps this one exclusion local to the one router that needs it, without
+    teaching ``resolve_selection``/``ResolvedSelection`` — used by every
+    other service — about an exclusion that is specific to this one.
+    """
+    body = resolve_selection(
         request, service_name="connections", raise_on_incompatible=False,
     ).as_dict()
+    body.pop("batch", None)
+    body.pop("batch_origin", None)
+    return body

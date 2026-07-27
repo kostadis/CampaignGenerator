@@ -27,7 +27,7 @@ Feature 003 split services into two classes, and this feature must preserve the 
 
 ## Phase 1: Setup
 
-- [ ] T001 Create worktree + branch `005-ui-batch-selection` off `main`; copy gitignored `config/wiring.yaml` from the main checkout into the worktree
+- [X] T001 Create worktree + branch `005-ui-batch-selection` off `main`; copy gitignored `config/wiring.yaml` from the main checkout into the worktree
 
 ---
 
@@ -37,15 +37,15 @@ Feature 003 split services into two classes, and this feature must preserve the 
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 Fix the broken route-table assertions in `tests/test_service_selection_override.py::test_inheriting_services_have_no_selection_endpoint` (currently 3 failing parametrizations). Root cause found during planning: routers mount as `_IncludedRouter` objects, so `{getattr(r,"path",None) for r in app.routes}` never contains flattened paths like `/api/prep/selection/resolved`. Both assertions are therefore wrong — the "preview exists" half fails despite the endpoint working (verified: returns 200 JSON), and the "no write endpoint" half passes **vacuously** and would not catch a violation. Rewrite to enumerate real paths (`app.openapi()["paths"]`, or recurse `_IncludedRouter` children, or probe with `TestClient` and assert on content-type to defeat the SPA catch-all). This guard must genuinely work before this feature edits selection endpoints.
-- [ ] T003 Add `batch: bool = False` and `batch_origin: str = "platform"` to `ResolvedSelection` in `server/platform_config_service.py`, including `as_dict()`, per `contracts/selection-api.md`
-- [ ] T004 Implement batch tier resolution in `resolve_selection()` (`server/platform_config_service.py`): precedence request → service → platform, matching backend; the model/backend pairing rule does **not** extend to batch (research D2)
-- [ ] T005 Implement batch refusal in `resolve_selection()`: when `batch` resolves true but the resolved backend is not `anthropic` (or the service's capability is `incompatible`), populate the **existing** `refusal` with a message naming batch as the cause, so `compatible` becomes false — run routes raise `incompatible_selection`, preview routes return it. No downgrade path exists (FR-006). Origin-independent (research D3).
-- [ ] T006 Emit `--batch` from `selection_cli_args()` in `server/platform_config_service.py` when `resolved.batch` is true — the only place the flag is ever built
-- [ ] T007 Add `default_batch: bool = False` to the platform runtime schema in `server/platform_config_shared.py` and its write path
-- [ ] T008 [P] Add the static per-service batch capability map (`full` / `degraded` / `incompatible` / `excluded`) per `data-model.md`, in `server/platform_config_service.py` alongside the resolver that consumes it
-- [ ] T009 [P] Resolution tests in `tests/test_platform_config_service.py` (or the nearest existing selection test module): precedence across all three tiers; `null` service value defers while `false` does not; batch true + anthropic is compatible; batch true + dgx/openrouter/claude-code refuses with a batch-naming message; refusal is identical whether batch came from service or platform
-- [ ] T010 [P] Guardrail test (mirroring spec 004's `messages.batches` grep guard): no module under `server/routers/` appends `"--batch"` or reads a batch setting directly — every occurrence must originate in `selection_cli_args`
+- [X] T002 Fix the broken route-table assertions in `tests/test_service_selection_override.py::test_inheriting_services_have_no_selection_endpoint` (currently 3 failing parametrizations). Root cause found during planning: routers mount as `_IncludedRouter` objects, so `{getattr(r,"path",None) for r in app.routes}` never contains flattened paths like `/api/prep/selection/resolved`. Both assertions are therefore wrong — the "preview exists" half fails despite the endpoint working (verified: returns 200 JSON), and the "no write endpoint" half passes **vacuously** and would not catch a violation. Rewrite to enumerate real paths (`app.openapi()["paths"]`, or recurse `_IncludedRouter` children, or probe with `TestClient` and assert on content-type to defeat the SPA catch-all). This guard must genuinely work before this feature edits selection endpoints.
+- [X] T003 Add `batch: bool = False` and `batch_origin: str = "platform"` to `ResolvedSelection` in `server/platform_config_service.py`, including `as_dict()`, per `contracts/selection-api.md`
+- [X] T004 Implement batch tier resolution in `resolve_selection()` (`server/platform_config_service.py`): precedence request → service → platform, matching backend; the model/backend pairing rule does **not** extend to batch (research D2)
+- [X] T005 Implement batch refusal in `resolve_selection()`: when `batch` resolves true but the resolved backend is not `anthropic` (or the service's capability is `incompatible`), populate the **existing** `refusal` with a message naming batch as the cause, so `compatible` becomes false — run routes raise `incompatible_selection`, preview routes return it. No downgrade path exists (FR-006). Origin-independent (research D3).
+- [X] T006 Emit `--batch` from `selection_cli_args()` in `server/platform_config_service.py` when `resolved.batch` is true — the only place the flag is ever built
+- [X] T007 Add `default_batch: bool = False` to the platform runtime schema in `server/platform_config_shared.py` and its write path
+- [X] T008 [P] Add the static per-service batch capability map (`full` / `degraded` / `incompatible` / `excluded`) per `data-model.md`, in `server/platform_config_service.py` alongside the resolver that consumes it
+- [X] T009 [P] Resolution tests in `tests/test_platform_config_service.py` (or the nearest existing selection test module): precedence across all three tiers; `null` service value defers while `false` does not; batch true + anthropic is compatible; batch true + dgx/openrouter/claude-code refuses with a batch-naming message; refusal is identical whether batch came from service or platform
+- [X] T010 [P] Guardrail test (mirroring spec 004's `messages.batches` grep guard): no module under `server/routers/` appends `"--batch"` or reads a batch setting directly — every occurrence must originate in `selection_cli_args`
 
 **Checkpoint**: resolution + flag emission correct and covered; the FR-004 guard actually guards.
 

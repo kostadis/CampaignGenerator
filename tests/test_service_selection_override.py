@@ -188,14 +188,33 @@ def test_resolved_preview_reports_incompatibility_without_raising(platform):
 
 @pytest.mark.parametrize("service", ["setup", "prep", "connections"])
 def test_inheriting_services_have_no_selection_endpoint(platform, service):
-    """Asserted against the route table, not the HTTP status.
+    """Asserted against FastAPI's own flattened OpenAPI path table, not
+    ``app.routes`` and not the HTTP status.
 
-    ``server/main.py`` mounts an SPA catch-all (``@app.get("/{full_path:path}")``)
-    that serves index.html for anything unmatched, so an absent API route
-    answers 200 with HTML rather than 404. Checking the status would therefore
-    pass for a route that exists and fail to notice one that doesn't.
+    ``server/main.py`` mounts each router via ``app.include_router(...)``,
+    which FastAPI represents on ``app.routes`` as an opaque
+    ``starlette.routing._IncludedRouter`` wrapper — NOT one flattened
+    ``Route`` per endpoint, and with no usable ``.path`` attribute at all
+    (verified: every entry in ``app.routes`` besides the four Starlette
+    defaults is an ``_IncludedRouter`` whose ``getattr(r, "path", None)`` is
+    ``None``). So ``{getattr(r, "path", None) for r in app.routes}`` was a
+    set containing at most ``{None}`` — BOTH assertions built on it were
+    broken: the "no write endpoint" half passed *vacuously* (an actual
+    ``PUT /api/prep/selection`` would never have been caught — the dangerous
+    direction), and the "preview exists" half failed even though the preview
+    endpoint works correctly (returns 200 JSON via ``TestClient``).
+
+    ``app.openapi()["paths"]`` is FastAPI's own fully-mounted, flattened path
+    table — a ``dict`` keyed by complete path (prefix + route path), the same
+    structure Swagger UI renders from — so it is immune to however routers
+    happen to be mounted internally.
+
+    Checking the HTTP status alone would still not work even against the
+    real path table: ``server/main.py`` mounts an SPA catch-all
+    (``@app.get("/{full_path:path}")``) that serves index.html for anything
+    unmatched, so an absent API route answers 200 with HTML rather than 404.
     """
-    paths = {getattr(r, "path", None) for r in app.routes}
+    paths = app.openapi()["paths"]
     assert f"/api/{service}/selection" not in paths, (
         "an inheriting service must have nowhere to SET a selection (FR-004)"
     )

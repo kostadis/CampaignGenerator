@@ -53,7 +53,7 @@ from __future__ import annotations
 import threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import yaml
 from fastapi import HTTPException, Request
@@ -189,7 +189,16 @@ class ResolvedSelection:
     Computed per request and discarded — it is deliberately NOT persisted.
     The durable record of what a run used is the run log written by
     ``server/subprocess_runner.py::_save_run_log``, whose ``command`` line
-    already carries the ``--model``/``--backend`` flags built from this.
+    already carries the ``--model``/``--backend``/``--batch`` flags built
+    from this.
+
+    ``batch``/``batch_origin`` (feature 005-ui-batch-selection) mirror
+    ``model``/``backend`` in shape, but are resolved independently — see
+    ``resolve_selection``'s batch block. An unsatisfiable batch selection
+    (a non-anthropic backend, or a service whose batch capability is
+    ``incompatible``) populates the same ``refusal`` field model/backend
+    incompatibility already uses, naming batch as the cause, rather than
+    growing a second refusal field (research D2).
     """
 
     model: str
@@ -199,6 +208,8 @@ class ResolvedSelection:
     endpoint: str | None = None
     endpoints: tuple[str, ...] = ()
     refusal: str | None = None
+    batch: bool = False
+    batch_origin: str = "platform"  # request | service | platform
 
     @property
     def compatible(self) -> bool:
@@ -210,9 +221,76 @@ class ResolvedSelection:
             "backend": self.backend,
             "model_origin": self.model_origin,
             "backend_origin": self.backend_origin,
+            "batch": self.batch,
+            "batch_origin": self.batch_origin,
             "compatible": self.compatible,
             "refusal": self.refusal,
         }
+
+
+# ── Batch capability map (feature 005-ui-batch-selection, research D7) ─────
+# Static and per-service, keyed on the same `service_name` strings already
+# passed to resolve_selection() at each call site. Cannot be derived at
+# runtime without the server reasoning about batch (Constitution VI), so this
+# is a plain, reviewable table sourced from the CLIs' actual behavior as
+# merged in spec 004-claude-api-batch — see docs/cli/cli_tools.md's
+# "Shared flag: --batch" section and specs/005-ui-batch-selection/data-model.md.
+#
+#   full        — independent calls grouped into one submission.
+#   degraded    — an ordered chain that runs as sequential one-item batches:
+#                 same discount, slower, never refused (FR-010 states the
+#                 trade-off in the UI, not here).
+#   incompatible — the tool cannot act on batch at all; only this state
+#                 changes resolve_selection's refusal (below). No UI-reachable
+#                 service occupies it today (the one CLI that does — the
+#                 optional polish pass — is not wired into the UI, so it never
+#                 reaches this map by service_name; specified anyway so wiring
+#                 it in later inherits the rule).
+#   excluded    — out of scope for batch entirely (the Connection Graph,
+#                 FR-013/FR-014): its preview must not grow a batch field at
+#                 all, which is enforced where that preview is built
+#                 (server/routers/connections.py), not by this map — a
+#                 service_name absent from resolve_selection's refusal check
+#                 simply never refuses on batch's account.
+#
+# A service_name with no entry here (including None, since several run routes
+# do not pass one at all) defaults to "full" — the permissive, pre-existing
+# behavior — rather than silently refusing a run this map has no opinion on.
+BatchCapability = Literal["full", "degraded", "incompatible", "excluded"]
+
+BATCH_CAPABILITY: dict[str, BatchCapability] = {
+    # Grounding's own sub-documents (server/routers/grounding.py) — each is
+    # one or more independent calls grouped into a single submission.
+    "campaign_state": "full",
+    "distill": "full",
+    # Shared by grounding.py's /run/party + /run/planning (build-dossiers)
+    # AND the standalone Party/Planning services (party_routes.py /
+    # planning_routes.py) — same underlying CLI (party.py / planning.py)
+    # either way, so one entry covers both.
+    "party": "full",
+    "planning": "full",
+    "ensemble": "full",
+    # session-prep's 5 stages are an ordered chain — sequential one-item
+    # batches (docs/cli/cli_tools.md). Only the /selection/resolved preview
+    # passes this service_name today; /run/npc-table and /run/query (also in
+    # prep.py) pass none, so they fall to the "full" default above, which
+    # matches their own actual (single-call) capability.
+    "prep": "degraded",
+    "setup": "full",
+    # Session Doc Editor (server/routers/scene_editor.py): every stage shares
+    # this one service_name today. Most (scene_extract, enhance_summary,
+    # sd_plan, sd_consistency) are full; sd_narrate's handoff-threaded scenes
+    # are degraded. Classified degraded as the conservative choice until the
+    # router distinguishes stages — see the "Risk noted" paragraph of D7.
+    "session_doc": "degraded",
+    "connections": "excluded",
+}
+
+
+def _batch_capability(service_name: str | None) -> BatchCapability:
+    if not service_name:
+        return "full"
+    return BATCH_CAPABILITY.get(service_name, "full")
 
 
 def resolve_selection(
@@ -220,6 +298,7 @@ def resolve_selection(
     *,
     request_model: str | None = None,
     request_backend: str | None = None,
+    request_batch: bool | None = None,
     service: ModelSelection | Any | None = None,
     service_name: str | None = None,
     raise_on_incompatible: bool = True,
@@ -248,6 +327,16 @@ def resolve_selection(
     the two pre-existing shapes (``EnsembleBackend`` with plural
     ``endpoints``, ``BackendProfile`` with singular ``endpoint``) pass
     through unchanged and keep their endpoint fields.
+
+    **Batch** (feature 005-ui-batch-selection) resolves in this same function
+    with the same request -> service -> platform precedence, via
+    ``request_batch`` and ``getattr(service, "batch", None)`` /
+    ``runtime.default_batch``. It is NOT subject to the pairing rule above —
+    see the batch block below. A batch selection that cannot be honoured (a
+    non-anthropic backend, or a service whose static batch capability is
+    ``incompatible`` — see ``BATCH_CAPABILITY``) populates this same
+    ``refusal``/``raise_on_incompatible`` machinery, naming batch as the
+    cause; there is no separate downgrade path (FR-006).
     """
     try:
         platform = require_platform(request)
@@ -320,9 +409,44 @@ def resolve_selection(
     if backend == "dgx" and not endpoint and not endpoints:
         endpoint = wiring_get("dgx_endpoint")
 
+    # ── Batch (feature 005-ui-batch-selection) ──────────────────────────
+    # Same request -> service -> platform precedence as backend, above, but
+    # resolved independently of it: the pairing rule is a model/backend-only
+    # rule (research D2) — a service that overrides just `batch` must not
+    # thereby be treated as though it also chose this tier's model or
+    # backend. `svc_batch is None` means "this service defers"; `False` is a
+    # genuine, sticky choice that does not follow an app-wide change
+    # (data-model.md's "Batch selection, by tier" table).
+    plat_batch = bool(getattr(runtime, "default_batch", False)) if runtime else False
+    svc_batch = getattr(service, "batch", None) if service is not None else None
+
+    if request_batch is not None:
+        batch, batch_origin = bool(request_batch), "request"
+    elif svc_batch is not None:
+        batch, batch_origin = bool(svc_batch), "service"
+    else:
+        batch, batch_origin = plat_batch, "platform"
+
     refusal = None
     if not compatible(model, backend):
         refusal = f'"{model}" is not a valid model for the {backend} backend.'
+    elif batch and backend != "anthropic":
+        # Batch is a cost-savings measure, not a preference (research D2): an
+        # unsatisfiable batch selection is an incompatible selection in
+        # exactly the sense the model/backend check above already models,
+        # not something to quietly drop. Origin-independent (D3) — an
+        # inherited app-wide batch refuses exactly as a per-service one does,
+        # since neither `batch` nor `batch_origin` participates in this
+        # check.
+        refusal = (
+            f'batch is a Claude API option; this run resolves to the '
+            f'"{backend}" backend.'
+        )
+    elif batch and _batch_capability(service_name) == "incompatible":
+        refusal = (
+            f'batch is a Claude API option; "{service_name}" has no batch '
+            f'capability.'
+        )
 
     resolved = ResolvedSelection(
         model=model,
@@ -332,6 +456,8 @@ def resolve_selection(
         endpoint=endpoint,
         endpoints=endpoints,
         refusal=refusal,
+        batch=batch,
+        batch_origin=batch_origin,
     )
     if refusal and raise_on_incompatible:
         raise IncompatibleSelection(resolved, service_name)
@@ -339,7 +465,10 @@ def resolve_selection(
 
 
 def selection_cli_args(resolved: ResolvedSelection) -> list[str]:
-    """Build the ``--model``/``--backend``/``--endpoint(s)`` flags for a run.
+    """Build the ``--model``/``--backend``/``--endpoint(s)``/``--batch``
+    flags for a run — the ONLY place any of them is built (Constitution V;
+    ``tests/test_backend_seam_guardrails.py`` greps ``server/routers/`` for a
+    stray ``"--batch"`` literal to enforce it for the last of the four).
 
     Exactly ONE ``--model`` is emitted, always. The pre-003 Grounding path
     emitted two (one from the platform, one from ``backend_cli_args``) and
@@ -348,6 +477,12 @@ def selection_cli_args(resolved: ResolvedSelection) -> list[str]:
     ``backend_cli_args`` is reused for the backend half so the flag
     vocabulary stays defined in one place — it is correctly scoped to
     *formatting* and only the *resolving* half was broken.
+
+    ``--batch`` (feature 005-ui-batch-selection) is appended last, and only
+    when ``resolved.batch`` is true. A resolved selection that reaches this
+    function has already passed ``resolve_selection``'s compatibility check,
+    so ``--batch`` is never emitted alongside a non-anthropic ``--backend``
+    — the UI and the command line cannot disagree about the same run.
     """
     from server.backend_forwarding import backend_cli_args
 
@@ -360,7 +495,10 @@ def selection_cli_args(resolved: ResolvedSelection) -> list[str]:
     # see the pairing rule in resolve_selection. Emitting no --model lets the
     # downstream script apply its own default, which is a tool default rather
     # than a substitution of the operator's pick.
-    return args + (["--model", resolved.model] if resolved.model else [])
+    args += ["--model", resolved.model] if resolved.model else []
+    if resolved.batch:
+        args.append("--batch")
+    return args
 
 
 class PlatformConfigService:
