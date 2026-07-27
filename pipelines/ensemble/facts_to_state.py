@@ -35,6 +35,7 @@ Examples:
 
 import argparse
 import json
+import os
 import queue
 import re
 import sys
@@ -46,9 +47,11 @@ from pathlib import Path
 from campaignlib import (
     DEFAULT_MODEL,
     atomic_write_text,
+    build_batch_request,
     client_from_args,
     load_agent_prompt,
     load_pc_names,
+    run_batch,
     stream_api,
 )
 from campaignlib.registry import load_registry, resolve_registry_arg
@@ -454,6 +457,32 @@ def write_dossier(out_dir: Path, b: Bundle, body: str) -> Path:
     return dest
 
 
+def check_batch_backend(args: argparse.Namespace) -> None:
+    """Fail fast (FR-003) if --batch is combined with a non-anthropic backend.
+
+    Duplicates campaignlib.api.client.client_from_args's own anthropic-only
+    check — same CG_BACKEND-aware precedence, same message — rather than
+    calling client_from_args itself: client_from_args's happy path
+    constructs a real client, which would force `--batch --list` (a
+    deliberately network-free dry run — the human checkpoint on scope, see
+    the module docstring) to require an API key just to be rejected-or-not.
+    Message wording/precedence must stay byte-identical with the
+    registrar's version; tests/test_facts_to_state.py checks both directly.
+    """
+    if not getattr(args, "batch", False):
+        return
+    arg_backend = getattr(args, "backend", "anthropic")
+    resolved_backend = (
+        arg_backend if arg_backend != "anthropic"
+        else (os.environ.get("CG_BACKEND") or "anthropic")
+    )
+    if resolved_backend != "anthropic":
+        raise SystemExit(
+            "--batch requires the Claude API backend (--backend anthropic); "
+            f"backend '{resolved_backend}' has no batch support"
+        )
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -533,6 +562,17 @@ def build_parser() -> argparse.ArgumentParser:
                    help="Multiple OpenAI-compatible endpoints to fan out across "
                         "concurrently (one worker per endpoint, work-stealing). "
                         "All must serve --model.")
+    # Wording copied verbatim from campaignlib.api.client.add_backend_args's
+    # --batch (not delegated to it — see the --backend/--endpoints comment
+    # above; this hand-rolled parser can't call add_backend_args without
+    # colliding on --endpoint). tests/test_facts_to_state.py asserts the two
+    # stay in sync.
+    p.add_argument(
+        "--batch", action="store_true", default=False,
+        help="Process Claude API calls through the Message Batches API (50%% "
+             "token cost, asynchronous; blocks and polls until complete). "
+             "Anthropic backend only. Unrelated to ensemble_batch (local "
+             "dispatch).")
     p.add_argument("--entity-parallel", type=int, default=None, metavar="N",
                    help="Number of entities to aggregate concurrently (default: one per endpoint). "
                         "Set higher than the endpoint count to parallelise on a single endpoint.")
@@ -546,6 +586,14 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
+
+    # Fail fast (FR-003), once, before any corpus/registry loading or
+    # worker-thread creation below — the worker pool's per-thread
+    # client_from_args(args, endpoint=...) call would otherwise raise this
+    # same rejection too, but only after N threads had already started (and,
+    # in --list/--render-only mode, wouldn't run at all). No-op when --batch
+    # is absent, so the DGX --endpoints fan-out is unaffected.
+    check_batch_backend(args)
 
     if not args.list and not args.render_only and not args.out_dir:
         parser.error("--out-dir is required unless --list / --render-only")
@@ -654,6 +702,64 @@ def main() -> None:
     # interrupts; re-run to fill in the rest).
     todo = [b for b in selected if not dossier_path(out_dir, b).exists()]
     already = len(selected) - len(todo)
+
+    if args.batch:
+        # ── batch path (anthropic backend only) ─────────────────────────
+        # Replaces the per-thread fan-out below with ONE grouped Message
+        # Batch over every not-yet-aggregated entity's independent
+        # aggregation call. The unit is the same Bundle the threaded path
+        # aggregates one at a time; custom_id is its dossier filename stem
+        # (dossier_path(out_dir, b).stem) — deterministic and, since it's
+        # already the output filename, trivially collision-free with the
+        # writer below. Successes are written with the same write_dossier
+        # helper (atomic_write_text under the hood, FR-014) the threaded
+        # path uses, so the on-disk cache-write guarantee is unchanged.
+        if not todo:
+            print(f"All {len(selected)} entitie(s) already aggregated "
+                  f"({already} pre-existing) — nothing to submit.")
+            return
+        print(f"Aggregating {len(todo)} entitie(s) via the Message Batches API "
+              f"(model: {model or 'default'})"
+              f"{f'; {already} already done (skipped)' if already else ''}\n")
+
+        client = client_from_args(args)
+        by_id = {dossier_path(out_dir, b).stem: b for b in todo}
+        requests = [
+            build_batch_request(
+                custom_id=dossier_path(out_dir, b).stem,
+                system=AGGREGATE_SYSTEM,
+                user=build_user_prompt(b, args.quotes),
+                model=model,
+                max_tokens=args.max_tokens,
+            )
+            for b in todo
+        ]
+        results = run_batch(client, requests, label="facts_to_state")
+
+        done = 0
+        failed: list[str] = []
+        for custom_id, record in results.items():
+            b = by_id.get(custom_id)
+            if record["status"] != "succeeded":
+                failed.append(custom_id)
+                print(f"FAILED {custom_id}: {record['status']} {record.get('error')}",
+                      file=sys.stderr)
+                continue
+            if b is not None:
+                write_dossier(out_dir, b, record["text"])
+                done += 1
+                print(f"[{done}/{len(todo)}] {b.type}: {b.display} "
+                      f"({len(b.facts)} facts) -> {dossier_path(out_dir, b).name}")
+
+        print(f"\nWrote {done} dossier(s) to {out_dir} ({already} pre-existing)")
+        if failed:
+            print(f"{len(failed)} entitie(s) failed (re-run --batch to retry "
+                  f"only the missing one(s)):", file=sys.stderr)
+            for custom_id in failed:
+                print(f"  {custom_id}", file=sys.stderr)
+            sys.exit(1)
+        print("REVIEW these (esp. the ## Uncertainty blocks) before synthesis.")
+        return
 
     # [None] means "no explicit endpoint" — the worker pool still runs once,
     # resolving via client_from_args(args, endpoint=None), which falls back to

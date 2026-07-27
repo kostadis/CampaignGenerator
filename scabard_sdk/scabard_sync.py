@@ -34,7 +34,7 @@ import sys
 import time
 from pathlib import Path
 
-from campaignlib import add_backend_args, client_from_args, stream_api, DEFAULT_MODEL
+from campaignlib import add_backend_args, client_from_args, run_single_batch, stream_api, DEFAULT_MODEL
 from . import ScabardAuthError, ScabardClient, ScabardRateLimitError
 
 EXTRACT_SYSTEM = """\
@@ -69,10 +69,18 @@ CONCEPTS = ["character", "group", "location", "event"]
 
 # ── Extraction ────────────────────────────────────────────────────────────────
 
-def extract_entities(client: object, docs_text: str, model: str) -> list[dict]:
+def extract_entities(client: object, docs_text: str, model: str, batch: bool = False) -> list[dict]:
     print(f"\n[Pass 1: Extract | {len(docs_text):,} chars | model: {model}]")
     print("=" * 60)
-    response = stream_api(client, EXTRACT_SYSTEM, docs_text, model, max_tokens=8192)
+    if batch:
+        try:
+            response = run_single_batch(client, system=EXTRACT_SYSTEM, user=docs_text,
+                                        model=model, max_tokens=8192)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        response = stream_api(client, EXTRACT_SYSTEM, docs_text, model, max_tokens=8192)
     print("=" * 60)
 
     text = response.strip()
@@ -250,7 +258,7 @@ def main() -> None:
 
         docs_text = "\n\n---\n\n".join(doc_parts)
         claude_client = client_from_args(args)
-        entities = extract_entities(claude_client, docs_text, args.model)
+        entities = extract_entities(claude_client, docs_text, args.model, batch=args.batch)
 
         extract_path = Path(args.extract_file).expanduser().resolve()
         extract_path.write_text(

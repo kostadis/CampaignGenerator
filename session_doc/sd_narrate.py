@@ -9,6 +9,16 @@ sections.
 
 This is the Phase-4 split of what used to be Passes 4–5 inside session_doc.py.
 See docs/design/SessionDocRefactor.md.
+
+``--batch`` (Claude API backend only; see campaignlib.api.client.add_backend_args):
+each scene's narration call is still made one at a time, in plan order — this
+loop is order-dependent (each scene's ``handoff`` line feeds the next scene's
+prompt, and ``prev_voice_sample`` depends on plan position), so scenes are
+NEVER grouped into a single multi-item batch. Every call instead goes through
+``run_single_batch`` as its own one-item batch: slower than a grouped batch
+(no overlap between scenes) but still billed at the 50% batch rate. If a
+scene's batch item fails, an error is printed and the run exits non-zero;
+narration files already written for earlier scenes are left on disk.
 """
 
 import argparse
@@ -25,6 +35,7 @@ from campaignlib import (
     format_npc_roster,
     find_alias_registry,
     load_alias_map,
+    run_single_batch,
     stream_api,
 )
 from session_doc.examples import get_char_examples
@@ -292,9 +303,22 @@ def main() -> None:
             continue
 
         print("─" * 60)
-        narration = stream_api(client, narrate_system, narrate_prompt,
-                               args.model, max_tokens=args.narrate_tokens,
-                               verbose=args.verbose)
+        if args.batch:
+            # Order-dependent chain (handoff / prev_voice_sample) — never
+            # grouped; one sequential one-item batch per scene (FR-006).
+            try:
+                narration = run_single_batch(
+                    client, system=narrate_system, user=narrate_prompt,
+                    model=args.model, max_tokens=args.narrate_tokens,
+                )
+            except RuntimeError as e:
+                print(f"Error: batch item failed for scene {label}: {e}",
+                      file=sys.stderr)
+                sys.exit(1)
+        else:
+            narration = stream_api(client, narrate_system, narrate_prompt,
+                                   args.model, max_tokens=args.narrate_tokens,
+                                   verbose=args.verbose)
         print("─" * 60)
         narration = narration.strip()
         handoff = narration.rsplit("\n", 1)[-1].strip().strip('"').strip("'")

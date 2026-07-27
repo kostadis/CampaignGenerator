@@ -19,6 +19,7 @@ from campaignlib import (
     add_backend_args,
     client_from_args,
     load_agent_prompt,
+    run_single_batch,
     stream_api,
 )
 from session_doc.io import load_extractions, load_scene_extractions, parse_plan
@@ -136,11 +137,21 @@ def main() -> None:
 
     client = client_from_args(args)
     system = load_agent_prompt("session_doc/plan")
+    user_prompt = "\n\n---\n\n".join(plan_parts)
     print(f"[sd_plan: Pass 3 | model: {args.model} | "
           f"{len(scene_extractions)} scene(s) | {len(characters)} narrator(s)]")
     print("=" * 60)
-    plan_text = stream_api(client, system, "\n\n---\n\n".join(plan_parts),
-                           args.model, verbose=args.verbose)
+    if args.batch:
+        try:
+            plan_text = run_single_batch(client, system=system, user=user_prompt,
+                                         model=args.model, max_tokens=8096,
+                                         cache_system=False)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        plan_text = stream_api(client, system, user_prompt,
+                               args.model, verbose=args.verbose)
     print("=" * 60)
 
     sections = parse_plan(plan_text, len(scene_extractions) or 1)

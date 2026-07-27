@@ -1,12 +1,15 @@
 """Tests for the deterministic (no-API) parts of synthesise_world_state.py.
 
-The Claude synthesis call is not exercised here; these guard the
-render/grounding layer — the LLM-pipeline checkpoint where atomic facts are
-grouped into structured input by code, not by a model.
+The Claude synthesis call is not exercised here (except in the --batch
+section below); these guard the render/grounding layer — the LLM-pipeline
+checkpoint where atomic facts are grouped into structured input by code, not
+by a model.
 """
 import json
 import sys
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -158,3 +161,113 @@ def test_expand_globs_dedups_and_sorts(tmp_path):
     # Passing the same glob twice must not duplicate.
     out = sws.expand_globs([pat, pat])
     assert out == sorted([fa.resolve(), fb.resolve()])
+
+
+# ── --batch: routes the synthesis call through run_single_batch ─────────────
+# Single-call CLI per contracts/cli-batch-flag.md: the render/grouping above
+# is deterministic (no LLM); only the final synthesis call is batchable.
+
+class FakeStreamAPI:
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, system, user, model, *args, **kwargs):
+        self.calls.append({"system": system, "user": user, "model": model, "kwargs": kwargs})
+        return "## NPCs\n\n**Daz**\n"
+
+
+class FakeRunSingleBatch:
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, *, system, user, model, max_tokens=8192, **kwargs):
+        self.calls.append({"system": system, "user": user, "model": model,
+                           "max_tokens": max_tokens})
+        return "## NPCs\n\n**Daz** (batched)\n"
+
+
+class FailingRunSingleBatch:
+    def __call__(self, client, *, system, user, model, max_tokens=8192, **kwargs):
+        raise RuntimeError("batch item 'single' did not succeed: status=errored error=boom")
+
+
+@pytest.fixture
+def fake_stream_api(monkeypatch):
+    fake = FakeStreamAPI()
+    monkeypatch.setattr(sws, "stream_api", fake)
+    monkeypatch.setattr(sws, "client_from_args", lambda *a, **kw: None)
+    return fake
+
+
+@pytest.fixture
+def fake_run_single_batch(monkeypatch):
+    fake = FakeRunSingleBatch()
+    monkeypatch.setattr(sws, "run_single_batch", fake)
+    monkeypatch.setattr(sws, "client_from_args", lambda *a, **kw: None)
+    return fake
+
+
+def _write_corpus(tmp_path: Path) -> Path:
+    p = tmp_path / "merged.json"
+    p.write_text(json.dumps([
+        {"type": "npc", "subject": "Daz", "fact": "Daz acts.", "source_quote": ""},
+    ]), encoding="utf-8")
+    return p
+
+
+def test_default_path_uses_stream_api_unchanged(monkeypatch, fake_stream_api, tmp_path):
+    corpus = _write_corpus(tmp_path)
+    output = tmp_path / "world_state.md"
+    monkeypatch.setattr(sys, "argv", [
+        "synthesise_world_state.py", "--corpus", str(corpus), "--output", str(output),
+    ])
+    sws.main()
+
+    assert len(fake_stream_api.calls) == 1
+    assert fake_stream_api.calls[0]["kwargs"].get("max_tokens") == 16000  # default --max-tokens
+    assert output.exists()
+
+
+def test_batch_flag_routes_through_run_single_batch(monkeypatch, fake_run_single_batch, tmp_path):
+    corpus = _write_corpus(tmp_path)
+    output = tmp_path / "world_state.md"
+    monkeypatch.setattr(sys, "argv", [
+        "synthesise_world_state.py", "--corpus", str(corpus), "--output", str(output),
+        "--batch",
+    ])
+    sws.main()
+
+    assert len(fake_run_single_batch.calls) == 1
+    assert fake_run_single_batch.calls[0]["max_tokens"] == 16000
+    assert "(batched)" in output.read_text(encoding="utf-8")
+
+
+def test_batch_flag_honors_custom_max_tokens(monkeypatch, fake_run_single_batch, tmp_path):
+    corpus = _write_corpus(tmp_path)
+    output = tmp_path / "world_state.md"
+    monkeypatch.setattr(sys, "argv", [
+        "synthesise_world_state.py", "--corpus", str(corpus), "--output", str(output),
+        "--batch", "--max-tokens", "32000",
+    ])
+    sws.main()
+
+    assert fake_run_single_batch.calls[0]["max_tokens"] == 32000
+
+
+def test_batch_failure_exits_nonzero(monkeypatch, tmp_path, capsys):
+    corpus = _write_corpus(tmp_path)
+    output = tmp_path / "world_state.md"
+    monkeypatch.setattr(sws, "run_single_batch", FailingRunSingleBatch())
+    monkeypatch.setattr(sws, "client_from_args", lambda *a, **kw: None)
+    monkeypatch.setattr(sys, "argv", [
+        "synthesise_world_state.py", "--corpus", str(corpus), "--output", str(output),
+        "--batch",
+    ])
+
+    with pytest.raises(SystemExit) as exc_info:
+        sws.main()
+
+    assert exc_info.value.code == 1
+    err = capsys.readouterr().err
+    assert "Error: batch item failed:" in err
+    assert not output.exists()

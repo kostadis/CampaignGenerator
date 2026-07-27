@@ -76,6 +76,7 @@ from campaignlib import (
     load_registry,
     make_client,
     resolve_registry_arg,
+    run_single_batch,
     stream_api,
 )
 
@@ -486,13 +487,23 @@ def main() -> None:
     print("=" * 60)
 
     client = client_from_args(args)
-    world_state = stream_api(
-        client,
-        system_prompt,
-        user_prompt,
-        args.model,
-        max_tokens=args.max_tokens,
-    )
+    if args.batch:
+        try:
+            world_state = run_single_batch(
+                client, system=system_prompt, user=user_prompt,
+                model=args.model, max_tokens=args.max_tokens,
+            )
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        world_state = stream_api(
+            client,
+            system_prompt,
+            user_prompt,
+            args.model,
+            max_tokens=args.max_tokens,
+        )
 
     output_path = Path(args.output).expanduser().resolve()
     output_path.parent.mkdir(parents=True, exist_ok=True)

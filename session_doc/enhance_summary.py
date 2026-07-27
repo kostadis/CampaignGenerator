@@ -38,6 +38,7 @@ from campaignlib import (
     load_agent_prompt,
     poll_batch,
     read_batch_sidecar,
+    run_batch,
     save_log,
     stream_api,
     submit_batch,
@@ -334,20 +335,33 @@ def main() -> None:
         _run_streaming(args, system, user, vtt_path, len(dialogue), gmassist_body, out_path)
         return
 
-    # ── --batch (block-and-poll) or --batch --submit-only ──
-    batch_id = _submit(args, system, user, out_path)
+    # ── --batch --submit-only: detached, sidecar-based (unchanged; FR-012) ──
     if args.submit_only:
+        _submit(args, system, user, out_path)
         print("\nSubmit-only: exiting. Run with --batch --collect to retrieve later.")
         return
 
+    # ── Plain --batch: submit + poll + collect in one run_batch call, no
+    # sidecar ever written (mirrors scene_extract.py's blocking path) ──
+    request = build_batch_request(
+        custom_id=CUSTOM_ID, system=system, user=user, model=args.model,
+        max_tokens=args.max_tokens, cache_system=not args.no_cache,
+    )
     client = client_from_args(args)
-    print(f"\n[Polling batch {batch_id} every {args.poll_interval}s...]")
-    poll_batch(client, batch_id, interval=args.poll_interval,
-               on_tick=lambda b: print("  " + format_batch_progress(b), flush=True))
-    sidecar = _sidecar_path(out_path)
-    _collect_and_write(args, batch_id, out_path,
-                       vtt_path=vtt_path, dialogue_len=len(dialogue),
-                       gmassist_body=gmassist_body, sidecar=sidecar)
+    print(f"\n[Batch | model: {args.model} | 1 request | "
+          f"system: {len(system):,} chars | user: {len(user):,} chars]")
+    results = run_batch(client, [request], label="enhance", poll_interval=args.poll_interval)
+    record = results[CUSTOM_ID]
+    if record["status"] != "succeeded":
+        print(f"FAILED {CUSTOM_ID}: {record['status']} {record.get('error')}",
+              file=sys.stderr)
+        sys.exit(1)
+    enriched = record["text"] or ""
+    _write_output(out_path, enriched)
+    if record.get("usage"):
+        print(f"  Usage: {record['usage']}")
+    if not args.no_log:
+        _save_log(out_path, vtt_path, len(dialogue), gmassist_body, enriched, None)
 
 
 if __name__ == "__main__":

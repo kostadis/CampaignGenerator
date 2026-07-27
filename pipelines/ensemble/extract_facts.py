@@ -49,9 +49,11 @@ from pathlib import Path
 
 from campaignlib import (
     add_backend_args,
+    build_batch_request,
     client_from_args,
     load_agent_prompt,
     prepare_chunks,
+    run_batch,
     stream_api,
     wiring_get,
 )
@@ -326,6 +328,84 @@ def run_parallel(chunks: list, extract_dir: Path, call_fn,
     return results, failures
 
 
+def run_batched(chunks: list, extract_dir: Path, client, extract_system: str,
+                model: str, max_tokens: int) -> tuple[dict[int, list], list[tuple[int, str]]]:
+    """Run cache-miss chunks through ONE grouped Message Batch (`--batch`).
+
+    Mirrors `run_parallel`'s contract (1-based {chunk_index: facts} results,
+    [(chunk_index, error)] failures against the same `facts_NNN.json` cache
+    names) so the caller's post-processing loop is identical regardless of
+    which path produced `facts_by_chunk`.
+
+    `custom_id` is the cache filename stem (`facts_{i:03d}`), so batch
+    results map back to the exact same atomic per-unit writes the threaded
+    path uses. The missing-chunk set is computed BEFORE any request is
+    built — a fully-cached re-run submits nothing. A batch item that comes
+    back non-succeeded, or whose text fails `parse_facts_block`, is recorded
+    as a failure (raw output saved to `*.raw.txt` on a parse failure, same as
+    the sequential/parallel paths) and printed as `FAILED <custom_id>:
+    <status> <error>` — the caller keeps every other chunk's success and
+    exits non-zero once any failure is present.
+    """
+    results: dict[int, list] = {}
+    failures: list[tuple[int, str]] = []
+    missing: list[tuple[int, str, Path]] = []
+    for i, chunk in enumerate(chunks, 1):
+        out_file = extract_dir / f"facts_{i:03d}.json"
+        cached = _load_cached(out_file)
+        if cached is not None:
+            print(f"  [{i}/{len(chunks)}] Reusing cached: {out_file.name}")
+            verify_quotes(cached, chunk)  # stamp caches/hand-fixes that predate the flag
+            results[i] = cached
+        else:
+            missing.append((i, chunk, out_file))
+
+    if not missing:
+        print(f"  All {len(chunks)} chunk(s) already extracted — nothing to submit.")
+        return results, failures
+
+    requests = [
+        build_batch_request(
+            custom_id=out_file.stem,
+            system=extract_system,
+            user=chunk,
+            model=model,
+            max_tokens=max_tokens,
+        )
+        for _, chunk, out_file in missing
+    ]
+    print(f"  Submitting {len(requests)} of {len(chunks)} chunk(s) as one batch...")
+    batch_results = run_batch(client, requests, label="extract_facts")
+
+    by_id = {out_file.stem: (i, chunk, out_file) for i, chunk, out_file in missing}
+    for custom_id, record in batch_results.items():
+        entry = by_id.get(custom_id)
+        if entry is None:
+            continue
+        i, chunk, out_file = entry
+        if record["status"] != "succeeded":
+            err = f"{record['status']} {record.get('error')}"
+            failures.append((i, err))
+            print(f"FAILED {custom_id}: {err}", file=sys.stderr)
+            continue
+        raw = record["text"]
+        try:
+            facts = parse_facts_block(raw)
+        except (ValueError, json.JSONDecodeError) as e:
+            bad = out_file.with_suffix(".raw.txt")
+            _atomic_write_text(bad, raw)
+            err = f"parse_error {e} (raw output saved to {bad.name})"
+            failures.append((i, err))
+            print(f"FAILED {custom_id}: {err}", file=sys.stderr)
+            continue
+        verify_quotes(facts, chunk)
+        _atomic_write_text(out_file, json.dumps(facts, indent=2))
+        results[i] = facts
+
+    failures.sort()
+    return results, failures
+
+
 def _positive_int(s: str) -> int:
     v = int(s)
     if v < 1:
@@ -381,11 +461,17 @@ def main() -> None:
                              "aggregate throughput — the Sparks serve "
                              "--max-num-seqs 4, so 4 saturates a box.")
     add_backend_args(parser, default_backend="dgx")
+    args = parser.parse_args()
     # This script always resolved to a real DGX endpoint before the --backend
     # seam existed — preserve that default (env var, then mneme wiring) so an
-    # invocation with no --endpoint flag is unchanged.
-    parser.set_defaults(endpoint=os.environ.get("DGX_ENDPOINT") or wiring_get("dgx_endpoint"))
-    args = parser.parse_args()
+    # invocation with no --endpoint flag is unchanged. Gated on the resolved
+    # backend actually being "dgx" (this script's own default): make_client()
+    # treats a truthy `endpoint` as an OpenAI-compatible override regardless
+    # of `backend`, so applying this fallback unconditionally would silently
+    # route `--backend anthropic --batch` (Anthropic-only) at the DGX Spark
+    # instead of the real Anthropic client.
+    if args.backend == "dgx" and args.endpoint is None:
+        args.endpoint = os.environ.get("DGX_ENDPOINT") or wiring_get("dgx_endpoint")
 
     extract_system = load_agent_prompt(args.agent)
 
@@ -413,7 +499,26 @@ def main() -> None:
     all_facts: list[dict] = []
     problems_total: list[str] = []
 
-    if args.parallel > 1:
+    if args.batch:
+        if args.parallel > 1:
+            print("  [batch] --parallel is ignored under --batch (grouped "
+                  "submission is fully concurrent)")
+        results, failures = run_batched(chunks, extract_dir, client,
+                                        extract_system, args.model,
+                                        args.max_tokens)
+        if failures:
+            # The ensemble dispatcher surfaces only the LAST 3 stderr lines of
+            # a failed unit — keep the actionable payload in them.
+            names = ", ".join(f"facts_{i:03d}.json" for i, _ in failures)
+            print(f"\n{len(failures)} of {len(chunks)} chunk(s) failed in "
+                  f"the batch; the rest are cached.", file=sys.stderr)
+            print(f"  Raw outputs (parse failures) saved as *.raw.txt in "
+                  f"{extract_dir}", file=sys.stderr)
+            print(f"  Fix by hand into {names} and re-run to resume.",
+                  file=sys.stderr)
+            sys.exit(1)
+        facts_by_chunk = [results[i] for i in range(1, len(chunks) + 1)]
+    elif args.parallel > 1:
         def call_fn(chunk: str) -> str:
             return stream_api(client, extract_system, chunk, args.model,
                               max_tokens=args.max_tokens, silent=True)

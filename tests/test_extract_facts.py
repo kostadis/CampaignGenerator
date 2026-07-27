@@ -270,3 +270,77 @@ def test_cli_rejects_parallel_zero(tmp_path):
         capture_output=True, text=True)
     assert r.returncode != 0
     assert "must be >= 1" in r.stderr
+
+
+# ── run_batched (--batch grouped submission) ──────────────────────────────────
+# Mirrors run_parallel's contract tests: injected fake seam, no server.
+
+class FakeRunBatch:
+    """Stands in for campaignlib.api.run_batch — records the one grouped call."""
+
+    def __init__(self, results: dict):
+        self.calls = []
+        self._results = results
+
+    def __call__(self, client, requests, **kwargs):
+        self.calls.append({"requests": requests, "kwargs": kwargs})
+        return self._results
+
+
+def _batch_record(text=None, status="succeeded", error=None):
+    return {"status": status, "text": text, "stop_reason": "end_turn",
+            "error": error, "usage": None}
+
+
+def test_run_batched_skips_cached_chunks(tmp_path, monkeypatch):
+    extract_dir = tmp_path
+    seeded = [_fact("c1")]
+    (extract_dir / "facts_001.json").write_text(json.dumps(seeded))
+    fake = FakeRunBatch({"facts_002": _batch_record(text=_raw_for("c2"))})
+    monkeypatch.setattr(ef, "run_batch", fake)
+
+    results, failures = ef.run_batched(["c1", "c2"], extract_dir, None,
+                                       "sys", "m", 4096)
+    assert failures == []
+    assert len(fake.calls) == 1
+    reqs = fake.calls[0]["requests"]
+    assert [r["custom_id"] for r in reqs] == ["facts_002"]  # cached c1 excluded
+    assert sorted(results) == [1, 2]
+    on_disk = json.loads((extract_dir / "facts_002.json").read_text())
+    assert on_disk[0]["fact"] == "c2"
+
+
+def test_run_batched_fully_cached_submits_nothing(tmp_path, monkeypatch):
+    (tmp_path / "facts_001.json").write_text(json.dumps([_fact("c1")]))
+    fake = FakeRunBatch({})
+    monkeypatch.setattr(ef, "run_batch", fake)
+    results, failures = ef.run_batched(["c1"], tmp_path, None, "sys", "m", 4096)
+    assert failures == [] and list(results) == [1]
+    assert fake.calls == []
+
+
+def test_run_batched_failed_item_reported_successes_kept(tmp_path, monkeypatch, capsys):
+    fake = FakeRunBatch({
+        "facts_001": _batch_record(text=_raw_for("c1")),
+        "facts_002": _batch_record(status="errored", error="boom"),
+    })
+    monkeypatch.setattr(ef, "run_batch", fake)
+    results, failures = ef.run_batched(["c1", "c2"], tmp_path, None,
+                                       "sys", "m", 4096)
+    assert list(results) == [1]
+    assert (tmp_path / "facts_001.json").exists()
+    assert not (tmp_path / "facts_002.json").exists()
+    assert failures and failures[0][0] == 2
+    assert "FAILED facts_002: errored boom" in capsys.readouterr().err
+
+
+def test_run_batched_parse_failure_saves_raw(tmp_path, monkeypatch, capsys):
+    fake = FakeRunBatch({
+        "facts_001": _batch_record(text="Sorry, I cannot extract facts."),
+    })
+    monkeypatch.setattr(ef, "run_batch", fake)
+    results, failures = ef.run_batched(["c1"], tmp_path, None, "sys", "m", 4096)
+    assert results == {} and len(failures) == 1
+    raw = tmp_path / "facts_001.raw.txt"
+    assert raw.exists() and "Sorry" in raw.read_text()
+    assert "FAILED facts_001: parse_error" in capsys.readouterr().err

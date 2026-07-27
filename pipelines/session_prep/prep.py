@@ -9,6 +9,11 @@ Modes:
 Session flag:
   --session           — accepts a numbered outline; runs the chosen mode once per beat,
                         producing one encounter document per line, saved to a combined log
+
+Batch mode (--batch): every Claude call this script makes — the single call, each
+stage of the 3-stage pipeline chain (Lore Oracle -> Encounter Architect -> Voice
+Keeper), and each beat's call in --session — depends on the previous stage's output,
+so --batch never groups them; each becomes its own sequential one-item Message Batch.
 """
 
 import argparse
@@ -25,6 +30,7 @@ from campaignlib import (
     find_default_config,
     load_config,
     load_repo_file,
+    run_single_batch,
     save_log,
     stream_api,
 )
@@ -115,10 +121,38 @@ def get_beat(arg_beat: str | None) -> str:
     return beat
 
 
+# ── Batch routing ─────────────────────────────────────────────────────────────
+
+def _call_llm(client, system, user: str, model: str, *, batch: bool) -> str:
+    """Route one Claude call through `run_single_batch` when --batch, live
+    `stream_api` otherwise.
+
+    Every one of prep's call sites is order-dependent (pipeline stage N reads
+    stage N-1's response; --session's per-beat loop is itself sequential), so
+    each call becomes its own one-item batch — never grouped. max_tokens is
+    passed explicitly as stream_api's own default (8096) in the batch branch
+    so the two paths share an identical ceiling instead of stream_api's 8096
+    and run_single_batch's 8192 defaults silently drifting apart.
+
+    Raises SystemExit(1) (after an `Error: batch item failed: <e>` line on
+    stderr) if the batch item did not succeed — prep's calls form a single
+    dependent chain, so there's nothing sensible to keep running once one
+    stage's output is unavailable.
+    """
+    if batch:
+        try:
+            return run_single_batch(client, system=system, user=user, model=model, max_tokens=8096)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    return stream_api(client, system, user, model)
+
+
 # ── Pipeline encounter ────────────────────────────────────────────────────────
 
 def run_pipeline_encounter(
-    client, agents: dict, user: str, model: str, base_dir: Path | None = None
+    client, agents: dict, user: str, model: str, base_dir: Path | None = None,
+    batch: bool = False,
 ) -> tuple[str, str, str] | None:
     """Run one beat through the three-agent pipeline.
 
@@ -133,7 +167,7 @@ def run_pipeline_encounter(
     # Stage 1: Lore Oracle
     print("  [1/3 Lore Oracle]")
     print("  " + "─" * 56)
-    oracle_response = stream_api(client, load_repo_file(agents["lore_oracle"], base_dir), user, model)
+    oracle_response = _call_llm(client, load_repo_file(agents["lore_oracle"], base_dir), user, model, batch=batch)
     print("  " + "─" * 56)
 
     if "FLAGS" in oracle_response:
@@ -144,22 +178,24 @@ def run_pipeline_encounter(
     # Stage 2: Encounter Architect
     print("  [2/3 Encounter Architect]")
     print("  " + "─" * 56)
-    architect_response = stream_api(
+    architect_response = _call_llm(
         client,
         load_repo_file(agents["encounter_architect"], base_dir),
         f"{user}\n\n---\n\n## Lore Oracle Report\n\n{oracle_response}",
         model,
+        batch=batch,
     )
     print("  " + "─" * 56)
 
     # Stage 3: Voice Keeper
     print("  [3/3 Voice Keeper]")
     print("  " + "─" * 56)
-    voice_response = stream_api(
+    voice_response = _call_llm(
         client,
         load_repo_file(agents["voice_keeper"], base_dir),
         f"{user}\n\n---\n\n## Encounter Document\n\n{architect_response}",
         model,
+        batch=batch,
     )
     print("  " + "─" * 56)
 
@@ -168,7 +204,7 @@ def run_pipeline_encounter(
 
 # ── Top-level mode runners ────────────────────────────────────────────────────
 
-def run_single(client, config, system, user, model, clipboard, no_log, output=None):
+def run_single(client, config, system, user, model, clipboard, no_log, output=None, batch=False):
     log_dir = config.get("log_dir", "logs/")
 
     if clipboard:
@@ -180,7 +216,7 @@ def run_single(client, config, system, user, model, clipboard, no_log, output=No
 
     print(f"\n[Mode: single | Model: {model}]\n")
     print("=" * 60)
-    response = stream_api(client, system, user, model)
+    response = _call_llm(client, system, user, model, batch=batch)
     print("=" * 60)
 
     if output:
@@ -191,13 +227,13 @@ def run_single(client, config, system, user, model, clipboard, no_log, output=No
         print(f"\nLog saved to: {save_log(log_dir, [('System Prompt', system), ('User Prompt', user), ('Response', response)])}")
 
 
-def run_pipeline(client, config, user, model, clipboard, no_log, base_dir=None, output=None):
+def run_pipeline(client, config, user, model, clipboard, no_log, base_dir=None, output=None, batch=False):
     log_dir = config.get("log_dir", "logs/")
     agents = config.get("agents", {})
 
     print(f"\n[Mode: pipeline | Model: {model}]\n")
     print("=" * 60)
-    result = run_pipeline_encounter(client, agents, user, model, base_dir)
+    result = run_pipeline_encounter(client, agents, user, model, base_dir, batch=batch)
     print("=" * 60)
 
     if result is None:
@@ -217,7 +253,7 @@ def run_pipeline(client, config, user, model, clipboard, no_log, base_dir=None, 
         print(f"\nLog saved to: {save_log(log_dir, [('User Prompt', user), ('Lore Oracle', oracle_response), ('Encounter Architect', architect_response), ('Voice Keeper (Final)', voice_response)])}")
 
 
-def run_session(client, config, outline: str, mode: str, model: str, clipboard: bool, no_log: bool, base_dir=None, output=None):
+def run_session(client, config, outline: str, mode: str, model: str, clipboard: bool, no_log: bool, base_dir=None, output=None, batch=False):
     """Run all beats in the session outline, one encounter document per beat."""
     log_dir = config.get("log_dir", "logs/")
     agents = config.get("agents", {})
@@ -246,11 +282,11 @@ def run_session(client, config, outline: str, mode: str, model: str, clipboard: 
         user = assemble_user_prompt(config, beat, base_dir)
 
         if mode == "single":
-            response = stream_api(client, system, user, model)
+            response = _call_llm(client, system, user, model, batch=batch)
             log_sections.append((f"Encounter {i} — {beat[:60]}", response))
             all_final_outputs.append(response)
         else:
-            result = run_pipeline_encounter(client, agents, user, model, base_dir)
+            result = run_pipeline_encounter(client, agents, user, model, base_dir, batch=batch)
             if result is None:
                 print(f"\n  Encounter {i} stopped at FLAGS. Skipping to next beat.")
                 log_sections.append((f"Encounter {i} — {beat[:60]} [STOPPED AT FLAGS]", "Stopped at Lore Oracle FLAGS."))
@@ -352,12 +388,12 @@ def main() -> None:
 
     if args.session is not None:
         outline = get_session_outline_from_file(args.session)
-        run_session(_make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output)
+        run_session(_make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output, batch=args.batch)
         return
 
     if args.session_text is not None:
         outline = get_session_outline_interactive(args.session_text if args.session_text else None)
-        run_session(_make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output)
+        run_session(_make_client(), config, outline, args.mode, args.model, args.clipboard, args.no_log, base_dir, args.output, batch=args.batch)
         return
 
     beat = get_beat(args.beat)
@@ -370,9 +406,9 @@ def main() -> None:
 
     client = _make_client()
     if args.mode == "single":
-        run_single(client, config, load_repo_file(config["system_prompt"], base_dir), user, args.model, clipboard=False, no_log=args.no_log, output=args.output)
+        run_single(client, config, load_repo_file(config["system_prompt"], base_dir), user, args.model, clipboard=False, no_log=args.no_log, output=args.output, batch=args.batch)
     else:
-        run_pipeline(client, config, user, args.model, clipboard=args.clipboard, no_log=args.no_log, base_dir=base_dir, output=args.output)
+        run_pipeline(client, config, user, args.model, clipboard=args.clipboard, no_log=args.no_log, base_dir=base_dir, output=args.output, batch=args.batch)
 
 
 if __name__ == "__main__":

@@ -44,9 +44,12 @@ PER_CAMPAIGN_PROMPT_NAME = "scrub_mechanics_prompt.md"
 from campaignlib import (  # noqa: E402
     DEFAULT_MODEL,
     add_backend_args,
+    build_batch_request,
     client_from_args,
+    run_batch,
     stream_api,
 )
+from campaignlib.io_atomic import atomic_write_text  # noqa: E402
 
 
 def resolve_prompt_path() -> Path:
@@ -105,6 +108,37 @@ def extract_blocks(raw: str) -> tuple[str | None, str]:
     return scan, raw.strip()
 
 
+def finalize_scrub_response(path: Path, frontmatter: str, response: str,
+                            dry_run: bool, save_scan: bool) -> Path | None:
+    """Turn a model response into the written `.scrubbed.md` (+ optional
+    `.scan.md`). Shared by the serial (`stream_api`) and batch (`run_batch`)
+    paths so a successful batch item lands byte-identical to what the serial
+    loop would have written for the same response text. Writes go through
+    `campaignlib.io_atomic.atomic_write_text` (tmp + os.replace) rather than
+    a raw `Path.write_text` so a killed process never leaves a torn file —
+    the written bytes are unchanged either way.
+    """
+    scan, prose = extract_blocks(response)
+    if scan is None and "<prose>" not in response.lower():
+        print(f"[warn]  {path.name}: model did not emit <scan>/<prose> tags; "
+              f"using full response", file=sys.stderr)
+
+    out = frontmatter + prose.rstrip() + "\n"
+    out_path = path.with_suffix(".scrubbed.md")
+    if dry_run:
+        print(f"[dry-run] would write {out_path}", file=sys.stderr)
+        return out_path
+    atomic_write_text(out_path, out)
+    print(f"[wrote]  {out_path}", file=sys.stderr)
+
+    if save_scan and scan is not None:
+        scan_path = path.with_suffix(".scan.md")
+        atomic_write_text(scan_path, scan.rstrip() + "\n")
+        print(f"[wrote]  {scan_path}", file=sys.stderr)
+
+    return out_path
+
+
 def scrub_one(path: Path, client, system_prompt: str, model: str,
               max_tokens: int, dry_run: bool, save_scan: bool) -> Path | None:
     raw = path.read_text(encoding="utf-8")
@@ -118,25 +152,71 @@ def scrub_one(path: Path, client, system_prompt: str, model: str,
     response = stream_api(client, system_prompt, body, model,
                           max_tokens=max_tokens, silent=False)
 
-    scan, prose = extract_blocks(response)
-    if scan is None and "<prose>" not in response.lower():
-        print(f"[warn]  {path.name}: model did not emit <scan>/<prose> tags; "
-              f"using full response", file=sys.stderr)
+    return finalize_scrub_response(path, frontmatter, response, dry_run, save_scan)
 
-    out = frontmatter + prose.rstrip() + "\n"
-    out_path = path.with_suffix(".scrubbed.md")
-    if dry_run:
-        print(f"[dry-run] would write {out_path}", file=sys.stderr)
-        return out_path
-    out_path.write_text(out, encoding="utf-8")
-    print(f"[wrote]  {out_path}", file=sys.stderr)
 
-    if save_scan and scan is not None:
-        scan_path = path.with_suffix(".scan.md")
-        scan_path.write_text(scan.rstrip() + "\n", encoding="utf-8")
-        print(f"[wrote]  {scan_path}", file=sys.stderr)
+def collect_scrub_inputs(targets: list[Path]) -> list[tuple[Path, str, str]]:
+    """Read every target, split frontmatter/body, skip empty bodies.
 
-    return out_path
+    Mirrors `scrub_one`'s empty-body skip check, computed BEFORE any batch
+    request is built — an all-empty target set submits nothing.
+    """
+    eligible: list[tuple[Path, str, str]] = []
+    for path in targets:
+        raw = path.read_text(encoding="utf-8")
+        frontmatter, body = split_frontmatter(raw)
+        if not body.strip():
+            print(f"[skip] {path.name}: empty body", file=sys.stderr)
+            continue
+        eligible.append((path, frontmatter, body))
+    return eligible
+
+
+def scrub_batch(targets: list[Path], client, system_prompt: str, model: str,
+                max_tokens: int, dry_run: bool, save_scan: bool) -> bool:
+    """Batch MAP: one grouped `run_batch` call across all target files
+    instead of the serial per-file `stream_api` loop.
+
+    `custom_id` is each file's stem (`collect_targets` only ever gathers
+    `session_doc_scene_*.md` from a single directory, so stems are unique
+    within one run). Successes are written via `finalize_scrub_response`
+    (byte-identical to the serial path); a failed item prints
+    `FAILED <custom_id>: <status> <error>` to stderr and writes nothing for
+    that file — successful files stay on disk regardless.
+
+    Returns True if any item failed (the caller exits non-zero in that case).
+    """
+    eligible = collect_scrub_inputs(targets)
+    if not eligible:
+        print("error: no non-empty target files to scrub", file=sys.stderr)
+        return True
+
+    requests = [
+        build_batch_request(
+            custom_id=path.stem,
+            system=system_prompt,
+            user=body,
+            model=model,
+            max_tokens=max_tokens,
+        )
+        for path, _frontmatter, body in eligible
+    ]
+    print(f"Submitting {len(requests)} file(s) as one batch...", file=sys.stderr)
+    results = run_batch(client, requests, label="scrub")
+
+    any_failed = False
+    for path, frontmatter, _body in eligible:
+        custom_id = path.stem
+        record = results.get(custom_id)
+        if record is None or record["status"] != "succeeded":
+            status = record["status"] if record else "missing"
+            error = record.get("error") if record else "no result returned"
+            print(f"FAILED {custom_id}: {status} {error}", file=sys.stderr)
+            any_failed = True
+            continue
+        finalize_scrub_response(path, frontmatter, record["text"], dry_run, save_scan)
+
+    return any_failed
 
 
 def collect_targets(arg: Path) -> list[Path]:
@@ -186,10 +266,17 @@ def main() -> int:
     print(f"model:    {model}", file=sys.stderr)
     print(f"targets:  {len(targets)} file(s)", file=sys.stderr)
 
-    for path in targets:
-        scrub_one(path, client, system_prompt, model,
-                  max_tokens=args.max_tokens, dry_run=args.dry_run,
-                  save_scan=args.save_scan)
+    if args.batch:
+        any_failed = scrub_batch(targets, client, system_prompt, model,
+                                  max_tokens=args.max_tokens, dry_run=args.dry_run,
+                                  save_scan=args.save_scan)
+        if any_failed:
+            return 1
+    else:
+        for path in targets:
+            scrub_one(path, client, system_prompt, model,
+                      max_tokens=args.max_tokens, dry_run=args.dry_run,
+                      save_scan=args.save_scan)
 
     return 0
 
