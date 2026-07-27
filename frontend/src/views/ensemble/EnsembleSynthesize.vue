@@ -233,10 +233,13 @@ async function promote(doc: string) {
         <code>docs/ensemble/merged_dossiers/</code> is auto-included as
         pass-through context alongside it unless overridden below.
       </p>
-      <p v-if="!planningConfigPath && !planningNpcFiles" class="hint warn-hint">
-        ⚠ No planning config path set and no NPC dossiers listed below — if
-        neither <code>config/planning.yaml</code> nor <code>planning.yaml</code>
-        exists on disk either, this will error with no source material.
+      <p v-if="!planningConfigPath && !planningNpcFiles" class="hint">
+        ℹ No planning config path set and no NPC dossiers listed below — the
+        server auto-detects <code>config/planning.yaml</code> if one exists on
+        disk, and either way auto-includes <strong>every</strong> dossier in
+        <code>docs/ensemble/merged_dossiers/</code> (minus party.yaml-bound PC
+        dossiers). This only errors if that directory is empty (run Bundle
+        first).
       </p>
       <EnsemblePlanningFields
         v-model:synth-mode="planningSynthMode"
