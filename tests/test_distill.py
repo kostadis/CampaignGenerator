@@ -186,3 +186,51 @@ def test_default_no_batch_path_still_uses_stream_api_unaffected_by_batch_wiring(
 
     assert len(fake_stream_api.calls) == 2
     assert output.exists()
+
+
+class FailingRunBatch(FakeRunBatch):
+    """First custom_id errors; the rest succeed — CLI-level partial failure."""
+
+    def __call__(self, client, requests, **kwargs):
+        results = super().__call__(client, requests, **kwargs)
+        first = requests[0]["custom_id"]
+        results[first] = {"status": "errored", "text": None, "stop_reason": None,
+                          "error": "overloaded", "usage": None}
+        return results
+
+
+def test_batch_partial_failure_exits_nonzero_and_keeps_successes(
+    monkeypatch, tmp_path, capsys
+):
+    """T024 CLI-level: any failed extract unit => exit != 0, successes stay
+    on disk, synthesis never runs on incomplete inputs (FR-008)."""
+    run_batch = FailingRunBatch()
+    run_single_batch = FakeRunSingleBatch()
+    monkeypatch.setattr(campaignlib.pipelines, "run_batch", run_batch)
+    monkeypatch.setattr(campaignlib.pipelines, "run_single_batch", run_single_batch)
+    monkeypatch.setattr(distill, "client_from_args", lambda *a, **kw: None)
+
+    # Two chunks => two extract units, first one fails.
+    input_file = tmp_path / "summaries.md"
+    input_file.write_text("\n\n".join("para " + ("x " * 300) for _ in range(3)),
+                          encoding="utf-8")
+    output = tmp_path / "world_state.md"
+    extract_dir = tmp_path / "extractions"
+
+    monkeypatch.setattr(sys, "argv", [
+        "distill.py", str(input_file),
+        "--output", str(output),
+        "--extract-dir", str(extract_dir),
+        "--chunk-size", "500",
+        "--batch",
+    ])
+    with pytest.raises(SystemExit) as excinfo:
+        distill.main()
+
+    assert excinfo.value.code == 1
+    assert not output.exists()  # synthesis never ran
+    assert len(run_single_batch.calls) == 0
+    surviving = list(extract_dir.glob("extract_*.md"))
+    assert surviving  # the succeeded unit's file stays on disk
+    err = capsys.readouterr().err
+    assert "FAILED extract_001: errored overloaded" in err

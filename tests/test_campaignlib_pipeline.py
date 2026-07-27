@@ -757,3 +757,24 @@ def test_format_npc_roster_renders_sorted_with_aliases():
 def test_normalize_npc_key_strips_punctuation_and_case():
     assert campaignlib.normalize_npc_key("Harbin (Townmaster)") == "harbin townmaster"
     assert campaignlib.normalize_npc_key("Elara 'Seasong' Meliamne") == "elara seasong meliamne"
+
+
+@pytest.mark.parametrize("status", ["expired", "canceled"])
+def test_extract_batch_expired_and_canceled_count_as_failures(
+    monkeypatch, tmp_path, capsys, status
+):
+    """T026: the Batch API's other terminal item states are failures too —
+    an expired or canceled item must not be mistaken for a success."""
+    fake = FakeRunBatch(status_by_id={"extract_001": status})
+    monkeypatch.setattr(campaignlib.pipelines, "run_batch", fake)
+
+    failed = campaignlib.run_extract_pipeline(
+        client=None, text="short",
+        extract_system="SYS", model="m",
+        extract_dir=tmp_path / "e", chunk_size=60000,
+        batch=True,
+    )
+
+    assert failed == ["extract_001"]
+    assert not (tmp_path / "e" / "extract_001.md").exists()
+    assert f"FAILED extract_001: {status}" in capsys.readouterr().err

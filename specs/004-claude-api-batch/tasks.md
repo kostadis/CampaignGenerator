@@ -84,10 +84,10 @@
 
 **Independent Test**: quickstart §4 (fake-driven partial failure), §5 (SIGTERM during a live batch → `canceling` in provider console).
 
-- [ ] T024 [P] [US3] End-to-end partial-failure tests (one succeeded + one errored + one expired item): successes written, `FAILED <custom_id>: <status> <error>` lines, exit ≠ 0 — seam-level in `tests/test_batch_api.py` plus one CLI-level case in `tests/test_distill.py`
-- [ ] T025 [P] [US3] Abort tests in `tests/test_batch_api.py`: SIGINT and SIGTERM delivered mid-poll each trigger exactly one `batches.cancel(batch_id)` call, an outcome report line, non-zero exit; signal handlers restored after `run_batch` returns
-- [ ] T026 [P] [US3] Truncation + terminal-state tests: `stop_reason="max_tokens"` item emits the banner naming its `custom_id` and still counts as succeeded (output written, warning loud); `canceled`/`expired` items reported as failures
-- [ ] T027 [US3] Audit and fix exit-code propagation at every call site wired in US1/US2 (grounding CLIs, scene_extract, sweep CLIs): any non-succeeded item ⇒ process exit ≠ 0, successes still on disk (FR-008); verify the SIGTERM path composes with the web UI's graceful→force abort (spec 002) — the graceful window must be long enough for the cancel request
+- [X] T024 [P] [US3] End-to-end partial-failure tests (one succeeded + one errored + one expired item): successes written, `FAILED <custom_id>: <status> <error>` lines, exit ≠ 0 — seam-level in `tests/test_batch_api.py` plus one CLI-level case in `tests/test_distill.py`
+- [X] T025 [P] [US3] Abort tests in `tests/test_batch_api.py`: SIGINT and SIGTERM delivered mid-poll each trigger exactly one `batches.cancel(batch_id)` call, an outcome report line, non-zero exit; signal handlers restored after `run_batch` returns
+- [X] T026 [P] [US3] Truncation + terminal-state tests: `stop_reason="max_tokens"` item emits the banner naming its `custom_id` and still counts as succeeded (output written, warning loud); `canceled`/`expired` items reported as failures
+- [X] T027 [US3] Audit and fix exit-code propagation at every call site wired in US1/US2 (grounding CLIs, scene_extract, sweep CLIs): any non-succeeded item ⇒ process exit ≠ 0, successes still on disk (FR-008); verify the SIGTERM path composes with the web UI's graceful→force abort (spec 002) — the graceful window must be long enough for the cancel request
 
 **Checkpoint**: all three stories independently verifiable.
 

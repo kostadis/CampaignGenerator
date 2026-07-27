@@ -463,3 +463,48 @@ def test_collect_reads_sidecar_and_writes_files(monkeypatch, tmp_path):
     assert out_file.exists()
     assert "MOMENTS FROM COLLECT" in out_file.read_text(encoding="utf-8")
     assert not sidecar.exists()  # removed after a fully-successful collect
+
+
+def test_collect_with_failed_scene_exits_nonzero_keeps_successes_and_sidecar(
+    monkeypatch, tmp_path, capsys
+):
+    """T027/FR-008: a --collect with any failed scene exits non-zero; the
+    succeeded scene's file is written and the sidecar stays for a retry."""
+    out_dir = tmp_path / "out"
+    out_dir.mkdir()
+    sidecar = out_dir / ".batch.json"
+    campaignlib.write_batch_sidecar(sidecar, {
+        "kind": "scene_extract",
+        "batch_id": "sb3",
+        "model": "m",
+        "submitted_at": campaignlib.utc_now_iso(),
+        "scenes": [
+            {"i": 1, "name": "Scene A", "slug": "scene_a",
+             "custom_id": "01_scene_a", "path": str(out_dir / "01_scene_a.md")},
+            {"i": 2, "name": "Scene B", "slug": "scene_b",
+             "custom_id": "02_scene_b", "path": str(out_dir / "02_scene_b.md")},
+        ],
+        "pending_custom_ids": ["01_scene_a", "02_scene_b"],
+    })
+
+    entries = [
+        _succeeded_scene_entry("01_scene_a", "MOMENTS A"),
+        _errored_scene_entry("02_scene_b", "overloaded"),
+    ]
+    fake_client = _fake_batches_client(results_iter=entries, batch_id="sb3")
+    monkeypatch.setattr(se, "client_from_args", lambda args: fake_client)
+
+    monkeypatch.setattr(sys, "argv", [
+        "scene_extract.py",
+        "--output-dir", str(out_dir),
+        "--batch", "--collect", "--poll-interval", "0",
+    ])
+    with pytest.raises(SystemExit) as excinfo:
+        se.main()
+
+    assert excinfo.value.code == 1
+    assert (out_dir / "01_scene_a.md").exists()
+    assert not (out_dir / "02_scene_b.md").exists()
+    assert sidecar.exists()  # kept for a retry --collect
+    err = capsys.readouterr().err
+    assert "FAILED 02_scene_b" in err

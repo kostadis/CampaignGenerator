@@ -229,15 +229,22 @@ def _collect_and_write(client, *, batch_id: str, out_dir: Path,
                        sidecar: Path | None = None,
                        force: bool = False) -> list[Path]:
     """Retrieve batch results (collect_batch against `batch_id`) and write
-    per-scene files. Detached --collect's entry point — unchanged behavior
-    (return shape and all) — grandfathered per FR-012.
+    per-scene files. Detached --collect's entry point — grandfathered per
+    FR-012, except the exit code: a collect with any failed scene now exits
+    non-zero (FR-008/T027) so a wrapping script can't mistake a partial
+    collect for a complete one. Successes are written first; the sidecar
+    stays on disk so a re-run --collect can retry the failures.
     """
     print(f"\n[Collecting batch {batch_id}...]")
     results = collect_batch(client, batch_id)
-    saved, _errors = _write_results(
+    saved, errors = _write_results(
         results, out_dir=out_dir, plan_entries=plan_entries,
         sidecar=sidecar, force=force,
     )
+    if errors:
+        print(f"{len(errors)} scene(s) failed; successes are on disk and the "
+              f"sidecar is kept for a retry.", file=sys.stderr)
+        sys.exit(1)
     return saved
 
 
