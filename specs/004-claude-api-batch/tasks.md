@@ -19,7 +19,7 @@
 
 **Purpose**: Branch/worktree preparation (existing repo — no scaffolding needed)
 
-- [ ] T001 Create worktree + branch `004-claude-api-batch` off `main`; copy gitignored `config/wiring.yaml` from the main checkout into the worktree (required by `tests/test_extract_facts.py::test_cli_parallel_fully_cached`)
+- [X] T001 Create worktree + branch `004-claude-api-batch` off `main`; copy gitignored `config/wiring.yaml` from the main checkout into the worktree (required by `tests/test_extract_facts.py::test_cli_parallel_fully_cached`)
 
 ---
 
@@ -29,14 +29,14 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 Promote `_atomic_write_text` (tmp + `os.replace`) from `pipelines/ensemble/extract_facts.py:231` into `campaignlib/` (new `campaignlib/io_atomic.py` or the most natural existing module); re-import it in `pipelines/ensemble/extract_facts.py` so there is a single definition; unit test alongside existing atomicity tests
-- [ ] T003 Extend `campaignlib/api/batch.py`: `collect_batch` carries per-item `stop_reason`; `build_batch_request` accepts a content-block list as `user` (needed for `dnd_sheet` vision payloads) while keeping the string path byte-identical; update `tests/test_batch_api.py` fakes accordingly
-- [ ] T004 Implement `run_batch(client, requests, *, label, poll_interval, on_tick)` in `campaignlib/api/batch.py` per `contracts/batch-seam.md`: stderr `Batch submitted: <id> (<n> requests)` immediately after submit (FR-013); progress line per tick from `request_counts` (FR-007); SIGINT/SIGTERM during the poll → best-effort `batches.cancel` + outcome report + non-zero exit, handlers restored on return (FR-009); post-collect `!!!` truncation banner naming each `custom_id` with `stop_reason == "max_tokens"` (FR-010); returns all items keyed by `custom_id`, never raising on per-item failure (FR-008); export from `campaignlib/api/__init__.py`
-- [ ] T005 Implement `run_single_batch(client, *, system, user, model, max_tokens, cache_system=False) -> str` in `campaignlib/api/batch.py` — one-item convenience over `run_batch` for single-call CLIs, returning the text or raising `RuntimeError` with the item's error; export from `campaignlib/api/__init__.py`
-- [ ] T006 Add `--batch` (store_true, help text per `contracts/cli-batch-flag.md`, incl. the ensemble_batch disambiguation) to `add_backend_args` in `campaignlib/api/client.py`; `client_from_args` fails fast with a clear `SystemExit` when `--batch` is combined with any resolved non-anthropic backend, **including `CG_BACKEND`-driven selection** (FR-003)
-- [ ] T007 [P] Seam unit tests in `tests/test_batch_api.py` using `_fake_client_with_batches`: submission line emitted, poll-until-ended, signal → cancel called + non-zero, truncation banner on fake `stop_reason="max_tokens"`, partial-failure result set returned intact, `run_single_batch` success/failure paths
-- [ ] T008 [P] Guardrail tests in `tests/test_backend_seam_guardrails.py`: `--batch` present in registrar output; rejection matrix for `dgx`/`openrouter`/`claude-code` and for `CG_BACKEND` env selection; no work dispatched before rejection
-- [ ] T009 [P] CI guardrails: add `run_batch`/`run_single_batch` to the render-call list in `tests/test_retrieve_render_isolation.py`; new grep-level test asserting no module outside `campaignlib/api/` references `messages.batches`
+- [X] T002 Promote `_atomic_write_text` (tmp + `os.replace`) from `pipelines/ensemble/extract_facts.py:231` into `campaignlib/` (new `campaignlib/io_atomic.py` or the most natural existing module); re-import it in `pipelines/ensemble/extract_facts.py` so there is a single definition; unit test alongside existing atomicity tests
+- [X] T003 Extend `campaignlib/api/batch.py`: `collect_batch` carries per-item `stop_reason`; `build_batch_request` accepts a content-block list as `user` (needed for `dnd_sheet` vision payloads) while keeping the string path byte-identical; update `tests/test_batch_api.py` fakes accordingly
+- [X] T004 Implement `run_batch(client, requests, *, label, poll_interval, on_tick)` in `campaignlib/api/batch.py` per `contracts/batch-seam.md`: stderr `Batch submitted: <id> (<n> requests)` immediately after submit (FR-013); progress line per tick from `request_counts` (FR-007); SIGINT/SIGTERM during the poll → best-effort `batches.cancel` + outcome report + non-zero exit, handlers restored on return (FR-009); post-collect `!!!` truncation banner naming each `custom_id` with `stop_reason == "max_tokens"` (FR-010); returns all items keyed by `custom_id`, never raising on per-item failure (FR-008); export from `campaignlib/api/__init__.py`
+- [X] T005 Implement `run_single_batch(client, *, system, user, model, max_tokens, cache_system=False) -> str` in `campaignlib/api/batch.py` — one-item convenience over `run_batch` for single-call CLIs, returning the text or raising `RuntimeError` with the item's error; export from `campaignlib/api/__init__.py`
+- [X] T006 Add `--batch` (store_true, help text per `contracts/cli-batch-flag.md`, incl. the ensemble_batch disambiguation) to `add_backend_args` in `campaignlib/api/client.py`; `client_from_args` fails fast with a clear `SystemExit` when `--batch` is combined with any resolved non-anthropic backend, **including `CG_BACKEND`-driven selection** (FR-003)
+- [X] T007 [P] Seam unit tests in `tests/test_batch_api.py` using `_fake_client_with_batches`: submission line emitted, poll-until-ended, signal → cancel called + non-zero, truncation banner on fake `stop_reason="max_tokens"`, partial-failure result set returned intact, `run_single_batch` success/failure paths
+- [X] T008 [P] Guardrail tests in `tests/test_backend_seam_guardrails.py`: `--batch` present in registrar output; rejection matrix for `dgx`/`openrouter`/`claude-code` and for `CG_BACKEND` env selection; no work dispatched before rejection
+- [X] T009 [P] CI guardrails: add `run_batch`/`run_single_batch` to the render-call list in `tests/test_retrieve_render_isolation.py`; new grep-level test asserting no module outside `campaignlib/api/` references `messages.batches`
 
 **Checkpoint**: seam contract fully met and tested — user stories can start (in parallel if staffed).
 

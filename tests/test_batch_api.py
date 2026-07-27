@@ -6,6 +6,8 @@ between them produces byte-identical extraction files.
 """
 
 import json
+import os
+import signal
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -48,6 +50,20 @@ def test_build_batch_request_no_cache_passes_string_system():
         model="m", max_tokens=10, cache_system=False,
     )
     assert req["params"]["system"] == "SYS"
+
+
+def test_build_batch_request_accepts_content_block_list():
+    """A vision-style content-block list (e.g. dnd_sheet's) is used directly
+    as the user message content — no transformation, no string coercion."""
+    blocks = [
+        {"type": "image", "source": {"type": "base64", "media_type": "image/png",
+                                     "data": "AAAA"}},
+        {"type": "text", "text": "Describe this."},
+    ]
+    req = campaignlib.build_batch_request(
+        custom_id="vision", system="SYS", user=blocks, model="m", max_tokens=100,
+    )
+    assert req["params"]["messages"] == [{"role": "user", "content": blocks}]
 
 
 # ── format_scene_output ───────────────────────────────────────────────────────
@@ -167,6 +183,8 @@ def _fake_client_with_batches(*, batch_id="batch_x", final_status="ended",
             processing=0, succeeded=1, errored=0, canceled=0, expired=0,
         ),
     )
+    client.messages.batches.cancel.return_value = SimpleNamespace(
+        processing_status="canceling")
     if results_iter is not None:
         client.messages.batches.results.return_value = iter(results_iter)
     return client
@@ -271,6 +289,235 @@ def test_collect_batch_records_errored_results():
     assert got["02_scene_b"]["status"] == "errored"
     assert "rate limited" in got["02_scene_b"]["error"]
     assert got["02_scene_b"]["text"] is None
+    assert got["02_scene_b"]["stop_reason"] is None
+
+
+def test_collect_batch_carries_stop_reason_for_succeeded():
+    msg = SimpleNamespace(
+        content=[SimpleNamespace(type="text", text="partial")],
+        stop_reason="max_tokens",
+        usage=None,
+    )
+    entry = SimpleNamespace(
+        custom_id="c1", result=SimpleNamespace(type="succeeded", message=msg))
+    client = _fake_client_with_batches(results_iter=[entry])
+    got = campaignlib.collect_batch(client, "abc")
+    assert got["c1"]["stop_reason"] == "max_tokens"
+
+
+# ── run_batch / run_single_batch ──────────────────────────────────────────────
+
+def _succeeded_entry(custom_id: str, text: str, stop_reason: str = "end_turn"):
+    msg = SimpleNamespace(
+        content=[SimpleNamespace(type="text", text=text)],
+        stop_reason=stop_reason,
+        usage=None,
+    )
+    return SimpleNamespace(custom_id=custom_id,
+                           result=SimpleNamespace(type="succeeded", message=msg))
+
+
+def _errored_entry(custom_id: str, message: str):
+    err = SimpleNamespace(error=SimpleNamespace(message=message))
+    return SimpleNamespace(custom_id=custom_id,
+                           result=SimpleNamespace(type="errored", error=err))
+
+
+def test_run_batch_prints_submission_line(capsys):
+    entry = _succeeded_entry("x", "OK")
+    client = _fake_client_with_batches(batch_id="b1", results_iter=[entry])
+    requests = [campaignlib.build_batch_request(
+        custom_id="x", system="s", user="u", model="m", max_tokens=10)]
+
+    out = campaignlib.run_batch(client, requests, poll_interval=0)
+
+    err = capsys.readouterr().err
+    assert "Batch submitted: b1 (1 requests)" in err
+    assert out["x"]["status"] == "succeeded"
+    assert out["x"]["text"] == "OK"
+
+
+def test_run_batch_polls_until_ended_and_prints_progress(capsys):
+    client = MagicMock()
+    client.messages.batches.create.return_value = SimpleNamespace(id="b2")
+    in_progress = SimpleNamespace(
+        id="b2", processing_status="in_progress",
+        request_counts=SimpleNamespace(
+            processing=1, succeeded=0, errored=0, canceled=0, expired=0),
+    )
+    ended = SimpleNamespace(
+        id="b2", processing_status="ended",
+        request_counts=SimpleNamespace(
+            processing=0, succeeded=1, errored=0, canceled=0, expired=0),
+    )
+    client.messages.batches.retrieve.side_effect = [in_progress, ended]
+    client.messages.batches.results.return_value = iter([_succeeded_entry("x", "OK")])
+    requests = [campaignlib.build_batch_request(
+        custom_id="x", system="s", user="u", model="m", max_tokens=10)]
+
+    with patch("time.sleep"):
+        out = campaignlib.run_batch(client, requests, poll_interval=10)
+
+    err = capsys.readouterr().err
+    assert "[batch b2] processing: 1 succeeded: 0 errored: 0" in err
+    assert "elapsed" in err
+    assert "[batch b2] processing: 0 succeeded: 1 errored: 0" in err
+    assert out["x"]["status"] == "succeeded"
+
+
+def test_run_batch_sigint_cancels_and_exits(capsys):
+    client = MagicMock()
+    client.messages.batches.create.return_value = SimpleNamespace(id="b3")
+    client.messages.batches.retrieve.return_value = SimpleNamespace(
+        id="b3", processing_status="in_progress",
+        request_counts=SimpleNamespace(
+            processing=1, succeeded=0, errored=0, canceled=0, expired=0),
+    )
+    client.messages.batches.cancel.return_value = SimpleNamespace(
+        processing_status="canceling")
+    requests = [campaignlib.build_batch_request(
+        custom_id="x", system="s", user="u", model="m", max_tokens=10)]
+    prev_sigint = signal.getsignal(signal.SIGINT)
+    prev_sigterm = signal.getsignal(signal.SIGTERM)
+
+    def _tick(batch):
+        os.kill(os.getpid(), signal.SIGINT)
+
+    try:
+        with pytest.raises(SystemExit) as exc_info:
+            campaignlib.run_batch(client, requests, poll_interval=0, on_tick=_tick)
+    finally:
+        # Belt-and-suspenders: don't let a test failure leak a bad handler
+        # into the rest of the suite.
+        signal.signal(signal.SIGINT, prev_sigint)
+        signal.signal(signal.SIGTERM, prev_sigterm)
+
+    assert exc_info.value.code == 1
+    client.messages.batches.cancel.assert_called_once_with("b3")
+    err = capsys.readouterr().err
+    assert "Abort received — requesting batch cancellation… status: canceling" in err
+    assert signal.getsignal(signal.SIGINT) is prev_sigint
+    assert signal.getsignal(signal.SIGTERM) is prev_sigterm
+
+
+def test_run_batch_sigterm_cancels_and_exits(capsys):
+    """SIGTERM matters because the web UI's abort (spec 002) sends graceful
+    SIGTERM before force-kill — the cancel must fire on that signal too."""
+    client = MagicMock()
+    client.messages.batches.create.return_value = SimpleNamespace(id="b4")
+    client.messages.batches.retrieve.return_value = SimpleNamespace(
+        id="b4", processing_status="in_progress",
+        request_counts=SimpleNamespace(
+            processing=1, succeeded=0, errored=0, canceled=0, expired=0),
+    )
+    client.messages.batches.cancel.return_value = SimpleNamespace(
+        processing_status="canceling")
+    requests = [campaignlib.build_batch_request(
+        custom_id="x", system="s", user="u", model="m", max_tokens=10)]
+    prev_sigint = signal.getsignal(signal.SIGINT)
+    prev_sigterm = signal.getsignal(signal.SIGTERM)
+
+    def _tick(batch):
+        os.kill(os.getpid(), signal.SIGTERM)
+
+    try:
+        with pytest.raises(SystemExit) as exc_info:
+            campaignlib.run_batch(client, requests, poll_interval=0, on_tick=_tick)
+    finally:
+        signal.signal(signal.SIGINT, prev_sigint)
+        signal.signal(signal.SIGTERM, prev_sigterm)
+
+    assert exc_info.value.code == 1
+    client.messages.batches.cancel.assert_called_once_with("b4")
+    err = capsys.readouterr().err
+    assert "Abort received — requesting batch cancellation… status: canceling" in err
+    assert signal.getsignal(signal.SIGINT) is prev_sigint
+    assert signal.getsignal(signal.SIGTERM) is prev_sigterm
+
+
+def test_run_batch_abort_reports_cancel_failure(capsys):
+    """A best-effort cancel that itself fails must still report and exit —
+    the abort path can't be allowed to hang or swallow the failure."""
+    client = MagicMock()
+    client.messages.batches.create.return_value = SimpleNamespace(id="b5")
+    client.messages.batches.retrieve.return_value = SimpleNamespace(
+        id="b5", processing_status="in_progress",
+        request_counts=SimpleNamespace(
+            processing=1, succeeded=0, errored=0, canceled=0, expired=0),
+    )
+    client.messages.batches.cancel.side_effect = RuntimeError("network down")
+    requests = [campaignlib.build_batch_request(
+        custom_id="x", system="s", user="u", model="m", max_tokens=10)]
+    prev_sigint = signal.getsignal(signal.SIGINT)
+    prev_sigterm = signal.getsignal(signal.SIGTERM)
+
+    def _tick(batch):
+        os.kill(os.getpid(), signal.SIGTERM)
+
+    try:
+        with pytest.raises(SystemExit) as exc_info:
+            campaignlib.run_batch(client, requests, poll_interval=0, on_tick=_tick)
+    finally:
+        signal.signal(signal.SIGINT, prev_sigint)
+        signal.signal(signal.SIGTERM, prev_sigterm)
+
+    assert exc_info.value.code == 1
+    err = capsys.readouterr().err
+    assert "status: failed: network down" in err
+
+
+def test_run_batch_prints_truncation_banner_naming_custom_id(capsys):
+    entry = _succeeded_entry("chunk_02", "partial output", stop_reason="max_tokens")
+    client = _fake_client_with_batches(batch_id="b6", results_iter=[entry])
+    requests = [campaignlib.build_batch_request(
+        custom_id="chunk_02", system="s", user="u", model="m", max_tokens=512)]
+
+    out = campaignlib.run_batch(client, requests, poll_interval=0)
+
+    err = capsys.readouterr().err
+    assert "!" * 70 in err
+    assert "TRUNCATED" in err
+    assert "chunk_02" in err
+    assert "512" in err
+    # Still written — the banner is a loud warning, not a failure.
+    assert out["chunk_02"]["status"] == "succeeded"
+
+
+def test_run_batch_returns_all_items_including_failures(capsys):
+    ok = _succeeded_entry("a", "fine")
+    bad = _errored_entry("b", "boom")
+    client = _fake_client_with_batches(batch_id="b7", results_iter=[ok, bad])
+    requests = [
+        campaignlib.build_batch_request(
+            custom_id="a", system="s", user="u", model="m", max_tokens=10),
+        campaignlib.build_batch_request(
+            custom_id="b", system="s", user="u", model="m", max_tokens=10),
+    ]
+
+    out = campaignlib.run_batch(client, requests, poll_interval=0)
+
+    assert set(out) == {"a", "b"}
+    assert out["a"]["status"] == "succeeded"
+    assert out["b"]["status"] == "errored"
+    assert out["b"]["error"] == "boom"
+
+
+def test_run_single_batch_returns_text_on_success():
+    entry = _succeeded_entry("single", "the answer")
+    client = _fake_client_with_batches(batch_id="b8", results_iter=[entry])
+
+    text = campaignlib.run_single_batch(
+        client, system="s", user="u", model="m", max_tokens=10)
+
+    assert text == "the answer"
+
+
+def test_run_single_batch_raises_on_failure():
+    entry = _errored_entry("single", "rate limited")
+    client = _fake_client_with_batches(batch_id="b9", results_iter=[entry])
+
+    with pytest.raises(RuntimeError, match="rate limited"):
+        campaignlib.run_single_batch(client, system="s", user="u", model="m", max_tokens=10)
 
 
 # ── sidecar round-trip ────────────────────────────────────────────────────────

@@ -55,6 +55,7 @@ from campaignlib import (
     stream_api,
     wiring_get,
 )
+from campaignlib.io_atomic import atomic_write_text as _atomic_write_text
 
 # DGX endpoint + model are EXTERNAL config (they name the DGX) — owned by mneme and
 # rendered into config/wiring.yaml. Read them from there; an env var still overrides.
@@ -226,19 +227,6 @@ def verify_quotes(facts: list[dict], chunk: str) -> None:
         f["quote_verified"] = bool(q) and (
             q in chunk or " ".join(q.split()) in chunk_norm
         )
-
-
-def _atomic_write_text(path: Path, text: str) -> None:
-    """Write via tmp + os.replace so a kill mid-write never leaves a torn file.
-
-    The ensemble's speculative re-execution runs a duplicate of the same unit
-    in another process sharing this cache dir, and terminates the loser — the
-    PID suffix keeps the tmp names from colliding, and the rename makes the
-    loser's death harmless (last writer wins, both wrote the same chunk).
-    """
-    tmp = path.with_name(f"{path.name}.tmp.{os.getpid()}")
-    tmp.write_text(text, encoding="utf-8")
-    os.replace(tmp, path)
 
 
 def _load_cached(out_file: Path) -> list | None:

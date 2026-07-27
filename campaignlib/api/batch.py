@@ -1,6 +1,7 @@
 """Anthropic Message Batches orchestration: build / submit / poll / collect."""
 
 import json
+import signal
 import sys
 import time
 from datetime import datetime, timezone
@@ -26,7 +27,7 @@ def build_batch_request(
     *,
     custom_id: str,
     system: str,
-    user: str,
+    user: str | list,
     model: str,
     max_tokens: int = 8192,
     cache_system: bool = False,
@@ -36,6 +37,11 @@ def build_batch_request(
     Mirrors the system/messages shape `stream_api` constructs, including the
     optional `cache_control: ephemeral` block on the system prompt so the
     cache breakpoint is identical between live and batched paths.
+
+    user — a string (unchanged behavior, byte-identical payload) or a list of
+    content blocks (e.g. an image block + a text block for a vision payload,
+    mirroring call_api's `content` parameter). A list is used directly as the
+    user message content — no transformation.
     """
     if cache_system:
         system_arg = [{
@@ -125,13 +131,14 @@ def collect_batch(client, batch_id: str) -> dict[str, dict]:
     """Stream the batch's results back into a dict keyed by `custom_id`.
 
     Each value: `{"status": "succeeded" | "errored" | "canceled" | "expired",
-                  "text": str | None, "error": str | None,
-                  "usage": dict | None}`.
+                  "text": str | None, "stop_reason": str | None,
+                  "error": str | None, "usage": dict | None}`.
 
-    `text` is populated only for succeeded results. The caller is responsible
-    for deciding what to do with non-succeeded entries (typically: print the
-    error message and let the user re-run; sidecar files stay on disk so a
-    subsequent `--collect` can retry).
+    `text` and `stop_reason` are populated only for succeeded results (a
+    `stop_reason` of "max_tokens" flags a truncated response). The caller is
+    responsible for deciding what to do with non-succeeded entries (typically:
+    print the error message and let the user re-run; sidecar files stay on
+    disk so a subsequent `--collect` can retry).
     """
     delays = [10, 20, 40]
     for attempt, delay in enumerate([-1] + delays):
@@ -155,7 +162,7 @@ def collect_batch(client, batch_id: str) -> dict[str, dict]:
             continue
         result_type = getattr(result, "type", None)
         record: dict = {"status": result_type, "text": None,
-                        "error": None, "usage": None}
+                        "stop_reason": None, "error": None, "usage": None}
         if result_type == "succeeded":
             message = getattr(result, "message", None)
             if message is not None:
@@ -163,6 +170,7 @@ def collect_batch(client, batch_id: str) -> dict[str, dict]:
                 text_parts = [getattr(b, "text", "") for b in blocks
                               if getattr(b, "type", None) == "text"]
                 record["text"] = "".join(text_parts)
+                record["stop_reason"] = getattr(message, "stop_reason", None)
                 usage = getattr(message, "usage", None)
                 if usage is not None:
                     record["usage"] = {
@@ -183,6 +191,115 @@ def collect_batch(client, batch_id: str) -> dict[str, dict]:
             record["error"] = f"result type: {result_type}"
         out[custom_id] = record
     return out
+
+
+def run_batch(client, requests: list[dict], *, label: str = "",
+              poll_interval: int = 10, on_tick=None) -> dict[str, dict]:
+    """Blocking submit -> poll -> collect composition (FR-012).
+
+    1. Prints `Batch submitted: <id> (<n> requests)` to stderr immediately
+       after submission (FR-013) — the trail for a hard-killed wait.
+       `label`, if given, is appended (`... [label]`) so concurrent callers'
+       stderr output can be told apart; omitted entirely when empty.
+    2. Installs SIGINT/SIGTERM handlers for the duration of the poll: either
+       signal attempts `client.messages.batches.cancel(batch_id)`, reports
+       the outcome, and raises SystemExit(1) (FR-009). Handlers are restored
+       on return. SIGTERM matters because the web UI's abort (spec 002) is a
+       graceful-then-force process-group kill — the graceful phase must
+       trigger the cancel.
+    3. Polls until `processing_status == "ended"`, printing a progress line
+       from `request_counts` each tick unless `on_tick` overrides it (FR-007).
+    4. After collection, every item with `stop_reason == "max_tokens"` gets
+       the same loud truncation banner `stream_api` prints, naming the
+       item's `custom_id` (FR-010).
+    5. Returns every item (succeeded and failed) keyed by `custom_id` — never
+       raises on a per-item failure (FR-008); only the caller knows the
+       unit<->file mapping needed to write successes and report failures.
+
+    Raises only on transport-level failure of submit/poll/collect after the
+    seam's standard retries (`_is_retryable`).
+    """
+    n = len(requests)
+    batch_id = submit_batch(client, requests)
+    suffix = f" [{label}]" if label else ""
+    print(f"Batch submitted: {batch_id} ({n} requests){suffix}",
+          file=sys.stderr, flush=True)
+
+    start = time.monotonic()
+    max_tokens_by_id = {
+        r.get("custom_id"): r.get("params", {}).get("max_tokens")
+        for r in requests
+    }
+
+    def _default_tick(batch) -> None:
+        counts = getattr(batch, "request_counts", None)
+        processing = getattr(counts, "processing", 0) or 0 if counts else 0
+        succeeded = getattr(counts, "succeeded", 0) or 0 if counts else 0
+        errored = getattr(counts, "errored", 0) or 0 if counts else 0
+        elapsed = int(time.monotonic() - start)
+        print(f"[batch {batch_id}] processing: {processing} "
+              f"succeeded: {succeeded} errored: {errored} "
+              f"(elapsed {elapsed}s)", file=sys.stderr, flush=True)
+
+    tick = on_tick or _default_tick
+
+    def _handle_abort(signum, frame):
+        try:
+            cancelled = client.messages.batches.cancel(batch_id)
+            status = getattr(cancelled, "processing_status", None) or "canceling"
+        except Exception as e:
+            status = f"failed: {e}"
+        print(f"Abort received — requesting batch cancellation… status: {status}",
+              file=sys.stderr, flush=True)
+        raise SystemExit(1)
+
+    prev_sigint = signal.getsignal(signal.SIGINT)
+    prev_sigterm = signal.getsignal(signal.SIGTERM)
+    signal.signal(signal.SIGINT, _handle_abort)
+    signal.signal(signal.SIGTERM, _handle_abort)
+    try:
+        poll_batch(client, batch_id, interval=poll_interval, on_tick=tick)
+    finally:
+        signal.signal(signal.SIGINT, prev_sigint)
+        signal.signal(signal.SIGTERM, prev_sigterm)
+
+    results = collect_batch(client, batch_id)
+    for custom_id, record in results.items():
+        if record.get("stop_reason") == "max_tokens":
+            mt = max_tokens_by_id.get(custom_id)
+            mt_str = f"{mt}-token " if mt is not None else ""
+            print(f"\n{'!' * 70}\n"
+                  f"!!  WARNING: output TRUNCATED at the {mt_str}max_tokens\n"
+                  f"!!  ceiling (stop_reason=max_tokens) for item '{custom_id}'. "
+                  f"The tail of\n"
+                  f"!!  the response is MISSING. Re-run with a higher max_tokens "
+                  f"ceiling.\n"
+                  f"{'!' * 70}", file=sys.stderr, flush=True)
+    return results
+
+
+def run_single_batch(client, *, system: str, user: str | list, model: str,
+                     max_tokens: int = 8192, cache_system: bool = False) -> str:
+    """One-request convenience wrapper over `run_batch` for single-call CLIs.
+
+    Builds one Request (`custom_id="single"`), runs it through the full
+    submit/poll/collect/abort/truncation machinery, and returns its text on
+    success. Raises RuntimeError (including status + error) if the item did
+    not succeed — callers of single-call CLIs don't have a unit<->file map
+    to report partial failure against, so failure here is fatal.
+    """
+    request = build_batch_request(
+        custom_id="single", system=system, user=user, model=model,
+        max_tokens=max_tokens, cache_system=cache_system,
+    )
+    results = run_batch(client, [request])
+    record = results["single"]
+    if record["status"] != "succeeded":
+        raise RuntimeError(
+            f"batch item 'single' did not succeed: status={record['status']} "
+            f"error={record.get('error')}"
+        )
+    return record["text"]
 
 
 def write_batch_sidecar(path: Path, payload: dict) -> None:

@@ -30,10 +30,13 @@ in the server routers.
 
 from __future__ import annotations
 
+import argparse
 import ast
 from pathlib import Path
 
 import pytest
+
+from campaignlib.api import client as client_mod
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -147,3 +150,104 @@ def test_model_flag_implies_backend_args(path: Path):
         f"{rel} declares --model but never calls add_backend_args( — "
         "every script with a model choice must also expose --backend/--endpoint."
     )
+
+
+# ── Check 3: --batch is uniform (spec 004-claude-api-batch) ─────────────────
+
+def test_add_backend_args_registers_batch_flag():
+    """Every registrar CLI gets --batch spelled and defaulted identically
+    (FR-001/FR-002) — a store_true defaulting to False, byte-identical
+    behavior when omitted (FR-011)."""
+    p = argparse.ArgumentParser()
+    p.add_argument("--model", default="claude-sonnet-4-6")
+    client_mod.add_backend_args(p)
+    ns = p.parse_args([])
+    assert ns.batch is False
+    ns_on = p.parse_args(["--batch"])
+    assert ns_on.batch is True
+
+
+@pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+def test_client_from_args_rejects_batch_for_non_anthropic_backend(backend, monkeypatch):
+    """--batch requires the real Anthropic client — none of the façades
+    implement messages.batches, so this must fail before construction."""
+    def _boom(*a, **kw):
+        raise AssertionError("make_client must not be called before the --batch rejection")
+
+    monkeypatch.setattr(client_mod, "make_client", _boom)
+    ns = argparse.Namespace(backend=backend, endpoint=None, model="m", batch=True)
+
+    with pytest.raises(SystemExit) as exc_info:
+        client_mod.client_from_args(ns)
+
+    assert f"backend '{backend}' has no batch support" in str(exc_info.value)
+    assert "--batch requires the Claude API backend (--backend anthropic)" in str(exc_info.value)
+
+
+def test_client_from_args_rejects_batch_via_cg_backend_env(monkeypatch):
+    """--backend anthropic (the default) + CG_BACKEND=openrouter + --batch
+    must still be rejected — the env-driven resolution, not just the
+    explicit --backend flag, decides what --batch is validated against."""
+    def _boom(*a, **kw):
+        raise AssertionError("make_client must not be called before the --batch rejection")
+
+    monkeypatch.setattr(client_mod, "make_client", _boom)
+    monkeypatch.setenv("CG_BACKEND", "openrouter")
+    ns = argparse.Namespace(backend="anthropic", endpoint=None, model="m", batch=True)
+
+    with pytest.raises(SystemExit) as exc_info:
+        client_mod.client_from_args(ns)
+
+    assert "backend 'openrouter' has no batch support" in str(exc_info.value)
+
+
+def test_client_from_args_allows_batch_for_anthropic(monkeypatch):
+    """The default (anthropic, no CG_BACKEND) must not be rejected."""
+    monkeypatch.delenv("CG_BACKEND", raising=False)
+    seen = {}
+    monkeypatch.setattr(client_mod, "make_client",
+                        lambda backend=None, endpoint=None, model_override=None:
+                        seen.update(backend=backend) or "client")
+    ns = argparse.Namespace(backend="anthropic", endpoint=None, model="m", batch=True)
+
+    out = client_mod.client_from_args(ns)
+
+    assert out == "client"
+    assert seen == {"backend": None}
+
+
+def test_client_from_args_batch_absent_is_unaffected(monkeypatch):
+    """No --batch attribute at all (an older/unrelated caller's Namespace)
+    must not trip the check — getattr(..., False) is the guard."""
+    seen = {}
+    monkeypatch.setattr(client_mod, "make_client",
+                        lambda backend=None, endpoint=None, model_override=None:
+                        seen.update(backend=backend) or "client")
+    ns = argparse.Namespace(backend="dgx", endpoint=None, model="m")  # no .batch
+
+    out = client_mod.client_from_args(ns)
+
+    assert out == "client"
+
+
+# ── Check 4: messages.batches only referenced inside the seam ───────────────
+
+def test_no_out_of_seam_messages_batches_reference():
+    """The Message Batches API surface (client.messages.batches.*) is only
+    ever touched from campaignlib/api/ — every other CLI/pipeline goes
+    through run_batch / run_single_batch / submit_batch / poll_batch /
+    collect_batch instead (spec 004-claude-api-batch contract)."""
+    offenders = []
+    seam = (REPO_ROOT / "campaignlib" / "api").resolve()
+    for py in REPO_ROOT.rglob("*.py"):
+        rp = py.resolve()
+        if seam in rp.parents or rp.parent == seam:
+            continue
+        if "/tests/" in str(rp) or rp.name.startswith("test_"):
+            continue
+        if ".specify" in rp.parts or "node_modules" in rp.parts or ".venv" in rp.parts:
+            continue
+        text = py.read_text(encoding="utf-8", errors="ignore")
+        if "messages.batches" in text:
+            offenders.append(str(rp.relative_to(REPO_ROOT)))
+    assert not offenders, f"messages.batches referenced outside campaignlib/api/: {offenders}"

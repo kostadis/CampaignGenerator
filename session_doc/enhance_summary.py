@@ -262,9 +262,8 @@ def main() -> None:
     parser.add_argument("--no-log", action="store_true")
     parser.add_argument("--verbose", action="store_true",
                         help="Print system + user prompts before the API call")
-    parser.add_argument("--batch", action="store_true",
-                        help="Use Anthropic's Message Batches API (50%% off list price). "
-                             "Default mode submits, polls, retrieves, exits.")
+    # --batch itself now comes from add_backend_args (spec 004); default mode
+    # submits, polls, retrieves, exits.
     parser.add_argument("--submit-only", action="store_true",
                         help="With --batch: submit the batch, write a sidecar, exit. "
                              "Use --collect later to retrieve.")

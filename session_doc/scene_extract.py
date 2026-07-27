@@ -247,10 +247,8 @@ def main() -> None:
                              "extraction; only override if you know the VTT uses "
                              "unrecognised display names.")
     parser.add_argument("--no-log", action="store_true")
-    parser.add_argument("--batch", action="store_true",
-                        help="Use Anthropic's Message Batches API (50%% off list price). "
-                             "Per-scene calls are submitted as one batch and share the "
-                             "cached VTT prefix.")
+    # --batch itself now comes from add_backend_args (spec 004); per-scene
+    # calls are submitted as one batch and share the cached VTT prefix.
     parser.add_argument("--submit-only", action="store_true",
                         help="With --batch: submit the batch, write a sidecar in "
                              "--output-dir/.batch.json, exit.")
