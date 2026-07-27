@@ -11,12 +11,14 @@ single campaignlib seam honors (Principle V).
 import difflib
 import glob
 import shutil
+from collections import Counter
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from campaignlib.registry import find_registry
+from campaignlib.registry import find_registry, load_registry
+from entity_registry.registry import collect_check_findings
 from server.backend_forwarding import backend_cli_args
 from server.config import MODELS
 from server.ensemble_config_service import EnsembleConfigService
@@ -329,6 +331,34 @@ def _sse_error_response(message: str) -> StreamingResponse:
     )
 
 
+# The entity registry (docs/entity_registry.yaml) is now mandatory for every
+# route that used to accept legacy --aliases/--known-names query params
+# (/run/bundle, /run/threads, world_state synthesis). Migrate-and-delete
+# (per feedback_single_user_no_backcompat): the legacy flags were removed
+# from the web UI outright rather than kept as a silent CWD-not-migrated
+# fallback — a campaign without a registry yet must run `registry init .`
+# (+ import-*) before these routes will run from the UI. The CLIs themselves
+# are untouched and still support their own --aliases/legacy flags directly.
+_NO_REGISTRY_MESSAGE = (
+    "No entity registry found (docs/entity_registry.yaml). This workflow "
+    "requires one — create it with `registry init .` and populate it "
+    "(registry import-inventory / import-dedup / import-aliases), then "
+    "re-run."
+)
+
+
+def _require_registry() -> Path | None:
+    """The campaign's docs/entity_registry.yaml, or None if it doesn't exist.
+
+    Callers check for None and return
+    ``_sse_error_response(_NO_REGISTRY_MESSAGE)`` themselves — run routes are
+    consumed by EventSource, so the failure must be a real SSE stream, never
+    a plain 4xx (see ``_sse_error_response``'s docstring and the "No chapters
+    selected" precedent in ``run_extract``).
+    """
+    return find_registry(Path.cwd())
+
+
 def _run_locked(stage: str, cmd: list[str], env_extra: dict[str, str] | None = None,
                 prelude: str = "") -> StreamingResponse:
     key = _lock_key(stage)
@@ -428,6 +458,52 @@ def status(service: EnsembleConfigService = Depends(get_ensemble_service)):
     ]
     current = next((s["id"] for s in stages if s["status"] != "complete"), "review")
     return {"campaign_dir": str(cwd.resolve()), "stages": stages, "current_stage": current}
+
+
+@router.get("/registry")
+def ensemble_registry_status():
+    """Entity-registry status probe for the ensemble UI — always 200, like
+    ``/status`` above, never a 4xx: "no registry yet" and "registry is
+    invalid" are both states the Setup page needs to *render*, not errors
+    a caller needs to catch.
+
+    Reuses ``registry check``'s own finding-collection
+    (``collect_check_findings``, extracted from ``entity_registry.registry
+    .cmd_check`` for exactly this reuse) so the UI shows the identical
+    grouping-drift/fuzzy-near-dup findings the CLI would report, without
+    shelling out to it or duplicating its detectors.
+    """
+    cwd = Path.cwd()
+    registry_path = find_registry(cwd)
+    if registry_path is None:
+        return {
+            "found": False,
+            "path": None,
+            "error": "no entity registry at docs/entity_registry.yaml — run `registry init .`",
+        }
+
+    rel_path = str(registry_path.relative_to(cwd))
+    try:
+        reg = load_registry(registry_path)
+    except ValueError as exc:
+        # Loads but fails validation (e.g. an identity collision) — surfaced,
+        # but deliberately with no counts/check: they'd be computed off a
+        # Registry object that was never actually returned.
+        return {"found": True, "path": rel_path, "error": str(exc)}
+
+    alias_count = sum(len(e.aliases) for e in reg.entities)
+    types = Counter(e.type for e in reg.entities)
+    findings = collect_check_findings(cwd, reg)
+    clean = not findings["grouping"] and not findings["fuzzy"]
+    return {
+        "found": True,
+        "path": rel_path,
+        "error": None,
+        "entity_count": len(reg.entities),
+        "alias_count": alias_count,
+        "types": dict(types),
+        "check": {**findings, "clean": clean},
+    }
 
 
 # ── File listing / read / write (FR-004, FR-012, FR-017) ────────────────────
@@ -600,8 +676,6 @@ def run_extract(
 def run_bundle(
     request: Request,
     corpus: str = "",
-    aliases: str = "",
-    known_names: list[str] = Query(default=[]),
     min_facts: int | None = None,
     known_only: bool = False,
     out_dir: str = "",
@@ -615,8 +689,6 @@ def run_bundle(
     cfg = service.resolved()
     corpus = corpus or cfg.paths.corpus_glob
     out_dir = out_dir or cfg.paths.state_dossiers_dir
-    aliases = aliases or cfg.aliases_path or ""
-    known_names = known_names or cfg.known_names
     backend = backend or cfg.extract.backend
     model = model or cfg.extract.model or ""
     endpoints = endpoints or cfg.extract.endpoints
@@ -625,17 +697,16 @@ def run_bundle(
     if entity_parallel is None:
         entity_parallel = cfg.tuning.entity_parallel
 
+    # The entity registry is mandatory now — legacy --aliases/--known-names
+    # were removed from the web UI entirely (migrate-and-delete, see
+    # _NO_REGISTRY_MESSAGE above), not kept as a dual-location fallback.
+    # Checked before any lock/backend-selection work below.
+    registry_path = _require_registry()
+    if registry_path is None:
+        return _sse_error_response(_NO_REGISTRY_MESSAGE)
+
     cmd = [console_script("facts_to_state"), "--corpus", corpus]
-    # A campaign that has migrated to docs/entity_registry.yaml supersedes the
-    # UI's persisted legacy aliases/known-names fields (Principle: single
-    # source of truth for aliases). Passing both trips facts_to_state.py's
-    # deprecation guard and permanently disables its own auto-discovery.
-    registry_path = find_registry(Path.cwd())
-    if registry_path is not None:
-        _cmd_opt(cmd, "--registry", str(registry_path))
-    else:
-        _cmd_opt(cmd, "--aliases", aliases)
-        _cmd_multi(cmd, "--known-names", known_names)
+    _cmd_opt(cmd, "--registry", str(registry_path))
     _cmd_opt(cmd, "--min-facts", min_facts)
     if list:
         cmd.append("--list")
@@ -670,7 +741,6 @@ def run_recent_events(
 @router.get("/run/threads")
 def run_threads(
     corpus: str = "",
-    aliases: str = "",
     output: str = "",
     min_facts: int | None = None,
     service: EnsembleConfigService = Depends(get_ensemble_service),
@@ -680,17 +750,19 @@ def run_threads(
     cfg = service.resolved()
     corpus = corpus or cfg.paths.corpus_glob
     output = output or cfg.paths.threads_out
-    aliases = aliases or cfg.aliases_path or ""
     if min_facts is None:
         min_facts = cfg.tuning.threads_min_facts
+
+    # Mandatory registry — same migrate-and-delete rationale as /run/bundle;
+    # the legacy --aliases flag is gone.
+    registry_path = _require_registry()
+    if registry_path is None:
+        return _sse_error_response(_NO_REGISTRY_MESSAGE)
+
     cmd = [console_script("facts_to_state"),
            "--corpus", corpus, "--types", "thread",
            "--min-facts", str(min_facts), "--render-only", output]
-    registry_path = find_registry(Path.cwd())
-    if registry_path is not None:
-        _cmd_opt(cmd, "--registry", str(registry_path))
-    else:
-        _cmd_opt(cmd, "--aliases", aliases)
+    _cmd_opt(cmd, "--registry", str(registry_path))
     return _run_locked("threads", cmd)
 
 
@@ -705,6 +777,7 @@ def run_synthesize(
     # world_state
     dossiers: str = "",
     dossier_min_facts: int | None = None,
+    inventory: str = "",
     # party.yaml — anchors the Party section for world_state, and is the
     # preferred (human-authored) source for the party doc's own synthesis.
     # Falls back to the conventional config/party.yaml / party.yaml path
@@ -735,6 +808,7 @@ def run_synthesize(
     endpoint = endpoint or (cfg.synthesize.endpoints[0] if cfg.synthesize.endpoints else "")
     if dossier_min_facts is None:
         dossier_min_facts = cfg.tuning.dossier_min_facts
+    inventory = inventory or cfg.paths.inventory
     planning_mode = planning_mode or cfg.planning.synth_mode
     depth = depth or cfg.planning.depth
     npc = npc or cfg.planning.npc
@@ -748,9 +822,21 @@ def run_synthesize(
                             detail="synthesis output must be a draft, not a live doc")
 
     if doc == "world_state":
+        # synthesise_world_state would auto-discover docs/entity_registry.yaml
+        # from the CWD anyway when --registry is omitted (resolve_registry_arg)
+        # — but passing it explicitly here makes the copyable reproducible
+        # command (spec-002 US1) honest about what it depends on, and turns a
+        # campaign that hasn't migrated yet into a caught error instead of a
+        # script that silently ran without one.
+        registry_path = _require_registry()
+        if registry_path is None:
+            return _sse_error_response(_NO_REGISTRY_MESSAGE)
         cmd = [console_script("synthesise_world_state"),
                "--dossiers", dossiers, "--dossier-min-facts", str(dossier_min_facts),
                "--output", out]
+        _cmd_opt(cmd, "--registry", str(registry_path))
+        if inventory:
+            _cmd_opt(cmd, "--inventory", str(_resolve_ensemble_path(inventory)))
         _cmd_opt(cmd, "--party", party)
         # Auto-detect the threads track the same way planning_config /
         # party_config auto-detect — an explicit --threads override still wins.
@@ -758,10 +844,12 @@ def run_synthesize(
         _cmd_opt(cmd, "--threads", threads_path)
         _cmd_multi(cmd, "--backstories", backstories)
     elif doc == "campaign_state":
+        # No --registry: campaign_state.py has no such argument. Don't add one.
         cmd = [console_script("campaign_state"), "--output", out]
         _cmd_flag(cmd, "--synthesize-only", synthesize_only)
         _cmd_opt(cmd, "--extract-dir", extract_dir)
     elif doc == "party":
+        # No --registry: party.py has no such argument. Don't add one.
         cmd = [console_script("party"), "--output", out]
         # Which dossiers/sheets belong to which PC is campaign-specific and
         # already a human decision once party.yaml exists — reuse it instead
@@ -782,6 +870,7 @@ def run_synthesize(
             _cmd_flag(cmd, "--synthesize-only", synthesize_only)
             _cmd_opt(cmd, "--extract-dir", extract_dir)
     else:  # planning
+        # No --registry: planning.py has no such argument. Don't add one.
         cmd = [console_script("planning"), "--output", out]
         # The tracked (arc-scored) NPC/faction subset is a human-curated
         # decision (docs/cli/ensemble_workflow.md §3e) — reuse the

@@ -53,6 +53,12 @@ def _capture_cmd(monkeypatch) -> dict:
 def _synthesize(monkeypatch, tmp_path, **params) -> str:
     _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
+    # world_state synthesis now requires an entity registry (Phase 2 of the
+    # registry migration) — this module is about the SYNTHESIS_CAPABLE
+    # warning, not the registry gate, so give every call one for free.
+    docs = tmp_path / "docs"
+    docs.mkdir(exist_ok=True)
+    (docs / "entity_registry.yaml").write_text("version: 1\nentities: []\n")
     r = client.get("/api/ensemble/run/synthesize",
                    params={"doc": "world_state", **params})
     assert r.status_code == 200, r.text

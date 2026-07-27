@@ -971,21 +971,23 @@ def _resolved_entity_names(reg: Registry, names: "list[str]") -> "set[str]":
     return resolved
 
 
-def cmd_check(args: argparse.Namespace) -> int:
-    campaign_dir = Path(args.campaign_dir)
-    path = _registry_path(campaign_dir)
-    if not path.is_file():
-        print(
-            f"Error: no registry at {path} — run `registry init {campaign_dir}` first",
-            file=sys.stderr,
-        )
-        return 1
-    try:
-        reg = load_registry(path)
-    except Exception as exc:  # noqa: BLE001 — any load/parse/validate failure is a report, not a crash
-        print(f"Error: registry at {path} failed to load: {exc}", file=sys.stderr)
-        return 1
+def collect_check_findings(campaign_dir: Path, reg: Registry) -> dict:
+    """Compute grouping-drift, fuzzy-near-dup, and presence-drift findings for
+    ``reg`` against every legacy store still on disk under ``campaign_dir``.
 
+    Pure — no printing, no exit code, no argparse; the only I/O is reading
+    whichever legacy stores (``.dedup_state.json``, inventory markdown files,
+    ``.alias_decisions.json``, dossier frontmatter, ``aliases.json``) happen to
+    exist under ``campaign_dir``. ``cmd_check`` (the CLI entry point below)
+    owns loading the registry, argparse, and rendering this dict to
+    stdout/exit-code; the web UI's ``GET /api/ensemble/registry`` endpoint
+    calls this directly on an already-loaded ``Registry`` to serve the same
+    findings as structured JSON, without going through argparse or stdout.
+
+    Returns ``{"grouping": [...], "fuzzy": [...], "missing_from_registry":
+    [...], "missing_from_legacy": [...]}`` — the same finding strings
+    ``cmd_check`` used to print, now handed back as a dict instead.
+    """
     grouping_findings: list[str] = []
     fuzzy_findings: list[str] = []
     legacy_display_names: list[str] = []  # for presence drift
@@ -1144,6 +1146,35 @@ def cmd_check(args: argparse.Namespace) -> int:
         missing_from_legacy = sorted(
             display for key, display in registry_norms.items() if key not in legacy_norms
         )
+
+    return {
+        "grouping": grouping_findings,
+        "fuzzy": fuzzy_findings,
+        "missing_from_registry": missing_from_registry,
+        "missing_from_legacy": missing_from_legacy,
+    }
+
+
+def cmd_check(args: argparse.Namespace) -> int:
+    campaign_dir = Path(args.campaign_dir)
+    path = _registry_path(campaign_dir)
+    if not path.is_file():
+        print(
+            f"Error: no registry at {path} — run `registry init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return 1
+    try:
+        reg = load_registry(path)
+    except Exception as exc:  # noqa: BLE001 — any load/parse/validate failure is a report, not a crash
+        print(f"Error: registry at {path} failed to load: {exc}", file=sys.stderr)
+        return 1
+
+    findings = collect_check_findings(campaign_dir, reg)
+    grouping_findings = findings["grouping"]
+    fuzzy_findings = findings["fuzzy"]
+    missing_from_registry = findings["missing_from_registry"]
+    missing_from_legacy = findings["missing_from_legacy"]
 
     # ── report ────────────────────────────────────────────────────────────
     print("=== Grouping drift (primary, high-confidence) ===")

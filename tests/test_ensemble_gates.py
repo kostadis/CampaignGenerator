@@ -1,6 +1,8 @@
 """Gate guards: drafts-only synthesis, no live-doc writes, promote is the sole
 live-doc writer (FR-013, SC-005, spec US3)."""
 
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 from server.main import app
@@ -80,6 +82,17 @@ def _capture_cmd(monkeypatch):
     return captured
 
 
+def _write_registry(tmp_path) -> Path:
+    """A minimal valid docs/entity_registry.yaml — for tests that don't care
+    about registry contents but need one to exist, since /run/bundle,
+    /run/threads, and world_state synthesis all require one now."""
+    docs = tmp_path / "docs"
+    docs.mkdir(exist_ok=True)
+    registry = docs / "entity_registry.yaml"
+    registry.write_text("version: 1\nentities: []\n")
+    return registry
+
+
 def test_synthesize_refuses_stale_model_for_anthropic(tmp_path, monkeypatch):
     """FR-009/FR-011 (feature 003): a stale non-Anthropic id on an Anthropic
     run is REFUSED, not silently replaced.
@@ -102,6 +115,7 @@ def test_synthesize_refuses_stale_model_for_anthropic(tmp_path, monkeypatch):
     """
     _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
+    _write_registry(tmp_path)
     r = client.get("/api/ensemble/run/synthesize", params={
         "doc": "world_state",
         "backend": "anthropic",
@@ -137,6 +151,7 @@ def test_bundle_refuses_stale_model_for_anthropic(tmp_path, monkeypatch):
     """
     _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
+    _write_registry(tmp_path)
     r = client.get("/api/ensemble/run/bundle", params={
         "backend": "anthropic",
         "model": "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
@@ -212,22 +227,18 @@ def test_extract_forwards_backend_and_endpoints_when_non_anthropic(tmp_path, mon
     assert not captured["env_extra"]
 
 
-# ── entity_registry.yaml supersedes stale UI-persisted --aliases/--known-names
-# ── (a campaign that's migrated to the registry must not keep tripping
-# ── facts_to_state.py's deprecation guard, which also disables its own
-# ── auto-discovery when legacy flags are present) ──────────────────────────
+# ── The entity registry is now mandatory for /run/bundle and /run/threads
+# ── (Phase 2 of the registry migration: legacy --aliases/--known-names were
+# ── removed from the web UI entirely — migrate-and-delete, not a
+# ── dual-location fallback). A campaign dir with no docs/entity_registry.yaml
+# ── gets a real SSE error, not a silent legacy run. ─────────────────────────
 
-def test_bundle_prefers_registry_over_stale_aliases(tmp_path, monkeypatch):
+def test_bundle_passes_registry(tmp_path, monkeypatch):
     captured = _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "docs").mkdir()
-    registry = tmp_path / "docs" / "entity_registry.yaml"
-    registry.write_text("version: 1\nentities: []\n")
+    registry = _write_registry(tmp_path)
 
-    r = client.get("/api/ensemble/run/bundle", params={
-        "aliases": "docs/ensemble/alias.json",
-        "known_names": ["docs/entity_inventory.md"],
-    })
+    r = client.get("/api/ensemble/run/bundle")
     assert r.status_code == 200
     _ = r.text
     cmd = captured["cmd"]
@@ -237,37 +248,93 @@ def test_bundle_prefers_registry_over_stale_aliases(tmp_path, monkeypatch):
     assert "--known-names" not in cmd
 
 
-def test_bundle_falls_back_to_legacy_aliases_without_registry(tmp_path, monkeypatch):
+def test_bundle_errors_without_registry(tmp_path, monkeypatch):
     captured = _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
 
-    r = client.get("/api/ensemble/run/bundle", params={
-        "aliases": "docs/ensemble/alias.json",
-        "known_names": ["docs/entity_inventory.md"],
-    })
+    r = client.get("/api/ensemble/run/bundle")
     assert r.status_code == 200
-    _ = r.text
-    cmd = captured["cmd"]
-    assert "--registry" not in cmd
-    assert cmd[cmd.index("--aliases") + 1] == "docs/ensemble/alias.json"
-    assert cmd[cmd.index("--known-names") + 1] == "docs/entity_inventory.md"
+    assert r.headers["content-type"].startswith("text/event-stream")
+    assert "No entity registry" in r.text
+    assert "cmd" not in captured
 
 
-def test_threads_prefers_registry_over_stale_aliases(tmp_path, monkeypatch):
+def test_threads_passes_registry(tmp_path, monkeypatch):
     captured = _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "docs").mkdir()
-    registry = tmp_path / "docs" / "entity_registry.yaml"
-    registry.write_text("version: 1\nentities: []\n")
+    registry = _write_registry(tmp_path)
 
-    r = client.get("/api/ensemble/run/threads",
-                   params={"aliases": "docs/ensemble/alias.json"})
+    r = client.get("/api/ensemble/run/threads")
     assert r.status_code == 200
     _ = r.text
     cmd = captured["cmd"]
     assert "--registry" in cmd
     assert cmd[cmd.index("--registry") + 1] == str(registry)
     assert "--aliases" not in cmd
+
+
+def test_threads_errors_without_registry(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+
+    r = client.get("/api/ensemble/run/threads")
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/event-stream")
+    assert "No entity registry" in r.text
+    assert "cmd" not in captured
+
+
+# ── world_state synthesis: same mandatory-registry gate, plus --inventory ──
+
+def test_synthesize_world_state_passes_registry(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    registry = _write_registry(tmp_path)
+
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "world_state"})
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--registry" in cmd
+    assert cmd[cmd.index("--registry") + 1] == str(registry)
+
+
+def test_synthesize_world_state_errors_without_registry(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "world_state"})
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/event-stream")
+    assert "No entity registry" in r.text
+    assert "cmd" not in captured
+
+
+def test_synthesize_world_state_passes_inventory(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    _write_registry(tmp_path)
+    inv_dir = tmp_path / "docs" / "background"
+    inv_dir.mkdir(parents=True)
+    inv = inv_dir / "inv.md"
+    inv.write_text("# Inventory\n")
+
+    r = client.get("/api/ensemble/run/synthesize", params={
+        "doc": "world_state", "inventory": "docs/background/inv.md",
+    })
+    assert r.status_code == 200
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--inventory" in cmd
+    assert cmd[cmd.index("--inventory") + 1] == str(inv)
+
+    # No param, and no cfg.paths.inventory set (this router has no
+    # EnsembleConfigService override here, so it's the schema default "") ->
+    # the flag must be entirely absent, not passed as an empty string.
+    r2 = client.get("/api/ensemble/run/synthesize", params={"doc": "world_state"})
+    assert r2.status_code == 200
+    _ = r2.text
+    assert "--inventory" not in captured["cmd"]
 
 
 # ── Subscription (claude-code) backend selection ────────────────────────────
@@ -277,6 +344,7 @@ def test_synthesize_forwards_claude_code_backend_and_model(tmp_path, monkeypatch
     env_extra (env_extra is never passed by any route anymore)."""
     captured = _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
+    _write_registry(tmp_path)
     r = client.get("/api/ensemble/run/synthesize", params={
         "doc": "world_state",
         "backend": "claude-code",
@@ -299,6 +367,7 @@ def test_bundle_forwards_claude_code_backend_and_model(tmp_path, monkeypatch):
     """Same cmd-based forwarding for the run_bundle route (-> facts_to_state.py)."""
     captured = _capture_cmd(monkeypatch)
     monkeypatch.chdir(tmp_path)
+    _write_registry(tmp_path)
     r = client.get("/api/ensemble/run/bundle", params={
         "backend": "claude-code",
         "model": "claude-opus-4-8",
