@@ -39,6 +39,7 @@ from campaignlib import (
     load_agent_prompt,
     find_alias_registry,
     load_alias_map,
+    resolve_extract_output,
     run_extract_pipeline,
     run_synthesize_pipeline,
 )
@@ -118,7 +119,7 @@ def main() -> None:
             sys.exit(1)
         print(f"\n[Pass 1: Extract | {len(text):,} chars | model: {args.model}]")
         print("=" * 60)
-        extract_files = run_extract_pipeline(
+        extract_result = run_extract_pipeline(
             client, text,
             extract_system=EXTRACT_SYSTEM,
             model=args.model,
@@ -129,7 +130,10 @@ def main() -> None:
             input_normalizer=normalize,
             system_suffix=roster,
             max_tokens=CITED_EXTRACT_MAX_TOKENS,
+            batch=args.batch,
         )
+        extract_files = resolve_extract_output(
+            extract_result, batch=args.batch, extract_dir=extract_dir)
         if not extract_files:
             print("Error: no chunks were extracted — input may be too short.", file=sys.stderr)
             sys.exit(1)
@@ -153,14 +157,19 @@ def main() -> None:
     print(f"\n[Pass 2: Synthesize | model: {args.model}]")
     print("=" * 60)
     id_assigner = CitationIdAssigner()
-    world_state = run_synthesize_pipeline(
-        client,
-        source_groups=[("", extract_files)],
-        synthesize_system=SYNTHESIZE_SYSTEM,
-        model=args.model,
-        input_normalizer=lambda body: id_assigner(normalize(body)),
-        system_suffix=roster,
-    )
+    try:
+        world_state = run_synthesize_pipeline(
+            client,
+            source_groups=[("", extract_files)],
+            synthesize_system=SYNTHESIZE_SYSTEM,
+            model=args.model,
+            input_normalizer=lambda body: id_assigner(normalize(body)),
+            system_suffix=roster,
+            batch=args.batch,
+        )
+    except RuntimeError as e:
+        print(f"Error: synthesis batch item failed: {e}", file=sys.stderr)
+        sys.exit(1)
     print("=" * 60)
     world_state = check_synthesis_citations(world_state, id_assigner.id_to_quote, extract_dir)
 

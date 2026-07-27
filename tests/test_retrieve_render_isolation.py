@@ -18,6 +18,8 @@ Retrieval sentinels (any call within the body):
 
 Render sentinels (any call within the body):
   * stream_api / call_api  (campaignlib.py)
+  * run_batch / run_single_batch  (campaignlib/api/batch.py — blocking Message
+    Batches render entry points, spec 004-claude-api-batch)
 
 The check is lexical (name-based) — good enough in practice because
 CampaignGenerator scripts use the shared names verbatim.
@@ -46,7 +48,7 @@ RETRIEVAL_NAMES = frozenset(
         "rpg_search",
     }
 )
-RENDER_NAMES = frozenset({"stream_api", "call_api"})
+RENDER_NAMES = frozenset({"stream_api", "call_api", "run_batch", "run_single_batch"})
 
 # Modules that ARE allowed to mix — they implement the plumbing or
 # explicitly own the MCP surface. The rule applies to higher-level

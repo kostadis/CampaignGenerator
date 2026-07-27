@@ -174,3 +174,84 @@ def test_no_tracked_items_omits_tracked_section(monkeypatch, fake_stream_api, tm
     synthesize_system = fake_stream_api.calls[1]["system"]
     assert "## Tracked Items" not in extract_system
     assert "Tracked Items Status" not in synthesize_system
+
+
+# ── --batch: routes through the batch entry points ───────────────────────────
+# campaign_state.py never imports run_batch/run_single_batch itself (both
+# extract and synthesize route through campaignlib.pipelines), so patching
+# that one module binding intercepts both stages — same rationale as
+# test_distill.py's equivalent fixture.
+
+class FakeRunBatch:
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, requests, **kwargs):
+        self.calls.append({"requests": requests, "kwargs": kwargs})
+        return {
+            r["custom_id"]: {"status": "succeeded", "text": f"[batch-{r['custom_id']}]",
+                             "stop_reason": "end_turn", "error": None, "usage": None}
+            for r in requests
+        }
+
+
+class FakeRunSingleBatch:
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, *, system, user, model, max_tokens=8192, **kwargs):
+        self.calls.append({"system": system, "user": user, "model": model,
+                           "max_tokens": max_tokens})
+        return "[batch-synth-result]"
+
+
+@pytest.fixture
+def fake_batch_entry_points(monkeypatch):
+    run_batch = FakeRunBatch()
+    run_single_batch = FakeRunSingleBatch()
+    monkeypatch.setattr(campaignlib.pipelines, "run_batch", run_batch)
+    monkeypatch.setattr(campaignlib.pipelines, "run_single_batch", run_single_batch)
+    monkeypatch.setattr(campaign_state, "make_client", lambda: None)
+    return run_batch, run_single_batch
+
+
+def test_batch_flag_routes_extract_and_synthesize_through_batch_entry_points(
+    monkeypatch, fake_batch_entry_points, tmp_path
+):
+    run_batch, run_single_batch = fake_batch_entry_points
+    input_file = tmp_path / "summaries.md"
+    input_file.write_text("some session content", encoding="utf-8")
+    output = tmp_path / "campaign_state.md"
+    extract_dir = tmp_path / "extractions"
+
+    monkeypatch.setattr(sys, "argv", [
+        "campaign_state.py", str(input_file),
+        "--output", str(output),
+        "--extract-dir", str(extract_dir),
+        "--batch",
+    ])
+    campaign_state.main()
+
+    assert len(run_batch.calls) == 1
+    assert len(run_single_batch.calls) == 1
+    assert output.exists()
+    assert output.read_text(encoding="utf-8").strip() == "[batch-synth-result]"
+
+
+def test_default_no_batch_path_unaffected_by_batch_wiring(monkeypatch, fake_stream_api, tmp_path):
+    """FR-011 regression guard — re-asserts test_default_run_calls_both_passes'
+    shape after the batch wiring landed."""
+    input_file = tmp_path / "summaries.md"
+    input_file.write_text("some session content", encoding="utf-8")
+    output = tmp_path / "campaign_state.md"
+    extract_dir = tmp_path / "extractions"
+
+    monkeypatch.setattr(sys, "argv", [
+        "campaign_state.py", str(input_file),
+        "--output", str(output),
+        "--extract-dir", str(extract_dir),
+    ])
+    campaign_state.main()
+
+    assert len(fake_stream_api.calls) == 2
+    assert output.exists()

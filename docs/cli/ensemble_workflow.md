@@ -46,6 +46,16 @@ Outputs always land in `*_draft.md`. Diff against the live doc and promote by ha
 
 ## Prerequisites
 
+> **Batch mode:** with `--backend anthropic --batch`, `extract_facts` (and
+> `ensemble`, which forwards the flag) groups all cache-miss chunks into one
+> Message Batch at 50% token cost — block-and-poll, atomic per-chunk cache
+> writes, non-zero exit on any failed chunk with the rest cached. The
+> synthesis CLIs (`synthesise_world_state`, `synthesise_polish`,
+> `facts_to_state`) accept it too; `polish` accepts but ignores it (agentic
+> tool-use loop — prints a notice). Unrelated to `ensemble_batch`, the local
+> multi-chapter dispatcher. See `docs/cli/cli_tools.md` § Shared flag.
+
+
 ### Spelling / proper-noun consistency pass (always run before Stage 1)
 
 AI transcription services (Zoom, Otter, Whisper) mangle proper nouns differently session to session. The ensemble model will create a separate entity for each surface variant — `Xenophon`, `Xenobon`, and `Zenvon` all become independent subjects — and the alias-review step (Stage 1a) can only collapse variants that appeared in the *same corpus run*. Correcting them upstream before extraction is cheaper and more reliable.

@@ -191,13 +191,17 @@ resolves the path per-request.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/002-ensemble-run-observability/plan.md` (Ensemble Run Observability —
-makes an ensemble-stage run observable and controllable from the `/ensemble` UI:
-a copyable, secret-free reproducible command; live streamed output; an
-unambiguous succeeded/failed/aborted result plus a durable on-disk run record;
-and abort = graceful→force process-group kill, where a lost connection is an
-implicit abort. Engine correctness — process-group kill in the shared
-`server/subprocess_runner.py` seam, atomic per-unit cache writes in
-`ensemble_batch.py`/`facts_to_state.py` — stays in the CLI/seam layer, not the
-router. Predecessor: `specs/001-ensemble-workflow-ui/plan.md`.).
+`specs/004-claude-api-batch/plan.md` (Claude API Batch Processing Option —
+makes Anthropic Message Batches (50% cost, async) a uniform `--batch` option of
+the anthropic backend across every LLM-bearing CLI. The seam already exists in
+`campaignlib/api/batch.py` (wired into scene_extract/enhance_summary); this
+feature promotes `--batch` into `add_backend_args`, hardens the seam (fail-fast
+non-anthropic rejection, batch-id line at submission, SIGINT/SIGTERM →
+remote cancel, per-item max_tokens truncation banner, per-item failure listing
+with non-zero exit, atomic per-unit writes), and routes multi-call pipelines
+(`run_extract_pipeline`, per-scene/per-file loops) through grouped submissions.
+Block-and-poll only; `sd_narrate`/`prep` stay sequential one-item batches
+(order-dependent chains); web UI out of scope. Predecessors:
+`specs/002-ensemble-run-observability/plan.md`,
+`specs/003-model-selection-resolution/`.).
 <!-- SPECKIT END -->

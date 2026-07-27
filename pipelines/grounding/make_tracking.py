@@ -20,7 +20,13 @@ import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import add_backend_args, client_from_args, stream_api, DEFAULT_MODEL
+from campaignlib import (
+    add_backend_args,
+    client_from_args,
+    run_single_batch,
+    stream_api,
+    DEFAULT_MODEL,
+)
 
 SYSTEM_PROMPT = """\
 You are reading a D&D adventure module or campaign document and extracting a tracking list.
@@ -80,7 +86,15 @@ def main() -> None:
     print("=" * 60)
 
     client = client_from_args(args)
-    result = stream_api(client, SYSTEM_PROMPT, text, args.model)
+    if args.batch:
+        try:
+            result = run_single_batch(client, system=SYSTEM_PROMPT, user=text,
+                                      model=args.model, max_tokens=8096)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        result = stream_api(client, SYSTEM_PROMPT, text, args.model)
     print("=" * 60)
 
     output = Path(args.output).expanduser()

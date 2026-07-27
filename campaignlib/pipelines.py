@@ -5,6 +5,8 @@ from pathlib import Path
 
 from .textproc import prepare_chunks
 from .api.client import stream_api
+from .api.batch import build_batch_request, run_batch, run_single_batch
+from .io_atomic import atomic_write_text as _atomic_write_text
 
 # Default per-chunk extraction output budget — matches stream_api's own
 # default. Most extract_system prompts produce compact notes well under this;
@@ -40,13 +42,22 @@ def run_extract_pipeline(
     input_normalizer=None,
     system_suffix: str = "",
     max_tokens: int = EXTRACT_MAX_TOKENS,
-) -> list[Path]:
+    batch: bool = False,
+) -> list[Path] | list[str]:
     """Chunk `text`, run `extract_system` against each chunk, cache each result to `extract_dir`.
 
     Files are named via `filename_template` (default `extract_NNN.md`; `{i}` is
     the 1-indexed chunk number). Existing files are skipped so a partial run
-    can be resumed. Returns the ordered list of output paths (including skipped
-    ones).
+    can be resumed.
+
+    Return value depends on `batch`:
+      batch=False (default) — returns the ordered list[Path] of output paths
+        (including skipped ones), unchanged from before this parameter existed
+        (FR-011: byte-identical behavior when --batch is absent).
+      batch=True — returns list[str], the custom_ids of chunks whose batch
+        item did NOT succeed (empty list on full success). Callers that need
+        the ordered list[Path] of extracted files should re-glob `extract_dir`
+        after checking this list is empty (see `resolve_extract_output`).
 
     input_normalizer — optional `Callable[[str], str]` applied to `text`
                        before chunking. Used to rewrite alias variants to
@@ -61,6 +72,18 @@ def run_extract_pipeline(
                        hitting the ceiling is a hard error with no partial
                        text, unlike the Anthropic API's graceful truncation —
                        so a too-low ceiling fails the whole chunk outright.
+    batch            — when True, submit every not-yet-extracted chunk as one
+                       Message Batch (`run_batch`) instead of the serial
+                       stream_api loop (FR-006). The missing-chunk set is
+                       computed with the identical skip-if-exists check used
+                       by the serial path, BEFORE any request is built — a
+                       fully-cached re-run submits nothing. Each request's
+                       `custom_id` is the chunk's output filename stem, so
+                       results map back to paths deterministically. Successful
+                       items are written atomically (tmp + os.replace) so a
+                       killed process never leaves a torn chunk file; a
+                       `FAILED <custom_id>: <status> <error>` line is printed
+                       to stderr for every non-succeeded item.
     """
     if input_normalizer:
         text = input_normalizer(text)
@@ -70,25 +93,99 @@ def run_extract_pipeline(
     chunks, label = prepare_chunks(text, chunk_size, split_chapters, split_label=split_label)
     total = len(chunks)
     extract_dir.mkdir(parents=True, exist_ok=True)
-    saved: list[Path] = []
 
+    if not batch:
+        saved: list[Path] = []
+        for i, chunk in enumerate(chunks, 1):
+            out_file = extract_dir / filename_template.format(i=i)
+            if out_file.exists():
+                print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
+                saved.append(out_file)
+                continue
+
+            print(f"  [{i}/{total}] Extracting {label} ({len(chunk):,} chars)...")
+            print("  " + "─" * 56)
+            result = stream_api(client, extract_system, chunk, model, max_tokens=max_tokens)
+            print("  " + "─" * 56)
+
+            out_file.write_text(result, encoding="utf-8")
+            saved.append(out_file)
+            print(f"  Saved: {out_file.name}\n")
+
+        return saved
+
+    # ── batch mode ────────────────────────────────────────────────────────
+    # Missing-chunk set computed BEFORE any request is built (Constitution
+    # VII) — identical skip-if-exists check as the serial loop above.
+    missing: list[tuple[Path, str]] = []
     for i, chunk in enumerate(chunks, 1):
         out_file = extract_dir / filename_template.format(i=i)
         if out_file.exists():
             print(f"  [{i}/{total}] Skipping (already exists): {out_file.name}")
-            saved.append(out_file)
             continue
+        missing.append((out_file, chunk))
 
-        print(f"  [{i}/{total}] Extracting {label} ({len(chunk):,} chars)...")
-        print("  " + "─" * 56)
-        result = stream_api(client, extract_system, chunk, model, max_tokens=max_tokens)
-        print("  " + "─" * 56)
+    if not missing:
+        print(f"  All {total} {label}(s) already extracted — nothing to submit.")
+        return []
 
-        out_file.write_text(result, encoding="utf-8")
-        saved.append(out_file)
-        print(f"  Saved: {out_file.name}\n")
+    requests = [
+        build_batch_request(
+            custom_id=out_file.stem,
+            system=extract_system,
+            user=chunk,
+            model=model,
+            max_tokens=max_tokens,
+        )
+        for out_file, chunk in missing
+    ]
+    print(f"  Submitting {len(requests)} of {total} {label}(s) as one batch...")
+    results = run_batch(client, requests, label=label)
 
-    return saved
+    by_id = {out_file.stem: out_file for out_file, _ in missing}
+    failed: list[str] = []
+    for custom_id, record in results.items():
+        out_file = by_id.get(custom_id)
+        if record["status"] != "succeeded":
+            failed.append(custom_id)
+            print(f"FAILED {custom_id}: {record['status']} {record.get('error')}",
+                  file=sys.stderr)
+            continue
+        if out_file is not None:
+            _atomic_write_text(out_file, record["text"])
+            print(f"  Saved: {out_file.name}")
+
+    return failed
+
+
+def resolve_extract_output(result, *, batch: bool, extract_dir: Path,
+                           pattern: str = "extract_*.md") -> list[Path]:
+    """Normalize `run_extract_pipeline`'s return value across modes for callers.
+
+    batch=False — `result` is already the ordered list[Path]
+      `run_extract_pipeline` returns; passed through unchanged.
+
+    batch=True — `result` is the list of failed custom_ids.
+      * Non-empty: at least one chunk's batch item did not succeed (its
+        `FAILED <custom_id>: ...` line was already printed by
+        `run_extract_pipeline`). Prints a summary and exits the process
+        (successful chunks are already saved to disk — only the missing ones
+        need a re-run).
+      * Empty: full success. `run_extract_pipeline`'s batch branch does not
+        reconstruct the ordered Path list itself (only the failure set), so
+        this re-globs `extract_dir` for it — the same pattern the CLIs
+        already use for `--synthesize-only`.
+    """
+    if not batch:
+        return result
+    failed = result
+    if failed:
+        print(f"Error: {len(failed)} extraction chunk(s) failed in the batch "
+              f"(see FAILED lines above). Successful chunks are saved in "
+              f"{extract_dir} — re-run with --batch to retry only the missing "
+              f"one(s).", file=sys.stderr)
+        sys.exit(1)
+    return sorted(extract_dir.glob(pattern))
 
 
 def run_synthesize_pipeline(
@@ -105,6 +202,7 @@ def run_synthesize_pipeline(
     system_suffix: str = "",
     dump_input: str | None = None,
     dump_only: bool = False,
+    batch: bool = False,
 ) -> str:
     """Concat labeled file groups into a user prompt, call `stream_api`, return the response.
 
@@ -112,6 +210,13 @@ def run_synthesize_pipeline(
                      `SYNTHESIS_MAX_TOKENS`). Whole-document synthesis needs far
                      more headroom than per-chunk extraction; a ceiling, not a
                      target — it permits a longer document, it does not force one.
+
+    batch          — when True, route the single synthesis call through
+                     `run_single_batch` instead of live `stream_api` (same
+                     system/user/model/max_tokens) — the 50% Message Batches
+                     discount, one-item batch. Raises `RuntimeError` if that
+                     item does not succeed (single-call CLIs have no
+                     unit<->file map to report a partial failure against).
 
     source_groups — list of tuples in one of two shapes:
                       `(heading, files)` — uses the default `source_label`
@@ -180,6 +285,10 @@ def run_synthesize_pipeline(
 
     print(f"  Synthesizing {total_files} source file(s) ({len(user_prompt):,} chars total)...")
     print("  " + "─" * 56)
-    result = stream_api(client, synthesize_system, user_prompt, model, max_tokens=max_tokens)
+    if batch:
+        result = run_single_batch(client, system=synthesize_system, user=user_prompt,
+                                  model=model, max_tokens=max_tokens)
+    else:
+        result = stream_api(client, synthesize_system, user_prompt, model, max_tokens=max_tokens)
     print("  " + "─" * 56)
     return result

@@ -731,6 +731,35 @@ def sanity_check(doc: WorkingDoc, roster_names: set[str]) -> list[str]:
     return warnings
 
 
+# ── --batch (accepted, structurally unsupported) ─────────────────────────────
+#
+# add_backend_args() gives every LLM-bearing CLI --batch for vocabulary
+# consistency (spec 004), and client_from_args() still fails fast if it's
+# combined with a non-anthropic backend. But polish.py's loop drives its own
+# control flow through call_api_with_tools: each turn sends `tools=
+# TOOL_SCHEMAS` plus a `messages` list that accumulates every prior
+# assistant/tool_result turn. The Message Batches seam (`build_batch_request`
+# / `run_single_batch`, campaignlib/api/batch.py) only expresses a single
+# system + user turn — no `tools`, no multi-turn `messages` — so there is no
+# request shape to submit per turn. This is a stricter block than the
+# "sequential one-item batches" pattern used by other order-dependent chains
+# (prep.py, sd_narrate.py): those chains are still plain single-turn calls,
+# just run one at a time; polish.py's calls are not single-turn at all.
+# Extending the seam to carry tools/messages would fix this, but that's a
+# campaignlib change, out of scope here — --batch is accepted and validated,
+# then silently has no effect without this notice.
+
+def _warn_batch_unsupported(batch: bool) -> None:
+    if not batch:
+        return
+    print("Note: --batch has no effect on polish.py — its agentic tool-use "
+          "loop (call_api_with_tools, multi-turn messages + tools) isn't "
+          "representable by the Message Batches request shape "
+          "(build_batch_request/run_single_batch support a single "
+          "system+user turn only). Every turn still runs as a live call.",
+          file=sys.stderr)
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -862,6 +891,7 @@ def main() -> None:
     )
 
     client = client_from_args(args)
+    _warn_batch_unsupported(args.batch)
 
     print(f"\nTrace: {trace_path}")
     print("=" * 60)

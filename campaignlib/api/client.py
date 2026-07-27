@@ -83,6 +83,12 @@ def add_backend_args(parser, default_backend: str = "anthropic") -> None:
     parser.add_argument(
         "--endpoint", default=None, metavar="URL",
         help="OpenAI-compatible endpoint for --backend dgx (OpenRouter uses its own base URL).")
+    parser.add_argument(
+        "--batch", action="store_true", default=False,
+        help="Process Claude API calls through the Message Batches API (50%% "
+             "token cost, asynchronous; blocks and polls until complete). "
+             "Anthropic backend only. Unrelated to ensemble_batch (local "
+             "dispatch).")
 
 
 def client_from_args(args, *, endpoint: str | None = None):
@@ -97,7 +103,25 @@ def client_from_args(args, *, endpoint: str | None = None):
     ``endpoint`` — explicit override that wins over ``args.endpoint``, for
     callers that resolve a specific endpoint from a fan-out pool at call time
     (e.g. facts_to_state.py's per-thread worker, one client per DGX box).
+
+    Fails fast (``SystemExit``, before any client construction or token
+    spend) when ``args.batch`` is set and the resolved backend isn't
+    anthropic — mirrors make_client's own ``backend or CG_BACKEND`` env
+    precedence so ``--backend anthropic`` (the default) plus
+    ``CG_BACKEND=openrouter`` is caught too, not just an explicit
+    ``--backend``.
     """
+    if getattr(args, "batch", False):
+        arg_backend = getattr(args, "backend", "anthropic")
+        resolved_backend = (
+            arg_backend if arg_backend != "anthropic"
+            else (os.environ.get("CG_BACKEND") or "anthropic")
+        )
+        if resolved_backend != "anthropic":
+            raise SystemExit(
+                "--batch requires the Claude API backend (--backend anthropic); "
+                f"backend '{resolved_backend}' has no batch support"
+            )
     backend = None if getattr(args, "backend", "anthropic") == "anthropic" else args.backend
     model_override = getattr(args, "model", None) if backend in ("dgx", "openrouter", "claude-code") else None
     resolved_endpoint = endpoint if endpoint is not None else getattr(args, "endpoint", None)

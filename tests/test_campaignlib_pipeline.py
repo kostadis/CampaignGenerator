@@ -35,6 +35,58 @@ def fake_stream_api(monkeypatch):
     return fake
 
 
+class FakeRunBatch:
+    """Callable stub for campaignlib.pipelines.run_batch: records the
+    requests it was called with and returns a results dict keyed by
+    custom_id. Every item succeeds by default; `status_by_id` overrides
+    specific custom_ids to simulate partial failure."""
+
+    def __init__(self, status_by_id=None):
+        self.calls = []
+        self._status_by_id = status_by_id or {}
+
+    def __call__(self, client, requests, **kwargs):
+        self.calls.append({"requests": requests, "kwargs": kwargs})
+        results = {}
+        for r in requests:
+            cid = r["custom_id"]
+            status = self._status_by_id.get(cid, "succeeded")
+            if status == "succeeded":
+                results[cid] = {"status": "succeeded", "text": f"[batch-result-{cid}]",
+                                "stop_reason": "end_turn", "error": None, "usage": None}
+            else:
+                results[cid] = {"status": status, "text": None,
+                                "stop_reason": None, "error": "boom", "usage": None}
+        return results
+
+
+@pytest.fixture
+def fake_run_batch(monkeypatch):
+    fake = FakeRunBatch()
+    monkeypatch.setattr(campaignlib.pipelines, "run_batch", fake)
+    return fake
+
+
+class FakeRunSingleBatch:
+    """Callable stub for campaignlib.pipelines.run_single_batch."""
+
+    def __init__(self, response="[batch-synth-result]"):
+        self.calls = []
+        self._response = response
+
+    def __call__(self, client, *, system, user, model, max_tokens=8192, **kwargs):
+        self.calls.append({"system": system, "user": user, "model": model,
+                           "max_tokens": max_tokens})
+        return self._response
+
+
+@pytest.fixture
+def fake_run_single_batch(monkeypatch):
+    fake = FakeRunSingleBatch()
+    monkeypatch.setattr(campaignlib.pipelines, "run_single_batch", fake)
+    return fake
+
+
 # ── run_extract_pipeline ─────────────────────────────────────────────────────
 
 def test_extract_chunks_and_writes_files(fake_stream_api, tmp_path):
@@ -145,6 +197,146 @@ def test_extract_creates_output_dir(fake_stream_api, tmp_path):
         extract_dir=nested, chunk_size=60000,
     )
     assert nested.exists()
+
+
+# ── run_extract_pipeline(batch=True) ─────────────────────────────────────────
+
+def test_extract_batch_excludes_precomputed_chunks_from_requests(fake_run_batch, tmp_path):
+    extract_dir = tmp_path / "e"
+    extract_dir.mkdir()
+    (extract_dir / "extract_001.md").write_text("precomputed", encoding="utf-8")
+    text = "\n\n".join("para " + ("x " * 300) for _ in range(3))
+
+    failed = campaignlib.run_extract_pipeline(
+        client=None, text=text,
+        extract_system="SYS", model="m",
+        extract_dir=extract_dir, chunk_size=500,
+        batch=True,
+    )
+
+    assert failed == []
+    assert len(fake_run_batch.calls) == 1
+    ids = [r["custom_id"] for r in fake_run_batch.calls[0]["requests"]]
+    assert "extract_001" not in ids  # already on disk — must not be requested
+    assert len(ids) >= 1
+
+
+def test_extract_batch_writes_results_to_same_paths_as_serial(fake_run_batch, tmp_path):
+    extract_dir = tmp_path / "e"
+    campaignlib.run_extract_pipeline(
+        client=None, text="short",
+        extract_system="SYS", model="m",
+        extract_dir=extract_dir, chunk_size=60000,
+        batch=True,
+    )
+    out_file = extract_dir / "extract_001.md"  # same path the serial loop uses
+    assert out_file.exists()
+    assert out_file.read_text(encoding="utf-8") == "[batch-result-extract_001]"
+
+
+def test_extract_batch_uses_atomic_write(monkeypatch, tmp_path):
+    recorded = []
+
+    def fake_atomic_write(path, text):
+        recorded.append(Path(path))
+        Path(path).write_text(text, encoding="utf-8")
+
+    monkeypatch.setattr(campaignlib.pipelines, "_atomic_write_text", fake_atomic_write)
+    monkeypatch.setattr(campaignlib.pipelines, "run_batch", FakeRunBatch())
+
+    extract_dir = tmp_path / "e"
+    campaignlib.run_extract_pipeline(
+        client=None, text="short",
+        extract_system="SYS", model="m",
+        extract_dir=extract_dir, chunk_size=60000,
+        batch=True,
+    )
+
+    assert recorded == [extract_dir / "extract_001.md"]
+    assert not list(extract_dir.glob("*.tmp.*"))  # no leftover tmp files
+
+
+def test_extract_batch_empty_missing_set_skips_submission(fake_run_batch, tmp_path):
+    extract_dir = tmp_path / "e"
+    extract_dir.mkdir()
+    (extract_dir / "extract_001.md").write_text("precomputed", encoding="utf-8")
+
+    failed = campaignlib.run_extract_pipeline(
+        client=None, text="short",
+        extract_system="SYS", model="m",
+        extract_dir=extract_dir, chunk_size=60000,
+        batch=True,
+    )
+
+    assert failed == []
+    assert len(fake_run_batch.calls) == 0  # nothing missing — run_batch never called
+
+
+def test_extract_batch_partial_failure_returns_failed_ids_and_keeps_successes(
+    monkeypatch, tmp_path, capsys
+):
+    fake = FakeRunBatch(status_by_id={"extract_002": "errored"})
+    monkeypatch.setattr(campaignlib.pipelines, "run_batch", fake)
+
+    text = "\n\n".join("para " + ("x " * 300) for _ in range(3))
+    extract_dir = tmp_path / "e"
+
+    failed = campaignlib.run_extract_pipeline(
+        client=None, text=text,
+        extract_system="SYS", model="m",
+        extract_dir=extract_dir, chunk_size=500,
+        batch=True,
+    )
+
+    assert failed == ["extract_002"]
+    assert (extract_dir / "extract_001.md").exists()  # success stays on disk
+    assert not (extract_dir / "extract_002.md").exists()  # failure never written
+    err = capsys.readouterr().err
+    assert "FAILED extract_002: errored boom" in err
+
+
+def test_extract_batch_custom_id_matches_filename_stem(fake_run_batch, tmp_path):
+    extract_dir = tmp_path / "e"
+    campaignlib.run_extract_pipeline(
+        client=None, text="x",
+        extract_system="", model="m",
+        extract_dir=extract_dir, chunk_size=60000,
+        filename_template="dossier_extract_{i:03d}.md",
+        batch=True,
+    )
+    assert fake_run_batch.calls[0]["requests"][0]["custom_id"] == "dossier_extract_001"
+
+
+def test_extract_batch_false_is_byte_identical_to_pre_batch_behavior(fake_stream_api, tmp_path):
+    """FR-011: with batch=False (the default), behavior is unchanged."""
+    result = campaignlib.run_extract_pipeline(
+        client=None, text="short",
+        extract_system="SYS", model="m",
+        extract_dir=tmp_path / "e", chunk_size=60000,
+    )
+    assert result[0].name == "extract_001.md"
+    assert len(fake_stream_api.calls) == 1
+
+
+# ── resolve_extract_output ────────────────────────────────────────────────────
+
+def test_resolve_extract_output_passthrough_when_not_batch(tmp_path):
+    paths = [tmp_path / "a.md"]
+    assert campaignlib.resolve_extract_output(paths, batch=False, extract_dir=tmp_path) is paths
+
+
+def test_resolve_extract_output_globs_extract_dir_on_batch_success(tmp_path):
+    (tmp_path / "extract_001.md").write_text("x", encoding="utf-8")
+    (tmp_path / "extract_002.md").write_text("y", encoding="utf-8")
+    result = campaignlib.resolve_extract_output([], batch=True, extract_dir=tmp_path)
+    assert result == [tmp_path / "extract_001.md", tmp_path / "extract_002.md"]
+
+
+def test_resolve_extract_output_exits_on_batch_failure(tmp_path, capsys):
+    with pytest.raises(SystemExit):
+        campaignlib.resolve_extract_output(["extract_002"], batch=True, extract_dir=tmp_path)
+    err = capsys.readouterr().err
+    assert "1 extraction chunk(s) failed" in err
 
 
 # ── run_synthesize_pipeline ──────────────────────────────────────────────────
@@ -321,6 +513,46 @@ def test_synthesize_strips_trailing_whitespace_from_file_contents(fake_stream_ap
     prompt = fake_stream_api.calls[0]["user"]
     assert "alpha with padding" in prompt
     assert not prompt.endswith("   \n\n")
+
+
+# ── run_synthesize_pipeline(batch=True) ──────────────────────────────────────
+
+def test_synthesize_batch_routes_through_run_single_batch(fake_run_single_batch, tmp_path):
+    f1 = _write(tmp_path / "a.md", "alpha content")
+    result = campaignlib.run_synthesize_pipeline(
+        client=None,
+        source_groups=[("", [f1])],
+        synthesize_system="SYS", model="m",
+        batch=True,
+    )
+    assert len(fake_run_single_batch.calls) == 1
+    assert result == "[batch-synth-result]"
+    assert "alpha content" in fake_run_single_batch.calls[0]["user"]
+    assert fake_run_single_batch.calls[0]["system"] == "SYS"
+    assert fake_run_single_batch.calls[0]["model"] == "m"
+
+
+def test_synthesize_batch_false_still_uses_stream_api(fake_stream_api, tmp_path):
+    f1 = _write(tmp_path / "a.md", "x")
+    campaignlib.run_synthesize_pipeline(
+        client=None,
+        source_groups=[("", [f1])],
+        synthesize_system="SYS", model="m",
+        batch=False,
+    )
+    assert len(fake_stream_api.calls) == 1
+
+
+def test_synthesize_batch_forwards_max_tokens(fake_run_single_batch, tmp_path):
+    f1 = _write(tmp_path / "a.md", "x")
+    campaignlib.run_synthesize_pipeline(
+        client=None,
+        source_groups=[("", [f1])],
+        synthesize_system="", model="m",
+        max_tokens=5000,
+        batch=True,
+    )
+    assert fake_run_single_batch.calls[0]["max_tokens"] == 5000
 
 
 # ── input_normalizer / system_suffix kwargs ──────────────────────────────────
@@ -525,3 +757,24 @@ def test_format_npc_roster_renders_sorted_with_aliases():
 def test_normalize_npc_key_strips_punctuation_and_case():
     assert campaignlib.normalize_npc_key("Harbin (Townmaster)") == "harbin townmaster"
     assert campaignlib.normalize_npc_key("Elara 'Seasong' Meliamne") == "elara seasong meliamne"
+
+
+@pytest.mark.parametrize("status", ["expired", "canceled"])
+def test_extract_batch_expired_and_canceled_count_as_failures(
+    monkeypatch, tmp_path, capsys, status
+):
+    """T026: the Batch API's other terminal item states are failures too —
+    an expired or canceled item must not be mistaken for a success."""
+    fake = FakeRunBatch(status_by_id={"extract_001": status})
+    monkeypatch.setattr(campaignlib.pipelines, "run_batch", fake)
+
+    failed = campaignlib.run_extract_pipeline(
+        client=None, text="short",
+        extract_system="SYS", model="m",
+        extract_dir=tmp_path / "e", chunk_size=60000,
+        batch=True,
+    )
+
+    assert failed == ["extract_001"]
+    assert not (tmp_path / "e" / "extract_001.md").exists()
+    assert f"FAILED extract_001: {status}" in capsys.readouterr().err

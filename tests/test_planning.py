@@ -823,3 +823,130 @@ npcs:
     }
     assert '[cite:1 "Adabra sealed the rift"]' in captured[0]
     assert '[cite:2 "Grundar swore vengeance"]' in captured[1]
+
+
+# ── --batch: routes through the batch entry points ───────────────────────────
+# planning.py's extract fan-out routes through campaignlib.pipelines (patch
+# run_batch there), but BOTH synthesis functions (run_synthesize and
+# run_synthesize_with_config) call run_single_batch directly — planning.py
+# imports it into its own namespace, so that binding needs patching too
+# (mirrors the existing fake_stream_api fixture's two-binding pattern above).
+
+class FakeRunBatch:
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, requests, **kwargs):
+        self.calls.append({"requests": requests, "kwargs": kwargs})
+        return {
+            r["custom_id"]: {"status": "succeeded", "text": f"[batch-{r['custom_id']}]",
+                             "stop_reason": "end_turn", "error": None, "usage": None}
+            for r in requests
+        }
+
+
+class FakeRunSingleBatch:
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, *, system, user, model, max_tokens=8192, **kwargs):
+        self.calls.append({"system": system, "user": user, "model": model,
+                           "max_tokens": max_tokens})
+        return "[batch-synth-result]"
+
+
+@pytest.fixture
+def fake_batch_entry_points(monkeypatch):
+    run_batch = FakeRunBatch()
+    run_single_batch = FakeRunSingleBatch()
+    monkeypatch.setattr(campaignlib.pipelines, "run_batch", run_batch)
+    monkeypatch.setattr(planning, "run_single_batch", run_single_batch)
+    monkeypatch.setattr(planning, "make_client", lambda: None)
+    return run_batch, run_single_batch
+
+
+def test_batch_flag_routes_extract_fan_out_through_run_batch(
+    monkeypatch, fake_batch_entry_points, tmp_path
+):
+    run_batch, _run_single_batch = fake_batch_entry_points
+    summaries = _write(tmp_path / "summaries.md", "some session content")
+    output = tmp_path / "planning.md"
+    extract_dir = tmp_path / "extractions"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--summaries", str(summaries),
+        "--output", str(output),
+        "--extract-dir", str(extract_dir),
+        "--extract-only",
+        "--batch",
+    ])
+    planning.main()
+
+    assert len(run_batch.calls) == 1
+    assert any(extract_dir.glob("extract_*.md"))
+
+
+def test_batch_flag_routes_flat_synthesis_through_run_single_batch(
+    monkeypatch, fake_batch_entry_points, tmp_path
+):
+    """The --npc (no --planning-config) path goes through run_synthesize()."""
+    _run_batch, run_single_batch = fake_batch_entry_points
+    npc = _write_dossier(tmp_path / "grundar.md", "Grundar")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--npc", str(npc),
+        "--output", str(output),
+        "--batch",
+    ])
+    planning.main()
+
+    assert len(run_single_batch.calls) == 1
+    assert run_single_batch.calls[0]["max_tokens"] == planning.SYNTH_MAX_TOKENS
+    assert output.exists()
+
+
+def test_batch_flag_routes_config_synthesis_through_run_single_batch(
+    monkeypatch, fake_batch_entry_points, tmp_path
+):
+    """The --planning-config path goes through run_synthesize_with_config()."""
+    monkeypatch.chdir(tmp_path)
+    _run_batch, run_single_batch = fake_batch_entry_points
+    _write_dossier(tmp_path / "adabra.md", "Adabra")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Adabra
+    dossier: adabra.md
+""")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--planning-config", str(cfg),
+        "--output", str(output),
+        "--batch",
+    ])
+    planning.main()
+
+    assert len(run_single_batch.calls) == 1
+    assert output.exists()
+
+
+def test_default_no_batch_path_unaffected_by_batch_wiring(monkeypatch, fake_stream_api, tmp_path):
+    """FR-011 regression guard — the default (no --batch) flat-path flow is
+    unchanged after the batch wiring landed (same shape as
+    test_synthesis_uses_default_synth_max_tokens above)."""
+    npc = _write_dossier(tmp_path / "grundar.md", "Grundar")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--npc", str(npc),
+        "--output", str(output),
+    ])
+    planning.main()
+
+    assert len(fake_stream_api.calls) == 1
+    assert output.exists()

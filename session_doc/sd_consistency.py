@@ -17,6 +17,7 @@ from campaignlib import (
     add_backend_args,
     client_from_args,
     load_agent_prompt,
+    run_single_batch,
     stream_api,
 )
 
@@ -76,12 +77,22 @@ def main() -> None:
 
     client = client_from_args(args)
     system = load_agent_prompt("session_doc/consistency")
+    user_prompt = "\n\n---\n\n".join(parts)
 
     print(f"[sd_consistency: Pass 1 | model: {args.model} | "
           f"{len(context_parts)} context file(s)]")
     print("=" * 60)
-    report = stream_api(client, system, "\n\n---\n\n".join(parts),
-                        args.model, silent=True, verbose=args.verbose)
+    if args.batch:
+        try:
+            report = run_single_batch(client, system=system, user=user_prompt,
+                                      model=args.model, max_tokens=8096,
+                                      cache_system=False)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        report = stream_api(client, system, user_prompt,
+                            args.model, silent=True, verbose=args.verbose)
     print("=" * 60)
 
     out_path = Path(args.out).expanduser()

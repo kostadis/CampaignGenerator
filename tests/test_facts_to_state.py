@@ -3,6 +3,7 @@
 Covers the deterministic Stage-1 logic (bundling, chapter ordering, type/floor
 selection, render) where the precision lives. No API / no model calls.
 """
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from pipelines.ensemble import facts_to_state as fts  # noqa: E402
+from campaignlib import add_backend_args  # noqa: E402
 from campaignlib.registry import load_registry  # noqa: E402
 from pipelines.ensemble.synthesise_world_state import load_dossiers  # noqa: E402
 
@@ -304,6 +306,215 @@ def test_load_dossiers_filters_by_nfacts(tmp_path):
     kept = load_dossiers(list(tmp_path.glob("*.md")), min_facts=20)
     assert [stem for stem, _ in kept] == ["npc_a"]   # only A passes the floor
     assert "body A" in kept[0][1]
+
+
+# ── --batch (spec 004-claude-api-batch, T021) ────────────────────────────────
+
+def test_batch_flag_wording_matches_registrar():
+    """facts_to_state hand-rolls --backend/--endpoints instead of calling
+    add_backend_args (it needs a plural --endpoints, which would collide with
+    the registrar's singular --endpoint) — but --batch must still be spelled,
+    defaulted, and documented identically (FR-001/FR-002), so this syncs the
+    two sources of truth directly rather than eyeballing it."""
+    registrar_parser = argparse.ArgumentParser()
+    registrar_parser.add_argument("--model", default="claude-sonnet-4-6")
+    add_backend_args(registrar_parser)
+    registrar_action = next(
+        a for a in registrar_parser._actions if "--batch" in a.option_strings)
+
+    fts_parser = fts.build_parser()
+    fts_action = next(
+        a for a in fts_parser._actions if "--batch" in a.option_strings)
+
+    assert fts_action.help == registrar_action.help
+    assert fts_action.default == registrar_action.default is False
+    assert fts_action.const == registrar_action.const is True  # store_true
+
+
+def test_batch_defaults_false_and_toggles_on():
+    p = fts.build_parser()
+    args = p.parse_args(["--corpus", "x", "--list"])
+    assert args.batch is False
+    args = p.parse_args(["--corpus", "x", "--list", "--batch"])
+    assert args.batch is True
+
+
+# ── check_batch_backend: fires once, up front, before any work ───────────────
+
+def test_check_batch_backend_noop_when_batch_absent():
+    ns = argparse.Namespace(batch=False, backend="dgx")
+    fts.check_batch_backend(ns)  # must not raise regardless of backend
+
+
+def test_check_batch_backend_allows_anthropic(monkeypatch):
+    monkeypatch.delenv("CG_BACKEND", raising=False)
+    ns = argparse.Namespace(batch=True, backend="anthropic")
+    fts.check_batch_backend(ns)  # must not raise
+
+
+@pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+def test_check_batch_backend_rejects_non_anthropic(backend, monkeypatch):
+    monkeypatch.delenv("CG_BACKEND", raising=False)
+    ns = argparse.Namespace(batch=True, backend=backend)
+    with pytest.raises(SystemExit) as exc_info:
+        fts.check_batch_backend(ns)
+    msg = str(exc_info.value)
+    assert "--batch requires the Claude API backend (--backend anthropic)" in msg
+    assert f"backend '{backend}' has no batch support" in msg
+
+
+def test_check_batch_backend_rejects_via_cg_backend_env(monkeypatch):
+    """--backend anthropic (the default) + CG_BACKEND=openrouter must still
+    be rejected — env-driven resolution, not just the explicit flag."""
+    monkeypatch.setenv("CG_BACKEND", "openrouter")
+    ns = argparse.Namespace(batch=True, backend="anthropic")
+    with pytest.raises(SystemExit) as exc_info:
+        fts.check_batch_backend(ns)
+    assert "backend 'openrouter' has no batch support" in str(exc_info.value)
+
+
+def test_main_rejects_batch_before_any_corpus_or_client_work(tmp_path, monkeypatch):
+    """End-to-end: --batch + a non-anthropic backend must abort before
+    expand_globs (corpus loading) or client construction — not merely before
+    the worker threads. Trips an assertion if either runs."""
+    def _boom_globs(*a, **kw):
+        raise AssertionError("expand_globs must not run before the --batch rejection")
+
+    def _boom_client(*a, **kw):
+        raise AssertionError("client_from_args must not run before the --batch rejection")
+
+    monkeypatch.setattr(fts, "expand_globs", _boom_globs)
+    monkeypatch.setattr(fts, "client_from_args", _boom_client)
+    monkeypatch.delenv("CG_BACKEND", raising=False)
+    monkeypatch.setattr(sys, "argv", [
+        "facts_to_state.py",
+        "--corpus", str(tmp_path / "gen-ch*" / "merged.json"),
+        "--out-dir", str(tmp_path / "out"),
+        "--backend", "dgx",
+        "--batch",
+    ])
+    with pytest.raises(SystemExit) as exc_info:
+        fts.main()
+    assert "backend 'dgx' has no batch support" in str(exc_info.value)
+
+
+# ── batch aggregation path: grouped submission + partial failure ────────────
+
+def _write_two_npc_corpus(tmp_path):
+    (tmp_path / "gen-ch01").mkdir()
+    (tmp_path / "gen-ch01" / "merged.json").write_text(json.dumps([
+        _fact("npc", "Alpha", "did a thing"),
+        _fact("npc", "Beta", "did another thing"),
+    ]), encoding="utf-8")
+    return tmp_path
+
+
+class FakeRunBatch:
+    """Records the single grouped call and returns caller-controlled records."""
+
+    def __init__(self, records_by_id):
+        self.calls = []
+        self.records_by_id = records_by_id
+
+    def __call__(self, client, requests, **kwargs):
+        self.calls.append({"client": client, "requests": requests, "kwargs": kwargs})
+        return {r["custom_id"]: self.records_by_id[r["custom_id"]] for r in requests}
+
+
+def _succeeded(text):
+    return {"status": "succeeded", "text": text, "stop_reason": "end_turn",
+            "error": None, "usage": None}
+
+
+def _errored(error):
+    return {"status": "errored", "text": None, "stop_reason": None,
+            "error": error, "usage": None}
+
+
+def test_batch_mode_groups_per_unit_calls_into_one_submission(tmp_path, monkeypatch):
+    _write_two_npc_corpus(tmp_path)
+    out_dir = tmp_path / "out"
+    fake_run_batch = FakeRunBatch({
+        "npc_alpha": _succeeded("ALPHA DOSSIER BODY"),
+        "npc_beta": _succeeded("BETA DOSSIER BODY"),
+    })
+    monkeypatch.setattr(fts, "run_batch", fake_run_batch)
+    monkeypatch.setattr(fts, "client_from_args", lambda *a, **kw: "FAKE_CLIENT")
+    monkeypatch.setattr(sys, "argv", [
+        "facts_to_state.py",
+        "--corpus", str(tmp_path / "gen-ch*" / "merged.json"),
+        "--out-dir", str(out_dir),
+        "--min-facts", "1",
+        "--batch",
+    ])
+    fts.main()
+
+    # One grouped submission, one request per unit (not one call per entity).
+    assert len(fake_run_batch.calls) == 1
+    requests = fake_run_batch.calls[0]["requests"]
+    assert {r["custom_id"] for r in requests} == {"npc_alpha", "npc_beta"}
+    assert fake_run_batch.calls[0]["client"] == "FAKE_CLIENT"
+
+    assert (out_dir / "npc_alpha.md").read_text(encoding="utf-8").strip().endswith(
+        "ALPHA DOSSIER BODY")
+    assert (out_dir / "npc_beta.md").read_text(encoding="utf-8").strip().endswith(
+        "BETA DOSSIER BODY")
+
+
+def test_batch_mode_partial_failure_writes_successes_and_exits_nonzero(
+    tmp_path, monkeypatch, capsys
+):
+    _write_two_npc_corpus(tmp_path)
+    out_dir = tmp_path / "out"
+    fake_run_batch = FakeRunBatch({
+        "npc_alpha": _succeeded("ALPHA DOSSIER BODY"),
+        "npc_beta": _errored("boom"),
+    })
+    monkeypatch.setattr(fts, "run_batch", fake_run_batch)
+    monkeypatch.setattr(fts, "client_from_args", lambda *a, **kw: "FAKE_CLIENT")
+    monkeypatch.setattr(sys, "argv", [
+        "facts_to_state.py",
+        "--corpus", str(tmp_path / "gen-ch*" / "merged.json"),
+        "--out-dir", str(out_dir),
+        "--min-facts", "1",
+        "--batch",
+    ])
+    with pytest.raises(SystemExit) as exc_info:
+        fts.main()
+    assert exc_info.value.code != 0
+
+    # Successful item's dossier is written; the errored one's is not.
+    assert (out_dir / "npc_alpha.md").exists()
+    assert not (out_dir / "npc_beta.md").exists()
+
+    stderr = capsys.readouterr().err
+    assert "FAILED npc_beta: errored boom" in stderr
+
+
+def test_batch_mode_all_cached_submits_nothing(tmp_path, monkeypatch):
+    """Resumable behavior carries over to batch mode: entities whose dossier
+    already exists on disk are excluded from the request set, same as the
+    threaded path's skip-if-exists check — an empty todo list must not call
+    run_batch at all (submit_batch raises on an empty requests list)."""
+    _write_two_npc_corpus(tmp_path)
+    out_dir = tmp_path / "out"
+    out_dir.mkdir(parents=True)
+    (out_dir / "npc_alpha.md").write_text("already here", encoding="utf-8")
+    (out_dir / "npc_beta.md").write_text("already here", encoding="utf-8")
+
+    def _boom(*a, **kw):
+        raise AssertionError("run_batch must not be called when nothing is missing")
+
+    monkeypatch.setattr(fts, "run_batch", _boom)
+    monkeypatch.setattr(fts, "client_from_args", lambda *a, **kw: "FAKE_CLIENT")
+    monkeypatch.setattr(sys, "argv", [
+        "facts_to_state.py",
+        "--corpus", str(tmp_path / "gen-ch*" / "merged.json"),
+        "--out-dir", str(out_dir),
+        "--min-facts", "1",
+        "--batch",
+    ])
+    fts.main()  # must return normally, not raise
 
 
 def test_known_names_accepts_repeated_flags():

@@ -6,13 +6,16 @@ Reads a campaign dossier and uses Claude to extract it into either:
   - A single session beat       (--single) → paste into: prep --beat
 
 Output is printed to stdout and optionally saved with --output.
+
+Batch mode (--batch): the single Claude call is submitted as a one-item
+Message Batch (50% token cost, asynchronous; blocks and polls until complete).
 """
 
 import argparse
 import sys
 from pathlib import Path
 
-from campaignlib import add_backend_args, client_from_args, stream_api, DEFAULT_MODEL
+from campaignlib import add_backend_args, client_from_args, run_single_batch, stream_api, DEFAULT_MODEL
 
 
 OUTLINE_SYSTEM = """\
@@ -85,7 +88,14 @@ def main() -> None:
     print(f"[Transforming dossier → {mode_label}...]\n", file=sys.stderr)
 
     client = client_from_args(args)
-    result = stream_api(client, system, dossier, args.model, max_tokens=1024)
+    if args.batch:
+        try:
+            result = run_single_batch(client, system=system, user=dossier, model=args.model, max_tokens=1024)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        result = stream_api(client, system, dossier, args.model, max_tokens=1024)
 
     if args.output:
         out_path = Path(args.output).expanduser()

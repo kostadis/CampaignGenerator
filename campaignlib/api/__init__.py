@@ -5,5 +5,6 @@ from .client import (
 )
 from .batch import (
     build_batch_request, submit_batch, poll_batch, collect_batch,
+    run_batch, run_single_batch,
     write_batch_sidecar, read_batch_sidecar, utc_now_iso, format_batch_progress,
 )

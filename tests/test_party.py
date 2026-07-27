@@ -575,3 +575,120 @@ characters:
 
     prompt = citing_stream_api.calls[0]["user"]
     assert '[cite:1 "Brewbarry swore an oath to the crown"]' in prompt
+
+
+# ── --batch: routes through the batch entry points ───────────────────────────
+# party.py's extract fan-out routes through campaignlib.pipelines (patch
+# run_batch there). The non-config synthesis path also routes through
+# campaignlib.pipelines (run_synthesize_pipeline); the --party-config path
+# calls run_single_batch directly via party.py's own _party_config_synthesize
+# helper, so that binding needs patching too — mirrors the existing
+# fake_stream_api fixture's two-binding pattern above.
+
+class FakeRunBatch:
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, requests, **kwargs):
+        self.calls.append({"requests": requests, "kwargs": kwargs})
+        return {
+            r["custom_id"]: {"status": "succeeded", "text": f"[batch-{r['custom_id']}]",
+                             "stop_reason": "end_turn", "error": None, "usage": None}
+            for r in requests
+        }
+
+
+class FakeRunSingleBatch:
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, *, system, user, model, max_tokens=8192, **kwargs):
+        self.calls.append({"system": system, "user": user, "model": model,
+                           "max_tokens": max_tokens})
+        return "[batch-synth-result]"
+
+
+@pytest.fixture
+def fake_batch_entry_points(monkeypatch):
+    run_batch = FakeRunBatch()
+    run_single_batch = FakeRunSingleBatch()
+    monkeypatch.setattr(campaignlib.pipelines, "run_batch", run_batch)
+    monkeypatch.setattr(campaignlib.pipelines, "run_single_batch", run_single_batch)
+    monkeypatch.setattr(party, "run_single_batch", run_single_batch)
+    monkeypatch.setattr(party, "make_client", lambda: None)
+    return run_batch, run_single_batch
+
+
+def test_batch_flag_routes_flat_synthesis_through_batch_entry_points(
+    monkeypatch, fake_batch_entry_points, tmp_path
+):
+    """The non-config (--character) path goes through run_synthesize_pipeline,
+    which itself routes to run_single_batch when batch=True."""
+    run_batch, run_single_batch = fake_batch_entry_points
+    summaries = _write(tmp_path / "summaries.md", "a session")
+    sheet = _write(tmp_path / "soma.md", "Tortle Druid")
+    output = tmp_path / "party.md"
+    extract_dir = tmp_path / "extractions"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--character", str(sheet),
+        "--summaries", str(summaries),
+        "--output", str(output),
+        "--extract-dir", str(extract_dir),
+        "--batch",
+    ])
+    party.main()
+
+    assert len(run_batch.calls) == 1  # extract fan-out
+    assert len(run_single_batch.calls) == 1  # synthesis
+    assert output.exists()
+
+
+def test_batch_flag_routes_config_synthesis_through_run_single_batch(
+    monkeypatch, fake_batch_entry_points, tmp_path
+):
+    """The --party-config path calls run_single_batch directly via
+    _party_config_synthesize."""
+    monkeypatch.chdir(tmp_path)
+    _run_batch, run_single_batch = fake_batch_entry_points
+    _write(tmp_path / "brew.md", "Brewbarry sheet content")
+    cfg = _write_party_config(tmp_path, """
+characters:
+  - name: Brewbarry
+    sheet: brew.md
+""")
+    output = tmp_path / "party.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--party-config", str(cfg),
+        "--output", str(output),
+        "--batch",
+    ])
+    party.main()
+
+    assert len(run_single_batch.calls) == 1
+    assert run_single_batch.calls[0]["max_tokens"] == 8096
+    assert output.exists()
+
+
+def test_default_no_batch_path_unaffected_by_batch_wiring(monkeypatch, fake_stream_api, tmp_path):
+    """FR-011 regression guard — re-asserts test_default_run_uses_per_group_
+    source_labels' call count after the batch wiring landed."""
+    summaries = _write(tmp_path / "summaries.md", "session content")
+    sheet = _write(tmp_path / "soma.md", "Tortle Druid")
+    output = tmp_path / "party.md"
+    extract_dir = tmp_path / "extractions"
+
+    monkeypatch.setattr(sys, "argv", [
+        "party.py",
+        "--character", str(sheet),
+        "--summaries", str(summaries),
+        "--output", str(output),
+        "--extract-dir", str(extract_dir),
+    ])
+    party.main()
+
+    assert len(fake_stream_api.calls) == 2
+    assert output.exists()

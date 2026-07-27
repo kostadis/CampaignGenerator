@@ -30,6 +30,7 @@ from campaignlib import (
     add_backend_args,
     client_from_args,
     find_default_config,
+    run_single_batch,
     stream_api,
     save_log,
     DEFAULT_MODEL,
@@ -186,7 +187,16 @@ def main() -> None:
 
     client = client_from_args(args)
     print(f"\nAnalysing against {voice_path.name}…\n")
-    response = stream_api(client, ANALYSIS_SYSTEM, user_prompt, args.model)
+    if args.batch:
+        try:
+            response = run_single_batch(client, system=ANALYSIS_SYSTEM, user=user_prompt,
+                                        model=args.model, max_tokens=8096,
+                                        cache_system=False)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        response = stream_api(client, ANALYSIS_SYSTEM, user_prompt, args.model)
 
     if args.update:
         append_to_voice_file(voice_path, response)

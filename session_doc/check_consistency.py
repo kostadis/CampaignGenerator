@@ -22,6 +22,7 @@ from campaignlib import (
     client_from_args,
     find_default_config,
     load_config,
+    run_single_batch,
     stream_api,
 )
 
@@ -131,11 +132,21 @@ def main() -> None:
     ])
 
     client = client_from_args(args)
-    report = stream_api(
-        client, CONSISTENCY_SYSTEM, prompt, args.model,
-        max_tokens=int(os.environ.get("CG_CONSISTENCY_MAX_TOKENS", "32000")),
-        silent=True, verbose=args.verbose,
-    )
+    max_tokens = int(os.environ.get("CG_CONSISTENCY_MAX_TOKENS", "32000"))
+    if args.batch:
+        try:
+            report = run_single_batch(client, system=CONSISTENCY_SYSTEM, user=prompt,
+                                      model=args.model, max_tokens=max_tokens,
+                                      cache_system=False)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        report = stream_api(
+            client, CONSISTENCY_SYSTEM, prompt, args.model,
+            max_tokens=max_tokens,
+            silent=True, verbose=args.verbose,
+        )
 
     issue_count = report.count("**Location**")
     if issue_count:

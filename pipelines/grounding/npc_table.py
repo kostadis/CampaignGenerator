@@ -10,6 +10,7 @@ Usage:
 """
 
 import argparse
+import sys
 from pathlib import Path
 
 from campaignlib import (
@@ -20,6 +21,7 @@ from campaignlib import (
     copy_to_clipboard,
     find_default_config,
     load_config,
+    run_single_batch,
     save_log,
     stream_api,
 )
@@ -75,7 +77,15 @@ def main() -> None:
     client = client_from_args(args)
     print(f"\n[NPC Table | docs: {', '.join(args.docs)} | model: {args.model}]\n")
     print("=" * 60)
-    table = stream_api(client, SYSTEM_PROMPT, user_prompt, args.model, max_tokens=4096)
+    if args.batch:
+        try:
+            table = run_single_batch(client, system=SYSTEM_PROMPT, user=user_prompt,
+                                     model=args.model, max_tokens=4096)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        table = stream_api(client, SYSTEM_PROMPT, user_prompt, args.model, max_tokens=4096)
     print("=" * 60)
 
     if args.output:

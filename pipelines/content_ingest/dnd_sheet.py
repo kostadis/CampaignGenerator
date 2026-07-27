@@ -16,7 +16,7 @@ from pathlib import Path
 
 import fitz  # pymupdf
 
-from campaignlib import add_backend_args, call_api, client_from_args, DEFAULT_MODEL
+from campaignlib import add_backend_args, call_api, client_from_args, run_single_batch, DEFAULT_MODEL
 
 SYSTEM_PROMPT = """\
 You are converting a D&D Beyond character sheet PDF into a clean markdown document \
@@ -102,12 +102,23 @@ def extract_text(pdf_path: Path) -> str:
     return "\n\n".join(pages)
 
 
-def pdf_to_markdown(client, pdf_path: Path, model: str) -> str:
+def pdf_to_markdown(client, pdf_path: Path, model: str, batch: bool = False) -> str:
     text = extract_text(pdf_path)
     user_prompt = (
         "Please convert this D&D Beyond character sheet into the structured "
         f"markdown format.\n\n{text}"
     )
+    # user_prompt is a plain string today (PyMuPDF text extraction — the module
+    # docstring's "no vision required"); it is passed through as-is to whichever
+    # call path is used so a future multimodal/vision payload (a content-block
+    # list) would flow identically without touching this function.
+    if batch:
+        try:
+            return run_single_batch(client, system=SYSTEM_PROMPT, user=user_prompt,
+                                    model=model, max_tokens=8096)
+        except RuntimeError as e:
+            print(f"Error: batch item failed: {e}", file=sys.stderr)
+            sys.exit(1)
     return call_api(client, SYSTEM_PROMPT, user_prompt, model)
 
 
@@ -135,7 +146,7 @@ def main() -> None:
             sys.exit(1)
 
         print(f"Converting {pdf_path.name}...", file=sys.stderr)
-        markdown = pdf_to_markdown(client, pdf_path, args.model)
+        markdown = pdf_to_markdown(client, pdf_path, args.model, batch=args.batch)
 
         if args.output and len(args.pdfs) == 1:
             out = Path(args.output).expanduser()

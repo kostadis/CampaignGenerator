@@ -40,6 +40,13 @@ Pass 5 user-prompt assembly order (in `build_narrate_prompt()`): narrator + focu
 
 ## Typical invocations
 
+All three CLIs accept the shared `--batch` flag (Message Batches, 50% cost —
+see `docs/cli/cli_tools.md` § Shared flag). `sd_consistency`/`sd_plan` submit
+their single call as a one-item batch; `sd_narrate` degrades to sequential
+one-item batches because each scene's narration hands off into the next
+scene's prompt — grouping would break the chain.
+
+
 ```bash
 SESS=summaries/20260414
 

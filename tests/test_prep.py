@@ -1,12 +1,13 @@
 """Tests for campaignlib, prep.py, and session_doc logic."""
 
+import io
 import sys
 import pytest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import campaignlib
-from pipelines.session_prep import prep
+from pipelines.session_prep import prep, transform
 import session_doc
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
@@ -188,6 +189,220 @@ def test_parse_beats_empty_returns_empty():
 
 def test_parse_beats_single():
     assert prep.parse_session_beats("1. Only one beat") == ["Only one beat"]
+
+
+# ── prep.py --batch: sequential one-item batches, order preserved ───────────
+# prep's 5 stream_api call sites (3 chained pipeline stages, run_single,
+# run_session's single-mode loop) are order-dependent — Encounter Architect
+# reads the Lore Oracle's response, Voice Keeper reads the Architect's — so
+# --batch must never group them. These tests patch prep's own `run_single_batch`
+# / `stream_api` / `client_from_args` bindings directly (prep imports them by
+# name, same pattern as the existing test_sd_plan_writes_plan_md above) and
+# assert call order + per-call arguments rather than grouping.
+
+class _FakeRunSingleBatch:
+    def __init__(self, responses=None, fail_at=None):
+        self.calls = []
+        self._responses = responses
+        self._fail_at = fail_at
+
+    def __call__(self, client, *, system, user, model, max_tokens=8192, **kwargs):
+        idx = len(self.calls)
+        self.calls.append({"system": system, "user": user, "model": model, "max_tokens": max_tokens})
+        if self._fail_at is not None and idx == self._fail_at:
+            raise RuntimeError("batch item 'single' did not succeed: status=errored error=boom")
+        if self._responses is not None:
+            return self._responses[idx]
+        return f"[batch-{idx}]"
+
+
+class _FakeStreamAPI:
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, client, system, user, model, **kwargs):
+        self.calls.append({"system": system, "user": user, "model": model, **kwargs})
+        return "[stream response]"
+
+
+@pytest.fixture
+def pipeline_workspace(tmp_path):
+    """Workspace with real agent prompt files so run_pipeline_encounter's
+    three load_repo_file() calls succeed."""
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "world_state.md").write_text("# World\nSome lore.", encoding="utf-8")
+    (tmp_path / "system_prompt.md").write_text("You are a DM assistant.", encoding="utf-8")
+
+    agents_dir = tmp_path / "agents"
+    agents_dir.mkdir()
+    (agents_dir / "lore_oracle.md").write_text("You are the Lore Oracle.", encoding="utf-8")
+    (agents_dir / "encounter_architect.md").write_text("You are the Encounter Architect.", encoding="utf-8")
+    (agents_dir / "voice_keeper.md").write_text("You are the Voice Keeper.", encoding="utf-8")
+
+    (tmp_path / "config.yaml").write_text(f"""\
+system_prompt: {tmp_path}/system_prompt.md
+log_dir: {tmp_path}/logs
+agents:
+  lore_oracle: {agents_dir}/lore_oracle.md
+  encounter_architect: {agents_dir}/encounter_architect.md
+  voice_keeper: {agents_dir}/voice_keeper.md
+documents:
+  - label: world_state
+    path: {docs}/world_state.md
+""", encoding="utf-8")
+    return tmp_path
+
+
+def test_batch_flag_routes_pipeline_stages_through_sequential_one_item_batches(
+    monkeypatch, pipeline_workspace
+):
+    """--mode pipeline, --batch: all 3 stages route through run_single_batch,
+    in order, each fed the previous stage's response (never grouped)."""
+    fake = _FakeRunSingleBatch(responses=["oracle output", "architect output", "voice output"])
+    monkeypatch.setattr(prep, "run_single_batch", fake)
+    monkeypatch.setattr(prep, "client_from_args", lambda args: object())
+
+    monkeypatch.setattr(sys, "argv", [
+        "prep",
+        "--config", str(pipeline_workspace / "config.yaml"),
+        "--mode", "pipeline",
+        "--beat", "The party enters the dungeon",
+        "--no-log",
+        "--batch",
+    ])
+    prep.main()
+
+    assert len(fake.calls) == 3
+    assert fake.calls[0]["system"] == "You are the Lore Oracle."
+    assert fake.calls[1]["system"] == "You are the Encounter Architect."
+    assert fake.calls[2]["system"] == "You are the Voice Keeper."
+    # Dependency chaining: each stage's user prompt carries the prior stage's output.
+    assert "oracle output" in fake.calls[1]["user"]
+    assert "architect output" in fake.calls[2]["user"]
+    # max_tokens ceiling matches stream_api's own default in both branches.
+    assert all(c["max_tokens"] == 8096 for c in fake.calls)
+
+
+def test_batch_flag_routes_session_beats_sequentially(monkeypatch, pipeline_workspace, tmp_path):
+    """--session with --batch: each beat is its own one-item batch, submitted
+    in outline order (call site inside run_session's single-mode loop)."""
+    fake = _FakeRunSingleBatch(responses=["beat1 result", "beat2 result"])
+    monkeypatch.setattr(prep, "run_single_batch", fake)
+    monkeypatch.setattr(prep, "client_from_args", lambda args: object())
+
+    session_file = tmp_path / "outline.md"
+    session_file.write_text("1. First beat\n2. Second beat\n", encoding="utf-8")
+
+    monkeypatch.setattr(sys, "argv", [
+        "prep",
+        "--config", str(pipeline_workspace / "config.yaml"),
+        "--session", str(session_file),
+        "--mode", "single",
+        "--no-log",
+        "--batch",
+    ])
+    prep.main()
+
+    assert len(fake.calls) == 2
+    assert "First beat" in fake.calls[0]["user"]
+    assert "Second beat" in fake.calls[1]["user"]
+
+
+def test_batch_item_failure_exits_nonzero(monkeypatch, pipeline_workspace, capsys):
+    """A non-succeeding batch item (run_single_batch raises RuntimeError) must
+    print `Error: batch item failed: <e>` to stderr and exit non-zero."""
+    fake = _FakeRunSingleBatch(fail_at=0)
+    monkeypatch.setattr(prep, "run_single_batch", fake)
+    monkeypatch.setattr(prep, "client_from_args", lambda args: object())
+
+    monkeypatch.setattr(sys, "argv", [
+        "prep",
+        "--config", str(pipeline_workspace / "config.yaml"),
+        "--mode", "single",
+        "--beat", "The party enters the dungeon",
+        "--no-log",
+        "--batch",
+    ])
+    with pytest.raises(SystemExit) as exc_info:
+        prep.main()
+
+    assert exc_info.value.code == 1
+    captured = capsys.readouterr()
+    assert "Error: batch item failed:" in captured.err
+
+
+def test_default_no_batch_path_uses_stream_api_only(monkeypatch, pipeline_workspace):
+    """FR-011 regression guard: without --batch, prep must still call
+    stream_api exclusively and never touch run_single_batch."""
+    fake_stream = _FakeStreamAPI()
+    fake_batch = _FakeRunSingleBatch()
+    monkeypatch.setattr(prep, "stream_api", fake_stream)
+    monkeypatch.setattr(prep, "run_single_batch", fake_batch)
+    monkeypatch.setattr(prep, "client_from_args", lambda args: object())
+
+    monkeypatch.setattr(sys, "argv", [
+        "prep",
+        "--config", str(pipeline_workspace / "config.yaml"),
+        "--mode", "single",
+        "--beat", "The party enters the dungeon",
+        "--no-log",
+    ])
+    prep.main()
+
+    assert len(fake_stream.calls) == 1
+    assert len(fake_batch.calls) == 0
+
+
+# ── transform.py --batch: single call via run_single_batch ──────────────────
+
+def test_transform_batch_flag_routes_through_run_single_batch(monkeypatch, capsys):
+    fake = _FakeRunSingleBatch(responses=["1. Outline beat one\n2. Outline beat two"])
+    monkeypatch.setattr(transform, "run_single_batch", fake)
+    monkeypatch.setattr(transform, "client_from_args", lambda args: object())
+
+    # `input` is positional and expected to be a file path; omit it and feed
+    # the dossier via stdin instead, matching transform's own no-path mode.
+    monkeypatch.setattr(sys, "argv", ["transform", "--batch"])
+    monkeypatch.setattr(sys, "stdin", io.StringIO("A dossier of campaign notes."))
+
+    transform.main()
+
+    assert len(fake.calls) == 1
+    assert fake.calls[0]["user"] == "A dossier of campaign notes."
+    assert fake.calls[0]["max_tokens"] == 1024
+
+
+def test_transform_batch_failure_exits_nonzero(monkeypatch, capsys):
+    fake = _FakeRunSingleBatch(fail_at=0)
+    monkeypatch.setattr(transform, "run_single_batch", fake)
+    monkeypatch.setattr(transform, "client_from_args", lambda args: object())
+
+    monkeypatch.setattr(sys, "argv", ["transform", "--batch"])
+    monkeypatch.setattr(sys, "stdin", io.StringIO("A dossier of campaign notes."))
+
+    with pytest.raises(SystemExit) as exc_info:
+        transform.main()
+
+    assert exc_info.value.code == 1
+    captured = capsys.readouterr()
+    assert "Error: batch item failed:" in captured.err
+
+
+def test_transform_default_no_batch_path_uses_stream_api_only(monkeypatch):
+    fake_stream = _FakeStreamAPI()
+    fake_batch = _FakeRunSingleBatch()
+    monkeypatch.setattr(transform, "stream_api", fake_stream)
+    monkeypatch.setattr(transform, "run_single_batch", fake_batch)
+    monkeypatch.setattr(transform, "client_from_args", lambda args: object())
+
+    monkeypatch.setattr(sys, "argv", ["transform"])
+    monkeypatch.setattr(sys, "stdin", io.StringIO("A dossier of campaign notes."))
+
+    transform.main()
+
+    assert len(fake_stream.calls) == 1
+    assert len(fake_batch.calls) == 0
 
 
 # ── Fixtures for session_doc tests ───────────────────────────────────────────

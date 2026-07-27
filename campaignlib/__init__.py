@@ -38,6 +38,8 @@ from .api.batch import (
     submit_batch,
     poll_batch,
     collect_batch,
+    run_batch,
+    run_single_batch,
     write_batch_sidecar,
     read_batch_sidecar,
     utc_now_iso,
@@ -70,7 +72,12 @@ from .scenes import (
     build_scene_extraction_system_prompt,
     plan_scene_extraction,
 )
-from .pipelines import run_extract_pipeline, run_synthesize_pipeline, CITED_EXTRACT_MAX_TOKENS
+from .pipelines import (
+    run_extract_pipeline,
+    run_synthesize_pipeline,
+    resolve_extract_output,
+    CITED_EXTRACT_MAX_TOKENS,
+)
 from .citations import (
     Citation,
     CitationIdAssigner,
@@ -129,6 +136,8 @@ __all__ = [
     "submit_batch",
     "poll_batch",
     "collect_batch",
+    "run_batch",
+    "run_single_batch",
     "write_batch_sidecar",
     "read_batch_sidecar",
     "utc_now_iso",
@@ -159,6 +168,7 @@ __all__ = [
     # pipelines
     "run_extract_pipeline",
     "run_synthesize_pipeline",
+    "resolve_extract_output",
     "CITED_EXTRACT_MAX_TOKENS",
     # citations (extract/synthesize grounding checks — shared across
     # distill.py/planning.py/party.py)

@@ -52,6 +52,7 @@ from campaignlib import (
     plan_scene_extraction,
     poll_batch,
     read_batch_sidecar,
+    run_batch,
     run_scene_extraction,
     save_log,
     submit_batch,
@@ -75,11 +76,19 @@ def _sidecar_path(out_dir: Path) -> Path:
     return out_dir / SIDECAR_NAME
 
 
-def _submit_pending(args, *, scenes, vtt_text, out_dir, alias_map):
-    """Build per-scene Requests for not-yet-extracted scenes and submit one batch.
+def _build_pending_requests(args, *, scenes, vtt_text, out_dir, alias_map):
+    """Build per-scene Requests for not-yet-extracted scenes.
+
+    Shared by the detached submit path (`_submit_pending`, sidecar-based) and
+    the blocking `--batch` path (main(), one `run_batch` call) — the only
+    thing that differs between them is what happens to the requests once
+    built, not how they're built.
 
     With `args.force`, every scene is treated as pending (the on-disk file
     is overwritten on collect, with the prior version snapshotted to .prev).
+
+    Returns `(requests, plan, system_prompt)`; `requests` is `[]` if every
+    scene already exists on disk (nothing pending) and `--force` was not given.
     """
     normalize, _ = build_alias_normalizer(alias_map)
     system_suffix = format_npc_roster(alias_map)
@@ -92,9 +101,6 @@ def _submit_pending(args, *, scenes, vtt_text, out_dir, alias_map):
 
     plan = plan_scene_extraction(scenes=scenes, extract_dir=out_dir)
     pending = plan if args.force else [p for p in plan if not p["exists"]]
-    if not pending:
-        print("\nAll scenes already extracted on disk — nothing to submit.")
-        return None, plan, system_prompt
 
     requests = []
     for entry in pending:
@@ -109,6 +115,20 @@ def _submit_pending(args, *, scenes, vtt_text, out_dir, alias_map):
             max_tokens=args.max_tokens,
             cache_system=not args.no_cache,
         ))
+    return requests, plan, system_prompt
+
+
+def _submit_pending(args, *, scenes, vtt_text, out_dir, alias_map):
+    """Build per-scene Requests for not-yet-extracted scenes and submit one batch
+    (detached mode: writes a sidecar in --output-dir/.batch.json for a later
+    --collect). Unchanged behavior — grandfathered per FR-012.
+    """
+    requests, plan, system_prompt = _build_pending_requests(
+        args, scenes=scenes, vtt_text=vtt_text, out_dir=out_dir, alias_map=alias_map,
+    )
+    if not requests:
+        print("\nAll scenes already extracted on disk — nothing to submit.")
+        return None, plan, system_prompt
 
     print(f"\n[Submitting batch | model: {args.model} | "
           f"{len(requests)} of {len(plan)} scene(s) | "
@@ -126,29 +146,34 @@ def _submit_pending(args, *, scenes, vtt_text, out_dir, alias_map):
              "custom_id": p["custom_id"], "path": str(p["path"])}
             for p in plan
         ],
-        "pending_custom_ids": [p["custom_id"] for p in pending],
+        "pending_custom_ids": [r["custom_id"] for r in requests],
     })
     print(f"  Batch ID: {batch_id}")
     print(f"  Sidecar:  {sidecar}")
     return batch_id, plan, system_prompt
 
 
-def _collect_and_write(client, *, batch_id: str, out_dir: Path,
-                       plan_entries: list[dict],
-                       sidecar: Path | None = None,
-                       force: bool = False) -> list[Path]:
-    """Retrieve batch results and write per-scene files using format_scene_output.
+def _write_results(results: dict, *, out_dir: Path, plan_entries: list[dict],
+                   sidecar: Path | None = None,
+                   force: bool = False) -> tuple[list[Path], list[str]]:
+    """Write per-scene files from an already-collected results dict via
+    format_scene_output — the single formatter shared by every entry point
+    (live streaming, detached --collect, blocking --batch) so output files
+    stay byte-identical regardless of path.
 
     `plan_entries` is the full plan list (from plan_scene_extraction or the
     sidecar) so we can map custom_id back to the on-disk path and the
     verbatim scene body. Already-existing files are left alone unless
     `force=True`, in which case prior content is snapshotted to .prev (only
     when content differs) and any .reviewed sidecar is cleared.
+
+    Returns `(saved, errors)` — `errors` is one `FAILED <custom_id>: ...` line
+    per non-succeeded item (empty on full success). `sidecar`, if given, is
+    removed only when there are zero errors (detached --collect's existing
+    retry-on-sidecar contract).
     """
     from campaignlib import snapshot_scene_for_rerun
 
-    print(f"\n[Collecting batch {batch_id}...]")
-    results = collect_batch(client, batch_id)
     saved: list[Path] = []
     errors: list[str] = []
 
@@ -165,8 +190,7 @@ def _collect_and_write(client, *, batch_id: str, out_dir: Path,
             saved.append(path)
             continue
         if record["status"] != "succeeded":
-            errors.append(f"  [{entry['i']}] {custom_id}: {record['status']} — "
-                          f"{record.get('error')}")
+            errors.append(f"FAILED {custom_id}: {record['status']} {record.get('error')}")
             continue
         text = record["text"] or ""
         body_text = format_scene_output(entry["name"], entry.get("body", ""), text)
@@ -185,14 +209,42 @@ def _collect_and_write(client, *, batch_id: str, out_dir: Path,
     if errors:
         print("\nErrors:", file=sys.stderr)
         for line in errors:
-            print(line, file=sys.stderr)
-        print("\nRe-run with --batch (sidecar preserved) to resubmit failures.",
-              file=sys.stderr)
+            print(f"  {line}", file=sys.stderr)
+        if sidecar:
+            print("\nRe-run with --batch --collect (sidecar preserved) to resubmit failures.",
+                  file=sys.stderr)
+        else:
+            print("\nRe-run with --batch to retry the missing scene(s) "
+                  "(existing files are left untouched).", file=sys.stderr)
 
     if not errors and sidecar and sidecar.exists():
         sidecar.unlink()
         print(f"  Removed sidecar: {sidecar}")
 
+    return saved, errors
+
+
+def _collect_and_write(client, *, batch_id: str, out_dir: Path,
+                       plan_entries: list[dict],
+                       sidecar: Path | None = None,
+                       force: bool = False) -> list[Path]:
+    """Retrieve batch results (collect_batch against `batch_id`) and write
+    per-scene files. Detached --collect's entry point — grandfathered per
+    FR-012, except the exit code: a collect with any failed scene now exits
+    non-zero (FR-008/T027) so a wrapping script can't mistake a partial
+    collect for a complete one. Successes are written first; the sidecar
+    stays on disk so a re-run --collect can retry the failures.
+    """
+    print(f"\n[Collecting batch {batch_id}...]")
+    results = collect_batch(client, batch_id)
+    saved, errors = _write_results(
+        results, out_dir=out_dir, plan_entries=plan_entries,
+        sidecar=sidecar, force=force,
+    )
+    if errors:
+        print(f"{len(errors)} scene(s) failed; successes are on disk and the "
+              f"sidecar is kept for a retry.", file=sys.stderr)
+        sys.exit(1)
     return saved
 
 
@@ -247,10 +299,8 @@ def main() -> None:
                              "extraction; only override if you know the VTT uses "
                              "unrecognised display names.")
     parser.add_argument("--no-log", action="store_true")
-    parser.add_argument("--batch", action="store_true",
-                        help="Use Anthropic's Message Batches API (50%% off list price). "
-                             "Per-scene calls are submitted as one batch and share the "
-                             "cached VTT prefix.")
+    # --batch itself now comes from add_backend_args (spec 004); per-scene
+    # calls are submitted as one batch and share the cached VTT prefix.
     parser.add_argument("--submit-only", action="store_true",
                         help="With --batch: submit the batch, write a sidecar in "
                              "--output-dir/.batch.json, exit.")
@@ -434,31 +484,37 @@ def main() -> None:
             print(f"Log saved to: {log_file}")
         return
 
-    # ── --batch (block-and-poll) or --batch --submit-only ──
+    # ── --batch --submit-only: detached, sidecar-based (unchanged; FR-012) ──
     out_dir.mkdir(parents=True, exist_ok=True)
-    batch_id, plan_entries, _ = _submit_pending(
-        args, scenes=scenes, vtt_text=dialogue, out_dir=out_dir, alias_map=alias_map,
-    )
-    if batch_id is None:
-        # Nothing to do — every scene already on disk.
-        return
     if args.submit_only:
+        batch_id, _plan_entries, _system_prompt = _submit_pending(
+            args, scenes=scenes, vtt_text=dialogue, out_dir=out_dir, alias_map=alias_map,
+        )
+        if batch_id is None:
+            # Nothing to do — every scene already on disk.
+            return
         print("\nSubmit-only: exiting. Run with --batch --collect to retrieve later.")
         return
 
+    # ── Plain --batch: submit + poll + collect in one run_batch call ──
+    requests, plan_entries, _system_prompt = _build_pending_requests(
+        args, scenes=scenes, vtt_text=dialogue, out_dir=out_dir, alias_map=alias_map,
+    )
+    if not requests:
+        print("\nAll scenes already extracted on disk — nothing to submit.")
+        return
+
     client = client_from_args(args)
-    print(f"\n[Polling batch {batch_id} every {args.poll_interval}s...]")
-    poll_batch(client, batch_id, interval=args.poll_interval,
-               on_tick=lambda b: print("  " + format_batch_progress(b), flush=True))
-    sidecar = _sidecar_path(out_dir)
-    saved = _collect_and_write(client, batch_id=batch_id, out_dir=out_dir,
-                               plan_entries=plan_entries, sidecar=sidecar,
-                               force=args.force)
+    print(f"\n[Batch | model: {args.model} | {len(requests)} of {len(plan_entries)} scene(s)]")
+    results = run_batch(client, requests, label="scene", poll_interval=args.poll_interval)
+    saved, errors = _write_results(
+        results, out_dir=out_dir, plan_entries=plan_entries, force=args.force,
+    )
     print(f"\nWrote {len(saved)} scene file(s) to {out_dir}")
 
     if not args.no_log:
         log_sections = [
-            ("Batch", f"id: {batch_id} (submit-and-collect)"),
+            ("Batch", "submit-and-collect (blocking)"),
             ("VTT", f"{vtt_path.name} — {len(dialogue):,} chars"),
             ("Summary", summary_text),
             ("Scenes", "\n".join(f"{i}. {s['name']}" for i, s in enumerate(scenes, 1))),
@@ -466,6 +522,9 @@ def main() -> None:
         ]
         log_file = save_log(str(out_dir / "logs"), log_sections, stem="scene_extract")
         print(f"Log saved to: {log_file}")
+
+    if errors:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

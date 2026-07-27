@@ -12,6 +12,12 @@ explicit per-call params from the ensemble UI). Only flag *building* is
 shared here, mirroring campaignlib.api.client.add_backend_args's vocabulary
 so every downstream script (which all now accept --backend/--endpoint(s)/
 --model via that seam) receives exactly what it expects.
+
+NOTE (spec 004-claude-api-batch): the registrar's vocabulary also includes
+--batch (Message Batches mode, anthropic backend only). This builder does
+NOT forward it — UI exposure of batch mode is deliberately out of that
+spec's scope. When a UI surface wants it, add a `batch: bool` param here
+(append "--batch") rather than teaching any router the flag directly.
 """
 
 from __future__ import annotations

@@ -74,6 +74,12 @@ def main() -> None:
                         help="LLM backend forwarded to ensemble_extract.py -> "
                              "extract_facts.py (default: dgx). This driver never "
                              "builds a client itself.")
+    parser.add_argument(
+        "--batch", action="store_true", default=False,
+        help="Process Claude API calls through the Message Batches API (50%% "
+             "token cost, asynchronous; blocks and polls until complete). "
+             "Anthropic backend only. Unrelated to ensemble_batch (local "
+             "dispatch).")
     parser.add_argument("--skip", action="append", default=[], metavar="NAME",
                         help="Skip a named pass (can repeat).")
     parser.add_argument("--speculative", action=argparse.BooleanOptionalAction,
@@ -120,6 +126,8 @@ def main() -> None:
     if args.model:
         extract_cmd += ["--model", args.model]
     extract_cmd += ["--backend", args.backend]
+    if args.batch:
+        extract_cmd += ["--batch"]
     for s in args.skip:
         extract_cmd += ["--skip", s]
     if not args.speculative:

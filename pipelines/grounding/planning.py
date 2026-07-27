@@ -76,7 +76,9 @@ from campaignlib import (
     make_client,
     normalize_npc_key as _normalize_npc_key,
     parse_dossier,
+    resolve_extract_output,
     run_extract_pipeline,
+    run_single_batch,
     stream_api,
 )
 
@@ -532,6 +534,7 @@ def run_synthesize(
     dump_input: str | None = None,
     dump_only: bool = False,
     max_tokens: int = SYNTH_MAX_TOKENS,
+    batch: bool = False,
 ) -> str:
     parts = []
 
@@ -606,7 +609,11 @@ def run_synthesize(
 
     print(f"  Synthesizing ({len(user_prompt):,} chars total)...")
     print("  " + "─" * 56)
-    result = stream_api(client, system_prompt, user_prompt, model, max_tokens=max_tokens)
+    if batch:
+        result = run_single_batch(client, system=system_prompt, user=user_prompt,
+                                  model=model, max_tokens=max_tokens)
+    else:
+        result = stream_api(client, system_prompt, user_prompt, model, max_tokens=max_tokens)
     print("  " + "─" * 56)
     return result
 
@@ -653,6 +660,7 @@ def run_synthesize_with_config(
     dump_input: str | None = None,
     dump_only: bool = False,
     max_tokens: int = SYNTH_MAX_TOKENS,
+    batch: bool = False,
 ) -> str:
     """Synthesize using the per-entity planning-config rendering. Mirrors
     party.py's --party-config path: each NPC/faction in the config is a
@@ -725,7 +733,11 @@ def run_synthesize_with_config(
 
     print(f"  Synthesizing ({len(user_prompt):,} chars total)...")
     print("  " + "─" * 56)
-    result = stream_api(client, system_prompt, user_prompt, model, max_tokens=max_tokens)
+    if batch:
+        result = run_single_batch(client, system=system_prompt, user=user_prompt,
+                                  model=model, max_tokens=max_tokens)
+    else:
+        result = stream_api(client, system_prompt, user_prompt, model, max_tokens=max_tokens)
     print("  " + "─" * 56)
     return result
 
@@ -933,7 +945,7 @@ def main() -> None:
         summaries_text = Path(args.summaries).expanduser().read_text(encoding="utf-8")
         print(f"\n[Pass 1: Extract NPC/faction info | {len(summaries_text):,} chars | model: {args.model}]")
         print("=" * 60)
-        extract_files = run_extract_pipeline(
+        extract_result = run_extract_pipeline(
             client, summaries_text,
             extract_system=EXTRACT_SYSTEM,
             model=args.model,
@@ -942,7 +954,10 @@ def main() -> None:
             split_chapters=args.split_chapters,
             split_label="session",
             max_tokens=CITED_EXTRACT_MAX_TOKENS,
+            batch=args.batch,
         )
+        extract_files = resolve_extract_output(
+            extract_result, batch=args.batch, extract_dir=extract_dir)
         print(f"Extractions saved to: {extract_dir}")
         check_citations(summaries_text, None, extract_files, args.chunk_size,
                          args.split_chapters, extract_dir, tool_name="planning.py")
@@ -992,27 +1007,33 @@ def main() -> None:
     print(f"\n[Pass 2: Synthesize | {', '.join(sources)} | model: {args.model}]")
     print("=" * 60)
     id_assigner = CitationIdAssigner()
-    if planning_config:
-        planning_doc = run_synthesize_with_config(
-            client, planning_config, npc_files,
-            extract_files, context_files, args.model, id_assigner,
-            threads_file=threads_file,
-            force_include=args.force_include,
-            depth=args.depth,
-            dump_input=args.dump_input,
-            dump_only=args.dump_only,
-            max_tokens=args.synth_tokens,
-        )
-    else:
-        planning_doc = run_synthesize(
-            client, npc_files, arc_score_files, extract_files, context_files, args.model, id_assigner,
-            threads_file=threads_file,
-            force_include=args.force_include,
-            depth=args.depth,
-            dump_input=args.dump_input,
-            dump_only=args.dump_only,
-            max_tokens=args.synth_tokens,
-        )
+    try:
+        if planning_config:
+            planning_doc = run_synthesize_with_config(
+                client, planning_config, npc_files,
+                extract_files, context_files, args.model, id_assigner,
+                threads_file=threads_file,
+                force_include=args.force_include,
+                depth=args.depth,
+                dump_input=args.dump_input,
+                dump_only=args.dump_only,
+                max_tokens=args.synth_tokens,
+                batch=args.batch,
+            )
+        else:
+            planning_doc = run_synthesize(
+                client, npc_files, arc_score_files, extract_files, context_files, args.model, id_assigner,
+                threads_file=threads_file,
+                force_include=args.force_include,
+                depth=args.depth,
+                dump_input=args.dump_input,
+                dump_only=args.dump_only,
+                max_tokens=args.synth_tokens,
+                batch=args.batch,
+            )
+    except RuntimeError as e:
+        print(f"Error: synthesis batch item failed: {e}", file=sys.stderr)
+        sys.exit(1)
     print("=" * 60)
 
     if args.dump_only:
