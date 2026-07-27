@@ -1,9 +1,15 @@
 """Tests for the claude-code (Pro/Max subscription) backend façade.
 
-Focus: the fix for issue #108 — `max_tokens` must reach the `claude -p`
-subprocess as the CLAUDE_CODE_MAX_OUTPUT_TOKENS env var instead of being
-silently dropped, so the subscription path honors the same output ceiling as
-the Anthropic API and DGX backends.
+Covers two fixes:
+  - issue #108 — `max_tokens` must reach the `claude -p` subprocess as the
+    CLAUDE_CODE_MAX_OUTPUT_TOKENS env var instead of being silently dropped,
+    so the subscription path honors the same output ceiling as the Anthropic
+    API and DGX backends.
+  - the truncation/auto-continue fix — `--output-format json`'s single
+    `result` field only reflects the LAST assistant turn when the CLI
+    auto-continues past its output ceiling, silently dropping the head of
+    the response. The backend now uses `--output-format stream-json
+    --verbose` and concatenates the text of every assistant turn.
 """
 import json
 import subprocess
@@ -14,21 +20,51 @@ import pytest
 import campaignlib.api.backends as backends
 
 
-def _fake_run_factory(captured, *, result="ok", is_error=False, returncode=0, stderr=""):
+def _assistant_event(text: str) -> str:
+    return json.dumps({
+        "type": "assistant",
+        "message": {"content": [{"type": "text", "text": text}]},
+    })
+
+
+def _result_event(*, result="ok", is_error=False, num_turns=1) -> str:
+    return json.dumps({
+        "type": "result", "result": result, "is_error": is_error,
+        "num_turns": num_turns,
+    })
+
+
+def _fake_run_factory(captured, *, result="ok", is_error=False, returncode=0,
+                      stderr="", assistant_texts=None, num_turns=None,
+                      raw_stdout=None):
     """Return a subprocess.run stand-in that records the env it was called with.
 
-    Emits the `claude -p --output-format json` result envelope (type=result) so
-    the backend's envelope-first error handling sees a well-formed payload; pass
-    returncode=1 to simulate the CLI exiting non-zero while still emitting it (the
-    overflow case).
+    Emits `claude -p --output-format stream-json` NDJSON: one line per
+    assistant turn (default: a single turn built from `result`, unless
+    `assistant_texts` overrides it) followed by the terminal `type=result`
+    envelope line — so the backend's envelope-first error handling sees a
+    well-formed payload. Pass returncode=1 to simulate the CLI exiting
+    non-zero while still emitting the envelope (the overflow case).
+
+    `raw_stdout`, if given, replaces the generated NDJSON entirely — for
+    tests that need to simulate a non-JSON / garbled response.
     """
+    if assistant_texts is None:
+        assistant_texts = [] if is_error else [result]
+    if num_turns is None:
+        num_turns = len(assistant_texts) or 1
+
     def _fake_run(cmd, *, input, capture_output, text, env):
         captured["cmd"] = cmd
         captured["env"] = env
         captured["input"] = input
-        payload = {"type": "result", "result": result, "is_error": is_error}
-        return types.SimpleNamespace(
-            returncode=returncode, stdout=json.dumps(payload), stderr=stderr)
+        if raw_stdout is not None:
+            stdout = raw_stdout
+        else:
+            lines = [_assistant_event(t) for t in assistant_texts]
+            lines.append(_result_event(result=result, is_error=is_error, num_turns=num_turns))
+            stdout = "\n".join(lines)
+        return types.SimpleNamespace(returncode=returncode, stdout=stdout, stderr=stderr)
     return _fake_run
 
 
@@ -104,3 +140,62 @@ def test_nonzero_exit_without_json_raises_raw(monkeypatch):
     with pytest.raises(RuntimeError, match="exited 1") as excinfo:
         backends._claude_code_generate(system="s", user="u", model="m", max_tokens=100)
     assert "command not found" in str(excinfo.value)
+
+
+def test_exit_zero_without_result_event_raises_with_stdout_snippet(monkeypatch):
+    # Exited 0 but stdout has no parseable `type=result` event at all — a
+    # genuine "unusable output" case, distinct from the exited-nonzero path.
+    captured = {}
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(
+        captured, returncode=0, raw_stdout="not json at all, just noise"))
+    with pytest.raises(RuntimeError, match="non-JSON output") as excinfo:
+        backends._claude_code_generate(system="s", user="u", model="m", max_tokens=100)
+    assert "not json at all" in str(excinfo.value)
+
+
+# ── Multi-turn auto-continue concatenation (stream-json) ────────────────────
+
+def test_two_assistant_turns_are_concatenated_in_order(monkeypatch, capsys):
+    captured = {}
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(
+        captured, assistant_texts=["First half. ", "Second half."],
+        result="Second half.", num_turns=2))
+    out = backends._claude_code_generate(
+        system="s", user="u", model="m", max_tokens=100)
+    assert out == "First half. Second half."
+    err = capsys.readouterr().err
+    assert "AUTO-CONTINUED" in err
+    assert "2" in err
+
+
+def test_single_assistant_turn_has_no_warning(monkeypatch, capsys):
+    captured = {}
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(
+        captured, assistant_texts=["Only turn."], result="Only turn.", num_turns=1))
+    out = backends._claude_code_generate(
+        system="s", user="u", model="m", max_tokens=100)
+    assert out == "Only turn."
+    err = capsys.readouterr().err
+    assert "AUTO-CONTINUED" not in err
+
+
+def test_no_assistant_events_falls_back_to_result_field(monkeypatch):
+    # Defensive fallback: a well-formed, non-error result envelope but no
+    # assistant events were parsed (shouldn't happen in practice, but the
+    # backend must not crash and must still return something usable).
+    captured = {}
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(
+        captured, assistant_texts=[], result="fallback text", num_turns=0))
+    out = backends._claude_code_generate(system="s", user="u", model="m")
+    assert out == "fallback text"
+
+
+def test_command_uses_stream_json_and_verbose(monkeypatch):
+    captured = {}
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model="m")
+    cmd = captured["cmd"]
+    assert "stream-json" in cmd
+    assert "--verbose" in cmd
+    assert "--output-format" in cmd
+    assert cmd[cmd.index("--output-format") + 1] == "stream-json"

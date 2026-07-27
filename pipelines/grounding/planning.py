@@ -269,6 +269,15 @@ def _render_flat_section(heading: str, files: list[Path], label: str,
     return f"# {heading}\n\n" + "\n\n---\n\n".join(blocks)
 
 
+# Output-token ceiling for the Pass 2 synthesis call. stream_api's own default
+# (8096) is a per-chunk-extraction-sized budget; a real planning.md commonly
+# needs 12K+ output tokens and was being silently tail-truncated (Anthropic
+# backend: stop_reason=max_tokens, never checked) or auto-continued across a
+# hidden second turn whose head got dropped (claude-code backend). A ceiling,
+# not a target — it permits a longer document, it does not force one.
+SYNTH_MAX_TOKENS = 32000
+
+
 def write_dossier(
     path: Path,
     name: str,
@@ -522,6 +531,7 @@ def run_synthesize(
     depth: str = "scene",
     dump_input: str | None = None,
     dump_only: bool = False,
+    max_tokens: int = SYNTH_MAX_TOKENS,
 ) -> str:
     parts = []
 
@@ -596,7 +606,7 @@ def run_synthesize(
 
     print(f"  Synthesizing ({len(user_prompt):,} chars total)...")
     print("  " + "─" * 56)
-    result = stream_api(client, system_prompt, user_prompt, model)
+    result = stream_api(client, system_prompt, user_prompt, model, max_tokens=max_tokens)
     print("  " + "─" * 56)
     return result
 
@@ -642,6 +652,7 @@ def run_synthesize_with_config(
     depth: str = "scene",
     dump_input: str | None = None,
     dump_only: bool = False,
+    max_tokens: int = SYNTH_MAX_TOKENS,
 ) -> str:
     """Synthesize using the per-entity planning-config rendering. Mirrors
     party.py's --party-config path: each NPC/faction in the config is a
@@ -714,7 +725,7 @@ def run_synthesize_with_config(
 
     print(f"  Synthesizing ({len(user_prompt):,} chars total)...")
     print("  " + "─" * 56)
-    result = stream_api(client, system_prompt, user_prompt, model)
+    result = stream_api(client, system_prompt, user_prompt, model, max_tokens=max_tokens)
     print("  " + "─" * 56)
     return result
 
@@ -764,6 +775,13 @@ def main() -> None:
                              "(default: <output_dir>/planning_extractions/ or ./planning_extractions/)")
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction, synthesize from existing files in --extract-dir")
+    parser.add_argument("--synth-tokens", type=int, default=SYNTH_MAX_TOKENS, metavar="N",
+                        help="Output-token ceiling for the Pass 2 synthesis call "
+                             f"(default: {SYNTH_MAX_TOKENS}). A ceiling, not a target — "
+                             "it permits a longer planning.md, it does not force one. "
+                             "The old implicit default (stream_api's own max_tokens=8096) "
+                             "silently tail-truncated large planning docs; raise this if "
+                             "planning.md still looks cut off.")
     parser.add_argument("--extract-only", action="store_true",
                         help="Run the extract pass only, then stop so you can review "
                              "extractions before synthesis. In --build-dossiers mode, stops "
@@ -983,6 +1001,7 @@ def main() -> None:
             depth=args.depth,
             dump_input=args.dump_input,
             dump_only=args.dump_only,
+            max_tokens=args.synth_tokens,
         )
     else:
         planning_doc = run_synthesize(
@@ -992,6 +1011,7 @@ def main() -> None:
             depth=args.depth,
             dump_input=args.dump_input,
             dump_only=args.dump_only,
+            max_tokens=args.synth_tokens,
         )
     print("=" * 60)
 
