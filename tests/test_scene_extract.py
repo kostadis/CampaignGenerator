@@ -2,13 +2,15 @@
 
 import sys
 from pathlib import Path
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import campaignlib
 import session_doc
+from session_doc import scene_extract as se
 
 
 # ── parse_gmassist_scenes ─────────────────────────────────────────────────────
@@ -287,3 +289,177 @@ def test_load_scene_extractions_skips_files_without_NN_prefix(tmp_path):
     (tmp_path / "session-doc.md").write_text("not a scene", encoding="utf-8")
     (tmp_path / "1_too_short.md").write_text("not NN_ pattern", encoding="utf-8")
     assert session_doc.load_scene_extractions(tmp_path) == []
+
+
+# ── scene_extract.py --batch (blocking submit+poll+collect) ──────────────────
+
+SINGLE_SCENE_SUMMARY = "## Scenes\n### Scene A\n#### A short scene.\n- bullet one\n"
+
+
+def _write_vtt(path: Path) -> None:
+    path.write_text(
+        "WEBVTT\n\n1\n00:00:00.000 --> 00:00:02.000\nGM: hello there\n",
+        encoding="utf-8",
+    )
+
+
+def _fake_batches_client(*, results_iter, batch_id="sb1"):
+    """Same shape as tests/test_batch_api.py's _fake_client_with_batches,
+    duplicated here so this file doesn't depend on that module."""
+    client = MagicMock()
+    client.messages.batches.create.return_value = SimpleNamespace(id=batch_id)
+    client.messages.batches.retrieve.return_value = SimpleNamespace(
+        id=batch_id, processing_status="ended",
+        request_counts=SimpleNamespace(
+            processing=0, succeeded=len(results_iter), errored=0, canceled=0, expired=0),
+    )
+    client.messages.batches.results.return_value = iter(results_iter)
+    return client
+
+
+def _succeeded_scene_entry(custom_id: str, text: str):
+    msg = SimpleNamespace(content=[SimpleNamespace(type="text", text=text)],
+                          stop_reason="end_turn", usage=None)
+    return SimpleNamespace(custom_id=custom_id,
+                           result=SimpleNamespace(type="succeeded", message=msg))
+
+
+def _errored_scene_entry(custom_id: str, message: str):
+    err = SimpleNamespace(error=SimpleNamespace(message=message))
+    return SimpleNamespace(custom_id=custom_id,
+                           result=SimpleNamespace(type="errored", error=err))
+
+
+def test_batch_blocking_mode_submits_polls_collects_and_writes_files(monkeypatch, tmp_path):
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(SINGLE_SCENE_SUMMARY, encoding="utf-8")
+    out_dir = tmp_path / "out"
+
+    entry = _succeeded_scene_entry("01_scene_a", "MOMENTS")
+    fake_client = _fake_batches_client(results_iter=[entry])
+    monkeypatch.setattr(se, "client_from_args", lambda args: fake_client)
+
+    monkeypatch.setattr(sys, "argv", [
+        "scene_extract.py", str(vtt),
+        "--summary", str(summary),
+        "--output-dir", str(out_dir),
+        "--batch", "--poll-interval", "0", "--no-log",
+    ])
+    se.main()
+
+    out_file = out_dir / "01_scene_a.md"
+    assert out_file.exists()
+    assert "MOMENTS" in out_file.read_text(encoding="utf-8")
+    # The blocking path submits+polls+collects in one call — no detached
+    # sidecar is left behind (unlike --submit-only, which does write one).
+    assert not (out_dir / ".batch.json").exists()
+
+
+def test_batch_blocking_mode_exits_nonzero_on_item_failure(monkeypatch, tmp_path):
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(SINGLE_SCENE_SUMMARY, encoding="utf-8")
+    out_dir = tmp_path / "out"
+
+    entry = _errored_scene_entry("01_scene_a", "boom")
+    fake_client = _fake_batches_client(results_iter=[entry])
+    monkeypatch.setattr(se, "client_from_args", lambda args: fake_client)
+
+    monkeypatch.setattr(sys, "argv", [
+        "scene_extract.py", str(vtt),
+        "--summary", str(summary),
+        "--output-dir", str(out_dir),
+        "--batch", "--poll-interval", "0", "--no-log",
+    ])
+    with pytest.raises(SystemExit) as exc_info:
+        se.main()
+
+    assert exc_info.value.code != 0
+    assert not (out_dir / "01_scene_a.md").exists()
+
+
+def test_batch_blocking_mode_skips_submission_when_all_scenes_exist(monkeypatch, tmp_path, capsys):
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(SINGLE_SCENE_SUMMARY, encoding="utf-8")
+    out_dir = tmp_path / "out"
+    out_dir.mkdir()
+    (out_dir / "01_scene_a.md").write_text("ALREADY DONE", encoding="utf-8")
+
+    fake_client = MagicMock()
+    monkeypatch.setattr(se, "client_from_args", lambda args: fake_client)
+
+    monkeypatch.setattr(sys, "argv", [
+        "scene_extract.py", str(vtt),
+        "--summary", str(summary),
+        "--output-dir", str(out_dir),
+        "--batch", "--no-log",
+    ])
+    se.main()
+
+    fake_client.messages.batches.create.assert_not_called()
+    assert (out_dir / "01_scene_a.md").read_text(encoding="utf-8") == "ALREADY DONE"
+
+
+def test_submit_only_writes_sidecar_and_does_not_poll_or_write_files(monkeypatch, tmp_path):
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(SINGLE_SCENE_SUMMARY, encoding="utf-8")
+    out_dir = tmp_path / "out"
+
+    fake_client = _fake_batches_client(results_iter=[], batch_id="sb-submit-only")
+    monkeypatch.setattr(se, "client_from_args", lambda args: fake_client)
+
+    monkeypatch.setattr(sys, "argv", [
+        "scene_extract.py", str(vtt),
+        "--summary", str(summary),
+        "--output-dir", str(out_dir),
+        "--batch", "--submit-only", "--no-log",
+    ])
+    se.main()
+
+    sidecar = out_dir / ".batch.json"
+    assert sidecar.exists()
+    payload = campaignlib.read_batch_sidecar(sidecar)
+    assert payload["batch_id"] == "sb-submit-only"
+    assert payload["kind"] == "scene_extract"
+    fake_client.messages.batches.retrieve.assert_not_called()
+    assert not (out_dir / "01_scene_a.md").exists()
+
+
+def test_collect_reads_sidecar_and_writes_files(monkeypatch, tmp_path):
+    out_dir = tmp_path / "out"
+    out_dir.mkdir()
+    sidecar = out_dir / ".batch.json"
+    campaignlib.write_batch_sidecar(sidecar, {
+        "kind": "scene_extract",
+        "batch_id": "sb2",
+        "model": "m",
+        "submitted_at": campaignlib.utc_now_iso(),
+        "scenes": [
+            {"i": 1, "name": "Scene A", "slug": "scene_a",
+             "custom_id": "01_scene_a", "path": str(out_dir / "01_scene_a.md")},
+        ],
+        "pending_custom_ids": ["01_scene_a"],
+    })
+
+    entry = _succeeded_scene_entry("01_scene_a", "MOMENTS FROM COLLECT")
+    fake_client = _fake_batches_client(results_iter=[entry], batch_id="sb2")
+    monkeypatch.setattr(se, "client_from_args", lambda args: fake_client)
+
+    monkeypatch.setattr(sys, "argv", [
+        "scene_extract.py",
+        "--output-dir", str(out_dir),
+        "--batch", "--collect", "--poll-interval", "0",
+    ])
+    se.main()
+
+    out_file = out_dir / "01_scene_a.md"
+    assert out_file.exists()
+    assert "MOMENTS FROM COLLECT" in out_file.read_text(encoding="utf-8")
+    assert not sidecar.exists()  # removed after a fully-successful collect

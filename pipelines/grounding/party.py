@@ -67,7 +67,9 @@ from campaignlib import (
     find_alias_registry,
     load_alias_map,
     make_client,
+    resolve_extract_output,
     run_extract_pipeline,
+    run_single_batch,
     run_synthesize_pipeline,
     stream_api,
 )
@@ -144,6 +146,24 @@ def _render_party_block(party_config: ResolvedPartyConfig, input_normalizer=None
             )
         char_blocks.append("\n\n".join(parts))
     return "# PARTY\n\n" + "\n\n---\n\n".join(char_blocks)
+
+
+def _party_config_synthesize(client, system_prompt: str, user_prompt: str,
+                             model: str, *, batch: bool) -> str:
+    """Route the --party-config path's single synthesis call through
+    `run_single_batch` when --batch, live `stream_api` otherwise.
+
+    max_tokens is passed explicitly as stream_api's own default (8096) in
+    both branches — this call site has never taken a --synth-tokens-style
+    override (unlike planning.py's Pass 2), so there is no other value that
+    needs preserving; passing it explicitly just keeps the two paths at an
+    identical ceiling rather than relying on two different library defaults
+    (stream_api's 8096 vs run_single_batch's 8192) drifting apart silently.
+    """
+    if batch:
+        return run_single_batch(client, system=system_prompt, user=user_prompt,
+                                model=model, max_tokens=8096)
+    return stream_api(client, system_prompt, user_prompt, model)
 
 
 def _render_source_group(heading: str, files: list[Path], label: str,
@@ -284,7 +304,7 @@ def main() -> None:
         summaries_text = Path(args.summaries).expanduser().read_text(encoding="utf-8")
         print(f"\n[Pass 1: Extract party info | {len(summaries_text):,} chars | model: {args.model}]")
         print("=" * 60)
-        extract_files = run_extract_pipeline(
+        extract_result = run_extract_pipeline(
             client, summaries_text,
             extract_system=EXTRACT_SYSTEM,
             model=args.model,
@@ -295,7 +315,10 @@ def main() -> None:
             input_normalizer=normalize,
             system_suffix=roster,
             max_tokens=CITED_EXTRACT_MAX_TOKENS,
+            batch=args.batch,
         )
+        extract_files = resolve_extract_output(
+            extract_result, batch=args.batch, extract_dir=extract_dir)
         print(f"Extractions saved to: {extract_dir}")
         check_citations(summaries_text, normalize, extract_files, args.chunk_size,
                          args.split_chapters, extract_dir, tool_name="party.py")
@@ -337,55 +360,62 @@ def main() -> None:
     print("=" * 60)
     id_assigner = CitationIdAssigner()
     cited_normalize = lambda body: id_assigner(normalize(body))
-    if party_config:
-        party_block = _render_party_block(party_config, input_normalizer=cited_normalize)
-        extracts_block = _render_source_group("SESSION EXTRACTIONS", extract_files,
-                                              "Session extract", input_normalizer=cited_normalize)
-        context_block = _render_source_group("ADDITIONAL CONTEXT", context_files,
-                                             "Context", input_normalizer=cited_normalize)
-        parts = [p for p in (party_block, extracts_block, context_block) if p]
-        if not parts:
-            print("Error: no source material to synthesize.", file=sys.stderr)
-            sys.exit(1)
-        user_prompt = "\n\n===\n\n".join(parts)
-        system_prompt = SYNTHESIZE_SYSTEM + ("\n\n" + roster if roster else "")
-        if args.dump_input:
-            dump_path = Path(args.dump_input).expanduser().resolve()
-            dump_path.write_text(user_prompt, encoding="utf-8")
-            system_path = dump_path.with_suffix(dump_path.suffix + ".system.md")
-            system_path.write_text(system_prompt, encoding="utf-8")
-            print(f"Dumped synthesis input: {dump_path}")
-            print(f"Dumped system prompt:   {system_path}")
-            if args.dump_only:
-                print("[--dump-only: stopping before the API call]")
-                party_doc = ""
+    try:
+        if party_config:
+            party_block = _render_party_block(party_config, input_normalizer=cited_normalize)
+            extracts_block = _render_source_group("SESSION EXTRACTIONS", extract_files,
+                                                  "Session extract", input_normalizer=cited_normalize)
+            context_block = _render_source_group("ADDITIONAL CONTEXT", context_files,
+                                                 "Context", input_normalizer=cited_normalize)
+            parts = [p for p in (party_block, extracts_block, context_block) if p]
+            if not parts:
+                print("Error: no source material to synthesize.", file=sys.stderr)
+                sys.exit(1)
+            user_prompt = "\n\n===\n\n".join(parts)
+            system_prompt = SYNTHESIZE_SYSTEM + ("\n\n" + roster if roster else "")
+            if args.dump_input:
+                dump_path = Path(args.dump_input).expanduser().resolve()
+                dump_path.write_text(user_prompt, encoding="utf-8")
+                system_path = dump_path.with_suffix(dump_path.suffix + ".system.md")
+                system_path.write_text(system_prompt, encoding="utf-8")
+                print(f"Dumped synthesis input: {dump_path}")
+                print(f"Dumped system prompt:   {system_path}")
+                if args.dump_only:
+                    print("[--dump-only: stopping before the API call]")
+                    party_doc = ""
+                else:
+                    print(f"  Synthesizing per-character party block ({len(user_prompt):,} chars)...")
+                    print("  " + "─" * 56)
+                    party_doc = _party_config_synthesize(
+                        client, system_prompt, user_prompt, args.model, batch=args.batch)
+                    print("  " + "─" * 56)
             else:
                 print(f"  Synthesizing per-character party block ({len(user_prompt):,} chars)...")
                 print("  " + "─" * 56)
-                party_doc = stream_api(client, system_prompt, user_prompt, args.model)
+                party_doc = _party_config_synthesize(
+                    client, system_prompt, user_prompt, args.model, batch=args.batch)
                 print("  " + "─" * 56)
         else:
-            print(f"  Synthesizing per-character party block ({len(user_prompt):,} chars)...")
-            print("  " + "─" * 56)
-            party_doc = stream_api(client, system_prompt, user_prompt, args.model)
-            print("  " + "─" * 56)
-    else:
-        party_doc = run_synthesize_pipeline(
-            client,
-            source_groups=[
-                ("CHARACTER SHEETS", character_files, "Character sheet"),
-                ("SESSION EXTRACTIONS", extract_files, "Session extract"),
-                ("BACKSTORY DOCUMENTS", backstory_files, "Backstory"),
-                ("ARC SCORE MECHANICS", arc_score_files, "Arc score mechanic"),
-                ("ADDITIONAL CONTEXT", context_files, "Context"),
-            ],
-            synthesize_system=SYNTHESIZE_SYSTEM,
-            model=args.model,
-            input_normalizer=cited_normalize,
-            system_suffix=roster,
-            dump_input=args.dump_input,
-            dump_only=args.dump_only,
-        )
+            party_doc = run_synthesize_pipeline(
+                client,
+                source_groups=[
+                    ("CHARACTER SHEETS", character_files, "Character sheet"),
+                    ("SESSION EXTRACTIONS", extract_files, "Session extract"),
+                    ("BACKSTORY DOCUMENTS", backstory_files, "Backstory"),
+                    ("ARC SCORE MECHANICS", arc_score_files, "Arc score mechanic"),
+                    ("ADDITIONAL CONTEXT", context_files, "Context"),
+                ],
+                synthesize_system=SYNTHESIZE_SYSTEM,
+                model=args.model,
+                input_normalizer=cited_normalize,
+                system_suffix=roster,
+                dump_input=args.dump_input,
+                dump_only=args.dump_only,
+                batch=args.batch,
+            )
+    except RuntimeError as e:
+        print(f"Error: synthesis batch item failed: {e}", file=sys.stderr)
+        sys.exit(1)
     print("=" * 60)
 
     if args.dump_only:

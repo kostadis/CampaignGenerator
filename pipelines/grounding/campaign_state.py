@@ -79,6 +79,7 @@ from campaignlib import (
     find_alias_registry,
     load_alias_map,
     make_client,
+    resolve_extract_output,
     run_extract_pipeline,
     run_synthesize_pipeline,
 )
@@ -247,7 +248,7 @@ def main() -> None:
             sys.exit(1)
         print(f"\n[Pass 1: Extract campaign state | {len(text):,} chars | model: {args.model}]")
         print("=" * 60)
-        extract_files = run_extract_pipeline(
+        extract_result = run_extract_pipeline(
             client, text,
             extract_system=build_extract_system(tracked_items),
             model=args.model,
@@ -257,7 +258,10 @@ def main() -> None:
             split_label="session",
             input_normalizer=normalize,
             system_suffix=roster,
+            batch=args.batch,
         )
+        extract_files = resolve_extract_output(
+            extract_result, batch=args.batch, extract_dir=extract_dir)
         if not extract_files:
             print("Error: no chunks were extracted — input may be too short.", file=sys.stderr)
             sys.exit(1)
@@ -279,16 +283,21 @@ def main() -> None:
 
     print(f"\n[Pass 2: Synthesize | model: {args.model}]")
     print("=" * 60)
-    state_doc = run_synthesize_pipeline(
-        client,
-        source_groups=[("", extract_files)],
-        synthesize_system=build_synthesize_system(tracked_items),
-        model=args.model,
-        input_normalizer=normalize,
-        system_suffix=roster,
-        dump_input=args.dump_input,
-        dump_only=args.dump_only,
-    )
+    try:
+        state_doc = run_synthesize_pipeline(
+            client,
+            source_groups=[("", extract_files)],
+            synthesize_system=build_synthesize_system(tracked_items),
+            model=args.model,
+            input_normalizer=normalize,
+            system_suffix=roster,
+            dump_input=args.dump_input,
+            dump_only=args.dump_only,
+            batch=args.batch,
+        )
+    except RuntimeError as e:
+        print(f"Error: synthesis batch item failed: {e}", file=sys.stderr)
+        sys.exit(1)
     print("=" * 60)
 
     if args.dump_only:
