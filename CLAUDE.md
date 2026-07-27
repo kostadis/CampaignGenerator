@@ -191,17 +191,20 @@ resolves the path per-request.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/004-claude-api-batch/plan.md` (Claude API Batch Processing Option —
-makes Anthropic Message Batches (50% cost, async) a uniform `--batch` option of
-the anthropic backend across every LLM-bearing CLI. The seam already exists in
-`campaignlib/api/batch.py` (wired into scene_extract/enhance_summary); this
-feature promotes `--batch` into `add_backend_args`, hardens the seam (fail-fast
-non-anthropic rejection, batch-id line at submission, SIGINT/SIGTERM →
-remote cancel, per-item max_tokens truncation banner, per-item failure listing
-with non-zero exit, atomic per-unit writes), and routes multi-call pipelines
-(`run_extract_pipeline`, per-scene/per-file loops) through grouped submissions.
-Block-and-poll only; `sd_narrate`/`prep` stay sequential one-item batches
-(order-dependent chains); web UI out of scope. Predecessors:
-`specs/002-ensemble-run-observability/plan.md`,
-`specs/003-model-selection-resolution/`.).
+`specs/005-ui-batch-selection/plan.md` (Batch as a UI Selection Option — adds
+batch as a third value in feature 003's selection mechanism, so it is chosen,
+resolved, displayed and forwarded exactly like model and backend. One seam:
+`ResolvedSelection` gains `batch`/`batch_origin`/`batch_unavailable_reason`,
+`resolve_selection` resolves it request→service→platform and *downgrades*
+(never raises) when the resolved backend can't do batch, and
+`selection_cli_args` is the only emitter of `--batch`; `SelectionPanel.vue`
+gives ~10 service pages the control at once. Progress reporting,
+abort-cancels-remote-batch and fail-fast all come free from specs 002/004 —
+the server adds no batch logic of its own (Constitution VI). Connection Graph
+is excluded as the one in-process caller (issue #192), and the Session Doc
+Editor's bespoke batch checkbox is retired in favour of the unified control.
+Predecessors: `specs/004-claude-api-batch/plan.md` (the `--batch` CLI flag and
+the `campaignlib/api/batch.py` seam it forwards to),
+`specs/003-model-selection-resolution/` (the selection tiers this extends),
+`specs/002-ensemble-run-observability/plan.md` (run streaming + abort).)
 <!-- SPECKIT END -->
