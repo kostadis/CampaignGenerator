@@ -350,6 +350,17 @@ def _claude_code_generate(
     through it so the subscription path respects the same ceiling the Anthropic
     API and DGX backends do (a ceiling, not a target — it permits longer output,
     it does not force it).
+
+    Uses `--output-format stream-json --verbose` (print mode requires
+    --verbose when stream-json is requested) instead of the single-envelope
+    `json` format. Current CLI versions (observed: 2.1.220) do NOT hard-error
+    when generation hits CLAUDE_CODE_MAX_OUTPUT_TOKENS mid-turn — they
+    AUTO-CONTINUE in a second (or further) assistant turn, and
+    `--output-format json`'s single `result` field only reflects the LAST
+    turn, silently dropping the head of the response. Streaming NDJSON lets
+    us concatenate the text of every assistant turn ourselves instead. The
+    is_error / "output token maximum" hard-error branch below is kept for
+    older CLI versions that still exit that way.
     """
     import subprocess
     import tempfile
@@ -362,7 +373,8 @@ def _claude_code_generate(
     cmd = [
         CLAUDE_CODE_CLI, "-p",
         "--model", model,
-        "--output-format", "json",
+        "--output-format", "stream-json",
+        "--verbose",   # required by print mode when --output-format is stream-json
         "--disallowed-tools", "*",   # pure text generation; no agentic tool calls
     ]
     sp_file = None
@@ -376,35 +388,71 @@ def _claude_code_generate(
         proc = subprocess.run(
             cmd, input=user, capture_output=True, text=True, env=env)
 
-        # `claude -p --output-format json` emits a parseable result envelope even
-        # when it fails on an output-token overflow — and in that case it ALSO
-        # exits non-zero. Inspect the envelope BEFORE the returncode so the
-        # overflow-specific message is reachable; fall back to the raw exit error
-        # only when stdout is not that envelope (genuine failures: CLI not found,
-        # auth failure, crash — no JSON envelope).
-        try:
-            data = json.loads(proc.stdout)
-        except json.JSONDecodeError:
-            data = None
+        # stdout is newline-delimited JSON events. Collect the concatenated
+        # text of every "assistant" event (in turn order) and keep the
+        # terminal "result" event for error handling — it carries the same
+        # `result` / `is_error` / `num_turns` fields the old single-envelope
+        # `json` format did, just as one event among many now.
+        assistant_text_parts: list[str] = []
+        num_assistant_events = 0
+        result_event: dict | None = None
+        for line in proc.stdout.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if not isinstance(event, dict):
+                continue
+            if event.get("type") == "assistant":
+                num_assistant_events += 1
+                message = event.get("message") or {}
+                for block in message.get("content") or []:
+                    if isinstance(block, dict) and block.get("type") == "text":
+                        assistant_text_parts.append(block.get("text", ""))
+            elif event.get("type") == "result":
+                result_event = event
 
-        if isinstance(data, dict) and data.get("type") == "result":
-            if data.get("is_error"):
-                result_text = str(data.get("result", ""))
-                # Unlike the Anthropic API (which truncates and returns partial
-                # text with stop_reason=max_tokens), `claude -p` treats hitting the
-                # cap as a hard error and discards the text. Re-phrase its
-                # env-var-centric message in terms of the caller's knob
-                # (--narrate-tokens / max_tokens).
+        # `claude -p` emits a parseable result envelope even when it fails on
+        # an output-token overflow — and in that case it ALSO exits non-zero.
+        # Inspect the envelope BEFORE the returncode so the overflow-specific
+        # message is reachable; fall back to the raw exit error only when no
+        # result event was found at all (genuine failures: CLI not found,
+        # auth failure, crash — no JSON envelope ever emitted).
+        if result_event is not None:
+            if result_event.get("is_error"):
+                result_text = str(result_event.get("result", ""))
+                # Older CLI versions treat hitting the cap as a hard error and
+                # discard the text, rather than auto-continuing (see
+                # docstring). Re-phrase the env-var-centric message in terms
+                # of the caller's knob (--narrate-tokens / max_tokens).
                 if max_tokens and "output token maximum" in result_text:
                     raise RuntimeError(
                         f"claude -p hit the {max_tokens}-token output ceiling and "
-                        f"returned no text (the subscription backend errors on "
-                        f"overflow rather than truncating). Raise --narrate-tokens "
+                        f"returned no text (this CLI version errors on overflow "
+                        f"rather than auto-continuing). Raise --narrate-tokens "
                         f"/ max_tokens for this run.")
                 raise RuntimeError(f"claude -p error: {result_text[:500]}")
-            return data.get("result", "")
 
-        # Not the JSON result envelope — a genuine process failure.
+            if num_assistant_events > 1:
+                print(
+                    f"\n{'!' * 70}\n"
+                    f"!!  WARNING: claude -p hit its output ceiling mid-generation and AUTO-CONTINUED\n"
+                    f"!!  across {num_assistant_events} assistant turns. All turns were concatenated, but there may be a\n"
+                    f"!!  seam at the continuation boundary — review the output, and consider raising\n"
+                    f"!!  max_tokens (CLAUDE_CODE_MAX_OUTPUT_TOKENS) for this call.\n"
+                    f"{'!' * 70}",
+                    file=sys.stderr, flush=True)
+
+            if assistant_text_parts:
+                return "".join(assistant_text_parts)
+            # Defensive fallback — no assistant text blocks were parsed at all.
+            return str(result_event.get("result", ""))
+
+        # No result event found among the parsed lines — a genuine process
+        # failure (CLI not found, auth error, crash before emitting one).
         if proc.returncode != 0:
             raise RuntimeError(
                 f"claude -p exited {proc.returncode}: "

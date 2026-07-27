@@ -60,7 +60,7 @@ class FakeStreamAPI:
         self.calls = []
 
     def __call__(self, client, system, user, model, *args, **kwargs):
-        self.calls.append({"system": system, "user": user, "model": model})
+        self.calls.append({"system": system, "user": user, "model": model, "kwargs": kwargs})
         return f"[stub-{len(self.calls)}]"
 
 
@@ -119,6 +119,70 @@ def test_extract_only_build_dossiers_mode_stops_after_phase_1(monkeypatch, fake_
     assert any(extract_dir.glob("dossier_extract_*.md"))
     # No dossier files created — Phase 3 was skipped.
     assert not any(dossier_dir.glob("*.md")) if dossier_dir.exists() else True
+
+
+# ── Synthesis output-token ceiling (--synth-tokens) ──────────────────────────
+# planning.py's Pass 2 synthesis call used to inherit stream_api's own
+# default (8096), which silently tail-truncated large planning docs (the
+# claude-code backend auto-continues past it in a hidden second turn instead,
+# dropping the head). SYNTH_MAX_TOKENS (32000) is now passed explicitly, with
+# --synth-tokens as an escape hatch.
+
+def test_synthesis_uses_default_synth_max_tokens(monkeypatch, fake_stream_api, tmp_path):
+    """The flat (--npc) path's stream_api call gets max_tokens=SYNTH_MAX_TOKENS
+    by default."""
+    npc = _write_dossier(tmp_path / "grundar.md", "Grundar")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--npc", str(npc),
+        "--output", str(output),
+    ])
+    planning.main()
+
+    assert len(fake_stream_api.calls) == 1
+    assert planning.SYNTH_MAX_TOKENS == 32000
+    assert fake_stream_api.calls[0]["kwargs"]["max_tokens"] == planning.SYNTH_MAX_TOKENS
+
+
+def test_synth_tokens_flag_overrides_default_on_flat_path(monkeypatch, fake_stream_api, tmp_path):
+    npc = _write_dossier(tmp_path / "grundar.md", "Grundar")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--npc", str(npc),
+        "--output", str(output),
+        "--synth-tokens", "5000",
+    ])
+    planning.main()
+
+    assert fake_stream_api.calls[0]["kwargs"]["max_tokens"] == 5000
+
+
+def test_synth_tokens_flag_overrides_default_on_planning_config_path(
+    monkeypatch, fake_stream_api, tmp_path
+):
+    """run_synthesize_with_config's stream_api call also honors --synth-tokens."""
+    monkeypatch.chdir(tmp_path)
+    _write_dossier(tmp_path / "adabra.md", "Adabra")
+    cfg = _write_planning_config(tmp_path, """
+npcs:
+  - name: Adabra
+    dossier: adabra.md
+""")
+    output = tmp_path / "planning.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py",
+        "--planning-config", str(cfg),
+        "--output", str(output),
+        "--synth-tokens", "9000",
+    ])
+    planning.main()
+
+    assert fake_stream_api.calls[0]["kwargs"]["max_tokens"] == 9000
 
 
 # ── parse/write dossier frontmatter round-trip ───────────────────────────────

@@ -271,6 +271,19 @@ def stream_api(client, system, user: str, model: str, max_tokens: int = 8096,
                     if not silent:
                         print(text, end="", flush=True)
                     chunks.append(text)
+                # Only the real anthropic SDK stream exposes get_final_message() —
+                # the DGX/openrouter (_OpenAICompatStream) and claude-code
+                # (_ClaudeCodeStream) façades in campaignlib/api/backends.py do
+                # not, and must not break on this defensive check.
+                get_final = getattr(stream, "get_final_message", None)
+                if callable(get_final):
+                    final = get_final()
+                    if getattr(final, "stop_reason", None) == "max_tokens":
+                        print(f"\n{'!' * 70}\n"
+                              f"!!  WARNING: output TRUNCATED at the {max_tokens}-token max_tokens\n"
+                              f"!!  ceiling (stop_reason=max_tokens). The tail of the response is\n"
+                              f"!!  MISSING. Re-run with a higher max_tokens ceiling.\n"
+                              f"{'!' * 70}", file=sys.stderr, flush=True)
             if not silent:
                 print()
             return _require_nonempty("".join(chunks))
