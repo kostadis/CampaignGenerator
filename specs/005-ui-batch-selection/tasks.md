@@ -104,10 +104,10 @@ Feature 003 split services into two classes, and this feature must preserve the 
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T029 Retire the bespoke batch control (FR-011): remove `useBatch` and the `?batch=1` URL construction from `frontend/src/views/session/SessionDocEditor.vue`, the checkbox from `frontend/src/components/scene-editor/KnobDrawer.vue`, and the `batch` query parameter from the extract/enhance routes in `server/routers/scene_editor.py` — those runs now take batch from the resolved selection. Verify the two stages behave exactly as they did before (research D6).
-- [ ] T030 [P] Add the `batch: bool` forwarding parameter to `backend_cli_args` in `server/backend_forwarding.py` **only if** an implementation need appears; otherwise update its spec-004 NOTE to record that batch joins at `selection_cli_args` instead. Do not leave the NOTE stale.
-- [ ] T031 [P] Docs: document the UI batch control in `docs/web/web_ui.md` (where it appears, tiering, refusal + remedy, degraded services, the Connection Graph exclusion and why)
-- [ ] T032 Full gate from the worktree: `env -u PYTHONPATH ~/.venvs/main/bin/python -m pytest -q` (the 3 `test_service_selection_override` failures must now be **fixed**, not tolerated — T002) plus `cd frontend && npm run build`; then run quickstart §1–§8 against a live campaign and record results in the PR body
+- [X] T029 Retire the bespoke batch control (FR-011): remove `useBatch` and the `?batch=1` URL construction from `frontend/src/views/session/SessionDocEditor.vue`, the checkbox from `frontend/src/components/scene-editor/KnobDrawer.vue`, and the `batch` query parameter from the extract/enhance routes in `server/routers/scene_editor.py` — those runs now take batch from the resolved selection. Verify the two stages behave exactly as they did before (research D6).
+- [X] T030 [P] Add the `batch: bool` forwarding parameter to `backend_cli_args` in `server/backend_forwarding.py` **only if** an implementation need appears; otherwise update its spec-004 NOTE to record that batch joins at `selection_cli_args` instead. Do not leave the NOTE stale.
+- [X] T031 [P] Docs: document the UI batch control in `docs/web/web_ui.md` (where it appears, tiering, refusal + remedy, degraded services, the Connection Graph exclusion and why)
+- [X] T032 Full gate from the worktree: `env -u PYTHONPATH ~/.venvs/main/bin/python -m pytest -q` (the 3 `test_service_selection_override` failures must now be **fixed**, not tolerated — T002) plus `cd frontend && npm run build`; then run quickstart §1–§8 against a live campaign and record results in the PR body
 
 ---
 

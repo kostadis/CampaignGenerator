@@ -10,7 +10,7 @@ No database. State is YAML on disk plus one per-request computed object (Constit
 |---|---|---|---|---|
 | Platform (app-wide) | `config/platform.yaml` → `runtime` | `default_batch: bool` | `false` (FR-004) | App sidebar |
 | Service (per-service override) | that service's selection store, alongside its `model`/`backend` | `batch: bool \| null` | `null` = defer to platform | `SelectionPanel` on the service's page |
-| Ensemble stage (parallel service tier) | `config/ensemble.yaml` → `extract` / `synthesize` | `batch: bool` | `false` | `EnsembleSetup.vue` |
+| Ensemble stage (parallel service tier) | `config/ensemble.yaml` → `extract` / `synthesize` | `batch: bool \| null` | `null` = defer | `EnsembleSetup.vue` (three-state: inherit / on / off) |
 | Request (per-run) | not persisted | — | absent | not exposed in this feature |
 
 `null` at the service tier is load-bearing: it is the difference between "this service defers" and "this service explicitly chose off". Only the former follows an app-wide change.

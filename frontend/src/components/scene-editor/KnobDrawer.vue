@@ -17,7 +17,6 @@ const props = defineProps<{
   characters: string
   context: string
   // ── Stage knobs ───────────────────────────────────────────
-  useBatch: boolean
   backend: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
   dgxEndpoint: string
   dgxModel: string
@@ -40,7 +39,6 @@ const emit = defineEmits<{
   'update:examplesDir': [value: string]
   'update:characters': [value: string]
   'update:context': [value: string]
-  'update:useBatch': [value: boolean]
   'update:backend': [value: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code']
   'update:dgxEndpoint': [value: string]
   'update:dgxModel': [value: string]
@@ -140,14 +138,11 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
       <!-- Stage 1 — Enhance -->
       <section class="drawer-section">
         <h3>① Enhance</h3>
-        <label class="checkbox-row">
-          <input
-            type="checkbox"
-            :checked="useBatch"
-            @change="emit('update:useBatch', ($event.target as HTMLInputElement).checked)"
-          />
-          Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)
-        </label>
+        <!-- 005-ui-batch-selection, FR-011: the bespoke batch checkbox that
+             used to live here is retired — batch (Anthropic Message
+             Batches: 50% off list price; replaces streaming with
+             poll-progress) is now set app-wide from the sidebar and
+             inherited here, same as every other service. -->
         <div class="field">
           <label class="field-label">Backend (also applies to Stage 2, Narrate, Scrub)</label>
           <div class="seg-toggle">
@@ -214,7 +209,7 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
       <section class="drawer-section">
         <h3>② Extract</h3>
         <div class="field-help muted-block">
-          Batch mode (toggle above) and Backend apply here. The Re-Extract button always forwards
+          Batch (set app-wide via the sidebar) and Backend apply here. The Re-Extract button always forwards
           <code>--force</code> so prior per-scene files are snapshotted to <code>.prev</code> and
           rewritten.
         </div>
@@ -226,13 +221,17 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
         <!-- 005-ui-batch-selection, FR-010: narrate's handoff-threaded scenes
              can only submit as sequential one-item batches — same 50%
              discount as any other stage, but not the parallel speedup batch
-             usually gives. Stated here, before the run, whether or not batch
-             is currently forwarded to this stage (see KnobDrawer's Enhance
-             checkbox above and specs/005-ui-batch-selection/data-model.md's
-             "Batch capability map" — session_doc is classified `degraded`). -->
-        <div v-if="useBatch" class="degraded-note">
-          Batch runs narration one scene at a time — same discount, slower
-          than a normal run.
+             usually gives (data-model.md's "Batch capability map" classifies
+             session_doc as `degraded`). Stated unconditionally rather than
+             gated on a live toggle: T029 retired the bespoke Enhance
+             checkbox this used to key off of, and batch here is now
+             inherited from the resolved selection (app-wide, or this
+             editor's own per-backend override) rather than a value this
+             page holds locally. -->
+        <div class="degraded-note">
+          If batch is enabled — app-wide, or for this editor's active
+          backend — narration runs one scene at a time: same discount,
+          slower than a normal run.
         </div>
         <div class="field">
           <label class="field-label">Token limit</label>

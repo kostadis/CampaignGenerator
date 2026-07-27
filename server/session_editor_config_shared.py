@@ -154,6 +154,19 @@ class EditorPaths(BaseModel):
         return {k: v for k, v in data.items() if k not in RETIRED_PATH_FIELDS}
 
 
+# Retired alongside the bespoke Session Doc Editor batch checkbox
+# (005-ui-batch-selection T029, FR-011): `narrate.batch` was that checkbox's
+# own persisted store, entirely disconnected from the actual sd_narrate
+# command (which never read it) and superseded by `backends.<name>.batch`
+# (BackendProfile, via ModelSelection) — the same per-service-selection
+# field every other batch consumer now reads through `_selection_args`.
+# Stripped on load, not rejected, mirroring RETIRED_PATH_FIELDS above: a
+# campaign whose session_doc.yaml still carries the old key from before
+# this change would otherwise fail schema validation and take the whole
+# editor down on boot.
+RETIRED_NARRATE_FIELDS: tuple[str, ...] = ("batch",)
+
+
 class NarrateKnobs(BaseModel):
     """Stage-④ narrate knobs."""
 
@@ -163,8 +176,29 @@ class NarrateKnobs(BaseModel):
     prose_mode: bool = False
     reflections: bool = False
     genre: OptStr = None
-    batch: bool = False
     context: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _drop_retired_fields(cls, data: Any) -> Any:
+        """Strip the retired ``batch`` key before ``extra="forbid"`` sees it.
+
+        Announced on stderr rather than dropped silently — see
+        ``EditorPaths._drop_retired_fields`` above for the identical
+        rationale.
+        """
+        if not isinstance(data, dict):
+            return data
+        retired = [k for k in RETIRED_NARRATE_FIELDS if k in data]
+        if not retired:
+            return data
+        print(
+            f"  config: dropping retired session_doc.yaml narrate field(s) "
+            f"{', '.join(retired)} — batch now lives on the per-backend "
+            f"selection (backends.<name>.batch), not narrate.",
+            file=sys.stderr,
+        )
+        return {k: v for k, v in data.items() if k not in RETIRED_NARRATE_FIELDS}
 
 
 class ScrubKnobs(BaseModel):
@@ -259,7 +293,11 @@ TYPED_SESSION_DOC_TO_GROUPED: dict[str, tuple[str, ...]] = {
     "prose_mode": ("narrate", "prose_mode"),
     "reflections": ("narrate", "reflections"),
     "narration_genre": ("narrate", "genre"),
-    "batch": ("narrate", "batch"),
+    # ``batch`` is deliberately absent (005-ui-batch-selection T029): it
+    # mapped into the now-retired RETIRED_NARRATE_FIELDS. Same rationale as
+    # ``roleplay_dir``/``summary_dir`` above — reported as unrecognised
+    # (visible, left behind in the old ui_state.yaml) instead of migrated
+    # into a field that no longer exists (silently lost).
     "context": ("narrate", "context"),
     "session_name": ("session_name",),
     "backend": ("backends", "active"),

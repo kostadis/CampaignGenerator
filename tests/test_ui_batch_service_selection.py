@@ -10,11 +10,13 @@ Editor's per-backend-profile equivalent (``PUT /api/editor/config`` writing
 ``tests/test_service_selection_override.py``'s ``OVERRIDE_SERVICES``, which
 has always excluded it).
 
-The editor's *run* commands do not yet emit ``--batch`` from the resolved
-selection — that rewiring is explicitly reserved for T029 (Phase 6), which
-retires the bespoke ``useBatch``/``?batch=1`` mechanism this feature
-replaces. Asserting ``--batch`` in an editor run's built command belongs
-there, not here; this file only exercises storage + the preview for editor.
+The editor's *run* commands emitting ``--batch`` from the resolved selection
+is T029's (Phase 6) doing, which retired the bespoke ``useBatch``/
+``?batch=1`` mechanism this feature replaces — see
+``tests/test_editor_pipeline.py``'s ``_build_enhance_cmd``/
+``_build_reextract_cmd``/``_build_narrate_cmd`` batch-forwarding coverage.
+This file only exercises storage + the preview for editor, not the built
+command.
 """
 
 import sys

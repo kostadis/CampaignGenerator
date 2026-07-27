@@ -29,7 +29,6 @@ const narrateTokens = ref(16000)
 const proseMode = ref(false)
 const reflections = ref(false)
 const narrationGenre = ref('')
-const useBatch = ref(false)
 const backend = ref<'anthropic' | 'dgx' | 'openrouter' | 'claude-code'>('anthropic')
 const dgxEndpoint = ref('')
 const dgxModel = ref('')
@@ -69,7 +68,6 @@ function loadConfigFields() {
   proseMode.value = !!narrate.prose_mode
   reflections.value = !!narrate.reflections
   narrationGenre.value = narrate.genre || ''
-  useBatch.value = narrate.batch === true
   backend.value = normalizeBackend(backends.active)
   dgxEndpoint.value = backends.dgx?.endpoint || ''
   dgxModel.value = backends.dgx?.model || ''
@@ -139,15 +137,6 @@ watch(
    narrateTokens, proseMode, reflections, narrationGenre],
   scheduleApply,
 )
-
-async function persistBatchToggle() {
-  try {
-    await config.updateEditor({ narrate: { batch: useBatch.value } })
-  } catch {
-    /* non-fatal: toggle will still apply to in-flight calls */
-  }
-}
-watch(useBatch, persistBatchToggle)
 
 async function persistBackend() {
   try {
@@ -489,14 +478,16 @@ async function runExtract() {
   if (extracting.value || narrating.value || enhancing.value || planning.value) return
   extracting.value = true
   narrationOutput.value = ''
-  setStatus(useBatch.value
-    ? 'Submitting Stage 2 batch (Message Batches API)...'
-    : 'Re-extracting quotes (Stage 2)...')
+  setStatus('Re-extracting quotes (Stage 2)...')
 
-  const url = useBatch.value
-    ? '/api/editor/extract?batch=1&force=1'
-    : '/api/editor/extract?force=1'
-  activeSSE.value = connectSSE(url, {
+  // Batch (Message Batches API; 50% off list price) is no longer a
+  // `?batch=1` query param the page decides here — it comes from the
+  // resolved selection (app-wide, or this editor's own per-backend
+  // override) the same way every other service's run does
+  // (005-ui-batch-selection, T029). A batch submission shows up in the
+  // streamed output itself ("Batch submitted: …") rather than needing to
+  // be predicted here.
+  activeSSE.value = connectSSE('/api/editor/extract?force=1', {
     onData(text) { narrationOutput.value += text },
     onDone(rc, error) {
       activeSSE.value = null
@@ -542,12 +533,12 @@ async function runEnhance() {
   if (enhancing.value || extracting.value || narrating.value || planning.value) return
   enhancing.value = true
   narrationOutput.value = ''
-  setStatus(useBatch.value
-    ? 'Submitting Stage 1 batch (Message Batches API)...'
-    : 'Enhancing summary (Stage 1)...')
+  setStatus('Enhancing summary (Stage 1)...')
 
-  const url = useBatch.value ? '/api/editor/enhance?batch=1' : '/api/editor/enhance'
-  activeSSE.value = connectSSE(url, {
+  // Same retirement as runExtract above — no `?batch=1`; the resolved
+  // selection decides, and a batch submission announces itself in the
+  // stream.
+  activeSSE.value = connectSSE('/api/editor/enhance', {
     onData(text) { narrationOutput.value += text },
     onDone(rc, error) {
       activeSSE.value = null
@@ -799,7 +790,6 @@ onMounted(async () => {
       v-model:examples-dir="examplesDir"
       v-model:characters="characters"
       v-model:context="context"
-      v-model:use-batch="useBatch"
       v-model:backend="backend"
       v-model:dgx-endpoint="dgxEndpoint"
       v-model:dgx-model="dgxModel"

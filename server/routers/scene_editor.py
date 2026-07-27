@@ -19,6 +19,7 @@ import json
 import re
 import subprocess
 import sys
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -28,7 +29,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from server.backend_forwarding import backend_cli_args
-from server.platform_config_service import resolve_selection
+from server.platform_config_service import resolve_selection, selection_cli_args
 from server.platform_config_shared import ModelSelection
 from server.session_editor_config_shared import ProfileEntry
 from server.session_editor_config_service import (
@@ -605,6 +606,25 @@ def _selection_args(request, cfg: ResolvedEditorConfig, *,
     before 003. This is the one path that deliberately does not forward a
     resolved selection, and it is a behaviour-preserving carve-out rather
     than an oversight.
+
+    The batch flag (005-ui-batch-selection, T029) rides the same seam now
+    instead of the bespoke ``?batch=1``/checkbox mechanism this replaces —
+    ``_editor_service_selection`` already folds ``prof.batch`` into the
+    ``ModelSelection`` passed to ``resolve_selection`` above, so ``resolved``
+    carries the right value (and already raises ``IncompatibleSelection``,
+    naming batch, before any subprocess is built — that part predates this
+    change). What was missing was emitting the flag: mirrors
+    ``ensemble.py::_backend_args`` — ``--backend``/``--endpoint`` still come
+    from ``backend_cli_args`` called directly with the editor's own SINGULAR
+    ``endpoint`` (``resolved.endpoint`` is unset here by construction, since
+    ``_editor_service_selection`` builds a plain ``ModelSelection`` with no
+    endpoint field — the ensemble twin has the same reason for not routing
+    its plural ``endpoints`` through ``resolved`` either), while ``--model``
+    and the batch flag come from ``selection_cli_args`` via a throwaway copy
+    of ``resolved`` with ``backend`` forced to ``"anthropic"`` so that call
+    contributes only those two flags — ``backend_cli_args("anthropic", ...)``
+    short-circuits to ``[]`` regardless of endpoint, so this never emits a
+    second, wrongly-shaped ``--backend``/``--endpoint`` pair.
     """
     service, endpoint = _editor_service_selection(cfg)
 
@@ -617,17 +637,43 @@ def _selection_args(request, cfg: ResolvedEditorConfig, *,
         service_name="session_doc",
     )
     args = backend_cli_args(resolved.backend, endpoint=endpoint)
-    return args + (["--model", resolved.model] if resolved.model else [])
+    args += selection_cli_args(replace(resolved, backend="anthropic"))
+    return args
+
+
+def _editor_resolved_batch(request, cfg: ResolvedEditorConfig) -> bool:
+    """Whether this editor run's resolved selection has batch on.
+
+    Used only to log an honest value in the activity-log knob snapshot
+    (``_record_activity``'s ``knobs={"batch": ...}``) now that batch is no
+    longer a route query param a caller hands in directly (T029). By the
+    time a route reaches this (inside its SSE `on_complete` callback,
+    always after ``_selection_args`` has already run once for the same
+    request/cfg without raising) the selection is known compatible, so this
+    recomputation is redundant-but-cheap rather than a second chance to
+    refuse.
+    """
+    service, _endpoint = _editor_service_selection(cfg)
+    return resolve_selection(
+        request,
+        service=service,
+        service_name="session_doc",
+        raise_on_incompatible=False,
+    ).batch
 
 
 
-def _build_enhance_cmd(request, cfg: ResolvedEditorConfig, batch: bool = False) -> list[str] | tuple[None, str]:
+def _build_enhance_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     """Stage 1: enhance_summary {vtt} --gmassist {session} --output {summary}.
 
     Returns the command list, or (None, error_message) on misconfig.
-    Pass `batch=True` to forward `--batch` so the script uses the Message
-    Batches API (50% off list price; the script's poll-progress lines flow
-    over the same SSE stream).
+
+    The batch flag (Message Batches API; 50% off list price; the script's
+    poll-progress lines flow over the same SSE stream) is no longer a param
+    here — the bespoke checkbox that used to supply one is retired
+    (005-ui-batch-selection, T029). ``_selection_args`` forwards it whenever
+    the resolved selection's batch is true, the same way every other
+    service's run command picks it up.
     """
     vtt = _vtt_path(cfg)
     if vtt is None or not vtt.exists():
@@ -644,17 +690,16 @@ def _build_enhance_cmd(request, cfg: ResolvedEditorConfig, batch: bool = False) 
         "--output", str(summary),
     ]
     cmd += _selection_args(request, cfg)
-    if batch:
-        cmd.append("--batch")
     return cmd
 
 
-def _build_reextract_cmd(request, cfg: ResolvedEditorConfig, batch: bool = False,
+def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
                          force: bool = False) -> list[str] | tuple[None, str]:
     """Stage 2: scene_extract {vtt} --summary {summary} --output-dir {sx_dir}.
 
-    Pass `batch=True` to forward `--batch` so per-scene calls are submitted
-    as one Message Batch (50% off + cache hits compound).
+    The batch flag (per-scene calls submitted as one Message Batch — 50% off
+    + cache hits compound) is forwarded by ``_selection_args`` from the
+    resolved selection, same as Stage 1 — no local param anymore (T029).
 
     Pass `force=True` to forward `--force` so existing per-scene files are
     overwritten (with .prev snapshot) instead of skipped. The UI sets this
@@ -689,8 +734,6 @@ def _build_reextract_cmd(request, cfg: ResolvedEditorConfig, batch: bool = False
     gm_player = (cfg.roster.gm_player or "").strip()
     if gm_player:
         cmd += ["--gm-player", gm_player]
-    if batch:
-        cmd.append("--batch")
     if force:
         cmd.append("--force")
     return cmd
@@ -703,6 +746,16 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
     sd_narrate and pass plan.md explicitly via --plan (instead of the
     old --plan-file). --context lives on sd_consistency now; sd_narrate
     has --context for the --reflections code path only.
+
+    The batch flag was never forwarded here even after the bespoke checkbox
+    existed (it only ever reached enhance/extract) — ``_selection_args``
+    below now forwards it whenever the resolved selection's batch is true,
+    for the first time (005-ui-batch-selection). ``session_doc`` is a
+    `degraded`-capability service in the batch map (data-model.md): the
+    handoff-threaded scenes can only submit as sequential one-item batches,
+    not one grouped batch, so this is slower than a normal batched run for
+    the same 50% discount — the KnobDrawer degradation note states that
+    trade-off before the run.
     """
     summary = _session_summary_path(cfg)
     if summary is None or not summary.exists():
@@ -956,23 +1009,27 @@ def api_get_output(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config
 
 
 @router.get("/enhance")
-async def api_enhance(request: Request, batch: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+async def api_enhance(request: Request, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Stage 1 — stream enhance_summary output.
 
-    `batch=1` forwards `--batch` to the script (Message Batches API; 50%
-    off list price; replaces token streaming with poll-progress lines).
+    Batch (Message Batches API; 50% off list price; replaces token
+    streaming with poll-progress lines) is no longer a `?batch=1` query
+    param — it comes from the resolved selection like every other service
+    now (005-ui-batch-selection, T029; the bespoke checkbox is retired).
+    ``_build_enhance_cmd`` already calls ``_selection_args``, which forwards
+    the batch flag when applicable, so there is nothing to add here.
     """
-    result = _build_enhance_cmd(request, cfg, batch=bool(batch))
+    result = _build_enhance_cmd(request, cfg)
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
-    cmd = result + _selection_args(request, cfg)
+    cmd = result
     summary = _session_summary_path(cfg)
     outputs = [str(summary)] if summary else []
 
     def _done(rc: int | None) -> None:
         _record_activity(cfg, stage="enhance", rc=rc,
-                         knobs={"batch": bool(batch)},
+                         knobs={"batch": _editor_resolved_batch(request, cfg)},
                          outputs=outputs)
 
     return StreamingResponse(
@@ -984,26 +1041,26 @@ async def api_enhance(request: Request, batch: int = 0, cfg: ResolvedEditorConfi
 
 
 @router.get("/extract")
-async def api_extract(request: Request, batch: int = 0, force: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+async def api_extract(request: Request, force: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Stage 2 (Re-Extract Quotes) — calls scene_extract.
 
-    `batch=1` forwards `--batch` to the script. `force=1` forwards `--force`
-    so existing per-scene files are overwritten (with .prev snapshot) — the
-    UI Re-Extract button always sets this. Falls back to the old
-    Pass-1-to-4 command (no batch / no force support) when the workspace
-    is on the legacy flow.
+    Batch comes from the resolved selection now, not a `?batch=1` query
+    param (005-ui-batch-selection, T029) — see ``_build_reextract_cmd``,
+    which already forwards it via ``_selection_args``. `force=1` forwards
+    `--force` so existing per-scene files are overwritten (with .prev
+    snapshot) — the UI Re-Extract button always sets this.
     """
-    result = _build_reextract_cmd(request, cfg, batch=bool(batch), force=bool(force))
+    result = _build_reextract_cmd(request, cfg, force=bool(force))
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
-    cmd = result + _selection_args(request, cfg)
+    cmd = result
     sx = _scene_extractions_dir(cfg)
 
     def _done(rc: int | None) -> None:
         outputs = [str(sx)] if sx else []
         _record_activity(cfg, stage="extract", rc=rc,
-                         knobs={"batch": bool(batch), "force": bool(force)},
+                         knobs={"batch": _editor_resolved_batch(request, cfg), "force": bool(force)},
                          outputs=outputs)
 
     return StreamingResponse(
@@ -1020,7 +1077,7 @@ async def api_narrate(n: int, request: Request, cfg: ResolvedEditorConfig = Depe
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
-    cmd = result + _selection_args(request, cfg)
+    cmd = result
     knobs = _narrate_knobs_snapshot(cfg)
 
     def _done(rc: int | None) -> None:

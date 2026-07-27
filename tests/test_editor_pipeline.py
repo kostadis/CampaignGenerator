@@ -170,3 +170,116 @@ def test_build_narrate_cmd_uses_new_flags(tmp_path):
     # Must not use legacy flags
     assert "--from-extractions" not in result
     assert "--by-scene" not in result
+
+
+# ── Batch forwarding via the resolved selection (005-ui-batch-selection,
+#    T029) — the bespoke `?batch=1`/checkbox mechanism is retired; Enhance,
+#    Extract, and (for the first time) Narrate now pick up --batch from
+#    `_selection_args` -> `resolve_selection` -> `selection_cli_args` the
+#    same way every other service's run command does. This is the "natural
+#    first end-to-end check that the unified path produces the same
+#    behavior the bespoke one did" (research.md D6). ────────────────────────
+
+
+def test_build_enhance_cmd_forwards_batch_when_resolved_selection_true(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        vtt=str(vtt),
+    )
+    cfg.backends.anthropic.batch = True
+    cmd = scene_editor._build_enhance_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert "--batch" in cmd
+
+
+def test_build_enhance_cmd_omits_batch_by_default(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        vtt=str(vtt),
+    )
+    cmd = scene_editor._build_enhance_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert "--batch" not in cmd
+
+
+def test_build_reextract_cmd_forwards_batch_when_resolved_selection_true(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+    )
+    cfg.backends.anthropic.batch = True
+    cmd = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert "--batch" in cmd
+
+
+def test_build_reextract_cmd_omits_batch_by_default(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+    )
+    cmd = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert "--batch" not in cmd
+
+
+def test_build_narrate_cmd_forwards_batch_when_resolved_selection_true(tmp_path):
+    """`session_doc` is classified `degraded` in the batch capability map
+    (data-model.md), not `incompatible` — it runs, just as sequential
+    one-item batches. Narrate picking up --batch here is new: even the
+    retired bespoke checkbox never reached this stage (it only ever forwarded
+    to Enhance/Extract), so this is a real behavior addition, not a
+    preservation of prior behavior — and it is the intended, correct one."""
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+    )
+    cfg.backends.anthropic.batch = True
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+    assert isinstance(result, list)
+    assert "--batch" in result
+
+
+def test_build_enhance_cmd_refuses_incompatible_batch_selection(tmp_path):
+    """Batch is a Claude API option (research D2/D3) — a batch selection
+    that resolves against a non-anthropic backend raises
+    IncompatibleSelection before any command is built, exactly like every
+    other service (tests/test_ui_batch_service_selection.py's
+    grounding/party/planning coverage), never a silent full-price run."""
+    from server.platform_config_service import IncompatibleSelection
+
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        vtt=str(vtt),
+    )
+    cfg.backends.active = "dgx"
+    cfg.backends.dgx.model = "Qwen3-Next-80B"
+    cfg.backends.dgx.endpoint = "http://localhost:8000"
+    cfg.backends.dgx.batch = True
+    with pytest.raises(IncompatibleSelection):
+        scene_editor._build_enhance_cmd(None, cfg)
