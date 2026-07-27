@@ -95,9 +95,9 @@
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T028 [P] Add the drift-guard comment to `server/backend_forwarding.py` referencing spec 004 (vocabulary copy deliberately unchanged; UI exposure is a follow-up feature)
-- [ ] T029 [P] Docs: document `--batch` in `docs/cli/cli_tools.md` (shared flag section) and note the batch option + degraded CLIs in `docs/cli/session_doc_pipeline.md` / `docs/cli/ensemble_workflow.md` where those CLIs are described
-- [ ] T030 Full-suite gate from the worktree: `env -u PYTHONPATH ~/.venvs/main/bin/python -m pytest -q` (only known pre-existing failures allowed); then run quickstart.md §1–§3, §5–§7 live against a real campaign dir and record results in the PR description
+- [X] T028 [P] Add the drift-guard comment to `server/backend_forwarding.py` referencing spec 004 (vocabulary copy deliberately unchanged; UI exposure is a follow-up feature)
+- [X] T029 [P] Docs: document `--batch` in `docs/cli/cli_tools.md` (shared flag section) and note the batch option + degraded CLIs in `docs/cli/session_doc_pipeline.md` / `docs/cli/ensemble_workflow.md` where those CLIs are described
+- [X] T030 Full-suite gate from the worktree: `env -u PYTHONPATH ~/.venvs/main/bin/python -m pytest -q` (only known pre-existing failures allowed); then run quickstart.md §1–§3, §5–§7 live against a real campaign dir and record results in the PR description
 
 ---
 

@@ -2,6 +2,29 @@
 
 Per-script invocations and flags. All scripts auto-detect `config.yaml` from CWD, falling back to `<script-dir>/config/config.yaml`.
 
+## Shared flag: `--batch` (Message Batches, 50% cost)
+
+Every LLM-bearing CLI accepts `--batch` (registered by
+`campaignlib.api.client.add_backend_args`): Claude API calls go through the
+Anthropic Message Batches API at 50% token cost. The command **blocks and
+polls** until the batch completes (progress on stderr; the batch id is
+printed at submission so an orphaned batch can be cancelled by hand).
+Anthropic backend only — combining `--batch` with `--backend dgx/openrouter/
+claude-code` (or `CG_BACKEND`) fails fast before any work. Ctrl-C/SIGTERM
+during the wait cancels the remote batch. Any failed item exits non-zero;
+succeeded items' files stay on disk, so a re-run submits only what's missing.
+
+Shape per CLI: multi-unit pipelines (`distill`, `planning`, `party`,
+`campaign_state` extract fan-outs; `scene_extract`; `scrub_mechanics`;
+`query`'s map phase; `extract_facts`) group their independent calls into one
+submission. Order-dependent chains (`prep`'s 5 stages, `sd_narrate`'s
+handoff-threaded scenes) run as sequential one-item batches — slower, same
+discount, identical outputs. Single-call CLIs submit a one-item batch.
+`polish` accepts the flag but its agentic tool-use loop has no batch shape —
+it prints a notice and runs live. Not related to `ensemble_batch` (local
+multi-chapter dispatch). `scene_extract`/`enhance_summary` additionally keep
+their detached `--batch --submit-only` / `--batch --collect` mode.
+
 ## prep
 
 Single-beat or session-arc encounter generation.
