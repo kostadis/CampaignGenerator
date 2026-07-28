@@ -29,16 +29,39 @@ onMounted(async () => {
   registry.value = await fetchRegistrySummary()
 })
 
+// Plain-language readout of what the two scope knobs currently mean together.
+// They only make sense as a pair — a floor without a window is what deleted the
+// newest chapter's entities every run (issue #194) — so the page states the
+// combined effect rather than leaving the operator to compose it.
+const scopeSummary = computed(() => {
+  const w = cfg.value?.tuning.dossier_recent_window ?? 0
+  const m = cfg.value?.tuning.background_min_facts ?? 0
+  if (w === 0) {
+    return `Every entity counts as current, so the ${m}-fact floor is not applied `
+      + `— nothing is dropped, and the payload is every dossier on disk.`
+  }
+  return `Entities touched in the last ${w} chapter${w === 1 ? '' : 's'} are always `
+    + `included, however few facts they have. Entities last seen earlier need at `
+    + `least ${m} fact${m === 1 ? '' : 's'}.`
+})
+
 async function save() {
   if (!cfg.value) return
   cfg.value.extract.endpoints = extractEndpointsText.value.split('\n').map(s => s.trim()).filter(Boolean)
-  // Send only what this page owns — chapters_glob now lives under `paths`,
-  // and the untouched groups (tuning, planning) are left to merge server-side.
+  // Send only what this page owns — chapters_glob now lives under `paths`, and
+  // `tuning` carries just the two world_state scope knobs. The service
+  // deep-merges, so the other five tuning fields (chapter_parallel,
+  // chunk_parallel, bundle/threads_min_facts, entity_parallel,
+  // recent_events_window) stay YAML-only and survive untouched.
   cfg.value = await saveEnsembleConfig({
     chapters_selected: cfg.value.chapters_selected,
     extract: cfg.value.extract,
     synthesize: cfg.value.synthesize,
     paths: { chapters_glob: cfg.value.paths.chapters_glob },
+    tuning: {
+      dossier_recent_window: cfg.value.tuning.dossier_recent_window,
+      background_min_facts: cfg.value.tuning.background_min_facts,
+    },
   })
   saved.value = true
   setTimeout(() => (saved.value = false), 1500)
@@ -149,6 +172,34 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
       </fieldset>
     </div>
 
+    <fieldset class="scope">
+      <legend>Synthesis scope (world_state dossiers)</legend>
+      <p class="hint">
+        Which entity dossiers reach the world_state synthesis call. Recency
+        decides, not how often an entity is mentioned — a character introduced
+        last session has the fewest facts precisely because it is new.
+      </p>
+      <div class="scope-row">
+        <label class="fld">
+          <span>Recent window (chapters)</span>
+          <input v-model.number="cfg.tuning.dossier_recent_window" type="number" min="0" step="1" />
+          <div class="field-help">
+            Chapters counted as “current”. Everything touched in them is included
+            whatever its fact count. 0 = all chapters are recent, so no floor applies.
+          </div>
+        </label>
+        <label class="fld">
+          <span>Background floor (facts)</span>
+          <input v-model.number="cfg.tuning.background_min_facts" type="number" min="0" step="1" />
+          <div class="field-help">
+            Minimum facts for an entity last seen <em>before</em> the window.
+            Filters one-scene noise out of the deep past.
+          </div>
+        </label>
+      </div>
+      <p class="scope-summary">{{ scopeSummary }}</p>
+    </fieldset>
+
     <div class="actions">
       <button class="btn-success" @click="save">Save selections</button>
       <span v-if="saved" class="ok">Saved</span>
@@ -173,6 +224,20 @@ h2 { font-size: 16px; margin-bottom: 6px; }
   margin-top: 3px; line-height: 1.4; max-width: 40ch;
 }
 .profiles { display: flex; gap: 16px; flex-wrap: wrap; margin: 10px 0; }
+.scope { margin: 10px 0; max-width: 600px; }
+.scope .hint { margin-bottom: 10px; }
+.scope-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.scope-row .fld { flex: 1 1 200px; margin-bottom: 6px; }
+.scope-row .fld input { max-width: 110px; }
+.scope .field-help {
+  font-size: 10px; color: var(--text-muted); font-style: italic;
+  margin-top: 3px; line-height: 1.4;
+}
+.scope-summary {
+  font-size: 11px; color: var(--text-sub); margin-top: 8px;
+  padding: 6px 8px; border-left: 2px solid var(--mauve);
+  background: var(--bg-surface0); border-radius: 0 4px 4px 0; line-height: 1.5;
+}
 fieldset { border: 1px solid var(--bg-surface1); border-radius: 6px; padding: 10px 12px; min-width: 280px; }
 legend { font-size: 11px; font-weight: 700; color: var(--mauve); padding: 0 6px; }
 .warn-note { font-size: 11px; color: var(--peach); max-width: 40ch; margin-top: 4px; }

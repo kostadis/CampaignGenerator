@@ -114,7 +114,7 @@ write; a missing or empty file loads as an all-defaults `EnsembleConfig`, not an
 | *(root)* | `chapters_selected[]`, `known_names[]`, `aliases_path` |
 | `extract` / `synthesize` | `EnsembleBackend`: backend (`anthropic\|dgx\|openrouter\|claude-code`), **`endpoints[]`** (plural — the extract stage fans out across DGX hosts), model |
 | `paths` | chapters_glob, per_chapter_dir, corpus_glob, merged_out, state_dossiers_dir, dossiers_glob, npc_dossiers_glob, threads_out, recent_events_out |
-| `tuning` | chapter_parallel, chunk_parallel, bundle_min_facts, threads_min_facts, dossier_min_facts, entity_parallel, recent_events_window |
+| `tuning` | chapter_parallel, chunk_parallel, bundle_min_facts, threads_min_facts, **background_min_facts**, **dossier_recent_window**, entity_parallel, recent_events_window |
 | `planning` | synth_mode (`config\|flat`), npc[], arc_scores[], context[], depth (`scene\|full`), force_include[] |
 
 `paths` and `tuning` were Python literals in `server/routers/ensemble.py`'s route signatures
@@ -123,6 +123,16 @@ code. `planning` holds the six `planning_*` keys that used to ride on `ui.ensemb
 `extra="allow"` overflow, undeclared and unvalidated. `campaign_dir` is deliberately absent: it is
 platform-tier. `bundle_min_facts` and `threads_min_facts` are separate fields because the shipped
 defaults genuinely differ (3 vs 2).
+
+**`dossier_recent_window` + `background_min_facts`** (settable on `/ensemble/setup`) scope
+`synthesise_world_state`'s entity-dossier payload, and only make sense as a pair. Entities touched
+within the last `dossier_recent_window` chapters are included **whatever their fact count**;
+`background_min_facts` then filters everything older. They were one field
+(`dossier_min_facts`, applied to every dossier) until [#194](https://github.com/kostadis/CampaignGenerator/issues/194):
+a bare frequency floor deletes the present, because an entity introduced in the newest chapter has
+the fewest facts by construction. A pre-rename `ensemble.yaml` is migrated on read with its value
+preserved. Note `dossier_recent_window` is **not** `recent_events_window` — that one scopes
+`build_recent_events`' `recent_events.md`, a different track.
 
 ### ~~Loose UI sections~~ — none
 There are no `ui.<section>` blobs and no `_LooseSection` type. The last six were deleted with

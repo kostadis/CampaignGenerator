@@ -105,6 +105,105 @@ def test_load_aliases_flat_map(tmp_path):
     assert flat["Buppido"] == "Buppido"  # canonical self-maps
 
 
+# ── Dossier scope: recency, not frequency (issue #194) ──────────────────────
+#
+# The floor used to apply to every dossier, so it deleted the newest chapter's
+# entities on every run — a debuting entity has the fewest facts by
+# construction. These pin the corrected contract: recency scopes the floor.
+
+
+def _dossier(tmp_path, stem, n_facts, chapters="1-1", body="body"):
+    """Write a facts_to_state-shaped dossier and return its path."""
+    p = tmp_path / f"{stem}.md"
+    fm = f"---\nname: {stem}\ntype: npc\nn_facts: {n_facts}\n"
+    if chapters is not None:
+        fm += f"chapters: {chapters}\n"
+    p.write_text(fm + "---\n\n" + body + "\n", encoding="utf-8")
+    return p
+
+
+def _split(tmp_path, specs, background_min_facts, recent_window):
+    paths = [_dossier(tmp_path, s, n, c) for s, n, c in specs]
+    dossiers, n_missing = sws.read_dossiers(paths)
+    recent, background, cutoff = sws.split_dossiers(
+        dossiers, background_min_facts, recent_window)
+    return ([d.stem for d in recent], [d.stem for d in background],
+            cutoff, n_missing)
+
+
+def test_read_dossiers_parses_both_frontmatter_fields(tmp_path):
+    p = _dossier(tmp_path, "npc_moziqodo", 1, "62-62")
+    dossiers, n_missing = sws.read_dossiers([p])
+    assert n_missing == 0
+    assert dossiers[0].n_facts == 1
+    assert dossiers[0].last_chapter == 62
+
+
+def test_recent_entity_survives_below_the_floor(tmp_path):
+    # The OOTA regression verbatim: Moziqodo debuts in ch62 with a single fact
+    # and a floor of 10. Before the fix he was silently dropped, and
+    # world_state.md reported the Chapter-61 world stamped "Chapter 62".
+    recent, background, _cutoff, _ = _split(
+        tmp_path,
+        [("npc_moziqodo", 1, "62-62"), ("npc_bookwyrm", 40, "3-40")],
+        background_min_facts=10, recent_window=4)
+    assert "npc_moziqodo" in recent
+    assert background == ["npc_bookwyrm"]
+
+
+def test_old_and_sparse_entity_is_dropped(tmp_path):
+    # The floor's real job — one-scene noise in the deep past — still works.
+    # npc_current anchors `latest` at 62; without it the "old" entities would
+    # themselves be the newest thing in the corpus and correctly count as recent.
+    recent, background, _cutoff, _ = _split(
+        tmp_path,
+        [("npc_current", 5, "62-62"), ("npc_walk_on", 1, "3-3"),
+         ("npc_recurring", 40, "3-40")],
+        background_min_facts=10, recent_window=4)
+    assert recent == ["npc_current"]
+    assert background == ["npc_recurring"]
+    assert "npc_walk_on" not in recent + background
+
+
+def test_window_zero_keeps_everything(tmp_path):
+    # 0 = every chapter is recent, so the floor applies to nothing — the same
+    # sense as build_recent_events.py --window 0.
+    recent, background, cutoff, _ = _split(
+        tmp_path,
+        [("npc_walk_on", 1, "3-3"), ("npc_recurring", 40, "3-40")],
+        background_min_facts=10, recent_window=0)
+    assert cutoff is None
+    assert sorted(recent) == ["npc_recurring", "npc_walk_on"]
+    assert background == []
+
+
+def test_missing_chapters_line_keeps_everything_and_is_counted(tmp_path):
+    # Recency could not be read, so nothing is deleted on the strength of it.
+    paths = [_dossier(tmp_path, "npc_a", 1, chapters=None),
+             _dossier(tmp_path, "npc_b", 2, chapters=None)]
+    dossiers, n_missing = sws.read_dossiers(paths)
+    recent, background, _cutoff = sws.split_dossiers(dossiers, 10, 4)
+    assert n_missing == 2
+    assert sorted(d.stem for d in recent) == ["npc_a", "npc_b"]
+    assert background == []
+
+
+def test_cutoff_is_relative_to_the_latest_chapter_present(tmp_path):
+    _r, _b, cutoff, _ = _split(
+        tmp_path, [("npc_a", 1, "1-62")], background_min_facts=10, recent_window=4)
+    assert cutoff == 59
+
+
+def test_recent_sorts_newest_first_background_densest_first(tmp_path):
+    recent, background, _cutoff, _ = _split(
+        tmp_path,
+        [("npc_old_dense", 90, "2-10"), ("npc_old_denser", 99, "2-9"),
+         ("npc_ch60", 5, "60-60"), ("npc_ch62", 1, "62-62")],
+        background_min_facts=10, recent_window=4)
+    assert recent == ["npc_ch62", "npc_ch60"]        # newest touched leads
+    assert background == ["npc_old_denser", "npc_old_dense"]  # densest leads
+
+
 def test_session_label_prefers_parent_dir(tmp_path):
     d = tmp_path / "gen-ch02"
     d.mkdir()

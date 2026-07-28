@@ -131,8 +131,15 @@ export interface EnsembleTuning {
   chunk_parallel: number
   bundle_min_facts: number
   threads_min_facts: number
-  dossier_min_facts: number
+  // world_state's dossier payload (issue #194). The floor applies ONLY to
+  // entities last seen before the window — inside it, everything is included
+  // whatever its fact count, because a debuting entity has the fewest facts by
+  // construction and "current state" is exactly what it is about.
+  background_min_facts: number
+  dossier_recent_window: number
   entity_parallel: number
+  // Different track: build_recent_events' recent_events.md window, NOT
+  // dossier_recent_window above. See EnsembleTuning's docstring server-side.
   recent_events_window: number
 }
 

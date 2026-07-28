@@ -490,7 +490,7 @@ reasoning task.
 | ≥ 10 | ~88 | Good synthesis floor — broad enough for factions, recurring locations, minor NPCs |
 | ≥ 20 | ~37 | Tight floor — core cast only |
 
-Use ≥ 3 for the aggregation run (don't discard facts at this stage). The synthesis tools have their own `--dossier-min-facts` filter that you apply per-doc.
+Use ≥ 3 for the aggregation run (don't discard facts at this stage). The synthesis tools have their own `--background-min-facts` filter that you apply per-doc — and note it applies only *outside* the recency window (see 3a).
 
 ### 2d. Threads track (zero model tokens)
 
@@ -511,10 +511,12 @@ This writes a chapter-tagged markdown file with no model call. Feed it to `synth
 
 **There are two timescales of world state, and the fact-count filter silently picks one.**
 
-- **Long-term world state** (`world_state.md`, from Stage 3 synthesis over dossiers with a `--dossier-min-facts` floor): only entities that *persist* across chapters survive. A one-session combatant — say an unnamed goblin boss killed at a cave entrance — has a burst of facts in a single chapter and never recurs, so it correctly **ages out**. This is the "what is true across the whole campaign" view.
+- **Long-term world state** (`world_state.md`, from Stage 3 synthesis over dossiers with a `--background-min-facts` floor): only entities that *persist* across chapters survive. A one-session combatant — say an unnamed goblin boss killed at a cave entrance — has a burst of facts in a single chapter and never recurs, so it correctly **ages out**. This is the "what is true across the whole campaign" view.
 - **Short-term world state** (`recent_events.md`): a **mechanical, full-fidelity, chapter-ordered render of every `event` fact** in a recent window. No synthesis — *synthesis is exactly the step that drops low-persistence facts*, so the short-term record must bypass it. This is the "what happened in chapter N" view, where that goblin boss IS material.
 
 Fact-count is a **proxy for persistence**, and the right threshold scales with the query window: whole-campaign window → high threshold (long-term); few-recent-chapters window → threshold ≈ 0 (short-term). The two docs are one mechanism at two settings, not two separate pipelines.
+
+**The proxy only works backwards.** Fact count says nothing about persistence for an entity that has not had time to recur yet — a character introduced last session has few facts *because it is new*, not because it is transient, and the two are indistinguishable by counting. Applied to the newest chapters, the floor therefore deletes the present: this is [#194](https://github.com/kostadis/CampaignGenerator/issues/194), which shipped a Chapter-61 `world_state.md` stamped Chapter 62. So `synthesise_world_state` scopes the floor by recency (`--recent-window N`): entities touched in the last N chapters are included whatever their count, and the floor governs only what came before. Sequence is not frequency — and the sequence is already in each dossier's `chapters: lo-hi` frontmatter.
 
 This resolves a real failure mode: if you only build the long-term doc, "what happened in Chapter 1" has no correct home, and a synthesis model asked for a timeline will either drop the transient entity (silent information loss) or mis-attribute its events to a surviving neighbour. Don't patch transient entities into `world_state.md` — that's the long-term doc where their absence is correct. Give them the short-term doc instead.
 
@@ -601,7 +603,7 @@ Example preamble:
 > primary interaction surface.
 ```
 
-Deity dossiers that pass the `--dossier-min-facts` floor will be included in synthesis. The preamble ensures the synthesis model weights them correctly and does not treat them as addressable mortals.
+Deity dossiers that pass the `--background-min-facts` floor (or fall inside `--recent-window`) will be included in synthesis. The preamble ensures the synthesis model weights them correctly and does not treat them as addressable mortals.
 
 ### 2f. Fallback: `--split-gap` (no inventory files)
 
@@ -620,7 +622,8 @@ cd ~/Phandalin/Phandalin
 
 synthesise_world_state \
   --dossiers 'docs/ensemble/merged_dossiers/*.md' \
-  --dossier-min-facts 10 \
+  --background-min-facts 10 \
+  --recent-window 4 \
   --party config/party.yaml \
   --backstories 'docs/Backstory - Brewbarry.md' \
                'docs/Backstory - Valphine Sotorra.md' \
@@ -630,7 +633,7 @@ synthesise_world_state \
   --model claude-opus-4-8
 ```
 
-`--dossier-min-facts 10` filters at synthesis time — you can re-run with a different floor without re-aggregating. Add `--threads` if you ran the threads track in 2d; omit it if not (thread coverage will come from dossier bodies). **For correct timeline ordering, pass the chronological spine here too** — concatenate `recent_events.md` (built with `--window 0`, see "Recent events" above) ahead of `threads.md` and feed the combined file via `--threads`. Without it the model reconstructs chapter order from entity snapshots and mis-dates events.
+`--background-min-facts 10 --recent-window 4` filters at synthesis time — you can re-run with a different floor or window without re-aggregating. The two are a pair: the window says how far back "current" reaches (everything inside it is included regardless of fact count), the floor trims one-scene noise from everything older. `--recent-window 0` means *every* chapter is current, so the floor applies to nothing. Add `--threads` if you ran the threads track in 2d; omit it if not (thread coverage will come from dossier bodies). **For correct timeline ordering, pass the chronological spine here too** — concatenate `recent_events.md` (built with `--window 0`, see "Recent events" above) ahead of `threads.md` and feed the combined file via `--threads`. Without it the model reconstructs chapter order from entity snapshots and mis-dates events.
 
 **Token cost estimate (Phandalin, ≥10 facts, 88 entities):** ~128K metered tokens.
 
@@ -641,7 +644,8 @@ synthesise_world_state \
 ```bash
 synthesise_world_state \
   --dossiers 'docs/ensemble/merged_dossiers/*.md' \
-  --dossier-min-facts 10 \
+  --background-min-facts 10 \
+  --recent-window 4 \
   --party config/party.yaml \
   --backstories 'docs/Backstory - Brewbarry.md' \
                'docs/Backstory - Valphine Sotorra.md' \
@@ -715,7 +719,7 @@ claude -p \
   > docs/campaign_state_draft.md
 ```
 
-**Caveat: the low-fact blind spot.** `campaign_state_draft.md` derives from `world_state_draft.md`, which applies `--dossier-min-facts 10` at synthesis time. Any entity with fewer than 10 extracted facts is invisible to world_state — and by extension invisible to campaign_state if world_state is the only source. This hits the **Tracked Items Status** section hardest: an entity can be declared "NOT FOUND IN SUMMARIES" when a dossier with 3–9 facts exists in `merged_dossiers/`, proving the ensemble did extract something about it from the transcripts.
+**Caveat: the low-fact blind spot.** `campaign_state_draft.md` derives from `world_state_draft.md`, which applies `--background-min-facts 10` at synthesis time. Any entity with fewer than 10 extracted facts **and last seen before the recency window** is invisible to world_state — and by extension invisible to campaign_state if world_state is the only source. (Recently-touched low-fact entities are no longer affected: `--recent-window` exempts them, which is [#194](https://github.com/kostadis/CampaignGenerator/issues/194)'s fix. The blind spot now covers only the old and sparse, which is what the floor is for.) This hits the **Tracked Items Status** section hardest: an entity can be declared "NOT FOUND IN SUMMARIES" when a dossier with 3–9 facts exists in `merged_dossiers/`, proving the ensemble did extract something about it from the transcripts.
 
 **Before finalising any "NOT FOUND" verdict**, check:
 
@@ -1047,7 +1051,8 @@ The `--dump-input --dump-only` flag already externalises the prompt to disk. The
 ```bash
 # Dump all four synthesis prompts (no API call)
 synthesise_world_state \
-  --dossiers 'docs/ensemble/merged_dossiers/*.md' --dossier-min-facts 10 \
+  --dossiers 'docs/ensemble/merged_dossiers/*.md' \
+  --background-min-facts 10 --recent-window 4 \
   --party config/party.yaml --threads docs/ensemble/threads.md \
   --dump-input /tmp/ws_prompt.md --dump-only
 

@@ -125,6 +125,14 @@ class EnsembleTuning(BaseModel):
     purpose: the shipped defaults genuinely differ (3 for ``/run/bundle``,
     2 for ``/run/threads``), and collapsing them into one value would be a
     silent behavior change rather than a refactor.
+
+    **Two window fields, two different tracks.** ``dossier_recent_window``
+    scopes ``synthesise_world_state``'s entity-dossier payload (which entities
+    count as "now"); ``recent_events_window`` scopes ``build_recent_events``'s
+    ``recent_events.md`` (how many chapters of raw events to dump). They answer
+    different questions and are deliberately not one knob — changing how much
+    event detail you want dumped should not silently change what world_state
+    considers current.
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -133,7 +141,12 @@ class EnsembleTuning(BaseModel):
     chunk_parallel: int = 4
     bundle_min_facts: int = 3
     threads_min_facts: int = 2
-    dossier_min_facts: int = 10
+    # Renamed from `dossier_min_facts` (issue #194): the floor now applies ONLY
+    # to entities outside `dossier_recent_window`. Applied to every dossier, as
+    # it was, a floor of 10 deleted the newest chapter's entities every run —
+    # a debuting entity has the fewest facts by construction.
+    background_min_facts: int = 10
+    dossier_recent_window: int = 4
     entity_parallel: int = 0
     recent_events_window: int = 0
 
@@ -200,6 +213,12 @@ def load_ensemble_config(path: Path) -> EnsembleConfig:
     ``extra="forbid"``, so they are pruned from ``raw`` here, read-only —
     this never rewrites the file; the next ``save_ensemble_config`` (a PUT)
     is what leaves it clean.
+
+    ``tuning.dossier_min_facts`` gets the same treatment with one difference: it
+    was **renamed**, not retired (to ``background_min_facts``, issue #194), so
+    the shim carries the operator's value across instead of discarding it.
+    Dropping it would silently reset a hand-tuned floor back to the default,
+    which is exactly the kind of quiet substitution this rename exists to end.
     """
     if not path.exists():
         return EnsembleConfig()
@@ -211,6 +230,10 @@ def load_ensemble_config(path: Path) -> EnsembleConfig:
         return EnsembleConfig()
     for key in ("known_names", "aliases_path"):
         raw.pop(key, None)
+    tuning = raw.get("tuning")
+    if isinstance(tuning, dict) and "dossier_min_facts" in tuning:
+        old = tuning.pop("dossier_min_facts")
+        tuning.setdefault("background_min_facts", old)
     return EnsembleConfig.model_validate(raw)
 
 
