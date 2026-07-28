@@ -323,3 +323,27 @@ Corpus: 15,465 facts, 62 chapters, 456 dossiers, 1,013 registry entities.
   **+14%** scoped to entities with ≤3 own facts.
 - Scenes: **145**, median 5,250 chars, 5 over 15,000.
 - Session summaries: **16** of 62 chapters, **11** structured.
+
+---
+
+## Addendum — resolved 2026-07-28 (PRs #204–#209)
+
+Everything this doc records as *open* was built and merged the same day. The
+sections above stand as the point-in-time record; read them for the *why*, and
+this table for where each item landed.
+
+| item above | resolution |
+|---|---|
+| #199 — no chapter ↔ summary mapping | PR #206: `summary_map.py` proposes `summary_map.yaml` (heading-overlap scoring with quoted evidence, every entry `approved: false`). GM approves the mapping; nothing consumes an unapproved entry. |
+| #201 — coverage report | PR #207: `facts_to_state --list --coverage`. Type-scoped hearsay section + registry-iterated zero-fact section (the asymmetry noted above), intersected with #194's recency window. Validated on OOTA: Khaem surfaces at 0 own / 34 mentions. |
+| #202 — scene chunking | PR #205: `chunk_by_scenes` (H2 > H3 > size-fallback, per the convention table above); `ensemble_merge` stamps `scene_index` next to `quote_offset`, `None` on degradation. |
+| #202 — narrative pass | PR #208: `narrate_chapter.py` writes a per-chapter `narrative.md` with `approved: false` — no code path sets it true. `synthesise_world_state --narratives` includes only approved narratives and names what it skips. |
+| Loose end 2 — uncalibrated threshold | PR #204: `calibrate_embed.py` sweep tooling. The 45-pair labeled sweep showed the dup/distinct bands **overlap** on `qwen3-embedding:0.6b` (dups 0.9051–0.9528; worst distinct pair — two different in-world dates — 0.9375). PR #209 adopted **0.94**: precision-first, zero false merges, same recall as 0.93 on the labeled set. |
+| Loose end 4 — stub dossier for Khaem? | Resolved as *report, don't create*: the coverage report surfaces zero-fact entities; no dossier is manufactured. |
+
+Still open after the merge wave, deliberately — both are GM actions, not code:
+
+1. **Loose end 1** — `npc_moziqodo.md` still says "Alive" on disk; the
+   hand-correction awaits approval. #195 stays open until it lands.
+2. **Loose end 3** — the one-time corpus re-merge (now with `--embed-threshold
+   0.94` and scene indices) is unblocked but not yet run.
