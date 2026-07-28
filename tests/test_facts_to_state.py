@@ -604,3 +604,372 @@ def test_ordering_degrades_to_chapter_only_on_a_pre_offset_corpus():
     for ch, text in [(62, "later"), (3, "earlier"), (40, "middle")]:
         b.add(ch, _fact("event", "X", text), "X")
     assert [ch for ch, _f in b.ordered()] == [3, 40, 62]
+
+
+# ── Coverage report (issue #201) ──────────────────────────────────────────────
+
+
+def _write_corpus(tmp_path, chapters: dict[int, list[dict]]):
+    """chapters = {chapter_num: [fact_dict, ...]}. Writes gen-chNN/merged.json
+    per chapter and returns the sorted glob of paths."""
+    for ch, facts in chapters.items():
+        d = tmp_path / f"gen-ch{ch:02d}"
+        d.mkdir()
+        (d / "merged.json").write_text(json.dumps(facts), encoding="utf-8")
+    return sorted(tmp_path.glob("gen-ch*/merged.json"))
+
+
+def test_load_all_facts_is_type_agnostic_and_canonicalises_subjects(tmp_path):
+    """Unlike load_bundles, every type must survive -- a mention can hide in an
+    event/thread/date fact just as easily as an npc fact."""
+    corpus = _write_corpus(tmp_path, {1: [
+        _fact("npc", "Bupido", "spoke"),
+        _fact("event", "a brawl", "happened, and Bupido was named"),
+        _fact("date", "1492", "the year"),
+        {"type": "npc", "subject": "", "fact": "", "source_quote": ""},  # blank -> skipped
+    ]})
+    facts = fts.load_all_facts(corpus, aliases={"Bupido": "Buppido"})
+    assert len(facts) == 3   # the blank-text fact is dropped
+    npc_fact = next(f for f in facts if "spoke" in f.text)
+    assert npc_fact.subject_norm == fts._norm_subject("Buppido")  # alias applied
+    assert npc_fact.chapter == 1
+    event_fact = next(f for f in facts if "happened" in f.text)
+    assert event_fact.subject_norm == fts._norm_subject("a brawl")  # no alias entry
+
+
+def test_build_alias_variants_inverts_and_excludes_self_map():
+    aliases = {"Moziqodo": "Moziqodo", "Mozi": "Moziqodo", "Khaem": "Khaem"}
+    variants = fts.build_alias_variants(aliases)
+    assert variants == {"Moziqodo": ["Mozi"]}   # self-map entries excluded
+
+
+def test_count_mentions_excludes_self_and_counts_once_per_fact():
+    facts = [
+        fts.FactRef(60, fts._norm_subject("Someone"),
+                    "Someone said Nibbles ran into the tunnel, and Nibbles vanished."),
+        fts.FactRef(60, fts._norm_subject("Nibbles"), "Nibbles scampered off."),  # self, excluded
+        fts.FactRef(58, fts._norm_subject("Another"), "Nibbles was seen earlier."),
+    ]
+    candidates = {"nibbles": fts.MentionCandidate(self_key=fts._norm_subject("Nibbles"),
+                                                  variants=["Nibbles"])}
+    result = fts.count_mentions(facts, candidates)
+    count, last_ch = result["nibbles"]
+    assert count == 2          # ch60 fact (once, despite 2 occurrences) + ch58 fact
+    assert last_ch == 60       # latest mentioning chapter, not latest fact overall
+
+
+def test_count_mentions_respects_word_boundaries():
+    """"Or" must not match inside "corridor" -- a substring check without word
+    boundaries would silently inflate every short name's mention count."""
+    facts = [fts.FactRef(1, fts._norm_subject("Elsewhere"),
+                         "They fled down the corridor.")]
+    candidates = {"or": fts.MentionCandidate(self_key="nobody", variants=["Or"])}
+    result = fts.count_mentions(facts, candidates)
+    assert result["or"] == (0, None)
+
+
+def test_compute_hearsay_coverage_needs_type_scoping_not_raw_ratio(tmp_path):
+    """The doc's headline finding: a raw own-vs-mentioned ratio surfaces
+    concepts ("Madness") that are supposed to be heavily referred to, ranking
+    above the real hearsay npc. Type-scoping bundles to npc/monster before
+    computing coverage is what makes Moziqodo-shaped entities rank at all --
+    this pins that "Madness" never becomes a candidate in the first place."""
+    corpus = _write_corpus(tmp_path, {62: [
+        _fact("npc", "Tadric", "Tadric identifies the dead fiend as Moziqodo."),
+        _fact("npc", "Sylvira Savikas", "mother of Moziqodo, the dead pit fiend."),
+        _fact("npc", "Moziqodo", "the target of the pit fiend's attack."),  # 1 own, wrong
+        _fact("thread", "Madness", "the madness consumed them"),
+        *[_fact("event", f"event{i}", f"Madness spread through event {i}.")
+          for i in range(5)],
+    ]})
+    aliases = {"Moziqodo": "Moziqodo"}
+    bundles = fts.load_bundles(corpus, aliases, ["npc", "monster"])
+    all_facts = fts.load_all_facts(corpus, aliases)
+    variants = fts.build_alias_variants(aliases)
+    hearsay, n_dropped = fts.compute_hearsay_coverage(bundles, all_facts, variants,
+                                                       min_mentions=2, max_own_facts=2)
+    assert n_dropped == 0   # no registry given -> require_registered is a no-op
+    names = {e.display for e in hearsay}
+    assert "Moziqodo" in names          # 1 own fact, >=2 mentions -> flagged
+    assert "Madness" not in names        # not an npc/monster bundle -> never a candidate
+    moziqodo = next(e for e in hearsay if e.display == "Moziqodo")
+    assert moziqodo.own_facts == 1
+    assert moziqodo.mentions == 2
+    assert moziqodo.last_chapter == 62
+    assert moziqodo.type == "npc"
+
+
+def test_compute_hearsay_coverage_excludes_anonymous_bundles(tmp_path):
+    """An anonymous, location-scoped npc/monster bundle ("Orc (Phandalin)")
+    isn't a mis-attributed individual and must never become a hearsay
+    candidate, however often "orc" is mentioned elsewhere. known_names must be
+    an (empty) set, not None, to force monster-type location-scoping -- see
+    load_bundles: a bare None known_names treats every monster subject as
+    globally known by default."""
+    corpus = _write_corpus(tmp_path, {1: [
+        _fact("monster", "orc", "an orc attacked"),
+        *[_fact("npc", f"witness{i}", f"an orc was seen nearby, witness {i}")
+          for i in range(4)],
+        _fact("location", "Phandalin", "a town"),
+    ]})
+    bundles = fts.load_bundles(corpus, {}, ["npc", "monster"], known_names=set())
+    all_facts = fts.load_all_facts(corpus, {})
+    hearsay, n_dropped = fts.compute_hearsay_coverage(bundles, all_facts, {},
+                                                       min_mentions=2, max_own_facts=2)
+    assert hearsay == []
+    assert n_dropped == 0   # no registry given -> require_registered is a no-op
+
+
+def test_compute_hearsay_coverage_drops_cross_type_registered_mistags(tmp_path):
+    """Real-corpus finding: a region name ("Underdark", registered as a
+    *location*) can pick up one stray type=monster fact and then dominate the
+    report, since the region's name is constantly mentioned for reasons that
+    have nothing to do with it being a mis-attributed individual. When the
+    name IS registered, the registry's own type call -- the single source of
+    truth for entity identity -- wins over the stray extraction tag."""
+    corpus = _write_corpus(tmp_path, {1: [
+        _fact("monster", "Underdark", "a stray mistagged fact"),
+        *[_fact("npc", f"witness{i}", f"they fled into the Underdark, witness {i}")
+          for i in range(4)],
+        _fact("npc", "Moziqodo", "the target of the pit fiend's attack"),
+        *[_fact("npc", f"other{i}", f"Moziqodo, they whispered, witness {i}")
+          for i in range(3)],
+    ]})
+    registry_path = tmp_path / "entity_registry.yaml"
+    registry_path.write_text(
+        "version: 1\nentities:\n"
+        "  - name: Underdark\n    type: location\n"
+        "  - name: Moziqodo\n    type: npc\n",
+        encoding="utf-8",
+    )
+    reg = load_registry(registry_path)
+    aliases = reg.alias_to_canonical()
+    bundles = fts.load_bundles(corpus, aliases, ["npc", "monster"],
+                               known_names=reg.known_names())
+    all_facts = fts.load_all_facts(corpus, aliases)
+    variants = fts.build_alias_variants(aliases)
+    hearsay, _n_dropped = fts.compute_hearsay_coverage(bundles, all_facts, variants,
+                                                        min_mentions=3, max_own_facts=2,
+                                                        registry=reg)
+    names = {e.display for e in hearsay}
+    assert names == {"Moziqodo"}   # Underdark dropped; registered as location, not npc
+
+
+def test_compute_hearsay_coverage_requires_registration_by_default(tmp_path):
+    """Peer-review fix 1: an unregistered candidate that would otherwise clear
+    both thresholds (like "The Party" / "she" / "Dwarf" on the real OOTA
+    corpus) must be dropped by default once a registry is given, and counted
+    so the filtering is visible rather than silent. --coverage-unregistered
+    (require_registered=False) restores the raw, unfiltered set."""
+    corpus = _write_corpus(tmp_path, {1: [
+        _fact("npc", "The Party", "the party made camp"),
+        *[_fact("npc", f"witness{i}", f"the party marched all day, witness {i}")
+          for i in range(4)],
+        _fact("npc", "Moziqodo", "the target of the pit fiend's attack"),
+        *[_fact("npc", f"other{i}", f"Moziqodo, they whispered, witness {i}")
+          for i in range(3)],
+    ]})
+    registry_path = tmp_path / "entity_registry.yaml"
+    registry_path.write_text(
+        "version: 1\nentities:\n  - name: Moziqodo\n    type: npc\n",
+        encoding="utf-8",
+    )
+    reg = load_registry(registry_path)
+    aliases = reg.alias_to_canonical()
+    bundles = fts.load_bundles(corpus, aliases, ["npc", "monster"],
+                               known_names=reg.known_names())
+    all_facts = fts.load_all_facts(corpus, aliases)
+    variants = fts.build_alias_variants(aliases)
+
+    strict, n_dropped = fts.compute_hearsay_coverage(
+        bundles, all_facts, variants, min_mentions=3, max_own_facts=2, registry=reg)
+    assert {e.display for e in strict} == {"Moziqodo"}   # "The Party" dropped
+    # The count is every unregistered known npc/monster bundle the gate removed,
+    # not just the ones that would have cleared min_mentions/max_own_facts --
+    # "The Party" + 4 witness bundles + 3 other bundles = 8. Visibility into
+    # the gate itself, independent of downstream thresholds, is the point.
+    assert n_dropped == 8
+
+    lenient, n_dropped_lenient = fts.compute_hearsay_coverage(
+        bundles, all_facts, variants, min_mentions=3, max_own_facts=2, registry=reg,
+        require_registered=False)
+    assert {e.display for e in lenient} == {"Moziqodo", "The Party"}
+    assert n_dropped_lenient == 0   # filter is off -> nothing dropped for that reason
+
+
+def test_compute_hearsay_coverage_collapses_same_entity_across_types(tmp_path):
+    """Peer-review fix 2: the same person extracted under both npc and
+    monster (Whistler-shaped on the real OOTA corpus) must be reported once,
+    own-fact counts summed across both bundles -- which can push the total
+    over --hearsay-max-own-facts, correctly: two bundles' worth of facts is
+    not hearsay even if either alone would clear the floor."""
+    corpus = _write_corpus(tmp_path, {59: [
+        _fact("npc", "Whistler", "npc-tagged fact about Whistler"),
+        _fact("monster", "Whistler", "monster-tagged fact about Whistler"),
+        *[_fact("npc", f"witness{i}", f"Whistler was heard nearby, witness {i}")
+          for i in range(3)],
+    ]})
+    bundles = fts.load_bundles(corpus, {}, ["npc", "monster"], known_names={"whistler"})
+    all_facts = fts.load_all_facts(corpus, {})
+    hearsay, _n_dropped = fts.compute_hearsay_coverage(
+        bundles, all_facts, {}, min_mentions=3, max_own_facts=2)
+    whistlers = [e for e in hearsay if e.display == "Whistler"]
+    assert len(whistlers) == 1                     # reported once, not twice
+    w = whistlers[0]
+    assert w.own_facts == 2                         # 1 npc fact + 1 monster fact, summed
+    assert w.type == "npc+monster"
+    assert w.mentions == 3
+
+    # Tightening the ceiling below the summed total drops it -- two bundles'
+    # worth of facts correctly stops counting as hearsay.
+    hearsay_tight, _ = fts.compute_hearsay_coverage(
+        bundles, all_facts, {}, min_mentions=3, max_own_facts=1)
+    assert hearsay_tight == []
+
+
+def test_compute_zero_fact_coverage_finds_khaem(tmp_path):
+    """The purest case from the doc: a registry npc that never once appears as
+    a fact subject has no bundle at all, so section 1 structurally cannot see
+    it -- only iterating the registry finds it."""
+    corpus = _write_corpus(tmp_path, {62: [
+        _fact("npc", "Someone", "Khaem was mentioned in passing by the guards."),
+        _fact("event", "an old rumor", "They say Khaem never left the ruins."),
+        _fact("npc", "Moziqodo", "has one fact of his own"),  # has a bundle -> not zero-fact
+    ]})
+    registry_path = tmp_path / "entity_registry.yaml"
+    registry_path.write_text(
+        "version: 1\nentities:\n"
+        "  - name: Khaem\n    type: npc\n"
+        "  - name: Moziqodo\n    type: npc\n",
+        encoding="utf-8",
+    )
+    reg = load_registry(registry_path)
+    aliases = reg.alias_to_canonical()
+    bundles = fts.load_bundles(corpus, aliases, ["npc", "monster"],
+                               known_names=reg.known_names())
+    all_facts = fts.load_all_facts(corpus, aliases)
+    variants = fts.build_alias_variants(aliases)
+    zero_fact = fts.compute_zero_fact_coverage(bundles, reg, all_facts, variants,
+                                                min_mentions=2)
+    names = {e.display for e in zero_fact}
+    assert names == {"Khaem"}            # Moziqodo has a bundle -> excluded
+    khaem = zero_fact[0]
+    assert khaem.own_facts == 0
+    assert khaem.mentions == 2
+    assert khaem.last_chapter == 62
+
+
+def test_compute_zero_fact_coverage_skips_below_min_mentions(tmp_path):
+    """A registered entity that never surfaces in the corpus at all (0
+    mentions too) isn't the "referred-to but ungrounded" condition -- it's
+    just absent, and shouldn't clutter the report."""
+    corpus = _write_corpus(tmp_path, {1: [_fact("npc", "Someone", "did a thing")]})
+    registry_path = tmp_path / "entity_registry.yaml"
+    registry_path.write_text(
+        "version: 1\nentities:\n  - name: NeverMentioned\n    type: npc\n",
+        encoding="utf-8",
+    )
+    reg = load_registry(registry_path)
+    bundles = fts.load_bundles(corpus, {}, ["npc", "monster"])
+    all_facts = fts.load_all_facts(corpus, {})
+    zero_fact = fts.compute_zero_fact_coverage(bundles, reg, all_facts, {}, min_mentions=3)
+    assert zero_fact == []
+
+
+def test_recency_cutoff_matches_split_dossiers_formula():
+    """Section 3 must agree with #194/PR #196's own cutoff arithmetic --
+    pinned against the same chapters-59-62 example split_dossiers is tested
+    against."""
+    assert fts.recency_cutoff(62, 4) == 59
+    assert fts.recency_cutoff(62, 0) is None    # 0 = every chapter recent
+
+
+def test_flag_recent_filters_by_last_chapter():
+    entries = [
+        fts.CoverageEntry("npc", "moziqodo", "Moziqodo", 1, 3, 62),
+        fts.CoverageEntry("npc", "bookwyrm", "Bookwyrm", 5, 4, 10),
+    ]
+    flagged = fts.flag_recent(entries, cutoff=59)
+    assert [e.display for e in flagged] == ["Moziqodo"]
+    # cutoff=None (recent_window<=0) -> everything counts as recent
+    assert fts.flag_recent(entries, cutoff=None) == entries
+
+
+def test_render_coverage_report_contents():
+    hearsay = [fts.CoverageEntry("npc", "moziqodo", "Moziqodo", 1, 3, 62)]
+    zero_fact = [fts.CoverageEntry("npc", "khaem", "Khaem", 0, 18, 62)]
+    report = fts.render_coverage_report(
+        hearsay, zero_fact, registry_available=True,
+        latest_chapter=62, recent_window=4, min_mentions=3, max_own_facts=2)
+    assert "Moziqodo" in report
+    assert "Khaem" in report
+    assert "chapters 59-62" in report
+    assert "Check these before regenerating" in report
+    assert "2 fall inside" in report  # both hearsay+zero_fact entries qualify
+
+
+def test_render_coverage_report_notes_missing_registry():
+    report = fts.render_coverage_report(
+        [], [], registry_available=False,
+        latest_chapter=10, recent_window=4, min_mentions=3, max_own_facts=2)
+    assert "skipped (no --registry resolved)" in report
+
+
+# ── --coverage CLI wiring ─────────────────────────────────────────────────────
+
+
+def test_coverage_flag_defaults():
+    p = fts.build_parser()
+    args = p.parse_args(["--corpus", "x", "--list"])
+    assert args.coverage is False
+    assert args.hearsay_min_mentions == 3
+    assert args.hearsay_max_own_facts == 2
+    assert args.recent_window == 4
+
+
+def test_main_rejects_coverage_without_list(tmp_path, monkeypatch):
+    monkeypatch.setattr(sys, "argv", [
+        "facts_to_state.py",
+        "--corpus", str(tmp_path / "gen-ch*" / "merged.json"),
+        "--out-dir", str(tmp_path / "out"),
+        "--coverage",
+    ])
+    with pytest.raises(SystemExit):
+        fts.main()
+
+
+def test_main_list_coverage_end_to_end_prints_both_sections(tmp_path, monkeypatch, capsys):
+    """--list --coverage on a small synthetic corpus surfaces both a hearsay
+    npc (Moziqodo-shaped) and a zero-own-fact registry entity (Khaem-shaped),
+    with the recency-window intersection called out."""
+    corpus_dir = tmp_path / "campaign"
+    corpus_dir.mkdir()
+    _write_corpus(corpus_dir, {60: [
+        _fact("npc", "Someone", "Khaem was mentioned in passing by the guards."),
+        _fact("event", "an old rumor", "They say Khaem never left the ruins."),
+    ], 62: [
+        _fact("npc", "Tadric", "Tadric identifies the dead fiend as Moziqodo."),
+        _fact("npc", "Sylvira Savikas", "mother of Moziqodo, the dead pit fiend."),
+        _fact("npc", "Moziqodo", "the target of the pit fiend's attack."),
+    ]})
+    registry_path = corpus_dir / "entity_registry.yaml"
+    registry_path.write_text(
+        "version: 1\nentities:\n"
+        "  - name: Moziqodo\n    type: npc\n"
+        "  - name: Khaem\n    type: npc\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(sys, "argv", [
+        "facts_to_state.py",
+        "--corpus", str(corpus_dir / "gen-ch*" / "merged.json"),
+        "--registry", str(registry_path),
+        "--min-facts", "1",
+        "--list", "--coverage",
+        "--hearsay-min-mentions", "2",
+    ])
+    fts.main()
+    out = capsys.readouterr().out
+    assert "COVERAGE REPORT" in out
+    assert "Moziqodo" in out
+    assert "Khaem" in out
+    assert "Check these before regenerating" in out

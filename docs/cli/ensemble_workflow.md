@@ -25,7 +25,7 @@ docs/ensemble/per_chapter/<stem>/merged.json   — atomic facts per chapter
   ↓  facts_to_state --list                     — HUMAN CHECKPOINT: scope review
   ↓  facts_to_state                            (local, Spark)
 docs/ensemble/state_dossiers/*.md              — per-entity current-state dossiers
-  ↓  (Stage 2e: merge type-duplicate dossiers — human step)
+  ↓  (Stage 2f: merge type-duplicate dossiers — human step)
 docs/ensemble/merged_dossiers/*.md             — type-merged dossiers, ready for synthesis
   ↓  synthesise_world_state                    (API or subscription)
 docs/world_state_draft.md
@@ -399,9 +399,9 @@ The alias file lives at `docs/ensemble/aliases.json` in the Phandalin workspace.
 
 **These are not a bug** — the type facets often capture genuinely different information (combat stats vs. personality). But synthesis tools must be told to treat them as the same entity, and reviewers should be aware that important facts may be split across two files.
 
-**Alias review does not fix this** — aliases collapse name variants, not type variants. Run Stage 2e after aggregation to produce a `merged_dossiers/` directory where type-duplicates are concatenated into one file each. Use `merged_dossiers/` as input to all synthesis steps in Stage 3.
+**Alias review does not fix this** — aliases collapse name variants, not type variants. Run Stage 2f after aggregation to produce a `merged_dossiers/` directory where type-duplicates are concatenated into one file each. Use `merged_dossiers/` as input to all synthesis steps in Stage 3.
 
-**What alias review does fix** — name variants where the same entity was extracted under two different surface forms (e.g. "Adabra" vs. "Adabra Gwynn", "Don-Jon" vs. "Don-Jon Raskin"). After adding the alias and re-running Stage 2b (resumable), delete the orphaned short-form dossier file by hand — the pipeline will not remove it automatically.
+**What alias review does fix** — name variants where the same entity was extracted under two different surface forms (e.g. "Adabra" vs. "Adabra Gwynn", "Don-Jon" vs. "Don-Jon Raskin"). After adding the alias and re-running Stage 2d (resumable), delete the orphaned short-form dossier file by hand — the pipeline will not remove it automatically.
 
 **Distinct failure mode — different entities colliding on one `(type, subject)` key.** The case above is the *same* entity split across *different* types (`npc_glabbagool` + `monster_glabbagool`); the fix is to merge. The opposite symptom is *different* entities that collapse into *one* dossier because they normalise to the same `(type, subject)` string — e.g. two unrelated things each extracted as `object_spores`, wrongly aggregated into a single `object_spores.md`. That is a registry/normalisation defect (a first-token collision), not a type-duplicate, and merging is exactly the wrong response — the entities need to be kept apart, not joined. If a single dossier reads as two unrelated subjects fused together, you are looking at this failure mode, not the type-duplicate one above.
 
@@ -453,7 +453,77 @@ Selected: 439 for aggregation
 
 `--list` does not call the model. Use it freely.
 
-### 2b. `--known-names`: named vs anonymous entity splitting
+### 2b. Coverage report — hearsay dossiers and zero-fact entities (`--coverage`)
+
+`--list` shows what *will* be aggregated. It cannot show what a thin dossier is
+actually made of, or which registered entities never got a dossier at all —
+that needs a second pass over the same bundle/mention data, so it's opt-in:
+
+```bash
+facts_to_state \
+  --corpus 'docs/ensemble/per_chapter/*/merged.json' \
+  --registry docs/entity_registry.yaml \
+  --list --coverage
+```
+
+This appends a report (issue [#201](https://github.com/kostadis/CampaignGenerator/issues/201)) in two parts that structurally cannot share a mechanism — one iterates bundles, the other iterates the registry:
+
+- **Hearsay npc/monster** — a *known* `npc`/`monster` bundle with `<= 2` own
+  facts but `>= 3` mentions inside *other* entities' fact text (both
+  thresholds tunable via `--hearsay-max-own-facts` / `--hearsay-min-mentions`).
+  This is the Moziqodo/[#195](https://github.com/kostadis/CampaignGenerator/issues/195) failure mode: the one fact filed directly under
+  his name got his fate backwards, while the two correct readings landed
+  under other entities' subjects and never touched his dossier. A raw
+  own-vs-mentioned ratio does not work here — campaign-wide concepts like
+  "Madness" or "the Abyss" are *supposed* to be heavily referred to — so
+  candidates are type-scoped to `npc`/`monster` bundles first. Two more
+  filters apply when `--registry` is given, both **on by default**:
+  - a candidate registered under a *different* type (a location or deity
+    that picked up one stray `npc`/`monster`-tagged fact) is dropped — the
+    registry's own type call wins over a single extraction lens's mistag;
+  - a candidate that isn't registered *at all* is dropped too, and the count
+    of how many were removed this way is printed on its own line rather than
+    silently vanishing. On the real OOTA corpus this is most of the noise: a
+    raw scan surfaces pronouns ("she") and collective/role phrases ("The
+    Party", "Dwarf", "assassins") that rack up hundreds of mentions apiece
+    and bury the genuine hits. Pass `--coverage-unregistered` to see the raw,
+    unfiltered set instead — needed for a campaign with no registry, or one
+    known to be incomplete, since there's no other way for an unregistered
+    hearsay entity to surface.
+
+  The same person occasionally gets extracted under both `npc` and `monster`
+  in different scenes (see "Known limitation — type duplicates" below, e.g.
+  Whistler). Rather than print it twice with an identical mention count under
+  two rows, this section reports it once, own-fact counts **summed** across
+  both bundles (`npc+monster` in the type column) — which can push the total
+  past `--hearsay-max-own-facts`, correctly: two bundles' worth of facts is
+  not hearsay even if either alone would clear the floor.
+- **Zero-own-fact registry entities** — entities from `--registry` (`npc`
+  type) that never once appear as a fact subject, so they have no bundle at
+  all and the section above structurally cannot see them. The purest case
+  found on the OOTA campaign: an npc with dozens of mentions across other
+  people's facts and zero facts of its own, with no dossier on disk.
+- A third line intersects both lists against `--recent-window` (default 4,
+  matching `ensemble.yaml`'s `tuning.dossier_recent_window`; same recency
+  concept as [#194](https://github.com/kostadis/CampaignGenerator/issues/194)/[PR #196](https://github.com/kostadis/CampaignGenerator/pull/196), computed independently here) and
+  prints "check these before regenerating."
+
+**This is report-only.** It writes nothing and decides nothing — per this
+repo's LLM Pipeline Design Rule, what to do about a hearsay-only or
+zero-fact dossier (hand-correct it, leave it, flag it for the next session)
+is a GM call. On real campaign data, literal name matching still has one
+known false-positive mode the registration requirement above does not catch:
+a short candidate name that is also a substring of a longer, unrelated
+registered entity's name (e.g. a person named "Khaem" inside a location
+called "the Lost Tomb of Khaem") inflates that candidate's mention count. The
+registry-type cross-check catches the equivalent problem when the *longer*
+name is what's registered; it does not (and deliberately does not try to)
+resolve the reverse case automatically — ambiguous automatic name matching is
+left for the human to see and judge, the same convention
+`campaignlib.registry.alias_to_canonical` already follows for ambiguous
+first-token derivation.
+
+### 2c. `--known-names`: named vs anonymous entity splitting
 
 Without `--known-names`, `facts_to_state` produces one global bundle per `(type, subject)` key — every orc encounter in the campaign collapses into a single "Orc" dossier. With `--known-names`, entities whose normalised name appears in any of the source files are treated as named individuals (global bundle); everything else is scoped to its chapter location (e.g. `Orc (Phandalin)`, `Orc (Wayside Inn)`).
 
@@ -461,7 +531,7 @@ Sources can be:
 - **Inventory `.md` files** — bold-marked proper nouns are extracted. First word of a multi-word name (≥ 4 chars) is also added as a short-form match.
 - **`.dedup_state.json`** — `clusters_confirmed` aliases, canonical filename stems, and `pc_files_skipped` stems. This covers short forms like "Adabra" (from `adabra.md`) and PC names like "Soma" (from `soma.md`).
 
-### 2c. Aggregation — known entities only
+### 2d. Aggregation — known entities only
 
 Run aggregation with `--known-only` to skip anonymous location-scoped bundles. They appear in `--list` tagged `[location]` and can be addressed in a later dedup pass if needed.
 
@@ -483,7 +553,7 @@ facts_to_state \
 
 The run is **resumable**: entities whose dossier file already exists in `--out-dir` are skipped automatically.
 
-**Single endpoint?** Stage 2c fans one worker per endpoint by default, so a lone
+**Single endpoint?** Stage 2d fans one worker per endpoint by default, so a lone
 live endpoint aggregates serially. Add `--entity-parallel N` (e.g. 8) to run N
 entities concurrently against the one endpoint — keep N under the server's
 `--max-num-seqs`. Entities are processed largest-fact-first, so the opening wave
@@ -501,7 +571,7 @@ reasoning task.
 
 Use ≥ 3 for the aggregation run (don't discard facts at this stage). The synthesis tools have their own `--background-min-facts` filter that you apply per-doc — and note it applies only *outside* the recency window (see 3a).
 
-### 2d. Threads track (zero model tokens)
+### 2e. Threads track (zero model tokens)
 
 Plot threads and mysteries are factual and don't need synthesis — render them directly:
 
@@ -570,9 +640,9 @@ build_recent_events \
 > bulk of `world_state` — are unaffected either way; only the time-ordered "current
 > location / current objective" fields are at risk. **Verify those by hand in Stage 4.**
 
-### 2e. Merge type-duplicate dossiers (before synthesis)
+### 2f. Merge type-duplicate dossiers (before synthesis)
 
-Run this after Stage 2c to produce `merged_dossiers/` — a directory where every type-duplicate group is collapsed into one file, used as input to all Stage 3 synthesis steps instead of `state_dossiers/`.
+Run this after Stage 2d to produce `merged_dossiers/` — a directory where every type-duplicate group is collapsed into one file, used as input to all Stage 3 synthesis steps instead of `state_dossiers/`.
 
 **Use the `/ensemble-type-merge` skill for this, not a blind script.** A shared subject name across types is
 not always the same entity — grouping by filename alone and merging every match is unsafe: e.g. a 539-fact
@@ -614,7 +684,7 @@ Example preamble:
 
 Deity dossiers that pass the `--background-min-facts` floor (or fall inside `--recent-window`) will be included in synthesis. The preamble ensures the synthesis model weights them correctly and does not treat them as addressable mortals.
 
-### 2f. Fallback: `--split-gap` (no inventory files)
+### 2g. Fallback: `--split-gap` (no inventory files)
 
 If no inventory or dedup-state files exist, use `--split-gap N` to split bundles where consecutive chapter gaps exceed N. This is a mechanical heuristic — it won't distinguish a named NPC who stops appearing for 10 chapters from two different orcs encountered 10 chapters apart. Prefer `--known-names` when inventory files are available.
 
@@ -642,7 +712,7 @@ synthesise_world_state \
   --model claude-opus-4-8
 ```
 
-`--background-min-facts 10 --recent-window 4` filters at synthesis time — you can re-run with a different floor or window without re-aggregating. The two are a pair: the window says how far back "current" reaches (everything inside it is included regardless of fact count), the floor trims one-scene noise from everything older. `--recent-window 0` means *every* chapter is current, so the floor applies to nothing. Add `--threads` if you ran the threads track in 2d; omit it if not (thread coverage will come from dossier bodies). **For correct timeline ordering, pass the chronological spine here too** — concatenate `recent_events.md` (built with `--window 0`, see "Recent events" above) ahead of `threads.md` and feed the combined file via `--threads`. Without it the model reconstructs chapter order from entity snapshots and mis-dates events.
+`--background-min-facts 10 --recent-window 4` filters at synthesis time — you can re-run with a different floor or window without re-aggregating. The two are a pair: the window says how far back "current" reaches (everything inside it is included regardless of fact count), the floor trims one-scene noise from everything older. `--recent-window 0` means *every* chapter is current, so the floor applies to nothing. Add `--threads` if you ran the threads track in 2e; omit it if not (thread coverage will come from dossier bodies). **For correct timeline ordering, pass the chronological spine here too** — concatenate `recent_events.md` (built with `--window 0`, see "Recent events" above) ahead of `threads.md` and feed the combined file via `--threads`. Without it the model reconstructs chapter order from entity snapshots and mis-dates events.
 
 **Token cost estimate (Phandalin, ≥10 facts, 88 entities):** ~128K metered tokens.
 
@@ -996,7 +1066,7 @@ All outputs land in `*_draft.md`. **Never write directly to the live docs.**
 
 Review each draft:
 - Each dossier has an `## Uncertainty` block listing facts the model flagged as ambiguous. Skim these before trusting synthesis — scope/ordering/attribution are the model's weak spots.
-- **Check the "current location / current objective" fields first — they are the least reliable.** Synthesis often records the right *events* (the timeline entry is correct) yet sets the wrong *current state*, because it weights the campaign's high-salience base over the most-recent scene, and there is no `party` dossier to anchor the answer (the meta-label is excluded in Stage 2a). This is amplified if the corpus was structured session docs rather than narrative chapters (see the timeline "input contract" note in 2d). Verify the snapshot against the **last scene of the final chapter** in the authoritative source.
+- **Check the "current location / current objective" fields first — they are the least reliable.** Synthesis often records the right *events* (the timeline entry is correct) yet sets the wrong *current state*, because it weights the campaign's high-salience base over the most-recent scene, and there is no `party` dossier to anchor the answer (the meta-label is excluded in Stage 2a). This is amplified if the corpus was structured session docs rather than narrative chapters (see the timeline "input contract" note in 2e). Verify the snapshot against the **last scene of the final chapter** in the authoritative source.
 - Diff `world_state_draft.md` against `world_state.md` before promoting. The diff is the edit surface; don't copy blindly.
 - For `planning_draft.md`, check the NPC list against your own sense of who matters — the importance cut may miss forward-looking significance (an NPC who appeared rarely but is about to become central).
 
