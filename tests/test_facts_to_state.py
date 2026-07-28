@@ -556,3 +556,51 @@ def test_known_names_accepts_repeated_flags():
     # Absent -> falsy so the "everything global" path is preserved.
     args = p.parse_args(["--corpus", "x", "--list"])
     assert not args.known_names
+
+
+# ── Narrative ordering within a chapter (issue #195) ─────────────────────────
+
+
+def _off(chapter, offset, text):
+    f = _fact("event", "X", text)
+    f["quote_offset"] = offset
+    return (chapter, f, "X")
+
+
+def test_bundle_orders_by_quote_offset_within_a_chapter():
+    """Before quote offsets existed, facts inside one chapter came out in the
+    merge's alphabetical order, so a bundle could narrate a death before the
+    arrival. Chapter still dominates; offset breaks the tie."""
+    b = fts.Bundle("event", "x")
+    for ch, f, disp in [_off(62, 21514, "named over the corpse"),
+                        _off(62, 20703, "the fiend is killed"),
+                        _off(61, 99999, "previous chapter, late"),
+                        _off(62, 17141, "the fiend attacks Tadric")]:
+        b.add(ch, f, disp)
+    assert [f["fact"] for _ch, f in b.ordered()] == [
+        "previous chapter, late",
+        "the fiend attacks Tadric",
+        "the fiend is killed",
+        "named over the corpse",
+    ]
+
+
+def test_facts_without_an_offset_sort_last_within_their_chapter():
+    """A missing offset means the quote could not be located — the same signal
+    quote_verified carries. Those must not lead the bundle."""
+    b = fts.Bundle("event", "x")
+    unlocated = _fact("event", "X", "unlocatable quote")   # no quote_offset key
+    b.add(62, unlocated, "X")
+    for ch, f, disp in [_off(62, 500, "second"), _off(62, 100, "first")]:
+        b.add(ch, f, disp)
+    assert [f["fact"] for _ch, f in b.ordered()] == [
+        "first", "second", "unlocatable quote"]
+
+
+def test_ordering_degrades_to_chapter_only_on_a_pre_offset_corpus():
+    """15k facts merged before #195 carry no offsets. They must still order by
+    chapter rather than raising or reordering unpredictably."""
+    b = fts.Bundle("event", "x")
+    for ch, text in [(62, "later"), (3, "earlier"), (40, "middle")]:
+        b.add(ch, _fact("event", "X", text), "X")
+    assert [ch for ch, _f in b.ordered()] == [3, 40, 62]

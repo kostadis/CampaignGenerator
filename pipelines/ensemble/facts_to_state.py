@@ -92,8 +92,29 @@ def slugify(name: str) -> str:
     return s or "entity"
 
 
+def _narrative_key(item: tuple[int, dict, str | None]) -> tuple[int, int, int]:
+    """Sort key putting a bundle's facts in the order they were narrated.
+
+    Chapter first, then ``quote_offset`` — the character position of the fact's
+    source quote inside that chapter, stamped by ``ensemble_merge`` (issue
+    #195). Before it existed, facts within a chapter came out in whatever order
+    the merge's alphabetical (type, subject, fact) sort left them, so a dossier
+    could report an entity's death before its arrival.
+
+    Facts with no offset sort **last** within their chapter, not first: a
+    missing offset means the quote could not be located in the source, which is
+    the same signal ``quote_verified`` carries — usually a fabricated or
+    ``...``-stitched quote. Leading with the least trustworthy facts would be
+    the wrong default. Corpora merged before #195 have no offsets at all, so
+    they degrade to the previous chapter-only ordering rather than breaking.
+    """
+    chapter, fact, _location = item
+    offset = fact.get("quote_offset")
+    return (chapter, 1, 0) if offset is None else (chapter, 0, offset)
+
+
 class Bundle:
-    """All facts about one (type, canonical-subject), in chapter order."""
+    """All facts about one (type, canonical-subject), in narrative order."""
 
     def __init__(self, type_: str, key: str):
         self.type = type_
@@ -119,12 +140,12 @@ class Bundle:
         return (min(chs), max(chs))
 
     def ordered(self) -> list[tuple[int, dict]]:
-        """Chapter-sorted (chapter, fact) pairs — backward-compatible API."""
-        return [(ch, f) for ch, f, _ in sorted(self.facts, key=lambda t: t[0])]
+        """Narrative-ordered (chapter, fact) pairs — backward-compatible API."""
+        return [(ch, f) for ch, f, _ in sorted(self.facts, key=_narrative_key)]
 
     def ordered_with_location(self) -> list[tuple[int, dict, str | None]]:
-        """Chapter-sorted (chapter, fact, location) triples."""
-        return sorted(self.facts, key=lambda t: t[0])
+        """Narrative-ordered (chapter, fact, location) triples."""
+        return sorted(self.facts, key=_narrative_key)
 
 
 def split_bundle_by_gap(b: Bundle, max_gap: int) -> list["Bundle"]:
