@@ -145,10 +145,12 @@ facts filed under different subjects, so cross-subject duplicates and
 contradictions survive it by construction; `embed` partitions on `type` alone and
 clusters on embedding cosine. `method: null` derives — `embed` when
 `embed_endpoint` is set, else `subject`. Only `embed_endpoint` is surfaced on
-`/ensemble/setup`; `0.93` is a measured threshold (true duplicates ~0.97–0.98,
-distinct-but-related ~0.75–0.78) rather than a dial. Before #197 none of this was
-declared and `/run/extract` emitted no merge flags, so every UI-driven extraction
-silently got `subject`.
+`/ensemble/setup`; `0.94` is a measured threshold (calibrated on
+`qwen3-embedding:0.6b`, 2026-07-28 — precision-first, zero false merges on the
+labeled set; model-specific, recalibrate via `calibrate_embed` if the embed
+model changes) rather than a dial. Before #197 none of this was declared and
+`/run/extract` emitted no merge flags, so every UI-driven extraction silently
+got `subject`.
 
 ### ~~Loose UI sections~~ — none
 There are no `ui.<section>` blobs and no `_LooseSection` type. The last six were deleted with

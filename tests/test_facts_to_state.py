@@ -973,3 +973,34 @@ def test_main_list_coverage_end_to_end_prints_both_sections(tmp_path, monkeypatc
     assert "Moziqodo" in out
     assert "Khaem" in out
     assert "Check these before regenerating" in out
+
+
+# ── scene_index passthrough (issue #202) ──────────────────────────────────────
+#
+# ensemble_merge stamps scene_index the same way it stamps quote_offset — a
+# plain key on the fact dict. Bundle never rebuilds fact dicts from a field
+# whitelist, so scene_index (and any other key ensemble_merge stamps) must
+# survive add() -> ordered() / ordered_with_location() untouched, and its
+# absence on an older corpus must not raise.
+
+
+def test_scene_index_survives_bundle_round_trip():
+    f = _fact("event", "X", "the fiend died")
+    f["scene_index"] = 3
+    b = fts.Bundle("event", "x")
+    b.add(62, f, "X")
+    ((ch, out),) = b.ordered()
+    assert ch == 62
+    assert out["scene_index"] == 3
+    ((_ch2, out2, _loc),) = b.ordered_with_location()
+    assert out2["scene_index"] == 3
+
+
+def test_missing_scene_index_does_not_break_ordering():
+    """A fact from a corpus merged before #202 has no 'scene_index' key at
+    all — ordering (which never reads it) must not raise, and .get(...) on
+    the returned dict must degrade to None rather than KeyError."""
+    b = fts.Bundle("event", "x")
+    b.add(62, _fact("event", "X", "no scene_index on this one"), "X")
+    ((_ch, out),) = b.ordered()
+    assert out.get("scene_index") is None

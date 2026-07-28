@@ -79,7 +79,7 @@ class TestDefaults:
         assert m.method is None          # derive: embed if endpoint, else subject
         assert m.embed_endpoint == ""
         assert m.embed_model == ""
-        assert m.embed_threshold == 0.93
+        assert m.embed_threshold == 0.94
         assert m.similarity == 0.85
 
     def test_bundle_and_threads_min_facts_stay_distinct(self):

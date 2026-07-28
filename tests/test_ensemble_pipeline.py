@@ -60,6 +60,52 @@ def test_extract_writes_manifest_and_no_merged(tmp_path):
     assert not (w / "merged.json").exists()
 
 
+def test_extract_manifest_records_structural_false_by_default(tmp_path):
+    w = _seed(tmp_path / "run")
+    r = _run(EXTRACT, "--workdir", w, "--plan", w / "plan.yaml")
+    assert r.returncode == 0, r.stderr
+    manifest = json.loads((w / "manifest.json").read_text())
+    assert [p["structural"] for p in manifest["passes"]] == [False, False]
+
+
+def test_extract_scene_chunks_flag_records_structural_true(tmp_path):
+    w = _seed(tmp_path / "run")
+    r = _run(EXTRACT, "--workdir", w, "--plan", w / "plan.yaml", "--scene-chunks")
+    assert r.returncode == 0, r.stderr
+    manifest = json.loads((w / "manifest.json").read_text())
+    assert [p["structural"] for p in manifest["passes"]] == [True, True]
+
+
+def test_extract_plan_can_set_structural_per_pass(tmp_path):
+    """A --plan pass can opt into structural chunking on its own, without the
+    blanket --scene-chunks flag, and without affecting its sibling pass."""
+    w = tmp_path / "run"
+    w.mkdir(parents=True, exist_ok=True)
+    (w / "doc.txt").write_text("Some session text.\n", encoding="utf-8")
+    (w / "plan.yaml").write_text(
+        "document: doc.txt\n"
+        "passes:\n"
+        "  - {name: a, agent: extract_facts, chunk_size: 6000, structural: true}\n"
+        "  - {name: b, agent: extract_facts, chunk_size: 6000}\n",
+        encoding="utf-8")
+    (w / "a.json").write_text(json.dumps([]))
+    (w / "b.json").write_text(json.dumps([]))
+
+    r = _run(EXTRACT, "--workdir", w, "--plan", w / "plan.yaml")
+    assert r.returncode == 0, r.stderr
+    manifest = json.loads((w / "manifest.json").read_text())
+    by_name = {p["name"]: p["structural"] for p in manifest["passes"]}
+    assert by_name == {"a": True, "b": False}
+
+
+def test_extract_dry_run_shows_scene_chunks_passes(tmp_path):
+    w = _seed(tmp_path / "run")
+    r = _run(EXTRACT, "--workdir", w, "--plan", w / "plan.yaml",
+             "--dry-run", "--scene-chunks")
+    assert r.returncode == 0, r.stderr
+    assert "Scene-chunks: a, b" in r.stdout
+
+
 def test_extract_dry_run_writes_nothing(tmp_path):
     w = _seed(tmp_path / "run")
     r = _run(EXTRACT, "--workdir", w, "--plan", w / "plan.yaml", "--dry-run")

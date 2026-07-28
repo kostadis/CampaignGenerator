@@ -273,7 +273,7 @@ ensemble_batch \
   --unit-timeout 0 \
   --embed-endpoint http://192.168.1.121:11434 \
   --embed-model qwen3-embedding:0.6b \
-  --embed-threshold 0.93 \
+  --embed-threshold 0.94 \
   --chapter-parallel 3
 ```
 
@@ -285,7 +285,7 @@ The run is **resumable**: chapters whose `per_chapter/<stem>/merged.json` alread
 
 > **⚠ The embed endpoint moved on 2026-06-30 and this doc pointed at the dead one until 2026-07-28.** It was `vllm-embed` on `:8000` serving `Qwen/Qwen3-Embedding-0.6B`; it is now **Ollama on `:11434` serving `qwen3-embedding:0.6b`** (lazy-load — it unloads after 5 minutes idle, so the first call after a pause is slow, not broken). Always take the live endpoint from `~/src/dgx/current-setup.md` rather than from this file. Anything extracted between those dates was almost certainly merged with the `subject` fallback.
 >
-> **⚠ `--embed-threshold 0.93` is calibrated for `nomic-embed-text-v1.5`, not for the model now serving.** On nomic, duplicates measured ~0.97 and distinct-but-related ~0.78, so 0.93 sat in an empty gap. Spot-measured on `qwen3-embedding:0.6b`: a true near-duplicate scores **0.9103** (i.e. *below* 0.93 — it would not merge), a related-but-distinct pair 0.8465, unrelated 0.3392. The threshold needs re-measuring against whichever model is live before the embed merge can be trusted to catch duplicates. Tracked in [#197](https://github.com/kostadis/CampaignGenerator/issues/197).
+> **The default `--embed-threshold` is 0.94, calibrated on `qwen3-embedding:0.6b` (2026-07-28, closing the loose end in [#197](https://github.com/kostadis/CampaignGenerator/issues/197)).** A 45-pair labeled sweep with `calibrate_embed` against the live corpus showed the dup/distinct bands *overlap* on this model — paraphrase duplicates score ~0.91–0.95 (Grey/Gray Ghosts 0.9157, Metalworkers Guild 0.9528) while the worst distinct pair, two **different in-world dates**, scores **0.9375** — so no threshold separates them cleanly. 0.94 is the precision-first choice: zero false merges on the labeled set, identical recall to the old nomic-era 0.93 (which *would* have merged the two dates). Cost: paraphrase dups below 0.94 stay unmerged — they surface as duplicates in review rather than corrupting facts. The threshold is **model-specific**: whenever the embed sidecar changes model, re-run `calibrate_embed --bootstrap` + a labeling pass before trusting the merge (labeled pairs from this calibration: `scratch_output/calib_pairs_oota_qwen3embed.yaml`).
 
 > **Operational gotchas (these will silently waste an hour if ignored):**
 >

@@ -115,7 +115,16 @@ def _narrative_key(item: tuple[int, dict, str | None]) -> tuple[int, int, int]:
 
 
 class Bundle:
-    """All facts about one (type, canonical-subject), in narrative order."""
+    """All facts about one (type, canonical-subject), in narrative order.
+
+    Each ``fact`` dict is stored and handed back exactly as loaded from
+    ``merged.json`` — nothing here rebuilds it from a field whitelist, so any
+    key ``ensemble_merge`` stamps (``quote_offset``, and since issue #202
+    ``scene_index``, the fact's chunk index — the join key for a future
+    scene-narrative pass) survives untouched, including its absence on a
+    corpus merged before that stamping existed (``fact.get(...)`` upstream,
+    never ``fact["..."]``).
+    """
 
     def __init__(self, type_: str, key: str):
         self.type = type_
