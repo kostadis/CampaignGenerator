@@ -370,3 +370,114 @@ def test_batch_failure_exits_nonzero(monkeypatch, tmp_path, capsys):
     err = capsys.readouterr().err
     assert "Error: batch item failed:" in err
     assert not output.exists()
+
+
+# ── --narratives (issue #202): approved-only grounding, loud skip reporting ──
+#
+# narrate_chapter.py writes an `approved: false` gate by default; only a human
+# flipping it to `true` after review lets synthesise_world_state consume it.
+# These pin: approved narratives are included, unapproved ones are SKIPPED and
+# reported BY NAME (never silently — the same "computed a signal, discarded
+# it" failure #194/#197/#200 already fixed elsewhere), and ordering is
+# chronological like the corpus track.
+
+def test_session_label_narrative_uses_parent_dir_name(tmp_path):
+    d = tmp_path / "chapter_09_leemooggoogoon"
+    d.mkdir()
+    p = d / "narrative.md"
+    p.write_text("x", encoding="utf-8")
+    assert sws.session_label(p) == "chapter_09_leemooggoogoon"
+
+
+def _narrative(tmp_path, name, approved, chapter=None, body="Body prose."):
+    d = tmp_path / name
+    d.mkdir()
+    p = d / "narrative.md"
+    fm_lines = ["---"]
+    if chapter is not None:
+        fm_lines.append(f"chapter: {chapter}")
+    fm_lines.append(f"approved: {'true' if approved else 'false'}")
+    fm_lines.append("---")
+    p.write_text("\n".join(fm_lines) + f"\n\n{body}\n", encoding="utf-8")
+    return p
+
+
+def test_read_narrative_missing_file_returns_none(tmp_path):
+    assert sws.read_narrative(tmp_path / "nope" / "narrative.md") is None
+
+
+def test_narratives_approved_included_unapproved_skipped_and_reported(
+        monkeypatch, fake_stream_api, tmp_path, capsys):
+    corpus = _write_corpus(tmp_path)
+    _narrative(tmp_path, "chapter_01", approved=True, chapter="chapter_01",
+              body="Thorin killed the pit fiend. It was Moziqodo.")
+    _narrative(tmp_path, "chapter_02", approved=False, chapter="chapter_02",
+              body="This one is NOT reviewed yet.")
+    output = tmp_path / "world_state.md"
+    monkeypatch.setattr(sys, "argv", [
+        "synthesise_world_state.py", "--corpus", str(corpus),
+        "--narratives", str(tmp_path / "*" / "narrative.md"),
+        "--output", str(output),
+    ])
+    sws.main()
+
+    out = capsys.readouterr().out
+    assert "1 approved, 1 skipped (unapproved)" in out
+    assert "chapter_02" in out  # named in the skip report
+
+    user_prompt = fake_stream_api.calls[0]["user"]
+    assert "Thorin killed the pit fiend. It was Moziqodo." in user_prompt
+    assert "This one is NOT reviewed yet." not in user_prompt
+    assert "NARRATIVE ACCOUNTS" in user_prompt
+
+
+def test_narratives_missing_frontmatter_treated_as_unapproved(
+        monkeypatch, fake_stream_api, tmp_path, capsys):
+    corpus = _write_corpus(tmp_path)
+    d = tmp_path / "chapter_05"
+    d.mkdir()
+    (d / "narrative.md").write_text("No frontmatter at all, just prose.\n",
+                                    encoding="utf-8")
+    output = tmp_path / "world_state.md"
+    monkeypatch.setattr(sys, "argv", [
+        "synthesise_world_state.py", "--corpus", str(corpus),
+        "--narratives", str(tmp_path / "*" / "narrative.md"),
+        "--output", str(output),
+    ])
+    sws.main()
+
+    out = capsys.readouterr().out
+    assert "0 approved, 1 skipped (unapproved)" in out
+    user_prompt = fake_stream_api.calls[0]["user"]
+    assert "No frontmatter at all" not in user_prompt
+
+
+def test_narratives_chronological_ordering(monkeypatch, fake_stream_api, tmp_path):
+    corpus = _write_corpus(tmp_path)
+    _narrative(tmp_path, "chapter_02", approved=True, chapter="chapter_02",
+              body="SECOND chapter body.")
+    _narrative(tmp_path, "chapter_01", approved=True, chapter="chapter_01",
+              body="FIRST chapter body.")
+    output = tmp_path / "world_state.md"
+    monkeypatch.setattr(sys, "argv", [
+        "synthesise_world_state.py", "--corpus", str(corpus),
+        "--narratives", str(tmp_path / "*" / "narrative.md"),
+        "--output", str(output),
+    ])
+    sws.main()
+    user_prompt = fake_stream_api.calls[0]["user"]
+    assert user_prompt.index("FIRST chapter body.") < user_prompt.index("SECOND chapter body.")
+
+
+def test_narratives_flag_omitted_does_not_touch_prompt(monkeypatch, fake_stream_api, tmp_path):
+    corpus = _write_corpus(tmp_path)
+    _narrative(tmp_path, "chapter_01", approved=True, chapter="chapter_01",
+              body="Should never appear.")
+    output = tmp_path / "world_state.md"
+    monkeypatch.setattr(sys, "argv", [
+        "synthesise_world_state.py", "--corpus", str(corpus), "--output", str(output),
+    ])
+    sws.main()
+    user_prompt = fake_stream_api.calls[0]["user"]
+    assert "Should never appear." not in user_prompt
+    assert "NARRATIVE ACCOUNTS" not in user_prompt

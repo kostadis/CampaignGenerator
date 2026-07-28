@@ -78,6 +78,7 @@ from campaignlib import (
     make_client,
     resolve_registry_arg,
     run_single_batch,
+    split_frontmatter,
     stream_api,
 )
 
@@ -158,8 +159,30 @@ world_state document.
 2. OPEN THREADS & MYSTERIES — recurring unresolved thread facts in chapter
    order. Cluster related ones and surface them as the document's open
    questions / mysteries section.
-3. PLAYER CHARACTER BACKSTORIES — campaign background to enrich party profiles,
+3. NARRATIVE ACCOUNTS (if present) — approved, human-reviewed plain-prose
+   accounts of what happened. Prefer these for attribution and event order.
+4. PLAYER CHARACTER BACKSTORIES — campaign background to enrich party profiles,
    not to invent events.
+"""
+
+# --narratives grounding (issue #202): the whole point of a narrative pass is
+# that it states attribution the atomic facts fragment away (issue #195,
+# Moziqodo). It is still LLM output, though a human-reviewed one — so it gets
+# a stronger claim on attribution/order than the raw fact fragments, not an
+# unconditional one; a verbatim quote still wins a direct contradiction.
+NARRATIVE_GROUNDING = """\
+# NARRATIVE ACCOUNTS (approved, chronological)
+
+The following are per-scene plain-prose accounts of what happened, produced
+by a narration pass and reviewed/approved by the GM before being included
+here (unapproved narratives are never included). Each states, in order, who
+did what, who was present, and — critically — who died and by whose action.
+Prefer these over the atomic fact extracts above when the two disagree about
+attribution or event order: atomic facts are extracted independently per
+sentence and can lose the sentence structure that carried who-did-what-to-
+whom, which these accounts were written specifically to preserve. A
+narrative account is still LLM output, though a reviewed one — if it
+contradicts a fact's verbatim source_quote, prefer the quote.
 """
 
 
@@ -268,6 +291,22 @@ def split_dossiers(
     return recent, background, cutoff
 
 
+def read_narrative(path: Path) -> tuple[dict, str] | None:
+    """Parse one narrate_chapter.py narrative.md into (frontmatter, body).
+
+    Returns ``None`` only when the file can't be read at all. A file that
+    reads fine but has no/malformed frontmatter still returns
+    ``({}, whole_text)`` via ``split_frontmatter`` — the caller's approval
+    check (``frontmatter.get("approved") is True``) then treats it the same
+    as an explicit ``approved: false``: the gate defaults CLOSED, never open.
+    """
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    return split_frontmatter(text)
+
+
 def expand_globs(patterns: list[str]) -> list[Path]:
     """Expand and de-dup glob patterns, preserving order.
 
@@ -284,7 +323,8 @@ def expand_globs(patterns: list[str]) -> list[Path]:
 
 def session_label(path: Path) -> str:
     """A human-readable label for a merged.json — prefer its parent dir name."""
-    if path.name in ("merged.json", "merged_embed.json", "facts.json") and path.parent.name:
+    if path.name in ("merged.json", "merged_embed.json", "facts.json",
+                     "narrative.md") and path.parent.name:
         return path.parent.name
     return path.stem
 
@@ -398,6 +438,15 @@ def main() -> None:
                         help="Pre-rendered threads/mysteries markdown (from "
                              "facts_to_state.py --types thread --render-only). The "
                              "cross-cutting material that doesn't aggregate per-entity.")
+    parser.add_argument("--narratives", nargs="+", metavar="GLOB",
+                        help="Glob(s) matching narrate_chapter.py narrative.md files "
+                             "(issue #202). Only files whose frontmatter says "
+                             "'approved: true' are included as grounding; unapproved "
+                             "narratives are SKIPPED and reported by name (never "
+                             "silently) — narrative.md is still LLM output and needs "
+                             "the human checkpoint before it can ground synthesis. "
+                             "Approved narratives are preferred over the atomic fact "
+                             "extracts for attribution and event order.")
     parser.add_argument("--output", "-o", required=True, metavar="FILE",
                         help="Where to write world_state markdown. Required and "
                              "never defaulted — point at a scratch file and diff "
@@ -485,6 +534,8 @@ def main() -> None:
     sessions: list[tuple] = []
     total_facts = 0
     n_dossiers = 0
+    n_narratives_approved = 0
+    n_narratives_skipped = 0
 
     # ── Dossier track: pre-aggregated, current-state-per-entity (no LLM here) ──
     if dossier_paths:
@@ -543,6 +594,44 @@ def main() -> None:
             print(f"Threads track: {tpath.name}")
             blocks.append("# OPEN THREADS & MYSTERIES (recurring, chronological)")
             blocks.append(tpath.read_text(encoding="utf-8").strip())
+
+    # ── Narrative track (issue #202): approved, human-reviewed plain-prose ──
+    # accounts of what happened. Unapproved narratives are skipped and named
+    # OUT LOUD — narrative.md is still LLM output; silently including an
+    # unreviewed one (or silently dropping one without saying so) would both
+    # be the same "computed a signal, then ignored it" failure #194/#197/#200
+    # already shipped fixes for.
+    if args.narratives:
+        narrative_paths = expand_globs(args.narratives)
+        approved_narratives: list[tuple[Path, dict, str]] = []
+        skipped_narratives: list[str] = []
+        for npath in narrative_paths:
+            parsed = read_narrative(npath)
+            if parsed is None:
+                skipped_narratives.append(f"{npath.name} (unreadable)")
+                continue
+            n_fm, n_body = parsed
+            if n_fm.get("approved") is True:
+                approved_narratives.append((npath, n_fm, n_body))
+            else:
+                skipped_narratives.append(session_label(npath))
+        approved_narratives.sort(key=lambda t: session_index(t[0]))
+        n_narratives_approved = len(approved_narratives)
+        n_narratives_skipped = len(skipped_narratives)
+
+        print(f"Narrative accounts: {len(narrative_paths)} found -> "
+              f"{len(approved_narratives)} approved, "
+              f"{len(skipped_narratives)} skipped (unapproved).")
+        if skipped_narratives:
+            print(f"  Skipped (unapproved): {', '.join(skipped_narratives)}")
+        if approved_narratives:
+            print("  Approved (chronological):")
+            for npath, n_fm, _n_body in approved_narratives:
+                print(f"    {n_fm.get('chapter') or session_label(npath)}")
+            blocks.append(NARRATIVE_GROUNDING)
+            for npath, n_fm, n_body in approved_narratives:
+                n_label = n_fm.get("chapter") or session_label(npath)
+                blocks.append(f"<!-- {n_label} -->\n\n{n_body.strip()}")
 
     # ── Corpus track: raw facts rendered per session (the original path) ──
     if corpus_paths:
@@ -612,6 +701,9 @@ def main() -> None:
         srcs.append(f"{len(sessions)} sessions/{total_facts} facts")
     if args.threads:
         srcs.append("threads")
+    if args.narratives:
+        srcs.append(f"{n_narratives_approved} narratives "
+                    f"({n_narratives_skipped} skipped unapproved)")
     print(f"[Synthesise world_state | {', '.join(srcs) or 'no source'} | "
           f"quotes: {'on' if args.quotes else 'off'} | "
           f"model: {args.model}{pc_note}{inv_note}{bs_note}]")
@@ -643,7 +735,10 @@ def main() -> None:
 
     print("\n" + "=" * 60)
     print(f"Wrote world_state: {output_path}")
-    print(f"Synthesised from {n_dossiers} dossier(s) + {len(sessions)} session(s).")
+    narr_note = (f" + {n_narratives_approved} narrative(s)"
+                if args.narratives else "")
+    print(f"Synthesised from {n_dossiers} dossier(s) + {len(sessions)} "
+          f"session(s){narr_note}.")
     if party_names:
         print(f"Party anchored: {', '.join(party_names)}")
 
