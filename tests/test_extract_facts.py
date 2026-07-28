@@ -261,6 +261,37 @@ def test_cli_parallel_fully_cached(tmp_path):
     assert json.loads(out.read_text()) == [seeded[0] | {"quote_verified": False}]
 
 
+def test_scene_chunks_flag_reaches_prepare_chunks(tmp_path, monkeypatch, capsys):
+    """--scene-chunks (issue #202) must reach prepare_chunks: a document with
+    one heading produces exactly one chunk (the whole document), matching the
+    pre-seeded facts_001.json cache. Runs main() in-process (not as a
+    subprocess, unlike test_cli_parallel_fully_cached) with client_from_args
+    stubbed out — the CLI's default --backend dgx builds a real dgxlib-backed
+    client at construction time regardless of whether the endpoint is ever
+    called, and dgxlib isn't installed in this worktree's venv (a pre-existing
+    environment gap, not exercised here on purpose)."""
+    doc = tmp_path / "chapter.md"
+    doc.write_text(
+        "## Grygum — Chaos in the Fungal Cavern\n\nThe fight began.\n",
+        encoding="utf-8",
+    )
+    extract_dir = tmp_path / "cache"
+    extract_dir.mkdir()
+    seeded = [_fact("seeded")]
+    (extract_dir / "facts_001.json").write_text(json.dumps(seeded))
+    out = tmp_path / "facts.json"
+
+    monkeypatch.setattr(ef, "client_from_args", lambda args: object())
+    monkeypatch.setattr(sys, "argv", [
+        "extract_facts.py", str(doc),
+        "--output", str(out), "--extract-dir", str(extract_dir),
+        "--scene-chunks",
+    ])
+    ef.main()
+    assert "1 scene(s) to process" in capsys.readouterr().out
+    assert json.loads(out.read_text()) == [seeded[0] | {"quote_verified": False}]
+
+
 def test_cli_rejects_parallel_zero(tmp_path):
     doc = tmp_path / "doc.txt"
     doc.write_text("text\n")

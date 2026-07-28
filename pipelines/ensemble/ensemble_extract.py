@@ -91,6 +91,8 @@ def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
         cmd += ["--model", model]
     if pass_spec.get("annotate_pov"):
         cmd += ["--annotate-pov"]
+    if pass_spec.get("structural"):
+        cmd += ["--scene-chunks"]
     return cmd
 
 PASSES = [
@@ -243,6 +245,20 @@ def main() -> None:
                         help="Skip a named pass (can repeat). Useful when "
                              "iterating on prompt fixes for one lens. Applies to "
                              "built-in and --plan pass names alike.")
+    parser.add_argument("--scene-chunks", action="store_true",
+                        help="Forward --scene-chunks to every active pass's "
+                             "extract_facts.py: chunk on the best available "
+                             "structural heading boundary instead of by "
+                             "character count, for chapters that have one. "
+                             "OPT-IN and OFF by default — the 5 built-in passes "
+                             "deliberately use different chunk sizes (6,000 vs "
+                             "15,000 chars) for extraction diversity; forcing "
+                             "them all onto identical scene boundaries reduces "
+                             "that diversity (oversized scenes still get "
+                             "sub-split at each pass's own chunk_size, so some "
+                             "diversity survives). A --plan pass may also set "
+                             "'structural: true' itself; this flag ORs onto "
+                             "every pass regardless of its own setting.")
     parser.add_argument("--samples", type=int, default=1, metavar="N",
                         help="Self-consistency: run each pass N times and union "
                              "the results (default 1). Extraction is "
@@ -366,6 +382,7 @@ def main() -> None:
                 "agent": p.get("agent", "extract_facts"),
                 "chunk_size": int(p.get("chunk_size", 15000)),
                 "annotate_pov": bool(p.get("annotate_pov", False)),
+                "structural": bool(p.get("structural", False)),
                 "input_path": ip,
             })
     else:
@@ -374,6 +391,13 @@ def main() -> None:
                   "supplies per-pass documents.", file=sys.stderr)
             sys.exit(1)
         active_passes = [{**p, "input_path": default_input} for p in PASSES]
+
+    # --scene-chunks ORs onto every active pass regardless of its own
+    # 'structural' setting (built-in PASSES have none at all — they default to
+    # False, i.e. unaffected unless this flag is given).
+    if args.scene_chunks:
+        for p in active_passes:
+            p["structural"] = True
 
     # --skip applies by name to built-in and plan passes alike.
     active_passes = [p for p in active_passes if p["name"] not in args.skip]
@@ -410,6 +434,10 @@ def main() -> None:
         print(f"Skipped:  {', '.join(args.skip)}")
     if args.samples > 1:
         print(f"Samples:  {args.samples} per pass (self-consistency union)")
+    structural_passes = [p["name"] for p in active_passes if p.get("structural")]
+    if structural_passes:
+        print(f"Scene-chunks: {', '.join(structural_passes)} (structural — "
+              f"falls back to character-count per chapter if no heading)")
 
     # Resolve the endpoint pool. One endpoint → the old sequential behaviour;
     # several → units fan out concurrently (one in-flight unit per endpoint,
@@ -605,6 +633,7 @@ def main() -> None:
         manifest["passes"].append({
             "name": p["name"], "agent": p["agent"],
             "chunk_size": p["chunk_size"], "document": str(p["input_path"]),
+            "structural": bool(p.get("structural", False)),
             "outputs": outs,
         })
     manifest_path = workdir / "manifest.json"

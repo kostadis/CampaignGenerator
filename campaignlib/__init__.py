@@ -13,7 +13,9 @@ from .wiring import load_wiring, wiring_get, wiring_path
 from .textproc import (
     strip_base64_images,
     chunk_text,
+    chunk_text_with_offsets,
     chunk_by_chapters,
+    chunk_by_scenes,
     annotate_chunks_with_pov,
     prepare_chunks,
     norm_subject,
@@ -107,7 +109,9 @@ __all__ = [
     # textproc
     "strip_base64_images",
     "chunk_text",
+    "chunk_text_with_offsets",
     "chunk_by_chapters",
+    "chunk_by_scenes",
     "annotate_chunks_with_pov",
     "prepare_chunks",
     "norm_subject",

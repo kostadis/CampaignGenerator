@@ -95,3 +95,23 @@ def test_build_extract_cmd_defaults_sequential(tmp_path):
     assert cmd[cmd.index("--backend") + 1] == "dgx"
     assert "--endpoint" not in cmd
     assert "--model" not in cmd
+
+
+# ── --scene-chunks plumbing (issue #202) ─────────────────────────────────────
+
+
+def test_build_extract_cmd_omits_scene_chunks_by_default(tmp_path):
+    """OPT-IN: a pass_spec with no 'structural' key (every built-in PASS,
+    absent --scene-chunks) must not forward the flag at all."""
+    cmd = ee.build_extract_cmd(tmp_path / "doc.txt", PASS,
+                               tmp_path / "small.json", tmp_path / "cache",
+                               endpoint=None, model=None, backend="dgx")
+    assert "--scene-chunks" not in cmd
+
+
+def test_build_extract_cmd_forwards_scene_chunks_when_structural(tmp_path):
+    pass_spec = {**PASS, "structural": True}
+    cmd = ee.build_extract_cmd(tmp_path / "doc.txt", pass_spec,
+                               tmp_path / "small.json", tmp_path / "cache",
+                               endpoint=None, model=None, backend="dgx")
+    assert "--scene-chunks" in cmd
