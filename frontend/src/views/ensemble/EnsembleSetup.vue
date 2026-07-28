@@ -78,8 +78,9 @@ async function save() {
       background_min_facts: cfg.value.tuning.background_min_facts,
     },
     // Only the endpoint: it is the one that decides WHICH merge algorithm runs.
-    // method/embed_model/embed_threshold/similarity stay YAML-only — 0.93 is a
-    // measured threshold, not a dial (issue #197).
+    // method/embed_model/embed_threshold/similarity stay YAML-only — 0.94 is a
+    // measured threshold, not a dial (issue #197; calibrated on
+    // qwen3-embedding:0.6b via calibrate_embed).
     merge: { embed_endpoint: cfg.value.merge.embed_endpoint },
   })
   saved.value = true

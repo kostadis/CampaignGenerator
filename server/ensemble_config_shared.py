@@ -181,10 +181,14 @@ class EnsembleMerge(BaseModel):
     method: Literal["subject", "embed"] | None = None
     embed_endpoint: str = ""
     embed_model: str = ""
-    # 0.93 sits in the empty gap between true duplicates (~0.97-0.98) and
-    # distinct-but-related facts (~0.75-0.78) — measured, not guessed. Declared
-    # so it is settable, deliberately not surfaced in the UI.
-    embed_threshold: float = 0.93
+    # 0.94 is calibrated on qwen3-embedding:0.6b (calibrate_embed sweep,
+    # 2026-07-28, issue #197): the dup/distinct bands overlap on that model, so
+    # 0.94 is the precision-first pick — zero false merges on the labeled set
+    # (the worst distinct pair, two different in-world dates, scores 0.9375).
+    # Model-specific; recalibrate if the embed sidecar changes model. The
+    # nomic-era value was 0.93. Declared so it is settable, deliberately not
+    # surfaced in the UI.
+    embed_threshold: float = 0.94
     similarity: float = 0.85
 
 
