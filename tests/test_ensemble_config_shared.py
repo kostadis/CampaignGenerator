@@ -71,6 +71,17 @@ class TestDefaults:
         assert cfg.tuning.recent_events_window == 6
         assert cfg.tuning.dossier_recent_window == 4
 
+    def test_merge_defaults_leave_the_command_unchanged(self):
+        """Every merge default must be falsy-or-derived except the two measured
+        thresholds, so an unconfigured campaign emits no new flags and behaves
+        exactly as before issue #197."""
+        m = EnsembleConfig().merge
+        assert m.method is None          # derive: embed if endpoint, else subject
+        assert m.embed_endpoint == ""
+        assert m.embed_model == ""
+        assert m.embed_threshold == 0.93
+        assert m.similarity == 0.85
+
     def test_bundle_and_threads_min_facts_stay_distinct(self):
         """/run/bundle defaults to 3, /run/threads to 2. Collapsing them into
         one field would be a silent behavior change."""
@@ -107,6 +118,12 @@ class TestStrict:
         ):
             with pytest.raises(Exception):
                 EnsembleConfig.model_validate({key: "whatever"})
+
+    def test_merge_method_literal_is_enforced(self):
+        """Only the two real algorithms. A typo'd method must not fall through
+        to the derived default — that is how the wrong merge ran unnoticed."""
+        with pytest.raises(Exception):
+            EnsembleConfig.model_validate({"merge": {"method": "cosine"}})
 
     def test_singular_endpoint_rejected(self):
         """config_models.BackendProfile's singular `endpoint` is the shape the

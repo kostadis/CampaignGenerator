@@ -55,6 +55,13 @@ Users specify **campaign directory** + **session directory** on the Session Conf
   [#194](https://github.com/kostadis/CampaignGenerator/issues/194). Stored as
   `tuning.dossier_recent_window` / `tuning.background_min_facts` in `config/ensemble.yaml`; the other
   five `tuning` keys remain YAML-only.
+  Also **Fact merge** — an *Embedding endpoint* for the per-chapter fact merge. Blank falls back to
+  the subject merge, which groups on `(type, subject)` and so never compares facts filed under
+  different subjects; the page states that consequence rather than letting a downgrade read as a
+  neutral setting. Stored as `merge.embed_endpoint`; `method`/`embed_model`/`embed_threshold`/
+  `similarity` stay YAML-only. Before
+  [#197](https://github.com/kostadis/CampaignGenerator/issues/197) this was unreachable from the UI
+  entirely.
 - **Stage 1 — Extraction**: Runs `ensemble_batch` over the selected chapters.
   - **Command bar**: Shows the exact, secret-free, copyable invocation emitted by the server. Paste it into a workspace terminal to reproduce the run. No API key ever appears in the command.
   - **Running state**: Button shows "Running…" while the stage is active; live output streams incrementally.

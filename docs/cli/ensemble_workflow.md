@@ -271,13 +271,19 @@ ensemble_batch \
   --model Qwen/Qwen3-Next-80B-A3B-Instruct-FP8 \
   --chunk-parallel 4 \
   --unit-timeout 0 \
-  --embed-endpoint http://spark2:8000 \
-  --embed-model Qwen/Qwen3-Embedding-0.6B \
+  --embed-endpoint http://192.168.1.121:11434 \
+  --embed-model qwen3-embedding:0.6b \
   --embed-threshold 0.93 \
   --chapter-parallel 3
 ```
 
 The run is **resumable**: chapters whose `per_chapter/<stem>/merged.json` already exists are skipped. If a chapter fails, fix and re-run; completed chapters are not re-extracted.
+
+**The `--embed-*` flags are not optional polish.** Omit `--embed-endpoint` and the merge falls back to `--method subject`, which groups on `(type, subject)` and therefore *never compares facts filed under different subjects* — a whole class of cross-subject duplicate and contradiction is invisible to it. Since [#197](https://github.com/kostadis/CampaignGenerator/issues/197) that fallback prints a warning and marks its method line `[fallback — no embed endpoint]`; pass `--method subject` explicitly to choose it deliberately and silence the warning. From the web UI the endpoint comes from `merge.embed_endpoint` in `config/ensemble.yaml`, set on `/ensemble/setup`.
+
+> **⚠ The embed endpoint moved on 2026-06-30 and this doc pointed at the dead one until 2026-07-28.** It was `vllm-embed` on `:8000` serving `Qwen/Qwen3-Embedding-0.6B`; it is now **Ollama on `:11434` serving `qwen3-embedding:0.6b`** (lazy-load — it unloads after 5 minutes idle, so the first call after a pause is slow, not broken). Always take the live endpoint from `~/src/dgx/current-setup.md` rather than from this file. Anything extracted between those dates was almost certainly merged with the `subject` fallback.
+>
+> **⚠ `--embed-threshold 0.93` is calibrated for `nomic-embed-text-v1.5`, not for the model now serving.** On nomic, duplicates measured ~0.97 and distinct-but-related ~0.78, so 0.93 sat in an empty gap. Spot-measured on `qwen3-embedding:0.6b`: a true near-duplicate scores **0.9103** (i.e. *below* 0.93 — it would not merge), a related-but-distinct pair 0.8465, unrelated 0.3392. The threshold needs re-measuring against whichever model is live before the embed merge can be trusted to catch duplicates. Tracked in [#197](https://github.com/kostadis/CampaignGenerator/issues/197).
 
 > **Operational gotchas (these will silently waste an hour if ignored):**
 >
@@ -286,8 +292,9 @@ The run is **resumable**: chapters whose `per_chapter/<stem>/merged.json` alread
 >    command (notably WSL2, containers, and cron). When they don't resolve, the
 >    OpenAI client hangs on connection with *no error and no output* until it times
 >    out — looking exactly like a stalled model. Pass `--endpoints
->    http://192.168.1.147:8001/v1` and `--embed-endpoint http://192.168.1.121:8000`
->    (check `~/src/dgx/current-setup.md` for the live IPs). Note that the example
+>    http://192.168.1.147:8001/v1` and `--embed-endpoint http://192.168.1.121:11434`
+>    (check `~/src/dgx/current-setup.md` for the live IPs — it is authoritative and
+>    these change). Note that the example
 >    above shows a two-endpoint setup; current single-box serving uses one
 >    `--endpoints` value.
 >

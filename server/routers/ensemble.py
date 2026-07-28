@@ -698,6 +698,16 @@ def run_extract(
     _cmd_opt(cmd, "--chapter-parallel", chapter_parallel)
     _cmd_opt(cmd, "--chunk-parallel", chunk_parallel)
     _cmd_flag(cmd, "--no-speculative", no_speculative)
+    # Merge settings (issue #197). ensemble_batch has always forwarded these
+    # down to ensemble_merge; this route emitted none of them, so the embed
+    # merge was unreachable from the UI and every web-driven run silently got
+    # the weaker subject merge. _cmd_opt skips empty/None, so an unconfigured
+    # merge group leaves the command exactly as it was.
+    _cmd_opt(cmd, "--embed-endpoint", cfg.merge.embed_endpoint)
+    _cmd_opt(cmd, "--embed-model", cfg.merge.embed_model)
+    _cmd_opt(cmd, "--embed-threshold", cfg.merge.embed_threshold)
+    _cmd_opt(cmd, "--similarity", cfg.merge.similarity)
+    _cmd_opt(cmd, "--method", cfg.merge.method)
     return _run_locked("extract", cmd)
 
 

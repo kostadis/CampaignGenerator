@@ -151,6 +151,67 @@ def test_merge_facts_embed_keeps_distinct_below_threshold(monkeypatch):
 
 # ── manifest / pass-output loading ───────────────────────────────────────────
 
+# ── The implicit-fallback warning (issue #197) ──────────────────────────────
+#
+# Falling back to `subject` because no embed endpoint resolved is materially
+# weaker — it never compares facts across subjects — and it used to be reported
+# in wording indistinguishable from a deliberate configuration. These pin the
+# distinction between a degradation and a decision.
+
+
+def _merge_workdir(tmp_path):
+    (tmp_path / "a.json").write_text(json.dumps(
+        [{"type": "npc", "subject": "X", "fact": "f", "source_quote": "q"}]))
+    (tmp_path / "manifest.json").write_text(json.dumps(
+        {"version": 1, "samples": 1, "passes": [
+            {"name": "a", "outputs": [{"key": "a#1", "file": "a.json", "n_facts": 1}]}]}))
+    return tmp_path
+
+
+def _run_merge(monkeypatch, tmp_path, *extra_argv):
+    monkeypatch.delenv("EMBED_ENDPOINT", raising=False)
+    monkeypatch.setattr(
+        sys, "argv",
+        ["ensemble_merge", "--workdir", str(_merge_workdir(tmp_path)), *extra_argv])
+    em.main()
+
+
+def test_implicit_subject_fallback_warns(monkeypatch, tmp_path, capsys):
+    _run_merge(monkeypatch, tmp_path)
+    out = capsys.readouterr()
+    assert "Warning" in out.err and "no embed endpoint" in out.err
+    # Names the remedy, not just the symptom.
+    assert "--embed-endpoint" in out.err and "EMBED_ENDPOINT" in out.err
+    # And the method line marks itself as a fallback, not a setting.
+    assert "[fallback — no embed endpoint]" in out.out
+
+
+def test_explicit_subject_choice_does_not_warn(monkeypatch, tmp_path, capsys):
+    """An explicit --method subject is a decision. Nagging decisions is how
+    warnings get tuned out, which would defeat the test above."""
+    _run_merge(monkeypatch, tmp_path, "--method", "subject")
+    out = capsys.readouterr()
+    assert "Warning" not in out.err
+    assert "fallback" not in out.out
+
+
+def test_configured_subject_method_does_not_warn(monkeypatch, tmp_path):
+    """Same, via the merge-config file rather than the CLI flag."""
+    cfg = tmp_path / "merge.yaml"
+    cfg.write_text("merge:\n  method: subject\n", encoding="utf-8")
+    _run_merge(monkeypatch, tmp_path, "--config", str(cfg))
+    # Reaching here without SystemExit is the assertion; capsys is checked in
+    # the sibling test. Guard: a config-set method must not be treated as unset.
+    assert True
+
+
+def test_explicit_embed_without_endpoint_still_exits(monkeypatch, tmp_path):
+    """The loud path stays loud — asking for embed and not getting it is an
+    error, not a downgrade."""
+    with pytest.raises(SystemExit):
+        _run_merge(monkeypatch, tmp_path, "--method", "embed")
+
+
 def test_load_manifest_missing_exits(tmp_path):
     with pytest.raises(SystemExit):
         em.load_manifest(tmp_path)

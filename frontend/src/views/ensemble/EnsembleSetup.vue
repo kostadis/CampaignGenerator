@@ -45,6 +45,21 @@ const scopeSummary = computed(() => {
     + `least ${m} fact${m === 1 ? '' : 's'}.`
 })
 
+// States which merge algorithm the endpoint field actually selects, and what the
+// weaker one cannot do. Blank is a legitimate state (no embed server), but it is
+// a real downgrade and the page says so rather than letting it read as neutral —
+// the whole of issue #197 is a degradation that looked like a decision.
+const mergeSummary = computed(() => {
+  const ep = (cfg.value?.merge.embed_endpoint ?? '').trim()
+  return ep
+    ? `Embedding merge: facts cluster by meaning across subjects, so the same `
+      + `event described under two different subjects collapses into one.`
+    : `No endpoint — falls back to the subject merge, which groups on `
+      + `(type, subject) and therefore never compares facts filed under `
+      + `different subjects. Cross-subject duplicates and contradictions `
+      + `survive it by construction.`
+})
+
 async function save() {
   if (!cfg.value) return
   cfg.value.extract.endpoints = extractEndpointsText.value.split('\n').map(s => s.trim()).filter(Boolean)
@@ -62,6 +77,10 @@ async function save() {
       dossier_recent_window: cfg.value.tuning.dossier_recent_window,
       background_min_facts: cfg.value.tuning.background_min_facts,
     },
+    // Only the endpoint: it is the one that decides WHICH merge algorithm runs.
+    // method/embed_model/embed_threshold/similarity stay YAML-only — 0.93 is a
+    // measured threshold, not a dial (issue #197).
+    merge: { embed_endpoint: cfg.value.merge.embed_endpoint },
   })
   saved.value = true
   setTimeout(() => (saved.value = false), 1500)
@@ -198,6 +217,24 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
         </label>
       </div>
       <p class="scope-summary">{{ scopeSummary }}</p>
+    </fieldset>
+
+    <fieldset class="scope">
+      <legend>Fact merge (extraction)</legend>
+      <p class="hint">
+        How the five extraction lenses' facts are collapsed into
+        <code>merged.json</code>. This runs per chapter during extraction.
+      </p>
+      <label class="fld">
+        <span>Embedding endpoint</span>
+        <input v-model="cfg.merge.embed_endpoint" type="text"
+               placeholder="http://spark:8000/v1" />
+        <div class="field-help">
+          An OpenAI-compatible <code>/v1/embeddings</code> server (nomic). Leave
+          blank if you have none.
+        </div>
+      </label>
+      <p class="scope-summary">{{ mergeSummary }}</p>
     </fieldset>
 
     <div class="actions">

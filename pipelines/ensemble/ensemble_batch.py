@@ -86,6 +86,11 @@ def _build_parser():
                    help="Embedding model id")
     p.add_argument("--embed-threshold", type=float, metavar="COS",
                    help="Embedding cosine threshold override")
+    # ensemble.py has always accepted and forwarded --similarity; this hop was
+    # the only one missing it, so a subject-merge similarity set anywhere
+    # upstream was silently dropped on batch runs (issue #197).
+    p.add_argument("--similarity", type=float, metavar="RATIO",
+                   help="Subject-merge fact-text similarity threshold override")
     p.add_argument("--method", choices=["subject", "embed"],
                    help="Merge method override")
     p.add_argument("--merge-config", metavar="YAML",
@@ -131,6 +136,8 @@ def _build_ensemble_cmd(chapter: Path, workdir: Path, args) -> list[str]:
         cmd += ["--embed-model", args.embed_model]
     if args.embed_threshold is not None:
         cmd += ["--embed-threshold", str(args.embed_threshold)]
+    if args.similarity is not None:
+        cmd += ["--similarity", str(args.similarity)]
     if args.method:
         cmd += ["--method", args.method]
     if args.merge_config:

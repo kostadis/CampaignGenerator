@@ -115,6 +115,7 @@ write; a missing or empty file loads as an all-defaults `EnsembleConfig`, not an
 | `extract` / `synthesize` | `EnsembleBackend`: backend (`anthropic\|dgx\|openrouter\|claude-code`), **`endpoints[]`** (plural — the extract stage fans out across DGX hosts), model |
 | `paths` | chapters_glob, per_chapter_dir, corpus_glob, merged_out, state_dossiers_dir, dossiers_glob, npc_dossiers_glob, threads_out, recent_events_out |
 | `tuning` | chapter_parallel, chunk_parallel, bundle_min_facts, threads_min_facts, **background_min_facts**, **dossier_recent_window**, entity_parallel, recent_events_window |
+| `merge` | method (`subject\|embed\|null` = derive), embed_endpoint, embed_model, embed_threshold, similarity |
 | `planning` | synth_mode (`config\|flat`), npc[], arc_scores[], context[], depth (`scene\|full`), force_include[] |
 
 `paths` and `tuning` were Python literals in `server/routers/ensemble.py`'s route signatures
@@ -133,6 +134,21 @@ a bare frequency floor deletes the present, because an entity introduced in the 
 the fewest facts by construction. A pre-rename `ensemble.yaml` is migrated on read with its value
 preserved. Note `dossier_recent_window` is **not** `recent_events_window` — that one scopes
 `build_recent_events`' `recent_events.md`, a different track.
+
+**`merge`** (added by [#197](https://github.com/kostadis/CampaignGenerator/issues/197))
+selects how `ensemble_merge` collapses the five extraction lenses into
+`merged.json`. Field names mirror the flat mapping `ensemble_merge --config`
+already accepts, so the names hold from here through the CLI flag to the
+merge-config YAML. The two methods are **not** tunings of one algorithm:
+`subject` groups on `(type, normalized_subject)` and therefore never compares
+facts filed under different subjects, so cross-subject duplicates and
+contradictions survive it by construction; `embed` partitions on `type` alone and
+clusters on embedding cosine. `method: null` derives — `embed` when
+`embed_endpoint` is set, else `subject`. Only `embed_endpoint` is surfaced on
+`/ensemble/setup`; `0.93` is a measured threshold (true duplicates ~0.97–0.98,
+distinct-but-related ~0.75–0.78) rather than a dial. Before #197 none of this was
+declared and `/run/extract` emitted no merge flags, so every UI-driven extraction
+silently got `subject`.
 
 ### ~~Loose UI sections~~ — none
 There are no `ui.<section>` blobs and no `_LooseSection` type. The last six were deleted with
