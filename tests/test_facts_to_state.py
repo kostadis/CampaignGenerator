@@ -16,7 +16,9 @@ sys.path.insert(0, str(ROOT))
 from pipelines.ensemble import facts_to_state as fts  # noqa: E402
 from campaignlib import add_backend_args  # noqa: E402
 from campaignlib.registry import load_registry  # noqa: E402
-from pipelines.ensemble.synthesise_world_state import load_dossiers  # noqa: E402
+from pipelines.ensemble.synthesise_world_state import (  # noqa: E402
+    read_dossiers, split_dossiers,
+)
 
 
 def _fact(type_, subject, fact, quote="", subjects=None):
@@ -298,14 +300,37 @@ def test_main_rejects_explicit_registry_combined_with_legacy_aliases(tmp_path, m
         fts.main()
 
 
-def test_load_dossiers_filters_by_nfacts(tmp_path):
-    (tmp_path / "npc_a.md").write_text("---\nname: A\ntype: npc\nn_facts: 40\n---\n\nbody A",
-                                       encoding="utf-8")
-    (tmp_path / "npc_b.md").write_text("---\nname: B\ntype: npc\nn_facts: 5\n---\n\nbody B",
-                                       encoding="utf-8")
-    kept = load_dossiers(list(tmp_path.glob("*.md")), min_facts=20)
-    assert [stem for stem, _ in kept] == ["npc_a"]   # only A passes the floor
-    assert "body A" in kept[0][1]
+def test_dossier_frontmatter_round_trips_into_the_reader(tmp_path):
+    """write_dossier emits `n_facts` AND `chapters: lo-hi`; the reader consumes
+    both. Issue #194 was exactly this contract half-honoured — the chapter span
+    was computed, serialised and then ignored, so a frequency floor stood in for
+    a sequence the pipeline already knew. Pinned against real writer output
+    rather than hand-rolled frontmatter, so a change to either side breaks here.
+    """
+    old = _bundle("npc", "bookwyrm", [
+        (3, _fact("npc", "Bookwyrm", "early"), "Bookwyrm"),
+        (40, _fact("npc", "Bookwyrm", "later"), "Bookwyrm"),
+    ])
+    debut = _bundle("npc", "moziqodo", [
+        (62, _fact("npc", "Moziqodo", "dies in the rotunda"), "Moziqodo"),
+    ])
+    for b in (old, debut):
+        fts.write_dossier(tmp_path, b, "body")
+
+    dossiers, n_missing = read_dossiers(sorted(tmp_path.glob("*.md")))
+    assert n_missing == 0
+    by_stem = {d.stem: d for d in dossiers}
+    assert by_stem["npc_bookwyrm"].n_facts == 2
+    assert by_stem["npc_bookwyrm"].last_chapter == 40
+    assert by_stem["npc_moziqodo"].last_chapter == 62
+
+    # A one-fact debut in the newest chapter outranks a denser but stale entity.
+    recent, background, cutoff = split_dossiers(
+        dossiers, background_min_facts=2, recent_window=4)
+    assert cutoff == 59
+    assert [d.stem for d in recent] == ["npc_moziqodo"]
+    assert [d.stem for d in background] == ["npc_bookwyrm"]
+    assert "body" in by_stem["npc_moziqodo"].text
 
 
 # ── --batch (spec 004-claude-api-batch, T021) ────────────────────────────────

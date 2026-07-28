@@ -46,6 +46,15 @@ Users specify **campaign directory** + **session directory** on the Session Conf
 **Grounding Docs**: Campaign State, World State, Party Document, Planning Document
 
 **Ensemble** (four-stage extraction + synthesis workflow):
+- **Setup** (`/ensemble/setup`): chapter selection, a backend per LLM-bearing stage, and
+  **Synthesis scope** — the two knobs deciding which entity dossiers reach the world_state
+  synthesis call. **Recent window (chapters)** is how far back "current" reaches; everything
+  touched inside it is included whatever its fact count. **Background floor (facts)** then filters
+  older entities. The page shows the combined effect in plain language as you change either, because
+  a floor without a window is what silently deleted the newest chapter's entities before
+  [#194](https://github.com/kostadis/CampaignGenerator/issues/194). Stored as
+  `tuning.dossier_recent_window` / `tuning.background_min_facts` in `config/ensemble.yaml`; the other
+  five `tuning` keys remain YAML-only.
 - **Stage 1 — Extraction**: Runs `ensemble_batch` over the selected chapters.
   - **Command bar**: Shows the exact, secret-free, copyable invocation emitted by the server. Paste it into a workspace terminal to reproduce the run. No API key ever appears in the command.
   - **Running state**: Button shows "Running…" while the stage is active; live output streams incrementally.

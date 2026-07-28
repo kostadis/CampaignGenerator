@@ -200,14 +200,36 @@ class TestConfigReachesTheCommand:
     def test_synthesize_uses_configured_dossiers_and_backend(self, client, captured):
         self._put(client, {
             "paths": {"dossiers_glob": "out/dossiers/*.md"},
-            "tuning": {"dossier_min_facts": 4},
+            "tuning": {"background_min_facts": 4},
             "synthesize": {"backend": "openrouter", "model": "openai/gpt-5"},
         })
         client.get("/api/ensemble/run/synthesize", params={"doc": "world_state"})
-        joined = " ".join(captured[-1])
+        cmd = captured[-1]
+        joined = " ".join(cmd)
         assert "out/dossiers/*.md" in joined
         assert "openai/gpt-5" in joined
-        assert "4" in captured[-1]
+        # Positional, not `"4" in cmd` — a bare substring check passes even if
+        # the flag stops being emitted at all.
+        assert cmd[cmd.index("--background-min-facts") + 1] == "4"
+
+    def test_synthesize_forwards_the_dossier_recency_window(self, client, captured):
+        """world_state's scope is recency-first (issue #194), so the window has
+        to reach the CLI — a floor arriving without one is the bug."""
+        self._put(client, {"tuning": {"dossier_recent_window": 6}})
+        client.get("/api/ensemble/run/synthesize", params={"doc": "world_state"})
+        cmd = captured[-1]
+        assert cmd[cmd.index("--recent-window") + 1] == "6"
+
+    def test_synthesize_query_params_override_the_configured_scope(self, client, captured):
+        self._put(client, {
+            "tuning": {"background_min_facts": 4, "dossier_recent_window": 6},
+        })
+        client.get("/api/ensemble/run/synthesize", params={
+            "doc": "world_state", "background_min_facts": 9, "recent_window": 2,
+        })
+        cmd = captured[-1]
+        assert cmd[cmd.index("--background-min-facts") + 1] == "9"
+        assert cmd[cmd.index("--recent-window") + 1] == "2"
 
     def test_synthesize_uses_configured_planning_depth(self, client, captured):
         self._put(client, {"planning": {"depth": "full"}})

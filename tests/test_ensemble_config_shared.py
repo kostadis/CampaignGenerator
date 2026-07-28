@@ -53,9 +53,23 @@ class TestDefaults:
         t = EnsembleConfig().tuning
         assert t.chapter_parallel == 3
         assert t.chunk_parallel == 4
-        assert t.dossier_min_facts == 10
+        assert t.background_min_facts == 10
         assert t.entity_parallel == 0
         assert t.recent_events_window == 0
+
+    def test_dossier_recency_window_ships_enabled(self):
+        """A shipped 0 would mean "no window", which reinstates issue #194's
+        behaviour: the floor applying to every dossier, deleting the newest
+        chapter's entities on every run. The default has to be a real window."""
+        assert EnsembleConfig().tuning.dossier_recent_window == 4
+
+    def test_the_two_window_fields_are_independent(self):
+        """dossier_recent_window scopes world_state's dossier payload;
+        recent_events_window scopes build_recent_events' recent_events.md.
+        Different tracks — setting one must not move the other."""
+        cfg = EnsembleConfig.model_validate({"tuning": {"recent_events_window": 6}})
+        assert cfg.tuning.recent_events_window == 6
+        assert cfg.tuning.dossier_recent_window == 4
 
     def test_bundle_and_threads_min_facts_stay_distinct(self):
         """/run/bundle defaults to 3, /run/threads to 2. Collapsing them into
@@ -215,3 +229,31 @@ class TestLegacyPruning:
         raw = yaml.safe_load(p.read_text(encoding="utf-8"))
         assert "known_names" not in raw
         assert "aliases_path" not in raw
+
+    def test_renamed_dossier_min_facts_carries_its_value_over(self, tmp_path):
+        """dossier_min_facts was RENAMED to background_min_facts (issue #194),
+        not retired — so unlike the pruned keys above, the operator's number has
+        to survive. Discarding it would silently reset a hand-tuned floor to the
+        default, which is the class of quiet substitution the rename exists to
+        end."""
+        p = tmp_path / "ensemble.yaml"
+        p.write_text("tuning:\n  dossier_min_facts: 25\n", encoding="utf-8")
+        cfg = load_ensemble_config(p)
+        assert cfg.tuning.background_min_facts == 25
+
+    def test_migrated_key_does_not_clobber_an_explicit_new_one(self, tmp_path):
+        """A half-migrated file carrying both keys: the new name wins."""
+        p = tmp_path / "ensemble.yaml"
+        p.write_text(
+            "tuning:\n  dossier_min_facts: 25\n  background_min_facts: 7\n",
+            encoding="utf-8",
+        )
+        assert load_ensemble_config(p).tuning.background_min_facts == 7
+
+    def test_saving_a_migrated_config_writes_only_the_new_key(self, tmp_path):
+        p = tmp_path / "ensemble.yaml"
+        p.write_text("tuning:\n  dossier_min_facts: 25\n", encoding="utf-8")
+        save_ensemble_config(p, load_ensemble_config(p))
+        raw = yaml.safe_load(p.read_text(encoding="utf-8"))
+        assert "dossier_min_facts" not in raw["tuning"]
+        assert raw["tuning"]["background_min_facts"] == 25

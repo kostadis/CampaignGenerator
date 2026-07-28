@@ -64,6 +64,7 @@ import sys
 import warnings
 from collections import defaultdict
 from pathlib import Path
+from typing import NamedTuple
 
 import yaml
 
@@ -133,15 +134,27 @@ DOSSIER_GROUNDING = """\
 The source material below is already distilled. Synthesise it into the
 world_state document.
 
-1. ENTITY DOSSIERS — one per significant NPC, faction, location, object, or
-   monster. Each is a CURRENT-STATE summary already reconciled across the whole
-   campaign (later chapters override earlier), with a "## Uncertainty" block
-   listing what could not be confirmed. Treat the dossier body as current;
-   fold the Uncertainty items into open threads or omit them — do NOT assert an
-   uncertain claim as settled fact. A dossier's roster of "current companions"
-   may be stale (it was written from that one entity's facts); reconcile party
+1. ENTITY DOSSIERS — one per NPC, faction, location, object, or monster. Each
+   is a CURRENT-STATE summary already reconciled across the whole campaign
+   (later chapters override earlier), with a "## Uncertainty" block listing what
+   could not be confirmed. Treat the dossier body as current; fold the
+   Uncertainty items into open threads or omit them — do NOT assert an uncertain
+   claim as settled fact. A dossier's roster of "current companions" may be
+   stale (it was written from that one entity's facts); reconcile party
    membership across dossiers and the player-character roster, not from any
    single dossier's companion list.
+
+   They arrive in two segments, and the split is chronological, not editorial:
+
+   * RECENT ENTITIES — everyone touched in the most recent chapters. This is
+     the PRESENT. Whatever the document says about where the party is, who is
+     alive, and what is unresolved must be consistent with this segment, and an
+     entity here belongs in the document even if it appears only briefly — a
+     newly introduced character has few facts precisely BECAUSE it is new, not
+     because it is unimportant.
+   * BACKGROUND ENTITIES — established material last seen in earlier chapters,
+     included for continuity. Where background contradicts recent, RECENT WINS:
+     background describes a past moment, not the present.
 2. OPEN THREADS & MYSTERIES — recurring unresolved thread facts in chapter
    order. Cluster related ones and surface them as the document's open
    questions / mysteries section.
@@ -164,13 +177,32 @@ def load_aliases(path: Path | None) -> dict[str, str]:
 
 
 _NFACTS_RE = re.compile(r"^n_facts:\s*(\d+)", re.M)
+_CHAPTERS_RE = re.compile(r"^chapters:\s*(\d+)\s*-\s*(\d+)", re.M)
 
 
-def load_dossiers(paths: list[Path], min_facts: int) -> list[tuple[str, str]]:
-    """Read per-entity dossier .md files (facts_to_state.py output), keeping only
-    those with frontmatter n_facts >= min_facts. Returns [(label, text)] sorted
-    densest-first so the most significant entities lead the synthesis input."""
-    out: list[tuple[int, str, str]] = []
+class Dossier(NamedTuple):
+    """One per-entity dossier, plus the two frontmatter fields that decide its fate.
+
+    ``last_chapter`` is the ``hi`` of ``facts_to_state.py``'s ``chapters: lo-hi``
+    line — the chapter this entity was most recently touched in. 0 when the line
+    is missing or unparseable.
+    """
+
+    stem: str
+    text: str
+    n_facts: int
+    last_chapter: int
+
+
+def read_dossiers(paths: list[Path]) -> tuple[list[Dossier], int]:
+    """Parse per-entity dossier .md files (facts_to_state.py output).
+
+    Returns ``(dossiers, n_missing_chapters)`` — the second value is how many
+    files carried no parseable ``chapters:`` line, so the caller can say so out
+    loud instead of silently treating them as chapter 0.
+    """
+    out: list[Dossier] = []
+    n_missing = 0
     for p in paths:
         try:
             text = p.read_text(encoding="utf-8")
@@ -178,10 +210,62 @@ def load_dossiers(paths: list[Path], min_facts: int) -> list[tuple[str, str]]:
             continue
         m = _NFACTS_RE.search(text)
         n = int(m.group(1)) if m else 0
-        if n >= min_facts:
-            out.append((n, p.stem, text))
-    out.sort(key=lambda x: -x[0])
-    return [(stem, text) for _, stem, text in out]
+        c = _CHAPTERS_RE.search(text)
+        if c is None:
+            n_missing += 1
+        last = int(c.group(2)) if c else 0
+        out.append(Dossier(p.stem, text, n, last))
+    return out, n_missing
+
+
+def split_dossiers(
+    dossiers: list[Dossier], background_min_facts: int, recent_window: int
+) -> tuple[list[Dossier], list[Dossier], int | None]:
+    """Split dossiers into ``(recent, background, cutoff)`` by *when*, not how often.
+
+    The significance floor used to apply to every dossier, which made it delete
+    the present: an entity introduced in the newest chapter necessarily has the
+    fewest facts, so *any* frequency floor preferentially discards exactly the
+    material a "current state" document exists to report (issue #194). Frequency
+    of reference is not sequence of events — and the sequence is already in the
+    frontmatter, parsed and then thrown away.
+
+    So recency scopes the floor instead of competing with it:
+
+    * **recent** — ``last_chapter >= cutoff``, kept regardless of fact count.
+      This is the present; it is not a popularity contest.
+    * **background** — everything else, and only if ``n_facts >=
+      background_min_facts``. The floor keeps doing its real job, filtering
+      one-scene noise out of the deep past.
+
+    ``cutoff = latest - recent_window + 1``, where ``latest`` is the highest
+    chapter any dossier declares. ``recent_window == 0`` returns ``cutoff=None``
+    and treats everything as recent (no floor) — matching
+    ``build_recent_events.py --window 0 = all chapters``, whose docstring frames
+    the same trade: a wide window wants a high threshold, a narrow one wants
+    ~none.
+
+    Both degenerate cases fail toward keeping too much rather than deleting. If
+    no dossier declares a chapter at all, ``latest`` is 0 and everything lands in
+    recent: the pipeline must not delete on a signal it could not read.
+
+    Recent sorts newest-touched first (the present leads); background stays
+    densest-first, as before.
+    """
+    latest = max((d.last_chapter for d in dossiers), default=0)
+    cutoff = latest - recent_window + 1 if recent_window > 0 else None
+
+    recent = [d for d in dossiers if cutoff is None or d.last_chapter >= cutoff]
+    background = [
+        d
+        for d in dossiers
+        if cutoff is not None
+        and d.last_chapter < cutoff
+        and d.n_facts >= background_min_facts
+    ]
+    recent.sort(key=lambda d: (-d.last_chapter, -d.n_facts, d.stem))
+    background.sort(key=lambda d: (-d.n_facts, d.stem))
+    return recent, background, cutoff
 
 
 def expand_globs(patterns: list[str]) -> list[Path]:
@@ -295,9 +379,21 @@ def main() -> None:
                              "verbatim — already compressed + human-reviewable. "
                              "Use instead of --corpus when the raw fact corpus is "
                              "too large for one synthesis call.")
-    parser.add_argument("--dossier-min-facts", type=int, default=0, metavar="N",
-                        help="Only include dossiers whose frontmatter n_facts >= N "
-                             "(significance floor; e.g. 20 -> the recurring entities).")
+    parser.add_argument("--background-min-facts", type=int, default=0, metavar="N",
+                        help="Significance floor for entities OUTSIDE the recency "
+                             "window: include a background dossier only if its "
+                             "frontmatter n_facts >= N (e.g. 10 -> the recurring "
+                             "entities). Entities inside --recent-window are always "
+                             "included regardless of fact count. Renamed from "
+                             "--dossier-min-facts, which applied to every dossier and "
+                             "so deleted newly-introduced entities — the newest "
+                             "chapter always has the fewest facts (issue #194).")
+    parser.add_argument("--recent-window", type=int, default=0, metavar="N",
+                        help="Treat the last N chapters as the current window: every "
+                             "entity touched in them is included whatever its fact "
+                             "count, because recency is what 'current state' means. "
+                             "0 = every chapter counts as recent, so no floor applies "
+                             "(same sense as build_recent_events.py --window 0).")
     parser.add_argument("--threads", metavar="FILE", default=None,
                         help="Pre-rendered threads/mysteries markdown (from "
                              "facts_to_state.py --types thread --render-only). The "
@@ -392,17 +488,53 @@ def main() -> None:
 
     # ── Dossier track: pre-aggregated, current-state-per-entity (no LLM here) ──
     if dossier_paths:
-        dossiers = load_dossiers(dossier_paths, args.dossier_min_facts)
-        if not dossiers:
-            print(f"Error: no dossiers matched n_facts >= {args.dossier_min_facts}.",
+        all_dossiers, n_missing_chapters = read_dossiers(dossier_paths)
+        recent, background, cutoff = split_dossiers(
+            all_dossiers, args.background_min_facts, args.recent_window)
+        if not recent and not background:
+            print(f"Error: no dossiers survived "
+                  f"--recent-window {args.recent_window} / "
+                  f"--background-min-facts {args.background_min_facts}.",
                   file=sys.stderr)
             sys.exit(1)
-        n_dossiers = len(dossiers)
-        print(f"Entity dossiers: {n_dossiers} (n_facts >= {args.dossier_min_facts}), "
-              f"densest first.")
-        blocks.append("# ENTITY DOSSIERS (current state — significant entities)")
-        for stem, text in dossiers:
-            blocks.append(f"<!-- {stem} -->\n\n{text.strip()}")
+        n_dossiers = len(recent) + len(background)
+        latest = max((d.last_chapter for d in all_dossiers), default=0)
+
+        # What got dropped is a scope decision, so say it out loud — the corpus
+        # track below prints its resolved session order for exactly this reason
+        # (see session_index). A filter that silently deletes the newest chapter
+        # is how #194 shipped a Chapter-61 document stamped Chapter 62.
+        dropped = len(all_dossiers) - n_dossiers
+        print(f"Entity dossiers: {len(all_dossiers)} read -> {len(recent)} recent, "
+              f"{len(background)} background "
+              f"(n_facts >= {args.background_min_facts}), {dropped} dropped.")
+        if cutoff is None:
+            window_note = ("Recent window: all chapters (--recent-window 0), "
+                           "so the background floor applies to nothing.")
+        else:
+            window_note = (f"Recent window: last {args.recent_window} chapter(s) "
+                           f"= chapters {cutoff}-{latest} (latest chapter = {latest}).")
+        print(window_note)
+        if n_missing_chapters:
+            print(f"Warning: {n_missing_chapters} dossier(s) carry no parseable "
+                  f"'chapters:' line; treated as chapter 0.", file=sys.stderr)
+        if recent:
+            print("Recent entities (newest first):")
+            for d in recent:
+                print(f"  ch{d.last_chapter:02d}  {d.stem} "
+                      f"({d.n_facts} fact{'' if d.n_facts == 1 else 's'})")
+
+        if recent:
+            span = ("all chapters" if cutoff is None
+                    else f"chapters {cutoff}-{latest}")
+            blocks.append(f"# RECENT ENTITIES ({span} — the current window)")
+            for d in recent:
+                blocks.append(f"<!-- {d.stem} -->\n\n{d.text.strip()}")
+        if background:
+            blocks.append(f"# BACKGROUND ENTITIES (last seen before chapter "
+                          f"{cutoff}; n_facts >= {args.background_min_facts})")
+            for d in background:
+                blocks.append(f"<!-- {d.stem} -->\n\n{d.text.strip()}")
 
     # ── Threads / mysteries track (cross-cutting; does not aggregate per-entity) ──
     if args.threads:

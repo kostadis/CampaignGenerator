@@ -812,7 +812,8 @@ def run_synthesize(
     batch: bool | None = None,
     # world_state
     dossiers: str = "",
-    dossier_min_facts: int | None = None,
+    background_min_facts: int | None = None,
+    recent_window: int | None = None,
     inventory: str = "",
     # party.yaml — anchors the Party section for world_state, and is the
     # preferred (human-authored) source for the party doc's own synthesis.
@@ -846,8 +847,10 @@ def run_synthesize(
     # `or` fold would clobber with cfg.synthesize.batch (005-ui-batch-selection).
     if batch is None:
         batch = cfg.synthesize.batch
-    if dossier_min_facts is None:
-        dossier_min_facts = cfg.tuning.dossier_min_facts
+    if background_min_facts is None:
+        background_min_facts = cfg.tuning.background_min_facts
+    if recent_window is None:
+        recent_window = cfg.tuning.dossier_recent_window
     inventory = inventory or cfg.paths.inventory
     planning_mode = planning_mode or cfg.planning.synth_mode
     depth = depth or cfg.planning.depth
@@ -872,7 +875,9 @@ def run_synthesize(
         if registry_path is None:
             return _sse_error_response(_NO_REGISTRY_MESSAGE)
         cmd = [console_script("synthesise_world_state"),
-               "--dossiers", dossiers, "--dossier-min-facts", str(dossier_min_facts),
+               "--dossiers", dossiers,
+               "--background-min-facts", str(background_min_facts),
+               "--recent-window", str(recent_window),
                "--output", out]
         _cmd_opt(cmd, "--registry", str(registry_path))
         if inventory:
