@@ -140,6 +140,33 @@ class TestConfigReachesTheCommand:
         assert "out/pc" in cmd and "out/all.json" in cmd
         assert "7" in cmd and "9" in cmd
 
+    def test_extract_forwards_the_merge_settings(self, client, captured):
+        """Issue #197: ensemble_batch forwarded these to ensemble_merge all
+        along, but this route emitted none of them, so the embed merge was
+        unreachable from the UI and every web run silently got the weaker
+        subject merge."""
+        self._put(client, {"merge": {
+            "embed_endpoint": "http://spark:8000/v1",
+            "embed_model": "nomic-x", "embed_threshold": 0.9,
+            "similarity": 0.8, "method": "embed",
+        }})
+        client.get("/api/ensemble/run/extract", params={"chapters": ["ch01.md"]})
+        cmd = captured[-1]
+        assert cmd[cmd.index("--embed-endpoint") + 1] == "http://spark:8000/v1"
+        assert cmd[cmd.index("--embed-model") + 1] == "nomic-x"
+        assert cmd[cmd.index("--embed-threshold") + 1] == "0.9"
+        assert cmd[cmd.index("--similarity") + 1] == "0.8"
+        assert cmd[cmd.index("--method") + 1] == "embed"
+
+    def test_extract_emits_no_endpoint_flag_when_unconfigured(self, client, captured):
+        """An unconfigured campaign must produce the pre-#197 command exactly —
+        no empty --embed-endpoint, no --method pinning the derived default."""
+        client.get("/api/ensemble/run/extract", params={"chapters": ["ch01.md"]})
+        cmd = captured[-1]
+        assert "--embed-endpoint" not in cmd
+        assert "--embed-model" not in cmd
+        assert "--method" not in cmd
+
     def test_extract_uses_configured_backend_and_endpoints(self, client, captured):
         self._put(client, {
             "extract": {"backend": "dgx", "model": "qwen3-next",

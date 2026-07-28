@@ -319,13 +319,32 @@ def main() -> None:
                            os.environ.get("EMBED_MODEL", DEFAULT_EMBED_MODEL))
     embed_threshold = float(_resolve(args.embed_threshold, "embed_threshold", 0.93))
     similarity = float(_resolve(args.similarity, "similarity", 0.85))
-    method = _resolve(args.method, "method", None) or (
-        "embed" if embed_endpoint else "subject")
+    chosen_method = _resolve(args.method, "method", None)
+    method = chosen_method or ("embed" if embed_endpoint else "subject")
     if method == "embed" and not embed_endpoint:
         print("Error: merge method 'embed' needs an embed endpoint "
               "(--embed-endpoint, config embed_endpoint, or $EMBED_ENDPOINT).",
               file=sys.stderr)
         sys.exit(1)
+    # A degradation must not look like a decision. Falling back to `subject`
+    # because no embed endpoint resolved is materially weaker — `subject`
+    # partitions on (type, subject), so facts filed under different subjects are
+    # never compared, and a whole class of cross-subject duplicate and
+    # contradiction is invisible by construction (issue #197, and the mechanism
+    # behind #195). Warn only when the fallback is IMPLICIT: an explicit
+    # `--method subject` (or a config key) is a considered choice, and nagging
+    # considered choices is how warnings get tuned out.
+    implicit_fallback = method == "subject" and chosen_method is None
+    if implicit_fallback:
+        print(
+            "Warning: merging with 'subject' because no embed endpoint was "
+            "resolved. The 'embed' merge is stronger — it clusters on fact-text "
+            "similarity across subjects, which 'subject' cannot do at all. "
+            "Enable it with --embed-endpoint URL, an embed_endpoint key in "
+            "--config, or $EMBED_ENDPOINT. Pass --method subject to choose this "
+            "deliberately and silence this warning.",
+            file=sys.stderr,
+        )
 
     manifest = load_manifest(workdir)
     samples = int(manifest.get("samples", 1))
@@ -337,10 +356,18 @@ def main() -> None:
     print(f"Passes:   {len(manifest.get('passes', []))} "
           f"({len(pass_outputs)} sample-run output(s))")
     if method == "embed":
-        print(f"Merge:    embedding cosine / nomic ({embed_endpoint}, "
+        # Don't name a model in the label — this said "nomic" for months after
+        # the embed sidecar became Qwen (2026-06-30), and the threshold below is
+        # MODEL-SPECIFIC: 0.93 was measured on nomic-embed-text-v1.5 (duplicates
+        # ~0.97, distinct ~0.78). A different embedding model has a different
+        # similarity distribution and needs its own threshold. Print what is
+        # actually being used and let it speak for itself.
+        print(f"Merge:    embedding cosine ({embed_endpoint}, "
               f"model {embed_model}, threshold {embed_threshold})")
     else:
-        print(f"Merge:    subject-keyed SequenceMatcher (similarity {similarity})")
+        origin = " [fallback — no embed endpoint]" if implicit_fallback else ""
+        print(f"Merge:    subject-keyed SequenceMatcher "
+              f"(similarity {similarity}){origin}")
     print("=" * 70)
 
     if method == "embed":

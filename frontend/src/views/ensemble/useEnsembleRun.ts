@@ -143,6 +143,21 @@ export interface EnsembleTuning {
   recent_events_window: number
 }
 
+/** How ensemble_merge collapses the five lenses into merged.json (issue #197).
+ *  Mirrors server/ensemble_config_shared.py's EnsembleMerge. `method: null`
+ *  derives — "embed" when an endpoint is set, else "subject" — matching
+ *  ensemble_merge's own default; an explicit value is a deliberate choice and
+ *  suppresses its fallback warning. The two methods are not tunings of one
+ *  algorithm: `subject` keys on (type, subject) and so never compares facts
+ *  across subjects at all. */
+export interface EnsembleMerge {
+  method: 'subject' | 'embed' | null
+  embed_endpoint: string
+  embed_model: string
+  embed_threshold: number
+  similarity: number
+}
+
 export interface EnsemblePlanning {
   synth_mode: 'config' | 'flat'
   npc: string[]
@@ -158,6 +173,7 @@ export interface EnsembleConfig {
   synthesize: BackendProfile
   paths: EnsemblePaths
   tuning: EnsembleTuning
+  merge: EnsembleMerge
   planning: EnsemblePlanning
 }
 

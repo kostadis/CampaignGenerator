@@ -151,6 +151,43 @@ class EnsembleTuning(BaseModel):
     recent_events_window: int = 0
 
 
+class EnsembleMerge(BaseModel):
+    """How ``ensemble_merge`` collapses the five lenses' facts into merged.json.
+
+    Field names mirror the flat mapping ``ensemble_merge --config`` already
+    accepts (it tolerates a ``merge:`` wrapper key), so the same names hold from
+    this file through the CLI flag to the merge-config YAML. Nothing here existed
+    before issue #197: ``ensemble_batch`` forwarded all four flags correctly, but
+    ``/run/extract`` emitted none of them and the schema had no field, so a
+    UI-driven extraction could not select the embed merge at all.
+
+    The two methods are not interchangeable tunings of one algorithm.
+    ``subject`` groups on ``(type, normalized_subject)``, so facts filed under
+    different subjects are **never compared** — a class of cross-subject
+    duplicate and contradiction is invisible to it by construction. ``embed``
+    partitions on ``type`` alone and clusters on embedding cosine, which is why
+    it also records which subjects contributed to each cluster.
+
+    ``embed_endpoint`` empty means "no embed server", which resolves ``method``
+    to ``subject``. That is a legitimate state — the DGX is not always up — and
+    the run says so out loud rather than passing it off as a choice.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    # None = derive ("embed" when an endpoint is set, else "subject"), matching
+    # ensemble_merge's own default. An explicit value is a deliberate choice and
+    # suppresses the fallback warning.
+    method: Literal["subject", "embed"] | None = None
+    embed_endpoint: str = ""
+    embed_model: str = ""
+    # 0.93 sits in the empty gap between true duplicates (~0.97-0.98) and
+    # distinct-but-related facts (~0.75-0.78) — measured, not guessed. Declared
+    # so it is settable, deliberately not surfaced in the UI.
+    embed_threshold: float = 0.93
+    similarity: float = 0.85
+
+
 class EnsemblePlanning(BaseModel):
     """Ensemble-local overrides for planning synthesis.
 
@@ -191,6 +228,7 @@ class EnsembleConfig(BaseModel):
     synthesize: EnsembleBackend = Field(default_factory=EnsembleBackend)
     paths: EnsemblePaths = Field(default_factory=EnsemblePaths)
     tuning: EnsembleTuning = Field(default_factory=EnsembleTuning)
+    merge: EnsembleMerge = Field(default_factory=EnsembleMerge)
     planning: EnsemblePlanning = Field(default_factory=EnsemblePlanning)
 
 
