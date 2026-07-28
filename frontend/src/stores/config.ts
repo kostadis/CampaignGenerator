@@ -62,6 +62,13 @@ export const useConfigStore = defineStore('config', () => {
   // legitimate per-service override now, just no longer the global value.
   const backend = ref<string>('anthropic')
   const backends = ref<string[]>([])
+  // The app-wide batch flag (005-ui-batch-selection). Same tier and write
+  // path as `backend` — PUT /api/config/runtime is the ONLY app-wide write
+  // door (feature 003) — so it is hydrated and refreshed identically. Every
+  // SelectionPanel re-resolves on a change here (see its `watch`), which is
+  // how flipping this in the sidebar shows up as "inherited" everywhere else
+  // without a page reload.
+  const batch = ref<boolean>(false)
   const apiKeyPresent = ref(false)
   const cwd = ref('')
   const loaded = ref(false)
@@ -88,6 +95,7 @@ export const useConfigStore = defineStore('config', () => {
       backends.value = modelsData.backends || ['anthropic', 'dgx', 'openrouter', 'claude-code']
       backend.value = cfg.resolved?.runtime?.default_backend || modelsData.default_backend || 'anthropic'
       model.value = cfg.resolved?.runtime?.default_model || modelsData.default
+      batch.value = cfg.resolved?.runtime?.default_batch === true
       apiKeyPresent.value = status.api_key_present
       cwd.value = status.cwd
       editorConfig.value = editorCfg
@@ -105,6 +113,9 @@ export const useConfigStore = defineStore('config', () => {
     migrationWarnings.value = cfg.migration_warnings ?? []
     if (resolved.value.runtime?.default_backend) backend.value = resolved.value.runtime.default_backend
     if (resolved.value.runtime?.default_model) model.value = resolved.value.runtime.default_model
+    if (resolved.value.runtime?.default_batch !== undefined) {
+      batch.value = resolved.value.runtime.default_batch === true
+    }
   }
 
   // Refetch the resolved editor config — call after any write that touches
@@ -197,6 +208,7 @@ export const useConfigStore = defineStore('config', () => {
     models,
     backend,
     backends,
+    batch,
     defaultModel,
     model,
     apiKeyPresent,

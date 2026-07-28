@@ -76,8 +76,16 @@ class EnsembleBackend(ModelSelection):
     def is_empty(self) -> bool:
         """`backend` is non-optional here, so the base class's "backend is
         None" test never fires. For this schema "nothing chosen" means the
-        default backend, no model and no endpoints."""
-        return self.backend == "anthropic" and not self.model and not self.endpoints
+        default backend, no model, no endpoints, and no `batch` (feature
+        005-ui-batch-selection) — mirroring the fix `ModelSelection.is_empty`
+        needed for the same reason (a batch-only override must not be
+        classified "empty" and silently dropped). Nothing calls
+        `EnsembleBackend.is_empty()` today, but leaving it batch-blind would
+        be a latent trap for the first caller that does."""
+        return (
+            self.backend == "anthropic" and not self.model and not self.endpoints
+            and self.batch is None
+        )
 
 
 class EnsemblePaths(BaseModel):

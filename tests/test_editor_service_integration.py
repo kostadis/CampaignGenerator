@@ -138,7 +138,6 @@ class TestPutPersistsViaService:
                     "dgx": {"endpoint": "http://localhost:8000", "model": "llama-3-70b"},
                 },
                 "scrub": {"enabled": True, "tokens": 8000},
-                "narrate": {"batch": True},
             },
         )
         assert resp.status_code == 200
@@ -149,7 +148,23 @@ class TestPutPersistsViaService:
         assert editor_cfg["backends"]["dgx"]["model"] == "llama-3-70b"
         assert editor_cfg["scrub"]["enabled"] is True
         assert editor_cfg["scrub"]["tokens"] == 8000
-        assert editor_cfg["narrate"]["batch"] is True
+
+    def test_put_editor_config_narrate_batch_is_retired(self, fresh_campaign):
+        """005-ui-batch-selection T029: `narrate.batch` was the bespoke
+        checkbox's own store, superseded by `backends.<name>.batch`
+        (test_ui_batch_service_selection.py's editor coverage). A stray
+        `narrate.batch` key — e.g. from a pre-T029 session_doc.yaml, or a
+        stale client still sending the old shape — is stripped before
+        `extra="forbid"` sees it (NarrateKnobs._drop_retired_fields),
+        mirroring EditorPaths' RETIRED_PATH_FIELDS precedent: the PUT still
+        succeeds, but the field is simply absent afterward rather than
+        persisted."""
+        client = TestClient(_make_app(fresh_campaign))
+        resp = client.put("/api/editor/config", json={"narrate": {"batch": True}})
+        assert resp.status_code == 200, resp.text
+
+        editor_cfg = client.get("/api/editor/config").json()
+        assert "batch" not in editor_cfg["narrate"]
 
     def test_put_editor_config_rejects_extraneous_top_level_keys(self, fresh_campaign):
         # The flat compat shim (_flat_body_to_grouped / _IGNORED_FLAT_KEYS)

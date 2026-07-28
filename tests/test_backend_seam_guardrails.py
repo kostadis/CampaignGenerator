@@ -251,3 +251,39 @@ def test_no_out_of_seam_messages_batches_reference():
         if "messages.batches" in text:
             offenders.append(str(rp.relative_to(REPO_ROOT)))
     assert not offenders, f"messages.batches referenced outside campaignlib/api/: {offenders}"
+
+
+# ── Check 5: --batch is only ever built by selection_cli_args (spec 005) ────
+#
+# 005-ui-batch-selection's resolution seam
+# (server/platform_config_service.py::resolve_selection +
+# selection_cli_args) is the one place a router may learn whether a run
+# should carry --batch, and selection_cli_args is the one place that flag is
+# ever built (mirrors Check 4's messages.batches guard for the equivalent
+# 004 seam, one layer up the stack).
+#
+# The Session Doc Editor's bespoke batch checkbox (KnobDrawer.vue's
+# `?batch=1` -> scene_editor.py's own `cmd.append("--batch")` in
+# _build_enhance_cmd/_build_reextract_cmd) predated the unified selection
+# seam and was this guard's one narrowly-scoped exception until
+# 005-ui-batch-selection's T029 (FR-011) retired it: scene_editor.py now
+# routes through selection_cli_args like every other router (via
+# _selection_args), so no exception remains.
+
+
+def test_batch_flag_only_built_by_selection_cli_args():
+    """No module under server/routers/ may append the literal ``"--batch"``
+    or otherwise build the flag itself — every occurrence must originate in
+    ``platform_config_service.selection_cli_args``, so a run's command line
+    can never disagree with what the resolved selection says (Constitution
+    V/VI)."""
+    offenders = []
+    routers_dir = (REPO_ROOT / "server" / "routers").resolve()
+    for py in sorted(routers_dir.glob("*.py")):
+        text = py.read_text(encoding="utf-8", errors="ignore")
+        if "--batch" in text:
+            offenders.append(str(py.relative_to(REPO_ROOT)))
+    assert not offenders, (
+        f"server/routers/*.py builds '--batch' directly: {offenders} — "
+        "route it through selection_cli_args instead."
+    )

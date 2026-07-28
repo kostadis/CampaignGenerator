@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
@@ -32,8 +33,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server.platform_config_service import (
     ConfigError,
+    IncompatibleSelection,
     PlatformConfigService,
+    ResolvedSelection,
     TRACKED_CONFIG_NAME,
+    resolve_selection,
+    selection_cli_args,
 )
 from server.platform_config_shared import (
     LOCAL_CONFIG_NAME,
@@ -678,3 +683,322 @@ class TestLoadSavePlatformConfig:
         monkeypatch.setattr(os, "replace", original_replace)
 
         assert path.read_bytes() == before
+
+
+# ── Batch resolution (feature 005-ui-batch-selection, T009) ────────────────
+#
+# Direct, unit-level exercise of resolve_selection()'s batch tier — request ->
+# service -> platform precedence (mirroring backend's), resolved
+# independently of the model/backend pairing rule (research D2), plus the
+# refusal it populates when batch cannot be honoured (D2/D3). Uses a bare
+# fake Request (just enough for require_platform's
+# `request.app.state.platform` lookup) rather than the FastAPI TestClient,
+# since the thing under test is the resolver function itself, not any route.
+
+
+class _FakeAppState:
+    def __init__(self, platform):
+        self.platform = platform
+
+
+class _FakeApp:
+    def __init__(self, platform):
+        self.state = _FakeAppState(platform)
+
+
+class _FakeRequest:
+    def __init__(self, platform):
+        self.app = _FakeApp(platform)
+
+
+def _svc(*, backend=None, model=None, batch=None):
+    """A minimal stand-in for the duck-typed `service` tier, extended with
+    `batch` (feature 005) alongside the pre-existing `backend`/`model`."""
+    return SimpleNamespace(backend=backend, model=model, batch=batch)
+
+
+# Backend-compatible models, used to isolate a batch refusal from the
+# pre-existing model/backend refusal when parametrizing over backends.
+_COMPATIBLE_MODEL = {
+    "dgx": "Qwen-X",
+    "openrouter": "anthropic/claude-sonnet-4",
+    "claude-code": "claude-sonnet-4-6",
+}
+
+
+@pytest.fixture
+def no_wiring(monkeypatch):
+    """dgx_endpoint resolution is irrelevant to these tests; keep it
+    deterministic rather than depending on an ambient config/wiring.yaml."""
+    monkeypatch.setattr(
+        "server.platform_config_service.wiring_get", lambda key, default=None: default
+    )
+
+
+class TestBatchResolution:
+    def _request(self, platform):
+        return _FakeRequest(platform)
+
+    def test_platform_default_batch_false_by_default(self, fresh_campaign, no_wiring):
+        platform = PlatformConfigService(fresh_campaign)
+        resolved = resolve_selection(self._request(platform))
+        assert resolved.batch is False
+        assert resolved.batch_origin == "platform"
+
+    def test_platform_default_batch_true_flows_through(self, fresh_campaign, no_wiring):
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_batch": True})
+        resolved = resolve_selection(self._request(platform))
+        assert resolved.batch is True
+        assert resolved.batch_origin == "platform"
+
+    def test_service_batch_true_overrides_platform_false(self, fresh_campaign, no_wiring):
+        platform = PlatformConfigService(fresh_campaign)
+        resolved = resolve_selection(self._request(platform), service=_svc(batch=True))
+        assert resolved.batch is True
+        assert resolved.batch_origin == "service"
+
+    def test_service_batch_false_is_sticky_against_platform_true(self, fresh_campaign, no_wiring):
+        """`False` at the service tier is a genuine choice, not "unset" — it
+        must NOT follow an app-wide change (data-model.md's tier table)."""
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_batch": True})
+        resolved = resolve_selection(self._request(platform), service=_svc(batch=False))
+        assert resolved.batch is False
+        assert resolved.batch_origin == "service"
+
+    def test_service_batch_none_defers_to_platform(self, fresh_campaign, no_wiring):
+        """`None` (unset), unlike `False`, defers — the load-bearing
+        distinction data-model.md calls out explicitly."""
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_batch": True})
+        resolved = resolve_selection(self._request(platform), service=_svc(batch=None))
+        assert resolved.batch is True
+        assert resolved.batch_origin == "platform"
+
+    def test_request_batch_wins_over_service_and_platform(self, fresh_campaign, no_wiring):
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_batch": True})
+        resolved = resolve_selection(
+            self._request(platform), service=_svc(batch=False), request_batch=True,
+        )
+        assert resolved.batch is True
+        assert resolved.batch_origin == "request"
+
+    def test_full_precedence_chain(self, fresh_campaign, no_wiring):
+        """All three tiers in one scenario: request > service > platform."""
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_batch": True})
+
+        # request wins over both
+        r1 = resolve_selection(
+            self._request(platform), service=_svc(batch=False), request_batch=True,
+        )
+        assert (r1.batch, r1.batch_origin) == (True, "request")
+
+        # service wins over platform when no request value
+        r2 = resolve_selection(self._request(platform), service=_svc(batch=False))
+        assert (r2.batch, r2.batch_origin) == (False, "service")
+
+        # platform wins when neither request nor service supplies one
+        r3 = resolve_selection(self._request(platform), service=_svc(batch=None))
+        assert (r3.batch, r3.batch_origin) == (True, "platform")
+
+    def test_batch_does_not_extend_the_model_backend_pairing_rule(self, fresh_campaign, no_wiring):
+        """D2: a service overriding only `batch` must not thereby be treated
+        as though it also chose this tier's model/backend."""
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_model": "claude-opus-5", "default_backend": "anthropic"})
+        resolved = resolve_selection(self._request(platform), service=_svc(batch=True))
+        assert resolved.model_origin == "platform"
+        assert resolved.backend_origin == "platform"
+        assert resolved.batch is True
+        assert resolved.batch_origin == "service"
+
+    def test_batch_true_with_anthropic_is_compatible(self, fresh_campaign, no_wiring):
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_backend": "anthropic", "default_batch": True})
+        resolved = resolve_selection(self._request(platform))
+        assert resolved.batch is True
+        assert resolved.compatible is True
+        assert resolved.refusal is None
+
+    @pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+    def test_batch_true_with_non_anthropic_backend_refuses(self, fresh_campaign, no_wiring, backend):
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({
+            "default_backend": backend,
+            "default_model": _COMPATIBLE_MODEL[backend],
+            "default_batch": True,
+        })
+        resolved = resolve_selection(self._request(platform), raise_on_incompatible=False)
+        assert resolved.compatible is False
+        assert resolved.refusal is not None
+        assert "batch" in resolved.refusal.lower()
+        assert backend in resolved.refusal
+
+    @pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+    def test_batch_refusal_raises_when_raise_on_incompatible(self, fresh_campaign, no_wiring, backend):
+        from fastapi import HTTPException
+
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({
+            "default_backend": backend,
+            "default_model": _COMPATIBLE_MODEL[backend],
+            "default_batch": True,
+        })
+        with pytest.raises(HTTPException) as exc_info:
+            resolve_selection(self._request(platform))
+        assert exc_info.value.status_code == 409
+
+    def test_batch_refusal_identical_for_service_vs_platform_origin(self, fresh_campaign, no_wiring):
+        """D3: an inherited app-wide batch refuses exactly as a per-service
+        one does — same message, regardless of which tier chose batch."""
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_backend": "dgx", "default_model": "Qwen-X"})
+
+        platform.update_runtime({"default_batch": True})
+        from_platform = resolve_selection(self._request(platform), raise_on_incompatible=False)
+
+        platform.update_runtime({"default_batch": False})
+        from_service = resolve_selection(
+            self._request(platform), service=_svc(batch=True), raise_on_incompatible=False,
+        )
+
+        assert from_platform.compatible is False
+        assert from_service.compatible is False
+        assert from_platform.refusal == from_service.refusal
+        assert from_platform.batch_origin == "platform"
+        assert from_service.batch_origin == "service"
+
+    def test_batch_false_never_refuses_regardless_of_backend(self, fresh_campaign, no_wiring):
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({"default_backend": "dgx", "default_model": "Qwen-X"})
+        resolved = resolve_selection(self._request(platform))
+        assert resolved.batch is False
+        assert resolved.compatible is True
+
+
+class TestSelectionCliArgsBatchFlag:
+    def _resolved(self, **overrides):
+        base = dict(
+            model="claude-sonnet-4-6", backend="anthropic",
+            model_origin="platform", backend_origin="platform",
+            batch=False, batch_origin="platform",
+        )
+        base.update(overrides)
+        return ResolvedSelection(**base)
+
+    def test_batch_true_emits_the_flag(self):
+        args = selection_cli_args(self._resolved(batch=True))
+        assert "--batch" in args
+
+    def test_batch_false_omits_the_flag(self):
+        args = selection_cli_args(self._resolved(batch=False))
+        assert "--batch" not in args
+
+    def test_batch_flag_comes_after_model(self):
+        args = selection_cli_args(self._resolved(batch=True))
+        assert args.index("--batch") > args.index("--model")
+
+    # ── T028 backstop: selection_cli_args is unconditional on compatibility
+    # ── — it emits --batch purely off `resolved.batch`, for EVERY compatible
+    # ── batch-true selection, regardless of model/origin. The complementary
+    # ── half of the invariant (no *router* ever reaches this function with a
+    # ── batch-true-but-incompatible selection) is a property of
+    # ── resolve_selection's raise-before-return, exercised below and by the
+    # ── per-service "refuses and spawns nothing" tests in
+    # ── tests/test_ui_batch_service_selection.py and
+    # ── tests/test_ensemble_gates.py.
+
+    @pytest.mark.parametrize("model,backend,origin", [
+        ("claude-sonnet-4-6", "anthropic", "platform"),
+        ("claude-opus-5", "anthropic", "service"),
+        ("claude-haiku-4-5", "anthropic", "request"),
+        ("", "anthropic", "platform"),  # no model chosen — batch still stands alone
+    ])
+    def test_batch_true_emits_the_flag_for_every_compatible_selection(self, model, backend, origin):
+        resolved = self._resolved(
+            model=model, backend=backend, model_origin=origin, batch=True,
+        )
+        assert resolved.compatible is True
+        assert "--batch" in selection_cli_args(resolved)
+
+    def test_batch_flag_is_not_gated_on_compatible_by_selection_cli_args_itself(self):
+        """selection_cli_args has no compatibility check of its own — it is a
+        pure renderer of `resolved.batch`. That is deliberate (one seam, one
+        job — Constitution V): the refusal gate lives entirely in
+        resolve_selection, which must never hand a router an incompatible,
+        batch-true ResolvedSelection to render in the first place. This test
+        documents why the *router* side of the invariant (covered elsewhere)
+        is the one that actually matters."""
+        incompatible_but_batch_true = self._resolved(
+            backend="dgx", model="Qwen-X", batch=True, refusal="batch is a Claude API option; …",
+        )
+        assert incompatible_but_batch_true.compatible is False
+        # selection_cli_args itself would still render --batch here — proving
+        # the backstop is resolve_selection's raise, not a second check here.
+        assert "--batch" in selection_cli_args(incompatible_but_batch_true)
+
+
+class TestNoRouteBuildsFromIncompatibleBatchSelection:
+    """T028's other half: resolve_selection's raise is unconditional — no
+    caller can reach selection_cli_args (and therefore no router can build a
+    command) with a batch-true-but-incompatible selection, for EITHER
+    refusal cause (non-anthropic backend, or a service whose static batch
+    capability is "incompatible" — the latter has no UI-reachable service
+    today per BATCH_CAPABILITY's own comment, but the branch is real code and
+    gets covered here rather than only by services that happen to occupy
+    "full"/"degraded")."""
+
+    def _request(self, platform=None):
+        return _FakeRequest(platform)
+
+    @pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+    def test_non_anthropic_backend_raises_before_any_args_could_be_built(self, backend):
+        # A backend-compatible model, so the refusal isolates the batch cause
+        # from the pre-existing model/backend refusal (mirrors
+        # TestBatchResolution's _COMPATIBLE_MODEL above).
+        with pytest.raises(IncompatibleSelection) as exc_info:
+            resolve_selection(
+                self._request(),
+                service=_svc(backend=backend, model=_COMPATIBLE_MODEL[backend], batch=True),
+            )
+        assert "batch" in exc_info.value.resolved.refusal
+
+    def test_service_incompatible_batch_capability_raises_before_any_args_could_be_built(self, monkeypatch):
+        monkeypatch.setattr(
+            "server.platform_config_service.BATCH_CAPABILITY",
+            {"no_batch_service": "incompatible"},
+        )
+        with pytest.raises(IncompatibleSelection) as exc_info:
+            resolve_selection(
+                self._request(),
+                service=_svc(batch=True),
+                service_name="no_batch_service",
+            )
+        assert "batch" in exc_info.value.resolved.refusal
+        assert "no_batch_service" in exc_info.value.resolved.refusal
+
+    def test_preview_path_never_builds_args_either(self):
+        """The one legitimate way to get a batch-true-but-incompatible
+        ResolvedSelection back from resolve_selection at all is the preview
+        path (`raise_on_incompatible=False`) — and preview routes only ever
+        call `.as_dict()` on the result, never `selection_cli_args`. This
+        documents that contract at the unit level rather than only at the
+        per-router integration level."""
+        resolved = resolve_selection(
+            self._request(),
+            service=_svc(backend="dgx", model="Qwen-X", batch=True),
+            raise_on_incompatible=False,
+        )
+        assert resolved.compatible is False
+        # A preview route calls .as_dict() — never selection_cli_args. This
+        # assertion is the contract, not an exercise of it: grep guardrails
+        # (tests/test_backend_seam_guardrails.py) and the per-service
+        # "refuses and spawns nothing" tests are what actually enforce that
+        # no router does the wrong thing here.
+        assert set(resolved.as_dict()) == {
+            "model", "backend", "model_origin", "backend_origin",
+            "batch", "batch_origin", "compatible", "refusal",
+        }

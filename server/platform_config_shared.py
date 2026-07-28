@@ -148,13 +148,27 @@ class PlatformRuntime(BaseModel):
     was ``server/config.py``'s own ``DEFAULT_MODEL``, also now consolidated).
     Behaviorally identical: ``campaignlib.constants.DEFAULT_MODEL`` is
     computed from the same env lookup at import time, and ``CAMPAIGN_MODEL``
-    does not change mid-process."""
+    does not change mid-process.
+
+    ``default_batch`` arrived with feature 005-ui-batch-selection — the
+    app-wide Message Batches toggle, alongside the model/backend pickers in
+    the sidebar. Resolved with the same request → service → platform
+    precedence as ``default_backend`` (``server.platform_config_service.
+    resolve_selection``), but independently: the model/backend *pairing*
+    rule does not extend to batch (research D2 of that spec) — a service
+    that overrides only ``batch`` must not thereby inherit this tier's model
+    or backend. Defaults to ``False`` (FR-004: an operator who never touches
+    the toggle sees no change in behavior). Uses ``OptBool`` rather than a
+    bare ``bool`` so a partial write that leaves this field an explicit
+    ``null`` coerces to ``False`` instead of failing validation — the same
+    protection ``OptStr`` already gives the string fields above."""
 
     model_config = ConfigDict(extra="forbid")
 
     default_model: str = Field(default_factory=lambda: DEFAULT_MODEL)
     default_backend: Backend = "anthropic"
     session_dir: OptStr = None
+    default_batch: OptBool = False
 
 
 class PlatformServer(BaseModel):

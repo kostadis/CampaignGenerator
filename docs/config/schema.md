@@ -178,10 +178,10 @@ additionally exposed as its own sub-collection at `/api/editor/profiles`.
 | Field | Type | Role |
 |---|---|---|
 | `paths` | `EditorPaths` | path selectors — see split below |
-| `narrate` | `NarrateKnobs` | `tokens` (int=16000), `prose_mode`, `reflections` (bool=False), `genre`, `batch` (bool=False), `context[]` |
+| `narrate` | `NarrateKnobs` | `tokens` (int=16000), `prose_mode`, `reflections` (bool=False), `genre`, `context[]` — `batch` retired (005-ui-batch-selection T029; a stray key is stripped on load, see `RETIRED_NARRATE_FIELDS`), superseded by `backends.<name>.batch` below |
 | `scrub` | `ScrubKnobs` | `enabled` (bool=False), `tokens` (int=16000) |
 | `roster` | `Roster` | `characters`, `gm_player` |
-| `backends` | `Backends` | `active` (`anthropic\|dgx\|openrouter\|claude-code`) + per-backend `BackendProfile` memory (`anthropic`, `claude-code` — aliased from the hyphenated YAML key, `dgx`, `openrouter`) |
+| `backends` | `Backends` | `active` (`anthropic\|dgx\|openrouter\|claude-code`) + per-backend `BackendProfile` memory (`anthropic`, `claude-code` — aliased from the hyphenated YAML key, `dgx`, `openrouter`), each carrying `model`, `endpoint` (dgx only), and `batch` (bool \| None — 005-ui-batch-selection) |
 | `session_name` | str \| None | |
 | `profiles` | `list[ProfileEntry]` | named narrate/backend knob presets |
 | `active_profile` | str \| None | mirrored server-side by `POST /api/editor/profiles/{name}/activate` |

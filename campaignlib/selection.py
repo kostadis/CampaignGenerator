@@ -52,20 +52,42 @@ class ModelSelection(BaseModel):
     switch the platform backend and come back to fix the override later, while
     resolution refuses the run and says why. Rejecting the write instead would
     make the refusal message unreachable.
+
+    ``batch`` (feature 005-ui-batch-selection) is a *third*, independently
+    optional field, resolved by ``server.platform_config_service.
+    resolve_selection`` with the same request -> service -> platform
+    precedence as ``model``/``backend`` but NOT subject to their pairing rule
+    (a service that sets only ``batch`` does not thereby inherit that tier's
+    model or backend — research D2 of that spec). ``None`` means "defer to
+    the tier above"; ``False`` is a genuine, sticky "explicitly off for this
+    service" that does not follow an app-wide change — the two must stay
+    distinguishable, so this is ``bool | None`` rather than a bare ``bool``
+    with a ``False`` default (see ``specs/005-ui-batch-selection/data-model.md``'s
+    "Batch selection, by tier" table). An unsatisfiable ``batch: true`` is
+    storable-not-rejected for the same reason an incompatible model/backend
+    pair is, above.
     """
 
     model_config = ConfigDict(extra="forbid")
 
     backend: Backend | None = None
     model: _OptStr = None
+    batch: bool | None = None
 
     def is_empty(self) -> bool:
         """True when this selection defers entirely to the tier above.
 
         An empty selection MUST be indistinguishable from an absent one, so
-        consumers test this rather than ``is None``.
+        consumers test this rather than ``is None``. ``batch`` participates
+        here too (005): a selection carrying only ``batch=True`` (or
+        ``False``) is NOT empty — it has something to say — even though
+        ``backend``/``model`` are unset. Without this, ``_selection_for``-style
+        callers across grounding/party/planning/editor would treat a
+        batch-only override as "no override at all" and the stored intent
+        would never reach ``resolve_selection``, nor survive a save that
+        gates on emptiness (``save_party_config``/``save_planning_config``).
         """
-        return not self.backend and not self.model
+        return not self.backend and not self.model and self.batch is None
 
 
 def compatible(model: str | None, backend: str | None) -> bool:

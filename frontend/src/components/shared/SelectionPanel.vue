@@ -39,14 +39,34 @@ interface Resolved {
   backend_origin: string
   compatible: boolean
   refusal: string | null
+  batch: boolean
+  batch_origin: string
 }
 
 const resolved = ref<Resolved | null>(null)
 const editing = ref(false)
 const draftModel = ref('')
 const draftBackend = ref('')
+// '' = inherit platform, 'on'/'off' = this service's own explicit choice.
+// A plain boolean can't express "defer" separately from "explicitly off" —
+// see ModelSelection.batch's `bool | null` (data-model.md's tier table).
+const draftBatch = ref<'' | 'on' | 'off'>('')
 const busy = ref(false)
 const error = ref('')
+
+// Batch capability, per service (feature 005-ui-batch-selection). The
+// /selection/resolved payload carries the resolved batch value and the
+// refusal/compatible outcome, but not the static per-service CAPABILITY
+// (full/degraded/incompatible/excluded) that decides whether a degradation
+// notice is warranted — the server deliberately keeps that reasoning out of
+// the wire payload (Constitution VI), so it is mirrored here as a small,
+// reviewable constant instead. Keep this in sync with
+// server/platform_config_service.py's BATCH_CAPABILITY map — see
+// specs/005-ui-batch-selection/data-model.md's "Batch capability map".
+// Only `degraded` matters to this component: `full` needs no notice,
+// `excluded` services (Connection Graph) never mount this panel at all, and
+// no `incompatible` service is reachable from the UI today.
+const DEGRADED_BATCH_SERVICES = new Set(['prep', 'session_doc'])
 
 const resolvedUrl = computed(() => {
   const base = `/api/${props.service}/selection/resolved`
@@ -68,14 +88,16 @@ async function load() {
 async function loadOverride() {
   if (!props.canOverride) return
   try {
-    const sel = await apiFetch<{ model: string | null; backend: string | null }>(
+    const sel = await apiFetch<{ model: string | null; backend: string | null; batch: boolean | null }>(
       `/api/${props.service}/selection`,
     )
     draftModel.value = sel.model || ''
     draftBackend.value = sel.backend || ''
+    draftBatch.value = sel.batch === true ? 'on' : sel.batch === false ? 'off' : ''
   } catch {
     draftModel.value = ''
     draftBackend.value = ''
+    draftBatch.value = ''
   }
 }
 
@@ -83,9 +105,14 @@ async function save() {
   busy.value = true
   error.value = ''
   try {
+    // PUT replaces the whole stored selection (ModelSelection.model_validate
+    // of exactly this body) — omitting `batch` here would silently reset any
+    // existing batch override back to "defer" every time the operator saves
+    // a model/backend edit. All three fields always travel together.
     await apiPut(`/api/${props.service}/selection`, {
       model: draftModel.value.trim() || null,
       backend: draftBackend.value.trim() || null,
+      batch: draftBatch.value === 'on' ? true : draftBatch.value === 'off' ? false : null,
     })
     editing.value = false
     await load()
@@ -103,7 +130,37 @@ async function clearOverride() {
     await apiDelete(`/api/${props.service}/selection`)
     draftModel.value = ''
     draftBackend.value = ''
+    draftBatch.value = ''
     editing.value = false
+    await load()
+  } catch (e: any) {
+    error.value = e?.message || 'Clear failed'
+  } finally {
+    busy.value = false
+  }
+}
+
+/** FR-006a's batch-specific remedy: force batch OFF for this service, while
+ *  preserving any model/backend override untouched. Deliberately NOT the
+ *  same as clearOverride() — that resets to "defer", which would leave the
+ *  run refused when batch is inherited from a platform-wide selection that
+ *  is still on. Setting an explicit `false` here fixes the refusal whether
+ *  batch came from this service or from the platform (batch_origin-
+ *  independent, per data-model.md's D3). */
+async function clearBatchSelection() {
+  if (!props.canOverride) return
+  busy.value = true
+  error.value = ''
+  try {
+    const current = await apiFetch<{ model: string | null; backend: string | null }>(
+      `/api/${props.service}/selection`,
+    )
+    await apiPut(`/api/${props.service}/selection`, {
+      model: current.model || null,
+      backend: current.backend || null,
+      batch: false,
+    })
+    if (editing.value) draftBatch.value = 'off'
     await load()
   } catch (e: any) {
     error.value = e?.message || 'Clear failed'
@@ -129,13 +186,33 @@ function originLabel(origin: string): string {
 }
 
 const hasOverride = computed(() =>
-  resolved.value?.model_origin === 'service' || resolved.value?.backend_origin === 'service',
+  resolved.value?.model_origin === 'service'
+  || resolved.value?.backend_origin === 'service'
+  || resolved.value?.batch_origin === 'service',
+)
+
+// A batch selection that cannot be honoured populates `refusal` naming batch
+// as the cause (server/platform_config_service.py's resolve_selection) —
+// distinguished from a model/backend-pair refusal, which never mentions it,
+// so the panel can show the right remedy without a second refusal field.
+const batchCausedRefusal = computed(() => {
+  const r = resolved.value?.refusal
+  return !!r && r.toLowerCase().includes('batch')
+})
+
+// FR-010: state the trade-off before a run that will actually execute as
+// batch on a `degraded` service — not when the run is refused outright (that
+// case is covered by the refusal block instead).
+const showDegradationNotice = computed(() =>
+  !!resolved.value?.batch
+  && resolved.value?.compatible !== false
+  && DEGRADED_BATCH_SERVICES.has(props.service),
 )
 
 onMounted(load)
 // The sidebar writes the platform tier, so a change there moves every
 // inheriting service's answer — re-resolve rather than showing a stale one.
-watch(() => [config.model, config.backend, props.doc], load)
+watch(() => [config.model, config.backend, config.batch, props.doc], load)
 </script>
 
 <template>
@@ -163,12 +240,37 @@ watch(() => [config.model, config.backend, props.doc], load)
       >Clear override</button>
     </div>
 
+    <!-- 005-ui-batch-selection — same visibility rule as model/backend above:
+         effective state + origin, always shown, never hidden to dodge a
+         refusal (contract "What it must forbid"). -->
+    <div class="row batch-row">
+      <span class="label">Batch</span>
+      <span class="pair">
+        <code>{{ resolved.batch ? 'on' : 'off' }}</code>
+        <span class="origin">{{ originLabel(resolved.batch_origin) }}</span>
+      </span>
+    </div>
+    <div class="batch-copy">
+      Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)
+    </div>
+    <div v-if="showDegradationNotice" class="degraded-notice">
+      This service's steps run one at a time under batch — same discount, slower than a normal run (FR-010).
+    </div>
+
     <!-- T041 — the incompatibility is visible BEFORE the run, with the fix
          attached. The Run button is disabled by the parent via @compatible. -->
     <div v-if="!resolved.compatible" class="refusal">
       <strong>Incompatible selection.</strong>
       {{ resolved.refusal }}
-      <template v-if="resolved.model_origin === 'service'">
+      <template v-if="batchCausedRefusal && canOverride">
+        Clear the batch selection for this service, or change its backend to
+        <code>anthropic</code>.
+      </template>
+      <template v-else-if="batchCausedRefusal">
+        This inherits the platform's batch and backend choice — turn batch
+        off, or switch backends, in the sidebar.
+      </template>
+      <template v-else-if="resolved.model_origin === 'service'">
         This service's override cannot run on the
         <code>{{ resolved.backend }}</code> backend.
       </template>
@@ -177,6 +279,12 @@ watch(() => [config.model, config.backend, props.doc], load)
         <code>{{ resolved.backend }}</code> backend — change one in the sidebar.
       </template>
       <div class="refusal-actions">
+        <button
+          v-if="canOverride && batchCausedRefusal"
+          class="mini"
+          :disabled="busy"
+          @click="clearBatchSelection"
+        >Clear batch selection</button>
         <button
           v-if="canOverride && resolved.model_origin === 'service'"
           class="mini"
@@ -197,6 +305,14 @@ watch(() => [config.model, config.backend, props.doc], load)
         <select v-model="draftBackend">
           <option value="">(inherit platform)</option>
           <option v-for="b in config.backends" :key="b" :value="b">{{ b }}</option>
+        </select>
+      </label>
+      <label>
+        Batch
+        <select v-model="draftBatch">
+          <option value="">(inherit platform)</option>
+          <option value="on">On</option>
+          <option value="off">Off</option>
         </select>
       </label>
       <button class="mini primary" :disabled="busy" @click="save">Save</button>
@@ -235,6 +351,21 @@ watch(() => [config.model, config.backend, props.doc], load)
 }
 .origin { color: var(--text-muted); font-style: italic; }
 .sep { color: var(--text-muted); }
+.batch-row { margin-top: 6px; }
+.batch-copy {
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.degraded-notice {
+  margin-top: 6px;
+  padding: 5px 8px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--peach, #f9b874) 14%, transparent);
+  color: var(--text);
+  line-height: 1.5;
+}
 .refusal {
   margin-top: 6px;
   padding: 6px 8px;

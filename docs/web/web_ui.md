@@ -61,6 +61,36 @@ Users specify **campaign directory** + **session directory** on the Session Conf
 
 **Settings**: Raw YAML editor for ui_config.yaml
 
+## Model, backend and batch selection
+
+Every page that spends tokens shows a selection panel: which **model**, which
+**backend**, and whether the run uses **batch** (Anthropic Message Batches —
+50% of list price, asynchronous, progress instead of live streaming). Each
+value displays where it came from, so you can see what a run will do before
+starting it.
+
+**Resolution.** App-wide (sidebar) applies unless a service overrides it.
+Grounding, Party, Planning and the Session Doc Editor can override; Session
+Prep and Setup inherit only (they show the value read-only and have no
+override control by design). The Ensemble keeps its own per-stage selection
+on the Setup page, with a three-state batch control per stage —
+inherit / on / off.
+
+**Batch is a cost constraint, not a preference.** If batch is selected and the
+run cannot honour it — the resolved backend isn't the Claude API — the
+selection is reported as *incompatible* and the run is blocked, with the
+reason and a one-click remedy ("Clear batch selection"). It never quietly runs
+at full price: that would bill double what you asked for, invisibly. This
+matches the CLI, which refuses the same combination.
+
+**Slower stages.** Session Prep and the narrate stage run their steps in
+order, so under batch they submit one at a time — same discount, longer
+wall-clock. The page says so before the run.
+
+**Not offered on the Connection Graph.** It is the one service that runs
+inside a single web request rather than as a streamed background run, so a
+batch run there could outlive the request. Tracked as issue #192.
+
 ## Session Doc Editor
 
 Two-panel layout for the extract → edit → narrate → assemble workflow:
