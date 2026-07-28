@@ -436,7 +436,20 @@ def main() -> None:
                              "source document uses ### Speaker sections or "
                              "## Name — Scene sections (e.g. chapter files) to "
                              "prevent the LLM losing track of who is speaking "
-                             "across chunk boundaries.")
+                             "across chunk boundaries. Has no effect on chunks "
+                             "produced by --scene-chunks (they already open with "
+                             "their own heading).")
+    parser.add_argument("--scene-chunks", action="store_true",
+                        help="Chunk on the best available structural heading "
+                             "boundary (## Name — Scene, plain ## date, or "
+                             "### Name) instead of by character count, when the "
+                             "document has one. A scene bigger than --chunk-size "
+                             "is still sub-split by the character-count logic. "
+                             "Falls back to plain character-count chunking "
+                             "(with --annotate-pov honoured) for documents with "
+                             "no recognized heading. OPT-IN: default is today's "
+                             "character-count chunking, unchanged, so existing "
+                             "per-chunk facts_NNN.json caches stay valid.")
     parser.add_argument("--extract-dir", metavar="DIR", default=None,
                         help="Where to save per-chunk JSON files "
                              "(default: <output_dir>/fact_extractions/). Existing "
@@ -493,7 +506,8 @@ def main() -> None:
 
     client = client_from_args(args)
     chunks, label = prepare_chunks(text, args.chunk_size, args.split_chapters,
-                                   annotate_pov=args.annotate_pov)
+                                   annotate_pov=args.annotate_pov,
+                                   structural=args.scene_chunks)
     extract_dir.mkdir(parents=True, exist_ok=True)
 
     all_facts: list[dict] = []

@@ -36,6 +36,7 @@ Usage:
 """
 
 import argparse
+import bisect
 import json
 import os
 import re
@@ -44,7 +45,12 @@ from difflib import SequenceMatcher
 from pathlib import Path
 
 import campaignlib
-from campaignlib.textproc import norm_subject as _norm_subject
+from campaignlib.textproc import (
+    chunk_by_scenes,
+    chunk_text_with_offsets,
+    norm_subject as _norm_subject,
+    strip_base64_images,
+)
 
 
 def _fact_key(fact: dict) -> tuple[str, str]:
@@ -316,6 +322,100 @@ def stamp_offsets(merged: list[dict], document: str | None) -> int:
     return located
 
 
+def reference_chunking(manifest: dict) -> tuple[int | None, bool]:
+    """The (chunk_size, structural) pair used to derive ``scene_index``.
+
+    Mirrors ``load_document``'s own precedent: prefer the FIRST pass's
+    config. Every pass reads the same document in practice, but they can be
+    extracted at different chunk sizes (the 5 built-in lenses deliberately
+    are — 6,000 vs 15,000 chars) and, with issue #202's ``--scene-chunks``,
+    can differ on ``structural`` too. Picking one reference pass rather than
+    trying to reconcile five is a scope decision, not a bug: when
+    ``--scene-chunks`` is applied uniformly (the expected use — see
+    ``ensemble_extract --scene-chunks``), every opted-in pass produces
+    IDENTICAL scene boundaries anyway, since structural splitting is
+    header-driven, not size-driven — they only diverge on the sub-split of
+    an oversized scene, which is bounded by each pass's own chunk_size.
+
+    Returns ``(None, False)`` when the manifest lists no passes at all (e.g.
+    ``{}``, matching ``load_document``'s handling of the same input) so the
+    caller degrades to stamping ``scene_index: None`` everywhere rather than
+    raising.
+    """
+    passes = manifest.get("passes") or []
+    if not passes:
+        return None, False
+    p0 = passes[0]
+    return p0.get("chunk_size"), bool(p0.get("structural", False))
+
+
+def scene_boundaries(
+    document: str, chunk_size: int, structural: bool
+) -> tuple[list[int], str]:
+    """Reproduce ``prepare_chunks``' chunk boundaries for a single-document
+    (no ``--split-chapters``) extraction, so a fact's quote can be mapped back
+    to the chunk it came from.
+
+    Applies the identical base64-image-strip + BOM-lstrip ``prepare_chunks``
+    applies before chunking, and the identical structural-vs-character-count
+    decision. Returns ``(sorted chunk start offsets, the stripped text)`` —
+    callers MUST locate a fact's quote against the returned STRIPPED text, not
+    the raw ``document`` passed in (or the raw text used by ``quote_offset``
+    for the separate ``quote_offset`` field above): if the source document
+    ever contains a leading BOM or an embedded base64 image block, the
+    stripped text's coordinates shift relative to the raw document's, and
+    bisecting a raw-document offset against stripped-text boundaries would be
+    silently wrong. Locating independently against the SAME stripped text
+    sidesteps that entirely (see ``stamp_scene_index``).
+    """
+    stripped = strip_base64_images(document).lstrip("﻿")
+    if structural:
+        result = chunk_by_scenes(stripped, chunk_size)
+        if result is not None:
+            scenes, _convention = result
+            return [off for off, _ in scenes], stripped
+    scenes = chunk_text_with_offsets(stripped, chunk_size)
+    return [off for off, _ in scenes], stripped
+
+
+def stamp_scene_index(
+    merged: list[dict], document: str | None, chunk_size: int | None,
+    structural: bool,
+) -> int:
+    """Stamp ``scene_index`` (the containing chunk's 0-based index) on each
+    fact; returns how many got a real one.
+
+    Complementary to ``quote_offset`` (issue #200): the offset gives WHERE
+    within the chapter a fact happened, ``scene_index`` gives WHICH scene it
+    happened in — the natural join key for a future narrative-per-scene pass
+    (issue #202) and for scoping a bundle to the scenes it actually touches.
+
+    Degrades exactly like ``stamp_offsets``: no document, or no chunk_size on
+    the manifest's reference pass (an ancient corpus, or one with no passes
+    at all), stamps ``scene_index: None`` everywhere rather than a fake 0 —
+    the same backward-compatibility contract ``facts_to_state._narrative_key``
+    already honours for a missing ``quote_offset``. An individual fact whose
+    quote can't be located gets ``None`` too, independently of whether its
+    ``quote_offset`` (against the raw document) was found — see
+    ``scene_boundaries`` for why the two are located separately.
+    """
+    if document is None or not chunk_size:
+        for f in merged:
+            f["scene_index"] = None
+        return 0
+    starts, stripped = scene_boundaries(document, chunk_size, structural)
+    located = 0
+    for f in merged:
+        q = f.get("source_quote") or ""
+        off = quote_offset(q, stripped) if q else None
+        if off is None:
+            f["scene_index"] = None
+            continue
+        f["scene_index"] = max(bisect.bisect_right(starts, off) - 1, 0)
+        located += 1
+    return located
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
@@ -460,6 +560,13 @@ def main() -> None:
     document = load_document(manifest)
     located = stamp_offsets(merged, document)
 
+    # WHICH scene each fact happened in (issue #202), complementary to the
+    # offset above: offsets give position, scene indices give grouping — the
+    # join key a future narrative-per-scene pass consumes. Same "done at
+    # merge time" reasoning as quote_offset above.
+    scene_chunk_size, scene_structural = reference_chunking(manifest)
+    scene_located = stamp_scene_index(merged, document, scene_chunk_size, scene_structural)
+
     campaignlib.atomic_write_json(output_path, merged)  # FR-014: atomic publish
 
     counts_by_lens: dict[str, int] = {}
@@ -489,6 +596,13 @@ def main() -> None:
     else:
         print(f"Quote offsets:         {located}/{len(merged)} located "
               f"(within-chapter event order)")
+    if document is None or not scene_chunk_size:
+        print("Scene index:           none — no source document or no "
+              "chunk_size on the manifest's reference pass.", file=sys.stderr)
+    else:
+        mode = "structural" if scene_structural else "character-count"
+        print(f"Scene index:           {scene_located}/{len(merged)} located "
+              f"({mode} chunking, size {scene_chunk_size:,})")
     if samples > 1:
         print(f"Agreement (n_samples -> #facts): {dict(sorted(agree_hist.items()))}")
     print("Pass coverage:")

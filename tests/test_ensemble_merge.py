@@ -293,3 +293,134 @@ def test_load_document_missing_file_returns_none_not_exit(tmp_path):
     degradation; refusing to merge would be a regression."""
     assert em.load_document({"default_input": str(tmp_path / "gone.md")}) is None
     assert em.load_document({}) is None
+
+
+# ── scene_index: which chunk a fact came from (issue #202) ───────────────────
+#
+# Complementary to quote_offset: offsets give position, scene_index gives
+# grouping — the join key a future narrative-per-scene pass consumes.
+
+
+def test_reference_chunking_prefers_first_pass():
+    manifest = {"passes": [
+        {"chunk_size": 6000, "structural": True},
+        {"chunk_size": 15000, "structural": False},
+    ]}
+    assert em.reference_chunking(manifest) == (6000, True)
+
+
+def test_reference_chunking_defaults_structural_false_for_old_manifest():
+    """A manifest written before #202 has no 'structural' key at all — it
+    must default to character-count, not raise a KeyError."""
+    manifest = {"passes": [{"chunk_size": 15000}]}
+    assert em.reference_chunking(manifest) == (15000, False)
+
+
+def test_reference_chunking_no_passes_returns_none_false():
+    assert em.reference_chunking({}) == (None, False)
+    assert em.reference_chunking({"passes": []}) == (None, False)
+
+
+def test_scene_boundaries_character_count_mode():
+    doc = "para one.\n\npara two.\n\npara three."
+    starts, stripped = em.scene_boundaries(doc, chunk_size=1000, structural=False)
+    assert stripped == doc
+    assert starts == [0]  # whole doc fits in one chunk at this size
+
+
+def test_scene_boundaries_structural_mode_splits_on_headings():
+    doc = (
+        "## Grygum — Chaos in the Fungal Cavern\n\nFirst scene.\n\n"
+        "## Daz — The Drow Reinforcements\n\nSecond scene."
+    )
+    starts, stripped = em.scene_boundaries(doc, chunk_size=15000, structural=True)
+    assert starts == [0, doc.index("## Daz")]
+
+
+def test_scene_boundaries_structural_mode_falls_back_with_no_heading():
+    doc = "Plain narration with no headings at all, just prose."
+    starts, _stripped = em.scene_boundaries(doc, chunk_size=10, structural=True)
+    assert len(starts) > 1  # character-count fallback still cuts it up
+
+
+def test_stamp_scene_index_marks_every_fact_and_counts_located():
+    doc = (
+        "## Grygum — Chaos in the Fungal Cavern\n\nfirst thing happened.\n\n"
+        "## Daz — The Drow Reinforcements\n\nsecond thing happened."
+    )
+    facts = [
+        {"source_quote": "second thing happened"},
+        {"source_quote": "first thing happened"},
+        {"source_quote": "never appears in the document"},
+    ]
+    located = em.stamp_scene_index(facts, doc, chunk_size=15000, structural=True)
+    assert located == 2
+    assert [f["scene_index"] for f in facts] == [1, 0, None]
+
+
+def test_stamp_scene_index_without_document_stamps_none_not_zero():
+    facts = [{"source_quote": "anything"}]
+    assert em.stamp_scene_index(facts, None, chunk_size=15000, structural=False) == 0
+    assert facts[0]["scene_index"] is None
+
+
+def test_stamp_scene_index_without_chunk_size_stamps_none():
+    """A manifest with passes but no chunk_size recorded (shouldn't happen in
+    practice, but must degrade rather than crash on a 0/None chunk_size)."""
+    facts = [{"source_quote": "anything"}]
+    assert em.stamp_scene_index(facts, "some document", chunk_size=None,
+                                structural=False) == 0
+    assert facts[0]["scene_index"] is None
+
+
+def test_stamp_scene_index_character_count_mode():
+    doc = "a" * 20 + "\n\n" + "b" * 20 + "\n\n" + "c" * 20
+    facts = [{"source_quote": "b" * 20}, {"source_quote": "a" * 20}]
+    located = em.stamp_scene_index(facts, doc, chunk_size=25, structural=False)
+    assert located == 2
+    assert facts[0]["scene_index"] == 1
+    assert facts[1]["scene_index"] == 0
+
+
+def test_merge_end_to_end_stamps_scene_index(tmp_path):
+    """A full extract-then-merge run, with --scene-chunks style manifest
+    metadata, ends up with scene_index on every fact."""
+    doc = tmp_path / "chapter.md"
+    doc.write_text(
+        "## Grygum — Chaos in the Fungal Cavern\n\nDaz drew his sword.\n\n"
+        "## Daz — The Drow Reinforcements\n\nThe fight ended.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "a.json").write_text(json.dumps([
+        {"type": "npc", "subject": "Daz", "fact": "Daz fought.",
+         "source_quote": "The fight ended."},
+    ]))
+    manifest = {
+        "version": 1, "samples": 1,
+        "passes": [{
+            "name": "a", "agent": "extract_facts", "chunk_size": 15000,
+            "document": str(doc), "structural": True,
+            "outputs": [{"key": "a#1", "file": "a.json", "n_facts": 1}],
+        }],
+    }
+    (tmp_path / "manifest.json").write_text(json.dumps(manifest))
+
+    m = em.load_manifest(tmp_path)
+    pass_outputs = em.load_pass_outputs(tmp_path, m)
+    merged = em.merge_facts(pass_outputs, similarity=0.85)
+    document = em.load_document(m)
+    chunk_size, structural = em.reference_chunking(m)
+    em.stamp_scene_index(merged, document, chunk_size, structural)
+
+    assert merged[0]["scene_index"] == 1  # the second (Daz) scene
+
+
+def test_stamp_scene_index_is_independent_of_a_leading_bom():
+    """quote_offset (against the raw document) and scene_index (against the
+    stripped document) are located separately on purpose — a leading BOM
+    would misalign the two if scene_index reused the raw-document offset."""
+    doc = "﻿## A — One\n\nfirst.\n\n## B — Two\n\nsecond."
+    facts = [{"source_quote": "second"}]
+    located = em.stamp_scene_index(facts, doc, chunk_size=15000, structural=True)
+    assert located == 1
+    assert facts[0]["scene_index"] == 1
