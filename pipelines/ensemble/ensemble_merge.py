@@ -132,7 +132,7 @@ def embed_texts(texts: list[str], endpoint: str, model: str, batch: int = 256):
 
 def merge_facts_embed(
     pass_outputs: dict[str, list[dict]], endpoint: str, model: str,
-    threshold: float = 0.93,
+    threshold: float = 0.94,
 ) -> list[dict]:
     """Like merge_facts, but cluster on embedding cosine of the FACT TEXT,
     partitioned only by `type` — the subject string is NOT part of the key.
@@ -145,9 +145,14 @@ def merge_facts_embed(
     their near-identical fact text; cosine similarity does.
 
     Greedy clustering against each cluster's fixed anchor (the longest fact,
-    since we process longest-first). The default 0.93 threshold sits in the
-    empirically-measured empty gap between true duplicates (~0.97-0.98) and
-    distinct-but-related facts (~0.75-0.78), so distinct facts are NOT merged.
+    since we process longest-first). The default 0.94 threshold is calibrated
+    on `qwen3-embedding:0.6b` (calibrate_embed sweep, 2026-07-28, issue #197):
+    on that model the dup/distinct bands OVERLAP — paraphrase duplicates score
+    ~0.91-0.95 while the worst distinct pair (two different in-world dates)
+    scores 0.9375 — so no threshold is clean, and 0.94 is the precision-first
+    choice: zero false merges on the labeled set, at the cost of missing
+    paraphrase dups below it. The threshold is MODEL-SPECIFIC; re-run
+    calibrate_embed whenever the embed sidecar changes model.
 
     Every collapsed variant is preserved on the survivor for human audit:
     `variants` lists the distinct fact strings merged in, `subjects` the
@@ -352,8 +357,10 @@ def main() -> None:
                              f"{DEFAULT_EMBED_MODEL}).")
     parser.add_argument("--embed-threshold", type=float, default=None, metavar="COS",
                         help="Cosine threshold for the embedding merge (default "
-                             "0.93). True duplicates ~0.97-0.98, distinct-but-"
-                             "related ~0.75-0.78 — 0.93 sits in the empty gap.")
+                             "0.94, calibrated on qwen3-embedding:0.6b — "
+                             "precision-first: zero false merges on the labeled "
+                             "set. Model-specific; recalibrate with "
+                             "calibrate_embed if the embed model changes.)")
     parser.add_argument("--output", "-o", default=None, metavar="FILE",
                         help="Where to write merged.json (default: "
                              "<workdir>/merged.json).")
@@ -384,7 +391,7 @@ def main() -> None:
                               os.environ.get("EMBED_ENDPOINT"))
     embed_model = _resolve(args.embed_model, "embed_model",
                            os.environ.get("EMBED_MODEL", DEFAULT_EMBED_MODEL))
-    embed_threshold = float(_resolve(args.embed_threshold, "embed_threshold", 0.93))
+    embed_threshold = float(_resolve(args.embed_threshold, "embed_threshold", 0.94))
     similarity = float(_resolve(args.similarity, "similarity", 0.85))
     chosen_method = _resolve(args.method, "method", None)
     method = chosen_method or ("embed" if embed_endpoint else "subject")
@@ -425,10 +432,11 @@ def main() -> None:
     if method == "embed":
         # Don't name a model in the label — this said "nomic" for months after
         # the embed sidecar became Qwen (2026-06-30), and the threshold below is
-        # MODEL-SPECIFIC: 0.93 was measured on nomic-embed-text-v1.5 (duplicates
-        # ~0.97, distinct ~0.78). A different embedding model has a different
-        # similarity distribution and needs its own threshold. Print what is
-        # actually being used and let it speak for itself.
+        # MODEL-SPECIFIC: 0.94 was calibrated on qwen3-embedding:0.6b
+        # (calibrate_embed, 2026-07-28; the nomic-era value was 0.93). A
+        # different embedding model has a different similarity distribution and
+        # needs its own threshold. Print what is actually being used and let it
+        # speak for itself.
         print(f"Merge:    embedding cosine ({embed_endpoint}, "
               f"model {embed_model}, threshold {embed_threshold})")
     else:
