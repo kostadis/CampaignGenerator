@@ -43,6 +43,7 @@ import threading
 import warnings
 from collections import Counter
 from pathlib import Path
+from typing import NamedTuple
 
 from campaignlib import (
     DEFAULT_MODEL,
@@ -54,7 +55,7 @@ from campaignlib import (
     run_batch,
     stream_api,
 )
-from campaignlib.registry import load_registry, resolve_registry_arg
+from campaignlib.registry import Registry, load_registry, resolve_registry_arg
 from .ensemble_merge import _norm_subject
 from .synthesise_world_state import (
     expand_globs,
@@ -513,6 +514,490 @@ def check_batch_backend(args: argparse.Namespace) -> None:
         )
 
 
+# ── Coverage report (issue #201) ─────────────────────────────────────────────
+#
+# Two failure modes the aggregation stage above cannot see on its own:
+#
+#   1. HEARSAY DOSSIERS — a known npc/monster bundle exists, but almost
+#      everything known about the entity was said by *other* entities' facts,
+#      not its own. Moziqodo (issue #195) is the case that drove this: the
+#      one fact filed directly under his name got his fate backwards, while
+#      the two correct readings landed under other entities' subjects and
+#      never touched his dossier.
+#   2. ZERO-FACT ENTITIES — an entity the registry knows about that never
+#      once appears as a fact SUBJECT. It has no bundle, so section 1
+#      (which iterates bundles) structurally cannot see it; only iterating
+#      the registry finds it. Khaem is the purest case: 0 own facts, 18
+#      mentions, no dossier exists.
+#
+# These are report-only. Per this repo's LLM Pipeline Design Rule, scope is a
+# precision decision — the report flags absence, a human decides what (if
+# anything) to do about it. Nothing here writes a stub dossier.
+
+
+class FactRef(NamedTuple):
+    """One fact, corpus-wide, independent of --types/known-name filtering.
+
+    Mention-scanning needs every fact regardless of type — a mention of a
+    hearsay npc can land inside a location, event, or thread fact just as
+    easily as an npc fact — so this is built by a dedicated pass, not
+    filtered from load_bundles's output.
+    """
+
+    chapter: int
+    subject_norm: str
+    text: str
+
+
+class MentionCandidate(NamedTuple):
+    """What count_mentions needs to search for one entity.
+
+    self_key is the entity's own normalised name, used to skip counting the
+    entity's own facts as "mentions of itself" — deliberately NOT type-
+    qualified: an npc-typed and monster-typed bundle for the same person
+    share one self_key, so a monster-typed fact about Moziqodo doesn't count
+    as someone else talking about him.
+    """
+
+    self_key: str
+    variants: list[str]
+
+
+_WORD_RE = re.compile(r"[a-z0-9']+")
+
+
+def _tokenize(text: str) -> set[str]:
+    return set(_WORD_RE.findall(text.lower()))
+
+
+def load_all_facts(corpus_paths: list[Path], aliases: dict[str, str]) -> list[FactRef]:
+    """Every fact in the corpus, canonical-subject-tagged and chapter-stamped.
+
+    Unlike load_bundles, nothing is filtered by --types or known/anonymous
+    status — mention-scanning needs the full corpus, since a hearsay entity's
+    name can appear in a fact of any type. Subject canonicalisation mirrors
+    load_bundles's own two-liner exactly (same aliases input) so "mentioned
+    under a different entity" means the same thing in both places.
+    """
+    aliases_by_norm = {_norm_subject(k): v for k, v in aliases.items()}
+    out: list[FactRef] = []
+    for path in sorted(corpus_paths, key=session_index):
+        ch = chapter_num(path)
+        try:
+            facts = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as e:
+            print(f"  warn: skipping {path}: {e}", file=sys.stderr)
+            continue
+        for f in facts:
+            text = (f.get("fact") or "").strip()
+            if not text:
+                continue
+            raw = (f.get("subject") or "").strip()
+            display = aliases_by_norm.get(_norm_subject(raw), raw) if raw else ""
+            out.append(FactRef(ch, _norm_subject(display), text))
+    return out
+
+
+def build_alias_variants(aliases: dict[str, str]) -> dict[str, list[str]]:
+    """Invert the resolved variant->canonical alias map: {canonical: [variants]}.
+
+    Excludes the self-mapped canonical entry. Lets mention-search widen past a
+    bundle's single display name to every surface form the alias map (registry
+    or legacy) already knows about, per "use the alias map already resolved in
+    facts_to_state" (issue #201).
+    """
+    variants: dict[str, list[str]] = {}
+    for variant, canonical in aliases.items():
+        if variant == canonical:
+            continue
+        variants.setdefault(canonical, []).append(variant)
+    return variants
+
+
+def _build_token_index(facts: list[FactRef]) -> dict[str, list[int]]:
+    """word -> [fact indices whose text contains it], for O(1) candidate shortlisting.
+
+    A naive per-candidate substring/regex scan of the whole corpus is
+    O(candidates x facts); with hundreds of candidates and tens of thousands
+    of facts that's slow enough to matter. This index lets count_mentions
+    shortlist, per name variant, only the facts that could possibly match
+    before running the precise word-boundary regex.
+    """
+    index: dict[str, list[int]] = {}
+    for i, f in enumerate(facts):
+        for tok in _tokenize(f.text):
+            index.setdefault(tok, []).append(i)
+    return index
+
+
+def count_mentions(
+    facts: list[FactRef],
+    candidates: dict[str, MentionCandidate],
+    token_index: dict[str, list[int]] | None = None,
+) -> dict[str, tuple[int, int | None]]:
+    """For each candidate key, (mention_count, last_mention_chapter).
+
+    A mention is a fact whose (canonicalised) subject differs from the
+    candidate's own name, and whose text contains one of the candidate's name
+    variants as a whole word (case-insensitive). Counted per FACT, not per
+    occurrence — a name appearing twice in one fact's text is one mention.
+    last_mention_chapter is None when the candidate has zero mentions.
+    """
+    if token_index is None:
+        token_index = _build_token_index(facts)
+
+    results: dict[str, tuple[int, int | None]] = {}
+    for key, cand in candidates.items():
+        seen: set[int] = set()
+        last_chapter: int | None = None
+        for variant in cand.variants:
+            variant = variant.strip()
+            words = _WORD_RE.findall(variant.lower())
+            if not words:
+                continue
+            shortlist: set[int] | None = None
+            for w in words:
+                idxs = token_index.get(w)
+                if not idxs:
+                    shortlist = set()
+                    break
+                s = set(idxs)
+                shortlist = s if shortlist is None else (shortlist & s)
+                if not shortlist:
+                    break
+            if not shortlist:
+                continue
+            pattern = re.compile(r"\b" + re.escape(variant) + r"\b", re.IGNORECASE)
+            for i in shortlist:
+                if i in seen:
+                    continue
+                f = facts[i]
+                if f.subject_norm == cand.self_key:
+                    continue  # own fact under another type tag, not a mention
+                if pattern.search(f.text):
+                    seen.add(i)
+                    if last_chapter is None or f.chapter > last_chapter:
+                        last_chapter = f.chapter
+        results[key] = (len(seen), last_chapter)
+    return results
+
+
+class CoverageEntry(NamedTuple):
+    type: str  # "npc", "monster", or "npc+monster" when collapsed across both
+    key: str
+    display: str
+    own_facts: int
+    mentions: int
+    last_chapter: int | None  # max(own last chapter, last mention chapter)
+
+
+class HearsayCoverage(NamedTuple):
+    """compute_hearsay_coverage's result, plus the visibility count Fix 1
+    (peer review of this branch) asked for: filtering silently is how #194's
+    dossier floor shipped a hidden-loss bug in the first place, so the count
+    of candidates a gate removed travels with the result rather than
+    vanishing into it."""
+
+    entries: list[CoverageEntry]
+    n_dropped_unregistered: int
+
+
+def compute_hearsay_coverage(
+    bundles: dict[str, "Bundle"],
+    all_facts: list[FactRef],
+    alias_variants: dict[str, list[str]],
+    min_mentions: int = 3,
+    max_own_facts: int = 2,
+    token_index: dict[str, list[int]] | None = None,
+    registry: Registry | None = None,
+    require_registered: bool = True,
+) -> HearsayCoverage:
+    """Section 1 — thin-but-present npc/monster entities (issue #201).
+
+    ``bundles`` MUST already be scoped to types=["npc", "monster"] (the
+    caller's job, typically via a dedicated load_bundles(...,
+    types=["npc","monster"]) call independent of whatever --types the main
+    aggregation run used) — a raw own-vs-mentioned ratio over every type does
+    NOT work: the top hits are concepts like "Madness" (0 own / 259
+    mentions) that are *supposed* to be heavily referred to. Type-scoping the
+    candidates, not the mention text, is what makes the signal usable.
+
+    Anonymous/location-scoped bundles (b.known is False) are never
+    candidates — "Orc (Phandalin)" isn't a mis-attributed individual, it's
+    already correctly generic.
+
+    Type-scoping the bundle isn't quite enough on a real corpus: extraction
+    occasionally mistags a single fact under type npc/monster for something
+    that is unambiguously NOT an individual elsewhere in the record — e.g.
+    "Underdark" (a registered *location*, well-attested under that type)
+    picking up one stray type=monster fact somewhere, or "Lolth"/"Tiamat"
+    (registered *deities*) picking up a type=npc fact. Those aren't hearsay
+    npcs, they're mistagging artifacts, and they otherwise dominate the report
+    (a region or archdevil's name appears constantly). If ``registry`` is
+    given, a candidate whose name IS a registered entity is dropped when the
+    registry's OWN declared type for it isn't "npc" — the registry is this
+    repo's single source of truth for entity identity (CLAUDE.md), so its
+    type call wins over a single extraction lens's stray tag.
+
+    ``require_registered`` (default True): when ``registry`` is given, a
+    candidate must ALSO actually be a registered entity, not merely absent
+    from the type-mismatch above. On a real corpus, unregistered npc/monster-
+    typed subjects are dominated by extraction noise the lens mistook for a
+    name — pronouns ("she"), collective/role phrases ("The Party", "Dwarf",
+    "assassins") — which otherwise bury the genuine hits (Moziqodo, Whistler,
+    ...) under hundreds of mentions apiece. Pass ``require_registered=False``
+    (``--coverage-unregistered``) to see the raw, unfiltered set instead — a
+    campaign with no registry, or a known-incomplete one, has no other way to
+    surface an unregistered hearsay entity. A no-op when ``registry`` is
+    None: there is nothing to require membership in.
+    """
+    registry_type_of: dict[str, str] = {}
+    if registry is not None:
+        registry_type_of = {_norm_subject(e.name): e.type for e in registry.entities}
+    require_registered = require_registered and registry is not None
+
+    # Group by the PLAIN (type-independent) key first: the same person can
+    # produce separate npc- and monster-typed bundles (seen on the OOTA
+    # corpus for Whistler, Malfire, Yestabrod, Araumycos) and must be
+    # reported once, not twice with an identical mention count under two
+    # rows — the design doc explicitly warns against double-counting an
+    # entity that appears under two types.
+    grouped: dict[str, dict] = {}
+    n_dropped_unregistered = 0
+    for b in bundles.values():
+        if b.type not in ("npc", "monster"):
+            continue
+        if not getattr(b, "known", True):
+            continue
+        reg_type = registry_type_of.get(b.key)
+        if reg_type is not None and reg_type != "npc":
+            continue  # registered as something else -- a cross-type mistag, not hearsay
+        if reg_type is None and require_registered:
+            n_dropped_unregistered += 1
+            continue
+        g = grouped.setdefault(b.key, {"types": set(), "own": 0, "display": b.display,
+                                       "bundles": []})
+        g["types"].add(b.type)
+        g["own"] += len(b.facts)
+        g["bundles"].append(b)
+        if len(b.facts) >= max((len(x.facts) for x in g["bundles"][:-1]), default=0):
+            g["display"] = b.display  # denser bundle's casing wins ties too
+
+    candidates: dict[str, MentionCandidate] = {
+        key: MentionCandidate(self_key=key,
+                              variants=[g["display"], *alias_variants.get(g["display"], [])])
+        for key, g in grouped.items()
+    }
+
+    mentions = count_mentions(all_facts, candidates, token_index=token_index)
+
+    out: list[CoverageEntry] = []
+    for key, g in grouped.items():
+        own = g["own"]
+        if own > max_own_facts:
+            continue
+        n_mentions, last_mention_ch = mentions.get(key, (0, None))
+        if n_mentions < min_mentions:
+            continue
+        hi = max(b.chapters[1] for b in g["bundles"])
+        last_chapter = hi if last_mention_ch is None else max(hi, last_mention_ch)
+        type_label = "+".join(t for t in ("npc", "monster") if t in g["types"])
+        out.append(CoverageEntry(type_label, key, g["display"], own, n_mentions, last_chapter))
+    out.sort(key=lambda e: (-e.mentions, e.own_facts, e.display.lower()))
+    return HearsayCoverage(out, n_dropped_unregistered)
+
+
+def compute_zero_fact_coverage(
+    bundles: dict[str, "Bundle"],
+    registry: Registry,
+    all_facts: list[FactRef],
+    alias_variants: dict[str, list[str]],
+    min_mentions: int = 3,
+    types: frozenset = frozenset({"npc"}),
+    token_index: dict[str, list[int]] | None = None,
+) -> list[CoverageEntry]:
+    """Section 2 — registry entities that never appear as a fact subject at all
+    (issue #201). They have no bundle, so section 1 (which iterates bundles)
+    structurally cannot see them; this iterates the REGISTRY instead — the
+    asymmetry the issue is named for.
+
+    ``bundles`` should be the same npc/monster-scoped set section 1 uses.
+    Registry entity types don't include "monster" (see
+    campaignlib.registry.VALID_TYPES), so this defaults to "npc" only — the
+    closest analogue to section 1's npc/monster scope.
+
+    ``min_mentions`` still applies here: a registry entity with zero own
+    facts AND zero (or few) mentions never surfaced in the corpus at all,
+    which isn't the "referred-to but never grounded" condition this report
+    exists to flag.
+    """
+    present = {b.key for b in bundles.values()}
+    candidates: dict[str, MentionCandidate] = {}
+    display_of: dict[str, str] = {}
+    for e in registry.entities:
+        if e.type not in types:
+            continue
+        key = _norm_subject(e.name)
+        if not key or key in present:
+            continue
+        candidates[key] = MentionCandidate(
+            self_key=key,
+            variants=[e.name, *alias_variants.get(e.name, [])],
+        )
+        display_of[key] = e.name
+
+    mentions = count_mentions(all_facts, candidates, token_index=token_index)
+
+    out: list[CoverageEntry] = []
+    for key in candidates:
+        n_mentions, last_chapter = mentions.get(key, (0, None))
+        if n_mentions < min_mentions:
+            continue
+        out.append(CoverageEntry("npc", key, display_of[key], 0, n_mentions, last_chapter))
+    out.sort(key=lambda e: (-e.mentions, e.display.lower()))
+    return out
+
+
+def recency_cutoff(latest_chapter: int, recent_window: int) -> int | None:
+    """First chapter counted as "recent" — mirrors
+    synthesise_world_state.split_dossiers's cutoff formula (issue #194 / PR
+    #196), recomputed here directly from the bundle/mention data --list
+    already has rather than requiring dossiers to already be on disk.
+    recent_window <= 0 means every chapter counts as recent (no cutoff)."""
+    return latest_chapter - recent_window + 1 if recent_window > 0 else None
+
+
+def flag_recent(entries: list[CoverageEntry], cutoff: int | None) -> list[CoverageEntry]:
+    """Section 3 — entries from section 1 or 2 whose last-touched chapter falls
+    inside the recency window: "check these before regenerating" (issue #201)."""
+    if cutoff is None:
+        return list(entries)
+    return [e for e in entries if e.last_chapter is not None and e.last_chapter >= cutoff]
+
+
+class CoverageResult(NamedTuple):
+    hearsay: list[CoverageEntry]
+    zero_fact: list[CoverageEntry]
+    latest_chapter: int
+    n_dropped_unregistered: int
+
+
+def compute_coverage(
+    corpus_paths: list[Path],
+    aliases: dict[str, str],
+    known_names: set[str] | None,
+    registry: Registry | None,
+    min_mentions: int = 3,
+    max_own_facts: int = 2,
+    registry_types: frozenset = frozenset({"npc"}),
+    exclude_names: set[str] | None = None,
+    require_registered: bool = True,
+) -> CoverageResult:
+    """Run both coverage sections.
+
+    zero_fact is [] when registry is None — section 2 has no roster to
+    iterate without one (--list still runs; the report says so).
+
+    exclude_names is the SAME --exclude-names set main() already builds for
+    the aggregation path (location_scoped_races.md-shaped files): a name the
+    GM has already ruled "not a unique individual" (a race/collective like
+    "Derro", a recurring item-species) must not become a hearsay candidate
+    here either, or coverage would flag exactly the noise --exclude-names
+    exists to suppress everywhere else in this file.
+
+    require_registered is forwarded to compute_hearsay_coverage — see its
+    docstring. Default True; --coverage-unregistered flips it off.
+    """
+    coverage_bundles = load_bundles(corpus_paths, aliases, ["npc", "monster"],
+                                    known_names=known_names,
+                                    exclude_names=exclude_names)
+    all_facts = load_all_facts(corpus_paths, aliases)
+    token_index = _build_token_index(all_facts)
+    alias_variants = build_alias_variants(aliases)
+    latest_chapter = max((chapter_num(p) for p in corpus_paths), default=0)
+
+    hearsay, n_dropped_unregistered = compute_hearsay_coverage(
+        coverage_bundles, all_facts, alias_variants,
+        min_mentions=min_mentions, max_own_facts=max_own_facts,
+        token_index=token_index, registry=registry,
+        require_registered=require_registered)
+
+    zero_fact: list[CoverageEntry] = []
+    if registry is not None:
+        zero_fact = compute_zero_fact_coverage(
+            coverage_bundles, registry, all_facts, alias_variants,
+            min_mentions=min_mentions, types=registry_types,
+            token_index=token_index)
+
+    return CoverageResult(hearsay, zero_fact, latest_chapter, n_dropped_unregistered)
+
+
+def render_coverage_report(
+    hearsay: list[CoverageEntry],
+    zero_fact: list[CoverageEntry],
+    registry_available: bool,
+    latest_chapter: int,
+    recent_window: int,
+    min_mentions: int,
+    max_own_facts: int,
+    n_dropped_unregistered: int = 0,
+    require_registered: bool = True,
+) -> str:
+    """Deterministic markdown-ish report text — no model call (issue #201 is a
+    report, not a render; "LLM renders, humans decide")."""
+    cutoff = recency_cutoff(latest_chapter, recent_window)
+    lines = [
+        "=" * 60,
+        "COVERAGE REPORT (issue #201) — report only, writes nothing",
+        "",
+        f"Hearsay npc/monster ({len(hearsay)}) — >= {min_mentions} mention(s) in "
+        f"other entities' facts, <= {max_own_facts} own:",
+    ]
+    if registry_available:
+        if require_registered:
+            lines.append(f"  (requires --registry membership; "
+                         f"{n_dropped_unregistered} unregistered candidate(s) dropped -- "
+                         f"pass --coverage-unregistered to include them)")
+        else:
+            lines.append("  (--coverage-unregistered: unregistered candidates included, "
+                         "no registration filter applied)")
+    if hearsay:
+        for e in hearsay:
+            lines.append(f"  {e.mentions:>4} mentions / {e.own_facts:>2} own   "
+                        f"{e.type:11s} {e.display}  (last touched ch {e.last_chapter})")
+    else:
+        lines.append("  (none)")
+    lines.append("")
+
+    if registry_available:
+        lines.append(f"Zero-own-fact registry entities ({len(zero_fact)}) — never a "
+                     f"fact subject; no bundle, no dossier exists:")
+        if zero_fact:
+            for e in zero_fact:
+                lines.append(f"  {e.mentions:>4} mentions /  0 own   npc       "
+                            f"{e.display}  (last mentioned ch {e.last_chapter})")
+        else:
+            lines.append("  (none)")
+    else:
+        lines.append("Zero-own-fact registry entities: skipped (no --registry resolved).")
+    lines.append("")
+
+    flagged = flag_recent(hearsay + zero_fact, cutoff)
+    if cutoff is None:
+        lines.append(f"Recency window: --recent-window {recent_window} "
+                     "(0 = every chapter counts as recent).")
+    else:
+        lines.append(f"Recency window: last {recent_window} chapter(s) = "
+                     f"chapters {cutoff}-{latest_chapter} (latest chapter = {latest_chapter}).")
+    if flagged:
+        names = ", ".join(f"{e.display} (ch{e.last_chapter})" for e in flagged)
+        lines.append(f"Check these before regenerating — {len(flagged)} fall inside "
+                     f"the window: {names}")
+    else:
+        lines.append("Nothing above falls inside the window.")
+    return "\n".join(lines)
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -572,6 +1057,45 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--list", action="store_true",
                    help="Stage 1 only: print the selected bundles (no model call). "
                         "The human checkpoint on what will be aggregated.")
+    p.add_argument("--coverage", action="store_true",
+                   help="With --list: append a coverage report (issue #201) flagging "
+                        "(1) known npc/monster entities heavily referenced in OTHER "
+                        "entities' facts but thin or absent in their own -- hearsay "
+                        "dossiers, the Moziqodo/#195 failure mode -- and (2) --registry "
+                        "entities that never appear as a fact subject at all, so no "
+                        "bundle and no dossier is possible (section 2 needs --registry; "
+                        "skipped with a note otherwise). Report only -- writes nothing, "
+                        "decides nothing. Off by default: it's a second, heavier corpus "
+                        "pass most --list invocations (tuning --min-facts/--only/--top) "
+                        "don't want paying for.")
+    p.add_argument("--hearsay-min-mentions", type=int, default=3, metavar="N",
+                   help="--coverage: flag an entity only with >= N mentions in OTHER "
+                        "entities' facts (default 3). Applies to both coverage "
+                        "sections.")
+    p.add_argument("--hearsay-max-own-facts", type=int, default=2, metavar="N",
+                   help="--coverage: cap on a section-1 (npc/monster bundle) entity's "
+                        "own fact count to still count as hearsay (default 2). Section "
+                        "2 (zero-fact registry entities) always qualifies by definition.")
+    p.add_argument("--coverage-unregistered", action="store_true",
+                   help="--coverage: include section-1 candidates that are NOT in "
+                        "--registry (default: require registry membership). On a real "
+                        "corpus, unregistered npc/monster-typed subjects are dominated "
+                        "by extraction noise -- pronouns, collective/role phrases like "
+                        "'The Party' or 'the gate warden' -- that bury genuine hearsay "
+                        "individuals under hundreds of mentions apiece. Pass this for a "
+                        "campaign with no registry, or one known to be incomplete, where "
+                        "an unregistered hearsay entity would otherwise never surface. "
+                        "No-op without --registry (there is nothing to require "
+                        "membership in either way).")
+    p.add_argument("--recent-window", type=int, default=4, metavar="N",
+                   help="--coverage: flag section-1/2 entities last touched or "
+                        "mentioned within the last N chapters as 'check before "
+                        "regenerating' (default 4, matching ensemble.yaml's "
+                        "tuning.dossier_recent_window default). Same recency concept "
+                        "as synthesise_world_state.py's --recent-window (issue #194 / "
+                        "PR #196), computed independently here from --list's own "
+                        "bundle/mention data rather than requiring dossiers already on "
+                        "disk. 0 = every chapter counts as recent.")
     p.add_argument("--render-only", metavar="FILE", default=None,
                    help="Deterministic dump of the selected bundles to FILE as "
                         "grouped markdown (no model call). Used to build the "
@@ -627,6 +1151,9 @@ def main() -> None:
 
     if not args.list and not args.render_only and not args.out_dir:
         parser.error("--out-dir is required unless --list / --render-only")
+    if args.coverage and not args.list:
+        parser.error("--coverage only applies with --list (issue #201's coverage "
+                     "report is a --list extension, not a standalone mode)")
 
     corpus = expand_globs(args.corpus)
     if not corpus:
@@ -636,6 +1163,7 @@ def main() -> None:
         args.registry, bool(args.aliases or args.known_names), parser)
 
     known_names: set[str] | None
+    reg: Registry | None = None
     if registry_path is not None:
         if explicit_registry and (args.aliases or args.known_names):
             parser.error("--registry is the single source; do not combine it with "
@@ -722,6 +1250,23 @@ def main() -> None:
             print(f"  {tag}{len(b.facts):>5}  {b.type:9s}  {b.display}  (ch {lo}-{hi})")
         if not selected:
             print("(nothing selected)")
+        if args.list and args.coverage:
+            require_registered = not args.coverage_unregistered
+            coverage = compute_coverage(
+                corpus, aliases, known_names, reg,
+                min_mentions=args.hearsay_min_mentions,
+                max_own_facts=args.hearsay_max_own_facts,
+                exclude_names=exclude_names,
+                require_registered=require_registered,
+            )
+            print()
+            print(render_coverage_report(
+                coverage.hearsay, coverage.zero_fact, reg is not None,
+                coverage.latest_chapter, args.recent_window,
+                args.hearsay_min_mentions, args.hearsay_max_own_facts,
+                n_dropped_unregistered=coverage.n_dropped_unregistered,
+                require_registered=require_registered,
+            ))
         return
 
     model = args.model
