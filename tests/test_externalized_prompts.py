@@ -76,10 +76,15 @@ def test_all_externalised_prompts_listed():
     #   - prep.py agents (lore_oracle, encounter_architect, voice_keeper)
     #   - the fact-extraction ensemble lenses (extract_facts*.md), loaded via
     #     `extract_facts.py --agent`.
+    #   - narrate_scene.md, loaded the same way via `narrate_chapter.py
+    #     --agent` (issue #202 part 2 — the narrative pass is a sibling
+    #     artifact, not a sixth extraction lens, but it borrows the same
+    #     load-by-name convention).
     session_doc_files = {p for p in actual if p.startswith("session_doc/")}
     prep_files = {"lore_oracle.md", "encounter_architect.md", "voice_keeper.md"}
     ensemble_files = {p for p in actual if p.startswith("extract_facts")}
-    relevant = actual - session_doc_files - prep_files - ensemble_files
+    narrate_files = {"narrate_scene.md"}
+    relevant = actual - session_doc_files - prep_files - ensemble_files - narrate_files
     assert expected == relevant, (
         f"Phase-3 CASES table out of sync with config/agents/.\n"
         f"  in CASES but not on disk: {sorted(expected - relevant)}\n"

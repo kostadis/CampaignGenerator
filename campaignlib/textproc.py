@@ -2,11 +2,44 @@
 
 import re
 
+import yaml
+
 
 _BASE64_IMAGE_RE = re.compile(
     r'^\[image\d+\]:\s*<data:image/[^>]+>\s*$',
     re.MULTILINE,
 )
+
+_FRONTMATTER_RE = re.compile(r"\A---[ \t]*\n(.*?\n)---[ \t]*\n?", re.DOTALL)
+
+
+def split_frontmatter(text: str) -> tuple[dict, str]:
+    """Split a leading YAML frontmatter block (delimited by ``---`` lines)
+    from its body. Returns ``(frontmatter_dict, body)``.
+
+    ``frontmatter_dict`` is ``{}`` — never an exception — when there is no
+    leading ``---`` block, when the block doesn't parse as YAML, or when it
+    parses to something other than a mapping. A gate built on this (e.g. "is
+    ``approved`` true?") should therefore default CLOSED: a missing or
+    malformed marker reads the same as an explicit ``false``, never as
+    permission. ``body`` is the full original text in every failure case
+    (nothing is silently dropped), and just the post-frontmatter remainder on
+    success.
+
+    Shared by ``narrate_chapter.py`` (writes the ``approved:`` gate) and
+    ``synthesise_world_state.py`` (reads it before treating a narrative as
+    grounding) so the two sides can never drift on what counts as "approved".
+    """
+    m = _FRONTMATTER_RE.match(text)
+    if not m:
+        return {}, text
+    try:
+        data = yaml.safe_load(m.group(1))
+    except yaml.YAMLError:
+        return {}, text
+    if not isinstance(data, dict):
+        return {}, text
+    return data, text[m.end():]
 
 
 def norm_subject(s: str) -> str:

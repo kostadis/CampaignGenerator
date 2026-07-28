@@ -19,6 +19,7 @@ from .textproc import (
     annotate_chunks_with_pov,
     prepare_chunks,
     norm_subject,
+    split_frontmatter,
 )
 from .config import (
     find_default_config,
@@ -115,6 +116,7 @@ __all__ = [
     "annotate_chunks_with_pov",
     "prepare_chunks",
     "norm_subject",
+    "split_frontmatter",
     # config / file I/O / agent prompts
     "find_default_config",
     "load_config",
