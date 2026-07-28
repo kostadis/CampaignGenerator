@@ -51,6 +51,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [Source tree restructure](design/SourceTreeRestructure.md) — splits the 62 flat root scripts into subsystem packages under `pipelines/`, `entity_registry/`, and `session_doc/`, grouped by pipeline; migration complete.
 - [RLM paper comparison](design/rlm_paper_comparison.md) — how this system relates to (and diverges from) the published RLM paper.
 - [Chapter-extract consolidation (killed)](design/ChapterExtractConsolidation_killed.md) — why consolidating the three extract passes into one per-chapter extract regressed all three grounding docs, and the depth-vs-breadth lesson.
+- [Ensemble grounding investigation](design/EnsembleGroundingInvestigation.md) — the "stamped ch62, contains ch61" hunt: four defects sharing one pattern (the pipeline computes a signal, serialises it, then ignores it), what shipped (#194/#197/#200), what is still open (#199/#201/#202), and the measurements + dead-end hypotheses worth not re-deriving.
 
 ## Archive
 
