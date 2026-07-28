@@ -236,3 +236,60 @@ def test_load_pass_outputs_missing_file_exits(tmp_path):
     (tmp_path / "manifest.json").write_text(json.dumps(manifest))
     with pytest.raises(SystemExit):
         em.load_pass_outputs(tmp_path, em.load_manifest(tmp_path))
+
+
+# ── Quote offsets: the within-chapter event sequence (issue #195) ────────────
+#
+# verify_quotes already located every quote and kept only a boolean, so the
+# pipeline had to guess an ordering it was handed for free. These pin the
+# position being recovered, and the cases where it deliberately isn't.
+
+
+def test_quote_offset_exact_substring():
+    doc = "Alpha beta. Gamma delta. Epsilon."
+    assert em.quote_offset("Gamma delta.", doc) == 12
+
+
+def test_quote_offset_tolerates_reflowed_whitespace():
+    """verify_quotes accepts a whitespace-normalized match; the offset must
+    survive the same reflow rather than silently reporting 'not found'."""
+    doc = "He said,\n   'Moziqodo,'   and\nwent still."
+    assert em.quote_offset("He said, 'Moziqodo,' and went still.", doc) == 0
+
+
+def test_quote_offset_absent_is_none_not_zero():
+    """A quote that cannot be located is usually fabricated or '...'-stitched.
+    Reporting 0 would sort exactly the least trustworthy facts first."""
+    assert em.quote_offset("never appears", "some other text") is None
+    assert em.quote_offset("", "some other text") is None
+
+
+def test_stamp_offsets_marks_every_fact_and_counts_located():
+    doc = "first thing happened. then the second thing happened."
+    facts = [{"source_quote": "then the second"}, {"source_quote": "first thing"},
+             {"source_quote": "not in the document"}]
+    located = em.stamp_offsets(facts, doc)
+    assert located == 2
+    assert [f["quote_offset"] for f in facts] == [22, 0, None]
+
+
+def test_stamp_offsets_without_a_document_still_stamps_none():
+    """A corpus extracted elsewhere must merge, just without ordering — the
+    field is always present so consumers never branch on its absence."""
+    facts = [{"source_quote": "anything"}]
+    assert em.stamp_offsets(facts, None) == 0
+    assert facts[0]["quote_offset"] is None
+
+
+def test_load_document_prefers_pass_document_then_default_input(tmp_path):
+    doc = tmp_path / "chapter.md"
+    doc.write_text("the chapter body", encoding="utf-8")
+    assert em.load_document({"passes": [{"document": str(doc)}]}) == "the chapter body"
+    assert em.load_document({"default_input": str(doc)}) == "the chapter body"
+
+
+def test_load_document_missing_file_returns_none_not_exit(tmp_path):
+    """A campaign that moved must still merge. Losing ordering is a
+    degradation; refusing to merge would be a regression."""
+    assert em.load_document({"default_input": str(tmp_path / "gone.md")}) is None
+    assert em.load_document({}) is None

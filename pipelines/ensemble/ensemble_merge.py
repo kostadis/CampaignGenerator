@@ -38,6 +38,7 @@ Usage:
 import argparse
 import json
 import os
+import re
 import sys
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -249,6 +250,72 @@ def load_pass_outputs(workdir: Path, manifest: dict) -> dict[str, list[dict]]:
     return pass_outputs
 
 
+def quote_offset(quote: str, document: str) -> int | None:
+    """Character offset of ``quote`` in ``document``, or None if not found.
+
+    ``extract_facts.verify_quotes`` already locates every quote — it just asks
+    ``q in chunk`` and keeps only the boolean. Finding it costs the same as
+    testing for it, and the position is the one thing that says WHEN a fact
+    happened inside a chapter (issue #195). Without it the pipeline has to infer
+    ordering it was handed for free: the cache keeps chunk order only in a
+    filename, and ``merge_facts`` sorts alphabetically by (type, subject, fact).
+
+    Whitespace-tolerant, mirroring ``verify_quotes``' own fallback: the extract
+    prompts demand verbatim substrings, but a reflowed line break inside an
+    otherwise exact quote shouldn't lose the position. Runs of whitespace in the
+    quote match runs of whitespace in the document.
+    """
+    if not quote:
+        return None
+    i = document.find(quote)
+    if i >= 0:
+        return i
+    tokens = quote.split()
+    if not tokens:
+        return None
+    pattern = re.compile(r"\s+".join(re.escape(t) for t in tokens))
+    m = pattern.search(document)
+    return m.start() if m else None
+
+
+def load_document(manifest: dict) -> str | None:
+    """Source text the passes were extracted from, for quote positioning.
+
+    Every pass in a run reads the same document in practice, but the manifest
+    records it per pass, so prefer the first pass's ``document`` and fall back
+    to ``default_input``. Returns None (rather than exiting) when the path is
+    absent or unreadable: a corpus extracted elsewhere, or a campaign that has
+    since moved, must still merge — it just merges without offsets.
+    """
+    candidates = [p.get("document") for p in manifest.get("passes", [])]
+    candidates.append(manifest.get("default_input"))
+    for c in candidates:
+        if not c:
+            continue
+        try:
+            return Path(c).expanduser().read_text(encoding="utf-8")
+        except OSError:
+            continue
+    return None
+
+
+def stamp_offsets(merged: list[dict], document: str | None) -> int:
+    """Stamp ``quote_offset`` on each fact; returns how many got a real one.
+
+    Facts whose quote can't be located keep ``quote_offset: None`` rather than a
+    fake 0 — an unlocatable quote is usually a fabricated or ``...``-stitched
+    one (the same signal ``quote_verified`` carries), and sorting those to
+    position zero would put the least trustworthy facts first.
+    """
+    located = 0
+    for f in merged:
+        off = quote_offset(f.get("source_quote") or "", document) if document else None
+        f["quote_offset"] = off
+        if off is not None:
+            located += 1
+    return located
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
@@ -385,6 +452,14 @@ def main() -> None:
         f["n_samples"] = len(runs)
         f["passes"] = sorted({p.split("#")[0] for p in runs})
 
+    # WHEN each fact happened inside the chapter (issue #195). Done here rather
+    # than in extract_facts.verify_quotes so it lands on corpora that are
+    # already extracted: re-merging is free (the per-lens JSON is on disk),
+    # re-extracting is hours of local-LLM time. The merged file keeps its
+    # alphabetical sort for diffability — consumers re-order by this field.
+    document = load_document(manifest)
+    located = stamp_offsets(merged, document)
+
     campaignlib.atomic_write_json(output_path, merged)  # FR-014: atomic publish
 
     counts_by_lens: dict[str, int] = {}
@@ -407,6 +482,13 @@ def main() -> None:
     print(f"By type:               {dict(sorted(counts_by_type.items()))}")
     print(f"Quotes verified:       {verified}/{len(merged)} "
           f"({len(merged) - verified} unverified — review those first)")
+    if document is None:
+        print("Quote offsets:         none — the manifest's source document "
+              "could not be read, so facts carry no within-chapter order.",
+              file=sys.stderr)
+    else:
+        print(f"Quote offsets:         {located}/{len(merged)} located "
+              f"(within-chapter event order)")
     if samples > 1:
         print(f"Agreement (n_samples -> #facts): {dict(sorted(agree_hist.items()))}")
     print("Pass coverage:")
