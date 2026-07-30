@@ -159,13 +159,33 @@ class TestConfigReachesTheCommand:
         assert cmd[cmd.index("--method") + 1] == "embed"
 
     def test_extract_emits_no_endpoint_flag_when_unconfigured(self, client, captured):
-        """An unconfigured campaign must produce the pre-#197 command exactly —
-        no empty --embed-endpoint, no --method pinning the derived default."""
+        """An unconfigured campaign must not invent an embed *server* or pin the
+        derived merge method — no empty --embed-endpoint, no --method.
+
+        --embed-model is deliberately NOT in that list. It carries a real
+        default (the model embed_threshold is calibrated on), so it is always
+        emitted and the copyable command stays explicit about which embedding
+        model a merge would use. Asserting its absence is what let the stale
+        `nomic-ai/nomic-embed-text-v1.5` fallback survive the retirement of the
+        vLLM embed sidecar unnoticed."""
         client.get("/api/ensemble/run/extract", params={"chapters": ["ch01.md"]})
         cmd = captured[-1]
         assert "--embed-endpoint" not in cmd
-        assert "--embed-model" not in cmd
         assert "--method" not in cmd
+
+    def test_extract_always_names_the_embed_model(self, client, captured):
+        """The embed model must be explicit in the command, and must agree with
+        the model embed_threshold was calibrated on. These two travel together:
+        a threshold measured on one embedding model mis-clusters on another."""
+        from server.ensemble_config_shared import EnsembleMerge
+
+        client.get("/api/ensemble/run/extract", params={"chapters": ["ch01.md"]})
+        cmd = captured[-1]
+        assert cmd[cmd.index("--embed-model") + 1] == "qwen3-embedding:0.6b"
+        assert EnsembleMerge().embed_model == "qwen3-embedding:0.6b"
+        # An Ollama-style `name:tag`, not a vLLM `org/model` id. The retired
+        # sidecar's id is precisely the value that broke the 2026-07-29 run.
+        assert "/" not in EnsembleMerge().embed_model
 
     def test_extract_uses_configured_backend_and_endpoints(self, client, captured):
         self._put(client, {

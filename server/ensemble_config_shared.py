@@ -180,14 +180,27 @@ class EnsembleMerge(BaseModel):
     # suppresses the fallback warning.
     method: Literal["subject", "embed"] | None = None
     embed_endpoint: str = ""
-    embed_model: str = ""
+    # Must name a model the endpoint actually serves — unlike the threshold
+    # below, this is not a dial with a safe middle, it is an identity that
+    # either matches the server or 404s the whole merge. It was `""` until
+    # 2026-07-29, which fell through to ensemble_merge's DEFAULT_EMBED_MODEL,
+    # then `nomic-ai/nomic-embed-text-v1.5` — a *vLLM* id from the `vllm-embed`
+    # sidecar that was decommissioned 2026-06-30 in favour of Ollama. Every
+    # embed merge against an Ollama endpoint therefore died with
+    # `model "nomic-ai/nomic-embed-text-v1.5" not found`, after paying for the
+    # full extraction. Defaulted to the model the threshold below is calibrated
+    # on, so the pair is coherent out of the box; overridable per campaign and
+    # settable from the UI beside the endpoint it has to agree with.
+    embed_model: str = "qwen3-embedding:0.6b"
     # 0.94 is calibrated on qwen3-embedding:0.6b (calibrate_embed sweep,
     # 2026-07-28, issue #197): the dup/distinct bands overlap on that model, so
     # 0.94 is the precision-first pick — zero false merges on the labeled set
     # (the worst distinct pair, two different in-world dates, scores 0.9375).
     # Model-specific; recalibrate if the embed sidecar changes model. The
-    # nomic-era value was 0.93. Declared so it is settable, deliberately not
-    # surfaced in the UI.
+    # nomic-era value was 0.93 — which is why `embed_model` above defaults to
+    # the model this number was measured on rather than to "unset": a threshold
+    # calibrated on one model silently mis-clusters on another. Declared so it
+    # is settable, deliberately not surfaced in the UI.
     embed_threshold: float = 0.94
     similarity: float = 0.85
 

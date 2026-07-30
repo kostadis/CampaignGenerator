@@ -58,8 +58,13 @@ Users specify **campaign directory** + **session directory** on the Session Conf
   Also **Fact merge** — an *Embedding endpoint* for the per-chapter fact merge. Blank falls back to
   the subject merge, which groups on `(type, subject)` and so never compares facts filed under
   different subjects; the page states that consequence rather than letting a downgrade read as a
-  neutral setting. Stored as `merge.embed_endpoint`; `method`/`embed_model`/`embed_threshold`/
-  `similarity` stay YAML-only. Before
+  neutral setting. Alongside it, *Embedding model* — the id **as the endpoint names it**
+  (`qwen3-embedding:0.6b` for Ollama, a full `org/model` for vLLM). The two are saved as a pair
+  because the endpoint alone is an incomplete choice: pointing at an Ollama server while the model
+  id stayed a vLLM one is what made the 2026-07-29 Phandalin run die with `model … not found`
+  *after* paying for a full extraction. Stored as `merge.embed_endpoint` / `merge.embed_model`;
+  `method`/`embed_threshold`/`similarity` stay YAML-only (0.94 is a measured threshold tied to the
+  model above, not a dial — changing the model invalidates it, so re-run `calibrate_embed`). Before
   [#197](https://github.com/kostadis/CampaignGenerator/issues/197) this was unreachable from the UI
   entirely.
 - **Stage 1 — Extraction**: Runs `ensemble_batch` over the selected chapters.
