@@ -27,7 +27,14 @@ _REPO_ROOT = _CG_DIR.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from campaignlib import SourceDecision, compose_scenes, resolve_source  # noqa: E402
+import yaml  # noqa: E402
+
+from campaignlib import (  # noqa: E402
+    SourceDecision,
+    compose_scenes,
+    resolve_source,
+    route_plan,
+)
 
 ENSEMBLE = _CG_DIR / "ensemble.py"
 
@@ -137,10 +144,11 @@ def _resolve(chapter: Path, args):
     return resolve_source(chapter, campaign_dir, map_path=map_path)
 
 
-def _build_ensemble_cmd(chapter: Path, workdir: Path, args) -> list[str]:
+def _build_ensemble_cmd(chapter: Path, workdir: Path, args,
+                        plan_override: Path | None = None) -> list[str]:
     cmd = [sys.executable, str(ENSEMBLE), str(chapter), "--workdir", str(workdir)]
 
-    plan = args.plan
+    plan = str(plan_override) if plan_override else args.plan
     if plan is None:
         default_plan = Path("plan.yaml")
         if default_plan.exists():
@@ -230,6 +238,8 @@ def main():
         # a plain "chapter" fallback — is written to lineage.json so the merge
         # can stamp per-fact provenance and the run is auditable afterwards.
         input_path = chapter
+        plan_override = None
+        pass_kinds: dict[str, str] = {}
         if args.source == "auto":
             decision = _resolve(chapter, args)
             if decision.kind == "scenes":
@@ -240,14 +250,37 @@ def main():
         else:
             decision = SourceDecision(kind="chapter", inputs=[chapter],
                                       reason="--source chapter (forced)")
+
+        # Per-lens routing (#213 Phase 1.1): when the ladder resolved away
+        # from the chapter, factual lenses read the resolved input but
+        # chapter-bound lenses (interiority) keep reading the prose — the
+        # only artifact their subject matter exists in. Needs a plan file;
+        # without one the whole run uses the resolved input uniformly.
+        if decision.kind != "chapter":
+            plan_path = Path(args.plan) if args.plan else Path("plan.yaml")
+            if plan_path.exists():
+                plan = yaml.safe_load(plan_path.read_text(encoding="utf-8")) or {}
+                routed, pass_kinds = route_plan(plan, decision, chapter, input_path)
+                plan_override = workdir / "plan_resolved.yaml"
+                plan_override.write_text(
+                    yaml.safe_dump(routed, sort_keys=False), encoding="utf-8")
+
         (workdir / "lineage.json").write_text(
-            json.dumps({"chapter": chapter.stem, **decision.as_json()},
+            json.dumps({"chapter": chapter.stem, **decision.as_json(),
+                        "passes": pass_kinds},
                        indent=1, ensure_ascii=False),
             encoding="utf-8")
 
         with print_lock:
-            print(f"[extract+merge] {chapter.stem}  (source: {decision.kind})")
-        cmd = _build_ensemble_cmd(input_path, workdir, args)
+            routed_note = ""
+            if pass_kinds:
+                bound = sorted(n for n, k in pass_kinds.items() if k == "chapter")
+                if bound:
+                    routed_note = f", {'/'.join(bound)} -> chapter"
+            print(f"[extract+merge] {chapter.stem}  "
+                  f"(source: {decision.kind}{routed_note})")
+        cmd = _build_ensemble_cmd(input_path, workdir, args,
+                                  plan_override=plan_override)
         result = subprocess.run(cmd)
         ok = result.returncode == 0
         if not ok:

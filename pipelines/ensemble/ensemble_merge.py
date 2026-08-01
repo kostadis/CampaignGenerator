@@ -441,11 +441,24 @@ def stamp_lineage(merged: list[dict], workdir: Path) -> dict | None:
         return None
     if not isinstance(lineage, dict) or not lineage.get("kind"):
         return None
-    stamp = {"kind": lineage["kind"]}
-    if lineage.get("session"):
-        stamp["session"] = lineage["session"]
+    session = lineage.get("session")
+    pass_kinds = lineage.get("passes") or {}
     for f in merged:
-        f["source"] = dict(stamp)
+        # Per-lens routing (#213 Phase 1.1): a fact's provenance is the
+        # document(s) the lenses that produced it actually read. A fact
+        # merged across lenses with different sources gets the honest list,
+        # never a guess.
+        if pass_kinds and f.get("passes"):
+            kinds = sorted({pass_kinds.get(p, lineage["kind"])
+                            for p in f["passes"]})
+        else:
+            kinds = [lineage["kind"]]
+        stamp = {"kind": kinds[0] if len(kinds) == 1 else "mixed"}
+        if len(kinds) > 1:
+            stamp["kinds"] = kinds
+        if session:
+            stamp["session"] = session
+        f["source"] = stamp
     return lineage
 
 

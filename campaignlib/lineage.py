@@ -170,6 +170,53 @@ def resolve_source(chapter_path: Path, campaign_dir: Path,
     )
 
 
+# Lenses whose subject matter exists only in the chapter prose, regardless of
+# what the ladder resolves for the factual lenses. Interiority — why the
+# characters acted, how they felt — is authored into the memoir-voice
+# narration; it was never in the transcript, so scene extractions and session
+# summaries mostly do not contain it. Routing this lens to the chapter is also
+# zero-regression: it is exactly what the lens read before Phase 1.
+# (GM ruling, #213 Phase 1.1, 2026-07-31.)
+CHAPTER_BOUND_PASSES = ("interiority",)
+
+
+def route_plan(plan: dict, decision: "SourceDecision", chapter_path: Path,
+               resolved_input: Path) -> tuple[dict, dict[str, str]]:
+    """Give each extract-plan pass the document its lens should read.
+
+    Returns ``(routed_plan, pass_kinds)`` where ``pass_kinds`` maps pass name
+    to the lineage kind of the document it will read — the merge stamps
+    per-fact provenance from it.
+
+    - Passes matching :data:`CHAPTER_BOUND_PASSES` (by name or agent) read the
+      chapter prose (kind ``chapter``).
+    - Passes with an explicit ``document`` already in the plan are the plan
+      author's routing decision — left untouched, kind ``plan``.
+    - Every other pass reads the ladder-resolved input (``decision.kind``).
+    """
+    routed = {k: v for k, v in plan.items() if k != "passes"}
+    routed["passes"] = []
+    kinds: dict[str, str] = {}
+    for p in plan.get("passes") or []:
+        q = dict(p)
+        name = str(q.get("name") or q.get("agent") or "")
+        agent = str(q.get("agent") or "")
+        # Absolute paths: ensemble_extract resolves a pass's `document`
+        # relative to the plan file's own directory, and the routed plan
+        # lives in the workdir — relative paths would double up.
+        if q.get("document"):
+            kinds[name] = "plan"
+        elif any(t in name for t in CHAPTER_BOUND_PASSES) or \
+                any(t in agent for t in CHAPTER_BOUND_PASSES):
+            q["document"] = str(Path(chapter_path).resolve())
+            kinds[name] = "chapter"
+        else:
+            q["document"] = str(Path(resolved_input).resolve())
+            kinds[name] = decision.kind
+        routed["passes"].append(q)
+    return routed, kinds
+
+
 def compose_scenes(files: list[Path], dest: Path) -> Path:
     """Concatenate per-scene extraction files into one extraction input.
 

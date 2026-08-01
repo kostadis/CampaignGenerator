@@ -72,6 +72,7 @@ from .lineage import (
     compose_scenes,
     load_approved_rows,
     resolve_source,
+    route_plan,
 )
 from .scenes import (
     parse_gmassist_scenes,
@@ -175,6 +176,7 @@ __all__ = [
     "compose_scenes",
     "load_approved_rows",
     "resolve_source",
+    "route_plan",
     # scenes
     "parse_gmassist_scenes",
     "snapshot_scene_for_rerun",

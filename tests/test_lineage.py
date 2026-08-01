@@ -19,7 +19,8 @@ import yaml
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
-from campaignlib import compose_scenes, resolve_source  # noqa: E402
+from campaignlib import compose_scenes, resolve_source, route_plan  # noqa: E402
+from campaignlib.lineage import SourceDecision  # noqa: E402
 from campaignlib.textproc import split_frontmatter  # noqa: E402
 from pipelines.ensemble.ensemble_merge import stamp_lineage  # noqa: E402
 
@@ -167,6 +168,62 @@ def test_stamp_lineage_absent_file_stamps_nothing(tmp_path):
     facts = [{"fact": "a"}]
     assert stamp_lineage(facts, tmp_path) is None
     assert "source" not in facts[0]
+
+
+# ── per-lens routing (#213 Phase 1.1) ────────────────────────────────────
+
+PLAN = {"passes": [
+    {"name": "small", "agent": "extract_facts", "chunk_size": 6000},
+    {"name": "temporal", "agent": "extract_facts_temporal", "chunk_size": 15000},
+    {"name": "interiority", "agent": "extract_facts_interiority", "chunk_size": 15000},
+    {"name": "custom", "agent": "extract_facts", "document": "docs/other.md"},
+]}
+
+
+def test_route_plan_sends_interiority_to_chapter(tmp_path):
+    decision = SourceDecision(kind="scenes", session="20260505")
+    routed, kinds = route_plan(
+        PLAN, decision, Path("docs/chapters/chapter_40_x.md"),
+        Path("per_chapter/chapter_40_x/lineage_scenes.md"))
+    by_name = {p["name"]: p for p in routed["passes"]}
+    # Routed documents are absolute — ensemble_extract resolves relative
+    # documents against the plan file's directory (the workdir).
+    assert by_name["small"]["document"].endswith("lineage_scenes.md")
+    assert Path(by_name["small"]["document"]).is_absolute()
+    assert by_name["temporal"]["document"].endswith("lineage_scenes.md")
+    assert by_name["interiority"]["document"].endswith("docs/chapters/chapter_40_x.md")
+    assert Path(by_name["interiority"]["document"]).is_absolute()
+    assert by_name["custom"]["document"] == "docs/other.md"  # author routing kept
+    assert kinds == {"small": "scenes", "temporal": "scenes",
+                     "interiority": "chapter", "custom": "plan"}
+    # original plan untouched
+    assert "document" not in PLAN["passes"][0]
+
+
+def test_stamp_lineage_per_pass_kinds(tmp_path):
+    (tmp_path / "lineage.json").write_text(json.dumps(
+        {"chapter": "chapter_40_x", "kind": "scenes", "session": "20260505",
+         "passes": {"small": "scenes", "temporal": "scenes",
+                    "interiority": "chapter"}}))
+    facts = [
+        {"fact": "orc nine died", "passes": ["small", "temporal"]},
+        {"fact": "vukradin felt doubt", "passes": ["interiority"]},
+        {"fact": "both saw it", "passes": ["interiority", "small"]},
+    ]
+    stamp_lineage(facts, tmp_path)
+    assert facts[0]["source"] == {"kind": "scenes", "session": "20260505"}
+    assert facts[1]["source"] == {"kind": "chapter", "session": "20260505"}
+    assert facts[2]["source"] == {"kind": "mixed",
+                                  "kinds": ["chapter", "scenes"],
+                                  "session": "20260505"}
+
+
+def test_stamp_lineage_without_passes_is_uniform(tmp_path):
+    (tmp_path / "lineage.json").write_text(json.dumps(
+        {"chapter": "c", "kind": "scenes", "session": "20260505"}))
+    facts = [{"fact": "a", "passes": ["interiority"]}]
+    stamp_lineage(facts, tmp_path)
+    assert facts[0]["source"] == {"kind": "scenes", "session": "20260505"}
 
 
 # ── batch report smoke test ──────────────────────────────────────────────
