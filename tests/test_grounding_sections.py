@@ -92,6 +92,40 @@ def test_planning_threads_section_renders_registry(tmp_path):
     assert "notes (optional, no input)" in r.stdout   # optional section skipped
 
 
+def test_planning_emerging_section_layers_pending_proposals(tmp_path):
+    camp = _campaign(tmp_path)
+    (camp / "docs/ensemble/thread_proposals.yaml").write_text(yaml.safe_dump({
+        "proposals": [
+            {"norm": "a", "title": "Carver's dark influence", "status": "pending",
+             "matches": "carver-march", "chapters": [35],
+             "evidence": [{"chapter": 35, "fact": "Something dark threads in."}]},
+            {"norm": "b", "title": "The drowned gate", "status": "pending",
+             "matches": None, "chapters": [21, 44],
+             "evidence": [{"chapter": 21, "fact": "A gate lies drowned."}]},
+            {"norm": "c", "title": "Old ruling", "status": "rejected",
+             "matches": None, "chapters": [3], "evidence": []},
+        ]}))
+    r = run_cli(camp, "build", "--doc", "planning")
+    assert r.returncode == 0, r.stderr
+    draft = (camp / "docs/planning_draft.md").read_text()
+    assert "Emerging Threads" in draft
+    assert "Continuations of ratified threads" in draft
+    assert "`carver-march`" in draft
+    assert "The drowned gate" in draft
+    assert "Old ruling" not in draft       # ruled proposals never resurface
+    assert "not yet ruled on" in draft
+
+
+def test_synthesis_section_never_spends_without_backend(tmp_path):
+    camp = _campaign(tmp_path)
+    d = camp / "docs/ensemble/merged_dossiers"
+    d.mkdir(parents=True)
+    (d / "faction_kraken_society.md").write_text("---\nname: k\n---\nDossier.")
+    r = run_cli(camp, "build", "--doc", "planning")
+    assert r.returncode == 0, r.stderr
+    assert "factions (synthesis — pass --backend to render)" in r.stdout
+
+
 def test_spine_window_flag_scopes_recent_section(tmp_path):
     camp = _campaign(tmp_path)
     r = run_cli(camp, "build", "--doc", "campaign_state", "--window", "1")

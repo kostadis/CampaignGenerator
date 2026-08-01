@@ -79,8 +79,20 @@ SPECS: dict[str, list[Section]] = {
         Section("recent_events", "spine", window=4),
         Section("party", "copy", source="docs/party.md"),
     ],
+    # planning.md is the GM's threads-at-play cockpit — a creative input, not
+    # a state dump (GM, 2026-07-31: campaign_state/world_state are "what's
+    # going on", party.md is "what the party is up to", planning.md "is
+    # supposed to help me see the threads that are at play"). It layers by
+    # certainty: ratified canon, then the un-ruled harvest, then the
+    # explicitly-non-canon idea surface, then faction outlook and GM notes.
     "planning": [
         Section("threads", "threads"),
+        Section("emerging", "emerging",
+                source="docs/ensemble/thread_proposals.yaml", optional=True),
+        Section("speculations", "copy",
+                source="notes/thread_speculations.md", optional=True),
+        Section("factions", "synthesis", dossier_prefixes=["faction_"],
+                optional=True),
         Section("notes", "copy", source="docs/planning_notes.md", optional=True),
     ],
 }
@@ -96,7 +108,7 @@ def section_inputs(sec: Section, args) -> list[Path]:
         return [Path("docs/ensemble/events.jsonl")]
     if sec.mode == "threads":
         return [Path("docs/thread_registry.yaml")]
-    if sec.mode == "copy":
+    if sec.mode in ("copy", "emerging"):
         return [Path(sec.source)]
     raise ValueError(sec.mode)
 
@@ -168,6 +180,55 @@ def render_copy(sec: Section, args) -> str:
     return src.read_text(encoding="utf-8").strip()
 
 
+def render_emerging(sec: Section, args) -> str:
+    """Digest of un-ruled thread proposals — the maybe-at-play layer.
+
+    Recency-sorted (latest evidence chapter first). Matched-to-canon
+    proposals lead, since they are ratifications waiting to happen. One
+    evidence line each keeps 100+ proposals scannable.
+    """
+    import yaml
+    data = yaml.safe_load(Path(sec.source).read_text(encoding="utf-8")) or {}
+    pending = [p for p in data.get("proposals") or []
+               if isinstance(p, dict) and p.get("status") == "pending"]
+    ruled = len([p for p in data.get("proposals") or []
+                 if isinstance(p, dict) and p.get("status") != "pending"])
+
+    def latest(p):
+        return max(p.get("chapters") or [0])
+
+    matched = sorted((p for p in pending if p.get("matches")),
+                     key=latest, reverse=True)
+    fresh = sorted((p for p in pending if not p.get("matches")),
+                   key=latest, reverse=True)
+    lines = [
+        "## Emerging Threads (harvested, not yet ruled on)",
+        "",
+        f"_{len(pending)} pending proposal(s) from the extraction corpus "
+        f"({ruled} already ruled). These are threads the record *suggests* are "
+        "at play — ratify, alias, or reject via thread-triage; nothing here is "
+        "canon._",
+        "",
+    ]
+    if matched:
+        lines.append("### Continuations of ratified threads")
+        for p in matched:
+            lines.append(f"- **{p.get('title')}** -> `{p['matches']}` "
+                         f"(ch {p.get('chapters')})")
+            ev = (p.get("evidence") or [{}])[0]
+            if ev.get("fact"):
+                lines.append(f"  - ch{ev.get('chapter')}: {ev['fact']}")
+        lines.append("")
+    if fresh:
+        lines.append("### New thread candidates (latest first)")
+        for p in fresh:
+            lines.append(f"- **{p.get('title')}** (ch {p.get('chapters')})")
+            ev = (p.get("evidence") or [{}])[0]
+            if ev.get("fact"):
+                lines.append(f"  - ch{ev.get('chapter')}: {ev['fact']}")
+    return "\n".join(lines)
+
+
 def render_synthesis(sec: Section, args, inputs: list[Path], out_file: Path) -> None:
     """Type-scoped synthesise_world_state run — one narrow section per call."""
     cmd = [sys.executable,
@@ -201,6 +262,8 @@ def build_section(sec: Section, args, section_file: Path, sha: str,
         body = render_spine(sec, args)
     elif sec.mode == "threads":
         body = render_threads(sec, args)
+    elif sec.mode == "emerging":
+        body = render_emerging(sec, args)
     else:
         body = render_copy(sec, args)
     section_file.parent.mkdir(parents=True, exist_ok=True)
@@ -289,6 +352,14 @@ def main():
     for sec in sections:
         f = SECTIONS_DIR / args.doc / f"{sec.name}.md"
         inputs = section_inputs(sec, args)
+        if sec.mode == "synthesis" and not inputs:
+            skipped.append(f"{sec.name} (no dossiers matched)")
+            continue
+        if sec.mode == "synthesis" and not args.backend:
+            # An LLM section never spends tokens implicitly — a build without
+            # --backend is a deterministic-only build by definition.
+            skipped.append(f"{sec.name} (synthesis — pass --backend to render)")
+            continue
         if any(not p.exists() for p in inputs):
             if sec.optional:
                 skipped.append(f"{sec.name} (optional, no input)")
