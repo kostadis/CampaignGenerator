@@ -89,6 +89,7 @@ SPECS: dict[str, list[Section]] = {
         Section("threads", "threads"),
         Section("emerging", "emerging",
                 source="docs/ensemble/thread_proposals.yaml", optional=True),
+        Section("npc_outlook", "npc_outlook", optional=True),
         Section("speculations", "copy",
                 source="notes/thread_speculations.md", optional=True),
         Section("factions", "synthesis", dossier_prefixes=["faction_"],
@@ -110,6 +111,8 @@ def section_inputs(sec: Section, args) -> list[Path]:
         return [Path("docs/thread_registry.yaml")]
     if sec.mode in ("copy", "emerging"):
         return [Path(sec.source)]
+    if sec.mode == "npc_outlook":
+        return []          # per-NPC freshness handled in build_outlook_section
     raise ValueError(sec.mode)
 
 
@@ -229,6 +232,100 @@ def render_emerging(sec: Section, args) -> str:
     return "\n".join(lines)
 
 
+def outlook_selection(args) -> list[str]:
+    """Which NPCs rate an outlook block — the GM's salience decision.
+
+    ``--npcs a,b`` wins; otherwise `npc_*` entries in
+    narrative_importance.yaml's force_include (the existing GM curation
+    knob). Never inferred from fact counts — salience stays with the GM.
+    """
+    if getattr(args, "npcs", None):
+        return [s.strip() for s in args.npcs.split(",") if s.strip()]
+    imp = Path("docs/ensemble/narrative_importance.yaml")
+    if not imp.exists():
+        return []
+    import yaml
+    data = yaml.safe_load(imp.read_text(encoding="utf-8")) or {}
+    slugs = []
+    for entry in data.get("force_include") or []:
+        stem = Path(str(entry)).stem
+        if stem.startswith("npc_"):
+            slugs.append(stem[len("npc_"):])
+    return slugs
+
+
+def outlook_inputs(slug: str) -> list[Path]:
+    """The per-NPC freshness basis: this NPC's ensemble dossier + registry.
+
+    ENSEMBLE-PATH ONLY (GM, 2026-07-31: docs/npcs/ build-dossiers is the
+    old path). The dossier is merged_dossiers/npc_<slug>.md — the
+    type-merge-curated layer the ensemble planning synthesis itself
+    consumes — falling back to state_dossiers/ where the type-merge has
+    not run yet.
+
+    The spine window is provided as prompt context but deliberately NOT
+    hashed — a chapter in which the NPC did nothing must not re-render
+    their block; anything they did do lands in their state dossier.
+    """
+    dossier = Path(f"docs/ensemble/merged_dossiers/npc_{slug}.md")
+    if not dossier.exists():
+        dossier = Path(f"docs/ensemble/state_dossiers/npc_{slug}.md")
+    candidates = [dossier, Path("docs/thread_registry.yaml")]
+    return [p for p in candidates if p.exists()]
+
+
+def render_outlook_block(slug: str, inputs: list[Path], args) -> str:
+    from campaignlib import client_from_args, load_agent_prompt, stream_api
+    system = load_agent_prompt("planning_npc_outlook")
+    parts = []
+    for p in inputs:
+        parts.append(f"=== {p} ===\n{p.read_text(encoding='utf-8')}")
+    spine = Path(SECTIONS_DIR / "campaign_state" / "recent_events.md")
+    if spine.exists():
+        parts.append(f"=== recent events window ===\n"
+                     f"{spine.read_text(encoding='utf-8')}")
+    user = "\n\n".join(parts) + f"\n\nWrite the outlook block for: {slug}"
+    client = client_from_args(args)
+    return stream_api(client, system, user, args.model,
+                      max_tokens=args.max_tokens or 2048).strip()
+
+
+def build_outlook_section(sec: Section, args, section_file: Path) -> tuple[list[str], list[str]]:
+    """Per-NPC block files, each with its own inputs-sha; combined section."""
+    slugs = outlook_selection(args)
+    block_dir = section_file.parent / "npc_outlook"
+    rebuilt, skipped = [], []
+    for slug in slugs:
+        inputs = outlook_inputs(slug)
+        if not any("dossiers" in str(p) for p in inputs):
+            skipped.append(f"npc_outlook/{slug} (no ensemble dossier found)")
+            continue
+        block_file = block_dir / f"{slug}.md"
+        sha = inputs_sha(inputs)
+        if not args.force and current_stamp(block_file) == sha:
+            skipped.append(f"npc_outlook/{slug} (fresh)")
+            continue
+        body = render_outlook_block(slug, inputs, args)
+        block_file.parent.mkdir(parents=True, exist_ok=True)
+        block_file.write_text(
+            f"<!-- section: {slug} | inputs-sha: {sha} -->\n{body}\n",
+            encoding="utf-8")
+        rebuilt.append(f"npc_outlook/{slug}")
+    # Combined section = concatenation of the per-NPC blocks (stamp = their shas)
+    blocks = sorted(block_dir.glob("*.md")) if block_dir.exists() else []
+    combined_sha = inputs_sha(blocks)
+    parts = ["## NPC Outlook (antagonist play, per GM salience list)", ""]
+    for b in blocks:
+        text = STAMP_RE.sub("", b.read_text(encoding="utf-8")).strip()
+        parts.append(text)
+        parts.append("")
+    section_file.parent.mkdir(parents=True, exist_ok=True)
+    section_file.write_text(
+        f"<!-- section: {sec.name} | inputs-sha: {combined_sha} -->\n"
+        + "\n".join(parts).strip() + "\n", encoding="utf-8")
+    return rebuilt, skipped
+
+
 def render_synthesis(sec: Section, args, inputs: list[Path], out_file: Path) -> None:
     """Type-scoped synthesise_world_state run — one narrow section per call."""
     cmd = [sys.executable,
@@ -311,6 +408,10 @@ def main():
                        help="Entity registry path forwarded to synthesis")
         p.add_argument("--window", type=int, default=None,
                        help="Override the spine section's chapter window")
+        p.add_argument("--npcs", default=None,
+                       help="Comma-separated NPC slugs for the outlook section "
+                            "(default: npc_* entries in narrative_importance "
+                            "force_include)")
         if name == "build":
             p.add_argument("--force", action="store_true",
                            help="Re-render even when inputs-sha is unchanged")
@@ -334,6 +435,11 @@ def main():
         print(f"{'section':<16} {'mode':<10} {'state':<9} inputs")
         for sec in SPECS[args.doc]:
             f = SECTIONS_DIR / args.doc / f"{sec.name}.md"
+            if sec.mode == "npc_outlook":
+                slugs = outlook_selection(args)
+                print(f"{sec.name:<16} {sec.mode:<10} "
+                      f"{'-':<9} {len(slugs)} npc(s) on the salience list")
+                continue
             inputs = section_inputs(sec, args)
             missing = [p for p in inputs if not p.exists()]
             if missing and sec.optional:
@@ -351,6 +457,18 @@ def main():
     rebuilt, skipped = [], []
     for sec in sections:
         f = SECTIONS_DIR / args.doc / f"{sec.name}.md"
+        if sec.mode == "npc_outlook":
+            slugs = outlook_selection(args)
+            if not slugs:
+                skipped.append(f"{sec.name} (no GM salience list)")
+                continue
+            if not args.backend:
+                skipped.append(f"{sec.name} (synthesis — pass --backend to render)")
+                continue
+            rb, sk = build_outlook_section(sec, args, f)
+            rebuilt += rb
+            skipped += sk
+            continue
         inputs = section_inputs(sec, args)
         if sec.mode == "synthesis" and not inputs:
             skipped.append(f"{sec.name} (no dossiers matched)")

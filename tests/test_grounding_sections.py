@@ -116,6 +116,51 @@ def test_planning_emerging_section_layers_pending_proposals(tmp_path):
     assert "not yet ruled on" in draft
 
 
+def test_npc_outlook_selection_and_guards(tmp_path):
+    camp = _campaign(tmp_path)
+    # no salience list -> section skipped
+    r = run_cli(camp, "build", "--doc", "planning")
+    assert "npc_outlook (no GM salience list)" in r.stdout
+    # salience list but no backend -> no-implicit-spend guard
+    (camp / "docs/ensemble/narrative_importance.yaml").write_text(yaml.safe_dump(
+        {"force_include": ["npc_adabra.md", "faction_kraken.md"]}))
+    r2 = run_cli(camp, "build", "--doc", "planning")
+    assert "npc_outlook (synthesis — pass --backend to render)" in r2.stdout
+
+
+def test_npc_outlook_per_npc_freshness(tmp_path, monkeypatch):
+    import importlib
+    gs = importlib.import_module("pipelines.grounding.grounding_sections")
+    camp = _campaign(tmp_path)
+    (camp / "docs/ensemble/state_dossiers").mkdir(parents=True)
+    (camp / "docs/ensemble/state_dossiers/npc_adabra.md").write_text("Adabra dossier.")
+    calls = []
+    monkeypatch.setattr(gs, "render_outlook_block",
+                        lambda slug, inputs, args: calls.append(slug) or f"### {slug}\nBlock.")
+    monkeypatch.chdir(camp)
+
+    class A:
+        npcs = "adabra"
+        force = False
+        model = None
+        max_tokens = None
+        backend = "dgx"
+
+    sec = gs.Section("npc_outlook", "npc_outlook", optional=True)
+    f = gs.SECTIONS_DIR / "planning" / "npc_outlook.md"
+    rb, sk = gs.build_outlook_section(sec, A, f)
+    assert rb == ["npc_outlook/adabra"] and calls == ["adabra"]
+    # unchanged inputs -> fresh, renderer NOT called again
+    rb2, sk2 = gs.build_outlook_section(sec, A, f)
+    assert rb2 == [] and "npc_outlook/adabra (fresh)" in sk2
+    assert calls == ["adabra"]
+    # dossier edit -> re-render
+    (camp / "docs/ensemble/state_dossiers/npc_adabra.md").write_text("Adabra dossier v2.")
+    rb3, _ = gs.build_outlook_section(sec, A, f)
+    assert rb3 == ["npc_outlook/adabra"] and calls == ["adabra", "adabra"]
+    assert "### adabra" in f.read_text()
+
+
 def test_synthesis_section_never_spends_without_backend(tmp_path):
     camp = _campaign(tmp_path)
     d = camp / "docs/ensemble/merged_dossiers"
