@@ -23,6 +23,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 _CG_DIR = Path(__file__).parent.resolve()
+_REPO_ROOT = _CG_DIR.parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from campaignlib import SourceDecision, compose_scenes, resolve_source  # noqa: E402
+
 ENSEMBLE = _CG_DIR / "ensemble.py"
 
 
@@ -49,6 +55,31 @@ def _build_parser():
     p.add_argument(
         "--chapter-parallel", type=int, default=3, metavar="N",
         help="Chapters to run concurrently (default: 3)",
+    )
+
+    # Source-lineage ladder (issue #213 Phase 1)
+    p.add_argument(
+        "--source", choices=["auto", "chapter"], default="auto",
+        help="Extraction input per chapter. 'auto' walks the lineage ladder "
+             "(reviewed scene extractions > structured session-summary > "
+             "chapter prose), gated on approved summary_map.yaml rows — with "
+             "no approved rows it behaves exactly like 'chapter'. 'chapter' "
+             "forces the pre-ladder behaviour. (default: auto)",
+    )
+    p.add_argument(
+        "--campaign-dir", default=".", metavar="DIR",
+        help="Campaign root the summary map and session dirs resolve against "
+             "(default: cwd)",
+    )
+    p.add_argument(
+        "--summary-map", default=None, metavar="FILE",
+        help="Chapter<->session join file (default: "
+             "<campaign-dir>/docs/ensemble/summary_map.yaml)",
+    )
+    p.add_argument(
+        "--lineage-report", action="store_true",
+        help="Print the per-chapter source decision table and exit — no "
+             "extraction, no model calls.",
     )
 
     # ensemble.py pass-through flags
@@ -96,6 +127,14 @@ def _build_parser():
     p.add_argument("--merge-config", metavar="YAML",
                    help="Merge-config YAML (passed to ensemble.py)")
     return p
+
+
+def _resolve(chapter: Path, args):
+    """Ladder decision for one chapter (issue #213 Phase 1)."""
+    campaign_dir = Path(args.campaign_dir)
+    map_path = (Path(args.summary_map) if args.summary_map
+                else campaign_dir / "docs/ensemble/summary_map.yaml")
+    return resolve_source(chapter, campaign_dir, map_path=map_path)
 
 
 def _build_ensemble_cmd(chapter: Path, workdir: Path, args) -> list[str]:
@@ -158,6 +197,15 @@ def main():
         print(f"No chapter files matched: {' '.join(args.chapters)}", file=sys.stderr)
         sys.exit(1)
 
+    if args.lineage_report:
+        print(f"{'chapter':<44} {'source':<8} {'session':<9} reason")
+        print("-" * 100)
+        for chapter in chapters:
+            d = _resolve(chapter, args)
+            print(f"{chapter.stem[:43]:<44} {d.kind:<8} "
+                  f"{d.session or '-':<9} {d.reason}")
+        return
+
     per_chapter_dir = Path(args.per_chapter_dir)
     per_chapter_dir.mkdir(parents=True, exist_ok=True)
     out_path = Path(args.out)
@@ -176,10 +224,30 @@ def main():
             with print_lock:
                 print(f"[skip]          {chapter.stem}")
             return chapter, True
-        with print_lock:
-            print(f"[extract+merge] {chapter.stem}")
         workdir.mkdir(exist_ok=True)
-        cmd = _build_ensemble_cmd(chapter, workdir, args)
+
+        # Source-lineage ladder (issue #213 Phase 1). The decision — including
+        # a plain "chapter" fallback — is written to lineage.json so the merge
+        # can stamp per-fact provenance and the run is auditable afterwards.
+        input_path = chapter
+        if args.source == "auto":
+            decision = _resolve(chapter, args)
+            if decision.kind == "scenes":
+                input_path = compose_scenes(
+                    decision.inputs, workdir / "lineage_scenes.md")
+            elif decision.kind == "summary":
+                input_path = decision.inputs[0]
+        else:
+            decision = SourceDecision(kind="chapter", inputs=[chapter],
+                                      reason="--source chapter (forced)")
+        (workdir / "lineage.json").write_text(
+            json.dumps({"chapter": chapter.stem, **decision.as_json()},
+                       indent=1, ensure_ascii=False),
+            encoding="utf-8")
+
+        with print_lock:
+            print(f"[extract+merge] {chapter.stem}  (source: {decision.kind})")
+        cmd = _build_ensemble_cmd(input_path, workdir, args)
         result = subprocess.run(cmd)
         ok = result.returncode == 0
         if not ok:
