@@ -54,6 +54,7 @@ from campaignlib import (
     load_agent_prompt,
     prepare_chunks,
     run_batch,
+    split_frontmatter,
     stream_api,
     wiring_get,
 )
@@ -496,6 +497,10 @@ def main() -> None:
     )
 
     text = Path(args.input).expanduser().read_text(encoding="utf-8")
+    # Chapter files carry identity frontmatter (chapter/session/title — issue
+    # #213); it is metadata, not chapter content, and must not be extracted
+    # from as prose.
+    _, text = split_frontmatter(text)
     if not text.strip():
         print(f"Error: input file is empty: {args.input}", file=sys.stderr)
         sys.exit(1)
