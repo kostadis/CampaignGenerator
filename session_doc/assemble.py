@@ -83,6 +83,16 @@ def main() -> None:
     parser.add_argument("--title", metavar="TEXT", default=None,
                         help="Top-level H1 title. Defaults to the input directory's "
                              "parent dir name (typically the session date).")
+    parser.add_argument("--chapter", type=int, metavar="N", default=None,
+                        help="Canonical chapter number (issue #213). When given, the "
+                             "assembled document opens with YAML frontmatter "
+                             "(chapter/session/title) and the H1 becomes "
+                             "'# Chapter N <title>'. This is where chapter identity "
+                             "is minted — the release append and split carry it.")
+    parser.add_argument("--session", metavar="YYYYMMDD", default=None,
+                        help="Session date for the frontmatter. Defaults to the "
+                             "first YYYYMMDD-shaped directory name on the input "
+                             "path (summaries/YYYYMMDD/narration).")
     parser.add_argument("--pattern", default="session_doc_scene_*.md",
                         help="Glob pattern for per-scene files (default: "
                              "session_doc_scene_*.md).")
@@ -123,7 +133,29 @@ def main() -> None:
         sys.exit(1)
 
     title = args.title or in_dir.parent.name or "Session"
-    parts: list[str] = [f"# {title}\n"]
+    if args.chapter is not None:
+        # Minting point for chapter identity (issue #213 Phase 0). The bare
+        # title goes in the frontmatter; a pre-prefixed --title like
+        # "Chapter 37 — A Gem of a Problem" is stripped so the number is
+        # stated exactly once, by --chapter.
+        bare_title = re.sub(r"^Chapter\s+[\d.]+\s*[:\-—]?\s*", "", title).strip()
+        session = args.session
+        if session is None:
+            for part in [in_dir.name, *(p.name for p in in_dir.parents)]:
+                if re.fullmatch(r"\d{8}", part):
+                    session = part
+                    break
+        meta_lines = [f"chapter: {args.chapter}"]
+        if session:
+            meta_lines.append(f"session: '{session}'")
+        if bare_title:
+            quoted = bare_title.replace("'", "''")
+            meta_lines.append(f"title: '{quoted}'")
+        frontmatter = "---\n" + "\n".join(meta_lines) + "\n---\n"
+        heading = f"# Chapter {args.chapter} {bare_title}".rstrip()
+        parts: list[str] = [frontmatter + "\n" + heading + "\n"]
+    else:
+        parts = [f"# {title}\n"]
     for scene_num, meta, body, path in scenes:
         scene_name = meta.get("scene_name") or humanise_slug(meta.get("slug", "scene"))
         narrator = meta.get("narrator", "")
