@@ -77,6 +77,13 @@ SPECS: dict[str, list[Section]] = {
     ],
     "campaign_state": [
         Section("recent_events", "spine", window=4),
+        # Module-progress audit: every tracking-list item judged against the
+        # event spine (DONE/PARTIAL/NOT SEEN with chapter citations). LLM
+        # proposes, the GM verifies line by line at the draft gate — the
+        # lists carry no completion markers of their own (GM, 2026-07-31:
+        # "campaign_state is supposed to tell me how many events from the
+        # tracking lists are completed").
+        Section("tracking", "tracking", optional=True),
         Section("party", "copy", source="docs/party.md"),
     ],
     # planning.md is the GM's threads-at-play cockpit — a creative input, not
@@ -113,6 +120,9 @@ def section_inputs(sec: Section, args) -> list[Path]:
         return [Path(sec.source)]
     if sec.mode == "npc_outlook":
         return []          # per-NPC freshness handled in build_outlook_section
+    if sec.mode == "tracking":
+        lists = sorted(Path("docs").glob("tracking*.txt"))
+        return lists + [Path("docs/ensemble/events.jsonl")] if lists else []
     raise ValueError(sec.mode)
 
 
@@ -326,6 +336,33 @@ def build_outlook_section(sec: Section, args, section_file: Path) -> tuple[list[
     return rebuilt, skipped
 
 
+def render_tracking(sec: Section, args, inputs: list[Path]) -> str:
+    """Module-progress audit: tracking lists judged against the event spine.
+
+    LLM call — the completion judgment ("did 'Wyvern attack' happen?") is
+    semantic matching the spine's phrasing will never satisfy verbatim. The
+    GM verifies line by line at the draft gate; nothing downstream consumes
+    the verdicts.
+    """
+    from campaignlib import client_from_args, load_agent_prompt, stream_api
+    from pipelines.grounding.event_spine import load_store, _row_order
+
+    lists = [p for p in inputs if p.suffix == ".txt"]
+    parts = []
+    for p in lists:
+        parts.append(f"=== TRACKING LIST: {p.stem} ===\n"
+                     f"{p.read_text(encoding='utf-8')}")
+    rows = sorted(load_store(Path("docs/ensemble/events.jsonl")), key=_row_order)
+    spine = "\n".join(f"ch{r.get('chapter', '?')}: {r['event']}" for r in rows)
+    parts.append(f"=== EVENT SPINE (what actually happened) ===\n{spine}")
+    user = "\n\n".join(parts) + "\n\nAudit every list now."
+    client = client_from_args(args)
+    body = stream_api(client, load_agent_prompt("tracking_completion"), user,
+                      args.model, max_tokens=args.max_tokens or 8000)
+    return ("## Module Tracking (completion audit — LLM-proposed, verify "
+            "line by line)\n\n" + body.strip())
+
+
 def render_synthesis(sec: Section, args, inputs: list[Path], out_file: Path) -> None:
     """Type-scoped synthesise_world_state run — one narrow section per call."""
     cmd = [sys.executable,
@@ -361,6 +398,8 @@ def build_section(sec: Section, args, section_file: Path, sha: str,
         body = render_threads(sec, args)
     elif sec.mode == "emerging":
         body = render_emerging(sec, args)
+    elif sec.mode == "tracking":
+        body = render_tracking(sec, args, inputs)
     else:
         body = render_copy(sec, args)
     section_file.parent.mkdir(parents=True, exist_ok=True)
@@ -470,6 +509,12 @@ def main():
             skipped += sk
             continue
         inputs = section_inputs(sec, args)
+        if sec.mode == "tracking" and not inputs:
+            skipped.append(f"{sec.name} (no tracking lists)")
+            continue
+        if sec.mode == "tracking" and not args.backend:
+            skipped.append(f"{sec.name} (synthesis — pass --backend to render)")
+            continue
         if sec.mode == "synthesis" and not inputs:
             skipped.append(f"{sec.name} (no dossiers matched)")
             continue

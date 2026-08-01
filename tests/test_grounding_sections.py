@@ -161,6 +161,18 @@ def test_npc_outlook_per_npc_freshness(tmp_path, monkeypatch):
     assert "### adabra" in f.read_text()
 
 
+def test_tracking_section_guards(tmp_path):
+    camp = _campaign(tmp_path)
+    # no tracking lists -> clean skip
+    r = run_cli(camp, "build", "--doc", "campaign_state")
+    assert "tracking (no tracking lists)" in r.stdout
+    # lists present but no backend -> no-implicit-spend guard
+    (camp / "docs/tracking-storm-lords-wrath.txt").write_text(
+        "# Main Quests\nAttack on the Wayside Inn\n")
+    r2 = run_cli(camp, "build", "--doc", "campaign_state")
+    assert "tracking (synthesis — pass --backend to render)" in r2.stdout
+
+
 def test_synthesis_section_never_spends_without_backend(tmp_path):
     camp = _campaign(tmp_path)
     d = camp / "docs/ensemble/merged_dossiers"
