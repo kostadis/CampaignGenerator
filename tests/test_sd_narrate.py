@@ -1,4 +1,5 @@
-"""Tests for sd_narrate.py's --batch path (spec 004-claude-api-batch, T020).
+"""Tests for sd_narrate.py's --batch path (spec 004-claude-api-batch, T020)
+and the global-examples routing into scene mode.
 
 sd_narrate's per-scene loop is order-dependent: each scene's ``handoff`` line
 (the last line of its narration) feeds directly into the next scene's prompt,
@@ -216,3 +217,56 @@ def test_default_path_uses_stream_api_not_run_single_batch(monkeypatch, tmp_path
         "session_doc_scene_01_scene_one.md",
         "session_doc_scene_02_scene_two.md",
     ]
+
+
+# ── Global examples reach scene mode ────────────────────────────────────────
+
+HOUSE_STYLE = "The deadpan lands in its own one-line paragraph. And he is correct."
+ALICE_STYLE = "I do not explain the joke. I let it sit there."
+
+
+def _write_examples(tmp_path: Path) -> Path:
+    """A non-character file (global) plus a first-name-stemmed one (per-char)."""
+    ex = tmp_path / "examples"
+    ex.mkdir()
+    (ex / "house_style.md").write_text(HOUSE_STYLE, encoding="utf-8")
+    (ex / "alice.md").write_text(ALICE_STYLE, encoding="utf-8")
+    return ex
+
+
+def test_global_examples_reach_scene_mode_prompts(monkeypatch, tmp_path):
+    """Every plan section carries a ``scene:`` line, so scene mode is the only
+    mode the pipeline actually runs. The global block used to be suppressed
+    there (``None if scene_name else examples_text``), which made a non-
+    character example file silently inert. It must reach every scene now.
+    """
+    paths = _write_fixtures(tmp_path)
+    ex_dir = _write_examples(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--examples", str(ex_dir), "--characters", "Alice, Bob"))
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 2
+    for call in fake_stream.calls:
+        assert HOUSE_STYLE in call["system"]
+
+    # Routing still holds: alice.md is per-character, so it reaches Alice's
+    # scene only — and never leaks into the global block Bob also sees.
+    assert ALICE_STYLE in fake_stream.calls[0]["system"]
+    assert ALICE_STYLE not in fake_stream.calls[1]["system"]
+
+
+def test_no_examples_dir_leaves_system_prompt_without_style_block(monkeypatch, tmp_path):
+    """Guard the other direction: unrouted examples must not appear from nowhere."""
+    paths = _write_fixtures(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+
+    monkeypatch.setattr(sys, "argv", _base_argv(paths))
+    sd_narrate.main()
+
+    for call in fake_stream.calls:
+        assert "STYLE REFERENCE" not in call["system"]
