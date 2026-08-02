@@ -488,7 +488,7 @@ def main() -> None:
                              "is also accepted. CLI flags override these.")
     parser.add_argument("--method", choices=["subject", "embed"], default=None,
                         help="Merge method. 'subject' = group by (type, subject) "
-                             "then SequenceMatcher dedup; 'embed' = nomic "
+                             "then SequenceMatcher dedup; 'embed' = "
                              "embedding-cosine clustering partitioned by type. "
                              "Default: 'embed' if an embed endpoint is resolved, "
                              "else 'subject'.")
