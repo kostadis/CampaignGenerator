@@ -286,3 +286,79 @@ def test_partial_degrade_writes_draft_with_omission_block(tmp_path):
     assert notice_pos < header_end
     assert "notes" in draft[:header_end] and "optional, no input" in draft[:header_end]
     assert draft.index("# Planning (draft)") < notice_pos
+
+
+# ── Backend seam: --backend/--endpoint/--batch come from add_backend_args ───
+#
+# This CLI used to hand-roll --backend/--endpoint and so never grew --batch,
+# leaving the 50%-cost Claude batch path unreachable for the only sections
+# that actually spend tokens. Adopting the seam had to happen WITHOUT
+# defaulting --backend to "anthropic", because the no-implicit-spend guard
+# keys on the flag being falsy when omitted.
+
+
+def test_build_exposes_the_uniform_batch_flag(tmp_path):
+    """--batch is registered here like on every other registrar CLI."""
+    camp = _campaign(tmp_path)
+    r = run_cli(camp, "build", "--help")
+    assert r.returncode == 0, r.stderr
+    assert "--batch" in r.stdout
+    assert "--endpoint" in r.stdout
+
+
+def test_backend_still_has_no_default_so_spend_stays_opt_in(tmp_path):
+    """The seam must not hand --backend a truthy default.
+
+    `add_backend_args`' normal default is "anthropic"; taking it here would
+    make `if not args.backend` always false and start rendering — and paying
+    for — LLM sections on a plain deterministic build.
+    """
+    camp = _campaign(tmp_path)
+    # a dossier must exist, or "no dossiers matched" short-circuits ahead of
+    # the backend guard and the test proves nothing (cf.
+    # test_synthesis_section_never_spends_without_backend)
+    d = camp / "docs/ensemble/merged_dossiers"
+    d.mkdir(parents=True)
+    (d / "faction_kraken_society.md").write_text("---\nname: k\n---\nDossier.")
+    r = run_cli(camp, "build", "--doc", "planning")
+    assert r.returncode == 0, r.stderr
+    assert "factions (synthesis — pass --backend to render)" in r.stdout
+    # help must not advertise a default that would defeat the guard
+    h = run_cli(camp, "build", "--help")
+    assert "no default" in h.stdout
+
+
+def test_batch_is_forwarded_to_the_synthesis_subprocess(monkeypatch):
+    """A --batch that stopped at this process would be silently inert for
+    exactly the sections that do the spending."""
+    sys.path.insert(0, str(REPO))
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("_gs", CLI)
+    gs = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(gs)
+
+    import types
+
+    captured = {}
+
+    def _fake_run(cmd, **kw):
+        captured["cmd"] = cmd
+        return types.SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(gs.subprocess, "run", _fake_run)
+
+    class _Args:
+        registry = None
+        backend = "anthropic"
+        endpoint = None
+        model = None
+        max_tokens = None
+        batch = True
+
+    sec = gs.Section(name="factions", mode="synthesis")
+    gs.render_synthesis(sec, _Args(), [Path("d.md")], Path("out.md"))
+    assert "--batch" in captured["cmd"]
+
+    _Args.batch = False
+    gs.render_synthesis(sec, _Args(), [Path("d.md")], Path("out.md"))
+    assert "--batch" not in captured["cmd"]
