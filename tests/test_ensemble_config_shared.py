@@ -62,13 +62,18 @@ class TestDefaults:
         assert EnsembleConfig().tuning.dossier_recent_window == 4
 
     def test_merge_defaults_leave_the_command_unchanged(self):
-        """Every merge default must be falsy-or-derived except the two measured
-        thresholds, so an unconfigured campaign emits no new flags and behaves
-        exactly as before issue #197."""
+        """The two fields that would *invent* a choice stay falsy-or-derived, so
+        an unconfigured campaign still names no embed server and pins no merge
+        method (issue #197).
+
+        The three measured/identity fields carry real defaults. embed_model
+        joined them on 2026-07-29: leaving it "" deferred to a fallback naming
+        the decommissioned vLLM embed sidecar, so the "emit nothing" instinct
+        produced a command that could not run rather than a conservative one."""
         m = EnsembleConfig().merge
         assert m.method is None          # derive: embed if endpoint, else subject
         assert m.embed_endpoint == ""
-        assert m.embed_model == ""
+        assert m.embed_model == "qwen3-embedding:0.6b"
         assert m.embed_threshold == 0.94
         assert m.similarity == 0.85
 

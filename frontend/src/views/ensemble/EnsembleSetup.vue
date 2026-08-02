@@ -77,11 +77,18 @@ async function save() {
       dossier_recent_window: cfg.value.tuning.dossier_recent_window,
       background_min_facts: cfg.value.tuning.background_min_facts,
     },
-    // Only the endpoint: it is the one that decides WHICH merge algorithm runs.
-    // method/embed_model/embed_threshold/similarity stay YAML-only — 0.94 is a
-    // measured threshold, not a dial (issue #197; calibrated on
-    // qwen3-embedding:0.6b via calibrate_embed).
-    merge: { embed_endpoint: cfg.value.merge.embed_endpoint },
+    // The endpoint decides WHICH merge algorithm runs; the model decides
+    // whether it can run at all, so they are saved as a pair. Splitting them
+    // is what broke the 2026-07-29 Phandalin run: the UI could point at an
+    // Ollama endpoint but not name an Ollama model, so the merge inherited a
+    // stale vLLM default and 404'd after extraction had finished.
+    // method/embed_threshold/similarity stay YAML-only — 0.94 is a measured
+    // threshold, not a dial (issue #197; calibrated on qwen3-embedding:0.6b
+    // via calibrate_embed).
+    merge: {
+      embed_endpoint: cfg.value.merge.embed_endpoint,
+      embed_model: cfg.value.merge.embed_model,
+    },
   })
   saved.value = true
   setTimeout(() => (saved.value = false), 1500)
@@ -229,10 +236,25 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
       <label class="fld">
         <span>Embedding endpoint</span>
         <input v-model="cfg.merge.embed_endpoint" type="text"
-               placeholder="http://spark:8000/v1" />
+               placeholder="http://192.168.1.147:11434/v1" />
         <div class="field-help">
-          An OpenAI-compatible <code>/v1/embeddings</code> server (nomic). Leave
+          An OpenAI-compatible <code>/v1/embeddings</code> server. Leave
           blank if you have none.
+        </div>
+      </label>
+      <label class="fld">
+        <span>Embedding model</span>
+        <input v-model="cfg.merge.embed_model" type="text"
+               placeholder="qwen3-embedding:0.6b" />
+        <div class="field-help">
+          The model id <em>as that server names it</em> — an Ollama endpoint
+          wants <code>qwen3-embedding:0.6b</code>, a vLLM one wants the full
+          <code>org/model</code> id. A mismatch fails the merge with
+          <code>model … not found</code> <em>after</em> extraction has run, so
+          it is worth getting right before a long batch. Changing it away from
+          <code>qwen3-embedding:0.6b</code> also invalidates the calibrated
+          <code>embed_threshold</code> (0.94) — re-run
+          <code>calibrate_embed</code> for the new model.
         </div>
       </label>
       <p class="scope-summary">{{ mergeSummary }}</p>

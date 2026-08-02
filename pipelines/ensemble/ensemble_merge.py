@@ -110,7 +110,14 @@ def merge_facts(
     return merged
 
 
-DEFAULT_EMBED_MODEL = "nomic-ai/nomic-embed-text-v1.5"
+# The model the default 0.94 threshold is calibrated on (calibrate_embed sweep,
+# 2026-07-28). Was `nomic-ai/nomic-embed-text-v1.5` until 2026-07-29 — a vLLM id
+# served by the `vllm-embed` sidecar that was retired on 2026-06-30 when the
+# embed path moved to Ollama, so this default 404'd on every live endpoint and
+# took the merge down after extraction had already been paid for. Keep this in
+# step with EnsembleMerge.embed_threshold: a threshold measured on one embedding
+# model mis-clusters on another, so the model and the number change together.
+DEFAULT_EMBED_MODEL = "qwen3-embedding:0.6b"
 
 
 def embed_texts(texts: list[str], endpoint: str, model: str, batch: int = 256):
@@ -481,7 +488,7 @@ def main() -> None:
                              "is also accepted. CLI flags override these.")
     parser.add_argument("--method", choices=["subject", "embed"], default=None,
                         help="Merge method. 'subject' = group by (type, subject) "
-                             "then SequenceMatcher dedup; 'embed' = nomic "
+                             "then SequenceMatcher dedup; 'embed' = "
                              "embedding-cosine clustering partitioned by type. "
                              "Default: 'embed' if an embed endpoint is resolved, "
                              "else 'subject'.")
