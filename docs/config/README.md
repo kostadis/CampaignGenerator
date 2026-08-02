@@ -12,6 +12,7 @@ system/wiring docs live in the `mneme` repo under `docs/architecture/`.
 | [ensemble-isolation.md](./ensemble-isolation.md) | Ensemble's move out of `ui.ensemble` into its own `ensemble.yaml` + `EnsembleConfigService`; closes the router/model/TypeScript default drift |
 | [grounding-isolation.md](./grounding-isolation.md) | The four grounding-doc pages + the PC roster out of `ui_state.yaml` into `grounding.yaml` + `party.yaml`; closes the write-never sections, the dual party.yaml implementations, and the config-location Split-Brain |
 | [ui-state-retirement.md](./ui-state-retirement.md) | The last six loose `ui.<section>` blobs and `UIStateService` deleted rather than extracted — they were empty, unwritten and unread; closes the "no service ownership" gap |
+| [projection-isolation.md](./projection-isolation.md) | The State Projection service (`event_spine`/`thread_registry`/`grounding_sections`) gets its own `projections.yaml`, its own `docs/projections/` output namespace and a legacy-draft gate; closes the `events.jsonl` three-site split and the three-way output collision between the rendering services |
 | [master.md](./master.md) | Master map stitching all layers together |
 | [service-cut.md](./service-cut.md) | CampaignGenerator re-sliced as a multi-service monolith (global vs service-local config) |
 

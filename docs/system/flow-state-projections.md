@@ -2,7 +2,11 @@
 
 > Written 2026-07-31, as Phases 0–4 landed. Audience: anyone wiring the UI
 > (or a skill) to the new flow. Companion to `flow-ensemble.md`, which
-> describes the extraction ensemble this flow builds on.
+> describes the extraction ensemble this flow builds on. **Updated 2026-08-01**
+> for `specs/006-state-projection-service`: every path in Phase 4 now resolves
+> from `<config>/projections.yaml` instead of a literal, drafts moved to
+> `docs/projections/`, and two items in "Known seams and gaps" below closed.
+> Full design: [`docs/config/projection-isolation.md`](../config/projection-isolation.md).
 
 ## The one-paragraph architecture
 
@@ -54,7 +58,11 @@ GROUNDING SECTIONS (Phase 4)            grounding_sections.py build --doc <doc>
   docs/grounding_sections/<doc>/*.md      each section: <!-- inputs-sha --> content stamp
         |                                 re-render IFF input bytes changed (#137 principle)
         v
-docs/<doc>_draft.md                     assembled; GM diffs + promotes (gate unchanged)
+docs/projections/<doc>_draft.md         assembled; GM diffs + promotes (gate unchanged)
+                                         (own namespace since 006-state-projection-service —
+                                          was the shared docs/<doc>_draft.md; a pre-move file
+                                          left at that old path now refuses the build instead
+                                          of being silently overwritten — see "Known seams")
 ```
 
 ## The stores
@@ -70,7 +78,7 @@ docs/<doc>_draft.md                     assembled; GM diffs + promotes (gate unc
 | Speculations | `notes/thread_speculations.md` | `thread_registry.py speculate` | the GM's eyes only | NOT canon; no pipeline reads it |
 | Entity dossiers | `state_dossiers/` → `merged_dossiers/` | `facts_to_state` → type-merge skill | synthesis sections, NPC outlook | alias-review + type-merge skills; hand-review of Uncertainty |
 | Sections | `docs/grounding_sections/<doc>/*.md` | `grounding_sections.py` | assembly | inputs-sha staleness; no implicit LLM spend |
-| Drafts | `docs/<doc>_draft.md` | assembly | the GM | diff → promote by hand (unchanged) |
+| Drafts | `docs/projections/<doc>_draft.md` | assembly | the GM | diff → promote by hand (unchanged); refuses instead of writing if a pre-move `docs/<doc>_draft.md` still exists (FR-007b, see "Known seams") |
 
 ## Tool reference (new or changed)
 
@@ -141,11 +149,20 @@ docs/<doc>_draft.md                     assembled; GM diffs + promotes (gate unc
 
 ### Phase 4 — sections
 
-- **`grounding_sections.py list --doc D`** — staleness table
-  (`fresh`/`stale`/`unbuilt`/`no-input`) — the UI's status surface.
+Every path this phase reads or writes now resolves from `<config>/projections.yaml`
+(`campaignlib/projection_config.py`, feature 006-state-projection-service) rather than a
+module-level literal — `--corpus` is the one deliberate exception, staying `required=True` on
+`event_spine`/`thread_registry` so no config default can manufacture an implicit "all chapters".
+See [`docs/config/projection-isolation.md`](../config/projection-isolation.md).
+
+- **`grounding_sections.py list --doc D [--json]`** — staleness table
+  (`fresh`/`stale`/`unbuilt`/`no-input`/`optional`/`per-npc`) — the UI's status surface. `--json`
+  emits the same rows as `{doc, sections:[{name, mode, state, inputs, provenance}]}`, which is
+  what `GET /api/projections/sections` returns verbatim rather than parsing the table server-side.
 - **`grounding_sections.py build --doc D [--sections a,b] [--force]
   [--backend …] [--npcs a,b] [--window N] [--dossiers-dir D]`** — renders
-  stale sections, assembles `docs/<doc>_draft.md`.
+  stale sections, assembles `docs/projections/<doc>_draft.md` (own namespace since this feature;
+  see "Known seams" below for the pre-move path it guards against).
 - **Section map**: `world_state` = npcs/factions/locations/world (synthesis
   over type-scoped `merged_dossiers` globs); `campaign_state` =
   recent_events (spine) + **tracking** (module-progress audit) + party
@@ -185,17 +202,40 @@ docs/<doc>_draft.md                     assembled; GM diffs + promotes (gate unc
 5. **Thread triage** — walk `thread_proposals.yaml`, drive the registry
    verbs. (Planned as a skill; a UI can drive the same verbs.)
 6. **Section staleness + per-section rebuild** — `list` + `build
-   --sections`, with explicit backend choice for synthesis sections.
+   --sections`, with explicit backend choice for synthesis sections. Shipped as a UI page,
+   `ProjectionSections.vue` at `/grounding/projections`
+   (006-state-projection-service, spec Q2) — the only checkpoint in this list with one; the
+   other six stay CLI/skill-driven by deliberate scope decision, not oversight.
 7. **Draft promotion** — unchanged diff → copy.
 
 ## Known seams and gaps (honest list)
 
-- **`planning.py` and `grounding_sections.py` both write
+- ~~**`planning.py` and `grounding_sections.py` both write
   `docs/planning_draft.md`.** Until planning.py is retired/wrapped, do not
-  run both; the sections build is the forward path.
+  run both; the sections build is the forward path.~~ **CLOSED
+  (006-state-projection-service).** The two no longer write the same file:
+  Dossier Synthesis's draft half (which `planning.py --synthesize-only`-style
+  staging feeds) lives at `docs/ensemble/drafts/`, and `grounding_sections.py`
+  now writes its own namespace, `docs/projections/<doc>_draft.md`
+  (`ProjectionOutput.draft`, [projection-isolation.md](../config/projection-isolation.md)
+  research D13). Running both is no longer unsafe — each produces a separate
+  file the GM can diff independently, which is the whole point of
+  006-state-projection-service User Story 1. A **new**, narrower hazard
+  replaces the old one: a draft left over at the *pre-move* shared path
+  (`docs/<doc>_draft.md`, from before this feature) makes
+  `grounding_sections.py build` refuse outright rather than overwrite it —
+  the legacy-draft gate (FR-007b). It names the file, and clearing it (move
+  or delete, by hand — the tool does neither) makes the gate never fire
+  again for that document. Both live campaigns hit this gate on their first
+  post-006 build.
 - **Phandalin has no `merged_dossiers/`** — the type-merge skill has never
   run there; everything falls back to `state_dossiers/` (includes
-  location-scoped fragments).
+  location-scoped fragments). **No longer silent** (006-state-projection-service,
+  closing research D4): `grounding_sections list`/`build` print which dossier
+  set was used — `curated` or `fallback` — and the section body itself opens
+  with `_Dossiers: fallback (docs/ensemble/state_dossiers)._` before the
+  rendered content, so the fallback is visible in the draft the GM actually
+  reviews, not only in a run's stdout.
 - **Spine near-duplicates** — several lens phrasings of one beat survive
   the 60-char dedup key; tuning knob, not yet addressed.
 - **Quote offsets across split sources** — offsets are computed against one
