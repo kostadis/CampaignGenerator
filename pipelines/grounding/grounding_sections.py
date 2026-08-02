@@ -452,6 +452,11 @@ def render_synthesis(sec: Section, args, inputs: list[Path], out_file: Path) -> 
         cmd += ["--model", args.model]
     if args.max_tokens:
         cmd += ["--max-tokens", str(args.max_tokens)]
+    # synthesise_world_state registers --batch through the same seam, so a
+    # --batch that stopped at this process would be silently inert for exactly
+    # the sections that do the spending.
+    if getattr(args, "batch", False):
+        cmd += ["--batch"]
     result = subprocess.run(cmd)
     if result.returncode != 0:
         raise SystemExit(f"synthesis failed for section {sec.name!r} (exit {result.returncode})")
@@ -648,6 +653,11 @@ def assemble(doc: str, sections: list[Section], out: Path, sections_dir: Path,
 # ── cli ──────────────────────────────────────────────────────────────────
 
 def main():
+    # Imported here, not at module scope, matching render_synthesis /
+    # render_tracking below — the campaignlib package pulls the API clients in
+    # with it, and `list` must stay importable without them.
+    from campaignlib import add_backend_args
+
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -681,11 +691,18 @@ def main():
             p.add_argument("--force", action="store_true",
                            help="Re-render even when inputs-sha is unchanged")
             p.add_argument("--no-assemble", action="store_true")
-            p.add_argument("--backend", default=None,
-                           choices=["anthropic", "dgx", "openrouter", "claude-code"])
-            p.add_argument("--endpoint", default=None)
-            p.add_argument("--model", default=None)
+            p.add_argument("--model", default=None,
+                           help="Model id for the LLM sections (forwarded to "
+                                "synthesis; with --backend dgx/openrouter/"
+                                "claude-code it becomes the seam's override)")
             p.add_argument("--max-tokens", type=int, default=None)
+            # The seam, not a hand-rolled copy of it — this CLI used to
+            # declare --backend/--endpoint itself and so never grew --batch,
+            # leaving the 50%-cost Claude batch path unreachable here while
+            # every sibling registrar CLI had it (spec 004 FR-001/FR-002).
+            # default_backend=None keeps --backend falsy when omitted, which
+            # the no-implicit-spend guard below depends on.
+            add_backend_args(p, default_backend=None)
 
     args = ap.parse_args()
     # Loaded once — every path this run resolves comes from here, so the

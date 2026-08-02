@@ -65,7 +65,7 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
     return anthropic.Anthropic()
 
 
-def add_backend_args(parser, default_backend: str = "anthropic") -> None:
+def add_backend_args(parser, default_backend: str | None = "anthropic") -> None:
     """Register the uniform --backend/--endpoint selection on a CLI.
 
     Shared so every LLM-bearing script speaks the same backend vocabulary
@@ -74,11 +74,23 @@ def add_backend_args(parser, default_backend: str = "anthropic") -> None:
     never falls through to Anthropic today) default to "dgx" instead of
     silently changing behaviour when it adopts this seam — see
     client_from_args for the backward-compatibility contract.
+
+    ``default_backend=None`` is for a CLI where the *presence* of --backend is
+    the GM's opt-in to token spend, so the flag has to stay falsy when omitted
+    (grounding_sections.py: "an LLM section never spends tokens implicitly — a
+    build without --backend is a deterministic-only build by definition"). Any
+    non-None default would make that guard always-true and start rendering LLM
+    sections unasked. client_from_args already treats None the same as
+    "anthropic", so the resolved client is unchanged either way.
     """
+    _default_note = (
+        "no default — omitting it skips every LLM section"
+        if default_backend is None else f"default: {default_backend}"
+    )
     parser.add_argument(
         "--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
         default=default_backend,
-        help=f"LLM backend (default: {default_backend}). 'dgx'/'openrouter'/'claude-code' route "
+        help=f"LLM backend ({_default_note}). 'dgx'/'openrouter'/'claude-code' route "
              "through the campaignlib seam; with no flag, behaviour is unchanged.")
     parser.add_argument(
         "--endpoint", default=None, metavar="URL",
