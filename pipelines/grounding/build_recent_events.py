@@ -1,24 +1,14 @@
 #!/usr/bin/env python3
-"""Generate a SHORT-TERM world-state document (recent_events.md).
+"""Generate recent_events.md — now via the event spine store (#213 Phase 2).
 
-The ensemble pipeline produces a LONG-TERM world state (`synthesise_world_state.py`
-over per-entity dossiers with a fact-count / known-only filter): only entities that
-*persist* across chapters survive, so a one-session goblin boss correctly ages out.
-That is the "what is true across the whole campaign" view.
+This used to render markdown straight from the per-chapter corpora, a
+per-run derivation with no durable state. It is now a compatibility wrapper
+over `event_spine.py`: the corpus updates the durable store
+(`docs/ensemble/events.jsonl` — chapters present are replaced, chapters
+absent keep their rows), and the markdown is rendered as a projection of
+the store. Same CLI as before; the store path is the only new knob.
 
-This tool produces its short-term companion: a MECHANICAL, full-fidelity,
-chapter-ordered render of every in-world `event` fact in a recent window. There is
-no synthesis step — synthesis is exactly what drops low-persistence facts, so the
-short-term record must bypass it. This is the "what happened in chapter N" view,
-where a one-session combatant IS material.
-
-Fact-count is a proxy for persistence, and the right threshold scales with the query
-window: window = whole campaign -> high threshold (long-term world_state); window = a
-few recent chapters -> threshold ~0 (this file). As chapters pass, slide --window
-forward so the short-term record stays bounded; anything that mattered long-term has
-already been captured by world_state synthesis.
-
-Run from inside a campaign dir, consistent with the other CampaignGenerator tools:
+Run from inside a campaign dir:
 
   build_recent_events \
       --corpus 'docs/ensemble/per_chapter/*/merged.json' \
@@ -26,33 +16,23 @@ Run from inside a campaign dir, consistent with the other CampaignGenerator tool
       --window 0            # 0 = all chapters; N = keep only the last N
 """
 import argparse
-import glob
-import json
-import re
-from collections import defaultdict
+import sys
 from pathlib import Path
 
-# table/OOC chatter, not in-world events (VTT/Zoom recaps capture table talk)
-OOC = re.compile(
-    r"discord|spreadsheet|action economy|rpgbot|reference guide|audio|"
-    r"claude-based|name generator|next session|pinned|initiative of|"
-    r"rolled (a |an )?\d|roll(ed)? (of |totaled )|disadvantage|advantage on|"
-    r"armor class of|saving throw mechanic",
-    re.I,
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from campaignlib.constants import config_path
+from campaignlib.projection_config import (
+    PROJECTION_CONFIG_FILENAME,
+    load_projection_config,
 )
 
-# chapter index from the per-chapter dir/file name (chapter_02_*, session_001_*, ch3, gen-ch5, ...)
-CHAP = re.compile(r"(?:chapter|session|ch|gen-ch)[_-]?0*(\d+)", re.I)
-
-
-def chapter_of(path: str) -> int:
-    # prefer an explicit chapter/session token; fall back to the last number in the path
-    for seg in reversed(Path(path).parts):
-        m = CHAP.search(seg)
-        if m:
-            return int(m.group(1))
-    nums = re.findall(r"\d+", path)
-    return int(nums[-1]) if nums else 99
+try:  # package import (pytest) vs same-dir script execution
+    from pipelines.grounding.event_spine import render, update
+except ImportError:
+    from event_spine import render, update
 
 
 def main():
@@ -60,65 +40,33 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--corpus", required=True, nargs="+", metavar="GLOB",
                     help="merged.json glob(s), e.g. 'docs/ensemble/per_chapter/*/merged.json'")
-    ap.add_argument("--output", "-o", default="docs/recent_events.md", type=Path,
-                    help="Output markdown (default: docs/recent_events.md)")
-    ap.add_argument("--window", type=int, default=0,
-                    help="Keep only the last N chapters (0 = all)")
+    ap.add_argument("--output", "-o", default=None, type=Path,
+                    help="Output markdown (default: config output.recent_events)")
+    ap.add_argument("--window", type=int, default=None,
+                    help="Keep only the last N chapters (default: config "
+                         "output.recent_events_window; 0 = all)")
     ap.add_argument("--campaign", default=None,
                     help="Campaign label for the header (default: current dir name)")
+    ap.add_argument("--store", type=Path, default=None,
+                    help="Event spine store (default: config stores.events)")
     args = ap.parse_args()
 
-    files = sorted({f for g in args.corpus for f in glob.glob(g)})
-    if not files:
-        ap.error(f"no files matched: {args.corpus}")
+    # Loaded once, before any work begins (contracts/cli.md's resolution
+    # rule) — an explicit flag always wins. This wrapper moved here from
+    # Dossier Synthesis (research D15): its --store now resolves from THIS
+    # service's document, so its route/settings had to move with it rather
+    # than leave a Dossier Synthesis route reading projections.yaml.
+    cfg = load_projection_config(config_path(Path.cwd(), PROJECTION_CONFIG_FILENAME))
+    output = args.output if args.output is not None else Path(cfg.output.recent_events)
+    window = args.window if args.window is not None else cfg.output.recent_events_window
+    store = args.store if args.store is not None else Path(cfg.stores.events)
 
-    by_chap = defaultdict(list)
-    seen = set()
-    for f in files:
-        ch = chapter_of(f)
-        for fa in json.load(open(f, encoding="utf-8")):
-            if fa.get("type") != "event":
-                continue
-            text = (fa.get("fact") or "").strip()
-            if not text or OOC.search(text):
-                continue
-            key = re.sub(r"[^a-z0-9 ]", "", text.lower())[:60]
-            if key in seen:
-                continue
-            seen.add(key)
-            by_chap[ch].append(text)
-
-    chapters = sorted(by_chap)
-    if args.window and len(chapters) > args.window:
-        chapters = chapters[-args.window:]
-
-    campaign = args.campaign or Path.cwd().name
-    window_line = (
-        f"_Window: {'all chapters' if not args.window else f'last {args.window} chapters'} "
-        f"(chapters {chapters[0]}–{chapters[-1]})._" if chapters else "_No events._"
-    )
-    lines = [
-        f"# Recent Events — {campaign} (short-term world state)",
-        "",
-        "_Mechanically generated by `build_recent_events.py` — full-fidelity, chapter-ordered,",
-        "**not** synthesised (synthesis drops low-persistence facts). Every in-world event in",
-        "the window is kept, down to one-session combatants. The long-term, persistence-filtered",
-        "view is `docs/world_state.md`; this is the \"what happened in chapter N\" companion.",
-        "Regenerate after each session; slide `--window` forward as the campaign grows._",
-        "",
-        window_line,
-        "",
-    ]
-    for c in chapters:
-        lines.append(f"## Chapter {c}" if c != 99 else "## Unanchored")
-        lines.append("")
-        lines.extend(f"- {t}" for t in by_chap[c])
-        lines.append("")
-
-    args.output.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    kept = sum(len(by_chap[c]) for c in chapters)
-    print(f"wrote {args.output}: {kept} events across {len(chapters)} chapter(s) "
-          f"(window={args.window or 'all'})")
+    total, replaced = update(args.corpus, store)
+    print(f"store {store}: {total} rows; replaced chapter(s): "
+          f"{', '.join(map(str, replaced))}")
+    kept, nch = render(store, output, window, args.campaign)
+    print(f"wrote {output}: {kept} events across {nch} chapter(s) "
+          f"(window={window or 'all'})")
 
 
 if __name__ == "__main__":

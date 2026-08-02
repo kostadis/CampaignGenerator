@@ -54,6 +54,7 @@ from campaignlib import (
     load_agent_prompt,
     prepare_chunks,
     run_batch,
+    split_frontmatter,
     stream_api,
     wiring_get,
 )
@@ -132,6 +133,23 @@ def _repair_unescaped_quotes(text: str) -> str:
 
 
 def parse_facts_block(raw: str) -> list[dict]:
+    """Parse + normalise a model facts response.
+
+    The lens prompts ask for an `entity` key (#213 Phase 1.2 — "subject"
+    reads as an email-style headline to the model and invited event-title
+    filing of entity facts). The pipeline's internal key remains `subject`;
+    normalising here, at the single parse boundary, keeps merged.json and
+    every downstream consumer unchanged. Both keys are accepted so cached
+    per-pass outputs and older prompts keep working.
+    """
+    data = _parse_facts_raw(raw)
+    for f in data:
+        if isinstance(f, dict) and "entity" in f and "subject" not in f:
+            f["subject"] = f.pop("entity")
+    return data
+
+
+def _parse_facts_raw(raw: str) -> list[dict]:
     """Extract a JSON facts array from a model response. Tolerant of fences/preamble.
 
     Local models sometimes wrap JSON in ```json fences, prepend a short
@@ -496,6 +514,10 @@ def main() -> None:
     )
 
     text = Path(args.input).expanduser().read_text(encoding="utf-8")
+    # Chapter files carry identity frontmatter (chapter/session/title — issue
+    # #213); it is metadata, not chapter content, and must not be extracted
+    # from as prose.
+    _, text = split_frontmatter(text)
     if not text.strip():
         print(f"Error: input file is empty: {args.input}", file=sys.stderr)
         sys.exit(1)

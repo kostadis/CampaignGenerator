@@ -428,6 +428,47 @@ def stamp_scene_index(
     return located
 
 
+def stamp_lineage(merged: list[dict], workdir: Path) -> dict | None:
+    """Stamp per-fact source lineage from the workdir's lineage.json.
+
+    ensemble_batch writes lineage.json at ladder-decision time (issue #213
+    Phase 1: kind scenes|summary|chapter, session, inputs, reason). Each fact
+    gets a lean ``source: {kind[, session]}`` — the full decision detail
+    stays in lineage.json. Returns the loaded lineage dict, or None when the
+    file is absent (manual ensemble.py run, pre-Phase-1 workdir) or
+    malformed — in which case nothing is stamped: absent provenance must
+    read as absent, never be guessed.
+    """
+    lineage_file = workdir / "lineage.json"
+    if not lineage_file.exists():
+        return None
+    try:
+        lineage = json.loads(lineage_file.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    if not isinstance(lineage, dict) or not lineage.get("kind"):
+        return None
+    session = lineage.get("session")
+    pass_kinds = lineage.get("passes") or {}
+    for f in merged:
+        # Per-lens routing (#213 Phase 1.1): a fact's provenance is the
+        # document(s) the lenses that produced it actually read. A fact
+        # merged across lenses with different sources gets the honest list,
+        # never a guess.
+        if pass_kinds and f.get("passes"):
+            kinds = sorted({pass_kinds.get(p, lineage["kind"])
+                            for p in f["passes"]})
+        else:
+            kinds = [lineage["kind"]]
+        stamp = {"kind": kinds[0] if len(kinds) == 1 else "mixed"}
+        if len(kinds) > 1:
+            stamp["kinds"] = kinds
+        if session:
+            stamp["session"] = session
+        f["source"] = stamp
+    return lineage
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
@@ -581,6 +622,16 @@ def main() -> None:
     # merge time" reasoning as quote_offset above.
     scene_chunk_size, scene_structural = reference_chunking(manifest)
     scene_located = stamp_scene_index(merged, document, scene_chunk_size, scene_structural)
+
+    # WHICH artifact the facts were extracted from (issue #213 Phase 1).
+    # ensemble_batch writes lineage.json at decision time; stamping the kind
+    # onto every fact lets downstream consumers (facts_to_state bundles, the
+    # Phase-5 verifier) pick the right ground truth per claim. Absent file —
+    # a manual ensemble.py run, or a pre-Phase-1 workdir — stamps nothing.
+    lineage = stamp_lineage(merged, workdir)
+    if lineage:
+        print(f"Lineage:  {lineage['kind']}"
+              + (f" (session {lineage['session']})" if lineage.get("session") else ""))
 
     campaignlib.atomic_write_json(output_path, merged)  # FR-014: atomic publish
 

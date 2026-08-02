@@ -67,6 +67,13 @@ from .registry import (
     load_registry,
     resolve_registry_arg,
 )
+from .lineage import (
+    SourceDecision,
+    compose_scenes,
+    load_approved_rows,
+    resolve_source,
+    route_plan,
+)
 from .scenes import (
     parse_gmassist_scenes,
     snapshot_scene_for_rerun,
@@ -164,6 +171,12 @@ __all__ = [
     "find_registry",
     "load_registry",
     "resolve_registry_arg",
+    # source lineage (issue #213 Phase 1)
+    "SourceDecision",
+    "compose_scenes",
+    "load_approved_rows",
+    "resolve_source",
+    "route_plan",
     # scenes
     "parse_gmassist_scenes",
     "snapshot_scene_for_rerun",

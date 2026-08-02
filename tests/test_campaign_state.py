@@ -138,8 +138,9 @@ def test_tracked_items_injected_into_both_system_prompts(monkeypatch, fake_strea
 
 def test_synthesize_only_auto_stages_world_state_and_threads(monkeypatch, fake_stream_api, tmp_path):
     docs_dir = tmp_path / "docs"
-    (docs_dir / "ensemble").mkdir(parents=True)
-    (docs_dir / "world_state_draft.md").write_text("world state content", encoding="utf-8")
+    (docs_dir / "ensemble" / "drafts").mkdir(parents=True)
+    (docs_dir / "ensemble" / "drafts" / "world_state_draft.md").write_text(
+        "world state content", encoding="utf-8")
     (docs_dir / "ensemble" / "threads.md").write_text("threads content", encoding="utf-8")
     monkeypatch.chdir(tmp_path)
 

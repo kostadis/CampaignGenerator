@@ -27,6 +27,21 @@ def _assistant_event(text: str) -> str:
     })
 
 
+def _thinking_event() -> str:
+    """A thinking-only assistant event.
+
+    Thinking-capable models (claude-fable-5 always, claude-opus-5 by default)
+    emit the `thinking` block as its OWN assistant event, ahead of the event
+    carrying the answer text. Verified against `claude -p --output-format
+    stream-json` on claude-fable-5: an untruncated call returns exactly two
+    assistant events, `['thinking']` then `['text']`, with is_error=False.
+    """
+    return json.dumps({
+        "type": "assistant",
+        "message": {"content": [{"type": "thinking", "thinking": ""}]},
+    })
+
+
 def _result_event(*, result="ok", is_error=False, num_turns=1) -> str:
     return json.dumps({
         "type": "result", "result": result, "is_error": is_error,
@@ -177,6 +192,48 @@ def test_single_assistant_turn_has_no_warning(monkeypatch, capsys):
     assert out == "Only turn."
     err = capsys.readouterr().err
     assert "AUTO-CONTINUED" not in err
+
+
+def test_thinking_event_alone_does_not_trigger_warning(monkeypatch, capsys):
+    # Regression: the warning used to count EVERY assistant event, so a
+    # thinking-capable model's separate `thinking` event made a perfectly
+    # untruncated call report an auto-continuation. Reproduced live on
+    # claude-fable-5 at a 31000-token ceiling with a 6.7KB (untruncated)
+    # response. Only text-bearing turns count.
+    captured = {}
+    stdout = "\n".join([
+        _thinking_event(),
+        _assistant_event("The whole answer."),
+        _result_event(result="The whole answer.", num_turns=1),
+    ])
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(
+        captured, raw_stdout=stdout))
+    out = backends._claude_code_generate(
+        system="s", user="u", model="claude-fable-5", max_tokens=31000)
+    assert out == "The whole answer."
+    assert "AUTO-CONTINUED" not in capsys.readouterr().err
+
+
+def test_thinking_events_do_not_mask_a_real_continuation(monkeypatch, capsys):
+    # The other half: interleaved thinking events must not suppress the
+    # warning when the CLI genuinely auto-continued across two text turns.
+    captured = {}
+    stdout = "\n".join([
+        _thinking_event(),
+        _assistant_event("First half. "),
+        _thinking_event(),
+        _assistant_event("Second half."),
+        _result_event(result="Second half.", num_turns=2),
+    ])
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(
+        captured, raw_stdout=stdout))
+    out = backends._claude_code_generate(
+        system="s", user="u", model="claude-fable-5", max_tokens=100)
+    assert out == "First half. Second half."
+    err = capsys.readouterr().err
+    assert "AUTO-CONTINUED" in err
+    # Reports 2 text turns, not the 4 raw assistant events.
+    assert "across 2 assistant turns" in err
 
 
 def test_no_assistant_events_falls_back_to_result_field(monkeypatch):

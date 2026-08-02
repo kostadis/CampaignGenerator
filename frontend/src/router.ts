@@ -62,6 +62,11 @@ const routes = [
         name: 'planning-document',
         component: () => import('./views/grounding/PlanningDocument.vue'),
       },
+      {
+        path: 'projections',
+        name: 'projection-sections',
+        component: () => import('./views/grounding/ProjectionSections.vue'),
+      },
     ],
   },
   {

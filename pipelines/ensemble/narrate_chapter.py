@@ -281,6 +281,9 @@ def main() -> None:
         print(f"Error: input not found: {input_path}", file=sys.stderr)
         sys.exit(1)
     text = input_path.read_text(encoding="utf-8")
+    # Chapter identity frontmatter (issue #213) is metadata, not prose to
+    # narrate.
+    _, text = split_frontmatter(text)
     if not text.strip():
         print(f"Error: input file is empty: {input_path}", file=sys.stderr)
         sys.exit(1)

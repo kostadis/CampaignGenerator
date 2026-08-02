@@ -5,7 +5,7 @@ The motivation: a generalist extractor focused on actions and entities tends to 
 Each fact is one object with exactly these keys:
 
 - `type` — one of: `npc`, `faction`, `event`, `location`, `object`, `monster`, `thread`, `date`
-- `subject` — the named character whose interior is being described (or a short label if the fact is a `thread`)
+- `entity` — the named character whose interior is being described — the character's name itself, never a description of the moment (or a short label if the fact is a `thread`)
 - `fact` — one self-contained sentence stating the inner state, memory, refusal, or intention
 - `source_quote` — a short verbatim contiguous span from the input. No ellipses. No stitching.
 
@@ -13,18 +13,18 @@ Each fact is one object with exactly these keys:
 
 WRONG — two beats bundled into one fact (note the `...`-stitched quote):
 
-  {"type": "npc", "subject": "Thorin", "fact": "Thorin attempts to lie about the Giants but tells the truth, and thinks the mushroom looks like a giant's tongue.", "source_quote": "he tried to lie ... it looked like a giant's tongue"}
+  {"type": "npc", "entity": "Thorin", "fact": "Thorin attempts to lie about the Giants but tells the truth, and thinks the mushroom looks like a giant's tongue.", "source_quote": "he tried to lie ... it looked like a giant's tongue"}
 
 RIGHT — split into atomic facts, each with one contiguous quote:
 
-  {"type": "event", "subject": "Thorin", "fact": "Thorin attempts to lie about the Giants but ends up telling the truth.", "source_quote": "Thorin tried to lie, but the truth came out instead"}
-  {"type": "npc",   "subject": "Thorin", "fact": "Thorin thinks the mushroom looks like a giant's tongue.", "source_quote": "Thorin said it looked like a giant's tongue"}
+  {"type": "event", "entity": "Thorin", "fact": "Thorin attempts to lie about the Giants but ends up telling the truth.", "source_quote": "Thorin tried to lie, but the truth came out instead"}
+  {"type": "npc",   "entity": "Thorin", "fact": "Thorin thinks the mushroom looks like a giant's tongue.", "source_quote": "Thorin said it looked like a giant's tongue"}
 
 The ellipsis is the tell: if you reach for `...` to build a quote, you have bundled — stop and split.
 
-WRONG — literal "I" left as the subject of a first-person interior beat:
+WRONG — literal "I" left as the entity of a first-person interior beat:
 
-  {"type": "npc", "subject": "I", "fact": "I know what's real. I know what I've left behind and what I haven't.", "source_quote": "I know what's real. I know what I've left behind and what I haven't."}
+  {"type": "npc", "entity": "I", "fact": "I know what's real. I know what I've left behind and what I haven't.", "source_quote": "I know what's real. I know what I've left behind and what I haven't."}
 
 RIGHT — the pronoun resolved to the POV character named in the chunk's continuation banner:
 
@@ -32,7 +32,7 @@ RIGHT — the pronoun resolved to the POV character named in the chunk's continu
 
   I know what's real. I know what I've left behind and what I haven't...
 
-  {"type": "npc", "subject": "Zalthir", "fact": "Zalthir believes he knows what's real, what he's left behind, and what he hasn't.", "source_quote": "I know what's real. I know what I've left behind and what I haven't."}
+  {"type": "npc", "entity": "Zalthir", "fact": "Zalthir believes he knows what's real, what he's left behind, and what he hasn't.", "source_quote": "I know what's real. I know what I've left behind and what I haven't."}
 
 Your scope. Look for every sentence where the source says any of the following ABOUT a named character:
 
@@ -52,7 +52,7 @@ Your scope. Look for every sentence where the source says any of the following A
 
 8. **Desires and unresolved wants.** Trigger words: "wanted," "wished," "longed for," "missed," "hoped." Example: *"Stool wants to return home."* → can be `npc` (a state) or `thread` (an unresolved desire).
 
-9. **Relationship gestures.** Physical gestures between named characters that carry observable relational content — hand-holding, embraces, recoiling, exchanged looks, refusing eye contact, sitting beside, leaning on, taking by the arm. Extract VERBATIM the gesture itself; DO NOT translate it into the feeling it implies. Emit "X took Y's hand," not "X cared for Y." Emit "X recoiled from Y," not "X feared Y." Example: *"Stool extended his hand, and Grygum took it. So they marched together."* → `event` fact: "Stool extended his hand and Grygum took it; the two marched together." Use either character as `subject` — pick the one initiating the gesture.
+9. **Relationship gestures.** Physical gestures between named characters that carry observable relational content — hand-holding, embraces, recoiling, exchanged looks, refusing eye contact, sitting beside, leaning on, taking by the arm. Extract VERBATIM the gesture itself; DO NOT translate it into the feeling it implies. Emit "X took Y's hand," not "X cared for Y." Emit "X recoiled from Y," not "X feared Y." Example: *"Stool extended his hand, and Grygum took it. So they marched together."* → `event` fact: "Stool extended his hand and Grygum took it; the two marched together." Use either character as `entity` — pick the one initiating the gesture.
 
 Rules:
 
@@ -60,8 +60,8 @@ Rules:
 - The array may be empty (`[]`) if the chunk contains no interiority sentences.
 - `type` MUST be one of exactly: `npc`, `faction`, `event`, `location`, `object`, `monster`, `thread`, `date`. Do not invent new types.
 - **The source text must contain an explicit interiority trigger OR a relational gesture between named characters.** For categories 1-8 (thoughts, feelings, refusals, etc.), do not infer interior states from actions alone. If the text says "X drew a sword" do NOT emit "X felt angry." If the text says "X drew a sword, his face purple with rage" you may emit a feeling fact because rage is explicit. For category 9 (gestures), extract the gesture itself verbatim and stop there — do NOT translate it into the feeling it implies. The gesture is the fact; the feeling is the reader's inference.
-- **The subject must be a named character.** Do not emit interiority facts about unnamed groups ("the prisoners felt hopeful"). One named subject per fact.
-- **Resolve first-person pronouns.** If the source text uses "I"/"me"/"my"/"myself" with no named character in view, resolve the pronoun to the POV character named in a `[Continuing — Speaker: X, ...]` banner at the top of the chunk, or failing that, the character named in the nearest preceding `## Name — Scene` or `### Name` heading. Use that name as `subject` — never emit `"I"`, `"me"`, `"narrator"`, or `"speaker"` as a literal subject. If no named POV character can be determined either way, drop the fact rather than guessing.
+- **The entity must be a named character.** Do not emit interiority facts about unnamed groups ("the prisoners felt hopeful"). One named character per fact.
+- **Resolve first-person pronouns.** If the source text uses "I"/"me"/"my"/"myself" with no named character in view, resolve the pronoun to the POV character named in a `[Continuing — Speaker: X, ...]` banner at the top of the chunk, or failing that, the character named in the nearest preceding `## Name — Scene` or `### Name` heading. Use that name as `entity` — never emit `"I"`, `"me"`, `"narrator"`, or `"speaker"` as a literal entity. If no named POV character can be determined either way, drop the fact rather than guessing.
 - `source_quote` MUST be a single contiguous span copy-pasted from the input. No `...`. No stitching.
 - Do not editorialize. State only what the text says about the character's interior; do not interpret further.
 - A descriptive phrase in commas attaches to the noun immediately before it.
@@ -77,10 +77,10 @@ Type guidance:
 Example output shape (illustrative — do not copy these contents):
 
 [
-  {"type": "npc", "subject": "Sarith", "fact": "Sarith experiences bouts of madness during the journey.", "source_quote": "Sarith mutters about the madness coming on him again"},
-  {"type": "event", "subject": "Daz", "fact": "Daz refused to wear the offered armor.", "source_quote": "Daz refused, saying armor would only slow him down"},
-  {"type": "npc", "subject": "Grygum", "fact": "Grygum recalled the Giants eating prisoners who tried to steal rather than escape.", "source_quote": "He remembered how the Giants ate the ones who tried to steal"},
-  {"type": "thread", "subject": "Stool's home", "fact": "Stool wants to return home, but the location of his home is not specified in this session.", "source_quote": "Stool just wanted to go home"}
+  {"type": "npc", "entity": "Sarith", "fact": "Sarith experiences bouts of madness during the journey.", "source_quote": "Sarith mutters about the madness coming on him again"},
+  {"type": "event", "entity": "Daz", "fact": "Daz refused to wear the offered armor.", "source_quote": "Daz refused, saying armor would only slow him down"},
+  {"type": "npc", "entity": "Grygum", "fact": "Grygum recalled the Giants eating prisoners who tried to steal rather than escape.", "source_quote": "He remembered how the Giants ate the ones who tried to steal"},
+  {"type": "thread", "entity": "Stool's home", "fact": "Stool wants to return home, but the location of his home is not specified in this session.", "source_quote": "Stool just wanted to go home"}
 ]
 
 Emit the JSON array now.

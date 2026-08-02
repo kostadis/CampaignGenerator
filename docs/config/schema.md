@@ -23,7 +23,7 @@ flowchart TB
     PY["platform.yaml<br/>tracked, PlatformConfigService-owned"]
     LC[".campaigngenerator.local.yaml<br/>gitignored"]
     SD["session_doc.yaml<br/>tracked, editor-service-owned"]
-    EN["ensemble.yaml · grounding.yaml<br/>party.yaml · planning.yaml<br/>each its own service"]
+    EN["ensemble.yaml · grounding.yaml<br/>party.yaml · planning.yaml<br/>projections.yaml<br/>each its own service"]
   end
   subgraph mem[In-memory]
     BO["boot_overrides<br/>CLI flags"]
@@ -111,10 +111,10 @@ write; a missing or empty file loads as an all-defaults `EnsembleConfig`, not an
 
 | Group | Fields |
 |---|---|
-| *(root)* | `chapters_selected[]`, `known_names[]`, `aliases_path` |
+| *(root)* | `chapters_selected[]` |
 | `extract` / `synthesize` | `EnsembleBackend`: backend (`anthropic\|dgx\|openrouter\|claude-code`), **`endpoints[]`** (plural — the extract stage fans out across DGX hosts), model |
-| `paths` | chapters_glob, per_chapter_dir, corpus_glob, merged_out, state_dossiers_dir, dossiers_glob, npc_dossiers_glob, threads_out, recent_events_out |
-| `tuning` | chapter_parallel, chunk_parallel, bundle_min_facts, threads_min_facts, **background_min_facts**, **dossier_recent_window**, entity_parallel, recent_events_window |
+| `paths` | chapters_glob, per_chapter_dir, corpus_glob, merged_out, state_dossiers_dir, dossiers_glob, npc_dossiers_glob, threads_out, **drafts_dir**, inventory |
+| `tuning` | chapter_parallel, chunk_parallel, bundle_min_facts, threads_min_facts, **background_min_facts**, **dossier_recent_window**, entity_parallel |
 | `merge` | method (`subject\|embed\|null` = derive), embed_endpoint, embed_model, embed_threshold, similarity |
 | `planning` | synth_mode (`config\|flat`), npc[], arc_scores[], context[], depth (`scene\|full`), force_include[] |
 
@@ -123,7 +123,25 @@ before Phase 3 of [ensemble-isolation.md](./ensemble-isolation.md) — unreachab
 code. `planning` holds the six `planning_*` keys that used to ride on `ui.ensemble`'s
 `extra="allow"` overflow, undeclared and unvalidated. `campaign_dir` is deliberately absent: it is
 platform-tier. `bundle_min_facts` and `threads_min_facts` are separate fields because the shipped
-defaults genuinely differ (3 vs 2).
+defaults genuinely differ (3 vs 2). `known_names[]`/`aliases_path` — present in an earlier shape of
+this table — were retired from the schema by a prior, unrelated effort in favor of the entity
+registry (`docs/entity_registry.yaml`; commit `ed44935`), not by
+[projection-isolation.md](./projection-isolation.md). `load_ensemble_config` still prunes both
+keys from a pre-migration file on read, silently and without rewriting it
+(`server/ensemble_config_shared.py:267-271`) — this table previously still listed them as live
+root fields, which was already stale before this feature touched the file.
+
+**`paths.drafts_dir`** (`docs/ensemble/drafts`) is where `/run/synthesize`'s four draft outputs
+land — it replaced the draft half of `server/routers/ensemble.py`'s old `GROUNDING_DOCS` map, the
+live-doc half of which is unaffected and stays a router literal (`server/routers/ensemble.py:68-81`).
+**`paths.recent_events_out` and `tuning.recent_events_window` are gone, deleted with no
+compatibility shim** — [projection-isolation.md](./projection-isolation.md) (research D15):
+`build_recent_events` wraps the event spine, and once its `--store` resolved from a new
+`projections.yaml`, leaving these two fields here would make a Dossier Synthesis route read State
+Projection's config document. They now live as `output.recent_events` /
+`output.recent_events_window` in `projections.yaml`, below. Both live campaigns carried
+`recent_events_out`, so `GET /api/ensemble/config` returns `400` naming it until hand-removed —
+the server still boots, only that page is affected.
 
 **`dossier_recent_window` + `background_min_facts`** (settable on `/ensemble/setup`) scope
 `synthesise_world_state`'s entity-dossier payload, and only make sense as a pair. Entities touched
@@ -193,6 +211,44 @@ back when the editor's config *was* a `ui_state.yaml` section; Phase 5 of the se
 isolation moved the data out and left the models behind, and D2 of
 [ui-state-retirement.md](./ui-state-retirement.md) finished the move when that module was
 deleted.
+
+## projections.yaml → ProjectionConfig (grouped, strict)
+
+`<config>/projections.yaml`, owned outright by `ProjectionConfigService`
+(`server/projection_config_service.py`), modelled in `campaignlib/projection_config.py` rather
+than `server/` — the CLI engines (`event_spine`, `thread_registry`, `grounding_sections`,
+`build_recent_events`) need the same shape, and `test_layering.py` forbids them importing
+`server`. Strict (`extra="forbid"`), atomic writes, lazy on first write; a missing or empty file
+loads as all-defaults, identical in content to the tool's pre-config behavior (SC-006).
+
+One document for the State Projection service's three CLIs, replacing what used to be Python
+literals — several of them declared more than once and capable of disagreeing
+(`docs/ensemble/events.jsonl` was three independent literals inside `grounding_sections.py`
+alone). See [projection-isolation.md](./projection-isolation.md) for the full design.
+
+| Group | Fields |
+|---|---|
+| `stores` | `events`, `thread_registry`, `thread_proposals`, `tracking` — this service's own durable state, written and read back by its own CLIs |
+| `inputs` | `dossiers`, `dossiers_fallback`, `narrative_importance`, `party`, `planning_notes`, `speculations` — produced by other services, declared here as pointers rather than read from their config documents |
+| `output` | `sections_dir`, `draft`, `legacy_draft`, `recent_events`, `recent_events_window` |
+| `selection` | `ModelSelection` — this service's own model/backend override (feature 003), empty by default (inherit the platform tier) |
+
+`inputs.dossiers_fallback` is used only when `inputs.dossiers` (the type-merge-curated set) has no
+matching files, and which one was used is reported in the run's output and in the rendered section
+body — never silent (FR-024a; Phandalin, one of the two live campaigns, has no `merged_dossiers/`
+and always exercises this fallback). `output.draft` must contain the literal `{doc}` placeholder
+(validated at load) so the four documents cannot collapse onto one file; `output.legacy_draft` is
+the pre-move shared path the FR-007b gate checks before every write, never moved or deleted by the
+system itself. `output.recent_events` / `output.recent_events_window` **moved here from
+`ensemble.yaml`'s `paths.recent_events_out` / `tuning.recent_events_window`**
+([projection-isolation.md](./projection-isolation.md) research D15) — `build_recent_events` wraps
+`event_spine`, so once its `--store` resolved from this document, its output settings had to move
+with it or a Dossier Synthesis route would be reading State Projection's config. No `corpus` field
+exists on this model, deliberately: `event_spine update --corpus` and `thread_registry propose
+--corpus` are both `required=True`, and a config default would manufacture an implicit "all
+chapters" (Constitution X). No `sections`/`specs` field either — which sections exist and which
+document they belong to stays Python (`grounding_sections.py`'s `SPECS`), a fixed editorial
+decision, not a configurable value.
 
 ## session_doc.yaml → SessionEditorConfig (grouped, strict)
 

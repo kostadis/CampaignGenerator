@@ -23,6 +23,19 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 _CG_DIR = Path(__file__).parent.resolve()
+_REPO_ROOT = _CG_DIR.parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+import yaml  # noqa: E402
+
+from campaignlib import (  # noqa: E402
+    SourceDecision,
+    compose_scenes,
+    resolve_source,
+    route_plan,
+)
+
 ENSEMBLE = _CG_DIR / "ensemble.py"
 
 
@@ -49,6 +62,31 @@ def _build_parser():
     p.add_argument(
         "--chapter-parallel", type=int, default=3, metavar="N",
         help="Chapters to run concurrently (default: 3)",
+    )
+
+    # Source-lineage ladder (issue #213 Phase 1)
+    p.add_argument(
+        "--source", choices=["auto", "chapter"], default="auto",
+        help="Extraction input per chapter. 'auto' walks the lineage ladder "
+             "(reviewed scene extractions > structured session-summary > "
+             "chapter prose), gated on approved summary_map.yaml rows — with "
+             "no approved rows it behaves exactly like 'chapter'. 'chapter' "
+             "forces the pre-ladder behaviour. (default: auto)",
+    )
+    p.add_argument(
+        "--campaign-dir", default=".", metavar="DIR",
+        help="Campaign root the summary map and session dirs resolve against "
+             "(default: cwd)",
+    )
+    p.add_argument(
+        "--summary-map", default=None, metavar="FILE",
+        help="Chapter<->session join file (default: "
+             "<campaign-dir>/docs/ensemble/summary_map.yaml)",
+    )
+    p.add_argument(
+        "--lineage-report", action="store_true",
+        help="Print the per-chapter source decision table and exit — no "
+             "extraction, no model calls.",
     )
 
     # ensemble.py pass-through flags
@@ -98,10 +136,19 @@ def _build_parser():
     return p
 
 
-def _build_ensemble_cmd(chapter: Path, workdir: Path, args) -> list[str]:
+def _resolve(chapter: Path, args):
+    """Ladder decision for one chapter (issue #213 Phase 1)."""
+    campaign_dir = Path(args.campaign_dir)
+    map_path = (Path(args.summary_map) if args.summary_map
+                else campaign_dir / "docs/ensemble/summary_map.yaml")
+    return resolve_source(chapter, campaign_dir, map_path=map_path)
+
+
+def _build_ensemble_cmd(chapter: Path, workdir: Path, args,
+                        plan_override: Path | None = None) -> list[str]:
     cmd = [sys.executable, str(ENSEMBLE), str(chapter), "--workdir", str(workdir)]
 
-    plan = args.plan
+    plan = str(plan_override) if plan_override else args.plan
     if plan is None:
         default_plan = Path("plan.yaml")
         if default_plan.exists():
@@ -158,6 +205,15 @@ def main():
         print(f"No chapter files matched: {' '.join(args.chapters)}", file=sys.stderr)
         sys.exit(1)
 
+    if args.lineage_report:
+        print(f"{'chapter':<44} {'source':<8} {'session':<9} reason")
+        print("-" * 100)
+        for chapter in chapters:
+            d = _resolve(chapter, args)
+            print(f"{chapter.stem[:43]:<44} {d.kind:<8} "
+                  f"{d.session or '-':<9} {d.reason}")
+        return
+
     per_chapter_dir = Path(args.per_chapter_dir)
     per_chapter_dir.mkdir(parents=True, exist_ok=True)
     out_path = Path(args.out)
@@ -176,10 +232,55 @@ def main():
             with print_lock:
                 print(f"[skip]          {chapter.stem}")
             return chapter, True
-        with print_lock:
-            print(f"[extract+merge] {chapter.stem}")
         workdir.mkdir(exist_ok=True)
-        cmd = _build_ensemble_cmd(chapter, workdir, args)
+
+        # Source-lineage ladder (issue #213 Phase 1). The decision — including
+        # a plain "chapter" fallback — is written to lineage.json so the merge
+        # can stamp per-fact provenance and the run is auditable afterwards.
+        input_path = chapter
+        plan_override = None
+        pass_kinds: dict[str, str] = {}
+        if args.source == "auto":
+            decision = _resolve(chapter, args)
+            if decision.kind == "scenes":
+                input_path = compose_scenes(
+                    decision.inputs, workdir / "lineage_scenes.md")
+            elif decision.kind == "summary":
+                input_path = decision.inputs[0]
+        else:
+            decision = SourceDecision(kind="chapter", inputs=[chapter],
+                                      reason="--source chapter (forced)")
+
+        # Per-lens routing (#213 Phase 1.1): when the ladder resolved away
+        # from the chapter, factual lenses read the resolved input but
+        # chapter-bound lenses (interiority) keep reading the prose — the
+        # only artifact their subject matter exists in. Needs a plan file;
+        # without one the whole run uses the resolved input uniformly.
+        if decision.kind != "chapter":
+            plan_path = Path(args.plan) if args.plan else Path("plan.yaml")
+            if plan_path.exists():
+                plan = yaml.safe_load(plan_path.read_text(encoding="utf-8")) or {}
+                routed, pass_kinds = route_plan(plan, decision, chapter, input_path)
+                plan_override = workdir / "plan_resolved.yaml"
+                plan_override.write_text(
+                    yaml.safe_dump(routed, sort_keys=False), encoding="utf-8")
+
+        (workdir / "lineage.json").write_text(
+            json.dumps({"chapter": chapter.stem, **decision.as_json(),
+                        "passes": pass_kinds},
+                       indent=1, ensure_ascii=False),
+            encoding="utf-8")
+
+        with print_lock:
+            routed_note = ""
+            if pass_kinds:
+                bound = sorted(n for n, k in pass_kinds.items() if k == "chapter")
+                if bound:
+                    routed_note = f", {'/'.join(bound)} -> chapter"
+            print(f"[extract+merge] {chapter.stem}  "
+                  f"(source: {decision.kind}{routed_note})")
+        cmd = _build_ensemble_cmd(input_path, workdir, args,
+                                  plan_override=plan_override)
         result = subprocess.run(cmd)
         ok = result.returncode == 0
         if not ok:

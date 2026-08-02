@@ -219,6 +219,13 @@ Entry point: [`startup`](../../startup) builds the frontend then runs `python -m
 | Setup | `/api/setup` | [`server/routers/setup.py`](../../server/routers/setup.py) |
 | Scene editor | `/api/editor` | [`server/routers/scene_editor.py`](../../server/routers/scene_editor.py) |
 | Connection graph | `/api/connections` | [`server/routers/connections.py`](../../server/routers/connections.py) |
+| State projection | `/api/projections` | [`server/routers/projections.py`](../../server/routers/projections.py) |
+
+> This table and the "nine routers" count above are known to have drifted further than the one row
+> `006-state-projection-service` added — `ensemble`, `planning_routes` and `party_routes` are also
+> mounted in [`server/main.py`](../../server/main.py) and are not listed. That drift predates this
+> feature and is tracked separately as [issue #215](https://github.com/kostadis/CampaignGenerator/issues/215),
+> not fixed here.
 
 Long-running endpoints spawn the underlying CLI script via [`server/subprocess_runner.py`](../../server/subprocess_runner.py) and stream stdout as Server-Sent Events. Each run is also persisted as a markdown log in `<cwd>/logs/`.
 
@@ -304,10 +311,21 @@ Deep dives: [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md), [`docs/rlm/rlm
 
 The campaign workspace is the database. All long-lived state is markdown.
 
+> This tree predates the config-isolation series (`docs/config/`) and is known to have drifted well
+> beyond `config.yaml`/`ui_config.yaml` — `platform.yaml`, `.campaigngenerator.local.yaml`,
+> `session_doc.yaml`, `ensemble.yaml`, `grounding.yaml`, `party.yaml` and `planning.yaml` all exist
+> per-campaign and are not shown below. `docs/config/schema.md` is the current, accurate map of
+> `config/`; that reconciliation is [issue #215](https://github.com/kostadis/CampaignGenerator/issues/215),
+> not this one. The two lines this feature adds — `config/projections.yaml` and `docs/projections/`
+> — are shown for completeness.
+
 ```
 <campaign>/
   config.yaml                 # Tool config (paths, prompts, models)
   ui_config.yaml              # Web UI state (campaign_dir, session_dir, model selections)
+  config/
+    projections.yaml          # State Projection service config — docs/config/projection-isolation.md
+                               #   (see docs/config/schema.md for the rest of config/ — #215)
   docs/
     campaign_state.md         ← campaign_state        → prep, session_doc, mcp
     world_state.md            ← distill               → prep, party, planning, session_doc, mcp
@@ -316,6 +334,7 @@ The campaign workspace is the database. All long-lived state is markdown.
     mechanics.md              ← (manual)              → optional grounding
     dossier_proposal.md       ← dossier_proposer      → render pipelines (human-approved)
     npcs/*.md                 ← planning --build-dossiers
+    projections/              ← grounding_sections (state-projection service) → GM diff+promote
   voice/                      # Per-character narrator personality notes
   examples/                   # Handcrafted style examples for sd_narrate
   notes/                      # MCP server's only writable directory

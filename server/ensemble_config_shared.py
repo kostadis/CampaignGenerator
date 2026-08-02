@@ -112,7 +112,20 @@ class EnsemblePaths(BaseModel):
     # deriving one from the other would make overriding either surprising.
     npc_dossiers_glob: str = "docs/ensemble/merged_dossiers/npc_*.md"
     threads_out: str = "docs/ensemble/threads.md"
-    recent_events_out: str = "docs/recent_events.md"
+    # `recent_events_out` lived here until 006-state-projection-service
+    # (research D15): build_recent_events wraps event_spine, whose --store
+    # now resolves from THIS service's config would be the cross-service
+    # config read FR-003 forbids, so the field — and the /run/recent-events
+    # route — moved to State Projection's own `projections.yaml` as
+    # `output.recent_events`. No shim: a campaign carrying the old key gets
+    # a 400 naming it (see EnsembleConfigService.get_config) until it is
+    # hand-removed.
+    # Where /run/synthesize's four draft outputs land — replaces the literal
+    # draft half of server/routers/ensemble.py's old GROUNDING_DOCS map
+    # (006-state-projection-service research D13). The live-doc half of that
+    # map is unaffected and stays a router literal (FR-013's promote
+    # allow-list, a different concern from this workspace layout).
+    drafts_dir: str = "docs/ensemble/drafts"
     # Module inventory passed as --inventory to synthesise_world_state;
     # empty = don't pass.
     inventory: str = ""
@@ -126,13 +139,16 @@ class EnsembleTuning(BaseModel):
     2 for ``/run/threads``), and collapsing them into one value would be a
     silent behavior change rather than a refactor.
 
-    **Two window fields, two different tracks.** ``dossier_recent_window``
-    scopes ``synthesise_world_state``'s entity-dossier payload (which entities
-    count as "now"); ``recent_events_window`` scopes ``build_recent_events``'s
-    ``recent_events.md`` (how many chapters of raw events to dump). They answer
-    different questions and are deliberately not one knob — changing how much
-    event detail you want dumped should not silently change what world_state
-    considers current.
+    ``dossier_recent_window`` scopes ``synthesise_world_state``'s
+    entity-dossier payload (which entities count as "now"). It used to have a
+    sibling here, ``recent_events_window``, scoping ``build_recent_events``'s
+    ``recent_events.md`` window — that field moved to
+    ``projections.yaml``'s ``output.recent_events_window`` alongside the rest
+    of ``build_recent_events`` (006-state-projection-service, research D15):
+    it wraps ``event_spine``, whose store path is now declared by State
+    Projection's own config, and a Dossier Synthesis field driving a State
+    Projection command would be the cross-service config coupling FR-003
+    forbids.
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -148,7 +164,6 @@ class EnsembleTuning(BaseModel):
     background_min_facts: int = 10
     dossier_recent_window: int = 4
     entity_parallel: int = 0
-    recent_events_window: int = 0
 
 
 class EnsembleMerge(BaseModel):

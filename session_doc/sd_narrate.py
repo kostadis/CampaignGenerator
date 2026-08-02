@@ -270,8 +270,18 @@ def main() -> None:
         narrate_context = (context_parts
                            if args.reflections and context_parts else None)
 
+        # The global examples block reaches scene mode too. It used to be
+        # dropped here (de12e2b, "keep the prompt lean — the style constraint
+        # is already carried by voice notes and the handoff"), back when scene
+        # mode capped narration at 3000 tokens. That rationale is stale: the
+        # cap is 16000 now, and voice notes carry a *character's* voice, not
+        # the campaign's house style. Suppressing it meant a non-character
+        # example file was silently inert in the only mode the pipeline
+        # actually runs — every plan section carries a `scene:` line.
+        # Per-char examples and the voice spec still outrank it downstream
+        # (see build_narrate_system's block order).
         narrate_system = build_narrate_system(
-            None if scene_name else examples_text,
+            examples_text,
             scene=scene_name or None,
             prose_mode=args.prose_mode,
             has_scene_events=bool(scene_events_str or narrate_context),

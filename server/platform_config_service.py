@@ -284,6 +284,15 @@ BATCH_CAPABILITY: dict[str, BatchCapability] = {
     # router distinguishes stages — see the "Risk noted" paragraph of D7.
     "session_doc": "degraded",
     "connections": "excluded",
+    # State Projection (server/routers/projections.py, 006-state-projection-
+    # service): `grounding_sections build` has no `--batch` flag at all
+    # (contracts/cli.md) — this is the first service_name to actually land
+    # in the "incompatible" state the map's own comment anticipated. Without
+    # this entry a platform-wide batch default would reach `/run/build` and
+    # `selection_cli_args` would append `--batch` to a subprocess whose
+    # argparse doesn't know the flag, failing opaquely instead of with the
+    # same clear 409 every other incompatible selection gets.
+    "projections": "incompatible",
 }
 
 

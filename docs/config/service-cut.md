@@ -51,13 +51,28 @@ open — selection, contracts, ordering.
 | Service | Router / entry | Config | CLI engine | Its config/state |
 |---|---|---|---|---|
 | Session Doc Editor | `scene_editor.py` + `SessionEditorConfigService` | own file: `session_doc.yaml` (grouped, strict) | narrate/scrub CLI | backend/dgx knobs, tokens, prose/reflections, session paths, `profiles[]` |
-| Ensemble | `server/routers/ensemble.py` + `EnsembleConfigService` | own file: `ensemble.yaml` (grouped, strict) | `ensemble_extract`/`ensemble_merge`/`synthesise_*` | chapters, known_names, aliases, per-stage `EnsembleBackend`, artifact `paths`, `tuning`, planning overrides, `manifest.json`, `merge.yaml` |
+| Ensemble *(Extraction & State + Dossier Synthesis — see note below)* | `server/routers/ensemble.py` + `EnsembleConfigService` | own file: `ensemble.yaml` (grouped, strict) | `ensemble_extract`/`ensemble_merge` (extraction+bundling) and `synthesise_*` (rendering) | chapters, per-stage `EnsembleBackend`, artifact `paths` (incl. `drafts_dir`), `tuning`, planning overrides, `manifest.json`, `merge.yaml` |
 | Grounding / Search | `grounding.py` + `GroundingConfigService` | own file: `grounding.yaml` (grouped, strict) | campaign_state, distill, party, planning CLIs | shared `summaries` pointer + a run profile per doc |
+| State Projection | `server/routers/projections.py` + `ProjectionConfigService` | own file: `projections.yaml` (grouped, strict) | `event_spine`/`thread_registry`/`grounding_sections`/`build_recent_events` | `stores` (own durable state), `inputs` (pointers into Ensemble's dossiers), `output` (own `docs/projections/` namespace + the legacy-draft gate) — see [projection-isolation.md](./projection-isolation.md) |
 | Party | `party_routes` + `PartyConfigService` | own file: `party.yaml` | `pipelines/grounding/party.py` | roster, 3-state arc_score |
 | Planning | `planning_routes` + `PlanningConfigService` | own file: `planning.yaml` | `pipelines/grounding/planning.py` | npcs/factions |
 | Campaign State | `grounding.py` (`/run/campaign-state`) | `grounding.yaml`'s `campaign_state` group | `pipelines/grounding/campaign_state.py` | `tracking.txt` |
 | NPC Table / Query / Session Prep / Connection Graph | `prep.py`, `connections.py` | **none — stateless by decision** (D1 of [ui-state-retirement.md](./ui-state-retirement.md)) | `pipelines/grounding/npc_table.py`, `pipelines/session_prep/prep.py`, `pipelines/rlm/query.py` | nothing persisted. These held reserved `ui.<loose>` sections that no code ever wrote; they are one-shot run forms, so the GM's call was to record the statelessness rather than build them a tier |
 | Content Ingestion (5e) | `launch_5etools_mcp` / `apply_ingest_manifest` | (none) | `resolve_refs`, `fivetools_ingest` | `refs.yaml`, `refs.local.yaml`, `ingest_manifest.yaml`, runtime tree |
+
+**The "Ensemble" row is one config document over two logical services** — a distinction
+`specs/006-state-projection-service/research.md` (R1) drew explicitly while scoping State
+Projection, because State Projection depends on the first half and not the second. `ensemble_batch`
++ `facts_to_state` (the **Extraction & State** service) produce the fact corpus and per-entity
+dossiers; neither renders prose. `synthesise_world_state`/`synthesise_facts`/`synthesise_polish`
+(the **Dossier Synthesis** service) render the four grounding docs from those dossiers, and is a
+sibling of Grounding/Search and State Projection, not their shared substrate. State Projection
+depends on Extraction & State's output (dossiers, corpus) and, for its four synthesis-mode
+sections, on Dossier Synthesis's *engine* as a declared subprocess call — never on either one's
+*configuration* (`projection-isolation.md`'s FR-003 discussion). `ensemble.yaml` was deliberately
+**not** split along this line — research D11 found no knob one half needs that the other must not
+see, and a document with no motivated consumer is a tax the constitution's Architecture-is-Destiny
+clause argues against paying.
 
 ## Platform-global config (all services)
 
@@ -75,8 +90,9 @@ open — selection, contracts, ordering.
 | Service | Owns |
 |---|---|
 | Session Doc Editor | `session_doc.yaml` — own file, own service (`SessionEditorConfigService`); no `ui_state.yaml` section and no `scene_editor.CONFIG` process-global anymore |
-| Ensemble | `ensemble.yaml` — own file, own service (`EnsembleConfigService`) — plus `manifest.json`, `merge.yaml`, aliases file, `*_draft.md` |
+| Ensemble | `ensemble.yaml` — own file, own service (`EnsembleConfigService`) — plus `manifest.json`, `merge.yaml`, `docs/ensemble/drafts/*_draft.md` (`paths.drafts_dir`) |
 | Grounding/Search | `grounding.yaml` — own file, own service (`GroundingConfigService`) |
+| State Projection | `projections.yaml` — own file, own service (`ProjectionConfigService`) — plus `docs/ensemble/events.jsonl`, `docs/thread_registry.yaml`, `docs/grounding_sections/`, `docs/projections/*_draft.md` |
 | Party | `party.yaml` — own file, own service (`PartyConfigService`) |
 | Planning | `planning.yaml` (own file, own service — `PlanningConfigService`) |
 | Campaign State | `grounding.yaml`'s `campaign_state` group + `tracking.txt` |
