@@ -80,13 +80,66 @@ def test_all_externalised_prompts_listed():
     #     --agent` (issue #202 part 2 — the narrative pass is a sibling
     #     artifact, not a sixth extraction lens, but it borrows the same
     #     load-by-name convention).
+    #   - the #213 grounding-projection prompts, each read at its call site
+    #     with load_agent_prompt(<name>) and never bound to a module-level
+    #     constant, so the identity check above has nothing to compare:
+    #       planning_npc_outlook -> grounding_sections.render_outlook_block
+    #       tracking_completion  -> grounding_sections.render_tracking
+    #       thread_speculate     -> thread_registry (speculation surface)
     session_doc_files = {p for p in actual if p.startswith("session_doc/")}
     prep_files = {"lore_oracle.md", "encounter_architect.md", "voice_keeper.md"}
     ensemble_files = {p for p in actual if p.startswith("extract_facts")}
     narrate_files = {"narrate_scene.md"}
-    relevant = actual - session_doc_files - prep_files - ensemble_files - narrate_files
+    projection_files = {"planning_npc_outlook.md", "tracking_completion.md",
+                        "thread_speculate.md"}
+    relevant = (actual - session_doc_files - prep_files - ensemble_files
+                - narrate_files - projection_files)
     assert expected == relevant, (
         f"Phase-3 CASES table out of sync with config/agents/.\n"
         f"  in CASES but not on disk: {sorted(expected - relevant)}\n"
         f"  on disk but not in CASES: {sorted(relevant - expected)}"
     )
+
+
+def test_every_load_by_name_prompt_resolves_to_a_file():
+    """The load-by-name prompts excluded above still have to exist.
+
+    ``load_agent_prompt("thread_speculate")`` is a bare runtime string: no
+    import, no constant, no reference the CASES identity check can follow. So
+    renaming or deleting the .md is invisible to every other test here and
+    surfaces only when a GM runs the pipeline and pays for the trip.
+
+    Rather than hard-code a second list that would drift out of sync the same
+    way CASES did, scan the source for literal load_agent_prompt("...") calls
+    and assert each one resolves. Non-literal calls (``--agent`` dispatch,
+    where the name is a CLI argument) are skipped — there is no static name to
+    check.
+    """
+    import ast
+
+    agents_dir = ROOT / "config" / "agents"
+    missing, checked = [], 0
+    for py in ROOT.rglob("*.py"):
+        rel = py.relative_to(ROOT).as_posix()
+        if rel.startswith((".claude/", "tests/", "build/")):
+            continue
+        try:
+            tree = ast.parse(py.read_text(encoding="utf-8"))
+        except (SyntaxError, UnicodeDecodeError):
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            fn = node.func
+            name = fn.attr if isinstance(fn, ast.Attribute) else getattr(fn, "id", None)
+            if name != "load_agent_prompt" or not node.args:
+                continue
+            first = node.args[0]
+            if not (isinstance(first, ast.Constant) and isinstance(first.value, str)):
+                continue  # dynamic --agent dispatch; nothing static to verify
+            checked += 1
+            if not (agents_dir / f"{first.value}.md").is_file():
+                missing.append(f"{rel}:{node.lineno} -> config/agents/{first.value}.md")
+
+    assert checked, "found no literal load_agent_prompt(...) calls — scan is broken"
+    assert not missing, "load_agent_prompt names with no file on disk:\n  " + "\n  ".join(missing)
