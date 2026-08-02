@@ -16,12 +16,23 @@ Run from inside a campaign dir:
       --window 0            # 0 = all chapters; N = keep only the last N
 """
 import argparse
+import sys
 from pathlib import Path
 
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from campaignlib.constants import config_path
+from campaignlib.projection_config import (
+    PROJECTION_CONFIG_FILENAME,
+    load_projection_config,
+)
+
 try:  # package import (pytest) vs same-dir script execution
-    from pipelines.grounding.event_spine import DEFAULT_STORE, render, update
+    from pipelines.grounding.event_spine import render, update
 except ImportError:
-    from event_spine import DEFAULT_STORE, render, update
+    from event_spine import render, update
 
 
 def main():
@@ -29,22 +40,33 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--corpus", required=True, nargs="+", metavar="GLOB",
                     help="merged.json glob(s), e.g. 'docs/ensemble/per_chapter/*/merged.json'")
-    ap.add_argument("--output", "-o", default="docs/recent_events.md", type=Path,
-                    help="Output markdown (default: docs/recent_events.md)")
-    ap.add_argument("--window", type=int, default=0,
-                    help="Keep only the last N chapters (0 = all)")
+    ap.add_argument("--output", "-o", default=None, type=Path,
+                    help="Output markdown (default: config output.recent_events)")
+    ap.add_argument("--window", type=int, default=None,
+                    help="Keep only the last N chapters (default: config "
+                         "output.recent_events_window; 0 = all)")
     ap.add_argument("--campaign", default=None,
                     help="Campaign label for the header (default: current dir name)")
-    ap.add_argument("--store", type=Path, default=DEFAULT_STORE,
-                    help=f"Event spine store (default: {DEFAULT_STORE})")
+    ap.add_argument("--store", type=Path, default=None,
+                    help="Event spine store (default: config stores.events)")
     args = ap.parse_args()
 
-    total, replaced = update(args.corpus, args.store)
-    print(f"store {args.store}: {total} rows; replaced chapter(s): "
+    # Loaded once, before any work begins (contracts/cli.md's resolution
+    # rule) — an explicit flag always wins. This wrapper moved here from
+    # Dossier Synthesis (research D15): its --store now resolves from THIS
+    # service's document, so its route/settings had to move with it rather
+    # than leave a Dossier Synthesis route reading projections.yaml.
+    cfg = load_projection_config(config_path(Path.cwd(), PROJECTION_CONFIG_FILENAME))
+    output = args.output if args.output is not None else Path(cfg.output.recent_events)
+    window = args.window if args.window is not None else cfg.output.recent_events_window
+    store = args.store if args.store is not None else Path(cfg.stores.events)
+
+    total, replaced = update(args.corpus, store)
+    print(f"store {store}: {total} rows; replaced chapter(s): "
           f"{', '.join(map(str, replaced))}")
-    kept, nch = render(args.store, args.output, args.window, args.campaign)
-    print(f"wrote {args.output}: {kept} events across {nch} chapter(s) "
-          f"(window={args.window or 'all'})")
+    kept, nch = render(store, output, window, args.campaign)
+    print(f"wrote {output}: {kept} events across {nch} chapter(s) "
+          f"(window={window or 'all'})")
 
 
 if __name__ == "__main__":
