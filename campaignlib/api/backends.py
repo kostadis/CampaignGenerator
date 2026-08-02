@@ -361,6 +361,14 @@ def _claude_code_generate(
     us concatenate the text of every assistant turn ourselves instead. The
     is_error / "output token maximum" hard-error branch below is kept for
     older CLI versions that still exit that way.
+
+    The auto-continue WARNING counts assistant events that carry a `text`
+    block, NOT assistant events outright. A thinking-capable model emits its
+    `thinking` block as a separate assistant event, so an ordinary untruncated
+    call already yields two events. Counting events outright made the warning
+    fire on every claude-fable-5 call (thinking is always on there and cannot
+    be disabled) and every claude-opus-5 call (thinking on by default) —
+    crying wolf until a real truncation was indistinguishable from noise.
     """
     import subprocess
     import tempfile
@@ -394,7 +402,7 @@ def _claude_code_generate(
         # `result` / `is_error` / `num_turns` fields the old single-envelope
         # `json` format did, just as one event among many now.
         assistant_text_parts: list[str] = []
-        num_assistant_events = 0
+        num_text_turns = 0
         result_event: dict | None = None
         for line in proc.stdout.splitlines():
             line = line.strip()
@@ -407,11 +415,18 @@ def _claude_code_generate(
             if not isinstance(event, dict):
                 continue
             if event.get("type") == "assistant":
-                num_assistant_events += 1
+                # Count only turns that actually carry text. A thinking-capable
+                # model emits its `thinking` block as its OWN assistant event,
+                # so counting every assistant event would report a continuation
+                # on every single call — see the auto-continue note above.
                 message = event.get("message") or {}
+                had_text = False
                 for block in message.get("content") or []:
                     if isinstance(block, dict) and block.get("type") == "text":
                         assistant_text_parts.append(block.get("text", ""))
+                        had_text = True
+                if had_text:
+                    num_text_turns += 1
             elif event.get("type") == "result":
                 result_event = event
 
@@ -436,11 +451,11 @@ def _claude_code_generate(
                         f"/ max_tokens for this run.")
                 raise RuntimeError(f"claude -p error: {result_text[:500]}")
 
-            if num_assistant_events > 1:
+            if num_text_turns > 1:
                 print(
                     f"\n{'!' * 70}\n"
                     f"!!  WARNING: claude -p hit its output ceiling mid-generation and AUTO-CONTINUED\n"
-                    f"!!  across {num_assistant_events} assistant turns. All turns were concatenated, but there may be a\n"
+                    f"!!  across {num_text_turns} assistant turns. All turns were concatenated, but there may be a\n"
                     f"!!  seam at the continuation boundary — review the output, and consider raising\n"
                     f"!!  max_tokens (CLAUDE_CODE_MAX_OUTPUT_TOKENS) for this call.\n"
                     f"{'!' * 70}",
