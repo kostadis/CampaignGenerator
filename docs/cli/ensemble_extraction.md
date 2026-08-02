@@ -115,6 +115,56 @@ These are intentionally separate YAMLs — merge settings do not belong in the p
 
 ---
 
+## Scene boundaries — where `scene_index` comes from
+
+`ensemble_merge` stamps every fact with a `scene_index`: the index of the
+header-delimited chunk its quote fell into. That number becomes the `scene`
+component of `event_spine`'s `(chapter, scene, seq)` key, so **the source
+document's headings are the scene key**.
+
+`campaignlib.textproc.chunk_by_scenes` decides the boundaries with a strict
+priority:
+
+1. any `##` heading — split on those;
+2. `###` headings — consulted **only when the document has no `##` at all**;
+3. neither — fall back to character-count chunking.
+
+### The gotcha when the source is a `session-summary.md`
+
+A summary's own layout is `## Summary` / `## Scenes` / `## NPCs` — all H2s. So
+`chunk_by_scenes` splits on *those*, the `###` scene titles are never reached,
+and every scene in the chapter collapses into one `scene_index`:
+
+```bash
+ensemble session-summary.md --workdir gen-ch01/      # <-- 3 chunks, not 9 scenes
+```
+
+Slicing to the `## Scenes` section alone does not help — `## Scenes` is itself
+an H2. And stripping every `##` from the whole file is worse: the
+`### <NPC name>` entries under `## NPCs` are H3 too and become boundaries, so a
+9-scene chapter yields 18 "scenes", half of them NPC paragraphs.
+
+**`ensemble_batch --source auto` handles this for you.** When the lineage ladder
+resolves a chapter to the `summary` rung it calls
+`campaignlib.lineage.compose_summary_scenes`, which slices the `## Scenes`
+body, drops its one wrapper line, carries the `# H1` over for context, and
+writes `lineage_summary_scenes.md` into the chapter workdir. Extraction reads
+that; the summary on disk keeps its H2s so `_summary_is_structured` still admits
+it to the rung. Convention flips to `h3` and each scene gets its own chunk. If
+the summary has no usable scene list, it falls back to the summary unchanged.
+
+**Invoking `ensemble` directly on a `session-summary.md` does not slice** — it
+has no ladder. Either go through `ensemble_batch`, or point `--plan` at a
+pre-sliced document if you need per-scene `scene_index` from a one-off run.
+
+Chapter prose has its own version of this problem, and no fix: chapters
+organised by in-world date (`## 8/1 of Taraksh 1495`) with POV names beneath
+(`### Soma`) yield a `scene` meaning "which day", and chapters with no `##` at
+all fall to character-count chunking. That is a property of the source, not
+something extraction can repair.
+
+---
+
 ## Output
 
 After a successful run, `--workdir` contains:
@@ -124,4 +174,5 @@ After a successful run, `--workdir` contains:
 - `merged.json` — deduplicated fact list with `n_samples` confidence counts
 
 `merged.json` is the input to `facts_to_state` for per-entity dossier
-aggregation. Human review of dossiers is the checkpoint before any synthesis call.
+aggregation, and to `event_spine update` for the durable event store. Human
+review of dossiers is the checkpoint before any synthesis call.
