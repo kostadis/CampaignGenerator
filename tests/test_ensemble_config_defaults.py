@@ -92,7 +92,6 @@ class TestNoDrift:
     FORBIDDEN = (
         "docs/ensemble",
         "docs/chapters",
-        "docs/recent_events",
     )
 
     def test_no_ensemble_path_literal_in_the_router(self):
@@ -218,11 +217,6 @@ class TestConfigReachesTheCommand:
         threads_cmd = captured[-1]
         assert bundle_cmd[bundle_cmd.index("--min-facts") + 1] == "3"
         assert threads_cmd[threads_cmd.index("--min-facts") + 1] == "2"
-
-    def test_recent_events_uses_configured_output(self, client, captured):
-        self._put(client, {"paths": {"recent_events_out": "out/recent.md"}})
-        client.get("/api/ensemble/run/recent-events")
-        assert "out/recent.md" in captured[-1]
 
     def test_synthesize_uses_configured_dossiers_and_backend(self, client, captured):
         self._put(client, {
@@ -399,11 +393,16 @@ class TestModelResolution:
         assert "--list" in cmd
         assert "--model" not in cmd
 
-    def test_threads_and_recent_events_get_no_model(self, client, captured):
-        """Deterministic renders — no model call, so no --model."""
+    def test_threads_gets_no_model(self, client, captured):
+        """Deterministic render — no model call, so no --model.
+
+        Survivor of ``test_threads_and_recent_events_get_no_model``, which
+        asserted this for ``/run/threads`` *and* ``/run/recent-events``. The
+        latter route moved to the State Projection service (006, research D15)
+        and its half of the assertion went with it; the threads half is
+        unrelated to that move and stays here.
+        """
         client.get("/api/ensemble/run/threads")
-        assert "--model" not in captured[-1]
-        client.get("/api/ensemble/run/recent-events")
         assert "--model" not in captured[-1]
 
     def test_stale_non_anthropic_model_is_refused_not_substituted(self, client, captured):

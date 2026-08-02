@@ -665,8 +665,11 @@ def test_synthesize_party_auto_includes_world_state_and_campaign_state_context(t
     (tmp_path / "config").mkdir()
     (tmp_path / "config" / "party.yaml").write_text("characters: []\n")
     (tmp_path / "docs").mkdir()
-    # world_state: only a draft exists — draft should be preferred.
-    ws_draft = tmp_path / "docs" / "world_state_draft.md"
+    # world_state: only a draft exists — draft should be preferred. Default
+    # drafts_dir (no config/ensemble.yaml in this fixture) is
+    # docs/ensemble/drafts (EnsemblePaths.drafts_dir).
+    (tmp_path / "docs" / "ensemble" / "drafts").mkdir(parents=True)
+    ws_draft = tmp_path / "docs" / "ensemble" / "drafts" / "world_state_draft.md"
     ws_draft.write_text("world state")
     # campaign_state: only the live doc exists — should be used as a fallback.
     cs_live = tmp_path / "docs" / "campaign_state.md"
@@ -691,7 +694,11 @@ def test_synthesize_party_explicit_context_overrides_auto_detect(tmp_path, monke
     (tmp_path / "config").mkdir()
     (tmp_path / "config" / "party.yaml").write_text("characters: []\n")
     (tmp_path / "docs").mkdir()
-    (tmp_path / "docs" / "world_state_draft.md").write_text("world state")
+    # Present only to prove explicit --context wins over auto-detect; its
+    # exact location doesn't matter since _default_party_context is never
+    # called when the caller supplies context.
+    (tmp_path / "docs" / "ensemble" / "drafts").mkdir(parents=True)
+    (tmp_path / "docs" / "ensemble" / "drafts" / "world_state_draft.md").write_text("world state")
     custom_context = tmp_path / "notes.md"
     custom_context.write_text("notes")
 

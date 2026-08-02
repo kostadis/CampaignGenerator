@@ -33,7 +33,7 @@ Usage:
       --output docs/campaign_state.md
 
   # Ensemble workflow: --extract-dir omitted auto-stages
-  # docs/world_state_draft.md + docs/ensemble/threads.md as extracts
+  # docs/ensemble/drafts/world_state_draft.md + docs/ensemble/threads.md as extracts
   campaign_state --synthesize-only --output docs/campaign_state_draft.md
 
 Tracking file format (tracking.txt):
@@ -124,10 +124,19 @@ def auto_stage_synthesize_only_extracts(output_dir: Path) -> Path:
     so --synthesize-only works without the manual mkdir+cp 'staging trick'
     (docs/cli/ensemble_workflow.md §3c). Always re-copies from source so a
     staged extract can't go stale relative to what it was copied from.
+
+    The world-state source lives under Dossier Synthesis's own draft
+    directory (docs/ensemble/drafts/, not the pre-move docs/ shared path) —
+    this cross-service dependency follows that service to its new location
+    rather than reading whichever rendering service wrote the shared
+    filename last (006-state-projection-service FR-007a). A plain literal on
+    purpose, not a projections.yaml/ensemble.yaml read: a cross-service
+    config read is the defect _backend_flags was deleted for (FR-003).
     """
     cwd = Path.cwd()
     sources = [
-        (cwd / "docs" / "world_state_draft.md", "extract_001_world_state.md"),
+        (cwd / "docs" / "ensemble" / "drafts" / "world_state_draft.md",
+         "extract_001_world_state.md"),
         (cwd / "docs" / "ensemble" / "threads.md", "extract_002_threads.md"),
     ]
     missing = [str(src) for src, _ in sources if not src.exists()]
@@ -177,7 +186,8 @@ def main() -> None:
     parser.add_argument("--synthesize-only", action="store_true",
                         help="Skip extraction, synthesize from existing files in --extract-dir "
                              "(tracking list still applies to synthesize prompt). If "
-                             "--extract-dir is omitted, auto-stages docs/world_state_draft.md "
+                             "--extract-dir is omitted, auto-stages "
+                             "docs/ensemble/drafts/world_state_draft.md "
                              "+ docs/ensemble/threads.md as extracts (run those first)")
     parser.add_argument("--extract-only", action="store_true",
                         help="Run the extract pass only, then stop so you can review "
