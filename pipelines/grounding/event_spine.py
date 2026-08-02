@@ -29,10 +29,19 @@ import argparse
 import glob
 import json
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
-DEFAULT_STORE = Path("docs/ensemble/events.jsonl")
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from campaignlib.constants import config_path
+from campaignlib.projection_config import (
+    PROJECTION_CONFIG_FILENAME,
+    load_projection_config,
+)
 
 # table/OOC chatter, not in-world events (VTT/Zoom recaps capture table talk)
 OOC = re.compile(
@@ -177,23 +186,34 @@ def main():
 
     up = sub.add_parser("update", help="Replace store rows for chapters present in the corpus")
     up.add_argument("--corpus", required=True, nargs="+", metavar="GLOB")
-    up.add_argument("--store", type=Path, default=DEFAULT_STORE)
+    up.add_argument("--store", type=Path, default=None,
+                    help="Event spine store (default: config stores.events)")
 
     rd = sub.add_parser("render", help="Render recent_events.md from the store")
-    rd.add_argument("--store", type=Path, default=DEFAULT_STORE)
-    rd.add_argument("--output", "-o", type=Path, default=Path("docs/recent_events.md"))
+    rd.add_argument("--store", type=Path, default=None,
+                    help="Event spine store (default: config stores.events)")
+    rd.add_argument("--output", "-o", type=Path, default=None,
+                    help="Output markdown (default: config output.recent_events)")
     rd.add_argument("--window", type=int, default=0,
                     help="Keep only the last N chapters (0 = all)")
     rd.add_argument("--campaign", default=None)
 
     args = ap.parse_args()
+    # Loaded once, before any work begins (contracts/cli.md's resolution
+    # rule) — an explicit --store/--output always wins; a None sentinel
+    # resolves from projections.yaml. `--window` has no config counterpart
+    # here (only build_recent_events' persistent window does — research
+    # D15), so it keeps its own literal default.
+    cfg = load_projection_config(config_path(Path.cwd(), PROJECTION_CONFIG_FILENAME))
+    store = args.store if args.store is not None else Path(cfg.stores.events)
     if args.cmd == "update":
-        total, replaced = update(args.corpus, args.store)
-        print(f"store {args.store}: {total} rows; replaced chapter(s): "
+        total, replaced = update(args.corpus, store)
+        print(f"store {store}: {total} rows; replaced chapter(s): "
               f"{', '.join(map(str, replaced))}")
     else:
-        kept, nch = render(args.store, args.output, args.window, args.campaign)
-        print(f"wrote {args.output}: {kept} events across {nch} chapter(s) "
+        output = args.output if args.output is not None else Path(cfg.output.recent_events)
+        kept, nch = render(store, output, args.window, args.campaign)
+        print(f"wrote {output}: {kept} events across {nch} chapter(s) "
               f"(window={args.window or 'all'})")
 
 

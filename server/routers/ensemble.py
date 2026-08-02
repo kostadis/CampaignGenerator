@@ -60,14 +60,26 @@ def get_ensemble_service(request: Request) -> EnsembleConfigService:
     base = platform.config_path_base if platform is not None else Path.cwd() / "config"
     return EnsembleConfigService(base)
 
-# The four grounding docs the workflow targets. live = promote target; draft =
-# what synthesis writes. Nothing else may be promoted (FR-013).
+# The four grounding docs the workflow targets — the promote allow-list.
+# Nothing else may be promoted (FR-013). Live paths only: the draft
+# counterpart is no longer a stored literal — EnsemblePaths.drafts_dir is
+# resolved per-request and composed by _draft_path() at the route edge
+# (research D13), so it can be redirected via config without a code change.
 GROUNDING_DOCS = {
-    "world_state": ("docs/world_state.md", "docs/world_state_draft.md"),
-    "campaign_state": ("docs/campaign_state.md", "docs/campaign_state_draft.md"),
-    "party": ("docs/party.md", "docs/party_draft.md"),
-    "planning": ("docs/planning.md", "docs/planning_draft.md"),
+    "world_state": "docs/world_state.md",
+    "campaign_state": "docs/campaign_state.md",
+    "party": "docs/party.md",
+    "planning": "docs/planning.md",
 }
+
+
+def _draft_path(doc: str, drafts_dir: str) -> str:
+    """The draft counterpart of a promote-target doc, composed from the
+    resolved config rather than a router literal — see
+    tests/test_ensemble_config_defaults.py's ``TestNoDrift`` no-drift
+    guard, a plain substring scan this file must never trip."""
+    return f"{drafts_dir}/{doc}_draft.md"
+
 
 # Models considered capable enough for synthesis (FR-014 / R6). Anything else
 # selected for the synthesize stage triggers a non-fatal warning.
@@ -213,7 +225,7 @@ def _resolve_ensemble_path(path: str) -> Path:
 
 def _is_live_doc(path: Path) -> bool:
     cwd = Path.cwd().resolve()
-    live = {(cwd / live_rel).resolve() for live_rel, _ in GROUNDING_DOCS.values()}
+    live = {(cwd / live_rel).resolve() for live_rel in GROUNDING_DOCS.values()}
     return path.resolve() in live
 
 
@@ -312,7 +324,7 @@ def _party_pc_dossier_files(party_config_path: Path | None) -> tuple[set[Path], 
     return {pc.dossier.resolve() for pc in config.characters if pc.dossier is not None}, None
 
 
-def _default_party_context() -> list[str]:
+def _default_party_context(drafts_dir: str) -> list[str]:
     """Auto-include world_state/campaign_state as --context for party
     synthesis — otherwise party.py's characters-only path has no source for
     current location/active quests/reputation and correctly reports them as
@@ -321,8 +333,7 @@ def _default_party_context() -> list[str]:
     cwd = Path.cwd()
     found = []
     for key in ("world_state", "campaign_state"):
-        live_rel, draft_rel = GROUNDING_DOCS[key]
-        draft, live = cwd / draft_rel, cwd / live_rel
+        draft, live = cwd / _draft_path(key, drafts_dir), cwd / GROUNDING_DOCS[key]
         if draft.exists():
             found.append(str(draft))
         elif live.exists():
@@ -463,11 +474,12 @@ def status(service: EnsembleConfigService = Depends(get_ensemble_service)):
     cwd = Path.cwd()
     per_chapter = sorted(glob.glob(str(cwd / cfg.paths.corpus_glob)))
     dossiers = sorted(glob.glob(str(cwd / cfg.paths.state_dossiers_dir / "*.md")))
-    drafts = [name for name, (_, draft_rel) in GROUNDING_DOCS.items()
+    draft_rels = {name: _draft_path(name, cfg.paths.drafts_dir) for name in GROUNDING_DOCS}
+    drafts = [name for name, draft_rel in draft_rels.items()
               if (cwd / draft_rel).exists()]
-    promoted = [name for name, (live_rel, draft_rel) in GROUNDING_DOCS.items()
-                if (cwd / live_rel).exists() and (cwd / draft_rel).exists()
-                and (cwd / live_rel).stat().st_mtime >= (cwd / draft_rel).stat().st_mtime]
+    promoted = [name for name, live_rel in GROUNDING_DOCS.items()
+                if (cwd / live_rel).exists() and (cwd / draft_rels[name]).exists()
+                and (cwd / live_rel).stat().st_mtime >= (cwd / draft_rels[name]).stat().st_mtime]
 
     def st(done: bool) -> str:
         return "complete" if done else "not_started"
@@ -766,21 +778,13 @@ def run_bundle(
     return _run_locked("bundle", cmd)
 
 
-@router.get("/run/recent-events")
-def run_recent_events(
-    corpus: str = "",
-    output: str = "",
-    window: int | None = None,
-    service: EnsembleConfigService = Depends(get_ensemble_service),
-):
-    cfg = service.resolved()
-    corpus = corpus or cfg.paths.corpus_glob
-    output = output or cfg.paths.recent_events_out
-    if window is None:
-        window = cfg.tuning.recent_events_window
-    cmd = [console_script("build_recent_events"),
-           "--corpus", corpus, "--output", output, "--window", str(window)]
-    return _run_locked("recent-events", cmd)
+# /run/recent-events moved to State Projection (006-state-projection-service,
+# research D15): build_recent_events wraps event_spine, and event_spine's
+# --store now resolves from projections.yaml, not ensemble.yaml. Leaving the
+# route here would make a Dossier Synthesis route read another service's
+# config document — exactly what FR-003 forbids. CLI-only
+# (`build_recent_events`) until a `/api/projections/run/recent-events` route
+# lands; a deliberate, single-user gap (tasks.md T031/T039).
 
 
 @router.get("/run/threads")
@@ -868,7 +872,7 @@ def run_synthesize(
     arc_scores = arc_scores or cfg.planning.arc_scores
     context = context or cfg.planning.context
     force_include = force_include or cfg.planning.force_include
-    out = output or GROUNDING_DOCS[doc][1]  # default to the draft path
+    out = output or _draft_path(doc, cfg.paths.drafts_dir)  # default to the draft path
     # FR-013: never let synthesis target a live grounding doc.
     if _is_live_doc(_resolve_ensemble_path(out)):
         raise HTTPException(status_code=400,
@@ -919,7 +923,7 @@ def run_synthesize(
             # Characters-only mode has no session extracts, so without context
             # docs it correctly reports current location/quests/reputation as
             # absent — feed it world_state/campaign_state so it doesn't have to.
-            party_context = context or _default_party_context()
+            party_context = context or _default_party_context(cfg.paths.drafts_dir)
             _cmd_multi(cmd, "--context", party_context)
         else:
             _cmd_flag(cmd, "--synthesize-only", synthesize_only)

@@ -49,7 +49,7 @@ def test_campaign_state_builds_deterministically_and_skips_when_fresh(tmp_path):
     r = run_cli(camp, "build", "--doc", "campaign_state")
     assert r.returncode == 0, r.stderr
     assert "rebuilt: recent_events, party" in r.stdout
-    draft = (camp / "docs/campaign_state_draft.md").read_text()
+    draft = (camp / "docs/projections/campaign_state_draft.md").read_text()
     assert "Orc nine dies." in draft and "Vukradin and friends." in draft
     assert "inputs-sha" in draft
 
@@ -70,7 +70,7 @@ def test_changed_store_re_renders_only_that_section(tmp_path):
     r = run_cli(camp, "build", "--doc", "campaign_state")
     assert "rebuilt: recent_events" in r.stdout
     assert "party (fresh)" in r.stdout
-    assert "UBT begins." in (camp / "docs/campaign_state_draft.md").read_text()
+    assert "UBT begins." in (camp / "docs/projections/campaign_state_draft.md").read_text()
 
 
 def test_touch_without_content_change_stays_fresh(tmp_path):
@@ -86,7 +86,7 @@ def test_planning_threads_section_renders_registry(tmp_path):
     camp = _campaign(tmp_path)
     r = run_cli(camp, "build", "--doc", "planning")
     assert r.returncode == 0, r.stderr
-    draft = (camp / "docs/planning_draft.md").read_text()
+    draft = (camp / "docs/projections/planning_draft.md").read_text()
     assert "The Carver's march" in draft
     assert "[ch40] (advanced) Closer." in draft
     assert "notes (optional, no input)" in r.stdout   # optional section skipped
@@ -107,7 +107,7 @@ def test_planning_emerging_section_layers_pending_proposals(tmp_path):
         ]}))
     r = run_cli(camp, "build", "--doc", "planning")
     assert r.returncode == 0, r.stderr
-    draft = (camp / "docs/planning_draft.md").read_text()
+    draft = (camp / "docs/projections/planning_draft.md").read_text()
     assert "Emerging Threads" in draft
     assert "Continuations of ratified threads" in draft
     assert "`carver-march`" in draft
@@ -131,12 +131,13 @@ def test_npc_outlook_selection_and_guards(tmp_path):
 def test_npc_outlook_per_npc_freshness(tmp_path, monkeypatch):
     import importlib
     gs = importlib.import_module("pipelines.grounding.grounding_sections")
+    from campaignlib.projection_config import ProjectionConfig
     camp = _campaign(tmp_path)
     (camp / "docs/ensemble/state_dossiers").mkdir(parents=True)
     (camp / "docs/ensemble/state_dossiers/npc_adabra.md").write_text("Adabra dossier.")
     calls = []
     monkeypatch.setattr(gs, "render_outlook_block",
-                        lambda slug, inputs, args: calls.append(slug) or f"### {slug}\nBlock.")
+                        lambda slug, inputs, args, sections_dir: calls.append(slug) or f"### {slug}\nBlock.")
     monkeypatch.chdir(camp)
 
     class A:
@@ -146,19 +147,26 @@ def test_npc_outlook_per_npc_freshness(tmp_path, monkeypatch):
         max_tokens = None
         backend = "dgx"
 
+    cfg = ProjectionConfig()
     sec = gs.Section("npc_outlook", "npc_outlook", optional=True)
-    f = gs.SECTIONS_DIR / "planning" / "npc_outlook.md"
-    rb, sk = gs.build_outlook_section(sec, A, f)
-    assert rb == ["npc_outlook/adabra"] and calls == ["adabra"]
+    # No config/projections.yaml in this fixture, so this is the same default
+    # sections_dir main() would resolve — see ProjectionOutput.sections_dir.
+    sections_dir = Path("docs/grounding_sections")
+    f = sections_dir / "planning" / "npc_outlook.md"
+    rb, sk = gs.build_outlook_section(sec, A, f, sections_dir, cfg)
+    # Only state_dossiers/ (the fallback set) has this NPC — the choice is
+    # now named rather than absorbed silently (research D4, FR-024a).
+    assert rb == ["npc_outlook/adabra (fallback)"] and calls == ["adabra"]
     # unchanged inputs -> fresh, renderer NOT called again
-    rb2, sk2 = gs.build_outlook_section(sec, A, f)
-    assert rb2 == [] and "npc_outlook/adabra (fresh)" in sk2
+    rb2, sk2 = gs.build_outlook_section(sec, A, f, sections_dir, cfg)
+    assert rb2 == [] and "npc_outlook/adabra (fresh, fallback dossier)" in sk2
     assert calls == ["adabra"]
     # dossier edit -> re-render
     (camp / "docs/ensemble/state_dossiers/npc_adabra.md").write_text("Adabra dossier v2.")
-    rb3, _ = gs.build_outlook_section(sec, A, f)
-    assert rb3 == ["npc_outlook/adabra"] and calls == ["adabra", "adabra"]
+    rb3, _ = gs.build_outlook_section(sec, A, f, sections_dir, cfg)
+    assert rb3 == ["npc_outlook/adabra (fallback)"] and calls == ["adabra", "adabra"]
     assert "### adabra" in f.read_text()
+    assert "_Dossier: fallback._" in f.read_text()
 
 
 def test_tracking_section_guards(tmp_path):
@@ -187,7 +195,7 @@ def test_spine_window_flag_scopes_recent_section(tmp_path):
     camp = _campaign(tmp_path)
     r = run_cli(camp, "build", "--doc", "campaign_state", "--window", "1")
     assert r.returncode == 0, r.stderr
-    draft = (camp / "docs/campaign_state_draft.md").read_text()
+    draft = (camp / "docs/projections/campaign_state_draft.md").read_text()
     assert "Victory lap." in draft and "Orc nine dies." not in draft
 
 
@@ -206,3 +214,75 @@ def test_missing_required_input_fails_loudly(tmp_path):
     r = run_cli(camp, "build", "--doc", "campaign_state")
     assert r.returncode != 0
     assert "party" in r.stderr and "input missing" in r.stderr
+
+
+def test_dossiers_entirely_absent_skips_synthesis_and_exits_zero(tmp_path):
+    """Neither a curated nor a fallback dossier directory exists on disk at
+    all — the live-campaign case this closes (research D4: Phandalin has no
+    merged_dossiers/, and until now nothing said the fallback was even
+    attempted, let alone that BOTH could be absent). All four world_state
+    sections must skip with a stated reason and the build must still exit
+    zero: a campaign with no dossiers extracted yet is an expected early
+    state, not an error. ``--backend`` is passed to prove the skip is about
+    missing dossiers and not the separate no-implicit-spend guard.
+
+    ALL FOUR of world_state's sections are omittable here (none is a
+    non-degradable "anchor" the way campaign_state's party/recent_events or
+    planning's threads are) — so this is also the SC-007 total-degrade
+    case; see test_total_degrade_writes_no_draft_and_says_so below for the
+    dedicated assertions on the no-draft-written behavior itself.
+    """
+    camp = _campaign(tmp_path)
+    r = run_cli(camp, "build", "--doc", "world_state", "--backend", "anthropic")
+    assert r.returncode == 0, r.stderr
+    for name in ("npcs", "factions", "locations", "world"):
+        assert f"{name} (no dossiers matched)" in r.stdout
+    assert "rebuilt: nothing" in r.stdout
+    assert "dossiers: docs/ensemble/state_dossiers (fallback)" in r.stdout
+
+
+def test_total_degrade_writes_no_draft_and_says_so(tmp_path):
+    """SC-007's other half, spelled out on its own: when EVERY section is
+    omitted, no draft is written at all — an empty-but-titled document is
+    worse than none, because there's nothing to review and the file's mere
+    existence implies otherwise. stdout must plainly say no draft was
+    written and list why, since there is no file left to say it in.
+    """
+    camp = _campaign(tmp_path)
+    r = run_cli(camp, "build", "--doc", "world_state", "--backend", "anthropic")
+    assert r.returncode == 0, r.stderr
+    assert not (camp / "docs/projections/world_state_draft.md").exists()
+    assert not (camp / "docs/projections").exists() or not any(
+        (camp / "docs/projections").iterdir())
+    assert "no draft written for world_state: nothing to assemble" in r.stdout
+    assert "every section was omitted" in r.stdout
+    for name in ("npcs", "factions", "locations", "world"):
+        assert f"{name}: no dossiers matched under" in r.stdout
+
+
+def test_partial_degrade_writes_draft_with_omission_block(tmp_path):
+    """A REAL section renders (party.md is always present in _campaign),
+    but a synthesis section with no matching dossiers is omitted — the
+    draft must still be written (partial success, per spec's edge case),
+    AND must carry an explicit, near-the-top block naming what's missing
+    and why, because that file — not this run's stdout — is what a GM
+    diffs, possibly days later.
+    """
+    camp = _campaign(tmp_path)
+    # planning's "factions" section is optional + synthesis; with no
+    # dossiers at all it degrades rather than erroring, while "threads"
+    # (non-optional, backed by docs/thread_registry.yaml) still renders.
+    r = run_cli(camp, "build", "--doc", "planning")
+    assert r.returncode == 0, r.stderr
+    draft_path = camp / "docs/projections/planning_draft.md"
+    assert draft_path.exists()
+    draft = draft_path.read_text()
+    # The real content is still there...
+    assert "The Carver's march" in draft
+    # ...but the omission notice comes BEFORE it, near the top of the file,
+    # and names every omitted section with its reason.
+    header_end = draft.index("The Carver's march")
+    notice_pos = draft.index("INCOMPLETE DRAFT")
+    assert notice_pos < header_end
+    assert "notes" in draft[:header_end] and "optional, no input" in draft[:header_end]
+    assert draft.index("# Planning (draft)") < notice_pos

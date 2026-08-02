@@ -67,9 +67,16 @@ Owned outright by `EnsembleConfigService`, its own file. Read through
 | `known_names[]`, `aliases_path` | `/run/bundle`, `/run/threads` (→ `facts_to_state`) | `PUT /api/ensemble/config` |
 | `extract.{backend,endpoints,model}` | `/run/extract`, `/run/bundle` | `PUT /api/ensemble/config` |
 | `synthesize.{backend,endpoints,model}` | `/run/synthesize` | `PUT /api/ensemble/config` |
-| `paths.*` | every `/api/ensemble/*` route + `/chapters`, `/status` | `PUT /api/ensemble/config` |
-| `tuning.*` | `/run/extract`, `/run/bundle`, `/run/threads`, `/run/recent-events`, `/run/synthesize` | `PUT /api/ensemble/config` |
+| `paths.*` (incl. `drafts_dir`, replacing the draft half of the old `GROUNDING_DOCS` literal map) | every `/api/ensemble/*` route + `/chapters`, `/status` | `PUT /api/ensemble/config` |
+| `tuning.*` | `/run/extract`, `/run/bundle`, `/run/threads`, `/run/synthesize` | `PUT /api/ensemble/config` |
 | `planning.*` | `/run/synthesize?doc=planning` | `PUT /api/ensemble/config` |
+
+**Retired, no shim**: `paths.recent_events_out` and `tuning.recent_events_window`, and with them
+`/run/recent-events`. Moved to `projections.yaml`'s `output.recent_events` /
+`output.recent_events_window` and `GET /api/projections/run/recent-events` — see the
+`projections.yaml` section below and [projection-isolation.md](./projection-isolation.md) research
+D15. Both live campaigns carried `recent_events_out`, so `GET /api/ensemble/config` returns `400`
+naming it until hand-removed.
 
 Model resolution for the Anthropic branch is `explicit request → ensemble.yaml's per-stage model →
 platform.runtime.default_model → campaignlib DEFAULT_MODEL` (`ensemble._backend_args`, Phase 4).
@@ -93,6 +100,29 @@ through `resolved()` by every `/api/grounding/run/*` route; written by
 Input resolution is `explicit request param → that doc's stored input → the root
 `summaries` → 400`. No silent fallback — the same "no silent all" rule
 `ensemble.yaml`'s `chapters_selected` follows.
+
+## projections.yaml — the State Projection service (projection-isolation.md)
+
+Owned outright by `ProjectionConfigService`, its own file. Read through `resolved()` by every
+`/api/projections/*` route and — uniquely among this table's documents — also read directly by
+four CLIs (`event_spine`, `thread_registry`, `grounding_sections`, `build_recent_events`), each via
+`campaignlib.constants.config_path(Path.cwd(), PROJECTION_CONFIG_FILENAME)` at the top of its own
+`main()`, since these tools are also run headless, not only through the server. Written only by
+`PUT /api/projections/config`.
+
+| Value | Read by | Written by |
+|---|---|---|
+| `stores.events` | `event_spine update`/`render`, `grounding_sections`'s freshness hash **and** its spine/tracking reads (one resolved value — closes the three-site split [projection-isolation.md](./projection-isolation.md) documents), `build_recent_events` | `PUT /api/projections/config` |
+| `stores.thread_registry`, `stores.thread_proposals` | `thread_registry`'s verbs and `propose`; `grounding_sections`'s `threads`/`emerging` sections | `PUT /api/projections/config` |
+| `stores.tracking` | `grounding_sections`'s `tracking` section (a glob; zero matches skips cleanly) | `PUT /api/projections/config` |
+| `inputs.dossiers`, `inputs.dossiers_fallback` | `grounding_sections`'s synthesis and `npc_outlook` sections — curated preferred, fallback used and **reported** when the curated set has no files (FR-024a) | `PUT /api/projections/config` |
+| `inputs.narrative_importance`, `inputs.party`, `inputs.planning_notes`, `inputs.speculations` | `grounding_sections`'s outlook selection and its `copy`/`emerging` sections | `PUT /api/projections/config` |
+| `output.sections_dir`, `output.draft`, `output.legacy_draft` | `grounding_sections`'s section files, its assembled draft, and the FR-007b legacy-draft gate | `PUT /api/projections/config` |
+| `output.recent_events`, `output.recent_events_window` | `build_recent_events`, `GET /api/projections/run/recent-events` | `PUT /api/projections/config`. **Moved from `ensemble.yaml`'s `paths.recent_events_out` / `tuning.recent_events_window`** — see [projection-isolation.md](./projection-isolation.md) research D15 and the retirement note in the `ensemble.yaml` row above |
+| `selection` | `resolve_selection` as the service tier for `/api/projections/run/build` | `PUT`/`DELETE /api/projections/selection` |
+
+No `corpus` field exists to read: `event_spine`'s `--corpus` and `thread_registry`'s `--corpus` stay
+`required=True` on the CLI, never defaulted from config (Constitution X).
 
 ## platform.yaml — runtime (Phase 3, O3)
 

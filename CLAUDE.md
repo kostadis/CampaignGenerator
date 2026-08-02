@@ -208,20 +208,27 @@ resolves the path per-request.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/005-ui-batch-selection/plan.md` (Batch as a UI Selection Option — adds
-batch as a third value in feature 003's selection mechanism, so it is chosen,
-resolved, displayed and forwarded exactly like model and backend. One seam:
-`ResolvedSelection` gains `batch`/`batch_origin`/`batch_unavailable_reason`,
-`resolve_selection` resolves it request→service→platform and *downgrades*
-(never raises) when the resolved backend can't do batch, and
-`selection_cli_args` is the only emitter of `--batch`; `SelectionPanel.vue`
-gives ~10 service pages the control at once. Progress reporting,
-abort-cancels-remote-batch and fail-fast all come free from specs 002/004 —
-the server adds no batch logic of its own (Constitution VI). Connection Graph
-is excluded as the one in-process caller (issue #192), and the Session Doc
-Editor's bespoke batch checkbox is retired in favour of the unified control.
-Predecessors: `specs/004-claude-api-batch/plan.md` (the `--batch` CLI flag and
-the `campaignlib/api/batch.py` seam it forwards to),
-`specs/003-model-selection-resolution/` (the selection tiers this extends),
+`specs/006-state-projection-service/plan.md` (State-Projection Rendering as
+its own service — the #213 projection engine (`event_spine`,
+`thread_registry`, `grounding_sections`) becomes a service with its own
+strict document `<config>/projections.yaml` (modelled in
+`campaignlib/projection_config.py`, so both the CLIs and the service can read
+it — `test_layering.py` forbids the engine importing `server/`), its own
+output namespace `docs/projections/`, and a UI limited to section staleness +
+per-section rebuild. Four services, not three: `ensemble_batch` +
+`facts_to_state` are a shared **Extraction & State** service; **Per-Tool
+Rendering**, **Dossier Synthesis** and **State Projection** are three sibling
+renderers, each writing to its own subdirectory so they can run in any order
+without clobbering each other. "Service" is the canonical term; "path" is
+reserved for prose. `ensemble.yaml` is deliberately NOT split (research D11);
+`synthesise_world_state` stays Dossier Synthesis's engine and State
+Projection execs it as a declared dependency (D12); the corpus glob stays
+`required=True` with no config default and a test asserts the field's absence
+(D6, Constitution X); pre-move drafts are never moved or deleted — a renderer
+refuses until the GM clears them (FR-007b). `research.md` D1–D14 holds the
+codebase survey; extend it rather than re-deriving.
+Predecessors: `specs/005-ui-batch-selection/plan.md` (batch as a selection
+value; `SelectionPanel.vue`), `specs/003-model-selection-resolution/` (the
+`resolve_selection` seam this service's `selection` field plugs into),
 `specs/002-ensemble-run-observability/plan.md` (run streaming + abort).)
 <!-- SPECKIT END -->

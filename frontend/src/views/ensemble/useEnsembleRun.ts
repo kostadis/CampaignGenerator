@@ -122,7 +122,9 @@ export interface EnsemblePaths {
   dossiers_glob: string
   npc_dossiers_glob: string
   threads_out: string
-  recent_events_out: string
+  // recent_events_out moved to State Projection's own projections.yaml as
+  // output.recent_events (006-state-projection-service, research D15) — see
+  // EnsembleTuning's server-side docstring for why it left this document.
   inventory: string
 }
 
@@ -138,9 +140,6 @@ export interface EnsembleTuning {
   background_min_facts: number
   dossier_recent_window: number
   entity_parallel: number
-  // Different track: build_recent_events' recent_events.md window, NOT
-  // dossier_recent_window above. See EnsembleTuning's docstring server-side.
-  recent_events_window: number
 }
 
 /** How ensemble_merge collapses the five lenses into merged.json (issue #197).

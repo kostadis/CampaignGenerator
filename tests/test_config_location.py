@@ -46,6 +46,7 @@ CONFIG_FILENAMES = (
     "refs.yaml",
     "refs.local.yaml",
     "ingest_manifest.yaml",
+    "projections.yaml",
 )
 
 #: ``docs/entity_registry.yaml`` is deliberately absent from the list above —

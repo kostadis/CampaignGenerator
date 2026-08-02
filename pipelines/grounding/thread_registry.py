@@ -63,8 +63,12 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-DEFAULT_REGISTRY = Path("docs/thread_registry.yaml")
-DEFAULT_PROPOSALS = Path("docs/ensemble/thread_proposals.yaml")
+from campaignlib.constants import config_path
+from campaignlib.projection_config import (
+    PROJECTION_CONFIG_FILENAME,
+    load_projection_config,
+)
+
 STATUSES = ("open", "dormant", "resolved", "abandoned")
 CHANGES = ("opened", "advanced", "resolved", "reopened", "abandoned")
 
@@ -385,12 +389,14 @@ def render(data: dict, output: Path) -> int:
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
+    ap.add_argument("--registry", type=Path, default=None,
+                    help="Thread registry store (default: config stores.thread_registry)")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     pr = sub.add_parser("propose", help="Harvest thread facts into a GM-review proposals file")
     pr.add_argument("--corpus", required=True, nargs="+", metavar="GLOB")
-    pr.add_argument("--out", type=Path, default=DEFAULT_PROPOSALS)
+    pr.add_argument("--out", type=Path, default=None,
+                    help="Proposals file (default: config stores.thread_proposals)")
 
     ad = sub.add_parser("add", help="Add a thread (GM ratification)")
     ad.add_argument("--id", required=True)
@@ -420,23 +426,37 @@ def main():
     ck = sub.add_parser("check", help="Registry invariants (read-only)")  # noqa: F841
 
     rd = sub.add_parser("render", help="Project the registry to markdown")
-    rd.add_argument("--output", type=Path,
-                    default=Path("docs/ensemble/threads_registry.md"))
+    # No config default: this render's own markdown (superseded in practice
+    # by grounding_sections.py's inline "threads" section, which reads the
+    # registry directly rather than shelling out here) has no declared
+    # ProjectionOutput field, and inventing one to hold a single-caller
+    # literal would be the opposite of FR-014's discipline. Required instead
+    # of a bare path literal (contracts/cli.md doesn't cover this flag).
+    rd.add_argument("--output", type=Path, required=True)
 
     sp = sub.add_parser(
         "speculate",
         help="LLM brainstorm over registry + evidence -> notes/ (NOT canon)")
-    sp.add_argument("--proposals", type=Path, default=DEFAULT_PROPOSALS)
-    sp.add_argument("--output", type=Path,
-                    default=Path("notes/thread_speculations.md"))
+    sp.add_argument("--proposals", type=Path, default=None,
+                    help="Proposals file (default: config stores.thread_proposals)")
+    sp.add_argument("--output", type=Path, default=None,
+                    help="Speculation output (default: config inputs.speculations)")
     sp.add_argument("--model", default=None, metavar="ID")
     sp.add_argument("--max-tokens", type=int, default=4096)
     from campaignlib import add_backend_args
     add_backend_args(sp, default_backend="dgx")
 
     args = ap.parse_args()
+    # Loaded once, before any work begins (contracts/cli.md's resolution
+    # rule) — every None sentinel above resolves from here; an explicit
+    # flag always wins.
+    cfg = load_projection_config(config_path(Path.cwd(), PROJECTION_CONFIG_FILENAME))
+    if args.registry is None:
+        args.registry = Path(cfg.stores.thread_registry)
 
     if args.cmd == "propose":
+        if args.out is None:
+            args.out = Path(cfg.stores.thread_proposals)
         total, pending = propose(args.corpus, args.registry, args.out)
         print(f"wrote {args.out}: {total} proposal(s), {pending} pending GM review")
         return
@@ -453,6 +473,10 @@ def main():
         print(f"wrote {args.output}: {n} thread(s)")
         return
     if args.cmd == "speculate":
+        if args.proposals is None:
+            args.proposals = Path(cfg.stores.thread_proposals)
+        if args.output is None:
+            args.output = Path(cfg.inputs.speculations)
         speculate(data, args.proposals, args.output, args)
         print(f"wrote {args.output} (speculation — NOT canon; notes staging)")
         return

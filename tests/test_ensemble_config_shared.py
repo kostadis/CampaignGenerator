@@ -43,7 +43,6 @@ class TestDefaults:
         assert p.state_dossiers_dir == "docs/ensemble/state_dossiers"
         assert p.dossiers_glob == "docs/ensemble/merged_dossiers/*.md"
         assert p.threads_out == "docs/ensemble/threads.md"
-        assert p.recent_events_out == "docs/recent_events.md"
 
     def test_inventory_path_defaults_to_empty_string(self):
         """Empty means 'don't pass --inventory', not 'unset'."""
@@ -55,21 +54,12 @@ class TestDefaults:
         assert t.chunk_parallel == 4
         assert t.background_min_facts == 10
         assert t.entity_parallel == 0
-        assert t.recent_events_window == 0
 
     def test_dossier_recency_window_ships_enabled(self):
         """A shipped 0 would mean "no window", which reinstates issue #194's
         behaviour: the floor applying to every dossier, deleting the newest
         chapter's entities on every run. The default has to be a real window."""
         assert EnsembleConfig().tuning.dossier_recent_window == 4
-
-    def test_the_two_window_fields_are_independent(self):
-        """dossier_recent_window scopes world_state's dossier payload;
-        recent_events_window scopes build_recent_events' recent_events.md.
-        Different tracks — setting one must not move the other."""
-        cfg = EnsembleConfig.model_validate({"tuning": {"recent_events_window": 6}})
-        assert cfg.tuning.recent_events_window == 6
-        assert cfg.tuning.dossier_recent_window == 4
 
     def test_merge_defaults_leave_the_command_unchanged(self):
         """Every merge default must be falsy-or-derived except the two measured

@@ -65,9 +65,9 @@ async function save() {
   cfg.value.extract.endpoints = extractEndpointsText.value.split('\n').map(s => s.trim()).filter(Boolean)
   // Send only what this page owns — chapters_glob now lives under `paths`, and
   // `tuning` carries just the two world_state scope knobs. The service
-  // deep-merges, so the other five tuning fields (chapter_parallel,
-  // chunk_parallel, bundle/threads_min_facts, entity_parallel,
-  // recent_events_window) stay YAML-only and survive untouched.
+  // deep-merges, so the other four tuning fields (chapter_parallel,
+  // chunk_parallel, bundle/threads_min_facts, entity_parallel) stay
+  // YAML-only and survive untouched.
   cfg.value = await saveEnsembleConfig({
     chapters_selected: cfg.value.chapters_selected,
     extract: cfg.value.extract,

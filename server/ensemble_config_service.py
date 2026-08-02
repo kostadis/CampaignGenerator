@@ -85,12 +85,27 @@ class EnsembleConfigService:
         relative to the campaign dir, which is what the CLI engine expects
         (every ensemble console script runs with cwd == campaign_dir; see
         ``server/subprocess_runner.py``).
+
+        A field retired with no compatibility shim (e.g. ``paths.
+        recent_events_out`` / ``tuning.recent_events_window``, deleted for
+        006-state-projection-service — research D15) fails validation here
+        exactly like any other unknown key, since the model is
+        ``extra="forbid"``. Pydantic's own message already names the
+        offending path (``paths.recent_events_out: Extra inputs are not
+        permitted``); the wrapper below repeats the file path and spells out
+        the fix so the 400 is actionable without reading this docstring —
+        there is no migration for the GM to run, only a hand edit.
         """
         try:
             return load_ensemble_config(self.ensemble_config_path)
         except ValueError as exc:
             raise HTTPException(
-                status_code=400, detail=f"invalid ensemble config: {exc}"
+                status_code=400,
+                detail=(
+                    f"{self.ensemble_config_path} failed validation: {exc}\n"
+                    "Remove the key(s) named above from the file by hand — "
+                    "there is no automatic migration for a retired field."
+                ),
             ) from exc
 
     def resolved(self) -> EnsembleConfig:
