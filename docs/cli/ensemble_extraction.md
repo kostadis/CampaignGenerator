@@ -157,11 +157,50 @@ the summary has no usable scene list, it falls back to the summary unchanged.
 has no ladder. Either go through `ensemble_batch`, or point `--plan` at a
 pre-sliced document if you need per-scene `scene_index` from a one-off run.
 
-Chapter prose has its own version of this problem, and no fix: chapters
-organised by in-world date (`## 8/1 of Taraksh 1495`) with POV names beneath
-(`### Soma`) yield a `scene` meaning "which day", and chapters with no `##` at
-all fall to character-count chunking. That is a property of the source, not
-something extraction can repair.
+Chapter prose has its own version of this problem: chapters organised by
+in-world date (`## 8/1 of Taraksh 1495`) with POV names beneath (`### Soma`)
+yield a `scene` meaning "which day", and chapters with no `##` at all fall to
+character-count chunking.
+
+### When the summary is *derived from* the chapter — use `scene_map` instead
+
+The rung above assumes the summary is **upstream** of the prose: transcript →
+`enhance_summary` → summary → memoir narration. There, moving to the summary
+gains fidelity.
+
+A summary generated *from* chapter prose inverts that. It is downstream, and
+it is small: on the Phandalin corpus the `## Scenes` body is **26% of the
+chapter's word count** (14,100 words against 55,036). Routing extraction to it
+would trade three quarters of the source text for the scene key.
+
+`scene_map` takes neither side of that trade. It uses the summary's scenes
+**only as a boundary map** — titles and positions — and writes a derived copy
+of the *chapter* with `## <Scene Title>` injected at each anchor. Extraction
+then reads the full prose and still gets a real per-scene `scene_index`.
+
+```bash
+scene_map propose --summaries-dir summaries/haiku
+#   → docs/ensemble/scene_map.yaml   (every chapter approved: false)
+#   review it, then set approved: true per chapter
+scene_map apply --dest docs/chapters_scened
+ensemble_batch --chapters 'docs/chapters_scened/chapter_*.md' --source chapter
+```
+
+Anchoring is deterministic — no model call. Each scene is placed at the
+densest cluster of its own chapter-rare tokens, constrained to fall at or
+after the previous scene, then snapped back to a paragraph break. Existing
+`##` headings in the chapter are demoted to `###` in the derived copy, so the
+injected scene headings are the only structural boundaries; the in-world dates
+stay visible but stop competing.
+
+**A boundary is a scope decision** — put it in the wrong paragraph and events
+are misattributed to the neighbouring scene — so `propose` writes the prose
+found at each anchor into the map and `apply` ignores any chapter not marked
+approved. It also flags scenes whose span comes out under 400 characters,
+which almost always means two anchors landed on top of each other. On
+Phandalin chapters 2–30 that was 13 flags across 12 of 29 chapters; 147 of 148
+scenes anchored, one left unanchored (an unanchored scene merges into its
+predecessor rather than guessing).
 
 ---
 

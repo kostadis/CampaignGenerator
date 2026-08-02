@@ -111,8 +111,13 @@ page:
 
 - **The chapter prose has no scene structure.** Chapters organised by in-world
   date (`## 8/1 of Taraksh 1495`) give a `scene` meaning "which day"; chapters
-  with no `##` heading at all fall back to character-count chunking. A property
-  of the source.
+  with no `##` heading at all fall back to character-count chunking. If you
+  have per-chapter summaries with a `## Scenes` list, `scene_map propose` /
+  `apply` will inject those scene boundaries into a derived copy of the prose
+  so extraction keeps the full text *and* gains a real scene key — see
+  [`ensemble_extraction.md`](ensemble_extraction.md#when-the-summary-is-derived-from-the-chapter--use-scene_map-instead).
+  Without such a summary this is a property of the source and cannot be fixed
+  downstream.
 - **The extraction ran on a whole `session-summary.md`.** Its `## Summary` /
   `## Scenes` / `## NPCs` headings are H2s, so all the `###` scenes collapse
   into one chunk. `ensemble_batch --source auto` slices the scene body out
