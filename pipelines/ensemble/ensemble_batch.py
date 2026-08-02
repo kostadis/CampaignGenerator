@@ -32,6 +32,7 @@ import yaml  # noqa: E402
 from campaignlib import (  # noqa: E402
     SourceDecision,
     compose_scenes,
+    compose_summary_scenes,
     resolve_source,
     route_plan,
 )
@@ -246,7 +247,16 @@ def main():
                 input_path = compose_scenes(
                     decision.inputs, workdir / "lineage_scenes.md")
             elif decision.kind == "summary":
-                input_path = decision.inputs[0]
+                # Hand extraction the ## Scenes body, not the whole summary:
+                # the file's own ## Summary/## Scenes/## NPCs headings are H2s,
+                # so chunk_by_scenes would split on those and collapse every
+                # scene into one scene_index. Falls back to the summary as-is
+                # when it has no sliceable scene list. See compose_summary_scenes.
+                input_path = (
+                    compose_summary_scenes(
+                        decision.inputs[0], workdir / "lineage_summary_scenes.md")
+                    or decision.inputs[0]
+                )
         else:
             decision = SourceDecision(kind="chapter", inputs=[chapter],
                                       reason="--source chapter (forced)")

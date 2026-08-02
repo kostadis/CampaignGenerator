@@ -70,6 +70,7 @@ from .registry import (
 from .lineage import (
     SourceDecision,
     compose_scenes,
+    compose_summary_scenes,
     load_approved_rows,
     resolve_source,
     route_plan,
@@ -174,6 +175,7 @@ __all__ = [
     # source lineage (issue #213 Phase 1)
     "SourceDecision",
     "compose_scenes",
+    "compose_summary_scenes",
     "load_approved_rows",
     "resolve_source",
     "route_plan",
