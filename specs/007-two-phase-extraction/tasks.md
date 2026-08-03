@@ -114,7 +114,7 @@ consumes them as authoritative.
 - [ ] T028 [US2] Add `--scene-extractions DIR` to `session_doc/sd_verify_quotes.py`: sweep `NN_*.md` sorted, skipping `.prev`, `.reviewed` and `.scaffold.md` — mirroring the filter already used by `server/routers/scene_editor.py:834 api_pipeline_status`. Permitted alongside `--summary`; at least one is required
 - [ ] T029 [P] [US2] Add Stage 2 parser tests to `tests/test_verify_quotes.py`: quotes inside `## Verbatim moments` are found; quotes inside `## Scene summary` are **not**; `*"italic"*` quotes in the summary section are ignored; the sidecar suffixes are skipped
 - [ ] T030 [US2] Extend `render_report` so per-file findings are grouped under the source filename with line numbers, keeping `unverified` ahead of `near` across the whole run rather than per file
-- [ ] T031 [US2] Run `quickstart.md` Scenario 4 against `~/campaigns/Phandalin/summaries/20260623/`. Expect ≈336 `verified` (64%), ≈148 `near`, single-digit `unverified`, wall clock < 30 s (SC-004). **A materially different `verified` share means the parser regressed** — the D1 measurement is the baseline
+- [ ] T031 [US2] Run `quickstart.md` Scenario 4 against `~/campaigns/Phandalin/summaries/20260623/`. Measured: **339 verified (65%) / 139 near / 39 unverified / 3 unscored / 2 exempt in 1.2 s**. **A materially different `verified` share means the parser regressed.** Note the 39 is inflated by pre-`6e00f54` alias corruption (Brewbarry↔Gruberry, Neverember↔Nevember); re-run after a fresh extraction and expect it to fall
 
 **Checkpoint**: both extraction stages verifiable.
 

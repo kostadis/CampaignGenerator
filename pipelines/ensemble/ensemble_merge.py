@@ -48,6 +48,7 @@ import campaignlib
 from campaignlib.textproc import (
     chunk_by_scenes,
     chunk_text_with_offsets,
+    locate_quote,
     norm_subject as _norm_subject,
     strip_base64_images,
 )
@@ -282,18 +283,14 @@ def quote_offset(quote: str, document: str) -> int | None:
     prompts demand verbatim substrings, but a reflowed line break inside an
     otherwise exact quote shouldn't lose the position. Runs of whitespace in the
     quote match runs of whitespace in the document.
+
+    The matching itself now lives in ``campaignlib.textproc.locate_quote`` — the
+    same helper ``extract_facts.verify_quotes`` and the session_doc quote
+    verifier use, so all three agree on what counts as verbatim. Behaviour is
+    unchanged; ``tests/test_locate_quote_parity.py`` pins that against the
+    pre-consolidation implementation.
     """
-    if not quote:
-        return None
-    i = document.find(quote)
-    if i >= 0:
-        return i
-    tokens = quote.split()
-    if not tokens:
-        return None
-    pattern = re.compile(r"\s+".join(re.escape(t) for t in tokens))
-    m = pattern.search(document)
-    return m.start() if m else None
+    return locate_quote(quote, document)
 
 
 def load_document(manifest: dict) -> str | None:

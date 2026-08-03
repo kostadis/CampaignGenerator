@@ -128,15 +128,33 @@ time sd_verify_quotes \
   --out "$S/narration/quote_report.md" --report-only
 ```
 
-**Expected**, from the D1 measurement on this exact session (522 quotes):
+**Measured** on this exact session (522 quotes, 1,244 cues, threshold 0.85):
 
-- `verified` ≈ **336 (64%)**
-- `near` ≈ 148 — mostly disfluency edits
-- `unverified` — single digits
-- wall clock **< 30 s** (prototype measured < 5 s), zero tokens
+| verdict | count | share |
+|---|---|---|
+| `verified` | **339** | 65% |
+| `near` | 139 | 27% |
+| `unverified` | **39** | 7% |
+| `unscored` | 3 | 1% |
+| `exempt` | 2 | 0% |
 
-A wildly different `verified` share means the parser regressed, not that the
-session changed.
+Wall clock **1.2 s**, zero tokens.
+
+A materially different `verified` share means the parser regressed, not that
+the session changed.
+
+**Why 39 and not a handful:** this corpus was extracted *before* `6e00f54`, so a
+large share of the unverified findings are the D13 alias substitution, not model
+fabrication — `"Brewbarry made a quiet mental note"` where the tape says
+`"Gruberry…"`, `"Lord Neverember"` for `"Lord Nevember"`, `"Alagondar"` for
+`"allegondre"`, `"Brother Aldric"` for `"Brother Aldrich"`. The verifier is
+correct (those are not what was said) and it independently rediscovered the bug
+PR #231 fixed. **A post-`6e00f54` re-extraction should drop this count
+substantially** — and comparing before/after is itself a good check that the
+fix worked.
+
+The remainder are ellipsis-stitched quotes, flagged as **Likely stitched** in
+the report.
 
 ---
 
