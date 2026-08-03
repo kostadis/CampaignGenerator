@@ -35,7 +35,6 @@ from pathlib import Path
 from campaignlib import (
     DEFAULT_MODEL,
     add_backend_args,
-    build_alias_normalizer,
     build_batch_request,
     build_scene_extraction_system_prompt,
     client_from_args,
@@ -90,13 +89,15 @@ def _build_pending_requests(args, *, scenes, vtt_text, out_dir, alias_map):
     Returns `(requests, plan, system_prompt)`; `requests` is `[]` if every
     scene already exists on disk (nothing pending) and `--force` was not given.
     """
-    normalize, _ = build_alias_normalizer(alias_map)
+    # No input_normalizer: scene extraction emits VERBATIM quotes, so the VTT
+    # must reach the model exactly as transcribed. The registry's aliases are
+    # identity assertions ("these forms denote one entity"), not rewrite rules;
+    # they reach the model as knowledge via the roster in `system_suffix`.
     system_suffix = format_npc_roster(alias_map)
     system_prompt = build_scene_extraction_system_prompt(
         vtt_text=vtt_text,
         system_prefix=SCENE_EXTRACT_SYSTEM_PREFIX,
         system_suffix=system_suffix,
-        input_normalizer=normalize if alias_map else None,
     )
 
     plan = plan_scene_extraction(scenes=scenes, extract_dir=out_dir)
@@ -263,10 +264,11 @@ def main() -> None:
                         help="Where to write per-scene extraction files")
     parser.add_argument("--dossier-dir", metavar="DIR", default=None,
                         help="Directory of per-NPC dossier files (built by "
-                             "planning --build-dossiers). Aliases are "
-                             "rewritten to canonical names in the VTT before "
-                             "extraction; the canonical NPC roster is appended "
-                             "to the system prompt.")
+                             "planning --build-dossiers). The canonical NPC "
+                             "roster is appended to the system prompt so the "
+                             "model knows which names denote the same entity. "
+                             "The VTT itself is never rewritten — scene "
+                             "extraction emits verbatim quotes.")
     parser.add_argument("--party", metavar="FILE", default=None,
                         help="party.md path. When set, player → character "
                              "mappings are parsed from the `**Class, Player: "
@@ -451,7 +453,6 @@ def main() -> None:
 
     if not args.batch:
         # ── Live streaming path (unchanged behaviour) ──
-        normalize, _ = build_alias_normalizer(alias_map)
         npc_roster = format_npc_roster(alias_map)
         client = client_from_args(args)
         print(f"\n[Scene extraction | {len(scenes)} scene(s) | model: {args.model}]")
@@ -465,7 +466,6 @@ def main() -> None:
             extraction_instruction=SCENE_EXTRACT_USER_TEMPLATE,
             system_prefix=SCENE_EXTRACT_SYSTEM_PREFIX,
             system_suffix=npc_roster,
-            input_normalizer=normalize if alias_map else None,
             cache_vtt=not args.no_cache,
             max_tokens=args.max_tokens,
             force=args.force,
