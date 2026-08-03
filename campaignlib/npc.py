@@ -75,6 +75,24 @@ def build_alias_normalizer(
         for alias in aliases:
             alias_to_canonical[alias.lower()] = canonical
 
+    # Idempotency guard. When an alias also occurs *inside* its own canonical,
+    # text that already carries part of that canonical gets the shared prefix
+    # duplicated: "Lord Cassian" + (Cassian -> "Lord Cassian Meliamne") became
+    # "Lord Lord Cassian Meliamne", and "Lord Dagult Neverember" +
+    # (Neverember -> "Dagult Neverember") became "Lord Dagult Dagult Neverember".
+    # Registering the canonical's prefix-through-the-alias as a key — which
+    # longest-first matching prefers over the bare alias — consumes the prefix
+    # already present instead of re-emitting it. Never overwrites an explicit
+    # alias mapping.
+    for canonical, aliases in canonical_to_aliases.items():
+        for alias in aliases:
+            m = re.search(
+                r"\b" + re.escape(alias) + r"\b", canonical, flags=re.IGNORECASE
+            )
+            if m and m.start() > 0:
+                prefix = canonical[: m.end()]
+                alias_to_canonical.setdefault(prefix.lower(), canonical)
+
     if not alias_to_canonical:
         return (lambda text: text, [])
 
