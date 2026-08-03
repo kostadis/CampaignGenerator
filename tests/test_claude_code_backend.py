@@ -342,6 +342,34 @@ def test_stream_api_forwards_thinking_to_claude_code(monkeypatch):
     assert captured["env"]["MAX_THINKING_TOKENS"] == "0"
 
 
+# ── Effort clamp (the other half of suppressing thinking) ───────────────────
+#
+# The API rejects the top effort levels when thinking is disabled:
+#   400 output_config.effort 'xhigh' is not supported when thinking is disabled
+#   on this model. Use effort 'high' or below, or enable thinking.
+# The CLI reads effortLevel from the GM's settings.json — not an env var we can
+# unset in the child — so it must be overridden on the command line.
+
+def test_effort_clamped_when_thinking_suppressed(monkeypatch):
+    captured = {}
+    monkeypatch.delenv("CG_CLAUDE_CODE_THINKING", raising=False)
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model="m")
+    cmd = captured["cmd"]
+    assert "--effort" in cmd
+    assert cmd[cmd.index("--effort") + 1] == backends.CLAUDE_CODE_NO_THINKING_EFFORT
+    assert backends.CLAUDE_CODE_NO_THINKING_EFFORT in ("low", "medium", "high")
+
+
+def test_effort_left_alone_when_thinking_opted_in(monkeypatch):
+    # With thinking on, xhigh/max are legal again — don't downgrade the GM's
+    # configured effort behind their back.
+    captured = {}
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model="m", thinking=True)
+    assert "--effort" not in captured["cmd"]
+
+
 def test_command_passes_strict_mcp_config(monkeypatch):
     # --disallowed-tools '*' blocks tool USE but still spawns every configured
     # MCP server (7 of them in a campaign workspace, ~300MB each, per call).
