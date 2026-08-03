@@ -289,8 +289,41 @@ class _OpenRouterClient:
 # out only. Tool use, vision, and true token streaming are not supported — those
 # paths keep the real Anthropic API. Output is delivered as one chunk, so the
 # streaming UI shows the whole block at once after the call returns.
+#
+# Thinking is OFF by default on this backend, unlike every other one. `claude -p`
+# runs extended thinking by default, but the real Anthropic SDK path does not
+# (stream_api only forwards `thinking` to _THINKING_EXTRA_CLIENTS), so leaving it
+# on made the two backends do measurably different work for the same call. Worse,
+# `max_tokens` is forwarded as CLAUDE_CODE_MAX_OUTPUT_TOKENS, which the CLI
+# charges the thinking trace against: a ~14K-token trace against enhance_summary's
+# default 16384 ceiling left no room for the answer, so the CLI auto-continued
+# into a fresh turn and thought another ~14K. Measured on a 130,412-char VTT:
+#
+#   --backend anthropic                          3m23s   ~9K output tokens
+#   --backend claude-code (16384 ceiling)        17m43s  53,387 output tokens (+ seam)
+#   --backend claude-code --max-tokens 32000     10m54s  clean, no seam
+#   ... plus MAX_THINKING_TOKENS=0                3m57s  10,100 output tokens
+#
+# Raising the ceiling only stops the auto-continue loop; suppressing the trace is
+# what closes the gap. Every pipeline on this backend is a render/extract pass
+# ("LLM renders, humans decide"), and the tool-use judgement passes can't run here
+# at all — `create()` rejects tools. Set CG_CLAUDE_CODE_THINKING=1, or pass
+# thinking=True per call, to opt back in.
 
 CLAUDE_CODE_CLI = os.environ.get("CG_CLAUDE_CLI", "claude")
+
+
+def _claude_code_thinking(thinking: bool | None) -> bool:
+    """Resolve per-call reasoning intent for the `claude -p` backend.
+
+    ``None`` (the caller expressed no preference) resolves to OFF — see the
+    module comment above for the measurement that motivates the inverted
+    default. ``CG_CLAUDE_CODE_THINKING`` opts back in; an explicit
+    ``True``/``False`` from the caller always wins over the env var.
+    """
+    if thinking is None:
+        return bool(os.environ.get("CG_CLAUDE_CODE_THINKING"))
+    return bool(thinking)
 
 
 def _blocks_to_text(x) -> str:
@@ -336,7 +369,8 @@ def _messages_user_text(messages: list) -> str:
 
 
 def _claude_code_generate(
-    *, system, user: str, model: str, max_tokens: int | None = None
+    *, system, user: str, model: str, max_tokens: int | None = None,
+    thinking: bool | None = None,
 ) -> str:
     """Invoke `claude -p` headless and return the assistant text.
 
@@ -344,6 +378,19 @@ def _claude_code_generate(
     cached prefix doesn't blow ARG_MAX; the user prompt is piped on stdin for
     the same reason. ANTHROPIC_API_KEY is stripped so billing lands on the
     subscription, not the metered API.
+
+    Thinking is suppressed via MAX_THINKING_TOKENS=0 unless the caller asks for
+    it (`thinking=True`) or CG_CLAUDE_CODE_THINKING is set — see the module
+    comment for why this backend inverts the usual default.
+
+    `--strict-mcp-config` is passed with no `--mcp-config`, so the CLI ignores
+    every configured MCP server. `--disallowed-tools '*'` already stops the
+    tools being *used*, but not the servers being *spawned*: a campaign
+    workspace launched seven of them (codebase-memory, headroom, mcp-server-git,
+    campaign, mempalace, 5etools, registry) on every single call, at ~300MB
+    apiece. They contribute no tokens either way (measured: an identical
+    13,399-token cached prefix with and without the flag), so this is pure
+    process/memory overhead — which scene_extract paid once per scene.
 
     `claude -p` has no output-length CLI flag, but it honors the
     CLAUDE_CODE_MAX_OUTPUT_TOKENS env var. We forward the caller's `max_tokens`
@@ -377,6 +424,12 @@ def _claude_code_generate(
     env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
     if max_tokens:
         env["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] = str(max_tokens)
+    if _claude_code_thinking(thinking):
+        # Opted in — inherit whatever the CLI/model would do on its own. Drop any
+        # inherited MAX_THINKING_TOKENS=0 so the opt-in actually takes effect.
+        env.pop("MAX_THINKING_TOKENS", None)
+    else:
+        env["MAX_THINKING_TOKENS"] = "0"
 
     cmd = [
         CLAUDE_CODE_CLI, "-p",
@@ -384,6 +437,7 @@ def _claude_code_generate(
         "--output-format", "stream-json",
         "--verbose",   # required by print mode when --output-format is stream-json
         "--disallowed-tools", "*",   # pure text generation; no agentic tool calls
+        "--strict-mcp-config",       # ...and don't even spawn the MCP servers
     ]
     sp_file = None
     try:
@@ -492,17 +546,19 @@ class _ClaudeCodeStream:
     `with client.messages.stream(...) as s: s.text_stream` contract.
     """
 
-    def __init__(self, *, system, user: str, model: str, max_tokens: int | None = None):
+    def __init__(self, *, system, user: str, model: str, max_tokens: int | None = None,
+                 thinking: bool | None = None):
         self._system = system
         self._user = user
         self._model = model
         self._max_tokens = max_tokens
+        self._thinking = thinking
         self._text = ""
 
     def __enter__(self):
         self._text = _claude_code_generate(
             system=self._system, user=self._user, model=self._model,
-            max_tokens=self._max_tokens)
+            max_tokens=self._max_tokens, thinking=self._thinking)
         return self
 
     def __exit__(self, exc_type, exc, tb):
@@ -525,7 +581,8 @@ class _ClaudeCodeMessages:
         # names, so the picker's claude-* value flows straight through.
         return self._client.model_override or model
 
-    def create(self, *, model, max_tokens, system, messages, tools=None, **_ignored):
+    def create(self, *, model, max_tokens, system, messages, tools=None,
+               thinking=None, **_ignored):
         if tools:
             raise NotImplementedError(
                 "tool use is not supported on the claude-code backend — switch to "
@@ -536,15 +593,17 @@ class _ClaudeCodeMessages:
             user=_messages_user_text(messages),
             model=self._resolve_model(model),
             max_tokens=max_tokens,
+            thinking=thinking,
         )
         return _OpenAICompatResponse(text)
 
-    def stream(self, *, model, max_tokens, system, messages, **_ignored):
+    def stream(self, *, model, max_tokens, system, messages, thinking=None, **_ignored):
         return _ClaudeCodeStream(
             system=system,
             user=_messages_user_text(messages),
             model=self._resolve_model(model),
             max_tokens=max_tokens,
+            thinking=thinking,
         )
 
 

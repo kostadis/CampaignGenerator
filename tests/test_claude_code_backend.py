@@ -256,3 +256,99 @@ def test_command_uses_stream_json_and_verbose(monkeypatch):
     assert "--verbose" in cmd
     assert "--output-format" in cmd
     assert cmd[cmd.index("--output-format") + 1] == "stream-json"
+
+
+# ── Thinking suppression (the 4.5x latency tax) ─────────────────────────────
+#
+# `claude -p` runs extended thinking by default; the real Anthropic SDK path
+# never does. On a 130,412-char VTT the trace burned ~14K tokens against
+# enhance_summary's 16384 ceiling, triggering the CLI's auto-continue into a
+# second equally-thinky turn: 17m43s / 53,387 output tokens, versus 3m23s on
+# --backend anthropic. MAX_THINKING_TOKENS=0 brought it to 3m57s / 10,100.
+
+def test_thinking_disabled_by_default(monkeypatch):
+    captured = {}
+    monkeypatch.delenv("CG_CLAUDE_CODE_THINKING", raising=False)
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model="m")
+    assert captured["env"]["MAX_THINKING_TOKENS"] == "0"
+
+
+def test_thinking_env_opt_in(monkeypatch):
+    captured = {}
+    monkeypatch.setenv("CG_CLAUDE_CODE_THINKING", "1")
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model="m")
+    assert "MAX_THINKING_TOKENS" not in captured["env"]
+
+
+def test_explicit_thinking_true_beats_unset_env(monkeypatch):
+    captured = {}
+    monkeypatch.delenv("CG_CLAUDE_CODE_THINKING", raising=False)
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model="m", thinking=True)
+    assert "MAX_THINKING_TOKENS" not in captured["env"]
+
+
+def test_explicit_thinking_false_beats_env_opt_in(monkeypatch):
+    captured = {}
+    monkeypatch.setenv("CG_CLAUDE_CODE_THINKING", "1")
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model="m", thinking=False)
+    assert captured["env"]["MAX_THINKING_TOKENS"] == "0"
+
+
+def test_opt_in_clears_inherited_zero(monkeypatch):
+    # A MAX_THINKING_TOKENS=0 already in the parent env must not silently
+    # defeat an explicit opt-in.
+    captured = {}
+    monkeypatch.setenv("MAX_THINKING_TOKENS", "0")
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model="m", thinking=True)
+    assert "MAX_THINKING_TOKENS" not in captured["env"]
+
+
+def test_messages_facade_threads_thinking(monkeypatch):
+    captured = {}
+    monkeypatch.delenv("CG_CLAUDE_CODE_THINKING", raising=False)
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    client = backends._ClaudeCodeClient()
+    with client.messages.stream(
+        model="m", max_tokens=8000, system="s",
+        messages=[{"role": "user", "content": "hi"}], thinking=True,
+    ):
+        pass
+    assert "MAX_THINKING_TOKENS" not in captured["env"]
+
+    client.messages.create(
+        model="m", max_tokens=8000, system="s",
+        messages=[{"role": "user", "content": "hi"}], thinking=False,
+    )
+    assert captured["env"]["MAX_THINKING_TOKENS"] == "0"
+
+
+def test_stream_api_forwards_thinking_to_claude_code(monkeypatch):
+    # The seam: stream_api only forwards `thinking` to _THINKING_EXTRA_CLIENTS,
+    # so _ClaudeCodeClient must be a member or the knob never arrives.
+    from campaignlib.api.client import _THINKING_EXTRA_CLIENTS, stream_api
+
+    assert isinstance(backends._ClaudeCodeClient(), _THINKING_EXTRA_CLIENTS)
+
+    captured = {}
+    monkeypatch.setenv("CG_CLAUDE_CODE_THINKING", "1")
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    stream_api(backends._ClaudeCodeClient(), "sys", "user", "m",
+               max_tokens=1000, thinking=False, silent=True)
+    assert captured["env"]["MAX_THINKING_TOKENS"] == "0"
+
+
+def test_command_passes_strict_mcp_config(monkeypatch):
+    # --disallowed-tools '*' blocks tool USE but still spawns every configured
+    # MCP server (7 of them in a campaign workspace, ~300MB each, per call).
+    captured = {}
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model="m")
+    cmd = captured["cmd"]
+    assert "--strict-mcp-config" in cmd
+    # Guard the precondition that makes it mean "no servers at all".
+    assert "--mcp-config" not in cmd

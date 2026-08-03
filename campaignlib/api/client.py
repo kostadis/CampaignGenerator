@@ -6,9 +6,10 @@ import sys
 from .backends import _OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient
 
 # Clients that accept the DGX-style `thinking` request extra (mapped per-backend
-# to the right knob: enable_thinking for vLLM, `reasoning` for OpenRouter). The
-# real Anthropic SDK would reject it, so it is only forwarded to these.
-_THINKING_EXTRA_CLIENTS = (_OpenAICompatClient, _OpenRouterClient)
+# to the right knob: enable_thinking for vLLM, `reasoning` for OpenRouter,
+# MAX_THINKING_TOKENS for the `claude -p` subprocess). The real Anthropic SDK
+# would reject it, so it is only forwarded to these.
+_THINKING_EXTRA_CLIENTS = (_OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient)
 
 
 def _require_nonempty(text: str) -> str:
@@ -23,7 +24,9 @@ def _require_nonempty(text: str) -> str:
         raise RuntimeError(
             "model returned empty output (no content). On a reasoning model this "
             "usually means the token budget was spent on a thinking trace — disable "
-            "thinking (DGX_NO_THINKING=1 / OPENROUTER_NO_THINKING=1) or raise max_tokens."
+            "thinking (DGX_NO_THINKING=1 / OPENROUTER_NO_THINKING=1; the claude-code "
+            "backend disables it by default unless CG_CLAUDE_CODE_THINKING is set) "
+            "or raise max_tokens."
         )
     return text
 
@@ -193,7 +196,9 @@ def call_api(client, system: str, content, model: str, max_tokens: int = 8096,
 
     content — a string or a list of content blocks (for multimodal/vision calls).
     thinking — per-call reasoning intent for the DGX backend (None = the model's
-    registry default); ignored for the Anthropic / Claude Code backends.
+    registry default) and the claude-code backend (None = off; see
+    `_claude_code_thinking`). Ignored for the real Anthropic backend, which
+    never enables thinking.
     Retries on transient errors (rate limit, overload, connection) with exponential backoff.
     """
     import time
