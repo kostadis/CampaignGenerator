@@ -309,8 +309,46 @@ class _OpenRouterClient:
 # ("LLM renders, humans decide"), and the tool-use judgement passes can't run here
 # at all — `create()` rejects tools. Set CG_CLAUDE_CODE_THINKING=1, or pass
 # thinking=True per call, to opt back in.
+#
+# Suppressing the trace also constrains effort: the API rejects the top two
+# effort levels outright when thinking is disabled —
+#
+#   API Error: 400 output_config.effort 'xhigh' is not supported when thinking
+#   is disabled on this model. Use effort 'high' or below, or enable thinking.
+#
+# — and the CLI resolves effort from the GM's own `~/.claude/settings.json`
+# (`effortLevel`), which a power user may well have pinned to xhigh/max. That
+# is not an env var we can unset in the child: the setting is read from disk,
+# so every subscription-backed call hard-fails until it is overridden on the
+# command line. We pass `--effort` explicitly, at the highest level that is
+# legal without thinking, whenever we actually suppress the trace.
+#
+# "Actually" is the model-conditional part. On the Fable/Mythos family thinking
+# is always on and cannot be disabled at all, so MAX_THINKING_TOKENS=0 is a
+# no-op there and xhigh/max stay legal (verified: a `claude -p` call on
+# claude-fable-5 with the var set and an inherited xhigh returns clean). Pinning
+# effort on those models would silently downgrade the GM's configured level to
+# dodge an error that cannot occur, so we skip the clamp for them.
 
 CLAUDE_CODE_CLI = os.environ.get("CG_CLAUDE_CLI", "claude")
+
+# Highest effort level the API accepts when thinking is disabled.
+CLAUDE_CODE_NO_THINKING_EFFORT = "high"
+
+# Substrings identifying model families whose thinking cannot be disabled.
+# Matched against the model id, so they cover bare aliases, date suffixes, and
+# provider-prefixed ids (`anthropic.claude-fable-5`) alike.
+CLAUDE_CODE_ALWAYS_THINKING_MARKERS = ("fable", "mythos")
+
+
+def _claude_code_always_thinking(model: str) -> bool:
+    """True when `model`'s extended thinking cannot be turned off.
+
+    The Fable/Mythos family runs adaptive thinking unconditionally — an
+    explicit disable is rejected outright — so the effort ceiling that applies
+    to thinking-disabled calls never binds there.
+    """
+    return any(m in (model or "").lower() for m in CLAUDE_CODE_ALWAYS_THINKING_MARKERS)
 
 
 def _claude_code_thinking(thinking: bool | None) -> bool:
@@ -381,7 +419,12 @@ def _claude_code_generate(
 
     Thinking is suppressed via MAX_THINKING_TOKENS=0 unless the caller asks for
     it (`thinking=True`) or CG_CLAUDE_CODE_THINKING is set — see the module
-    comment for why this backend inverts the usual default.
+    comment for why this backend inverts the usual default. Suppressing it also
+    forces `--effort high`: the API refuses effort above that when thinking is
+    off, and the CLI would otherwise resolve the GM's own settings.json
+    `effortLevel` (xhigh/max for a power user) and 400 on every call. That
+    clamp is skipped on models whose thinking can't be disabled in the first
+    place (Fable/Mythos), where the ceiling doesn't apply.
 
     `--strict-mcp-config` is passed with no `--mcp-config`, so the CLI ignores
     every configured MCP server. `--disallowed-tools '*'` already stops the
@@ -424,7 +467,8 @@ def _claude_code_generate(
     env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
     if max_tokens:
         env["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] = str(max_tokens)
-    if _claude_code_thinking(thinking):
+    thinking_on = _claude_code_thinking(thinking)
+    if thinking_on:
         # Opted in — inherit whatever the CLI/model would do on its own. Drop any
         # inherited MAX_THINKING_TOKENS=0 so the opt-in actually takes effect.
         env.pop("MAX_THINKING_TOKENS", None)
@@ -439,6 +483,12 @@ def _claude_code_generate(
         "--disallowed-tools", "*",   # pure text generation; no agentic tool calls
         "--strict-mcp-config",       # ...and don't even spawn the MCP servers
     ]
+    if not thinking_on and not _claude_code_always_thinking(model):
+        # The GM's settings.json effortLevel is read from disk, so a pinned
+        # xhigh/max 400s every no-thinking call unless overridden here. Skipped
+        # on always-thinking models, where the ceiling doesn't apply and the
+        # clamp would only cost the GM effort they asked for.
+        cmd += ["--effort", CLAUDE_CODE_NO_THINKING_EFFORT]
     sp_file = None
     try:
         if sys_text:
