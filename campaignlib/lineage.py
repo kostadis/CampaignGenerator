@@ -35,7 +35,7 @@ from pathlib import Path
 
 import yaml
 
-from campaignlib.textproc import split_frontmatter
+from campaignlib.textproc import chunk_by_scenes, split_frontmatter
 
 DEFAULT_MAP = Path("docs/ensemble/summary_map.yaml")
 DEFAULT_SUMMARIES = Path("summaries")
@@ -230,4 +230,75 @@ def compose_scenes(files: list[Path], dest: Path) -> Path:
         _, body = split_frontmatter(p.read_text(encoding="utf-8"))
         parts.append(body.strip())
     dest.write_text("\n\n".join(parts) + "\n", encoding="utf-8")
+    return dest
+
+
+_SCENES_SECTION_RE = re.compile(r"(?ms)^##[ \t]+Scenes\b.*?(?=^##(?!#)[ \t]+|\Z)")
+_SCENES_HEADING_RE = re.compile(r"(?m)^##[ \t]+Scenes\b.*\n")
+_H1_RE = re.compile(r"(?s)\A\s*(#(?!#)[ \t]+[^\n]*)\n")
+# Big enough that chunk_by_scenes never sub-splits during the probe below: we
+# are asking which heading convention it *detects*, not how it would cut.
+_PROBE_CHUNK = 10 ** 9
+
+
+def compose_summary_scenes(summary: Path, dest: Path) -> Path | None:
+    """Slice a session-summary's ``## Scenes`` body out as its own document.
+
+    Returns ``dest`` on success, or ``None`` when the summary has no usable
+    scene list — the caller then falls back to the summary as-is, which is the
+    pre-existing behaviour.
+
+    **Why this exists.** Two consumers read a ``session-summary.md`` and want
+    opposite things from its headings:
+
+    - ``_summary_is_structured`` (the ladder gate, above) admits the file to the
+      summary rung only if literal ``## Scenes`` AND ``## NPCs`` are present.
+    - ``chunk_by_scenes`` splits on ``##`` and consults ``###`` *only when no*
+      ``##`` *heading exists anywhere*. Its chunk index becomes ``scene_index``
+      (``ensemble_merge.stamp_scene_index``), which is the ``scene`` component
+      of ``event_spine``'s ``(chapter, scene, seq)`` key.
+
+    So the gate requires the H2 wrapper and the chunker is defeated by it: fed
+    the whole file, ``chunk_by_scenes`` returns Summary / Scenes / NPCs and
+    every scene collapses into a single ``scene_index``. Slicing to the
+    ``## Scenes`` section alone does not help — ``## Scenes`` is itself an H2.
+
+    One document cannot satisfy both, so the resolution is here rather than in
+    the format: the file on disk keeps its H2s for the gate, and extraction is
+    handed this derived document, whose only headings are the ``###`` scene
+    titles. Convention flips to ``h3`` and each scene gets its own chunk.
+
+    Stripping every ``##`` line from the whole file would NOT work: the
+    ``### <NPC name>`` entries under ``## NPCs`` are H3 too and would become
+    chunk boundaries, so a 9-scene chapter yields 18 "scenes", half of them NPC
+    paragraphs. The section must be sliced first, then its one wrapper line
+    dropped.
+
+    The chapter's ``# H1`` title is carried over for context;
+    ``chunk_by_scenes`` folds pre-first-heading content into the first scene,
+    and an H1 matches neither the H2 nor the H3 pattern, so it cannot create a
+    boundary.
+
+    Deterministic; byte-stable for unchanged input. Writing the slice to disk
+    (rather than slicing in memory) is load-bearing: ``ensemble_merge.
+    load_document`` re-reads the document from the path recorded in the
+    manifest, so extract-time and merge-time text must be the same file or
+    ``quote_offset`` and ``scene_index`` would be computed against different
+    coordinates.
+    """
+    text = summary.read_text(encoding="utf-8")
+    section = _SCENES_SECTION_RE.search(text)
+    if section is None:
+        return None
+    body = _SCENES_HEADING_RE.sub("", section.group(0), count=1).strip()
+    if not body:
+        return None
+    # Ask chunk_by_scenes itself rather than re-implementing its priority rule:
+    # anything other than a clean h3 read means slicing bought us nothing.
+    probe = chunk_by_scenes(body, _PROBE_CHUNK)
+    if probe is None or probe[1] != "h3":
+        return None
+    title = _H1_RE.match(text)
+    head = f"{title.group(1).strip()}\n\n" if title else ""
+    dest.write_text(head + body + "\n", encoding="utf-8")
     return dest

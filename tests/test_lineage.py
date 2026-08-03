@@ -10,18 +10,21 @@ Rulings under test (recorded on the #213 anchor, 2026-07-31):
 """
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 import yaml
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
-from campaignlib import compose_scenes, resolve_source, route_plan  # noqa: E402
-from campaignlib.lineage import SourceDecision  # noqa: E402
-from campaignlib.textproc import split_frontmatter  # noqa: E402
+from campaignlib import (  # noqa: E402
+    compose_scenes, compose_summary_scenes, resolve_source, route_plan)
+from campaignlib.lineage import SourceDecision, _summary_is_structured  # noqa: E402
+from campaignlib.textproc import chunk_by_scenes, split_frontmatter  # noqa: E402
 from pipelines.ensemble.ensemble_merge import stamp_lineage  # noqa: E402
 
 
@@ -149,6 +152,90 @@ def test_compose_scenes_strips_frontmatter_and_orders(tmp_path):
     first = text
     compose_scenes(d.inputs, tmp_path / "composed.md")
     assert (tmp_path / "composed.md").read_text() == first
+
+
+# ── summary scene slicing (the H2/H3 tension) ────────────────────────────
+
+MULTI_SCENE_SUMMARY = (
+    "# Chapter 40 Through the Valley\n\n"
+    "## Summary\n\nThe party crossed the valley.\n\n"
+    "## Scenes\n\n"
+    "### The Crossing\n#### They cross.\n- Boots got wet.\n\n"
+    "### The Ridge\n#### They climb.\n- Orcs waited above.\n\n"
+    "### The Descent\n#### They come down.\n- Nobody died.\n\n"
+    "## NPCs\n\n"
+    "### Orc Nine\n\nDied anyway.\n\n"
+    "### Xanth\n\nGuided them.\n"
+)
+
+
+def test_compose_summary_scenes_gives_one_chunk_per_scene(tmp_path):
+    """The whole summary chunks on its ## headings and collapses every scene
+    into one; the slice chunks on ### and gives each scene its own index."""
+    src = tmp_path / "session-summary.md"
+    src.write_text(MULTI_SCENE_SUMMARY)
+
+    # Whole file: splits on ## Summary / ## Scenes / ## NPCs, so all three
+    # scenes share a single chunk and therefore a single scene_index.
+    whole, conv_whole = chunk_by_scenes(MULTI_SCENE_SUMMARY, 6000)
+    assert conv_whole != "h3"
+    holding = [c for _, c in whole if "### The Crossing" in c]
+    assert len(holding) == 1
+    assert "### The Ridge" in holding[0] and "### The Descent" in holding[0]
+
+    out = compose_summary_scenes(src, tmp_path / "sliced.md")
+    assert out is not None
+    chunks, conv = chunk_by_scenes(out.read_text(), 6000)
+    assert conv == "h3"
+    assert len(chunks) == 3
+    # One scene per chunk, in order. Chunk 0 also carries the H1 title, which
+    # chunk_by_scenes folds into the first scene — an H1 matches neither the
+    # H2 nor the H3 pattern, so it cannot open a chunk of its own.
+    assert [re.findall(r"(?m)^###\s+.+$", c) for _, c in chunks] == [
+        ["### The Crossing"], ["### The Ridge"], ["### The Descent"]]
+    assert chunks[0][1].startswith("# Chapter 40 Through the Valley")
+
+
+def test_compose_summary_scenes_excludes_npc_headings(tmp_path):
+    """Stripping every ## from the whole file would turn the ### NPC entries
+    into chunk boundaries too. Slicing the section first must not."""
+    src = tmp_path / "session-summary.md"
+    src.write_text(MULTI_SCENE_SUMMARY)
+    text = compose_summary_scenes(src, tmp_path / "sliced.md").read_text()
+    assert "Orc Nine" not in text and "Xanth" not in text
+    assert "## NPCs" not in text and "## Summary" not in text
+    assert text.startswith("# Chapter 40 Through the Valley")   # H1 kept for context
+
+
+def test_compose_summary_scenes_leaves_the_gate_intact(tmp_path):
+    """The on-disk summary is untouched, so _summary_is_structured still
+    admits it to the summary rung — the slice is a derived extraction input."""
+    src = tmp_path / "session-summary.md"
+    src.write_text(MULTI_SCENE_SUMMARY)
+    compose_summary_scenes(src, tmp_path / "sliced.md")
+    assert src.read_text() == MULTI_SCENE_SUMMARY
+    assert _summary_is_structured(src)
+
+
+@pytest.mark.parametrize("body,why", [
+    ("# Ch\n\n## Summary\n\nNo scenes at all.\n", "no ## Scenes section"),
+    ("# Ch\n\n## Scenes\n\n## NPCs\n\n### A\n\nx\n", "empty ## Scenes section"),
+    ("# Ch\n\n## Scenes\n\nProse, no ### entries.\n", "no ### scene headings"),
+])
+def test_compose_summary_scenes_returns_none_when_unusable(tmp_path, body, why):
+    """Caller falls back to the summary as-is rather than extracting from an
+    empty or heading-less document."""
+    src = tmp_path / "session-summary.md"
+    src.write_text(body)
+    assert compose_summary_scenes(src, tmp_path / "sliced.md") is None, why
+
+
+def test_compose_summary_scenes_is_byte_stable(tmp_path):
+    src = tmp_path / "session-summary.md"
+    src.write_text(MULTI_SCENE_SUMMARY)
+    first = compose_summary_scenes(src, tmp_path / "sliced.md").read_text()
+    again = compose_summary_scenes(src, tmp_path / "sliced.md").read_text()
+    assert first == again
 
 
 # ── merge stamping ───────────────────────────────────────────────────────
