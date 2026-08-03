@@ -370,6 +370,31 @@ def test_effort_left_alone_when_thinking_opted_in(monkeypatch):
     assert "--effort" not in captured["cmd"]
 
 
+@pytest.mark.parametrize("model", [
+    "claude-fable-5",
+    "claude-mythos-5",
+    "claude-mythos-preview",
+    "anthropic.claude-fable-5",   # provider-prefixed id
+    "FABLE",                      # bare alias, any casing
+])
+def test_effort_left_alone_on_always_thinking_models(monkeypatch, model):
+    # Fable/Mythos run thinking unconditionally, so MAX_THINKING_TOKENS=0 is a
+    # no-op and xhigh/max stay legal. Clamping there would silently downgrade
+    # the GM's configured effort to dodge an error that cannot occur.
+    captured = {}
+    monkeypatch.delenv("CG_CLAUDE_CODE_THINKING", raising=False)
+    monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))
+    backends._claude_code_generate(system="s", user="u", model=model)
+    assert "--effort" not in captured["cmd"]
+    # The suppression itself is unchanged — it just doesn't take on this model.
+    assert captured["env"]["MAX_THINKING_TOKENS"] == "0"
+
+
+def test_always_thinking_predicate_does_not_overmatch(monkeypatch):
+    for model in ("claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5", "m", ""):
+        assert not backends._claude_code_always_thinking(model), model
+
+
 def test_command_passes_strict_mcp_config(monkeypatch):
     # --disallowed-tools '*' blocks tool USE but still spawns every configured
     # MCP server (7 of them in a campaign workspace, ~300MB each, per call).
