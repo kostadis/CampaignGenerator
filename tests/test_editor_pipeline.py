@@ -283,3 +283,77 @@ def test_build_enhance_cmd_refuses_incompatible_batch_selection(tmp_path):
     cfg.backends.dgx.batch = True
     with pytest.raises(IncompatibleSelection):
         scene_editor._build_enhance_cmd(None, cfg)
+
+
+# ── _scene_extraction_file_new: resolution when the plan title has drifted ───
+#
+# The UI builds the Stage-2 filename by slugifying the scene name taken from
+# the PLAN, but sd_plan retitles scenes, so the plan title often no longer
+# slugifies to what Stage 2 wrote. When that happened the file read as missing,
+# has_extraction went False, and the editor greyed out Narrate for a scene the
+# CLI would narrate fine — sd_narrate.py:235 already does "name match, fallback
+# to index", so the UI was strictly stricter than the engine it fronts.
+
+
+def _sx_cfg(tmp_path: Path):
+    sx = tmp_path / "scene_extractions_new"
+    sx.mkdir()
+    return sx, _cfg(scene_extractions_dir=str(sx))
+
+
+def test_scene_file_prefers_the_exact_slug(tmp_path):
+    sx, cfg = _sx_cfg(tmp_path)
+    (sx / "05_the_return_of_the_statue.md").write_text("body", encoding="utf-8")
+    got = scene_editor._scene_extraction_file_new(cfg, 5, "The Return Of The Statue")
+    assert got == sx / "05_the_return_of_the_statue.md"
+
+
+def test_scene_file_prefers_the_scaffold_over_the_stage2_source(tmp_path):
+    """The scaffold is what the user edits and what Narrate consumes; the
+    Stage-2 file is the expensive LLM source we never overwrite."""
+    sx, cfg = _sx_cfg(tmp_path)
+    (sx / "05_the_statue.md").write_text("source", encoding="utf-8")
+    (sx / "05_the_statue.scaffold.md").write_text("edited", encoding="utf-8")
+    got = scene_editor._scene_extraction_file_new(cfg, 5, "The Statue")
+    assert got == sx / "05_the_statue.scaffold.md"
+
+
+def test_scene_file_falls_back_to_index_when_the_title_drifted(tmp_path):
+    """The regression: plan says "The Statue Returned, a Quest Begun", Stage 2
+    wrote 05_the_return_of_the_meliamne_statue.md. Slug resolution misses."""
+    sx, cfg = _sx_cfg(tmp_path)
+    real = sx / "05_the_return_of_the_meliamne_statue.md"
+    real.write_text("body", encoding="utf-8")
+    got = scene_editor._scene_extraction_file_new(
+        cfg, 5, "The Statue Returned, a Quest Begun")
+    assert got == real
+    assert got.exists(), "has_extraction would be False and Narrate greyed out"
+
+
+def test_index_fallback_still_prefers_a_scaffold(tmp_path):
+    sx, cfg = _sx_cfg(tmp_path)
+    (sx / "05_some_other_title.md").write_text("source", encoding="utf-8")
+    (sx / "05_some_other_title.scaffold.md").write_text("edited", encoding="utf-8")
+    got = scene_editor._scene_extraction_file_new(cfg, 5, "Totally Different Name")
+    assert got == sx / "05_some_other_title.scaffold.md"
+
+
+def test_index_fallback_never_resolves_to_a_different_scene(tmp_path):
+    """The NN_ prefix is unique per scene, so a miss must not borrow scene 4's
+    file — that would silently narrate the wrong scene, which is worse than a
+    greyed-out button."""
+    sx, cfg = _sx_cfg(tmp_path)
+    (sx / "04_scene_four.md").write_text("four", encoding="utf-8")
+    (sx / "06_scene_six.md").write_text("six", encoding="utf-8")
+    got = scene_editor._scene_extraction_file_new(cfg, 5, "Nothing Matches This")
+    assert not got.exists()
+    assert "04_" not in got.name and "06_" not in got.name
+
+
+def test_missing_everything_returns_the_slug_path_unchanged(tmp_path):
+    """Callers test .exists() on the result, so the genuinely-absent case must
+    behave exactly as it did before the fallback existed."""
+    sx, cfg = _sx_cfg(tmp_path)
+    got = scene_editor._scene_extraction_file_new(cfg, 5, "No Such Scene")
+    assert got == sx / "05_no_such_scene.md"
+    assert not got.exists()
