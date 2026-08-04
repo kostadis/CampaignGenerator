@@ -118,10 +118,27 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
                           scene_text: str | None = None,
                           context_docs: list[str] | None = None,
                           prev_narrator: str | None = None,
-                          prev_voice_sample: str | None = None) -> str:
+                          prev_voice_sample: str | None = None,
+                          npc_roster: str = "") -> str:
     parts = [f"## Narrator: {narrator}\n## Focus: {focus}"]
     if roster:
         parts.append(f"## Character Classes (definitive — never contradict these)\n\n{roster}")
+    if npc_roster:
+        # The canonical-name channel that CANNOT corrupt a quote. Aliases used to
+        # be applied to the source text as a find-and-replace before Pass 5, which
+        # rewrote names inside verbatim dialogue (#223); they arrive as knowledge
+        # now, so the caveat below has to be explicit or the model does the
+        # substitution itself.
+        parts.append(
+            "## Known NPCs — canonical spellings for NARRATION ONLY\n\n"
+            "Use these spellings in the prose you write. Never apply them inside "
+            "quotation marks. A quoted line is a verbatim record of what somebody "
+            "actually said, and the name they chose — a nickname, a title, a partial "
+            "name, the wrong name — is part of what they said and part of what it "
+            "reveals about them. Reproduce the speaker's own wording, then use the "
+            "canonical spelling in your own sentences around it.\n\n"
+            f"{npc_roster}"
+        )
     if party:
         parts.append(f"## Party Document (authoritative source for character classes, "
                      f"abilities, and roles)\n\n{party.strip()}")

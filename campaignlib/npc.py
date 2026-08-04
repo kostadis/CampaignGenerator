@@ -58,8 +58,25 @@ def normalize_npc_key(name: str) -> str:
     return s
 
 
+# Spans whose contents are a RECORD of what somebody said, not prose the
+# pipeline may edit: double-quoted speech (straight or curly) and ``*...*``
+# spans, which the extraction layer uses for VTT-truncated speech and stage
+# directions. See ``build_alias_normalizer(preserve_quoted=True)``.
+#
+# A span may wrap across a single newline but never crosses a blank line, so an
+# unpaired quotation mark can only fail to protect the text after it — it can
+# never swallow the rest of the document and freeze normalization off.
+_PROTECTED_SPAN_RE = re.compile(
+    r'"(?:[^"\n]|\n(?!\s*\n))*"'
+    r'|“(?:[^”\n]|\n(?!\s*\n))*”'
+    r'|\*(?:[^*\n]|\n(?!\s*\n))*\*'
+)
+
+
 def build_alias_normalizer(
     canonical_to_aliases: dict[str, list[str]],
+    *,
+    preserve_quoted: bool = False,
 ):
     """Return (normalize(text) -> text, [(canonical, aliases), ...]).
 
@@ -69,6 +86,21 @@ def build_alias_normalizer(
 
     An empty map yields an identity function and an empty entries list,
     so every extractor can call this unconditionally.
+
+    ``preserve_quoted=True`` restricts the rewrite to prose, leaving
+    ``"..."`` / ``“...”`` / ``*...*`` spans byte-identical. Callers whose input
+    carries VERBATIM table dialogue must set it. An alias is an identity
+    assertion — "these surface forms denote one entity" — and consuming it as a
+    read-time lookup is correct; consuming it as a write-time transform inside
+    quotation marks destroys which surface form was actually spoken, which is
+    the entire payload of a verbatim record. The damage is worst when the alias
+    data is *right*: a speaker who said "Glasstaff" comes back saying "Iarno", a
+    name they may not know, and no fact-check can see the edit because the
+    substituted name is canon-correct. See issue #223, and the matching
+    guardrail comment in ``session_doc/scene_extract.py`` (#231).
+
+    The canonical names still reach the model — as knowledge, via
+    ``format_npc_roster`` — which is the channel that cannot corrupt a quote.
     """
     alias_to_canonical: dict[str, str] = {}
     for canonical, aliases in canonical_to_aliases.items():
@@ -105,8 +137,19 @@ def build_alias_normalizer(
     def normalize(text: str) -> str:
         return pattern.sub(lambda m: alias_to_canonical[m.group(0).lower()], text)
 
+    def normalize_prose_only(text: str) -> str:
+        """`normalize`, applied only to the gaps between protected spans."""
+        out: list[str] = []
+        pos = 0
+        for span in _PROTECTED_SPAN_RE.finditer(text):
+            out.append(normalize(text[pos:span.start()]))
+            out.append(span.group(0))
+            pos = span.end()
+        out.append(normalize(text[pos:]))
+        return "".join(out)
+
     entries = [(c, a) for c, a in canonical_to_aliases.items() if a]
-    return (normalize, entries)
+    return (normalize_prose_only if preserve_quoted else normalize, entries)
 
 
 def load_alias_map(dossier_dir, registry_path=None) -> dict[str, list[str]]:
