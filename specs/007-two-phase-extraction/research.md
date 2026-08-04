@@ -272,6 +272,74 @@ is usable, but it is not a post-fix control.
 
 ---
 
+### D8b — Stage 2 calibration: the premise was backwards
+
+Same session, same `.cleaned` VTT, same 6 scenes, same summary as input.
+
+| corpus | quotes | **verbatim** | near | unverified |
+|---|---|---|---|---|
+| Claude (2026-06-26, pre-D13-fix) | 522 | **374 (71%)** | 113 | 31 |
+| **DeepSeek V4 Flash (2026-08-03)** | 390 | **371 (95%)** | 7 | **12** |
+
+**DeepSeek is dramatically *more* verbatim than Claude here** — 95% vs 71%. The
+feature was specified on the opposite assumption.
+
+**Two hypotheses tested, one survives.**
+
+*Rejected — D13 alias corruption.* If the pre-fix extraction had been fed an
+alias-rewritten VTT, its quotes should match the *rewritten* transcript better
+than the real one. Re-scored Claude's 522 against a VTT put through
+`build_alias_normalizer` with the live registry (569 entities, 73 with aliases):
+verbatim went **374 → 356**, i.e. *worse*. D13 does not explain the gap.
+(Imperfect reconstruction — today's registry, not June's — but it points the
+wrong way for the hypothesis.)
+
+*Supported — Claude tidies speech; DeepSeek copies it.* Quote lengths are
+near-identical (mean 13.4 vs 13.2 words, median 9 vs 10), so this is not a
+selection effect. But **disfluency retention differs**: 31% of DeepSeek's quotes
+still contain a `like` / `you know` / `uh`, versus **22%** of Claude's. Claude
+removes the filler its own prompt told it to preserve. That *is* D1's
+observation — but D1 read it as a property of extraction in general, when it is
+substantially **Claude's own editorializing**.
+
+**Consequence for D1**: "only 64% of quotes are exact verbatim *even from
+Claude*" should be read as "only 64% … **because it is** Claude". The
+three-bucket design still stands — 19 of DeepSeek's 390 are genuinely scored,
+and 12 of those are real problems — but the *volume* argument for it (186
+findings/session, ~90% benign) is a Claude number. Against DeepSeek the same
+threshold yields **19 scored quotes, 12 flagged** — a report a GM will actually
+read.
+
+**The threshold barely matters at this quality level.** Sweeping it across the
+whole plausible range moves the DeepSeek finding count by 14 quotes out of 390:
+
+| threshold | 0.60 | 0.70 | 0.75 | 0.80 | **0.85** | 0.90 | 0.95 |
+|---|---|---|---|---|---|---|---|
+| Claude (144 scored) | 6 | 12 | 15 | 22 | **31** | 52 | 94 |
+| DeepSeek (19 scored) | 1 | 6 | 10 | 10 | **12** | 13 | 15 |
+
+**Decision: keep 0.85.** Not because it was validated as optimal — D8a shows no
+threshold separates the classes that matter — but because on DeepSeek output the
+knob is nearly inert, and 0.85 sits on a flat part of its curve (0.75→0.85 moves
+2 quotes). Spending more calibration effort on this number is the wrong place to
+spend it. **T047 is closed with "the number is fine and it is not the problem."**
+
+**What DeepSeek actually gets wrong** — the 12 unverified, by inspection, are not
+inventions but **joins**: two separate utterances merged into one quote
+("You know it's stolen… Every last copper, it's blood." where the tape has only
+the second half, 0.63), and one case of two quotes concatenated inside a single
+blockquote with `" / "`. The ellipsis-stitch detector already labels this class.
+The single worst (0.13) is a genuine garble that doubles a name
+(`Alphonse 'Big Al' Kalazorn, she turns to Alphonse 'Big Al' Kalazorn`) — note
+this is the *model* doubling, with no normalizer in the path.
+
+**Where the user's original "DeepSeek invented quotes" complaint most likely
+lives**: not here, but in **Stage 1**, where DeepSeek writes 5 blockquotes and
+131 inline quoted spans (D8a Finding 2) — so ~97% of its Stage 1 quoted material
+is never checked. Fixing coverage there is worth more than any threshold work.
+
+---
+
 ## D9 — Raw vs `.cleaned` VTT
 
 Sessions carry both `*.transcript.vtt` and `*.transcript.cleaned.vtt` (the
