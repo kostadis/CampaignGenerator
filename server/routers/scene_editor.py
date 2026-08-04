@@ -415,7 +415,30 @@ def _scene_extraction_file_new(cfg: ResolvedEditorConfig, n: int, scene_name: st
     scaffold = sx / f"{n:02d}_{slug}.scaffold.md"
     if scaffold.exists():
         return scaffold
-    return sx / f"{n:02d}_{slug}.md"
+    exact = sx / f"{n:02d}_{slug}.md"
+    if exact.exists():
+        return exact
+
+    # Index fallback. sd_plan retitles scenes, so a plan title need not
+    # slugify to the stage-2 filename it was derived from ("The Statue
+    # Returned, a Quest Begun" vs 05_the_return_of_the_meliamne_statue...).
+    # Without this the file reads as missing, has_extraction goes False and
+    # the editor greys out Narrate for a scene the CLI would narrate fine —
+    # sd_narrate already does "name match, fallback to index". The NN_ prefix
+    # is unique per scene, so matching on it cannot mis-resolve.
+    scaffolds = sorted(sx.glob(f"{n:02d}_*.scaffold.md"))
+    if scaffolds:
+        return scaffolds[0]
+    plains = sorted(
+        p for p in sx.glob(f"{n:02d}_*.md")
+        if not p.name.endswith(".scaffold.md")
+    )
+    if plains:
+        return plains[0]
+
+    # Genuinely absent — return the slug path so .exists() callers behave
+    # exactly as before.
+    return exact
 
 
 # ── Helpers (ported from session_doc_ui.py) ──────────────────────────────────
