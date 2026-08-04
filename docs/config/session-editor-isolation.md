@@ -350,6 +350,10 @@ narrate:
 scrub:
   enabled: false            # [was: scrub_enabled]
   tokens: 16000             # [was: scrub_tokens]
+verify:                     # quote verification (spec 007) — new, no legacy key
+  threshold: 0.85           # near/unverified boundary; NOT calibrated for a local model
+  min_tokens: 4             # below this a quote is 'unscored', never accused
+  report_only: false        # suppress the additive <!-- cg:unverified --> marker
 roster:
   characters:
   gm_player:
