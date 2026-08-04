@@ -212,11 +212,20 @@ class TestResolveRoots:
         assert roots["fivetools_data"].path == (tmp_path / "from-env").resolve()
 
     def test_default_used_as_last_resort(
-        self, monkeypatch: pytest.MonkeyPatch
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ):
+        # The "default" comes from config/wiring.yaml, which is mneme-RENDERED
+        # and gitignored — so it is absent in a fresh clone and in every new
+        # worktree. Reading the ambient value made this test pass only on a
+        # machine where someone had happened to render that file, and fail
+        # everywhere else with a SystemExit about a missing root. Pin the
+        # wiring-derived default so this tests the PRECEDENCE RULE (local >
+        # env > default), which is what it is named for.
         monkeypatch.delenv("FIVETOOLS_DATA_ROOT", raising=False)
+        monkeypatch.setitem(rr._DEFAULT_ROOTS, "fivetools_data", tmp_path / "wired")
         roots = rr.resolve_roots({}, {"fivetools_data"})
         assert roots["fivetools_data"].source == "default"
+        assert roots["fivetools_data"].path == (tmp_path / "wired").resolve()
 
     def test_no_default_for_rpg_library(
         self, monkeypatch: pytest.MonkeyPatch
@@ -229,7 +238,11 @@ class TestResolveRoots:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ):
         # Even with rpg_library unconfigured, asking for only fivetools_data succeeds.
+        # fivetools_data must still resolve to something, and its default is the
+        # gitignored wiring.yaml (see test_default_used_as_last_resort) — pin it
+        # rather than depend on whether this checkout has one.
         monkeypatch.delenv("RPG_LIBRARY_ROOT", raising=False)
+        monkeypatch.setitem(rr._DEFAULT_ROOTS, "fivetools_data", tmp_path / "wired")
         roots = rr.resolve_roots({}, {"fivetools_data"})
         assert "rpg_library" not in roots
 
