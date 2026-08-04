@@ -6,6 +6,7 @@ and the subject merge needs no network. They exercise the manifest handoff and
 the driver wiring end to end.
 """
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -41,8 +42,25 @@ def _seed(workdir: Path) -> Path:
     return workdir
 
 
+def _subprocess_env() -> dict:
+    """Env that makes a spawned CLI import THIS checkout's packages.
+
+    Without it the child resolves `campaignlib` through the editable-install
+    `.pth`, which hardcodes the main checkout — so in a worktree these tests
+    silently exercise main's code, and any branch that adds a campaignlib
+    symbol fails here with a confusing ImportError naming a path outside the
+    worktree. Prepending the repo root is a no-op when the two are the same
+    directory (see reference_worktree_editable_install_shadowing).
+    """
+    env = dict(os.environ)
+    existing = env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = f"{ROOT}{os.pathsep}{existing}" if existing else str(ROOT)
+    return env
+
+
 def _run(*argv) -> subprocess.CompletedProcess:
-    return subprocess.run([PY, *map(str, argv)], capture_output=True, text=True)
+    return subprocess.run([PY, *map(str, argv)], capture_output=True, text=True,
+                          env=_subprocess_env())
 
 
 def test_extract_writes_manifest_and_no_merged(tmp_path):

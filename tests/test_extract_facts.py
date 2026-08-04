@@ -7,6 +7,7 @@ calls), mirroring tests/test_ensemble_pipeline.py.
 """
 import json
 import subprocess
+import os
 import sys
 import threading
 from pathlib import Path
@@ -19,6 +20,23 @@ sys.path.insert(0, str(ROOT))
 from pipelines.ensemble import extract_facts as ef  # noqa: E402
 
 SCRIPT = ROOT / "pipelines" / "ensemble" / "extract_facts.py"
+
+
+def _subprocess_env() -> dict:
+    """Env that makes a spawned CLI import THIS checkout's packages.
+
+    Without it the child resolves `campaignlib` through the editable-install
+    `.pth`, which hardcodes the main checkout — so in a worktree these tests
+    silently exercise main's code, and any branch that adds a campaignlib
+    symbol fails here with a confusing ImportError naming a path outside the
+    worktree. Prepending the repo root is a no-op when the two are the same
+    directory (see reference_worktree_editable_install_shadowing).
+    """
+    env = dict(os.environ)
+    existing = env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = f"{ROOT}{os.pathsep}{existing}" if existing else str(ROOT)
+    return env
+
 
 
 def _fact(text: str) -> dict:
@@ -256,7 +274,7 @@ def test_cli_parallel_fully_cached(tmp_path):
          "--output", str(out), "--extract-dir", str(extract_dir),
          "--parallel", "2",
          "--endpoint", "http://127.0.0.1:1"],  # unreachable: must not be hit
-        capture_output=True, text=True)
+        capture_output=True, text=True, env=_subprocess_env())
     assert r.returncode == 0, r.stderr
     assert json.loads(out.read_text()) == [seeded[0] | {"quote_verified": False}]
 
@@ -298,7 +316,7 @@ def test_cli_rejects_parallel_zero(tmp_path):
     r = subprocess.run(
         [sys.executable, str(SCRIPT), str(doc),
          "--output", str(tmp_path / "f.json"), "--parallel", "0"],
-        capture_output=True, text=True)
+        capture_output=True, text=True, env=_subprocess_env())
     assert r.returncode != 0
     assert "must be >= 1" in r.stderr
 
