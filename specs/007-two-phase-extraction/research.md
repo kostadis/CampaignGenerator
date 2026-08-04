@@ -214,10 +214,37 @@ unstable; rejected only because a sorted 186-row list is still a re-read.
 ## D9 — Raw vs `.cleaned` VTT
 
 Sessions carry both `*.transcript.vtt` and `*.transcript.cleaned.vtt` (the
-`/vtt-spell-pass` output, applying the campaign proper-noun glossary). Diffed on
-20260623: **identical** after cue-number stripping. Not safe to generalise —
-where they differ it is precisely on proper nouns, which is where verification
-false-positives would cluster.
+`/vtt-spell-pass` output, applying the campaign proper-noun glossary).
+
+> **CORRECTION (2026-08-03).** An earlier revision of this entry claimed the two
+> were "**identical** after cue-number stripping" on 20260623. **That was wrong**
+> — the diff behind it was botched. Re-measured: 131,616 vs 126,810 bytes, same
+> 1,244 cues, **72 cue lines differ**, and *every* difference is a proper noun:
+> `Vukerdin`/`Bukradin`→`Vukradin`, `Blueberry`/`Brewberry`→`Brewbarry`,
+> `Cryovane`→`Cryovain`, `Pruta`→`Prutha`, `Giles`→`Giles Slipper-Shine`.
+> The prediction in the sentence that followed ("where they differ it is
+> precisely on proper nouns") was right; the measurement was not.
+
+**This is not cosmetic — it moves the verdict.** Same 522 scene quotes, same
+threshold, only the transcript swapped:
+
+| VTT | verified | near | unverified |
+|---|---|---|---|
+| `*.transcript.vtt` (raw ASR) | 339 (65%) | 139 (27%) | **39 (7%)** |
+| `*.transcript.cleaned.vtt` | 374 (72%) | 113 (22%) | **31 (6%)** |
+
+A 26% swing in the finding count, from the transcript choice alone. Any published
+`unverified` number is meaningless without naming the VTT it was measured against.
+
+**Note the direction, and the irony.** The *cleaned* VTT verifies better because
+the spell pass repairs ASR mis-hearings — the table said "Brewbarry", the ASR
+wrote "Blueberry", and the extraction (which had the roster) wrote "Brewbarry".
+So here the glossary pass restores the spoken form rather than destroying it. But
+it is the **same mechanism D13 condemns** — a whole-word substitution over the
+transcript — and it has the same failure mode at the edges: if a player really
+did say "Blueberry" as a joke, the spell pass silently erases the joke and the
+verifier then certifies the erasure as verbatim. Restoring-what-was-said and
+overwriting-what-was-said are indistinguishable from inside the substitution.
 
 **Decision**: verify against the **same VTT the artifact was generated from**.
 `server/routers/scene_editor.py:251 _vtt_path` already resolves the editor's
@@ -228,6 +255,12 @@ takes the path explicitly and the report records which file it used.
 `…transcript.vtt` alphabetically. Whether that matches what generation used is
 not currently guaranteed anywhere. Flagged for the tasks phase; it is a
 pre-existing ambiguity this feature surfaces rather than creates.
+
+**Sharpened by the correction above**: alphabetical order happens to pick the
+*better* file here, but it picks it **by accident of the letter "c"**, not
+because anything reasoned about it. `sd_agent` prints a note when more than one
+`.vtt` is present, which is the mitigation actually shipped; the note is now
+known to be pointing at a 26%-of-findings decision, not a tie-break.
 
 **Superseded in part by D13**: there is a *third* variant — an alias-normalised
 VTT that exists only in memory inside `scene_extract`. Read D13 before
