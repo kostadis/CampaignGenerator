@@ -12,6 +12,21 @@ inferred.
 
 ## D1 — The dominant failure mode is disfluency removal, not fabrication
 
+> ## ⚠ THE 64% IN THIS ENTRY WAS MEASURING A BUG — see D8c
+>
+> The 522-quote corpus below is `scene_extractions_new/`, generated **2026-06-26**,
+> i.e. *before* `6e00f54` removed the alias normalizer from scene extraction.
+> **T053 re-ran the identical extraction with current code: 93% exact verbatim,
+> not 64%.** The qualitative claim survives — non-verbatim quotes are dominated
+> by benign edits, not fabrications, and a three-verdict split is still right.
+> **The quantitative claim does not.** Anywhere this document says "36% of quotes
+> are not verbatim", "186 findings per session", or "~90% benign", read D8c
+> instead: the real post-fix figures are **~25 non-verbatim and 12 flagged per
+> session, roughly half of them actionable.**
+>
+> The examples in the table below are still genuine disfluency edits — they were
+> checked by hand. It is the *rate* that was inflated.
+
 **This is the finding that reshapes the feature.** The spec assumed the check
 was binary: a quote is in the transcript or it is invented. Measured against
 real data, that assumption is wrong and a binary check would be unusable.
@@ -272,6 +287,13 @@ is usable, but it is not a post-fix control.
 
 ---
 
+> ## ⚠ D8b IS SUPERSEDED BY D8c — READ D8c FIRST
+>
+> D8b compares a 2026-06-26 Claude corpus against a 2026-08-03 DeepSeek one and
+> spends three rounds hypothesising about why they differ. **T053 ran the missing
+> control and the answer is "the era, not the model".** D8b is kept for the record
+> of what was tested and rejected; **every causal claim in it is dead.**
+
 ### D8b — Stage 2 calibration: the premise was backwards
 
 Same session, same `.cleaned` VTT, same 6 scenes, same summary as input.
@@ -377,6 +399,81 @@ this is the *model* doubling, with no normalizer in the path.
 lives**: not here, but in **Stage 1**, where DeepSeek writes 5 blockquotes and
 131 inline quoted spans (D8a Finding 2) — so ~97% of its Stage 1 quoted material
 is never checked. Fixing coverage there is worth more than any threshold work.
+
+---
+
+## D8c — T053: the control run. It was the era, not the model.
+
+D8b compared corpora from two different dates and then argued about *why*. The
+missing arm was an extraction run with **today's code** and **Claude**. Ran it on
+the subscription backend (`--backend claude-code`, `claude-sonnet-4-6`), same
+VTT, same 6 scenes, same Stage 1 summary, no `--dossier-dir` — identical
+conditions to the DeepSeek run.
+
+| corpus | quotes | verbatim | near | unver | non-contiguous |
+|---|---|---|---|---|---|
+| Claude **PRE**-fix (2026-06-26) | 522 | 374 (**71%**) | 113 | 31 | 148 (**28%**) |
+| **Claude POST-fix (T053)** | 377 | 352 (**93%**) | 13 | **12** | 25 (**6%**) |
+| DeepSeek POST-fix | 390 | 371 (**95%**) | 7 | **12** | 19 (**4%**) |
+
+Decomposing the unverified (the T055 discriminator):
+
+| corpus | unver | stitched | **invented** | unclear |
+|---|---|---|---|---|
+| Claude PRE-fix | 31 | 16 | **6** | 9 |
+| Claude POST-fix | 12 | 9 | **1** | 2 |
+| DeepSeek POST-fix | 12 | 9 | **0** | 3 |
+
+**Post-fix Claude and post-fix DeepSeek are indistinguishable** — 93% vs 95%
+verbatim, 12 vs 12 unverified, 9 vs 9 stitched. Every difference D8b agonised
+over is an artifact of the 2026-06-26 corpus.
+
+**Retracted from D8b (third and final time):** "Claude joins non-adjacent
+material ~5.5× as often" is **false**. Claude's non-contiguous rate is 6%,
+not 20% — the 20% belonged to the pre-fix era. The mechanism was real
+(non-contiguity *is* what the measurement detects); the attribution to
+Claude-the-model was wrong.
+
+**Also invalidates D8b's rejection of the D13 hypothesis.** That rejection
+re-normalised the VTT with **today's** registry and **today's**
+`build_alias_normalizer` — which carries the idempotency guard added *in
+`6e00f54` itself*. It could not reproduce June's normaliser, so it was never a
+valid test. D13 is back to being the leading explanation; it is simply no longer
+necessary to name the culprit, because the whole pre-fix delta is gone.
+
+**Residual confound, stated rather than hidden:** the June run's model version is
+unknown, so "pre-fix era" bundles *code path* + *model version* + any prompt
+drift in `config/agents/scene_extract.md`. T053 shows the delta is not
+Claude-vs-DeepSeek; it does not isolate `6e00f54` specifically. Post-fix Claude
+also extracts **fewer** quotes than the pre-fix run (377 vs 522) — closer to
+DeepSeek's 390 — which is itself unexplained.
+
+### The consequence that matters: D1's headline is dead
+
+**D1's "only 64% of quotes are exact verbatim *even from Claude*" was measuring
+the bug.** With current code it is **93%**. Every argument built on that number
+needs re-reading:
+
+- *"A binary check would emit 186 findings per session, ~90% benign, which
+  teaches you to ignore the report."* The real post-fix numbers are **25
+  non-verbatim, 12 flagged** (Claude) and **19 / 12** (DeepSeek). A binary check
+  would emit ~25, not 186 — an order of magnitude less alarming.
+- **The three-bucket design survives but its stated justification does not.**
+  Post-fix the split is 13 informational + 12 actionable, i.e. ~50/50, not
+  90/10. Still worth having — 12 is a list a GM reads and 25 is one they skim —
+  but it should be defended as *"separates the actionable from the
+  informational"*, never again as *"suppresses a 90%-benign flood"*.
+- **The higher-value split is stitched-vs-invented, not near-vs-unverified.**
+  In *both* post-fix corpora, **9 of 12** unverified quotes are stitches of real
+  material and at most 1 is an invention. That is the distinction that changes
+  what the GM does. See T055.
+
+**Standing methodological lesson.** Three hypotheses were argued from two
+corpora that differed in more than one variable, and all three were wrong. The
+control run cost one subscription-billed extraction and settled it immediately.
+When two measurements differ on a date as well as a treatment, **run the missing
+arm before theorising** — this entry is four revisions long because that was
+done last instead of first.
 
 ---
 
