@@ -315,25 +315,40 @@ than quietly deleted, because the first measurement behind it was bad.
   Tidying is a *minority* pattern for Claude, and the two models' profiles are
   the same shape. Whatever drives 71% vs 95%, it is not editorializing.
 
-**And the surviving number is itself suspect.** `score_quote` matches against
-the single best *cue*, so a quote that legitimately spans two adjacent cues
-necessarily looks like it "adds" words. That inflates the "adds" row for both
-models and penalises longer quotes — and Claude's non-verbatim quotes average
-19.2 words against 11.0 for its verbatim ones. **A plausible remaining
-explanation is simply that Claude extracts longer, cue-spanning quotes and
-DeepSeek copies within a single cue** — but this analysis cannot separate that
-from stitching, so it is a hypothesis, not a finding. Do not cite it as one.
+*SUPPORTED — Claude joins non-adjacent material far more often.* A first draft
+of this entry waved the "adds words" row away as an artifact of matching against
+a single cue. **That was wrong, and the code says why.**
+`haystack = _normalize(" ".join(spoken))` — cues are joined with a space *after*
+speaker prefixes are stripped, so **a quote spanning two adjacent cues is a
+contiguous span of the haystack and matches as `verified`**. Checked
+empirically: synthetic tail-of-cue-*i* + head-of-cue-*i+1* quotes match verbatim;
+synthetic cue-*i* + cue-*i+3* joins are correctly rejected.
 
-**Consequence for D1**: hold the headline loosely. "Only 64% of quotes are exact
-verbatim even from Claude" is reproduced here (71% on the same corpus), but the
-*cause* is unestablished — the two explanations offered so far have both been
-tested and rejected. T053 (a post-`6e00f54` Claude run on the same scenes) is
-the instrument that separates model-era from model-behaviour; until it lands,
-the honest statement is **"Claude's rate is much lower than DeepSeek's and we do
-not yet know why."** The three-bucket design does not depend on the answer — 19
-of DeepSeek's 390 are scored and 12 are real problems either way — but the
-*volume* argument for it (186 findings/session, ~90% benign) is a Claude number
-and should not be quoted as a general one.
+So a quote that fails `locate_quote` is genuinely **not contiguous on the tape**,
+and the "adds words" row is real non-contiguity — a join or a substitution, not a
+measurement artifact. As a share of each corpus:
+
+| | non-contiguous quotes | of all quotes |
+|---|---|---|
+| Claude | 103 | **20%** |
+| DeepSeek | 14 | **3.6%** |
+
+**Claude assembles quotes from non-adjacent material ~5.5× as often**, and that
+is sufficient to explain 71% vs 95%. It also reframes which model is the risky
+one for a verbatim record: DeepSeek's errors are few; Claude's characteristic
+error is *stitching*, which is arguably worse than fabrication because a
+stitched quote reads as one continuous utterance and every individual word in it
+is real. Nothing in the report catches that except the ellipsis heuristic, and
+only when the model is honest enough to write the ellipsis.
+
+**Consequence for D1**: the headline reproduces (71% here), and the cause now
+has a mechanical answer — but note it is a *within-model* property measured
+across two different eras, so T053 (post-`6e00f54` Claude on the same scenes) is
+still the clean control and is the thing that confirms or kills it. The
+three-bucket design does not depend on the answer: 19 of DeepSeek's 390 are
+scored and 12 are real problems either way. But the *volume* argument for it
+(186 findings/session, ~90% benign) is a Claude number and should not be quoted
+as a general one.
 
 **The threshold barely matters at this quality level.** Sweeping it across the
 whole plausible range moves the DeepSeek finding count by 14 quotes out of 390:
