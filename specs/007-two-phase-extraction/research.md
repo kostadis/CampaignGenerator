@@ -294,21 +294,46 @@ verbatim went **374 → 356**, i.e. *worse*. D13 does not explain the gap.
 (Imperfect reconstruction — today's registry, not June's — but it points the
 wrong way for the hypothesis.)
 
-*Supported — Claude tidies speech; DeepSeek copies it.* Quote lengths are
-near-identical (mean 13.4 vs 13.2 words, median 9 vs 10), so this is not a
-selection effect. But **disfluency retention differs**: 31% of DeepSeek's quotes
-still contain a `like` / `you know` / `uh`, versus **22%** of Claude's. Claude
-removes the filler its own prompt told it to preserve. That *is* D1's
-observation — but D1 read it as a property of extraction in general, when it is
-substantially **Claude's own editorializing**.
+*Also REJECTED — "Claude tidies speech; DeepSeek copies it."* This was written
+up as supported on a first pass and **it does not hold.** Retracted here rather
+than quietly deleted, because the first measurement behind it was bad.
 
-**Consequence for D1**: "only 64% of quotes are exact verbatim *even from
-Claude*" should be read as "only 64% … **because it is** Claude". The
-three-bucket design still stands — 19 of DeepSeek's 390 are genuinely scored,
-and 12 of those are real problems — but the *volume* argument for it (186
-findings/session, ~90% benign) is a Claude number. Against DeepSeek the same
-threshold yields **19 scored quotes, 12 flagged** — a report a GM will actually
-read.
+- The original evidence was a naive substring count of `like`/`you know`
+  (31% DeepSeek vs 22% Claude). `like` also matches *"I like it"*. With
+  disfluency-specific patterns (comma-delimited `, like,`, `you know`,
+  stutters, hedges) it is **28% vs 21%** — and **the VTT's own cues are 21%**.
+  Claude matches the ground-truth rate exactly; it is DeepSeek that is *above*
+  it, concentrated almost entirely in `you know` (15% vs the VTT's 9%).
+- The direct test kills it. Word-level diff of every non-verbatim quote against
+  its nearest line, split by edit direction:
+
+  | | Claude (144 non-verbatim) | DeepSeek (19) |
+  |---|---|---|
+  | removes words only, **all fillers** ("tidying") | 21 (**14%**) | 0 (**0%**) |
+  | **adds** words absent from the matched line | 103 (**71%**) | 14 (**73%**) |
+
+  Tidying is a *minority* pattern for Claude, and the two models' profiles are
+  the same shape. Whatever drives 71% vs 95%, it is not editorializing.
+
+**And the surviving number is itself suspect.** `score_quote` matches against
+the single best *cue*, so a quote that legitimately spans two adjacent cues
+necessarily looks like it "adds" words. That inflates the "adds" row for both
+models and penalises longer quotes — and Claude's non-verbatim quotes average
+19.2 words against 11.0 for its verbatim ones. **A plausible remaining
+explanation is simply that Claude extracts longer, cue-spanning quotes and
+DeepSeek copies within a single cue** — but this analysis cannot separate that
+from stitching, so it is a hypothesis, not a finding. Do not cite it as one.
+
+**Consequence for D1**: hold the headline loosely. "Only 64% of quotes are exact
+verbatim even from Claude" is reproduced here (71% on the same corpus), but the
+*cause* is unestablished — the two explanations offered so far have both been
+tested and rejected. T053 (a post-`6e00f54` Claude run on the same scenes) is
+the instrument that separates model-era from model-behaviour; until it lands,
+the honest statement is **"Claude's rate is much lower than DeepSeek's and we do
+not yet know why."** The three-bucket design does not depend on the answer — 19
+of DeepSeek's 390 are scored and 12 are real problems either way — but the
+*volume* argument for it (186 findings/session, ~90% benign) is a Claude number
+and should not be quoted as a general one.
 
 **The threshold barely matters at this quality level.** Sweeping it across the
 whole plausible range moves the DeepSeek finding count by 14 quotes out of 390:
