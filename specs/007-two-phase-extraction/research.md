@@ -211,6 +211,67 @@ unstable; rejected only because a sorted 186-row list is still a re-read.
 
 ---
 
+### D8a — CALIBRATION RUN (2026-08-03): the threshold is the wrong instrument
+
+First real DeepSeek measurement. `deepseek-ai/DeepSeek-V4-Flash-0731` on spark1
+(256K ctx), same session (Phandalin 20260623), same `.cleaned` VTT, same
+gm-assist as the Claude baseline. Stage 1 produced a 39.5 KB summary against
+Claude's 39.1 KB — comparable bulk.
+
+**Finding 1 — similarity cannot separate the two classes that matter.** Two
+DeepSeek quotes, both classified `near` (i.e. "informational, probably a
+disfluency edit"):
+
+| score | quote | transcript | what it actually is |
+|---|---|---|---|
+| **0.92** | "**My kind** has been spreading violence and pain throughout the land…" | "**Mankind** has been spreading violence and pain, you know, throughout the land…" | **meaning-changing corruption** — the speaker is made to say something about *his own kind* rather than humanity |
+| **0.94** | "No, I have my soul is for rent." | "No, I, I have, my soul is for rent." | benign disfluency edit |
+
+The corrupting edit scores *below* the benign one — but only by 0.02, and both
+sit far above any threshold that would not also sweep in the bulk of legitimate
+disfluency edits. `Mankind`→`My kind` is a two-character edit that changes the
+meaning; `I, I have,`→`I have` is a three-character edit that changes nothing.
+**Edit distance ranks them the same because they are the same size.** No choice
+of threshold separates them.
+
+**This is the honest T047 answer, and it is not a number.** Calibrating 0.85 to
+some other value does not fix this; it only moves how much benign traffic is in
+the report. The `near` bucket should be read as *"an edit happened here"*, never
+as *"the edit was safe"* — and the report's current framing ("Overwhelmingly
+disfluency edits") is too reassuring for a bucket that provably contains
+semantic corruptions. **Recommend**: keep 0.85, retitle the `near` section, and
+stop implying the bucket is benign.
+
+**Finding 2 — Stage 1 coverage against DeepSeek is ~3%.** D5 verifies `> "…"`
+blockquotes only. Counting quoted spans ≥15 chars in each summary:
+
+| model | blockquoted (checked) | inline (not checked) | coverage |
+|---|---|---|---|
+| Claude | 12 | 60 | 16% |
+| **DeepSeek** | **5** | **131** | **3%** |
+
+DeepSeek expresses dialogue inline rather than as blockquotes, so Stage 1
+verification barely touches its output — on the very model the feature was
+built for. D5's reasoning (inline `"…"` is not reliably dialogue) is still
+correct; the consequence was not measured until now. **The cheap fix is a prompt
+contract, not a parser change**: require `> "…"` for dialogue in
+`config/agents/enhance_summary.md`, which keeps D5 intact and makes the output
+checkable. Not done here — it changes generation, and Stage 2 (`## Verbatim
+moments`, a mandated structure) is where the volume actually is.
+
+**Finding 3 — the stitch detector earns its place.** DeepSeek joined two
+separate utterances with an ellipsis ("That treasure came from you… I want to
+give it back to you.", 0.82). Flagged, correctly, with "Likely stitched" and the
+advice to split rather than reword.
+
+**Caveat on the comparator**: the Claude scene extractions on disk are dated
+2026-06-26, *before* `6e00f54` removed the alias normalizer (D13), so they are
+from the corrupt era. Observed doubling in this session is nonetheless minimal
+(1 suspect line in 144 reported), unlike Phandalin ch. 47's 24 — so the baseline
+is usable, but it is not a post-fix control.
+
+---
+
 ## D9 — Raw vs `.cleaned` VTT
 
 Sessions carry both `*.transcript.vtt` and `*.transcript.cleaned.vtt` (the

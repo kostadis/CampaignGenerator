@@ -498,13 +498,23 @@ def render_report(report: VerificationReport) -> str:
             out.extend(_render_finding(f))
 
     if near:
-        out.append("## Near — traceable, not verbatim (informational)")
+        out.append("## Near — an edit happened here (traceable, not verbatim)")
         out.append("")
         out.append(
-            "Overwhelmingly disfluency edits: the extraction tidied a filler "
+            "Most of these are disfluency edits: the extraction tidied a filler "
             "word out of a real line. Listed after the unverified section on "
-            "purpose — these are the majority and should not bury the findings "
+            "purpose — they are the majority and should not bury the findings "
             "that matter."
+        )
+        out.append("")
+        out.append(
+            "**But `near` means *an edit*, not *a safe edit*.** Similarity cannot "
+            "tell the two apart: a measured DeepSeek run scored "
+            "`\"My kind has been spreading violence\"` (transcript: `\"Mankind …\"`) "
+            "at **0.92** and the harmless `\"No, I have\"` for `\"No, I, I have,\"` "
+            "at **0.94** — the meaning-changing edit ranked *below* the harmless "
+            "one, and no threshold separates them, because both are edits of the "
+            "same tiny size. Skim this list for changed *words*, not low scores."
         )
         out.append("")
         for f in near:
