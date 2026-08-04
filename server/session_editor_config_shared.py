@@ -210,6 +210,30 @@ class ScrubKnobs(BaseModel):
     tokens: int = 16000
 
 
+class VerifyKnobs(BaseModel):
+    """Quote-verification knobs (`sd_verify_quotes`).
+
+    Deliberately has **no `enabled` flag**. A check you can switch off in
+    config is a check that is off exactly when it matters, and its absence
+    then reads as a clean result. The GM chooses per run by not invoking it.
+
+    ``threshold`` is the `near`/`unverified` boundary. The 0.85 default was
+    derived from *Claude*-generated output (spec 007 research D1: 522 quotes,
+    65% exact verbatim, the rest dominated by disfluency edits). It is **not
+    calibrated for a local model**, which is the case the feature exists for —
+    the repo has been burned by a transplanted threshold before, when
+    ``--embed-threshold 0.93`` was measured on one embedding model and stayed
+    put after the sidecar was swapped (issue #197, `calibrate_embed.py`).
+    Re-measure against real DeepSeek output before trusting it.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    threshold: float = 0.85
+    min_tokens: int = 4
+    report_only: bool = False
+
+
 class Roster(BaseModel):
     """Player/character-name mapping inputs."""
 
@@ -258,6 +282,7 @@ class SessionEditorConfig(BaseModel):
     paths: EditorPaths = Field(default_factory=EditorPaths)
     narrate: NarrateKnobs = Field(default_factory=NarrateKnobs)
     scrub: ScrubKnobs = Field(default_factory=ScrubKnobs)
+    verify: VerifyKnobs = Field(default_factory=VerifyKnobs)
     roster: Roster = Field(default_factory=Roster)
     backends: Backends = Field(default_factory=Backends)
     session_name: OptStr = None

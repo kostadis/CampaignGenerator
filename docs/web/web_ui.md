@@ -125,6 +125,27 @@ The editor has a config panel for setting paths (session recap, scene extraction
 
 **Typora integration**: Edit in Typora / Open narration buttons work on WSL via `wslpath -w` + `powershell.exe Start-Process`.
 
+### Verify Quotes
+
+Runs `sd_verify_quotes` over `session-summary.md` and the scene extractions, checking every quote against the session transcript. **Deterministic and free** — no model is called, so it is not offered a model/backend selector and has no batch control. Offering either would advertise a cost this run cannot incur.
+
+The pipeline strip gains a ✓ dot beside the four stage dots:
+
+| dot | meaning |
+|---|---|
+| `cold` / `—` | never run |
+| `ok` | report is fresh and no quote is unverified |
+| `warn` + `N!` | N unverified quotes, or the report is older than an artifact it describes |
+| `warn` + `?` | the report exists but could not be parsed — an unreadable report is not a passing one |
+
+Stale and has-findings both show as `warn` because both mean unfinished business; the label distinguishes them.
+
+**Exit code 1 is not a failure.** It means the check ran and found unverified quotes — the tool working. Only exit 2 (or a stream error) means it could not run, and the page words the three cases differently.
+
+**There is no accept/reject control, by design.** Accepting a finding would mean rewriting a quote, and nothing in this feature is permitted to alter quote text. The UI shows counts and staleness; judging whether a finding is real and fixing it happens in Claude or an editor (Principle IX). Findings land in `narration/quote_report.md`, each with the nearest transcript line so a reflow is distinguishable from a fabrication at a glance.
+
+Knobs live in `<config>/session_doc.yaml` under `verify:` (`threshold`, `min_tokens`, `report_only`). There is deliberately **no `enabled` flag** — a check you can switch off in config is off exactly when it matters.
+
 ### Token estimates
 
 Each extraction file shows an estimated output token count. If it exceeds narrate_tokens, the estimate turns orange. Override per-scene by adding `tokens: 6000` as the first line of an extraction file.

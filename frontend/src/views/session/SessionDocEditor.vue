@@ -198,6 +198,7 @@ const scrubbing = ref(false)
 const extracting = ref(false)
 const enhancing = ref(false)
 const planning = ref(false)
+const verifying = ref(false)
 const narrationOutput = ref('')
 const statusMsg = ref('')
 const assembledExists = ref(false)
@@ -212,13 +213,34 @@ interface StageStatus {
   count?: number
   count_done?: number
   count_total?: number
+  // Verify only. `null` means the report could not be read — which is NOT the
+  // same as zero, and the strip must not render it as a pass.
+  verified?: number | null
+  near?: number | null
+  unverified?: number | null
 }
 const pipeline = ref<{
   enhance: StageStatus
   extract: StageStatus
   plan: StageStatus
   narrate: StageStatus
+  verify: StageStatus
 } | null>(null)
+
+const verifyLabel = computed(() => {
+  const v = pipeline.value?.verify
+  if (!v || v.status === 'cold') return '—'
+  if (v.unverified == null) return '?'
+  return v.unverified > 0 ? `${v.unverified}!` : 'ok'
+})
+
+const verifyTitle = computed(() => {
+  const v = pipeline.value?.verify
+  if (!v || v.status === 'cold') return 'Verify quotes · never run'
+  if (v.unverified == null) return 'Verify quotes · report unreadable — re-run'
+  return `Verify quotes · ${v.unverified} unverified, ${v.near ?? 0} near, ` +
+         `${v.verified ?? 0} verified · ${v.ago ?? 'unknown age'}`
+})
 
 async function refreshPipeline() {
   if (!configReady.value) {
@@ -554,6 +576,34 @@ async function runEnhance() {
   })
 }
 
+async function runVerify() {
+  if (enhancing.value || extracting.value || narrating.value || planning.value || verifying.value) return
+  verifying.value = true
+  narrationOutput.value = ''
+  setStatus('Verifying quotes against the transcript...')
+
+  // No batch/model params: this calls no model, so there is nothing to route
+  // and nothing to discount.
+  activeSSE.value = connectSSE('/api/editor/verify', {
+    onData(text) { narrationOutput.value += text },
+    onDone(rc, error) {
+      activeSSE.value = null
+      verifying.value = false
+      // rc 1 means "ran, found unverified quotes" — the tool working, not a
+      // failure. Only rc 2 (and stream errors) mean it could not run.
+      if (rc === 0) setStatus('Quotes verified — none unverified.')
+      else if (rc === 1) setStatus('Verification found unverified quotes — see quote_report.md.')
+      else setStatus(`Verification could not run${error ? ': ' + error : ''}.`)
+      refreshPipeline()
+    },
+    onError() {
+      activeSSE.value = null
+      verifying.value = false
+      setStatus('Stream error — check terminal.')
+    },
+  })
+}
+
 async function openTypora(type: string) {
   if (currentScene.value === null) return
   try {
@@ -666,6 +716,11 @@ onMounted(async () => {
             {{ pipeline.narrate.count_done ?? 0 }}/{{ pipeline.narrate.count_total ?? 0 }}
           </span>
         </span>
+        <span class="pipe-stage" :title="verifyTitle">
+          <span class="pipe-glyph">✓</span>
+          <span class="pipe-dot" :class="pipeline.verify.status"></span>
+          <span class="pipe-age">{{ verifyLabel }}</span>
+        </span>
       </div>
 
       <span class="status-msg">{{ statusMsg }}</span>
@@ -688,6 +743,16 @@ onMounted(async () => {
           @click="runExtract"
           title="Stage 2 — rebuild per-scene quote files from session-summary.md"
         >{{ extracting ? 'Re-extracting…' : 'Re-Extract Quotes' }}</button>
+      </span>
+
+      <span class="stage-group">
+        <span class="stage-label">Verify</span>
+        <button
+          class="btn-neutral btn-sm"
+          :disabled="!configReady || enhancing || extracting || narrating || planning || verifying"
+          @click="runVerify"
+          title="Check every quote against the transcript. Deterministic and free — calls no model. Nothing is auto-corrected; findings go to quote_report.md for you to review."
+        >{{ verifying ? 'Verifying…' : 'Verify Quotes' }}</button>
       </span>
 
       <span class="stage-group">

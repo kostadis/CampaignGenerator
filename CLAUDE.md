@@ -70,6 +70,7 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/core/architecture.md` | **Start here.** System map: layers, pipelines, on-disk state, recurring concepts, "common task → start here" table |
 | `docs/cli/cli_tools.md` | Per-script invocations and flags (prep, campaign_state, planning, party, distill, query, …); typical new-campaign workflow |
 | `docs/cli/session_doc_pipeline.md` | post-session pipeline: sd_consistency / sd_plan / sd_narrate flags, voice files, dialogue handling, recap context, player-name mapping, token scaling, plus design rationale |
+| `docs/cli/quote_verification_howto.md` | Using quote verification: `sd_verify_quotes` / `sd_agent`, the five verdicts, why `near` ≠ safe, raw-vs-`.cleaned` VTT choice, every error message. Deterministic, zero-token, no backend — optional and auto-corrects nothing |
 | `docs/cli/state_projection_howto.md` | Using State Projection: `event_spine` → `thread_registry` → `grounding_sections` order, staleness states, every skip/refuse message, `projections.yaml`, the `/grounding/projections` page |
 | `docs/web/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |
 | `docs/rlm/dossier_aliases.md` | Dossier merge rules and cross-pipeline alias propagation |
@@ -209,7 +210,30 @@ resolves the path per-request.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/006-state-projection-service/plan.md` (State-Projection Rendering as
+`specs/007-two-phase-extraction/plan.md` (Two-Phase Extraction Agent — a
+**deterministic, zero-token quote verifier** over the Session Doc Editor's
+Stage 1 `session-summary.md` and Stage 2 `scene_extractions_new/`, plus a
+**stage-scoped** orchestrator (`sd_agent --stage {summary,scenes}`) that runs
+generation then that stage's checks and STOPS at the stage boundary — the
+Stage 1→2 human gate is preserved, not chained. Verification calls no model:
+a quote is a span of the VTT or it isn't. Measured (research D1): only **64%
+of quotes are exact verbatim even from Claude** — the other 36% are mostly
+*disfluency edits* (`"I do cross promotions."` vs the VTT's `"I do, like,
+cross promotions."`), so classification is **three buckets**
+(`verified`/`near`/`unverified`), not binary; a binary check would emit 186
+findings per session, ~90% benign. **Nothing is auto-corrected** — flag and
+report only; the GM applies fixes in Claude (`scrub_mechanics`/#151 is the
+scar). Stage 1 parses `> "…"` blockquotes only — inline `"…"` is not reliably
+dialogue (D5); Stage 2 parses `## Verbatim moments` only — `## Scene summary`
+is human-authored gm-assist content (D4). **D13 is a blocking dependency**:
+`scene_extract.py:468` feeds the model an alias-rewritten VTT via
+`build_alias_normalizer`, so Stage 2 verification must not ship until that
+wiring is removed — *pass the equivalence set as knowledge, never as a
+transform*. The 0.85 threshold is a starting point, **not calibrated for
+DeepSeek** (D8, cf. the `--embed-threshold` precedent). `research.md` D1–D13
+holds the survey and the 522-quote measurement; extend it rather than
+re-deriving.)
+Predecessor: `specs/006-state-projection-service/plan.md` (State-Projection Rendering as
 its own service — the #213 projection engine (`event_spine`,
 `thread_registry`, `grounding_sections`) becomes a service with its own
 strict document `<config>/projections.yaml` (modelled in
