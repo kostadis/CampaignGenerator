@@ -117,7 +117,7 @@ Every resolved command is printed before it runs, so the hop is visible rather t
 Two things it will tell you rather than do silently:
 
 - **`--context` omitted** ⇒ the consistency check is skipped and the run says so. There is nothing to compare a recap against without grounding docs.
-- **`--dossier-dir` omitted on `--stage scenes`** ⇒ the canonical NPC roster never reaches the model. Since `6e00f54` the roster is the *only* channel for canonical spellings (the VTT is deliberately never rewritten — see `docs/rlm/dossier_aliases.md`), so omitting it produces name-shaped quote findings that look like fabrication but are missing grounding.
+- **`--dossier-dir` omitted on `--stage scenes`** ⇒ it checks whether `scene_extract` can auto-discover `docs/entity_registry.yaml` from the CWD. **If it can, you need no flag** — a registry *replaces* the dossier scan outright, so the roster already reaches the model (run from the campaign root and this is the normal case). **If it can't**, the run says so loudly: since `6e00f54` the roster is the *only* channel for canonical spellings (the VTT is deliberately never rewritten — see `docs/rlm/dossier_aliases.md`), so a run without it produces name-shaped quote findings that look like fabrication but are really missing grounding.
 
 Use `--skip-generate` to re-check an artifact without re-spending tokens, and `--dry-run` to print the commands and exit.
 

@@ -74,6 +74,22 @@ def _console(name: str) -> list[str]:
     return [sys.executable, "-m", f"session_doc.{name}"]
 
 
+def _registry_visible() -> bool:
+    """Would scene_extract auto-discover an entity registry from here?
+
+    It resolves `find_alias_registry(Path.cwd())` itself, and a registry
+    REPLACES the dossier scan, so the answer decides whether an absent
+    --dossier-dir is a real gap or a non-issue. Same CWD, since the child is
+    spawned from ours.
+    """
+    try:
+        from campaignlib.npc import find_alias_registry
+        return find_alias_registry(Path.cwd()) is not None
+    except Exception:
+        # Never let a grounding *note* break the run it is annotating.
+        return False
+
+
 def _selection_args(args) -> list[str]:
     """Backend selection, forwarded to the GENERATION step only.
 
@@ -196,18 +212,30 @@ def build_steps(args) -> tuple[list[Step], list[str]]:
             grounding: list[str] = []
             if args.dossier_dir:
                 grounding += ["--dossier-dir", str(Path(args.dossier_dir).expanduser())]
-            else:
-                # Post-D13 the roster reaches the model ONLY through the system
-                # prompt — the VTT is never rewritten any more. So an extraction
-                # run without it has no way to learn that "Blueberry" and
-                # "Brewbarry" are one NPC, and mis-set names then surface as
-                # verification findings that look like fabrication but are
-                # missing grounding. Silent capability loss; say so.
+            elif _registry_visible():
+                # `docs/entity_registry.yaml` is auto-discovered from the CWD by
+                # scene_extract and REPLACES the dossier scan outright, so the
+                # roster already reaches the model. Saying "pass --dossier-dir"
+                # here would be advice to add a flag the registry supersedes.
                 notes.append(
-                    "no --dossier-dir: the canonical NPC roster will NOT reach "
-                    "the model. Since 6e00f54 the roster is the only channel for "
-                    "canonical spellings (the VTT is deliberately never "
-                    "rewritten), so expect name-shaped quote findings."
+                    "no --dossier-dir, but an entity registry is discoverable "
+                    "from the CWD — scene_extract will use it, and it supersedes "
+                    "a dossier scan. The roster reaches the model."
+                )
+            else:
+                # No registry AND no dossiers. Post-D13 the roster reaches the
+                # model ONLY through the system prompt — the VTT is never
+                # rewritten any more — so this run has no way to learn that
+                # "Blueberry" and "Brewbarry" are one NPC. Mis-set names then
+                # surface as verification findings that look like fabrication
+                # but are really missing grounding. Silent; say so.
+                notes.append(
+                    "no --dossier-dir and NO entity registry found from the CWD: "
+                    "the canonical NPC roster will not reach the model. Since "
+                    "6e00f54 the roster is the only channel for canonical "
+                    "spellings (the VTT is deliberately never rewritten), so "
+                    "expect name-shaped quote findings. Run from the campaign "
+                    "root, or pass --dossier-dir."
                 )
             if args.party:
                 grounding += ["--party", str(Path(args.party).expanduser())]

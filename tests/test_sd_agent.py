@@ -26,6 +26,7 @@ if _resolved != _REPO_ROOT:
         allow_module_level=True,
     )
 
+from session_doc import sd_agent  # noqa: E402
 from session_doc.sd_agent import build_parser, build_steps, resolve_vtt  # noqa: E402
 
 
@@ -166,13 +167,25 @@ def test_scene_grounding_flags_reach_scene_extract(session):
     assert not any("dossier" in n for n in notes)
 
 
-def test_missing_dossier_dir_is_announced_not_silent(session):
+def test_missing_dossier_dir_with_no_registry_is_announced(session, monkeypatch):
     """Losing the roster degrades extraction invisibly — the run must say so
     rather than let the GM read the findings as fabrication (Principle VIII)."""
+    monkeypatch.setattr(sd_agent, "_registry_visible", lambda: False)
     steps, notes = build_steps(_args(session_dir=session, stage="scenes"))
     gen = next(s for s in steps if s.key == "generate")
     assert "--dossier-dir" not in gen.cmd
-    assert any("dossier-dir" in n and "roster" in n for n in notes)
+    assert any("NO entity registry" in n for n in notes)
+
+
+def test_missing_dossier_dir_with_a_registry_is_NOT_an_alarm(session, monkeypatch):
+    """scene_extract auto-discovers docs/entity_registry.yaml from the CWD and a
+    registry REPLACES the dossier scan, so the roster already reaches the model.
+    Telling the GM to pass --dossier-dir here would be advice to add a flag the
+    registry supersedes."""
+    monkeypatch.setattr(sd_agent, "_registry_visible", lambda: True)
+    _, notes = build_steps(_args(session_dir=session, stage="scenes"))
+    assert not any("will not reach the model" in n for n in notes)
+    assert any("supersedes" in n for n in notes)
 
 
 def test_scene_grounding_flags_do_not_leak_into_the_summary_stage(session):
