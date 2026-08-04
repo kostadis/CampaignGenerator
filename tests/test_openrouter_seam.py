@@ -15,6 +15,8 @@ from campaignlib.api import client as client_mod
 from campaignlib.api import backends as backends_mod
 
 
+from repo_sources import repo_python_files  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -167,13 +169,11 @@ def test_no_out_of_seam_openrouter_construction():
     construct the client directly — selection goes through make_client / env."""
     offenders = []
     seam = (REPO_ROOT / "campaignlib" / "api").resolve()
-    for py in REPO_ROOT.rglob("*.py"):
+    for py in repo_python_files(REPO_ROOT):
         rp = py.resolve()
         if seam in rp.parents or rp.parent == seam:
             continue
         if "/tests/" in str(rp) or rp.name.startswith("test_"):
-            continue
-        if ".specify" in rp.parts or "node_modules" in rp.parts:
             continue
         text = py.read_text(encoding="utf-8", errors="ignore")
         if "openrouter.ai" in text or "_OpenRouterClient(" in text:

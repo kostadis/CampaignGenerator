@@ -16,6 +16,8 @@ from pathlib import Path
 
 import pytest
 
+from repo_sources import repo_python_files  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
@@ -119,7 +121,7 @@ def test_every_load_by_name_prompt_resolves_to_a_file():
 
     agents_dir = ROOT / "config" / "agents"
     missing, checked = [], 0
-    for py in ROOT.rglob("*.py"):
+    for py in repo_python_files(ROOT):
         rel = py.relative_to(ROOT).as_posix()
         if rel.startswith((".claude/", "tests/", "build/")):
             continue
