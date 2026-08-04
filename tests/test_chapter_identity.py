@@ -231,7 +231,33 @@ def test_assemble_mints_frontmatter_and_h1(tmp_path):
     meta, body = split_frontmatter(out.read_text())
     assert meta == {"chapter": 46, "session": "20260706",
                     "title": "Universal Basic Treasure"}
-    assert body.lstrip().startswith("# Chapter 46 Universal Basic Treasure")
+    # The number is stated once, by --chapter; the separator the author wrote
+    # in --title is re-emitted as ": " rather than flattened to a space.
+    assert body.lstrip().startswith("# Chapter 46: Universal Basic Treasure")
+
+
+def test_assemble_h1_has_no_dangling_separator_without_a_title(tmp_path):
+    """--chapter with no --title must not emit '# Chapter 46: '."""
+    narr = tmp_path / "summaries" / "20260706" / "narration"
+    narr.mkdir(parents=True)
+    _scene(narr, 1, "First.")
+    out = tmp_path / "session_doc.md"
+    proc = subprocess.run(
+        [sys.executable, str(REPO / "session_doc/assemble.py"), str(narr),
+         "--output", str(out), "--chapter", "46", "--title", "Chapter 46"],
+        capture_output=True, text=True, cwd=REPO)
+    assert proc.returncode == 0, proc.stderr
+    meta, body = split_frontmatter(out.read_text())
+    assert "title" not in meta
+    assert body.lstrip().startswith("# Chapter 46\n")
+
+
+def test_assemble_h1_survives_split_chapters(tmp_path):
+    """The minted H1 must still parse as a chapter heading downstream."""
+    heading = "# Chapter 46: Universal Basic Treasure"
+    chapters = sc.split(f"{heading}\n\nBody.\n", "# Chapter ")
+    assert len(chapters) == 1
+    assert sc.heading_title(heading, "# Chapter ") == "Universal Basic Treasure"
 
 
 def test_assemble_without_chapter_is_unchanged(tmp_path):
