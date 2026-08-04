@@ -13,6 +13,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [CLI tool reference](cli/cli_tools.md) — per-script flags and a typical new-campaign workflow.
 - [Session-prep workflow](cli/session_prep_workflow.md) — end-to-end pre-session pipeline.
 - [Session-doc pipeline](cli/session_doc_pipeline.md) — the 4-stage post-session pipeline (`enhance_summary` → `scene_extract` → `session_doc` → `assemble`) plus the 5-pass internals and design rationale.
+- [Quote verification how-to](cli/quote_verification_howto.md) — operator's manual for `sd_verify_quotes` / `sd_agent`: checking that a generated summary or scene extraction actually quotes the tape. **Deterministic, free, calls no model, needs no DGX**, and fixes nothing by itself. Read this for what the three verdicts mean, why `near` is not "safe", and why the `.vtt` you pick moves the finding count 26%.
 - [Post-session umbrella](cli/post_session.md) — short "which entry point matches how I want to work" page.
 - [gm-assist anchor](cli/gmassist_anchor.md) — why the gm-assist document is the authoritative event skeleton.
 - [Grounding documents](cli/grounding_docs.md) — when and how to refresh `campaign_state`, `world_state`, `planning`, `party`.
