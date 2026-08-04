@@ -49,9 +49,8 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [File formats](specs/formats.md) — input/output shapes for the major tools.
 
 ## Design notes
+
 - [Quote verification handoff](design/QuoteVerification_handoff.md) — **pick-up note**: what 007 shipped, the three findings that outlived it (DeepSeek was not the problem; D1's 64% was measuring a bug; the failure mode is stitching), which corpora are worth re-extracting, and how to start the follow-up feature.
-
-
 - [Source tree restructure](design/SourceTreeRestructure.md) — splits the 62 flat root scripts into subsystem packages under `pipelines/`, `entity_registry/`, and `session_doc/`, grouped by pipeline; migration complete.
 - [RLM paper comparison](design/rlm_paper_comparison.md) — how this system relates to (and diverges from) the published RLM paper.
 - [Chapter-extract consolidation (killed)](design/ChapterExtractConsolidation_killed.md) — why consolidating the three extract passes into one per-chapter extract regressed all three grounding docs, and the depth-vs-breadth lesson.
