@@ -40,6 +40,7 @@ from campaignlib import (
     stream_api,
 )
 from session_doc.examples import get_char_examples
+from session_doc.knowledge_check import find_unknown_names, format_warning
 from session_doc.io import (
     extract_scene_text,
     load_scene_extractions,
@@ -180,6 +181,12 @@ def main() -> None:
                         help="entity_registry.yaml, or a campaign dir holding "
                              "docs/entity_registry.yaml, to source canonical names from. "
                              "Default: auto-discover docs/entity_registry.yaml under CWD.")
+    parser.add_argument("--known-lore", nargs="+", metavar="FILE",
+                        help="Documents the whole party is assumed to know — normally the "
+                             "campaign bible, or docs/chapters/*.md up to the chapter "
+                             "BEFORE this session. Enables a post-narration warning for "
+                             "names that appear neither there nor in this session's scene "
+                             "extractions (#223 A.3). Warning only; nothing is rewritten.")
     parser.add_argument("--no-alias-normalize", "--no-alias-normalise",
                         dest="no_alias_normalize", action="store_true",
                         help="Do not rewrite aliases to canonical names in the source text. "
@@ -280,6 +287,23 @@ def main() -> None:
 
     alias_map = load_alias_map(args.dossier_dir, registry_path=registry_path)
     npc_roster = format_npc_roster(alias_map)
+
+    # Snapshot the session's own source BEFORE alias normalisation. The check
+    # below exists to catch names the PIPELINE introduced, so an alias the
+    # normaliser just expanded must not get to vouch for itself: normalising
+    # first would put "Aldus Hern" in the known set and hide the one finding
+    # this is here to make (#223 A.3).
+    session_source = "\n".join(
+        f"{sx['moments']}\n{sx['summary']}\n{sx['body']}" for sx in scene_extractions
+    )
+    known_lore_texts: list[str] = []
+    for k in (args.known_lore or []):
+        kp = Path(k).expanduser()
+        if kp.is_file():
+            known_lore_texts.append(kp.read_text(encoding="utf-8"))
+        else:
+            print(f"Warning: --known-lore file not found: {kp}", file=sys.stderr)
+
     # Alias rewriting is scoped to prose: quoted and italic spans are a verbatim
     # record of what a person said at the table and are never edited here (#223).
     # The canonical names reach the model as knowledge via `npc_roster` instead —
@@ -428,6 +452,14 @@ def main() -> None:
         print("─" * 60)
         narration = narration.strip()
         handoff = narration.rsplit("\n", 1)[-1].strip().strip('"').strip("'")
+
+        if args.known_lore:
+            warning = format_warning(
+                f"scene {i} ({label})",
+                find_unknown_names(narration, [*known_lore_texts, session_source]),
+            )
+            if warning:
+                print(warning, file=sys.stderr)
 
         slug_scene = re.sub(r"[^a-z0-9]+", "_", (scene_name or narrator).lower()).strip("_")
         session_id = recap_path.parent.name

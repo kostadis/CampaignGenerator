@@ -80,6 +80,18 @@ _PROTECTED_SPAN_RE = re.compile(
 )
 
 
+def strip_protected_spans(text: str, replacement: str = " ") -> str:
+    """Remove quoted/italic spans, leaving only prose.
+
+    The inverse view of ``build_alias_normalizer(preserve_quoted=True)``: that
+    one edits everything EXCEPT these spans, this one returns everything except
+    these spans. Callers that need to reason about what the narrator wrote — as
+    opposed to what somebody was quoted saying — share this one definition of
+    the boundary rather than each rolling their own regex.
+    """
+    return _PROTECTED_SPAN_RE.sub(replacement, text)
+
+
 def build_alias_normalizer(
     canonical_to_aliases: dict[str, list[str]],
     *,

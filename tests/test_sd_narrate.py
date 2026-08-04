@@ -407,6 +407,80 @@ def test_warns_when_a_smoothed_sibling_exists_but_was_not_selected(
     assert "will NOT reach narration" in err
 
 
+# ── Unknown-name warning (#223, defect A.3) ────────────────────────────────
+
+def test_known_lore_warns_about_a_name_absent_from_bible_and_source(
+    monkeypatch, tmp_path, capsys,
+):
+    paths = _write_fixtures(tmp_path)
+    bible = tmp_path / "bible.md"
+    bible.write_text("Alice drinks at the bar in Neverwinter.\n", encoding="utf-8")
+
+    leaked = "Kazneporium had been watching.\n\nAlice ordered another.\n"
+    monkeypatch.setattr(sd_narrate, "stream_api",
+                        FakeStreamAPI([leaked, SCENE2_NARRATION]))
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--known-lore", str(bible)))
+    sd_narrate.main()
+
+    err = capsys.readouterr().err
+    assert "Kazneporium" in err
+    assert "#223 A.3" in err
+    # A warning only — the narration file is written exactly as generated.
+    written = paths["out_dir"] / "session_doc_scene_01_scene_one.md"
+    assert "Kazneporium had been watching." in written.read_text(encoding="utf-8")
+
+
+def test_known_lore_is_quiet_when_every_name_is_accounted_for(
+    monkeypatch, tmp_path, capsys,
+):
+    paths = _write_fixtures(tmp_path)
+    bible = tmp_path / "bible.md"
+    bible.write_text("Alice drinks at the bar in Neverwinter.\n", encoding="utf-8")
+
+    monkeypatch.setattr(sd_narrate, "stream_api",
+                        FakeStreamAPI(["Alice went back to Neverwinter.", SCENE2_NARRATION]))
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--known-lore", str(bible)))
+    sd_narrate.main()
+
+    assert "#223 A.3" not in capsys.readouterr().err
+
+
+def test_no_known_lore_flag_means_no_check_at_all(monkeypatch, tmp_path, capsys):
+    """Without an allowlist every name would be 'unknown' — so the check is
+    strictly opt-in."""
+    paths = _write_fixtures(tmp_path)
+    monkeypatch.setattr(sd_narrate, "stream_api",
+                        FakeStreamAPI(["Kazneporium was here.", SCENE2_NARRATION]))
+    monkeypatch.setattr(sys, "argv", _base_argv(paths))
+    sd_narrate.main()
+
+    assert "#223 A.3" not in capsys.readouterr().err
+
+
+def test_known_lore_checks_the_PRE_normalisation_source(monkeypatch, tmp_path, capsys):
+    """The session's own extractions are snapshotted BEFORE alias expansion.
+    Otherwise a surname the normaliser just introduced would appear in the
+    'known' set and vouch for itself — which is exactly the ch47 defect."""
+    paths = _write_fixtures(tmp_path)
+    (paths["scenes_dir"] / "01_scene_one.md").write_text(
+        "- Aldus counts the coins.\n", encoding="utf-8")
+    _write_registry(tmp_path)
+    (tmp_path / "docs" / "entity_registry.yaml").write_text(
+        "version: 1\ncampaign: testcamp\nentities:\n"
+        "  - name: Aldus Hern\n    type: npc\n    aliases: [Aldus]\n",
+        encoding="utf-8")
+    bible = tmp_path / "bible.md"
+    bible.write_text("Alice drinks at the bar.\n", encoding="utf-8")
+
+    monkeypatch.setattr(sd_narrate, "stream_api",
+                        FakeStreamAPI(["I watched Aldus Hern count.", SCENE2_NARRATION]))
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--known-lore", str(bible)))
+    sd_narrate.main()
+
+    err = capsys.readouterr().err
+    assert "Aldus Hern" in err, "alias expansion vouched for itself"
+
+
 def test_no_warning_when_the_smoothed_dir_is_the_one_selected(
     monkeypatch, tmp_path, capsys,
 ):
