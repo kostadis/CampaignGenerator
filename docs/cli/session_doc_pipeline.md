@@ -66,7 +66,60 @@ Stated in every report, because silent non-coverage reads exactly like a pass:
 
 The only write to a checked file is an additive `<!-- cg:unverified -->` marker on an unverified quote's line, applied idempotently — re-running leaves the file byte-identical. Quote text is never altered. `--report-only` suppresses even that. Repair is a human decision made in Claude; the autonomous-repair alternative is what removed spells from narration in issue #151.
 
-**Use the same `.vtt` the artifact was generated from.** A session may carry both `*.transcript.vtt` and `*.transcript.cleaned.vtt`, and where they differ it is on proper nouns — exactly where false findings would cluster.
+### `near` means *an edit*, not *a safe edit*
+
+Similarity cannot tell a harmless edit from a damaging one, because both are edits of the same size. Measured on a real DeepSeek run:
+
+| score | quote | transcript | verdict |
+|---|---|---|---|
+| 0.92 | "**My kind** has been spreading violence…" | "**Mankind** has been spreading violence…" | `near` — but the meaning changed |
+| 0.94 | "No, I have my soul is for rent." | "No, I, I have, my soul is for rent." | `near` — harmless |
+
+The corrupting edit scored *lower* than the harmless one, and no threshold separates them. **Skim the `near` list for changed words, not for low scores.**
+
+### Which `.vtt` — it is not a tie-break
+
+**Use the same `.vtt` the artifact was generated from.** A session may carry both `*.transcript.vtt` and `*.transcript.cleaned.vtt`; where they differ it is on proper nouns — exactly where false findings cluster. On session 20260623 the two differ on **72 cue lines** (`Blueberry`→`Brewbarry`, `Cryovane`→`Cryovain`, …), and the same 522 quotes score:
+
+| VTT | verified | near | unverified |
+|---|---|---|---|
+| `*.transcript.vtt` (raw ASR) | 339 (65%) | 139 (27%) | **39** |
+| `*.transcript.cleaned.vtt` | 374 (72%) | 113 (22%) | **31** |
+
+A 26% swing in the finding count from the transcript choice alone. Any `unverified` number is meaningless without naming the VTT behind it. When more than one is present `sd_agent` takes the first alphabetically (`…cleaned.vtt`) and prints which one it used — pass `--vtt` to choose deliberately.
+
+## One stage at a time — `sd_agent`
+
+`sd_agent` runs a stage's generation **and** that stage's checks as one action, then stops:
+
+```
+sd_agent --stage summary  →  enhance_summary  →  sd_verify_quotes  →  sd_consistency  →  STOP
+sd_agent --stage scenes   →  scene_extract    →  sd_verify_quotes                     →  STOP
+```
+
+**It stops at the stage boundary on purpose.** The Stage 1 → Stage 2 human review is a checkpoint; an orchestrator that ran straight through would delete it. There is no `--stage all`.
+
+```bash
+SESS=summaries/20260623
+
+sd_agent --stage summary --session-dir "$SESS" \
+    --context "$SESS/../../docs/campaign_state.md" \
+    --backend dgx --model deepseek-ai/DeepSeek-V4-Flash-0731
+
+# after you have reviewed session-summary.md:
+sd_agent --stage scenes --session-dir "$SESS" \
+    --dossier-dir docs/npcs --gm-player Kostadis \
+    --backend dgx --model deepseek-ai/DeepSeek-V4-Flash-0731
+```
+
+Every resolved command is printed before it runs, so the hop is visible rather than implicit. Backend flags reach **generation only** — verification calls no model. Exit `0` clean, `1` findings, `2` a step could not run.
+
+Two things it will tell you rather than do silently:
+
+- **`--context` omitted** ⇒ the consistency check is skipped and the run says so. There is nothing to compare a recap against without grounding docs.
+- **`--dossier-dir` omitted on `--stage scenes`** ⇒ the canonical NPC roster never reaches the model. Since `6e00f54` the roster is the *only* channel for canonical spellings (the VTT is deliberately never rewritten — see `docs/rlm/dossier_aliases.md`), so omitting it produces name-shaped quote findings that look like fabrication but are missing grounding.
+
+Use `--skip-generate` to re-check an artifact without re-spending tokens, and `--dry-run` to print the commands and exit.
 
 ## Passes
 

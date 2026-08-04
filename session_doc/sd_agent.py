@@ -193,11 +193,31 @@ def build_steps(args) -> tuple[list[Step], list[str]]:
                 raise ValueError(
                     f"session-summary not found: {summary} — run --stage summary first"
                 )
+            grounding: list[str] = []
+            if args.dossier_dir:
+                grounding += ["--dossier-dir", str(Path(args.dossier_dir).expanduser())]
+            else:
+                # Post-D13 the roster reaches the model ONLY through the system
+                # prompt — the VTT is never rewritten any more. So an extraction
+                # run without it has no way to learn that "Blueberry" and
+                # "Brewbarry" are one NPC, and mis-set names then surface as
+                # verification findings that look like fabrication but are
+                # missing grounding. Silent capability loss; say so.
+                notes.append(
+                    "no --dossier-dir: the canonical NPC roster will NOT reach "
+                    "the model. Since 6e00f54 the roster is the only channel for "
+                    "canonical spellings (the VTT is deliberately never "
+                    "rewritten), so expect name-shaped quote findings."
+                )
+            if args.party:
+                grounding += ["--party", str(Path(args.party).expanduser())]
+            if args.gm_player:
+                grounding += ["--gm-player", args.gm_player]
             steps.append(Step(
                 "generate", "generate      ",
                 _console("scene_extract") + [
                     str(vtt), "--summary", str(summary), "--output-dir", str(scenes),
-                ] + _selection_args(args),
+                ] + grounding + _selection_args(args),
             ))
         steps.append(Step(
             "verify", "verify quotes ",
@@ -232,6 +252,17 @@ def build_parser() -> argparse.ArgumentParser:
                    help="Default: <session-dir>/scene_extractions_new")
     p.add_argument("--narration-dir", metavar="DIR",
                    help="Where reports are written (default: <session-dir>/narration).")
+    p.add_argument("--dossier-dir", metavar="DIR",
+                   help="NPC dossiers, forwarded to scene_extract (--stage scenes). "
+                        "The canonical roster goes into the system prompt; since "
+                        "6e00f54 that is the ONLY way the model learns canonical "
+                        "spellings, so omitting it degrades extraction silently.")
+    p.add_argument("--party", metavar="FILE",
+                   help="party.md, forwarded to scene_extract (--stage scenes) for "
+                        "player -> character speaker mapping.")
+    p.add_argument("--gm-player", metavar="NAME",
+                   help="GM's display name in the VTT, forwarded to scene_extract "
+                        "(--stage scenes).")
     p.add_argument("--context", nargs="+", metavar="FILE",
                    help="Grounding docs for the consistency check. Omitted ⇒ "
                         "that step is skipped and the run says so.")

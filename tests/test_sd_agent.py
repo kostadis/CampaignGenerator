@@ -146,6 +146,57 @@ def test_backend_flags_reach_generation_only(session):
         assert flag not in ver.cmd
 
 
+def test_scene_grounding_flags_reach_scene_extract(session):
+    """--dossier-dir/--party/--gm-player must survive the hop. Since 6e00f54
+    the roster is the ONLY channel for canonical NPC spellings (the VTT is
+    deliberately never rewritten), so an orchestrator that drops it produces
+    name-shaped quote findings that look like fabrication."""
+    dossiers = session / "npcs"
+    dossiers.mkdir()
+    party = session / "party.md"
+    party.write_text("# party\n")
+    steps, notes = build_steps(_args(
+        session_dir=session, stage="scenes",
+        dossier_dir=dossiers, party=party, gm_player="Kostadis",
+    ))
+    gen = next(s for s in steps if s.key == "generate")
+    assert "--dossier-dir" in gen.cmd and str(dossiers) in gen.cmd
+    assert "--party" in gen.cmd and str(party) in gen.cmd
+    assert "--gm-player" in gen.cmd and "Kostadis" in gen.cmd
+    assert not any("dossier" in n for n in notes)
+
+
+def test_missing_dossier_dir_is_announced_not_silent(session):
+    """Losing the roster degrades extraction invisibly — the run must say so
+    rather than let the GM read the findings as fabrication (Principle VIII)."""
+    steps, notes = build_steps(_args(session_dir=session, stage="scenes"))
+    gen = next(s for s in steps if s.key == "generate")
+    assert "--dossier-dir" not in gen.cmd
+    assert any("dossier-dir" in n and "roster" in n for n in notes)
+
+
+def test_scene_grounding_flags_do_not_leak_into_the_summary_stage(session):
+    """They configure scene extraction; enhance_summary has no such options,
+    so forwarding them there would just crash the generation step."""
+    dossiers = session / "npcs"
+    dossiers.mkdir()
+    steps, _ = build_steps(_args(session_dir=session, stage="summary",
+                                 dossier_dir=dossiers, gm_player="Kostadis"))
+    for s in steps:
+        assert "--dossier-dir" not in s.cmd
+        assert "--gm-player" not in s.cmd
+
+
+def test_scene_grounding_flags_never_reach_verification(session):
+    dossiers = session / "npcs"
+    dossiers.mkdir()
+    steps, _ = build_steps(_args(session_dir=session, stage="scenes",
+                                 dossier_dir=dossiers, gm_player="Kostadis"))
+    ver = next(s for s in steps if s.key == "verify")
+    for flag in ("--dossier-dir", "--party", "--gm-player"):
+        assert flag not in ver.cmd
+
+
 def test_threshold_and_report_only_reach_verification_only(session):
     steps, _ = build_steps(_args(session_dir=session, threshold=0.9, report_only=True))
     ver = next(s for s in steps if s.key == "verify")
