@@ -108,8 +108,8 @@ Two roots, and the distinction matters:
 
 ### 🚦 Human checkpoint
 
-- [ ] T031 **GM REVIEW GATE — BLOCKING.** Present `~/src/campaigns/provenance.yaml` and all six `~/src/campaigns/*/docs/corrections.yaml` files to the GM for ratification. FR-029 requires this data be hand-authored; a drafted transcription is not ratified data until the GM has read it. **No Phase 3+ task may start until this is signed off.** Record the ratification in the commit message.
-- [ ] T032 Commit the authored data to `~/src/campaigns` as **seven separate commits** — one per campaign for the six `docs/corrections.yaml` files, plus one for root-level `provenance.yaml` — per that workspace's hard no-bundling rule
+- [X] T031 **GM REVIEW GATE — BLOCKING.** Present `~/src/campaigns/provenance.yaml` and all six `~/src/campaigns/*/docs/corrections.yaml` files to the GM for ratification. FR-029 requires this data be hand-authored; a drafted transcription is not ratified data until the GM has read it. **No Phase 3+ task may start until this is signed off.** Record the ratification in the commit message.
+- [X] T032 Commit the authored data to `~/src/campaigns` as **seven separate commits** — one per campaign for the six `docs/corrections.yaml` files, plus one for root-level `provenance.yaml` — per that workspace's hard no-bundling rule
 
 **Checkpoint**: Manifest ratified and loadable; `provenance check` clean; user stories can begin.
 
