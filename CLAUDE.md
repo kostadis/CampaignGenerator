@@ -71,6 +71,7 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/cli/cli_tools.md` | Per-script invocations and flags (prep, campaign_state, planning, party, distill, query, …); typical new-campaign workflow |
 | `docs/cli/session_doc_pipeline.md` | post-session pipeline: sd_consistency / sd_plan / sd_narrate flags, voice files, dialogue handling, recap context, player-name mapping, token scaling, plus design rationale |
 | `docs/cli/state_projection_howto.md` | Using State Projection: `event_spine` → `thread_registry` → `grounding_sections` order, staleness states, every skip/refuse message, `projections.yaml`, the `/grounding/projections` page |
+| `docs/cli/provenance_search.md` | The `provenance` CLI + its two hand-authored files (`~/src/campaigns/provenance.yaml`, per-campaign `docs/corrections.yaml`): trust tiers, corrections matching, `check` findings, what's built vs. not |
 | `docs/web/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |
 | `docs/rlm/dossier_aliases.md` | Dossier merge rules and cross-pipeline alias propagation |
 | `docs/rlm/rlm_pipeline.md` | Three-state retrieval, ingest flow, MCP tools, palace/rpglib path resolution |
