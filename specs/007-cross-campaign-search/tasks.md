@@ -285,10 +285,19 @@ Two roots, and the distinction matters:
 ### GM action items — outside this feature's write scope (FR-032)
 
 > Deliberately **not** implementable by this task list. Recorded so the gap is visible
-> rather than discovered at demo time (research D11).
+> rather than discovered at demo time (research D11). **Both run by the GM on
+> 2026-08-06**, at their direction and with them electing the canonical form.
 
-- [ ] T098 **GM ONLY**: run `registry alias` against `~/src/campaigns/obelisk/docs/entity_registry.yaml` to register Veyra with alias "Vera", so spec Story 2 AS-1 resolves on the live corpus (`obelisk/characters/veyra.md` exists; the registry entry does not)
-- [ ] T099 **GM ONLY**: run `registry add` + `registry mark-distinct` against `~/src/campaigns/Phandalin/docs/entity_registry.yaml` for Kazneporium Ketternopappux and Kostadinious the Sage, so spec Story 2 AS-2's known confusion resolves on the live corpus
+- [X] T098 **GM ONLY** — done 2026-08-06: register Veyra with alias "Vera" in `~/src/campaigns/obelisk/docs/entity_registry.yaml`, so spec Story 2 AS-1 resolves on the live corpus.
+  **The task's stated verb was wrong.** It said `registry alias`, but obelisk had no `Veyra` entity to alias onto — its 374 entities came from module canon and included none of the table's own characters. Ran `registry add obelisk --name Veyra --type npc --aliases Vera` instead.
+  Evidence, all pre-existing and GM-authored — the link was *recorded*, not inferred from the one-letter difference (FR-016): `notes/vtt_transcription_corrections.md:26` lists `Vera, Azvera, Rivera, Maya, Maia, Zerabira → Veyra`; `docs/background/name_glossary.md:403` names "Veyra of the Blue Candle"; `docs/world_state.md:10` records "***Veyra*** (Ch. 5 summary says 'Sister Vera')". The raw→cleaned VTT diff shows the substitution being applied (17 lines, session 007).
+  Effect on drift: obelisk's `registry check` went 13→12 grouping-drift and 27→25 missing-from-registry.
+  **Not done, left for the GM:** the other five variants in that table row. `Maya`/`Maia` in particular want an eyeball, since Maela Dawnforge is a separate sidekick with her own row.
+- [X] T099 **GM ONLY** — done 2026-08-06: register Kazneporium Ketternopappux and Kostadinious the Sage in `~/src/campaigns/Phandalin/docs/entity_registry.yaml` and mark them distinct, so spec Story 2 AS-2's known confusion resolves on the live corpus.
+  **An entity named `KP` already existed** (type `deity`, with a note describing him as a gnome wizard / planar optimizer). The GM chose canonical = the full spelling, matching their own correction note's "the only canonical spelling is Kazneporium Ketternopappux", and elected to keep `type: deity` rather than change it in the same act. Ran: `registry add Phandalin --name "Kazneporium Ketternopappux" --type deity` → `registry merge Phandalin KP --into "Kazneporium Ketternopappux"` (folds `KP` in as an alias, note preserved verbatim) → `registry add Phandalin --name "Kostadinious the Sage" --type npc` → `registry mark-distinct`.
+  Ground truth was already on disk: `Phandalin/notes/corrections/kp_identity_attribution.md`, filed 2026-04-20 at the DM's direction, states that KP = Kazneporium Ketternopappux and that Kostadinious the Sage is his **in-world biographer** — the confusion arising from a source file named `KP post Barovia - Kostadinious the Sage.md`, whose (subject–author) filename LLMs read as (alias–true name). Registering it turns a note the model had to re-read each session into a guard the registry enforces.
+  Effect on drift: Phandalin's `missing-from-legacy` went 469→471 — the two new entities are not yet in the `aliases.json` projection. `registry project Phandalin` clears it; deliberately not run, since it rewrites a large tracked file.
+  **Not done, left for the GM:** the same correction note names `Knazreponnium Ketternopappux` as a live misspelling in `docs/background/Withering Grove.md`. `registry alias Phandalin "Knazreponnium Ketternopappux" --to "Kazneporium Ketternopappux"` would make it resolve.
 
 ---
 

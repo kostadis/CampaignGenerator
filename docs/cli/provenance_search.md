@@ -385,11 +385,28 @@ an over-narrow one produces an absence you cannot see.
 PC now has a species, so there is no visible swap. It stays in the file, reported every
 `check` run, until a human confirms or prunes it.
 
-**Not this feature's job:** incident 5 (`"Vera"` → Veyra, `"KP"` must not reach
-Kostadinious, `"Unla"`/`"Key"` are one halfling PC) is identity-store work.
-`resolve("Vera", "obelisk")` returning `not-found-in-identity-store` is the design
-working, not a bug. Entering those aliases is a `registry alias` /
-`registry mark-distinct` act behind explicit human confirmation.
+**Not this feature's job — and closed separately on 2026-08-06.** Incident 5 (`"Vera"` →
+Veyra, `"KP"` must not reach Kostadinious, `"Unla"`/`"Key"` are one halfling PC) is
+identity-store work, so `resolve("Vera", "obelisk")` answering
+`not-found-in-identity-store` was the design working, not a bug. The GM has since entered
+the first two through the `registry` CLI (spec tasks T098/T099), so both now resolve:
+
+```
+$ provenance resolve Vera --campaign obelisk
+RESOLVED  Vera → Veyra  (npc)
+
+$ provenance resolve KP --campaign Phandalin
+RESOLVED  KP → Kazneporium Ketternopappux  (deity)
+  known confusions:
+    ✗ Kazneporium Ketternopappux is a DISTINCT entity from Kostadinious the Sage  (registry: distinct)
+```
+
+Note what made those enterable: in both cases the GM had **already written the ruling
+down** — obelisk's `notes/vtt_transcription_corrections.md` listed Vera → Veyra, and
+Phandalin's `notes/corrections/kp_identity_attribution.md` had recorded the KP /
+Kostadinious non-identity in April. Registering them promoted an existing human decision
+into the authority store. Nothing resolved because two names looked alike; FR-016 is
+unchanged, and `provenance` still performs no registry write of its own (FR-032).
 
 ---
 

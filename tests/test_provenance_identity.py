@@ -274,14 +274,54 @@ def test_live_rejected_aliases_are_reported_as_refused_links(
     assert pair[1].casefold() in names
 
 
-def test_live_vera_is_honestly_not_found(live_manifest, live_workspace) -> None:
-    """FR-018 behaving correctly. Veyra exists on disk; the alias link does not.
+def test_live_vera_now_resolves_to_veyra(live_manifest, live_workspace) -> None:
+    """Spec Story 2 AS-1, now true on the live corpus (T098, 2026-08-06).
 
-    Making this resolve is GM action item T098 — a `registry alias` run this
-    feature is forbidden from performing (FR-032).
+    Until the GM ran `registry add obelisk --name Veyra --aliases Vera`, this
+    asserted the honest `not-found` — Veyra was real on disk
+    (`obelisk/characters/veyra.md`, and named in `docs/background/name_glossary.md`)
+    but no alias link was recorded, so FR-018 required saying so rather than
+    guessing from the one-letter difference.
+
+    What made the link enterable was *evidence*, not similarity: the GM's own
+    `notes/vtt_transcription_corrections.md` already listed Vera → Veyra, and
+    `docs/world_state.md` records the same correction. FR-016 is unchanged —
+    nothing here resolved the name because it looked close.
     """
     campaign, root = _campaign(live_manifest, live_workspace, "obelisk")
-    assert resolve(campaign, root, "Vera").status is IdentityStatus.NOT_FOUND
+    result = resolve(campaign, root, "Vera")
+    assert result.status is IdentityStatus.RESOLVED
+    assert result.canonical == "Veyra"
+
+
+def test_live_kp_resolves_to_the_full_name_and_is_distinct_from_the_biographer(
+    live_manifest, live_workspace
+) -> None:
+    """Spec Story 2 AS-2, now true on the live corpus (T099, 2026-08-06).
+
+    The defect this closes is documented in
+    `Phandalin/notes/corrections/kp_identity_attribution.md`: a source file named
+    `KP post Barovia - Kostadinious the Sage.md` put the two strings adjacent, and
+    LLMs read the filename as (alias — true name). Kostadinious is KP's in-world
+    *biographer*. The registry now says so, so the confusion is recorded rather
+    than re-derived every session.
+    """
+    campaign, root = _campaign(live_manifest, live_workspace, "Phandalin")
+    result = resolve(campaign, root, "KP")
+    assert result.status is IdentityStatus.RESOLVED
+    assert result.canonical == "Kazneporium Ketternopappux"
+
+    confusions = {
+        n for c in result.known_confusions if c.kind is ConfusionKind.DISTINCT
+        for n in c.names
+    }
+    assert "Kostadinious the Sage" in confusions
+
+    # And the biographer is a real entity in his own right, not just a name in a
+    # guard — so resolving him answers `resolved`, not `not-found`.
+    other = resolve(campaign, root, "Kostadinious the Sage")
+    assert other.status is IdentityStatus.RESOLVED
+    assert other.canonical != result.canonical
 
 
 def test_live_campaigns_without_a_store_say_no_store(live_manifest, live_workspace) -> None:
