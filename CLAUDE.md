@@ -153,6 +153,16 @@ A CI test (`tests/test_retrieve_render_isolation.py`) fails if any function body
 
 See `docs/rlm/rlm_pipeline.md` for the proposal workflow and MCP tools.
 
+### Provenance search: prefer an authoritative hit over a generated one
+
+`provenance search` labels every hit with its trust tier and, when a pipeline wrote the file, the stage that will clobber it. **A `generated_by` hit is a draft with a countdown on it** — `docs/world_state.md`, `docs/campaign_state.md`, `docs/planning.md`, `docs/party.md` and `docs/npcs/*.md` are all regenerated output, and the incident this feature exists to prevent was a consistency check treating one of them as canon and flagging a *correct* recap as a continuity error.
+
+So when a render pipeline or a consistency check needs a fact, and an authoritative-tier hit (a session summary, a VTT, a chapter split) disagrees with a `working_reference` one, **the authoritative hit wins** — and if only the generated one exists, say so rather than asserting it. `--tier authoritative` scopes a search to canon; the ranking already puts the more trusted tier first at equal relevance.
+
+Two labels ride alongside and mean specific things: `generated_but_hand_edited: true` says the file carries a hand-written correction the next run will destroy, and an attached correction with `verified: false` is an open question for the GM, not a settled fact. Neither is a reason to re-tier the file.
+
+Read-only, no LLM call, no writes — statically guarded (`tests/test_provenance_readonly.py`, `tests/test_provenance_no_llm.py`). See `docs/cli/provenance_search.md`.
+
 ### LLM renders, humans decide
 
 Per the global rule in `~/.claude/CLAUDE.md`: scope/ordering/attribution are precision decisions and need a human checkpoint; rendering verified structure into prose is what LLMs do well. When designing new pipelines in this repo, the pattern is **LLM extracts → human reviews → LLM renders inside that structure** — never **LLM extracts → LLM structures → LLM renders**.

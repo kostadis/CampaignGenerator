@@ -1,20 +1,21 @@
 # MCP servers
 
-CampaignGenerator ships four MCP servers a campaign workspace can register in its
+CampaignGenerator ships five MCP servers a campaign workspace can register in its
 `.mcp.json`. They're independent — a campaign wires in whichever it needs — but
 easy to forget exist, since nothing lists them in one place. This page does.
 
 For the *actual* mechanics of wiring one in, see [Wiring one in](#wiring-one-in)
 below. For what each server is *for*, read its section.
 
-| Server | Console script | Gated on | What it's for |
-|---|---|---|---|
-| [`campaign`](#campaign) | `mcp_server` | `config.yaml` (every campaign) | Read campaign docs/notes; RLM retrieval search; write to `notes/` |
-| [`5etools`](#5etools) | `launch_5etools_mcp` | `refs.yaml` | Published-module reference lookups (monsters, spells, items, book/adventure sections), scoped to what the campaign owns |
-| [`registry`](#registry) | `registry_mcp` | `docs/entity_registry.yaml` | Entity identity — canonical names, aliases, anti-merge guards |
-| [`kanka`](#kanka) | `kanka_mcp` | `KANKA_TOKEN` passed to `configure_mcp` | Pull/push campaign canon to/from a Kanka CE workspace |
+| Server | Console script | Gated on | Scope | What it's for |
+|---|---|---|---|---|
+| [`campaign`](#campaign) | `mcp_server` | `config.yaml` (every campaign) | one campaign, pinned | Read campaign docs/notes; RLM retrieval search; write to `notes/` |
+| [`5etools`](#5etools) | `launch_5etools_mcp` | `refs.yaml` | one campaign, pinned | Published-module reference lookups (monsters, spells, items, book/adventure sections), scoped to what the campaign owns |
+| [`registry`](#registry) | `registry_mcp` | `docs/entity_registry.yaml` | one campaign, pinned | Entity identity — canonical names, aliases, anti-merge guards |
+| [`kanka`](#kanka) | `kanka_mcp` | `KANKA_TOKEN` passed to `configure_mcp` | one campaign, pinned | Pull/push campaign canon to/from a Kanka CE workspace |
+| [`provenance`](#provenance) | `provenance_mcp` | `provenance.yaml` at the **repo root** | **unpinned** — scope per call | Read-only, provenance-labeled search across every campaign; identity resolution |
 
-A fifth server, **mempalace** (semantic search over a campaign's mined content),
+A sixth server, **mempalace** (semantic search over a campaign's mined content),
 is related but not owned by CampaignGenerator — it's a separate package with its
 own CLI (`mempalace`) and its own setup guide, `MEMPALACE_HOWTO.md` at the
 workspace root. `configure_mcp` does not wire it; the `mempalace-campaign` skill
@@ -102,6 +103,43 @@ identity.
 Needs `KANKA_TOKEN` (and optionally `KANKA_BASE_URL`, default
 `http://localhost:8081`). Source: `pipelines/integrations/kanka/kanka_mcp.py`.
 
+## `provenance`
+
+**The one unpinned server, and that is the whole point of it.** The four above bind a
+campaign at process start, so answering a question about a different game means editing
+`.mcp.json` and restarting the session. `provenance` takes **no campaign argument at
+all** — scope arrives on every call, and is required on every call. There is no "all
+campaigns" token; naming two or more campaigns is itself the deliberate cross-campaign
+act.
+
+Four read-only tools, each a thin in-process wrapper over the `provenance` CLI so the
+two surfaces cannot drift:
+
+- `provenance_search(query, campaigns, tiers, horizon, expand_aliases, …)` — every hit
+  comes back wrapped in a **provenance envelope**: owning campaign, trust tier, whether
+  a pipeline generated it (and which stage will clobber it), the chapter it reflects,
+  and any GM-recorded known-stale correction attached inline. `campaigns` is required
+  and has no default; an empty list is refused with the list of known campaigns.
+- `provenance_resolve(surface_form, campaign)` — canonical entity, aliases and recorded
+  non-identity assertions. Three distinguishable answers: resolved / not-found (the
+  store exists, no link recorded) / no-store. Name similarity is never evidence.
+- `provenance_capabilities()` — which campaigns exist and which backends are live **on
+  this machine**. Call it before trusting an empty result; an unavailable backend is
+  reported as unavailable, never as zero hits.
+- `provenance_check(campaigns=None)` — validates the two hand-authored documents and
+  reports findings for GM review. The one tool that may be called unscoped, because it
+  returns no campaign content.
+
+**Nothing on this server writes.** No `notes/` escape hatch, no identity mutation —
+aliasing and merging stay with `registry`, behind explicit GM confirmation. A hit
+tagged `generated_by` will be clobbered on the next pipeline run and may be stale;
+verify it against an authoritative-tier hit before treating it as fact.
+
+Gated on the **workspace** manifest `provenance.yaml` at the repo root, not on anything
+per-campaign, so `configure_mcp` emits one identical block however many campaigns share
+that root. Source: `provenance/provenance_mcp.py`. Operator guide:
+[`docs/cli/provenance_search.md`](../cli/provenance_search.md).
+
 ## Wiring one in
 
 **Automatic, per campaign or all of them:**
@@ -117,17 +155,26 @@ configure_mcp --dry-run                # preview without writing
 file by default (`--force` to overwrite entirely instead). `campaign` is
 always added; `5etools` is gated on `refs.yaml` existing; `registry` is gated
 on `docs/entity_registry.yaml` existing; `kanka` only appears when
-`--kanka-token` is passed. Source: `pipelines/workspace/configure_mcp.py`.
+`--kanka-token` is passed; `provenance` is gated on `provenance.yaml` existing
+at the repo root. Source: `pipelines/workspace/configure_mcp.py`.
 
 **Manual:** copy the relevant block from
 [`.mcp.json.template`](../../.mcp.json.template) at the repo root into the
-campaign's own `.mcp.json`, under `mcpServers`. Every server here resolves its
-campaign directory the same way: `CAMPAIGN_DIR` env var first, then
+campaign's own `.mcp.json`, under `mcpServers`. The four pinned servers resolve
+their campaign directory the same way: `CAMPAIGN_DIR` env var first, then
 `--campaign-dir <path>` in `args`, then falls back to cwd — so pick one
 consistently rather than mixing both across servers in the same file.
+`provenance` is the exception and takes neither; its block is literally
+`{"command": "provenance_mcp", "args": []}`.
 
 A server only being *gated in* (the file it needs exists) doesn't mean it's
 *wired in* — `configure_mcp` has to actually run (or you edit `.mcp.json` by
 hand) before Claude sees the new tools in a session. Re-run `configure_mcp`
 after a campaign gains a `refs.yaml` or `entity_registry.yaml` it didn't have
 before, or the newly-eligible server won't show up until you do.
+
+**Two campaigns sharing one repo root share one `.mcp.json`,** and the pinned
+servers overwrite each other when you re-run `configure_mcp` for a different
+campaign — `main()` prints a NOTE when that happens. `provenance` is unaffected:
+its block is byte-identical whichever campaign emitted it, which is what makes
+cross-campaign search reachable without touching the file at all.

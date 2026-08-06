@@ -29,19 +29,34 @@ its trust label.** Everything below exists to keep that true.
 
 ## 2. Status — what actually runs today
 
-Phases 1–2 of the build are complete. Be honest with yourself about the rest.
+All five user stories are built. There is no longer any surface that exits 70.
 
 | Surface | State |
 |---|---|
-| `provenance check` | ✅ **Works fully.** Validates the authored data, reports findings. |
-| `provenance capabilities` | ⚠️ Partial — reports workspace root, resolution rule, campaign list. Backend roster lands at T074. |
-| `provenance search` | ⛔ Refusals work (scope, unknown campaign, missing root, no horizon). Execution exits **70**. |
-| `provenance resolve` | ⛔ Same — refusals work, execution exits **70**. |
-| `provenance_mcp` | ⛔ Declared in `pyproject.toml`; module not written yet. |
+| `provenance check` | ✅ Validates the authored data; reports ten kinds of finding for GM review. |
+| `provenance capabilities` | ✅ Workspace root + which rule resolved it, the six-campaign table, the live backend roster, the `.gitignore` note. |
+| `provenance search` | ✅ Scoped, tier-filtered, horizon-filtered, alias-expandable; text and `--json`. |
+| `provenance resolve` | ✅ All three identity states, distinguishable. |
+| `provenance_mcp` | ✅ Four read-only tools, unpinned; registered in `~/src/campaigns/.mcp.json`. |
 
-Exit **70** is deliberate and is *not* exit 0. A stub that returned "no results" would
-be indistinguishable from a real search that found nothing — the precise silent
-failure this feature exists to kill.
+**Not built, and deliberately so:** the semantic (MemPalace) backend is *probed* but
+never queried — `capabilities` and every search response say
+`not-consulted (semantic backend not wired in increment 1)` rather than implying the
+result set is complete.
+
+### One behaviour worth knowing before you use it
+
+Relevance is `matches-in-this-file + bonuses` (research D9). On a corpus containing a
+few very large files, that term dominates: `Phandalin/docs/NeverwinterExpansionismandtheNorth.md`
+holds ~700 "Woodland Manse" lines and `toee/docs/ensemble/merged.json` holds ~1,500
+"Calmer" lines, so **one file can fill the entire first page of results.** Nothing is
+lost — the counts in the header tell you how many hits were withheld — but you will
+want one of:
+
+- `--tier authoritative` (or `working_reference`) to scope to the material you meant;
+- a longer, more specific query;
+- an `exclude` glob in the manifest for a machine artifact like `merged.json` that is
+  in scope only because `.json` is a searchable extension.
 
 ---
 
@@ -234,12 +249,27 @@ mis-tier every dossier in the corpus.
 ## 6. Using the CLI
 
 ```bash
-provenance check                                   # validate authored data (works today)
+provenance check                                   # validate authored data
 provenance check --campaign toee --json
 provenance capabilities                            # where am I reading from?
 provenance search "Woodland Manse" --campaign Phandalin --campaign toee
+provenance search "Grannoc" --campaign Phandalin --tier authoritative
+provenance search "Ilvara" --campaign out-of-the-abyss --expand-aliases
+provenance search "the Manse" --campaign Phandalin --horizon 43
 provenance resolve "Vera" --campaign obelisk
 ```
+
+### Search flags worth knowing
+
+| Flag | Default | Notes |
+|---|---|---|
+| `--tier` | none | Repeatable. Suppressed hits are **counted** in the header, never dropped in silence. |
+| `--horizon N` | none | Refused for a campaign with no marker, rather than served unfiltered. Files the pattern cannot attribute come back labelled `unattributable`. |
+| `--expand-aliases` | off | Searches `{canonical} ∪ {aliases}`; each hit reports the `matched_surface_form` that found it. |
+| `--regex` | off | Off means the query is escaped and matched literally. |
+| `--case-sensitive` | off | Explicit either way — never rg's `--smart-case`, which would make `Ilvara` and `ilvara` behave differently. |
+| `--limit` | 50 | Truncation is reported as `withheld by --limit: N`. |
+| `--scanner rg\|python` | auto | Forcing an unavailable one is a **refusal**, not a silent fallback. Results are identical; only latency differs (~60×). |
 
 ### Scope is always explicit
 
@@ -259,7 +289,7 @@ is safe because it reads and reports rather than answering a question.
 | 1 | Refusal — a deliberate, explained "no" (also: `check` found error-level findings) |
 | 2 | Usage error from argparse |
 | 3 | Load error — manifest or corrections file invalid |
-| 70 | Not implemented yet. **Never 0.** |
+| 70 | Reserved for "not implemented". No surface returns it any more; kept so a future stub cannot quietly return 0. |
 
 ### Which corpus am I reading?
 
@@ -377,6 +407,30 @@ working, not a bug. Entering those aliases is a `registry alias` /
   over magic tokens.
 - **`.gitignore` gets no vote on scope.** The manifest's `exclude` list is the single
   authority (research D17).
+- **Never shells out to anything but `rg`**, with a pinned, allow-listed flag set.
+  Enforced by `tests/test_provenance_readonly.py`.
+
+---
+
+## 10b. The MCP server
+
+`provenance_mcp` is the outward seam, and the **only unpinned server** in
+`~/src/campaigns/.mcp.json` — every other one binds a campaign at process start, so
+searching a different game means editing that file and restarting the session. This
+one takes no campaign argument at all; scope arrives per call and is required on every
+call. That absence is the feature.
+
+```json
+"provenance": { "command": "provenance_mcp", "args": [] }
+```
+
+Four read-only tools, each a thin in-process wrapper over the CLI so the two cannot
+drift: `provenance_search` (`campaigns` is required, no default, empty list refused),
+`provenance_resolve`, `provenance_capabilities`, `provenance_check`. No write tool, no
+identity-mutating tool — those stay with the `registry` server, behind GM confirmation.
+
+`configure_mcp` emits the block automatically, gated on the workspace manifest existing
+at the repo root.
 
 ---
 
