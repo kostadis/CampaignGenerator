@@ -389,28 +389,36 @@ an over-narrow one produces an absence you cannot see.
 PC now has a species, so there is no visible swap. It stays in the file, reported every
 `check` run, until a human confirms or prunes it.
 
-**Not this feature's job — and closed separately on 2026-08-06.** Incident 5 (`"Vera"` →
-Veyra, `"KP"` must not reach Kostadinious, `"Unla"`/`"Key"` are one halfling PC) is
-identity-store work, so `resolve("Vera", "obelisk")` answering
-`not-found-in-identity-store` was the design working, not a bug. The GM has since entered
-the first two through the `registry` CLI (spec tasks T098/T099), so both now resolve:
+**Not this feature's job — and only half of it turned out to be wanted.** Incident 5
+(`"Vera"` → Veyra, `"KP"` must not reach Kostadinious, `"Unla"`/`"Key"` are one halfling
+PC) is identity-store work, so `resolve(…)` answering `not-found-in-identity-store` was
+the design working, not a bug.
+
+**`KP` was entered** (spec T099, `campaigns` PR #134) and now resolves:
 
 ```
-$ provenance resolve Vera --campaign obelisk
-RESOLVED  Vera → Veyra  (npc)
-
 $ provenance resolve KP --campaign Phandalin
 RESOLVED  KP → Kazneporium Ketternopappux  (deity)
   known confusions:
     ✗ Kazneporium Ketternopappux is a DISTINCT entity from Kostadinious the Sage  (registry: distinct)
 ```
 
-Note what made those enterable: in both cases the GM had **already written the ruling
-down** — obelisk's `notes/vtt_transcription_corrections.md` listed Vera → Veyra, and
-Phandalin's `notes/corrections/kp_identity_attribution.md` had recorded the KP /
-Kostadinious non-identity in April. Registering them promoted an existing human decision
-into the authority store. Nothing resolved because two names looked alike; FR-016 is
-unchanged, and `provenance` still performs no registry write of its own (FR-032).
+**`Vera` was not, and should not be.** Spec T098 asked for it, and the task is out of
+date: `campaigns@f091bf28` (2026-08-01) audited all 377 obelisk entities and ruled that
+*"title and short-form variants are legitimate aliases; **ASR mishearings are not**"* —
+removing `Dendar` from the Dendrar aliases on the same grounds and moving
+`Sister Vera → Veyra` into `notes/vtt_transcription_corrections.md`, which now carries
+four rows for the variant. `Vera` is a garble, so `resolve Vera --campaign obelisk`
+correctly answers `NOT FOUND IN IDENTITY STORE`. Reasoning in `campaigns` PR #133.
+
+**The line that separates the two cases** is worth keeping: a *transcription* variant is
+repaired by the glossary before text ever reaches a pipeline; an *identity* variant is a
+claim about who someone is, and belongs in the registry. Both were "the GM already wrote
+it down somewhere" — Phandalin's `notes/corrections/kp_identity_attribution.md` recorded
+the KP/Kostadinious non-identity in April — but only one of them is identity.
+
+Neither resolved because two names looked alike. FR-016 is unchanged, and `provenance`
+still performs no registry write of its own (FR-032).
 
 ---
 

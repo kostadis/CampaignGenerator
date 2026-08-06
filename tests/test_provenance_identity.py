@@ -274,24 +274,29 @@ def test_live_rejected_aliases_are_reported_as_refused_links(
     assert pair[1].casefold() in names
 
 
-def test_live_vera_now_resolves_to_veyra(live_manifest, live_workspace) -> None:
-    """Spec Story 2 AS-1, now true on the live corpus (T098, 2026-08-06).
+def test_live_vera_is_honestly_not_found(live_manifest, live_workspace) -> None:
+    """FR-018 behaving correctly — and spec T098 was wrong to want it otherwise.
 
-    Until the GM ran `registry add obelisk --name Veyra --aliases Vera`, this
-    asserted the honest `not-found` — Veyra was real on disk
-    (`obelisk/characters/veyra.md`, and named in `docs/background/name_glossary.md`)
-    but no alias link was recorded, so FR-018 required saying so rather than
-    guessing from the one-letter difference.
+    Veyra is real on disk (`obelisk/characters/veyra.md`, named in
+    `docs/background/name_glossary.md`), and `Vera` is how the ASR hears her. It
+    still answers `not-found`, because **a transcription variant is not an
+    identity**, and the obelisk registry deliberately holds no garbles.
 
-    What made the link enterable was *evidence*, not similarity: the GM's own
-    `notes/vtt_transcription_corrections.md` already listed Vera → Veyra, and
-    `docs/world_state.md` records the same correction. FR-016 is unchanged —
-    nothing here resolved the name because it looked close.
+    That is a workspace rule, not an accident. `campaigns@f091bf28` (2026-08-01,
+    "separate entity identity from transcription repair") audited all 377
+    entities against the glossary and states it outright: *"title and short-form
+    variants are legitimate aliases; ASR mishearings are not."* It removed
+    `Dendar` from the Dendrar family's aliases for exactly this reason and moved
+    `Sister Vera → Veyra` into `notes/vtt_transcription_corrections.md`, which
+    now carries four rows covering the variant — better coverage than one alias.
+
+    Spec task T098 predates that ruling and asked for the opposite. It was run,
+    then reverted before shipping (`campaigns` PR #133 holds the reasoning).
+    Do not "fix" this test by registering the alias: it would put a garble back
+    into a registry that was deliberately cleaned of them.
     """
     campaign, root = _campaign(live_manifest, live_workspace, "obelisk")
-    result = resolve(campaign, root, "Vera")
-    assert result.status is IdentityStatus.RESOLVED
-    assert result.canonical == "Veyra"
+    assert resolve(campaign, root, "Vera").status is IdentityStatus.NOT_FOUND
 
 
 def test_live_kp_resolves_to_the_full_name_and_is_distinct_from_the_biographer(

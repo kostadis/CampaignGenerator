@@ -143,7 +143,7 @@ Three outcomes, never collapsed into two:
 | Output | Means | What to do |
 |---|---|---|
 | `RESOLVED  X → Y` | A GM recorded this link | Use `Y` |
-| `NOT FOUND IN IDENTITY STORE` | The store exists; nobody recorded this name | Consider `registry alias` |
+| `NOT FOUND IN IDENTITY STORE` | The store exists; nobody recorded this name | See below — it may be deliberate |
 | `NO IDENTITY STORE FOR THIS CAMPAIGN` | stormgiants and Hillsfar have none | Nothing to record against |
 
 Recorded confusions print as explicit non-identity assertions:
@@ -153,11 +153,22 @@ Recorded confusions print as explicit non-identity assertions:
 ✗ Topsy is a DISTINCT entity from Turvy  (registry: distinct)
 ```
 
-**Nothing here guesses from spelling.** `Vera` did not resolve to `Veyra` for months, even
-though the files sat next to each other, because no human had written the link down.
-Making it resolve took a `registry` command run by the GM — not a similarity threshold.
-That is deliberate: name similarity is the single most convincing way to merge two people
-who are not the same person.
+**Nothing here guesses from spelling.** `resolve Vera --campaign obelisk` answers
+`NOT FOUND`, even though `characters/veyra.md` sits right there and the two names are one
+letter apart. Name similarity is the single most convincing way to merge two people who
+are not the same person, so it is never evidence here.
+
+**`not-found` is not always a gap to close.** `Vera` is how the ASR hears Veyra, and the
+workspace draws a line the registry enforces: a *transcription* variant is repaired by
+`notes/vtt_transcription_corrections.md` before text reaches a pipeline; an *identity*
+variant is a claim about who someone is. `campaigns@f091bf28` audited all 377 obelisk
+entities on exactly that rule — *"title and short-form variants are legitimate aliases;
+ASR mishearings are not"* — and moved `Sister Vera → Veyra` to the glossary. So the
+honest answer here is a miss, and registering the alias would be the mistake.
+
+When it *is* a gap — a genuine short form, or two entities a session keeps confusing —
+`registry alias` / `registry mark-distinct` close it, behind your confirmation.
+`provenance` never writes identity itself.
 
 To search every recorded spelling at once:
 
