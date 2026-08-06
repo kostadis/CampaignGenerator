@@ -24,6 +24,21 @@ DEFAULT_MODEL = os.environ.get("CAMPAIGN_MODEL") or "claude-sonnet-4-6"
 CONFIG_DIR_NAME = os.environ.get("CAMPAIGN_CONFIG_DIR") or "config"
 
 
+# The multi-campaign workspace root — the directory that holds one subdirectory
+# per campaign. THE location, resolved once here rather than re-spelled at each
+# call site: this literal previously lived only in
+# `pipelines/workspace/configure_mcp.py`, and the provenance seam needs the same
+# answer. Two literals are two answers waiting to drift.
+#
+# Override per-environment with $CAMPAIGNS_ROOT. A CLI may additionally accept
+# an explicit `--campaigns-root`, which takes precedence over both; the
+# resolution order is then (flag -> env -> this constant), and
+# `provenance capabilities` reports which rule fired.
+CAMPAIGNS_ROOT = Path(
+    os.environ.get("CAMPAIGNS_ROOT") or "~/src/campaigns"
+).expanduser()
+
+
 def config_path(campaign_dir: Path | str, filename: str) -> Path:
     """``<campaign_dir>/<config dir>/<filename>`` — the declared location.
 

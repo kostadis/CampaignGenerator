@@ -1,0 +1,18 @@
+version: 1
+campaign: alpha
+entities:
+  - name: Marnix Vale
+    type: npc
+    aliases: [Marnix, The Keeper]
+    note: keeper of the Greyfen common house
+  - name: Silver Lantern
+    type: item
+    aliases: [The Lantern]
+  - name: Torvin
+    type: npc
+  - name: Torvald
+    type: npc
+distinct:
+  - [Torvin, Torvald]
+rejected_aliases:
+  - [Marnix, Marnik]

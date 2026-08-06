@@ -42,9 +42,11 @@ import json
 import sys
 from pathlib import Path
 
-from campaignlib.constants import config_path
+from campaignlib.constants import CAMPAIGNS_ROOT, config_path
 
-CAMPAIGNS_ROOT = Path("~/src/campaigns").expanduser()
+# CAMPAIGNS_ROOT is re-exported from campaignlib.constants rather than spelled
+# again here: the provenance seam needs the same workspace root, and two
+# literals are two answers waiting to drift.
 # mcp_server.py and launch_5etools_mcp.py have moved to pipelines/rlm/ and
 # gained `mcp_server` / `launch_5etools_mcp` console-script entry points (see
 # pyproject.toml), same as kanka_mcp.py's own move to
