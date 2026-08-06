@@ -72,6 +72,8 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/cli/session_doc_pipeline.md` | post-session pipeline: sd_consistency / sd_plan / sd_narrate flags, voice files, dialogue handling, recap context, player-name mapping, token scaling, plus design rationale |
 | `docs/cli/quote_verification_howto.md` | Using quote verification: `sd_verify_quotes` / `sd_agent`, the five verdicts, why `near` ≠ safe, raw-vs-`.cleaned` VTT choice, every error message. Deterministic, zero-token, no backend — optional and auto-corrects nothing |
 | `docs/cli/state_projection_howto.md` | Using State Projection: `event_spine` → `thread_registry` → `grounding_sections` order, staleness states, every skip/refuse message, `projections.yaml`, the `/grounding/projections` page |
+| `docs/cli/provenance_howto.md` | **Start here for `provenance`.** Task-oriented: trust a hit or don't, scope to canon, chapter horizons, resolve a name, cross-campaign, what to do when results look wrong |
+| `docs/cli/provenance_search.md` | The reference behind it — the two hand-authored files (`~/src/campaigns/provenance.yaml`, per-campaign `docs/corrections.yaml`): trust tiers, corrections matching, all ten `check` findings |
 | `docs/web/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |
 | `docs/rlm/dossier_aliases.md` | Dossier merge rules and cross-pipeline alias propagation |
 | `docs/rlm/rlm_pipeline.md` | Three-state retrieval, ingest flow, MCP tools, palace/rpglib path resolution |
@@ -152,6 +154,16 @@ Render pipelines (`prep`, `sd_narrate`, `planning`) must **not** consume raw `rp
 A CI test (`tests/test_retrieve_render_isolation.py`) fails if any function body contains both a retrieval call (`retrieve`, `search_hierarchical`, `rpg_search`, …) and a render call (`stream_api`, `call_api`). Don't bypass this — fix the structure.
 
 See `docs/rlm/rlm_pipeline.md` for the proposal workflow and MCP tools.
+
+### Provenance search: prefer an authoritative hit over a generated one
+
+`provenance search` labels every hit with its trust tier and, when a pipeline wrote the file, the stage that will clobber it. **A `generated_by` hit is a draft with a countdown on it** — `docs/world_state.md`, `docs/campaign_state.md`, `docs/planning.md`, `docs/party.md` and `docs/npcs/*.md` are all regenerated output, and the incident this feature exists to prevent was a consistency check treating one of them as canon and flagging a *correct* recap as a continuity error.
+
+So when a render pipeline or a consistency check needs a fact, and an authoritative-tier hit (a session summary, a VTT, a chapter split) disagrees with a `working_reference` one, **the authoritative hit wins** — and if only the generated one exists, say so rather than asserting it. `--tier authoritative` scopes a search to canon; the ranking already puts the more trusted tier first at equal relevance.
+
+Two labels ride alongside and mean specific things: `generated_but_hand_edited: true` says the file carries a hand-written correction the next run will destroy, and an attached correction with `verified: false` is an open question for the GM, not a settled fact. Neither is a reason to re-tier the file.
+
+Read-only, no LLM call, no writes — statically guarded (`tests/test_provenance_readonly.py`, `tests/test_provenance_no_llm.py`). See `docs/cli/provenance_search.md`.
 
 ### LLM renders, humans decide
 

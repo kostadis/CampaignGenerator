@@ -1,0 +1,58 @@
+version: 1
+campaign: alpha
+corrections:
+  - id: silver-lantern-recovered
+    applies_to:
+      paths: ["docs/world_state.md"]
+      subjects: ["Silver Lantern"]
+    stale_claim: >-
+      "The Silver Lantern remains lost in the marsh shrine."
+    truth: >-
+      The Silver Lantern was recovered in Chapter 2 and hangs in the Greyfen
+      common house.
+    as_of: chapter-2
+    recorded: 2026-08-05
+    recorded_by: GM
+
+  - id: keeper-still-alive
+    applies_to:
+      paths: ["docs/npcs/keeper.md"]
+      subjects: ["Marnix", "Keeper"]
+    stale_claim: >-
+      "Status: Dead. Died at the marsh shrine."
+    truth: >-
+      Marnix Vale is alive. The dossier's hand-written banner says so and the
+      next generation run will destroy it.
+    as_of: null
+    recorded: 2026-08-05
+    recorded_by: GM
+
+  - id: torvald-death-unconfirmed
+    applies_to:
+      paths: ["docs/world_state.md"]
+      subjects: ["Torvald"]
+    stale_claim: >-
+      Torvald the reeve is reported dead.
+    truth: >-
+      Torvald's death was never confirmed at the table.
+    as_of: null
+    recorded: 2026-08-05
+    recorded_by: GM
+    verified: false
+    note: >-
+      Fixture entry for the unverified path. Ships verified:false so
+      `provenance check` has an `unverified-correction` finding to report and
+      the annotation tests have an unsettled correction to assert against.
+
+  - id: ghost-entry
+    applies_to:
+      paths: ["docs/deleted_file.md"]
+    stale_claim: >-
+      A claim in a file that no longer exists.
+    truth: >-
+      The file was deleted. This entry exists so `provenance check` has a
+      `stale-correction-entry` finding to report; it must never crash a query
+      and must never be auto-removed.
+    as_of: null
+    recorded: 2026-08-05
+    recorded_by: GM

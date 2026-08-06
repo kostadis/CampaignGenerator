@@ -24,7 +24,13 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 #: Packages that make up the engine/library layer. Nothing here may import the
 #: web-server layer. ``server/`` itself is deliberately absent — it is allowed
 #: (and expected) to import ``campaignlib``.
-ENGINE_PACKAGES = ("campaignlib", "pipelines", "session_doc", "entity_registry")
+ENGINE_PACKAGES = (
+    "campaignlib",
+    "pipelines",
+    "session_doc",
+    "entity_registry",
+    "provenance",
+)
 
 
 def _engine_modules() -> list[Path]:

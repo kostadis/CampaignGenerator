@@ -13,6 +13,10 @@ dependencies = [
     "requests",
     "mcp",
     "aiofiles",
+    # Declared directly, not left to arrive transitively via fastapi: the
+    # `provenance` package's strict (extra="forbid") config models are a CLI
+    # concern and must load on a host that never installs the web server.
+    "pydantic>=2",
 ]
 
 [project.urls]
@@ -43,6 +47,8 @@ grounding_sections = "pipelines.grounding.grounding_sections:main"
 normalize_bible_headings = "pipelines.grounding.normalize_bible_headings:main"
 registry = "entity_registry.registry:main"
 registry_mcp = "entity_registry.registry_mcp:main"
+provenance = "provenance.cli:main"
+provenance_mcp = "provenance.provenance_mcp:main"
 spell_canon = "entity_registry.spell_canon:main"
 ensemble = "pipelines.ensemble.ensemble:main"
 ensemble_batch = "pipelines.ensemble.ensemble_batch:main"
@@ -94,4 +100,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["campaignlib", "session_doc", "server", "pipelines", "entity_registry", "scabard_sdk"]
+packages = ["campaignlib", "session_doc", "server", "pipelines", "entity_registry", "scabard_sdk", "provenance"]

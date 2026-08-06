@@ -1,0 +1,6 @@
+# Deliberate: this file exists so the scanner tests can prove that .gitignore
+# does NOT scope a provenance search (research D17). rg honours .gitignore by
+# default and would hide docs/hidden_reference.md — a real, working-reference
+# tier file. The manifest's `exclude` list is the single scope authority.
+hidden_reference.md
+sidecars/
