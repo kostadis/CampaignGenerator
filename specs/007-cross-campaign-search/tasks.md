@@ -125,26 +125,26 @@ Two roots, and the distinction matters:
 
 > Write these first; they must fail before implementation.
 
-- [ ] T033 [P] [US1] Write `tests/test_provenance_search.py` — the SC-001 structural assertion that **every hit's key set equals the required set exactly** (data-model.md §6), plus ranking order and the suppression counters
-- [ ] T034 [P] [US1] Write `tests/test_provenance_scan.py` — excerpt fidelity (verbatim, Constitution IV), `excerpt_encoding: "undecodable"` on the non-UTF-8 fixture, and that `elapsed_ms` + active scanner are reported
-- [ ] T035 [P] [US1] Write `tests/test_provenance_scanner_parity.py` — `rg` and the Python fallback return an **identical** `(path, line, excerpt)` set **and an identical `suppressed_by_exclude` count** over the fixture workspace and one live campaign (research D1). Must fail without the total-order sort tail
-- [ ] T036 [P] [US1] Write `tests/test_provenance_rg_flags.py` — assert the pinned flag set, and specifically that a fixture file hidden by `.gitignore` **is still returned**; `.gitignore` must never scope the search (research D17)
-- [ ] T037 [P] [US1] Write `tests/test_provenance_incidents.py` — SC-002 for **incidents 1–4** (the corrections-backed ones). Assert **labeling**, not stale-string presence (research D12). Incident 1 asserts against a pinned fixture for the mechanism plus the live corpus for the envelope; incident 3 asserts it surfaces as `verified: false` rather than as settled fact. **Incident 5 is not a correction** — it is identity, and its SC-002 coverage lives in T051/T052 (`contracts/corrections.md`, "Incident 5")
-- [ ] T038 [P] [US1] Write `tests/test_provenance_readonly.py` — the AST write-sentinel guard, the subprocess allow-list (only `rg`, only pinned flags), and the SC-010 before/after sha256 sweep over the fixture workspace (research D16)
+- [X] T033 [P] [US1] Write `tests/test_provenance_search.py` — the SC-001 structural assertion that **every hit's key set equals the required set exactly** (data-model.md §6), plus ranking order and the suppression counters
+- [X] T034 [P] [US1] Write `tests/test_provenance_scan.py` — excerpt fidelity (verbatim, Constitution IV), `excerpt_encoding: "undecodable"` on the non-UTF-8 fixture, and that `elapsed_ms` + active scanner are reported
+- [X] T035 [P] [US1] Write `tests/test_provenance_scanner_parity.py` — `rg` and the Python fallback return an **identical** `(path, line, excerpt)` set **and an identical `suppressed_by_exclude` count** over the fixture workspace and one live campaign (research D1). Must fail without the total-order sort tail
+- [X] T036 [P] [US1] Write `tests/test_provenance_rg_flags.py` — assert the pinned flag set, and specifically that a fixture file hidden by `.gitignore` **is still returned**; `.gitignore` must never scope the search (research D17)
+- [X] T037 [P] [US1] Write `tests/test_provenance_incidents.py` — SC-002 for **incidents 1–4** (the corrections-backed ones). Assert **labeling**, not stale-string presence (research D12). Incident 1 asserts against a pinned fixture for the mechanism plus the live corpus for the envelope; incident 3 asserts it surfaces as `verified: false` rather than as settled fact. **Incident 5 is not a correction** — it is identity, and its SC-002 coverage lives in T051/T052 (`contracts/corrections.md`, "Incident 5")
+- [X] T038 [P] [US1] Write `tests/test_provenance_readonly.py` — the AST write-sentinel guard, the subprocess allow-list (only `rg`, only pinned flags), and the SC-010 before/after sha256 sweep over the fixture workspace (research D16)
 
 ### Implementation for User Story 1
 
-- [ ] T039 [US1] Define the scanner interface and implementation selection in `provenance/scan.py`: `--scanner` → `rg` if `shutil.which("rg")` resolves → `python`; forcing an unavailable scanner is a **refusal, not a silent fallback**; returns the active impl + version for reporting (research D1)
-- [ ] T040 [P] [US1] Implement the `rg` scanner in `provenance/scan.py` with the pinned flag set — `--no-config --no-ignore --hidden --json`, `-g '!.git/**'`, one `-g` per `search_extensions`, manifest `exclude` globs as `-g '!…'`, `-F` unless `regex`, `-e` for the pattern, explicit `-i`/`-s` and **never `--smart-case`** (research D17). Must **count** files removed by `exclude` rather than merely skipping them, so T047's `suppressed_by_exclude` has a value (needs a second `rg --files` pass or an equivalent enumeration)
-- [ ] T041 [P] [US1] Implement `--json` parsing in `provenance/scan.py`: JSON Lines, `match` events, `line_number`, `submatches` offsets, and the `{"bytes": base64}` non-UTF-8 branch mapping to `excerpt_encoding: "undecodable"` rather than `errors="replace"` (research D18, Constitution IV)
-- [ ] T042 [P] [US1] Implement the stdlib Python fallback scanner in `provenance/scan.py` — `os.walk` + `read_bytes()` + compiled `bytes` regex whole-file fast reject, decoding only surviving lines, honouring the same manifest `exclude` globs so both scanners share one scope declaration, and returning the **same `suppressed_by_exclude` count** as the rg path (covered by the T035 parity test)
-- [ ] T043 [US1] Implement `ProvenanceEnvelope` in `provenance/envelope.py` with **every field always present** — `null` plus a status field rather than an omitted key (FR-001, data-model.md §6, SC-001). There is **no `date` field**: horizon is chapter-only (data-model.md §7)
-- [ ] T044 [US1] Implement envelope assembly in `provenance/envelope.py`: tier + `tier_ambiguous` from `tiers.py`, `generated_by` from the manifest's `GeneratedDecl`, `generated_but_hand_edited` when a correction exists for a generated path, `chapter` from the manifest filename pattern only (FR-002, FR-003, research D14)
-- [ ] T045 [US1] Implement deterministic ranking in `provenance/envelope.py` — `(-relevance, tier_ordinal, campaign, path, line)`, with a comment stating the tail is load-bearing because rg is multithreaded and its file order is unstable (FR-010, research D9, D18)
-- [ ] T046 [US1] Implement search orchestration in `provenance/search.py`: scope validation → scan → classify → annotate corrections → rank → truncate, emitting `SearchRequest`/`SearchResponse` per data-model.md §12. Populate `backends_consulted` with the `literal` entry (name, status, `impl`, `impl_version`) in this phase — T075 adds the `semantic` entry in US3, so the field ships populated rather than empty
-- [ ] T047 [US1] Implement the suppression counters in `provenance/search.py` — `suppressed_by_tier` (per tier), `suppressed_by_horizon`, **`suppressed_by_exclude`**, `truncated_by_limit`; a filter that excludes everything returns `hits: []` **with** the counts, never a bare empty list (FR-011, FR-012, SC-005). `suppressed_by_exclude` closes the last silent narrowing: D17 made the manifest's `exclude` globs the single scope authority, so one glob added by a GM must not shrink every future search invisibly (data-model.md §12)
-- [ ] T048 [US1] Implement `provenance search` text rendering in `provenance/cli.py` — the boxed per-hit layout from `contracts/cli.md` with tier, generated-by and the **correction inside the hit's frame** (FR-004, SC-008), plus the header line carrying counts, `elapsed_ms` and the active scanner
-- [ ] T049 [US1] Implement `--json` output in `provenance/cli.py` emitting `SearchResponse` verbatim, identical data to the text form
+- [X] T039 [US1] Define the scanner interface and implementation selection in `provenance/scan.py`: `--scanner` → `rg` if `shutil.which("rg")` resolves → `python`; forcing an unavailable scanner is a **refusal, not a silent fallback**; returns the active impl + version for reporting (research D1)
+- [X] T040 [P] [US1] Implement the `rg` scanner in `provenance/scan.py` with the pinned flag set — `--no-config --no-ignore --hidden --json`, `-g '!.git/**'`, one `-g` per `search_extensions`, manifest `exclude` globs as `-g '!…'`, `-F` unless `regex`, `-e` for the pattern, explicit `-i`/`-s` and **never `--smart-case`** (research D17). Must **count** files removed by `exclude` rather than merely skipping them, so T047's `suppressed_by_exclude` has a value (needs a second `rg --files` pass or an equivalent enumeration)
+- [X] T041 [P] [US1] Implement `--json` parsing in `provenance/scan.py`: JSON Lines, `match` events, `line_number`, `submatches` offsets, and the `{"bytes": base64}` non-UTF-8 branch mapping to `excerpt_encoding: "undecodable"` rather than `errors="replace"` (research D18, Constitution IV)
+- [X] T042 [P] [US1] Implement the stdlib Python fallback scanner in `provenance/scan.py` — `os.walk` + `read_bytes()` + compiled `bytes` regex whole-file fast reject, decoding only surviving lines, honouring the same manifest `exclude` globs so both scanners share one scope declaration, and returning the **same `suppressed_by_exclude` count** as the rg path (covered by the T035 parity test)
+- [X] T043 [US1] Implement `ProvenanceEnvelope` in `provenance/envelope.py` with **every field always present** — `null` plus a status field rather than an omitted key (FR-001, data-model.md §6, SC-001). There is **no `date` field**: horizon is chapter-only (data-model.md §7)
+- [X] T044 [US1] Implement envelope assembly in `provenance/envelope.py`: tier + `tier_ambiguous` from `tiers.py`, `generated_by` from the manifest's `GeneratedDecl`, `generated_but_hand_edited` when a correction exists for a generated path, `chapter` from the manifest filename pattern only (FR-002, FR-003, research D14)
+- [X] T045 [US1] Implement deterministic ranking in `provenance/envelope.py` — `(-relevance, tier_ordinal, campaign, path, line)`, with a comment stating the tail is load-bearing because rg is multithreaded and its file order is unstable (FR-010, research D9, D18)
+- [X] T046 [US1] Implement search orchestration in `provenance/search.py`: scope validation → scan → classify → annotate corrections → rank → truncate, emitting `SearchRequest`/`SearchResponse` per data-model.md §12. Populate `backends_consulted` with the `literal` entry (name, status, `impl`, `impl_version`) in this phase — T075 adds the `semantic` entry in US3, so the field ships populated rather than empty
+- [X] T047 [US1] Implement the suppression counters in `provenance/search.py` — `suppressed_by_tier` (per tier), `suppressed_by_horizon`, **`suppressed_by_exclude`**, `truncated_by_limit`; a filter that excludes everything returns `hits: []` **with** the counts, never a bare empty list (FR-011, FR-012, SC-005). `suppressed_by_exclude` closes the last silent narrowing: D17 made the manifest's `exclude` globs the single scope authority, so one glob added by a GM must not shrink every future search invisibly (data-model.md §12)
+- [X] T048 [US1] Implement `provenance search` text rendering in `provenance/cli.py` — the boxed per-hit layout from `contracts/cli.md` with tier, generated-by and the **correction inside the hit's frame** (FR-004, SC-008), plus the header line carrying counts, `elapsed_ms` and the active scanner
+- [X] T049 [US1] Implement `--json` output in `provenance/cli.py` emitting `SearchResponse` verbatim, identical data to the text form
 
 **Checkpoint**: US1 is independently demoable. Run quickstart Scenarios 1, 2, 3, 4, 6, 7, 7b, 8.
 
@@ -158,19 +158,19 @@ Two roots, and the distinction matters:
 
 ### Tests for User Story 2
 
-- [ ] T050 [P] [US2] Write `tests/test_provenance_identity.py` covering the three distinguishable states (`resolved` / `not-found` / `no-store`) and asserting `not-found` and `no-store` are never collapsed (FR-017, FR-018, SC-006)
-- [ ] T051 [P] [US2] Add contract tests over **pinned synthetic registries** in `tests/fixtures/provenance/` for spec Story 2 AS-1 (Vera→Veyra) and AS-2 (KP + the Kostadinious non-identity note) — these Givens are **false on the live corpus** and the fixtures prove the mechanism independent of corpus drift (research D11)
-- [ ] T052 [P] [US2] Add live-corpus tests to `tests/test_provenance_identity.py` using the confusions that **do** exist — `[Topsy, Turvy]`, `[Barkinar, Deggum]`, `[Meril's Staff, Staff of Birdcalls]`, and rejected pairs `[Corbin, Corwin]`, `[Shoor Vandree, Stool]` — and assert `resolve("Vera", "obelisk")` returns the honest `not-found` (research D10, D11)
-- [ ] T053 [P] [US2] Add an assertion to `tests/test_provenance_identity.py` that **no string-distance function is used to assert identity** anywhere in `provenance/identity.py` (FR-016)
+- [X] T050 [P] [US2] Write `tests/test_provenance_identity.py` covering the three distinguishable states (`resolved` / `not-found` / `no-store`) and asserting `not-found` and `no-store` are never collapsed (FR-017, FR-018, SC-006)
+- [X] T051 [P] [US2] Add contract tests over **pinned synthetic registries** in `tests/fixtures/provenance/` for spec Story 2 AS-1 (Vera→Veyra) and AS-2 (KP + the Kostadinious non-identity note) — these Givens are **false on the live corpus** and the fixtures prove the mechanism independent of corpus drift (research D11)
+- [X] T052 [P] [US2] Add live-corpus tests to `tests/test_provenance_identity.py` using the confusions that **do** exist — `[Topsy, Turvy]`, `[Barkinar, Deggum]`, `[Meril's Staff, Staff of Birdcalls]`, and rejected pairs `[Corbin, Corwin]`, `[Shoor Vandree, Stool]` — and assert `resolve("Vera", "obelisk")` returns the honest `not-found` (research D10, D11)
+- [X] T053 [P] [US2] Add an assertion to `tests/test_provenance_identity.py` that **no string-distance function is used to assert identity** anywhere in `provenance/identity.py` (FR-016)
 
 ### Implementation for User Story 2
 
-- [ ] T054 [US2] Implement `provenance/identity.py` as a **read-only adapter over the existing `campaignlib.registry` loader** — `load_registry`, `alias_to_canonical()`, `known_names()` (FR-014, FR-032). Do **not** write a second registry parser; a second parser would be a Split-Brain on identity (research D10)
-- [ ] T055 [US2] Implement `IdentityResolution` in `provenance/identity.py` with the three-state `status` field, per data-model.md §8
-- [ ] T056 [US2] Map `KnownConfusion` in `provenance/identity.py` onto the two real registry fields, kept distinct: `distinct:` → kind `distinct`, `rejected_aliases:` → kind `rejected-alias` (FR-015)
-- [ ] T057 [US2] Implement `known_wrong_variants` in `provenance/identity.py` returning `{status: "not-recorded-by-schema"}` — the registry has no such field and wrong variants are stored as ordinary aliases; classifying them by inspection would be the name-similarity reasoning FR-016 forbids (research D10)
-- [ ] T058 [US2] Implement `provenance resolve` output in `provenance/cli.py` per `contracts/cli.md` — all three states rendered distinguishably, confusions printed as explicit non-identity assertions
-- [ ] T059 [US2] Implement `--expand-aliases` in `provenance/search.py`: search once per `{canonical} ∪ {aliases}`, set `matched_surface_form` per hit, dedupe on `(campaign, path, line)` keeping the **longest** matched form (FR-019, data-model.md §8)
+- [X] T054 [US2] Implement `provenance/identity.py` as a **read-only adapter over the existing `campaignlib.registry` loader** — `load_registry`, `alias_to_canonical()`, `known_names()` (FR-014, FR-032). Do **not** write a second registry parser; a second parser would be a Split-Brain on identity (research D10)
+- [X] T055 [US2] Implement `IdentityResolution` in `provenance/identity.py` with the three-state `status` field, per data-model.md §8
+- [X] T056 [US2] Map `KnownConfusion` in `provenance/identity.py` onto the two real registry fields, kept distinct: `distinct:` → kind `distinct`, `rejected_aliases:` → kind `rejected-alias` (FR-015)
+- [X] T057 [US2] Implement `known_wrong_variants` in `provenance/identity.py` returning `{status: "not-recorded-by-schema"}` — the registry has no such field and wrong variants are stored as ordinary aliases; classifying them by inspection would be the name-similarity reasoning FR-016 forbids (research D10)
+- [X] T058 [US2] Implement `provenance resolve` output in `provenance/cli.py` per `contracts/cli.md` — all three states rendered distinguishably, confusions printed as explicit non-identity assertions
+- [X] T059 [US2] Implement `--expand-aliases` in `provenance/search.py`: search once per `{canonical} ∪ {aliases}`, set `matched_surface_form` per hit, dedupe on `(campaign, path, line)` keeping the **longest** matched form (FR-019, data-model.md §8)
 
 **Checkpoint**: US1 and US2 both work independently. Run quickstart Scenario 5.
 
@@ -180,15 +180,15 @@ Two roots, and the distinction matters:
 
 **Purpose**: Expose the two shipped stories through the single outward seam (Constitution V). No new retrieval behaviour — this phase adds a face over the CLI engine (Constitution VI).
 
-- [ ] T060 Implement `provenance/provenance_mcp.py` as a thin in-process wrapper calling `provenance.cli.main(argv)` under `redirect_stdout`/`redirect_stderr`, catching `SystemExit`, returning captured output as `str` — the exact pattern of `entity_registry/registry_mcp.py`
-- [ ] T061 Guard the FastMCP import lazily inside `build_server()` in `provenance/provenance_mcp.py` so the core functions unit-test without the `mcp` package installed
-- [ ] T062 [P] Implement the `provenance_search` tool in `provenance/provenance_mcp.py` with `campaigns: list[str]` as a **required parameter carrying no default** — the signature must offer no way to express "everything" (FR-006, Constitution X)
-- [ ] T063 [P] Implement `provenance_resolve` and `provenance_check` tools in `provenance/provenance_mcp.py` per `contracts/mcp.md`
-- [ ] T064 Write the server `instructions` string in `provenance/provenance_mcp.py` from `contracts/mcp.md` — stating that scope is required, that a `generated_by` hit will be clobbered and may be stale, and that this server never writes
-- [ ] T065 [P] Write `tests/test_provenance_mcp.py` — every MCP tool has an exactly equivalent CLI invocation (Constitution VI), no tool writes, and an empty `campaigns` list is refused
-- [ ] T066 Add a `provenance` block to `pipelines/workspace/configure_mcp.py`'s `build_server_block`, gated on the workspace manifest existing and emitted **once per repo root** rather than once per campaign, carrying **no campaign argument** (research D4)
-- [ ] T067 [P] Add coverage to `tests/test_configure_mcp.py` asserting the `provenance` block is gated on the manifest and contains no `--campaign-dir` or `CAMPAIGN_DIR`
-- [ ] T068 Register `provenance` in `~/src/campaigns/.mcp.json` alongside the three existing pinned servers, with `"args": []` and no campaign binding
+- [X] T060 Implement `provenance/provenance_mcp.py` as a thin in-process wrapper calling `provenance.cli.main(argv)` under `redirect_stdout`/`redirect_stderr`, catching `SystemExit`, returning captured output as `str` — the exact pattern of `entity_registry/registry_mcp.py`
+- [X] T061 Guard the FastMCP import lazily inside `build_server()` in `provenance/provenance_mcp.py` so the core functions unit-test without the `mcp` package installed
+- [X] T062 [P] Implement the `provenance_search` tool in `provenance/provenance_mcp.py` with `campaigns: list[str]` as a **required parameter carrying no default** — the signature must offer no way to express "everything" (FR-006, Constitution X)
+- [X] T063 [P] Implement `provenance_resolve` and `provenance_check` tools in `provenance/provenance_mcp.py` per `contracts/mcp.md`
+- [X] T064 Write the server `instructions` string in `provenance/provenance_mcp.py` from `contracts/mcp.md` — stating that scope is required, that a `generated_by` hit will be clobbered and may be stale, and that this server never writes
+- [X] T065 [P] Write `tests/test_provenance_mcp.py` — every MCP tool has an exactly equivalent CLI invocation (Constitution VI), no tool writes, and an empty `campaigns` list is refused
+- [X] T066 Add a `provenance` block to `pipelines/workspace/configure_mcp.py`'s `build_server_block`, gated on the workspace manifest existing and emitted **once per repo root** rather than once per campaign, carrying **no campaign argument** (research D4)
+- [X] T067 [P] Add coverage to `tests/test_configure_mcp.py` asserting the `provenance` block is gated on the manifest and contains no `--campaign-dir` or `CAMPAIGN_DIR`
+- [X] T068 Register `provenance` in `~/src/campaigns/.mcp.json` alongside the three existing pinned servers, with `"args": []` and no campaign binding
 
 **Checkpoint**: Increment 1 complete. Run quickstart Scenario 10 and verify an unpinned cross-campaign search works without editing `.mcp.json`.
 
@@ -202,16 +202,16 @@ Two roots, and the distinction matters:
 
 ### Tests for User Story 3
 
-- [ ] T069 [P] [US3] Write `tests/test_provenance_capabilities.py` — SC-004: an unavailable backend is reported as unavailable with a reason and **never** as zero hits; all six campaigns enumerated with their three status flags (FR-021, FR-023)
-- [ ] T070 [P] [US3] Add a test to `tests/test_provenance_capabilities.py` asserting every `SearchResponse` carries `backends_consulted`, so a result set is never implied complete (FR-022)
+- [X] T069 [P] [US3] Write `tests/test_provenance_capabilities.py` — SC-004: an unavailable backend is reported as unavailable with a reason and **never** as zero hits; all six campaigns enumerated with their three status flags (FR-021, FR-023)
+- [X] T070 [P] [US3] Add a test to `tests/test_provenance_capabilities.py` asserting every `SearchResponse` carries `backends_consulted`, so a result set is never implied complete (FR-022)
 
 ### Implementation for User Story 3
 
-- [ ] T071 [P] [US3] Implement the backend roster in `provenance/backends.py` — `{name, status, reason, contributed, impl, impl_version}` with `status ∈ {available, unavailable, not-wired}` (FR-020, data-model.md §11)
-- [ ] T072 [P] [US3] Implement the per-machine MemPalace probe in `provenance/backends.py` reusing the guarded-import pattern at `pipelines/rlm/mcp_server.py:22-26` plus a palace-directory check — it must report `available` on a host that has it and `unavailable` here (research D15)
-- [ ] T073 [US3] Implement the `literal` backend entry in `provenance/backends.py` reporting `impl` (`rg`/`python`) and `impl_version`, so the ~60× latency difference is observable rather than tribal (research D1, Principle VIII)
-- [ ] T074 [US3] Implement `provenance capabilities` in `provenance/cli.py` per `contracts/cli.md` — the resolved workspace root **and which rule resolved it**, the six-campaign table, the backend roster, and the `--no-ignore` note explaining that `.gitignore` does not scope search
-- [ ] T075 [US3] Wire `backends_consulted` into every `SearchResponse` in `provenance/search.py`, with `contributed: "not-consulted (semantic backend not wired in increment 1)"` for the semantic entry (FR-022)
+- [X] T071 [P] [US3] Implement the backend roster in `provenance/backends.py` — `{name, status, reason, contributed, impl, impl_version}` with `status ∈ {available, unavailable, not-wired}` (FR-020, data-model.md §11)
+- [X] T072 [P] [US3] Implement the per-machine MemPalace probe in `provenance/backends.py` reusing the guarded-import pattern at `pipelines/rlm/mcp_server.py:22-26` plus a palace-directory check — it must report `available` on a host that has it and `unavailable` here (research D15)
+- [X] T073 [US3] Implement the `literal` backend entry in `provenance/backends.py` reporting `impl` (`rg`/`python`) and `impl_version`, so the ~60× latency difference is observable rather than tribal (research D1, Principle VIII)
+- [X] T074 [US3] Implement `provenance capabilities` in `provenance/cli.py` per `contracts/cli.md` — the resolved workspace root **and which rule resolved it**, the six-campaign table, the backend roster, and the `--no-ignore` note explaining that `.gitignore` does not scope search
+- [X] T075 [US3] Wire `backends_consulted` into every `SearchResponse` in `provenance/search.py`, with `contributed: "not-consulted (semantic backend not wired in increment 1)"` for the semantic entry (FR-022)
 
 **Checkpoint**: Run quickstart Scenario 9.
 
@@ -225,16 +225,16 @@ Two roots, and the distinction matters:
 
 ### Tests for User Story 4
 
-- [ ] T076 [P] [US4] Write `tests/test_provenance_horizon.py` — chapter attribution from the manifest `path_pattern` only, the excluded-hit count (FR-012), and `horizon_disposition: unattributable` surfacing rather than silently dropping a file
-- [ ] T077 [P] [US4] Add a test to `tests/test_provenance_horizon.py` asserting a horizon request against a campaign with **no** marker is refused, not served unfiltered (FR-025)
-- [ ] T078 [P] [US4] Add a test to `tests/test_provenance_horizon.py` asserting obelisk's `session_(\d+)_` pattern attributes correctly — the case a shared chapter pattern would silently fail (research D2)
+- [X] T076 [P] [US4] Write `tests/test_provenance_horizon.py` — chapter attribution from the manifest `path_pattern` only, the excluded-hit count (FR-012), and `horizon_disposition: unattributable` surfacing rather than silently dropping a file
+- [X] T077 [P] [US4] Add a test to `tests/test_provenance_horizon.py` asserting a horizon request against a campaign with **no** marker is refused, not served unfiltered (FR-025)
+- [X] T078 [P] [US4] Add a test to `tests/test_provenance_horizon.py` asserting obelisk's `session_(\d+)_` pattern attributes correctly — the case a shared chapter pattern would silently fail (research D2)
 
 ### Implementation for User Story 4
 
-- [ ] T079 [US4] Implement chapter attribution in `provenance/envelope.py` from the manifest's `horizon.path_pattern` applied to the **repo-relative path only** — never to file contents, which would be inference and violate FR-029 (research D14). Chapter-only: there is no date branch to dispatch on (data-model.md §7)
-- [ ] T080 [US4] Implement horizon filtering in `provenance/search.py` with the excluded count reported and unattributable files returned with an explicit disposition (FR-024, FR-012)
-- [ ] T081 [US4] Implement the horizon refusal path in `provenance/cli.py` for campaigns with no recorded marker (FR-025)
-- [ ] T082 [US4] Implement `provenance_range` labeling in `provenance/envelope.py` from the manifest's declared ranges; a chapter in no declared range gets `null`, never a guess (FR-026, data-model.md §9)
+- [X] T079 [US4] Implement chapter attribution in `provenance/envelope.py` from the manifest's `horizon.path_pattern` applied to the **repo-relative path only** — never to file contents, which would be inference and violate FR-029 (research D14). Chapter-only: there is no date branch to dispatch on (data-model.md §7)
+- [X] T080 [US4] Implement horizon filtering in `provenance/search.py` with the excluded count reported and unattributable files returned with an explicit disposition (FR-024, FR-012)
+- [X] T081 [US4] Implement the horizon refusal path in `provenance/cli.py` for campaigns with no recorded marker (FR-025)
+- [X] T082 [US4] Implement `provenance_range` labeling in `provenance/envelope.py` from the manifest's declared ranges; a chapter in no declared range gets `null`, never a guess (FR-026, data-model.md §9)
 
 **Checkpoint**: out-of-the-abyss hits are labeled `gm-written` vs `ai-assisted`.
 
@@ -248,15 +248,15 @@ Two roots, and the distinction matters:
 
 ### Tests for User Story 5
 
-- [ ] T083 [P] [US5] Write `tests/test_provenance_cross_campaign.py` — hits from each named campaign are returned and labeled, and are **never merged or de-duplicated across campaigns** (FR-008)
-- [ ] T084 [P] [US5] Add a test to `tests/test_provenance_cross_campaign.py` asserting that two campaigns containing an entity with the same name keep them separate and never assert they are the same entity (spec edge case)
-- [ ] T085 [P] [US5] Add a test to `tests/test_provenance_scope.py` re-asserting SC-003 at multi-campaign scope: omitting scope entirely is still refused, never materialized as "all"
+- [X] T083 [P] [US5] Write `tests/test_provenance_cross_campaign.py` — hits from each named campaign are returned and labeled, and are **never merged or de-duplicated across campaigns** (FR-008)
+- [X] T084 [P] [US5] Add a test to `tests/test_provenance_cross_campaign.py` asserting that two campaigns containing an entity with the same name keep them separate and never assert they are the same entity (spec edge case)
+- [X] T085 [P] [US5] Add a test to `tests/test_provenance_scope.py` re-asserting SC-003 at multi-campaign scope: omitting scope entirely is still refused, never materialized as "all"
 
 ### Implementation for User Story 5
 
-- [ ] T086 [US5] Extend `provenance/search.py` to iterate the explicitly named campaign list, keeping per-campaign result sets separate through ranking so `(campaign, path, line)` ordering holds across campaigns (FR-007 — cross-campaign is reached only by naming N≥2 campaigns, never by a default)
-- [ ] T087 [US5] Ensure `campaigns_searched` echoes the resolved scope in every `SearchResponse` so the caller sees what actually ran (data-model.md §12)
-- [ ] T088 [US5] Grep `provenance/cli.py`, `provenance/search.py` and `provenance/provenance_mcp.py` to verify no `all`/`*` scope token was introduced during Phases 3–8; the deliberate cross-campaign act remains naming N≥2 campaigns by hand (Constitution X)
+- [X] T086 [US5] Extend `provenance/search.py` to iterate the explicitly named campaign list, keeping per-campaign result sets separate through ranking so `(campaign, path, line)` ordering holds across campaigns (FR-007 — cross-campaign is reached only by naming N≥2 campaigns, never by a default)
+- [X] T087 [US5] Ensure `campaigns_searched` echoes the resolved scope in every `SearchResponse` so the caller sees what actually ran (data-model.md §12)
+- [X] T088 [US5] Grep `provenance/cli.py`, `provenance/search.py` and `provenance/provenance_mcp.py` to verify no `all`/`*` scope token was introduced during Phases 3–8; the deliberate cross-campaign act remains naming N≥2 campaigns by hand (Constitution X)
 
 **Checkpoint**: All five user stories independently functional.
 
@@ -264,15 +264,23 @@ Two roots, and the distinction matters:
 
 ## Phase 9: Polish & Cross-Cutting Concerns
 
-- [ ] T089 [P] Write `docs/provenance/provenance_search.md` — what the seam is, the trust tiers, how to author the manifest and a corrections record, and the `.gitignore`-is-not-scope rule
-- [ ] T090 [P] Update `docs/mcp/mcp_servers.md` from four servers to five, adding a `provenance` section and noting it is the only **unpinned** one
-- [ ] T091 [P] Add `docs/provenance/provenance_search.md` to the doc index in `docs/README.md` and to the detailed-docs table in `CLAUDE.md`
-- [ ] T092 [P] Add a "Provenance search" row to the critical-rules section of `CLAUDE.md` stating that render pipelines and consistency checks must prefer authoritative-tier hits over generated ones
-- [ ] T093 Run the full `python -m pytest tests/ -q` suite and confirm `test_layering.py` and `test_retrieve_render_isolation.py` still pass with the new package present
-- [ ] T094 Execute every scenario in `specs/007-cross-campaign-search/quickstart.md` end-to-end against the live workspace at `~/src/campaigns` and record the measured p95 for SC-007
-- [ ] T095 Verify SC-009 by asserting the feature produces **no** derived artifact — `git status` in `~/src/campaigns` is clean after a full exercise, and the only files the feature added are the hand-authored inputs
-- [ ] T096 [P] Confirm live-corpus tests skip cleanly when `~/src/campaigns` is absent, so CI and fresh clones stay green
-- [ ] T097 Verify in any worktree that `python -c "import provenance; print(provenance.__file__)"` resolves to the branch checkout, not the main tree — the editable-install `.pth` shadowing hazard recorded for this repo
+- [X] T089 [P] Write the operator guide — what the seam is, the trust tiers, how to author the manifest and a corrections record, and the `.gitignore`-is-not-scope rule. **Landed at `docs/cli/provenance_search.md`, not `docs/provenance/provenance_search.md`.** That file already existed (written for the T031 review gate) and is already indexed in `docs/README.md` and `CLAUDE.md`; creating a second copy under a new directory would be a Split-Brain on documentation, and `docs/cli/` is where every other CLI's guide lives. Updated in place to cover the built surface instead.
+- [X] T090 [P] Update `docs/mcp/mcp_servers.md` from four servers to five, adding a `provenance` section and noting it is the only **unpinned** one
+- [X] T091 [P] Add the operator guide to the doc index in `docs/README.md` and to the detailed-docs table in `CLAUDE.md` — both already point at `docs/cli/provenance_search.md` (see T089)
+- [X] T092 [P] Add a "Provenance search" row to the critical-rules section of `CLAUDE.md` stating that render pipelines and consistency checks must prefer authoritative-tier hits over generated ones
+- [X] T093 Run the full `python -m pytest tests/ -q` suite and confirm `test_layering.py` and `test_retrieve_render_isolation.py` still pass with the new package present
+- [X] T094 Execute every scenario in `specs/007-cross-campaign-search/quickstart.md` end-to-end against the live workspace at `~/src/campaigns` and record the measured p95 for SC-007. **Measured 2026-08-06, rg 15.1.0, 12 runs per cell.** Worst single-campaign p95 over realistic queries: **594 ms** (out-of-the-abyss / "Ilvara", 7,916 matches) against the 2,000 ms budget — **SC-007 PASS**. Every other cell is 13–117 ms. Broad single-term queries are outside the criterion and are recorded because they are large: all six campaigns / "the party" (67,303 matches) 2.3 s; out-of-the-abyss / "the" (232,495 matches) 4.2 s; all six / "the" (551,507 matches) 10.7 s. Cost is linear in *matched lines*, not corpus size — see the ranking note below.
+- [X] T095 Verify SC-009 by asserting the feature produces **no** derived artifact — `git status` in `~/src/campaigns` is clean after a full exercise, and the only files the feature added are the hand-authored inputs
+- [X] T096 [P] Confirm live-corpus tests skip cleanly when `~/src/campaigns` is absent, so CI and fresh clones stay green
+- [X] T097 Verify in any worktree that `python -c "import provenance; print(provenance.__file__)"` resolves to the branch checkout, not the main tree — the editable-install `.pth` shadowing hazard recorded for this repo. Verified: resolves to `/home/kostadis/src/CampaignGenerator/provenance/__init__.py`, which is this branch. **The hazard is unchanged for anyone who does use a worktree** — the `.pth` still hardcodes the main checkout, so a green worktree run is not proof the branch was tested.
+
+### Findings surfaced by the build, for the GM — not fixed here
+
+> Both are the system working: it found problems in hand-authored data and in a
+> specified formula. Neither is this feature's to decide (FR-029, FR-031).
+
+- [ ] **F1 — toee's `docs/npcs/` is undeclared.** 104 NPC dossiers written by `planning --build-dossiers` are neither tiered nor declared generated in `~/src/campaigns/provenance.yaml`. Phandalin and stormgiants both declare `docs/npcs/*.md` generated by `planning`; toee does not. So `toee/docs/npcs/calmer.md` — the corpus's live example of "generated AND hand-edited afterward", and the reason incident 2 exists — comes back `tier: unclassified`, `generated_by: null`. Its correction still attaches (path match), so a reader is warned it is stale; what is missing is the warning that the next pipeline run destroys the hand-written banner. `provenance check --campaign toee` already reports it as `unclassified-heavy: docs/npcs/ — 104/104`. Fix is two globs, and it is a manifest edit — GM's call. Pinned by `test_provenance_incidents.py::test_incident_2_exposes_a_gap_in_toees_ratified_manifest`, which fails the day it is closed.
+- [ ] **F2 — the relevance formula lets one big file own the whole page.** Research D9 fixes `relevance = matches-in-this-file + 2.0 whole-word + 1.5 heading + 1.0 basename`, and it is implemented exactly. The file term is unbounded while the bonuses are ≤ 4.5, so on this corpus a single large file swamps everything: `search Calmer --campaign toee` returns 200 hits, all from `docs/ensemble/merged.json` (~1,500 matching lines); `search "Woodland Manse" --campaign Phandalin` returns hits only from `docs/NeverwinterExpansionismandtheNorth.md` (~700). Nothing is lost — the header reports what was withheld — and `--tier`, a longer query, or an `exclude` glob all work around it today. A bounded file term (log-scaled, or capped) would restore the bonuses' intended weight, but changing a specified formula is a GM decision, not an implementation one.
 
 ### GM action items — outside this feature's write scope (FR-032)
 
