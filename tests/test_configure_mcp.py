@@ -67,6 +67,64 @@ def test_kanka_server_gated_on_token(tmp_path):
     assert servers["kanka"]["env"]["KANKA_TOKEN"] == "tok"
 
 
+# ── provenance: the one workspace-scoped server (spec 007, T066/T067) ───────
+
+def test_provenance_server_absent_without_a_workspace_manifest(tmp_path):
+    assert "provenance" not in build_server_block(tmp_path, kanka_token="", kanka_url="")
+
+
+def test_provenance_server_gated_on_the_repo_root_manifest(tmp_path):
+    repo = tmp_path / "workspace"
+    (repo / ".git").mkdir(parents=True)
+    (repo / "provenance.yaml").write_text("version: 1\ncampaigns: {}\n")
+    campaign = repo / "Phandalin"
+    _make_campaign(campaign)
+
+    servers = build_server_block(campaign, kanka_token="", kanka_url="")
+    assert servers["provenance"]["command"] == "provenance_mcp"
+
+
+def test_provenance_server_carries_no_campaign_binding(tmp_path):
+    """The absence of a campaign pin IS the feature (research D4)."""
+    repo = tmp_path / "workspace"
+    (repo / ".git").mkdir(parents=True)
+    (repo / "provenance.yaml").write_text("version: 1\ncampaigns: {}\n")
+    campaign = repo / "Phandalin"
+    _make_campaign(campaign)
+
+    block = build_server_block(campaign, kanka_token="", kanka_url="")["provenance"]
+    assert block["args"] == []
+    assert "env" not in block
+    assert "--campaign-dir" not in json.dumps(block)
+    assert "CAMPAIGN_DIR" not in json.dumps(block)
+
+
+def test_a_manifest_beside_the_campaign_does_not_count(tmp_path):
+    """The gate is the *workspace* manifest at the repo root, not a stray file."""
+    repo = tmp_path / "workspace"
+    (repo / ".git").mkdir(parents=True)
+    campaign = repo / "Phandalin"
+    _make_campaign(campaign)
+    (campaign / "provenance.yaml").write_text("version: 1\ncampaigns: {}\n")
+
+    assert "provenance" not in build_server_block(campaign, kanka_token="", kanka_url="")
+
+
+def test_two_campaigns_in_one_repo_emit_the_same_provenance_block(tmp_path):
+    """Identical entries, so the shared-.mcp.json overwrite note cannot bite here."""
+    repo = tmp_path / "workspace"
+    (repo / ".git").mkdir(parents=True)
+    (repo / "provenance.yaml").write_text("version: 1\ncampaigns: {}\n")
+    first, second = repo / "Phandalin", repo / "toee"
+    _make_campaign(first)
+    _make_campaign(second)
+
+    assert (
+        build_server_block(first, kanka_token="", kanka_url="")["provenance"]
+        == build_server_block(second, kanka_token="", kanka_url="")["provenance"]
+    )
+
+
 # ── git_root / monorepo .mcp.json placement ─────────────────────────────────
 
 def test_git_root_finds_repo_root_above_a_nested_campaign_dir(tmp_path):

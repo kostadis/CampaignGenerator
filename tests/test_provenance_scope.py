@@ -40,6 +40,14 @@ SCOPE_PARAMS = {"campaign", "campaigns", "campaign_name", "campaign_names", "sco
 #: Tokens that must never mean "everything".
 MAGIC_TOKENS = ["all", "ALL", "*", "", "  ", "%", ".", "any"]
 
+#: The one deliberate exception, named function by function rather than by a
+#: pattern. ``check`` validates the *authored YAML* — it returns no corpus
+#: content, no hits and no excerpt, and spends no tokens. The blast radius
+#: Principle X guards is content and token spend, and ``check`` has neither
+#: (contracts/mcp.md). Anything else appearing in this set is a bug, which is
+#: why it lists exact names instead of, say, everything matching ``*_check``.
+SCOPE_DEFAULT_EXEMPT = {"provenance_check", "provenance_check_tool"}
+
 
 def modules() -> list[Path]:
     return sorted(p for p in PKG.glob("*.py") if p.name != "__init__.py")
@@ -52,6 +60,8 @@ def _scope_params_with_defaults(tree: ast.AST):
     found = []
     for node in ast.walk(tree):
         if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        if node.name in SCOPE_DEFAULT_EXEMPT:
             continue
         args = node.args
         positional = args.posonlyargs + args.args
@@ -229,6 +239,26 @@ def test_only_check_may_default_to_every_campaign(root, capsys):
     main(["check", *root])
     out = capsys.readouterr().out
     assert "Checked: alpha, beta" in out
+
+
+def test_the_exemption_covers_check_and_nothing_else():
+    """The allow-list is a list of names, and it must stay a short one.
+
+    An exemption that grew by pattern — every ``*_check``, every "read-only"
+    function — would eventually cover something that returns corpus text, and
+    the sweep above would go quiet at exactly the wrong moment.
+    """
+    assert all("check" in name for name in SCOPE_DEFAULT_EXEMPT)
+    assert len(SCOPE_DEFAULT_EXEMPT) <= 2
+
+
+def test_check_returns_no_corpus_content(root, capsys):
+    """Why the exemption is safe, asserted rather than asserted-in-prose."""
+    main(["check", *root])
+    out = capsys.readouterr().out
+    # `check` names paths and globs; it must never quote a line out of a file.
+    assert "Silver Lantern" not in out
+    assert "┌─" not in out
 
 
 def test_capabilities_enumerates_without_searching(root, capsys):

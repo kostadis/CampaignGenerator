@@ -8,6 +8,13 @@ workspace directories:
   5etools    — launch_5etools_mcp console script   (campaigns that have refs.yaml)
   registry   — registry_mcp console script         (campaigns that have docs/entity_registry.yaml)
   kanka      — kanka_mcp console script             (only when --kanka-token is given)
+  provenance — provenance_mcp console script        (when the repo root has provenance.yaml)
+
+Four of those five are pinned to one campaign and are re-emitted per campaign.
+``provenance`` is the exception and deliberately so: it is gated on the
+*workspace* manifest at the repo root, takes no campaign argument at all, and is
+therefore identical whichever campaign's run emitted it. Scope arrives on each
+tool call instead — which is the whole point of that server (spec 007, D4).
 
 Usage
 -----
@@ -43,10 +50,12 @@ import sys
 from pathlib import Path
 
 from campaignlib.constants import CAMPAIGNS_ROOT, config_path
+from provenance.manifest import MANIFEST_FILENAME
 
 # CAMPAIGNS_ROOT is re-exported from campaignlib.constants rather than spelled
 # again here: the provenance seam needs the same workspace root, and two
-# literals are two answers waiting to drift.
+# literals are two answers waiting to drift. MANIFEST_FILENAME is imported for
+# the same reason — the gate below and the loader must agree on the filename.
 # mcp_server.py and launch_5etools_mcp.py have moved to pipelines/rlm/ and
 # gained `mcp_server` / `launch_5etools_mcp` console-script entry points (see
 # pyproject.toml), same as kanka_mcp.py's own move to
@@ -124,6 +133,17 @@ def build_server_block(campaign_dir: Path, kanka_token: str, kanka_url: str) -> 
                 "KANKA_TOKEN": kanka_token,
                 "KANKA_BASE_URL": kanka_url,
             },
+        }
+
+    # Workspace-scoped, not campaign-scoped: gated on the manifest at the repo
+    # root (where .mcp.json itself lands), and carrying no campaign binding —
+    # no --campaign-dir, no CAMPAIGN_DIR. Two campaigns sharing a repo root
+    # therefore emit byte-identical entries, so the "later one overwrites the
+    # earlier one" note above does not apply to this server.
+    if (git_root(campaign_dir) / MANIFEST_FILENAME).exists():
+        servers["provenance"] = {
+            "command": "provenance_mcp",
+            "args": [],
         }
 
     return servers

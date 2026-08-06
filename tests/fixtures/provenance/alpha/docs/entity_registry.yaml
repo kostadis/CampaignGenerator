@@ -12,7 +12,34 @@ entities:
     type: npc
   - name: Torvald
     type: npc
+
+  # ── spec Story 2's acceptance Givens, pinned here on purpose ──────────────
+  #
+  # AS-1 (Vera -> Veyra) and AS-2 (the KP / Kostadinious non-identity note) are
+  # both FALSE on the live corpus: obelisk's registry has no Veyra entry, and no
+  # registry anywhere contains Kazneporium or Kostadinious (research D11).
+  # Entering them for real is a `registry alias` / `registry mark-distinct` act,
+  # which FR-032 forbids this feature from performing — it is recorded as GM
+  # action items T098/T099 instead.
+  #
+  # So the *mechanism* is proven here, where it cannot drift, and the live-corpus
+  # tests assert the honest `not-found` answer that the real stores give today.
+  # Deleting these entries would silently un-test spec Story 2.
+  - name: Veyra
+    type: npc
+    aliases: [Vera]
+    note: the acceptance Given for Story 2 AS-1
+  - name: Kazneporium Ketternopappux
+    type: npc
+    aliases: [KP]
+    note: a gnome whose short form collides with nothing
+  - name: Kostadinious the Sage
+    type: npc
+    note: a different person entirely, and the registry says so below
+
 distinct:
   - [Torvin, Torvald]
+  - [Kazneporium Ketternopappux, Kostadinious the Sage]
 rejected_aliases:
   - [Marnix, Marnik]
+  - [KP, Kostadinious the Sage]

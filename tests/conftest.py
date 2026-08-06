@@ -48,3 +48,41 @@ def alpha(fixture_manifest):
 def beta(fixture_manifest):
     """The deliberately impoverished one — no identity store, no horizon, no corrections."""
     return fixture_manifest.campaigns["beta"]
+
+
+# ── the live corpus ──────────────────────────────────────────────────────────
+#
+# Skipped, never failed, when the workspace is absent. CI and a fresh clone have
+# no ~/src/campaigns, and a suite that goes red there would train everyone to
+# ignore it (T096).
+
+
+def _live_root() -> Path:
+    from provenance.manifest import resolve_workspace_root
+
+    return resolve_workspace_root(None).path
+
+
+@pytest.fixture(scope="session")
+def live_workspace() -> Path:
+    root = _live_root()
+    if not (root / "provenance.yaml").is_file():
+        pytest.skip(f"live workspace absent: no manifest at {root / 'provenance.yaml'}")
+    return root
+
+
+@pytest.fixture(scope="session")
+def live_manifest(live_workspace: Path):
+    from provenance.manifest import load_manifest
+
+    return load_manifest(live_workspace / "provenance.yaml")
+
+
+@pytest.fixture(scope="session")
+def rg_or_skip():
+    """The rg-specific tests are skipped, not failed, on a host without it."""
+    import shutil
+
+    if shutil.which("rg") is None:
+        pytest.skip("ripgrep is not on PATH; the rg scanner cannot be exercised here")
+    return shutil.which("rg")
