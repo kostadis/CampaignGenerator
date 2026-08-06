@@ -4,6 +4,7 @@ import os
 import sys
 
 from .backends import _OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient
+from ..wiring import wiring_get
 
 # Clients that accept the DGX-style `thinking` request extra (mapped per-backend
 # to the right knob: enable_thinking for vLLM, `reasoning` for OpenRouter,
@@ -48,6 +49,13 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
     billing the Pro/Max subscription instead of the metered API. An explicit
     backend takes precedence over the DGX endpoint.
 
+    An explicit `backend="dgx"` resolves its endpoint from the argument, then
+    DGX_ENDPOINT, then the mneme-rendered `dgx_endpoint` wiring — and raises if
+    none of those name a box. It does NOT quietly become an Anthropic client:
+    asking for the local model and silently getting the metered API is the exact
+    "obscured swap-back" this docstring forbids, and it bills real money while
+    reporting a local run.
+
     No fallback if the local endpoint is unreachable — the choice is explicit,
     and an obscured swap-back to Anthropic would defeat the point of pointing
     at the DGX in the first place.
@@ -57,6 +65,21 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
         return _ClaudeCodeClient(model_override=model_override)
     if backend == "openrouter":
         return _OpenRouterClient(model_override=model_override)
+    if backend == "dgx":
+        # Resolved HERE rather than at each call site. Four callers
+        # (extract_facts, narrate_chapter, scene_editor, platform_config_service)
+        # each re-derived this line; every CLI that did not — enhance_summary and
+        # so sd_agent among them — fell through to Anthropic with --backend dgx
+        # set, spending metered tokens on a run the GM had asked to keep local.
+        endpoint = (endpoint or os.environ.get("DGX_ENDPOINT")
+                    or wiring_get("dgx_endpoint"))
+        if not endpoint:
+            raise SystemExit(
+                "--backend dgx: no endpoint. Pass --endpoint, set DGX_ENDPOINT, "
+                "or render `dgx_endpoint` into config/wiring.yaml. Refusing to "
+                "fall back to the Anthropic API — you asked for the local box."
+            )
+        return _OpenAICompatClient(endpoint, model_override=model_override)
     endpoint = endpoint or os.environ.get("DGX_ENDPOINT")
     if endpoint:
         return _OpenAICompatClient(endpoint, model_override=model_override)

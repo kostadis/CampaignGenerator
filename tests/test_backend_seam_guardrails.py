@@ -32,19 +32,24 @@ from __future__ import annotations
 
 import argparse
 import ast
+import pathlib
 from pathlib import Path
 
 import pytest
 
 from campaignlib.api import client as client_mod
+from repo_sources import repo_python_files
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SEAM_FILE = "campaignlib/api/client.py"
-SKIP_DIRS = {
-    "venv", ".venv", "__pycache__", "node_modules", "frontend",
-    ".git", "logs", "tests",
-}
+# Directory exclusion is NOT maintained here — see tests/repo_sources.py.
+# `repo_python_files` returns git-TRACKED files only, so a nested worktree
+# under .claude/ (a full second copy of the repo) can never be reported as a
+# seam violation. `tests` is still filtered, but by path role rather than by
+# a denylist that has to be remembered.
+def _is_test_file(rel: pathlib.PurePath) -> bool:
+    return "tests" in rel.parts
 
 # Dispatcher scripts that intentionally use a bare --backend instead of
 # add_backend_args (see module docstring) — never build a client themselves.
@@ -57,18 +62,11 @@ ALLOWED_NAME_COLLISION_FILES = {"kanka_mcp.py"}
 
 
 def _is_candidate_file(path: Path) -> bool:
-    if path.suffix != ".py":
-        return False
-    rel = path.relative_to(REPO_ROOT)
-    if any(part in SKIP_DIRS for part in rel.parts):
-        return False
-    if ".specify" in rel.parts:
-        return False
-    return True
+    return not _is_test_file(path.relative_to(REPO_ROOT))
 
 
 def _iter_candidate_files():
-    for path in sorted(REPO_ROOT.rglob("*.py")):
+    for path in repo_python_files(REPO_ROOT):
         if _is_candidate_file(path):
             yield path
 
@@ -230,6 +228,78 @@ def test_client_from_args_batch_absent_is_unaffected(monkeypatch):
     assert out == "client"
 
 
+# ── Check 3b: --backend dgx never silently becomes Anthropic ────────────────
+#
+# make_client had branches for "claude-code" and "openrouter" but none for
+# "dgx": the local path was reached only via a truthy `endpoint`, so
+# `--backend dgx` with no --endpoint/DGX_ENDPOINT fell through to
+# `anthropic.Anthropic()`. Four call sites (extract_facts, narrate_chapter,
+# scene_editor, platform_config_service) each pre-resolved wiring's
+# dgx_endpoint to dodge it; every CLI that did not — enhance_summary, and so
+# sd_agent — silently billed the metered API for a run the GM asked to keep
+# local. That is the "obscured swap-back to Anthropic" make_client's own
+# docstring forbids, and it is silent: the flag is accepted, no warning is
+# printed, and only the invoice disagrees.
+
+
+def test_backend_dgx_never_falls_back_to_anthropic(monkeypatch):
+    """--backend dgx with nothing naming a box must RAISE, not quietly
+    return a metered Anthropic client."""
+    monkeypatch.delenv("DGX_ENDPOINT", raising=False)
+    monkeypatch.delenv("CG_BACKEND", raising=False)
+    monkeypatch.setattr(client_mod, "wiring_get", lambda key, default=None: default)
+
+    with pytest.raises(SystemExit) as exc_info:
+        client_mod.make_client(backend="dgx")
+
+    msg = str(exc_info.value)
+    assert "--backend dgx" in msg
+    assert "Refusing to fall back to the Anthropic API" in msg
+
+
+def test_backend_dgx_resolves_endpoint_from_wiring(monkeypatch):
+    """With no --endpoint and no env var, the mneme-rendered dgx_endpoint is
+    what makes `--backend dgx` work — resolved in the seam, so a CLI does not
+    have to re-derive it to get a local client."""
+    monkeypatch.delenv("DGX_ENDPOINT", raising=False)
+    monkeypatch.setattr(client_mod, "wiring_get",
+                        lambda key, default=None:
+                        "http://wired-box:8001/v1" if key == "dgx_endpoint" else default)
+
+    out = client_mod.make_client(backend="dgx", model_override="some/model")
+
+    assert isinstance(out, client_mod._OpenAICompatClient)
+
+
+@pytest.mark.parametrize("source", ["arg", "env"])
+def test_backend_dgx_endpoint_precedence_over_wiring(monkeypatch, source):
+    """An explicit --endpoint (or DGX_ENDPOINT) outranks wiring — a fan-out
+    caller pinning one box of a pool must not be redirected to the wired
+    default."""
+    monkeypatch.setattr(client_mod, "wiring_get",
+                        lambda key, default=None: "http://wired-box:8001/v1")
+    kwargs = {"backend": "dgx", "model_override": "m"}
+    if source == "arg":
+        monkeypatch.delenv("DGX_ENDPOINT", raising=False)
+        kwargs["endpoint"] = "http://chosen-box:8001/v1"
+    else:
+        monkeypatch.setenv("DGX_ENDPOINT", "http://chosen-box:8001/v1")
+
+    out = client_mod.make_client(**kwargs)
+
+    assert "chosen-box" in out.oai.base_url.host or "chosen-box" in str(out.oai.base_url)
+
+
+def test_backend_anthropic_still_reaches_anthropic(monkeypatch):
+    """The fix must not change the default path: no backend, no endpoint,
+    still a real Anthropic client."""
+    monkeypatch.delenv("DGX_ENDPOINT", raising=False)
+    monkeypatch.delenv("CG_BACKEND", raising=False)
+    import anthropic
+
+    assert isinstance(client_mod.make_client(), anthropic.Anthropic)
+
+
 # ── Check 4: messages.batches only referenced inside the seam ───────────────
 
 def test_no_out_of_seam_messages_batches_reference():
@@ -239,13 +309,11 @@ def test_no_out_of_seam_messages_batches_reference():
     collect_batch instead (spec 004-claude-api-batch contract)."""
     offenders = []
     seam = (REPO_ROOT / "campaignlib" / "api").resolve()
-    for py in REPO_ROOT.rglob("*.py"):
+    for py in repo_python_files(REPO_ROOT):
         rp = py.resolve()
         if seam in rp.parents or rp.parent == seam:
             continue
         if "/tests/" in str(rp) or rp.name.startswith("test_"):
-            continue
-        if ".specify" in rp.parts or "node_modules" in rp.parts or ".venv" in rp.parts:
             continue
         text = py.read_text(encoding="utf-8", errors="ignore")
         if "messages.batches" in text:

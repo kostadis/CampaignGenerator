@@ -137,7 +137,10 @@ def main() -> None:
         # Minting point for chapter identity (issue #213 Phase 0). The bare
         # title goes in the frontmatter; a pre-prefixed --title like
         # "Chapter 37 — A Gem of a Problem" is stripped so the number is
-        # stated exactly once, by --chapter.
+        # stated exactly once, by --chapter. The separator is then re-emitted
+        # as ": " in the H1 — stripping it and rejoining with a bare space
+        # produced "# Chapter 37 A Gem of a Problem", which reads as a
+        # four-word title rather than a numbered one.
         bare_title = re.sub(r"^Chapter\s+[\d.]+\s*[:\-—]?\s*", "", title).strip()
         session = args.session
         if session is None:
@@ -152,7 +155,8 @@ def main() -> None:
             quoted = bare_title.replace("'", "''")
             meta_lines.append(f"title: '{quoted}'")
         frontmatter = "---\n" + "\n".join(meta_lines) + "\n---\n"
-        heading = f"# Chapter {args.chapter} {bare_title}".rstrip()
+        heading = (f"# Chapter {args.chapter}: {bare_title}" if bare_title
+                   else f"# Chapter {args.chapter}")
         parts: list[str] = [frontmatter + "\n" + heading + "\n"]
     else:
         parts = [f"# {title}\n"]

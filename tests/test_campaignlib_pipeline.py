@@ -738,6 +738,60 @@ def test_build_alias_normalizer_empty_map_is_identity():
     assert entries == []
 
 
+# ── preserve_quoted: alias rewriting must never reach a verbatim record (#223) ──
+
+def test_preserve_quoted_leaves_double_quoted_speech_untouched():
+    normalize, _ = campaignlib.build_alias_normalizer(
+        {'Iarno "Glasstaff" Albrek': ["Glasstaff"]}, preserve_quoted=True)
+    assert normalize('Wick shrugged. "Glasstaff? Man, he\'s scary."') == \
+        'Wick shrugged. "Glasstaff? Man, he\'s scary."'
+
+
+def test_preserve_quoted_still_rewrites_the_prose_around_the_quote():
+    normalize, _ = campaignlib.build_alias_normalizer(
+        {"Nezznar the Spider": ["Spider"]}, preserve_quoted=True)
+    assert normalize('Spider had been here. "Spider," he said. Spider was gone.') == \
+        'Nezznar the Spider had been here. "Spider," he said. Nezznar the Spider was gone.'
+
+
+def test_preserve_quoted_protects_curly_quotes_and_italic_spans():
+    normalize, _ = campaignlib.build_alias_normalizer(
+        {"Dagult Neverember": ["Lord Neverember"]}, preserve_quoted=True)
+    assert normalize("“Lord Neverember said so.”") == \
+        "“Lord Neverember said so.”"
+    # *...* carries VTT-truncated speech and stage directions.
+    assert normalize("*Lord Neverember, cut off*") == "*Lord Neverember, cut off*"
+
+
+def test_preserve_quoted_correct_aliases_are_the_dangerous_case():
+    """The alias data here is RIGHT — which is exactly why nothing downstream
+    catches the edit. Laeral Silverhand really is the Open Lord of Waterdeep,
+    so the substitution is canon-correct and produces a self-referential
+    sentence no fact-check can flag."""
+    alias_map = {"Laeral Silverhand": ["Open Lord of Waterdeep"]}
+    src = 'Lady Laeral Silverhand, "who\'s the Open Lord of Waterdeep."'
+
+    unscoped, _ = campaignlib.build_alias_normalizer(alias_map)
+    assert unscoped(src) == 'Lady Laeral Silverhand, "who\'s the Laeral Silverhand."'
+
+    scoped, _ = campaignlib.build_alias_normalizer(alias_map, preserve_quoted=True)
+    assert scoped(src) == src
+
+
+def test_preserve_quoted_unpaired_quote_fails_safe():
+    """An odd quotation mark must not freeze normalization off for the rest of
+    the document — a protected span never crosses a blank line."""
+    normalize, _ = campaignlib.build_alias_normalizer(
+        {"Tolubb": ["Cap"]}, preserve_quoted=True)
+    assert normalize('He said "hello, Cap\n\nCap walked away.') == \
+        'He said "hello, Tolubb\n\nTolubb walked away.'
+
+
+def test_preserve_quoted_defaults_off_so_grounding_pipelines_are_unchanged():
+    normalize, _ = campaignlib.build_alias_normalizer({"Tolubb": ["Cap"]})
+    assert normalize('He said "Cap".') == 'He said "Tolubb".'
+
+
 def test_format_npc_roster_empty_is_empty_string():
     assert campaignlib.format_npc_roster({}) == ""
 

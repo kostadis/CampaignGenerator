@@ -415,7 +415,30 @@ def _scene_extraction_file_new(cfg: ResolvedEditorConfig, n: int, scene_name: st
     scaffold = sx / f"{n:02d}_{slug}.scaffold.md"
     if scaffold.exists():
         return scaffold
-    return sx / f"{n:02d}_{slug}.md"
+    exact = sx / f"{n:02d}_{slug}.md"
+    if exact.exists():
+        return exact
+
+    # Index fallback. sd_plan retitles scenes, so a plan title need not
+    # slugify to the stage-2 filename it was derived from ("The Statue
+    # Returned, a Quest Begun" vs 05_the_return_of_the_meliamne_statue...).
+    # Without this the file reads as missing, has_extraction goes False and
+    # the editor greys out Narrate for a scene the CLI would narrate fine —
+    # sd_narrate already does "name match, fallback to index". The NN_ prefix
+    # is unique per scene, so matching on it cannot mis-resolve.
+    scaffolds = sorted(sx.glob(f"{n:02d}_*.scaffold.md"))
+    if scaffolds:
+        return scaffolds[0]
+    plains = sorted(
+        p for p in sx.glob(f"{n:02d}_*.md")
+        if not p.name.endswith(".scaffold.md")
+    )
+    if plains:
+        return plains[0]
+
+    # Genuinely absent — return the slug path so .exists() callers behave
+    # exactly as before.
+    return exact
 
 
 # ── Helpers (ported from session_doc_ui.py) ──────────────────────────────────
@@ -693,6 +716,91 @@ def _build_enhance_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[
     return cmd
 
 
+def _quote_report_path(cfg: ResolvedEditorConfig) -> Path | None:
+    nd = _narration_dir(cfg)
+    return (nd / "quote_report.md") if nd else None
+
+
+_REPORT_ROW_RE = re.compile(
+    r"^\|\s*\**(verified|near|unverified|unscored|exempt)\**\s*\|\s*\**(\d+)\**\s*\|",
+    re.MULTILINE,
+)
+
+
+def _parse_quote_report_counts(path: Path | None) -> dict:
+    """Per-verdict counts from a quote report's summary table.
+
+    Returns ``None`` for each count when the report is missing or unparseable
+    rather than zero — "no unverified quotes" and "we could not tell" must not
+    look the same to the status strip, since the second is a reason to look and
+    the first is a reason not to.
+    """
+    empty = {"verified": None, "near": None, "unverified": None,
+             "unscored": None, "exempt": None}
+    if path is None or not path.exists():
+        return empty
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return empty
+    found = {k: int(v) for k, v in _REPORT_ROW_RE.findall(text)}
+    if not found:
+        return empty
+    return {k: found.get(k, 0) for k in empty}
+
+
+def _build_verify_cmd(request, cfg: ResolvedEditorConfig,
+                      target: str = "both") -> list[str] | tuple[None, str]:
+    """sd_verify_quotes --vtt {vtt} [--summary …] [--scene-extractions …].
+
+    Deliberately does NOT call ``_selection_args``: verification calls no
+    model, so there is no backend to route and no batch to honour. Forwarding
+    a model selection here would advertise a token cost this command cannot
+    incur — and a batch flag would be actively wrong, since Message Batches is
+    an Anthropic API concept and nothing here reaches the API.
+    """
+    vtt = _vtt_path(cfg)
+    if vtt is None or not vtt.exists():
+        return None, ("no .vtt resolved — set it on the Editor Config page or "
+                      "place a *.vtt in the session dir")
+
+    cmd = [console_script("sd_verify_quotes"), "--vtt", str(vtt)]
+
+    want_summary = target in ("summary", "both")
+    want_scenes = target in ("scenes", "both")
+    added = False
+
+    if want_summary:
+        summary = _session_summary_path(cfg)
+        if summary is not None and summary.exists():
+            cmd += ["--summary", str(summary)]
+            added = True
+        elif target == "summary":
+            return None, "session-summary.md not found — run Enhance Summary first"
+
+    if want_scenes:
+        sx = _scene_extractions_dir(cfg)
+        if sx is not None and sx.is_dir() and any(sx.glob("[0-9][0-9]_*.md")):
+            cmd += ["--scene-extractions", str(sx)]
+            added = True
+        elif target == "scenes":
+            return None, "no scene extraction files found — run Extract Quotes first"
+
+    if not added:
+        return None, ("nothing to verify — neither session-summary.md nor scene "
+                      "extractions exist yet")
+
+    report = _quote_report_path(cfg)
+    if report is None:
+        return None, "could not resolve the narration dir for the report"
+    cmd += ["--out", str(report),
+            "--threshold", str(cfg.verify.threshold),
+            "--min-tokens", str(cfg.verify.min_tokens)]
+    if cfg.verify.report_only:
+        cmd += ["--report-only"]
+    return cmd
+
+
 def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
                          force: bool = False) -> list[str] | tuple[None, str]:
     """Stage 2: scene_extract {vtt} --summary {summary} --output-dir {sx_dir}.
@@ -891,11 +999,35 @@ def api_pipeline_status(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
             "mtime": newest.stat().st_mtime if newest else None,
         })
 
+    # ⑤ Verify: output is narration/quote_report.md; inputs are the VTT and
+    # every artifact it describes. Counts come from the report's own summary
+    # table so the strip can show what was found, not just when it ran.
+    verify_report = _quote_report_path(cfg)
+    verify_inputs: list[Path] = []
+    if vtt is not None:
+        verify_inputs.append(vtt)
+    if summary is not None:
+        verify_inputs.append(summary)
+    if sx is not None and sx.is_dir():
+        verify_inputs.extend(sx.glob("[0-9][0-9]_*.md"))
+    verify_status = _stage_status(verify_report, verify_inputs)
+    counts = _parse_quote_report_counts(verify_report)
+    verify_status.update(counts)
+    if verify_status["status"] != "cold":
+        if counts.get("unverified") is None:
+            # An unreadable report is not a passing one.
+            verify_status["status"] = "warn"
+        elif counts["unverified"] > 0:
+            # Stale and has-findings both mean unfinished business here; the
+            # counts tell the two apart.
+            verify_status["status"] = "warn"
+
     return {
         "enhance": enhance_status,
         "extract": extract_status,
         "plan": plan_status,
         "narrate": narrate_status,
+        "verify": verify_status,
     }
 
 
@@ -1035,6 +1167,40 @@ async def api_enhance(request: Request, cfg: ResolvedEditorConfig = Depends(get_
     return StreamingResponse(
         stream_subprocess(cmd, cwd=cfg.work_dir,
                           on_complete=_done),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@router.get("/verify")
+async def api_verify(request: Request, target: str = "both",
+                     cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    """Quote verification — stream sd_verify_quotes over the configured artifacts.
+
+    ``target`` is ``summary`` | ``scenes`` | ``both`` (default). There is no
+    ``batch`` parameter: this command calls no model, so offering one would
+    imply a cost it cannot incur.
+    """
+    if target not in ("summary", "scenes", "both"):
+        return _sse_error(f"unknown target {target!r} (expected summary|scenes|both)")
+
+    result = _build_verify_cmd(request, cfg, target=target)
+    if isinstance(result, tuple):
+        _, err = result
+        return _sse_error(err)
+    cmd = result
+    report = _quote_report_path(cfg)
+
+    def _done(rc: int | None) -> None:
+        # rc 1 means "ran, found unverified quotes" — a finding, not a failure.
+        _record_activity(cfg, stage="verify", rc=rc,
+                         knobs={"target": target,
+                                "threshold": cfg.verify.threshold,
+                                "report_only": cfg.verify.report_only},
+                         outputs=[str(report)] if report else [])
+
+    return StreamingResponse(
+        stream_subprocess(cmd, cwd=cfg.work_dir, on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )

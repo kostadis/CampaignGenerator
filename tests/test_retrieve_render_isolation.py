@@ -33,11 +33,12 @@ from pathlib import Path
 import pytest
 
 
+from repo_sources import repo_python_files  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {
-    "venv", ".venv", "__pycache__", "node_modules", "frontend",
-    ".git", "logs", "tests",
-}
+# Directory exclusion lives in tests/repo_sources.py — git-tracked files only,
+# so a nested worktree under .claude/ cannot be reported as a violation.
+SKIP_DIRS = {"tests"}
 
 RETRIEVAL_NAMES = frozenset(
     {
@@ -95,7 +96,7 @@ def _function_bodies(module: ast.Module):
 
 
 def _iter_candidate_files():
-    for path in sorted(REPO_ROOT.rglob("*.py")):
+    for path in repo_python_files(REPO_ROOT):
         if _is_candidate_file(path):
             yield path
 

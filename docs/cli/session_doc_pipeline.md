@@ -10,11 +10,11 @@ Generates per-scene first-person narration from a session recap, the human-verif
 gm-assist.md (structure, human-authored)
     │
     ▼  Stage 1 — enhance_summary
-session-summary.md  ◄── HUMAN REVIEW (edit freely)
-    │
+session-summary.md  ◄── sd_verify_quotes ──► quote_report.md
+    │                   HUMAN REVIEW (edit freely)
     ▼  Stage 2 — scene_extract --summary
-scene_extractions/NN_<slug>.md  ◄── HUMAN REVIEW
-    │
+scene_extractions/NN_<slug>.md  ◄── sd_verify_quotes ──► quote_report.md
+    │                               HUMAN REVIEW
     ▼  Stage 3 — sd_consistency + sd_plan + sd_narrate  ← these scripts
 narration/session_doc_scene_NN_<slug>.md  ◄── HUMAN REVIEW
     │
@@ -23,6 +23,103 @@ session_doc.md
 ```
 
 The "LLM extracts → human reviews and imposes structure → LLM renders inside that structure" rule (`~/.claude/CLAUDE.md`) drives the boundaries: each stage is the LLM doing one thing the human can verify before the next call inherits its output. Per-scene narration files mean a single bad voice take only requires re-running that scene.
+
+## Quote verification — `sd_verify_quotes`
+
+Stages 1 and 2 both instruct the model to quote dialogue verbatim. `sd_verify_quotes` is what checks that it did. It is **deterministic and free** — a quote is a span of the VTT or it is not, so no model is called and no token is spent.
+
+```bash
+SESS=summaries/20260623
+
+sd_verify_quotes --vtt "$SESS"/*.transcript.vtt \
+    --summary            "$SESS/session-summary.md" \
+    --scene-extractions  "$SESS/scene_extractions_new" \
+    --out                "$SESS/narration/quote_report.md"
+```
+
+Exit code `0` = no unverified quotes, `1` = findings, `2` = could not run (missing transcript or artifact). A finding is not an error.
+
+### Three verdicts, not two
+
+Measured over 522 real quotes, **only 65% are exact verbatim** — and that was a Claude-generated session. Most of the rest are *disfluency edits*: the extraction says `"I do cross promotions."` where the tape says `"I do, like, cross promotions."` A binary verbatim check would report ~180 findings per session with the overwhelming majority benign, which teaches you to ignore the report.
+
+| verdict | meaning | a problem? |
+|---|---|---|
+| `verified` | exact, or differing only by whitespace/reflow | no |
+| `near` | not verbatim, but traceable to a transcript line — usually a filler word removed | no, informational |
+| `unverified` | no plausible source line | **yes — review these** |
+| `unscored` | under 4 tokens; matches anything, so neither a high nor low score means anything | no |
+| `exempt` | `(paraphrase)`, `(truncated)`, `[inaudible]` — the sanctioned markers | no |
+
+Every finding carries the **nearest transcript line**, so a reflow is distinguishable from a fabrication at a glance. Quotes containing `...` are additionally flagged **Likely stitched** — two separate utterances joined into one, which is fixed by splitting rather than rewording.
+
+### What it does not check
+
+Stated in every report, because silent non-coverage reads exactly like a pass:
+
+- **Inline `"…"` in prose** — not reliably dialogue (`the "liberators of the Ordning"` is a label). Only `> "…"` blockquotes are verified.
+- **Speaker attribution** — it answers *were these words said*, not *did this person say them*.
+- **`## Scene summary` sections** — human-authored gm-assist content, not model output.
+- Multi-line blockquote quotes, if any appear (none exist in the measured corpus); the count is reported.
+
+### Nothing is auto-corrected
+
+The only write to a checked file is an additive `<!-- cg:unverified -->` marker on an unverified quote's line, applied idempotently — re-running leaves the file byte-identical. Quote text is never altered. `--report-only` suppresses even that. Repair is a human decision made in Claude; the autonomous-repair alternative is what removed spells from narration in issue #151.
+
+### `near` means *an edit*, not *a safe edit*
+
+Similarity cannot tell a harmless edit from a damaging one, because both are edits of the same size. Measured on a real DeepSeek run:
+
+| score | quote | transcript | verdict |
+|---|---|---|---|
+| 0.92 | "**My kind** has been spreading violence…" | "**Mankind** has been spreading violence…" | `near` — but the meaning changed |
+| 0.94 | "No, I have my soul is for rent." | "No, I, I have, my soul is for rent." | `near` — harmless |
+
+The corrupting edit scored *lower* than the harmless one, and no threshold separates them. **Skim the `near` list for changed words, not for low scores.**
+
+### Which `.vtt` — it is not a tie-break
+
+**Use the same `.vtt` the artifact was generated from.** A session may carry both `*.transcript.vtt` and `*.transcript.cleaned.vtt`; where they differ it is on proper nouns — exactly where false findings cluster. On session 20260623 the two differ on **72 cue lines** (`Blueberry`→`Brewbarry`, `Cryovane`→`Cryovain`, …), and the same 522 quotes score:
+
+| VTT | verified | near | unverified |
+|---|---|---|---|
+| `*.transcript.vtt` (raw ASR) | 339 (65%) | 139 (27%) | **39** |
+| `*.transcript.cleaned.vtt` | 374 (72%) | 113 (22%) | **31** |
+
+A 26% swing in the finding count from the transcript choice alone. Any `unverified` number is meaningless without naming the VTT behind it. When more than one is present `sd_agent` takes the first alphabetically (`…cleaned.vtt`) and prints which one it used — pass `--vtt` to choose deliberately.
+
+## One stage at a time — `sd_agent`
+
+`sd_agent` runs a stage's generation **and** that stage's checks as one action, then stops:
+
+```
+sd_agent --stage summary  →  enhance_summary  →  sd_verify_quotes  →  sd_consistency  →  STOP
+sd_agent --stage scenes   →  scene_extract    →  sd_verify_quotes                     →  STOP
+```
+
+**It stops at the stage boundary on purpose.** The Stage 1 → Stage 2 human review is a checkpoint; an orchestrator that ran straight through would delete it. There is no `--stage all`.
+
+```bash
+SESS=summaries/20260623
+
+sd_agent --stage summary --session-dir "$SESS" \
+    --context "$SESS/../../docs/campaign_state.md" \
+    --backend dgx --model deepseek-ai/DeepSeek-V4-Flash-0731
+
+# after you have reviewed session-summary.md:
+sd_agent --stage scenes --session-dir "$SESS" \
+    --dossier-dir docs/npcs --gm-player Kostadis \
+    --backend dgx --model deepseek-ai/DeepSeek-V4-Flash-0731
+```
+
+Every resolved command is printed before it runs, so the hop is visible rather than implicit. Backend flags reach **generation only** — verification calls no model. Exit `0` clean, `1` findings, `2` a step could not run.
+
+Two things it will tell you rather than do silently:
+
+- **`--context` omitted** ⇒ the consistency check is skipped and the run says so. There is nothing to compare a recap against without grounding docs.
+- **`--dossier-dir` omitted on `--stage scenes`** ⇒ it checks whether `scene_extract` can auto-discover `docs/entity_registry.yaml` from the CWD. **If it can, you need no flag** — a registry *replaces* the dossier scan outright, so the roster already reaches the model (run from the campaign root and this is the normal case). **If it can't**, the run says so loudly: since `6e00f54` the roster is the *only* channel for canonical spellings (the VTT is deliberately never rewritten — see `docs/rlm/dossier_aliases.md`), so a run without it produces name-shaped quote findings that look like fabrication but are really missing grounding.
+
+Use `--skip-generate` to re-check an artifact without re-spending tokens, and `--dry-run` to print the commands and exit.
 
 ## Passes
 

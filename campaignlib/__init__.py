@@ -12,6 +12,7 @@ from .constants import CONFIG_DIR_NAME, DEFAULT_MODEL, config_path
 from .wiring import load_wiring, wiring_get, wiring_path
 from .textproc import (
     strip_base64_images,
+    locate_quote,
     chunk_text,
     chunk_text_with_offsets,
     chunk_by_chapters,
@@ -117,6 +118,7 @@ __all__ = [
     "wiring_path",
     # textproc
     "strip_base64_images",
+    "locate_quote",
     "chunk_text",
     "chunk_text_with_offsets",
     "chunk_by_chapters",

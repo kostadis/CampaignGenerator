@@ -13,6 +13,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [CLI tool reference](cli/cli_tools.md) — per-script flags and a typical new-campaign workflow.
 - [Session-prep workflow](cli/session_prep_workflow.md) — end-to-end pre-session pipeline.
 - [Session-doc pipeline](cli/session_doc_pipeline.md) — the 4-stage post-session pipeline (`enhance_summary` → `scene_extract` → `session_doc` → `assemble`) plus the 5-pass internals and design rationale.
+- [Quote verification how-to](cli/quote_verification_howto.md) — operator's manual for `sd_verify_quotes` / `sd_agent`: checking that a generated summary or scene extraction actually quotes the tape. **Deterministic, free, calls no model, needs no DGX**, and fixes nothing by itself. Read this for what the three verdicts mean, why `near` is not "safe", and why the `.vtt` you pick moves the finding count 26%.
 - [Post-session umbrella](cli/post_session.md) — short "which entry point matches how I want to work" page.
 - [gm-assist anchor](cli/gmassist_anchor.md) — why the gm-assist document is the authoritative event skeleton.
 - [Grounding documents](cli/grounding_docs.md) — when and how to refresh `campaign_state`, `world_state`, `planning`, `party`.
@@ -25,7 +26,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 
 ## MCP servers
 
-- [MCP servers](mcp/mcp_servers.md) — the four servers a campaign can wire into its `.mcp.json` (`campaign`, `5etools`, `registry`, `kanka`): what each is for, what gates it, how to wire one in.
+- [MCP servers](mcp/mcp_servers.md) — the five servers a campaign can wire into its `.mcp.json` (`campaign`, `5etools`, `registry`, `kanka`, `provenance`): what each is for, what gates it, how to wire one in. `provenance` is the only unpinned one.
 
 ## Web UI
 
@@ -51,6 +52,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 
 ## Design notes
 
+- [Quote verification handoff](design/QuoteVerification_handoff.md) — **pick-up note**: what 007 shipped, the three findings that outlived it (DeepSeek was not the problem; D1's 64% was measuring a bug; the failure mode is stitching), which corpora are worth re-extracting, and how to start the follow-up feature.
 - [Source tree restructure](design/SourceTreeRestructure.md) — splits the 62 flat root scripts into subsystem packages under `pipelines/`, `entity_registry/`, and `session_doc/`, grouped by pipeline; migration complete.
 - [RLM paper comparison](design/rlm_paper_comparison.md) — how this system relates to (and diverges from) the published RLM paper.
 - [Chapter-extract consolidation (killed)](design/ChapterExtractConsolidation_killed.md) — why consolidating the three extract passes into one per-chapter extract regressed all three grounding docs, and the depth-vs-breadth lesson.

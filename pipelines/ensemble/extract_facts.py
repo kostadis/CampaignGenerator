@@ -52,6 +52,7 @@ from campaignlib import (
     build_batch_request,
     client_from_args,
     load_agent_prompt,
+    locate_quote,
     prepare_chunks,
     run_batch,
     split_frontmatter,
@@ -238,15 +239,18 @@ def verify_quotes(facts: list[dict], chunk: str) -> None:
     just lets human review sort unverified facts to the top. Empty quotes
     count as unverified. Whitespace-normalized fallback so a reflowed line
     break doesn't fail an otherwise verbatim quote.
+
+    The match itself is ``campaignlib.textproc.locate_quote`` — shared with
+    ``ensemble_merge.quote_offset`` and the session_doc quote verifier so all
+    three agree on what counts as verbatim. This function keeps only the
+    boolean; ``quote_offset`` keeps the position the same call already found.
+    Behaviour is unchanged, pinned by ``tests/test_locate_quote_parity.py``.
     """
-    chunk_norm = " ".join(chunk.split())
     for f in facts:
         if not isinstance(f, dict):
             continue
         q = f.get("source_quote") or ""
-        f["quote_verified"] = bool(q) and (
-            q in chunk or " ".join(q.split()) in chunk_norm
-        )
+        f["quote_verified"] = locate_quote(q, chunk) is not None
 
 
 def _load_cached(out_file: Path) -> list | None:

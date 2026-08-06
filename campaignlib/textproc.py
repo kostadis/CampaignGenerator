@@ -60,6 +60,41 @@ def strip_base64_images(text: str) -> str:
     return _BASE64_IMAGE_RE.sub('', text)
 
 
+def locate_quote(quote: str, document: str) -> int | None:
+    """Character offset of ``quote`` in ``document``, or None if not found.
+
+    The single whitespace-tolerant verbatim matcher. Two pipelines had
+    independently grown their own copy of this logic — ``extract_facts.
+    verify_quotes`` (which kept only the boolean) and ``ensemble_merge.
+    quote_offset`` (which kept the position) — and a third was about to be
+    written for the session_doc quote verifier. Three implementations of "is
+    this quote really a span of that text?" is three chances to disagree about
+    what counts as verbatim, so they now all call this.
+
+    Exact match first, then a whitespace-tolerant fallback: runs of whitespace
+    in the quote match runs of whitespace in the document. That fallback is the
+    whole point — the extract prompts demand character-for-character
+    substrings, but a reflowed line break inside an otherwise exact quote must
+    not read as a fabrication.
+
+    Returns the position rather than a bool because finding costs the same as
+    testing and the position is the one thing that says WHEN a fact happened
+    inside a chapter (issue #195). Callers wanting the boolean use
+    ``locate_quote(...) is not None``.
+    """
+    if not quote:
+        return None
+    i = document.find(quote)
+    if i >= 0:
+        return i
+    tokens = quote.split()
+    if not tokens:
+        return None
+    pattern = re.compile(r"\s+".join(re.escape(t) for t in tokens))
+    m = pattern.search(document)
+    return m.start() if m else None
+
+
 # ── Text chunking ─────────────────────────────────────────────────────────────
 
 def chunk_text(text: str, chunk_size: int) -> list[str]:

@@ -1,10 +1,30 @@
 PROSE MODE — IMMERSIVE NARRATION ONLY:
 
-CRITICAL: No mechanical numbers may appear in the prose — not damage values, not hit
+CRITICAL — QUOTED SPEECH IS A RECORD, NOT PROSE. Everything inside "..." is a verbatim
+transcript of what a person actually said at the table. It is not yours to translate,
+trim, paraphrase, soften, or tidy up, and this rule OUTRANKS every mechanical-language
+rule below it. For any line of quoted speech you have exactly two moves:
+  KEEP — reproduce it inside quotation marks exactly as written, word for word,
+         including any number it happens to contain; or
+  DROP — do not quote it at all, and render the beat as narration instead — at which
+         point you are writing prose, so the number gets translated like any other.
+There is no third move. Rewriting the inside of a quotation mark invents a sentence the
+speaker never said and destroys the only record of what they did say.
+    SOURCE: "Wait, 8 points of damage does nothing?"
+    BAD:    "Wait, that does nothing?"     <- a line nobody spoke; this is the failure
+    KEEP:   "Wait, 8 points of damage does nothing?"
+    DROP:   He stared at it, unable to believe the blow had cost it so little.
+Choosing between them: when a quoted line is pure table-talk and nothing but arithmetic,
+prefer DROP. When it carries voice, character, or a decision, prefer KEEP even if a
+number rides along — a surviving number is a cleanup problem with a human reviewing it,
+whereas a fabricated quote is unrecoverable, because nothing downstream can tell it apart
+from a real one. GM out-of-character table instructions and table banter are always DROP,
+never KEEP — see the GM-framing rules below.
+
+CRITICAL: No mechanical numbers may appear in the NARRATION — not damage values, not hit
 points, not spell slot numbers, not AC, not DCs, not die rolls. Not even in passing.
-Not even as part of a verbatim player quote. If a player said "I've got 16 HP left"
-or "that was 22 damage", those are table-talk, not story. Translate every number into
-what the body or mind actually experiences. A number that reaches the page is a failure.
+Translate every number into what the body or mind actually experiences. A number in the
+narration is a failure; a number inside quotation marks is the transcript, and it stays.
 
 This section was narrated partly from a GM/DM's spoken description of events. Do NOT
 carry any of that framing into the prose:
@@ -28,7 +48,9 @@ carry any of that framing into the prose:
     BAD:  "*Roll a DC-14 Wisdom saving throw.*"
     GOOD: "Something pressed against my mind — cold, insistent, trying to get in."
     GOOD: "My focus narrowed to a single point. Hold. Just hold."
-  Never reproduce the instruction in any form, italicised or otherwise.
+  Never reproduce the instruction in any form, italicised or otherwise. This is a DROP,
+  not a rewrite: the instruction leaves the page entirely, and what replaces it is your
+  own narration — not the GM's sentence with the numbers filed off inside quotation marks.
 - DC numbers are difficulty, not prose. Translate them by scale:
     DC 10 or below → a routine effort, something that costs focus but little else
     DC 14–15       → a hard push, real resistance, the outcome genuinely uncertain
@@ -80,9 +102,10 @@ carry any of that framing into the prose:
     GOOD (48 damage, necrotic): "Something cold and wrong moved through her — not pain
                        exactly, more like absence, like warmth being taken rather than
                        heat being applied. She could feel what it was pulling away."
-- When a player states remaining HP ("I've got 18 hit points left of 44"), translate this
-  to the character's felt condition — never mention the number. The threshold that matters
-  is whether they're likely to survive the next serious hit:
+- When a player states remaining HP ("I've got 18 hit points left of 44"), DROP the quote
+  and render the character's felt condition as narration — do not keep the quotation marks
+  and swap the number out from inside them. The threshold that matters is whether they're
+  likely to survive the next serious hit:
       < 10 HP  → on the verge of collapse; barely standing; the next solid hit ends it;
                   running on instinct and survival reflex alone
       10–19 HP → the edge; one more bad round and it's over; the character knows this —

@@ -270,3 +270,148 @@ def test_no_examples_dir_leaves_system_prompt_without_style_block(monkeypatch, t
 
     for call in fake_stream.calls:
         assert "STYLE REFERENCE" not in call["system"]
+
+
+# ── Alias normalisation must not reach verbatim dialogue (#223, defect A) ───
+#
+# The scene extraction below is the shape the bug actually took: a quote whose
+# speaker used an alias, sitting next to prose using the same alias. Before the
+# fix both were rewritten, so a line the player spoke came back as a sentence
+# nobody said. The prose rewrite is the legitimate half and must survive.
+
+REGISTRY_YAML = """\
+version: 1
+campaign: testcamp
+entities:
+  - name: Nezznar the Spider
+    type: npc
+    aliases: [Spider]
+  - name: Dagult Neverember
+    type: npc
+    aliases: [Lord Neverember]
+"""
+
+SCENE_WITH_QUOTE = (
+    "- Alice asks about Spider, who runs the docks.\n"
+    '- Alice: "Tell me about Spider and Lord Neverember."\n'
+)
+
+
+def _write_registry(tmp_path: Path) -> Path:
+    docs = tmp_path / "docs"
+    docs.mkdir(exist_ok=True)
+    reg = docs / "entity_registry.yaml"
+    reg.write_text(REGISTRY_YAML, encoding="utf-8")
+    return reg
+
+
+def _run_with_registry(monkeypatch, tmp_path, *extra: str) -> FakeStreamAPI:
+    paths = _write_fixtures(tmp_path)
+    (paths["scenes_dir"] / "01_scene_one.md").write_text(
+        SCENE_WITH_QUOTE, encoding="utf-8")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, *extra))
+    sd_narrate.main()
+    return fake_stream
+
+
+def test_alias_normalisation_skips_quoted_dialogue_but_rewrites_prose(
+    monkeypatch, tmp_path,
+):
+    _write_registry(tmp_path)
+    fake_stream = _run_with_registry(monkeypatch, tmp_path)
+
+    prompt = fake_stream.calls[0]["user"]
+    # The quote is a record of what Alice said — byte-identical, aliases and all.
+    assert '"Tell me about Spider and Lord Neverember."' in prompt
+    # ...while the surrounding prose bullet still gets the canonical names.
+    assert "Alice asks about Nezznar the Spider, who runs the docks." in prompt
+
+
+def test_no_alias_normalize_disables_the_rewrite_but_keeps_the_roster(
+    monkeypatch, tmp_path,
+):
+    _write_registry(tmp_path)
+    fake_stream = _run_with_registry(monkeypatch, tmp_path, "--no-alias-normalize")
+
+    prompt = fake_stream.calls[0]["user"]
+    assert "Alice asks about Spider, who runs the docks." in prompt
+    assert "Nezznar the Spider" not in prompt.split("## Known NPCs")[0]
+    # Canonical names still reach the model — as knowledge, not as a rewrite.
+    assert "## Known NPCs" in prompt
+    assert "Nezznar the Spider (also: Spider)" in prompt
+
+
+def test_known_npc_roster_reaches_the_prompt_even_when_party_is_given(
+    monkeypatch, tmp_path,
+):
+    """The roster used to be passed as ``roster or npc_roster``, so supplying
+    --party silently dropped it — leaving the destructive rewrite as the only
+    channel carrying canonical names."""
+    _write_registry(tmp_path)
+    party = tmp_path / "party.md"
+    party.write_text("## Alice\n**Human Bard 5, Player: Ann**\n", encoding="utf-8")
+
+    fake_stream = _run_with_registry(monkeypatch, tmp_path, "--party", str(party))
+
+    prompt = fake_stream.calls[0]["user"]
+    assert "## Character Classes" in prompt          # party roster still there
+    assert "## Known NPCs" in prompt                 # and so is the NPC roster
+    assert "Never apply them inside quotation marks" in prompt
+
+
+def test_alias_registry_flag_overrides_autodiscovery(monkeypatch, tmp_path):
+    """No docs/entity_registry.yaml under CWD — the flag is the only source."""
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    reg = elsewhere / "registry.yaml"
+    reg.write_text(REGISTRY_YAML, encoding="utf-8")
+
+    fake_stream = _run_with_registry(
+        monkeypatch, tmp_path, "--alias-registry", str(reg))
+
+    prompt = fake_stream.calls[0]["user"]
+    assert "Alice asks about Nezznar the Spider" in prompt
+    assert '"Tell me about Spider and Lord Neverember."' in prompt
+
+
+def test_alias_registry_flag_errors_when_the_path_is_missing(monkeypatch, tmp_path):
+    paths = _write_fixtures(tmp_path)
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--alias-registry", str(tmp_path / "nope.yaml")))
+    with pytest.raises(SystemExit) as excinfo:
+        sd_narrate.main()
+    assert excinfo.value.code == 1
+
+
+# ── Smoothed-sibling guard (#223, defect C) ────────────────────────────────
+
+def test_warns_when_a_smoothed_sibling_exists_but_was_not_selected(
+    monkeypatch, tmp_path, capsys,
+):
+    paths = _write_fixtures(tmp_path)
+    smoothed = tmp_path / "scenes_smoothed"
+    smoothed.mkdir()
+    (smoothed / "01_scene_one.md").write_text(SCENE_ONE_BODY, encoding="utf-8")
+    monkeypatch.setattr(sd_narrate, "stream_api",
+                        FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION]))
+
+    monkeypatch.setattr(sys, "argv", _base_argv(paths))
+    sd_narrate.main()
+
+    err = capsys.readouterr().err
+    assert "scenes_smoothed/ exists alongside scenes/" in err
+    assert "will NOT reach narration" in err
+
+
+def test_no_warning_when_the_smoothed_dir_is_the_one_selected(
+    monkeypatch, tmp_path, capsys,
+):
+    paths = _write_fixtures(tmp_path)
+    monkeypatch.setattr(sd_narrate, "stream_api",
+                        FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION]))
+    monkeypatch.setattr(sys, "argv", _base_argv(paths))
+    sd_narrate.main()
+
+    assert "exists alongside" not in capsys.readouterr().err

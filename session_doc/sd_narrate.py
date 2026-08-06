@@ -34,6 +34,7 @@ from campaignlib import (
     client_from_args,
     format_npc_roster,
     find_alias_registry,
+    find_registry,
     load_alias_map,
     run_single_batch,
     stream_api,
@@ -132,6 +133,15 @@ def main() -> None:
                         help="Per-NPC dossier files (planning --build-dossiers). "
                              "Aliases are normalised before Pass 5; a 'Known NPCs' roster "
                              "is seeded into the narrate prompt.")
+    parser.add_argument("--alias-registry", default=None, metavar="PATH",
+                        help="entity_registry.yaml, or a campaign dir holding "
+                             "docs/entity_registry.yaml, to source canonical names from. "
+                             "Default: auto-discover docs/entity_registry.yaml under CWD.")
+    parser.add_argument("--no-alias-normalize", "--no-alias-normalise",
+                        dest="no_alias_normalize", action="store_true",
+                        help="Do not rewrite aliases to canonical names in the source text. "
+                             "The 'Known NPCs' roster still reaches the prompt, so canonical "
+                             "spellings remain available to the model as knowledge.")
     parser.add_argument("--narrate-tokens", type=int, default=16000, metavar="N",
                         help="Per-scene output token cap. Override per-scene with "
                              "'tokens: N' as the first line of the scene file.")
@@ -165,6 +175,16 @@ def main() -> None:
         print(f"Error: no NN_*.md files in {sx_dir}", file=sys.stderr)
         sys.exit(1)
 
+    # A voice-smoothed layer next door is easy to produce and easy to forget to
+    # point at; nothing downstream reveals which layer was narrated (#223, C).
+    smoothed = sx_dir.parent / f"{sx_dir.name}_smoothed"
+    if smoothed.is_dir() and smoothed.resolve() != sx_dir.resolve():
+        print(f"Warning: {smoothed.name}/ exists alongside {sx_dir.name}/, but "
+              f"--scene-extractions points at {sx_dir.name}/ — the voice-smoothed "
+              f"extractions will NOT reach narration.\n"
+              f"  -> pass --scene-extractions {smoothed} if that was the intent.",
+              file=sys.stderr)
+
     per_scene_output_dir = Path(args.per_scene_output).expanduser()
     per_scene_output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -187,10 +207,25 @@ def main() -> None:
             if cp.exists():
                 context_parts.append(cp.read_text(encoding="utf-8"))
 
-    alias_map = load_alias_map(args.dossier_dir, registry_path=find_alias_registry(Path.cwd()))
-    normalize, _ = build_alias_normalizer(alias_map)
+    if args.alias_registry:
+        given = Path(args.alias_registry).expanduser()
+        registry_path = find_registry(given) if given.is_dir() else given
+        if registry_path is None or not registry_path.is_file():
+            print(f"Error: --alias-registry not found: {args.alias_registry}",
+                  file=sys.stderr)
+            sys.exit(1)
+        print(f"Entity registry: {registry_path} (--alias-registry)", file=sys.stderr)
+    else:
+        registry_path = find_alias_registry(Path.cwd())
+
+    alias_map = load_alias_map(args.dossier_dir, registry_path=registry_path)
     npc_roster = format_npc_roster(alias_map)
-    if alias_map:
+    # Alias rewriting is scoped to prose: quoted and italic spans are a verbatim
+    # record of what a person said at the table and are never edited here (#223).
+    # The canonical names reach the model as knowledge via `npc_roster` instead —
+    # the same channel scene_extract settled on in #231.
+    if alias_map and not args.no_alias_normalize:
+        normalize, _ = build_alias_normalizer(alias_map, preserve_quoted=True)
         recap = normalize(recap)
         for sx in scene_extractions:
             sx["moments"] = normalize(sx["moments"])
@@ -293,7 +328,8 @@ def main() -> None:
         )
         narrate_prompt = build_narrate_prompt(
             narrator, focus, char_moments, party, handoff,
-            roster or npc_roster,
+            roster,
+            npc_roster=npc_roster,
             scene_text=scene_events_str or None,
             context_docs=narrate_context,
             prev_narrator=prev_narrator,
