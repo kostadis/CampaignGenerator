@@ -3,9 +3,13 @@
 **Command:** `provenance` · **Authored data:** `~/src/campaigns/provenance.yaml` + `<campaign>/docs/corrections.yaml`
 **Spec:** `specs/007-cross-campaign-search/` · **Ratified:** 2026-08-06 (task T031)
 
-Read this when you need to search across all six campaigns, when `provenance check`
-reports something, or when you are about to hand-edit the manifest or a corrections
-file.
+**This is the reference.** For *"I want to do X, what do I type"*, read
+[`provenance_howto.md`](provenance_howto.md) first — it walks the five things you
+actually do and what to check when results look wrong.
+
+Read *this* page when `provenance check` reports something you don't recognise, when you
+are about to hand-edit the manifest or a corrections file, or when you need the exact
+shape of a field. Where the two overlap, this one wins.
 
 ---
 

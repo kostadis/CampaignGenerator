@@ -20,7 +20,8 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [Ensemble extraction](cli/ensemble_extraction.md) — single-file and multi-file `ensemble` deep dive; `--plan` YAML format, key flags, output layout.
 - [planning workflow](cli/planning_pipeline.md) — the two-phase build-dossiers → synthesize design.
 - [State Projection how-to](cli/state_projection_howto.md) — operator's manual for `event_spine` / `thread_registry` / `grounding_sections` and the State Projection UI page: what to run in what order, what every skip message means. **Read this if the projections page looks empty or errors.**
-- [Provenance-aware search](cli/provenance_search.md) — the `provenance` CLI and the two hand-authored files it reads (`provenance.yaml`, per-campaign `corrections.yaml`): trust tiers, the corrections matching rule, `check` findings. **Read this before hand-editing either file.**
+- [Provenance search how-to](cli/provenance_howto.md) — task-oriented walkthrough: find a fact and know whether to trust it, scope to canon, ask what was true at chapter N, resolve a name, compare two campaigns. **Start here.**
+- [Provenance-aware search](cli/provenance_search.md) — the reference behind it: the two hand-authored files (`provenance.yaml`, per-campaign `corrections.yaml`), trust tiers, the corrections matching rule, all ten `check` findings. **Read this before hand-editing either file.**
 
 ## MCP servers
 
