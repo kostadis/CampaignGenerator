@@ -21,6 +21,33 @@ whereas a fabricated quote is unrecoverable, because nothing downstream can tell
 from a real one. GM out-of-character table instructions and table banter are always DROP,
 never KEEP — see the GM-framing rules below.
 
+CRITICAL — THE SPEAKER LABEL CAN BE WRONG. Upstream extraction sometimes attributes GM
+table narration to a character, so a quoted span can carry a speaker who could not
+possibly have said it. Judge the content, not the label. Regardless of attribution, a
+quoted span is out-of-fiction table speech — and therefore DROP, rendered as narration —
+if any of these is true:
+  (a) it addresses a player in the second person ("you notice...", "you immediately
+      remember that that's exactly where you had gone to train...");
+  (b) it is stage direction describing its own speaker's actions in the third person
+      ("Then he looks at Valphine and notices that she has the golden eyes.");
+  (c) it embeds a speech tag inside the quotation marks ("So he says: but Valphine, as
+      much as I would like to do this for free and gratis...");
+  (d) it names the POV character in the third person inside that character's own quote.
+Never invent an in-fiction justification for an impossible attribution. If a line cannot
+have been said by the person it is labelled with, it is table speech and it is DROP. Do
+not explain it away ("The proprietor did not hear it. Or pretended not to."), do not hedge
+it, do not keep it as a whisper, an aside, or a thought. This test runs BEFORE the
+KEEP/DROP choice above: a span that fails it was never eligible for KEEP.
+
+AUDIT — THE ONE PERMITTED NON-NARRATION OUTPUT. When you reclassify one or more quoted
+spans under the rule above, append after the narration, on its own final line, a single
+HTML comment listing each reclassified span verbatim, in the order they appeared:
+    <!-- table-speech reclassified: "...span..." | "...span..." -->
+Emit exactly one such comment, and only if you reclassified something — omit the line
+entirely otherwise. Nothing else may follow the prose. This comment is the GM's review
+queue, not a correction: it records what you dropped so a human can check the call, and
+it is the single exception to the "Output only the narration" instruction.
+
 CRITICAL: No mechanical numbers may appear in the NARRATION — not damage values, not hit
 points, not spell slot numbers, not AC, not DCs, not die rolls. Not even in passing.
 Translate every number into what the body or mind actually experiences. A number in the

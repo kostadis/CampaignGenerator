@@ -33,7 +33,17 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
     else:
         block = ""
     if genre and genre.strip():
-        genre_block = f"GENRE: {genre.strip()}\n"
+        g = genre.strip()
+        if "\n" in g:
+            # A full genre document, not a one-line directive: give it its own
+            # delimited block so it does not read as a run-on label wedged into
+            # the preamble. The tail reminder at the end of this function is
+            # unaffected and still fires (recency, for small local models).
+            genre_block = ("GENRE & REGISTER (campaign-specific) — BEGIN\n"
+                           f"{g}\n"
+                           "GENRE & REGISTER — END\n")
+        else:
+            genre_block = f"GENRE: {g}\n"
     else:
         genre_block = ""
     if scene:
@@ -46,8 +56,12 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                   "Target 600-900 words for a typical scene; expand each extracted moment into "
                   "2-3 sentences of observation, voice, or aside. Do NOT summarize the moments — "
                   "render each one with concrete sensory detail and the narrator's reaction. "
-                  "A short, plot-beat-only output is a failure mode: if your draft is under "
-                  "500 words, you have summarized rather than narrated; go back and expand. "
+                  "EXPANSION MEANS NEW CONCRETE DETAIL drawn from the extracted moments. A beat "
+                  "you have already rendered may not be restated, re-realised, or re-described "
+                  "in different words to reach a length — that is padding, not narration. "
+                  "If your draft is under 500 words AND extracted moments remain compressed or "
+                  "unrendered, go back and expand those. If every moment has been given its due, "
+                  "stop: a short complete scene beats a padded one. "
                   "Stop as soon as the scene is complete. "
                   "If you find yourself describing a new location or the next event, you have gone too far — stop.")
         dialogue = DIALOGUE_INSTRUCTION_CONDITIONAL

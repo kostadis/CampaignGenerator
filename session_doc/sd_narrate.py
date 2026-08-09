@@ -71,7 +71,7 @@ def _load_examples(examples_dir: Path | None,
 
     A file whose stem matches a character's first name (case-insensitive)
     routes to that character only; everything else is concatenated into
-    the global block.
+    the global block. Files whose name starts with ``_`` are skipped entirely.
     """
     if examples_dir is None or not examples_dir.is_dir():
         return None, {}
@@ -79,6 +79,11 @@ def _load_examples(examples_dir: Path | None,
     global_parts: list[str] = []
     per_char: dict[str, str] = {}
     for f in sorted(examples_dir.glob("*.md")):
+        if f.name.startswith("_"):
+            # Shared campaign material (e.g. `_genre.md`), not a style example.
+            # An unmatched `_`-file would otherwise join the GLOBAL examples
+            # block and reach every narrator (mirrors session_doc/io.py).
+            continue
         stem = f.stem.lower()
         key = None
         for first in char_firsts:
@@ -123,7 +128,9 @@ def main() -> None:
     parser.add_argument("--prose-mode", action="store_true",
                         help="Strip mechanical / GM framing from narration.")
     parser.add_argument("--narration-genre", default=None, metavar="TEXT",
-                        help="One-line genre/register directive injected into Pass 5.")
+                        help="Genre/register directive injected into Pass 5. Accepts a "
+                             "one-line directive or a full multi-line genre document; a "
+                             "multi-line value is injected as its own delimited block.")
     parser.add_argument("--reflections", action="store_true",
                         help="Inject campaign_state and world_state context into Pass 5 so "
                              "the narrator can draw on past events as memories.")
@@ -190,6 +197,15 @@ def main() -> None:
 
     party = Path(args.party).read_text(encoding="utf-8") if args.party else None
     roster = extract_character_roster(party) if party else ""
+    if party and party.strip() and not roster.strip():
+        print(f"Warning: --party was given ({args.party}) but no character roster could be "
+              f"parsed from it. The '## Character Classes (definitive — never contradict "
+              f"these)' block will be ABSENT from the narrate prompt, so the model has no "
+              f"authority for class, level, or species.\n"
+              f"  -> expected a '## <Name>' or '### <Name>' heading whose first bold line "
+              f"is a class line: '**Race Class N, Player: X**' or "
+              f"'**Class N (Subclass) | Species | Player'.",
+              file=sys.stderr)
     characters = [c.strip() for c in (args.characters or "").split(",") if c.strip()]
     voice_files = (
         load_voice_files(Path(args.voice_dir).expanduser())
@@ -364,7 +380,7 @@ def main() -> None:
         else:
             narration = stream_api(client, narrate_system, narrate_prompt,
                                    args.model, max_tokens=args.narrate_tokens,
-                                   verbose=args.verbose)
+                                   verbose=args.verbose, cache_system=True)
         print("─" * 60)
         narration = narration.strip()
         handoff = narration.rsplit("\n", 1)[-1].strip().strip('"').strip("'")
