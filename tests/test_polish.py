@@ -22,6 +22,7 @@ from pipelines.ensemble.polish import (
     tool_insert_section,
     tool_list_sections,
     tool_read_doc_section,
+    tool_read_voice_file,
     tool_record_critique,
 )
 
@@ -55,11 +56,12 @@ SAMPLE_RECAP = (
 
 
 def make_ctx(doc: WorkingDoc, recap: str = SAMPLE_RECAP,
-             roster=("vukradin", "soma", "brewbarry")) -> ToolContext:
+             roster=("vukradin", "soma", "brewbarry"),
+             voices: dict[str, str] | None = None) -> ToolContext:
     return ToolContext(
         doc=doc,
         recap_text=recap,
-        voices={},
+        voices=voices if voices is not None else {},
         context_docs={},
         context_paths={},
         roster_names=set(roster),
@@ -273,6 +275,46 @@ def test_read_doc_section_unknown_index_raises():
     ctx = make_ctx(doc)
     with pytest.raises(ToolError):
         tool_read_doc_section({"section_index": 99}, ctx)
+
+
+# ── read_voice_file (#247 — same resolver as session_doc.voice.get_voice_note,
+#    but must not warn: this tool can be called on every model turn) ──────────
+
+def test_tool_read_voice_file_resolves_new_pipeline_filename(capsys):
+    doc = WorkingDoc.parse(SAMPLE_DOC)
+    ctx = make_ctx(doc, voices={"brewbarry_new_pipeline": "Blustery halfling voice."})
+
+    result = tool_read_voice_file({"character": "Brewbarry"}, ctx)
+
+    assert result == {"character": "Brewbarry", "text": "Blustery halfling voice."}
+    assert capsys.readouterr().err == ""
+
+
+def test_tool_read_voice_file_missing_returns_error_dict_not_raise(capsys):
+    doc = WorkingDoc.parse(SAMPLE_DOC)
+    ctx = make_ctx(doc, voices={"vukradin": "Gruff."})
+
+    result = tool_read_voice_file({"character": "Brewbarry"}, ctx)
+
+    assert "error" in result
+    assert "Brewbarry" in result["error"]
+    assert "vukradin" in result["error"]
+    # No stderr spam on a routine tool-call miss — the warning lives in
+    # get_voice_note only (session_doc.voice._resolve_voice_key does not print).
+    assert capsys.readouterr().err == ""
+
+
+def test_tool_read_voice_file_ambiguous_returns_error_dict_not_raise(capsys):
+    doc = WorkingDoc.parse(SAMPLE_DOC)
+    ctx = make_ctx(doc, voices={
+        "brewbarry_new_pipeline": "New spec.",
+        "brewbarry_old_pipeline": "Old spec.",
+    })
+
+    result = tool_read_voice_file({"character": "Brewbarry"}, ctx)
+
+    assert "error" in result
+    assert capsys.readouterr().err == ""
 
 
 # ── Loop driver (mocked client) ───────────────────────────────────────────────

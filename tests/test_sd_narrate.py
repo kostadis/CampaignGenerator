@@ -550,6 +550,114 @@ def test_underscore_file_does_not_join_global_examples(tmp_path):
     assert "The house style sample." in (global_text or "")
 
 
+# ── Voice-file lookup resolution (#247) ──────────────────────────────────────
+#
+# load_voice_files only strips a trailing "_voice" suffix, so real Phandalin
+# filenames like "brewbarry_new_pipeline.md" key as "brewbarry_new_pipeline"
+# — a lookup on "Brewbarry" (full name or first name) used to miss entirely
+# and all four Phandalin narrators silently got no VOICE SPEC block. These
+# cover every real filename shape plus the ambiguity and skip cases.
+
+def test_get_voice_note_resolves_new_pipeline_filename(tmp_path):
+    voice_dir = tmp_path / "voice"
+    voice_dir.mkdir()
+    (voice_dir / "brewbarry_new_pipeline.md").write_text(
+        "Blustery halfling merchant voice.", encoding="utf-8")
+
+    voices = load_voice_files(voice_dir)
+
+    assert get_voice_note(voices, "Brewbarry") == "Blustery halfling merchant voice."
+
+
+def test_get_voice_note_resolves_legacy_voice_suffix(tmp_path):
+    voice_dir = tmp_path / "voice"
+    voice_dir.mkdir()
+    (voice_dir / "brewbarry_voice.md").write_text(
+        "Legacy spec.", encoding="utf-8")
+
+    voices = load_voice_files(voice_dir)
+
+    assert get_voice_note(voices, "Brewbarry") == "Legacy spec."
+
+
+def test_get_voice_note_resolves_bare_filename(tmp_path):
+    voice_dir = tmp_path / "voice"
+    voice_dir.mkdir()
+    (voice_dir / "brewbarry.md").write_text("Bare spec.", encoding="utf-8")
+
+    voices = load_voice_files(voice_dir)
+
+    assert get_voice_note(voices, "Brewbarry") == "Bare spec."
+
+
+def test_get_voice_note_ambiguous_prefix_returns_none_and_warns(tmp_path, capsys):
+    voice_dir = tmp_path / "voice"
+    voice_dir.mkdir()
+    # Two files whose keys both start with "brewbarry" + separator — the
+    # resolver must refuse to guess between them rather than picking one.
+    (voice_dir / "brewbarry_new_pipeline.md").write_text("New spec.", encoding="utf-8")
+    (voice_dir / "brewbarry-alt-take.md").write_text("Alt spec.", encoding="utf-8")
+
+    voices = load_voice_files(voice_dir)
+
+    result = get_voice_note(voices, "Brewbarry")
+
+    assert result is None
+    err = capsys.readouterr().err
+    assert "ambiguous" in err
+    assert "Brewbarry" in err
+    assert "brewbarry_new_pipeline" in err
+    assert "brewbarry-alt-take" in err
+
+
+def test_get_voice_note_genre_file_is_skipped_not_a_candidate(tmp_path):
+    voice_dir = tmp_path / "voice"
+    voice_dir.mkdir()
+    (voice_dir / "_genre.md").write_text(GENRE_SENTINEL, encoding="utf-8")
+    (voice_dir / "brewbarry_new_pipeline.md").write_text(
+        "Blustery halfling merchant voice.", encoding="utf-8")
+
+    voices = load_voice_files(voice_dir)
+
+    assert "genre" not in voices
+    assert get_voice_note(voices, "Brewbarry") == "Blustery halfling merchant voice."
+
+
+def test_get_voice_note_real_phandalin_shape_all_four_narrators_found(tmp_path):
+    # Mirrors the actual ~/src/campaigns/Phandalin/voice/ layout: four
+    # "_new_pipeline" files plus a shared "_genre.md".
+    voice_dir = tmp_path / "voice"
+    voice_dir.mkdir()
+    (voice_dir / "_genre.md").write_text(GENRE_SENTINEL, encoding="utf-8")
+    for name in ("brewbarry", "soma", "valphine", "vukradin"):
+        (voice_dir / f"{name}_new_pipeline.md").write_text(
+            f"{name} voice spec.", encoding="utf-8")
+
+    voices = load_voice_files(voice_dir)
+
+    for name in ("Brewbarry", "Soma", "Valphine", "Vukradin"):
+        assert get_voice_note(voices, name) == f"{name.lower()} voice spec."
+
+
+def test_get_voice_note_warns_on_miss_with_nonempty_voices(capsys):
+    voices = {"vukradin": "Gruff."}
+
+    result = get_voice_note(voices, "Brewbarry")
+
+    assert result is None
+    err = capsys.readouterr().err
+    assert "Brewbarry" in err
+    assert "vukradin" in err
+
+
+def test_get_voice_note_does_not_warn_on_empty_voices(capsys):
+    result = get_voice_note({}, "Brewbarry")
+
+    assert result is None
+    err = capsys.readouterr().err
+    assert err == ""
+
+
 # ── System-prompt caching on the live narrate call (#245, item E) ───────────
 #
 # The system prompt (base + prose_mode + examples + voice spec + genre doc)

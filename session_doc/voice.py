@@ -1,6 +1,7 @@
 """Voice-file loading and per-narrator lookups for session_doc and the sd_* CLIs."""
 
 import re
+import sys
 from pathlib import Path
 
 
@@ -23,10 +24,79 @@ def load_voice_files(voice_dir: Path) -> dict[str, str]:
     return voices
 
 
+def _first_name(narrator: str) -> str:
+    parts = narrator.lower().strip().split()
+    return parts[0] if parts else narrator.lower().strip()
+
+
+def _resolve_voice_key(voices: dict[str, str], narrator: str) -> tuple[str | None, bool]:
+    """Resolve ``narrator`` to a key in ``voices`` without warning.
+
+    Resolution order:
+      (a) exact full-name key (``narrator.lower()``),
+      (b) first-name key (``narrator.lower().split()[0]``),
+      (c) the unique key whose name starts with the first name followed by a
+          ``_`` or ``-`` separator — this is what makes real filenames like
+          ``brewbarry_new_pipeline.md`` resolve for narrator "Brewbarry".
+
+    Returns ``(key, ambiguous)``. ``key`` is ``None`` on a miss. ``ambiguous``
+    is True when step (c) found two or more candidate keys — the caller must
+    treat that as "cannot resolve," never guess which file to use.
+    """
+    if not voices:
+        return None, False
+    full = narrator.lower().strip()
+    if full in voices:
+        return full, False
+    firstname = _first_name(narrator)
+    if firstname in voices:
+        return firstname, False
+    prefix_len = len(firstname)
+    candidates = sorted(
+        k for k in voices
+        if k.startswith(firstname) and len(k) > prefix_len and k[prefix_len] in "_-"
+    )
+    if len(candidates) == 1:
+        return candidates[0], False
+    if len(candidates) >= 2:
+        return None, True
+    return None, False
+
+
 def get_voice_note(voices: dict[str, str], narrator: str) -> str | None:
-    """Look up a voice note for a narrator by case-insensitive name match."""
-    key = narrator.lower().split()[0]
-    return voices.get(key) or voices.get(narrator.lower())
+    """Look up a voice note for a narrator by case-insensitive name match.
+
+    An empty ``voices`` dict just means no ``--voice-dir`` was given and is
+    not worth warning about. A *non-empty* dict that still can't resolve the
+    narrator is the #247 failure mode — a real voice file sitting on disk
+    that silently never reaches the prompt — so that case warns to stderr
+    naming the narrator and the available keys, rather than vanishing.
+    """
+    if not voices:
+        return None
+    key, ambiguous = _resolve_voice_key(voices, narrator)
+    if key is not None:
+        return voices[key]
+    firstname = _first_name(narrator)
+    if ambiguous:
+        print(
+            f"Warning: voice file lookup for narrator '{narrator}' is ambiguous — "
+            f"multiple keys start with '{firstname}_' or '{firstname}-' in "
+            f"{sorted(voices)}. Refusing to guess; no voice spec will be used for "
+            f"this narrator.\n"
+            f"  -> rename the voice files so only one begins with '{firstname}' "
+            f"followed by '_' or '-'.",
+            file=sys.stderr,
+        )
+    else:
+        print(
+            f"Warning: no voice file found for narrator '{narrator}' — available "
+            f"keys in --voice-dir: {sorted(voices)}.\n"
+            f"  -> expected a file named '{firstname}.md', '{firstname}_voice.md', "
+            f"or '{firstname}_<anything>.md'.",
+            file=sys.stderr,
+        )
+    return None
 
 
 def extract_contrast_sample(text: str, max_sentences: int = 5) -> str:
