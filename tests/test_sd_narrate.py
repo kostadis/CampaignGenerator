@@ -16,6 +16,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import session_doc  # noqa: E402
 from session_doc import sd_narrate  # noqa: E402
+from session_doc.voice import get_voice_note, load_voice_files  # noqa: E402
 
 
 # ── Fixtures: a minimal 2-scene plan + scene-extraction pair ────────────────
@@ -89,7 +90,7 @@ class FakeRunSingleBatch:
     def __call__(self, client, *, system, user, model, max_tokens=8192, **kwargs):
         idx = len(self.calls)
         self.calls.append({"system": system, "user": user, "model": model,
-                           "max_tokens": max_tokens})
+                           "max_tokens": max_tokens, "kwargs": kwargs})
         return self._texts[idx]
 
 
@@ -118,7 +119,8 @@ class FakeStreamAPI:
 
     def __call__(self, client, system, user, model, *args, **kwargs):
         idx = len(self.calls)
-        self.calls.append({"system": system, "user": user, "model": model})
+        self.calls.append({"system": system, "user": user, "model": model,
+                           "kwargs": kwargs})
         return self._texts[idx]
 
 
@@ -415,3 +417,164 @@ def test_no_warning_when_the_smoothed_dir_is_the_one_selected(
     sd_narrate.main()
 
     assert "exists alongside" not in capsys.readouterr().err
+
+
+# ── Silent-failure warning when --party can't be parsed (#245, defect 4) ────
+#
+# The Phandalin ch46 regression: `## Character Classes` was silently ABSENT
+# from the prompt because the roster parser produced junk from a party.md
+# layout it didn't understand, with nothing telling the GM. The parser is
+# fixed for Phandalin/legacy layouts (tests/test_roster.py); this pair
+# guards the failure mode for every layout that is still unsupported.
+
+HILLSFAR_PARTY = (
+    "## Characters\n\n### Akritas\n**High Elf Ranger 11** — player: kostadis1\n"
+)
+
+# Verbatim excerpt from /home/kroussos/src/campaigns/Phandalin/docs/party.md — kept
+# as a local copy rather than importing from tests/test_roster.py: tests/ has no
+# __init__.py, so a cross-file `from tests.test_roster import ...` makes Python
+# import that module twice under two different names ("test_roster" via pytest's
+# own rootdir-relative collection, "tests.test_roster" via the explicit import),
+# re-executing its module body a second time. That duplicate execution was
+# observed to produce flaky session_doc.roster resolution in this suite —
+# harmless on its own terms, but not worth the risk. See tests/test_roster.py
+# for the parser-level coverage of this fixture; this copy only needs enough to
+# exercise the --party wiring end to end.
+PHANDALIN_PARTY = (
+    "# Party Reference — Icespire Peak / Phandalin Campaign\n"
+    "\n"
+    "## Characters\n"
+    "\n"
+    "### Brewbarry\n"
+    "\n"
+    "**Barbarian 6 (Path of the Giant) | Goliath | Stephane Boudreau \n"
+    "\n"
+    "### Valphine Sotorra\n"
+    "\n"
+    "**Cleric 6 (Peace Domain) | Drow Elf | Player: Gary Young**\n"
+    "\n"
+    "### Soma\n"
+    "\n"
+    "**Druid 6 (Circle of the Moon) | Tortle | Player: Wade Brown**\n"
+    "\n"
+    "### Vukradin\n"
+    "\n"
+    "**Bard 6 (College of Eloquence) | Aasimar | Player: David Mendenhall (Dave)**\n"
+    "\n"
+)
+
+
+def test_unparseable_party_prints_a_warning(monkeypatch, tmp_path, capsys):
+    paths = _write_fixtures(tmp_path)
+    party = tmp_path / "party.md"
+    party.write_text(HILLSFAR_PARTY, encoding="utf-8")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party", str(party)))
+    sd_narrate.main()
+
+    err = capsys.readouterr().err
+    assert "no character roster could be parsed" in err
+    assert "## Character Classes" not in fake_stream.calls[0]["user"]
+
+
+def test_parseable_party_prints_no_warning(monkeypatch, tmp_path, capsys):
+    paths = _write_fixtures(tmp_path)
+    party = tmp_path / "party.md"
+    party.write_text(PHANDALIN_PARTY, encoding="utf-8")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party", str(party)))
+    sd_narrate.main()
+
+    err = capsys.readouterr().err
+    assert "no character roster could be parsed" not in err
+
+    prompt = fake_stream.calls[0]["user"]
+    assert "## Character Classes" in prompt
+    assert "Goliath" in prompt
+
+
+# ── Underscore-prefixed shared campaign files are skipped (#245, item E) ────
+#
+# session_doc/io.py already treats a leading `_` as "shared sibling artifact,
+# not a per-item file" (`_genre.md` sitting next to per-scene/per-character
+# files). voice.py and sd_narrate.py's `_load_examples` glob the same `*.md`
+# directories and must mirror that skip.
+
+GENRE_SENTINEL = "SENTINEL_GENRE_TEXT — this is shared campaign material."
+
+
+def test_underscore_file_is_not_loaded_as_a_voice(tmp_path):
+    voice_dir = tmp_path / "voice"
+    voice_dir.mkdir()
+    (voice_dir / "_genre.md").write_text(GENRE_SENTINEL, encoding="utf-8")
+    (voice_dir / "alice_voice.md").write_text("Alice speaks in short sentences.",
+                                               encoding="utf-8")
+
+    voices = load_voice_files(voice_dir)
+
+    assert set(voices.keys()) == {"alice"}
+    assert not any("genre" in key for key in voices)
+
+    # Behaviour check: a voice/ dir with ONLY an underscore file yields {},
+    # and looking up a narrator against it returns None rather than crashing.
+    only_underscore_dir = tmp_path / "voice_only_underscore"
+    only_underscore_dir.mkdir()
+    (only_underscore_dir / "_genre.md").write_text(GENRE_SENTINEL, encoding="utf-8")
+    empty_voices = load_voice_files(only_underscore_dir)
+    assert empty_voices == {}
+    assert get_voice_note(empty_voices, "Brewbarry") is None
+
+
+def test_underscore_file_does_not_join_global_examples(tmp_path):
+    examples_dir = tmp_path / "examples"
+    examples_dir.mkdir()
+    (examples_dir / "_genre.md").write_text(GENRE_SENTINEL, encoding="utf-8")
+    (examples_dir / "alice.md").write_text("Alice's per-character style sample.",
+                                            encoding="utf-8")
+    (examples_dir / "general_style.md").write_text("The house style sample.",
+                                                     encoding="utf-8")
+
+    global_text, per_char = sd_narrate._load_examples(examples_dir, ["Alice", "Bob"])
+
+    # Sentinel from the underscore file reaches neither the global block...
+    assert GENRE_SENTINEL not in (global_text or "")
+    # ...nor any per-character entry.
+    for text in per_char.values():
+        assert GENRE_SENTINEL not in text
+    # A normal shared file (no leading underscore) still joins the global block.
+    assert "The house style sample." in (global_text or "")
+
+
+# ── System-prompt caching on the live narrate call (#245, item E) ───────────
+#
+# The system prompt (base + prose_mode + examples + voice spec + genre doc)
+# is identical across every scene in the per-scene loop, so caching it is
+# free money for API-billed runs. --batch is a different code path/semantics
+# and must NOT pick up cache_system.
+
+def test_narrate_requests_system_prompt_caching(monkeypatch, tmp_path):
+    paths = _write_fixtures(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+
+    monkeypatch.setattr(sys, "argv", _base_argv(paths))
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 2
+    for call in fake_stream.calls:
+        assert call["kwargs"].get("cache_system") is True
+
+    # --batch path is untouched: no cache_system kwarg reaches run_single_batch.
+    fake_batch = FakeRunSingleBatch([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "run_single_batch", fake_batch)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--batch"))
+    sd_narrate.main()
+
+    assert len(fake_batch.calls) == 2
+    for call in fake_batch.calls:
+        assert "cache_system" not in call["kwargs"]

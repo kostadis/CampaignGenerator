@@ -71,7 +71,7 @@ def _load_examples(examples_dir: Path | None,
 
     A file whose stem matches a character's first name (case-insensitive)
     routes to that character only; everything else is concatenated into
-    the global block.
+    the global block. Files whose name starts with ``_`` are skipped entirely.
     """
     if examples_dir is None or not examples_dir.is_dir():
         return None, {}
@@ -79,6 +79,11 @@ def _load_examples(examples_dir: Path | None,
     global_parts: list[str] = []
     per_char: dict[str, str] = {}
     for f in sorted(examples_dir.glob("*.md")):
+        if f.name.startswith("_"):
+            # Shared campaign material (e.g. `_genre.md`), not a style example.
+            # An unmatched `_`-file would otherwise join the GLOBAL examples
+            # block and reach every narrator (mirrors session_doc/io.py).
+            continue
         stem = f.stem.lower()
         key = None
         for first in char_firsts:
@@ -375,7 +380,7 @@ def main() -> None:
         else:
             narration = stream_api(client, narrate_system, narrate_prompt,
                                    args.model, max_tokens=args.narrate_tokens,
-                                   verbose=args.verbose)
+                                   verbose=args.verbose, cache_system=True)
         print("─" * 60)
         narration = narration.strip()
         handoff = narration.rsplit("\n", 1)[-1].strip().strip('"').strip("'")

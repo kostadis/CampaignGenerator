@@ -9,9 +9,14 @@ def load_voice_files(voice_dir: Path) -> dict[str, str]:
 
     Looks for files named {character_name}_voice.md or {character_name}.md
     (case-insensitive). Returns a dict mapping lowercased character name to content.
+    Files whose name starts with ``_`` are skipped — they are shared campaign material.
     """
     voices: dict[str, str] = {}
     for f in voice_dir.glob("*.md"):
+        if f.name.startswith("_"):
+            # `_genre.md` and friends are shared campaign material, not a
+            # per-character voice file (mirrors session_doc/io.py's skip).
+            continue
         stem = f.stem.lower()
         key = stem.removesuffix("_voice")
         voices[key] = f.read_text(encoding="utf-8").strip()
