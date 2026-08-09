@@ -28,6 +28,20 @@ from pathlib import Path
 
 _FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
 
+# Pass 5 appends `<!-- table-speech reclassified: "…" | "…" -->` after the
+# narration when it reclassifies a mislabelled quoted span as GM table speech
+# (issue #245). The comment is the GM's review queue and stays in the per-scene
+# file; it is not part of the assembled document.
+_AUDIT_COMMENT_RE = re.compile(
+    r"[ \t]*<!--\s*table-speech reclassified:.*?-->[ \t]*\n?",
+    re.DOTALL | re.IGNORECASE,
+)
+
+
+def strip_audit_comments(body: str) -> str:
+    """Remove Pass 5's table-speech audit comments from a scene body."""
+    return _AUDIT_COMMENT_RE.sub("", body)
+
 
 def parse_frontmatter(text: str) -> tuple[dict, str]:
     """Return (metadata, body) from a markdown file with YAML frontmatter."""
@@ -124,7 +138,7 @@ def main() -> None:
             print(f"  Skipping {path.name}: missing or non-numeric 'scene' frontmatter "
                   f"(got {scene_str!r})", file=sys.stderr)
             continue
-        scenes.append((scene_num, meta, body.strip(), path))
+        scenes.append((scene_num, meta, strip_audit_comments(body).strip(), path))
     scenes.sort(key=lambda x: x[0])
 
     if not scenes:
