@@ -192,6 +192,15 @@ def main() -> None:
 
     party = Path(args.party).read_text(encoding="utf-8") if args.party else None
     roster = extract_character_roster(party) if party else ""
+    if party and party.strip() and not roster.strip():
+        print(f"Warning: --party was given ({args.party}) but no character roster could be "
+              f"parsed from it. The '## Character Classes (definitive — never contradict "
+              f"these)' block will be ABSENT from the narrate prompt, so the model has no "
+              f"authority for class, level, or species.\n"
+              f"  -> expected a '## <Name>' or '### <Name>' heading whose first bold line "
+              f"is a class line: '**Race Class N, Player: X**' or "
+              f"'**Class N (Subclass) | Species | Player'.",
+              file=sys.stderr)
     characters = [c.strip() for c in (args.characters or "").split(",") if c.strip()]
     voice_files = (
         load_voice_files(Path(args.voice_dir).expanduser())
