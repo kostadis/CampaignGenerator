@@ -123,7 +123,9 @@ def main() -> None:
     parser.add_argument("--prose-mode", action="store_true",
                         help="Strip mechanical / GM framing from narration.")
     parser.add_argument("--narration-genre", default=None, metavar="TEXT",
-                        help="One-line genre/register directive injected into Pass 5.")
+                        help="Genre/register directive injected into Pass 5. Accepts a "
+                             "one-line directive or a full multi-line genre document; a "
+                             "multi-line value is injected as its own delimited block.")
     parser.add_argument("--reflections", action="store_true",
                         help="Inject campaign_state and world_state context into Pass 5 so "
                              "the narrator can draw on past events as memories.")

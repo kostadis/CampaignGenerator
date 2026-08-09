@@ -33,7 +33,17 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
     else:
         block = ""
     if genre and genre.strip():
-        genre_block = f"GENRE: {genre.strip()}\n"
+        g = genre.strip()
+        if "\n" in g:
+            # A full genre document, not a one-line directive: give it its own
+            # delimited block so it does not read as a run-on label wedged into
+            # the preamble. The tail reminder at the end of this function is
+            # unaffected and still fires (recency, for small local models).
+            genre_block = ("GENRE & REGISTER (campaign-specific) — BEGIN\n"
+                           f"{g}\n"
+                           "GENRE & REGISTER — END\n")
+        else:
+            genre_block = f"GENRE: {g}\n"
     else:
         genre_block = ""
     if scene:

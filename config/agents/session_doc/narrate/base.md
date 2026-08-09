@@ -39,6 +39,22 @@ AVOID:
 - Mechanical detail (rolls, HP, spell slots)
 - Generic fantasy prose that could belong to any character
 
+HARD BANS — these are banned as MOVES, not as wordings. Renaming the surface form does
+not fix them; if you swap one variant for another the ban is still violated.
+
+- Behavioral taxonomy — classifying a person's behaviour into a type instead of rendering
+  the specific thing observed. Banned in every variant, including:
+    "with the [adjective] [noun] of someone who..."
+    "the shape of X" / "the shape of it"
+    "that look X gets when..."
+    "had a way of X-ing"
+    "ever the X" ("Vukradin, ever the pedant")
+  This construction is one narrator wearing every character's hat. Name what the narrator
+  actually saw — the hands, the pause, the word they chose — and stop there.
+- Recap framing — the narrator mentally summarising events for the reader's benefit
+  ("After the battle, I reflected on what we had accomplished"). The next scene shows what
+  carried over. The narrator does not brief the reader.
+
 VOICE:
 - First person, emotionally honest, distinctly this character — not a generic narrator
 - The prose between quoted lines should sound like this character reflecting —
