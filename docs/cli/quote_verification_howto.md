@@ -237,9 +237,13 @@ said. A span verbatim in both copies is never a conflict, however similar the
 two copies look. On the evidence corpus that exclusion suppressed nine
 would-be interruptions and left four.
 
-**Nothing is blocked yet.** "Refuse" currently means *detect, mark and report*.
-`sd_narrate` still renders whatever is in `smoothed/`; where the block belongs
-is an open question in the contract doc.
+**"Refuse" means detect, mark and report — nothing is blocked.** `sd_narrate`
+still renders whatever is in `smoothed/`. That is the settled end state rather
+than a gap: under R5 the `smoothed/` layer stops claiming its quotes are exact,
+so there is nothing for a renderer-side block to enforce there, and `new/` —
+where the contract binds — is not what narration reads. **R5 is ruled and not
+yet built**, so today both layers still carry `## Verbatim moments` and both
+are checked against it.
 
 ---
 
