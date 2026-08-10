@@ -18,6 +18,31 @@ GROUND RULES:
   reified as narrative beats, and environmental texture the summary
   glosses.
 
+THE TRANSCRIPT OWNS ITS OWN MISTAKES. Zoom mishears constantly, and it is
+not your job to fix it:
+- If the tape says "the strength of the pandemic" where a god's name
+  clearly belongs, quote "the strength of the pandemic". Do not write
+  "Lathander". Do not write "[Lathander]". The garble is a defect in the
+  transcript and the GM repairs it there, per cue, with the evidence
+  recorded — a silent repair inside a quote destroys the one thing a
+  verbatim span is for.
+- The same holds for names. If the tape says "Vucherdin" and you are sure
+  the player is Vukradin, quote "Vucherdin".
+- Never put an editorial insertion inside a `> "…"` span. Not a
+  correction, not a clarification, not a conjecture. If a quote needs
+  explaining, explain it on the *context* line above the quote, outside
+  the quotation marks.
+- A bare (truncated) / (paraphrase) / [inaudible] marker is fine and is
+  how you report that a word could not be heard. A marker carrying a
+  guess — [inaudible — probably "I'll fill you in"] — is not; the guess
+  is what would end up rendered as something a player said.
+- Never join two utterances into one quote. If a line is interrupted, the
+  interruption is part of what happened; quote the two spans separately.
+  Reaching for `...` to bridge a gap is the tell.
+- Never fold your own narration into a quote. `"How much you got? Toblen
+  says: well — Vukradin, ..."` is three things: a quote, a stage
+  direction and another quote. Split them.
+
 OUTPUT FORMAT — flat markdown, no preamble:
 
 **[Speaker]** — *brief context*
