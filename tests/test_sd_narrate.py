@@ -423,12 +423,15 @@ def test_no_warning_when_the_smoothed_dir_is_the_one_selected(
 #
 # The Phandalin ch46 regression: `## Character Classes` was silently ABSENT
 # from the prompt because the roster parser produced junk from a party.md
-# layout it didn't understand, with nothing telling the GM. The parser is
-# fixed for Phandalin/legacy layouts (tests/test_roster.py); this pair
-# guards the failure mode for every layout that is still unsupported.
+# layout it didn't understand, with nothing telling the GM. The parser now
+# reads all six hand-authored campaign layouts (issue #248; see
+# tests/test_roster.py) — this pair guards the failure mode for whatever's
+# left over: a party.md with no class-shaped line the parser recognises at
+# all, synthetic on purpose so it isn't tied to any one campaign's (movable)
+# current file content.
 
-HILLSFAR_PARTY = (
-    "## Characters\n\n### Akritas\n**High Elf Ranger 11** — player: kostadis1\n"
+UNPARSEABLE_PARTY = (
+    "## Characters\n\n### Akritas\n**Notes:** Not a class line at all.\n"
 )
 
 # Verbatim excerpt from /home/kroussos/src/campaigns/Phandalin/docs/party.md — kept
@@ -468,7 +471,7 @@ PHANDALIN_PARTY = (
 def test_unparseable_party_prints_a_warning(monkeypatch, tmp_path, capsys):
     paths = _write_fixtures(tmp_path)
     party = tmp_path / "party.md"
-    party.write_text(HILLSFAR_PARTY, encoding="utf-8")
+    party.write_text(UNPARSEABLE_PARTY, encoding="utf-8")
     fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
     monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
 
