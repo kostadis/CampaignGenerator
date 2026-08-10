@@ -24,6 +24,8 @@ pipelines/session_prep/prep.py  # CLI: session beat / session arc prep
 session_doc/sd_consistency.py  # CLI: Pass 1 — consistency check (sd_*.py replaced session_doc.py)
 session_doc/sd_plan.py         # CLI: Pass 3 — narrative plan
 session_doc/sd_narrate.py      # CLI: Pass 5 — per-scene narration
+session_doc/sd_corrections.py  # CLI: generate *.transcript.cleaned.vtt from the raw
+                             #   tape + transcript_corrections.yaml (#250 R4)
 session_doc/                # Post-session pipeline CLIs (sd_*, assemble, scene_extract,
                              #   enhance_summary, …) + shared helpers (io, voice,
                              #   roster, examples, narrate)
@@ -164,6 +166,12 @@ So when a render pipeline or a consistency check needs a fact, and an authoritat
 Two labels ride alongside and mean specific things: `generated_but_hand_edited: true` says the file carries a hand-written correction the next run will destroy, and an attached correction with `verified: false` is an open question for the GM, not a settled fact. Neither is a reason to re-tier the file.
 
 Read-only, no LLM call, no writes — statically guarded (`tests/test_provenance_readonly.py`, `tests/test_provenance_no_llm.py`). See `docs/cli/provenance_search.md`.
+
+### Never hand-edit a `*.transcript.cleaned.vtt`
+
+It is **generated** (#250 R4). The raw `*.transcript.vtt` is the archive and is never written; `<session-dir>/transcript_corrections.yaml` is the hand-authored, cue-indexed record; `sd_corrections apply` turns one into the other. A hand-edit is discarded by the next `apply` and reported by `sd_corrections check` as an edit nobody wrote down.
+
+This rule exists because the previous arrangement — a chat-driven spell pass editing the tape directly — put 74 unrecorded substitutions into Phandalin ch46, three of which inserted a surname no player spoke. To fix a mishearing, add an entry (`cue`, `was`, `now`, `verified`, `note`) and re-apply. `was` is checked against the tape on every apply, so a stale entry fails loudly rather than pasting an old repair over new words. See `docs/cli/transcript_corrections_howto.md`.
 
 ### LLM renders, humans decide
 
