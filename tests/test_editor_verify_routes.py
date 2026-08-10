@@ -131,3 +131,37 @@ def test_verify_cmd_forwards_no_model_selection():
     assert "_selection_args" not in body
     for flag in ("--backend", "--model", "--batch", "--fast", "--endpoint"):
         assert flag not in body
+
+
+# ── Refusal count (extraction contract #250) ─────────────────────────────────
+
+REPORT_WITH_REFUSALS = REPORT.replace(
+    "\n## Not checked",
+    "\n**Refused by the extraction contract (#250)**: 16 — R1 4, R3 12.\n"
+    "\n## Not checked",
+)
+
+
+def test_refusal_count_parses(tmp_path):
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    p = tmp_path / "quote_report.md"
+    p.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")
+    assert _parse_quote_report_refusals(p) == 16
+
+
+def test_refusal_count_is_none_not_zero_when_absent(tmp_path):
+    """A report written before refusals existed must not read as 'found none'
+    — the same distinction the verdict counts make."""
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    p = tmp_path / "quote_report.md"
+    p.write_text(REPORT, encoding="utf-8")
+    assert _parse_quote_report_refusals(p) is None
+    assert _parse_quote_report_refusals(tmp_path / "nope.md") is None
+
+
+def test_refusals_do_not_disturb_the_verdict_counts(tmp_path):
+    p = tmp_path / "quote_report.md"
+    p.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")
+    assert _parse_quote_report_counts(p) == {"verified": 339, "near": 139,
+                                            "unverified": 39, "unscored": 3,
+                                            "exempt": 2}

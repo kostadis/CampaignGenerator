@@ -19,11 +19,17 @@ running `enhance_summary` and `scene_extract` exactly as before and nothing
 changes. Verification happens only when you type the command or click the
 button.
 
-**3. It never fixes anything.** The only write is an additive
-`<!-- cg:unverified -->` marker on a flagged line, applied idempotently — quote
-text is never altered, and `--report-only` suppresses even that. You apply the
-repairs yourself in Claude. That is deliberate: the autonomous-repair
-alternative is what silently stripped spells out of narration in issue #151.
+**3. It never fixes anything.** The only writes are additive
+`<!-- cg:unverified -->` / `<!-- cg:refused:R1 -->` markers on flagged lines,
+applied idempotently — quote text is never altered, and `--report-only`
+suppresses even that. You apply the repairs yourself in Claude. That is
+deliberate: the autonomous-repair alternative is what silently stripped spells
+out of narration in issue #151.
+
+**4. It reports two different things.** A **verdict** answers *is this in the
+tape*. A **refusal** answers *may the pipeline choose this*, and the answer is
+routinely "no" for a quote that is perfectly verbatim. See
+[The refusals](#the-refusals-contract-250) below.
 
 ---
 
@@ -186,8 +192,54 @@ the letter "c" rather than by anything reasoned — and prints which one it used
 | `unscored` | under 4 tokens; matches anything, so no score means anything | no |
 | `exempt` | `(paraphrase)`, `(truncated)`, `[inaudible]` — the sanctioned markers | no |
 
-Exit codes: `0` no unverified quotes, `1` findings, `2` could not run. **A
-finding is not an error.**
+Exit codes: `0` nothing unverified and nothing refused, `1` findings, `2` could
+not run. **A finding is not an error.**
+
+---
+
+## The refusals (contract #250)
+
+A second, independent axis, from the ratified
+[extraction contract](../design/ExtractionContract_proposal.md). It appears as a
+`## Refused` section at the top of the report, before `## Unverified`, because a
+refusal is the stronger claim: an unverified quote is a thing to look at, a
+refused span is a thing the pipeline has **declined to decide for you**.
+
+| rule | fires when | what to do |
+|---|---|---|
+| **R1** | the `## Scene summary` and `## Verbatim moments` copies of one span disagree and **neither** is verbatim in the tape | read the cue. Usually the tape is the thing that is wrong. |
+| **R3** | a span marked verbatim carries an editorial insertion — `"that's our next [stop]."` | rewrite the span as what was said and move the clarification outside the quote |
+
+Three things worth knowing before you read your first one:
+
+- **A refusal is not an accusation.** It is not saying the text is wrong. It is
+  saying that choosing between two readings is a scope decision, and this
+  pipeline is not the thing that should make it.
+- **A refused span can be `verified`.** `> "…the strength of [Lathander]"`
+  matches the tape once the bracket is stripped, and is still an editorial hand
+  inside something labelled verbatim. Verdict and refusal are computed
+  separately and a line can carry both markers.
+- **The usual fix is R2 — correct the tape, not the quote.** On the session
+  that produced this contract, *every* refusal traced back to Zoom mishearing a
+  word and the extraction quietly repairing it: cue 224's *"the strength of the
+  pandemic"* became "Lathander", cue 324's *"our next system"* became "our next
+  [stop]", cue 1211's *"much respect for the thunder"* became "[Lathander]".
+  Sixteen in one session. When that is what you are looking at, edit the
+  `.cleaned.vtt` cue and re-run — the check is free.
+
+**Bare `[inaudible]` is preserved, not refused.** It states a fact about the
+tape; deleting it fabricates certainty. The same marker carrying a guess —
+`[inaudible — probable "I'll fill you in"]` — *is* refused, because it is the
+guess that would render.
+
+**What R1 will not do:** wake you up over two things that were both actually
+said. A span verbatim in both copies is never a conflict, however similar the
+two copies look. On the evidence corpus that exclusion suppressed nine
+would-be interruptions and left four.
+
+**Nothing is blocked yet.** "Refuse" currently means *detect, mark and report*.
+`sd_narrate` still renders whatever is in `smoothed/`; where the block belongs
+is an open question in the contract doc.
 
 ---
 
@@ -204,7 +256,9 @@ Stated in every report, because silent non-coverage reads exactly like a pass:
 - **Speaker attribution.** It answers *were these words said*, not *did this
   person say them*.
 - **`## Scene summary` sections** — human-authored gm-assist content, not model
-  output.
+  output. It is never accused of anything. R1 does read it, but only as the
+  *other copy* of a span, so the worst a mis-parse there can do is fail to
+  notice a conflict.
 - **Multi-line blockquotes.** None exist in the measured corpus; if any appear
   the report counts them rather than skipping silently.
 
@@ -217,6 +271,11 @@ Session Doc Editor gains a **Verify Quotes** button and a ✓ pipeline dot showi
 report is older than the artifact it checked). It shells out to the same CLI and
 writes the same report to disk — there is nothing the UI can do that the command
 line cannot.
+
+The dot goes `warn` on **either** axis — unverified quotes or contract
+refusals. A run with nothing unverified and a dozen refused spans is not a
+clean run, so it does not show green. The strip does not yet say *which* axis
+tripped it; open the report for that.
 
 Knobs live in `<config>/session_doc.yaml`:
 

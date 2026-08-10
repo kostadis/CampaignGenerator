@@ -26,11 +26,20 @@ traceable to a transcript line is ``near`` (informational), and only an
 untraceable one is ``unverified`` (the fabrication signal).
 
 **Nothing is rewritten.** The only permitted modification to a checked file is
-an additive ``<!-- cg:unverified -->`` marker on an unverified quote's line,
-applied idempotently. Repairing quotes automatically is out of scope by
-design: ``scrub_mechanics.py`` was an autonomous LLM repair pass that stripped
-spells out of narration (issue #151) and was replaced by a propose→confirm→
-apply workflow. Verbatim text is the one thing this module must never touch.
+an additive ``<!-- cg:unverified -->`` / ``<!-- cg:refused:RN -->`` marker on
+an offending quote's line, applied idempotently. Repairing quotes
+automatically is out of scope by design: ``scrub_mechanics.py`` was an
+autonomous LLM repair pass that stripped spells out of narration (issue #151)
+and was replaced by a propose→confirm→apply workflow. Verbatim text is the one
+thing this module must never touch.
+
+**Verdicts and refusals are two different axes.** A verdict answers *is this
+in the tape*. A refusal (extraction contract #250, R1/R3 — see
+``docs/design/ExtractionContract_proposal.md``) answers *may the pipeline
+choose this*, and the answer can be no for a span that is perfectly verbatim.
+``> "…the strength of [Lathander]"`` matches the tape once the bracket is
+stripped and is still an editorial hand inside a span marked verbatim. The two
+axes are computed independently and reported separately.
 """
 
 from __future__ import annotations
@@ -67,12 +76,20 @@ DEFAULT_MIN_TOKENS = 4
 
 ANNOTATION = "<!-- cg:unverified -->"
 
+# Words that state a fact *about the tape* rather than supplying text: the
+# extractor reporting that something could not be heard. Shared by the two
+# rules below so the two cannot drift apart.
+_MARKER_WORDS = (
+    r"inaudible|unclear|unintelligible|indistinct|crosstalk"
+    r"|paraphrase|truncated|silence"
+)
+
 # Markers the generation prompts define for "no verbatim quote exists", plus
 # the [inaudible] convention that appears in real extractions but that neither
 # prompt documents (research D3). A quote consisting wholly of one of these is
 # the extractor reporting absence correctly, not fabricating.
 _EXEMPT_RE = re.compile(
-    r"^\s*[\[(]\s*(inaudible|paraphrase|truncated|unintelligible|silence)\b[^\])]*[\])]\s*$",
+    rf"^\s*[\[(]\s*({_MARKER_WORDS})\b[^\])]*[\])]\s*$",
     re.IGNORECASE,
 )
 
@@ -308,6 +325,236 @@ def classify(
     )
 
 
+# ── Extraction contract #250 — refusals ──────────────────────────────────────
+
+class Rule(str, Enum):
+    """A ratified extraction-contract rule that can refuse a span."""
+
+    R1 = "R1"   # the two sections carry the span differently; the tape cannot settle it
+    R3 = "R3"   # an editorial insertion sits inside a span marked verbatim
+
+
+#: One-line statement of each rule, for the report. Kept next to the enum so
+#: the wording the GM reads and the wording that was ratified stay together.
+RULE_TEXT = {
+    Rule.R1: (
+        "The `## Scene summary` and `## Verbatim moments` copies of one span "
+        "disagree and neither is verbatim in the tape. Renders as neither copy "
+        "until you resolve it. A span verbatim in *both* copies is never a "
+        "conflict — two true statements must not be escalated."
+    ),
+    Rule.R3: (
+        "An editorial insertion sits inside a span marked verbatim. Does not "
+        "render until it is rewritten. Bare transcription markers "
+        "(`[inaudible]`) are facts about the tape and are preserved; a marker "
+        "carrying a conjecture is not."
+    ),
+}
+
+
+@dataclass
+class Refusal:
+    """A span the contract will not let render until the GM resolves it.
+
+    Orthogonal to ``Verdict``: ``verdict`` records what the tape said about
+    this copy, which for R3 is frequently ``VERIFIED``. Refusing a verbatim
+    span is not a contradiction — the objection is to the editorial hand
+    inside it, not to the words around it.
+    """
+
+    rule: Rule
+    quote: Quote
+    detail: str
+    verdict: Verdict | None = None
+    counterpart: Quote | None = None
+    counterpart_verdict: Verdict | None = None
+    similarity: float | None = None
+
+
+# A bracket whose whole content is one marker word states a fact about the
+# tape (contract class 3) and is preserved — deleting one fabricates
+# certainty. The same marker carrying a reconstruction, e.g.
+# `[inaudible — probable "I'll fill you in the whole way"]`, is a hybrid: the
+# marker half is a fact and the conjecture half is the editor's, and it is the
+# conjecture that would render. Hybrids are class 4.
+_TRANSCRIPTION_MARKER_RE = re.compile(
+    rf"^\s*({_MARKER_WORDS})\s*[.?!]?\s*$", re.IGNORECASE
+)
+
+
+def editorial_brackets(text: str) -> list[str]:
+    """Class-4 brackets in one span: editorial insertions, not tape facts.
+
+    Counting brackets by *position* — inside a `> "…"` span — rather than by
+    token identity is what took the ch46 count from 3 to 10. Keying on the
+    token made `[Lathander]` a speaker label (it is one, elsewhere in the same
+    file) and let every marker-with-a-comment fall through unmatched.
+    """
+    return [
+        m.group(0)
+        for m in _BRACKET_SPAN_RE.finditer(text)
+        if not _TRANSCRIPTION_MARKER_RE.match(m.group(0)[1:-1])
+    ]
+
+
+def find_bracket_refusals(findings: list[Finding]) -> list[Refusal]:
+    """R3 — refuse every span carrying an editorial insertion.
+
+    Ruled as stated: no carve-out for a *clarifying* bracket whose content is
+    present in the tape (`[Lathander]` — the tape says it ten times). Whether
+    to add one is open question 1 in the ratified doc, and adding it here
+    before it is ruled would be the component deciding again.
+    """
+    out: list[Refusal] = []
+    for f in findings:
+        if f.verdict is Verdict.EXEMPT:
+            # The whole span is a marker. There is no quote for a bracket to
+            # sit inside, so there is nothing for R3 to object to.
+            continue
+        brackets = editorial_brackets(f.quote.text)
+        if brackets:
+            out.append(Refusal(rule=Rule.R3, quote=f.quote, verdict=f.verdict,
+                               detail=" ".join(brackets)))
+    return out
+
+
+#: A quoted span in a `## Scene summary` shorter than this is treated as a
+#: label rather than speech — the same judgement `_parse_blockquote_quotes`
+#: makes by refusing inline quotes outright (research D5). Pairing is the only
+#: thing these spans are used for; they are never classified as findings, so a
+#: label slipping through costs a missed pair, never a false accusation.
+PAIR_MIN_CHARS = 25
+
+#: Below this similarity two copies are two different spans, not one span in
+#: conflict. Deliberately loose: the smoothed splice in the evidence corpus
+#: scores 0.80 against the tape, so pairing it with its clean sibling has to
+#: tolerate at least that much drift or the conflict is invisible.
+PAIR_FLOOR = 0.55
+
+_SUMMARY_SPAN_RE = re.compile(r'["“]([^"“”]+)["”]')
+
+
+@dataclass
+class ConflictScan:
+    """What R1 found, including its denominator.
+
+    ``refused`` alone is unreadable: two refusals out of eight paired spans is
+    a working rule, two out of two is a broken one. The report states all four
+    numbers so the rate is visible, not just the interruptions.
+    """
+
+    paired: int = 0        # the same span appears in both sections
+    consistent: int = 0    # identical copies, or both verbatim — never a conflict
+    settled: int = 0       # exactly one copy is verbatim; the tape names the winner
+    refusals: list[Refusal] = field(default_factory=list)
+
+    @property
+    def refused(self) -> int:
+        return len(self.refusals)
+
+
+def parse_scene_summary_spans(text: str, artifact: Path) -> list[Quote]:
+    """Quoted spans in the `## Scene summary` half — **for pairing only**.
+
+    This deliberately parses inline `"…"`, which `parse_scene_quotes` refuses
+    to do, and the difference is what the spans are used for. There they would
+    become findings, and calling the GM's own hand-authored gm-assist phrasing
+    "unverified" would be both wrong and an insult to the checkpoint that
+    produced it (research D4). Here they are only ever the *other copy* of a
+    span, so the worst a mis-parse can do is fail to notice a conflict.
+    """
+    summary, _moments = _split_scene_body(text)
+    if not summary:
+        return []
+    offset = text.find(summary)
+    line_offset = text.count("\n", 0, offset) if offset > 0 else 0
+
+    out: list[Quote] = []
+    for idx, line in enumerate(summary.splitlines()):
+        for m in _SUMMARY_SPAN_RE.finditer(line):
+            span = m.group(1).strip()
+            if len(span) < PAIR_MIN_CHARS:
+                continue
+            out.append(Quote(text=span, artifact=artifact,
+                             line_no=line_offset + idx + 1,
+                             section="Scene summary"))
+    return out
+
+
+def scan_section_conflicts(
+    summary_spans: list[Quote],
+    moment_findings: list[Finding],
+    transcript: SourceTranscript,
+    *,
+    threshold: float = DEFAULT_THRESHOLD,
+    min_tokens: int = DEFAULT_MIN_TOKENS,
+) -> ConflictScan:
+    """R1 — refuse a span the two sections carry differently that the tape cannot settle.
+
+    Authority comes from the transcript and from nothing else (contract C1).
+    Every intuitive tiebreak picks the wrong copy on the evidence corpus: the
+    section named `Verbatim moments` is the *unfaithful* one in defect A, the
+    corrupted copy is the longer one in both defects, and smoothing degrades
+    the same span from 0.97 to 0.80, so "the later stage wins" is backwards.
+
+    Three outcomes, and only the last one wakes the GM:
+
+    * **consistent** — identical copies, or both verbatim. R1's load-bearing
+      exclusion. Without it the rule fires on any two similar-but-distinct real
+      utterances and the GM is asked to adjudicate between two facts.
+    * **settled** — exactly one copy is verbatim. The tape has already named
+      the faithful copy; the other is reported by its own verdict.
+    * **refused** — neither copy is in the tape. Nothing here can choose.
+
+    ``near`` never settles anything. A similarity band says *an edit happened*,
+    never that the edit was *safe*: 0.92 has been a meaning-changing misquote
+    and 0.94 a harmless disfluency, in that order.
+    """
+    scan = ConflictScan()
+    if not summary_spans or not moment_findings:
+        return scan
+
+    for span in summary_spans:
+        norm = _normalize(span.text)
+        best: Finding | None = None
+        best_sim = 0.0
+        for mf in moment_findings:
+            sim = SequenceMatcher(None, norm, _normalize(mf.quote.text)).ratio()
+            if sim > best_sim:
+                best, best_sim = mf, sim
+        if best is None or best_sim < PAIR_FLOOR:
+            continue          # a different span, not a second copy of this one
+
+        scan.paired += 1
+        if best_sim >= 0.999:
+            scan.consistent += 1
+            continue
+
+        summary_finding = classify(span, transcript,
+                                   threshold=threshold, min_tokens=min_tokens)
+        a = summary_finding.verdict is Verdict.VERIFIED
+        b = best.verdict is Verdict.VERIFIED
+        if a and b:
+            scan.consistent += 1
+            continue
+        if a or b:
+            scan.settled += 1
+            continue
+
+        scan.refusals.append(Refusal(
+            rule=Rule.R1,
+            quote=best.quote,
+            verdict=best.verdict,
+            counterpart=span,
+            counterpart_verdict=summary_finding.verdict,
+            similarity=best_sim,
+            detail=(f"neither copy is verbatim "
+                    f"(`## Scene summary` {summary_finding.verdict.value}, "
+                    f"`## Verbatim moments` {best.verdict.value})"),
+        ))
+    return scan
+
+
 # ── Parsers ──────────────────────────────────────────────────────────────────
 
 # `> "quote"` — the blockquote form both stages emit. The closing quote may be
@@ -430,6 +677,8 @@ class VerificationReport:
     min_tokens: int
     artifacts: list[Path] = field(default_factory=list)
     findings: list[Finding] = field(default_factory=list)
+    refusals: list[Refusal] = field(default_factory=list)
+    conflicts: ConflictScan = field(default_factory=ConflictScan)
     not_checked: list[str] = field(default_factory=lambda: list(NOT_CHECKED))
     generated_at: str = ""
 
@@ -443,6 +692,13 @@ class VerificationReport:
     @property
     def problems(self) -> list[Finding]:
         return [f for f in self.findings if f.is_problem]
+
+    @property
+    def refusal_counts(self) -> dict[Rule, int]:
+        out = {r: 0 for r in Rule}
+        for r in self.refusals:
+            out[r.rule] += 1
+        return out
 
 
 def _sorted_for_report(findings: list[Finding]) -> list[Finding]:
@@ -476,12 +732,21 @@ def render_report(report: VerificationReport) -> str:
             label = f"**{v.value}**" if v is Verdict.UNVERIFIED and n else v.value
             out.append(f"| {label} | {n} | {n / total:.0%} |")
         out.append("")
+        rc = report.refusal_counts
+        n_ref = len(report.refusals)
+        out.append(
+            f"**Refused by the extraction contract (#250)**: {n_ref}"
+            + (f" — R1 {rc[Rule.R1]}, R3 {rc[Rule.R3]}." if n_ref else ".")
+        )
+        out.append("")
 
     out.append("## Not checked")
     out.append("")
     for item in report.not_checked:
         out.append(f"- {item}")
     out.append("")
+
+    out.extend(_render_refusals(report))
 
     shown = _sorted_for_report(report.findings)
     unverified = [f for f in shown if f.verdict is Verdict.UNVERIFIED]
@@ -536,6 +801,89 @@ def render_report(report: VerificationReport) -> str:
     return "\n".join(out).rstrip() + "\n"
 
 
+def _render_refusals(report: VerificationReport) -> list[str]:
+    """The `## Refused` section — always emitted, empty or not.
+
+    Printed before `## Unverified` because a refusal is the stronger claim: an
+    unverified quote is a thing to look at, a refused span is a thing the
+    pipeline has declined to decide for you.
+    """
+    scan = report.conflicts
+    out = ["## Refused — the contract will not choose for you", ""]
+    out.append(
+        "Extraction contract #250 (`docs/design/ExtractionContract_proposal.md`), "
+        "rules R1 and R3. A refusal is **not** a claim that the text is wrong. "
+        "It is a claim that this pipeline is not the thing that should decide, "
+        "so the span stays as it is until you rule on it. Nothing here was "
+        "auto-corrected and nothing here will be — and nothing here is blocked "
+        "either: `sd_narrate` still renders these. Refusal means flagged."
+    )
+    out.append("")
+
+    if scan.paired:
+        out.append(
+            f"R1 scanned **{scan.paired}** span(s) carried by both sections: "
+            f"**{scan.consistent}** consistent (identical, or verbatim in both "
+            f"— never a conflict), **{scan.settled}** settled by the transcript, "
+            f"**{scan.refused}** refused."
+        )
+        out.append("")
+
+    if not report.refusals:
+        out.append("None. No span was refused by R1 or R3.")
+        out.append("")
+        return out
+
+    by_rule: dict[Rule, list[Refusal]] = {}
+    for r in report.refusals:
+        by_rule.setdefault(r.rule, []).append(r)
+
+    for rule in (Rule.R1, Rule.R3):
+        items = by_rule.get(rule)
+        if not items:
+            continue
+        out.append(f"### {rule.value} — {len(items)} span(s)")
+        out.append("")
+        out.append(RULE_TEXT[rule])
+        out.append("")
+        for r in items:
+            out.extend(_render_refusal(r))
+    return out
+
+
+def _render_refusal(r: Refusal) -> list[str]:
+    q = r.quote
+    loc = f"`{q.artifact.name}:{q.line_no}`"
+    if q.section:
+        loc += f" (§ {q.section})"
+    lines = [f"#### {loc}", ""]
+    lines.append(f'- **Quote**: "{q.text}"')
+    if r.verdict is not None:
+        lines.append(f"- **Verdict**: {r.verdict.value}")
+    if r.rule is Rule.R3:
+        lines.append(f"- **Editorial insertion(s)**: `{r.detail}`")
+        lines.append(
+            "- **To resolve**: rewrite the span so it is what was said, and "
+            "put the clarification outside the quote."
+        )
+    else:
+        lines.append(f"- **Conflict**: {r.detail}")
+        if r.counterpart is not None:
+            cv = r.counterpart_verdict.value if r.counterpart_verdict else "?"
+            lines.append(
+                f'- **Other copy** (`{r.counterpart.artifact.name}:'
+                f'{r.counterpart.line_no}`, {cv}): "{r.counterpart.text}"'
+            )
+        if r.similarity is not None:
+            lines.append(f"- **Similarity between the copies**: {r.similarity:.2f}")
+        lines.append(
+            "- **To resolve**: pick the copy the tape supports, or correct the "
+            "tape (R2) if the transcript itself is the defect."
+        )
+    lines.append("")
+    return lines
+
+
 def _render_finding(f: Finding) -> list[str]:
     q = f.quote
     loc = f"`{q.artifact.name}:{q.line_no}`"
@@ -564,36 +912,59 @@ def _render_finding(f: Finding) -> list[str]:
 
 # ── Annotation ───────────────────────────────────────────────────────────────
 
-def annotate_text(text: str, findings: list[Finding]) -> tuple[str, int]:
-    """Append the unverified marker to offending lines. Returns (text, n_added).
+def refusal_marker(rule: Rule) -> str:
+    return f"<!-- cg:refused:{rule.value} -->"
 
-    Idempotent by construction: a line already carrying the marker is left
-    exactly as-is, so re-running produces a byte-identical file (FR-007). Only
-    ``unverified`` lines are marked — marking ``near`` would re-import the
-    false-positive problem the three-verdict design exists to avoid. Quote text
-    between the delimiters is never touched (FR-006).
+
+def annotate_text(
+    text: str,
+    findings: list[Finding],
+    refusals: list[Refusal] | None = None,
+) -> tuple[str, int]:
+    """Append markers to offending lines. Returns (text, n_added).
+
+    Idempotent by construction: a line already carrying a marker does not
+    receive it twice, so re-running produces a byte-identical file (FR-007).
+    Only ``unverified`` findings are marked — marking ``near`` would re-import
+    the false-positive problem the three-verdict design exists to avoid — plus
+    every contract refusal, which is a separate axis and can land on a line
+    that is already marked unverified or on one that is perfectly verbatim.
+    Quote text between the delimiters is never touched (FR-006).
     """
-    targets = sorted({f.quote.line_no for f in findings if f.is_problem})
-    if not targets:
+    wanted: dict[int, list[str]] = {}
+    for f in findings:
+        if f.is_problem:
+            wanted.setdefault(f.quote.line_no, []).append(ANNOTATION)
+    for r in refusals or ():
+        marker = refusal_marker(r.rule)
+        slot = wanted.setdefault(r.quote.line_no, [])
+        if marker not in slot:
+            slot.append(marker)
+    if not wanted:
         return text, 0
 
     lines = text.splitlines(keepends=True)
     added = 0
-    for ln in targets:
+    for ln in sorted(wanted):
         i = ln - 1
         if i < 0 or i >= len(lines):
             continue
         raw = lines[i]
-        if ANNOTATION in raw:
-            continue
         newline = ""
         body = raw
         for suffix in ("\r\n", "\n", "\r"):
             if raw.endswith(suffix):
                 body, newline = raw[: -len(suffix)], suffix
                 break
-        lines[i] = f"{body}  {ANNOTATION}{newline}"
-        added += 1
+        changed = False
+        for marker in wanted[ln]:
+            if marker in body:
+                continue
+            body = f"{body}  {marker}"
+            added += 1
+            changed = True
+        if changed:
+            lines[i] = f"{body}{newline}"
     return "".join(lines), added
 
 
@@ -619,7 +990,12 @@ def verify_artifact(
     threshold: float = DEFAULT_THRESHOLD,
     min_tokens: int = DEFAULT_MIN_TOKENS,
 ) -> list[Finding]:
-    """Parse and classify one artifact. ``kind`` is ``summary`` or ``scene``."""
+    """Parse and classify one artifact — verdicts only.
+
+    ``kind`` is ``summary`` or ``scene``. This is the spec-007 layer and
+    answers only *is this in the tape*. For the #250 contract axis on top of
+    it, call :func:`verify_artifact_contract`.
+    """
     text = read_preserving_newlines(Path(path))
     parser = parse_summary_quotes if kind == "summary" else parse_scene_quotes
     quotes = parser(text, Path(path))
@@ -627,6 +1003,50 @@ def verify_artifact(
         classify(q, transcript, threshold=threshold, min_tokens=min_tokens)
         for q in quotes
     ]
+
+
+@dataclass
+class ArtifactResult:
+    """Both axes for one artifact: what the tape says, and what may render."""
+
+    path: Path
+    kind: str
+    findings: list[Finding] = field(default_factory=list)
+    refusals: list[Refusal] = field(default_factory=list)
+    conflicts: ConflictScan = field(default_factory=ConflictScan)
+
+
+def verify_artifact_contract(
+    path: Path,
+    transcript: SourceTranscript,
+    *,
+    kind: str,
+    threshold: float = DEFAULT_THRESHOLD,
+    min_tokens: int = DEFAULT_MIN_TOKENS,
+) -> ArtifactResult:
+    """Verdicts plus the ratified extraction contract (#250 R1/R3).
+
+    R3 applies to both stages — an editorial hand inside a verbatim span is
+    the same defect wherever it appears. R1 applies only to scene extractions,
+    because it compares two sections and a Stage 1 summary has only one.
+    """
+    path = Path(path)
+    text = read_preserving_newlines(path)
+    parser = parse_summary_quotes if kind == "summary" else parse_scene_quotes
+    findings = [
+        classify(q, transcript, threshold=threshold, min_tokens=min_tokens)
+        for q in parser(text, path)
+    ]
+
+    result = ArtifactResult(path=path, kind=kind, findings=findings)
+    result.refusals.extend(find_bracket_refusals(findings))
+    if kind != "summary":
+        result.conflicts = scan_section_conflicts(
+            parse_scene_summary_spans(text, path), findings, transcript,
+            threshold=threshold, min_tokens=min_tokens,
+        )
+        result.refusals.extend(result.conflicts.refusals)
+    return result
 
 
 # A blockquote line that opens a quote but never closes it on the same line.
