@@ -263,14 +263,14 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
         </label>
         <div class="field">
           <label class="field-label">Narration genre</label>
-          <input
-            type="text"
-            class="field-input"
+          <textarea
+            class="field-input field-textarea"
+            rows="8"
             :value="narrationGenre"
             placeholder='e.g. First-person comic-noir fantasy memoir'
-            @input="emit('update:narrationGenre', ($event.target as HTMLInputElement).value)"
+            @input="emit('update:narrationGenre', ($event.target as HTMLTextAreaElement).value)"
           />
-          <div class="field-help">One-line genre directive injected into the Pass-5 prompt.</div>
+          <div class="field-help">Genre/register directive injected into the Pass-5 prompt. Accepts either a one-line directive or a full multi-line genre document.</div>
         </div>
       </section>
 
@@ -411,6 +411,10 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
   box-sizing: border-box;
 }
 .field-input:focus { border-color: var(--mauve); }
+.field-textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
 .field-help {
   font-size: 10px;
   color: var(--text-muted);
