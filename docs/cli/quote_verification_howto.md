@@ -238,12 +238,20 @@ two copies look. On the evidence corpus that exclusion suppressed nine
 would-be interruptions and left four.
 
 **"Refuse" means detect, mark and report — nothing is blocked.** `sd_narrate`
-still renders whatever is in `smoothed/`. That is the settled end state rather
-than a gap: under R5 the `smoothed/` layer stops claiming its quotes are exact,
-so there is nothing for a renderer-side block to enforce there, and `new/` —
-where the contract binds — is not what narration reads. **R5 is ruled and not
-yet built**, so today both layers still carry `## Verbatim moments` and both
-are checked against it.
+still renders whatever is in `smoothed/`, and that is the settled end state
+rather than a gap.
+
+**Rename the heading in your voice-smoothed layer.** A section called
+`## Voiced moments` declares that its quotes are tidied, and R1 and R3 then
+have nothing to say to it — R3 objects to an editorial hand inside a span
+*marked verbatim*, R1 asks which of two copies is *faithful*, and neither
+question survives the declaration. Measured on ch46: refusals **18 → 0**, and
+the verdict counts do not move at all. Every splice and fabrication in the
+layer is still reported, because `unverified` means untraceable whatever the
+heading claims.
+
+So a smoothed layer that renames its heading stops being nagged about edits it
+exists to make, and keeps being checked for the ones it should not.
 
 ---
 

@@ -774,3 +774,127 @@ def test_cli_annotates_refusals_when_not_report_only(tmp_path):
     _run_cli("--vtt", str(vtt), "--scene-extractions", str(d),
              "--out", str(tmp_path / "r.md"))
     assert refusal_marker(Rule.R3) in scene.read_text()
+
+
+# ── R5 — a section that declares it edits is outside the contract ────────────
+#
+# `smoothed/` exists to make quotes readable, and measured on ch46 it more than
+# doubles the unverified rate. The two layers therefore cannot carry the same
+# promise. R5's answer is that the heading *is* the promise: rename it, and the
+# rules that police exactness stop applying — while the verdicts, which police
+# traceability, do not.
+
+VOICED_SCENE = CONTRACT_SCENE.replace("## Verbatim moments", "## Voiced moments")
+
+
+@pytest.fixture
+def voiced_scene(tmp_path):
+    p = tmp_path / "01_voiced.md"
+    p.write_text(VOICED_SCENE, encoding="utf-8")
+    return p
+
+
+@pytest.fixture
+def voiced(contract_tape, voiced_scene):
+    return verify_artifact_contract(voiced_scene, contract_tape, kind="scene")
+
+
+def test_the_heading_is_the_claim():
+    from session_doc.io import CLAIM_NONE, CLAIM_VERBATIM, CLAIM_VOICED, split_scene_sections
+    assert split_scene_sections(CONTRACT_SCENE)[2] == CLAIM_VERBATIM
+    assert split_scene_sections(VOICED_SCENE)[2] == CLAIM_VOICED
+    assert split_scene_sections("# Just a file\n\nno headings here\n")[2] == CLAIM_NONE
+
+
+def test_a_file_with_no_headings_claims_nothing():
+    """It has made no promise, and inventing one would let the contract fire on
+    a layout it was never shown."""
+    from session_doc.io import CLAIM_NONE, split_scene_sections
+    summary, moments, claim = split_scene_sections("# Scene\n\nbody text\n")
+    assert (summary, claim) == ("", CLAIM_NONE)
+    assert moments == "# Scene\n\nbody text"
+
+
+def test_split_scene_body_still_returns_two_and_handles_voiced():
+    """Pass 5 and friends do not care which promise the section made."""
+    from session_doc.io import _split_scene_body
+    summary, moments = _split_scene_body(VOICED_SCENE)
+    assert summary and "I do cross promotions [in the market]." in moments
+
+
+def test_voiced_quotes_are_still_parsed_and_classified(voiced):
+    assert voiced.findings, "a voiced section is still read"
+    assert any(f.verdict is Verdict.VERIFIED for f in voiced.findings)
+
+
+def test_voiced_section_carries_no_r3_refusal(voiced):
+    """R3 objects to an editorial hand inside a span *marked verbatim*. The
+    same bracket in a section that declares it edits is not a violation."""
+    assert not _refusals(voiced, Rule.R3)
+
+
+def test_voiced_section_carries_no_r1_refusal(voiced):
+    """R1 asks which of two copies is *faithful* — a question that does not
+    survive the declaration."""
+    assert not _refusals(voiced, Rule.R1)
+    assert voiced.conflicts.paired == 0
+
+
+def test_the_same_file_marked_verbatim_does_carry_both(contract):
+    """The control: R5 is the only difference between these two fixtures."""
+    assert _refusals(contract, Rule.R3) and _refusals(contract, Rule.R1)
+
+
+def test_unverified_still_fires_in_a_voiced_section(contract_tape, tmp_path):
+    """Dropping the verbatim claim is not dropping verification. `unverified`
+    means untraceable to any line — a fabrication or a splice — and both are
+    defects in a layer that only claims to be tidied."""
+    art = tmp_path / "02_voiced.md"
+    art.write_text(
+        "## Scene summary (from gm-assist, verbatim)\n\nnothing\n\n"
+        "## Voiced moments\n\n"
+        '> "I have always hated the sea and everything in it."\n',
+        encoding="utf-8",
+    )
+    result = verify_artifact_contract(art, contract_tape, kind="scene")
+    assert [f.verdict for f in result.findings] == [Verdict.UNVERIFIED]
+    assert not result.refusals
+
+
+def test_report_distinguishes_no_refusals_from_nothing_claiming_verbatim(
+        contract_tape, voiced, voiced_scene):
+    from session_doc.io import CLAIM_VOICED
+    r = _contract_report(contract_tape, voiced)
+    r.claims[voiced_scene] = CLAIM_VOICED
+    text = render_report(r)
+    assert "Not applicable" in text
+    assert "None. No span was refused" not in text
+
+
+def test_report_says_none_when_a_verbatim_file_is_simply_clean(
+        contract_tape, summary):
+    from session_doc.io import CLAIM_VERBATIM
+    r = VerificationReport(transcript=contract_tape.path, threshold=0.85,
+                           min_tokens=4, generated_at=now_iso())
+    r.artifacts.append(summary)
+    r.claims[summary] = CLAIM_VERBATIM
+    text = render_report(r)
+    assert "None. No span was refused" in text
+
+
+def test_cli_reports_voiced_files_and_exits_clean(tmp_path):
+    vtt = tmp_path / "c.vtt"
+    vtt.write_text(CONTRACT_VTT, encoding="utf-8")
+    d = tmp_path / "scenes"
+    d.mkdir()
+    (d / "01_scene.md").write_text(
+        "## Scene summary (from gm-assist, verbatim)\n\nnothing here\n\n"
+        "## Voiced moments\n\n"
+        '> "I do, like, cross [obviously] promotions."\n',
+        encoding="utf-8",
+    )
+    r = _run_cli("--vtt", str(vtt), "--scene-extractions", str(d),
+                 "--out", str(tmp_path / "r.md"), "--report-only")
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "voiced" in r.stdout
+    assert "Voiced moments" in (tmp_path / "r.md").read_text()

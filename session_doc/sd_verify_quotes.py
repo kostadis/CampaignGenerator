@@ -40,6 +40,7 @@ from .verify_quotes import (
     DEFAULT_THRESHOLD,
     NOT_CHECKED,
     NOT_CHECKED_SCENES,
+    NOT_CHECKED_VOICED,
     Rule,
     SourceTranscript,
     Verdict,
@@ -157,6 +158,7 @@ def main() -> int:
             return 2
         findings = result.findings
         report.artifacts.append(path)
+        report.claims[path] = result.claim
         report.findings.extend(findings)
         report.refusals.extend(result.refusals)
         if result.refusals:
@@ -165,6 +167,9 @@ def main() -> int:
         report.conflicts.consistent += result.conflicts.consistent
         report.conflicts.settled += result.conflicts.settled
         report.conflicts.refusals.extend(result.conflicts.refusals)
+
+    if report.voiced_artifacts:
+        report.not_checked.append(NOT_CHECKED_VOICED)
 
     if unparsed:
         # Non-coverage must be stated, not inferred from a clean-looking report.
@@ -213,6 +218,9 @@ def main() -> int:
         print(f"      R1 paired {scan.paired} span(s) across both sections: "
               f"{scan.consistent} consistent, {scan.settled} settled by the "
               f"transcript, {scan.refused} refused.")
+    if report.voiced_artifacts:
+        print(f"    {'voiced':11} {len(report.voiced_artifacts):5}  file(s) declare "
+              f"`## Voiced moments` — outside the contract (R5), still classified")
 
     n_annotated = 0
     if not args.report_only:
