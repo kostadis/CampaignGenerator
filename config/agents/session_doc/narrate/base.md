@@ -49,6 +49,14 @@ not fix them; if you swap one variant for another the ban is still violated.
     "that look X gets when..."
     "had a way of X-ing"
     "ever the X" ("Vukradin, ever the pedant")
+    "the way X do/does/say/says ... when ..." ("in the way men say it when they have
+      understood nothing", "everyone looked at me the way they do when they want someone
+      else to decide")
+    "the way they say things at that age" — and every other appeal to a group's age, sex,
+      class, or profession as the explanation for what one person just did
+  The test is the move, not the wording. If a sentence explains an observed behaviour by
+  generalising it to a class of people — men, women, they, people, that age, anyone who —
+  that is this ban, whatever shell it arrives in. Rotating the phrasing does not clear it.
   This construction is one narrator wearing every character's hat. Name what the narrator
   actually saw — the hands, the pause, the word they chose — and stop there.
 - Recap framing — the narrator mentally summarising events for the reader's benefit

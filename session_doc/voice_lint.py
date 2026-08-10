@@ -7,6 +7,8 @@ that the genre prompt bans but the model still emits:
 
 - "the shape of X"            — gesturing at a pattern instead of naming it
 - "with the <quality> of a man who ..."  — portable relative-clause portraits
+- "the way <class> do/say ... when ..."  — the same behavioral-taxonomy move after it
+  rotated out of the relative-clause shell (#251)
 - bookkeeping-verb convergence — "file/filed" leaking across every POV, and
   Thorin filing at all (he clocks/notes; he never files)
 
@@ -30,6 +32,18 @@ SHAPE_RE = re.compile(r"\bthe shape of\b", re.I)
 PORTRAIT_RE = re.compile(
     r"\bwith the [^.,;]*? of (?:a |an |the )?"
     r"(?:man|woman|men|someone|creature|people|person)s?\b[^.]*?\bwho\b",
+    re.I,
+)
+# Same banned move as PORTRAIT_RE, different shell. The #245 benchmark found the taxonomy
+# tic surviving the #246 ban by rotating into "the way men say it when ...", which
+# PORTRAIT_RE cannot see. The trailing alternation is load-bearing: requiring `when` alone
+# misses "the way they say things at that age" (one of the three confirmed instances), and
+# requiring nothing over-fires on legitimate specifics ("I liked the way she said my name",
+# "the way Brewbarry does" — a named individual is not a class).
+TAXONOMY_RE = re.compile(
+    r"\b(?:in )?the way (?:he|she|they|men|women|people|\w+)\s+"
+    r"(?:do|does|say|says|said|get|gets)\b.{0,40}?"
+    r"(?:\bwhen\b|\bat (?:that|his|her|their) age\b)",
     re.I,
 )
 # The tic is FIRST-PERSON filing-as-cognition ("I file/filed ..."). Literal third-person
@@ -63,7 +77,8 @@ def lint(text):
     errors, warns = [], []
 
     # Doc-level banned constructions: target 0; >1 is a hard failure.
-    for label, rx in [("the shape of", SHAPE_RE), ("with-the-X-of-a-man-who", PORTRAIT_RE)]:
+    for label, rx in [("the shape of", SHAPE_RE), ("with-the-X-of-a-man-who", PORTRAIT_RE),
+                      ("the-way-X-do-when", TAXONOMY_RE)]:
         hits = rx.findall(text)
         if hits:
             bucket = errors if len(hits) > 1 else warns
