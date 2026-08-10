@@ -417,3 +417,34 @@ SYNTHETIC_NON_CLASS_FIXTURES = {
 @pytest.mark.parametrize("name", sorted(SYNTHETIC_NON_CLASS_FIXTURES))
 def test_non_class_bold_lines_yield_nothing_not_junk(name):
     assert extract_character_roster(SYNTHETIC_NON_CLASS_FIXTURES[name]) == ""
+
+
+def test_dash_heading_name_stops_at_the_dash():
+    """`### Name — Class` headings must not fold the class into the name (#260).
+
+    This shape — a class summary after a dash in the heading, with the player
+    on a separate labeled body line — is the one `campaignlib.npc` documented
+    as "New (party.py output)". Before #260 the two readers disagreed on it:
+    `extract_player_character_map` split on the dash and returned "Daz", while
+    `extract_character_roster` kept the whole heading and emitted
+    `- Daz — Wizard (Evoker) 7 (Mike Hall): ...`. Unifying both onto
+    `campaignlib.party_md` settled it in favour of the one that was right.
+
+    Distinct from layout 4 (out-of-the-abyss), whose heading carries `·`
+    fields and is consumed whole by `_parse_oota_heading`.
+    """
+    text = (
+        "### Daz — Wizard (Evoker) 7\n"
+        "**Class/Level:** Wizard 7 | **Species:** Elf | **Player:** Mike Hall\n"
+    )
+    assert extract_character_roster(text) == "- Daz (Mike Hall): Elf Wizard 7"
+
+
+def test_oota_dash_heading_is_unaffected():
+    """Layout 4 still splits on its own dash — the fix must not double-handle it."""
+    text = (
+        "### Zalthir — Monk 8 (Warrior of Shadow) · Bronze Dragonborn · Player: Gabe\n"
+    )
+    assert extract_character_roster(text) == (
+        "- Zalthir (Gabe): Bronze Dragonborn Monk 8 (Warrior of Shadow)"
+    )

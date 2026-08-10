@@ -4,6 +4,8 @@ import re
 import sys
 from pathlib import Path
 
+from .party_md import parse_party_md
+
 
 _DOSSIER_FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n\n?(.*)\Z", re.DOTALL)
 
@@ -222,15 +224,11 @@ def _is_player_placeholder(name: str) -> bool:
 def extract_player_character_map(party_text: str) -> dict[str, str]:
     """Parse party.md and return {player_name: character_name}.
 
-    Supports two heading + info-line shapes:
-
-    Old (single bold span):
-        ## Soma
-        **Tortle Druid 5, Player: Wade**
-
-    New (party.py output, multiple bold spans separated by ``|``):
-        ### Soma — Druid 5
-        **Class/Level:** Druid 5 | **Species:** Tortle | **Player:** Wade
+    A projection over `campaignlib.party_md.parse_party_md`, which handles
+    all six hand-authored campaign layouts (see its docstring and
+    `session_doc.roster.extract_character_roster`'s docstring for the full
+    catalogue). Each entry's raw `player` field is split on ``/`` or ``,``,
+    stripped, and mapped to that entry's character name.
 
     When the Player slot holds multiple names separated by ``/`` or
     ``,``, both names map to the same character. Placeholder values
@@ -238,36 +236,13 @@ def extract_player_character_map(party_text: str) -> dict[str, str]:
     treated as missing.
     """
     result: dict[str, str] = {}
-    current_name: str | None = None
-
-    def _record_players(raw: str) -> None:
-        if _is_player_placeholder(raw):
-            return
-        for p in re.split(r'[/,]', raw):
+    for entry in parse_party_md(party_text):
+        if _is_player_placeholder(entry.player):
+            continue
+        for p in re.split(r'[/,]', entry.player):
             p = p.strip().rstrip('*').strip()
-            if p and not _is_player_placeholder(p) and current_name:
-                result[p] = current_name
-
-    for line in party_text.splitlines():
-        stripped = line.strip()
-        m = re.match(r'^#{2,3}\s+(.+)$', stripped)
-        if m:
-            heading = m.group(1).strip()
-            current_name = re.split(r'\s+[—–-]\s+', heading, maxsplit=1)[0].strip()
-            continue
-        if not current_name:
-            continue
-        new_pm = re.search(r'\*\*Player:\*\*\s*([^|]+?)(?:\s*\||\s*$)', stripped)
-        if new_pm:
-            _record_players(new_pm.group(1))
-            current_name = None
-            continue
-        cm = re.match(r'^\*\*(.+\d+.+)\*\*$', stripped)
-        if cm:
-            pm = re.search(r',\s*Player:\s*(.+)', cm.group(1))
-            if pm:
-                _record_players(pm.group(1))
-            current_name = None
+            if p and not _is_player_placeholder(p):
+                result[p] = entry.name
 
     # First-name aliases: if a player's recorded name is "Joe Beda" → also map
     # "Joe" → that character. Skip when the first name is ambiguous (two

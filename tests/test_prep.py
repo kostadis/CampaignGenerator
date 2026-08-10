@@ -846,6 +846,51 @@ def test_extract_player_character_map_skips_placeholders():
     assert m == {}
 
 
+# ── Issue #260: three previously-broken layouts (unified onto party_md) ─────
+
+
+def test_extract_player_character_map_phandalin_unlabeled_pipe():
+    """Phandalin's `| Player: X**` shape used to return {} — the legacy branch
+    required `, Player:` and this uses `| Player:` instead."""
+    import campaignlib
+    text = (
+        "### Brewbarry\n"
+        "**Barbarian 6 (Path of the Giant) | Goliath | Player: Stephane Boudreau**\n"
+        "\n"
+        "### Soma\n"
+        "**Druid 6 (Circle of the Moon) | Tortle | Player: Wade Brown**\n"
+    )
+    m = campaignlib.extract_player_character_map(text)
+    assert m["Stephane Boudreau"] == "Brewbarry"
+    assert m["Wade Brown"] == "Soma"
+
+
+def test_extract_player_character_map_hillsfar_em_dash():
+    """Hillsfar's `**Class N** — player: X` shape used to return {} — that
+    branch required the line to END with `**`; here player sits outside it."""
+    import campaignlib
+    text = (
+        "### Akritas\n**High Elf Ranger 11** — player: kostadis1\n"
+        "\n"
+        "### Bramgrim Stoutale\n**Hill Dwarf Life Cleric 11** — player: kostadis1\n"
+    )
+    m = campaignlib.extract_player_character_map(text)
+    assert m["kostadis1"] == "Bramgrim Stoutale"
+
+
+def test_extract_player_character_map_oota_heading_embedded():
+    """out-of-the-abyss carries the player field inside the `###` heading
+    itself, `·`-separated — the old parser only ever scanned body lines."""
+    import campaignlib
+    text = (
+        "### Zalthir — Monk 8 (Warrior of Shadow) · Bronze Dragonborn · Player: Gabe\n"
+        "### Thorin — Fighter 8 (Battle Master) · Dwarf (Giant Foundling) · Player: Joe Beda\n"
+    )
+    m = campaignlib.extract_player_character_map(text)
+    assert m["Gabe"] == "Zalthir"
+    assert m["Joe Beda"] == "Thorin"
+
+
 # ── campaignlib.normalize_vtt_speakers ─────────────────────────────────────
 
 
