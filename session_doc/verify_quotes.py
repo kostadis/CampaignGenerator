@@ -53,7 +53,7 @@ from pathlib import Path
 
 from campaignlib.textproc import locate_quote
 
-from .io import parse_vtt, _split_scene_body
+from .io import CLAIM_VERBATIM, CLAIM_VOICED, parse_vtt, split_scene_sections, _split_scene_body
 
 
 # ── Verdicts ─────────────────────────────────────────────────────────────────
@@ -636,11 +636,18 @@ def parse_summary_quotes(text: str, artifact: Path) -> list[Quote]:
 def parse_scene_quotes(text: str, artifact: Path) -> list[Quote]:
     """Stage 2 — quotes in a ``scene_extractions/NN_*.md``.
 
-    Only the ``## Verbatim moments`` section is checked. The other section,
+    Only the moments section is parsed — ``## Verbatim moments``, or its
+    ``## Voiced moments`` sibling in a voice-smoothed layer. The other section,
     ``## Scene summary (from gm-assist, verbatim)``, is the GM's own
     hand-authored skeleton copied from ``gm-assist.md`` — flagging the human's
     phrasing as "unverified" would be both wrong and an insult to the
     checkpoint that produced it (research D4).
+
+    A ``Voiced`` section is still classified. Dropping the *verbatim* claim is
+    not dropping verification: ``unverified`` means untraceable to any line,
+    which is a fabrication or a splice, and both remain defects in a layer that
+    only claims to be tidied. What a voiced heading switches off is the
+    contract axis — see :func:`verify_artifact_contract`.
     """
     _summary, moments = _split_scene_body(text)
     if not moments:
@@ -669,6 +676,12 @@ NOT_CHECKED_SCENES = (
     "`## Scene summary` sections — human-authored gm-assist content, not model output."
 )
 
+NOT_CHECKED_VOICED = (
+    "Contract rules R1/R3 in any file whose moments section is `## Voiced "
+    "moments` — that heading declares the quotes are tidied, so the exactness "
+    "those rules police was never claimed. Verdicts still apply there."
+)
+
 
 @dataclass
 class VerificationReport:
@@ -679,6 +692,9 @@ class VerificationReport:
     findings: list[Finding] = field(default_factory=list)
     refusals: list[Refusal] = field(default_factory=list)
     conflicts: ConflictScan = field(default_factory=ConflictScan)
+    #: artifact → what its moments section claims. Populated per artifact so
+    #: the report can say *why* a file produced no refusals (R5).
+    claims: dict[Path, str] = field(default_factory=dict)
     not_checked: list[str] = field(default_factory=lambda: list(NOT_CHECKED))
     generated_at: str = ""
 
@@ -699,6 +715,15 @@ class VerificationReport:
         for r in self.refusals:
             out[r.rule] += 1
         return out
+
+    @property
+    def voiced_artifacts(self) -> list[Path]:
+        """Artifacts outside the contract because they declare tidied quotes (R5)."""
+        return [p for p, c in self.claims.items() if c == CLAIM_VOICED]
+
+    @property
+    def verbatim_artifacts(self) -> list[Path]:
+        return [p for p, c in self.claims.items() if c != CLAIM_VOICED]
 
 
 def _sorted_for_report(findings: list[Finding]) -> list[Finding]:
@@ -829,8 +854,22 @@ def _render_refusals(report: VerificationReport) -> list[str]:
         )
         out.append("")
 
+    if report.voiced_artifacts:
+        n = len(report.voiced_artifacts)
+        out.append(
+            f"**{n} artifact(s) declare `## Voiced moments`** and are outside the "
+            f"contract (R5): a section that says its quotes are tidied has not "
+            f"claimed the exactness R1 and R3 police. Their quotes are still "
+            f"classified — `unverified` means untraceable, which is a splice or a "
+            f"fabrication whatever the heading says."
+        )
+        out.append("")
+
     if not report.refusals:
-        out.append("None. No span was refused by R1 or R3.")
+        if report.voiced_artifacts and not report.verbatim_artifacts:
+            out.append("Not applicable. Nothing checked here claims to be verbatim.")
+        else:
+            out.append("None. No span was refused by R1 or R3.")
         out.append("")
         return out
 
@@ -1014,6 +1053,11 @@ class ArtifactResult:
     findings: list[Finding] = field(default_factory=list)
     refusals: list[Refusal] = field(default_factory=list)
     conflicts: ConflictScan = field(default_factory=ConflictScan)
+    #: What this artifact's moments section promises — `verbatim`, `voiced`, or
+    #: `""` for a file with no dual-section layout. A `voiced` artifact carries
+    #: no refusals by construction (R5), so an empty refusal list means two
+    #: different things and the report has to be able to tell them apart.
+    claim: str = CLAIM_VERBATIM
 
 
 def verify_artifact_contract(
@@ -1024,21 +1068,37 @@ def verify_artifact_contract(
     threshold: float = DEFAULT_THRESHOLD,
     min_tokens: int = DEFAULT_MIN_TOKENS,
 ) -> ArtifactResult:
-    """Verdicts plus the ratified extraction contract (#250 R1/R3).
+    """Verdicts plus the ratified extraction contract (#250 R1/R3/R5).
 
     R3 applies to both stages — an editorial hand inside a verbatim span is
     the same defect wherever it appears. R1 applies only to scene extractions,
     because it compares two sections and a Stage 1 summary has only one.
+
+    **R5: the contract binds what a section promises.** A scene file whose
+    moments heading reads ``## Voiced moments`` has declared that its quotes
+    are tidied, and both rules then have nothing to say — R3 objects to an
+    editorial hand inside a span *marked verbatim*, and R1 asks which of two
+    copies is *faithful*. Neither question survives the declaration. Verdicts
+    are still computed and ``unverified`` is still a defect, because a
+    fabrication or a splice is untraceable whatever the heading claims.
     """
     path = Path(path)
     text = read_preserving_newlines(path)
-    parser = parse_summary_quotes if kind == "summary" else parse_scene_quotes
+    if kind == "summary":
+        quotes = parse_summary_quotes(text, path)
+        claim = CLAIM_VERBATIM
+    else:
+        quotes = parse_scene_quotes(text, path)
+        _summary, _moments, claim = split_scene_sections(text)
+
     findings = [
         classify(q, transcript, threshold=threshold, min_tokens=min_tokens)
-        for q in parser(text, path)
+        for q in quotes
     ]
+    result = ArtifactResult(path=path, kind=kind, findings=findings, claim=claim)
+    if claim == CLAIM_VOICED:
+        return result
 
-    result = ArtifactResult(path=path, kind=kind, findings=findings)
     result.refusals.extend(find_bracket_refusals(findings))
     if kind != "summary":
         result.conflicts = scan_section_conflicts(

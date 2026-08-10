@@ -50,24 +50,57 @@ def load_extractions(path: Path) -> list[tuple[str, str]]:
 _SCENE_FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n\n?(.*)\Z", re.DOTALL)
 
 
-def _split_scene_body(body: str) -> tuple[str, str]:
-    """Split the body of a scene_extract.py file into (gm_summary, verbatim_moments).
+#: What a moments section claims about the quotes inside it.
+CLAIM_VERBATIM = "verbatim"   # `## Verbatim moments` — these are the tape's words
+CLAIM_VOICED = "voiced"       # `## Voiced moments`  — tidied for reading; not exact
+CLAIM_NONE = ""               # no dual-section layout at all
+
+#: Heading → claim. The heading is the *promise*, and the extraction contract
+#: (#250 R5) binds a section to what it promises: R1 asks which of two copies
+#: is faithful and R3 objects to an editorial hand inside a span marked
+#: verbatim, and neither question means anything in a section that declares it
+#: edits. A voice-smoothed layer renames its heading rather than carrying a
+#: claim it cannot keep — measured on ch46, smoothing more than doubles the
+#: unverified rate, so the two layers cannot promise the same thing.
+_MOMENTS_CLAIMS = {
+    "verbatim moments": CLAIM_VERBATIM,
+    "voiced moments": CLAIM_VOICED,
+}
+
+_MOMENTS_HEADING_RE = re.compile(
+    r"(?ms)^## (?P<kind>Verbatim moments|Voiced moments)[^\n]*\n(?P<body>.*?)(?=^## |\Z)",
+    re.IGNORECASE,
+)
+
+
+def split_scene_sections(body: str) -> tuple[str, str, str]:
+    """Split a scene_extract.py file into (gm_summary, moments, claim).
 
     The conventional shape produced by scene_extract.py:
         # Scene Name
         ## Scene summary (from gm-assist, verbatim)
         <gm-assist body>
-        ## Verbatim moments
+        ## Verbatim moments          <- or `## Voiced moments` in a smoothed layer
         <vtt-derived moments>
 
-    Returns ('', body) when the headings are absent — the caller treats the
-    whole file as moments and lets Pass 5 work out the structure.
+    Returns ('', body, CLAIM_NONE) when the headings are absent — the caller
+    treats the whole file as moments and lets Pass 5 work out the structure.
+    That fallback deliberately claims nothing: a file with no heading has made
+    no promise, and inventing one for it would let the contract fire on a
+    layout it was never shown.
     """
     summary_match = re.search(r"(?ms)^## Scene summary[^\n]*\n(.*?)(?=^## |\Z)", body)
-    moments_match = re.search(r"(?ms)^## Verbatim moments[^\n]*\n(.*?)(?=^## |\Z)", body)
+    moments_match = _MOMENTS_HEADING_RE.search(body)
     if summary_match and moments_match:
-        return summary_match.group(1).strip(), moments_match.group(1).strip()
-    return "", body.strip()
+        claim = _MOMENTS_CLAIMS[moments_match.group("kind").casefold()]
+        return summary_match.group(1).strip(), moments_match.group("body").strip(), claim
+    return "", body.strip(), CLAIM_NONE
+
+
+def _split_scene_body(body: str) -> tuple[str, str]:
+    """(gm_summary, moments) — the claim-agnostic view, for Pass 5 and friends."""
+    summary, moments, _claim = split_scene_sections(body)
+    return summary, moments
 
 
 def load_scene_extractions(path: Path) -> list[dict]:

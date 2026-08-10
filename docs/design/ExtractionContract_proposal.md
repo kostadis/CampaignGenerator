@@ -1,6 +1,6 @@
 # Extraction contract for `scene_extractions_*`
 
-**Issue:** #250. **Status: fully ruled 2026-08-10; R1–R3 built, R4–R5 queued.** The GM ruled on D1–D3, then on the three questions implementation raised. R2 was applied by hand (campaigns#151); R1 and R3 are computed by `sd_verify_quotes` as **refusals**, a second axis alongside the three verdicts; R4 and R5 are ruled and not yet built. Every question is kept in full, with the options that lost, because the options not taken are the record of why the taken one is right.
+**Issue:** #250. **Status: fully ruled and built, 2026-08-10.** The GM ruled on D1–D3, then on the three questions implementation raised. R2 was applied by hand (campaigns#151); R1 and R3 are computed by `sd_verify_quotes` as **refusals**, a second axis alongside the three verdicts; R4 is `sd_corrections`; R5 is the `## Voiced moments` heading and the scoping that honours it. Every question is kept in full, with the options that lost, because the options not taken are the record of why the taken one is right.
 
 Implementing the rules against the evidence corpus moved every cost estimate in this document and answered one of its open questions with data. Those revisions are marked **Correction** and are in place below; the superseded figures are named so a reader who remembers them knows they were replaced rather than misread.
 
@@ -14,7 +14,7 @@ Evidence: `~/src/campaigns/Phandalin/summaries/20260623/` (ch46, six scenes, 1,2
 | **R2** (D2) | **A transcription garble is a defect in the ground truth and gets fixed** — as a **per-cue** correction in the `.cleaned.vtt`, authored by the GM. Never a global string replace, never a model judgement, never a registry canonicalisation. **Applied:** campaigns#151. | 3 cues fixed; **at least 16 more found** — see below |
 | **R3** (D3) | **Refuse and flag.** An editorial insertion inside a span marked verbatim does not render until rewritten. Applies to any *new* class-4 bracket, so the renderer never improvises again. | **12** flagged spans/session, both layers |
 | **R4** (Q2) | **The record is the source of truth; `.cleaned.vtt` is generated from raw + corrections.** A correction is cue-indexed data with a `verified` flag, not a hand-edit with a NOTE block. **Built:** `sd_corrections`. | **74** unrecorded edits found on ch46, + 16 owed |
-| **R5** (C4) | **`smoothed/` stops claiming verbatim** — its section is renamed and nothing there asserts exactness. The contract binds `new/`. *Not implemented.* | R1+R3 in `smoothed/`: 18 → **0** |
+| **R5** (C4) | **`smoothed/` stops claiming verbatim** — its section is renamed `## Voiced moments` and nothing there asserts exactness. The contract binds `new/`. **Built.** | R1+R3 in `smoothed/`: 18 → **0**, measured; verdicts unchanged |
 | **R6** | **R1 keeps escalating a pair that is identical once brackets are stripped.** Already the shipped behaviour. | 1 refusal/layer retained |
 
 R1's exclusion is load-bearing: without it the rule fires on any two similar-but-distinct real utterances, and the GM is woken up to adjudicate between two facts. With it, D1 can only ever fire where at most one copy is in the tape.
@@ -256,7 +256,11 @@ Three consequences, and the middle one is the point:
 
 The option that lost: quotes reach narration from `new/` and prose from `smoothed/`. It fixes the stated defect (the renderer consumes the less faithful layer) most directly, but it makes `smoothed/`'s quotes dead weight — the layer exists to make quotes readable — and it splits one scene across two files that the Session Doc Editor edits as one.
 
-Not built. What it needs: `_split_scene_body` and `parse_scene_quotes` recognising the second heading, and the contract layer scoping itself off when they see it.
+**Built.** `session_doc/io.py` gains `split_scene_sections`, which returns the moments body *and what it claims* — `verbatim`, `voiced`, or nothing at all for a file with no dual-section layout. `verify_artifact_contract` reads that claim and returns early on `voiced`, before either rule runs. `_split_scene_body` still returns two values for Pass 5 and friends, which do not care what the section promised.
+
+A file with no headings claims **nothing** rather than defaulting to verbatim. It has made no promise, and inventing one would let the contract fire on a layout it was never shown.
+
+Measured by renaming the heading in a copy of ch46's `smoothed/`: refusals **18 → 0**, and the verdict counts do not move at all — still 242 verified, 153 near, **79 unverified**, 7 unscored, 2 exempt. Every splice and fabrication the layer contains is still reported. That is the ruling working exactly as stated: the exactness claim goes, the traceability check stays.
 
 **4. Should R1 skip a pair identical once brackets are stripped → R6: no.**
 
