@@ -749,6 +749,30 @@ def _parse_quote_report_counts(path: Path | None) -> dict:
     return {k: found.get(k, 0) for k in empty}
 
 
+#: The report's contract line, e.g.
+#: `**Refused by the extraction contract (#250)**: 16 — R1 4, R3 12.`
+_REPORT_REFUSED_RE = re.compile(
+    r"^\*\*Refused by the extraction contract[^*]*\*\*:\s*(\d+)", re.MULTILINE
+)
+
+
+def _parse_quote_report_refusals(path: Path | None) -> int | None:
+    """How many spans the #250 contract refused. ``None`` when unknown.
+
+    ``None`` rather than ``0`` for the same reason the verdict counts do it: a
+    report written before refusals existed, or one that could not be read, must
+    not be reported as a run that found none.
+    """
+    if path is None or not path.exists():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    m = _REPORT_REFUSED_RE.search(text)
+    return int(m.group(1)) if m else None
+
+
 def _build_verify_cmd(request, cfg: ResolvedEditorConfig,
                       target: str = "both") -> list[str] | tuple[None, str]:
     """sd_verify_quotes --vtt {vtt} [--summary …] [--scene-extractions …].
@@ -1013,13 +1037,17 @@ def api_pipeline_status(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     verify_status = _stage_status(verify_report, verify_inputs)
     counts = _parse_quote_report_counts(verify_report)
     verify_status.update(counts)
+    refused = _parse_quote_report_refusals(verify_report)
+    verify_status["refused"] = refused
     if verify_status["status"] != "cold":
         if counts.get("unverified") is None:
             # An unreadable report is not a passing one.
             verify_status["status"] = "warn"
-        elif counts["unverified"] > 0:
+        elif counts["unverified"] > 0 or (refused or 0) > 0:
             # Stale and has-findings both mean unfinished business here; the
-            # counts tell the two apart.
+            # counts tell the two apart. A refusal counts: a run with nothing
+            # unverified and a dozen refused spans is not a clean run, and
+            # showing it green is how the contract gets quietly ignored.
             verify_status["status"] = "warn"
 
     return {

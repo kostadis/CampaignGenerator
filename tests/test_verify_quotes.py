@@ -38,14 +38,19 @@ if _resolved != _REPO_ROOT:
 
 from session_doc.verify_quotes import (  # noqa: E402
     ANNOTATION,
+    Rule,
     SourceTranscript,
     Verdict,
     annotate_text,
     classify,
+    editorial_brackets,
     parse_scene_quotes,
+    parse_scene_summary_spans,
     parse_summary_quotes,
+    refusal_marker,
     render_report,
     verify_artifact,
+    verify_artifact_contract,
     VerificationReport,
     now_iso,
 )
@@ -440,3 +445,332 @@ def test_cli_has_no_model_flags():
     r = _run_cli("--help")
     for flag in ("--model", "--backend", "--fast", "--batch", "--endpoint"):
         assert flag not in r.stdout
+
+
+# ── Extraction contract #250 — R1 and R3 ─────────────────────────────────────
+#
+# The fixture encodes each branch of both rules against a tape that garbles
+# things, because that is what real tapes do. Cue 1 is the measured shape of
+# the defect this contract exists for: Zoom heard "Lathander" as "the
+# pandemic", and both extraction stages quietly repaired it inside a span
+# marked verbatim.
+
+CONTRACT_VTT = """WEBVTT
+
+1
+00:00:01.000 --> 00:00:04.000
+Wade Brown: The town has been protected by the strength of the pandemic.
+
+2
+00:00:05.000 --> 00:00:08.000
+Gary Young: I do, like, cross promotions.
+
+3
+00:00:09.000 --> 00:00:13.000
+David Mendenhall: We rode north for three days and nothing happened at all.
+
+4
+00:00:14.000 --> 00:00:17.000
+Stephane Bourdeaud: The bathrobes are in the wagon.
+
+5
+00:00:18.000 --> 00:00:21.000
+Stephane Bourdeaud: The bathrobes are in the cart.
+"""
+
+CONTRACT_SCENE = '''---
+scene: Return to Phandalin
+---
+
+# Return to Phandalin
+
+## Scene summary (from gm-assist, verbatim)
+
+- Wade invokes his god: "The town has been protected by the strength of [Lathander]."
+- Stephane corrects himself: "The bathrobes are in the wagon."
+- David sums up the road: "We rode north for three days and nothing happened."
+- The sign read "Neverwinter".
+
+## Verbatim moments
+
+**[Wade Brown]** — swearing by his god
+> "The town has been protected by the strength of Lathander."
+
+**[Stephane Bourdeaud]** — correcting himself
+> "The bathrobes are in the cart."
+
+**[David Mendenhall]** — on the journey
+> "We rode north for three days and nothing happened at all."
+
+**[Gary Young]** — the pitch
+> "I do cross promotions [in the market]."
+> "I do, like, cross [inaudible] promotions."
+> "I do, like, cross promotions [inaudible — probably 'in the market']."
+> "[inaudible]"
+'''
+
+
+@pytest.fixture
+def contract_tape(tmp_path):
+    p = tmp_path / "contract.vtt"
+    p.write_text(CONTRACT_VTT, encoding="utf-8")
+    return SourceTranscript.load(p)
+
+
+@pytest.fixture
+def contract_scene(tmp_path):
+    p = tmp_path / "01_return_to_phandalin.md"
+    p.write_text(CONTRACT_SCENE, encoding="utf-8")
+    return p
+
+
+@pytest.fixture
+def contract(contract_tape, contract_scene):
+    return verify_artifact_contract(contract_scene, contract_tape, kind="scene")
+
+
+def _refusals(result, rule):
+    return [r for r in result.refusals if r.rule is rule]
+
+
+# ── R3 — an editorial insertion inside a span marked verbatim ────────────────
+
+def test_r3_refuses_an_editorial_insertion(contract):
+    texts = [r.quote.text for r in _refusals(contract, Rule.R3)]
+    assert 'I do cross promotions [in the market].' in texts
+
+
+def test_r3_preserves_a_bare_transcription_marker(contract):
+    """Class 3 — a fact about the tape. Deleting one fabricates certainty."""
+    texts = [r.quote.text for r in _refusals(contract, Rule.R3)]
+    assert 'I do, like, cross [inaudible] promotions.' not in texts
+
+
+def test_r3_refuses_a_marker_carrying_a_conjecture(contract):
+    """The hybrid case: the marker half is a fact, the reconstruction is the
+    editor's, and it is the reconstruction that would render."""
+    texts = [r.quote.text for r in _refusals(contract, Rule.R3)]
+    assert any("probably 'in the market'" in t for t in texts)
+
+
+def test_r3_leaves_a_whole_quote_marker_alone(contract):
+    """`[inaudible]` as the entire quote is EXEMPT — there is no verbatim span
+    for a bracket to sit inside, so R3 has nothing to object to."""
+    assert "[inaudible]" not in [r.quote.text for r in _refusals(contract, Rule.R3)]
+
+
+def test_r3_does_not_fire_on_a_speaker_block_header(contract):
+    """`**[Wade Brown]**` is structure, not an insertion — it is not inside a
+    quote, so position-based classification never sees it."""
+    assert not any("Wade Brown" in r.detail for r in _refusals(contract, Rule.R3))
+
+
+def test_r3_count_is_exactly_the_two_editorial_spans(contract):
+    assert len(_refusals(contract, Rule.R3)) == 2
+
+
+def test_r3_refuses_a_span_that_is_verbatim(contract_tape, tmp_path):
+    """The orthogonality property, and the whole reason refusals are not a
+    fourth verdict: this span matches the tape once the bracket is stripped,
+    and is still an editorial hand inside something marked verbatim."""
+    art = tmp_path / "02_scene.md"
+    art.write_text(
+        "## Scene summary (from gm-assist, verbatim)\n\nnothing here\n\n"
+        "## Verbatim moments\n\n"
+        '> "I do, like, cross [obviously] promotions."\n',
+        encoding="utf-8",
+    )
+    result = verify_artifact_contract(art, contract_tape, kind="scene")
+    assert [f.verdict for f in result.findings] == [Verdict.VERIFIED]
+    assert len(_refusals(result, Rule.R3)) == 1
+
+
+def test_editorial_brackets_classifies_by_position_not_token():
+    """Keying on the token is what made the first ch46 count 3 instead of 12:
+    `[Lathander]` is a speaker label elsewhere in the same file, and every
+    marker carrying a comment matched no known token and fell through."""
+    assert editorial_brackets("respect for [Lathander], yes.") == ["[Lathander]"]
+    assert editorial_brackets("he said [inaudible] then left") == []
+    assert editorial_brackets("he said [unclear] then [left]") == ["[left]"]
+
+
+# ── R1 — the two sections disagree and the tape cannot settle it ─────────────
+
+def test_r1_refuses_when_neither_copy_is_verbatim(contract):
+    r1 = _refusals(contract, Rule.R1)
+    assert len(r1) == 1
+    assert "strength of Lathander" in r1[0].quote.text
+    assert r1[0].counterpart is not None
+    assert "[Lathander]" in r1[0].counterpart.text
+
+
+def test_r1_never_fires_when_both_copies_are_verbatim(contract):
+    """The load-bearing exclusion. Without it the rule fires on any two
+    similar-but-distinct real utterances and the GM is woken up to adjudicate
+    between two facts."""
+    assert contract.conflicts.consistent == 1
+    assert not any("bathrobes" in r.quote.text for r in _refusals(contract, Rule.R1))
+
+
+def test_r1_does_not_fire_when_the_tape_settles_it(contract):
+    """Exactly one copy verbatim — the tape has already named the winner, and
+    the loser is reported by its own verdict."""
+    assert contract.conflicts.settled == 1
+    assert not any("rode north" in r.quote.text for r in _refusals(contract, Rule.R1))
+
+
+def test_r1_reports_its_denominator(contract):
+    """Two refusals out of eight pairs is a working rule; two out of two is a
+    broken one. The count alone cannot tell them apart."""
+    scan = contract.conflicts
+    assert scan.paired == 3
+    assert scan.consistent + scan.settled + scan.refused == scan.paired
+
+
+def test_r1_ignores_short_summary_spans(contract_scene):
+    """`"Neverwinter"` is a label, not speech — the same judgement the
+    blockquote parser makes by refusing inline quotes outright (D5)."""
+    spans = [q.text for q in parse_scene_summary_spans(
+        contract_scene.read_text(), contract_scene)]
+    assert "Neverwinter" not in spans
+
+
+def test_r1_pairing_never_turns_the_human_half_into_a_finding(contract):
+    """D4 stands: `## Scene summary` is the GM's own hand-authored content.
+    Its spans exist only as the *other copy*, never as an accusation."""
+    assert all(f.quote.section != "Scene summary" for f in contract.findings)
+
+
+def test_r1_does_not_run_on_a_stage_1_summary(contract_tape, tmp_path):
+    """A summary has one section, so there is no second copy to conflict with."""
+    art = tmp_path / "session-summary.md"
+    art.write_text('> "The town has been protected by the strength of Lathander."\n',
+                   encoding="utf-8")
+    result = verify_artifact_contract(art, contract_tape, kind="summary")
+    assert result.conflicts.paired == 0
+    assert not _refusals(result, Rule.R1)
+
+
+def test_summary_span_line_numbers_point_at_the_real_line(contract_scene):
+    lines = contract_scene.read_text().splitlines()
+    for q in parse_scene_summary_spans(contract_scene.read_text(), contract_scene):
+        assert q.text in lines[q.line_no - 1]
+
+
+# ── Refusal annotation ───────────────────────────────────────────────────────
+
+def test_refusal_marker_is_added_and_is_idempotent(contract, contract_scene):
+    text = contract_scene.read_text()
+    once, added1 = annotate_text(text, contract.findings, contract.refusals)
+    twice, added2 = annotate_text(once, contract.findings, contract.refusals)
+    assert added1 > 0 and added2 == 0
+    assert once == twice
+    assert refusal_marker(Rule.R3) in once
+
+
+def test_a_line_that_is_both_unverified_and_refused_gets_both_markers(
+        contract, contract_scene):
+    out, _ = annotate_text(contract_scene.read_text(),
+                           contract.findings, contract.refusals)
+    both = [ln for ln in out.splitlines()
+            if ANNOTATION in ln and "cg:refused" in ln]
+    assert both, "expected at least one line carrying both markers"
+    for ln in both:
+        assert ln.count(ANNOTATION) == 1
+
+
+def test_refusal_annotation_never_alters_quote_text(contract, contract_scene):
+    import re
+    before = contract_scene.read_text()
+    after, _ = annotate_text(before, contract.findings, contract.refusals)
+    pat = re.compile(r'"([^"]*)"')
+    assert pat.findall(before) == pat.findall(after)
+
+
+# ── Refusals in the report ───────────────────────────────────────────────────
+
+def _contract_report(tape, result):
+    r = VerificationReport(transcript=tape.path, threshold=0.85,
+                           min_tokens=4, generated_at=now_iso())
+    r.artifacts.append(result.path)
+    r.findings.extend(result.findings)
+    r.refusals.extend(result.refusals)
+    r.conflicts = result.conflicts
+    return r
+
+
+def test_report_has_a_refused_section_even_when_empty(contract_tape, summary):
+    r = VerificationReport(transcript=contract_tape.path, threshold=0.85,
+                           min_tokens=4, generated_at=now_iso())
+    r.artifacts.append(summary)
+    r.findings.extend(verify_artifact(summary, contract_tape, kind="summary"))
+    text = render_report(r)
+    assert "## Refused" in text
+    assert "No span was refused" in text
+
+
+def test_report_puts_refused_before_unverified(contract_tape, contract):
+    text = render_report(_contract_report(contract_tape, contract))
+    assert text.index("## Refused") < text.index("## Unverified")
+
+
+def test_report_states_the_conflict_denominator(contract_tape, contract):
+    text = render_report(_contract_report(contract_tape, contract))
+    assert "R1 scanned **3** span(s)" in text
+    assert "**1** settled by the transcript" in text
+
+
+def test_report_verdict_table_still_parses_for_the_editor(contract_tape, contract):
+    """The Session Doc Editor's status strip reads the verdict table by regex.
+    Adding a refusals section must not move a row out from under it."""
+    from server.routers.scene_editor import _parse_quote_report_counts
+    import tempfile
+    text = render_report(_contract_report(contract_tape, contract))
+    with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False) as fh:
+        fh.write(text)
+        p = Path(fh.name)
+    counts = _parse_quote_report_counts(p)
+    p.unlink()
+    assert set(counts) == {"verified", "near", "unverified", "unscored", "exempt"}
+    assert counts["verified"] is not None
+    assert sum(counts.values()) == len(contract.findings)
+
+
+# ── Refusals through the CLI ─────────────────────────────────────────────────
+
+def test_cli_exits_1_on_refusals_alone(tmp_path):
+    """A refusal is a finding. Exiting 0 because nothing was *unverified* would
+    hide the spans the contract declined to choose."""
+    vtt = tmp_path / "c.vtt"
+    vtt.write_text(CONTRACT_VTT, encoding="utf-8")
+    d = tmp_path / "scenes"
+    d.mkdir()
+    (d / "01_scene.md").write_text(
+        "## Scene summary (from gm-assist, verbatim)\n\nnothing here\n\n"
+        "## Verbatim moments\n\n"
+        '> "I do, like, cross [obviously] promotions."\n',
+        encoding="utf-8",
+    )
+    out = tmp_path / "report.md"
+    r = _run_cli("--vtt", str(vtt), "--scene-extractions", str(d),
+                 "--out", str(out), "--report-only")
+    assert r.returncode == 1, r.stdout + r.stderr
+    assert "refused" in r.stdout
+    assert "0 unverified quote(s), 1 refused span(s)" in r.stdout
+
+
+def test_cli_annotates_refusals_when_not_report_only(tmp_path):
+    vtt = tmp_path / "c.vtt"
+    vtt.write_text(CONTRACT_VTT, encoding="utf-8")
+    d = tmp_path / "scenes"
+    d.mkdir()
+    scene = d / "01_scene.md"
+    scene.write_text(
+        "## Scene summary (from gm-assist, verbatim)\n\nnothing here\n\n"
+        "## Verbatim moments\n\n"
+        '> "I do, like, cross [obviously] promotions."\n',
+        encoding="utf-8",
+    )
+    _run_cli("--vtt", str(vtt), "--scene-extractions", str(d),
+             "--out", str(tmp_path / "r.md"))
+    assert refusal_marker(Rule.R3) in scene.read_text()

@@ -14,11 +14,18 @@ Usage::
     sd_verify_quotes --vtt session.vtt \\
         --scene-extractions scene_extractions_new/ --report-only
 
+Two axes are reported. Verdicts (``verified``/``near``/``unverified``) answer
+*is this in the tape*. Refusals answer *may the pipeline choose this*, under
+the ratified extraction contract (``docs/design/ExtractionContract_proposal.md``,
+issue #250): R1 refuses a span the two sections carry differently that the
+transcript cannot settle, R3 refuses a span with an editorial insertion inside
+it. A refusal can land on a span that is perfectly verbatim.
+
 Exit codes are meaningful — ``sd_agent`` depends on the 1/2 split to tell
 "the check worked and found things" from "the check could not run":
 
-    0  ran; no unverified quotes
-    1  ran; one or more unverified quotes (a finding, not an error)
+    0  ran; nothing unverified and nothing refused
+    1  ran; unverified quotes and/or contract refusals (findings, not errors)
     2  could not run (no transcript, no artifact, unreadable input)
 """
 
@@ -33,6 +40,7 @@ from .verify_quotes import (
     DEFAULT_THRESHOLD,
     NOT_CHECKED,
     NOT_CHECKED_SCENES,
+    Rule,
     SourceTranscript,
     Verdict,
     VerificationReport,
@@ -41,7 +49,7 @@ from .verify_quotes import (
     now_iso,
     read_preserving_newlines,
     render_report,
-    verify_artifact,
+    verify_artifact_contract,
 )
 
 # Sidecars scene_extract leaves beside the real files. Mirrors the filter in
@@ -136,9 +144,10 @@ def main() -> int:
     )
 
     unparsed = 0
+    refusals_by_file: dict[Path, list] = {}
     for path, kind in targets:
         try:
-            findings = verify_artifact(
+            result = verify_artifact_contract(
                 path, transcript, kind=kind,
                 threshold=args.threshold, min_tokens=args.min_tokens,
             )
@@ -146,8 +155,16 @@ def main() -> int:
         except OSError as e:
             print(f"Error: cannot read {path}: {e}", file=sys.stderr)
             return 2
+        findings = result.findings
         report.artifacts.append(path)
         report.findings.extend(findings)
+        report.refusals.extend(result.refusals)
+        if result.refusals:
+            refusals_by_file.setdefault(path, []).extend(result.refusals)
+        report.conflicts.paired += result.conflicts.paired
+        report.conflicts.consistent += result.conflicts.consistent
+        report.conflicts.settled += result.conflicts.settled
+        report.conflicts.refusals.extend(result.conflicts.refusals)
 
     if unparsed:
         # Non-coverage must be stated, not inferred from a clean-looking report.
@@ -185,14 +202,28 @@ def main() -> int:
                 note = "   — [inaudible] / (paraphrase) / (truncated)"
             print(f"    {v.value:11} {n:5}  ({n / total:>3.0%}){note}")
 
+    rc = report.refusal_counts
+    n_refused = len(report.refusals)
+    scan = report.conflicts
+    if n_refused:
+        print(f"    {'refused':11} {n_refused:5}  "
+              f"(R1 {rc[Rule.R1]}, R3 {rc[Rule.R3]})   ← contract #250; "
+              f"these render as-is until you rule on them")
+    if scan.paired:
+        print(f"      R1 paired {scan.paired} span(s) across both sections: "
+              f"{scan.consistent} consistent, {scan.settled} settled by the "
+              f"transcript, {scan.refused} refused.")
+
     n_annotated = 0
     if not args.report_only:
         by_file: dict[Path, list] = {}
         for f in report.findings:
             by_file.setdefault(f.quote.artifact, []).append(f)
-        for path, findings in by_file.items():
+        for path in dict.fromkeys([*by_file, *refusals_by_file]):
             original = read_preserving_newlines(path)
-            updated, added = annotate_text(original, findings)
+            updated, added = annotate_text(
+                original, by_file.get(path, []), refusals_by_file.get(path, []),
+            )
             if added:
                 atomic_write_text(path, updated)
                 n_annotated += added
@@ -206,12 +237,15 @@ def main() -> int:
     print("=" * 60)
     n_problem = len(report.problems)
     if n_annotated:
-        print(f"  Marked {n_annotated} line(s) with {'<!-- cg:unverified -->'}.")
-    print(f"  {n_problem} unverified quote(s). Wrote {out_path}")
-    if n_problem:
+        # Markers, not lines: one line can carry both cg:unverified and a
+        # cg:refused, because the two axes are independent.
+        print(f"  Added {n_annotated} cg:unverified / cg:refused marker(s).")
+    print(f"  {n_problem} unverified quote(s), {n_refused} refused span(s). "
+          f"Wrote {out_path}")
+    if n_problem or n_refused:
         print("  Nothing was auto-corrected — review the report and fix the source.")
 
-    return 1 if n_problem else 0
+    return 1 if (n_problem or n_refused) else 0
 
 
 if __name__ == "__main__":
