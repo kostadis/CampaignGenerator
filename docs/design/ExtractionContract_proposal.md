@@ -1,8 +1,18 @@
-# Extraction contract for `scene_extractions_*` — design proposal
+# Extraction contract for `scene_extractions_*`
 
-**Issue:** #250. **Status:** proposal. **Do not implement before the GM rules on D1–D3 below** — all three are scope/attribution calls, the class the Pipeline Design Rule reserves for a human checkpoint.
+**Issue:** #250. **Status: ratified 2026-08-10** — the GM has ruled on D1–D3; the rulings are R1–R3 below and implementation is unblocked. The three questions are kept in full because the options not taken are the record of why the taken one is right.
 
-Evidence: `~/src/campaigns/Phandalin/summaries/20260623/` (ch46, six scenes, 1,244 VTT cues). Ground truth is `GMT20260624-035836_Recording.transcript.cleaned.vtt`; the disputed cues are byte-identical in the raw sibling, so the raw-vs-`.cleaned` choice is not implicated in either defect.
+Evidence: `~/src/campaigns/Phandalin/summaries/20260623/` (ch46, six scenes, 1,244 VTT cues). Ground truth is `GMT20260624-035836_Recording.transcript.cleaned.vtt`; the disputed cues are byte-identical in the raw sibling, so raw-vs-`.cleaned` did not *cause* either defect — but R2 makes `.cleaned` the repair layer, so the two files stop being interchangeable from here on.
+
+## Rulings
+
+| | ruling | measured cost on ch46 |
+|---|---|---|
+| **R1** (D1) | **Refuse and flag.** A conflict the VTT cannot settle renders as neither copy until the GM resolves it. **A span verbatim in both copies is never a conflict** — two true statements must never be escalated. | **2** interruptions/session (`new/`), 2 (`smoothed/`) |
+| **R2** (D2) | **A transcription garble is a defect in the ground truth and gets fixed** — as a **per-cue** correction in the `.cleaned.vtt`, authored by the GM. Never a global string replace, never a model judgement, never a registry canonicalisation. | 3 cues this session |
+| **R3** (D3) | **Refuse and flag.** An editorial insertion inside a span marked verbatim does not render until rewritten. Applies to any *new* class-4 bracket, so the renderer never improvises again. | **7–10** flagged spans/session |
+
+R1's exclusion is load-bearing: without it the rule fires on any two similar-but-distinct real utterances, and the GM is woken up to adjudicate between two facts. With it, D1 can only ever fire where at most one copy is in the tape.
 
 ## The finding that reframes the issue
 
@@ -67,9 +77,23 @@ Cues 4513 and 4521 are eight cues apart. The longer copy is a fabricated continu
 | Speaker labels | 417 | `[GM]` 162, `[Vukradin]` 108, `[Brewbarry]` 75, `[Soma]` 35, `[Valphine]` 32, `[Lathander]` 3, `[GM / Vukradin]` 2 | structural — preserve |
 | Sub-scene markers | 40 | `[scene tag — The Golden Eyes]` | structural — preserve |
 | Transcription markers | 7 | `[unclear]` 2, `[inaudible]` 2, `[stop]`, `[so]`, `[out]` | factual about the VTT — preserve; deleting one fabricates certainty |
-| **Editorial insertions inside a verbatim quote** | **3** | `[the good stuff on]` (`smoothed/04:107`), `[blurb]` (`04:181`), `[those are Brin and Giles]` (`new/04:69`) | **contested — D3** |
+| **Editorial insertions inside a verbatim quote** | **10** | see below | **R3 — refuse and flag** |
 
 Only the last class is the reported problem, and it is a verbatim-integrity violation rather than a formatting one: `> "Don't underestimate the power of [the good stuff on] the good people."` is marked verbatim while carrying inserted text. Fable preserved these; Opus deleted them. Neither should have been the component deciding.
+
+**Correction — this count was 3 and is 10.** The first pass classified brackets by *token identity* across the whole file, so `[Lathander]` landed in "speaker labels" (it is one, three times — but a fourth sits inside a verbatim blockquote) and every marker with a comment attached (`[inaudible — probable "…"]`) matched no known token and fell through uncounted. Reclassifying by *position* — every bracket inside a `> "…"` span — gives ten per layer, identical in `new/` and `smoothed/`:
+
+```
+[Same place the]  [those are Brin and Giles]  [the good stuff on]  [blurb]
+[continue?]       [kept]                      [Lathander]
+[inaudible — probable "I'll fill you in the whole way"]
+[inaudible — probable "It's a mermaid, Steph(ane)"]
+[inaudible — Vukradin cut off]
+```
+
+The last three are hybrids: a transcription marker (class 3, preserve) carrying a conjectured reconstruction (class 4). R3 was ruled against the old figure of 3; the true cost is 7–10 spans a session and the ruling was re-confirmed at that price.
+
+`[Lathander]` is also the one *clarifying* rather than *replacing* bracket here — the tape says "Lathander" ten times and "Morninglord" zero, so it inserts nothing the speaker did not say. Whether a bracket whose content is present in the tape should be exempt from R3 is mechanically checkable (`Quote.match_variants` already tests both readings) and is **not** ruled on; it is the first open question for implementation.
 
 ## Proposed contract
 
@@ -90,18 +114,44 @@ The only arbiter that gets both right is the transcript. Standing caveat: a simi
 
 **C4 — The contract binds `scene_extractions_new/` as the verbatim record, and `smoothed/` declares its edits.** Given smoothing triples the unverified rate, the two layers cannot carry the same promise. Either `smoothed/` stops claiming verbatim for spans it edited, or the renderer reads verbatim spans from `new/` and prose from `smoothed/`.
 
-## GM decision points
+## GM decision points — all three ruled
 
 **D1 — When the human `## Scene summary` and the model's `## Verbatim moments` disagree and the verifier cannot settle it (`near` on both, or the span is absent from the VTT), what happens?**
-(a) Human summary wins — it was right in the one confirmed case, but it is GM-assist prose, not a transcription, so it will not always be. (b) Refuse and flag: the span renders as neither until the GM resolves it — safest for verbatim integrity, costs an interruption per conflict. (c) Verbatim moments wins — recorded for completeness; the evidence is against it.
+(a) Human summary wins — it was right in the one confirmed case, but it is GM-assist prose, not a transcription, so it will not always be. **(b) RULED — refuse and flag:** the span renders as neither until the GM resolves it. (c) Verbatim moments wins — recorded for completeness; the evidence is against it.
 
-**D2 — Is laundering a transcription garble corruption?** The VTT says `Vucherdin`; the registry knows that is Vukradin. Either preserve the spoken form always and carry identity as metadata (the established rule — an alias is identity, never a text substitution, and passing the equivalence set as a transform destroys which form was spoken), or permit canonical spelling inside quotes when the registry is confident. This ruling alone decides whether `new/02:28`'s 0.97 is a defect or acceptable, independent of the splice.
+The cost of (b) is **not** the 34/79 per-quote unverified figures above — most unverified quotes have no second copy to conflict with. Pairing every quoted span in the summary half against `## Verbatim moments` and classifying both copies:
 
-**D3 — Class-4 brackets: strip, preserve, or refuse?** Three instances here. Strip = the quote reads clean and silently loses the editor's repair. Preserve = an editorial hand sits inside a verbatim span. Refuse = flagged, does not render until rewritten. Whatever is chosen must also say what happens to a *new* class-4 bracket, so the renderer never improvises again.
+| layer | same span in both sections | VTT settles it | conflicts R1 must refuse |
+|---|---|---|---|
+| `scene_extractions_new/` | 8 | 3 | **2** |
+| `scene_extractions_smoothed/` | 7 | 3 | **2** |
 
-## Out of scope for this proposal
+The both-verbatim exclusion accounts for one of these directly: `03_…proclamation.md` pairs `summary:11` with `moments:49` at 0.76 similarity and **both copies are verbatim in the tape** — two different things genuinely said, joined only by surface similarity. Under R1 that is not a conflict and never reaches the GM. One further overlap lowers the real cost again: `[Lathander]` at `new/06:154` is simultaneously an R1 conflict and an R3 bracket, so the two interruption sets intersect rather than add.
 
-- Any change to `scene_extract.py` or the smoothing pass — implementation follows sign-off.
+**D2 — Is laundering a transcription garble corruption?** **RULED — it is a mistranscription and gets fixed**, per-cue, in the `.cleaned.vtt`.
+
+Two corrections to how this question was originally framed:
+
+- **The registry does not know.** `Vukradin`'s entry in `Phandalin/docs/entity_registry.yaml` carries exactly one alias, `Bard`. It has never heard of `Vucherdin`. So the option "permit canonical spelling when the registry is confident" would not have fired here — **the model laundered the name on its own initiative**, which is the defect, not a policy gap.
+- **This is not the alias rule.** An alias is a *spoken variant* — a person choosing a different name — and the standing rule that an alias is identity and never a text substitution is untouched. An ASR mishearing is a defect in the ground truth itself. Different category, different remedy.
+
+Evidence it is a mishearing: within this one session the tape reads `Vukradin` 11×, `Vucherdin` 3×, `Vukra Din` 1×, and **every mangled form comes from a single speaker** (the GM); no player ever produces one. Two of the three Vucherdins (cues 389, 4073) are plain GM narration, where a mangle has no in-fiction job to do.
+
+The GM ruled all three cues fixed, including 1013 — the one in Toblen's voice, where the accident had a case for being kept. The *mechanism* stays per-cue regardless: a global `Vucherdin`→`Vukradin` replace is what would need a model to carve out exceptions, and would flatten a deliberate in-character fumble on the way past. Per-cue, an exception is data the GM authors once.
+
+This also settles `new/02:28`'s 0.97 as **not** a defect once the tape is repaired — but the `smoothed/02:28` splice at 0.80 remains one, independently.
+
+**D3 — Class-4 brackets: strip, preserve, or refuse?** **RULED — refuse and flag.** Strip = the quote reads clean and silently loses the editor's repair. Preserve = an editorial hand sits inside a verbatim span. Refuse = flagged, does not render until rewritten — and it binds any *new* class-4 bracket, so the renderer never improvises again.
+
+## Why the model is not the flagger
+
+The tempting shortcut on both R2 and R3 is "let the model flag it when it thinks the oddity is intentional." We already ran that experiment without meaning to. Both #245 benchmark arms had the Vucherdin span in front of them: **Fable kept the garble with no audit entry; Opus silently reclassified it.** Neither flagged anything, in opposite directions. A component that noticed nothing twice cannot be the one deciding which anomalies deserve the GM's attention — and asking it to would put a scope decision back exactly where this contract exists to take it out.
+
+The discovery path for a *future* accident stays open and stays deterministic: `sd_verify_quotes` surfaces any drifted span as `near`, which is how this one became visible at all. The GM reads the flagged list. What is dropped is the model pre-filtering that list.
+
+## Out of scope
+
+- ~~Any change to `scene_extract.py` or the smoothing pass~~ — unblocked by R1–R3; implementation is the follow-on to this doc.
 - The `## Scene summary` / `## Verbatim moments` split itself (spec 007 D4). This contract governs conflicts *between* them, not the boundary.
 - Re-running extraction for ch46. This corpus is evidence, not a migration target.
 - Threshold calibration. 0.85 is spec 007's starting point and is explicitly not calibrated for a local model; the numbers above are all at that default.
@@ -117,3 +167,11 @@ python3 -m session_doc.sd_verify_quotes \
   --vtt GMT20260624-035836_Recording.transcript.cleaned.vtt \
   --scene-extractions scene_extractions_smoothed --report-only --out /tmp/smoothed.md
 ```
+
+The R1 conflict counts and the R3 bracket recount are not produced by that CLI — they pair the two sections against each other, which nothing ships yet. They are the first thing implementation should turn into a test fixture; until then they are reproduced by the scratch scripts recorded in the #250 PR.
+
+## Open questions for implementation
+
+1. **Clarifying vs replacing brackets** (above): should a class-4 bracket whose content *is* present in the tape be exempt from R3? Mechanically checkable, not ruled.
+2. **Where R2 corrections live long-term.** This session's fix edits `.cleaned.vtt` directly. `docs/corrections.yaml` already exists per campaign, is hand-authored, and carries `verified: true|false` — which maps onto "we think this is a typo but have not asked the speaker." But `sd_verify_quotes` does not read it, and its matcher keys on document-path globs, not VTT cue indices. Extending it is the alternative to editing the transcript in place.
+3. **C4's two options** — `smoothed/` stops claiming verbatim, or the renderer reads verbatim from `new/` and prose from `smoothed/` — are still both open.

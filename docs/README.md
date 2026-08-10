@@ -52,6 +52,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 
 ## Design notes
 
+- [Extraction contract for `scene_extractions_*`](design/ExtractionContract_proposal.md) — **ratified (#250)**: what happens when a scene extraction's two sections carry the same span in conflicting copies. R1 refuse-and-flag (but two verbatim copies are never a conflict), R2 a transcription garble is a ground-truth defect fixed per-cue in the `.cleaned.vtt`, R3 refuse-and-flag on editorial brackets inside a verbatim span — with the measured interruption cost of each, and why the model is not the flagger.
 - [Quote verification handoff](design/QuoteVerification_handoff.md) — **pick-up note**: what 007 shipped, the three findings that outlived it (DeepSeek was not the problem; D1's 64% was measuring a bug; the failure mode is stitching), which corpora are worth re-extracting, and how to start the follow-up feature.
 - [Source tree restructure](design/SourceTreeRestructure.md) — splits the 62 flat root scripts into subsystem packages under `pipelines/`, `entity_registry/`, and `session_doc/`, grouped by pipeline; migration complete.
 - [RLM paper comparison](design/rlm_paper_comparison.md) — how this system relates to (and diverges from) the published RLM paper.
