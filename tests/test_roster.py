@@ -1,12 +1,20 @@
-"""Tests for session_doc/roster.py (issue #245, defect 4).
+"""Tests for session_doc/roster.py (issue #245 defect 4; issue #248 follow-up).
 
-Covers the two hand-authored party.md layouts (legacy `## Name` /
-`**Race Class N, Player: X**` and pipe `### Name` /
-`**Class N (Subclass) | Species | Player`), the Phandalin regression that
-produced cross-section junk, and — separately — the four other campaign
-layouts that are knowingly unsupported (issue #245 follow-up): they must
-come back empty, never junk, and the silent-failure warning added to
-sd_narrate.py is what surfaces that to the GM.
+Covers all six hand-authored party.md layouts now supported:
+
+1. Legacy (`## Name` / `**Race Class N, Player: X**`)
+2. Unlabeled pipe (`### Name` / `**Class N (Subclass) | Species | Player`)
+3. Hillsfar (`### Name` / `**Class N** — player: X`, em-dash suffix outside
+   the closing bold, species+class fused with no delimiter)
+4. out-of-the-abyss (everything in the heading, `·`-separated:
+   `### Name — Class N (Sub) · Species · Player: X`)
+5. Labeled pipe, no list prefix — stormgiants / toee
+   (`**Class/Level:** ... | **Species:** ... | **Player:** ...`)
+6. Labeled pipe, `- ` list prefix — obelisk (same fields, list-marked)
+
+plus the Phandalin regression that produced cross-section junk. The
+fixtures below for layouts 3-6 are verbatim excerpts from each campaign's
+real `~/src/campaigns/<name>/docs/party.md` (issue #248).
 """
 
 import pytest
@@ -163,32 +171,249 @@ def test_empty_party_text_yields_empty_string():
     ) == ""
 
 
-# ── Other campaign layouts: knowingly unsupported, must be empty not junk ───
+# ── Hillsfar format (H3, closed bold, em-dash player suffix OUTSIDE the bold) ─
 #
-# These four formats (Hillsfar, OOTA, obelisk, stormgiants) are out of scope
-# for this fix (issue #245 follow-up). The requirement here is narrower than
-# "parse them": they must yield an empty string, never a junk match, and the
-# --party warning added to sd_narrate.py is what surfaces the gap to the GM
-# so a future work order can add real support instead of silent failure.
+# Verbatim from ~/src/campaigns/Hillsfar/docs/party.md. Species+class are
+# fused with no delimiter ("High Elf Ranger 11") — the parser must NOT try to
+# split them; that needs a species lexicon, which is inference, not parsing.
 
-OTHER_CAMPAIGN_FIXTURES = {
-    "hillsfar": (
-        "## Characters\n\n### Akritas\n**High Elf Ranger 11** — player: kostadis1\n"
+HILLSFAR_PARTY = (
+    "## Characters\n"
+    "\n"
+    "### Akritas\n"
+    "**High Elf Ranger 11** — player: kostadis1\n"
+    "\n"
+    "### Bramgrim Stoutale\n"
+    "**Hill Dwarf Life Cleric 11** — player: kostadis1\n"
+    "\n"
+    "### Daein\n"
+    "**Human Fighter 9 / Bard 2** — player: kostadis1\n"
+    "\n"
+    "### Felkur Oldenwood\n"
+    "**Rock Gnome Artillerist Artificer 11** — player: kostadis1\n"
+)
+
+EXPECTED_HILLSFAR_ROSTER = "\n".join([
+    "- Akritas (kostadis1): High Elf Ranger 11",
+    "- Bramgrim Stoutale (kostadis1): Hill Dwarf Life Cleric 11",
+    "- Daein (kostadis1): Human Fighter 9 / Bard 2",
+    "- Felkur Oldenwood (kostadis1): Rock Gnome Artillerist Artificer 11",
+])
+
+
+def test_hillsfar_format_yields_four_characters():
+    assert extract_character_roster(HILLSFAR_PARTY) == EXPECTED_HILLSFAR_ROSTER
+
+
+# ── out-of-the-abyss format (everything in the H3 heading, `·`-separated) ───
+#
+# Verbatim from ~/src/campaigns/out-of-the-abyss/docs/party.md. Class first,
+# species second (species may itself carry parens: "Orc (Sage)"), then
+# `Player:`, plus a tolerated extra (`Faith:`) that must be ignored.
+
+OOTA_PARTY = (
+    "## Characters\n"
+    "\n"
+    "### Zalthir — Monk 8 (Warrior of Shadow) · Bronze Dragonborn · Player: Gabe\n"
+    "- **Personality & motivations:** Silent tactical architect.\n"
+    "\n"
+    "### Thorin — Fighter 8 (Battle Master) · Dwarf (Giant Foundling) · Player: Joe Beda\n"
+    "- **Personality & motivations:** Blunt melee pragmatist.\n"
+    "\n"
+    "### Grygum — Cleric 8 (Life Domain) · Orc (Sage) · Player: Ben Pfaff · Faith: Bahamut\n"
+    "- **Personality & motivations:** Compulsive documentarian.\n"
+    "\n"
+    "### Daz — Wizard 8 (Evoker) · Elf (Drow Lineage) · Player: Mike Hall\n"
+    "- **Personality & motivations:** Lead investigator.\n"
+)
+
+EXPECTED_OOTA_ROSTER = "\n".join([
+    "- Zalthir (Gabe): Bronze Dragonborn Monk 8 (Warrior of Shadow)",
+    "- Thorin (Joe Beda): Dwarf (Giant Foundling) Fighter 8 (Battle Master)",
+    "- Grygum (Ben Pfaff): Orc (Sage) Cleric 8 (Life Domain)",
+    "- Daz (Mike Hall): Elf (Drow Lineage) Wizard 8 (Evoker)",
+])
+
+
+def test_oota_format_yields_four_characters():
+    assert extract_character_roster(OOTA_PARTY) == EXPECTED_OOTA_ROSTER
+
+
+def test_oota_heading_fields_close_the_section():
+    """The heading supplies the whole class line; the body's `- **...**` line
+    must not get a second chance at it (there's nothing left to parse anyway,
+    but the section must be closed, not left open)."""
+    out = extract_character_roster(OOTA_PARTY)
+    assert "Personality" not in out
+    assert "Silent tactical architect" not in out
+
+
+def test_oota_plain_heading_is_unaffected():
+    """A heading with no em-dash/middle-dot field structure must fall through
+    to the ordinary heading-name path untouched."""
+    assert extract_character_roster(
+        "### Akritas\n**High Elf Ranger 11** — player: kostadis1\n"
+    ) == "- Akritas (kostadis1): High Elf Ranger 11"
+
+
+# ── Labeled pipe format, no list prefix (stormgiants / toee) ────────────────
+
+# Verbatim from ~/src/campaigns/stormgiants/docs/party.md. Must tolerate the
+# extra `| **Alignment:** ...` field on Unla Key.
+
+STORMGIANTS_PARTY = (
+    "## Characters\n"
+    "\n"
+    "### Vardis\n"
+    "**Class/Level:** Cleric 13 (Light Domain) | **Species:** Wood Elf | **Player:** Wade Brown\n"
+    "\n"
+    "### Orsik\n"
+    "**Class/Level:** Fighter 11 / Artificer 2 | **Species:** Mountain Dwarf | "
+    "**Player:** David Mendenhall\n"
+    "\n"
+    "### Unla Key\n"
+    "**Class/Level:** Wizard 13 (School of Divination) | **Species:** Lightfoot Halfling | "
+    "**Player:** Jared Rossof | **Alignment:** Neutral Evil\n"
+)
+
+EXPECTED_STORMGIANTS_ROSTER = "\n".join([
+    "- Vardis (Wade Brown): Wood Elf Cleric 13 (Light Domain)",
+    "- Orsik (David Mendenhall): Mountain Dwarf Fighter 11 / Artificer 2",
+    "- Unla Key (Jared Rossof): Lightfoot Halfling Wizard 13 (School of Divination)",
+])
+
+
+def test_stormgiants_format_yields_three_characters():
+    # Only Vardis/Orsik/Unla Key exist in the real doc — there is no Thistle
+    # entry. That's a known data gap in stormgiants, not a parser bug.
+    assert extract_character_roster(STORMGIANTS_PARTY) == EXPECTED_STORMGIANTS_ROSTER
+
+
+# ── Labeled pipe format, `- ` list prefix (obelisk) ──────────────────────────
+
+# Verbatim from ~/src/campaigns/obelisk/docs/party.md (post campaigns#142 data
+# fix: sidekicks now carry `**Player:** GM` and `**Role:** Sidekick` in the
+# same labeled shape as Zenvon's line, rather than the unparseable prose bold
+# they used to have).
+
+OBELISK_PARTY = (
+    "## Characters\n"
+    "\n"
+    "### Zenvon Foreput\n"
+    "- **Class/Level:** Rogue 2 | **Species:** Halfling | **Player:** Nikhil Reddy\n"
+    "\n"
+    "### Veyra of the Blue Candle\n"
+    "- **Class/Level:** Mage 2 | **Species:** Tiefling | **Player:** GM | **Role:** Sidekick\n"
+    "- *(Level-up to 3 pending.)*\n"
+    "\n"
+    "### Sister Maela Dawnforge\n"
+    "- **Class/Level:** Cleric 2 | **Species:** Dwarf | **Player:** GM | **Role:** Sidekick\n"
+    "- *(Level-up to 3 pending.)*\n"
+    "\n"
+    "### Pip Thistlewick\n"
+    "- **Class/Level:** Fighter 2 | **Species:** Human | **Player:** GM | **Role:** Sidekick\n"
+    "- *(Level-up to 3 pending.)*\n"
+)
+
+EXPECTED_OBELISK_ROSTER = "\n".join([
+    "- Zenvon Foreput (Nikhil Reddy): Halfling Rogue 2",
+    "- Veyra of the Blue Candle (GM): Tiefling Mage 2",
+    "- Sister Maela Dawnforge (GM): Dwarf Cleric 2",
+    "- Pip Thistlewick (GM): Human Fighter 2",
+])
+
+
+def test_obelisk_format_yields_four_characters():
+    assert extract_character_roster(OBELISK_PARTY) == EXPECTED_OBELISK_ROSTER
+
+
+# ── toee wrinkles: level after the subclass parens; three PCs with no level
+#    at all, one of which duplicates species into Class/Level ────────────────
+
+# Verbatim from ~/src/campaigns/toee/docs/party.md.
+
+TOEE_PARTY = (
+    "## Characters\n"
+    "\n"
+    "### Calmer\n"
+    "**Class/Level:** Cleric (War Domain) 6 | **Species:** Human | "
+    "**Player:** Kostadis/Kostadis Roussos/kostadis1\n"
+    "\n"
+    "### Zephyr\n"
+    "**Class/Level:** Tiefling Rogue (Assassin) | **Species:** Tiefling | "
+    "**Player:** Thomas/Thomas Kolivakis\n"
+    "\n"
+    "### Zinnia\n"
+    "**Class/Level:** Elf Monk | **Species:** Elf | **Player:** George/George Kolivakis \n"
+    "\n"
+    "### Sequoia\n"
+    "**Class/Level:** Halfling Rogue | **Species:** Halfling | **Player:** Nicholas\n"
+)
+
+EXPECTED_TOEE_ROSTER = "\n".join([
+    "- Calmer (Kostadis/Kostadis Roussos/kostadis1): Human Cleric (War Domain) 6",
+    "- Zephyr (Thomas/Thomas Kolivakis): Tiefling Rogue (Assassin)",
+    "- Zinnia (George/George Kolivakis): Elf Monk",
+    "- Sequoia (Nicholas): Halfling Rogue",
+])
+
+
+def test_toee_format_yields_four_characters():
+    assert extract_character_roster(TOEE_PARTY) == EXPECTED_TOEE_ROSTER
+
+
+def test_toee_species_never_doubles_into_a_missing_level():
+    """Zephyr/Zinnia/Sequoia have no level on the sheet, and Class/Level
+    already has species folded in ('Tiefling Rogue (Assassin)'). The parser
+    must emit that as-is — never invent a level, never double the species
+    word by blindly prepending it again."""
+    out = extract_character_roster(TOEE_PARTY)
+    zephyr = next(line for line in out.splitlines() if line.startswith("- Zephyr"))
+    assert zephyr == "- Zephyr (Thomas/Thomas Kolivakis): Tiefling Rogue (Assassin)"
+    assert "Tiefling Tiefling" not in out
+
+
+# ── Labeled form: unknown trailing label is ignored, no special-casing ──────
+
+def test_labeled_form_ignores_unknown_trailing_label():
+    """Real-world shape: stormgiants' `**Alignment:**`, obelisk's `**Role:**`.
+    The labeled-pipe parser must ignore any label it doesn't recognise rather
+    than choke on it, fold it into another field, or need a name check for
+    what the label says (no "sidekick" special-casing anywhere)."""
+    assert extract_character_roster(
+        "### Test Char\n"
+        "**Class/Level:** Fighter 3 | **Species:** Human | **Player:** Jamie | "
+        "**Role:** Sidekick\n"
+    ) == "- Test Char (Jamie): Human Fighter 3"
+
+    assert extract_character_roster(
+        "### Other Char\n"
+        "**Class/Level:** Wizard 5 | **Species:** Elf | **Player:** Robin | "
+        "**Alignment:** Chaotic Good\n"
+    ) == "- Other Char (Robin): Elf Wizard 5"
+
+
+# ── No-bleed / no-guess: non-class bold lines still yield nothing ───────────
+#
+# Synthetic fixtures (not tied to any one campaign's current file — obelisk's
+# real sidekick lines now parse, see above). The requirement is narrower than
+# "parse them": an unparseable bold line must yield nothing, never a junk
+# guess.
+
+SYNTHETIC_NON_CLASS_FIXTURES = {
+    "prose_label_no_digit": (
+        "### Some NPC\n**Notable relationships:** Close ally of the party.\n"
     ),
-    "oota": (
-        "## Characters\n\n### Zalthir — Monk 8 (Warrior of Shadow) · Bronze Dragonborn · "
-        "Player: Gabe\n- **Personality & motivations:** Silent tactical architect.\n"
+    "unlabeled_prose_with_list_prefix": (
+        "### Some Sidekick\n"
+        "- **Something mage sidekick, Level 2** (level-up to 3 pending).\n"
     ),
-    "obelisk": (
-        "## Characters\n\n### Zenvon Foreput\n- **Class/Level:** Rogue 2 | "
-        "**Species:** Halfling | **Player:** Nikhil Reddy\n"
-    ),
-    "stormgiants": (
-        "## Characters\n\n### Vardis\n\n**Notable Relationships:** Close to Orsik.\n"
+    "hillsfar_shape_without_player_suffix": (
+        "### Some Character\n**Human Fighter 5** — a footnote, not a player field.\n"
     ),
 }
 
 
-@pytest.mark.parametrize("name", sorted(OTHER_CAMPAIGN_FIXTURES))
-def test_other_campaign_layouts_yield_empty_not_junk(name):
-    assert extract_character_roster(OTHER_CAMPAIGN_FIXTURES[name]) == ""
+@pytest.mark.parametrize("name", sorted(SYNTHETIC_NON_CLASS_FIXTURES))
+def test_non_class_bold_lines_yield_nothing_not_junk(name):
+    assert extract_character_roster(SYNTHETIC_NON_CLASS_FIXTURES[name]) == ""
