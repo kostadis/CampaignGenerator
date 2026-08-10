@@ -9,7 +9,7 @@ Evidence: `~/src/campaigns/Phandalin/summaries/20260623/` (ch46, six scenes, 1,2
 | | ruling | measured cost on ch46 |
 |---|---|---|
 | **R1** (D1) | **Refuse and flag.** A conflict the VTT cannot settle renders as neither copy until the GM resolves it. **A span verbatim in both copies is never a conflict** — two true statements must never be escalated. | **2** interruptions/session (`new/`), 2 (`smoothed/`) |
-| **R2** (D2) | **A transcription garble is a defect in the ground truth and gets fixed** — as a **per-cue** correction in the `.cleaned.vtt`, authored by the GM. Never a global string replace, never a model judgement, never a registry canonicalisation. | 3 cues this session |
+| **R2** (D2) | **A transcription garble is a defect in the ground truth and gets fixed** — as a **per-cue** correction in the `.cleaned.vtt`, authored by the GM. Never a global string replace, never a model judgement, never a registry canonicalisation. **Applied:** campaigns#151. | 3 cues this session |
 | **R3** (D3) | **Refuse and flag.** An editorial insertion inside a span marked verbatim does not render until rewritten. Applies to any *new* class-4 bracket, so the renderer never improvises again. | **7–10** flagged spans/session |
 
 R1's exclusion is load-bearing: without it the rule fires on any two similar-but-distinct real utterances, and the GM is woken up to adjudicate between two facts. With it, D1 can only ever fire where at most one copy is in the tape.
@@ -46,7 +46,7 @@ Smoothing more than doubles the unverified count. Some of that is by design — 
 
 | stage | text | score |
 |---|---|---|
-| VTT cue 1013 | `Kostadis Roussos: Vucherdin, I think that if you were willing to play a song, it would be for free.` | ground truth |
+| VTT **cue 253** (file line 1013) | `Kostadis Roussos: Vucherdin, I think that if you were willing to play a song, it would be for free.` | ground truth |
 | `new/02:12` (`## Scene summary`, human) | `*"Vucherdin, …"*` | exact |
 | `new/02:28` (`## Verbatim moments`, model) | `> "Vukradin, …"` | **0.97** — name laundered |
 | `smoothed/02:28` | `> "How much you got? Toblen says: well — Vukradin, …"` | **0.80** — splice added |
@@ -59,12 +59,15 @@ Attribution is **correct** at both stages (`**[GM]** — *as Toblen, offering it
 
 | stage | text | score |
 |---|---|---|
-| VTT cue 4513 | `Gary Young: So it says that it will cost us 1,675 gold, and…` | ground truth |
-| VTT cue 4521 | `Gary Young: I'm hoping that we can barter this, staff and bird calls as part of the,` | ground truth |
+| VTT **cue 1128** (file line 4513) | `Gary Young: So it says that it will cost us 1,675 gold, and…` | ground truth |
+| VTT **cue 1129** | `David Mendenhall: We don't, we don't have that.` | ground truth — *the interruption the stitch deletes* |
+| VTT **cue 1130** (file line 4521) | `Gary Young: I'm hoping that we can barter this, staff and bird calls as part of the,` | ground truth |
 | `new/06:84` | `> "So it says that it will cost us 1,675 gold, and…"` | exact |
 | `new/05:187` | both cues joined | **0.75** |
 
-Cues 4513 and 4521 are eight cues apart. The longer copy is a fabricated continuity, and it sits in the wrong scene — the armorer negotiation is scene 06. This one originates in extraction; smoothing merely carried it forward.
+The two Gary Young cues are not adjacent: **cue 1129 sits between them, and it is a different speaker interrupting** — David Mendenhall's *"We don't, we don't have that."* The longer copy is therefore not merely a fabricated continuity, it is one that **deletes another player's turn** to manufacture it. And it sits in the wrong scene: the armorer negotiation is scene 06. This one originates in extraction; smoothing merely carried it forward.
+
+**Correction to earlier drafts of this doc:** the numbers above were file line numbers presented as cue indices (`cue 1013` is file line 1013, which is cue 253; `4513`/`4521` are lines, which are cues 1128/1130), and the claim that the two barter cues were "eight cues apart" was eight *lines* apart — two cues, one interruption. The identifiers are now given as `cue N (file line M)` throughout.
 
 **Correction to #250:** the "road-trip beat duplicated across 04/05" is *not* duplication. `04` carries the departure decision, `05` the journey; the bathrobe thread legitimately spans both. Only 05/06 is a true duplicate span. A naive overlap-dedup would destroy real thread continuity.
 
@@ -108,7 +111,9 @@ The last three are hybrids: a transcription marker (class 3, preserve) carrying 
 
 The only arbiter that gets both right is the transcript. Standing caveat: a similarity band says *an edit happened*, never that the edit was *safe* — 0.92 can be meaning-changing and 0.94 harmless. So `near` escalates; it must never silently resolve a conflict.
 
-**C2 — One authoritative copy per span, keyed on VTT cue index, with other appearances as references.** Re-transcription is what let A and B drift. Cue 4513 is a stable identity for the 1,675 span wherever it is discussed.
+**C2 — One authoritative copy per span, keyed on VTT cue index, with other appearances as references.** Re-transcription is what let A and B drift. Cue 1128 is a stable identity for the 1,675 span wherever it is discussed.
+
+**The key must be the cue index, never the file line.** Applying R2 to this very transcript demonstrated it: correcting three cues added ten NOTE lines to the header and shifted every file line number in the document, while every cue index stayed exactly where it was. A contract keyed on line numbers would have been invalidated by the first correction the contract itself authorised.
 
 **C3 — Scene ownership by cue range, not narrative fit.** A span belongs to the scene whose cue range contains its cue. This is mechanical and auditable, and it is the only rule that distinguishes B (same cue, two scenes — real duplicate) from the 04/05 bathrobe thread (different cues, adjacent scenes — legitimate continuity). No similarity measure can make that distinction.
 
@@ -135,9 +140,9 @@ Two corrections to how this question was originally framed:
 - **The registry does not know.** `Vukradin`'s entry in `Phandalin/docs/entity_registry.yaml` carries exactly one alias, `Bard`. It has never heard of `Vucherdin`. So the option "permit canonical spelling when the registry is confident" would not have fired here — **the model laundered the name on its own initiative**, which is the defect, not a policy gap.
 - **This is not the alias rule.** An alias is a *spoken variant* — a person choosing a different name — and the standing rule that an alias is identity and never a text substitution is untouched. An ASR mishearing is a defect in the ground truth itself. Different category, different remedy.
 
-Evidence it is a mishearing: within this one session the tape reads `Vukradin` 11×, `Vucherdin` 3×, `Vukra Din` 1×, and **every mangled form comes from a single speaker** (the GM); no player ever produces one. Two of the three Vucherdins (cues 389, 4073) are plain GM narration, where a mangle has no in-fiction job to do.
+Evidence it is a mishearing: within this one session the tape reads `Vukradin` 11×, `Vucherdin` 3×, `Vukra Din` 1× (cue 422), and **every mangled form comes from a single speaker** (the GM); no player ever produces one. Two of the three Vucherdins (cues 97 and 1018) are plain GM narration, where a mangle has no in-fiction job to do.
 
-The GM ruled all three cues fixed, including 1013 — the one in Toblen's voice, where the accident had a case for being kept. The *mechanism* stays per-cue regardless: a global `Vucherdin`→`Vukradin` replace is what would need a model to carve out exceptions, and would flatten a deliberate in-character fumble on the way past. Per-cue, an exception is data the GM authors once.
+The GM ruled all three cues fixed, including 253 — the one in Toblen's voice, where the accident had a case for being kept, since the table has a running bit about NPCs stumbling over this name (cues 464, 466: *"He actually stutters while trying to remember your name."*). The *mechanism* stays per-cue regardless: a global `Vucherdin`→`Vukradin` replace is what would need a model to carve out exceptions, and would flatten a deliberate in-character fumble on the way past. Per-cue, an exception is data the GM authors once.
 
 This also settles `new/02:28`'s 0.97 as **not** a defect once the tape is repaired — but the `smoothed/02:28` splice at 0.80 remains one, independently.
 
