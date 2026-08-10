@@ -13,7 +13,7 @@ Evidence: `~/src/campaigns/Phandalin/summaries/20260623/` (ch46, six scenes, 1,2
 | **R1** (D1) | **Refuse and flag.** A conflict the VTT cannot settle renders as neither copy until the GM resolves it. **A span verbatim in both copies is never a conflict** — two true statements must never be escalated. | **4** interruptions/session (`new/`), **6** (`smoothed/`) |
 | **R2** (D2) | **A transcription garble is a defect in the ground truth and gets fixed** — as a **per-cue** correction in the `.cleaned.vtt`, authored by the GM. Never a global string replace, never a model judgement, never a registry canonicalisation. **Applied:** campaigns#151. | 3 cues fixed; **at least 16 more found** — see below |
 | **R3** (D3) | **Refuse and flag.** An editorial insertion inside a span marked verbatim does not render until rewritten. Applies to any *new* class-4 bracket, so the renderer never improvises again. | **12** flagged spans/session, both layers |
-| **R4** (Q2) | **`corrections.yaml` is the record; `.cleaned.vtt` is generated from raw + corrections.** A correction is cue-indexed data with a `verified` flag, not a hand-edit with a NOTE block. *Not implemented.* | 16 corrections owed on ch46 alone |
+| **R4** (Q2) | **The record is the source of truth; `.cleaned.vtt` is generated from raw + corrections.** A correction is cue-indexed data with a `verified` flag, not a hand-edit with a NOTE block. **Built:** `sd_corrections`. | **74** unrecorded edits found on ch46, + 16 owed |
 | **R5** (C4) | **`smoothed/` stops claiming verbatim** — its section is renamed and nothing there asserts exactness. The contract binds `new/`. *Not implemented.* | R1+R3 in `smoothed/`: 18 → **0** |
 | **R6** | **R1 keeps escalating a pair that is identical once brackets are stripped.** Already the shipped behaviour. | 1 refusal/layer retained |
 
@@ -230,7 +230,19 @@ The alternative that lost was continuing what campaigns#151 did: edit the cue in
 
 The option where the tape is never rewritten at all and `sd_verify_quotes` applies corrections at match time also lost, for a specific reason: every other VTT consumer — `enhance_summary`, `scene_extract`, `vtt_voice_compare` — would keep reading the uncorrected tape, so the verifier and the generators would disagree about what was said. Generating the cleaned file keeps all of them consistent for free.
 
-Not built. What it needs: a cue dimension on the correction model (`provenance/corrections.py` keys on `applies_to: {paths, subjects}` today, both document-shaped); the apply CLI; and campaigns#151's three hand-edits back-filled as entries, or the very first tape the rule governs is not reproducible from its own record.
+**Built** as `sd_corrections` (`campaignlib/vtt.py`, `campaignlib/transcript_corrections.py`, `session_doc/sd_corrections.py`). Three subcommands: `import` reverse-engineers a record by diffing raw against an already-edited cleaned tape, `apply` regenerates, `check` verifies. See [the how-to](../cli/transcript_corrections_howto.md).
+
+**Two deviations from this section as ruled, both forced by what implementation found.**
+
+*The record is per-session, not the campaign-wide `docs/corrections.yaml`.* Building the importer and running it on ch46 turned up **74 unrecorded substitutions** in that one session's cleaned tape, not the 16 the R1/R3 refusals implied. Ninety-odd entries per session cannot share a file that currently holds five document corrections, and Phandalin has 42 sessions. It lives at `<session-dir>/transcript_corrections.yaml`, beside the tape it governs. The *mechanism* ruled — hand-authored, id'd, `verified`-flagged, tape generated from it — is unchanged, and the path is an argument, so moving it later costs nothing.
+
+*It does not extend `provenance/corrections.py`.* That package is statically guarded against every write sentinel — `write_text`, `mkdir`, and `.replace` outright (`tests/test_provenance_readonly.py`) — and a tape generator is a writer. Putting it there would have meant either breaking the guard or splitting one feature across two packages to satisfy it.
+
+**What ch46 actually contained.** Every one of the 74 was invisible before this: mostly proper-noun repairs (`Blueberry`→`Brewbarry`, `Cryovane`→`Cryovain`, `sir Kaelin`→`Ser Kaelen`), but also `"Brynn and Giles"`→`"Brynn and Giles Slipper-Shine"` at **three separate cues** — a surname nobody spoke, written into the ground truth — and cue 215's `"the Telosians have been defeated"`→`"the Talosian have been defeated"`, which fixed the spelling and broke the grammar. The editor was `/vtt-spell-pass`, a chat-driven pass with no reviewable output; `spell_canon` only touches bible files, so no repo tool was involved and nothing enumerated the result.
+
+That is the same anti-pattern this contract exists to remove, applied to the ground truth itself rather than to an extraction: a model made scope decisions, and the only record was the changed file. R4 converts it into 74 reviewable entries, every one `verified: false` because none of them ever was.
+
+**The completeness proof.** Regenerating ch46 from raw + the imported record reproduces the hand-edited tape with all **1,244 cues byte-identical**; the only difference is the NOTE header, campaigns#151's prose block giving way to the generated one. That check — `check` compares cue sets, not whole files, so header staleness is not reported as a finding — is what says the record is complete rather than merely plausible.
 
 **3. C4 → R5: `smoothed/` stops claiming verbatim.**
 
