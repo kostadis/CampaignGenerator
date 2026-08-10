@@ -31,6 +31,7 @@ from campaignlib import (
     save_log,
 )
 from session_doc import extract_character_roster, load_voice_files
+from session_doc.voice import _resolve_voice_key
 
 
 DEFAULT_MAX_ITERATIONS = 40
@@ -182,8 +183,12 @@ def tool_read_recap(args: dict, ctx: ToolContext) -> dict:
 
 def tool_read_voice_file(args: dict, ctx: ToolContext) -> dict:
     name = _require_str(args, "character")
-    key = name.lower().strip()
-    if key not in ctx.voices:
+    # Same resolver session_doc.voice.get_voice_note uses (#247), but the
+    # non-warning half of it — this runs on every tool call, so it must not
+    # spam stderr on a routine miss. A dict return either way: this is a
+    # tool result handed back to the model, never raised.
+    key, _ambiguous = _resolve_voice_key(ctx.voices, name)
+    if key is None:
         return {"error": f"no voice file for {name!r}; "
                          f"available: {sorted(ctx.voices)}"}
     return {"character": name, "text": ctx.voices[key]}
