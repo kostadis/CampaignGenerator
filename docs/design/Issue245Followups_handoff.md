@@ -24,6 +24,12 @@ its precondition is met and it is the highest-value remaining item in this doc: 
 be the first ch46 render with the full intended prompt stack, and item 2 (Vukradin's
 sardonic-operator beats) is a live open question either way it resolves.
 
+**Picking narration work back up?** The ordered plan — what to do first, what blocks what,
+and the one decision that gates it — is
+[`NarrationNextSteps_handoff.md`](NarrationNextSteps_handoff.md). It puts the capstone at
+step 5, behind a ten-line critic fix that makes its `/voice-critic` re-score meaningful.
+This doc stays the execution record it reads from.
+
 **What this doc's WO-2 turned out to be a symptom of:** a hand re-sync fixes one campaign
 and nothing stops the next paste from re-flattening, because `narrate.genre` is a *copy*
 of `voice/_genre.md`. OOTA is now the same bug this doc fixed for Phandalin — 16,303
