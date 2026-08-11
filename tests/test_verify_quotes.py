@@ -13,6 +13,7 @@ modified, and re-running never changes the file. Both are asserted directly —
 an unasserted safety property is a wish.
 """
 
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -49,6 +50,7 @@ from session_doc.verify_quotes import (  # noqa: E402
     parse_summary_quotes,
     refusal_marker,
     render_report,
+    report_json,
     verify_artifact,
     verify_artifact_contract,
     VerificationReport,
@@ -382,6 +384,60 @@ def test_report_names_the_transcript_and_threshold(transcript, summary):
     assert "0.85" in text
 
 
+# ── report_json (#264) ───────────────────────────────────────────────────────
+#
+# The typed sidecar sd_verify_quotes writes beside quote_report.md, so a
+# consumer stops regexing render_report's prose to recover counts.
+
+def test_report_json_has_expected_shape(transcript, summary):
+    r = _report(transcript, summary)
+    data = report_json(r)
+    assert data["schema_version"] == 1
+    assert data["transcript"] == str(transcript.path)
+    assert data["threshold"] == 0.85
+    assert data["min_tokens"] == 4
+    assert data["artifacts"] == [str(summary)]
+    assert data["counts"] == {"verified": 2, "near": 1, "unverified": 1,
+                              "unscored": 0, "exempt": 1}
+    assert data["refusals"] == {"total": 0, "by_rule": {"R1": 0, "R3": 0}}
+    assert isinstance(data["not_checked"], list) and data["not_checked"]
+    # `_report()` builds findings without going through verify_artifact_contract,
+    # so it never populates VerificationReport.claims — this only asserts the
+    # field survives serialisation as the right (empty) shape.
+    assert data["claims"] == {}
+
+
+def test_report_json_paths_are_plain_strings(transcript, summary):
+    """JSON has no Path type — every path-shaped field must already be str."""
+    data = report_json(_report(transcript, summary))
+    assert isinstance(data["transcript"], str)
+    assert all(isinstance(a, str) for a in data["artifacts"])
+    assert all(isinstance(k, str) for k in data["claims"])
+
+
+def test_report_json_is_json_serialisable(transcript, summary):
+    json.dumps(report_json(_report(transcript, summary)))  # must not raise
+
+
+def test_report_json_by_rule_breakdown_on_refusals(contract, contract_tape):
+    """The main point of #264: the per-rule split that render_report folds
+    into one sentence (`R1 1, R3 2.`) must survive as structured data."""
+    r = VerificationReport(transcript=contract_tape.path,
+                           threshold=0.85, min_tokens=4, generated_at=now_iso())
+    r.artifacts.append(contract.path)
+    r.claims[contract.path] = contract.claim
+    r.findings.extend(contract.findings)
+    r.refusals.extend(contract.refusals)
+    r.conflicts.paired += contract.conflicts.paired
+    r.conflicts.consistent += contract.conflicts.consistent
+    r.conflicts.settled += contract.conflicts.settled
+    r.conflicts.refusals.extend(contract.conflicts.refusals)
+    data = report_json(r)
+    assert data["refusals"]["total"] == 3
+    assert data["refusals"]["by_rule"] == {"R1": 1, "R3": 2}
+    json.dumps(data)  # still serialisable with refusals populated
+
+
 def test_no_quotes_is_distinct_from_all_verified(transcript, tmp_path):
     """FR-010 — an empty artifact is suspicious, not a pass."""
     empty = tmp_path / "empty.md"
@@ -438,6 +494,22 @@ def test_cli_report_only_leaves_the_artifact_untouched(tmp_path, summary):
     _run_cli("--vtt", str(vtt), "--summary", str(summary),
              "--out", str(tmp_path / "r.md"), "--report-only")
     assert summary.read_text() == before
+
+
+def test_cli_writes_json_sidecar_beside_the_report(tmp_path, summary):
+    """#264: quote_report.md -> quote_report.json, same directory, same run."""
+    vtt = tmp_path / "s.vtt"
+    vtt.write_text(VTT, encoding="utf-8")
+    out = tmp_path / "quote_report.md"
+    _run_cli("--vtt", str(vtt), "--summary", str(summary),
+              "--out", str(out), "--report-only")
+    json_out = out.with_suffix(".json")
+    assert json_out.exists()
+    data = json.loads(json_out.read_text(encoding="utf-8"))
+    assert data["schema_version"] == 1
+    assert data["counts"] == {"verified": 2, "near": 1, "unverified": 1,
+                              "unscored": 0, "exempt": 1}
+    assert data["refusals"] == {"total": 0, "by_rule": {"R1": 0, "R3": 0}}
 
 
 def test_cli_has_no_model_flags():

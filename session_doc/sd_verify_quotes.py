@@ -30,6 +30,7 @@ Exit codes are meaningful — ``sd_agent`` depends on the 1/2 split to tell
 """
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -50,6 +51,7 @@ from .verify_quotes import (
     now_iso,
     read_preserving_newlines,
     render_report,
+    report_json,
     verify_artifact_contract,
 )
 
@@ -241,6 +243,11 @@ def main() -> int:
     )
     out_path.parent.mkdir(parents=True, exist_ok=True)
     atomic_write_text(out_path, render_report(report))
+    # #264: a typed sidecar next to the markdown, so a consumer (the Session
+    # Doc Editor's status strip) reads structured data instead of regexing
+    # prose back apart. quote_report.md -> quote_report.json; the same rule
+    # gives sd_agent's quote_report_scenes.md -> quote_report_scenes.json.
+    atomic_write_text(out_path.with_suffix(".json"), json.dumps(report_json(report), indent=2) + "\n")
 
     print("=" * 60)
     n_problem = len(report.problems)
