@@ -79,8 +79,19 @@ def resolve_prompt_path() -> Path:
     return DEFAULT_PROMPT_PATH
 
 
-def split_frontmatter(text: str) -> tuple[str, str]:
-    """Return (frontmatter_block_including_delimiters, body). Empty frontmatter ok."""
+def split_frontmatter_raw(text: str) -> tuple[str, str]:
+    """Return (frontmatter_block_including_delimiters, body). Empty frontmatter ok.
+
+    Does NOT parse — the block comes back as the literal bytes between (and
+    including) the ``---`` delimiters, untouched. That is the whole point:
+    ``finalize_scrub_response`` reassembles ``frontmatter + prose`` and needs
+    the original block back verbatim, delimiters and all, so a scrubbed scene
+    round-trips its frontmatter unchanged instead of it being re-serialized
+    (and potentially reformatted) by a YAML dumper. For a parsed mapping —
+    e.g. to read a field out of the frontmatter — use
+    ``campaignlib.textproc.split_frontmatter`` instead, which returns
+    ``(dict, body)`` but cannot hand back the original block bytes.
+    """
     if not text.startswith("---\n"):
         return "", text
     end = text.find("\n---\n", 4)
@@ -142,7 +153,7 @@ def finalize_scrub_response(path: Path, frontmatter: str, response: str,
 def scrub_one(path: Path, client, system_prompt: str, model: str,
               max_tokens: int, dry_run: bool, save_scan: bool) -> Path | None:
     raw = path.read_text(encoding="utf-8")
-    frontmatter, body = split_frontmatter(raw)
+    frontmatter, body = split_frontmatter_raw(raw)
 
     if not body.strip():
         print(f"[skip] {path.name}: empty body", file=sys.stderr)
@@ -164,7 +175,7 @@ def collect_scrub_inputs(targets: list[Path]) -> list[tuple[Path, str, str]]:
     eligible: list[tuple[Path, str, str]] = []
     for path in targets:
         raw = path.read_text(encoding="utf-8")
-        frontmatter, body = split_frontmatter(raw)
+        frontmatter, body = split_frontmatter_raw(raw)
         if not body.strip():
             print(f"[skip] {path.name}: empty body", file=sys.stderr)
             continue

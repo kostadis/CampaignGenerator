@@ -29,6 +29,14 @@ def split_frontmatter(text: str) -> tuple[dict, str]:
     Shared by ``narrate_chapter.py`` (writes the ``approved:`` gate) and
     ``synthesise_world_state.py`` (reads it before treating a narrative as
     grounding) so the two sides can never drift on what counts as "approved".
+
+    This PARSES the block, so it cannot hand back the original bytes — a
+    reformatted mapping is not byte-identical to what was written (key order,
+    quoting style, comments all vary). A caller that needs to reproduce the
+    frontmatter verbatim (e.g. round-tripping it unchanged around an edited
+    body) should use ``session_doc.scrub_mechanics.split_frontmatter_raw``
+    instead, which returns the raw block including its delimiters and does
+    no parsing at all.
     """
     m = _FRONTMATTER_RE.match(text)
     if not m:

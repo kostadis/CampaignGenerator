@@ -25,8 +25,7 @@ import re
 import sys
 from pathlib import Path
 
-
-_FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
+from campaignlib.textproc import split_frontmatter
 
 # Pass 5 appends `<!-- table-speech reclassified: "…" | "…" -->` after the
 # narration when it reclassifies a mislabelled quoted span as GM table speech
@@ -41,19 +40,6 @@ _AUDIT_COMMENT_RE = re.compile(
 def strip_audit_comments(body: str) -> str:
     """Remove Pass 5's table-speech audit comments from a scene body."""
     return _AUDIT_COMMENT_RE.sub("", body)
-
-
-def parse_frontmatter(text: str) -> tuple[dict, str]:
-    """Return (metadata, body) from a markdown file with YAML frontmatter."""
-    m = _FRONTMATTER_RE.match(text)
-    if not m:
-        return {}, text
-    meta: dict = {}
-    for line in m.group(1).splitlines():
-        if ":" in line:
-            k, v = line.split(":", 1)
-            meta[k.strip()] = v.strip()
-    return meta, text[m.end():]
 
 
 def humanise_slug(slug: str) -> str:
@@ -130,8 +116,14 @@ def main() -> None:
     scenes: list[tuple[int, dict, str, Path]] = []
     for path in files:
         text = path.read_text(encoding="utf-8")
-        meta, body = parse_frontmatter(text)
-        scene_str = meta.get("scene", "").strip()
+        meta, body = split_frontmatter(text)
+        # `meta` now comes from real YAML (campaignlib.textproc.split_frontmatter),
+        # not the old hand-rolled `k: v` line splitter, so `scene` may arrive as
+        # an int (`scene: 04` -> 4) or a str (`scene: 08` -> '08' — PyYAML's
+        # octal resolver rejects 08/09 as invalid octal and falls back to str).
+        # str(...) normalises both before int() — don't drop it back to a bare
+        # `.strip()`, which raises AttributeError on the int case.
+        scene_str = str(meta.get("scene", "")).strip()
         try:
             scene_num = int(scene_str)
         except ValueError:
