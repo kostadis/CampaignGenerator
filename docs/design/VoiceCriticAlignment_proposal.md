@@ -4,9 +4,18 @@
 > against the narration pipeline as it stands after #245/#246/#247/#248/#251/#252.
 > **Scope:** what the critic must read and count to be a real check on Pass 5 output,
 > plus one code-side bug found while measuring.
+> **Landed by:** [PR #277](https://github.com/kostadis/CampaignGenerator/pull/277).
 > **Predecessor:** [`Issue245Followups_handoff.md`](Issue245Followups_handoff.md) — the six
 > work orders that produced the pipeline reviewed here. This note is the successor: §5 is
 > the OOTA half of that doc's WO-2, and F3/F4 are what its WO-5 left behind.
+>
+> **Division of labour with that doc, which this one overlaps:** it is the execution record
+> (benchmark numbers, standing constraints, per-WO acceptance criteria, current status); this
+> is the analysis (why the checker drifted from the thing it checks, and what it should read
+> instead). The citation direction is fixed: **the benchmark numbers are owned there and
+> cited here** — F5 and §6 do not re-derive them, and if the benchmark is re-run the
+> correction goes there first. The five-copies survey (§1) and findings F1–F11 are owned
+> here. New execution status belongs in that doc's status table, not in this note.
 > **Tracked by:** CampaignGenerator #276 (genre flattening, §5) and
 > [kostadis/mytools#125](https://github.com/kostadis/mytools/issues/125) (skill
 > realignment, §3–§4 — the skill itself lives in `mytools/dotfiles/claude/skills/`).
@@ -72,7 +81,7 @@ Severity: **B** breaks today, **G** gap under fable, **C** correctness/consisten
 | F2 | B | Critic never reads `narrate.genre` or `base.md`, so it cannot check rules that live only there, and its own scan lists rot silently. |
 | F3 | C | `voice_lint` exists as a console script (`pyproject.toml:86`) and its `TAXONOMY_RE` (`voice_lint.py:43-48`) is character-for-character the regex `SKILL.md:78` retypes. Two copies of one regex diverge at the next tic. |
 | F4 | B | `voice_lint`'s filing rules are OOTA-hardcoded (`UNLICENSED_FILERS = ("thorin","zalthir")`, licensed grygum/daz). On Phandalin every filing check except the >2-sections convergence rule is inert — and the one cross-model reflex on record (`filed … away`) is from **fable Vukradin 03**, a Phandalin scene. |
-| F5 | G | Scan-C calibration is 100% opus (`SKILL.md:87-89`). Against the #245 benchmark (fable ≈1.1 flags/1000w vs opus ≈2.4) the scans mostly return zero under fable, leaving `SKILL.md:67`'s "floor, not a ceiling" doing all the work. Fable's recurring profile is already enumerated in the `fable-narration` skill: em-dash overuse, bookkeeping-noun caps, cross-narrator register bleed, portable tics. |
+| F5 | G | Scan-C calibration is 100% opus (`SKILL.md:87-89`). Against the #245 benchmark — fable ≈1.1 flags/1000w vs opus ≈2.4 on matched ~7,890-word corpora, *as recorded in [`Issue245Followups_handoff.md`](Issue245Followups_handoff.md) §"Already done"; not re-measured here* — the scans mostly return zero under fable, leaving `SKILL.md:67`'s "floor, not a ceiling" doing all the work. Fable's recurring profile is already enumerated in the `fable-narration` skill: em-dash overuse, bookkeeping-noun caps, cross-narrator register bleed, portable tics. |
 | F6 | G | The fable-era rules are **doc-level budgets** — `_genre.md`'s "more than one 'the shape of X' across the entire doc means the pass failed" and "more than two of four sections containing 'filed' is the convergence bug"; `fable-narration`'s "at most one *filed it* in the whole doc", "1–2 load-bearing narration em-dashes in the whole doc". A per-scene critique cannot evaluate any of them, and the summary (`SKILL.md:119`) counts flags rather than checking budgets. |
 | F7 | G | `/fable-narration` emits one assembled `session-summary-fable-doc.md` (`## <Char> — <Scene>`, no frontmatter, no `narration/` dir) and names `/voice-critic` as its verification step, but the report path `SKILL.md:116` needs a scene number and a narration directory that input does not have. |
 | F8 | C | #246's table-speech hatch writes `<!-- table-speech reclassified: … -->` into per-scene files; `assemble.py:31-42` strips it at assembly, so **the per-scene files the critic reads are exactly where it survives**. The skill says nothing: it neither excludes the comment from prose flags nor surfaces it. Each one is the model making a scope call about what is in-fiction — a human checkpoint by this repo's doctrine. |
@@ -183,7 +192,10 @@ case is live today.
 ## 6. Non-goals
 
 - Auto-applying critique fixes. The report stays a review artifact.
-- Re-running the #245 benchmark. Its numbers are cited, not re-derived.
+- Re-running the #245 benchmark. Its numbers are cited from
+  [`Issue245Followups_handoff.md`](Issue245Followups_handoff.md), not re-derived here; the
+  renders behind them are gitignored (`scratch_output/bench_245/`), so that doc plus the #245
+  comment are the durable record.
 - Changing `base.md`'s bans or the genre specs' content. This is about which copy is
   authoritative and who reads it, not what the rules say.
 - Merging `/voice-critic` and `/fable-narration`. They are generate-then-verify and

@@ -46,6 +46,12 @@ before doing another manual re-sync.
 - **The Opus-5 vs Fable-5 benchmark** (posted on #245, issuecomment-5232809273): fable
   ≈1.1 vs opus ≈2.4 flags/1000 words on matched ~7,890-word corpora. Renders + 12
   per-scene voice-critique reports + 2 summaries: `scratch_output/bench_245/` (gitignored).
+  **This doc is the source of record for those numbers.**
+  [`VoiceCriticAlignment_proposal.md`](VoiceCriticAlignment_proposal.md) (added by
+  [PR #277](https://github.com/kostadis/CampaignGenerator/pull/277)) cites them in its F5
+  and does not re-derive them — if the benchmark is ever re-run, correct them here and let
+  that note follow, not the other way round. The artifacts are gitignored, so this bullet
+  and the #245 comment are the only durable record.
 - **CG#252** (merged): `DEFAULT_MODEL = claude-fable-5` (GM decision from the benchmark).
 - **campaigns#148** (merged, closed #146): `voice/_genre.md` tense rule past → present.
   The GM wanted present all along; "past tense, always" was a drafting assumption from
@@ -234,10 +240,19 @@ present tense, multi-line genre block). Check, against the `bench_245` baselines
 - The #245 comparison comment: https://github.com/kostadis/CampaignGenerator/issues/245#issuecomment-5232809273
 - Issues: CG#247 #248 #249 #250 #251; campaigns#141 #142 #143 #144 #145 #147 (#146 closed by #148)
 - Extraction ground truth for ch46: `~/src/campaigns/Phandalin/summaries/20260623/scene_extractions_smoothed/`
-- **Successor design note:** [`VoiceCriticAlignment_proposal.md`](VoiceCriticAlignment_proposal.md)
-  — written 2026-08-11 from a review of `/voice-critic` against the pipeline this doc's work
-  orders produced. Cites this doc's benchmark numbers rather than re-deriving them, carries
-  the OOTA half of WO-2 as **#276**, and the critic-side follow-ons as
-  [kostadis/mytools#125](https://github.com/kostadis/mytools/issues/125). It also records what
-  WO-1 changed for the *pipeline* but not for the checker: the critic still uses the pre-#247
-  lookup, so it finds no voice spec at all on Phandalin.
+- **Successor design note:** [`VoiceCriticAlignment_proposal.md`](VoiceCriticAlignment_proposal.md),
+  added by [PR #277](https://github.com/kostadis/CampaignGenerator/pull/277) — written
+  2026-08-11 from a review of `/voice-critic` against the pipeline this doc's work orders
+  produced. It records what WO-1 changed for the *pipeline* but not for the checker (the
+  critic still uses the pre-#247 lookup, so it finds no voice spec at all on Phandalin),
+  carries the OOTA half of WO-2 as **#276**, and the critic-side follow-ons as
+  [kostadis/mytools#125](https://github.com/kostadis/mytools/issues/125).
+
+  **How the two divide up, since they overlap:** this doc is the execution record — the
+  benchmark numbers, the standing constraints, the per-WO acceptance criteria, and the one
+  unrun item (the capstone). #277's note is the analysis — why the checker drifted from the
+  thing it checks, and what it should read instead. Where they touch, the direction of
+  citation is fixed: **the benchmark numbers live here and F5 cites them**; the five-copies
+  survey and findings F1–F11 live there and this doc cites those. Neither should restate the
+  other's half, and #277's note is not a place to record new execution status — that belongs
+  in the status table at the top of this file.
