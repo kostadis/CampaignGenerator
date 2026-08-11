@@ -19,6 +19,17 @@ DIALOGUE_INSTRUCTION_CONDITIONAL = load_agent_prompt("session_doc/narrate/dialog
 PROSE_MODE_INSTRUCTION     = load_agent_prompt("session_doc/narrate/prose_mode")
 SCENE_ANCHORED_DIRECTIVE   = load_agent_prompt("session_doc/narrate/scene_anchored")
 
+# Longest genre value still delivered as an inline ``GENRE: ...`` label.
+# Anything above this is a document and gets its own delimited block.
+#
+# Gate on SIZE, not on the presence of a newline (#276): out-of-the-abyss'
+# 16,303-char genre spec reached narrate.genre as a paste that lost its line
+# structure, so a newline test handed the campaign with the *largest* rulebook
+# the weakest delivery — a one-line label, repeated whole in the tail reminder.
+# Erring low here is cheap (the delimited form is never wrong for a short
+# directive, only two lines more verbose); erring high is the bug.
+GENRE_INLINE_MAX_CHARS = 200
+
 
 def build_narrate_system(examples_text: str | None, scene: str | None = None,
                          prose_mode: bool = False,
@@ -34,11 +45,13 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
         block = ""
     if genre and genre.strip():
         g = genre.strip()
-        if "\n" in g:
+        if "\n" in g or len(g) > GENRE_INLINE_MAX_CHARS:
             # A full genre document, not a one-line directive: give it its own
             # delimited block so it does not read as a run-on label wedged into
             # the preamble. The tail reminder at the end of this function is
             # unaffected and still fires (recency, for small local models).
+            # A flattened paste has no newlines and is still a document, so
+            # length decides too — see GENRE_INLINE_MAX_CHARS.
             genre_block = ("GENRE & REGISTER (campaign-specific) — BEGIN\n"
                            f"{g}\n"
                            "GENRE & REGISTER — END\n")
