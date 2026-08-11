@@ -4,6 +4,9 @@
 > against the narration pipeline as it stands after #245/#246/#247/#248/#251/#252.
 > **Scope:** what the critic must read and count to be a real check on Pass 5 output,
 > plus one code-side bug found while measuring.
+> **Predecessor:** [`Issue245Followups_handoff.md`](Issue245Followups_handoff.md) — the six
+> work orders that produced the pipeline reviewed here. This note is the successor: §5 is
+> the OOTA half of that doc's WO-2, and F3/F4 are what its WO-5 left behind.
 > **Tracked by:** CampaignGenerator #276 (genre flattening, §5) and
 > [kostadis/mytools#125](https://github.com/kostadis/mytools/issues/125) (skill
 > realignment, §3–§4 — the skill itself lives in `mytools/dotfiles/claude/skills/`).
