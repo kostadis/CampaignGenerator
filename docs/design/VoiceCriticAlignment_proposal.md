@@ -5,6 +5,9 @@
 > **Scope:** what the critic must read and count to be a real check on Pass 5 output,
 > plus one code-side bug found while measuring.
 > **Landed by:** [PR #277](https://github.com/kostadis/CampaignGenerator/pull/277).
+> **Execution order:** [`NarrationNextSteps_handoff.md`](NarrationNextSteps_handoff.md) — D1/F1
+> is step 4a and independent; D2 is **blocked** on a ruling about where the genre rulebook
+> lives (#276 fix 2 vs #220), and D4/D5/D8 want the capstone render's corpus first.
 > **Predecessor:** [`Issue245Followups_handoff.md`](Issue245Followups_handoff.md) — the six
 > work orders that produced the pipeline reviewed here. This note is the successor: §5 is
 > the OOTA half of that doc's WO-2, and F3/F4 are what its WO-5 left behind.
