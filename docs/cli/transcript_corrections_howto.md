@@ -123,6 +123,61 @@ file order.
 
 ---
 
+## Where `/vtt-spell-pass` fits
+
+The spell pass is how you get *dozens* of these entries without writing each by
+hand. It is the bulk route to the same record: it clusters unknown proper nouns,
+puts each cluster to you, and maintains the campaign-wide glossary at
+`<campaign>/notes/vtt_transcription_corrections.md`.
+
+**It does not write the cleaned tape.** It writes a *candidate* to scratch, and
+you import the diff:
+
+```bash
+# the skill's Phase 5 — note the scratch output
+python ~/.claude/skills/vtt-spell-pass/apply_replacements.py \
+  --vtt 20260623.transcript.vtt \
+  --glossary ~/campaigns/Phandalin/notes/vtt_transcription_corrections.md \
+  --output "$SCRATCH/candidate.cleaned.vtt"
+
+# the skill's Phase 7 — the diff becomes reviewable entries
+sd_corrections import --dir . \
+  --raw 20260623.transcript.vtt \
+  --edited "$SCRATCH/candidate.cleaned.vtt" \
+  --record "$SCRATCH/proposed.yaml"
+
+# review → merge into ./transcript_corrections.yaml → then apply + check
+```
+
+`apply_replacements.py` requires `--output`, has no `--in-place`, and refuses
+outright to write a `.cleaned.vtt` that a record in that directory claims. So
+the collision fails loudly instead of producing a tape whose edits nothing
+enumerates — which is exactly how ch46's 74 got there.
+
+Two divisions of labour worth keeping straight:
+
+| | glossary | this record |
+|---|---|---|
+| scope | campaign-wide, every future transcript | one tape, one cue each |
+| must be safe applied blind? | **yes** | no — a cue-scoped entry can hold what no rule could |
+| holds | the approved *rules* | the approved *results* |
+
+That second row is why the skill stopped hand-editing the tape for one-offs.
+`Embrace → Fembris` can't be a glossary row (it would corrupt "corrosive
+embrace") and used to be applied as a direct edit; as a record entry pinned to
+one cue it is both safe and auditable.
+
+**Merging into an existing record is a hand-merge.** `import --force`
+overwrites, discarding your notes and every `verified: true` you set. Import to
+a scratch path and merge the entries you want.
+
+**Imported entries land `verified: false` even though you approved the
+clusters.** The import captures whatever differs — including a substitution some
+glossary row made in a cue nobody looked at. Flip `verified` per entry against
+your own answers, and delete rather than approve any cue you didn't rule on.
+
+---
+
 ## Things that will bite you
 
 **Cue index, not file line.** A correction that adds a header shifts every line
@@ -150,7 +205,8 @@ make those. `sd_corrections` applies what you wrote down.
 |---|---|
 | `cue N does not say what \`was\` claims` | The record is stale, or you edited raw. Compare the two texts it prints; usually the fix is updating `was`. |
 | `cue N is not in <file> (it has M cues) — a file line number, perhaps?` | Exactly that. |
-| `the two transcripts do not carry the same cue indices` | `import` refuses to pair positionally — one file is not an edit of the other. Check you passed the right pair. |
+| `the two transcripts do not carry the same cue indices` | `import` refuses to pair positionally — one file is not an edit of the other. Check you passed the right pair. A `prepare_input.py --filtered-output`/`--dedup-output` copy will always fail this: it drops cues, so it can never be recorded. Use those for scanning only. |
+| `expected exactly one non-.cleaned .vtt in <dir>, found 2` | An `audio-to-vtt` run left `<stem>.transcript.retranscribed.vtt` beside the original. Auto-detection won't guess — pass `--raw`. Whichever raw you name is what the record is written against, and it decides which `.cleaned.vtt` `apply` produces. |
 | `transcript ... is already a .cleaned.vtt` | Point `transcript:` at the raw archive. The cleaned file is output. |
 | `N cue(s) ... are NOT explained by the record` | Someone hand-edited the generated file. `import --force` captures it, `apply` discards it. Read the diff before choosing. |
 | `generated NOTE line contains a colon` | An internal guard. `vtt_voice_compare` has no NOTE rule and would read that line as dialogue. |
