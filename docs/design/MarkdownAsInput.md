@@ -131,14 +131,19 @@ corpora — audit for non-bare `## Scenes` headings before landing it.
 
 `session_doc/verify_quotes.py` is the **deterministic, zero-token** quote
 verifier. It holds exact per-verdict counts as structured data —
-`ConflictScan.refusal_counts` is a typed property, `verify_quotes.py:697`:
+`VerificationReport.refusal_counts` is a typed property:
 
 ```python
 @property
 def refusal_counts(self) -> dict[Rule, int]: ...
 ```
 
-It renders that dict to a prose sentence, `verify_quotes.py:738`:
+(An earlier revision of this document attributed that property to
+`ConflictScan`. It does not live there — `ConflictScan` carries only a
+`refused` **int**, with no per-rule split, which is part of why the prose line
+below is the only place the breakdown ever existed.)
+
+It renders that dict to a prose sentence:
 
 ```python
 f"**Refused by the extraction contract (#250)**: {n_ref}"
@@ -164,7 +169,9 @@ Reword that line, or renumber the issue, and the Session Doc Editor's status
 strip silently loses the refusal count. The shape is `dict[Rule, int]` → prose
 → `dict` — a producer holding a typed dict, deliberately throwing the types
 away to render a sentence, and a consumer rebuilding a dict by pattern-matching
-the sentence. **#259 is what created this path** — `refusal_counts` and the
+the sentence. And the rebuild is **lossy**: the regex recovers the total and
+drops the per-rule split, so `R1 4, R3 12` is computed, rendered, and then
+unavailable to the UI at all. **#259 is what created this path** — `refusal_counts` and the
 sentence it feeds didn't coexist with `_REPORT_REFUSED_RE` before that PR
 landed — so this finding is live, not archaeology.
 
@@ -189,6 +196,13 @@ it. No effect on the verifier's zero-token / no-LLM guarantee.
 This is the cleanest of the five defects — the producer already holds the
 structured value, so nothing has to be re-derived to fix it. Only C1 is cheaper,
 and C1 adds no code at all.
+
+**Status: fixed** (#264). `report_json` sits beside `render_report`;
+`sd_verify_quotes` writes `quote_report.json` alongside the `.md`; the server
+prefers it and keeps the regex as a one-release shim. `render_report`'s output
+is unchanged, and the JSON carries the per-rule breakdown the regex could never
+recover. The `parse_scene_quotes` ↔ `parse_scene_summary_spans` C1 pair was
+documented in the same change.
 
 ---
 

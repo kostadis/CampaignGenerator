@@ -1,5 +1,6 @@
 """Tests for the Session Doc Editor verification surface (spec 007, Phase 6)."""
 
+import json
 import sys
 from pathlib import Path
 
@@ -165,3 +166,105 @@ def test_refusals_do_not_disturb_the_verdict_counts(tmp_path):
     assert _parse_quote_report_counts(p) == {"verified": 339, "near": 139,
                                             "unverified": 39, "unscored": 3,
                                             "exempt": 2}
+
+
+# ── JSON sidecar preference (#264) ──────────────────────────────────────────
+#
+# sd_verify_quotes now writes quote_report.json beside quote_report.md. These
+# functions must prefer it when it exists and parses, and fall back to the
+# markdown-regex path — a one-release compatibility shim — otherwise. The
+# "no unverified quotes" vs "we could not tell" distinction (None, never 0)
+# must hold on both paths.
+
+REPORT_JSON = {
+    "schema_version": 1,
+    "generated_at": "2026-01-01T00:00:00",
+    "transcript": "/tmp/s.vtt",
+    "threshold": 0.85,
+    "min_tokens": 4,
+    "artifacts": ["/tmp/session-summary.md"],
+    "counts": {"verified": 339, "near": 139, "unverified": 39,
+               "unscored": 3, "exempt": 2},
+    "refusals": {"total": 16, "by_rule": {"R1": 4, "R3": 12}},
+    "not_checked": [],
+    "claims": {},
+}
+
+
+def test_json_preferred_over_regex_when_both_present(tmp_path):
+    """The JSON sidecar wins even when it disagrees with the markdown table
+    beside it — proof this is a real preference, not a coincidence of
+    identical fixtures."""
+    md = tmp_path / "quote_report.md"
+    md.write_text(REPORT, encoding="utf-8")
+    stale = dict(REPORT_JSON)
+    stale["counts"] = {"verified": 1, "near": 0, "unverified": 0,
+                       "unscored": 0, "exempt": 0}
+    md.with_suffix(".json").write_text(json.dumps(stale), encoding="utf-8")
+    assert _parse_quote_report_counts(md) == stale["counts"]
+
+
+def test_regex_fallback_when_json_sidecar_absent(tmp_path):
+    md = tmp_path / "quote_report.md"
+    md.write_text(REPORT, encoding="utf-8")
+    assert not md.with_suffix(".json").exists()
+    assert _parse_quote_report_counts(md) == {"verified": 339, "near": 139,
+                                              "unverified": 39, "unscored": 3,
+                                              "exempt": 2}
+
+
+def test_corrupt_json_sidecar_falls_back_to_regex(tmp_path):
+    md = tmp_path / "quote_report.md"
+    md.write_text(REPORT, encoding="utf-8")
+    md.with_suffix(".json").write_text("{not valid json", encoding="utf-8")
+    assert _parse_quote_report_counts(md) == {"verified": 339, "near": 139,
+                                              "unverified": 39, "unscored": 3,
+                                              "exempt": 2}
+
+
+def test_missing_report_and_json_still_yields_none_not_zero(tmp_path):
+    """Neither file exists — a missing report, not a clean one."""
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    counts = _parse_quote_report_counts(tmp_path / "absent.md")
+    assert all(v is None for v in counts.values())
+    assert _parse_quote_report_refusals(tmp_path / "absent.md") is None
+
+
+def test_json_and_regex_agree_on_the_same_underlying_report(tmp_path):
+    """quote_report.md and quote_report.json describe the same run (as
+    sd_verify_quotes always writes them); either parsing path must recover
+    the same counts and refusal total."""
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    md = tmp_path / "quote_report.md"
+    md.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")
+    md.with_suffix(".json").write_text(json.dumps(REPORT_JSON), encoding="utf-8")
+
+    counts_via_json = _parse_quote_report_counts(md)
+    refused_via_json = _parse_quote_report_refusals(md)
+
+    md.with_suffix(".json").unlink()
+    counts_via_regex = _parse_quote_report_counts(md)
+    refused_via_regex = _parse_quote_report_refusals(md)
+
+    expected_counts = {"verified": 339, "near": 139, "unverified": 39,
+                       "unscored": 3, "exempt": 2}
+    assert counts_via_json == counts_via_regex == expected_counts
+    assert refused_via_json == refused_via_regex == 16
+
+
+def test_refusals_json_preferred_over_regex(tmp_path):
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    md = tmp_path / "quote_report.md"
+    md.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")  # says 16
+    stale = dict(REPORT_JSON)
+    stale["refusals"] = {"total": 99, "by_rule": {"R1": 50, "R3": 49}}
+    md.with_suffix(".json").write_text(json.dumps(stale), encoding="utf-8")
+    assert _parse_quote_report_refusals(md) == 99
+
+
+def test_refusals_corrupt_json_falls_back_to_regex(tmp_path):
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    md = tmp_path / "quote_report.md"
+    md.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")
+    md.with_suffix(".json").write_text("[]", encoding="utf-8")  # valid JSON, wrong shape
+    assert _parse_quote_report_refusals(md) == 16

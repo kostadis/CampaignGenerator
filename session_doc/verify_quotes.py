@@ -648,6 +648,13 @@ def parse_scene_quotes(text: str, artifact: Path) -> list[Quote]:
     which is a fabrication or a splice, and both remain defects in a layer that
     only claims to be tidied. What a voiced heading switches off is the
     contract axis — see :func:`verify_artifact_contract`.
+
+    This deliberately ignores inline ``"…"`` prose for the reason stated
+    above. Contrast with :func:`parse_scene_summary_spans`, which deliberately
+    parses inline quotes in the ``## Scene summary`` half — but only to pair
+    them against a moments-section quote for R1, never as findings of their
+    own. The divergence between the two parsers is the point, not an
+    oversight in one of them.
     """
     _summary, moments = _split_scene_body(text)
     if not moments:
@@ -731,6 +738,36 @@ def _sorted_for_report(findings: list[Finding]) -> list[Finding]:
     rank = {Verdict.UNVERIFIED: 0, Verdict.NEAR: 1, Verdict.UNSCORED: 2}
     shown = [f for f in findings if f.verdict in rank]
     return sorted(shown, key=lambda f: (rank[f.verdict], f.score if f.score is not None else 1.0))
+
+
+def report_json(report: VerificationReport) -> dict:
+    """Machine-readable form of this report — the transport, not the display.
+
+    ``render_report`` is prose for a human: counts folded into a sentence
+    like ``**Refused by the extraction contract (#250)**: 3 — R1 1, R3 2.``.
+    That sentence is what issue #264 exists about — a caller that needs the
+    per-rule breakdown had no way to get it back except regexing the prose,
+    and the regex only ever recovered the total, silently dropping the
+    breakdown that was computed and rendered right next to it. This function
+    returns the same data as JSON-safe types (``Path`` as ``str``, ``Verdict``
+    and ``Rule`` keys as their ``.value``) so a consumer reads structured
+    data. Counts must never again be recovered by parsing markdown.
+    """
+    return {
+        "schema_version": 1,
+        "generated_at": report.generated_at,
+        "transcript": str(report.transcript),
+        "threshold": report.threshold,
+        "min_tokens": report.min_tokens,
+        "artifacts": [str(p) for p in report.artifacts],
+        "counts": {v.value: n for v, n in report.counts.items()},
+        "refusals": {
+            "total": len(report.refusals),
+            "by_rule": {r.value: n for r, n in report.refusal_counts.items()},
+        },
+        "not_checked": list(report.not_checked),
+        "claims": {str(p): c for p, c in report.claims.items()},
+    }
 
 
 def render_report(report: VerificationReport) -> str:

@@ -734,6 +734,36 @@ def _quote_report_path(cfg: ResolvedEditorConfig) -> Path | None:
     return (nd / "quote_report.md") if nd else None
 
 
+def _quote_report_json_path(cfg: ResolvedEditorConfig) -> Path | None:
+    """The typed sidecar beside ``_quote_report_path`` (#264).
+
+    ``sd_verify_quotes`` writes it as ``out_path.with_suffix(".json")`` next
+    to the markdown report, so this is always ``quote_report.md`` ->
+    ``quote_report.json`` for the same narration dir.
+    """
+    nd = _narration_dir(cfg)
+    return (nd / "quote_report.json") if nd else None
+
+
+def _load_quote_report_json(md_path: Path | None) -> dict | None:
+    """Parsed ``quote_report.json`` beside ``md_path``, or ``None``.
+
+    ``None`` covers "no md path given", "no sidecar on disk", "unreadable",
+    and "not valid JSON" alike — every one of those must fall through to the
+    regex path below, never be mistaken for an empty-but-known report.
+    """
+    if md_path is None:
+        return None
+    json_path = md_path.with_suffix(".json")
+    if not json_path.exists():
+        return None
+    try:
+        data = json.loads(json_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
 _REPORT_ROW_RE = re.compile(
     r"^\|\s*\**(verified|near|unverified|unscored|exempt)\**\s*\|\s*\**(\d+)\**\s*\|",
     re.MULTILINE,
@@ -741,15 +771,28 @@ _REPORT_ROW_RE = re.compile(
 
 
 def _parse_quote_report_counts(path: Path | None) -> dict:
-    """Per-verdict counts from a quote report's summary table.
+    """Per-verdict counts from a quote report.
 
     Returns ``None`` for each count when the report is missing or unparseable
     rather than zero — "no unverified quotes" and "we could not tell" must not
     look the same to the status strip, since the second is a reason to look and
     the first is a reason not to.
+
+    Prefers the ``quote_report.json`` sidecar (#264) when it exists and
+    parses. The regex over the markdown table below is a one-release
+    compatibility shim for narration dirs that ran verify before the sidecar
+    existed — delete it once every campaign has re-run verify at least once
+    (#264).
     """
     empty = {"verified": None, "near": None, "unverified": None,
              "unscored": None, "exempt": None}
+    data = _load_quote_report_json(path)
+    if data is not None:
+        counts = data.get("counts")
+        if isinstance(counts, dict) and counts:
+            return {k: counts.get(k) for k in empty}
+        # JSON sidecar present but malformed/missing counts — fall through
+        # to the regex path rather than inventing zeros.
     if path is None or not path.exists():
         return empty
     try:
@@ -775,7 +818,21 @@ def _parse_quote_report_refusals(path: Path | None) -> int | None:
     ``None`` rather than ``0`` for the same reason the verdict counts do it: a
     report written before refusals existed, or one that could not be read, must
     not be reported as a run that found none.
+
+    Prefers the JSON sidecar's ``refusals.total`` (#264); the regex over the
+    markdown sentence below is the same one-release compatibility shim as
+    ``_parse_quote_report_counts`` and should be deleted alongside it (#264).
+    The sidecar also carries a ``refusals.by_rule`` breakdown (R1/R3 counts)
+    that this function does not surface — doing so would mean changing this
+    function's return type or the ``/status`` route's response shape, both
+    out of scope here; a future caller that wants the breakdown should read
+    the JSON sidecar directly via ``_load_quote_report_json``.
     """
+    data = _load_quote_report_json(path)
+    if data is not None:
+        refusals = data.get("refusals")
+        if isinstance(refusals, dict) and isinstance(refusals.get("total"), int):
+            return refusals["total"]
     if path is None or not path.exists():
         return None
     try:
