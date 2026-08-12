@@ -39,7 +39,7 @@ from session_doc.narrate import (
     build_narrate_system,
     estimate_narration_tokens,
 )
-from session_doc.roster import extract_character_roster
+from session_doc.roster import extract_character_roster, roster_from_config
 from session_doc.voice import (
     extract_contrast_sample,
     get_voice_note,
@@ -64,6 +64,7 @@ __all__ = [
     "build_narrate_system",
     "estimate_narration_tokens",
     "extract_character_roster",
+    "roster_from_config",
     "extract_contrast_sample",
     "extract_scene_text",
     "format_extractions",

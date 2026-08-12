@@ -50,7 +50,8 @@ from session_doc.narrate import (
     build_narrate_system,
     estimate_narration_tokens,
 )
-from session_doc.roster import extract_character_roster
+from campaignlib.party_config import load_party_config_arg
+from session_doc.roster import extract_character_roster, roster_from_config
 from session_doc.voice import (
     extract_contrast_sample,
     get_voice_note,
@@ -141,6 +142,10 @@ def main() -> None:
                         help="Where to write session_doc_scene_NN_<slug>.md files.")
     parser.add_argument("--party", metavar="FILE",
                         help="party.md — supplies character classes + roster + voice cues.")
+    parser.add_argument("--party-config", metavar="FILE", default=None,
+                        help="party.yaml. When given, the roster is preferred from each "
+                             "character's D&D Beyond sheet (issue #265); falls back to "
+                             "--party's party.md if any sheet lacks usable frontmatter.")
     parser.add_argument("--voice-dir", metavar="DIR",
                         help="Directory of {name}_voice.md files.")
     parser.add_argument("--examples", metavar="DIR",
@@ -227,7 +232,14 @@ def main() -> None:
     per_scene_output_dir.mkdir(parents=True, exist_ok=True)
 
     party = Path(args.party).read_text(encoding="utf-8") if args.party else None
-    roster = extract_character_roster(party) if party else ""
+
+    # Prefer the sheet-sourced roster (issue #265) when --party-config resolves
+    # usable frontmatter for every character; fall back to party.md otherwise.
+    # The party.md fallback path below, and its warning, are unchanged.
+    resolved_party_config = load_party_config_arg(args.party_config)
+    roster = roster_from_config(resolved_party_config) if resolved_party_config else None
+    if roster is None:
+        roster = extract_character_roster(party) if party else ""
     if party and party.strip() and not roster.strip():
         print(f"Warning: --party was given ({args.party}) but no character roster could be "
               f"parsed from it. The '## Character Classes (definitive — never contradict "

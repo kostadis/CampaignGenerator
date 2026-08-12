@@ -22,12 +22,30 @@ SYSTEM_PROMPT = """\
 You are converting a D&D Beyond character sheet PDF into a clean markdown document \
 for use as a campaign reference.
 
-Extract ALL information visible on the sheet and structure it as follows:
+Extract ALL information visible on the sheet and structure it as follows.
+
+First, a YAML frontmatter block — a machine-readable summary of the same
+Identity fields that follow, so downstream tooling can read the roster
+without re-parsing prose (issue #265). Emit EXACTLY these five keys, in
+this order, with no others:
+
+---
+name: [Character Name]
+player: [Player Name]
+species: [Species]
+class_level: [Class & Level, e.g. "Monk 8" — one string, do not split into
+  separate class/level/subclass fields]
+subclass: [Subclass, e.g. "Warrior of Shadow" — leave EMPTY (subclass: "")
+  if the sheet does not state one; never guess]
+---
+
+Then the markdown document itself:
 
 # [Character Name]
 
 ## Identity
 - **Class & Level:**
+- **Subclass:**
 - **Species:**
 - **Background:**
 - **Player:**
@@ -90,8 +108,12 @@ Rules:
 - Include every piece of information visible on the sheet.
 - Preserve modifier signs (e.g. +4, -1).
 - For features and traits, include the full description text, not just the name.
-- If a field is blank on the sheet, omit it.
-- Output only the markdown document. No preamble or commentary.
+- If a field is blank on the sheet, omit it from the body. The frontmatter
+  block is the one exception: always emit all five of its keys, even when a
+  value is empty (e.g. `subclass: ""`) — omitting a frontmatter key breaks
+  the downstream parser, which expects all five every time.
+- Output only the frontmatter block followed by the markdown document. No
+  preamble or commentary.
 """
 
 

@@ -1,6 +1,13 @@
 """Party roster parsing for session_doc and the sd_* CLIs."""
 
+import sys
+from typing import TYPE_CHECKING
+
 from campaignlib.party_md import parse_party_md
+from campaignlib.textproc import split_frontmatter
+
+if TYPE_CHECKING:
+    from campaignlib.party_config import ResolvedPartyConfig
 
 
 def extract_character_roster(party_text: str) -> str:
@@ -64,3 +71,76 @@ def extract_character_roster(party_text: str) -> str:
             else f"- {entry.name}: {entry.class_info}"
         )
     return "\n".join(roster)
+
+
+def roster_from_config(cfg: "ResolvedPartyConfig") -> str | None:
+    """Render the roster from each character's D&D Beyond sheet, per the GM
+    ruling in ``docs/design/PartyRosterCanonicalFormat.md`` (issue #265):
+    the sheet is canonical for character-specific data, ``party.yaml``
+    only references it.
+
+    ``cfg`` must already be resolved (:func:`campaignlib.party_config.
+    resolve_party_config`) — this function does not choose a base
+    directory itself. Which base directory is correct is campaign-
+    dependent and unresolved (see that design doc's "Measured" table);
+    picking one here would silently mis-resolve some campaigns, so the
+    caller owns that decision.
+
+    For each character, reads ``sheet``, splits its YAML frontmatter
+    (:func:`campaignlib.textproc.split_frontmatter`), and formats one line
+    in ``extract_character_roster``'s exact shape::
+
+        - {name} ({player}): {species} {class_level}
+
+    or, when the sheet's ``player`` field is empty, the no-player variant::
+
+        - {name}: {species} {class_level}
+
+    Every field is ``.strip()``-ed (one real sheet has a trailing space
+    after the player name). ``name`` comes from ``cfg`` — the party.yaml
+    entry's own name — not from the sheet's frontmatter, since ``party.yaml``
+    is what maps a roster slot to a sheet.
+
+    ALL-OR-NOTHING: returns ``None`` unless EVERY character's sheet exists
+    on disk and yields frontmatter with non-empty ``species`` and
+    ``class_level``. A roster silently missing one PC from the "never
+    contradict these" narration prompt block is worse than falling back to
+    ``party.md`` entirely, so a single unusable sheet fails the whole
+    roster. On returning ``None``, prints to stderr which character(s)
+    were unusable and why.
+    """
+    lines: list[str] = []
+    problems: list[str] = []
+    for character in cfg.characters:
+        sheet = character.sheet
+        if not sheet.exists():
+            problems.append(f"{character.name}: sheet not found at {sheet}")
+            continue
+        frontmatter, _body = split_frontmatter(sheet.read_text(encoding="utf-8"))
+        if not frontmatter:
+            problems.append(f"{character.name}: sheet has no YAML frontmatter ({sheet})")
+            continue
+        player = str(frontmatter.get("player") or "").strip()
+        species = str(frontmatter.get("species") or "").strip()
+        class_level = str(frontmatter.get("class_level") or "").strip()
+        if not species or not class_level:
+            problems.append(
+                f"{character.name}: sheet frontmatter missing 'species' or "
+                f"'class_level' ({sheet})"
+            )
+            continue
+        class_info = f"{species} {class_level}".strip()
+        lines.append(
+            f"- {character.name} ({player}): {class_info}"
+            if player
+            else f"- {character.name}: {class_info}"
+        )
+    if problems:
+        print(
+            "roster_from_config: falling back to party.md — not every character's "
+            "sheet yields a usable frontmatter roster:\n"
+            + "\n".join(f"  - {p}" for p in problems),
+            file=sys.stderr,
+        )
+        return None
+    return "\n".join(lines)

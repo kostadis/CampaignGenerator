@@ -19,7 +19,8 @@ real `~/src/campaigns/<name>/docs/party.md` (issue #248).
 
 import pytest
 
-from session_doc.roster import extract_character_roster
+from campaignlib.party_config import ResolvedCharacter, ResolvedPartyConfig
+from session_doc.roster import extract_character_roster, roster_from_config
 
 # Verbatim excerpt from /home/kroussos/src/campaigns/Phandalin/docs/party.md.
 # NOTE: the Brewbarry class line has an UNCLOSED bold and a TRAILING SPACE.
@@ -448,3 +449,113 @@ def test_oota_dash_heading_is_unaffected():
     assert extract_character_roster(text) == (
         "- Zalthir (Gabe): Bronze Dragonborn Monk 8 (Warrior of Shadow)"
     )
+
+
+# ── roster_from_config (issue #265) ─────────────────────────────────────────
+#
+# Per the GM ruling in docs/design/PartyRosterCanonicalFormat.md: the D&D
+# Beyond sheet is canonical, party.yaml only references it. Fixtures are
+# built entirely under tmp_path — never against ~/src/campaigns.
+
+def _write_sheet(tmp_path, filename, *, name, player, species, class_level,
+                  subclass="", extra_frontmatter=""):
+    """Write a sheet .md file with YAML frontmatter, matching dnd_sheet.py's
+    D1(b) shape, and return its Path."""
+    path = tmp_path / filename
+    path.write_text(
+        "---\n"
+        f"name: {name}\n"
+        f"player: {player}\n"
+        f"species: {species}\n"
+        f"class_level: {class_level}\n"
+        f"subclass: {subclass!r}\n"
+        f"{extra_frontmatter}"
+        "---\n"
+        f"# {name}\n\n## Identity\n- **Class & Level:** {class_level}\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def _resolved_character(name, sheet_path) -> ResolvedCharacter:
+    return ResolvedCharacter(name=name, sheet=sheet_path)
+
+
+def test_roster_from_config_all_sheets_have_frontmatter(tmp_path):
+    zalthir = _write_sheet(
+        tmp_path, "zalthir.md", name="Zalthir", player="Gabe",
+        species="Dragonborn (Brass Dragon)", class_level="Monk 8",
+        subclass="Warrior of Shadow",
+    )
+    soma = _write_sheet(
+        tmp_path, "soma.md", name="Soma", player="Wade",
+        species="Tortle", class_level="Druid 6",
+    )
+    cfg = ResolvedPartyConfig(characters=[
+        _resolved_character("Zalthir", zalthir),
+        _resolved_character("Soma", soma),
+    ])
+    result = roster_from_config(cfg)
+    assert result == (
+        "- Zalthir (Gabe): Dragonborn (Brass Dragon) Monk 8\n"
+        "- Soma (Wade): Tortle Druid 6"
+    )
+
+
+def test_roster_from_config_all_or_nothing_none_when_one_lacks_frontmatter(tmp_path, capsys):
+    zalthir = _write_sheet(
+        tmp_path, "zalthir.md", name="Zalthir", player="Gabe",
+        species="Dragonborn (Brass Dragon)", class_level="Monk 8",
+    )
+    # Soma's sheet has no frontmatter at all — a pre-#265 sheet.
+    soma = tmp_path / "soma.md"
+    soma.write_text("# Soma\n\n## Identity\n- **Class & Level:** Druid 6\n", encoding="utf-8")
+    cfg = ResolvedPartyConfig(characters=[
+        _resolved_character("Zalthir", zalthir),
+        _resolved_character("Soma", soma),
+    ])
+    assert roster_from_config(cfg) is None
+    err = capsys.readouterr().err
+    assert "Soma" in err
+    assert "frontmatter" in err
+    # A usable sheet (Zalthir) must not be blamed too.
+    assert "Zalthir: sheet" not in err
+
+
+def test_roster_from_config_all_or_nothing_none_when_sheet_missing(tmp_path, capsys):
+    soma = _write_sheet(
+        tmp_path, "soma.md", name="Soma", player="Wade",
+        species="Tortle", class_level="Druid 6",
+    )
+    cfg = ResolvedPartyConfig(characters=[
+        _resolved_character("Soma", soma),
+        _resolved_character("Ghost", tmp_path / "does_not_exist.md"),
+    ])
+    assert roster_from_config(cfg) is None
+    err = capsys.readouterr().err
+    assert "Ghost" in err
+    assert "not found" in err
+
+
+def test_roster_from_config_strips_fields(tmp_path):
+    """One real sheet (zalthir.md) has a trailing space after the player
+    name — every field must be .strip()-ed."""
+    sheet = _write_sheet(
+        tmp_path, "zalthir.md", name="Zalthir", player="Gabe ",
+        species=" Dragonborn (Brass Dragon) ", class_level=" Monk 8 ",
+    )
+    cfg = ResolvedPartyConfig(characters=[_resolved_character("Zalthir", sheet)])
+    assert roster_from_config(cfg) == "- Zalthir (Gabe): Dragonborn (Brass Dragon) Monk 8"
+
+
+def test_roster_from_config_no_player_line_shape(tmp_path):
+    sheet = _write_sheet(
+        tmp_path, "companion.md", name="Boney", player="",
+        species="Undead", class_level="Skeletal Horse",
+    )
+    cfg = ResolvedPartyConfig(characters=[_resolved_character("Boney", sheet)])
+    assert roster_from_config(cfg) == "- Boney: Undead Skeletal Horse"
+
+
+def test_roster_from_config_empty_roster_yields_empty_string(tmp_path):
+    assert roster_from_config(ResolvedPartyConfig(characters=[])) == ""
