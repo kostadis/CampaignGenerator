@@ -73,6 +73,8 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/core/architecture.md` | **Start here.** System map: layers, pipelines, on-disk state, recurring concepts, "common task → start here" table |
 | `docs/cli/cli_tools.md` | Per-script invocations and flags (prep, campaign_state, planning, party, distill, query, …); typical new-campaign workflow |
 | `docs/cli/session_doc_pipeline.md` | post-session pipeline: sd_consistency / sd_plan / sd_narrate flags, voice files, dialogue handling, recap context, player-name mapping, token scaling, plus design rationale |
+| `docs/cli/genre_rulebook_howto.md` | **Start here for the genre rulebook.** One file per campaign (`voice/_genre.md`) addressed by `paths.genre_file`; migrating a campaign, every migration refusal, why a render reads generic, and how to prove a rulebook rule actually arrives |
+| `docs/design/GenreRulebook_implementation.md` | The *why* behind it — three copies, the two fixes, the decision table, and what the verification render found |
 | `docs/cli/quote_verification_howto.md` | Using quote verification: `sd_verify_quotes` / `sd_agent`, the five verdicts, why `near` ≠ safe, raw-vs-`.cleaned` VTT choice, every error message. Deterministic, zero-token, no backend — optional and auto-corrects nothing |
 | `docs/cli/state_projection_howto.md` | Using State Projection: `event_spine` → `thread_registry` → `grounding_sections` order, staleness states, every skip/refuse message, `projections.yaml`, the `/grounding/projections` page |
 | `docs/cli/provenance_howto.md` | **Start here for `provenance`.** Task-oriented: trust a hit or don't, scope to canon, chapter horizons, resolve a name, cross-campaign, what to do when results look wrong |
