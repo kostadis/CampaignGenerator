@@ -32,6 +32,7 @@ while the API must let the GM name a sheet they are about to write. See
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from typing import Annotated, Any
 
@@ -307,3 +308,52 @@ def resolve_party_config(
             for pc in cfg.characters
         ]
     )
+
+
+def load_party_config_arg(
+    path_str: str | None, base: Path | None = None
+) -> ResolvedPartyConfig | None:
+    """CLI convenience for an optional ``--party-config PATH`` flag (issue
+    #265): load + resolve it if given, else ``None`` — the "no config
+    available, fall back to party.md" signal every render-CLI call site
+    (``sd_narrate``, ``polish``, ``scene_extract``, ``enhance_summary``)
+    needs. A missing path or malformed YAML both degrade to ``None`` with a
+    stderr warning rather than raising, since this is explicitly the softer
+    of two paths — the party.md fallback stays load-bearing.
+
+    ``require_files=False``: a referenced sheet that doesn't exist yet
+    doesn't abort here — ``roster_from_config``/``player_map_from_config``
+    make their own per-character existence check and report it, which is
+    more informative than a bare ``ValueError`` at load time.
+
+    ``base`` defaults to the current working directory, matching this
+    repo's documented CLI invariant ("run any script from a campaign
+    workspace directory") and ``pipelines/grounding/party.py``'s own
+    ``campaign_root or Path.cwd()`` default.
+
+    Caution inherited, not resolved, by this helper: which base directory
+    is actually correct for a given ``party.yaml``'s relative ``sheet:``
+    paths is campaign-dependent — see the "Measured" table in
+    ``docs/design/PartyRosterCanonicalFormat.md``. Some existing
+    campaigns' sheets resolve from ``party.yaml``'s own directory, others
+    from the campaign root, and no single default is right for all of
+    them. Migrating those files is explicitly out of scope for issue #265.
+    """
+    if not path_str:
+        return None
+    path = Path(path_str).expanduser()
+    if not path.exists():
+        print(
+            f"Warning: --party-config not found: {path} — falling back to party.md",
+            file=sys.stderr,
+        )
+        return None
+    try:
+        cfg = load_party_config(path)
+    except ValueError as e:
+        print(
+            f"Warning: --party-config unreadable ({e}) — falling back to party.md",
+            file=sys.stderr,
+        )
+        return None
+    return resolve_party_config(cfg, base or Path.cwd(), require_files=False)

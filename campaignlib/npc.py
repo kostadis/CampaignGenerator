@@ -3,8 +3,13 @@
 import re
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .party_md import parse_party_md
+from .textproc import split_frontmatter
+
+if TYPE_CHECKING:
+    from campaignlib.party_config import ResolvedPartyConfig
 
 
 _DOSSIER_FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n\n?(.*)\Z", re.DOTALL)
@@ -221,6 +226,38 @@ def _is_player_placeholder(name: str) -> bool:
     return name.strip().lower().strip("()[]").strip() in _PLAYER_PLACEHOLDERS
 
 
+def _add_player_entries(result: dict[str, str], player_raw: str, character_name: str) -> None:
+    """Split a raw ``player`` field on ``/`` or ``,`` and map each surviving
+    name to ``character_name``, skipping placeholders.
+
+    Shared by :func:`extract_player_character_map` (party.md's raw ``player``
+    field) and :func:`player_map_from_config` (a sheet's frontmatter
+    ``player`` field) — one splitting/placeholder rule, not two copies.
+    """
+    if _is_player_placeholder(player_raw):
+        return
+    for p in re.split(r'[/,]', player_raw):
+        p = p.strip().rstrip('*').strip()
+        if p and not _is_player_placeholder(p):
+            result[p] = character_name
+
+
+def _apply_first_name_aliases(result: dict[str, str]) -> None:
+    """If a player's recorded name is "Joe Beda" → also map "Joe" → that
+    character. Skip when the first name is ambiguous (two players share it
+    but map to different characters) so we don't pick one arbitrarily.
+    Existing full-name keys always win. Mutates ``result`` in place.
+    """
+    first_name_to_chars: dict[str, set[str]] = {}
+    for player, char in result.items():
+        first = player.split()[0] if player.split() else ""
+        if first and first != player:
+            first_name_to_chars.setdefault(first, set()).add(char)
+    for first, chars in first_name_to_chars.items():
+        if len(chars) == 1 and first not in result:
+            result[first] = next(iter(chars))
+
+
 def extract_player_character_map(party_text: str) -> dict[str, str]:
     """Parse party.md and return {player_name: character_name}.
 
@@ -237,26 +274,53 @@ def extract_player_character_map(party_text: str) -> dict[str, str]:
     """
     result: dict[str, str] = {}
     for entry in parse_party_md(party_text):
-        if _is_player_placeholder(entry.player):
+        _add_player_entries(result, entry.player, entry.name)
+    _apply_first_name_aliases(result)
+    return result
+
+
+def player_map_from_config(cfg: "ResolvedPartyConfig") -> dict[str, str] | None:
+    """Sheet-sourced counterpart to :func:`extract_player_character_map`, per
+    the GM ruling in ``docs/design/PartyRosterCanonicalFormat.md`` (issue
+    #265): the D&D Beyond sheet is canonical, ``party.yaml`` just points at
+    it. ``cfg`` must already be resolved
+    (:func:`campaignlib.party_config.resolve_party_config`) — same "caller
+    owns the base directory" contract as :func:`session_doc.roster.
+    roster_from_config`.
+
+    Returns ``{player_name: character_name}`` — same key/value direction as
+    :func:`extract_player_character_map`.
+
+    ALL-OR-NOTHING, same contract as ``roster_from_config``: returns
+    ``None`` unless EVERY character's sheet exists and yields non-empty YAML
+    frontmatter. (A character whose frontmatter ``player`` field is itself
+    empty or a placeholder is not a failure — it legitimately contributes no
+    mapping, exactly as ``extract_player_character_map`` treats an empty
+    ``party.md`` Player slot.) On returning ``None``, prints to stderr which
+    character(s) were unusable and why.
+    """
+    result: dict[str, str] = {}
+    problems: list[str] = []
+    for character in cfg.characters:
+        sheet = character.sheet
+        if not sheet.exists():
+            problems.append(f"{character.name}: sheet not found at {sheet}")
             continue
-        for p in re.split(r'[/,]', entry.player):
-            p = p.strip().rstrip('*').strip()
-            if p and not _is_player_placeholder(p):
-                result[p] = entry.name
-
-    # First-name aliases: if a player's recorded name is "Joe Beda" → also map
-    # "Joe" → that character. Skip when the first name is ambiguous (two
-    # players share it but map to different characters) so we don't pick one
-    # arbitrarily. Existing full-name keys always win.
-    first_name_to_chars: dict[str, set[str]] = {}
-    for player, char in result.items():
-        first = player.split()[0] if player.split() else ""
-        if first and first != player:
-            first_name_to_chars.setdefault(first, set()).add(char)
-    for first, chars in first_name_to_chars.items():
-        if len(chars) == 1 and first not in result:
-            result[first] = next(iter(chars))
-
+        frontmatter, _body = split_frontmatter(sheet.read_text(encoding="utf-8"))
+        if not frontmatter:
+            problems.append(f"{character.name}: sheet has no YAML frontmatter ({sheet})")
+            continue
+        player_raw = str(frontmatter.get("player") or "")
+        _add_player_entries(result, player_raw, character.name)
+    if problems:
+        print(
+            "player_map_from_config: falling back to party.md — not every "
+            "character's sheet yields usable frontmatter:\n"
+            + "\n".join(f"  - {p}" for p in problems),
+            file=sys.stderr,
+        )
+        return None
+    _apply_first_name_aliases(result)
     return result
 
 

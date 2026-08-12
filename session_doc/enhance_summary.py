@@ -36,6 +36,7 @@ from campaignlib import (
     extract_player_character_map,
     format_batch_progress,
     load_agent_prompt,
+    player_map_from_config,
     poll_batch,
     read_batch_sidecar,
     run_batch,
@@ -45,6 +46,7 @@ from campaignlib import (
     utc_now_iso,
     write_batch_sidecar,
 )
+from campaignlib.party_config import load_party_config_arg
 from .io import parse_vtt
 
 
@@ -64,6 +66,7 @@ def _sidecar_path(output_path: Path) -> Path:
 
 def _build_prompts(vtt_path: Path, gm_path: Path,
                    party_path: Path | None = None,
+                   party_config_path: Path | None = None,
                    gm_player: str | None = None,
                    allow_speaker_mismatch: bool = False) -> tuple[str, str, str, str]:
     """Read inputs, build (system, user, dialogue, gmassist_body).
@@ -72,6 +75,10 @@ def _build_prompts(vtt_path: Path, gm_path: Path,
     pre-flight: extracts expected speaker display names and aborts if
     the VTT contains zero lines starting with any of them. The check
     can be bypassed with `allow_speaker_mismatch=True`.
+
+    `party_config_path` (party.yaml) is preferred over `party_path`
+    (party.md) when it resolves usable sheet frontmatter for every
+    character (issue #265); falls back to `party_path` otherwise.
     """
     raw = vtt_path.read_text(encoding="utf-8")
     print(f"\n[Parsing VTT | {len(raw):,} raw chars | {vtt_path.name}]")
@@ -83,8 +90,15 @@ def _build_prompts(vtt_path: Path, gm_path: Path,
 
     expected: set[str] = set()
     if party_path is not None:
-        player_map = extract_player_character_map(
-            party_path.read_text(encoding="utf-8"))
+        resolved_party_config = load_party_config_arg(
+            str(party_config_path) if party_config_path else None
+        )
+        player_map = (
+            player_map_from_config(resolved_party_config) if resolved_party_config else None
+        )
+        if player_map is None:
+            player_map = extract_player_character_map(
+                party_path.read_text(encoding="utf-8"))
         if player_map:
             mapping_str = ", ".join(f"{p}→{c}" for p, c in sorted(player_map.items()))
             print(f"  Player → character map ({len(player_map)}): {mapping_str}")
@@ -244,6 +258,11 @@ def main() -> None:
                              "Player: Name**` lines and used for a wrong-VTT "
                              "pre-flight check (aborts before submission if "
                              "no VTT line starts with any of those names).")
+    parser.add_argument("--party-config", metavar="FILE", default=None,
+                        help="party.yaml. When given, the player -> character map is "
+                             "preferred from each character's D&D Beyond sheet (issue "
+                             "#265); falls back to --party's party.md if any sheet "
+                             "lacks usable frontmatter.")
     parser.add_argument("--gm-player", metavar="NAME", default=None,
                         help="Display name the GM appears under in the VTT "
                              "(e.g. 'Kostadis'). Added to the speaker pre-flight.")
@@ -323,10 +342,12 @@ def main() -> None:
         if not party_path.exists():
             print(f"Error: party file not found: {party_path}", file=sys.stderr)
             sys.exit(1)
+    party_config_path = Path(args.party_config).expanduser() if args.party_config else None
 
     system, user, dialogue, gmassist_body = _build_prompts(
         vtt_path, gm_path,
         party_path=party_path,
+        party_config_path=party_config_path,
         gm_player=args.gm_player,
         allow_speaker_mismatch=args.allow_speaker_mismatch,
     )

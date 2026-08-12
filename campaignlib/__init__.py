@@ -56,6 +56,7 @@ from .npc import (
     load_alias_map,
     find_alias_registry,
     extract_player_character_map,
+    player_map_from_config,
     normalize_vtt_speakers,
     format_npc_roster,
 )
@@ -166,6 +167,7 @@ __all__ = [
     "load_alias_map",
     "find_alias_registry",
     "extract_player_character_map",
+    "player_map_from_config",
     "normalize_vtt_speakers",
     "format_npc_roster",
     # party / PC names

@@ -891,6 +891,69 @@ def test_extract_player_character_map_oota_heading_embedded():
     assert m["Joe Beda"] == "Thorin"
 
 
+# ── campaignlib.player_map_from_config (issue #265) ─────────────────────────
+#
+# Per the GM ruling in docs/design/PartyRosterCanonicalFormat.md: the D&D
+# Beyond sheet is canonical, party.yaml only references it. Fixtures are
+# built entirely under tmp_path — never against ~/src/campaigns.
+
+def _pmfc_write_sheet(tmp_path, filename, *, name, player, species="Elf",
+                       class_level="Wizard 7"):
+    from campaignlib.party_config import ResolvedCharacter
+    path = tmp_path / filename
+    path.write_text(
+        "---\n"
+        f"name: {name}\n"
+        f"player: {player}\n"
+        f"species: {species}\n"
+        f"class_level: {class_level}\n"
+        "subclass: ''\n"
+        "---\n"
+        f"# {name}\n\n## Identity\n- **Player:** {player}\n",
+        encoding="utf-8",
+    )
+    return ResolvedCharacter(name=name, sheet=path)
+
+
+def test_player_map_from_config_basic(tmp_path):
+    from campaignlib.party_config import ResolvedPartyConfig
+    daz = _pmfc_write_sheet(tmp_path, "daz.md", name="Daz", player="Mike Hall")
+    thorin = _pmfc_write_sheet(tmp_path, "thorin.md", name="Thorin", player="Joe Beda")
+    cfg = ResolvedPartyConfig(characters=[daz, thorin])
+    m = campaignlib.player_map_from_config(cfg)
+    # Same key/value direction as extract_player_character_map: {player: character}.
+    assert m["Mike Hall"] == "Daz"
+    assert m["Joe Beda"] == "Thorin"
+
+
+def test_player_map_from_config_all_or_nothing_none_when_one_lacks_frontmatter(tmp_path, capsys):
+    from campaignlib.party_config import ResolvedCharacter, ResolvedPartyConfig
+    daz = _pmfc_write_sheet(tmp_path, "daz.md", name="Daz", player="Mike Hall")
+    # Thorin's sheet predates #265 — no frontmatter at all.
+    thorin_path = tmp_path / "thorin.md"
+    thorin_path.write_text("# Thorin\n\n## Identity\n- **Player:** Joe Beda\n", encoding="utf-8")
+    thorin = ResolvedCharacter(name="Thorin", sheet=thorin_path)
+    cfg = ResolvedPartyConfig(characters=[daz, thorin])
+    assert campaignlib.player_map_from_config(cfg) is None
+    err = capsys.readouterr().err
+    assert "Thorin" in err
+    assert "frontmatter" in err
+
+
+def test_player_map_from_config_empty_player_is_not_a_failure(tmp_path):
+    """A legitimately empty/placeholder Player field on one sheet must not
+    fail the whole all-or-nothing check — only missing/unusable frontmatter
+    does. Mirrors extract_player_character_map's placeholder handling."""
+    from campaignlib.party_config import ResolvedPartyConfig
+    boney = _pmfc_write_sheet(tmp_path, "boney.md", name="Boney", player="")
+    daz = _pmfc_write_sheet(tmp_path, "daz.md", name="Daz", player="Mike Hall")
+    cfg = ResolvedPartyConfig(characters=[boney, daz])
+    m = campaignlib.player_map_from_config(cfg)
+    assert m is not None
+    # First-name alias (see _apply_first_name_aliases) also applies here.
+    assert m == {"Mike Hall": "Daz", "Mike": "Daz"}
+
+
 # ── campaignlib.normalize_vtt_speakers ─────────────────────────────────────
 
 

@@ -48,6 +48,7 @@ from campaignlib import (
     load_alias_map,
     normalize_vtt_speakers,
     parse_gmassist_scenes,
+    player_map_from_config,
     plan_scene_extraction,
     poll_batch,
     read_batch_sidecar,
@@ -58,6 +59,7 @@ from campaignlib import (
     utc_now_iso,
     write_batch_sidecar,
 )
+from campaignlib.party_config import load_party_config_arg
 from .io import parse_vtt
 
 
@@ -274,6 +276,11 @@ def main() -> None:
                              "mappings are parsed from the `**Class, Player: "
                              "Name**` lines and used to rewrite speaker "
                              "labels in the VTT before the LLM sees it.")
+    parser.add_argument("--party-config", metavar="FILE", default=None,
+                        help="party.yaml. When given, the player -> character map is "
+                             "preferred from each character's D&D Beyond sheet (issue "
+                             "#265); falls back to --party's party.md if any sheet "
+                             "lacks usable frontmatter.")
     parser.add_argument("--gm-player", metavar="NAME", default=None,
                         help="Display name the GM appears under in the VTT "
                              "(e.g. 'Kostadis'). Rewritten to 'GM:' before "
@@ -387,7 +394,14 @@ def main() -> None:
         if not party_path.exists():
             print(f"Error: party file not found: {party_path}", file=sys.stderr)
             sys.exit(1)
-        player_map = extract_player_character_map(party_path.read_text(encoding="utf-8"))
+        # Prefer the sheet-sourced map (issue #265) when --party-config resolves
+        # usable frontmatter for every character; fall back to party.md otherwise.
+        resolved_party_config = load_party_config_arg(args.party_config)
+        player_map = (
+            player_map_from_config(resolved_party_config) if resolved_party_config else None
+        )
+        if player_map is None:
+            player_map = extract_player_character_map(party_path.read_text(encoding="utf-8"))
         if player_map:
             mapping_str = ", ".join(f"{p}→{c}" for p, c in sorted(player_map.items()))
             print(f"  Player → character map ({len(player_map)}): {mapping_str}")
