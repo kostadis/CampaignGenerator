@@ -35,6 +35,8 @@ from campaignlib import (
     save_log,
     DEFAULT_MODEL,
 )
+from campaignlib.vtt import VttError
+from campaignlib.vtt import parse as parse_transcript
 
 
 ANALYSIS_SYSTEM = """\
@@ -88,31 +90,28 @@ Output format:
 """
 
 
-def parse_vtt(vtt_path: Path) -> list[tuple[str, str]]:
-    """Parse a Zoom VTT file into (speaker, text) pairs.
+def speaker_pairs(text: str) -> list[tuple[str, str]]:
+    """Parse Zoom VTT text into (speaker, text) pairs.
 
-    Zoom VTT format:
-        sequence_number
-        timestamp --> timestamp
+    Delegates structural parsing to :func:`campaignlib.vtt.parse`, which
+    already separates NOTE blocks (author and generated alike) from cues —
+    so a NOTE line containing a colon never reaches the speaker regex below
+    and is never misread as dialogue. Raises
+    :class:`campaignlib.vtt.VttError` if ``text`` is not parseable WebVTT.
+
+    Zoom cue payload format:
         Speaker Name: dialogue text
-        [blank line]
     """
-    text = vtt_path.read_text(encoding="utf-8")
-    lines = text.splitlines()
+    tx = parse_transcript(text)
     pairs = []
-    for line in lines:
-        line = line.strip()
-        if not line:
-            continue
-        # Skip WEBVTT header and cue metadata
-        if line.startswith("WEBVTT") or re.match(r"^\d+$", line):
-            continue
-        if re.match(r"^\d{2}:\d{2}:\d{2}", line):
-            continue
-        # Speaker line: "Name: text"
-        m = re.match(r"^([^:]+):\s*(.+)$", line)
-        if m:
-            pairs.append((m.group(1).strip(), m.group(2).strip()))
+    for cue in tx.cues:
+        for line in cue.lines:
+            line = line.strip()
+            if not line:
+                continue
+            m = re.match(r"^([^:]+):\s*(.+)$", line)
+            if m:
+                pairs.append((m.group(1).strip(), m.group(2).strip()))
     return pairs
 
 
@@ -147,6 +146,34 @@ def append_to_voice_file(voice_path: Path, additions: str) -> None:
     print(f"\nAppended suggestions to {voice_path}")
 
 
+def _diagnose_vtt_error(vtt_path: Path, text: str, err: VttError) -> str:
+    """Build a stderr diagnostic that names the defect, not just the exception.
+
+    ``campaignlib.vtt.parse`` refuses malformed input rather than guessing.
+    The two shapes seen in real tapes on disk: a fragment with no WEBVTT
+    header at all, and two or more recordings concatenated into one file
+    (repeating WEBVTT headers, and cue indices that repeat with them).
+    """
+    webvtt_count = len(re.findall(r"^WEBVTT", text, re.MULTILINE))
+    if webvtt_count > 1:
+        hint = (
+            f"hint: {webvtt_count} WEBVTT headers found in this file — it looks "
+            "like two or more recordings joined together, so cue indices repeat."
+        )
+    elif webvtt_count == 0:
+        hint = (
+            "hint: no WEBVTT header found — the file looks like a fragment, "
+            "not a complete transcript."
+        )
+    else:
+        hint = "hint: exactly one WEBVTT header is present; a cue itself is malformed."
+    return (
+        f"Error: could not read {vtt_path} as WebVTT.\n"
+        f"  {err}\n"
+        f"  {hint}"
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("vtt", help="Path to the Zoom .vtt transcript file")
@@ -172,7 +199,12 @@ def main() -> None:
     character = args.character or args.player
 
     print(f"Parsing {vtt_path.name}…")
-    pairs = parse_vtt(vtt_path)
+    text = vtt_path.read_text(encoding="utf-8")
+    try:
+        pairs = speaker_pairs(text)
+    except VttError as e:
+        print(_diagnose_vtt_error(vtt_path, text, e), file=sys.stderr)
+        sys.exit(1)
     player_lines = extract_player_lines(pairs, args.player)
 
     if not player_lines:

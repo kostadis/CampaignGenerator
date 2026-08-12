@@ -193,9 +193,15 @@ class ApplyResult:
 def generated_note(record: TranscriptCorrectionRecord) -> list[str]:
     """The header block the regenerated tape carries.
 
-    Colon-free by necessity — see :func:`campaignlib.vtt.render`. Carries no
-    timestamp, so regenerating twice produces identical bytes; the record's own
-    ``recorded`` dates are where "when" lives.
+    Historically colon-free because :func:`campaignlib.vtt.render` guarded
+    against it — that guard existed only for the old
+    ``session_doc/vtt_voice_compare.py`` regex scan, which had no NOTE rule
+    and would misread a colon here as dialogue. That reader was rewired onto
+    structural parsing and the guard removed (#263); the " - " separator
+    below is kept as-is regardless, since changing generated output is out
+    of scope here. Carries no timestamp, so regenerating twice produces
+    identical bytes; the record's own ``recorded`` dates are where "when"
+    lives.
     """
     n = len(record.corrections)
     unverified = len(record.unverified)

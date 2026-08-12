@@ -17,6 +17,14 @@ def parse_vtt(text: str) -> str:
     ``scene_extract`` (Stage 2). Lived in ``vtt_summary.py`` until that
     pipeline was retired; it is the one piece of it the live flow still
     needs, so it moved here rather than dying with its old home.
+
+    This is the *lossy* reader for the generation stages: it flattens a tape
+    to plain speaker dialogue, on purpose, because that is all those stages
+    need. For the lossless reader — the one that preserves cue numbers and
+    timing and can write a tape back out — use ``campaignlib.vtt``
+    (``parse``/``render``). The two stay separate rather than being folded
+    into one function: this one flattens deliberately, because the
+    generation stages want dialogue, not structure.
     """
     lines = text.splitlines()
     dialogue: list[str] = []
