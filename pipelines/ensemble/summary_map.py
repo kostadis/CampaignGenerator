@@ -86,7 +86,7 @@ from pathlib import Path
 
 import yaml
 
-from campaignlib import utc_now_iso
+from campaignlib import find_scenes_section, utc_now_iso
 
 # Mirrors campaignlib.textproc's _H2_RE / _H2_SPEAKER_RE / _H3_RE exactly.
 # Kept as a local copy rather than imported: those are underscore-prefixed
@@ -157,19 +157,17 @@ def parse_summary_scenes(text: str) -> list[str] | None:
     Only 11 of 16 real OOTA summaries have this section; the other 5 use a
     looser ``## Overview / Session Events`` shape with no ordered scene list
     to compare against.
+
+    The ``## Scenes`` heading match is ``find_scenes_section``
+    (campaignlib/scenes.py) — issue #262 unified what was four independent
+    heading rules across the codebase into that one function; this is the
+    call site whose None-vs-empty-list distinction ("unstructured" vs
+    "empty") that function's contract was written to preserve.
     """
-    h2_matches = list(_H2_RE.finditer(text))
-    scenes_start = None
-    scenes_end = len(text)
-    for i, m in enumerate(h2_matches):
-        if m.group(1).strip().lower() == "scenes":
-            scenes_start = m.end()
-            if i + 1 < len(h2_matches):
-                scenes_end = h2_matches[i + 1].start()
-            break
-    if scenes_start is None:
+    found = find_scenes_section(text)
+    if found is None:
         return None
-    section = text[scenes_start:scenes_end]
+    section = found[0]
     scenes = [m.group(1).strip() for m in _H3_RE.finditer(section)]
     return scenes or None
 
