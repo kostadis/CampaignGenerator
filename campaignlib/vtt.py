@@ -30,8 +30,14 @@ TIMING_RE = re.compile(
 _CUE_NUMBER_RE = re.compile(r"^\d+$")
 
 #: Marks a NOTE block this module wrote. Reading drops these; every other NOTE
-#: in the file is the author's and is preserved. Colon-free on purpose — see
-#: :func:`render`; the obvious `cg:generated` is rejected by render's own guard.
+#: in the file is the author's and is preserved. The dash rather than a colon
+#: is historical: ``render`` used to guard against colons because
+#: ``session_doc/vtt_voice_compare.py``'s old regex scan had no NOTE rule and
+#: would misread a colon inside a generated header as dialogue. That reader
+#: was rewired onto structural parsing and the guard was deleted (#263), so
+#: this value is no longer constrained — it is kept exactly as
+#: ``"cg-generated"``, not changed to the more obvious ``cg:generated``, for
+#: compatibility with generated tapes already on disk carrying this mark.
 GENERATED_MARK = "cg-generated"
 
 
@@ -139,20 +145,10 @@ def render(tx: Transcript, generated_note: list[str] | None = None) -> str:
     were LF, and nothing downstream cares — but a generator that quietly
     rewrote every line ending would make a byte-comparison between the two
     files useless, which is exactly the check that proves the record complete.
-
-    ``generated_note`` lines must be colon-free. ``session_doc/io.py``'s reader
-    skips `^NOTE`, but ``session_doc/vtt_voice_compare.py``'s does not — it
-    keeps anything matching ``^([^:]+):\\s*(.+)$``, so a NOTE line containing a
-    colon leaks into that tool as a line of dialogue.
     """
     out: list[str] = [tx.signature, ""]
     if generated_note:
         for ln in generated_note:
-            if ":" in ln:
-                raise VttError(
-                    f"generated NOTE line contains a colon and would be read as "
-                    f"dialogue by vtt_voice_compare: {ln!r}"
-                )
             out.append(ln if ln.upper().startswith("NOTE") else f"NOTE {ln}")
         out.append("")
     for block in tx.notes:
