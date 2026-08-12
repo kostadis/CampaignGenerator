@@ -98,7 +98,8 @@ untouched — `sheet:` was already the reference, and the draft that added
 today**: 15 sheets on disk, 15 with a parseable `## Identity`, **0 with
 frontmatter**, so both readers return `None` everywhere and all call sites fall
 back to `party.md`. Per the GM ruling the six campaign migrations and their
-conflict rulings are a separate follow-up, and the fallback stays until then.
+conflict rulings are a separate follow-up (**#293**), and the fallback stays
+until then.
 
 Two things the corpus contradicted in this document:
 
@@ -563,9 +564,11 @@ issue that already touched each file. The order below is the one that was
 followed, with A2 and B1 swapped after the audit demoted A2 from
 "needs a ruling" to hygiene.
 
-Per-finding status notes are inline above. What is deliberately **not** done:
-A1's six campaign migrations and their conflict rulings, and deleting A3's and
-A1's one-release compatibility fallbacks.
+Per-finding status notes are inline above. What is deliberately **not** done,
+tracked at **#293**: A1's six campaign migrations and their conflict rulings,
+then — once every campaign has run one release on the new path — deleting A3's
+and A1's compatibility fallbacks. #293 is itself blocked on **#291**, since no
+single base directory currently resolves `sheet:` for all six campaigns.
 
 | | Finding | Risk | Effort | Note |
 |---|---|---|---|---|
