@@ -25,7 +25,14 @@ interface Knobs {
   narrate_tokens?: number
   prose_mode?: boolean
   reflections?: boolean
-  narration_genre?: string | null
+  // Which rulebook FILE the render used, plus a digest of its contents at
+  // that moment (#276 fix 2). The old `narration_genre` stored the whole
+  // document in every per-scene sidecar; the digest answers the question that
+  // mattered — did these two scenes use the same rulebook? — and catches a
+  // file edited between two renders, which a path alone cannot.
+  narration_genre_file?: string | null
+  narration_genre_sha?: string | null
+  narration_genre_lines?: number | null
   backend?: 'anthropic' | 'dgx' | 'claude-code'
 }
 
@@ -107,7 +114,13 @@ const knobsRollup = computed(() => {
     counts.reflections[k.reflections ? 'on' : 'off']++
     const b = k.backend ?? 'anthropic'
     counts.backend[b] = (counts.backend[b] ?? 0) + 1
-    if (k.narration_genre) genres.add(k.narration_genre)
+    if (k.narration_genre_file) {
+      // Group by file+digest: the same path with two digests means the rulebook
+      // changed mid-session, which is exactly what this summary should surface.
+      genres.add(k.narration_genre_sha
+        ? `${k.narration_genre_file} @${k.narration_genre_sha}`
+        : k.narration_genre_file)
+    }
   }
   return { counts, genres: Array.from(genres) }
 })
@@ -256,7 +269,13 @@ onMounted(loadAll)
               <span v-if="r.applied_knobs.prose_mode" class="chip">prose</span>
               <span v-if="r.applied_knobs.reflections" class="chip">reflections</span>
               <span v-if="r.applied_knobs.backend" class="chip">{{ r.applied_knobs.backend }}</span>
-              <span v-if="r.applied_knobs.narration_genre" class="chip wide" :title="r.applied_knobs.narration_genre">
+              <span
+                v-if="r.applied_knobs.narration_genre_file"
+                class="chip wide"
+                :title="`${r.applied_knobs.narration_genre_file}`
+                  + (r.applied_knobs.narration_genre_lines ? ` — ${r.applied_knobs.narration_genre_lines} lines` : '')
+                  + (r.applied_knobs.narration_genre_sha ? ` @${r.applied_knobs.narration_genre_sha}` : '')"
+              >
                 genre
               </span>
             </div>

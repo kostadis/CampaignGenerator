@@ -65,6 +65,33 @@ class _SceneResult:
     handoff: str
 
 
+def _load_genre_file(path: str | None) -> str | None:
+    """Read the genre rulebook from disk, or warn loudly and return None.
+
+    The file is the single source of truth (#276 fix 2): it is not mirrored
+    into ``session_doc.yaml``, so a missing or empty file means Pass 5 runs
+    with **no** genre directive at all. That is a big silent quality change —
+    the rulebook is where the per-narrator bookkeeping caps and the banned-tic
+    list live — so say so rather than proceeding quietly.
+    """
+    if not path:
+        return None
+    p = Path(path).expanduser()
+    if not p.is_file():
+        print(f"Warning: --narration-genre-file {p} does not exist. Pass 5 will run "
+              f"with NO genre directive — no register rules, no banned-tic list, no "
+              f"bookkeeping caps.\n"
+              f"  -> create the file, or drop the flag if that was intended.",
+              file=sys.stderr)
+        return None
+    text = p.read_text(encoding="utf-8").strip()
+    if not text:
+        print(f"Warning: --narration-genre-file {p} is empty. Pass 5 will run with NO "
+              f"genre directive.", file=sys.stderr)
+        return None
+    return text
+
+
 def _load_examples(examples_dir: Path | None,
                    characters: list[str]) -> tuple[str | None, dict[str, str]]:
     """Mirror session_doc.py's split between global and per-character examples.
@@ -127,10 +154,14 @@ def main() -> None:
                         help="Render only the listed scene number(s) (1-based).")
     parser.add_argument("--prose-mode", action="store_true",
                         help="Strip mechanical / GM framing from narration.")
-    parser.add_argument("--narration-genre", default=None, metavar="TEXT",
-                        help="Genre/register directive injected into Pass 5. Accepts a "
-                             "one-line directive or a full multi-line genre document; a "
-                             "multi-line value is injected as its own delimited block.")
+    parser.add_argument("--narration-genre-file", default=None, metavar="PATH",
+                        help="File holding the genre/register rulebook injected into "
+                             "Pass 5 (conventionally <campaign>/voice/_genre.md). A "
+                             "one-line directive or a full document both work; anything "
+                             "longer than a short label is injected as its own delimited "
+                             "block. Replaces --narration-genre, which took the text "
+                             "inline and made session_doc.yaml a second copy of the file "
+                             "(#276).")
     parser.add_argument("--reflections", action="store_true",
                         help="Inject campaign_state and world_state context into Pass 5 so "
                              "the narrator can draw on past events as memories.")
@@ -206,6 +237,7 @@ def main() -> None:
               f"is a class line: '**Race Class N, Player: X**' or "
               f"'**Class N (Subclass) | Species | Player'.",
               file=sys.stderr)
+    narration_genre = _load_genre_file(args.narration_genre_file)
     characters = [c.strip() for c in (args.characters or "").split(",") if c.strip()]
     voice_files = (
         load_voice_files(Path(args.voice_dir).expanduser())
@@ -340,7 +372,7 @@ def main() -> None:
             narrator=narrator,
             char_examples=char_examples,
             voice_note=voice_note,
-            genre=args.narration_genre,
+            genre=narration_genre,
         )
         narrate_prompt = build_narrate_prompt(
             narrator, focus, char_moments, party, handoff,

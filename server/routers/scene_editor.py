@@ -19,7 +19,7 @@ import json
 import re
 import subprocess
 import sys
-from dataclasses import replace
+from dataclasses import asdict, replace
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -108,6 +108,10 @@ def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
         "config_dir": cfg.config_dir,
         "vtt": cfg.vtt,
         "session_dir": cfg.session_dir,
+        # Display-only summary of the genre rulebook file (#276 fix 2). The UI
+        # shows path + counts + a preview; it does not offer to edit the file,
+        # because a browser textarea is what flattened 88 lines into one (#249).
+        "genre": asdict(cfg.genre) if cfg.genre is not None else None,
     }
 
 
@@ -309,13 +313,22 @@ def _narrate_knobs_snapshot(cfg: ResolvedEditorConfig) -> dict:
     "which flags were applied to this scene" without consulting the
     activity log.
     """
-    return {
+    snapshot = {
         "narrate_tokens": cfg.narrate.tokens,
         "prose_mode": bool(cfg.narrate.prose_mode),
         "reflections": bool(cfg.narrate.reflections),
-        "narration_genre": cfg.narrate.genre,
+        "narration_genre_file": cfg.paths.genre_file,
         "backend": cfg.backends.active or "anthropic",
     }
+    # Record which rulebook was used, by identity rather than by copy (#276
+    # fix 2). This field used to hold the whole genre document, so every
+    # per-scene sidecar carried its own 16K duplicate; the digest answers the
+    # question that mattered ("same rulebook as that other run?") and also
+    # reveals a file edited between two runs, which a path alone cannot.
+    if cfg.genre is not None and cfg.genre.exists:
+        snapshot["narration_genre_sha"] = cfg.genre.sha256
+        snapshot["narration_genre_lines"] = cfg.genre.lines
+    return snapshot
 
 
 def _record_activity(cfg: ResolvedEditorConfig, *, stage: str, rc: int | None,
@@ -928,8 +941,11 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
         for ctx in cfg.narrate.context or []:
             if ctx:
                 cmd += ["--context", ctx]
-    if cfg.narrate.genre:
-        cmd += ["--narration-genre", cfg.narrate.genre]
+    if cfg.paths.genre_file:
+        # Pass the path, not the text (#276 fix 2). Resolution already happened
+        # at the route edge, so the copyable command stays fully explicit and
+        # sd_narrate reads the same file the UI previewed.
+        cmd += ["--narration-genre-file", cfg.paths.genre_file]
     return cmd
 
 

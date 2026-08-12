@@ -13,6 +13,7 @@ reads (``runtime.default_model``, ``runtime.session_dir``, ``campaign_dir``,
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -46,16 +47,81 @@ _SESSION_PATH_FIELDS: tuple[str, ...] = (
     "narration_dir",
     "output_dir",
 )
-_CAMPAIGN_PATH_FIELDS: tuple[str, ...] = ("party", "voice_dir", "examples_dir")
+_CAMPAIGN_PATH_FIELDS: tuple[str, ...] = (
+    "party", "voice_dir", "examples_dir", "genre_file",
+)
 
 # ProfileEntry.knobs key -> grouped location, mirrored on activation.
 _PROFILE_KNOB_TO_GROUPED: dict[str, tuple[str, ...]] = {
     "narrate_tokens": ("narrate", "tokens"),
     "prose_mode": ("narrate", "prose_mode"),
     "reflections": ("narrate", "reflections"),
-    "narration_genre": ("narrate", "genre"),
+    # A profile switches which rulebook *file* is used, never a copy of its
+    # text (#276 fix 2). The old ``narration_genre`` knob held a paste of a
+    # paste: profile -> narrate.genre -> voice/_genre.md, synced one way only
+    # (#220), so activating a profile could silently overwrite a hand-edit
+    # with a stale duplicate.
+    "narration_genre_file": ("paths", "genre_file"),
     "backend": ("backends", "active"),
 }
+
+
+@dataclass(frozen=True)
+class ResolvedGenre:
+    """Read-only view of the genre rulebook file, for display only.
+
+    The Session Doc Editor shows the path, whether it resolved, and enough of
+    the content to recognise it — it does not offer to edit it. The file is
+    hand-authored campaign material; a browser textarea is what flattened
+    out-of-the-abyss' 88 lines into a single 16,303-character line (#249/#276).
+
+    ``text`` is deliberately **not** included: nothing downstream should read
+    the rulebook from this view. Pass 5 reads the file itself, by path.
+    """
+
+    path: str | None
+    exists: bool
+    lines: int = 0
+    chars: int = 0
+    preview: str = ""
+    sha256: str = ""
+    error: str | None = None
+
+
+_GENRE_PREVIEW_CHARS = 600
+
+
+def _describe_genre_file(resolved_path: str | None) -> ResolvedGenre:
+    """Summarise the resolved genre file without letting its text escape."""
+    if not resolved_path:
+        return ResolvedGenre(path=None, exists=False)
+    p = Path(resolved_path)
+    if not p.is_file():
+        return ResolvedGenre(
+            path=resolved_path,
+            exists=False,
+            error=(
+                "file not found — Pass 5 will run with no genre directive"
+            ),
+        )
+    try:
+        text = p.read_text(encoding="utf-8")
+    except OSError as exc:
+        return ResolvedGenre(
+            path=resolved_path, exists=False, error=f"unreadable: {exc}"
+        )
+    stripped = text.strip()
+    return ResolvedGenre(
+        path=resolved_path,
+        exists=True,
+        lines=len(stripped.splitlines()),
+        chars=len(stripped),
+        preview=stripped[:_GENRE_PREVIEW_CHARS],
+        # Provenance for the per-run knobs snapshot: two runs used the same
+        # rulebook iff these match, and a file edited between runs is visible
+        # without storing 16K of prose in every per-scene sidecar.
+        sha256=hashlib.sha256(stripped.encode("utf-8")).hexdigest()[:12],
+    )
 
 
 @dataclass(frozen=True)
@@ -81,6 +147,9 @@ class ResolvedEditorConfig:
     config_dir: str
     vtt: str | None = None
     session_dir: str | None = None
+    # Display-only summary of paths.genre_file (#276 fix 2). Injected, never
+    # persisted — same class of read-only extra as ``model``/``work_dir``.
+    genre: ResolvedGenre | None = None
 
 
 def _set_nested(target: dict[str, Any], path: tuple[str, ...], value: Any) -> None:
@@ -302,4 +371,5 @@ class SessionEditorConfigService:
             config_dir=self.platform.config_dir,
             vtt=None,
             session_dir=session_dir,
+            genre=_describe_genre_file(resolved_paths.genre_file),
         )

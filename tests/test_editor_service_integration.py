@@ -93,12 +93,21 @@ class TestGetEditorConfig:
             "paths", "narrate", "scrub", "roster", "backends",
             "session_name", "profiles", "active_profile", "model",
             "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
+            "genre",
         }
         # Defaults: strict grouped schema, backends keyed by name (incl.
         # the hyphenated claude-code alias).
         assert body["backends"]["active"] == "anthropic"
         assert "claude-code" in body["backends"]
         assert body["narrate"]["tokens"] == 16000
+        # The genre rulebook is a file (#276 fix 2): no path configured yet, so
+        # the injected read-only summary says "nothing resolved" rather than
+        # carrying a pasted default.
+        assert body["genre"] == {
+            "path": None, "exists": False, "lines": 0, "chars": 0,
+            "preview": "", "sha256": "", "error": None,
+        }
+        assert "genre" not in body["narrate"]
 
 
 # ── PUT /api/editor/config — flat payload, single write door ────────────────

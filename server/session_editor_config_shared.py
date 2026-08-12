@@ -130,6 +130,12 @@ class EditorPaths(BaseModel):
     party: OptStr = None
     voice_dir: OptStr = None
     examples_dir: OptStr = None
+    # The genre rulebook is a FILE, not a pasted string (#276 fix 2). It lives
+    # here rather than under ``narrate`` so it inherits the path contract every
+    # other selector has — relativized on write, resolved absolute on read —
+    # instead of needing a second, parallel derivation. Profiles still switch it
+    # through the ``narration_genre_file`` knob.
+    genre_file: OptStr = None
 
     @model_validator(mode="before")
     @classmethod
@@ -166,39 +172,68 @@ class EditorPaths(BaseModel):
 # editor down on boot.
 RETIRED_NARRATE_FIELDS: tuple[str, ...] = ("batch",)
 
+# Retired by #276 fix 2, and called out separately from RETIRED_NARRATE_FIELDS
+# because the value is not merely obsolete — it is a *paste* of
+# ``voice/_genre.md`` whose canonical home moved to ``paths.genre_file``.
+# Dropping it silently would discard a document (out-of-the-abyss carried
+# 16,303 characters here), so the notice names the migration that relocates it.
+RELOCATED_NARRATE_FIELDS: tuple[str, ...] = ("genre",)
+
 
 class NarrateKnobs(BaseModel):
-    """Stage-④ narrate knobs."""
+    """Stage-④ narrate knobs.
+
+    ``genre`` is deliberately absent: the genre rulebook is a file, addressed
+    by ``paths.genre_file``. It used to be pasted here as a string, which meant
+    two copies of the same document with no sync and no divergence check — the
+    paste in out-of-the-abyss had already drifted to 0.999 similarity against
+    its file, and had lost every newline on the way into YAML (#276, #249).
+    """
 
     model_config = ConfigDict(extra="forbid")
 
     tokens: int = 16000
     prose_mode: bool = False
     reflections: bool = False
-    genre: OptStr = None
     context: list[str] = Field(default_factory=list)
 
     @model_validator(mode="before")
     @classmethod
     def _drop_retired_fields(cls, data: Any) -> Any:
-        """Strip the retired ``batch`` key before ``extra="forbid"`` sees it.
+        """Strip retired/relocated keys before ``extra="forbid"`` sees them.
 
         Announced on stderr rather than dropped silently — see
         ``EditorPaths._drop_retired_fields`` above for the identical
-        rationale.
+        rationale. A stale key must not take the whole editor down on boot,
+        but it must not vanish quietly either.
         """
         if not isinstance(data, dict):
             return data
         retired = [k for k in RETIRED_NARRATE_FIELDS if k in data]
-        if not retired:
+        relocated = [k for k in RELOCATED_NARRATE_FIELDS if k in data]
+        if not retired and not relocated:
             return data
-        print(
-            f"  config: dropping retired session_doc.yaml narrate field(s) "
-            f"{', '.join(retired)} — batch now lives on the per-backend "
-            f"selection (backends.<name>.batch), not narrate.",
-            file=sys.stderr,
-        )
-        return {k: v for k, v in data.items() if k not in RETIRED_NARRATE_FIELDS}
+        if retired:
+            print(
+                f"  config: dropping retired session_doc.yaml narrate field(s) "
+                f"{', '.join(retired)} — batch now lives on the per-backend "
+                f"selection (backends.<name>.batch), not narrate.",
+                file=sys.stderr,
+            )
+        if relocated:
+            sizes = ", ".join(
+                f"{k} ({len(str(data[k]))} chars)" for k in relocated
+            )
+            print(
+                f"  config: ignoring relocated session_doc.yaml narrate field(s) "
+                f"{sizes} — the genre rulebook is now a file, addressed by "
+                f"paths.genre_file (#276).\n"
+                f"    -> this value is NOT reaching Pass 5. Relocate it with:\n"
+                f"       python -m server.migrate_narrate_genre --campaign-dir <DIR>",
+                file=sys.stderr,
+            )
+        drop = set(retired) | set(relocated)
+        return {k: v for k, v in data.items() if k not in drop}
 
 
 class ScrubKnobs(BaseModel):
@@ -317,7 +352,17 @@ TYPED_SESSION_DOC_TO_GROUPED: dict[str, tuple[str, ...]] = {
     "narrate_tokens": ("narrate", "tokens"),
     "prose_mode": ("narrate", "prose_mode"),
     "reflections": ("narrate", "reflections"),
-    "narration_genre": ("narrate", "genre"),
+    # ``narration_genre`` is deliberately absent (#276 fix 2): it mapped into
+    # ``narrate.genre``, which no longer exists — the genre rulebook is a file
+    # at ``paths.genre_file``. Same rationale as ``roleplay_dir``/``batch``:
+    # reported as unrecognised (visible, left behind in the old ui_state.yaml)
+    # rather than migrated into a field that is gone. A pre-Phase-5 campaign
+    # carrying genre *text* in ui_state.yaml keeps it there, reported and
+    # untouched: this migration cannot relocate it, because the destination is
+    # now a file on disk and choosing that file's contents is a GM decision.
+    # Write ``voice/_genre.md`` by hand and point ``paths.genre_file`` at it.
+    # (``server/migrate_narrate_genre.py`` handles the newer case, where the
+    # paste is already in session_doc.yaml.)
     # ``batch`` is deliberately absent (005-ui-batch-selection T029): it
     # mapped into the now-retired RETIRED_NARRATE_FIELDS. Same rationale as
     # ``roleplay_dir``/``summary_dir`` above — reported as unrecognised
