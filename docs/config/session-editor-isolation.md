@@ -124,7 +124,7 @@ different endpoints**, by design:
 - `buildEditorConfigPayload()` → `PUT /api/editor/config` → `api_put_config`,
   which does `CONFIG.update(data)` **and** `service.update_section("session_doc",
   _config_to_typed_payload(data))`. (path fields, `narrate_tokens`, `prose_mode`,
-  `reflections`, `narration_genre`, `context`, `work_dir`)
+  `reflections`, `context`, `work_dir`; `narration_genre` retired by #276 fix 2)
 - `config.updateSection("session_doc", {...})` → `PUT /api/config/section/session_doc`.
   (`backend`, `batch`, `dgx_endpoint`, `dgx_model`, `openrouter_model`)
 
@@ -211,7 +211,7 @@ The whole design turns on drawing this line correctly.
 
 **Owned by `SessionEditorConfigService` (service-local):**
 - `ui.session_doc` fields — the knobs (`narrate_tokens`, `prose_mode`,
-  `reflections`, `narration_genre`, `batch`, `scrub_*`, `backend`, `dgx_*`,
+  `reflections`, `batch`, `scrub_*`, `backend`, `dgx_*`,
   `openrouter_model`) and the path/selector fields.
 - `ui.profiles` — named knob presets. Editor-only.
 - The CONFIG-key ↔ typed-key translation (`_TYPED_TO_CONFIG_KEY`) — removed when
@@ -340,11 +340,11 @@ paths:                      # base (session/campaign) is service-owned metadata,
   party:                    #                            (campaign)
   voice_dir:                #                            (campaign)
   examples_dir:             #                            (campaign)  [was: examples_dir / examples]
+  genre_file:               #                            (campaign)  [was: narrate.genre — a PASTE of the file, #276 fix 2]
 narrate:
   tokens: 16000             # [was: narrate_tokens]
   prose_mode: false
   reflections: false
-  genre:                    # [was: narration_genre]
   batch: false
   context: []
 scrub:
