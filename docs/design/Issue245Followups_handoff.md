@@ -13,7 +13,7 @@ trees, not inferred from issue state:
 | WO | Issue | State | Evidence |
 |---|---|---|---|
 | WO-1 | CG#247 | **done** | `session_doc/voice.py:32-63` — `_resolve_voice_key`, three-step resolution, ambiguity refused, stderr warning on a non-empty miss |
-| WO-2 | campaigns#147 | **done (Phandalin only)** | `narrate.genre` **and** `profiles[0].knobs.narration_genre` both 7,351c / 60 newlines / contains "present tense"; matches `voice/_genre.md` at similarity 1.000. **OOTA is still flattened** — see below |
+| WO-2 | campaigns#147 | **superseded 2026-08-12** | Done for Phandalin by hand; then #276 removed the class. `narrate.genre` no longer exists — the rulebook is a file at `paths.genre_file`, so there is nothing left to re-sync. Per-campaign migration is still pending: `python -m server.migrate_narrate_genre` |
 | WO-3 | CG#249 | **landed, issue still open** | `KnobDrawer.vue:266-273` is a `rows="8"` textarea with the specified help text. Verify a paste round-trip and close #249 |
 | WO-4 | CG#248 | **parser done** | `a9a3951`. campaigns#142/#145 (the data gates) closed; **campaigns#141 / #143 / #144 still open** — the parser now handles those layouts, so these likely need verification and closing rather than work |
 | WO-5 | CG#251 | **done** | `8d55c0d` in `base.md`, plus `session_doc/voice_lint.py` — the scan became a tested console script rather than living only in the skill |
@@ -34,9 +34,11 @@ This doc stays the execution record it reads from.
 and nothing stops the next paste from re-flattening, because `narrate.genre` is a *copy*
 of `voice/_genre.md`. OOTA is now the same bug this doc fixed for Phandalin — 16,303
 chars, zero newlines, in both `narrate.genre` and the profile knob — so `narrate.py:37`
-hands the model a 16K one-line `GENRE:` label, twice. Tracked as **#276**, with the
-durable fix (gate on size, then replace the pasted key with `narrate.genre_file:`) and
-the measurements in
+hands the model a 16K one-line `GENRE:` label, twice. Tracked as **#276**, and **both fixes have now shipped** (2026-08-12): fix 1 gates the
+delimited block on size rather than newlines (PR #281), and fix 2 replaced the pasted key
+with `paths.genre_file` — one copy, in the file, with a migration that refuses to guess
+when the two copies disagree. So this work order does not just have a durable fix; the
+shape that made it necessary is gone. The measurements are in
 [`VoiceCriticAlignment_proposal.md`](VoiceCriticAlignment_proposal.md) §5. Read that
 before doing another manual re-sync.
 

@@ -24,7 +24,18 @@ const props = defineProps<{
   narrateTokens: number
   proseMode: boolean
   reflections: boolean
-  narrationGenre: string
+  // The genre rulebook is a FILE now (#276 fix 2): this is a path, and
+  // `genreInfo` is the server's read-only summary of what it resolved to.
+  genreFile: string
+  genreInfo?: {
+    path: string | null
+    exists: boolean
+    lines: number
+    chars: number
+    preview: string
+    sha256: string
+    error: string | null
+  } | null
 }>()
 
 const emit = defineEmits<{
@@ -46,10 +57,20 @@ const emit = defineEmits<{
   'update:narrateTokens': [value: number]
   'update:proseMode': [value: boolean]
   'update:reflections': [value: boolean]
-  'update:narrationGenre': [value: string]
+  'update:genreFile': [value: string]
 }>()
 
 const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsDir?.trim()))
+
+// Three display states, all of which the GM needs to tell apart at a glance:
+// no rulebook configured, one configured but not found on disk, and one
+// resolved. The middle state is the dangerous one — Pass 5 runs with NO genre
+// directive at all, silently, because the rulebook is no longer mirrored into
+// session_doc.yaml as a fallback.
+const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
+  if (!props.genreFile?.trim()) return 'unset'
+  return props.genreInfo?.exists ? 'ok' : 'missing'
+})
 </script>
 
 <template>
@@ -262,15 +283,29 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
           Reflections (inject campaign history as memories)
         </label>
         <div class="field">
-          <label class="field-label">Narration genre</label>
-          <textarea
-            class="field-input field-textarea"
-            rows="8"
-            :value="narrationGenre"
-            placeholder='e.g. First-person comic-noir fantasy memoir'
-            @input="emit('update:narrationGenre', ($event.target as HTMLTextAreaElement).value)"
+          <label class="field-label">Narration genre file</label>
+          <input
+            class="field-input"
+            type="text"
+            :value="genreFile"
+            placeholder="voice/_genre.md"
+            @input="emit('update:genreFile', ($event.target as HTMLInputElement).value)"
           />
-          <div class="field-help">Genre/register directive injected into the Pass-5 prompt. Accepts either a one-line directive or a full multi-line genre document.</div>
+          <div v-if="genreState === 'ok'" class="genre-status ok">
+            ✓ resolved · {{ genreInfo?.lines }} lines · {{ genreInfo?.chars?.toLocaleString() }} chars
+          </div>
+          <div v-else-if="genreState === 'missing'" class="genre-status bad">
+            ✗ {{ genreInfo?.error || 'not found' }}
+          </div>
+          <div v-else class="genre-status muted">
+            No genre file — Pass 5 runs with no genre directive.
+          </div>
+          <pre v-if="genreState === 'ok' && genreInfo?.preview" class="genre-preview">{{ genreInfo.preview }}</pre>
+          <div class="field-help">
+            The genre/register rulebook injected into the Pass-5 prompt, read from
+            this file at render time. It is the single source of truth — edit the
+            file itself to change it; this drawer only points at it.
+          </div>
         </div>
       </section>
 
@@ -420,6 +455,28 @@ const ready = computed(() => !!(props.session?.trim() && props.sceneExtractionsD
   color: var(--text-muted);
   margin-top: 2px;
   line-height: 1.4;
+}
+.genre-status {
+  font-size: 10px;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.genre-status.ok { color: var(--green, #a6e3a1); }
+.genre-status.bad { color: var(--red, #f38ba8); }
+.genre-status.muted { color: var(--text-muted); }
+.genre-preview {
+  margin: 4px 0 0;
+  padding: 6px 8px;
+  max-height: 140px;
+  overflow: auto;
+  border-radius: 4px;
+  border: 1px solid var(--bg-surface1);
+  background: var(--bg-base);
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .checkbox-row {

@@ -255,7 +255,7 @@ Practical implication for the human review step:
 | `--scene N [M …]` | — | Run only the listed scene number(s) from the plan (1-based) |
 | `--narrate-tokens N` | 16000 | Override the Pass-5 narration token limit. Per-scene override: add `tokens: N` as the first line of the scene-extraction file. |
 | `--prose-mode` | off | Strip mechanical / GM framing from narration (no rolls, HP, "the GM says…") |
-| `--narration-genre TEXT` | — | One-line genre/register directive injected into Pass 5 (e.g. `"First-person comic-noir fantasy memoir"`) |
+| `--narration-genre-file PATH` | — | File holding the genre/register rulebook injected into Pass 5, conventionally `<campaign>/voice/_genre.md`. A one-line directive or a full document both work; anything longer than a short label gets its own delimited block. **The file is the single source of truth** — a missing path means Pass 5 runs with no register rules at all, and warns. Replaces `--narration-genre TEXT` (#276). |
 | `--reflections` | off | Inject `campaign_state` and `world_state` context into Pass 5 so the narrator can draw on past events as memories. Requires `--context`. |
 | `--dossier-dir DIR` | — | Per-NPC dossier files. Aliases in frontmatter are rewritten to canonical names before Pass 5; a "Known NPCs" roster seeds the prompt. |
 | `--campaign-dir DIR` | `$CAMPAIGN_DIR` or recap parent | Campaign workspace root. Used to locate `docs/dossier_proposal.md`. |

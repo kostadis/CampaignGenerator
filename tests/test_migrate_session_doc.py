@@ -75,7 +75,15 @@ class TestBuildGroupedConfig:
         assert cfg.roster.characters == "Zalthir, Grygum"
         assert cfg.narrate.tokens == 12000
         assert cfg.narrate.prose_mode is True
-        assert cfg.narrate.genre == "noir"
+        # `narration_genre` is still in OLD_UI_STATE above but was dropped from
+        # TYPED_SESSION_DOC_TO_GROUPED by #276 fix 2: the genre rulebook is a
+        # file at `paths.genre_file`, and this migration cannot relocate a
+        # pasted string into a file on disk — choosing that file's contents is a
+        # GM decision. Same treatment as `roleplay_dir` above: left behind in
+        # ui_state.yaml, visible, rather than written into a field that is gone.
+        assert not hasattr(cfg.narrate, "genre")
+        assert "noir" not in cfg.model_dump_json()
+        assert cfg.paths.genre_file is None
         assert cfg.backends.active == "dgx"
         assert cfg.backends.dgx.endpoint == "http://box:8001"
         assert cfg.backends.dgx.model == "Qwen-X"

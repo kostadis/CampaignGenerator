@@ -31,6 +31,7 @@ session_doc/                # Post-session pipeline CLIs (sd_*, assemble, scene_
                              #   roster, examples, narrate)
 server/migrate_session_doc.py # CLI: one-shot ui_state.yaml → session_doc.yaml — python -m server.migrate_session_doc --campaign-dir /path/to/campaign
 server/migrate_ensemble_config.py # CLI: one-shot ui.ensemble → ensemble.yaml — python -m server.migrate_ensemble_config --campaign-dir /path/to/campaign
+server/migrate_narrate_genre.py # CLI: one-shot narrate.genre (a paste) → paths.genre_file (a path) — python -m server.migrate_narrate_genre --campaign-dir /path/to/campaign
 pipelines/grounding/npc_table.py        # CLI: generate NPC reference table
 pipelines/grounding/distill.py          # CLI: convert summaries → world_state.md
 pipelines/grounding/campaign_state.py   # CLI: generate completed-content grounding doc
@@ -134,7 +135,22 @@ Three services own a dedicated, strict (`extra="forbid"`) config file instead of
 
 Plus the platform tier: `<config>/platform.yaml` (`runtime.default_model`, `session_dir`) via `PUT /runtime`.
 
+One more one-shot migration sits alongside these, inside the Session Doc Editor's own file: `python -m server.migrate_narrate_genre --campaign-dir DIR` relocates the genre rulebook from `narrate.genre` (the document's *text*, pasted) to `paths.genre_file` (a path). See "The genre rulebook is a file" below.
+
 The migrations are one-shot and idempotent-ish (they refuse to clobber without `--force`) and report unrecognised keys rather than dropping them. **Skipping one is safe but not free:** `UIState` is `extra="allow"`, so a stale `ui.ensemble`/`ui.session_doc` block loads and is silently ignored — the page then starts from schema defaults, quietly losing hand-tuned selections like per-stage DGX backends and endpoint lists. Run the migration once per campaign before relying on those.
+
+### The genre rulebook is a file, never a pasted string
+
+`paths.genre_file` in `session_doc.yaml` points at the campaign's genre/register document (conventionally `<campaign>/voice/_genre.md`). **That file is the single source of truth** — `sd_narrate --narration-genre-file` reads it at render time, and nothing mirrors its text back into config.
+
+The retired `narrate.genre` held a *copy* of that document, and the copy is what broke: out-of-the-abyss' had lost every newline on the way into YAML (16,303 characters on one line, delivered as a one-line `GENRE:` label — #276 fix 1, #249) and had drifted to 0.9989 similarity against the file it came from. A third copy lived in `profiles[].knobs.narration_genre`, synced one way only (#220), so activating a profile could silently replace a hand-edit.
+
+Consequences for anyone touching this:
+
+- **The UI points, it does not edit.** The Session Doc Editor shows the path, whether it resolved, line/char counts and a capped preview. A browser textarea is what flattened 88 lines into one; editing happens in the file.
+- **A missing file means no genre at all.** There is no YAML fallback any more, so `sd_narrate` warns loudly rather than rendering quietly without the register rules and banned-tic list.
+- **Runs record identity, not a copy.** The per-scene `.knobs.json` stores `narration_genre_file` plus a content digest, so two scenes can be compared and a mid-session file edit is visible — instead of duplicating 16K of prose into every sidecar.
+- **A profile owns exactly one path**, `paths.genre_file`. A profile wanting a different register needs its own file.
 
 **Never add a default literal to `server/routers/ensemble.py`.** Every ensemble path and tuning knob is declared once, in `server/ensemble_config_shared.py`'s `EnsemblePaths`/`EnsembleTuning`; routes take a sentinel (`""`, or `None` for ints where `0` is meaningful) and resolve from `EnsembleConfigService.resolved()` at the route edge. `tests/test_ensemble_config_defaults.py` fails the build if a `docs/ensemble/`-shaped literal or `backend: str = "anthropic"` reappears there. Resolution happens *before* argv is built, so the copyable command `specs/002-ensemble-run-observability` promises stays fully explicit. See `docs/config/ensemble-isolation.md`.
 

@@ -230,7 +230,7 @@ def test_activate_profile_copies_knobs_into_narrate_and_backends(tmp_path):
                 "narrate_tokens": 4000,
                 "prose_mode": True,
                 "reflections": True,
-                "narration_genre": "noir",
+                "narration_genre_file": "voice/_genre.md",
                 "backend": "dgx",
             },
         )
@@ -240,7 +240,8 @@ def test_activate_profile_copies_knobs_into_narrate_and_backends(tmp_path):
     assert cfg.narrate.tokens == 4000
     assert cfg.narrate.prose_mode is True
     assert cfg.narrate.reflections is True
-    assert cfg.narrate.genre == "noir"
+    assert cfg.paths.genre_file == "voice/_genre.md"
+    assert not hasattr(cfg.narrate, "genre")
     assert cfg.backends.active == "dgx"
     assert cfg.active_profile == "Fast"
 

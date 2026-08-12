@@ -121,7 +121,7 @@ def test_activate_profile_mirrors_knobs_into_resolved_config(client):
                 "narrate_tokens": 9000,
                 "prose_mode": True,
                 "reflections": True,
-                "narration_genre": "noir",
+                "narration_genre_file": "voice/_genre.md",
                 "backend": "dgx",
             },
         },
@@ -136,11 +136,16 @@ def test_activate_profile_mirrors_knobs_into_resolved_config(client):
         "paths", "narrate", "scrub", "roster", "backends",
         "session_name", "profiles", "active_profile", "model",
         "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
+        "genre",
     }
     assert body["narrate"]["tokens"] == 9000
     assert body["narrate"]["prose_mode"] is True
     assert body["narrate"]["reflections"] is True
-    assert body["narrate"]["genre"] == "noir"
+    # A profile switches which rulebook FILE is used, never a copy of its text
+    # (#276 fix 2). This is the one path a profile owns, so activation has to
+    # mirror it into paths — resolved absolute here, like every other path.
+    assert body["paths"]["genre_file"].endswith("voice/_genre.md")
+    assert "genre" not in body["narrate"]
     assert body["backends"]["active"] == "dgx"
     assert body["active_profile"] == "batch_dgx"
 

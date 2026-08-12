@@ -77,11 +77,13 @@ A profile is a named set of Stage-④ knobs:
     "narrate_tokens": 16000,
     "prose_mode": true,
     "reflections": true,
-    "narration_genre": "First-person comic-noir fantasy memoir",
+    "narration_genre_file": "voice/_genre.md",
     "backend": "anthropic"
   }
 }
 ```
+
+`narration_genre_file` is the one **path** a profile owns (#276 fix 2). It used to be `narration_genre`, holding a copy of the genre document's text — a copy of a copy, since `narrate.genre` was itself a paste of `voice/_genre.md`, synced one way only (#220). A profile now switches which rulebook file is used; to give a profile its own register, write a second file and point that profile at it.
 
 Stored in `session_doc.yaml` under `profiles` (owned by `SessionEditorConfigService`; they left `ui_state.yaml` in Phase 5 of the session-editor isolation). Two operations:
 

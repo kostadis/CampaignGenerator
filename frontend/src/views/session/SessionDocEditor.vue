@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfigStore } from '../../stores/config'
-import { resolvePath, resolvePathList } from '../../utils/paths'
+import { resolvePath, resolvePathList, resolvePathWithBase } from '../../utils/paths'
 import { apiFetch, apiPut, apiPost } from '../../api/client'
 import { connectSSE } from '../../api/sse'
 import SceneList from '../../components/scene-editor/SceneList.vue'
@@ -28,7 +28,7 @@ const context = ref('')
 const narrateTokens = ref(16000)
 const proseMode = ref(false)
 const reflections = ref(false)
-const narrationGenre = ref('')
+const genreFile = ref('')
 const backend = ref<'anthropic' | 'dgx' | 'openrouter' | 'claude-code'>('anthropic')
 const dgxEndpoint = ref('')
 const dgxModel = ref('')
@@ -39,6 +39,12 @@ const openrouterModel = ref('')
 // persisted: a stale persisted 'true' otherwise inverts the button's first
 // click (it would close an already-open drawer).
 const drawerOpen = ref(false)
+
+// Server-side summary of the resolved genre rulebook — path, whether it
+// exists, line/char counts and a preview (#276 fix 2). Display only: the
+// drawer renders it read-only and the file is edited in an editor, not here.
+// Recomputed from the store, so it refreshes with every config GET/PUT.
+const genreInfo = computed(() => (config.editorConfig as any)?.genre ?? null)
 
 // ── Field ← store.editorConfig (grouped GET /api/editor/config) ──
 // Coerce an arbitrary backends.active value to one of the four known
@@ -67,7 +73,7 @@ function loadConfigFields() {
   narrateTokens.value = narrate.tokens || 16000
   proseMode.value = !!narrate.prose_mode
   reflections.value = !!narrate.reflections
-  narrationGenre.value = narrate.genre || ''
+  genreFile.value = paths.genre_file || ''
   backend.value = normalizeBackend(backends.active)
   dgxEndpoint.value = backends.dgx?.endpoint || ''
   dgxModel.value = backends.dgx?.model || ''
@@ -98,6 +104,8 @@ function buildEditorConfigPayload() {
       party: resolvePath(party.value) || undefined,
       voice_dir: resolvePath(voiceDir.value) || undefined,
       examples_dir: resolvePath(examplesDir.value) || undefined,
+      // Campaign-scoped, like the rulebook it points at (#276 fix 2).
+      genre_file: resolvePathWithBase(genreFile.value, 'campaign') || undefined,
     },
     roster: {
       characters: characters.value || undefined,
@@ -107,7 +115,6 @@ function buildEditorConfigPayload() {
       tokens: narrateTokens.value || undefined,
       prose_mode: proseMode.value || undefined,
       reflections: reflections.value || undefined,
-      genre: narrationGenre.value.trim() || undefined,
     },
   }
 }
@@ -134,7 +141,7 @@ function scheduleApply() {
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,
    party, voiceDir, examplesDir, characters, context,
-   narrateTokens, proseMode, reflections, narrationGenre],
+   narrateTokens, proseMode, reflections, genreFile],
   scheduleApply,
 )
 
@@ -261,7 +268,7 @@ interface ProfileEntry {
     narrate_tokens?: number
     prose_mode?: boolean
     reflections?: boolean
-    narration_genre?: string
+    narration_genre_file?: string
     backend?: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
   }
 }
@@ -278,7 +285,7 @@ const currentKnobs = computed(() => ({
   narrate_tokens: narrateTokens.value,
   prose_mode: proseMode.value,
   reflections: reflections.value,
-  narration_genre: narrationGenre.value,
+  narration_genre_file: genreFile.value,
   backend: backend.value,
 }))
 
@@ -294,21 +301,26 @@ const profileDirty = computed(() => {
   return (k.narrate_tokens ?? 16000) !== c.narrate_tokens
     || !!k.prose_mode !== c.prose_mode
     || !!k.reflections !== c.reflections
-    || (k.narration_genre ?? '') !== c.narration_genre
+    || (k.narration_genre_file ?? '') !== c.narration_genre_file
     || (k.backend ?? 'anthropic') !== c.backend
 })
 
-// Re-hydrate the knob refs (never paths — profiles don't own paths, see
-// ProfileEntry) from a resolved editor config, e.g. after server-side
-// profile activation. Replaces the old client-side applyProfileKnobs
-// watcher-mirror.
+// Re-hydrate the knob refs from a resolved editor config, e.g. after
+// server-side profile activation. Replaces the old client-side
+// applyProfileKnobs watcher-mirror.
+//
+// Profiles own exactly ONE path: `paths.genre_file`, the genre rulebook
+// (#276 fix 2). Everything else under `paths` is session-scoped and stays
+// out of profiles. It has to be re-hydrated here too, or activating a
+// profile that switches rulebooks would leave the drawer showing the
+// previous file — the stale-display half of the bug #220 is about.
 function hydrateKnobsFromEditorConfig(ec: any) {
   const narrate = ec?.narrate ?? {}
   const backends = ec?.backends ?? {}
   narrateTokens.value = narrate.tokens ?? 16000
   proseMode.value = !!narrate.prose_mode
   reflections.value = !!narrate.reflections
-  narrationGenre.value = narrate.genre || ''
+  genreFile.value = ec?.paths?.genre_file || ''
   backend.value = normalizeBackend(backends.active)
 }
 
@@ -862,7 +874,8 @@ onMounted(async () => {
       v-model:narrate-tokens="narrateTokens"
       v-model:prose-mode="proseMode"
       v-model:reflections="reflections"
-      v-model:narration-genre="narrationGenre"
+      v-model:genre-file="genreFile"
+      :genre-info="genreInfo"
     />
   </div>
 </template>
