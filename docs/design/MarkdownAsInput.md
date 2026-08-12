@@ -89,6 +89,36 @@ format, the six dialects exist only in the derived `party.md`, and the code is
 currently reading the derived copy in preference to the authoritative one — with
 at least one live factual conflict as a result.
 
+**Status: code shipped, migrations deliberately not** (#265). `dnd_sheet.py`
+emits YAML frontmatter and a `**Subclass:**` line; `roster_from_config` and
+`player_map_from_config` read it; `sheet_frontmatter` is a deterministic,
+zero-token importer for sheets that predate the change. `PartyCharacter` is
+untouched — `sheet:` was already the reference, and the draft that added
+`species`/`class_level` to it stays superseded. **Nothing changes behaviour
+today**: 15 sheets on disk, 15 with a parseable `## Identity`, **0 with
+frontmatter**, so both readers return `None` everywhere and all call sites fall
+back to `party.md`. Per the GM ruling the six campaign migrations and their
+conflict rulings are a separate follow-up, and the fallback stays until then.
+
+Two things the corpus contradicted in this document:
+
+- **The call sites are four, not three.** `enhance_summary.py` calls
+  `extract_player_character_map` too, alongside `sd_narrate`, `polish` and
+  `scene_extract`.
+- **"The sheet is canonical" is right as a ruling and wrong as an
+  implementation.** All four toee sheets carry `**Player:** kostadis1` — the
+  D&D Beyond *account handle*, not the person — while `party.md` has the real
+  names. A "sheet wins" rule applied mechanically would map that whole campaign
+  to one player and collapse its player→character map. This is why the importer
+  refuses to auto-resolve conflicts even toward the authoritative source: it is
+  authoritative about the character, not about who plays them.
+
+Also found and filed separately: no single base directory resolves `sheet:` for
+all campaigns (Phandalin, stormgiants and toee resolve from the `party.yaml`'s
+own directory; out-of-the-abyss from the campaign root), and
+`pipelines/grounding/party.py` passes `Path.cwd()`, so which sheets are found
+depends on where the CLI was run — **#291**.
+
 ---
 
 ## A2 — four `## Scenes` scanners, three different verdicts
@@ -124,6 +154,28 @@ them, and the distinction is load-bearing.
 **Open ruling.** Loosening means `extract_scene_text` begins finding sections it
 currently misses. That is the intended fix, but it is a behaviour change on live
 corpora — audit for non-bare `## Scenes` headings before landing it.
+
+**Status: fixed** (#262). `campaignlib.scenes.find_scenes_section` is the single
+rule and all four sites call it; `_TOP_HEADING_RE`, `_SCENES_SECTION_RE` and
+`_SCENES_HEADING_RE` are gone. `parse_summary_scenes`'s `None`-vs-`[]` contract
+became the shared one, as proposed.
+
+**The audit the open ruling asked for, answered.** Across 16,896 files: 570
+`## Scenes` occurrences, **566 bare and unanimous under all four old rules**, 0
+lowercase headings anywhere. The 4 divergent ones are all in a single generated
+`consistency_report.md` — a filename `session_doc/io.py` explicitly skips. So
+loosening changed the output of **no file any caller reads**. The hazard was
+latent, not live; the consolidation is insurance against future drift rather
+than a bug fix.
+
+Two multi-section behaviours were kept apart on a GM ruling rather than
+harmonised: `extract_scene_text` reads the first `## Scenes` section only,
+`parse_gmassist_scenes` accumulates across every one. Both were accidents of
+statement order in the old line loops, in *opposite* directions, and both are
+now pinned by tests that say so out loud. One more wart is pinned rather than
+fixed: no scanner has ever treated `#` as a section boundary, so an intervening
+H1 lands inside the preceding scene's body. Making H1 a boundary would change
+what every scene body contains — out of scope here, and now visible.
 
 ---
 
@@ -270,6 +322,29 @@ on `io.parse_vtt`'s five-caller path remains a latent version of that hazard.
 Neither half of the revised fix changes that; it is outside this sweep's
 scope.
 
+**Status: fixed** (#263). `vtt_voice_compare.parse_vtt` is now `speaker_pairs`,
+built on `campaignlib.vtt.parse(...).cues` — the name collision is gone along
+with the duplicate reader, and NOTE handling came for free. `io.parse_vtt`'s
+output is byte-identical, and it gained the reciprocal cross-reference.
+
+**The colon guard is deleted, which is the proof.** `campaignlib/vtt.py`'s
+`render()` no longer refuses to emit a generated NOTE containing a colon. That
+guard existed *only* because this one reader would have misread it as dialogue:
+a live generator was carrying a restriction to work around a defect in a
+single-caller tool. `GENERATED_MARK` kept its value deliberately — changing it
+would make NOTE blocks in tapes already on disk unrecognisable and break the
+`parse → render → parse` fixed point. `VttError` itself stays; only the colon
+branch went.
+
+Per the GM ruling, a malformed tape now **fails loudly and names the defect**
+rather than degrading quietly: `_diagnose_vtt_error` counts `WEBVTT` headers and
+reports "joined recordings" or "fragment". Running it over the corpus found two
+real ones (`campaigns#159`): a tape that is two recordings concatenated, with
+**363 duplicate cue indices** — and #250 R4 keys `transcript_corrections.yaml`
+on cue index, so a correction there would be ambiguous — and a `.cleaned` tape
+missing its first 128 cues, the opening 28 minutes. The parser accepting the
+concatenated shape at all is filed as **#287**.
+
 ---
 
 ## B2 — three frontmatter parsers, one lying about its contract
@@ -298,6 +373,18 @@ is visible at the call site.
 
 This becomes load-bearing under A1: sheet frontmatter must be parsed by the YAML
 implementation, never the `k: v` one.
+
+**Status: fixed** (#261). `assemble.parse_frontmatter` and its `_FRONTMATTER_RE`
+are deleted; the one caller uses `campaignlib.textproc.split_frontmatter`.
+`scrub_mechanics.split_frontmatter` is now `split_frontmatter_raw`, and the two
+carry reciprocal docstrings naming each other and saying why neither does the
+other's job — the `norm_subject` / `normalize_npc_key` template from C1.
+
+**Four frontmatter regexes remain, not five**: `textproc.py:13`,
+`npc.py:15` (`_DOSSIER_FRONTMATTER_RE`), `io.py:60` (`_SCENE_FRONTMATTER_RE`),
+plus `scrub_mechanics`'s offset find. The three that remain are matchers over
+the same delimiter, not competing *parsers* — only `assemble`'s claimed a
+`(dict, body)` contract it did not honour, and that is the one that went.
 
 ---
 
@@ -444,9 +531,41 @@ model infers attribution instead of being told it.
 That is Category B producing a live data-quality defect in narration input, and
 it is the clearest single argument in this document.
 
+**That defect is fixed** (#260, PR #274 — `campaignlib/party_md.py`, one parse
+and two projections), which is why A1 above could refactor `npc.py` freely: the
+two functions had only just been unified onto a single parse, so a 6-of-6
+byte-identical gate on both was cheap to state and load-bearing to check.
+
+### The method, since it kept paying
+
+Every finding here was gated on byte-identical output captured **before** the
+change, and the gates earned their cost three separate times — catching an
+implementation that had two behaviours backwards, a "correction" of mine that
+made divergence worse rather than better (2 diffs → 27), and a test asserting
+behaviour the code had never had. In each case reading the code supported the
+wrong conclusion and running it did not.
+
+One caveat has to travel with that, and it is filed as **#286**: six test files
+defend against worktree import shadowing with a module-level `pytest.skip`,
+which contributes exactly **one** entry to the skip count no matter how many
+tests it hides. A green full-suite total from a worktree is therefore not
+evidence for a change — roughly 200 tests can vanish behind a `+1`. It produced
+one false verification during this sweep, reported and corrected. Always also
+run the specific files a change touches, and report *that* number.
+
 ---
 
 ## Sequencing
+
+**All six shipped, 2026-08-12** — A3 (#264), B2 (#261), B1 (#263), A2 (#262),
+A1 (#265) as five PRs off `main`, with C1's four pairs riding along inside the
+issue that already touched each file. The order below is the one that was
+followed, with A2 and B1 swapped after the audit demoted A2 from
+"needs a ruling" to hygiene.
+
+Per-finding status notes are inline above. What is deliberately **not** done:
+A1's six campaign migrations and their conflict rulings, and deleting A3's and
+A1's one-release compatibility fallbacks.
 
 | | Finding | Risk | Effort | Note |
 |---|---|---|---|---|
