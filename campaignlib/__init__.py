@@ -77,6 +77,7 @@ from .lineage import (
     route_plan,
 )
 from .scenes import (
+    find_scenes_section,
     parse_gmassist_scenes,
     snapshot_scene_for_rerun,
     run_scene_extraction,
@@ -182,6 +183,7 @@ __all__ = [
     "resolve_source",
     "route_plan",
     # scenes
+    "find_scenes_section",
     "parse_gmassist_scenes",
     "snapshot_scene_for_rerun",
     "run_scene_extraction",

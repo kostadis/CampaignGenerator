@@ -35,6 +35,7 @@ from pathlib import Path
 
 import yaml
 
+from campaignlib.scenes import find_scenes_section
 from campaignlib.textproc import chunk_by_scenes, split_frontmatter
 
 DEFAULT_MAP = Path("docs/ensemble/summary_map.yaml")
@@ -233,8 +234,6 @@ def compose_scenes(files: list[Path], dest: Path) -> Path:
     return dest
 
 
-_SCENES_SECTION_RE = re.compile(r"(?ms)^##[ \t]+Scenes\b.*?(?=^##(?!#)[ \t]+|\Z)")
-_SCENES_HEADING_RE = re.compile(r"(?m)^##[ \t]+Scenes\b.*\n")
 _H1_RE = re.compile(r"(?s)\A\s*(#(?!#)[ \t]+[^\n]*)\n")
 # Big enough that chunk_by_scenes never sub-splits during the probe below: we
 # are asking which heading convention it *detects*, not how it would cut.
@@ -285,12 +284,17 @@ def compose_summary_scenes(summary: Path, dest: Path) -> Path | None:
     manifest, so extract-time and merge-time text must be the same file or
     ``quote_offset`` and ``scene_index`` would be computed against different
     coordinates.
+
+    The ``## Scenes`` heading match itself is ``find_scenes_section``
+    (campaignlib/scenes.py) — this was one of four independent heading
+    rules in the codebase before issue #262 unified them; see that
+    function's docstring for why.
     """
     text = summary.read_text(encoding="utf-8")
-    section = _SCENES_SECTION_RE.search(text)
-    if section is None:
+    found = find_scenes_section(text)
+    if found is None:
         return None
-    body = _SCENES_HEADING_RE.sub("", section.group(0), count=1).strip()
+    body = found[0].strip()
     if not body:
         return None
     # Ask chunk_by_scenes itself rather than re-implementing its priority rule:

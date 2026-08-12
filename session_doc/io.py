@@ -9,6 +9,8 @@ section, and reduces a raw WebVTT transcript to clean speaker dialogue.
 import re
 from pathlib import Path
 
+from campaignlib import find_scenes_section
+
 
 def parse_vtt(text: str) -> str:
     """Strip VTT headers, cue numbers, and timestamps. Return clean speaker dialogue.
@@ -217,18 +219,41 @@ def parse_plan(plan_text: str, total_chunks: int) -> list[dict]:
 
 
 def extract_scene_text(recap: str, scene_name: str) -> str:
-    """Return the text of a single named scene from the recap's ## Scenes section."""
-    lines = recap.splitlines()
-    in_scenes = False
+    """Return the text of a single named scene from the recap's ## Scenes section.
+
+    The ``## Scenes`` heading match is ``find_scenes_section``
+    (campaignlib/scenes.py) — one of four independent heading rules in this
+    codebase before issue #262 unified them; see that function's docstring
+    for why. This caller keeps its own ``### `` scene-title matching.
+
+    The first ``## Scenes`` section only — a small, deliberate narrowing. The
+    old loop tested ``line.strip() == "## Scenes"`` *before* its
+    ``break``-on-next-``##``, and with no "am I already inside one" guard, so
+    a second ``## Scenes`` heading was swallowed by the entry test and the
+    scan carried straight on into it — while any *other* ``##`` heading still
+    stopped it dead. The extra text it could reach was therefore only ever a
+    section sitting immediately after this one, with no other H2 between.
+
+    Exactly one file in a 16,896-file corpus has that shape, and it is a
+    chapter bible rather than a recap: ``sd_narrate.py:389`` derives
+    ``session_id`` from the recap file's parent directory, so the expected
+    input is one session's document, which has one ``## Scenes`` section.
+    A concatenated multi-chapter recap was never reliably supported anyway —
+    a single ``## NPCs`` between two chapters already ended the scan.
+
+    Contrast ``campaignlib.scenes.parse_gmassist_scenes``, which accumulates
+    across every section. The two callers really did differ here, in opposite
+    directions, and both differences were accidents of statement order rather
+    than decisions. Each is kept where keeping it costs nothing.
+    """
+    found = find_scenes_section(recap)
+    if found is None:
+        return ""
+    body, _ = found
     in_target = False
     collected: list[str] = []
-    for line in lines:
-        if line.strip() == "## Scenes":
-            in_scenes = True
-            continue
-        if in_scenes and line.startswith("## "):
-            break
-        if in_scenes and line.startswith("### "):
+    for line in body.splitlines():
+        if line.startswith("### "):
             if in_target:
                 break
             if line.strip("# ").strip().lower() == scene_name.lower():
