@@ -17,30 +17,68 @@
 > Cite them; don't re-derive them. New execution status still goes in the #245 handoff's
 > status table.
 
+## Status — worked through 2026-08-12
+
+| Step | State |
+|---|---|
+| §0 re-verify | ✅ all three claims held; nothing had been done |
+| §1 commit the voice-critic edit | ✅ kostadis/mytools#126 merged |
+| §2 CG#276 fix 1 (size gate) | ✅ CG#281 merged (`e549c13`) |
+| §3 **the blocking decision** | ✅ **ruled: option A**, and implemented — see below |
+| §4a mytools#125 F1 (voice lookup) | ✅ kostadis/mytools#128 merged, `~/.claude` re-synced |
+| §4b the rest of #125 | ⬜ unblocked by the ruling; D4/D5/D8 still want §5's corpus |
+| §5 the #245 capstone render | ⬜ **now the top item** — its blockers are gone |
+| §6 independent tracks | ⬜ unchanged (campaigns#154 + CG#272; CG#250) |
+| §7 bookkeeping sweep | ✅ CG#249, campaigns#141, campaigns#143 closed with evidence |
+
+**§7 was not pure verification.** campaigns#144 stays open: its unsampled entry, Thistle,
+does not exist in `docs/party.md` at all — `docs/party/party.yaml` lists three of four PCs
+while `docs/party/Thistle.md` (306 lines, Fairy Ranger 13) sits beside it. Every stormgiants
+Pass 5 render has had a 3-of-4 roster, silently, because `sd_narrate.py:200` warns only on a
+*fully* empty roster. A partial roster is invisible — worth its own issue.
+
+**§4a was worse than measured here.** stormgiants was affected too (`Unla Key` →
+`unla_key.md`, rule (c)), and the skill's own worked example was `Unla Key → unla`, which
+fails on the campaign it was drawn from. The consequence went past the `[no spec available]`
+tags: the spec-conflict category could never fire, so the critic ran with one of six
+categories silently disabled.
+
 ## 0. Re-verify before starting — this doc has a shelf life
 
-Every claim below was measured, not inferred, but the tree moves. Three checks, all cheap:
+Every claim here was measured, not inferred, but the tree moves. Steps 1, 2, 4a and 7 were
+executed on 2026-08-12, so the checks below now confirm the *new* state:
 
 ```bash
-# a) is the voice-critic edit still uncommitted?  (step 1 exists only if yes)
-git -C ~/src/mytools status --porcelain dotfiles/claude/skills/voice-critic/
-
-# b) is the genre still flattened for OOTA, and still duplicated into the profile knob?
+# a) has each campaign been migrated to a rulebook FILE?  (#276 fix 2)
 python - <<'PY'
 import yaml; from pathlib import Path
 for n in ("Phandalin", "out-of-the-abyss"):
-    d = yaml.safe_load((Path.home()/"src/campaigns"/n/"config/session_doc.yaml").read_text())
-    g = (d.get("narrate") or {}).get("genre") or ""
-    pk = ((d.get("profiles") or [{}])[0].get("knobs") or {}).get("narration_genre") or ""
-    print(n, len(g), g.count("\n"), "| profile knob:", len(pk), pk.count("\n"))
+    p = Path.home()/"src/campaigns"/n/"config/session_doc.yaml"
+    d = yaml.safe_load(p.read_text())
+    stale = (d.get("narrate") or {}).get("genre") or ""
+    gf = (d.get("paths") or {}).get("genre_file") or ""
+    f = (Path.home()/"src/campaigns"/n/(gf or "voice/_genre.md"))
+    print(f"{n}: genre_file={gf or 'UNSET'} | file={'ok' if f.is_file() else 'MISSING'} "
+          f"| stale narrate.genre={len(stale)} chars")
 PY
+# Want: genre_file set, file ok, stale 0. A non-zero stale count means the
+# migration has not been run there yet:
+#   python -m server.migrate_narrate_genre --campaign-dir ~/src/campaigns/<name>
+# out-of-the-abyss needs --prefer-file (its only divergence is the file's H1 title).
 
-# c) which of these are still open?
-gh issue list --state open --json number -q '.[].number' | tr '\n' ' '   # want: 276 249 250 245 220
+# b) which of these are still open?
+gh issue list --state open --json number -q '.[].number' | tr '\n' ' '   # 276 closed; want: 250 245 220
 gh issue list -R kostadis/mytools --state open --json number -q '.[].number' | tr '\n' ' '  # want: 125 120
+
+# c) is the deployed critic in sync with its tracked source?  (mytools#120's hazard)
+diff -q ~/src/mytools/dotfiles/claude/skills/voice-critic/SKILL.md \
+        ~/.claude/skills/voice-critic/SKILL.md && echo "in sync"
 ```
 
-If (b) reports OOTA with 0 newlines, nothing below has been done yet.
+**The live campaigns have NOT been migrated** — the code shipped, the campaign-side runs are
+a separate, per-campaign action. Until each one is migrated, its stale `narrate.genre` is
+loaded, announced on stderr, and ignored: Pass 5 runs with **no genre directive** on that
+campaign. That is the first thing to check if a render suddenly reads generic.
 
 ## 1. Commit the uncommitted voice-critic edit (minutes)
 
@@ -61,7 +99,28 @@ Gate the delimited `GENRE & REGISTER` block on **size**, not on `"\n" in g`
 the delimited form. OOTA renders become correct immediately, and nothing here has to be
 undone whichever way §3 is decided. Golden regen per the #245 handoff's standing constraint 6.
 
-## 3. ⚠ THE BLOCKING DECISION — where does the genre rulebook live? (GM ruling, not work)
+## 3. ✅ RULED: option A — the rulebook lives in the file
+
+**Decided 2026-08-12: A.** `paths.genre_file` points at `voice/_genre.md`; `narrate.genre` and
+the `narration_genre` profile knob are gone. Implemented in one change (model, path contract,
+argv, CLI reader, run record, UI, migration, docs) — the details live in `CLAUDE.md`'s "The
+genre rulebook is a file, never a pasted string" and in #276.
+
+Two things worth carrying forward, because they are not obvious from the ruling:
+
+- **The migration refuses rather than merging.** When the paste and the file disagree,
+  which one is the real rulebook is a content decision. Pure *flattening* is deliberately
+  not a conflict — it is the same rulebook badly stored. Verified on real data: Phandalin
+  migrated clean; out-of-the-abyss refused, and its entire 0.9989 difference turned out to
+  be the file's H1 title, so `--prefer-file` is the answer there.
+- **What D2 should now read** is the file, resolved the way the pipeline resolves it — never
+  `narrate.genre`, which no longer exists, and never the profile knob, which now holds a path.
+
+The original framing is kept below, because the *reasoning* for A (and against B/C) is what a
+future reader needs if this is ever revisited.
+
+<details>
+<summary>The decision as it stood before the ruling</summary>
 
 **This is the ordering answer.** mytools#125's **D2** — the critic reads the *effective*
 rulebook — targets `narrate.genre` in `session_doc.yaml`. Two open issues say that target
@@ -98,7 +157,20 @@ all, but it is the largest, and it touches the Session Doc Editor.
 verify a paste round-trip preserves newlines through save → reload, then close it. It is
 what stops the UI re-flattening whatever gets decided above.
 
+</details>
+
+**Postscript on #249:** it was verified and closed — and then option A superseded it outright.
+There is no genre textarea any more, so the flattening path it guarded does not exist rather
+than being defended. Its test file now guards the successor property instead: a multi-line
+*file* reaches the prompt line for line.
+
 ## 4. mytools#125, split in two
+
+**4a — ✅ DONE (mytools#128).** Landed with the per-narrator resolution table (D1), a
+separate rule for per-character examples (theirs genuinely differs — unmatched files are
+*global*, so prose echoing them is obeying instructions, not drifting), and a rule that
+`[no spec available — best guess]` must be earned by running the full resolution first.
+The original description follows, since it is what 4b builds on.
 
 **4a — F1 alone, independent of §3, do it as soon as step 1 lands.** The critic's
 voice-spec lookup is pre-#247, so on Phandalin all four narrators report "spec missing",
@@ -109,17 +181,22 @@ or `-`; skip `_`-prefixed; refuse on ambiguity). Add the per-narrator resolution
 (design D1) in the same pass so a future miss cannot be silent. **This one changes output
 the day it lands.**
 
-**4b — D2/D3/D4/D5/D6/D8 after §3 is ruled and after step 5.** D2 needs a stable rulebook
+**4b — D2/D3/D4/D5/D6/D8 after §3 is ruled and after step 5.** §3 is now ruled (A), so D2's
+target is settled: it reads `voice/_genre.md` via `paths.genre_file`, resolved the way the
+pipeline resolves it. D2 needs a stable rulebook
 location. D4 (doc-level budget ledger), D5 (assembled-doc mode) and D8 (fable's failure
 profile as named categories) all want a corpus that does not exist yet — see step 5. D3
 (delegate the mechanical layer to `voice_lint`, delete the duplicated regex) and D6
 (table-speech spans as a review queue) are independent of both and can ride along with 4a
 if convenient.
 
-## 5. Run the #245 capstone verification — the real unrun item
+## 5. Run the #245 capstone verification — ⬅ NOW THE TOP ITEM
 
 Detail and command template: the #245 handoff's "Capstone verification" section. Its
 precondition (WO-1 + WO-2 merged) has been met since 2026-08-11 and it has never been run.
+**As of 2026-08-12 nothing blocks it:** 4a has landed, so the `/voice-critic` re-score in its
+step 3 can actually read the specs, and #276 is fully closed, so the prompt the render sees is
+the intended one on both campaigns.
 
 Why it sits here rather than earlier: it needs **4a** to be worth anything. Its step 3 is a
 `/voice-critic` re-score, and its item 2 asks specifically whether Vukradin's
