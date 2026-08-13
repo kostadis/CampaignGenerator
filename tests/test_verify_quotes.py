@@ -792,20 +792,28 @@ def test_report_states_the_conflict_denominator(contract_tape, contract):
     assert "**1** settled by the transcript" in text
 
 
-def test_report_verdict_table_still_parses_for_the_editor(contract_tape, contract):
-    """The Session Doc Editor's status strip reads the verdict table by regex.
-    Adding a refusals section must not move a row out from under it."""
-    from server.routers.scene_editor import _parse_quote_report_counts
-    import tempfile
-    text = render_report(_contract_report(contract_tape, contract))
-    with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False) as fh:
-        fh.write(text)
-        p = Path(fh.name)
-    counts = _parse_quote_report_counts(p)
-    p.unlink()
+def test_sidecar_counts_reach_the_editor(tmp_path, contract_tape, contract):
+    """End-to-end on the only surviving channel (#264): what ``report_json``
+    writes is exactly what the Session Doc Editor's status strip reads back.
+
+    This replaces a test that pinned the editor's markdown-table regex. That
+    regex is gone, so the report's *prose* is now free to change — but the
+    sidecar is load-bearing, and a producer/consumer disagreement here would
+    silently blank the strip instead of failing.
+    """
+    from server.routers.scene_editor import (
+        _parse_quote_report_counts, _parse_quote_report_refusals)
+    report = _contract_report(contract_tape, contract)
+    md = tmp_path / "quote_report.md"
+    md.write_text(render_report(report), encoding="utf-8")
+    md.with_suffix(".json").write_text(
+        json.dumps(report_json(report)), encoding="utf-8")
+
+    counts = _parse_quote_report_counts(md)
     assert set(counts) == {"verified", "near", "unverified", "unscored", "exempt"}
     assert counts["verified"] is not None
     assert sum(counts.values()) == len(contract.findings)
+    assert _parse_quote_report_refusals(md) == len(report.refusals)
 
 
 # ── Refusals through the CLI ─────────────────────────────────────────────────

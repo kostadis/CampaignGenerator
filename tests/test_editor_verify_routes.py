@@ -72,10 +72,36 @@ REPORT = """# Quote Verification Report
 """
 
 
-def test_counts_parse_including_the_bolded_row(tmp_path):
-    p = tmp_path / "quote_report.md"
-    p.write_text(REPORT, encoding="utf-8")
-    counts = _parse_quote_report_counts(p)
+REPORT_JSON = {
+    "schema_version": 1,
+    "generated_at": "2026-01-01T00:00:00",
+    "transcript": "/tmp/s.vtt",
+    "threshold": 0.85,
+    "min_tokens": 4,
+    "artifacts": ["/tmp/session-summary.md"],
+    "counts": {"verified": 339, "near": 139, "unverified": 39,
+               "unscored": 3, "exempt": 2},
+    "refusals": {"total": 16, "by_rule": {"R1": 4, "R3": 12}},
+    "not_checked": [],
+    "claims": {},
+}
+
+
+def _write_report(tmp_path, *, markdown=REPORT, sidecar=REPORT_JSON):
+    """A narration dir's report pair. ``sidecar=None`` writes markdown only —
+    a pre-#264 report, which no longer yields counts."""
+    md = tmp_path / "quote_report.md"
+    if markdown is not None:
+        md.write_text(markdown, encoding="utf-8")
+    if sidecar is not None:
+        md.with_suffix(".json").write_text(
+            sidecar if isinstance(sidecar, str) else json.dumps(sidecar),
+            encoding="utf-8")
+    return md
+
+
+def test_counts_come_from_the_json_sidecar(tmp_path):
+    counts = _parse_quote_report_counts(_write_report(tmp_path))
     assert counts == {"verified": 339, "near": 139, "unverified": 39,
                       "unscored": 3, "exempt": 2}
 
@@ -97,11 +123,12 @@ def test_none_path_is_handled():
 
 
 def test_clean_report_parses_as_zero_not_none(tmp_path):
-    p = tmp_path / "quote_report.md"
-    p.write_text(
-        "| verdict | count | share |\n|---|---|---|\n"
-        "| verified | 10 | 100% |\n", encoding="utf-8")
-    counts = _parse_quote_report_counts(p)
+    """The other half of the contract: a run that genuinely found nothing
+    reports 0, not None. Only *absence of knowledge* is None."""
+    clean = dict(REPORT_JSON)
+    clean["counts"] = {"verified": 10, "near": 0, "unverified": 0,
+                       "unscored": 0, "exempt": 0}
+    counts = _parse_quote_report_counts(_write_report(tmp_path, sidecar=clean))
     assert counts["verified"] == 10
     assert counts["unverified"] == 0
 
@@ -136,90 +163,80 @@ def test_verify_cmd_forwards_no_model_selection():
 
 # ── Refusal count (extraction contract #250) ─────────────────────────────────
 
-REPORT_WITH_REFUSALS = REPORT.replace(
-    "\n## Not checked",
-    "\n**Refused by the extraction contract (#250)**: 16 — R1 4, R3 12.\n"
-    "\n## Not checked",
-)
-
-
 def test_refusal_count_parses(tmp_path):
     from server.routers.scene_editor import _parse_quote_report_refusals
-    p = tmp_path / "quote_report.md"
-    p.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")
-    assert _parse_quote_report_refusals(p) == 16
+    assert _parse_quote_report_refusals(_write_report(tmp_path)) == 16
 
 
 def test_refusal_count_is_none_not_zero_when_absent(tmp_path):
-    """A report written before refusals existed must not read as 'found none'
+    """A sidecar written before refusals existed must not read as 'found none'
     — the same distinction the verdict counts make."""
     from server.routers.scene_editor import _parse_quote_report_refusals
-    p = tmp_path / "quote_report.md"
-    p.write_text(REPORT, encoding="utf-8")
-    assert _parse_quote_report_refusals(p) is None
+    without = {k: v for k, v in REPORT_JSON.items() if k != "refusals"}
+    assert _parse_quote_report_refusals(
+        _write_report(tmp_path, sidecar=without)) is None
     assert _parse_quote_report_refusals(tmp_path / "nope.md") is None
 
 
+def test_refusal_count_of_zero_is_not_none(tmp_path):
+    """...and a run that refused nothing reports 0, not None."""
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    none_refused = dict(REPORT_JSON)
+    none_refused["refusals"] = {"total": 0, "by_rule": {}}
+    assert _parse_quote_report_refusals(
+        _write_report(tmp_path, sidecar=none_refused)) == 0
+
+
 def test_refusals_do_not_disturb_the_verdict_counts(tmp_path):
-    p = tmp_path / "quote_report.md"
-    p.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")
-    assert _parse_quote_report_counts(p) == {"verified": 339, "near": 139,
-                                            "unverified": 39, "unscored": 3,
-                                            "exempt": 2}
+    assert _parse_quote_report_counts(_write_report(tmp_path)) == {
+        "verified": 339, "near": 139, "unverified": 39, "unscored": 3,
+        "exempt": 2}
 
 
-# ── JSON sidecar preference (#264) ──────────────────────────────────────────
+# ── The sidecar is the only source (#264) ───────────────────────────────────
 #
-# sd_verify_quotes now writes quote_report.json beside quote_report.md. These
-# functions must prefer it when it exists and parses, and fall back to the
-# markdown-regex path — a one-release compatibility shim — otherwise. The
-# "no unverified quotes" vs "we could not tell" distinction (None, never 0)
-# must hold on both paths.
+# sd_verify_quotes writes quote_report.json beside quote_report.md, and these
+# functions read *only* the sidecar. The markdown-regex fallback was a
+# compatibility shim for narration dirs that ran verify before the sidecar
+# existed; it has been deleted. The tests below pin the consequence: markdown
+# alone now means "we could not tell" (None), never a count — and never 0.
 
-REPORT_JSON = {
-    "schema_version": 1,
-    "generated_at": "2026-01-01T00:00:00",
-    "transcript": "/tmp/s.vtt",
-    "threshold": 0.85,
-    "min_tokens": 4,
-    "artifacts": ["/tmp/session-summary.md"],
-    "counts": {"verified": 339, "near": 139, "unverified": 39,
-               "unscored": 3, "exempt": 2},
-    "refusals": {"total": 16, "by_rule": {"R1": 4, "R3": 12}},
-    "not_checked": [],
-    "claims": {},
-}
+def test_markdown_without_a_sidecar_yields_none_not_counts(tmp_path):
+    """The deleted shim's case. A pre-#264 report still on disk parses to
+    None, so the status strip goes amber instead of quoting stale numbers."""
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    md = _write_report(tmp_path, sidecar=None)
+    assert md.exists() and not md.with_suffix(".json").exists()
+    assert all(v is None for v in _parse_quote_report_counts(md).values())
+    assert _parse_quote_report_refusals(md) is None
 
 
-def test_json_preferred_over_regex_when_both_present(tmp_path):
-    """The JSON sidecar wins even when it disagrees with the markdown table
-    beside it — proof this is a real preference, not a coincidence of
-    identical fixtures."""
-    md = tmp_path / "quote_report.md"
-    md.write_text(REPORT, encoding="utf-8")
+def test_the_markdown_table_is_never_read(tmp_path):
+    """Even a perfectly well-formed table beside a sidecar that disagrees:
+    the sidecar wins outright, so no regex can be quietly reintroduced."""
     stale = dict(REPORT_JSON)
     stale["counts"] = {"verified": 1, "near": 0, "unverified": 0,
                        "unscored": 0, "exempt": 0}
-    md.with_suffix(".json").write_text(json.dumps(stale), encoding="utf-8")
+    md = _write_report(tmp_path, sidecar=stale)  # markdown says 339/139/39
     assert _parse_quote_report_counts(md) == stale["counts"]
 
 
-def test_regex_fallback_when_json_sidecar_absent(tmp_path):
-    md = tmp_path / "quote_report.md"
-    md.write_text(REPORT, encoding="utf-8")
-    assert not md.with_suffix(".json").exists()
-    assert _parse_quote_report_counts(md) == {"verified": 339, "near": 139,
-                                              "unverified": 39, "unscored": 3,
-                                              "exempt": 2}
+def test_refusals_come_from_the_sidecar_not_the_markdown(tmp_path):
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    stale = dict(REPORT_JSON)
+    stale["refusals"] = {"total": 99, "by_rule": {"R1": 50, "R3": 49}}
+    assert _parse_quote_report_refusals(
+        _write_report(tmp_path, sidecar=stale)) == 99
 
 
-def test_corrupt_json_sidecar_falls_back_to_regex(tmp_path):
-    md = tmp_path / "quote_report.md"
-    md.write_text(REPORT, encoding="utf-8")
-    md.with_suffix(".json").write_text("{not valid json", encoding="utf-8")
-    assert _parse_quote_report_counts(md) == {"verified": 339, "near": 139,
-                                              "unverified": 39, "unscored": 3,
-                                              "exempt": 2}
+@pytest.mark.parametrize("payload", ["{not valid json", "[]", '"a string"'])
+def test_unusable_sidecar_yields_none_not_stale_markdown_counts(tmp_path, payload):
+    """Corrupt, wrong-shaped, or not-an-object — each must read as "could not
+    tell" rather than silently falling back to the markdown beside it."""
+    from server.routers.scene_editor import _parse_quote_report_refusals
+    md = _write_report(tmp_path, sidecar=payload)
+    assert all(v is None for v in _parse_quote_report_counts(md).values())
+    assert _parse_quote_report_refusals(md) is None
 
 
 def test_missing_report_and_json_still_yields_none_not_zero(tmp_path):
@@ -230,41 +247,60 @@ def test_missing_report_and_json_still_yields_none_not_zero(tmp_path):
     assert _parse_quote_report_refusals(tmp_path / "absent.md") is None
 
 
-def test_json_and_regex_agree_on_the_same_underlying_report(tmp_path):
-    """quote_report.md and quote_report.json describe the same run (as
-    sd_verify_quotes always writes them); either parsing path must recover
-    the same counts and refusal total."""
-    from server.routers.scene_editor import _parse_quote_report_refusals
-    md = tmp_path / "quote_report.md"
-    md.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")
-    md.with_suffix(".json").write_text(json.dumps(REPORT_JSON), encoding="utf-8")
-
-    counts_via_json = _parse_quote_report_counts(md)
-    refused_via_json = _parse_quote_report_refusals(md)
-
-    md.with_suffix(".json").unlink()
-    counts_via_regex = _parse_quote_report_counts(md)
-    refused_via_regex = _parse_quote_report_refusals(md)
-
-    expected_counts = {"verified": 339, "near": 139, "unverified": 39,
-                       "unscored": 3, "exempt": 2}
-    assert counts_via_json == counts_via_regex == expected_counts
-    assert refused_via_json == refused_via_regex == 16
+def _status_for(narration_dir):
+    """``/pipeline-status``'s verify entry for a campaign whose only
+    configured path is the narration dir holding the report."""
+    from server.routers.scene_editor import api_pipeline_status
+    from server.session_editor_config_service import ResolvedEditorConfig
+    base = SessionEditorConfig()
+    cfg = ResolvedEditorConfig(
+        paths=base.paths.model_copy(
+            update={"narration_dir": str(narration_dir)}),
+        narrate=base.narrate, scrub=base.scrub, roster=base.roster,
+        backends=base.backends, session_name=None, profiles=[],
+        active_profile=None, model=None,
+        work_dir=str(narration_dir), campaign_dir=str(narration_dir),
+        config_dir=str(narration_dir),
+    )
+    return api_pipeline_status(cfg)["verify"]
 
 
-def test_refusals_json_preferred_over_regex(tmp_path):
-    from server.routers.scene_editor import _parse_quote_report_refusals
-    md = tmp_path / "quote_report.md"
-    md.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")  # says 16
-    stale = dict(REPORT_JSON)
-    stale["refusals"] = {"total": 99, "by_rule": {"R1": 50, "R3": 49}}
-    md.with_suffix(".json").write_text(json.dumps(stale), encoding="utf-8")
-    assert _parse_quote_report_refusals(md) == 99
+def test_report_without_a_sidecar_shows_amber_not_a_clean_run(tmp_path):
+    """The whole point of deleting the shim: a pre-#264 report is reported as
+    'we could not tell' (amber) rather than quoting numbers off the markdown.
+    Nothing here is auto-corrected — the GM is told to re-run verify."""
+    _write_report(tmp_path, sidecar=None)
+    status = _status_for(tmp_path)
+    assert status["status"] == "warn"
+    assert status["unverified"] is None
+    assert status["refused"] is None
 
 
-def test_refusals_corrupt_json_falls_back_to_regex(tmp_path):
-    from server.routers.scene_editor import _parse_quote_report_refusals
-    md = tmp_path / "quote_report.md"
-    md.write_text(REPORT_WITH_REFUSALS, encoding="utf-8")
-    md.with_suffix(".json").write_text("[]", encoding="utf-8")  # valid JSON, wrong shape
-    assert _parse_quote_report_refusals(md) == 16
+def test_report_with_a_clean_sidecar_shows_green(tmp_path):
+    """The contrast case — 0 findings really is green, so the amber above is
+    a real signal and not just 'verify always warns now'."""
+    clean = dict(REPORT_JSON)
+    clean["counts"] = {"verified": 10, "near": 0, "unverified": 0,
+                       "unscored": 0, "exempt": 0}
+    clean["refusals"] = {"total": 0, "by_rule": {}}
+    _write_report(tmp_path, sidecar=clean)
+    status = _status_for(tmp_path)
+    assert status["status"] == "ok"
+    assert status["unverified"] == 0
+    assert status["refused"] == 0
+
+
+def test_no_regex_over_the_report_survives_in_the_module():
+    """The shim is gone for good — a future edit that reintroduces a regex
+    over the markdown report fails here rather than silently restoring the
+    two-source ambiguity this deletion removed (#264)."""
+    import inspect
+    from server.routers import scene_editor
+
+    src = inspect.getsource(scene_editor)
+    assert "_REPORT_ROW_RE" not in src
+    assert "_REPORT_REFUSED_RE" not in src
+    for fn in (scene_editor._parse_quote_report_counts,
+               scene_editor._parse_quote_report_refusals):
+        body = inspect.getsource(fn)
+        assert "read_text" not in body, f"{fn.__name__} reads the markdown again"

@@ -749,8 +749,8 @@ def _load_quote_report_json(md_path: Path | None) -> dict | None:
     """Parsed ``quote_report.json`` beside ``md_path``, or ``None``.
 
     ``None`` covers "no md path given", "no sidecar on disk", "unreadable",
-    and "not valid JSON" alike — every one of those must fall through to the
-    regex path below, never be mistaken for an empty-but-known report.
+    and "not valid JSON" alike — every one of those must read as "we could not
+    tell", never as an empty-but-known report.
     """
     if md_path is None:
         return None
@@ -764,52 +764,29 @@ def _load_quote_report_json(md_path: Path | None) -> dict | None:
     return data if isinstance(data, dict) else None
 
 
-_REPORT_ROW_RE = re.compile(
-    r"^\|\s*\**(verified|near|unverified|unscored|exempt)\**\s*\|\s*\**(\d+)\**\s*\|",
-    re.MULTILINE,
-)
-
-
 def _parse_quote_report_counts(path: Path | None) -> dict:
-    """Per-verdict counts from a quote report.
+    """Per-verdict counts from a quote report's ``quote_report.json`` sidecar.
 
-    Returns ``None`` for each count when the report is missing or unparseable
+    Returns ``None`` for each count when the sidecar is missing or unparseable
     rather than zero — "no unverified quotes" and "we could not tell" must not
     look the same to the status strip, since the second is a reason to look and
     the first is a reason not to.
 
-    Prefers the ``quote_report.json`` sidecar (#264) when it exists and
-    parses. The regex over the markdown table below is a one-release
-    compatibility shim for narration dirs that ran verify before the sidecar
-    existed — delete it once every campaign has re-run verify at least once
-    (#264).
+    The markdown table is *not* read. A regex over it was a compatibility shim
+    for narration dirs that ran verify before ``sd_verify_quotes`` wrote the
+    sidecar; it has been deleted (#264). A pre-sidecar report therefore now
+    reads as "could not tell" and the status strip goes amber, which is the
+    honest answer — re-run verify to get counts back.
     """
     empty = {"verified": None, "near": None, "unverified": None,
              "unscored": None, "exempt": None}
     data = _load_quote_report_json(path)
-    if data is not None:
-        counts = data.get("counts")
-        if isinstance(counts, dict) and counts:
-            return {k: counts.get(k) for k in empty}
-        # JSON sidecar present but malformed/missing counts — fall through
-        # to the regex path rather than inventing zeros.
-    if path is None or not path.exists():
+    if data is None:
         return empty
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
+    counts = data.get("counts")
+    if not isinstance(counts, dict) or not counts:
         return empty
-    found = {k: int(v) for k, v in _REPORT_ROW_RE.findall(text)}
-    if not found:
-        return empty
-    return {k: found.get(k, 0) for k in empty}
-
-
-#: The report's contract line, e.g.
-#: `**Refused by the extraction contract (#250)**: 16 — R1 4, R3 12.`
-_REPORT_REFUSED_RE = re.compile(
-    r"^\*\*Refused by the extraction contract[^*]*\*\*:\s*(\d+)", re.MULTILINE
-)
+    return {k: counts.get(k) for k in empty}
 
 
 def _parse_quote_report_refusals(path: Path | None) -> int | None:
@@ -819,28 +796,22 @@ def _parse_quote_report_refusals(path: Path | None) -> int | None:
     report written before refusals existed, or one that could not be read, must
     not be reported as a run that found none.
 
-    Prefers the JSON sidecar's ``refusals.total`` (#264); the regex over the
-    markdown sentence below is the same one-release compatibility shim as
-    ``_parse_quote_report_counts`` and should be deleted alongside it (#264).
-    The sidecar also carries a ``refusals.by_rule`` breakdown (R1/R3 counts)
-    that this function does not surface — doing so would mean changing this
-    function's return type or the ``/status`` route's response shape, both
-    out of scope here; a future caller that wants the breakdown should read
-    the JSON sidecar directly via ``_load_quote_report_json``.
+    Reads the JSON sidecar's ``refusals.total`` (#264) and nothing else; the
+    regex over the markdown sentence was the same compatibility shim as in
+    ``_parse_quote_report_counts`` and was deleted with it. The sidecar also
+    carries a ``refusals.by_rule`` breakdown (R1/R3 counts) that this function
+    does not surface — doing so would mean changing this function's return type
+    or the ``/status`` route's response shape, both out of scope here; a future
+    caller that wants the breakdown should read the JSON sidecar directly via
+    ``_load_quote_report_json``.
     """
     data = _load_quote_report_json(path)
-    if data is not None:
-        refusals = data.get("refusals")
-        if isinstance(refusals, dict) and isinstance(refusals.get("total"), int):
-            return refusals["total"]
-    if path is None or not path.exists():
+    if data is None:
         return None
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return None
-    m = _REPORT_REFUSED_RE.search(text)
-    return int(m.group(1)) if m else None
+    refusals = data.get("refusals")
+    if isinstance(refusals, dict) and isinstance(refusals.get("total"), int):
+        return refusals["total"]
+    return None
 
 
 def _build_verify_cmd(request, cfg: ResolvedEditorConfig,
@@ -1097,8 +1068,9 @@ def api_pipeline_status(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
         })
 
     # ⑤ Verify: output is narration/quote_report.md; inputs are the VTT and
-    # every artifact it describes. Counts come from the report's own summary
-    # table so the strip can show what was found, not just when it ran.
+    # every artifact it describes. Counts come from the quote_report.json
+    # sidecar beside it (#264) so the strip can show what was found, not just
+    # when it ran — a report with no sidecar reads as unknown, hence warn.
     verify_report = _quote_report_path(cfg)
     verify_inputs: list[Path] = []
     if vtt is not None:
