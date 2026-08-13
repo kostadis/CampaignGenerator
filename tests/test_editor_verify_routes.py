@@ -304,3 +304,29 @@ def test_no_regex_over_the_report_survives_in_the_module():
                scene_editor._parse_quote_report_refusals):
         body = inspect.getsource(fn)
         assert "read_text" not in body, f"{fn.__name__} reads the markdown again"
+
+
+def test_a_run_that_checked_nothing_is_not_green(tmp_path):
+    """The report says it itself: "No quotes found. Nothing was checked — this
+    is not the same as everything passing." The strip has to agree. A wrong
+    input file, or a summary using inline "…" where the parser wants > "…"
+    blockquotes, both serialise as all-zero counts."""
+    nothing = dict(REPORT_JSON)
+    nothing["counts"] = {"verified": 0, "near": 0, "unverified": 0,
+                         "unscored": 0, "exempt": 0}
+    nothing["refusals"] = {"total": 0, "by_rule": {}}
+    _write_report(tmp_path, sidecar=nothing)
+    assert _status_for(tmp_path)["status"] == "warn"
+
+
+def test_unknown_refusal_count_is_not_green(tmp_path):
+    """The None-vs-0 rule the verdict counts get, applied to refusals. A
+    sidecar written before refusals existed knows nothing about them, and
+    `(refused or 0) > 0` used to read that as "none refused"."""
+    without = {k: v for k, v in REPORT_JSON.items() if k != "refusals"}
+    without["counts"] = {"verified": 10, "near": 0, "unverified": 0,
+                         "unscored": 0, "exempt": 0}
+    _write_report(tmp_path, sidecar=without)
+    status = _status_for(tmp_path)
+    assert status["refused"] is None
+    assert status["status"] == "warn"

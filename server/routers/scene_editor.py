@@ -1085,10 +1085,23 @@ def api_pipeline_status(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     refused = _parse_quote_report_refusals(verify_report)
     verify_status["refused"] = refused
     if verify_status["status"] != "cold":
+        checked = sum(v for v in counts.values() if isinstance(v, int))
         if counts.get("unverified") is None:
             # An unreadable report is not a passing one.
             verify_status["status"] = "warn"
-        elif counts["unverified"] > 0 or (refused or 0) > 0:
+        elif checked == 0:
+            # A run that checked NOTHING is not a clean run. The report says so
+            # itself ("Nothing was checked — this is not the same as everything
+            # passing"), and the strip has to agree: the wrong input file, or a
+            # summary using inline "…" where the parser wants > "…" blockquotes,
+            # both land here with all-zero counts and would otherwise read green.
+            verify_status["status"] = "warn"
+        elif refused is None:
+            # Same None-vs-0 rule the verdict counts get. A sidecar written
+            # before refusals existed knows nothing about them, and "unknown"
+            # must not render as "none refused".
+            verify_status["status"] = "warn"
+        elif counts["unverified"] > 0 or refused > 0:
             # Stale and has-findings both mean unfinished business here; the
             # counts tell the two apart. A refusal counts: a run with nothing
             # unverified and a dozen refused spans is not a clean run, and
