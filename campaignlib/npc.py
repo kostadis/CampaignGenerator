@@ -234,7 +234,7 @@ _PLAYER_PLACEHOLDERS = {
 }
 
 
-def _is_player_placeholder(name: str) -> bool:
+def is_player_placeholder(name: str) -> bool:
     return name.strip().lower().strip("()[]").strip() in _PLAYER_PLACEHOLDERS
 
 
@@ -246,11 +246,11 @@ def _add_player_entries(result: dict[str, str], player_raw: str, character_name:
     field) and :func:`player_map_from_config` (a sheet's frontmatter
     ``player`` field) — one splitting/placeholder rule, not two copies.
     """
-    if _is_player_placeholder(player_raw):
+    if is_player_placeholder(player_raw):
         return
     for p in re.split(r'[/,]', player_raw):
         p = p.strip().rstrip('*').strip()
-        if p and not _is_player_placeholder(p):
+        if p and not is_player_placeholder(p):
             result[p] = character_name
 
 

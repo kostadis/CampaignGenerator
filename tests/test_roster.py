@@ -497,9 +497,40 @@ def test_roster_from_config_all_sheets_have_frontmatter(tmp_path):
     ])
     result = roster_from_config(cfg)
     assert result == (
-        "- Zalthir (Gabe): Dragonborn (Brass Dragon) Monk 8\n"
+        # Zalthir's sheet carries a subclass, Soma's does not — the
+        # parenthetical appears only where there is something to put in it.
+        "- Zalthir (Gabe): Dragonborn (Brass Dragon) Monk 8 (Warrior of Shadow)\n"
         "- Soma (Wade): Tortle Druid 6"
     )
+
+
+def test_roster_renders_the_subclass_parenthetical(tmp_path):
+    """party.md carries "Barbarian 6 (Path of the Giant)". Dropping the
+    parenthetical silently shortened the roster block that goes into the
+    narration prompt, so the config roster was strictly worse than the
+    party.md it replaces."""
+    sheet = _write_sheet(
+        tmp_path, "brewbarry.md", name="Brewbarry", player="Stéphane Bourdeaud",
+        species="Goliath", class_level="Barbarian 6",
+        subclass="Path of the Giant",
+    )
+    cfg = ResolvedPartyConfig(characters=[_resolved_character("Brewbarry", sheet)])
+    assert roster_from_config(cfg) == (
+        "- Brewbarry (Stéphane Bourdeaud): Goliath Barbarian 6 (Path of the Giant)"
+    )
+
+
+def test_roster_omits_a_placeholder_player(tmp_path):
+    """Same placeholder rule ``player_map_from_config`` uses — one rule, not
+    two copies. Hillsfar's sheets came off a shared D&D Beyond account with no
+    real attribution; "- Akritas (Not specified): …" must not reach the
+    narration prompt."""
+    sheet = _write_sheet(
+        tmp_path, "akritas.md", name="Akritas", player="Not specified",
+        species="High Elf", class_level="Ranger 11", subclass="Hunter",
+    )
+    cfg = ResolvedPartyConfig(characters=[_resolved_character("Akritas", sheet)])
+    assert roster_from_config(cfg) == "- Akritas: High Elf Ranger 11 (Hunter)"
 
 
 def test_roster_from_config_all_or_nothing_none_when_one_lacks_frontmatter(tmp_path, capsys):

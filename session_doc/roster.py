@@ -3,6 +3,7 @@
 import sys
 from typing import TYPE_CHECKING
 
+from campaignlib.npc import is_player_placeholder
 from campaignlib.party_md import parse_party_md
 from campaignlib.textproc import split_frontmatter
 
@@ -81,20 +82,26 @@ def roster_from_config(cfg: "ResolvedPartyConfig") -> str | None:
 
     ``cfg`` must already be resolved (:func:`campaignlib.party_config.
     resolve_party_config`) — this function does not choose a base
-    directory itself. Which base directory is correct is campaign-
-    dependent and unresolved (see that design doc's "Measured" table);
-    picking one here would silently mis-resolve some campaigns, so the
-    caller owns that decision.
+    directory itself, the caller owns that decision. (Which base was
+    correct used to be campaign-dependent; #291 made every campaign's
+    ``party.yaml`` campaign-root-relative, so the cwd default now works
+    everywhere.)
 
     For each character, reads ``sheet``, splits its YAML frontmatter
     (:func:`campaignlib.textproc.split_frontmatter`), and formats one line
     in ``extract_character_roster``'s exact shape::
 
-        - {name} ({player}): {species} {class_level}
+        - {name} ({player}): {species} {class_level} ({subclass})
 
     or, when the sheet's ``player`` field is empty, the no-player variant::
 
-        - {name}: {species} {class_level}
+        - {name}: {species} {class_level} ({subclass})
+
+    ``subclass`` is appended only when non-empty. It is optional because it
+    cannot be recovered from an unmigrated sheet body, but omitting it is a
+    real loss: ``party.md`` carries the parenthetical ("Barbarian 6 (Path of
+    the Giant)"), so a blank one silently shortens the roster block that
+    goes into the narration prompt.
 
     Every field is ``.strip()``-ed (one real sheet has a trailing space
     after the player name). ``name`` comes from ``cfg`` — the party.yaml
@@ -121,6 +128,11 @@ def roster_from_config(cfg: "ResolvedPartyConfig") -> str | None:
             problems.append(f"{character.name}: sheet has no YAML frontmatter ({sheet})")
             continue
         player = str(frontmatter.get("player") or "").strip()
+        # Same placeholder rule player_map_from_config uses — one rule, not two
+        # copies. Without this a sheet whose player is genuinely unknown renders
+        # "- Akritas (Not specified): …" into the narration prompt.
+        if is_player_placeholder(player):
+            player = ""
         species = str(frontmatter.get("species") or "").strip()
         class_level = str(frontmatter.get("class_level") or "").strip()
         if not species or not class_level:
@@ -129,7 +141,10 @@ def roster_from_config(cfg: "ResolvedPartyConfig") -> str | None:
                 f"'class_level' ({sheet})"
             )
             continue
+        subclass = str(frontmatter.get("subclass") or "").strip()
         class_info = f"{species} {class_level}".strip()
+        if subclass:
+            class_info = f"{class_info} ({subclass})"
         lines.append(
             f"- {character.name} ({player}): {class_info}"
             if player
