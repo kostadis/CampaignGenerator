@@ -36,6 +36,7 @@ from pathlib import Path
 
 from campaignlib.util import atomic_write_text
 
+from .io import warn_if_smoothed_claims_verbatim
 from .verify_quotes import (
     DEFAULT_MIN_TOKENS,
     DEFAULT_THRESHOLD,
@@ -127,6 +128,13 @@ def main() -> int:
         if not sd.is_dir():
             print(f"Error: --scene-extractions is not a directory: {sd}", file=sys.stderr)
             return 2
+        # A smoothed layer still headed `## Verbatim moments` is inside the
+        # contract axis it cannot satisfy, so R1/R3 refuse spans whose
+        # exactness the layer never claimed (#304). Say so here, next to the
+        # refusals it produces. Note this does NOT explain inflated verdicts:
+        # a `## Voiced moments` layer is "outside the contract (R5), still
+        # classified" — see NOT_CHECKED_VOICED.
+        warn_if_smoothed_claims_verbatim(sd)
         files = _scene_files(sd)
         if not files:
             print(f"Error: no NN_*.md scene extractions in {sd}", file=sys.stderr)

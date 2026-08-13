@@ -24,11 +24,15 @@ from server.session_editor_config_shared import (  # noqa: E402
 
 
 def _cfg(*, vtt: str | None = None, work_dir: str = "", campaign_dir: str = "",
-         **path_overrides) -> ResolvedEditorConfig:
+         characters: str | None = None, **path_overrides) -> ResolvedEditorConfig:
     """Build a ResolvedEditorConfig directly (no service/platform needed) for
     exercising the CONFIG-free helpers/command-builders — Phase 2 of
     docs/config/session-editor-isolation.md. `path_overrides` are EditorPaths
     fields (session_recap, session_summary, scene_extractions_dir, ...).
+
+    ``characters`` is lifted out of ``path_overrides`` because it belongs to
+    ``Roster``, not ``EditorPaths`` — it is the one non-path input Pass 5's
+    style routing depends on (#301), so the argv tests below need to set it.
 
     ``campaign_dir`` defaults to "" so ``_party_config_path`` looks for
     ``config/party.yaml`` relative to the cwd — which the repo does not have,
@@ -37,7 +41,7 @@ def _cfg(*, vtt: str | None = None, work_dir: str = "", campaign_dir: str = "",
         paths=EditorPaths(**path_overrides),
         narrate=NarrateKnobs(),
         scrub=ScrubKnobs(),
-        roster=Roster(),
+        roster=Roster(characters=characters),
         backends=Backends(),
         session_name=None,
         profiles=[],
@@ -175,6 +179,98 @@ def test_build_narrate_cmd_uses_new_flags(tmp_path):
     # Must not use legacy flags
     assert "--from-extractions" not in result
     assert "--by-scene" not in result
+
+
+# ── Pass 5 style-input forwarding (#299) ─────────────────────────────────────
+# `_build_narrate_cmd` is the ONLY seam where the genre rulebook, the voice
+# specs, the style examples and the character roster enter the subprocess.
+# Until #299 nothing asserted any of them reached argv, on either side of the
+# `if value:` guard — which is how #295 (no campaign delivering a rulebook to
+# Pass 5) stayed invisible with a green suite. `tests/test_narrate_genre_file.py`
+# covers the reader and the describer; these cover the hand-off between them.
+
+
+def _narrate_cfg(tmp_path: Path, **overrides) -> ResolvedEditorConfig:
+    """A `_cfg` with the four Narrate preconditions (summary, extractions,
+    narration dir, plan.md) already satisfied, so a test can vary one input."""
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    (nd / "plan.md").write_text("plan", encoding="utf-8")
+    base = dict(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+    )
+    base.update(overrides)
+    return _cfg(**base)
+
+
+def test_narrate_cmd_forwards_the_genre_rulebook_path(tmp_path):
+    """The #295 seam: a configured rulebook must reach sd_narrate as a PATH.
+
+    Passing the text was #276's defect; passing nothing at all was #295's.
+    """
+    genre = tmp_path / "_genre.md"
+    genre.write_text("# Register\n\nFirst person, past tense.\n", encoding="utf-8")
+    cfg = _narrate_cfg(tmp_path, genre_file=str(genre))
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--narration-genre-file") + 1] == str(genre)
+    # The rulebook's TEXT must never be on the command line (#276 fix 2).
+    assert not any("First person" in part for part in cmd)
+
+
+def test_narrate_cmd_omits_the_genre_flag_when_unset(tmp_path):
+    """Unset means Pass 5 runs with no genre directive at all.
+
+    Asserted so the state #295 describes is pinned rather than incidental:
+    the router emits nothing, and `_load_genre_file(None)` is what decides
+    how loud that is.
+    """
+    cfg = _narrate_cfg(tmp_path)
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert "--narration-genre-file" not in cmd
+
+
+def test_narrate_cmd_forwards_voice_examples_and_characters(tmp_path):
+    """The other three style inputs travel the same `if value:` loop.
+
+    `--characters` is not decoration: it is the routing key `_load_examples`
+    uses to decide whether an examples file is per-character or global, so
+    losing it silently homogenises every narrator's prompt (#301).
+    """
+    voice = tmp_path / "voice"
+    voice.mkdir()
+    examples = tmp_path / "examples"
+    examples.mkdir()
+    cfg = _narrate_cfg(
+        tmp_path,
+        voice_dir=str(voice),
+        examples_dir=str(examples),
+        characters="Vukradin, Soma",
+    )
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--voice-dir") + 1] == str(voice)
+    assert cmd[cmd.index("--examples") + 1] == str(examples)
+    assert cmd[cmd.index("--characters") + 1] == "Vukradin, Soma"
+
+
+def test_narrate_cmd_omits_style_flags_when_unset(tmp_path):
+    cfg = _narrate_cfg(tmp_path)
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    for flag in ("--voice-dir", "--examples", "--characters"):
+        assert flag not in cmd
 
 
 # ── Batch forwarding via the resolved selection (005-ui-batch-selection,
@@ -523,6 +619,115 @@ def test_no_party_configured_at_all_emits_neither_flag(tmp_path):
     cmd = scene_editor._build_reextract_cmd(None, cfg)
     assert isinstance(cmd, list)
     assert "--party" not in cmd and "--party-config" not in cmd
+
+
+# ── #300: a voice_dir that cannot deliver is refused, not forwarded ──────────
+#
+# Mirrors `_party_args`: the editor turns `(None, reason)` into readable text,
+# where the subprocess's stderr reaches the GM only as a failed run they have
+# to open a terminal to read.
+
+
+def _voice_cfg(tmp_path: Path, keep_plan: bool = False,
+               **overrides) -> ResolvedEditorConfig:
+    """A cfg with Narrate's preconditions satisfied, so a test can vary voice_dir.
+
+    `keep_plan=True` retains `_seed_session_dir`'s real two-section plan
+    (Soma then Brewbarry) for the tests that need a narrator to resolve.
+    """
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    if not keep_plan:
+        (nd / "plan.md").write_text("plan", encoding="utf-8")
+    return _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+        **overrides,
+    )
+
+
+def test_narrate_refuses_a_voice_dir_that_is_not_a_directory(tmp_path):
+    cfg = _voice_cfg(tmp_path, voice_dir=str(tmp_path / "nope"))
+
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(result, tuple) and result[0] is None
+    assert "not a directory" in result[1]
+
+
+def test_narrate_does_not_refuse_a_voice_dir_with_no_specs_yet(tmp_path):
+    """`new_workspace` creates voice/ empty and `derive` fills voice_dir in
+    from its mere existence, so this state is usually the tool's doing rather
+    than a GM declaration. Refusing here would break Narrate on every fresh
+    campaign — and on any campaign holding only `voice/_genre.md`."""
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    (vd / "_genre.md").write_text("# Register\n", encoding="utf-8")
+    cfg = _voice_cfg(tmp_path, voice_dir=str(vd))
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--voice-dir") + 1] == str(vd)
+
+
+def test_narrate_refuses_when_this_scenes_narrator_has_no_spec(tmp_path):
+    """The likelier real miss, and the one the router can describe precisely.
+
+    Without this the router forwards happily, the subprocess exits 1, and the
+    GM gets an opaque failed run instead of a sentence naming the typo — which
+    is the live `sequioa`/`sequoia_voice.md` case in toee.
+    """
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    # Scene 1's narrator in the seeded plan is Soma; only Brewbarry has a spec.
+    (vd / "brewbarry_new_pipeline.md").write_text("spec\n", encoding="utf-8")
+    cfg = _voice_cfg(tmp_path, voice_dir=str(vd), keep_plan=True)
+
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(result, tuple) and result[0] is None
+    assert "Soma" in result[1]
+    assert "no voice file" in result[1]
+    assert "brewbarry_new_pipeline" in result[1]
+
+
+def test_narrate_allows_a_scene_whose_own_narrator_resolves(tmp_path):
+    """Scene 2's narrator is Brewbarry, who does have a spec — the refusal is
+    per-scene, matching the per-scene run the editor actually launches."""
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    (vd / "brewbarry_new_pipeline.md").write_text("spec\n", encoding="utf-8")
+    cfg = _voice_cfg(tmp_path, voice_dir=str(vd), keep_plan=True)
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 2)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--voice-dir") + 1] == str(vd)
+
+
+def test_narrate_forwards_a_usable_voice_dir(tmp_path):
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    (vd / "_genre.md").write_text("# Register\n", encoding="utf-8")
+    (vd / "vukradin_new_pipeline.md").write_text("spec\n", encoding="utf-8")
+    cfg = _voice_cfg(tmp_path, voice_dir=str(vd))
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--voice-dir") + 1] == str(vd)
+
+
+def test_no_voice_dir_configured_is_not_a_refusal(tmp_path):
+    """Rendering without voice specs stays a legitimate mode."""
+    cfg = _voice_cfg(tmp_path)
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert "--voice-dir" not in cmd
 
 
 # ── #301: the examples bleed is refused at the router too ───────────────────

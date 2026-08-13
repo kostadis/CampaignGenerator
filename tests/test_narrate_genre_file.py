@@ -211,3 +211,99 @@ def test_knobs_snapshot_omits_digest_when_the_file_is_gone():
 
     assert snap["narration_genre_file"] == "/c/voice/_gone.md"
     assert "narration_genre_sha" not in snap  # nothing was read, so claim nothing
+
+
+# ── #303: an empty relocated field is not a relocation ──────────────────────
+
+
+@pytest.mark.parametrize("value", [None, "", "   ", "\n"])
+def test_empty_genre_key_is_dropped_without_a_migration_notice(value, capsys):
+    """`genre: null` holds no document, so nothing is being discarded and the
+    migration has nothing to move.
+
+    obelisk carries exactly this and was told on EVERY config load that
+    4 characters were being ignored — `len(str(None))` — and to go run a
+    migration. A permanent false alarm on the one stream whose job is to make
+    the real alarm noticeable; the real one (#295) went unnoticed for months.
+    """
+    knobs = NarrateKnobs.model_validate({"genre": value, "tokens": 8000})
+
+    assert knobs.tokens == 8000
+    assert not hasattr(knobs, "genre")
+    # Asserting SILENCE, not just the absence of two substrings: the `odd`
+    # bucket's message contains neither, so a narrower assertion passed green
+    # while a whitespace-only value was being announced as "not text".
+    assert capsys.readouterr().err == ""
+
+
+def test_a_real_paste_is_still_announced_loudly(capsys):
+    """The case the notice exists for: out-of-the-abyss loses 16,303 characters
+    here and must be told, with the size and the migration command."""
+    knobs = NarrateKnobs.model_validate({"genre": "# Register\n\nFirst person."})
+
+    assert not hasattr(knobs, "genre")
+    err = capsys.readouterr().err
+    assert "relocated" in err
+    assert "migrate_narrate_genre" in err
+    assert "chars" in err
+
+
+def test_the_char_count_is_the_documents_not_the_reprs(capsys):
+    NarrateKnobs.model_validate({"genre": "abcdefghij"})
+
+    assert "(10 chars)" in capsys.readouterr().err
+
+
+def test_the_char_count_matches_what_the_migration_will_report(capsys):
+    """`migrate_narrate_genre._describe` measures `value.strip()`. A paste with
+    trailing blank lines was announced as N chars here and N-k there — the one
+    number the two surfaces both quote, disagreeing."""
+    NarrateKnobs.model_validate({"genre": "abcdefghij\n\n  "})
+
+    assert "(10 chars)" in capsys.readouterr().err
+
+
+# ── #303 review: the predicate must agree with the migration's ──────────────
+
+
+def test_a_non_string_genre_is_discarded_without_bogus_advice(capsys):
+    """A hand-edit writing `genre:` as a YAML list.
+
+    `migrate_narrate_genre._paste_from_raw` accepts `isinstance(value, str)`
+    and nothing else, so announcing this one as a relocatable document would
+    quote a *repr* length and send the GM to a migration that then reports
+    nothing to migrate.
+    """
+    knobs = NarrateKnobs.model_validate({"genre": ["line one", "line two"],
+                                         "tokens": 4000})
+
+    assert knobs.tokens == 4000              # config still loads
+    assert not hasattr(knobs, "genre")       # and the field is still dropped
+    err = capsys.readouterr().err
+    assert "not text" in err
+    assert "(list)" in err
+    assert "migrate_narrate_genre" not in err   # no advice that cannot work
+
+
+def test_an_empty_list_genre_is_silent(capsys):
+    NarrateKnobs.model_validate({"genre": []})
+    assert capsys.readouterr().err == ""
+
+
+def test_a_non_string_genre_does_not_break_the_strict_model():
+    """`extra="forbid"` would reject the whole config — taking the editor down
+    on boot — if an unrecognised `genre` survived the validator."""
+    knobs = NarrateKnobs.model_validate({"genre": {"a": "b"}, "prose_mode": True})
+    assert knobs.prose_mode is True
+
+
+# ── #303 review: no rulebook at all still says so, somewhere ────────────────
+
+
+def test_no_genre_file_flag_emits_a_note(capsys):
+    """Dropping the null-value false alarm removed the last signal that a
+    campaign has no rulebook. This is the floor that replaces it."""
+    assert _load_genre_file(None) is None
+    err = capsys.readouterr().err
+    assert "no --narration-genre-file" in err
+    assert "no register rules" in err

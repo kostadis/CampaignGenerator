@@ -99,6 +99,57 @@ def get_voice_note(voices: dict[str, str], narrator: str) -> str | None:
     return None
 
 
+def voice_resolution_problems(voices: dict[str, str],
+                              narrators: list[str]) -> list[str]:
+    """One problem line per narrator that has no usable voice spec.
+
+    The pre-flight behind ``sd_narrate``'s refusal (#300). ``get_voice_note``
+    warns and returns ``None`` per narrator, mid-render, once tokens have
+    already been spent on earlier scenes; this answers the same question for
+    every narrator in the plan *before* the first API call, so a render either
+    has all its specs or does not start.
+
+    Deliberately says nothing about an empty ``voices``: "no ``--voice-dir``
+    was given" is a legitimate mode and the caller is the only one that can
+    tell it apart from "the directory was given and is unusable" — which is
+    exactly the distinction ``load_voice_files`` cannot make, since a glob over
+    a missing directory yields the same ``{}`` as no flag at all.
+
+    Returns ``[]`` when every narrator resolves. Order follows ``narrators``,
+    de-duplicated, so a plan that gives one character four scenes reports the
+    problem once.
+    """
+    problems: list[str] = []
+    seen: set[str] = set()
+    for narrator in narrators:
+        key_of = narrator.strip().lower()
+        if not key_of or key_of in seen:
+            continue
+        seen.add(key_of)
+        key, ambiguous = _resolve_voice_key(voices, narrator)
+        if key is not None:
+            continue
+        firstname = _first_name(narrator)
+        if ambiguous:
+            candidates = sorted(
+                k for k in voices
+                if k.startswith(firstname) and len(k) > len(firstname)
+                and k[len(firstname)] in "_-"
+            )
+            problems.append(
+                f"narrator '{narrator}': ambiguous — {candidates} all match "
+                f"'{firstname}'. Refusing to guess which one the render should "
+                f"use; rename so only one begins with '{firstname}' + '_' or '-'."
+            )
+        else:
+            problems.append(
+                f"narrator '{narrator}': no voice file. Expected "
+                f"'{firstname}.md', '{firstname}_voice.md' or "
+                f"'{firstname}_<anything>.md'."
+            )
+    return problems
+
+
 def extract_contrast_sample(text: str, max_sentences: int = 5) -> str:
     """First substantive paragraph's first ~5 sentences — Phase-3 contrast signal.
 

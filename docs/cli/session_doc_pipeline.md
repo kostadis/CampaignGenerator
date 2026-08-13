@@ -245,7 +245,7 @@ Practical implication for the human review step:
 | `--party FILE` | — | `party.md` — backstory, personality, relationships. NOT the roster: since #265 the character classes come from `--party-config`, and `--party` without it is an error |
 | `--party-config FILE` | — | `config/party.yaml` — the roster, read from each character's sheet frontmatter. Required whenever `--party` is given |
 | `--characters NAMES` | — | Comma-separated narrator roster (`"Vukradin, Valphine, Soma, Brewbarry"`) |
-| `--voice-dir DIR` | — | Directory of `{name}_voice.md` files written by players (one per character) |
+| `--voice-dir DIR` | — | Directory of per-character voice specs written by players. Filenames need not be `{name}_voice.md` — `{name}.md` and `{name}_<anything>.md` resolve too, and an ambiguous prefix is refused rather than guessed (#247). `_`-prefixed files (`_genre.md`) are shared campaign material, not specs. **A declared directory must deliver (#300):** a path that is not a directory is fatal, and once the directory holds *any* spec, every narrator in the render must resolve to one — checked before the first API call, so a miss stops the run instead of surfacing as one narrator who quietly lost their voice. A directory that exists but holds no specs yet is not an error; it renders without them, as does omitting the flag. |
 | `--examples DIR` | — | Directory of style-reference `.md` files. Files whose stem matches a character's first name route to that character only; others are global. |
 | `--enhanced-sections FILE` | — | Pre-built Memorable Moments / NPCs / Scenes block to inject as scene context |
 | `--narrator NAME` | — | Filter the plan to one character's scenes only |
