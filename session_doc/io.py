@@ -7,6 +7,7 @@ section, and reduces a raw WebVTT transcript to clean speaker dialogue.
 """
 
 import re
+import sys
 from pathlib import Path
 
 from campaignlib import find_scenes_section
@@ -113,6 +114,75 @@ def _split_scene_body(body: str) -> tuple[str, str]:
     return summary, moments
 
 
+#: A directory whose name ends in this holds a derived, voice-smoothed layer.
+SMOOTHED_DIR_SUFFIX = "_smoothed"
+
+
+def is_smoothed_dir(path: Path) -> bool:
+    return path.name.endswith(SMOOTHED_DIR_SUFFIX)
+
+
+def smoothed_claim_problems(path: Path) -> list[str]:
+    """Files in a ``*_smoothed/`` directory that still claim ``## Verbatim moments``.
+
+    The contract (#250 R5) binds a heading to what it promises: ``## Verbatim
+    moments`` says *these are the tape's words*, and a smoothing pass edits
+    them, so the smoothed layer renames its heading to ``## Voiced moments``
+    rather than carrying a claim it cannot keep. Measured on ch46, smoothing
+    more than doubles the unverified rate — the two layers cannot promise the
+    same thing.
+
+    Nothing enforced it at either end. Phandalin's
+    ``scene_extractions_smoothed/`` carries ``## Verbatim moments`` on every
+    file while its frontmatter correctly declares ``source: voice-smoothed``,
+    and that directory is what ``paths.scene_extractions_dir`` points at — so
+    quote verification measures edited prose against the tape as though it were
+    a transcript, on the campaign where smoothing is standard.
+
+    Detection only. Nothing here rewrites an extraction file: the heading is a
+    claim about how the file was produced, and correcting it by guessing would
+    be the pipeline asserting something it does not know (the producer is
+    ``/voice-smooth``, kostadis/mytools#131).
+
+    Returns ``[]`` for a directory that is not a smoothed layer, so callers can
+    invoke it unconditionally.
+    """
+    if not is_smoothed_dir(path) or not path.is_dir():
+        return []
+    problems: list[str] = []
+    for f in sorted(path.glob("*.md")):
+        if f.name in {"plan.md", "consistency_report.md"} or f.name.startswith("_"):
+            continue
+        text = f.read_text(encoding="utf-8")
+        m = _SCENE_FRONTMATTER_RE.match(text)
+        body = m.group(2) if m else text
+        _summary, _moments, claim = split_scene_sections(body)
+        if claim == CLAIM_VERBATIM:
+            problems.append(f.name)
+    return problems
+
+
+def warn_if_smoothed_claims_verbatim(path: Path) -> None:
+    """Print the #304 warning for ``path``, if it earns one."""
+    problems = smoothed_claim_problems(path)
+    if not problems:
+        return
+    shown = ", ".join(problems[:5])
+    more = f" (+{len(problems) - 5} more)" if len(problems) > 5 else ""
+    print(
+        f"Warning: {path.name}/ is a voice-smoothed layer, but {len(problems)} "
+        f"of its files still head their moments section '## Verbatim moments': "
+        f"{shown}{more}.\n"
+        f"  Smoothing edits the words, so that heading promises something the "
+        f"file cannot keep — quote verification will measure this prose against "
+        f"the tape as if it were a transcript and report inflated findings "
+        f"(#250 R5, #304).\n"
+        f"  -> the producer should write '## Voiced moments'. Nothing is "
+        f"rewritten here.",
+        file=sys.stderr,
+    )
+
+
 def load_scene_extractions(path: Path) -> list[dict]:
     """Load scene-anchored extraction files written by scene_extract.py.
 
@@ -133,6 +203,7 @@ def load_scene_extractions(path: Path) -> list[dict]:
     Files named `plan.md`, `consistency_report.md`, or starting with `_` are
     skipped (they are sibling artifacts, not scene extractions).
     """
+    warn_if_smoothed_claims_verbatim(path)
     SKIP = {"plan.md", "consistency_report.md"}
     by_stem: dict[str, Path] = {}
     for f in path.glob("*.md"):

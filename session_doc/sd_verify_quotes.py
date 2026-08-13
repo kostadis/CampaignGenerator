@@ -36,6 +36,7 @@ from pathlib import Path
 
 from campaignlib.util import atomic_write_text
 
+from .io import warn_if_smoothed_claims_verbatim
 from .verify_quotes import (
     DEFAULT_MIN_TOKENS,
     DEFAULT_THRESHOLD,
@@ -127,6 +128,12 @@ def main() -> int:
         if not sd.is_dir():
             print(f"Error: --scene-extractions is not a directory: {sd}", file=sys.stderr)
             return 2
+        # A smoothed layer still headed `## Verbatim moments` is checked as if
+        # it were a transcript, so its findings are inflated by the smoothing
+        # rather than by anything wrong in the tape (#304). Say so here, next
+        # to the numbers it distorts — `classify` already skips a layer that
+        # correctly declares `## Voiced moments`.
+        warn_if_smoothed_claims_verbatim(sd)
         files = _scene_files(sd)
         if not files:
             print(f"Error: no NN_*.md scene extractions in {sd}", file=sys.stderr)
