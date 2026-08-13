@@ -22,6 +22,8 @@ from session_doc.io import (
     format_extractions,
     load_extractions,
     load_scene_extractions,
+    smoothed_claim_problems,
+    warn_if_smoothed_claims_verbatim,
     parse_plan,
     parse_vtt,
 )
@@ -72,6 +74,8 @@ __all__ = [
     "get_voice_note",
     "load_extractions",
     "load_scene_extractions",
+    "smoothed_claim_problems",
+    "warn_if_smoothed_claims_verbatim",
     "load_voice_files",
     "parse_plan",
     "parse_vtt",
