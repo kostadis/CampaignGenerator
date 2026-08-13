@@ -128,11 +128,12 @@ def main() -> int:
         if not sd.is_dir():
             print(f"Error: --scene-extractions is not a directory: {sd}", file=sys.stderr)
             return 2
-        # A smoothed layer still headed `## Verbatim moments` is checked as if
-        # it were a transcript, so its findings are inflated by the smoothing
-        # rather than by anything wrong in the tape (#304). Say so here, next
-        # to the numbers it distorts — `classify` already skips a layer that
-        # correctly declares `## Voiced moments`.
+        # A smoothed layer still headed `## Verbatim moments` is inside the
+        # contract axis it cannot satisfy, so R1/R3 refuse spans whose
+        # exactness the layer never claimed (#304). Say so here, next to the
+        # refusals it produces. Note this does NOT explain inflated verdicts:
+        # a `## Voiced moments` layer is "outside the contract (R5), still
+        # classified" — see NOT_CHECKED_VOICED.
         warn_if_smoothed_claims_verbatim(sd)
         files = _scene_files(sd)
         if not files:

@@ -43,6 +43,24 @@ Soma: "We should wait."
 
 VOICED = VERBATIM.replace("## Verbatim moments", "## Voiced moments")
 
+# The raw Stage-2 layer: no smoothing stamp. `## Verbatim moments` is CORRECT
+# here — that IS the tape's words.
+RAW = VERBATIM.replace("source: voice-smoothed\n", "").replace(
+    "from: ../scene_extractions/01_scene_one.md\n", "")
+
+# A smoothed file with no `## Scene summary`. `split_scene_sections` returns
+# CLAIM_NONE for this shape, but `parse_scene_quotes` falls back to treating the
+# whole body as the moments section — so every quote IS verified as verbatim.
+NO_SUMMARY = """---
+scene: Scene One
+source: voice-smoothed
+---
+
+## Verbatim moments
+
+Soma: "We should wait."
+"""
+
 
 def _dir(tmp_path: Path, name: str, **files: str) -> Path:
     d = tmp_path / name
@@ -73,14 +91,67 @@ def test_a_mixed_layer_reports_only_the_offenders(tmp_path):
     assert smoothed_claim_problems(d) == ["02_scene_two.md"]
 
 
-def test_a_non_smoothed_dir_is_never_reported(tmp_path):
+def test_the_raw_layer_is_never_reported(tmp_path):
     """`## Verbatim moments` in the raw extraction layer is correct — that IS
     the tape's words. The claim is only wrong once something has edited them."""
     d = _dir(tmp_path, "scene_extractions",
-             **{"01_scene_one": VERBATIM, "02_scene_two": VERBATIM})
+             **{"01_scene_one": RAW, "02_scene_two": RAW})
 
     assert smoothed_claim_problems(d) == []
     assert not is_smoothed_dir(d)
+
+
+def test_frontmatter_is_authoritative_when_the_directory_is_renamed(tmp_path):
+    """The signal that survives a copy.
+
+    `/voice-smooth` stamps `source: voice-smoothed` on every file it writes. A
+    layer copied or renamed into `scene_extractions/` — which is where obelisk
+    and out-of-the-abyss point — loses the directory name but keeps the stamp,
+    and keying detection on the directory alone would miss it entirely.
+    """
+    d = _dir(tmp_path, "scene_extractions", **{"01_scene_one": VERBATIM})
+
+    assert not is_smoothed_dir(d)
+    assert smoothed_claim_problems(d) == ["01_scene_one.md"]
+
+
+def test_a_file_with_no_scene_summary_is_still_caught(tmp_path):
+    """`split_scene_sections` returns CLAIM_NONE without a `## Scene summary`,
+    so deferring to it would report this file clean — while `parse_scene_quotes`
+    treats its whole body as moments and verifies every quote as verbatim. The
+    file most in need of the warning was the one reported fine."""
+    d = _dir(tmp_path, "scene_extractions_smoothed", **{"01_scene_one": NO_SUMMARY})
+
+    assert smoothed_claim_problems(d) == ["01_scene_one.md"]
+
+
+def test_an_unreadable_file_cannot_abort_a_render(tmp_path, capsys):
+    """This runs on `load_scene_extractions`'s hot path. A diagnostic must
+    never be the thing that stops a narration run, so a file it cannot decode
+    is skipped rather than raised on."""
+    d = _dir(tmp_path, "scene_extractions_smoothed", **{"01_scene_one": VERBATIM})
+    (d / "02_scene_two.md").write_bytes("scene: caf\xe9\n".encode("latin-1"))
+
+    assert smoothed_claim_problems(d) == ["01_scene_one.md"]
+
+
+def test_only_files_the_loader_would_read_are_scanned(tmp_path):
+    """A stray `notes.md` or a sibling artifact is not a scene extraction, and
+    counting it would send the GM after a file nothing verifies."""
+    d = _dir(tmp_path, "scene_extractions_smoothed", **{"01_scene_one": VOICED})
+    (d / "notes.md").write_text(VERBATIM, encoding="utf-8")
+    (d / "plan.md").write_text(VERBATIM, encoding="utf-8")
+
+    assert smoothed_claim_problems(d) == []
+
+
+def test_a_scaffold_shadows_its_raw_sibling(tmp_path):
+    """`load_scene_extractions` prefers `NN_<slug>.scaffold.md`, so that is the
+    file whose claim matters — the raw sibling is not what gets rendered."""
+    d = _dir(tmp_path, "scene_extractions_smoothed", **{"01_scene_one": VERBATIM})
+    (d / "01_scene_one.scaffold.md").write_text(VOICED, encoding="utf-8")
+
+    assert smoothed_claim_problems(d) == []
 
 
 def test_sibling_artifacts_are_skipped(tmp_path):
@@ -103,10 +174,15 @@ def test_the_warning_names_the_files_and_the_consequence(tmp_path, capsys):
 
     err = capsys.readouterr().err
     assert "01_scene_one.md" in err
-    assert "voice-smoothed layer" in err
-    assert "inflated findings" in err
+    assert "voice-smoothed" in err
     assert "Voiced moments" in err          # names the fix
     assert "Nothing is rewritten" in err    # and its own limits
+    # The remedy must not over-promise. Renaming drops the file out of the
+    # CONTRACT axis (R1/R3); it does NOT change the verdict counts — a voiced
+    # layer is "outside the contract (R5), still classified". Saying otherwise
+    # sends the GM to rename seven headings and get identical numbers.
+    assert "does NOT change the verdict counts" in err
+    assert "R1/R3" in err
 
 
 def test_the_warning_caps_the_file_list(tmp_path, capsys):
@@ -134,7 +210,7 @@ def test_loading_a_smoothed_layer_warns_but_still_loads(tmp_path, capsys):
 
 
 def test_loading_the_raw_layer_is_silent(tmp_path, capsys):
-    d = _dir(tmp_path, "scene_extractions", **{"01_scene_one": VERBATIM})
+    d = _dir(tmp_path, "scene_extractions", **{"01_scene_one": RAW})
 
     load_scene_extractions(d)
 

@@ -117,47 +117,98 @@ def _split_scene_body(body: str) -> tuple[str, str]:
 #: A directory whose name ends in this holds a derived, voice-smoothed layer.
 SMOOTHED_DIR_SUFFIX = "_smoothed"
 
+#: Frontmatter a smoothing pass stamps on every file it writes. This is the
+#: AUTHORITATIVE signal, not the directory name: `/voice-smooth` writes it, and
+#: it survives a copy or a rename into `scene_extractions/` —
+#: which is exactly where obelisk's and out-of-the-abyss'
+#: `scene_extractions_dir` point, so a layer moved there would otherwise be
+#: mislabelled with nothing left to notice it.
+_SMOOTHED_SOURCE_RE = re.compile(r"(?mi)^source:\s*voice-smoothed\s*$")
+
 
 def is_smoothed_dir(path: Path) -> bool:
     return path.name.endswith(SMOOTHED_DIR_SUFFIX)
 
 
+def scene_extraction_files(path: Path) -> dict[str, Path]:
+    """``stem -> file`` for the scene extractions a loader would actually read.
+
+    The single authority for that set, so a check and the loader it warns about
+    cannot disagree about which files count. Prefers a GM-edited
+    ``NN_<slug>.scaffold.md`` over the raw ``NN_<slug>.md``, matching the Editor.
+    """
+    skip = {"plan.md", "consistency_report.md"}
+    by_stem: dict[str, Path] = {}
+    for f in path.glob("*.md"):
+        if f.name in skip or f.name.startswith("_"):
+            continue
+        if f.name.endswith(".scaffold.md"):
+            stem, is_scaffold = f.name[: -len(".scaffold.md")], True
+        else:
+            stem, is_scaffold = f.stem, False
+        if not re.match(r"^\d{2}_", stem):
+            continue
+        if is_scaffold or stem not in by_stem:
+            by_stem[stem] = f
+    return by_stem
+
+
+def _claims_verbatim(body: str) -> bool:
+    """Whether a body heads its moments section ``## Verbatim moments``.
+
+    Matched directly rather than via ``split_scene_sections``, which returns
+    ``CLAIM_NONE`` unless a ``## Scene summary`` is present too. A smoothed file
+    that carries the verbatim heading but no gm-assist summary is the one most
+    in need of this warning — and ``parse_scene_quotes`` falls back to treating
+    its whole body as the moments section, so every quote in it IS verified as
+    verbatim. Deferring to the both-headings rule would report that file clean,
+    which is the "not checked, reported clean" shape #294 was written to close.
+    """
+    m = _MOMENTS_HEADING_RE.search(body)
+    return bool(m) and _MOMENTS_CLAIMS[m.group("kind").casefold()] == CLAIM_VERBATIM
+
+
 def smoothed_claim_problems(path: Path) -> list[str]:
-    """Files in a ``*_smoothed/`` directory that still claim ``## Verbatim moments``.
+    """Scene files that were voice-smoothed but still claim ``## Verbatim moments``.
 
     The contract (#250 R5) binds a heading to what it promises: ``## Verbatim
     moments`` says *these are the tape's words*, and a smoothing pass edits
     them, so the smoothed layer renames its heading to ``## Voiced moments``
-    rather than carrying a claim it cannot keep. Measured on ch46, smoothing
-    more than doubles the unverified rate — the two layers cannot promise the
-    same thing.
+    rather than carrying a claim it cannot keep.
 
     Nothing enforced it at either end. Phandalin's
-    ``scene_extractions_smoothed/`` carries ``## Verbatim moments`` on every
-    file while its frontmatter correctly declares ``source: voice-smoothed``,
-    and that directory is what ``paths.scene_extractions_dir`` points at — so
-    quote verification measures edited prose against the tape as though it were
-    a transcript, on the campaign where smoothing is standard.
+    ``scene_extractions_smoothed/`` heads every file ``## Verbatim moments``
+    while its frontmatter correctly declares ``source: voice-smoothed``, and
+    that directory is what ``paths.scene_extractions_dir`` points at.
+
+    A file counts as smoothed if EITHER its frontmatter says so or it sits in a
+    ``*_smoothed/`` directory. The frontmatter is the stronger signal and is
+    checked first: a smoothed layer copied or renamed into
+    ``scene_extractions/`` keeps its stamp but loses the directory name.
 
     Detection only. Nothing here rewrites an extraction file: the heading is a
     claim about how the file was produced, and correcting it by guessing would
     be the pipeline asserting something it does not know (the producer is
     ``/voice-smooth``, kostadis/mytools#131).
-
-    Returns ``[]`` for a directory that is not a smoothed layer, so callers can
-    invoke it unconditionally.
     """
-    if not is_smoothed_dir(path) or not path.is_dir():
+    if not path.is_dir():
         return []
+    dir_says_smoothed = is_smoothed_dir(path)
     problems: list[str] = []
-    for f in sorted(path.glob("*.md")):
-        if f.name in {"plan.md", "consistency_report.md"} or f.name.startswith("_"):
+    for _stem, f in sorted(scene_extraction_files(path).items()):
+        try:
+            text = f.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            # A diagnostic must never be the thing that stops a render. An
+            # unreadable or oddly-encoded file is skipped; the loader below
+            # will raise on it with a message about the file it was reading,
+            # which is a better error than one from a warning helper.
             continue
-        text = f.read_text(encoding="utf-8")
         m = _SCENE_FRONTMATTER_RE.match(text)
-        body = m.group(2) if m else text
-        _summary, _moments, claim = split_scene_sections(body)
-        if claim == CLAIM_VERBATIM:
+        frontmatter, body = (m.group(1), m.group(2)) if m else ("", text)
+        if not (dir_says_smoothed or _SMOOTHED_SOURCE_RE.search(frontmatter)):
+            continue
+        if _claims_verbatim(body):
             problems.append(f.name)
     return problems
 
@@ -170,13 +221,17 @@ def warn_if_smoothed_claims_verbatim(path: Path) -> None:
     shown = ", ".join(problems[:5])
     more = f" (+{len(problems) - 5} more)" if len(problems) > 5 else ""
     print(
-        f"Warning: {path.name}/ is a voice-smoothed layer, but {len(problems)} "
-        f"of its files still head their moments section '## Verbatim moments': "
+        f"Warning: {len(problems)} file(s) in {path.name}/ were voice-smoothed "
+        f"but still head their moments section '## Verbatim moments': "
         f"{shown}{more}.\n"
         f"  Smoothing edits the words, so that heading promises something the "
-        f"file cannot keep — quote verification will measure this prose against "
-        f"the tape as if it were a transcript and report inflated findings "
-        f"(#250 R5, #304).\n"
+        f"file cannot keep (#250 R5, #304).\n"
+        f"  What renaming to '## Voiced moments' changes: it drops the file out "
+        f"of the CONTRACT axis — R1/R3 refusals stop firing on spans whose "
+        f"exactness was never claimed. It does NOT change the verdict counts. "
+        f"unverified still means untraceable to any transcript line, which is a "
+        f"fabrication or a splice either way, and those remain defects in a "
+        f"layer that only claims to be tidied.\n"
         f"  -> the producer should write '## Voiced moments'. Nothing is "
         f"rewritten here.",
         file=sys.stderr,
@@ -204,21 +259,7 @@ def load_scene_extractions(path: Path) -> list[dict]:
     skipped (they are sibling artifacts, not scene extractions).
     """
     warn_if_smoothed_claims_verbatim(path)
-    SKIP = {"plan.md", "consistency_report.md"}
-    by_stem: dict[str, Path] = {}
-    for f in path.glob("*.md"):
-        if f.name in SKIP or f.name.startswith("_"):
-            continue
-        if f.name.endswith(".scaffold.md"):
-            stem = f.name[: -len(".scaffold.md")]
-            is_scaffold = True
-        else:
-            stem = f.stem
-            is_scaffold = False
-        if not re.match(r"^\d{2}_", stem):
-            continue
-        if is_scaffold or stem not in by_stem:
-            by_stem[stem] = f
+    by_stem = scene_extraction_files(path)
     items: list[dict] = []
     for stem in sorted(by_stem):
         f = by_stem[stem]
