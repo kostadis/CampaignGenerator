@@ -57,6 +57,7 @@ from session_doc.voice import (
     extract_contrast_sample,
     get_voice_note,
     load_voice_files,
+    voice_resolution_problems,
 )
 
 
@@ -92,6 +93,50 @@ def _load_genre_file(path: str | None) -> str | None:
               f"genre directive.", file=sys.stderr)
         return None
     return text
+
+
+def _load_voice_dir(path: str | None) -> dict[str, str]:
+    """Load the voice specs, or refuse the run — never return a silent ``{}``.
+
+    The bug this closes: ``Path.glob`` over a missing directory yields nothing
+    rather than raising, so a typo'd or renamed ``voice_dir`` produced exactly
+    the same ``{}`` as no flag, and ``get_voice_note``'s #247 warning starts
+    with ``if not voices: return None`` — so it could not fire. The warning
+    built to stop a voice file from silently missing the prompt was reachable
+    only when *some* file resolved, and mute in the one case where **all** of
+    them were lost.
+
+    Three states, and only one is fatal:
+
+    - **flag absent** — rendering without specs is a legitimate mode; ``{}``.
+    - **path is not a directory** — a declared path that does not exist is a
+      typo, and a typo is the whole bug. Fatal.
+    - **directory exists, holds no per-character specs** — nobody has written
+      any yet; ``{}``. NOT fatal, because this directory is frequently not a
+      GM declaration at all: ``new_workspace`` creates ``voice/`` empty and
+      ``PlatformConfigService.derive`` fills ``voice_dir`` in from its mere
+      existence, so failing here would refuse Narrate on every fresh campaign
+      over a path the tool chose. The rulebook conventionally living at
+      ``voice/_genre.md`` puts an otherwise-specless directory in this state
+      too.
+
+    A directory that holds *some* specs is where the silent miss actually
+    lives, and that is the pre-flight in ``main``, not this function.
+    """
+    if not path:
+        return {}
+    p = Path(path).expanduser()
+    if not p.is_dir():
+        print(f"Error: --voice-dir {p} is not a directory. Pass 5 would run with "
+              f"NO voice specs for any narrator.\n"
+              f"  -> fix the path, or drop the flag to render without voice specs.",
+              file=sys.stderr)
+        sys.exit(1)
+    voices = load_voice_files(p)
+    if not voices:
+        print(f"Note: --voice-dir {p} holds no per-character voice files; "
+              f"rendering without voice specs.", file=sys.stderr)
+    return voices
 
 
 def _load_examples(examples_dir: Path | None,
@@ -267,10 +312,7 @@ def main() -> None:
         roster = ""
     narration_genre = _load_genre_file(args.narration_genre_file)
     characters = [c.strip() for c in (args.characters or "").split(",") if c.strip()]
-    voice_files = (
-        load_voice_files(Path(args.voice_dir).expanduser())
-        if args.voice_dir else {}
-    )
+    voice_files = _load_voice_dir(args.voice_dir)
     examples_text, per_char_examples = _load_examples(
         Path(args.examples).expanduser() if args.examples else None,
         characters,
@@ -349,6 +391,26 @@ def main() -> None:
         sections = [(n, sections[n - 1]) for n in args.scene]
     else:
         sections = list(enumerate(sections, 1))
+
+    # Pre-flight: every narrator about to be rendered must resolve to a voice
+    # spec. Checked here — after --narrator/--scene filtering, before the first
+    # API call — so a render either has all its specs or does not start (#300).
+    # `get_voice_note`'s per-narrator warning fires mid-loop, once scenes 1..n-1
+    # have already been paid for and written, which makes the miss something you
+    # discover in the output rather than something that stops you.
+    if voice_files:
+        problems = voice_resolution_problems(
+            voice_files, [s["narrator"] for _i, s in sections]
+        )
+        if problems:
+            print(f"Error: --voice-dir {args.voice_dir} does not cover every "
+                  f"narrator in this render:", file=sys.stderr)
+            for line in problems:
+                print(f"  - {line}", file=sys.stderr)
+            print(f"  available keys: {sorted(voice_files)}\n"
+                  f"  -> add the missing file(s), or drop --voice-dir to render "
+                  f"without voice specs.", file=sys.stderr)
+            sys.exit(1)
 
     client = client_from_args(args)
     handoff = ""

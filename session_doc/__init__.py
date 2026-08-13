@@ -46,6 +46,7 @@ from session_doc.voice import (
     extract_contrast_sample,
     get_voice_note,
     load_voice_files,
+    voice_resolution_problems,
 )
 
 __all__ = [
@@ -77,6 +78,7 @@ __all__ = [
     "smoothed_claim_problems",
     "warn_if_smoothed_claims_verbatim",
     "load_voice_files",
+    "voice_resolution_problems",
     "parse_plan",
     "parse_vtt",
 ]

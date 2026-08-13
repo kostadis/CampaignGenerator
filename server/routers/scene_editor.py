@@ -755,6 +755,66 @@ def _party_args(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     return ["--party", cfg.paths.party, "--party-config", str(party_config)]
 
 
+def _voice_args(cfg: ResolvedEditorConfig, plan_path: Path,
+                scene_num: int) -> list[str] | tuple[None, str]:
+    """``--voice-dir`` for ``_build_narrate_cmd``, or ``(None, reason)`` (#300).
+
+    Refused here rather than forwarded, for the same reason ``_party_args``
+    refuses: the editor turns ``(None, reason)`` into readable text, where the
+    subprocess's stderr reaches the GM only as a failed run they have to open a
+    terminal to read.
+
+    Two conditions, matching ``sd_narrate``'s:
+
+    - the declared directory does not exist (a typo — see ``_load_voice_dir``);
+    - **this scene's narrator has no resolvable spec**, which is the likelier
+      real miss and the one worth a precise message. `toee`'s plans say
+      ``sequioa`` where the file is ``sequoia_voice.md``; without this check the
+      router forwards happily, the subprocess exits 1, and the GM gets an
+      opaque failed run in place of the sentence that names the typo.
+
+    A directory that exists but holds no per-character specs is deliberately
+    NOT refused: ``new_workspace`` creates ``voice/`` empty and ``derive``
+    fills ``voice_dir`` in from its mere existence, so that state is usually
+    the tool's doing rather than a GM declaration.
+
+    ``sd_narrate`` re-checks both independently — it is also driven from the
+    CLI, and a check that only exists in the router is a check the CLI lacks.
+    """
+    if not cfg.paths.voice_dir:
+        return []
+    voice_dir = Path(cfg.paths.voice_dir).expanduser()
+    if not voice_dir.is_dir():
+        return None, (
+            f"voice_dir {voice_dir} is not a directory. Pass 5 would render "
+            f"with no voice specs for any narrator. Fix the path in Session "
+            f"Config, or clear it to render without voice specs."
+        )
+
+    sys.path.insert(0, str(SCRIPT_DIR))
+    from session_doc import parse_plan
+    from session_doc.voice import load_voice_files, voice_resolution_problems
+
+    voices = load_voice_files(voice_dir)
+    if not voices:
+        # Nothing authored yet — render without specs, as before.
+        return ["--voice-dir", cfg.paths.voice_dir]
+
+    # Same scene->section indexing sd_narrate uses: plan order, 1-based.
+    sections = parse_plan(plan_path.read_text(encoding="utf-8"), total_chunks=99)
+    if not 1 <= scene_num <= len(sections):
+        return ["--voice-dir", cfg.paths.voice_dir]
+    narrator = sections[scene_num - 1]["narrator"]
+    problems = voice_resolution_problems(voices, [narrator])
+    if problems:
+        return None, (
+            f"{problems[0]} Available voice files: {sorted(voices)}. "
+            f"Fix the narrator's name in plan.md, add the file, or clear "
+            f"voice_dir to render without voice specs."
+        )
+    return ["--voice-dir", cfg.paths.voice_dir]
+
+
 def _build_enhance_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     """Stage 1: enhance_summary {vtt} --gmassist {session} --output {summary}.
 
@@ -1021,8 +1081,11 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
     if isinstance(party_args, tuple):
         return party_args
     cmd += party_args
-    for flag, value in [("--voice-dir", cfg.paths.voice_dir),
-                        ("--characters", cfg.roster.characters),
+    voice_args = _voice_args(cfg, plan_path, scene_num)
+    if isinstance(voice_args, tuple):
+        return voice_args
+    cmd += voice_args
+    for flag, value in [("--characters", cfg.roster.characters),
                         ("--examples", cfg.paths.examples_dir)]:
         if value:
             cmd += [flag, value]

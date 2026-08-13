@@ -811,3 +811,183 @@ def test_narrate_requests_system_prompt_caching(monkeypatch, tmp_path):
     assert len(fake_batch.calls) == 2
     for call in fake_batch.calls:
         assert "cache_system" not in call["kwargs"]
+
+
+# ── #300: a configured --voice-dir that cannot deliver stops the run ─────────
+#
+# `Path.glob` over a missing directory yields nothing rather than raising, so a
+# typo'd voice_dir produced the same `{}` as no flag at all — and
+# `get_voice_note`'s #247 warning opens with `if not voices: return None`, so
+# the warning built to stop a spec from silently missing the prompt was mute in
+# the one case where EVERY spec was lost. These pin the refusal that replaces
+# that silence.
+
+
+def test_voice_dir_not_given_is_still_a_legitimate_mode(tmp_path):
+    """Rendering without voice specs is a real mode and must not be broken."""
+    assert sd_narrate._load_voice_dir(None) == {}
+    assert sd_narrate._load_voice_dir("") == {}
+
+
+def test_voice_dir_that_does_not_exist_refuses(tmp_path, capsys):
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate._load_voice_dir(str(tmp_path / "nope"))
+    assert exc.value.code == 1
+    err = capsys.readouterr().err
+    assert "is not a directory" in err
+    assert "NO voice specs" in err
+
+
+def test_voice_dir_holding_only_shared_material_is_no_voice_mode(tmp_path, capsys):
+    """`_genre.md` is campaign material, not a spec — but a dir with only that
+    in it means "nobody has written specs yet", not "the path is wrong".
+
+    Deliberately NOT fatal: `new_workspace` creates `voice/` empty and
+    `PlatformConfigService.derive` fills `voice_dir` in from its mere
+    existence, so refusing here would break Narrate on every fresh campaign
+    over a path the tool chose rather than the GM.
+    """
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    (vd / "_genre.md").write_text("# Register\n", encoding="utf-8")
+
+    assert sd_narrate._load_voice_dir(str(vd)) == {}
+    assert "holds no per-character voice files" in capsys.readouterr().err
+
+
+def test_empty_voice_dir_is_no_voice_mode_not_a_refusal(tmp_path, capsys):
+    """The fresh-workspace shape, exactly."""
+    vd = tmp_path / "voice"
+    vd.mkdir()
+
+    assert sd_narrate._load_voice_dir(str(vd)) == {}
+    assert "holds no per-character voice files" in capsys.readouterr().err
+
+
+def test_a_fresh_workspace_still_renders(monkeypatch, tmp_path):
+    """End-to-end version of the above: empty voice/ must not block a render."""
+    paths = _write_fixtures(tmp_path)
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--voice-dir", str(vd)))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 2
+
+
+def test_usable_voice_dir_loads(tmp_path):
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    (vd / "alice_new_pipeline.md").write_text("Alice speaks flatly.", encoding="utf-8")
+    assert sd_narrate._load_voice_dir(str(vd)) == {
+        "alice_new_pipeline": "Alice speaks flatly."
+    }
+
+
+# ── #300: every narrator in the render must resolve, before the first call ───
+
+
+def _voice_dir(tmp_path: Path, *names: str) -> Path:
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    for n in names:
+        (vd / n).write_text(f"# {n}\n\nspec body\n", encoding="utf-8")
+    return vd
+
+
+def test_narrator_without_a_voice_file_stops_the_run_before_any_api_call(
+        monkeypatch, tmp_path, capsys):
+    """The plan needs Alice and Bob; only Alice has a spec.
+
+    Nothing may be rendered: the old behaviour warned for Bob and produced a
+    full session document in which one narrator had silently lost their voice.
+    """
+    paths = _write_fixtures(tmp_path)
+    vd = _voice_dir(tmp_path, "alice.md")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--voice-dir", str(vd)))
+
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+
+    assert exc.value.code == 1
+    assert fake_stream.calls == []                       # nothing was paid for
+    # The output dir itself is created earlier in main() (as it is on every
+    # other refusal path); what must not exist is narration.
+    assert list(paths["out_dir"].glob("*.md")) == []
+    err = capsys.readouterr().err
+    assert "narrator 'Bob': no voice file" in err
+    assert "available keys: ['alice']" in err
+
+
+def test_ambiguous_voice_file_stops_the_run_rather_than_guessing(
+        monkeypatch, tmp_path, capsys):
+    """#247 refuses to guess between two candidates; #300 makes that refusal
+    stop the render instead of dropping one narrator's spec."""
+    paths = _write_fixtures(tmp_path)
+    vd = _voice_dir(tmp_path, "alice_v1.md", "alice_v2.md", "bob.md")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--voice-dir", str(vd)))
+
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+
+    assert exc.value.code == 1
+    assert fake_stream.calls == []
+    err = capsys.readouterr().err
+    assert "ambiguous" in err
+    assert "alice_v1" in err and "alice_v2" in err
+
+
+def test_a_narrator_filtered_out_of_this_render_is_not_required(
+        monkeypatch, tmp_path):
+    """`--narrator Alice` renders only Alice's sections, so Bob's missing spec
+    is irrelevant to THIS run. The check follows the filters, not the plan."""
+    paths = _write_fixtures(tmp_path)
+    vd = _voice_dir(tmp_path, "alice.md")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--voice-dir", str(vd), "--narrator", "Alice"))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 1
+    assert "spec body" in fake_stream.calls[0]["system"]
+
+
+def test_full_coverage_renders_normally(monkeypatch, tmp_path):
+    paths = _write_fixtures(tmp_path)
+    vd = _voice_dir(tmp_path, "alice_new_pipeline.md", "bob.md")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--voice-dir", str(vd)))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 2
+
+
+# ── voice_resolution_problems in isolation ──────────────────────────────────
+
+
+def test_resolution_problems_empty_when_everyone_resolves():
+    voices = {"alice_new_pipeline": "a", "bob": "b"}
+    assert session_doc.voice_resolution_problems(voices, ["Alice", "Bob"]) == []
+
+
+def test_resolution_problems_reports_each_narrator_once():
+    """A plan giving one character four scenes is one problem, not four."""
+    problems = session_doc.voice_resolution_problems({"bob": "b"},
+                                                     ["Alice", "Alice", "Alice"])
+    assert len(problems) == 1
+    assert "Alice" in problems[0]
+
+
+def test_resolution_problems_ignores_blank_narrators():
+    assert session_doc.voice_resolution_problems({"bob": "b"}, ["", "  "]) == []
