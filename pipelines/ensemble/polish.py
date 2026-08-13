@@ -780,7 +780,7 @@ def main() -> None:
                         help="Directory containing per-character voice files")
     parser.add_argument("--party", required=True,
                         help="party.md (used to extract canonical narrator roster)")
-    parser.add_argument("--party-config", default=None,
+    parser.add_argument("--party-config", required=True,
                         help="party.yaml (conventionally <campaign>/config/party.yaml). "
                              "REQUIRED: the roster comes from each character's D&D Beyond "
                              "sheet frontmatter (issue #265) and there is no party.md "

@@ -588,5 +588,10 @@ def test_roster_from_config_no_player_line_shape(tmp_path):
     assert roster_from_config(cfg) == "- Boney: Undead Skeletal Horse"
 
 
-def test_roster_from_config_empty_roster_yields_empty_string(tmp_path):
-    assert roster_from_config(ResolvedPartyConfig(characters=[])) == ""
+def test_roster_from_config_rejects_a_roster_of_nobody(tmp_path, capsys):
+    """`characters: []` used to fall through to "" — which callers accept —
+    and render with the "never contradict these" block silently absent. That
+    is the roster-less render #265 exists to prevent, so it must be None."""
+    cfg = ResolvedPartyConfig(characters=[])
+    assert roster_from_config(cfg) is None
+    assert "lists no characters at all" in capsys.readouterr().err

@@ -427,22 +427,11 @@ def test_reextract_cmd_passes_party_config(tmp_path):
     assert cmd[cmd.index("--party") + 1] == str(tmp_path / "party.md")
 
 
-def test_reextract_cmd_omits_party_config_when_absent(tmp_path):
-    sd, gm, sx, nd = _seed_session_dir(tmp_path)
-    vtt = sd / "session.vtt"
-    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
-    cfg = _cfg(
-        session_recap=str(gm),
-        session_summary=str(sd / "session-summary.md"),
-        scene_extractions_dir=str(sx),
-        vtt=str(vtt),
-        party=str(tmp_path / "party.md"),
-        campaign_dir=str(tmp_path),
-    )
-    cmd = scene_editor._build_reextract_cmd(None, cfg)
-    assert isinstance(cmd, list)
-    assert "--party-config" not in cmd
-    assert "--party" in cmd
+# (The "--party alone, no config" case is covered by
+# test_party_without_a_config_refuses_instead_of_emitting_a_fatal_flag below.
+# An earlier version of this file asserted the router emitted `--party` alone
+# there — which is exactly the defect: that flag combination is fatal
+# downstream since #265 deleted the party.md roster fallback.)
 
 
 def test_narrate_cmd_passes_party_config(tmp_path):
@@ -480,3 +469,57 @@ def test_enhance_cmd_stays_roster_free(tmp_path):
     import inspect
     src = inspect.getsource(scene_editor._build_enhance_cmd)
     assert "_party_args" not in src
+
+
+def test_party_without_a_config_refuses_instead_of_emitting_a_fatal_flag(tmp_path):
+    """#265 made `--party` alone fatal downstream. Emitting it anyway would
+    hand the GM a subprocess crash naming --party-config, a flag the UI does
+    not expose. Refuse here, where the editor renders (None, reason)."""
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+        party=str(tmp_path / "party.md"),
+        campaign_dir=str(tmp_path),          # no config/party.yaml here
+    )
+    result = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(result, tuple)
+    assert result[0] is None
+    assert "party.yaml" in result[1] and "sheet_frontmatter" in result[1]
+
+
+def test_narrate_also_refuses_rather_than_emitting_party_alone(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    (nd / "plan.md").write_text("plan", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+        party=str(tmp_path / "party.md"),
+        campaign_dir=str(tmp_path),
+    )
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+    assert isinstance(result, tuple) and result[0] is None
+
+
+def test_no_party_configured_at_all_emits_neither_flag(tmp_path):
+    """A campaign that never set paths.party is not misconfigured — it just
+    runs without speaker normalisation, as it always could."""
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+        campaign_dir=str(tmp_path),
+    )
+    cmd = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert "--party" not in cmd and "--party-config" not in cmd

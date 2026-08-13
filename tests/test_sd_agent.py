@@ -294,3 +294,28 @@ def test_agent_makes_no_direct_api_call():
     src = (_REPO_ROOT / "session_doc" / "sd_agent.py").read_text()
     for forbidden in ("stream_api(", "call_api(", "make_client(", "client_from_args("):
         assert forbidden not in src
+
+
+# ── --party-config forwarding (#265) ─────────────────────────────────────────
+
+def test_scenes_stage_forwards_party_config(session):
+    """#265 deleted scene_extract's party.md roster fallback, so --party alone
+    now exits 1 there. sd_agent must be able to supply the flag that fixes it —
+    it had none, which made `sd_agent --stage scenes --party …` unsatisfiable:
+    guaranteed failure with nothing the caller could add."""
+    party = session / "party.md"
+    party.write_text("## A\n**Human Bard 5, Player: Ann**\n", encoding="utf-8")
+    cfg = session / "party.yaml"
+    cfg.write_text("characters: []\n", encoding="utf-8")
+    steps, _notes = build_steps(_args(
+        stage="scenes", session_dir=session, party=party, party_config=cfg))
+    generate = next(s for s in steps if s.key == "generate")
+    assert "--party-config" in generate.cmd
+    assert generate.cmd[generate.cmd.index("--party-config") + 1] == str(cfg)
+    assert "--party" in generate.cmd
+
+
+def test_scenes_stage_omits_party_config_when_not_given(session):
+    steps, _notes = build_steps(_args(stage="scenes", session_dir=session))
+    generate = next(s for s in steps if s.key == "generate")
+    assert "--party-config" not in generate.cmd

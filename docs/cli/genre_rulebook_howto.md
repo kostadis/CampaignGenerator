@@ -132,7 +132,8 @@ python -m session_doc.sd_narrate <recap> \
   --plan <narration>/plan.md \
   --scene-extractions <session>/scene_extractions_smoothed \
   --per-scene-output /tmp/try \
-  --party docs/party.md --voice-dir voice --examples examples \
+  --party docs/party.md --party-config config/party.yaml \
+  --voice-dir voice --examples examples \
   --characters "Brewbarry, Soma, Valphine, Vukradin" \
   --narration-genre-file voice/_genre.md \
   --prose-mode --narrate-tokens 16000 --scene 4 \

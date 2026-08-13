@@ -313,6 +313,12 @@ def player_map_from_config(cfg: "ResolvedPartyConfig") -> dict[str, str] | None:
     """
     result: dict[str, str] = {}
     problems: list[str] = []
+    if not cfg.characters:
+        # Distinct from the legitimate empty map (every ``player`` field a
+        # placeholder): there, sheets were read and had nothing to contribute.
+        # Here nothing was read at all, so returning {} would be a broken
+        # config reported as "nobody to attribute".
+        problems.append("party.yaml lists no characters at all")
     for character in cfg.characters:
         sheet = character.sheet
         if not sheet.exists():
@@ -326,7 +332,7 @@ def player_map_from_config(cfg: "ResolvedPartyConfig") -> dict[str, str] | None:
         _add_player_entries(result, player_raw, character.name)
     if problems:
         print(
-            "player_map_from_config: falling back to party.md — not every "
+            "player_map_from_config: no usable map — not every "
             "character's sheet yields usable frontmatter:\n"
             + "\n".join(f"  - {p}" for p in problems),
             file=sys.stderr,

@@ -271,10 +271,12 @@ def main() -> None:
                              "The VTT itself is never rewritten — scene "
                              "extraction emits verbatim quotes.")
     parser.add_argument("--party", metavar="FILE", default=None,
-                        help="party.md path. When set, player → character "
-                             "mappings are parsed from the `**Class, Player: "
-                             "Name**` lines and used to rewrite speaker "
-                             "labels in the VTT before the LLM sees it.")
+                        help="party.md path. When set, VTT speaker labels are "
+                             "rewritten to character names before the LLM sees "
+                             "them. The map itself comes from --party-config "
+                             "(#265), not from this file, so the two must be "
+                             "passed together; --party alone is an error. "
+                             "Omitting both skips speaker normalisation.")
     parser.add_argument("--party-config", metavar="FILE", default=None,
                         help="party.yaml (conventionally <campaign>/config/party.yaml). "
                              "REQUIRED: the player -> character map comes from each "

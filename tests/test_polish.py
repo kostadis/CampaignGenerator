@@ -491,3 +491,20 @@ def test_sanity_check_passes_clean_doc():
     doc = WorkingDoc.parse(SAMPLE_DOC)
     warnings = sanity_check(doc, {"vukradin", "soma", "brewbarry"})
     assert warnings == []
+
+
+def test_party_config_is_declared_required(monkeypatch, tmp_path):
+    """It is unconditionally mandatory since #265 (the roster call has no
+    guard), so argparse must reject its absence at usage time — exit 2 —
+    rather than letting the run parse the doc, read the recap and load the
+    voice dir before dying on a late runtime exit."""
+    import sys
+    from pipelines.ensemble import polish
+    doc = tmp_path / "doc.md"; doc.write_text("# t\n", encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", [
+        "polish", str(doc), "--recap", str(doc), "--party", str(doc),
+        "--voice-dir", str(tmp_path), "--out", str(tmp_path / "o.md"),
+    ])
+    with pytest.raises(SystemExit) as exc:
+        polish.main()
+    assert exc.value.code == 2          # argparse usage error, not a late exit

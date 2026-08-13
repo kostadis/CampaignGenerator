@@ -142,7 +142,11 @@ def main() -> None:
     parser.add_argument("--per-scene-output", required=True, metavar="DIR",
                         help="Where to write session_doc_scene_NN_<slug>.md files.")
     parser.add_argument("--party", metavar="FILE",
-                        help="party.md — supplies character classes + roster + voice cues.")
+                        help="party.md — supplies the party document's narrative content "
+                             "(voice cues, relationships) to the prompt. It is NOT read "
+                             "for the roster (#265), so passing it without "
+                             "--party-config is an error rather than a silent "
+                             "party.md-sourced roster.")
     parser.add_argument("--party-config", metavar="FILE", default=None,
                         help="party.yaml (conventionally <campaign>/config/party.yaml). "
                              "REQUIRED: the roster comes from each character's D&D Beyond "

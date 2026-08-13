@@ -118,6 +118,12 @@ def roster_from_config(cfg: "ResolvedPartyConfig") -> str | None:
     """
     lines: list[str] = []
     problems: list[str] = []
+    if not cfg.characters:
+        # A roster of nobody is a broken config, not an empty-but-valid one.
+        # Falling through would return "" — which callers accept — and render
+        # with the "never contradict these" block silently absent, the exact
+        # roster-less render #265 exists to prevent.
+        problems.append("party.yaml lists no characters at all")
     for character in cfg.characters:
         sheet = character.sheet
         if not sheet.exists():
@@ -152,8 +158,8 @@ def roster_from_config(cfg: "ResolvedPartyConfig") -> str | None:
         )
     if problems:
         print(
-            "roster_from_config: falling back to party.md — not every character's "
-            "sheet yields a usable frontmatter roster:\n"
+            "roster_from_config: no usable roster — not every character's "
+            "sheet yields usable frontmatter:\n"
             + "\n".join(f"  - {p}" for p in problems),
             file=sys.stderr,
         )

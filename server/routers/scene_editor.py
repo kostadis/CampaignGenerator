@@ -725,23 +725,34 @@ def _party_config_path(cfg: ResolvedEditorConfig) -> Path | None:
     return p if p.exists() else None
 
 
-def _party_args(cfg: ResolvedEditorConfig) -> list[str]:
-    """``--party``/``--party-config`` for the three CLIs that read a roster.
+def _party_args(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
+    """``--party``/``--party-config`` for the two builders that read a roster
+    (``_build_reextract_cmd``, ``_build_narrate_cmd``), or ``(None, reason)``.
 
-    Both are passed when both resolve: the readers prefer the sheet-sourced
-    roster and fall back to ``party.md``, and which one wins is theirs to
-    decide, not the router's.
+    ``--party`` alone is fatal downstream since #265 deleted the ``party.md``
+    roster fallback, so emitting it without a resolvable ``party.yaml`` would
+    hand the GM a subprocess crash and a message naming a flag the UI does not
+    expose. Refuse here instead, where the editor turns ``(None, reason)`` into
+    a readable error.
+
+    Dropping ``--party`` would be worse than refusing: it also gates VTT
+    speaker normalisation and ``enhance_summary``'s wrong-VTT pre-flight, so a
+    silent omission would quietly disable both.
 
     Not for ``sd_plan`` — it takes ``--party`` as raw prompt text and has no
     ``--party-config`` argument at all.
     """
-    args: list[str] = []
-    if cfg.paths.party:
-        args += ["--party", cfg.paths.party]
+    if not cfg.paths.party:
+        return []
     party_config = _party_config_path(cfg)
-    if party_config is not None:
-        args += ["--party-config", str(party_config)]
-    return args
+    if party_config is None:
+        return None, (
+            f"{Path(cfg.campaign_dir) / cfg.config_dir / PARTY_CONFIG_FILENAME} "
+            "not found. The roster comes from each character's sheet frontmatter "
+            "(#265) and party.md is no longer read for it, so this file is "
+            "required. Create it, then run: sheet_frontmatter --apply <sheet>.md"
+        )
+    return ["--party", cfg.paths.party, "--party-config", str(party_config)]
 
 
 def _build_enhance_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
@@ -976,10 +987,13 @@ def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
     # Pass party.md so scene_extract can rewrite Zoom display names to
     # character / GM labels deterministically before the LLM sees the VTT.
     # `party` is the synthesized party.md path (set by the Party Document
-    # page); the player→character map is parsed from its `**<Class>,
-    # Player: <Player>**` lines. --party-config rides alongside it (#265):
-    # the sheet frontmatter is preferred, party.md is the fallback.
-    cmd += _party_args(cfg)
+    # page), but it only GATES that rewrite — the player→character map itself
+    # comes from --party-config, i.e. each character's sheet frontmatter
+    # (#265). Hence both flags or neither, which _party_args enforces.
+    party_args = _party_args(cfg)
+    if isinstance(party_args, tuple):
+        return party_args
+    cmd += party_args
     # GM player name lives in cfg.roster.gm_player, resolved per-request
     # from the session editor config service — always the current value.
     gm_player = (cfg.roster.gm_player or "").strip()
@@ -1032,7 +1046,10 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
         "--scene", str(scene_num),
     ]
     cmd += _selection_args(request, cfg)
-    cmd += _party_args(cfg)
+    party_args = _party_args(cfg)
+    if isinstance(party_args, tuple):
+        return party_args
+    cmd += party_args
     for flag, value in [("--voice-dir", cfg.paths.voice_dir),
                         ("--characters", cfg.roster.characters),
                         ("--examples", cfg.paths.examples_dir)]:

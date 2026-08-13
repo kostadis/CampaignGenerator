@@ -343,7 +343,7 @@ def load_party_config_arg(
     path = Path(path_str).expanduser()
     if not path.exists():
         print(
-            f"Warning: --party-config not found: {path} — falling back to party.md",
+            f"Error: --party-config not found: {path}",
             file=sys.stderr,
         )
         return None

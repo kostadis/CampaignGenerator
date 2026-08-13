@@ -256,11 +256,13 @@ def main() -> None:
                         help="Where to write the enriched session-summary.md "
                              "(typically alongside the gm-assist)")
     parser.add_argument("--party", metavar="FILE", default=None,
-                        help="party.md path. When set, expected speaker "
-                             "display names are parsed from the `**Class, "
-                             "Player: Name**` lines and used for a wrong-VTT "
-                             "pre-flight check (aborts before submission if "
-                             "no VTT line starts with any of those names).")
+                        help="party.md path. When set, a wrong-VTT pre-flight "
+                             "runs (aborts before submission if no VTT line "
+                             "starts with an expected speaker name). The names "
+                             "come from --party-config (#265), not from this "
+                             "file, so the two must be passed together; --party "
+                             "alone is an error. Omitting both skips the "
+                             "pre-flight.")
     parser.add_argument("--party-config", metavar="FILE", default=None,
                         help="party.yaml (conventionally <campaign>/config/party.yaml). "
                              "REQUIRED: the player -> character map comes from each "
