@@ -532,10 +532,16 @@ def test_no_party_configured_at_all_emits_neither_flag(tmp_path):
 # to open a terminal to read.
 
 
-def _voice_cfg(tmp_path: Path, **overrides) -> ResolvedEditorConfig:
-    """A cfg with Narrate's preconditions satisfied, so a test can vary voice_dir."""
+def _voice_cfg(tmp_path: Path, keep_plan: bool = False,
+               **overrides) -> ResolvedEditorConfig:
+    """A cfg with Narrate's preconditions satisfied, so a test can vary voice_dir.
+
+    `keep_plan=True` retains `_seed_session_dir`'s real two-section plan
+    (Soma then Brewbarry) for the tests that need a narrator to resolve.
+    """
     sd, gm, sx, nd = _seed_session_dir(tmp_path)
-    (nd / "plan.md").write_text("plan", encoding="utf-8")
+    if not keep_plan:
+        (nd / "plan.md").write_text("plan", encoding="utf-8")
     return _cfg(
         session_recap=str(gm),
         session_summary=str(sd / "session-summary.md"),
@@ -554,17 +560,55 @@ def test_narrate_refuses_a_voice_dir_that_is_not_a_directory(tmp_path):
     assert "not a directory" in result[1]
 
 
-def test_narrate_refuses_a_voice_dir_holding_only_shared_material(tmp_path):
-    """`_genre.md` lives in voice/ on every campaign and is not a spec."""
+def test_narrate_does_not_refuse_a_voice_dir_with_no_specs_yet(tmp_path):
+    """`new_workspace` creates voice/ empty and `derive` fills voice_dir in
+    from its mere existence, so this state is usually the tool's doing rather
+    than a GM declaration. Refusing here would break Narrate on every fresh
+    campaign — and on any campaign holding only `voice/_genre.md`."""
     vd = tmp_path / "voice"
     vd.mkdir()
     (vd / "_genre.md").write_text("# Register\n", encoding="utf-8")
     cfg = _voice_cfg(tmp_path, voice_dir=str(vd))
 
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--voice-dir") + 1] == str(vd)
+
+
+def test_narrate_refuses_when_this_scenes_narrator_has_no_spec(tmp_path):
+    """The likelier real miss, and the one the router can describe precisely.
+
+    Without this the router forwards happily, the subprocess exits 1, and the
+    GM gets an opaque failed run instead of a sentence naming the typo — which
+    is the live `sequioa`/`sequoia_voice.md` case in toee.
+    """
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    # Scene 1's narrator in the seeded plan is Soma; only Brewbarry has a spec.
+    (vd / "brewbarry_new_pipeline.md").write_text("spec\n", encoding="utf-8")
+    cfg = _voice_cfg(tmp_path, voice_dir=str(vd), keep_plan=True)
+
     result = scene_editor._build_narrate_cmd(None, cfg, 1)
 
     assert isinstance(result, tuple) and result[0] is None
-    assert "no per-character voice files" in result[1]
+    assert "Soma" in result[1]
+    assert "no voice file" in result[1]
+    assert "brewbarry_new_pipeline" in result[1]
+
+
+def test_narrate_allows_a_scene_whose_own_narrator_resolves(tmp_path):
+    """Scene 2's narrator is Brewbarry, who does have a spec — the refusal is
+    per-scene, matching the per-scene run the editor actually launches."""
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    (vd / "brewbarry_new_pipeline.md").write_text("spec\n", encoding="utf-8")
+    cfg = _voice_cfg(tmp_path, voice_dir=str(vd), keep_plan=True)
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 2)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--voice-dir") + 1] == str(vd)
 
 
 def test_narrate_forwards_a_usable_voice_dir(tmp_path):

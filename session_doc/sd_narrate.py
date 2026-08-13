@@ -98,9 +98,6 @@ def _load_genre_file(path: str | None) -> str | None:
 def _load_voice_dir(path: str | None) -> dict[str, str]:
     """Load the voice specs, or refuse the run — never return a silent ``{}``.
 
-    ``--voice-dir`` not given at all is a legitimate mode and returns ``{}``.
-    Given and undeliverable is a **hard failure** (#300).
-
     The bug this closes: ``Path.glob`` over a missing directory yields nothing
     rather than raising, so a typo'd or renamed ``voice_dir`` produced exactly
     the same ``{}`` as no flag, and ``get_voice_note``'s #247 warning starts
@@ -108,6 +105,23 @@ def _load_voice_dir(path: str | None) -> dict[str, str]:
     built to stop a voice file from silently missing the prompt was reachable
     only when *some* file resolved, and mute in the one case where **all** of
     them were lost.
+
+    Three states, and only one is fatal:
+
+    - **flag absent** — rendering without specs is a legitimate mode; ``{}``.
+    - **path is not a directory** — a declared path that does not exist is a
+      typo, and a typo is the whole bug. Fatal.
+    - **directory exists, holds no per-character specs** — nobody has written
+      any yet; ``{}``. NOT fatal, because this directory is frequently not a
+      GM declaration at all: ``new_workspace`` creates ``voice/`` empty and
+      ``PlatformConfigService.derive`` fills ``voice_dir`` in from its mere
+      existence, so failing here would refuse Narrate on every fresh campaign
+      over a path the tool chose. The rulebook conventionally living at
+      ``voice/_genre.md`` puts an otherwise-specless directory in this state
+      too.
+
+    A directory that holds *some* specs is where the silent miss actually
+    lives, and that is the pre-flight in ``main``, not this function.
     """
     if not path:
         return {}
@@ -120,13 +134,8 @@ def _load_voice_dir(path: str | None) -> dict[str, str]:
         sys.exit(1)
     voices = load_voice_files(p)
     if not voices:
-        present = sorted(f.name for f in p.glob("*.md"))
-        detail = (f"it holds only shared `_`-prefixed material ({present})"
-                  if present else "it holds no .md files at all")
-        print(f"Error: --voice-dir {p} yields no voice specs — {detail}.\n"
-              f"  -> add per-character files, or drop the flag to render "
-              f"without voice specs.", file=sys.stderr)
-        sys.exit(1)
+        print(f"Note: --voice-dir {p} holds no per-character voice files; "
+              f"rendering without voice specs.", file=sys.stderr)
     return voices
 
 

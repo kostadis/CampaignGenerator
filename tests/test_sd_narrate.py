@@ -838,28 +838,44 @@ def test_voice_dir_that_does_not_exist_refuses(tmp_path, capsys):
     assert "NO voice specs" in err
 
 
-def test_voice_dir_holding_only_shared_material_refuses(tmp_path, capsys):
-    """`_genre.md` is campaign material, not a spec — a dir with only that in
-    it delivers nothing, and used to do so silently."""
+def test_voice_dir_holding_only_shared_material_is_no_voice_mode(tmp_path, capsys):
+    """`_genre.md` is campaign material, not a spec — but a dir with only that
+    in it means "nobody has written specs yet", not "the path is wrong".
+
+    Deliberately NOT fatal: `new_workspace` creates `voice/` empty and
+    `PlatformConfigService.derive` fills `voice_dir` in from its mere
+    existence, so refusing here would break Narrate on every fresh campaign
+    over a path the tool chose rather than the GM.
+    """
     vd = tmp_path / "voice"
     vd.mkdir()
     (vd / "_genre.md").write_text("# Register\n", encoding="utf-8")
 
-    with pytest.raises(SystemExit) as exc:
-        sd_narrate._load_voice_dir(str(vd))
-    assert exc.value.code == 1
-    err = capsys.readouterr().err
-    assert "yields no voice specs" in err
-    assert "_genre.md" in err          # names what it DID find
+    assert sd_narrate._load_voice_dir(str(vd)) == {}
+    assert "holds no per-character voice files" in capsys.readouterr().err
 
 
-def test_voice_dir_holding_no_markdown_at_all_refuses(tmp_path, capsys):
+def test_empty_voice_dir_is_no_voice_mode_not_a_refusal(tmp_path, capsys):
+    """The fresh-workspace shape, exactly."""
     vd = tmp_path / "voice"
     vd.mkdir()
-    with pytest.raises(SystemExit) as exc:
-        sd_narrate._load_voice_dir(str(vd))
-    assert exc.value.code == 1
-    assert "no .md files at all" in capsys.readouterr().err
+
+    assert sd_narrate._load_voice_dir(str(vd)) == {}
+    assert "holds no per-character voice files" in capsys.readouterr().err
+
+
+def test_a_fresh_workspace_still_renders(monkeypatch, tmp_path):
+    """End-to-end version of the above: empty voice/ must not block a render."""
+    paths = _write_fixtures(tmp_path)
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--voice-dir", str(vd)))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 2
 
 
 def test_usable_voice_dir_loads(tmp_path):

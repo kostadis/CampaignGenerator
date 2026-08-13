@@ -755,17 +755,31 @@ def _party_args(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     return ["--party", cfg.paths.party, "--party-config", str(party_config)]
 
 
-def _voice_args(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
+def _voice_args(cfg: ResolvedEditorConfig, plan_path: Path,
+                scene_num: int) -> list[str] | tuple[None, str]:
     """``--voice-dir`` for ``_build_narrate_cmd``, or ``(None, reason)`` (#300).
 
-    A configured voice directory that cannot deliver is refused here rather
-    than forwarded, for the same reason ``_party_args`` refuses: the editor
-    turns ``(None, reason)`` into readable text, where the subprocess's stderr
-    reaches the GM only as a failed run they have to open a terminal to read.
+    Refused here rather than forwarded, for the same reason ``_party_args``
+    refuses: the editor turns ``(None, reason)`` into readable text, where the
+    subprocess's stderr reaches the GM only as a failed run they have to open a
+    terminal to read.
 
-    ``sd_narrate`` refuses on the same conditions independently — it is also
-    driven from the CLI, and a check that only exists in the router is a check
-    the CLI does not have.
+    Two conditions, matching ``sd_narrate``'s:
+
+    - the declared directory does not exist (a typo — see ``_load_voice_dir``);
+    - **this scene's narrator has no resolvable spec**, which is the likelier
+      real miss and the one worth a precise message. `toee`'s plans say
+      ``sequioa`` where the file is ``sequoia_voice.md``; without this check the
+      router forwards happily, the subprocess exits 1, and the GM gets an
+      opaque failed run in place of the sentence that names the typo.
+
+    A directory that exists but holds no per-character specs is deliberately
+    NOT refused: ``new_workspace`` creates ``voice/`` empty and ``derive``
+    fills ``voice_dir`` in from its mere existence, so that state is usually
+    the tool's doing rather than a GM declaration.
+
+    ``sd_narrate`` re-checks both independently — it is also driven from the
+    CLI, and a check that only exists in the router is a check the CLI lacks.
     """
     if not cfg.paths.voice_dir:
         return []
@@ -776,11 +790,27 @@ def _voice_args(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
             f"with no voice specs for any narrator. Fix the path in Session "
             f"Config, or clear it to render without voice specs."
         )
-    # `_`-prefixed files are shared campaign material (`_genre.md`), not specs.
-    if not any(f.name[:1] != "_" for f in voice_dir.glob("*.md")):
+
+    sys.path.insert(0, str(SCRIPT_DIR))
+    from session_doc import parse_plan
+    from session_doc.voice import load_voice_files, voice_resolution_problems
+
+    voices = load_voice_files(voice_dir)
+    if not voices:
+        # Nothing authored yet — render without specs, as before.
+        return ["--voice-dir", cfg.paths.voice_dir]
+
+    # Same scene->section indexing sd_narrate uses: plan order, 1-based.
+    sections = parse_plan(plan_path.read_text(encoding="utf-8"), total_chunks=99)
+    if not 1 <= scene_num <= len(sections):
+        return ["--voice-dir", cfg.paths.voice_dir]
+    narrator = sections[scene_num - 1]["narrator"]
+    problems = voice_resolution_problems(voices, [narrator])
+    if problems:
         return None, (
-            f"voice_dir {voice_dir} holds no per-character voice files. Add "
-            f"them, or clear the setting to render without voice specs."
+            f"{problems[0]} Available voice files: {sorted(voices)}. "
+            f"Fix the narrator's name in plan.md, add the file, or clear "
+            f"voice_dir to render without voice specs."
         )
     return ["--voice-dir", cfg.paths.voice_dir]
 
@@ -1051,7 +1081,7 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
     if isinstance(party_args, tuple):
         return party_args
     cmd += party_args
-    voice_args = _voice_args(cfg)
+    voice_args = _voice_args(cfg, plan_path, scene_num)
     if isinstance(voice_args, tuple):
         return voice_args
     cmd += voice_args
