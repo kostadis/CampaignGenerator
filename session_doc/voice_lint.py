@@ -24,6 +24,11 @@ filing checks are **skipped and reported as skipped**. A campaign whose rulebook
 nothing about bookkeeping registers has no such rule to enforce, and inventing one — or
 reporting "clean" for a check that never ran — is the failure this replaced.
 
+A *malformed* bookkeeping block skips the same way, and says which one it was. Building a
+half-valid ``Bookkeeping`` out of it re-opened the hole from the other side: empty name
+lists match no narrator, so the licensing check went silently inert on a run that printed
+nothing at all. Every skip carries its own reason.
+
 The block is fenced YAML inside the rulebook, so the prose statement of the rule and the
 machine-readable form live in one file that the render pipeline already reads:
 
@@ -41,7 +46,10 @@ machine-readable form live in one file that the render pipeline already reads:
 
 No model calls, no network — pure stdlib plus PyYAML, cheap to run in a loop.
 
-Exit code is 1 if any hard ERROR fired (so it can gate a pipeline), else 0.
+Exit code is 1 if any hard ERROR fired (so it can gate a pipeline), 2 if ``--genre-file``
+was given but could not be read, else 0. A path that does not resolve is a usage error,
+not a skip: asking for a rulebook and silently not getting one is how a gating step goes
+green with its campaign-specific checks switched off.
 
 Usage:
     voice_lint path/to/gm-assist-doc.md
@@ -58,7 +66,11 @@ from pathlib import Path
 
 import yaml
 
-SECTION_RE = re.compile(r"^##\s+(\w+)", re.M)  # "## Daz — ..." -> "Daz"
+# "## Daz — Scene 01" -> "Daz"; "## Unla Kee — Scene 01" -> "Unla Kee". The separator has
+# to be a *spaced* dash so a hyphenated narrator ("Jean-Luc") survives whole. The old
+# `(\w+)` captured the first word only, which is why a two-word narrator could never match
+# a rulebook rule: the heading yielded "Unla" and the rulebook said "unla kee".
+SECTION_RE = re.compile(r"^##\s+(.+?)(?:\s+[—–-]\s+.*)?\s*$", re.M)
 SHAPE_RE = re.compile(r"\bthe shape of\b", re.I)
 PORTRAIT_RE = re.compile(
     r"\bwith the [^.,;]*? of (?:a |an |the )?"
@@ -98,6 +110,9 @@ DEFAULT_TIC_CAP = 1
 
 _BOOKKEEPING_KEYS = {"licensed", "unlicensed", "per_section_cap", "doc_sections_cap"}
 
+CONFIG_NOTE_PREFIX = "[config] "  # per-document notes the CLI prints once, not per file
+NO_RULEBOOK = "no rulebook was given (--genre-file)"
+
 
 @dataclass(frozen=True)
 class Bookkeeping:
@@ -111,12 +126,23 @@ class Bookkeeping:
 
 @dataclass(frozen=True)
 class LintConfig:
-    """What the campaign's rulebook says. ``bookkeeping is None`` means it says nothing."""
+    """What the campaign's rulebook says. ``bookkeeping is None`` means it says nothing.
+
+    ``skip_reason`` is why it says nothing, and there are five different whys: no rulebook
+    was asked for, the file is not there, it has no ``voice_lint`` block, the block has no
+    ``bookkeeping`` section, or that section did not parse. Reporting all five as "declares
+    no bookkeeping block" tells a GM the campaign has no filing register when the truth may
+    be that the path is a typo.
+
+    ``readable`` is False only when a rulebook was asked for and could not be read.
+    """
 
     source: str | None = None
     bookkeeping: Bookkeeping | None = None
     tic_caps: dict[str, int] = field(default_factory=dict)
     problems: tuple[str, ...] = ()
+    skip_reason: str = NO_RULEBOOK
+    readable: bool = True
 
     def cap_for(self, key: str) -> int:
         return self.tic_caps.get(key, DEFAULT_TIC_CAP)
@@ -133,21 +159,27 @@ def parse_config(genre_text: str, source: str | None = None) -> LintConfig:
 
     A rulebook is hand-authored campaign content, so a typo here must not crash a lint
     run or, worse, silently fall back to another campaign's rules. Every problem is
-    collected and reported alongside the findings.
+    collected and reported alongside the findings, and anything the parser could not use
+    leaves ``bookkeeping`` unset so the checks skip loudly instead of running on blanks.
     """
+    label = source or "the rulebook"
     body = extract_block(genre_text)
     if body is None:
-        return LintConfig(source=source)
+        return LintConfig(source=source,
+                          skip_reason=f"{label} has no ```yaml voice_lint block")
 
     try:
         data = yaml.safe_load(body)
     except yaml.YAMLError as exc:
-        return LintConfig(source=source, problems=(f"voice_lint block is not valid YAML: {exc}",))
+        return LintConfig(source=source, problems=(f"voice_lint block is not valid YAML: {exc}",),
+                          skip_reason=f"{label}'s voice_lint block is not valid YAML")
     if data is None:
-        return LintConfig(source=source, problems=("voice_lint block is empty",))
+        return LintConfig(source=source, problems=("voice_lint block is empty",),
+                          skip_reason=f"{label}'s voice_lint block is empty")
     if not isinstance(data, dict):
         return LintConfig(source=source,
-                          problems=(f"voice_lint block must be a mapping, got {type(data).__name__}",))
+                          problems=(f"voice_lint block must be a mapping, got {type(data).__name__}",),
+                          skip_reason=f"{label}'s voice_lint block is not a mapping")
 
     problems: list[str] = []
     for key in data:
@@ -155,20 +187,35 @@ def parse_config(genre_text: str, source: str | None = None) -> LintConfig:
             problems.append(f"unrecognised voice_lint key {key!r} — ignored")
 
     bookkeeping = None
+    skip_reason = f"{label}'s voice_lint block declares no bookkeeping section"
     raw_bk = data.get("bookkeeping")
     if raw_bk is not None:
         if not isinstance(raw_bk, dict):
             problems.append("bookkeeping: must be a mapping — filing checks skipped")
+            skip_reason = f"{label}'s bookkeeping section is not a mapping"
         else:
+            before = len(problems)
             for key in raw_bk:
                 if key not in _BOOKKEEPING_KEYS:
                     problems.append(f"unrecognised bookkeeping key {key!r} — ignored")
-            bookkeeping = Bookkeeping(
+            candidate = Bookkeeping(
                 licensed=_name_tuple(raw_bk.get("licensed"), "licensed", problems),
                 unlicensed=_name_tuple(raw_bk.get("unlicensed"), "unlicensed", problems),
-                per_section_cap=_positive_int(raw_bk.get("per_section_cap"), "per_section_cap", 1, problems),
-                doc_sections_cap=_positive_int(raw_bk.get("doc_sections_cap"), "doc_sections_cap", 2, problems),
+                per_section_cap=_cap_int(raw_bk.get("per_section_cap"), "per_section_cap", 1, problems),
+                doc_sections_cap=_cap_int(raw_bk.get("doc_sections_cap"), "doc_sections_cap", 2, problems),
             )
+            # Anything the parser had to complain about leaves the register undeclared. A
+            # partly-understood rule is the one shape that must not run: it enforces
+            # something the GM did not write, and reports the rest as checked.
+            if len(problems) > before:
+                skip_reason = (f"{label}'s bookkeeping section did not parse cleanly "
+                               "— see the [config] note(s)")
+            elif not candidate.licensed and not candidate.unlicensed:
+                problems.append("bookkeeping: neither licensed nor unlicensed names a "
+                                "narrator — filing checks skipped")
+                skip_reason = f"{label}'s bookkeeping section names no narrators"
+            else:
+                bookkeeping = candidate
 
     tic_caps: dict[str, int] = {}
     raw_tics = data.get("portable_tics")
@@ -181,21 +228,33 @@ def parse_config(genre_text: str, source: str | None = None) -> LintConfig:
                 if key not in known:
                     problems.append(f"unrecognised portable_tics key {key!r} — ignored")
                     continue
-                tic_caps[key] = _positive_int(value, key, DEFAULT_TIC_CAP, problems, allow_zero=True)
+                tic_caps[key] = _cap_int(value, key, DEFAULT_TIC_CAP, problems)
 
     return LintConfig(source=source, bookkeeping=bookkeeping, tic_caps=tic_caps,
-                      problems=tuple(problems))
+                      problems=tuple(problems), skip_reason=skip_reason)
 
 
 def load_config(genre_file: str | Path | None) -> LintConfig:
-    """Read a rulebook from disk. A missing path is 'says nothing', reported as such."""
+    """Read a rulebook from disk. An unreadable path is 'says nothing', reported as such.
+
+    The library degrades; the CLI does not. ``main`` turns ``readable=False`` into exit 2,
+    because a caller that named a rulebook and did not get one has a broken invocation,
+    not a campaign without a filing register.
+    """
     if not genre_file:
         return LintConfig()
     path = Path(genre_file)
     if not path.is_file():
         return LintConfig(source=str(path),
-                          problems=(f"--genre-file {path} does not exist",))
-    return parse_config(path.read_text(), source=str(path))
+                          problems=(f"--genre-file {path} does not exist",),
+                          skip_reason=f"{path} does not exist", readable=False)
+    try:
+        text = path.read_text()
+    except (OSError, UnicodeDecodeError) as exc:
+        return LintConfig(source=str(path),
+                          problems=(f"--genre-file {path} could not be read: {exc}",),
+                          skip_reason=f"{path} could not be read", readable=False)
+    return parse_config(text, source=str(path))
 
 
 def _name_tuple(value, label: str, problems: list[str]) -> tuple[str, ...]:
@@ -209,14 +268,30 @@ def _name_tuple(value, label: str, problems: list[str]) -> tuple[str, ...]:
     return tuple(v.strip().lower() for v in value if v.strip())
 
 
-def _positive_int(value, label: str, default: int, problems: list[str], allow_zero: bool = False) -> int:
+def _cap_int(value, label: str, default: int, problems: list[str]) -> int:
+    """A cap of 0 is legitimate, and is the strictest setting: it tolerates no occurrence.
+
+    Rejecting it and substituting the default gave a rulebook that asked for "no filing at
+    all" a *looser* check than one that asked for nothing.
+    """
     if value is None:
         return default
-    if not isinstance(value, int) or isinstance(value, bool) or value < (0 if allow_zero else 1):
-        problems.append(f"{label}: expected a{'' if allow_zero else ' positive'} integer, "
-                        f"got {value!r} — using {default}")
+    if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+        problems.append(f"{label}: expected a non-negative integer, got {value!r} "
+                        f"— using {default}")
         return default
     return value
+
+
+def _named(name: str, names: tuple[str, ...]) -> bool:
+    """True if a section heading's narrator is one of ``names``.
+
+    Exact on the normalised name, plus a whole-word prefix so a heading that qualifies the
+    narrator ("Grygum the Deep Gnome") still matches its rule. A bare ``startswith`` let
+    ``daz`` claim a narrator called ``Dazzle``.
+    """
+    n = " ".join(name.lower().split())
+    return any(n == v or n.startswith(v + " ") for v in names)
 
 
 def split_sections(text):
@@ -246,7 +321,7 @@ def lint(text, config: LintConfig | None = None):
     sections = split_sections(text)
     errors, warns, notes = [], [], []
 
-    notes.extend(f"[config] {p}" for p in config.problems)
+    notes.extend(f"{CONFIG_NOTE_PREFIX}{p}" for p in config.problems)
 
     # Doc-level banned constructions. base.md bans these for every campaign, so they run
     # whether or not a rulebook was supplied; only the cap is campaign-tunable.
@@ -259,10 +334,9 @@ def lint(text, config: LintConfig | None = None):
         bucket.append(f"[{label}] {len(hits)} occurrence(s) doc-wide — target 0, cap {cap}")
 
     if config.bookkeeping is None:
-        where = config.source or "no --genre-file given"
         notes.append(
-            f"[skipped] bookkeeping/filing checks — this campaign's rulebook declares no "
-            f"voice_lint bookkeeping block ({where}). Not the same as clean: nothing was checked."
+            f"[skipped] bookkeeping/filing checks — {config.skip_reason}. "
+            f"Not the same as clean: nothing was checked."
         )
         return errors, warns, notes
 
@@ -277,11 +351,13 @@ def lint(text, config: LintConfig | None = None):
         n = len(FP_FILE_RE.findall(body))
         if not n:
             continue
-        if name.lower().startswith(bk.unlicensed):
-            licensed = "/".join(v.title() for v in bk.licensed) or "no one's"
+        if _named(name, bk.unlicensed):
+            licensed = "/".join(v.title() for v in bk.licensed)
+            register = (f"filing is a {licensed} register" if licensed
+                        else "the rulebook licenses no one to file")
             errors.append(
                 f'[cross-pollination] {name} uses first-person "I filed" {n}x — '
-                f"filing is a {licensed} register; {name}'s rulebook entry does not license it"
+                f"{register}; {name}'s rulebook entry does not license it"
             )
         elif n > bk.per_section_cap:
             warns.append(
@@ -299,11 +375,23 @@ def main():
     ap.add_argument("--genre-file", default=None, metavar="PATH",
                     help="the campaign's rulebook (paths.genre_file, conventionally "
                          "voice/_genre.md). Supplies the bookkeeping rules; without it "
-                         "those checks are skipped, not passed.")
+                         "those checks are skipped, not passed. A path that cannot be "
+                         "read exits 2.")
     ap.add_argument("--quiet", action="store_true", help="print errors only, suppress warnings")
     args = ap.parse_args()
 
     config = load_config(args.genre_file)
+    if not config.readable:
+        for p in config.problems:
+            print(f"ERROR  {p}", file=sys.stderr)
+        sys.exit(2)
+
+    # The rulebook is one file for the whole run, so its complaints belong to the run, not
+    # to each document. Printing them per file made N copies and buried the findings.
+    for p in config.problems:
+        print(f"note   {CONFIG_NOTE_PREFIX}{p}")
+    if config.problems:
+        print()
 
     total_errors = 0
     for p in args.paths:
@@ -312,6 +400,7 @@ def main():
             print(f"skip   {p} (not a file)")
             continue
         errors, warns, notes = lint(path.read_text(), config)
+        notes = [n for n in notes if not n.startswith(CONFIG_NOTE_PREFIX)]
         if errors or notes or (warns and not args.quiet):
             print(f"== {p} ==")
         for e in errors:
