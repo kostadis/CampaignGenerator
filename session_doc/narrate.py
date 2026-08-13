@@ -9,15 +9,79 @@ import re
 
 from campaignlib import load_agent_prompt
 
-NARRATE_SYSTEM_BASE        = load_agent_prompt("session_doc/narrate/base")
-EXAMPLES_BLOCK             = load_agent_prompt("session_doc/narrate/examples_block")
-PER_CHAR_EXAMPLES_BLOCK    = load_agent_prompt("session_doc/narrate/per_char_examples")
-VOICE_SPEC_BLOCK           = load_agent_prompt("session_doc/narrate/voice_spec")
-PREV_VOICE_CONTRAST_BLOCK  = load_agent_prompt("session_doc/narrate/prev_voice_contrast")
-DIALOGUE_INSTRUCTION_FULL        = load_agent_prompt("session_doc/narrate/dialogue_full")
-DIALOGUE_INSTRUCTION_CONDITIONAL = load_agent_prompt("session_doc/narrate/dialogue_conditional")
-PROSE_MODE_INSTRUCTION     = load_agent_prompt("session_doc/narrate/prose_mode")
-SCENE_ANCHORED_DIRECTIVE   = load_agent_prompt("session_doc/narrate/scene_anchored")
+_PLACEHOLDER_RE = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
+
+
+def _load_template(name: str, *placeholders: str) -> str:
+    """Load a narrate template and verify its placeholders, both directions.
+
+    ``load_agent_prompt`` already offers exactly this check — "every ``{key}``
+    in the template must appear in ``placeholders``, and every key in
+    ``placeholders`` must appear in the template [...] so prompt drift surfaces
+    loudly instead of silently producing a malformed prompt" — but only when a
+    ``placeholders`` dict is passed, and this module cannot pass one: the
+    values are computed per call, conditionally, while the templates are
+    constants loaded once at import.
+
+    So the module declined the check and hand-rolled ``str.replace`` instead,
+    which is a no-op on an absent needle. Renaming ``{genre_directive}`` in
+    ``base.md`` deleted the genre rulebook from every system prompt with no
+    error, no warning and a green suite (#302) — in the pipeline that had just
+    lost that rulebook for months (#295).
+
+    This restores the guarantee at the only point where it can be made here:
+    import time, against the names the module actually substitutes. A campaign
+    override under ``config/agents/`` is checked too, since ``load_agent_prompt``
+    resolves those first — an override that drops a placeholder is exactly the
+    silent case worth failing on.
+    """
+    text = load_agent_prompt(name)
+    found = set(_PLACEHOLDER_RE.findall(text))
+    expected = set(placeholders)
+    if found != expected:
+        missing = sorted(expected - found)
+        unknown = sorted(found - expected)
+        detail = []
+        if missing:
+            detail.append(
+                f"template is missing {missing} — the code substitutes "
+                f"{'them' if len(missing) > 1 else 'it'}, so "
+                f"{'those blocks' if len(missing) > 1 else 'that block'} "
+                f"would silently never appear in the prompt"
+            )
+        if unknown:
+            detail.append(
+                f"template contains {unknown}, which nothing substitutes — "
+                f"{'they' if len(unknown) > 1 else 'it'} would reach the model "
+                f"as literal text"
+            )
+        raise ValueError(
+            f"config/agents/{name}.md placeholder drift: " + "; ".join(detail)
+        )
+    return text
+
+
+NARRATE_SYSTEM_BASE        = _load_template(
+    "session_doc/narrate/base",
+    "genre_directive", "examples_block", "scene_scope_line", "scene_events_line",
+    "rendering_instruction", "length_instruction", "dialogue_instruction",
+)
+EXAMPLES_BLOCK             = _load_template(
+    "session_doc/narrate/examples_block", "examples")
+PER_CHAR_EXAMPLES_BLOCK    = _load_template(
+    "session_doc/narrate/per_char_examples", "narrator", "examples")
+VOICE_SPEC_BLOCK           = _load_template(
+    "session_doc/narrate/voice_spec", "narrator", "voice_note")
+PREV_VOICE_CONTRAST_BLOCK  = _load_template(
+    "session_doc/narrate/prev_voice_contrast",
+    "prev_narrator", "prev_voice_sample", "narrator")
+DIALOGUE_INSTRUCTION_FULL        = _load_template(
+    "session_doc/narrate/dialogue_full")
+DIALOGUE_INSTRUCTION_CONDITIONAL = _load_template(
+    "session_doc/narrate/dialogue_conditional")
+PROSE_MODE_INSTRUCTION     = _load_template("session_doc/narrate/prose_mode")
+SCENE_ANCHORED_DIRECTIVE   = _load_template(
+    "session_doc/narrate/scene_anchored", "narrator")
 
 # Longest genre value still delivered as an inline ``GENRE: ...`` label.
 # Anything above this is a document and gets its own delimited block.
