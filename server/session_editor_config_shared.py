@@ -218,11 +218,19 @@ class NarrateKnobs(BaseModel):
         # a migration with no input. A permanent false alarm on the one stream
         # whose job is to make the real alarm noticeable (#303); the real one,
         # #295, went unnoticed for months.
-        relocated = [k for k in RELOCATED_NARRATE_FIELDS
-                     if k in data and str(data[k] or "").strip()]
-        empty_relocated = [k for k in RELOCATED_NARRATE_FIELDS
-                           if k in data and not str(data[k] or "").strip()]
-        if not retired and not relocated and not empty_relocated:
+        present = [k for k in RELOCATED_NARRATE_FIELDS if k in data]
+        # "Holds a document" must mean what the migration means by it —
+        # `_paste_from_raw` accepts `isinstance(value, str)` and nothing else.
+        # A hand-edited `genre:` written as a YAML list would otherwise be
+        # announced with a *repr* length and a migration command that then
+        # reports "nothing to migrate".
+        relocated = [k for k in present
+                     if isinstance(data[k], str) and data[k].strip()]
+        # Present, non-empty, and not a string: still dropped (the field is
+        # gone), but neither silently nor with advice that cannot work.
+        odd = [k for k in present
+               if k not in relocated and data[k] not in (None, "", [], {})]
+        if not retired and not present:
             return data
         if retired:
             print(
@@ -233,7 +241,7 @@ class NarrateKnobs(BaseModel):
             )
         if relocated:
             sizes = ", ".join(
-                f"{k} ({len(str(data[k]))} chars)" for k in relocated
+                f"{k} ({len(data[k])} chars)" for k in relocated
             )
             print(
                 f"  config: ignoring relocated session_doc.yaml narrate field(s) "
@@ -243,7 +251,20 @@ class NarrateKnobs(BaseModel):
                 f"       python -m server.migrate_narrate_genre --campaign-dir <DIR>",
                 file=sys.stderr,
             )
-        drop = set(retired) | set(relocated) | set(empty_relocated)
+        if odd:
+            kinds = ", ".join(f"{k} ({type(data[k]).__name__})" for k in odd)
+            print(
+                f"  config: discarding session_doc.yaml narrate field(s) {kinds} "
+                f"— the genre rulebook is a file at paths.genre_file (#276), and "
+                f"this value is not text, so there is nothing to relocate.\n"
+                f"    -> write the rulebook to voice/_genre.md and point "
+                f"paths.genre_file at it.",
+                file=sys.stderr,
+            )
+        # Every present key is dropped either way: the field no longer exists on
+        # the model, and `extra="forbid"` would reject the whole config — taking
+        # the editor down on boot — over a value nobody reads.
+        drop = set(retired) | set(present)
         return {k: v for k, v in data.items() if k not in drop}
 
 

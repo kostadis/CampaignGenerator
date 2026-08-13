@@ -251,3 +251,54 @@ def test_the_char_count_is_the_documents_not_the_reprs(capsys):
     NarrateKnobs.model_validate({"genre": "abcdefghij"})
 
     assert "(10 chars)" in capsys.readouterr().err
+
+
+# ── #303 review: the predicate must agree with the migration's ──────────────
+
+
+def test_a_non_string_genre_is_discarded_without_bogus_advice(capsys):
+    """A hand-edit writing `genre:` as a YAML list.
+
+    `migrate_narrate_genre._paste_from_raw` accepts `isinstance(value, str)`
+    and nothing else, so announcing this one as a relocatable document would
+    quote a *repr* length and send the GM to a migration that then reports
+    nothing to migrate.
+    """
+    knobs = NarrateKnobs.model_validate({"genre": ["line one", "line two"],
+                                         "tokens": 4000})
+
+    assert knobs.tokens == 4000              # config still loads
+    assert not hasattr(knobs, "genre")       # and the field is still dropped
+    err = capsys.readouterr().err
+    assert "not text" in err
+    assert "(list)" in err
+    assert "migrate_narrate_genre" not in err   # no advice that cannot work
+
+
+def test_an_empty_list_genre_is_silent(capsys):
+    NarrateKnobs.model_validate({"genre": []})
+    assert capsys.readouterr().err == ""
+
+
+def test_a_non_string_genre_does_not_break_the_strict_model():
+    """`extra="forbid"` would reject the whole config — taking the editor down
+    on boot — if an unrecognised `genre` survived the validator."""
+    knobs = NarrateKnobs.model_validate({"genre": {"a": "b"}, "prose_mode": True})
+    assert knobs.prose_mode is True
+
+
+def test_the_char_count_is_the_string_length_not_the_repr(capsys):
+    NarrateKnobs.model_validate({"genre": "abcdefghij"})
+    assert "(10 chars)" in capsys.readouterr().err
+
+
+# ── #303 review: no rulebook at all still says so, somewhere ────────────────
+
+
+def test_no_genre_file_flag_emits_a_note(capsys):
+    """Dropping the null-value false alarm removed the last signal that a
+    campaign has no rulebook. This is the floor that replaces it."""
+    assert _load_genre_file(None) is None
+    err = capsys.readouterr().err
+    assert "no --narration-genre-file" in err
+    assert "no register rules" in err

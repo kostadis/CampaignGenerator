@@ -77,6 +77,20 @@ def _load_genre_file(path: str | None) -> str | None:
     list live — so say so rather than proceeding quietly.
     """
     if not path:
+        # The floor, restored by #303's review. Dropping the false alarm on a
+        # null `narrate.genre` removed the last thing on any surface that
+        # pointed at obelisk having no rulebook at all — the router omits the
+        # flag when `paths.genre_file` is unset, and this function used to
+        # return None in silence, so Pass 5 rendered with no register rules and
+        # said nothing anywhere.
+        #
+        # A note, not a warning: "no rulebook configured and none on disk" is a
+        # legitimate state. The louder case — configured nowhere while
+        # `voice/_genre.md` sits right there — is #295's, and belongs where the
+        # config can see the campaign directory.
+        print("Note: no --narration-genre-file; Pass 5 will render with no "
+              "genre directive (no register rules, no banned-tic list, no "
+              "bookkeeping caps).", file=sys.stderr)
         return None
     p = Path(path).expanduser()
     if not p.is_file():
