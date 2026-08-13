@@ -218,6 +218,20 @@ class NarrateKnobs(BaseModel):
         # a migration with no input. A permanent false alarm on the one stream
         # whose job is to make the real alarm noticeable (#303); the real one,
         # #295, went unnoticed for months.
+        def _is_empty(value: Any) -> bool:
+            """Holds nothing worth announcing.
+
+            Strings are stripped first: `genre: "   "` and a block scalar
+            yielding `"\n"` are empty documents, not "not text". Without the
+            strip they failed the `relocated` test AND the emptiness test and
+            landed in `odd`, printing "genre (str) ... this value is not text"
+            — self-contradictory, and the same per-load false alarm on a new
+            value that this whole change exists to remove.
+            """
+            if isinstance(value, str):
+                return not value.strip()
+            return value in (None, "", [], {})
+
         present = [k for k in RELOCATED_NARRATE_FIELDS if k in data]
         # "Holds a document" must mean what the migration means by it —
         # `_paste_from_raw` accepts `isinstance(value, str)` and nothing else.
@@ -229,7 +243,7 @@ class NarrateKnobs(BaseModel):
         # Present, non-empty, and not a string: still dropped (the field is
         # gone), but neither silently nor with advice that cannot work.
         odd = [k for k in present
-               if k not in relocated and data[k] not in (None, "", [], {})]
+               if k not in relocated and not _is_empty(data[k])]
         if not retired and not present:
             return data
         if retired:
@@ -241,7 +255,7 @@ class NarrateKnobs(BaseModel):
             )
         if relocated:
             sizes = ", ".join(
-                f"{k} ({len(data[k])} chars)" for k in relocated
+                f"{k} ({len(data[k].strip())} chars)" for k in relocated
             )
             print(
                 f"  config: ignoring relocated session_doc.yaml narrate field(s) "

@@ -230,9 +230,10 @@ def test_empty_genre_key_is_dropped_without_a_migration_notice(value, capsys):
 
     assert knobs.tokens == 8000
     assert not hasattr(knobs, "genre")
-    err = capsys.readouterr().err
-    assert "migrate_narrate_genre" not in err
-    assert "relocated" not in err
+    # Asserting SILENCE, not just the absence of two substrings: the `odd`
+    # bucket's message contains neither, so a narrower assertion passed green
+    # while a whitespace-only value was being announced as "not text".
+    assert capsys.readouterr().err == ""
 
 
 def test_a_real_paste_is_still_announced_loudly(capsys):
@@ -249,6 +250,15 @@ def test_a_real_paste_is_still_announced_loudly(capsys):
 
 def test_the_char_count_is_the_documents_not_the_reprs(capsys):
     NarrateKnobs.model_validate({"genre": "abcdefghij"})
+
+    assert "(10 chars)" in capsys.readouterr().err
+
+
+def test_the_char_count_matches_what_the_migration_will_report(capsys):
+    """`migrate_narrate_genre._describe` measures `value.strip()`. A paste with
+    trailing blank lines was announced as N chars here and N-k there — the one
+    number the two surfaces both quote, disagreeing."""
+    NarrateKnobs.model_validate({"genre": "abcdefghij\n\n  "})
 
     assert "(10 chars)" in capsys.readouterr().err
 
@@ -285,11 +295,6 @@ def test_a_non_string_genre_does_not_break_the_strict_model():
     on boot — if an unrecognised `genre` survived the validator."""
     knobs = NarrateKnobs.model_validate({"genre": {"a": "b"}, "prose_mode": True})
     assert knobs.prose_mode is True
-
-
-def test_the_char_count_is_the_string_length_not_the_repr(capsys):
-    NarrateKnobs.model_validate({"genre": "abcdefghij"})
-    assert "(10 chars)" in capsys.readouterr().err
 
 
 # ── #303 review: no rulebook at all still says so, somewhere ────────────────
