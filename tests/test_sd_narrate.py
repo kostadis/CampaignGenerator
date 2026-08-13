@@ -811,3 +811,148 @@ def test_narrate_requests_system_prompt_caching(monkeypatch, tmp_path):
     assert len(fake_batch.calls) == 2
     for call in fake_batch.calls:
         assert "cache_system" not in call["kwargs"]
+
+
+# ── #301: per-character examples must not silently reach every narrator ──────
+#
+# `_load_examples` routes a file to a character only when its stem matches a
+# name in --characters. With an empty or incomplete roster nothing matches,
+# every file falls through to the GLOBAL block, and that block goes into EVERY
+# narrator's prompt — so one character's style reference steers all of them and
+# the output still looks plausible. That is what makes it worth refusing.
+
+
+def _examples_dir(tmp_path: Path, **files: str) -> Path:
+    ed = tmp_path / "examples"
+    ed.mkdir()
+    for name, body in files.items():
+        (ed / f"{name}.md").write_text(body, encoding="utf-8")
+    return ed
+
+
+def test_missing_characters_lets_one_voice_steer_every_narrator(
+        monkeypatch, tmp_path, capsys):
+    """Alice's examples file with no --characters: refuse, don't render."""
+    paths = _write_fixtures(tmp_path)
+    ed = _examples_dir(tmp_path, alice="Alice writes in short punches.")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--examples", str(ed)))
+
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+
+    assert exc.value.code == 1
+    assert fake_stream.calls == []
+    err = capsys.readouterr().err
+    assert "alice.md would route to narrator 'Alice'" in err
+    assert "reaching EVERY narrator" in err
+
+
+def test_an_incomplete_roster_is_caught_too(monkeypatch, tmp_path, capsys):
+    """--characters names Alice but not Bob, so bob.md goes global."""
+    paths = _write_fixtures(tmp_path)
+    ed = _examples_dir(tmp_path, alice="Alice.", bob="Bob.")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--examples", str(ed), "--characters", "Alice"))
+
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+
+    assert exc.value.code == 1
+    assert "bob.md would route to narrator 'Bob'" in capsys.readouterr().err
+
+
+def test_all_global_examples_are_not_a_problem(monkeypatch, tmp_path):
+    """toee's real shape: every examples file is house style, named for a
+    situation rather than a character. Nothing would have routed per-character,
+    so there is no bleed and no reason to refuse — even with no --characters."""
+    paths = _write_fixtures(tmp_path)
+    ed = _examples_dir(
+        tmp_path,
+        combat_and_consequences="How combat reads.",
+        political_maneuvering="How politics reads.",
+    )
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--examples", str(ed)))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 2
+    assert "How combat reads." in fake_stream.calls[0]["system"]
+
+
+def test_a_complete_roster_routes_per_character(monkeypatch, tmp_path):
+    paths = _write_fixtures(tmp_path)
+    ed = _examples_dir(tmp_path, alice="ALICE STYLE.", bob="BOB STYLE.")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--examples", str(ed), "--characters", "Alice, Bob"))
+
+    sd_narrate.main()
+
+    alice_prompt, bob_prompt = (c["system"] for c in fake_stream.calls)
+    assert "ALICE STYLE." in alice_prompt and "BOB STYLE." not in alice_prompt
+    assert "BOB STYLE." in bob_prompt and "ALICE STYLE." not in bob_prompt
+
+
+def test_a_narrator_filtered_out_does_not_require_its_examples_routed(
+        monkeypatch, tmp_path):
+    """--narrator Alice: Bob is not narrating, so bob.md going global is inert."""
+    paths = _write_fixtures(tmp_path)
+    ed = _examples_dir(tmp_path, alice="ALICE STYLE.", bob="BOB STYLE.")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--examples", str(ed), "--characters", "Alice",
+        "--narrator", "Alice"))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 1
+
+
+def test_examples_path_that_is_not_a_directory_refuses(monkeypatch, tmp_path, capsys):
+    paths = _write_fixtures(tmp_path)
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--examples", str(tmp_path / "nope")))
+
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+
+    assert exc.value.code == 1
+    assert "is not a directory" in capsys.readouterr().err
+
+
+def test_empty_examples_dir_is_not_a_refusal(monkeypatch, tmp_path, capsys):
+    """`new_workspace` creates examples/ empty and `derive` fills examples_dir
+    in from its existence — refusing here would break every fresh campaign."""
+    paths = _write_fixtures(tmp_path)
+    ed = tmp_path / "examples"
+    ed.mkdir()
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--examples", str(ed)))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 2
+    assert "holds no style examples" in capsys.readouterr().err
+
+
+# ── #301: the empty-narrator crash ──────────────────────────────────────────
+
+
+def test_get_char_examples_survives_an_empty_narrator():
+    """`parse_plan` accepts a bare `narrator:` line as "", and this raised
+    IndexError on it — taking the render down with a stack trace."""
+    from session_doc.examples import get_char_examples
+
+    assert get_char_examples({"alice": "x"}, "") is None
+    assert get_char_examples({"alice": "x"}, "   ") is None
+    assert get_char_examples({"alice": "x"}, "Alice") == "x"
+    assert get_char_examples({"alice": "x"}, "Alice Smith") == "x"
