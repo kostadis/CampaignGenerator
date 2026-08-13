@@ -300,7 +300,42 @@ exactly where it mattered most.
    alone is inert there and adding `--party` would newly switch on Stage 1
    speaker-attribution checking — a behaviour change, not plumbing.
 
-**Remaining before the fallback can go (#293):** run `sheet_frontmatter --apply`
-per campaign and rule on the conflicts. Two campaigns need a GM ruling first —
-obelisk has no character sheets at all (its `config/party.yaml` is a PC-name
-exclusion list, not a roster), and Hillsfar has sheets but no `party.yaml`.
+**Done, 2026-08-13 — the fallback is deleted.** All four call sites route
+through `campaignlib.party_config.require_from_config`, which exits 1 with the
+per-character reason plus the `sheet_frontmatter` command to fix it.
+
+Deleting a fallback must not add a requirement, which the test suite caught:
+`sd_narrate` could always run with no party data at all (`roster = ""`), a mode
+that predates #265 and stays legitimate. The error fires only when a roster was
+actually asked for. Passing `--party` alone IS an error — it used to be a roster
+source and is not read as one now.
+
+`value is None` is the failure signal rather than falsiness, so an *empty*
+player map stays legitimate: Hillsfar's sheets carry no real player
+attribution, and "nobody to attribute" is a different thing from "config is
+broken".
+
+Two defects surfaced by diffing `roster_from_config`'s output against the
+`party.md` it replaces, campaign by campaign — both meaning the config roster
+had been *worse* than what it replaced:
+
+- **`subclass` was written and never read.** The importer emitted it and the
+  template gained `**Subclass:**` for it, but the renderer produced
+  `f"{species} {class_level}"`, silently dropping the parenthetical
+  ("Barbarian 6 (Path of the Giant)" → "Barbarian 6").
+- **The player-placeholder rule was not shared.** `roster_from_config` ignored
+  the rule `player_map_from_config` applies, so an unknown player rendered as
+  "- Akritas (Not specified): …" into the prompt. `is_player_placeholder` is
+  now public and both use it.
+
+**Campaign state (#293, campaigns#167).** 19 sheets across five campaigns carry
+frontmatter; 18 subclasses recovered from an explicit source, Daein's left blank
+(Fighter 9 / Bard 2 with no archetype recorded). `player` carries the Zoom
+display name per the GM ruling, since `normalize_vtt_speakers` matches it by
+exact prefix and a near-miss silently drops that PC's lines.
+
+**obelisk is dormant** by GM ruling: no character sheets at all, and its
+`config/party.yaml` is the PC-name exclusion list, not a roster. It exits 1 with
+the diagnostic. Moving that file into `config/` (Track 0) did fix a live silent
+bug — `load_pc_names` had been returning `[]`, so its PC/sidekick exclusion was
+doing nothing.
