@@ -900,9 +900,16 @@ def test_a_complete_roster_routes_per_character(monkeypatch, tmp_path):
     assert "BOB STYLE." in bob_prompt and "ALICE STYLE." not in bob_prompt
 
 
-def test_a_narrator_filtered_out_does_not_require_its_examples_routed(
-        monkeypatch, tmp_path):
-    """--narrator Alice: Bob is not narrating, so bob.md going global is inert."""
+def test_filtering_to_one_narrator_does_not_disable_the_check(
+        monkeypatch, tmp_path, capsys):
+    """`--narrator Alice` must still refuse an unrouted bob.md.
+
+    The global examples block is NOT narrator-scoped: `examples_text` is passed
+    to every `build_narrate_system` call, so `bob.md` falling through reaches
+    ALICE's prompt. Scoping the check to the rendered sections made this exact
+    invocation ship the bleed that the full-plan run refuses — verified before
+    the fix: `BOB STYLE in Alice prompt: True`.
+    """
     paths = _write_fixtures(tmp_path)
     ed = _examples_dir(tmp_path, alice="ALICE STYLE.", bob="BOB STYLE.")
     fake_stream = FakeStreamAPI([SCENE1_NARRATION])
@@ -911,9 +918,29 @@ def test_a_narrator_filtered_out_does_not_require_its_examples_routed(
         paths, "--examples", str(ed), "--characters", "Alice",
         "--narrator", "Alice"))
 
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+
+    assert exc.value.code == 1
+    assert fake_stream.calls == []
+    assert "bob.md would route to narrator 'Bob'" in capsys.readouterr().err
+
+
+def test_filtering_still_renders_when_the_roster_is_complete(monkeypatch, tmp_path):
+    """The legitimate half of the above: a complete roster renders one scene."""
+    paths = _write_fixtures(tmp_path)
+    ed = _examples_dir(tmp_path, alice="ALICE STYLE.", bob="BOB STYLE.")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--examples", str(ed), "--characters", "Alice, Bob",
+        "--narrator", "Alice"))
+
     sd_narrate.main()
 
     assert len(fake_stream.calls) == 1
+    assert "ALICE STYLE." in fake_stream.calls[0]["system"]
+    assert "BOB STYLE." not in fake_stream.calls[0]["system"]
 
 
 def test_examples_path_that_is_not_a_directory_refuses(monkeypatch, tmp_path, capsys):

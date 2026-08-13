@@ -528,7 +528,7 @@ def test_no_party_configured_at_all_emits_neither_flag(tmp_path):
 # ── #301: the examples bleed is refused at the router too ───────────────────
 
 
-def _ex_cfg(tmp_path: Path, keep_plan: bool = True, characters: str | None = None,
+def _ex_cfg(tmp_path: Path, characters: str | None = None,
             **overrides) -> ResolvedEditorConfig:
     """Narrate preconditions satisfied, keeping the seeded Soma/Brewbarry plan.
 
@@ -538,8 +538,6 @@ def _ex_cfg(tmp_path: Path, keep_plan: bool = True, characters: str | None = Non
     import dataclasses
 
     sd, gm, sx, nd = _seed_session_dir(tmp_path)
-    if not keep_plan:
-        (nd / "plan.md").write_text("plan", encoding="utf-8")
     cfg = _cfg(
         session_recap=str(gm),
         session_summary=str(sd / "session-summary.md"),

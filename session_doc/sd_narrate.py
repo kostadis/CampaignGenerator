@@ -373,10 +373,15 @@ def main() -> None:
     # `_load_examples` matches nothing, every file falls through to the GLOBAL
     # block, and that block goes into every prompt — so one character's style
     # reference steers all of them, and the output still looks plausible (#301).
-    # Checked after --narrator/--scene filtering and before the first API call,
-    # so a mis-routed render costs nothing and stops rather than shipping.
+    #
+    # Keyed off the WHOLE plan, not the scenes being rendered. The global block
+    # is not narrator-scoped: `examples_text` is passed to every
+    # `build_narrate_system` call, so `bob.md` falling through reaches Alice's
+    # prompt even under `--narrator Alice`. Scoping this to the filtered
+    # sections made the narrower invocation silently ship the very bleed the
+    # full run refuses — measured on the fixture below before it was fixed.
     routing = examples_routing_problems(
-        examples_dir, characters, [s["narrator"] for _i, s in sections]
+        examples_dir, characters, list(plan_narrator_by_scene.values())
     )
     if routing:
         print("Error: --examples holds per-character files that are reaching "

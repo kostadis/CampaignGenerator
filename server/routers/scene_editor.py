@@ -793,7 +793,8 @@ def _examples_args(cfg: ResolvedEditorConfig, plan_path: Path
             f"or clear it to render without them."
         )
 
-    sys.path.insert(0, str(SCRIPT_DIR))
+    if str(SCRIPT_DIR) not in sys.path:
+        sys.path.insert(0, str(SCRIPT_DIR))
     from session_doc import parse_plan
     from session_doc.examples import examples_routing_problems
 
@@ -803,10 +804,13 @@ def _examples_args(cfg: ResolvedEditorConfig, plan_path: Path
         examples_dir, characters, [s["narrator"] for s in sections]
     )
     if problems:
+        # Every problem, not just the first: a GM with three mis-routed files
+        # would otherwise learn one name per failed run.
         return None, (
-            f"{problems[0]} Set Characters in Session Config to every "
-            f"narrating character (currently {cfg.roster.characters!r}), or "
-            f"rename the file so it is not per-character."
+            " ".join(problems)
+            + f" Set Characters in Session Config to every narrating character "
+              f"(currently {cfg.roster.characters!r}), or rename the file(s) "
+              f"so they are not per-character."
         )
     return args + ["--examples", cfg.paths.examples_dir]
 
