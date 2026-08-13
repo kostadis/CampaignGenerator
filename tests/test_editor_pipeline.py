@@ -23,11 +23,16 @@ from server.session_editor_config_shared import (  # noqa: E402
 )
 
 
-def _cfg(*, vtt: str | None = None, work_dir: str = "", **path_overrides) -> ResolvedEditorConfig:
+def _cfg(*, vtt: str | None = None, work_dir: str = "", campaign_dir: str = "",
+         **path_overrides) -> ResolvedEditorConfig:
     """Build a ResolvedEditorConfig directly (no service/platform needed) for
     exercising the CONFIG-free helpers/command-builders — Phase 2 of
     docs/config/session-editor-isolation.md. `path_overrides` are EditorPaths
-    fields (session_recap, session_summary, scene_extractions_dir, ...)."""
+    fields (session_recap, session_summary, scene_extractions_dir, ...).
+
+    ``campaign_dir`` defaults to "" so ``_party_config_path`` looks for
+    ``config/party.yaml`` relative to the cwd — which the repo does not have,
+    keeping the flag absent unless a test opts in."""
     return ResolvedEditorConfig(
         paths=EditorPaths(**path_overrides),
         narrate=NarrateKnobs(),
@@ -39,7 +44,7 @@ def _cfg(*, vtt: str | None = None, work_dir: str = "", **path_overrides) -> Res
         active_profile=None,
         model=None,
         work_dir=work_dir,
-        campaign_dir="",
+        campaign_dir=campaign_dir,
         config_dir="config",
         vtt=vtt,
     )
@@ -357,3 +362,164 @@ def test_missing_everything_returns_the_slug_path_unchanged(tmp_path):
     got = scene_editor._scene_extraction_file_new(cfg, 5, "No Such Scene")
     assert got == sx / "05_no_such_scene.md"
     assert not got.exists()
+
+
+# ── --party-config plumbing (#265) ───────────────────────────────────────────
+#
+# The sheet-frontmatter roster was unreachable from the Session Doc Editor:
+# the readers take --party-config, the editor only ever passed --party, so
+# args.party_config was always None for UI runs and roster_from_config's
+# per-character diagnostics never ran. The fallback was silent exactly where
+# it mattered. The path is resolved by declaration (Track 0), not configured.
+
+def _campaign_with_party_yaml(tmp_path) -> Path:
+    """A campaign dir holding the one declared <config>/party.yaml."""
+    (tmp_path / "config").mkdir(exist_ok=True)
+    (tmp_path / "config" / "party.yaml").write_text(
+        "characters:\n- name: Brewbarry\n  sheet: docs/party/brewbarry.md\n",
+        encoding="utf-8")
+    return tmp_path
+
+
+def test_party_config_path_resolves_the_declared_location(tmp_path):
+    camp = _campaign_with_party_yaml(tmp_path)
+    cfg = _cfg(campaign_dir=str(camp))
+    assert scene_editor._party_config_path(cfg) == camp / "config" / "party.yaml"
+
+
+def test_party_config_path_is_none_when_absent(tmp_path):
+    """A campaign with no roster config must not get a flag pointing at a
+    file that isn't there — the CLI would warn and fall back anyway, but the
+    router should not be the one inventing the path."""
+    cfg = _cfg(campaign_dir=str(tmp_path))
+    assert scene_editor._party_config_path(cfg) is None
+
+
+def test_party_config_honours_a_renamed_config_dir(tmp_path):
+    """Mirrors PlatformConfigService.config_path_base (campaign_dir /
+    config_dir) rather than hardcoding 'config', so a campaign that renamed
+    its config directory is still found."""
+    (tmp_path / "conf").mkdir()
+    (tmp_path / "conf" / "party.yaml").write_text("characters: []\n", encoding="utf-8")
+    cfg = _cfg(campaign_dir=str(tmp_path))
+    object.__setattr__(cfg, "config_dir", "conf")
+    assert scene_editor._party_config_path(cfg) == tmp_path / "conf" / "party.yaml"
+
+
+def test_reextract_cmd_passes_party_config(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    camp = _campaign_with_party_yaml(tmp_path)
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+        party=str(tmp_path / "party.md"),
+        campaign_dir=str(camp),
+    )
+    cmd = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert cmd[cmd.index("--party-config") + 1] == str(camp / "config" / "party.yaml")
+    # party.md still goes along — which roster wins is the reader's decision,
+    # not the router's.
+    assert cmd[cmd.index("--party") + 1] == str(tmp_path / "party.md")
+
+
+# (The "--party alone, no config" case is covered by
+# test_party_without_a_config_refuses_instead_of_emitting_a_fatal_flag below.
+# An earlier version of this file asserted the router emitted `--party` alone
+# there — which is exactly the defect: that flag combination is fatal
+# downstream since #265 deleted the party.md roster fallback.)
+
+
+def test_narrate_cmd_passes_party_config(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    (nd / "plan.md").write_text("plan", encoding="utf-8")
+    camp = _campaign_with_party_yaml(tmp_path)
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+        party=str(tmp_path / "party.md"),
+        campaign_dir=str(camp),
+    )
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--party-config") + 1] == str(camp / "config" / "party.yaml")
+
+
+def test_plan_cmd_never_gets_party_config(tmp_path):
+    """sd_plan takes --party as raw prompt text and declares no
+    --party-config; passing one would abort the run with 'unrecognized
+    arguments'."""
+    import inspect
+    src = inspect.getsource(scene_editor._build_plan_cmd)
+    assert "--party-config" not in src
+    assert "_party_args" not in src
+
+
+def test_enhance_cmd_stays_roster_free(tmp_path):
+    """enhance_summary gates its roster block on `if party_path is not None`,
+    so --party-config alone is inert there; adding --party would newly switch
+    on speaker-attribution checking in Stage 1, which is a behaviour change
+    rather than plumbing."""
+    import inspect
+    src = inspect.getsource(scene_editor._build_enhance_cmd)
+    assert "_party_args" not in src
+
+
+def test_party_without_a_config_refuses_instead_of_emitting_a_fatal_flag(tmp_path):
+    """#265 made `--party` alone fatal downstream. Emitting it anyway would
+    hand the GM a subprocess crash naming --party-config, a flag the UI does
+    not expose. Refuse here, where the editor renders (None, reason)."""
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+        party=str(tmp_path / "party.md"),
+        campaign_dir=str(tmp_path),          # no config/party.yaml here
+    )
+    result = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(result, tuple)
+    assert result[0] is None
+    assert "party.yaml" in result[1] and "sheet_frontmatter" in result[1]
+
+
+def test_narrate_also_refuses_rather_than_emitting_party_alone(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    (nd / "plan.md").write_text("plan", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+        party=str(tmp_path / "party.md"),
+        campaign_dir=str(tmp_path),
+    )
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+    assert isinstance(result, tuple) and result[0] is None
+
+
+def test_no_party_configured_at_all_emits_neither_flag(tmp_path):
+    """A campaign that never set paths.party is not misconfigured — it just
+    runs without speaker normalisation, as it always could."""
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+        campaign_dir=str(tmp_path),
+    )
+    cmd = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert "--party" not in cmd and "--party-config" not in cmd

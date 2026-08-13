@@ -234,7 +234,7 @@ _PLAYER_PLACEHOLDERS = {
 }
 
 
-def _is_player_placeholder(name: str) -> bool:
+def is_player_placeholder(name: str) -> bool:
     return name.strip().lower().strip("()[]").strip() in _PLAYER_PLACEHOLDERS
 
 
@@ -246,11 +246,11 @@ def _add_player_entries(result: dict[str, str], player_raw: str, character_name:
     field) and :func:`player_map_from_config` (a sheet's frontmatter
     ``player`` field) — one splitting/placeholder rule, not two copies.
     """
-    if _is_player_placeholder(player_raw):
+    if is_player_placeholder(player_raw):
         return
     for p in re.split(r'[/,]', player_raw):
         p = p.strip().rstrip('*').strip()
-        if p and not _is_player_placeholder(p):
+        if p and not is_player_placeholder(p):
             result[p] = character_name
 
 
@@ -313,6 +313,12 @@ def player_map_from_config(cfg: "ResolvedPartyConfig") -> dict[str, str] | None:
     """
     result: dict[str, str] = {}
     problems: list[str] = []
+    if not cfg.characters:
+        # Distinct from the legitimate empty map (every ``player`` field a
+        # placeholder): there, sheets were read and had nothing to contribute.
+        # Here nothing was read at all, so returning {} would be a broken
+        # config reported as "nobody to attribute".
+        problems.append("party.yaml lists no characters at all")
     for character in cfg.characters:
         sheet = character.sheet
         if not sheet.exists():
@@ -326,7 +332,7 @@ def player_map_from_config(cfg: "ResolvedPartyConfig") -> dict[str, str] | None:
         _add_player_entries(result, player_raw, character.name)
     if problems:
         print(
-            "player_map_from_config: falling back to party.md — not every "
+            "player_map_from_config: no usable map — not every "
             "character's sheet yields usable frontmatter:\n"
             + "\n".join(f"  - {p}" for p in problems),
             file=sys.stderr,

@@ -39,7 +39,6 @@ from campaignlib import (
     build_scene_extraction_system_prompt,
     client_from_args,
     collect_batch,
-    extract_player_character_map,
     format_batch_progress,
     format_npc_roster,
     format_scene_output,
@@ -59,7 +58,7 @@ from campaignlib import (
     utc_now_iso,
     write_batch_sidecar,
 )
-from campaignlib.party_config import load_party_config_arg
+from campaignlib.party_config import load_party_config_arg, require_from_config
 from .io import parse_vtt
 
 
@@ -272,15 +271,18 @@ def main() -> None:
                              "The VTT itself is never rewritten — scene "
                              "extraction emits verbatim quotes.")
     parser.add_argument("--party", metavar="FILE", default=None,
-                        help="party.md path. When set, player → character "
-                             "mappings are parsed from the `**Class, Player: "
-                             "Name**` lines and used to rewrite speaker "
-                             "labels in the VTT before the LLM sees it.")
+                        help="party.md path. When set, VTT speaker labels are "
+                             "rewritten to character names before the LLM sees "
+                             "them. The map itself comes from --party-config "
+                             "(#265), not from this file, so the two must be "
+                             "passed together; --party alone is an error. "
+                             "Omitting both skips speaker normalisation.")
     parser.add_argument("--party-config", metavar="FILE", default=None,
-                        help="party.yaml. When given, the player -> character map is "
-                             "preferred from each character's D&D Beyond sheet (issue "
-                             "#265); falls back to --party's party.md if any sheet "
-                             "lacks usable frontmatter.")
+                        help="party.yaml (conventionally <campaign>/config/party.yaml). "
+                             "REQUIRED: the player -> character map comes from each "
+                             "character's D&D Beyond sheet frontmatter (issue #265) and "
+                             "there is no party.md fallback — a sheet without frontmatter "
+                             "is a hard error. Run sheet_frontmatter --apply to add it.")
     parser.add_argument("--gm-player", metavar="NAME", default=None,
                         help="Display name the GM appears under in the VTT "
                              "(e.g. 'Kostadis'). Rewritten to 'GM:' before "
@@ -394,20 +396,23 @@ def main() -> None:
         if not party_path.exists():
             print(f"Error: party file not found: {party_path}", file=sys.stderr)
             sys.exit(1)
-        # Prefer the sheet-sourced map (issue #265) when --party-config resolves
-        # usable frontmatter for every character; fall back to party.md otherwise.
+        # The player→character map comes from each character's sheet
+        # frontmatter (#265) — no party.md fallback.
         resolved_party_config = load_party_config_arg(args.party_config)
-        player_map = (
-            player_map_from_config(resolved_party_config) if resolved_party_config else None
+        player_map = require_from_config(
+            player_map_from_config(resolved_party_config) if resolved_party_config else None,
+            what="player → character map",
+            party_config_arg=args.party_config,
         )
-        if player_map is None:
-            player_map = extract_player_character_map(party_path.read_text(encoding="utf-8"))
         if player_map:
             mapping_str = ", ".join(f"{p}→{c}" for p, c in sorted(player_map.items()))
             print(f"  Player → character map ({len(player_map)}): {mapping_str}")
         else:
-            print(f"  Warning: --party {party_path.name} produced an empty player map "
-                  f"(no `**..., Player: ...**` lines found)", file=sys.stderr)
+            # Legitimate: every sheet's `player` field is a placeholder, so no
+            # speaker can be attributed. Distinct from an unusable config,
+            # which require_from_config has already exited on.
+            print("  Warning: every character's sheet has a placeholder `player` "
+                  "field, so no speaker attribution is possible.", file=sys.stderr)
     if args.gm_player:
         print(f"  GM player → GM: {args.gm_player}")
     if player_map or args.gm_player:

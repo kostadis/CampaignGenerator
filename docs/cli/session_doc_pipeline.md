@@ -166,6 +166,7 @@ sd_narrate "$SESS/session-summary.md" \
     --plan              "$SESS/narration/plan.md" \
     --scene-extractions "$SESS/scene_extractions/" \
     --party             docs/party.md \
+    --party-config      config/party.yaml \
     --characters        "Vukradin, Valphine, Soma, Brewbarry" \
     --voice-dir         voice/ \
     --examples          examples/ \
@@ -241,7 +242,8 @@ Practical implication for the human review step:
 | `--summary-extract-dir DIR` | — | VTT session extractions (action detail, events, environmental context) — passed to Pass 3 plan prompt |
 | `--session-summary FILE` | — | Synthesised VTT session summary — passed to Pass 1 and Pass 3 |
 | `--context FILE [FILE …]` | — | Campaign context files for Pass 1 consistency check (typically `campaign_state.md world_state.md party.md`) |
-| `--party FILE` | — | `party.md` — backstory, personality, relationships, character classes |
+| `--party FILE` | — | `party.md` — backstory, personality, relationships. NOT the roster: since #265 the character classes come from `--party-config`, and `--party` without it is an error |
+| `--party-config FILE` | — | `config/party.yaml` — the roster, read from each character's sheet frontmatter. Required whenever `--party` is given |
 | `--characters NAMES` | — | Comma-separated narrator roster (`"Vukradin, Valphine, Soma, Brewbarry"`) |
 | `--voice-dir DIR` | — | Directory of `{name}_voice.md` files written by players (one per character) |
 | `--examples DIR` | — | Directory of style-reference `.md` files. Files whose stem matches a character's first name route to that character only; others are global. |

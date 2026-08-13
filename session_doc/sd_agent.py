@@ -239,6 +239,9 @@ def build_steps(args) -> tuple[list[Step], list[str]]:
                 )
             if args.party:
                 grounding += ["--party", str(Path(args.party).expanduser())]
+            if args.party_config:
+                grounding += ["--party-config",
+                              str(Path(args.party_config).expanduser())]
             if args.gm_player:
                 grounding += ["--gm-player", args.gm_player]
             steps.append(Step(
@@ -286,8 +289,15 @@ def build_parser() -> argparse.ArgumentParser:
                         "6e00f54 that is the ONLY way the model learns canonical "
                         "spellings, so omitting it degrades extraction silently.")
     p.add_argument("--party", metavar="FILE",
-                   help="party.md, forwarded to scene_extract (--stage scenes) for "
-                        "player -> character speaker mapping.")
+                   help="party.md, forwarded to scene_extract (--stage scenes). It "
+                        "gates VTT speaker normalisation and the wrong-VTT "
+                        "pre-flight; it is NOT read for the roster (#265), so it "
+                        "must be paired with --party-config.")
+    p.add_argument("--party-config", metavar="FILE",
+                   help="party.yaml (conventionally <campaign>/config/party.yaml), "
+                        "forwarded to scene_extract. Required alongside --party: "
+                        "the player -> character map comes from each character's "
+                        "sheet frontmatter (#265) and there is no party.md fallback.")
     p.add_argument("--gm-player", metavar="NAME",
                    help="GM's display name in the VTT, forwarded to scene_extract "
                         "(--stage scenes).")

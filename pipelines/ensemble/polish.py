@@ -30,8 +30,8 @@ from campaignlib import (
     load_config,
     save_log,
 )
-from campaignlib.party_config import load_party_config_arg
-from session_doc import extract_character_roster, load_voice_files, roster_from_config
+from campaignlib.party_config import load_party_config_arg, require_from_config
+from session_doc import load_voice_files, roster_from_config
 from session_doc.voice import _resolve_voice_key
 
 
@@ -780,10 +780,12 @@ def main() -> None:
                         help="Directory containing per-character voice files")
     parser.add_argument("--party", required=True,
                         help="party.md (used to extract canonical narrator roster)")
-    parser.add_argument("--party-config", default=None,
-                        help="party.yaml. When given, the roster is preferred from each "
-                             "character's D&D Beyond sheet (issue #265); falls back to "
-                             "--party's party.md if any sheet lacks usable frontmatter.")
+    parser.add_argument("--party-config", required=True,
+                        help="party.yaml (conventionally <campaign>/config/party.yaml). "
+                             "REQUIRED: the roster comes from each character's D&D Beyond "
+                             "sheet frontmatter (issue #265) and there is no party.md "
+                             "fallback — a sheet without frontmatter is a hard error. Run "
+                             "sheet_frontmatter --apply to add it.")
     parser.add_argument("--context", nargs="*", default=[],
                         help="Optional grounding docs (loaded lazily on demand)")
     parser.add_argument("--output", required=True,
@@ -844,12 +846,15 @@ def main() -> None:
     recap_text = recap_path.read_text(encoding="utf-8")
     voices = load_voice_files(voice_dir)
     party_text = party_path.read_text(encoding="utf-8")
-    # Prefer the sheet-sourced roster (issue #265) when --party-config resolves
-    # usable frontmatter for every character; fall back to party.md otherwise.
+    # The roster comes from each character's sheet frontmatter (#265) — no
+    # party.md fallback. party_text is still read, for the ## Name headers
+    # below and for voice matching.
     resolved_party_config = load_party_config_arg(args.party_config)
-    roster_text = roster_from_config(resolved_party_config) if resolved_party_config else None
-    if roster_text is None:
-        roster_text = extract_character_roster(party_text)
+    roster_text = require_from_config(
+        roster_from_config(resolved_party_config) if resolved_party_config else None,
+        what="character roster",
+        party_config_arg=args.party_config,
+    )
     roster_names = {
         m.group(1).lower()
         for line in roster_text.splitlines()

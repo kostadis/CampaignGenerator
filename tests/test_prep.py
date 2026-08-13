@@ -1173,3 +1173,13 @@ def test_build_narrate_prompt_includes_roster():
 
 
 
+
+
+def test_player_map_from_config_rejects_a_roster_of_nobody(tmp_path, capsys):
+    """Distinct from the legitimate empty map (every `player` a placeholder):
+    there, sheets were read and had nothing to give. Here nothing was read at
+    all, so {} would report a broken config as "nobody to attribute"."""
+    from campaignlib.party_config import ResolvedPartyConfig
+    from campaignlib.npc import player_map_from_config
+    assert player_map_from_config(ResolvedPartyConfig(characters=[])) is None
+    assert "lists no characters at all" in capsys.readouterr().err
