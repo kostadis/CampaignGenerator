@@ -349,13 +349,13 @@ def test_known_npc_roster_reaches_the_prompt_even_when_party_is_given(
     monkeypatch, tmp_path,
 ):
     """The roster used to be passed as ``roster or npc_roster``, so supplying
-    --party silently dropped it — leaving the destructive rewrite as the only
-    channel carrying canonical names."""
+    a party roster silently dropped the NPC one — leaving the destructive
+    rewrite as the only channel carrying canonical names."""
     _write_registry(tmp_path)
-    party = tmp_path / "party.md"
-    party.write_text("## Alice\n**Human Bard 5, Player: Ann**\n", encoding="utf-8")
+    cfg = _write_party_config(tmp_path)
+    monkeypatch.chdir(tmp_path)
 
-    fake_stream = _run_with_registry(monkeypatch, tmp_path, "--party", str(party))
+    fake_stream = _run_with_registry(monkeypatch, tmp_path, "--party-config", str(cfg))
 
     prompt = fake_stream.calls[0]["user"]
     assert "## Character Classes" in prompt          # party roster still there
@@ -542,7 +542,30 @@ PHANDALIN_PARTY = (
 )
 
 
-def test_unparseable_party_prints_a_warning(monkeypatch, tmp_path, capsys):
+def _write_party_config(tmp_path) -> Path:
+    """A campaign roster: party.yaml plus one migrated sheet (#265)."""
+    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "docs" / "brewbarry.md").write_text(
+        "---\n"
+        "name: Brewbarry\n"
+        "player: Stéphane Bourdeaud\n"
+        "species: Goliath\n"
+        "class_level: Barbarian 6\n"
+        "subclass: Path of the Giant\n"
+        "---\n"
+        "# Brewbarry\n", encoding="utf-8")
+    cfg = tmp_path / "party.yaml"
+    cfg.write_text(
+        "characters:\n- name: Brewbarry\n  sheet: docs/brewbarry.md\n",
+        encoding="utf-8")
+    return cfg
+
+
+def test_party_md_alone_is_now_a_hard_error(monkeypatch, tmp_path, capsys):
+    """#245 defect 4 was that `## Character Classes` went silently ABSENT when
+    party.md's layout defeated the roster parser. That is structurally
+    impossible now: party.md is not a roster source, and asking for a roster
+    without a usable config exits non-zero instead of rendering without one."""
     paths = _write_fixtures(tmp_path)
     party = tmp_path / "party.md"
     party.write_text(UNPARSEABLE_PARTY, encoding="utf-8")
@@ -550,29 +573,54 @@ def test_unparseable_party_prints_a_warning(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
 
     monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party", str(party)))
-    sd_narrate.main()
-
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+    assert exc.value.code == 1
     err = capsys.readouterr().err
-    assert "no character roster could be parsed" in err
-    assert "## Character Classes" not in fake_stream.calls[0]["user"]
+    assert "No --party-config was given" in err
+    assert "sheet_frontmatter --apply" in err
+    assert not fake_stream.calls          # nothing was sent to the model
 
 
-def test_parseable_party_prints_no_warning(monkeypatch, tmp_path, capsys):
+def test_a_well_formed_party_md_does_not_rescue_it(monkeypatch, tmp_path, capsys):
+    """Even a party.md the old parser handled perfectly is not consulted — the
+    deletion is about the *source*, not about parse failures."""
     paths = _write_fixtures(tmp_path)
     party = tmp_path / "party.md"
     party.write_text(PHANDALIN_PARTY, encoding="utf-8")
+    monkeypatch.setattr(sd_narrate, "stream_api",
+                        FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION]))
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party", str(party)))
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+    assert exc.value.code == 1
+
+
+def test_roster_comes_from_the_sheet_frontmatter(monkeypatch, tmp_path, capsys):
+    paths = _write_fixtures(tmp_path)
+    cfg = _write_party_config(tmp_path)
     fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
     monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.chdir(tmp_path)          # party.yaml paths are campaign-root-relative
 
-    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party", str(party)))
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party-config", str(cfg)))
     sd_narrate.main()
-
-    err = capsys.readouterr().err
-    assert "no character roster could be parsed" not in err
 
     prompt = fake_stream.calls[0]["user"]
     assert "## Character Classes" in prompt
-    assert "Goliath" in prompt
+    assert "Goliath Barbarian 6 (Path of the Giant)" in prompt
+
+
+def test_no_party_flags_at_all_still_runs(monkeypatch, tmp_path):
+    """Running with no roster predates #265 and stays legitimate — the class
+    block is simply absent. Deleting the fallback must not turn "no roster
+    wanted" into an error."""
+    paths = _write_fixtures(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths))
+    sd_narrate.main()
+    assert "## Character Classes" not in fake_stream.calls[0]["user"]
 
 
 # ── Underscore-prefixed shared campaign files are skipped (#245, item E) ────

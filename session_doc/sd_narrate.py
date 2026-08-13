@@ -51,8 +51,8 @@ from session_doc.narrate import (
     build_narrate_system,
     estimate_narration_tokens,
 )
-from campaignlib.party_config import load_party_config_arg
-from session_doc.roster import extract_character_roster, roster_from_config
+from campaignlib.party_config import load_party_config_arg, require_from_config
+from session_doc.roster import roster_from_config
 from session_doc.voice import (
     extract_contrast_sample,
     get_voice_note,
@@ -144,9 +144,11 @@ def main() -> None:
     parser.add_argument("--party", metavar="FILE",
                         help="party.md — supplies character classes + roster + voice cues.")
     parser.add_argument("--party-config", metavar="FILE", default=None,
-                        help="party.yaml. When given, the roster is preferred from each "
-                             "character's D&D Beyond sheet (issue #265); falls back to "
-                             "--party's party.md if any sheet lacks usable frontmatter.")
+                        help="party.yaml (conventionally <campaign>/config/party.yaml). "
+                             "REQUIRED: the roster comes from each character's D&D Beyond "
+                             "sheet frontmatter (issue #265) and there is no party.md "
+                             "fallback — a sheet without frontmatter is a hard error. Run "
+                             "sheet_frontmatter --apply to add it.")
     parser.add_argument("--voice-dir", metavar="DIR",
                         help="Directory of {name}_voice.md files.")
     parser.add_argument("--examples", metavar="DIR",
@@ -240,22 +242,25 @@ def main() -> None:
 
     party = Path(args.party).read_text(encoding="utf-8") if args.party else None
 
-    # Prefer the sheet-sourced roster (issue #265) when --party-config resolves
-    # usable frontmatter for every character; fall back to party.md otherwise.
-    # The party.md fallback path below, and its warning, are unchanged.
-    resolved_party_config = load_party_config_arg(args.party_config)
-    roster = roster_from_config(resolved_party_config) if resolved_party_config else None
-    if roster is None:
-        roster = extract_character_roster(party) if party else ""
-    if party and party.strip() and not roster.strip():
-        print(f"Warning: --party was given ({args.party}) but no character roster could be "
-              f"parsed from it. The '## Character Classes (definitive — never contradict "
-              f"these)' block will be ABSENT from the narrate prompt, so the model has no "
-              f"authority for class, level, or species.\n"
-              f"  -> expected a '## <Name>' or '### <Name>' heading whose first bold line "
-              f"is a class line: '**Race Class N, Player: X**' or "
-              f"'**Class N (Subclass) | Species | Player'.",
-              file=sys.stderr)
+    # The roster comes from each character's sheet frontmatter (#265). There is
+    # no party.md fallback: --party still supplies the party document's
+    # narrative content to the prompt, but not the "never contradict these"
+    # class block, which must come from the sheets.
+    #
+    # Only required when a roster was actually asked for. Running with neither
+    # flag is a legitimate mode that predates #265 — the class block is simply
+    # absent — so deleting the fallback must not turn "no roster wanted" into
+    # an error. Passing --party alone IS an error: it used to be a roster
+    # source and is not read as one any more, and failing is how you find out.
+    if args.party_config or args.party:
+        resolved_party_config = load_party_config_arg(args.party_config)
+        roster = require_from_config(
+            roster_from_config(resolved_party_config) if resolved_party_config else None,
+            what="character roster",
+            party_config_arg=args.party_config,
+        )
+    else:
+        roster = ""
     narration_genre = _load_genre_file(args.narration_genre_file)
     characters = [c.strip() for c in (args.characters or "").split(",") if c.strip()]
     voice_files = (

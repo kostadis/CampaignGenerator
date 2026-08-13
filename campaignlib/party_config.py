@@ -351,8 +351,52 @@ def load_party_config_arg(
         cfg = load_party_config(path)
     except ValueError as e:
         print(
-            f"Warning: --party-config unreadable ({e}) — falling back to party.md",
-            file=sys.stderr,
+            f"Warning: --party-config unreadable ({e})", file=sys.stderr,
         )
         return None
     return resolve_party_config(cfg, base or Path.cwd(), require_files=False)
+
+
+def require_from_config(value, *, what: str, party_config_arg: str | None):
+    """Return ``value``, or exit(1) — the roster has no ``party.md`` fallback.
+
+    #265 shipped the sheet-frontmatter roster with a fallback to parsing
+    ``party.md``; that fallback is deleted. It was silent by construction: a
+    campaign whose sheets lacked frontmatter kept rendering, from a *generated*
+    document, and nothing said so. ``docs/cli/provenance_search.md``'s rule
+    applies — ``party.md`` is `generated_by` output with a countdown on it, and
+    reading a roster back out of it is exactly the "treat generated output as
+    canon" incident that machinery exists to prevent.
+
+    ``value is None`` (not falsiness) is the failure signal, so an empty
+    player map — every character's ``player`` field a placeholder, as in
+    Hillsfar — stays legitimate rather than being mistaken for a broken config.
+
+    The callers that produce ``value`` (``roster_from_config``,
+    ``player_map_from_config``, :func:`load_party_config_arg`) have already
+    printed *which* character failed and why; this only adds what to do about
+    it, so the two messages compose instead of repeating.
+    """
+    if value is not None:
+        return value
+    if not party_config_arg:
+        detail = (
+            "  No --party-config was given. The roster now comes only from each\n"
+            "  character's sheet frontmatter, so this flag is required."
+        )
+    else:
+        detail = (
+            f"  --party-config was {party_config_arg}, but it did not yield a usable\n"
+            "  roster for every character (see the per-character reasons above)."
+        )
+    print(
+        f"Error: cannot build the {what} from the party config.\n"
+        f"{detail}\n"
+        "  Fix: point --party-config at the campaign's config/party.yaml, then give\n"
+        "  every referenced sheet YAML frontmatter:\n"
+        "      sheet_frontmatter --apply <sheet>.md [...]\n"
+        "  party.md is NOT consulted — it is generated output, and reading a roster\n"
+        "  back out of it is how a stale roster becomes invisible (#265).",
+        file=sys.stderr,
+    )
+    sys.exit(1)

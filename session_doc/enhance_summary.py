@@ -33,7 +33,6 @@ from campaignlib import (
     build_batch_request,
     client_from_args,
     collect_batch,
-    extract_player_character_map,
     format_batch_progress,
     load_agent_prompt,
     player_map_from_config,
@@ -46,7 +45,7 @@ from campaignlib import (
     utc_now_iso,
     write_batch_sidecar,
 )
-from campaignlib.party_config import load_party_config_arg
+from campaignlib.party_config import load_party_config_arg, require_from_config
 from .io import parse_vtt
 
 
@@ -76,9 +75,10 @@ def _build_prompts(vtt_path: Path, gm_path: Path,
     the VTT contains zero lines starting with any of them. The check
     can be bypassed with `allow_speaker_mismatch=True`.
 
-    `party_config_path` (party.yaml) is preferred over `party_path`
-    (party.md) when it resolves usable sheet frontmatter for every
-    character (issue #265); falls back to `party_path` otherwise.
+    `party_config_path` (party.yaml) is the only source of the
+    player→character map (issue #265) — each character's sheet frontmatter,
+    with no party.md fallback. `party_path` still gates whether the map is
+    built at all, but is not read for it.
     """
     raw = vtt_path.read_text(encoding="utf-8")
     print(f"\n[Parsing VTT | {len(raw):,} raw chars | {vtt_path.name}]")
@@ -90,22 +90,25 @@ def _build_prompts(vtt_path: Path, gm_path: Path,
 
     expected: set[str] = set()
     if party_path is not None:
-        resolved_party_config = load_party_config_arg(
-            str(party_config_path) if party_config_path else None
+        # The player→character map comes from each character's sheet
+        # frontmatter (#265) — no party.md fallback.
+        party_config_arg = str(party_config_path) if party_config_path else None
+        resolved_party_config = load_party_config_arg(party_config_arg)
+        player_map = require_from_config(
+            player_map_from_config(resolved_party_config) if resolved_party_config else None,
+            what="player → character map",
+            party_config_arg=party_config_arg,
         )
-        player_map = (
-            player_map_from_config(resolved_party_config) if resolved_party_config else None
-        )
-        if player_map is None:
-            player_map = extract_player_character_map(
-                party_path.read_text(encoding="utf-8"))
         if player_map:
             mapping_str = ", ".join(f"{p}→{c}" for p, c in sorted(player_map.items()))
             print(f"  Player → character map ({len(player_map)}): {mapping_str}")
             expected.update(player_map.keys())
         else:
-            print(f"  Warning: --party {party_path.name} produced an empty player map "
-                  f"(no `**..., Player: ...**` lines found)", file=sys.stderr)
+            # Legitimate: every sheet's `player` field is a placeholder, so no
+            # speaker can be attributed. Distinct from an unusable config,
+            # which require_from_config has already exited on.
+            print("  Warning: every character's sheet has a placeholder `player` "
+                  "field, so no speaker attribution is possible.", file=sys.stderr)
     if gm_player:
         print(f"  GM player: {gm_player}")
         expected.add(gm_player)
@@ -259,10 +262,11 @@ def main() -> None:
                              "pre-flight check (aborts before submission if "
                              "no VTT line starts with any of those names).")
     parser.add_argument("--party-config", metavar="FILE", default=None,
-                        help="party.yaml. When given, the player -> character map is "
-                             "preferred from each character's D&D Beyond sheet (issue "
-                             "#265); falls back to --party's party.md if any sheet "
-                             "lacks usable frontmatter.")
+                        help="party.yaml (conventionally <campaign>/config/party.yaml). "
+                             "REQUIRED: the player -> character map comes from each "
+                             "character's D&D Beyond sheet frontmatter (issue #265) and "
+                             "there is no party.md fallback — a sheet without frontmatter "
+                             "is a hard error. Run sheet_frontmatter --apply to add it.")
     parser.add_argument("--gm-player", metavar="NAME", default=None,
                         help="Display name the GM appears under in the VTT "
                              "(e.g. 'Kostadis'). Added to the speaker pre-flight.")
