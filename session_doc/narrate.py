@@ -6,18 +6,166 @@ the token-budget estimator used by the per-scene loop.
 """
 
 import re
+from pathlib import Path
 
 from campaignlib import load_agent_prompt
 
-NARRATE_SYSTEM_BASE        = load_agent_prompt("session_doc/narrate/base")
-EXAMPLES_BLOCK             = load_agent_prompt("session_doc/narrate/examples_block")
-PER_CHAR_EXAMPLES_BLOCK    = load_agent_prompt("session_doc/narrate/per_char_examples")
-VOICE_SPEC_BLOCK           = load_agent_prompt("session_doc/narrate/voice_spec")
-PREV_VOICE_CONTRAST_BLOCK  = load_agent_prompt("session_doc/narrate/prev_voice_contrast")
-DIALOGUE_INSTRUCTION_FULL        = load_agent_prompt("session_doc/narrate/dialogue_full")
-DIALOGUE_INSTRUCTION_CONDITIONAL = load_agent_prompt("session_doc/narrate/dialogue_conditional")
-PROSE_MODE_INSTRUCTION     = load_agent_prompt("session_doc/narrate/prose_mode")
-SCENE_ANCHORED_DIRECTIVE   = load_agent_prompt("session_doc/narrate/scene_anchored")
+_PLACEHOLDER_RE = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
+
+
+def _fill(template: str, **values: str) -> str:
+    """Substitute every ``{placeholder}`` in ``template``, and prove it.
+
+    Replaces the ``.replace()`` chains this module used to build prompts with.
+    A chain is a list of intentions that nothing checks: delete one line and the
+    template's ``{rendering_instruction}`` survives into the prompt as literal
+    text, which is #302's failure with the direction reversed — still silent,
+    still green (found reviewing #302 itself).
+
+    Here the substitution is driven by the template, so a value that is not
+    supplied cannot be skipped: it raises. And because the walk emits each
+    value verbatim rather than re-scanning the joined result, a rulebook or
+    voice spec that happens to contain ``{narrator}`` is passed through
+    untouched instead of being mistaken for an unsubstituted placeholder.
+    """
+    out: list[str] = []
+    pos = 0
+    for m in _PLACEHOLDER_RE.finditer(template):
+        name = m.group(1)
+        if name not in values:
+            raise ValueError(
+                f"narrate prompt assembly is missing a value for "
+                f"{{{name}}} — the template asks for it and nothing supplies "
+                f"it, so it would reach the model as literal text."
+            )
+        out.append(template[pos:m.start()])
+        out.append(values[name])
+        pos = m.end()
+    out.append(template[pos:])
+    return "".join(out)
+
+
+def _template_candidates(name: str) -> list[str]:
+    """The paths ``load_agent_prompt`` searches, in its order.
+
+    Named in the drift error because the campaign override wins: reporting only
+    the repo's copy sends a GM to a file that is correct, with no hint that a
+    different one was loaded (mirrors ``load_agent_prompt``'s own
+    FileNotFoundError, which lists both).
+    """
+    rel = Path("config/agents") / f"{name}.md"
+    repo_root = Path(__file__).resolve().parents[1]
+    return [str(Path.cwd() / rel), str(repo_root / rel)]
+
+
+def _load_template(name: str, *placeholders: str) -> str:
+    """Load a narrate template and verify its placeholders, both directions.
+
+    ``load_agent_prompt`` already offers exactly this check — "every ``{key}``
+    in the template must appear in ``placeholders``, and every key in
+    ``placeholders`` must appear in the template [...] so prompt drift surfaces
+    loudly instead of silently producing a malformed prompt" — but only when a
+    ``placeholders`` dict is passed, and this module cannot pass one: the
+    values are computed per call, conditionally, while the templates are
+    constants loaded once at import.
+
+    So the module declined the check and hand-rolled ``str.replace`` instead,
+    which is a no-op on an absent needle. Renaming ``{genre_directive}`` in
+    ``base.md`` deleted the genre rulebook from every system prompt with no
+    error, no warning and a green suite (#302) — in the pipeline that had just
+    lost that rulebook for months (#295).
+
+    This restores the guarantee against the names the module actually
+    substitutes. A campaign override under ``config/agents/`` is checked too,
+    since ``load_agent_prompt`` resolves those first — an override that drops a
+    placeholder is exactly the silent case worth failing on.
+
+    Called via ``_load_template_deferred`` at import; the error it raises is
+    held and re-raised by the prompt builders, so a drifted template does not
+    take down the rest of the package. See that constant's note.
+
+    This is one half of the contract. The other is ``_fill``, which guarantees
+    every placeholder the template *does* have receives a value — the two
+    together close both directions.
+    """
+    text = load_agent_prompt(name)
+    found = set(_PLACEHOLDER_RE.findall(text))
+    expected = set(placeholders)
+    if found != expected:
+        missing = sorted(expected - found)
+        unknown = sorted(found - expected)
+        detail = []
+        if missing:
+            detail.append(
+                f"template is missing {missing} — the code substitutes "
+                f"{'them' if len(missing) > 1 else 'it'}, so "
+                f"{'those blocks' if len(missing) > 1 else 'that block'} "
+                f"would silently never appear in the prompt"
+            )
+        if unknown:
+            detail.append(
+                f"template contains {unknown}, which nothing substitutes — "
+                f"{'they' if len(unknown) > 1 else 'it'} would reach the model "
+                f"as literal text"
+            )
+        searched = "\n    ".join(_template_candidates(name))
+        raise ValueError(
+            f"{name}.md placeholder drift: " + "; ".join(detail)
+            + f"\n  loaded from the first of:\n    {searched}"
+        )
+    return text
+
+
+#: A drifted template must not take down `import session_doc`.
+#:
+#: `session_doc/__init__.py` re-exports these constants, so raising at import
+#: made a bad narrate template break everything in the package: the editor's
+#: `GET /api/scenes` (which only wants `parse_plan`) 500s, and sd_consistency,
+#: sd_plan, sd_corrections and assemble refuse to start — none of which build a
+#: narrate prompt. `server/main.py` chdirs into the campaign, so a GM's own
+#: `config/agents/` override is enough to trigger it. The error is held here
+#: and raised by the two functions that actually assemble a prompt, which is
+#: where the damage is and where the message makes sense (found reviewing #302).
+_TEMPLATE_ERROR: Exception | None = None
+
+
+def _load_template_deferred(name: str, *placeholders: str) -> str:
+    global _TEMPLATE_ERROR
+    try:
+        return _load_template(name, *placeholders)
+    except ValueError as exc:
+        if _TEMPLATE_ERROR is None:
+            _TEMPLATE_ERROR = exc
+        return ""          # never reaches a prompt: _require_templates() raises
+
+
+def _require_templates() -> None:
+    """Raise the deferred drift error, if any. Called before any prompt build."""
+    if _TEMPLATE_ERROR is not None:
+        raise _TEMPLATE_ERROR
+
+
+NARRATE_SYSTEM_BASE        = _load_template_deferred(
+    "session_doc/narrate/base",
+    "genre_directive", "examples_block", "scene_scope_line", "scene_events_line",
+    "rendering_instruction", "length_instruction", "dialogue_instruction",
+)
+EXAMPLES_BLOCK             = _load_template_deferred(
+    "session_doc/narrate/examples_block", "examples")
+PER_CHAR_EXAMPLES_BLOCK    = _load_template_deferred(
+    "session_doc/narrate/per_char_examples", "narrator", "examples")
+VOICE_SPEC_BLOCK           = _load_template_deferred(
+    "session_doc/narrate/voice_spec", "narrator", "voice_note")
+PREV_VOICE_CONTRAST_BLOCK  = _load_template_deferred(
+    "session_doc/narrate/prev_voice_contrast",
+    "prev_narrator", "prev_voice_sample", "narrator")
+DIALOGUE_INSTRUCTION_FULL        = _load_template_deferred(
+    "session_doc/narrate/dialogue_full")
+DIALOGUE_INSTRUCTION_CONDITIONAL = _load_template_deferred(
+    "session_doc/narrate/dialogue_conditional")
+PROSE_MODE_INSTRUCTION     = _load_template_deferred("session_doc/narrate/prose_mode")
+SCENE_ANCHORED_DIRECTIVE   = _load_template_deferred(
+    "session_doc/narrate/scene_anchored", "narrator")
 
 # Longest genre value still delivered as an inline ``GENRE: ...`` label.
 # Anything above this is a document and gets its own delimited block.
@@ -39,6 +187,7 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                          char_examples: str | None = None,
                          voice_note: str | None = None,
                          genre: str | None = None) -> str:
+    _require_templates()
     if examples_text:
         block = "\n" + EXAMPLES_BLOCK.replace("{examples}", examples_text.strip()) + "\n"
     else:
@@ -93,28 +242,26 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
     else:
         scene_events_line = ""
         rendering = ""
-    result = (NARRATE_SYSTEM_BASE
-              .replace("{genre_directive}", genre_block)
-              .replace("{examples_block}", block)
-              .replace("{scene_scope_line}", scope)
-              .replace("{scene_events_line}", scene_events_line)
-              .replace("{rendering_instruction}", rendering)
-              .replace("{length_instruction}", length)
-              .replace("{dialogue_instruction}", dialogue))
+    result = _fill(NARRATE_SYSTEM_BASE,
+                   genre_directive=genre_block,
+                   examples_block=block,
+                   scene_scope_line=scope,
+                   scene_events_line=scene_events_line,
+                   rendering_instruction=rendering,
+                   length_instruction=length,
+                   dialogue_instruction=dialogue)
     if scene_anchored and narrator:
-        result += "\n\n" + SCENE_ANCHORED_DIRECTIVE.replace("{narrator}", narrator)
+        result += "\n\n" + _fill(SCENE_ANCHORED_DIRECTIVE, narrator=narrator)
     if prose_mode:
         result += "\n\n" + PROSE_MODE_INSTRUCTION
     if char_examples and narrator:
-        block = (PER_CHAR_EXAMPLES_BLOCK
-                 .replace("{narrator}", narrator)
-                 .replace("{examples}", char_examples.strip()))
-        result += "\n\n" + block
+        result += "\n\n" + _fill(PER_CHAR_EXAMPLES_BLOCK,
+                                 narrator=narrator,
+                                 examples=char_examples.strip())
     if voice_note and narrator:
-        block = (VOICE_SPEC_BLOCK
-                 .replace("{narrator}", narrator)
-                 .replace("{voice_note}", voice_note.strip()))
-        result += "\n\n" + block
+        result += "\n\n" + _fill(VOICE_SPEC_BLOCK,
+                                 narrator=narrator,
+                                 voice_note=voice_note.strip())
     if genre and genre.strip():
         # Repeat the genre directive at the tail of the prompt. The opening copy
         # is buried under ~150 lines of prose-mode/voice rules by the time
@@ -147,6 +294,7 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
                           prev_narrator: str | None = None,
                           prev_voice_sample: str | None = None,
                           npc_roster: str = "") -> str:
+    _require_templates()
     parts = [f"## Narrator: {narrator}\n## Focus: {focus}"]
     if roster:
         parts.append(f"## Character Classes (definitive — never contradict these)\n\n{roster}")
@@ -196,11 +344,10 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
         )
     if (prev_narrator and prev_voice_sample
             and prev_narrator.lower() != narrator.lower()):
-        contrast = (PREV_VOICE_CONTRAST_BLOCK
-                    .replace("{prev_narrator}", prev_narrator)
-                    .replace("{prev_voice_sample}", prev_voice_sample.strip())
-                    .replace("{narrator}", narrator))
-        parts.append(contrast)
+        parts.append(_fill(PREV_VOICE_CONTRAST_BLOCK,
+                           prev_narrator=prev_narrator,
+                           prev_voice_sample=prev_voice_sample.strip(),
+                           narrator=narrator))
     if handoff:
         parts.append(f"## Handoff from previous narrator\n\"{handoff}\"")
     if scene_text:
