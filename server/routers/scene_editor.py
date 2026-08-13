@@ -24,6 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from campaignlib import wiring_get
+from campaignlib.party_config import PARTY_CONFIG_FILENAME
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -699,6 +700,50 @@ def _editor_resolved_batch(request, cfg: ResolvedEditorConfig) -> bool:
 
 
 
+def _party_config_path(cfg: ResolvedEditorConfig) -> Path | None:
+    """The campaign's ``<config>/party.yaml``, or ``None`` if absent.
+
+    Resolved by *declaration*, not configured and not probed. Track 0 of
+    ``docs/config/grounding-isolation.md`` (GM directive, 2026-07-24) makes
+    ``<campaign>/config/`` the one location for config documents — a
+    ``party.yaml`` anywhere else is a migration input for
+    ``migrate_config.sh``, not a supported alternative. Adding an
+    ``EditorPaths.party_config`` field here would recreate exactly the second
+    location Track 0 deleted, and ``tests/test_config_location.py`` guards
+    against the list-of-candidates shape that caused it.
+
+    Mirrors ``PlatformConfigService.config_path_base`` (``campaign_dir /
+    config_dir``) rather than ``campaignlib.constants.config_path``, so a
+    campaign that has renamed its config directory is still honoured.
+
+    This is what makes the sheet-frontmatter roster (#265) reachable from the
+    Session Doc Editor at all: the readers take ``--party-config``, the editor
+    only ever passed ``--party``, so ``args.party_config`` was always ``None``
+    for UI runs and the per-character diagnostics never ran.
+    """
+    p = Path(cfg.campaign_dir) / cfg.config_dir / PARTY_CONFIG_FILENAME
+    return p if p.exists() else None
+
+
+def _party_args(cfg: ResolvedEditorConfig) -> list[str]:
+    """``--party``/``--party-config`` for the three CLIs that read a roster.
+
+    Both are passed when both resolve: the readers prefer the sheet-sourced
+    roster and fall back to ``party.md``, and which one wins is theirs to
+    decide, not the router's.
+
+    Not for ``sd_plan`` — it takes ``--party`` as raw prompt text and has no
+    ``--party-config`` argument at all.
+    """
+    args: list[str] = []
+    if cfg.paths.party:
+        args += ["--party", cfg.paths.party]
+    party_config = _party_config_path(cfg)
+    if party_config is not None:
+        args += ["--party-config", str(party_config)]
+    return args
+
+
 def _build_enhance_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     """Stage 1: enhance_summary {vtt} --gmassist {session} --output {summary}.
 
@@ -726,6 +771,10 @@ def _build_enhance_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[
         "--output", str(summary),
     ]
     cmd += _selection_args(request, cfg)
+    # Deliberately no --party/--party-config. enhance_summary gates its whole
+    # roster block on `if party_path is not None`, so --party-config alone is
+    # inert, and adding --party would newly switch on speaker-attribution
+    # checking in Stage 1 — a behaviour change, not plumbing. Tracked at #265.
     return cmd
 
 
@@ -928,9 +977,9 @@ def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
     # character / GM labels deterministically before the LLM sees the VTT.
     # `party` is the synthesized party.md path (set by the Party Document
     # page); the player→character map is parsed from its `**<Class>,
-    # Player: <Player>**` lines.
-    if cfg.paths.party:
-        cmd += ["--party", cfg.paths.party]
+    # Player: <Player>**` lines. --party-config rides alongside it (#265):
+    # the sheet frontmatter is preferred, party.md is the fallback.
+    cmd += _party_args(cfg)
     # GM player name lives in cfg.roster.gm_player, resolved per-request
     # from the session editor config service — always the current value.
     gm_player = (cfg.roster.gm_player or "").strip()
@@ -983,7 +1032,8 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
         "--scene", str(scene_num),
     ]
     cmd += _selection_args(request, cfg)
-    for flag, value in [("--party", cfg.paths.party), ("--voice-dir", cfg.paths.voice_dir),
+    cmd += _party_args(cfg)
+    for flag, value in [("--voice-dir", cfg.paths.voice_dir),
                         ("--characters", cfg.roster.characters),
                         ("--examples", cfg.paths.examples_dir)]:
         if value:

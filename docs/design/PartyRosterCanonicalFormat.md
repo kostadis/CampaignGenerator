@@ -258,3 +258,49 @@ subsequent work closed it.
 Its proposed fix — "extend `roster.py` with one branch per catalogued layout" —
 is superseded by this design, which removes the need for any branch. #248 still
 carries useful #245/#246 lineage, so whether to close it is the GM's call.
+
+---
+
+## Status, 2026-08-13
+
+**Shipped (#265, PR #290):** the `## Identity` template gained `**Subclass:**`,
+`dnd_sheet.py` emits frontmatter, `roster_from_config` /
+`player_map_from_config` read it, the `sheet_frontmatter` importer exists, and
+the four render call sites prefer the config roster. `PartyCharacter` is
+unchanged, as designed.
+
+**Still open — the `party.md` fallback, and why it could not be deleted with
+A3's (#264):** the replacement path was *unreachable from the UI*. The Session
+Doc Editor passed `--party` only, so `args.party_config` was always `None` for
+UI runs, `resolved_party_config` was `None`, and the per-character diagnostics
+that make a config-roster failure legible never ran. The fallback was silent
+exactly where it mattered most.
+
+**Two prerequisites, now met:**
+
+1. **#291 — one base.** Sheet paths resolved against two different bases
+   depending on the campaign; out-of-the-abyss used the campaign root and the
+   other three used `party.yaml`'s own directory. `resolve_party_config` takes
+   `base` from the caller *by design* (#145/#146: moving `party.yaml` must not
+   change what its contents mean), and `load_party_config_arg` defaults it to
+   the cwd, so the data was wrong rather than the code. All four are now
+   campaign-root-relative — 24 path values, since `backstory`, `dossier` and
+   `arc_score` share the base and `require_files=True` raises on any of them.
+
+2. **Track 0 — one location.** `party.yaml` now lives at `<campaign>/config/`
+   for every campaign, and the Session Doc Editor resolves it *by declaration*
+   (`_party_config_path`), passing `--party-config` alongside `--party` to
+   `scene_extract` and `sd_narrate`. Deliberately **not** an
+   `EditorPaths.party_config` field: that would recreate the second location
+   Track 0 deleted, and `tests/test_config_location.py` guards the shape.
+
+   Two builders are deliberately excluded. `sd_plan` takes `--party` as raw
+   prompt text and declares no `--party-config` at all. `enhance_summary` gates
+   its whole roster block on `if party_path is not None`, so `--party-config`
+   alone is inert there and adding `--party` would newly switch on Stage 1
+   speaker-attribution checking — a behaviour change, not plumbing.
+
+**Remaining before the fallback can go (#293):** run `sheet_frontmatter --apply`
+per campaign and rule on the conflicts. Two campaigns need a GM ruling first —
+obelisk has no character sheets at all (its `config/party.yaml` is a PC-name
+exclusion list, not a roster), and Hillsfar has sheets but no `party.yaml`.

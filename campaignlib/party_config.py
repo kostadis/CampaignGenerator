@@ -331,13 +331,12 @@ def load_party_config_arg(
     workspace directory") and ``pipelines/grounding/party.py``'s own
     ``campaign_root or Path.cwd()`` default.
 
-    Caution inherited, not resolved, by this helper: which base directory
-    is actually correct for a given ``party.yaml``'s relative ``sheet:``
-    paths is campaign-dependent — see the "Measured" table in
-    ``docs/design/PartyRosterCanonicalFormat.md``. Some existing
-    campaigns' sheets resolve from ``party.yaml``'s own directory, others
-    from the campaign root, and no single default is right for all of
-    them. Migrating those files is explicitly out of scope for issue #265.
+    The cwd default is now correct for every campaign. It used to be
+    campaign-dependent — out-of-the-abyss resolved from the campaign root
+    while Phandalin, stormgiants and toee resolved from ``party.yaml``'s own
+    directory, so no single default was right for all of them. #291 rewrote
+    those three campaign-root-relative, so the ambiguity is gone from the
+    data rather than papered over here.
     """
     if not path_str:
         return None
