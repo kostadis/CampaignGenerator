@@ -202,7 +202,8 @@ It renders that dict to a prose sentence:
 f"**Refused by the extraction contract (#250)**: {n_ref}"
 ```
 
-Then `server/routers/scene_editor.py:724` and `:754` parse it back:
+Then `server/routers/scene_editor.py` parsed it back (both regexes have since
+been deleted — see the status note at the end of this section):
 
 ```python
 _REPORT_ROW_RE = re.compile(
@@ -246,16 +247,30 @@ markdown stays a human-readable report that nothing parses. Keep the regex path
 for one release so existing campaign directories do not blank out, then delete
 it. No effect on the verifier's zero-token / no-LLM guarantee.
 
+*(The one-release wait was skipped — no campaign had a report on disk to
+protect. See the status note below.)*
+
 This is the cleanest of the five defects — the producer already holds the
 structured value, so nothing has to be re-derived to fix it. Only C1 is cheaper,
 and C1 adds no code at all.
 
 **Status: fixed** (#264). `report_json` sits beside `render_report`;
 `sd_verify_quotes` writes `quote_report.json` alongside the `.md`; the server
-prefers it and keeps the regex as a one-release shim. `render_report`'s output
-is unchanged, and the JSON carries the per-rule breakdown the regex could never
-recover. The `parse_scene_quotes` ↔ `parse_scene_summary_spans` C1 pair was
-documented in the same change.
+reads it. `render_report`'s output is unchanged, and the JSON carries the
+per-rule breakdown the regex could never recover. The `parse_scene_quotes` ↔
+`parse_scene_summary_spans` C1 pair was documented in the same change.
+
+**Shim deleted, 2026-08-13.** `_REPORT_ROW_RE`, `_REPORT_REFUSED_RE` and both
+markdown-fallback branches are gone; the sidecar is now the only source. The
+"one release" wait turned out to be unnecessary — `find ~ -name "quote_report*"`
+returned **zero files** across every campaign, so the shim was protecting
+nothing that existed. No error path was added either, because the loud state
+already existed: `api_pipeline_status` treats `None` counts as amber `warn`
+("an unreadable report is not a passing one"), so a pre-sidecar report now
+reports *unknown* instead of numbers scraped off prose. `None` (could not tell)
+and `0` (found none) remain distinguishable — that contract is what the
+deletion had to preserve, and `test_editor_verify_routes.py` pins both halves
+at the parser *and* the route level.
 
 ---
 
@@ -564,11 +579,22 @@ issue that already touched each file. The order below is the one that was
 followed, with A2 and B1 swapped after the audit demoted A2 from
 "needs a ruling" to hygiene.
 
-Per-finding status notes are inline above. What is deliberately **not** done,
-tracked at **#293**: A1's six campaign migrations and their conflict rulings,
-then — once every campaign has run one release on the new path — deleting A3's
-and A1's compatibility fallbacks. #293 is itself blocked on **#291**, since no
-single base directory currently resolves `sheet:` for all six campaigns.
+Per-finding status notes are inline above. **A3's fallback was deleted on
+2026-08-13** once a disk sweep showed it protected nothing — no campaign had
+ever written a `quote_report.*`.
+
+What is still deliberately **not** done, tracked at **#293**: A1's six campaign
+migrations and their conflict rulings, then deleting A1's `party.md` fallback.
+#293 is itself blocked on **#291**, since no single base directory currently
+resolves `sheet:` for all six campaigns.
+
+A1's fallback cannot follow A3's out the door yet, and the reason is not
+migration debt: **the replacement path is unreachable from the UI.** The Session
+Doc Editor passes `--party` only — `EditorPaths` has no `party_config` field, and
+it is `extra="forbid"` — so `args.party_config` is always `None` for UI runs and
+`roster_from_config`'s per-character diagnostic never runs. Deleting the fallback
+before that flag is plumbed would turn a silent fallback into a silent hard
+failure. Plumb first, then delete.
 
 | | Finding | Risk | Effort | Note |
 |---|---|---|---|---|
