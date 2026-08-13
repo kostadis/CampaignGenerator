@@ -210,8 +210,19 @@ class NarrateKnobs(BaseModel):
         if not isinstance(data, dict):
             return data
         retired = [k for k in RETIRED_NARRATE_FIELDS if k in data]
-        relocated = [k for k in RELOCATED_NARRATE_FIELDS if k in data]
-        if not retired and not relocated:
+        # Key presence is enough to RETIRE a field, but not to announce a
+        # relocation: `genre: null` and `genre: ''` hold no document, so there
+        # is nothing being discarded and nothing for the migration to move.
+        # obelisk carries `genre: null` and was told, on every config load,
+        # that 4 characters were being ignored — `len(str(None))` — and to run
+        # a migration with no input. A permanent false alarm on the one stream
+        # whose job is to make the real alarm noticeable (#303); the real one,
+        # #295, went unnoticed for months.
+        relocated = [k for k in RELOCATED_NARRATE_FIELDS
+                     if k in data and str(data[k] or "").strip()]
+        empty_relocated = [k for k in RELOCATED_NARRATE_FIELDS
+                           if k in data and not str(data[k] or "").strip()]
+        if not retired and not relocated and not empty_relocated:
             return data
         if retired:
             print(
@@ -232,7 +243,7 @@ class NarrateKnobs(BaseModel):
                 f"       python -m server.migrate_narrate_genre --campaign-dir <DIR>",
                 file=sys.stderr,
             )
-        drop = set(retired) | set(relocated)
+        drop = set(retired) | set(relocated) | set(empty_relocated)
         return {k: v for k, v in data.items() if k not in drop}
 
 

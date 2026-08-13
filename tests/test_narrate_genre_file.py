@@ -211,3 +211,43 @@ def test_knobs_snapshot_omits_digest_when_the_file_is_gone():
 
     assert snap["narration_genre_file"] == "/c/voice/_gone.md"
     assert "narration_genre_sha" not in snap  # nothing was read, so claim nothing
+
+
+# ── #303: an empty relocated field is not a relocation ──────────────────────
+
+
+@pytest.mark.parametrize("value", [None, "", "   ", "\n"])
+def test_empty_genre_key_is_dropped_without_a_migration_notice(value, capsys):
+    """`genre: null` holds no document, so nothing is being discarded and the
+    migration has nothing to move.
+
+    obelisk carries exactly this and was told on EVERY config load that
+    4 characters were being ignored — `len(str(None))` — and to go run a
+    migration. A permanent false alarm on the one stream whose job is to make
+    the real alarm noticeable; the real one (#295) went unnoticed for months.
+    """
+    knobs = NarrateKnobs.model_validate({"genre": value, "tokens": 8000})
+
+    assert knobs.tokens == 8000
+    assert not hasattr(knobs, "genre")
+    err = capsys.readouterr().err
+    assert "migrate_narrate_genre" not in err
+    assert "relocated" not in err
+
+
+def test_a_real_paste_is_still_announced_loudly(capsys):
+    """The case the notice exists for: out-of-the-abyss loses 16,303 characters
+    here and must be told, with the size and the migration command."""
+    knobs = NarrateKnobs.model_validate({"genre": "# Register\n\nFirst person."})
+
+    assert not hasattr(knobs, "genre")
+    err = capsys.readouterr().err
+    assert "relocated" in err
+    assert "migrate_narrate_genre" in err
+    assert "chars" in err
+
+
+def test_the_char_count_is_the_documents_not_the_reprs(capsys):
+    NarrateKnobs.model_validate({"genre": "abcdefghij"})
+
+    assert "(10 chars)" in capsys.readouterr().err
