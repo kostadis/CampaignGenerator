@@ -523,3 +523,68 @@ def test_no_party_configured_at_all_emits_neither_flag(tmp_path):
     cmd = scene_editor._build_reextract_cmd(None, cfg)
     assert isinstance(cmd, list)
     assert "--party" not in cmd and "--party-config" not in cmd
+
+
+# ── #300: a voice_dir that cannot deliver is refused, not forwarded ──────────
+#
+# Mirrors `_party_args`: the editor turns `(None, reason)` into readable text,
+# where the subprocess's stderr reaches the GM only as a failed run they have
+# to open a terminal to read.
+
+
+def _voice_cfg(tmp_path: Path, **overrides) -> ResolvedEditorConfig:
+    """A cfg with Narrate's preconditions satisfied, so a test can vary voice_dir."""
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    (nd / "plan.md").write_text("plan", encoding="utf-8")
+    return _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+        **overrides,
+    )
+
+
+def test_narrate_refuses_a_voice_dir_that_is_not_a_directory(tmp_path):
+    cfg = _voice_cfg(tmp_path, voice_dir=str(tmp_path / "nope"))
+
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(result, tuple) and result[0] is None
+    assert "not a directory" in result[1]
+
+
+def test_narrate_refuses_a_voice_dir_holding_only_shared_material(tmp_path):
+    """`_genre.md` lives in voice/ on every campaign and is not a spec."""
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    (vd / "_genre.md").write_text("# Register\n", encoding="utf-8")
+    cfg = _voice_cfg(tmp_path, voice_dir=str(vd))
+
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(result, tuple) and result[0] is None
+    assert "no per-character voice files" in result[1]
+
+
+def test_narrate_forwards_a_usable_voice_dir(tmp_path):
+    vd = tmp_path / "voice"
+    vd.mkdir()
+    (vd / "_genre.md").write_text("# Register\n", encoding="utf-8")
+    (vd / "vukradin_new_pipeline.md").write_text("spec\n", encoding="utf-8")
+    cfg = _voice_cfg(tmp_path, voice_dir=str(vd))
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--voice-dir") + 1] == str(vd)
+
+
+def test_no_voice_dir_configured_is_not_a_refusal(tmp_path):
+    """Rendering without voice specs stays a legitimate mode."""
+    cfg = _voice_cfg(tmp_path)
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert "--voice-dir" not in cmd

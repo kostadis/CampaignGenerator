@@ -755,6 +755,36 @@ def _party_args(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     return ["--party", cfg.paths.party, "--party-config", str(party_config)]
 
 
+def _voice_args(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
+    """``--voice-dir`` for ``_build_narrate_cmd``, or ``(None, reason)`` (#300).
+
+    A configured voice directory that cannot deliver is refused here rather
+    than forwarded, for the same reason ``_party_args`` refuses: the editor
+    turns ``(None, reason)`` into readable text, where the subprocess's stderr
+    reaches the GM only as a failed run they have to open a terminal to read.
+
+    ``sd_narrate`` refuses on the same conditions independently — it is also
+    driven from the CLI, and a check that only exists in the router is a check
+    the CLI does not have.
+    """
+    if not cfg.paths.voice_dir:
+        return []
+    voice_dir = Path(cfg.paths.voice_dir).expanduser()
+    if not voice_dir.is_dir():
+        return None, (
+            f"voice_dir {voice_dir} is not a directory. Pass 5 would render "
+            f"with no voice specs for any narrator. Fix the path in Session "
+            f"Config, or clear it to render without voice specs."
+        )
+    # `_`-prefixed files are shared campaign material (`_genre.md`), not specs.
+    if not any(f.name[:1] != "_" for f in voice_dir.glob("*.md")):
+        return None, (
+            f"voice_dir {voice_dir} holds no per-character voice files. Add "
+            f"them, or clear the setting to render without voice specs."
+        )
+    return ["--voice-dir", cfg.paths.voice_dir]
+
+
 def _build_enhance_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     """Stage 1: enhance_summary {vtt} --gmassist {session} --output {summary}.
 
@@ -1021,8 +1051,11 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
     if isinstance(party_args, tuple):
         return party_args
     cmd += party_args
-    for flag, value in [("--voice-dir", cfg.paths.voice_dir),
-                        ("--characters", cfg.roster.characters),
+    voice_args = _voice_args(cfg)
+    if isinstance(voice_args, tuple):
+        return voice_args
+    cmd += voice_args
+    for flag, value in [("--characters", cfg.roster.characters),
                         ("--examples", cfg.paths.examples_dir)]:
         if value:
             cmd += [flag, value]

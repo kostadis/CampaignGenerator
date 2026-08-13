@@ -44,6 +44,7 @@ from session_doc.voice import (
     extract_contrast_sample,
     get_voice_note,
     load_voice_files,
+    voice_resolution_problems,
 )
 
 __all__ = [
@@ -73,6 +74,7 @@ __all__ = [
     "load_extractions",
     "load_scene_extractions",
     "load_voice_files",
+    "voice_resolution_problems",
     "parse_plan",
     "parse_vtt",
 ]
