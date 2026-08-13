@@ -755,6 +755,64 @@ def _party_args(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     return ["--party", cfg.paths.party, "--party-config", str(party_config)]
 
 
+def _examples_args(cfg: ResolvedEditorConfig, plan_path: Path
+                   ) -> list[str] | tuple[None, str]:
+    """``--examples``/``--characters``, or ``(None, reason)`` (#301).
+
+    Refused here rather than forwarded, for the reason ``_party_args``
+    refuses: the editor turns ``(None, reason)`` into readable text, where the
+    subprocess's stderr reaches the GM only as a failed run.
+
+    Two conditions:
+
+    - the declared directory does not exist (a typo, and a silent one —
+      ``_load_examples`` returns ``(None, {})`` for a missing path, which is
+      indistinguishable from "no examples configured");
+    - a per-character file is about to reach **every** narrator because the
+      roster does not name its character. That is the #301 bleed, and it is
+      keyed off the plan's narrators rather than the file names alone, so a
+      campaign whose examples are all house style — toee's
+      ``political_maneuvering.md`` and friends — is not refused for it.
+
+    A directory that exists but holds no examples is NOT refused: like
+    ``voice/``, ``examples/`` is created empty by ``new_workspace`` and
+    ``PlatformConfigService.derive`` fills ``examples_dir`` in from its mere
+    existence, so that state is the tool's doing rather than a GM's.
+    """
+    args: list[str] = []
+    if cfg.roster.characters:
+        args += ["--characters", cfg.roster.characters]
+    if not cfg.paths.examples_dir:
+        return args
+
+    examples_dir = Path(cfg.paths.examples_dir).expanduser()
+    if not examples_dir.is_dir():
+        return None, (
+            f"examples_dir {examples_dir} is not a directory. Pass 5 would "
+            f"render with no style examples. Fix the path in Session Config, "
+            f"or clear it to render without them."
+        )
+
+    if str(SCRIPT_DIR) not in sys.path:
+        sys.path.insert(0, str(SCRIPT_DIR))
+    from session_doc import parse_plan
+    from session_doc.examples import examples_routing_problems
+
+    characters = [c.strip() for c in (cfg.roster.characters or "").split(",") if c.strip()]
+    sections = parse_plan(plan_path.read_text(encoding="utf-8"), total_chunks=99)
+    problems = examples_routing_problems(
+        examples_dir, characters, [s["narrator"] for s in sections]
+    )
+    if problems:
+        # Every problem, not just the first: a GM with three mis-routed files
+        # would otherwise learn one name per failed run.
+        return None, (
+            " ".join(problems)
+            + f" Set Characters in Session Config to every narrating character "
+              f"(currently {cfg.roster.characters!r}), or rename the file(s) "
+              f"so they are not per-character."
+        )
+    return args + ["--examples", cfg.paths.examples_dir]
 def _voice_args(cfg: ResolvedEditorConfig, plan_path: Path,
                 scene_num: int) -> list[str] | tuple[None, str]:
     """``--voice-dir`` for ``_build_narrate_cmd``, or ``(None, reason)`` (#300).
@@ -1085,10 +1143,10 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
     if isinstance(voice_args, tuple):
         return voice_args
     cmd += voice_args
-    for flag, value in [("--characters", cfg.roster.characters),
-                        ("--examples", cfg.paths.examples_dir)]:
-        if value:
-            cmd += [flag, value]
+    examples_args = _examples_args(cfg, plan_path)
+    if isinstance(examples_args, tuple):
+        return examples_args
+    cmd += examples_args
     if cfg.narrate.tokens:
         cmd += ["--narrate-tokens", str(cfg.narrate.tokens)]
     if cfg.narrate.prose_mode:

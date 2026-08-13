@@ -39,7 +39,13 @@ from campaignlib import (
     run_single_batch,
     stream_api,
 )
-from session_doc.examples import get_char_examples
+from session_doc.examples import (
+    _first_name as _examples_first_name,
+    example_files,
+    examples_routing_problems,
+    get_char_examples,
+    routes_to,
+)
 from session_doc.knowledge_check import find_unknown_names, format_warning
 from session_doc.io import (
     extract_scene_text,
@@ -160,22 +166,21 @@ def _load_examples(examples_dir: Path | None,
     A file whose stem matches a character's first name (case-insensitive)
     routes to that character only; everything else is concatenated into
     the global block. Files whose name starts with ``_`` are skipped entirely.
+
+    The matching rule lives in ``examples.routes_to`` so that this function and
+    ``examples_routing_problems`` — which detects a file that *should* have
+    routed here and did not — cannot drift apart (#301).
     """
     if examples_dir is None or not examples_dir.is_dir():
         return None, {}
-    char_firsts = {c.lower().split()[0] for c in characters}
+    char_firsts = {_examples_first_name(c) for c in characters if c.strip()}
     global_parts: list[str] = []
     per_char: dict[str, str] = {}
-    for f in sorted(examples_dir.glob("*.md")):
-        if f.name.startswith("_"):
-            # Shared campaign material (e.g. `_genre.md`), not a style example.
-            # An unmatched `_`-file would otherwise join the GLOBAL examples
-            # block and reach every narrator (mirrors session_doc/io.py).
-            continue
+    for f in example_files(examples_dir):
         stem = f.stem.lower()
         key = None
         for first in char_firsts:
-            if stem == first or stem.startswith(first + "_") or stem.startswith(first + "-"):
+            if routes_to(stem, first):
                 key = first
                 break
         text = f.read_text(encoding="utf-8")
@@ -327,10 +332,23 @@ def main() -> None:
     narration_genre = _load_genre_file(args.narration_genre_file)
     characters = [c.strip() for c in (args.characters or "").split(",") if c.strip()]
     voice_files = _load_voice_dir(args.voice_dir)
-    examples_text, per_char_examples = _load_examples(
-        Path(args.examples).expanduser() if args.examples else None,
-        characters,
-    )
+    # A declared --examples that is not a directory is a typo, and a typo here
+    # is silent: `_load_examples` returns `(None, {})` for a missing path, which
+    # is indistinguishable from "no examples configured" (#301). Same shape as
+    # --voice-dir: the path is fatal, an empty directory is not.
+    examples_dir: Path | None = None
+    if args.examples:
+        examples_dir = Path(args.examples).expanduser()
+        if not examples_dir.is_dir():
+            print(f"Error: --examples {examples_dir} is not a directory. Pass 5 "
+                  f"would run with NO style examples.\n"
+                  f"  -> fix the path, or drop the flag to render without them.",
+                  file=sys.stderr)
+            sys.exit(1)
+        if not example_files(examples_dir):
+            print(f"Note: --examples {examples_dir} holds no style examples; "
+                  f"rendering without them.", file=sys.stderr)
+    examples_text, per_char_examples = _load_examples(examples_dir, characters)
 
     context_parts: list[str] = []
     if args.context:
@@ -425,6 +443,31 @@ def main() -> None:
                   f"  -> add the missing file(s), or drop --voice-dir to render "
                   f"without voice specs.", file=sys.stderr)
             sys.exit(1)
+
+    # Pre-flight: no per-character examples file may be silently reaching every
+    # narrator. With an empty or incomplete --characters the routing loop in
+    # `_load_examples` matches nothing, every file falls through to the GLOBAL
+    # block, and that block goes into every prompt — so one character's style
+    # reference steers all of them, and the output still looks plausible (#301).
+    #
+    # Keyed off the WHOLE plan, not the scenes being rendered. The global block
+    # is not narrator-scoped: `examples_text` is passed to every
+    # `build_narrate_system` call, so `bob.md` falling through reaches Alice's
+    # prompt even under `--narrator Alice`. Scoping this to the filtered
+    # sections made the narrower invocation silently ship the very bleed the
+    # full run refuses — measured on the fixture below before it was fixed.
+    routing = examples_routing_problems(
+        examples_dir, characters, list(plan_narrator_by_scene.values())
+    )
+    if routing:
+        print("Error: --examples holds per-character files that are reaching "
+              "every narrator:", file=sys.stderr)
+        for line in routing:
+            print(f"  - {line}", file=sys.stderr)
+        print(f"  --characters is {args.characters!r}\n"
+              f"  -> list every narrating character in --characters, or rename "
+              f"the file(s) so they are not per-character.", file=sys.stderr)
+        sys.exit(1)
 
     client = client_from_args(args)
     handoff = ""

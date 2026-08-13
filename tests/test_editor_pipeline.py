@@ -728,3 +728,101 @@ def test_no_voice_dir_configured_is_not_a_refusal(tmp_path):
 
     assert isinstance(cmd, list), cmd
     assert "--voice-dir" not in cmd
+
+
+# ── #301: the examples bleed is refused at the router too ───────────────────
+
+
+def _ex_cfg(tmp_path: Path, characters: str | None = None,
+            **overrides) -> ResolvedEditorConfig:
+    """Narrate preconditions satisfied, keeping the seeded Soma/Brewbarry plan.
+
+    `characters` belongs to Roster rather than EditorPaths, so it is applied
+    after construction instead of being passed through as a path override.
+    """
+    import dataclasses
+
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+        **overrides,
+    )
+    if characters is None:
+        return cfg
+    return dataclasses.replace(cfg, roster=Roster(characters=characters))
+
+
+def _examples(tmp_path: Path, *names: str) -> Path:
+    ed = tmp_path / "examples"
+    ed.mkdir()
+    for n in names:
+        (ed / f"{n}.md").write_text(f"{n} style\n", encoding="utf-8")
+    return ed
+
+
+def test_narrate_refuses_examples_dir_that_is_not_a_directory(tmp_path):
+    cfg = _ex_cfg(tmp_path, examples_dir=str(tmp_path / "nope"))
+
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(result, tuple) and result[0] is None
+    assert "is not a directory" in result[1]
+
+
+def test_narrate_refuses_when_a_per_character_file_would_go_global(tmp_path):
+    """Characters unset while soma.md sits in examples/ — every narrator would
+    read Soma's style reference."""
+    ed = _examples(tmp_path, "soma")
+    cfg = _ex_cfg(tmp_path, examples_dir=str(ed))     # roster.characters is None
+
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(result, tuple) and result[0] is None
+    assert "soma.md would route to narrator 'Soma'" in result[1]
+
+
+def test_narrate_allows_house_style_examples_with_no_roster(tmp_path):
+    """toee's shape: nothing would have routed per-character, so nothing bleeds."""
+    ed = _examples(tmp_path, "political_maneuvering", "combat_and_consequences")
+    cfg = _ex_cfg(tmp_path, examples_dir=str(ed))
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--examples") + 1] == str(ed)
+    assert "--characters" not in cmd
+
+
+def test_narrate_forwards_examples_and_characters_when_complete(tmp_path):
+    ed = _examples(tmp_path, "soma", "brewbarry")
+    cfg = _ex_cfg(tmp_path, examples_dir=str(ed), characters="Soma, Brewbarry")
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--examples") + 1] == str(ed)
+    assert cmd[cmd.index("--characters") + 1] == "Soma, Brewbarry"
+
+
+def test_narrate_refuses_an_incomplete_roster(tmp_path):
+    ed = _examples(tmp_path, "soma", "brewbarry")
+    cfg = _ex_cfg(tmp_path, examples_dir=str(ed), characters="Soma")
+
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(result, tuple) and result[0] is None
+    assert "brewbarry.md would route to narrator 'Brewbarry'" in result[1]
+
+
+def test_empty_examples_dir_is_not_refused(tmp_path):
+    ed = tmp_path / "examples"
+    ed.mkdir()
+    cfg = _ex_cfg(tmp_path, examples_dir=str(ed))
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--examples") + 1] == str(ed)
