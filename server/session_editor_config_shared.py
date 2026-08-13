@@ -210,8 +210,41 @@ class NarrateKnobs(BaseModel):
         if not isinstance(data, dict):
             return data
         retired = [k for k in RETIRED_NARRATE_FIELDS if k in data]
-        relocated = [k for k in RELOCATED_NARRATE_FIELDS if k in data]
-        if not retired and not relocated:
+        # Key presence is enough to RETIRE a field, but not to announce a
+        # relocation: `genre: null` and `genre: ''` hold no document, so there
+        # is nothing being discarded and nothing for the migration to move.
+        # obelisk carries `genre: null` and was told, on every config load,
+        # that 4 characters were being ignored — `len(str(None))` — and to run
+        # a migration with no input. A permanent false alarm on the one stream
+        # whose job is to make the real alarm noticeable (#303); the real one,
+        # #295, went unnoticed for months.
+        def _is_empty(value: Any) -> bool:
+            """Holds nothing worth announcing.
+
+            Strings are stripped first: `genre: "   "` and a block scalar
+            yielding `"\n"` are empty documents, not "not text". Without the
+            strip they failed the `relocated` test AND the emptiness test and
+            landed in `odd`, printing "genre (str) ... this value is not text"
+            — self-contradictory, and the same per-load false alarm on a new
+            value that this whole change exists to remove.
+            """
+            if isinstance(value, str):
+                return not value.strip()
+            return value in (None, "", [], {})
+
+        present = [k for k in RELOCATED_NARRATE_FIELDS if k in data]
+        # "Holds a document" must mean what the migration means by it —
+        # `_paste_from_raw` accepts `isinstance(value, str)` and nothing else.
+        # A hand-edited `genre:` written as a YAML list would otherwise be
+        # announced with a *repr* length and a migration command that then
+        # reports "nothing to migrate".
+        relocated = [k for k in present
+                     if isinstance(data[k], str) and data[k].strip()]
+        # Present, non-empty, and not a string: still dropped (the field is
+        # gone), but neither silently nor with advice that cannot work.
+        odd = [k for k in present
+               if k not in relocated and not _is_empty(data[k])]
+        if not retired and not present:
             return data
         if retired:
             print(
@@ -222,7 +255,7 @@ class NarrateKnobs(BaseModel):
             )
         if relocated:
             sizes = ", ".join(
-                f"{k} ({len(str(data[k]))} chars)" for k in relocated
+                f"{k} ({len(data[k].strip())} chars)" for k in relocated
             )
             print(
                 f"  config: ignoring relocated session_doc.yaml narrate field(s) "
@@ -232,7 +265,20 @@ class NarrateKnobs(BaseModel):
                 f"       python -m server.migrate_narrate_genre --campaign-dir <DIR>",
                 file=sys.stderr,
             )
-        drop = set(retired) | set(relocated)
+        if odd:
+            kinds = ", ".join(f"{k} ({type(data[k]).__name__})" for k in odd)
+            print(
+                f"  config: discarding session_doc.yaml narrate field(s) {kinds} "
+                f"— the genre rulebook is a file at paths.genre_file (#276), and "
+                f"this value is not text, so there is nothing to relocate.\n"
+                f"    -> write the rulebook to voice/_genre.md and point "
+                f"paths.genre_file at it.",
+                file=sys.stderr,
+            )
+        # Every present key is dropped either way: the field no longer exists on
+        # the model, and `extra="forbid"` would reject the whole config — taking
+        # the editor down on boot — over a value nobody reads.
+        drop = set(retired) | set(present)
         return {k: v for k, v in data.items() if k not in drop}
 
 
