@@ -64,7 +64,6 @@ from session_doc.voice import (
     extract_contrast_sample,
     get_voice_note,
     load_declared_voices,
-    load_voice_files,
     unknown_narrators,
     voice_declaration_problems,
 )

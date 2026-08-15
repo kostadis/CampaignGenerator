@@ -14,7 +14,6 @@ const props = defineProps<{
   party: string
   voiceDir: string
   examplesDir: string
-  characters: string
   context: string
   // ── Stage knobs ───────────────────────────────────────────
   backend: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
@@ -48,7 +47,6 @@ const emit = defineEmits<{
   'update:party': [value: string]
   'update:voiceDir': [value: string]
   'update:examplesDir': [value: string]
-  'update:characters': [value: string]
   'update:context': [value: string]
   'update:backend': [value: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code']
   'update:dgxEndpoint': [value: string]
@@ -138,15 +136,11 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
           help="Handcrafted .md style references for narration."
         />
         <div class="field">
-          <label class="field-label">Characters</label>
-          <input
-            type="text"
-            class="field-input"
-            :value="characters"
-            placeholder="Zalthir, Grygum, Daz, Thorin"
-            @input="emit('update:characters', ($event.target as HTMLInputElement).value)"
-          />
-          <div class="field-help">Comma-separated narrator roster (used by Extract).</div>
+          <div class="field-help">
+            The narrating cast comes from <code>party.yaml</code>, and each
+            character names its own voice and example files there. Typing the
+            roster a second time here is what let it go stale against itself.
+          </div>
         </div>
         <MultiPathField
           :model-value="context"

@@ -23,7 +23,6 @@ const narrationDir = ref('')
 const party = ref('')
 const voiceDir = ref('')
 const examplesDir = ref('')
-const characters = ref('')
 const context = ref('')
 const narrateTokens = ref(16000)
 const proseMode = ref(false)
@@ -57,7 +56,6 @@ function loadConfigFields() {
   const ec = config.editorConfig
   const paths = ec?.paths ?? {}
   const narrate = ec?.narrate ?? {}
-  const roster = ec?.roster ?? {}
   const backends = ec?.backends ?? {}
 
   session.value = paths.session_recap || ''
@@ -68,7 +66,6 @@ function loadConfigFields() {
   party.value = paths.party || ''
   voiceDir.value = paths.voice_dir || ''
   examplesDir.value = paths.examples_dir || ''
-  characters.value = roster.characters || ''
   context.value = (narrate.context ?? []).join('\n')
   narrateTokens.value = narrate.tokens || 16000
   proseMode.value = !!narrate.prose_mode
@@ -107,9 +104,6 @@ function buildEditorConfigPayload() {
       // Campaign-scoped, like the rulebook it points at (#276 fix 2).
       genre_file: resolvePathWithBase(genreFile.value, 'campaign') || undefined,
     },
-    roster: {
-      characters: characters.value || undefined,
-    },
     narrate: {
       context: contextFiles.value.length ? contextFiles.value : [],
       tokens: narrateTokens.value || undefined,
@@ -140,7 +134,7 @@ function scheduleApply() {
 
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,
-   party, voiceDir, examplesDir, characters, context,
+   party, voiceDir, examplesDir, context,
    narrateTokens, proseMode, reflections, genreFile],
   scheduleApply,
 )
@@ -865,7 +859,6 @@ onMounted(async () => {
       v-model:party="party"
       v-model:voice-dir="voiceDir"
       v-model:examples-dir="examplesDir"
-      v-model:characters="characters"
       v-model:context="context"
       v-model:backend="backend"
       v-model:dgx-endpoint="dgxEndpoint"

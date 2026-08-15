@@ -43,7 +43,12 @@ import yaml
 
 from campaignlib.npc import is_player_placeholder
 from campaignlib.party_config import PARTY_CONFIG_FILENAME
-from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
+from campaignlib.players_config import (
+    PLAYERS_CONFIG_FILENAME,
+    Player,
+    PlayersConfig,
+    save_players_config,
+)
 from campaignlib.textproc import split_frontmatter
 from campaignlib.util import atomic_write_text
 
@@ -190,6 +195,7 @@ def migrate(campaign_dir: Path, config_dir: str, force: bool) -> int:
     roster_block = session_raw.get("roster") or {}
 
     conflicts: list[str] = []
+    conflicted: set[str] = set()
     notes: list[str] = []
 
     # ── players ─────────────────────────────────────────────────────────
@@ -206,10 +212,12 @@ def migrate(campaign_dir: Path, config_dir: str, force: bool) -> int:
             sheet_value = None
 
         if roster_value and sheet_value and roster_value != sheet_value:
+            conflicted.add(name)
             conflicts.append(
                 f"{name}: party.yaml says {roster_value!r}, the sheet says "
-                f"{sheet_value!r}. Neither written — rule on it and add the "
-                f"player by hand."
+                f"{sheet_value!r}. Neither written, and the value is LEFT in "
+                f"party.yaml so it is not lost — that file will refuse to load "
+                f"until you rule on it and move the answer to players.yaml."
             )
             continue
         person = roster_value or sheet_value
@@ -299,15 +307,35 @@ def migrate(campaign_dir: Path, config_dir: str, force: bool) -> int:
               f"behind: {', '.join(unrecognised)}")
 
     # ── write ───────────────────────────────────────────────────────────
-    atomic_write_text(
-        players_path,
-        yaml.safe_dump({"players": players}, default_flow_style=False,
-                       sort_keys=False, allow_unicode=True),
-    )
+    # Written through the service's own saver, which re-runs the uniqueness
+    # rules. A raw dump here could produce a file that fails its own loader —
+    # `party.yaml` saying `player: Wade` and `session_doc.yaml` saying
+    # `gm_player: wade` are two rows whose display names collide, and the
+    # migration would have reported success over a document nothing can read.
+    try:
+        save_players_config(
+            players_path,
+            PlayersConfig(players=[Player.model_validate(p) for p in players]),
+        )
+    except ValueError as exc:
+        print(
+            f"Error: the drafted roster is not valid, so nothing was written:\n"
+            f"  {exc}\n"
+            f"  Nothing else was changed either — {party_path} and "
+            f"{session_doc_path} are untouched.",
+            file=sys.stderr,
+        )
+        return 1
 
     for entry in entries:
-        entry.pop("player", None)
         name = str(entry.get("name") or "")
+        # A conflicting `player:` STAYS. Reporting "nothing was written" and
+        # then deleting the value from the only file that held it would leave
+        # the GM recovering it from scrollback. party.yaml refuses to load
+        # while it is there, which is the right kind of stuck: loud, and one
+        # ruling away from fixed.
+        if name not in conflicted:
+            entry.pop("player", None)
         if name in voices:
             entry["voice"] = voices[name]
         if name in examples:

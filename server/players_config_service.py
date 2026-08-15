@@ -40,6 +40,7 @@ from campaignlib.players_config import (
     Player,
     PlayersConfig,
     load_players_config,
+    norm_name,
     save_players_config,
 )
 
@@ -90,7 +91,10 @@ class PlayersConfigService:
         if not self.party_path.exists():
             return None
         try:
-            return {c.name for c in load_party_config(self.party_path).characters}
+            return {
+                norm_name(c.name)
+                for c in load_party_config(self.party_path).characters
+            }
         except ValueError:
             return None
 
@@ -104,7 +108,7 @@ class PlayersConfigService:
         problems: list[dict[str, str]] = []
         if known is not None:
             for character in player.plays:
-                if character not in known:
+                if norm_name(character) not in known:
                     problems.append({
                         "kind": "unknown_character",
                         "value": character,

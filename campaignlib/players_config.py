@@ -125,6 +125,24 @@ class PlayersConfig(BaseModel):
     players: list[Player] = Field(default_factory=list)
 
 
+def norm_name(value: str) -> str:
+    """Fold a **character** name for comparison — casefold + whitespace collapse.
+
+    THE rule, exported so `speaker_map`, `speaker_map_from_configs`,
+    `player_name_for`, `PlayersConfigService._with_problems` and
+    `players check` all fold identically. They did not: three used exact
+    equality and one lowercased, so a `plays: [gyrgum]` against a roster's
+    `Gyrgum` made the check report "Clean" while the render refused with
+    "no player bound". A check that disagrees with the run is worse than no
+    check.
+
+    Folding is not approximate matching. `Gyrgum` and `gyrgum` are one name
+    typed two ways; `Gyrgum` and `Grygum` are two names, and nothing here will
+    ever join them.
+    """
+    return " ".join(value.split()).casefold()
+
+
 def _norm_display(value: str) -> str:
     """Collapse a display name for *collision detection only*.
 
@@ -315,10 +333,12 @@ def speaker_map(players: PlayersConfig, party: "Any") -> dict[str, str]:
     transcripts this map is applied to, which is why they are marked rather
     than deleted.
     """
-    known = {c.name for c in getattr(party, "characters", [])}
+    by_norm = {norm_name(c.name): c.name for c in getattr(party, "characters", [])}
     mapped: dict[str, str] = {}
     for p in players.players:
-        character = next((c for c in p.plays if c in known), None)
+        character = next(
+            (by_norm[norm_name(c)] for c in p.plays if norm_name(c) in by_norm), None
+        )
         if character is None:
             continue
         for raw in p.display_names:
@@ -375,10 +395,20 @@ def speaker_map_from_configs(
     real state a GM can be in.
     """
     if players is None:
+        # Distinct from "recorded, but nobody is bound", and the caller cannot
+        # tell them apart from a bare None — `require_from_config`'s message
+        # names --party-config, which is the wrong file to go and look at.
+        print(
+            "speaker_map_from_configs: no player entity was given.\n"
+            "  -> pass --players-config <campaign>/config/players.yaml. If the "
+            "campaign has not been adopted yet, run:\n"
+            "     python -m server.migrate_players_config --campaign-dir DIR",
+            file=sys.stderr,
+        )
         return None
     characters = [c.name for c in getattr(party, "characters", [])]
-    bound = {c for p in players.players for c in p.plays}
-    unbound = [c for c in characters if c not in bound]
+    bound = {norm_name(c) for p in players.players for c in p.plays}
+    unbound = [c for c in characters if norm_name(c) not in bound]
     if unbound:
         print(
             "speaker_map_from_configs: no usable speaker map — these "
@@ -400,7 +430,8 @@ def player_name_for(players: PlayersConfig, character: str) -> str | None:
     archive still resolves (FR-011a, FR-019). A character played by two people
     renders the first of them, in authored order.
     """
+    wanted = norm_name(character)
     for p in players.players:
-        if p.active and character in p.plays:
+        if p.active and any(norm_name(c) == wanted for c in p.plays):
             return p.name
     return None

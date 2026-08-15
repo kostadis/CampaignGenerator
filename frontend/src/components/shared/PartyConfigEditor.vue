@@ -7,14 +7,19 @@ import PathField from './PathField.vue'
 interface PartyChar {
   name: string
   sheet: string
-  /**
-   * Who plays this character. The roster is authoritative for it (feature 008):
-   * a D&D Beyond export stamps the downloader's name into every sheet, so the
-   * sheet is wrong about this for everyone. Must be the ZOOM DISPLAY NAME.
-   */
-  player: string
   backstory: string
   dossier: string
+  /**
+   * This character's voice specification and style examples (feature 009).
+   *
+   * DECLARATIONS, not conventions: a render follows the path. They replaced a
+   * rule that matched a filename against the character's first name, which
+   * resolved a renamed `Gyrgum` to nothing and told nobody. Every field here
+   * must round-trip — the save PUTs the whole roster, so a field this
+   * component does not read back is a field the next save deletes.
+   */
+  voice: string
+  examples: string
   arc_score: string
   trackless: boolean
   /** Fields whose referenced file doesn't exist. Server-reported (D4). */
@@ -63,9 +68,10 @@ function normalize(rows: PartyChar[]): PartyChar[] {
   return rows.map(c => ({
     name: c.name ?? '',
     sheet: c.sheet ?? '',
-    player: c.player ?? '',
     backstory: c.backstory ?? '',
     dossier: c.dossier ?? '',
+    voice: c.voice ?? '',
+    examples: c.examples ?? '',
     arc_score: c.arc_score ?? '',
     trackless: !!c.trackless,
     missing_files: c.missing_files ?? [],
@@ -118,8 +124,8 @@ async function save() {
 
 function addChar() {
   characters.value.push({
-    name: '', sheet: '', player: '', backstory: '', dossier: '', arc_score: '',
-    trackless: false, missing_files: [],
+    name: '', sheet: '', backstory: '', dossier: '', voice: '', examples: '',
+    arc_score: '', trackless: false, missing_files: [],
   })
 }
 
@@ -194,22 +200,6 @@ watch(() => open.value, (o) => {
           </div>
 
           <div class="char-body">
-            <div class="field">
-              <label class="field-label">Player</label>
-              <input
-                type="text"
-                class="text-input"
-                v-model="c.player"
-                placeholder="Zoom display name (e.g. Wade)"
-              />
-              <p class="field-help">
-                Who plays this character. The roster wins over the sheet here — a D&amp;D
-                Beyond export stamps the <em>downloader's</em> name into every sheet it
-                produces. Use the player's <strong>Zoom display name</strong>, not their
-                legal name: speaker attribution matches transcript prefixes exactly, and
-                a near-miss silently drops this character's lines from every extraction.
-              </p>
-            </div>
             <PathField
               :model-value="c.sheet"
               @update:model-value="(v: string) => (c.sheet = v)"
@@ -231,6 +221,20 @@ watch(() => open.value, (o) => {
               label="Ensemble dossier"
               :base-dir="yamlParentDir"
               help="Optional. This PC's own docs/ensemble/merged_dossiers/npc_*.md — narrative facts (relationships, decisions, arc progression) from actual play."
+            />
+            <PathField
+              :model-value="c.voice"
+              @update:model-value="(v: string) => (c.voice = v)"
+              label="Voice specification"
+              :base-dir="yamlParentDir"
+              help="Optional. This character's register rules and banned-tic list (e.g. voice/gyrgum_voice.md). Named here, not matched by filename — a render follows this path, and a file it cannot find stops the run rather than leaving the narrator silently without its voice."
+            />
+            <PathField
+              :model-value="c.examples"
+              @update:model-value="(v: string) => (c.examples = v)"
+              label="Style examples"
+              :base-dir="yamlParentDir"
+              help="Optional. This character's style reference (e.g. examples/gyrgum.md). Reaches only this narrator. Campaign-wide examples go in party.yaml's shared_examples list."
             />
 
             <div class="arc-row">

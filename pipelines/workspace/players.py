@@ -43,6 +43,7 @@ from campaignlib.party_config import (
 from campaignlib.players_config import (
     PLAYERS_CONFIG_FILENAME,
     load_players_config,
+    norm_name,
 )
 
 
@@ -61,8 +62,26 @@ def _read_vtt_speakers(vtt: Path) -> set[str]:
     return speakers
 
 
-def collect_findings(campaign_dir: Path | str, vtt: Path | None = None) -> dict[str, Any]:
+#: Where a campaign conventionally keeps its voice specs and style examples.
+#: ``new_workspace`` creates both, and every campaign on disk uses them.
+DEFAULT_STYLE_DIRS = ("voice", "examples")
+
+
+def collect_findings(
+    campaign_dir: Path | str,
+    vtt: Path | None = None,
+    style_dirs: "tuple[str, ...] | None" = None,
+) -> dict[str, Any]:
     """Everything incoherent about this campaign's player configuration.
+
+    ``style_dirs`` is where to look for files nothing declares. It defaults to
+    the convention, and is a parameter rather than a read of
+    ``session_doc.yaml``'s ``voice_dir``/``examples_dir`` because that document
+    belongs to ``server/`` and this module may not import it
+    (``tests/test_layering.py``). A campaign that keeps its files elsewhere
+    passes ``--style-dir`` — without which the orphan section would be silently
+    empty, which is precisely the "reads as coverage and is not" failure #315
+    was.
 
     Raises ``ValueError`` when a document will not load at all — that is not a
     finding about the campaign, it is the check being unable to run, and the
@@ -80,21 +99,21 @@ def collect_findings(campaign_dir: Path | str, vtt: Path | None = None) -> dict[
     )
 
     characters = [c.name for c in party.characters] if party else []
-    known = {c.lower() for c in characters}
+    known = {norm_name(c) for c in characters}
 
     # "Nobody has ever played this" — deliberately counting inactive players
     # too. A character whose player has left is historical, not broken
     # (FR-011a): their transcripts still resolve, and reporting it every run
     # would train the reader to ignore this section. What the check is for is
     # a character nobody has been recorded against at all.
-    played_by_anyone = {c.lower() for p in players.players for c in p.plays}
-    unplayed = [c for c in characters if c.lower() not in played_by_anyone]
+    played_by_anyone = {norm_name(c) for p in players.players for c in p.plays}
+    unplayed = [c for c in characters if norm_name(c) not in played_by_anyone]
 
     unknown = [
         {"player": p.id, "character": c}
         for p in players.players
         for c in p.plays
-        if c.lower() not in known
+        if norm_name(c) not in known
     ]
 
     no_display_name = [
@@ -132,15 +151,20 @@ def collect_findings(campaign_dir: Path | str, vtt: Path | None = None) -> dict[
     # catch exactly this could not see it (#315).
     undeclared: list[str] = []
     claimed = {p.resolve() for p in declared_voice + declared_examples}
-    for subdir in ("voice", "examples"):
-        directory = campaign_dir / subdir
+    scanned: list[str] = []
+    for subdir in (style_dirs or DEFAULT_STYLE_DIRS):
+        directory = (campaign_dir / subdir).expanduser()
         if not directory.is_dir():
             continue
+        scanned.append(subdir)
         for f in sorted(directory.glob("*.md")):
             if f.name.startswith("_"):
                 continue          # shared campaign material, not a per-character file
             if f.resolve() not in claimed:
-                undeclared.append(str(f.relative_to(campaign_dir)))
+                try:
+                    undeclared.append(str(f.relative_to(campaign_dir)))
+                except ValueError:
+                    undeclared.append(str(f))
 
     absent_in_vtt: list[str] = []
     if vtt is not None:
@@ -157,6 +181,9 @@ def collect_findings(campaign_dir: Path | str, vtt: Path | None = None) -> dict[
         "absent_in_vtt": absent_in_vtt,
     }
     findings["clean"] = not any(v for k, v in findings.items() if k != "clean")
+    # Not a finding — a statement of coverage. An empty orphan section means
+    # something different depending on whether anything was scanned.
+    findings["scanned_dirs"] = scanned
     return findings
 
 
@@ -183,6 +210,14 @@ def _report(findings: dict[str, Any], *, checked_vtt: bool) -> None:
         lambda r: f"{r['character']}.{r['field']} -> {r['path']}",
     )
     section("Files nothing declares", findings["undeclared_files"])
+    # An empty section means two different things, so say which. "Nothing was
+    # scanned" reading as "nothing is wrong" is the failure #315 was.
+    scanned = findings.get("scanned_dirs") or []
+    if scanned:
+        print(f"  (scanned: {', '.join(scanned)})")
+    else:
+        print("  (scanned nothing — no style directory found. Pass --style-dir "
+              "if this campaign keeps its voice/example files elsewhere.)")
     if checked_vtt:
         section("Display names absent from this transcript", findings["absent_in_vtt"])
     else:
@@ -196,8 +231,9 @@ def cmd_check(args: argparse.Namespace) -> int:
     if vtt is not None and not vtt.is_file():
         print(f"Error: --vtt not found: {vtt}", file=sys.stderr)
         return 1
+    style_dirs = tuple(args.style_dir) if args.style_dir else None
     try:
-        findings = collect_findings(campaign_dir, vtt)
+        findings = collect_findings(campaign_dir, vtt, style_dirs)
     except ValueError as exc:
         # A document that will not load is the check being unable to run, not a
         # finding about the campaign. obelisk's party.yaml is a PC-name
@@ -227,6 +263,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     pc.add_argument("--campaign-dir", default=".",
                     help="Campaign root (default: the current directory).")
+    pc.add_argument("--style-dir", metavar="DIR", action="append", default=None,
+                    help="Where this campaign keeps its voice and example "
+                         f"files, relative to the campaign root. Repeatable. "
+                         f"Defaults to {', '.join(DEFAULT_STYLE_DIRS)}. Only "
+                         f"the 'files nothing declares' section reads it.")
     pc.add_argument("--vtt", metavar="FILE", default=None,
                     help="A transcript to check display names against. Reports "
                          "EACH expected name that does not appear — including "
