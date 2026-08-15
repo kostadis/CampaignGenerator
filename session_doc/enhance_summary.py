@@ -35,7 +35,7 @@ from campaignlib import (
     collect_batch,
     format_batch_progress,
     load_agent_prompt,
-    player_map_from_config,
+    load_players_config_arg,
     poll_batch,
     read_batch_sidecar,
     run_batch,
@@ -46,6 +46,7 @@ from campaignlib import (
     write_batch_sidecar,
 )
 from campaignlib.party_config import load_party_config_arg, require_from_config
+from campaignlib.players_config import speaker_map_from_configs
 from .io import parse_vtt
 
 
@@ -66,19 +67,25 @@ def _sidecar_path(output_path: Path) -> Path:
 def _build_prompts(vtt_path: Path, gm_path: Path,
                    party_path: Path | None = None,
                    party_config_path: Path | None = None,
-                   gm_player: str | None = None,
+                   players_config_path: Path | None = None,
                    allow_speaker_mismatch: bool = False) -> tuple[str, str, str, str]:
     """Read inputs, build (system, user, dialogue, gmassist_body).
 
-    When `party_path` or `gm_player` is provided, runs a wrong-VTT
-    pre-flight: extracts expected speaker display names and aborts if
-    the VTT contains zero lines starting with any of them. The check
-    can be bypassed with `allow_speaker_mismatch=True`.
+    When `party_path` is provided, runs a wrong-VTT pre-flight: collects the
+    expected speaker display names and aborts if the VTT contains zero lines
+    starting with any of them. The check can be bypassed with
+    `allow_speaker_mismatch=True`.
 
-    `party_config_path` (party.yaml) is the only source of the
-    player→character map (issue #265) — each character's sheet frontmatter,
-    with no party.md fallback. `party_path` still gates whether the map is
-    built at all, but is not read for it.
+    `party_config_path` (party.yaml) supplies the characters;
+    `players_config_path` (players.yaml) supplies every display name a
+    recording has used for each of them, the game master's included (feature
+    009). `party_path` still gates whether the map is built at all, but is not
+    read for it.
+
+    Note what this pre-flight can and cannot see: it fires only when **zero**
+    expected names match, so a session where three of four players are labelled
+    correctly and the fourth is not passes it. Reporting the individual absentee
+    is `players check --vtt`'s job.
     """
     raw = vtt_path.read_text(encoding="utf-8")
     print(f"\n[Parsing VTT | {len(raw):,} raw chars | {vtt_path.name}]")
@@ -90,28 +97,29 @@ def _build_prompts(vtt_path: Path, gm_path: Path,
 
     expected: set[str] = set()
     if party_path is not None:
-        # The player→character map comes from each character's sheet
-        # frontmatter (#265) — no party.md fallback.
+        # Display name → label comes from the player entity (feature 009). The
+        # game master's labels arrive through the same door as everyone else's,
+        # so there is no separate --gm-player to keep in step.
         party_config_arg = str(party_config_path) if party_config_path else None
+        players_config_arg = str(players_config_path) if players_config_path else None
         resolved_party_config = load_party_config_arg(party_config_arg)
+        players_config = load_players_config_arg(players_config_arg)
         player_map = require_from_config(
-            player_map_from_config(resolved_party_config) if resolved_party_config else None,
-            what="player → character map",
+            speaker_map_from_configs(players_config, resolved_party_config)
+            if resolved_party_config else None,
+            what="speaker map",
             party_config_arg=party_config_arg,
         )
         if player_map:
             mapping_str = ", ".join(f"{p}→{c}" for p, c in sorted(player_map.items()))
-            print(f"  Player → character map ({len(player_map)}): {mapping_str}")
+            print(f"  Speaker map ({len(player_map)}): {mapping_str}")
             expected.update(player_map.keys())
         else:
-            # Legitimate: every sheet's `player` field is a placeholder, so no
-            # speaker can be attributed. Distinct from an unusable config,
-            # which require_from_config has already exited on.
-            print("  Warning: every character's sheet has a placeholder `player` "
-                  "field, so no speaker attribution is possible.", file=sys.stderr)
-    if gm_player:
-        print(f"  GM player: {gm_player}")
-        expected.add(gm_player)
+            # Legitimate: every player is recorded but none carries a display
+            # name — Hillsfar's state. Distinct from an unusable config, which
+            # require_from_config already exited on.
+            print("  Warning: no player has a recorded display name, so no "
+                  "speaker attribution is possible.", file=sys.stderr)
     if expected:
         matches = sum(
             1 for line in dialogue.splitlines()
@@ -269,13 +277,16 @@ def main() -> None:
                              "character's D&D Beyond sheet frontmatter (issue #265) and "
                              "there is no party.md fallback — a sheet without frontmatter "
                              "is a hard error. Run sheet_frontmatter --apply to add it.")
-    parser.add_argument("--gm-player", metavar="NAME", default=None,
-                        help="Display name the GM appears under in the VTT "
-                             "(e.g. 'Kostadis'). Added to the speaker pre-flight.")
+    parser.add_argument("--players-config", metavar="FILE", default=None,
+                        help="players.yaml (conventionally "
+                             "<campaign>/config/players.yaml). REQUIRED with "
+                             "--party: every display name a recording has used "
+                             "for a player is recorded there, the game master's "
+                             "included. Replaces the old --gm-player.")
     parser.add_argument("--allow-speaker-mismatch", action="store_true",
                         help="Skip the pre-flight check that aborts when --party "
-                             "or --gm-player is provided but no VTT lines match "
-                             "any of those display names.")
+                             "is provided but no VTT lines match any recorded "
+                             "display name.")
     parser.add_argument("--model", default=DEFAULT_MODEL)
     add_backend_args(parser)
     parser.add_argument("--fast", action="store_true",
@@ -349,12 +360,15 @@ def main() -> None:
             print(f"Error: party file not found: {party_path}", file=sys.stderr)
             sys.exit(1)
     party_config_path = Path(args.party_config).expanduser() if args.party_config else None
+    players_config_path = (
+        Path(args.players_config).expanduser() if args.players_config else None
+    )
 
     system, user, dialogue, gmassist_body = _build_prompts(
         vtt_path, gm_path,
         party_path=party_path,
         party_config_path=party_config_path,
-        gm_player=args.gm_player,
+        players_config_path=players_config_path,
         allow_speaker_mismatch=args.allow_speaker_mismatch,
     )
 

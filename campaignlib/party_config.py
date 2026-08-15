@@ -59,7 +59,17 @@ AuthoredPath = Annotated[str | None, BeforeValidator(_as_authored)]
 
 #: Per-character path fields, in the order they are rendered and reported.
 #: ``sheet`` is required; the rest are optional.
-PATH_FIELDS: tuple[str, ...] = ("sheet", "backstory", "dossier", "arc_score")
+#:
+#: ``voice`` and ``examples`` joined this tuple in feature 009 and that is the
+#: entire mechanism behind "a character's voice and examples arrive because it
+#: named them". They used to be found by matching a file name against the
+#: character's first name, which is a similarity-based identity assertion and
+#: the last one left in this codebase. A path is checked by
+#: :func:`missing_files`, reported by the API, rendered by the Party page and
+#: refused by the CLI — it fails loudly, and the prefix rule failed silently.
+PATH_FIELDS: tuple[str, ...] = (
+    "sheet", "backstory", "dossier", "arc_score", "voice", "examples",
+)
 
 
 class PartyCharacter(BaseModel):
@@ -82,25 +92,31 @@ class PartyCharacter(BaseModel):
     to which PC is a campaign-specific attribution decision, so it is always an
     explicit human-authored mapping, never inferred by name-matching.
 
-    ``player`` is who plays the character, and the roster is **authoritative**
-    for it (feature 008, FR-008) — the one field where the roster overrules the
-    character sheet. A D&D Beyond export stamps the *downloader's* name into
-    every sheet it produces, so the sheet is wrong about this for every
-    character, every time, by construction. It must hold the player's **Zoom
-    display name**: ``campaignlib.npc.normalize_vtt_speakers`` matches speaker
-    prefixes exactly, so a legal name where Zoom shows a nickname silently
-    drops that PC's lines from every downstream extraction. Optional — a roster
-    that records no player anywhere stays valid (FR-008a).
+    ``voice`` and ``examples`` name this character's voice specification and
+    its style-examples file (feature 009). Both are **declarations**: a render
+    follows the path, and an absent file is reported before the first API call
+    rather than discovered as a narrator that quietly had no register rules.
+    They replaced a rule that matched a file name against the character's first
+    name, which resolved ``Gyrgum`` to nothing after a rename and told nobody
+    (campaigns#175). Optional — a character that declares neither has neither,
+    stated rather than inferred.
+
+    There is deliberately **no ``player`` field**. It lived here between
+    features 008 and 009 and had exactly one production reader; who plays a
+    character is now recorded in ``players.yaml``, which
+    :mod:`campaignlib.players_config` owns. A document still carrying it is
+    refused by name — see :func:`load_party_config`.
     """
 
     model_config = ConfigDict(extra="forbid")
 
     name: str
     sheet: Annotated[str, BeforeValidator(_as_authored)]
-    player: str | None = None
     backstory: AuthoredPath = None
     dossier: AuthoredPath = None
     arc_score: AuthoredPath = None
+    voice: AuthoredPath = None
+    examples: AuthoredPath = None
     trackless: bool = False
 
 
@@ -110,6 +126,17 @@ class PartyConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     characters: list[PartyCharacter] = Field(default_factory=list)
+
+    #: Feature 009 — example files that belong to the whole campaign rather
+    #: than to one character, and therefore reach EVERY narrator. toee's
+    #: ``combat_and_consequences.md`` and obelisk's ``house_style.md`` are the
+    #: real cases; today they reach every narrator only by *falling through*
+    #: the per-character routing, which is the same fall-through that sends one
+    #: character's style to everybody after a rename (#301). Declaring them
+    #: makes "shared" a written statement instead of the absence of a match: a
+    #: file that nothing declares is **unused**, not shared, and
+    #: ``players check`` names it.
+    shared_examples: list[str] = Field(default_factory=list)
 
     #: Feature 003 — this service's own model/backend override. Empty means
     #: "defer to the platform selection", which is the default and the common
@@ -130,10 +157,11 @@ class ResolvedCharacter(BaseModel):
 
     name: str
     sheet: Path
-    player: str | None = None
     backstory: Path | None = None
     dossier: Path | None = None
     arc_score: Path | None = None
+    voice: Path | None = None
+    examples: Path | None = None
     trackless: bool = False
 
 
@@ -148,6 +176,7 @@ class ResolvedPartyConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     characters: list[ResolvedCharacter] = Field(default_factory=list)
+    shared_examples: list[Path] = Field(default_factory=list)
 
 
 def load_party_config(path: Path) -> PartyConfig:
@@ -191,6 +220,16 @@ def load_party_config(path: Path) -> PartyConfig:
             raise ValueError(
                 f"character entry in {path} missing 'name' or 'sheet': {entry}"
             )
+        # `player` was retired in feature 009. Refuse rather than ignore: a
+        # location that still parses is a split brain waiting to happen, and a
+        # value silently dropped here is a person the GM thinks is recorded.
+        if "player" in entry:
+            raise ValueError(
+                f"{path}: character {name!r} still carries the retired 'player' "
+                f"field. Who plays a character is recorded in players.yaml now.\n"
+                f"  Fix: python -m server.migrate_players_config "
+                f"--campaign-dir <campaign>"
+            )
         # The three-state read: presence of the key is as meaningful as its
         # value, so this cannot be expressed as a plain model field default.
         if "arc_score" in entry:
@@ -203,17 +242,22 @@ def load_party_config(path: Path) -> PartyConfig:
             PartyCharacter(
                 name=str(name),
                 sheet=str(sheet),
-                player=str(entry["player"]) if entry.get("player") else None,
                 backstory=str(entry["backstory"]) if entry.get("backstory") else None,
                 dossier=str(entry["dossier"]) if entry.get("dossier") else None,
                 arc_score=arc_score,
+                voice=str(entry["voice"]) if entry.get("voice") else None,
+                examples=str(entry["examples"]) if entry.get("examples") else None,
                 trackless=trackless,
             )
         )
+    shared_raw = raw.get("shared_examples") or []
+    if not isinstance(shared_raw, list):
+        raise ValueError(f"{path}: 'shared_examples' must be a list")
     # See load_planning_config: loader and saver both hand-build, so a new
     # field must be named in both or it round-trips to nothing.
     return PartyConfig(
         characters=characters,
+        shared_examples=[str(s) for s in shared_raw if s],
         selection=ModelSelection.model_validate(raw.get("selection") or {}),
     )
 
@@ -232,22 +276,27 @@ def save_party_config(path: Path, cfg: PartyConfig) -> None:
     entries: list[dict[str, Any]] = []
     for pc in cfg.characters:
         entry: dict[str, Any] = {"name": pc.name, "sheet": pc.sheet}
-        if pc.player:
-            entry["player"] = pc.player
         if pc.backstory:
             entry["backstory"] = pc.backstory
         if pc.dossier:
             entry["dossier"] = pc.dossier
+        if pc.voice:
+            entry["voice"] = pc.voice
+        if pc.examples:
+            entry["examples"] = pc.examples
         if pc.trackless:
             entry["arc_score"] = None
         elif pc.arc_score:
             entry["arc_score"] = pc.arc_score
         entries.append(entry)
-    # `selection` is written only when set. These savers hand-build the YAML
-    # dict rather than dumping the model, so a new field is silently dropped
-    # unless added here — which is exactly what happened when feature 003 first
-    # added it, and the write appeared to succeed while persisting nothing.
+    # `selection` and `shared_examples` are written only when set. These savers
+    # hand-build the YAML dict rather than dumping the model, so a new field is
+    # silently dropped unless added here — which is exactly what happened when
+    # feature 003 first added `selection`, and the write appeared to succeed
+    # while persisting nothing.
     doc: dict[str, Any] = {"characters": entries}
+    if cfg.shared_examples:
+        doc["shared_examples"] = list(cfg.shared_examples)
     if not cfg.selection.is_empty():
         doc["selection"] = cfg.selection.model_dump(exclude_none=True)
     atomic_write_text(
@@ -315,15 +364,24 @@ def resolve_party_config(
             ResolvedCharacter(
                 name=pc.name,
                 sheet=_resolve(pc.sheet, "sheet", pc.name),
-                # Not a path — copied through verbatim, like `trackless`.
-                player=pc.player,
                 backstory=_resolve(pc.backstory, "backstory", pc.name),
                 dossier=_resolve(pc.dossier, "dossier", pc.name),
                 arc_score=_resolve(pc.arc_score, "arc_score", pc.name),
+                voice=_resolve(pc.voice, "voice", pc.name),
+                examples=_resolve(pc.examples, "examples", pc.name),
                 trackless=pc.trackless,
             )
             for pc in cfg.characters
-        ]
+        ],
+        # The resolver hand-builds too, and it is what the render pipelines
+        # actually consume — a field missing here is a field the renderer never
+        # sees, however faithfully the loader read it.
+        shared_examples=[
+            p for p in (
+                _resolve(s, "shared_examples", "<campaign>")
+                for s in cfg.shared_examples
+            ) if p is not None
+        ],
     )
 
 

@@ -421,40 +421,61 @@ def test_nothing_is_touched_before_the_api_call_returns(monkeypatch, tmp_path):
 
 # ── User story 3: the player behind the character ──────────────────────────
 
-ROSTER_WITH_PLAYER = """\
-    characters:
-    - name: Soma
-      sheet: docs/party/Soma.md
-      player: Wade
+PLAYERS_YAML = """\
+    players:
+    - id: wade
+      name: Wade
+      display_names: [Wade]
+      plays: [Soma]
 """
+
+
+def _players(campaign: Path, body: str = PLAYERS_YAML) -> str:
+    """Write config/players.yaml; return the argv path.
+
+    Feature 009 moved the player out of the roster: ``party.yaml`` describes a
+    character and its files, ``players.yaml`` describes the human. What
+    ``dnd_sheet`` stamps into a converted sheet is a **rendered copy** of that
+    person's name — nothing reads it back, so re-running the conversion is what
+    refreshes it.
+    """
+    (campaign / "config" / "players.yaml").write_text(
+        textwrap.dedent(body), encoding="utf-8"
+    )
+    return "config/players.yaml"
 
 
 def test_roster_player_replaces_the_downloaders_name(monkeypatch, stub_convert,
                                                      tmp_path, capsys):
     """FR-008: the stub converter stamps 'Kostadis' into every sheet, exactly
     as a D&D Beyond download does — that is the GM, not the player."""
-    campaign = _campaign(tmp_path, ROSTER_WITH_PLAYER)
+    campaign = _campaign(tmp_path, PHANDALIN_ROSTER)
+    players = _players(campaign)
     pdf = _pdf(tmp_path, "Soma")
-    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml")
+    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml",
+         "--players-config", players)
 
     written = (campaign / "docs" / "party" / "Soma.md").read_text(encoding="utf-8")
     assert "player: Wade" in written
     assert "- **Player:** Wade" in written
     assert "Kostadis" not in written
-    assert "Player: Kostadis -> Wade  (from party.yaml)" in capsys.readouterr().err
+    assert "Player: Kostadis -> Wade  (from players.yaml)" in capsys.readouterr().err
 
 
 def test_the_substitution_does_not_revert_on_a_second_conversion(monkeypatch,
                                                                  stub_convert,
                                                                  tmp_path):
-    campaign = _campaign(tmp_path, ROSTER_WITH_PLAYER)
+    campaign = _campaign(tmp_path, PHANDALIN_ROSTER)
+    players = _players(campaign)
     pdf = _pdf(tmp_path, "Soma")
-    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml")
+    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml",
+         "--players-config", players)
     # Bump the level so the second run has a free archive slot.
     sheet = campaign / "docs" / "party" / "Soma.md"
     sheet.write_text(sheet.read_text(encoding="utf-8").replace("Druid 6", "Druid 5"),
                      encoding="utf-8")
-    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml")
+    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml",
+         "--players-config", players)
 
     assert "Kostadis" not in sheet.read_text(encoding="utf-8")
     archived = campaign / "docs" / "party" / "old" / "level" / "5" / "Soma.md"
@@ -465,14 +486,17 @@ def test_a_ragged_model_response_still_rewrites_both_channels(monkeypatch,
                                                               tmp_path):
     """Real model output is not guaranteed to start exactly at `---`. If the
     leading whitespace reached the substitution, the frontmatter would keep the
-    downloader's name while the prose showed the roster's — and
-    `player_map_from_config` reads the frontmatter."""
-    campaign = _campaign(tmp_path, ROSTER_WITH_PLAYER)
+    downloader's name while the prose showed the recorded player's — a document
+    that contradicts itself, which is why `apply_roster_player` writes both
+    channels together."""
+    campaign = _campaign(tmp_path, PHANDALIN_ROSTER)
+    players = _players(campaign)
     pdf = _pdf(tmp_path, "Soma")
     monkeypatch.setattr(dnd_sheet, "pdf_to_markdown",
                         lambda *a, **kw: "\n\n  " + _sheet_markdown("Soma"))
     monkeypatch.setattr(dnd_sheet, "client_from_args", lambda *a, **kw: None)
-    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml")
+    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml",
+         "--players-config", players)
 
     written = (campaign / "docs" / "party" / "Soma.md").read_text(encoding="utf-8")
     assert written.startswith("---")
@@ -481,17 +505,34 @@ def test_a_ragged_model_response_still_rewrites_both_channels(monkeypatch,
     assert "Kostadis" not in written
 
 
-def test_no_roster_player_empties_the_field_and_says_why(monkeypatch,
+def test_nobody_playing_this_character_empties_the_field_and_says_why(
+    monkeypatch, stub_convert, tmp_path, capsys,
+):
+    """FR-009: never carry the downloaded value forward as a fallback. It names
+    the downloader, not the player, so keeping it would record the GM as every
+    character's player."""
+    campaign = _campaign(tmp_path, PHANDALIN_ROSTER)
+    players = _players(campaign, "players: []\n")
+    pdf = _pdf(tmp_path, "Soma")
+    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml",
+         "--players-config", players)
+
+    written = (campaign / "docs" / "party" / "Soma.md").read_text(encoding="utf-8")
+    assert "Kostadis" not in written
+    assert "nobody in players.yaml plays this character" in capsys.readouterr().err
+
+
+def test_no_players_config_at_all_also_empties_the_field(monkeypatch,
                                                          stub_convert,
                                                          tmp_path, capsys):
-    """FR-009: never carry the downloaded value forward as a fallback."""
+    """A campaign that has not been adopted yet still must not have the
+    downloader's name stamped into its sheets."""
     campaign = _campaign(tmp_path, PHANDALIN_ROSTER)
     pdf = _pdf(tmp_path, "Soma")
     _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml")
 
     written = (campaign / "docs" / "party" / "Soma.md").read_text(encoding="utf-8")
     assert "Kostadis" not in written
-    assert "none recorded in party.yaml" in capsys.readouterr().err
 
 
 # ── Legacy modes (FR-017, FR-018) ──────────────────────────────────────────

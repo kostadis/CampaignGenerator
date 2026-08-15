@@ -37,6 +37,10 @@ from campaignlib.party_config import (
     load_party_config,
     load_party_config_arg,
 )
+from campaignlib.players_config import (
+    load_players_config_arg,
+    player_name_for,
+)
 from campaignlib.sheet_identity import read_player, sheet_name
 from campaignlib.sheet_naming import (
     ArchiveSlotOccupied,
@@ -311,13 +315,16 @@ def main() -> None:
                              "entry by the character name on the sheet, written to "
                              "<roster sheet dir>/<char-name>.md, any sheet already "
                              "there is archived under old/level/<N>/, and the "
-                             "roster's player value replaces the one in the export "
-                             "(a D&D Beyond download stamps the downloader's name). "
-                             "That player value must be the player's ZOOM DISPLAY "
-                             "NAME — speaker attribution downstream matches VTT "
-                             "prefixes exactly, and a near-miss silently drops that "
-                             "character's lines. Relative paths in the roster "
+                             "player recorded in players.yaml replaces the one "
+                             "in the export (a D&D Beyond download stamps the "
+                             "downloader's name). Relative paths in the roster "
                              "resolve against the current directory.")
+    parser.add_argument("--players-config", metavar="PATH", default=None,
+                        help="The campaign's config/players.yaml. Supplies the "
+                             "person's name stamped into each converted sheet. "
+                             "The stamped value is a RENDERED COPY, not an "
+                             "authority: nothing reads it back, and re-running "
+                             "the conversion is what refreshes it.")
     parser.add_argument("--output", "-o", metavar="FILE",
                         help="Output file (single PDF only). Overrides --output-dir. "
                              "Suppresses roster naming and archival.")
@@ -339,6 +346,10 @@ def main() -> None:
         print(SKIPPED_FOR_EXPLICIT_OUTPUT, file=sys.stderr)
     else:
         roster = load_roster(args.party_config)
+        # Who plays each character. Absent is legitimate — the sheet's player
+        # line is then emptied rather than left naming the downloader, and the
+        # message below says so.
+        players_config = load_players_config_arg(args.players_config)
         if roster is None:
             print(NO_ROSTER_NOTICE, file=sys.stderr)
 
@@ -363,9 +374,10 @@ def main() -> None:
         # frontmatter — `read_player`, `read_class_level`, the substitution in
         # `apply_roster_player` — anchors its match at \A, so one stray leading
         # newline from the model would silently skip the machine channel while
-        # still rewriting the prose one. The sheet would then name the roster's
-        # player in ## Identity and the downloader in frontmatter, and
-        # `player_map_from_config` reads frontmatter.
+        # still rewriting the prose one. The sheet would then name one person in
+        # ## Identity and the downloader in frontmatter — a document that
+        # contradicts itself, which is the whole reason `apply_roster_player`
+        # writes both channels together.
         markdown = pdf_to_markdown(client, pdf_path, args.model, batch=args.batch).strip()
 
         if roster is not None:
@@ -384,17 +396,25 @@ def main() -> None:
             print(f"Matched roster entry: {character.name}", file=sys.stderr)
 
             downloaded = read_player(markdown)
-            markdown = apply_roster_player(markdown, character.player)
-            if character.player and character.player.strip():
+            # The person comes from the player entity (feature 009). What lands
+            # in the sheet is a rendered copy: no consumer reads it back, so it
+            # going stale between conversions is harmless by design.
+            roster_player = (
+                player_name_for(players_config, character.name)
+                if players_config else None
+            )
+            markdown = apply_roster_player(markdown, roster_player)
+            if roster_player and roster_player.strip():
                 print(
-                    f"Player: {downloaded or '(none)'} -> {character.player.strip()}"
-                    f"  (from party.yaml)",
+                    f"Player: {downloaded or '(none)'} -> {roster_player.strip()}"
+                    f"  (from players.yaml)",
                     file=sys.stderr,
                 )
             else:
                 print(
-                    "Player: none recorded in party.yaml — left empty (the "
-                    "downloaded value names the downloader, not the player)",
+                    "Player: nobody in players.yaml plays this character — "
+                    "left empty (the downloaded value names the downloader, "
+                    "not the player)",
                     file=sys.stderr,
                 )
 

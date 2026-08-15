@@ -20,6 +20,7 @@ real `~/src/campaigns/<name>/docs/party.md` (issue #248).
 import pytest
 
 from campaignlib.party_config import ResolvedCharacter, ResolvedPartyConfig
+from campaignlib.players_config import Player, PlayersConfig
 from session_doc.roster import extract_character_roster, roster_from_config
 
 # Verbatim excerpt from /home/kroussos/src/campaigns/Phandalin/docs/party.md.
@@ -481,6 +482,22 @@ def _resolved_character(name, sheet_path) -> ResolvedCharacter:
     return ResolvedCharacter(name=name, sheet=sheet_path)
 
 
+def _players(*pairs, inactive=()) -> PlayersConfig:
+    """``(person, character)`` pairs as a player roster.
+
+    Feature 009: the person's name comes from here, never from the sheet. A
+    D&D Beyond export stamps the *downloader's* name into every sheet it
+    produces, so the sheet was never authoritative about the human — the
+    fixtures below still write a ``player:`` line precisely so these tests
+    prove it is not read.
+    """
+    return PlayersConfig(players=[
+        Player(id=person.split()[0].lower() or "x", name=person,
+               plays=[character], active=person not in inactive)
+        for person, character in pairs
+    ])
+
+
 def test_roster_from_config_all_sheets_have_frontmatter(tmp_path):
     zalthir = _write_sheet(
         tmp_path, "zalthir.md", name="Zalthir", player="Gabe",
@@ -495,7 +512,7 @@ def test_roster_from_config_all_sheets_have_frontmatter(tmp_path):
         _resolved_character("Zalthir", zalthir),
         _resolved_character("Soma", soma),
     ])
-    result = roster_from_config(cfg)
+    result = roster_from_config(cfg, _players(("Gabe", "Zalthir"), ("Wade", "Soma")))
     assert result == (
         # Zalthir's sheet carries a subclass, Soma's does not — the
         # parenthetical appears only where there is something to put in it.
@@ -515,22 +532,50 @@ def test_roster_renders_the_subclass_parenthetical(tmp_path):
         subclass="Path of the Giant",
     )
     cfg = ResolvedPartyConfig(characters=[_resolved_character("Brewbarry", sheet)])
-    assert roster_from_config(cfg) == (
+    assert roster_from_config(cfg, _players(("Stéphane Bourdeaud", "Brewbarry"))) == (
         "- Brewbarry (Stéphane Bourdeaud): Goliath Barbarian 6 (Path of the Giant)"
     )
 
 
-def test_roster_omits_a_placeholder_player(tmp_path):
-    """Same placeholder rule ``player_map_from_config`` uses — one rule, not
-    two copies. Hillsfar's sheets came off a shared D&D Beyond account with no
-    real attribution; "- Akritas (Not specified): …" must not reach the
-    narration prompt."""
+def test_roster_omits_a_character_nobody_plays(tmp_path):
+    """Hillsfar's sheets came off a shared D&D Beyond account and say
+    "Not specified". Under feature 009 the sheet's line is not consulted at
+    all, so the placeholder cannot reach the prompt however it is spelled —
+    the question is only whether the entity names somebody."""
     sheet = _write_sheet(
         tmp_path, "akritas.md", name="Akritas", player="Not specified",
         species="High Elf", class_level="Ranger 11", subclass="Hunter",
     )
     cfg = ResolvedPartyConfig(characters=[_resolved_character("Akritas", sheet)])
-    assert roster_from_config(cfg) == "- Akritas: High Elf Ranger 11 (Hunter)"
+    assert roster_from_config(cfg, PlayersConfig()) == (
+        "- Akritas: High Elf Ranger 11 (Hunter)"
+    )
+
+
+def test_roster_never_reads_the_sheets_player_line(tmp_path):
+    """The sheet's `player:` is a rendered copy this pipeline writes, and a
+    copy read back is an authority (FR-023). The sheet here says one thing and
+    the entity another; the entity must win."""
+    sheet = _write_sheet(
+        tmp_path, "soma.md", name="Soma", player="kostadis1",
+        species="Tortle", class_level="Druid 6",
+    )
+    cfg = ResolvedPartyConfig(characters=[_resolved_character("Soma", sheet)])
+    assert roster_from_config(cfg, _players(("Wade Brown", "Soma"))) == (
+        "- Soma (Wade Brown): Tortle Druid 6"
+    )
+
+
+def test_roster_omits_an_inactive_player(tmp_path):
+    """FR-011a/FR-019: the prompt roster describes the table as it is now. The
+    departed player stays recorded so old transcripts still resolve."""
+    sheet = _write_sheet(
+        tmp_path, "zalthir.md", name="Zalthir", player="Gabe",
+        species="Dragonborn", class_level="Monk 8",
+    )
+    cfg = ResolvedPartyConfig(characters=[_resolved_character("Zalthir", sheet)])
+    players = _players(("Gabe", "Zalthir"), inactive={"Gabe"})
+    assert roster_from_config(cfg, players) == "- Zalthir: Dragonborn Monk 8"
 
 
 def test_roster_from_config_all_or_nothing_none_when_one_lacks_frontmatter(tmp_path, capsys):
@@ -545,7 +590,7 @@ def test_roster_from_config_all_or_nothing_none_when_one_lacks_frontmatter(tmp_p
         _resolved_character("Zalthir", zalthir),
         _resolved_character("Soma", soma),
     ])
-    assert roster_from_config(cfg) is None
+    assert roster_from_config(cfg, PlayersConfig()) is None
     err = capsys.readouterr().err
     assert "Soma" in err
     assert "frontmatter" in err
@@ -562,21 +607,23 @@ def test_roster_from_config_all_or_nothing_none_when_sheet_missing(tmp_path, cap
         _resolved_character("Soma", soma),
         _resolved_character("Ghost", tmp_path / "does_not_exist.md"),
     ])
-    assert roster_from_config(cfg) is None
+    assert roster_from_config(cfg, PlayersConfig()) is None
     err = capsys.readouterr().err
     assert "Ghost" in err
     assert "not found" in err
 
 
 def test_roster_from_config_strips_fields(tmp_path):
-    """One real sheet (zalthir.md) has a trailing space after the player
-    name — every field must be .strip()-ed."""
+    """Real sheets carry trailing spaces on their frontmatter values — every
+    field read from one must be .strip()-ed."""
     sheet = _write_sheet(
         tmp_path, "zalthir.md", name="Zalthir", player="Gabe ",
         species=" Dragonborn (Brass Dragon) ", class_level=" Monk 8 ",
     )
     cfg = ResolvedPartyConfig(characters=[_resolved_character("Zalthir", sheet)])
-    assert roster_from_config(cfg) == "- Zalthir (Gabe): Dragonborn (Brass Dragon) Monk 8"
+    assert roster_from_config(cfg, _players(("Gabe", "Zalthir"))) == (
+        "- Zalthir (Gabe): Dragonborn (Brass Dragon) Monk 8"
+    )
 
 
 def test_roster_from_config_no_player_line_shape(tmp_path):
@@ -585,7 +632,7 @@ def test_roster_from_config_no_player_line_shape(tmp_path):
         species="Undead", class_level="Skeletal Horse",
     )
     cfg = ResolvedPartyConfig(characters=[_resolved_character("Boney", sheet)])
-    assert roster_from_config(cfg) == "- Boney: Undead Skeletal Horse"
+    assert roster_from_config(cfg, PlayersConfig()) == "- Boney: Undead Skeletal Horse"
 
 
 def test_roster_from_config_rejects_a_roster_of_nobody(tmp_path, capsys):
@@ -593,5 +640,5 @@ def test_roster_from_config_rejects_a_roster_of_nobody(tmp_path, capsys):
     and render with the "never contradict these" block silently absent. That
     is the roster-less render #265 exists to prevent, so it must be None."""
     cfg = ResolvedPartyConfig(characters=[])
-    assert roster_from_config(cfg) is None
+    assert roster_from_config(cfg, PlayersConfig()) is None
     assert "lists no characters at all" in capsys.readouterr().err

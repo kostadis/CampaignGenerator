@@ -40,11 +40,11 @@ from campaignlib import (
     stream_api,
 )
 from session_doc.examples import (
-    _first_name as _examples_first_name,
-    example_files,
-    examples_routing_problems,
+    examples_declaration_problems,
     get_char_examples,
-    routes_to,
+    load_declared_examples,
+    load_shared_examples,
+    undeclared_files,
 )
 from session_doc.knowledge_check import find_unknown_names, format_warning
 from session_doc.io import (
@@ -58,12 +58,15 @@ from session_doc.narrate import (
     estimate_narration_tokens,
 )
 from campaignlib.party_config import load_party_config_arg, require_from_config
+from campaignlib.players_config import load_players_config_arg
 from session_doc.roster import roster_from_config
 from session_doc.voice import (
     extract_contrast_sample,
     get_voice_note,
+    load_declared_voices,
     load_voice_files,
-    voice_resolution_problems,
+    unknown_narrators,
+    voice_declaration_problems,
 )
 
 
@@ -115,81 +118,31 @@ def _load_genre_file(path: str | None) -> str | None:
     return text
 
 
-def _load_voice_dir(path: str | None) -> dict[str, str]:
-    """Load the voice specs, or refuse the run — never return a silent ``{}``.
+def _voice_dir_arg(path: str | None) -> Path | None:
+    """Validate ``--voice-dir`` as a directory, or refuse the run.
 
-    The bug this closes: ``Path.glob`` over a missing directory yields nothing
-    rather than raising, so a typo'd or renamed ``voice_dir`` produced exactly
-    the same ``{}`` as no flag, and ``get_voice_note``'s #247 warning starts
-    with ``if not voices: return None`` — so it could not fire. The warning
-    built to stop a voice file from silently missing the prompt was reachable
-    only when *some* file resolved, and mute in the one case where **all** of
-    them were lost.
+    The directory is no longer how a narrator finds its voice spec — that is
+    declared per character in ``party.yaml`` — but a **declared path that is
+    not a directory is still a typo**, and a typo here used to be silent:
+    ``Path.glob`` over a missing directory yields nothing rather than raising,
+    so a renamed ``voice_dir`` produced exactly the same empty result as no
+    flag at all (#300).
 
-    Three states, and only one is fatal:
-
-    - **flag absent** — rendering without specs is a legitimate mode; ``{}``.
-    - **path is not a directory** — a declared path that does not exist is a
-      typo, and a typo is the whole bug. Fatal.
-    - **directory exists, holds no per-character specs** — nobody has written
-      any yet; ``{}``. NOT fatal, because this directory is frequently not a
-      GM declaration at all: ``new_workspace`` creates ``voice/`` empty and
-      ``PlatformConfigService.derive`` fills ``voice_dir`` in from its mere
-      existence, so failing here would refuse Narrate on every fresh campaign
-      over a path the tool chose. The rulebook conventionally living at
-      ``voice/_genre.md`` puts an otherwise-specless directory in this state
-      too.
-
-    A directory that holds *some* specs is where the silent miss actually
-    lives, and that is the pre-flight in ``main``, not this function.
+    What it is read for now is the orphan census: files sitting in the
+    directory that no character declares, which is what a rename leaves behind.
+    An empty directory is not fatal — ``new_workspace`` creates ``voice/``
+    empty and ``PlatformConfigService.derive`` fills the setting in from its
+    mere existence, so failing here would refuse Narrate on every fresh
+    campaign over a path the tool chose.
     """
     if not path:
-        return {}
+        return None
     p = Path(path).expanduser()
     if not p.is_dir():
-        print(f"Error: --voice-dir {p} is not a directory. Pass 5 would run with "
-              f"NO voice specs for any narrator.\n"
-              f"  -> fix the path, or drop the flag to render without voice specs.",
-              file=sys.stderr)
+        print(f"Error: --voice-dir {p} is not a directory.\n"
+              f"  -> fix the path, or drop the flag.", file=sys.stderr)
         sys.exit(1)
-    voices = load_voice_files(p)
-    if not voices:
-        print(f"Note: --voice-dir {p} holds no per-character voice files; "
-              f"rendering without voice specs.", file=sys.stderr)
-    return voices
-
-
-def _load_examples(examples_dir: Path | None,
-                   characters: list[str]) -> tuple[str | None, dict[str, str]]:
-    """Mirror session_doc.py's split between global and per-character examples.
-
-    A file whose stem matches a character's first name (case-insensitive)
-    routes to that character only; everything else is concatenated into
-    the global block. Files whose name starts with ``_`` are skipped entirely.
-
-    The matching rule lives in ``examples.routes_to`` so that this function and
-    ``examples_routing_problems`` — which detects a file that *should* have
-    routed here and did not — cannot drift apart (#301).
-    """
-    if examples_dir is None or not examples_dir.is_dir():
-        return None, {}
-    char_firsts = {_examples_first_name(c) for c in characters if c.strip()}
-    global_parts: list[str] = []
-    per_char: dict[str, str] = {}
-    for f in example_files(examples_dir):
-        stem = f.stem.lower()
-        key = None
-        for first in char_firsts:
-            if routes_to(stem, first):
-                key = first
-                break
-        text = f.read_text(encoding="utf-8")
-        if key:
-            per_char[key] = (per_char.get(key, "") + ("\n\n" if per_char.get(key) else "") + text).strip()
-        else:
-            global_parts.append(text)
-    examples_text = "\n\n---\n\n".join(global_parts) if global_parts else None
-    return examples_text, per_char
+    return p
 
 
 def main() -> None:
@@ -217,13 +170,23 @@ def main() -> None:
                              "sheet frontmatter (issue #265) and there is no party.md "
                              "fallback — a sheet without frontmatter is a hard error. Run "
                              "sheet_frontmatter --apply to add it.")
+    parser.add_argument("--players-config", metavar="FILE", default=None,
+                        help="players.yaml (conventionally "
+                             "<campaign>/config/players.yaml). Supplies the "
+                             "person's name for each character in the roster "
+                             "block. Only players still at the table are named.")
     parser.add_argument("--voice-dir", metavar="DIR",
-                        help="Directory of {name}_voice.md files.")
+                        help="Directory holding the campaign's voice files. Read "
+                             "ONLY to report files nothing declares — a "
+                             "character's own voice file is named by its "
+                             "'voice:' entry in party.yaml, never matched by "
+                             "filename (feature 009).")
     parser.add_argument("--examples", metavar="DIR",
-                        help="Directory of style-reference .md files.")
-    parser.add_argument("--characters", metavar="NAMES",
-                        help='Comma-separated roster for per-char example routing '
-                             '(e.g. "Vukradin, Valphine, Soma, Brewbarry").')
+                        help="Directory holding the campaign's example files. "
+                             "Read ONLY to report files nothing declares. A "
+                             "character's examples come from its 'examples:' "
+                             "entry and the campaign's 'shared_examples:' list, "
+                             "both in party.yaml.")
     parser.add_argument("--narrator", metavar="NAME",
                         help="Render only this character's sections.")
     parser.add_argument("--scene", nargs="+", type=int, metavar="N",
@@ -320,35 +283,43 @@ def main() -> None:
     # absent — so deleting the fallback must not turn "no roster wanted" into
     # an error. Passing --party alone IS an error: it used to be a roster
     # source and is not read as one any more, and failing is how you find out.
+    resolved_party_config = None
+    players_config = load_players_config_arg(args.players_config)
     if args.party_config or args.party:
         resolved_party_config = load_party_config_arg(args.party_config)
         roster = require_from_config(
-            roster_from_config(resolved_party_config) if resolved_party_config else None,
+            roster_from_config(resolved_party_config, players_config)
+            if resolved_party_config else None,
             what="character roster",
             party_config_arg=args.party_config,
         )
     else:
         roster = ""
     narration_genre = _load_genre_file(args.narration_genre_file)
-    characters = [c.strip() for c in (args.characters or "").split(",") if c.strip()]
-    voice_files = _load_voice_dir(args.voice_dir)
-    # A declared --examples that is not a directory is a typo, and a typo here
-    # is silent: `_load_examples` returns `(None, {})` for a missing path, which
-    # is indistinguishable from "no examples configured" (#301). Same shape as
-    # --voice-dir: the path is fatal, an empty directory is not.
+
+    # Voice specs and style examples come from the roster's DECLARATIONS, not
+    # from scanning a directory and matching names (feature 009). A character
+    # names its own files; the campaign names the shared ones. Both are paths,
+    # so both fail loudly.
+    voice_files: dict[str, str] = {}
+    per_char_examples: dict[str, str] = {}
+    examples_text: str | None = None
+    if resolved_party_config is not None:
+        voice_files = load_declared_voices(resolved_party_config)
+        per_char_examples = load_declared_examples(resolved_party_config)
+        examples_text = load_shared_examples(resolved_party_config)
+
+    # The two directories are read for ONE thing now: reporting files nothing
+    # declares. A declared path that is not a directory is still a typo, and a
+    # typo here used to be silent (#300).
+    voice_dir = _voice_dir_arg(args.voice_dir)
     examples_dir: Path | None = None
     if args.examples:
         examples_dir = Path(args.examples).expanduser()
         if not examples_dir.is_dir():
-            print(f"Error: --examples {examples_dir} is not a directory. Pass 5 "
-                  f"would run with NO style examples.\n"
-                  f"  -> fix the path, or drop the flag to render without them.",
-                  file=sys.stderr)
+            print(f"Error: --examples {examples_dir} is not a directory.\n"
+                  f"  -> fix the path, or drop the flag.", file=sys.stderr)
             sys.exit(1)
-        if not example_files(examples_dir):
-            print(f"Note: --examples {examples_dir} holds no style examples; "
-                  f"rendering without them.", file=sys.stderr)
-    examples_text, per_char_examples = _load_examples(examples_dir, characters)
 
     context_parts: list[str] = []
     if args.context:
@@ -427,47 +398,66 @@ def main() -> None:
     # Pre-flight: every narrator about to be rendered must resolve to a voice
     # spec. Checked here — after --narrator/--scene filtering, before the first
     # API call — so a render either has all its specs or does not start (#300).
-    # `get_voice_note`'s per-narrator warning fires mid-loop, once scenes 1..n-1
-    # have already been paid for and written, which makes the miss something you
+    # A per-narrator warning inside the loop fires once scenes 1..n-1 have
+    # already been paid for and written, which makes the miss something you
     # discover in the output rather than something that stops you.
-    if voice_files:
-        problems = voice_resolution_problems(
-            voice_files, [s["narrator"] for _i, s in sections]
-        )
+    #
+    # What it checks changed with feature 009: a DECLARED path that is absent,
+    # or a narrator the roster does not have. It used to check whether a name
+    # matched a filename, which is how a renamed character kept resolving to
+    # nothing and told nobody (campaigns#175).
+    #
+    # Gated on the roster declaring *something*. A campaign that declares no
+    # voice or example files at all is rendering without them on purpose — the
+    # mode `--voice-dir`-absent has always been — and refusing there would turn
+    # "no specs wanted" into an error. The moment one character declares a
+    # file, the others' silence becomes worth reporting.
+    # Two independent gates, because a campaign may reasonably declare style
+    # examples and no voice specs, or the reverse.
+    declares_voice = resolved_party_config is not None and any(
+        c.voice for c in resolved_party_config.characters
+    )
+    declares_examples = resolved_party_config is not None and (
+        any(c.examples for c in resolved_party_config.characters)
+        or bool(resolved_party_config.shared_examples)
+    )
+    declares_anything = declares_voice or declares_examples
+    if declares_anything:
+        narrators = [s["narrator"] for _i, s in sections]
+        problems = unknown_narrators(resolved_party_config, narrators)
+        if declares_voice:
+            problems += voice_declaration_problems(resolved_party_config, narrators)
+        if declares_examples:
+            problems += examples_declaration_problems(resolved_party_config, narrators)
         if problems:
-            print(f"Error: --voice-dir {args.voice_dir} does not cover every "
-                  f"narrator in this render:", file=sys.stderr)
+            print("Error: this render's narrators do not all have their "
+                  "declared files:", file=sys.stderr)
             for line in problems:
                 print(f"  - {line}", file=sys.stderr)
-            print(f"  available keys: {sorted(voice_files)}\n"
-                  f"  -> add the missing file(s), or drop --voice-dir to render "
-                  f"without voice specs.", file=sys.stderr)
+            print("  -> fix the 'voice:'/'examples:' entries in party.yaml, or "
+                  "create the missing file(s).", file=sys.stderr)
             sys.exit(1)
 
-    # Pre-flight: no per-character examples file may be silently reaching every
-    # narrator. With an empty or incomplete --characters the routing loop in
-    # `_load_examples` matches nothing, every file falls through to the GLOBAL
-    # block, and that block goes into every prompt — so one character's style
-    # reference steers all of them, and the output still looks plausible (#301).
-    #
-    # Keyed off the WHOLE plan, not the scenes being rendered. The global block
-    # is not narrator-scoped: `examples_text` is passed to every
-    # `build_narrate_system` call, so `bob.md` falling through reaches Alice's
-    # prompt even under `--narrator Alice`. Scoping this to the filtered
-    # sections made the narrower invocation silently ship the very bleed the
-    # full run refuses — measured on the fixture below before it was fixed.
-    routing = examples_routing_problems(
-        examples_dir, characters, list(plan_narrator_by_scene.values())
-    )
-    if routing:
-        print("Error: --examples holds per-character files that are reaching "
-              "every narrator:", file=sys.stderr)
-        for line in routing:
-            print(f"  - {line}", file=sys.stderr)
-        print(f"  --characters is {args.characters!r}\n"
-              f"  -> list every narrating character in --characters, or rename "
-              f"the file(s) so they are not per-character.", file=sys.stderr)
-        sys.exit(1)
+    # Report files nothing declares. Not fatal: an orphan reaches no narrator,
+    # so it cannot corrupt a render — it is simply work that is not being used,
+    # and the state a rename leaves behind. Under the rule this replaced, such
+    # a file joined a GLOBAL block that went to EVERY narrator, which is the
+    # #301 bleed; the detector built to catch that could not see a rename
+    # (#315), and both are gone with the fall-through.
+    if declares_anything:
+        declared_voice = [c.voice for c in resolved_party_config.characters if c.voice]
+        declared_ex = [c.examples for c in resolved_party_config.characters if c.examples]
+        declared_ex += list(resolved_party_config.shared_examples)
+        orphans = (undeclared_files(voice_dir, declared_voice)
+                   + undeclared_files(examples_dir, declared_ex))
+        if orphans:
+            print("Note: these files are declared by nobody and reach no "
+                  "narrator:", file=sys.stderr)
+            for o in orphans:
+                print(f"  - {o}", file=sys.stderr)
+            print("  -> declare them in party.yaml ('voice:'/'examples:' on a "
+                  "character, or 'shared_examples:'), or delete them.",
+                  file=sys.stderr)
 
     client = client_from_args(args)
     handoff = ""

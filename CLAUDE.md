@@ -134,12 +134,35 @@ Three services own a dedicated, strict (`extra="forbid"`) config file instead of
 | Session Doc Editor | `<config>/session_doc.yaml` | `GET`/`PUT /api/editor/config` | `python -m server.migrate_session_doc --campaign-dir DIR` |
 | Ensemble | `<config>/ensemble.yaml` | `GET`/`PUT /api/ensemble/config` | `python -m server.migrate_ensemble_config --campaign-dir DIR` |
 | Planning | `<config>/planning.yaml` | `/api/planning/*` CRUD | *(no migration — same file all along)* |
+| Players | `<config>/players.yaml` | `/api/players/*` CRUD | `python -m server.migrate_players_config --campaign-dir DIR` |
 
 Plus the platform tier: `<config>/platform.yaml` (`runtime.default_model`, `session_dir`) via `PUT /runtime`.
 
 One more one-shot migration sits alongside these, inside the Session Doc Editor's own file: `python -m server.migrate_narrate_genre --campaign-dir DIR` relocates the genre rulebook from `narrate.genre` (the document's *text*, pasted) to `paths.genre_file` (a path). See "The genre rulebook is a file" below.
 
 The migrations are one-shot and idempotent-ish (they refuse to clobber without `--force`) and report unrecognised keys rather than dropping them. **Skipping one is safe but not free:** `UIState` is `extra="allow"`, so a stale `ui.ensemble`/`ui.session_doc` block loads and is silently ignored — the page then starts from schema defaults, quietly losing hand-tuned selections like per-stage DGX backends and endpoint lists. Run the migration once per campaign before relying on those.
+
+### A player is an entity; every other copy of them is rendered
+
+`<config>/players.yaml` is the **one place** a player's identity is authored —
+the person's name, every display name a recording has used for them, and which
+characters they play. The roster block in a narration prompt, the speaker labels
+in a transcript, and the `Player:` line stamped into a converted sheet are all
+**rendered from it**. Nothing reads any of them back.
+
+Two things follow, and both are enforced rather than documented:
+
+- **A character's voice and example files are declared, not matched.**
+  `party.yaml`'s `voice:` / `examples:` name them, and `shared_examples:` names
+  the campaign-wide ones. There is no fall-through: a file nothing declares
+  reaches nobody, and `players check` reports it. The rule this replaced matched
+  a filename against a character's first name, which is a similarity-based
+  identity assertion — the thing `provenance/identity.py` forbids everywhere
+  else — and it produced five defects (#247, #300, #301, #315, campaigns#175).
+  `tests/test_no_prefix_identity.py` fails the build if any of it comes back.
+- **`party.yaml` has no `player:` field and `session_doc.yaml` has no `roster`
+  group.** Both are refused with the migration command in the message, not
+  ignored. See `docs/config/players-isolation.md`.
 
 ### The genre rulebook is a file, never a pasted string
 

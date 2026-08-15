@@ -26,10 +26,11 @@ router emitting `--narration-genre-file` proves nothing if sd_narrate's parser
 has stopped accepting it, which surfaces to the GM only as "Stream error —
 check terminal."
 
-Two narrators, because one cannot detect a dropped `--characters`: with no
-roster, `_load_examples` routes every file into the GLOBAL block, so a
-single-narrator substring assertion still passes while every narrator is
-quietly reading every other narrator's examples (#301).
+Two narrators, because one cannot detect a leak: a bleed only shows up as one
+narrator's material appearing in the other's prompt. Feature 009 replaced the
+routing rule with declarations, so the leak the fall-through produced is gone
+by construction — these tests now assert that each narrator receives exactly
+what its roster entry names, and nothing else.
 """
 
 from __future__ import annotations
@@ -50,7 +51,6 @@ from server.session_editor_config_service import (  # noqa: E402
 )
 from server.session_editor_config_shared import (  # noqa: E402
     EditorPaths,
-    Roster,
     SessionEditorConfig,
     save_session_editor_config,
 )
@@ -116,6 +116,10 @@ def _campaign(tmp_path: Path) -> tuple[Path, Path]:
     (voice / "_genre.md").write_text(GENRE_TEXT, encoding="utf-8")
     # The real Phandalin filename shape (#247): neither `vukradin.md` nor
     # `vukradin_voice.md`, so resolution rule (c) has to fire for this to pass.
+    # Phandalin's real filename shape: neither `vukradin.md` nor
+    # `vukradin_voice.md`. Under the rule feature 009 deleted this resolved only
+    # through a first-name-prefix step; now the roster names the file outright,
+    # so the shape of the filename stops mattering at all.
     (voice / "vukradin_new_pipeline.md").write_text(VUKRADIN_VOICE, encoding="utf-8")
     (voice / "soma_new_pipeline.md").write_text(SOMA_VOICE, encoding="utf-8")
 
@@ -123,9 +127,49 @@ def _campaign(tmp_path: Path) -> tuple[Path, Path]:
     examples.mkdir()
     (examples / "vukradin.md").write_text(VUKRADIN_EXAMPLES, encoding="utf-8")
     (examples / "soma.md").write_text(SOMA_EXAMPLES, encoding="utf-8")
-    # Exercises `_load_examples`'s `_`-skip: without it this joins the GLOBAL
-    # block and reaches every narrator (sd_narrate.py:111).
+    # Declared by nobody. Under the old rule it joined a GLOBAL block that
+    # reached every narrator; now it reaches none, which is the point.
     (examples / "_shared.md").write_text(SKIPPED_EXAMPLES, encoding="utf-8")
+
+    # The roster: sheets, and the voice/example DECLARATIONS that replaced the
+    # first-name-prefix rule.
+    for name in ("Vukradin", "Soma"):
+        (tmp_path / "docs").mkdir(exist_ok=True)
+        (tmp_path / "docs" / f"{name}.md").write_text(
+            f"---\nplayer: someone\nspecies: Human\nclass_level: Fighter 5\n"
+            f"---\n\n# {name}\n",
+            encoding="utf-8",
+        )
+    (tmp_path / "config" / "party.yaml").write_text(
+        "characters:\n"
+        "- name: Vukradin\n"
+        "  sheet: docs/Vukradin.md\n"
+        "  voice: voice/vukradin_new_pipeline.md\n"
+        "  examples: examples/vukradin.md\n"
+        "- name: Soma\n"
+        "  sheet: docs/Soma.md\n"
+        "  voice: voice/soma_new_pipeline.md\n"
+        "  examples: examples/soma.md\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "config" / "players.yaml").write_text(
+        "players:\n"
+        "- id: dave\n"
+        "  name: Dave Mendenhall\n"
+        "  display_names: [Dave]\n"
+        "  plays: [Vukradin]\n"
+        "- id: wade\n"
+        "  name: Wade Brown\n"
+        "  display_names: [Wade]\n"
+        "  plays: [Soma]\n",
+        encoding="utf-8",
+    )
+
+    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "docs" / "party.md").write_text(
+        "## Vukradin\n**Human Fighter 5**\n\n## Soma\n**Tortle Druid 6**\n",
+        encoding="utf-8",
+    )
 
     session = tmp_path / "20260801"
     session.mkdir()
@@ -154,7 +198,9 @@ def _campaign(tmp_path: Path) -> tuple[Path, Path]:
 
 
 def _write_config(campaign: Path, session: Path, *, genre_file: str | None,
-                  characters: str | None = "Vukradin, Soma") -> None:
+                  characters: str | None = None) -> None:
+    """``characters`` is accepted and ignored — feature 009 deleted the roster
+    group; the cast comes from ``party.yaml``."""
     cfg = SessionEditorConfig(
         paths=EditorPaths(
             session_summary=str(session / "session-summary.md"),
@@ -163,8 +209,8 @@ def _write_config(campaign: Path, session: Path, *, genre_file: str | None,
             voice_dir="voice",
             examples_dir="examples",
             genre_file=genre_file,
+            party="docs/party.md",
         ),
-        roster=Roster(characters=characters),
     )
     # Written through the module-level saver, not the service, so the stored
     # shape is exactly what a GM's hand-edited session_doc.yaml looks like.

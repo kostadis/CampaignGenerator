@@ -153,37 +153,50 @@ def test_put_collection_duplicate_names_is_409(client):
     assert r.status_code == 409
 
 
-# ── The player field over the wire (feature 008, FR-023) ───────────────────
+# ── The declared file fields over the wire (feature 009) ───────────────────
 
-def test_player_round_trips_through_the_collection_put(client):
+def test_voice_and_examples_round_trip_through_the_collection_put(client):
     """A 200 is not proof. ``save_party_config`` hand-builds its YAML dict, so
     the failure mode this guards is a save that succeeds and persists nothing
     — exactly what happened when ``selection`` was added."""
     c, tmp = client
     sheet = _touch(tmp, "docs/party/Soma.md")
+    voice = _touch(tmp, "voice/soma_voice.md")
+    examples = _touch(tmp, "examples/soma.md")
     r = c.put("/api/party/characters", json=[
-        {"name": "Soma", "sheet": sheet, "player": "Wade"},
+        {"name": "Soma", "sheet": sheet, "voice": voice, "examples": examples},
         {"name": "Vukradin", "sheet": sheet},
     ])
     assert r.status_code == 200
-    assert [x.get("player") for x in r.json()] == ["Wade", None]
+    assert [x.get("voice") for x in r.json()] == [voice, None]
 
-    assert [x.get("player") for x in c.get("/api/party/characters").json()] == \
-        ["Wade", None]
+    listed = c.get("/api/party/characters").json()
+    assert [x.get("examples") for x in listed] == [examples, None]
     # …and it actually reached disk, not just the response model.
-    assert "player: Wade" in (tmp / "config" / "party.yaml").read_text(encoding="utf-8")
+    written = (tmp / "config" / "party.yaml").read_text(encoding="utf-8")
+    assert f"voice: {voice}" in written
+    assert f"examples: {examples}" in written
 
 
-def test_player_round_trips_through_the_single_character_routes(client):
+def test_a_declared_file_that_is_absent_is_reported_not_refused(client):
+    """FR-017: the GM must be able to name a file they are about to write."""
     c, tmp = client
     sheet = _touch(tmp, "docs/party/Soma.md")
-    c.post("/api/party/characters", json={"name": "Soma", "sheet": sheet,
-                                          "player": "Kostadis"})
-    r = c.put("/api/party/characters/Soma",
-              json={"name": "Soma", "sheet": sheet, "player": "Wade"})
+    r = c.put("/api/party/characters", json=[
+        {"name": "Soma", "sheet": sheet, "voice": "voice/not_written_yet.md"},
+    ])
     assert r.status_code == 200
-    assert c.get("/api/party/characters/Soma").json()["player"] == "Wade"
-    assert "player: Wade" in (tmp / "config" / "party.yaml").read_text(encoding="utf-8")
+    assert "voice" in r.json()[0]["missing_files"]
+
+
+def test_the_retired_player_field_is_rejected(client):
+    """FR-013. Accepting and ignoring it would leave the GM believing they had
+    recorded who plays Soma."""
+    c, tmp = client
+    sheet = _touch(tmp, "docs/party/Soma.md")
+    r = c.put("/api/party/characters",
+              json=[{"name": "Soma", "sheet": sheet, "player": "Wade"}])
+    assert r.status_code == 422
 
 
 def test_the_shape_the_editor_holds_is_not_the_shape_the_api_accepts(client):

@@ -133,7 +133,7 @@ def test_activate_profile_mirrors_knobs_into_resolved_config(client):
     # Same shape as GET /api/editor/config — the _serialize_resolved helper
     # is the single source of truth for both.
     assert set(body.keys()) == {
-        "paths", "narrate", "scrub", "roster", "backends",
+        "paths", "narrate", "scrub", "backends",
         "session_name", "profiles", "active_profile", "model",
         "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
         "genre",

@@ -3,12 +3,13 @@
 import sys
 from typing import TYPE_CHECKING
 
-from campaignlib.npc import is_player_placeholder
 from campaignlib.party_md import parse_party_md
+from campaignlib.players_config import player_name_for
 from campaignlib.textproc import split_frontmatter
 
 if TYPE_CHECKING:
     from campaignlib.party_config import ResolvedPartyConfig
+    from campaignlib.players_config import PlayersConfig
 
 
 def extract_character_roster(party_text: str) -> str:
@@ -74,11 +75,26 @@ def extract_character_roster(party_text: str) -> str:
     return "\n".join(roster)
 
 
-def roster_from_config(cfg: "ResolvedPartyConfig") -> str | None:
+def roster_from_config(
+    cfg: "ResolvedPartyConfig", players: "PlayersConfig | None" = None
+) -> str | None:
     """Render the roster from each character's D&D Beyond sheet, per the GM
     ruling in ``docs/design/PartyRosterCanonicalFormat.md`` (issue #265):
     the sheet is canonical for character-specific data, ``party.yaml``
     only references it.
+
+    ``players`` supplies the **person's name** (feature 009). The sheet is
+    still canonical for the character — species, class, subclass — but it was
+    never canonical about the human: a D&D Beyond export stamps the
+    *downloader's* name into every sheet it produces, so the sheet is wrong
+    about this for every character, every time, by construction. Only
+    **active** players are named; the roster block describes the table as it is
+    now, while an inactive player is kept so the transcript archive still
+    resolves (FR-011a, FR-019).
+
+    ``players`` of ``None`` renders the no-player variant for every character
+    rather than failing. Whether a run may proceed without player identity is
+    the caller's decision, not this formatter's.
 
     ``cfg`` must already be resolved (:func:`campaignlib.party_config.
     resolve_party_config`) — this function does not choose a base
@@ -133,12 +149,12 @@ def roster_from_config(cfg: "ResolvedPartyConfig") -> str | None:
         if not frontmatter:
             problems.append(f"{character.name}: sheet has no YAML frontmatter ({sheet})")
             continue
-        player = str(frontmatter.get("player") or "").strip()
-        # Same placeholder rule player_map_from_config uses — one rule, not two
-        # copies. Without this a sheet whose player is genuinely unknown renders
-        # "- Akritas (Not specified): …" into the narration prompt.
-        if is_player_placeholder(player):
-            player = ""
+        # The person comes from the entity, never from the sheet's own
+        # `player:` line — that line is a rendered copy this pipeline writes,
+        # and reading it back would make the copy the authority (FR-023).
+        player = (
+            player_name_for(players, character.name) or "" if players else ""
+        )
         species = str(frontmatter.get("species") or "").strip()
         class_level = str(frontmatter.get("class_level") or "").strip()
         if not species or not class_level:

@@ -256,7 +256,7 @@ def _status_for(narration_dir):
     cfg = ResolvedEditorConfig(
         paths=base.paths.model_copy(
             update={"narration_dir": str(narration_dir)}),
-        narrate=base.narrate, scrub=base.scrub, roster=base.roster,
+        narrate=base.narrate, scrub=base.scrub,
         backends=base.backends, session_name=None, profiles=[],
         active_profile=None, model=None,
         work_dir=str(narration_dir), campaign_dir=str(narration_dir),

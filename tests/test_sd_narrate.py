@@ -236,27 +236,45 @@ def _write_examples(tmp_path: Path) -> Path:
     return ex
 
 
-def test_global_examples_reach_scene_mode_prompts(monkeypatch, tmp_path):
+def test_shared_examples_reach_scene_mode_prompts(monkeypatch, tmp_path):
     """Every plan section carries a ``scene:`` line, so scene mode is the only
-    mode the pipeline actually runs. The global block used to be suppressed
-    there (``None if scene_name else examples_text``), which made a non-
-    character example file silently inert. It must reach every scene now.
+    mode the pipeline actually runs. The campaign-wide block used to be
+    suppressed there (``None if scene_name else examples_text``), which made a
+    shared example file silently inert. It must reach every scene.
+
+    The block's *source* changed with feature 009 — it is the roster's
+    ``shared_examples:`` list rather than whatever failed to match a name — but
+    what it must reach did not.
     """
+    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "examples").mkdir(exist_ok=True)
+    for who in ("Alice", "Bob"):
+        (tmp_path / "docs" / f"{who}.md").write_text(
+            f"---\nname: {who}\nspecies: Human\nclass_level: Rogue 4\n"
+            f"subclass: ''\n---\n# {who}\n", encoding="utf-8")
+    (tmp_path / "examples" / "house_style.md").write_text(HOUSE_STYLE, encoding="utf-8")
+    (tmp_path / "examples" / "alice.md").write_text(ALICE_STYLE, encoding="utf-8")
+    cfg = tmp_path / "party.yaml"
+    cfg.write_text(
+        "characters:\n"
+        "- name: Alice\n  sheet: docs/Alice.md\n  examples: examples/alice.md\n"
+        "- name: Bob\n  sheet: docs/Bob.md\n"
+        "shared_examples:\n- examples/house_style.md\n",
+        encoding="utf-8")
+
     paths = _write_fixtures(tmp_path)
-    ex_dir = _write_examples(tmp_path)
     fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
     monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-
-    monkeypatch.setattr(sys, "argv", _base_argv(
-        paths, "--examples", str(ex_dir), "--characters", "Alice, Bob"))
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party-config", str(cfg)))
     sd_narrate.main()
 
     assert len(fake_stream.calls) == 2
     for call in fake_stream.calls:
         assert HOUSE_STYLE in call["system"]
 
-    # Routing still holds: alice.md is per-character, so it reaches Alice's
-    # scene only — and never leaks into the global block Bob also sees.
+    # Alice's own file is named by Alice's entry and by nothing else, so it
+    # reaches her scene and never joins the block Bob also sees.
     assert ALICE_STYLE in fake_stream.calls[0]["system"]
     assert ALICE_STYLE not in fake_stream.calls[1]["system"]
 
@@ -655,7 +673,18 @@ def test_underscore_file_is_not_loaded_as_a_voice(tmp_path):
     assert get_voice_note(empty_voices, "Brewbarry") is None
 
 
-def test_underscore_file_does_not_join_global_examples(tmp_path):
+def test_an_undeclared_file_joins_nothing(tmp_path):
+    """The `_`-prefix convention used to be the only thing keeping `_genre.md`
+    out of the block every narrator sees. Declarations make it moot: a file
+    reaches a prompt because something named it, and `_genre.md` names itself
+    to nobody. `general_style.md` is the case that used to slip through — a
+    perfectly ordinary filename that matched no character and therefore went to
+    everyone."""
+    from campaignlib.party_config import PartyConfig, PartyCharacter, resolve_party_config
+    from session_doc.examples import load_declared_examples, load_shared_examples
+
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs" / "Alice.md").write_text("x", encoding="utf-8")
     examples_dir = tmp_path / "examples"
     examples_dir.mkdir()
     (examples_dir / "_genre.md").write_text(GENRE_SENTINEL, encoding="utf-8")
@@ -664,502 +693,293 @@ def test_underscore_file_does_not_join_global_examples(tmp_path):
     (examples_dir / "general_style.md").write_text("The house style sample.",
                                                      encoding="utf-8")
 
-    global_text, per_char = sd_narrate._load_examples(examples_dir, ["Alice", "Bob"])
+    cfg = resolve_party_config(PartyConfig(characters=[
+        PartyCharacter(name="Alice", sheet="docs/Alice.md",
+                       examples="examples/alice.md"),
+    ]), tmp_path)
 
-    # Sentinel from the underscore file reaches neither the global block...
-    assert GENRE_SENTINEL not in (global_text or "")
-    # ...nor any per-character entry.
-    for text in per_char.values():
-        assert GENRE_SENTINEL not in text
-    # A normal shared file (no leading underscore) still joins the global block.
-    assert "The house style sample." in (global_text or "")
+    per_char = load_declared_examples(cfg)
+    assert per_char == {"alice": "Alice's per-character style sample."}
+    # Nothing declares a shared block, so there is no shared block.
+    assert load_shared_examples(cfg) is None
+    assert GENRE_SENTINEL not in "".join(per_char.values())
 
 
-# ── Voice-file lookup resolution (#247) ──────────────────────────────────────
+# ── Declared voice and example files (feature 009) ───────────────────────────
 #
-# load_voice_files only strips a trailing "_voice" suffix, so real Phandalin
-# filenames like "brewbarry_new_pipeline.md" key as "brewbarry_new_pipeline"
-# — a lookup on "Brewbarry" (full name or first name) used to miss entirely
-# and all four Phandalin narrators silently got no VOICE SPEC block. These
-# cover every real filename shape plus the ambiguity and skip cases.
-
-def test_get_voice_note_resolves_new_pipeline_filename(tmp_path):
-    voice_dir = tmp_path / "voice"
-    voice_dir.mkdir()
-    (voice_dir / "brewbarry_new_pipeline.md").write_text(
-        "Blustery halfling merchant voice.", encoding="utf-8")
-
-    voices = load_voice_files(voice_dir)
-
-    assert get_voice_note(voices, "Brewbarry") == "Blustery halfling merchant voice."
-
-
-def test_get_voice_note_resolves_legacy_voice_suffix(tmp_path):
-    voice_dir = tmp_path / "voice"
-    voice_dir.mkdir()
-    (voice_dir / "brewbarry_voice.md").write_text(
-        "Legacy spec.", encoding="utf-8")
-
-    voices = load_voice_files(voice_dir)
-
-    assert get_voice_note(voices, "Brewbarry") == "Legacy spec."
-
-
-def test_get_voice_note_resolves_bare_filename(tmp_path):
-    voice_dir = tmp_path / "voice"
-    voice_dir.mkdir()
-    (voice_dir / "brewbarry.md").write_text("Bare spec.", encoding="utf-8")
-
-    voices = load_voice_files(voice_dir)
-
-    assert get_voice_note(voices, "Brewbarry") == "Bare spec."
-
-
-def test_get_voice_note_ambiguous_prefix_returns_none_and_warns(tmp_path, capsys):
-    voice_dir = tmp_path / "voice"
-    voice_dir.mkdir()
-    # Two files whose keys both start with "brewbarry" + separator — the
-    # resolver must refuse to guess between them rather than picking one.
-    (voice_dir / "brewbarry_new_pipeline.md").write_text("New spec.", encoding="utf-8")
-    (voice_dir / "brewbarry-alt-take.md").write_text("Alt spec.", encoding="utf-8")
-
-    voices = load_voice_files(voice_dir)
-
-    result = get_voice_note(voices, "Brewbarry")
-
-    assert result is None
-    err = capsys.readouterr().err
-    assert "ambiguous" in err
-    assert "Brewbarry" in err
-    assert "brewbarry_new_pipeline" in err
-    assert "brewbarry-alt-take" in err
-
-
-def test_get_voice_note_genre_file_is_skipped_not_a_candidate(tmp_path):
-    voice_dir = tmp_path / "voice"
-    voice_dir.mkdir()
-    (voice_dir / "_genre.md").write_text(GENRE_SENTINEL, encoding="utf-8")
-    (voice_dir / "brewbarry_new_pipeline.md").write_text(
-        "Blustery halfling merchant voice.", encoding="utf-8")
-
-    voices = load_voice_files(voice_dir)
-
-    assert "genre" not in voices
-    assert get_voice_note(voices, "Brewbarry") == "Blustery halfling merchant voice."
-
-
-def test_get_voice_note_real_phandalin_shape_all_four_narrators_found(tmp_path):
-    # Mirrors the actual ~/src/campaigns/Phandalin/voice/ layout: four
-    # "_new_pipeline" files plus a shared "_genre.md".
-    voice_dir = tmp_path / "voice"
-    voice_dir.mkdir()
-    (voice_dir / "_genre.md").write_text(GENRE_SENTINEL, encoding="utf-8")
-    for name in ("brewbarry", "soma", "valphine", "vukradin"):
-        (voice_dir / f"{name}_new_pipeline.md").write_text(
-            f"{name} voice spec.", encoding="utf-8")
-
-    voices = load_voice_files(voice_dir)
-
-    for name in ("Brewbarry", "Soma", "Valphine", "Vukradin"):
-        assert get_voice_note(voices, name) == f"{name.lower()} voice spec."
-
-
-def test_get_voice_note_warns_on_miss_with_nonempty_voices(capsys):
-    voices = {"vukradin": "Gruff."}
-
-    result = get_voice_note(voices, "Brewbarry")
-
-    assert result is None
-    err = capsys.readouterr().err
-    assert "Brewbarry" in err
-    assert "vukradin" in err
-
-
-def test_get_voice_note_does_not_warn_on_empty_voices(capsys):
-    result = get_voice_note({}, "Brewbarry")
-
-    assert result is None
-    err = capsys.readouterr().err
-    assert err == ""
-
-
-# ── System-prompt caching on the live narrate call (#245, item E) ───────────
+# A character's voice spec and style examples are DECLARED by its roster entry
+# and resolved by following a path. What this replaced was a three-step name
+# rule — exact, then first name, then the unique key beginning with the first
+# name plus `_` or `-` — plus a fall-through that sent every unmatched example
+# file to EVERY narrator.
 #
-# The system prompt (base + prose_mode + examples + voice spec + genre doc)
-# is identical across every scene in the per-scene loop, so caching it is
-# free money for API-billed runs. --batch is a different code path/semantics
-# and must NOT pick up cache_system.
+# Both halves failed the same way and for the same reason. `Grygum` renamed to
+# `Gyrgum` stopped resolving and told nobody (campaigns#175); the obvious
+# one-line repair then converted that silent drop into a silent bleed; and the
+# detector added for the bleed (#301) could not see a rename either (#315). A
+# path cannot fail that way. It is there, or it is named in a refusal.
 
-def test_narrate_requests_system_prompt_caching(monkeypatch, tmp_path):
+
+def _declaring_party(tmp_path: Path, *, alice_voice=True, alice_examples=True,
+                     bob_voice=True, shared=()) -> Path:
+    """A roster for the Alice/Bob plan, with declared files on disk."""
+    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "voice").mkdir(exist_ok=True)
+    (tmp_path / "examples").mkdir(exist_ok=True)
+    for who in ("Alice", "Bob"):
+        (tmp_path / "docs" / f"{who}.md").write_text(
+            f"---\nname: {who}\nspecies: Human\nclass_level: Rogue 4\n"
+            f"subclass: ''\n---\n# {who}\n", encoding="utf-8")
+    # Deliberately NOT named after the characters: under the deleted rule the
+    # filename's shape was load-bearing; under declarations it is arbitrary.
+    (tmp_path / "voice" / "a_new_pipeline.md").write_text(ALICE_VOICE, encoding="utf-8")
+    (tmp_path / "voice" / "b_new_pipeline.md").write_text(BOB_VOICE, encoding="utf-8")
+    (tmp_path / "examples" / "a.md").write_text(ALICE_STYLE, encoding="utf-8")
+    for i, text in enumerate(shared):
+        (tmp_path / "examples" / f"shared_{i}.md").write_text(text, encoding="utf-8")
+
+    lines = ["characters:"]
+    lines += ["- name: Alice", "  sheet: docs/Alice.md"]
+    if alice_voice:
+        lines.append("  voice: voice/a_new_pipeline.md")
+    if alice_examples:
+        lines.append("  examples: examples/a.md")
+    lines += ["- name: Bob", "  sheet: docs/Bob.md"]
+    if bob_voice:
+        lines.append("  voice: voice/b_new_pipeline.md")
+    if shared:
+        lines.append("shared_examples:")
+        lines += [f"- examples/shared_{i}.md" for i in range(len(shared))]
+    cfg = tmp_path / "party.yaml"
+    cfg.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return cfg
+
+
+ALICE_VOICE = "Alice speaks flatly, in short sentences."
+BOB_VOICE = "Bob speaks in long, hedging paragraphs."
+HOUSE_STYLE_2 = "The deadpan lands in its own one-line paragraph."
+
+
+def _run(monkeypatch, tmp_path, *extra):
     paths = _write_fixtures(tmp_path)
     fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
     monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-
-    monkeypatch.setattr(sys, "argv", _base_argv(paths))
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, *extra))
     sd_narrate.main()
-
-    assert len(fake_stream.calls) == 2
-    for call in fake_stream.calls:
-        assert call["kwargs"].get("cache_system") is True
-
-    # --batch path is untouched: no cache_system kwarg reaches run_single_batch.
-    fake_batch = FakeRunSingleBatch([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "run_single_batch", fake_batch)
-    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--batch"))
-    sd_narrate.main()
-
-    assert len(fake_batch.calls) == 2
-    for call in fake_batch.calls:
-        assert "cache_system" not in call["kwargs"]
+    return fake_stream
 
 
-# ── #300: a configured --voice-dir that cannot deliver stops the run ─────────
-#
-# `Path.glob` over a missing directory yields nothing rather than raising, so a
-# typo'd voice_dir produced the same `{}` as no flag at all — and
-# `get_voice_note`'s #247 warning opens with `if not voices: return None`, so
-# the warning built to stop a spec from silently missing the prompt was mute in
-# the one case where EVERY spec was lost. These pin the refusal that replaces
-# that silence.
+# ── each narrator gets what its own entry names, and nothing else ───────────
 
 
-def test_voice_dir_not_given_is_still_a_legitimate_mode(tmp_path):
-    """Rendering without voice specs is a real mode and must not be broken."""
-    assert sd_narrate._load_voice_dir(None) == {}
-    assert sd_narrate._load_voice_dir("") == {}
+def test_declared_voice_reaches_only_its_own_narrator(monkeypatch, tmp_path):
+    cfg = _declaring_party(tmp_path)
+    stream = _run(monkeypatch, tmp_path, "--party-config", str(cfg))
+
+    assert ALICE_VOICE in stream.calls[0]["system"]
+    assert ALICE_VOICE not in stream.calls[1]["system"]
+    assert BOB_VOICE in stream.calls[1]["system"]
+    assert BOB_VOICE not in stream.calls[0]["system"]
 
 
-def test_voice_dir_that_does_not_exist_refuses(tmp_path, capsys):
+def test_declared_examples_reach_only_their_own_narrator(monkeypatch, tmp_path):
+    """The #301 bleed, structurally impossible now: Alice's examples are named
+    by Alice's entry and by nothing else, so there is no path by which they
+    reach Bob."""
+    cfg = _declaring_party(tmp_path)
+    stream = _run(monkeypatch, tmp_path, "--party-config", str(cfg))
+
+    assert ALICE_STYLE in stream.calls[0]["system"]
+    assert ALICE_STYLE not in stream.calls[1]["system"]
+
+
+def test_the_filename_shape_no_longer_matters(monkeypatch, tmp_path):
+    """`a_new_pipeline.md` resolves for `Alice` because the roster says so —
+    not because the stem starts with the narrator's first name."""
+    cfg = _declaring_party(tmp_path)
+    stream = _run(monkeypatch, tmp_path, "--party-config", str(cfg))
+    assert ALICE_VOICE in stream.calls[0]["system"]
+
+
+def test_a_character_that_declares_nothing_gets_nothing(monkeypatch, tmp_path):
+    """Stated, not inferred. Bob declares no examples, so Bob has none — and
+    nothing wanders in from a file that happens to look related."""
+    cfg = _declaring_party(tmp_path)
+    stream = _run(monkeypatch, tmp_path, "--party-config", str(cfg))
+    assert ALICE_STYLE not in stream.calls[1]["system"]
+
+
+# ── shared_examples: the campaign-wide block, by declaration ────────────────
+
+
+def test_shared_examples_reach_every_narrator(monkeypatch, tmp_path):
+    """toee's six house-style files are a real configuration. The change is
+    that a human wrote down that they are shared."""
+    cfg = _declaring_party(tmp_path, shared=(HOUSE_STYLE_2,))
+    stream = _run(monkeypatch, tmp_path, "--party-config", str(cfg))
+    for call in stream.calls:
+        assert HOUSE_STYLE_2 in call["system"]
+
+
+def test_an_undeclared_file_reaches_nobody(monkeypatch, tmp_path, capsys):
+    """The orphan a rename leaves behind. Under the deleted rule it joined the
+    GLOBAL block and reached EVERY narrator; now it reaches none, and the run
+    says so rather than letting it sit there unused and invisible."""
+    cfg = _declaring_party(tmp_path)
+    (tmp_path / "examples" / "grygum.md").write_text(
+        "An orphan from before the rename.", encoding="utf-8")
+    stream = _run(monkeypatch, tmp_path, "--party-config", str(cfg),
+                  "--examples", str(tmp_path / "examples"))
+
+    for call in stream.calls:
+        assert "An orphan from before the rename." not in call["system"]
+    err = capsys.readouterr().err
+    assert "grygum.md" in err
+    assert "declared by nobody" in err
+
+
+def test_no_declarations_at_all_is_a_legitimate_mode(monkeypatch, tmp_path):
+    """A campaign that declares nothing renders without specs, exactly as
+    omitting --voice-dir always has. Refusing here would turn "no specs
+    wanted" into an error."""
+    cfg = _write_party_config(tmp_path)
+    stream = _run(monkeypatch, tmp_path, "--party-config", str(cfg))
+    assert len(stream.calls) == 2
+
+
+# ── the pre-flight refuses before the first API call ────────────────────────
+
+
+def test_a_declared_voice_file_that_is_absent_stops_the_run(monkeypatch, tmp_path, capsys):
+    """The Gyrgum case. The roster names a file, the file is not there, and the
+    run refuses — naming both the character and the path."""
+    cfg = _declaring_party(tmp_path)
+    (tmp_path / "voice" / "a_new_pipeline.md").unlink()
+    paths = _write_fixtures(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party-config", str(cfg)))
+
     with pytest.raises(SystemExit) as exc:
-        sd_narrate._load_voice_dir(str(tmp_path / "nope"))
+        sd_narrate.main()
+    assert exc.value.code == 1
+    assert not fake_stream.calls          # before the first API call
+    err = capsys.readouterr().err
+    assert "Alice" in err
+    assert "a_new_pipeline.md" in err
+
+
+def test_a_narrator_missing_from_the_roster_stops_the_run(monkeypatch, tmp_path, capsys):
+    """The plan and the roster disagree about a name — which is exactly what a
+    rename produces, and what three earlier detectors could not see."""
+    cfg = _declaring_party(tmp_path)
+    cfg.write_text(cfg.read_text(encoding="utf-8").replace("name: Bob", "name: Robert"),
+                   encoding="utf-8")
+    paths = _write_fixtures(tmp_path)
+    monkeypatch.setattr(sd_narrate, "stream_api",
+                        FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION]))
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party-config", str(cfg)))
+
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
     assert exc.value.code == 1
     err = capsys.readouterr().err
-    assert "is not a directory" in err
-    assert "NO voice specs" in err
+    assert "Bob" in err
+    assert "not a character in party.yaml" in err
 
 
-def test_voice_dir_holding_only_shared_material_is_no_voice_mode(tmp_path, capsys):
-    """`_genre.md` is campaign material, not a spec — but a dir with only that
-    in it means "nobody has written specs yet", not "the path is wrong".
-
-    Deliberately NOT fatal: `new_workspace` creates `voice/` empty and
-    `PlatformConfigService.derive` fills `voice_dir` in from its mere
-    existence, so refusing here would break Narrate on every fresh campaign
-    over a path the tool chose rather than the GM.
-    """
-    vd = tmp_path / "voice"
-    vd.mkdir()
-    (vd / "_genre.md").write_text("# Register\n", encoding="utf-8")
-
-    assert sd_narrate._load_voice_dir(str(vd)) == {}
-    assert "holds no per-character voice files" in capsys.readouterr().err
-
-
-def test_empty_voice_dir_is_no_voice_mode_not_a_refusal(tmp_path, capsys):
-    """The fresh-workspace shape, exactly."""
-    vd = tmp_path / "voice"
-    vd.mkdir()
-
-    assert sd_narrate._load_voice_dir(str(vd)) == {}
-    assert "holds no per-character voice files" in capsys.readouterr().err
-
-
-def test_a_fresh_workspace_still_renders(monkeypatch, tmp_path):
-    """End-to-end version of the above: empty voice/ must not block a render."""
+def test_a_character_declaring_no_voice_stops_the_run_once_others_do(
+    monkeypatch, tmp_path, capsys,
+):
+    """Silence is only worth reporting once the campaign has started
+    declaring. Bob's missing entry is a gap; a campaign with no entries at all
+    is a choice (see test_no_declarations_at_all_is_a_legitimate_mode)."""
+    cfg = _declaring_party(tmp_path, bob_voice=False)
     paths = _write_fixtures(tmp_path)
-    vd = tmp_path / "voice"
-    vd.mkdir()
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--voice-dir", str(vd)))
-
-    sd_narrate.main()
-
-    assert len(fake_stream.calls) == 2
-
-
-def test_usable_voice_dir_loads(tmp_path):
-    vd = tmp_path / "voice"
-    vd.mkdir()
-    (vd / "alice_new_pipeline.md").write_text("Alice speaks flatly.", encoding="utf-8")
-    assert sd_narrate._load_voice_dir(str(vd)) == {
-        "alice_new_pipeline": "Alice speaks flatly."
-    }
-
-
-# ── #300: every narrator in the render must resolve, before the first call ───
-
-
-def _voice_dir(tmp_path: Path, *names: str) -> Path:
-    vd = tmp_path / "voice"
-    vd.mkdir()
-    for n in names:
-        (vd / n).write_text(f"# {n}\n\nspec body\n", encoding="utf-8")
-    return vd
-
-
-def test_narrator_without_a_voice_file_stops_the_run_before_any_api_call(
-        monkeypatch, tmp_path, capsys):
-    """The plan needs Alice and Bob; only Alice has a spec.
-
-    Nothing may be rendered: the old behaviour warned for Bob and produced a
-    full session document in which one narrator had silently lost their voice.
-    """
-    paths = _write_fixtures(tmp_path)
-    vd = _voice_dir(tmp_path, "alice.md")
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--voice-dir", str(vd)))
+    monkeypatch.setattr(sd_narrate, "stream_api",
+                        FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION]))
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--party-config", str(cfg)))
 
     with pytest.raises(SystemExit) as exc:
         sd_narrate.main()
-
     assert exc.value.code == 1
-    assert fake_stream.calls == []                       # nothing was paid for
-    # The output dir itself is created earlier in main() (as it is on every
-    # other refusal path); what must not exist is narration.
-    assert list(paths["out_dir"].glob("*.md")) == []
     err = capsys.readouterr().err
-    assert "narrator 'Bob': no voice file" in err
-    assert "available keys: ['alice']" in err
+    assert "Bob" in err
+    assert "declares no voice file" in err
 
 
-def test_ambiguous_voice_file_stops_the_run_rather_than_guessing(
-        monkeypatch, tmp_path, capsys):
-    """#247 refuses to guess between two candidates; #300 makes that refusal
-    stop the render instead of dropping one narrator's spec."""
+def test_a_narrator_filtered_out_of_this_render_is_not_required(monkeypatch, tmp_path):
+    """The pre-flight runs AFTER --narrator/--scene filtering: a broken
+    declaration for somebody not being rendered must not block the render."""
+    cfg = _declaring_party(tmp_path, bob_voice=False)
     paths = _write_fixtures(tmp_path)
-    vd = _voice_dir(tmp_path, "alice_v1.md", "alice_v2.md", "bob.md")
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--voice-dir", str(vd)))
-
-    with pytest.raises(SystemExit) as exc:
-        sd_narrate.main()
-
-    assert exc.value.code == 1
-    assert fake_stream.calls == []
-    err = capsys.readouterr().err
-    assert "ambiguous" in err
-    assert "alice_v1" in err and "alice_v2" in err
-
-
-def test_a_narrator_filtered_out_of_this_render_is_not_required(
-        monkeypatch, tmp_path):
-    """`--narrator Alice` renders only Alice's sections, so Bob's missing spec
-    is irrelevant to THIS run. The check follows the filters, not the plan."""
-    paths = _write_fixtures(tmp_path)
-    vd = _voice_dir(tmp_path, "alice.md")
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    stream = FakeStreamAPI([SCENE1_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", stream)
+    monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(sys, "argv", _base_argv(
-        paths, "--voice-dir", str(vd), "--narrator", "Alice"))
-
+        paths, "--party-config", str(cfg), "--narrator", "Alice"))
     sd_narrate.main()
-
-    assert len(fake_stream.calls) == 1
-    assert "spec body" in fake_stream.calls[0]["system"]
+    assert len(stream.calls) == 1
 
 
-def test_full_coverage_renders_normally(monkeypatch, tmp_path):
-    paths = _write_fixtures(tmp_path)
-    vd = _voice_dir(tmp_path, "alice_new_pipeline.md", "bob.md")
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--voice-dir", str(vd)))
-
-    sd_narrate.main()
-
-    assert len(fake_stream.calls) == 2
+# ── voice.py / examples.py in isolation ─────────────────────────────────────
 
 
-# ── voice_resolution_problems in isolation ──────────────────────────────────
+def test_get_voice_note_is_an_exact_match():
+    from session_doc.voice import get_voice_note as gvn
+    voices = {"alice": "Flat."}
+    assert gvn(voices, "Alice") == "Flat."
+    assert gvn(voices, " ALICE ") == "Flat."
+    # No first-name step, no prefix step: `Alice Smith` is a different name.
+    assert gvn(voices, "Alice Smith") is None
 
 
-def test_resolution_problems_empty_when_everyone_resolves():
-    voices = {"alice_new_pipeline": "a", "bob": "b"}
-    assert session_doc.voice_resolution_problems(voices, ["Alice", "Bob"]) == []
-
-
-def test_resolution_problems_reports_each_narrator_once():
-    """A plan giving one character four scenes is one problem, not four."""
-    problems = session_doc.voice_resolution_problems({"bob": "b"},
-                                                     ["Alice", "Alice", "Alice"])
-    assert len(problems) == 1
-    assert "Alice" in problems[0]
-
-
-def test_resolution_problems_ignores_blank_narrators():
-    assert session_doc.voice_resolution_problems({"bob": "b"}, ["", "  "]) == []
-
-
-# ── #301: per-character examples must not silently reach every narrator ──────
-#
-# `_load_examples` routes a file to a character only when its stem matches a
-# name in --characters. With an empty or incomplete roster nothing matches,
-# every file falls through to the GLOBAL block, and that block goes into EVERY
-# narrator's prompt — so one character's style reference steers all of them and
-# the output still looks plausible. That is what makes it worth refusing.
-
-
-def _examples_dir(tmp_path: Path, **files: str) -> Path:
-    ed = tmp_path / "examples"
-    ed.mkdir()
-    for name, body in files.items():
-        (ed / f"{name}.md").write_text(body, encoding="utf-8")
-    return ed
-
-
-def test_missing_characters_lets_one_voice_steer_every_narrator(
-        monkeypatch, tmp_path, capsys):
-    """Alice's examples file with no --characters: refuse, don't render."""
-    paths = _write_fixtures(tmp_path)
-    ed = _examples_dir(tmp_path, alice="Alice writes in short punches.")
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--examples", str(ed)))
-
-    with pytest.raises(SystemExit) as exc:
-        sd_narrate.main()
-
-    assert exc.value.code == 1
-    assert fake_stream.calls == []
-    err = capsys.readouterr().err
-    assert "alice.md would route to narrator 'Alice'" in err
-    assert "reaching EVERY narrator" in err
-
-
-def test_an_incomplete_roster_is_caught_too(monkeypatch, tmp_path, capsys):
-    """--characters names Alice but not Bob, so bob.md goes global."""
-    paths = _write_fixtures(tmp_path)
-    ed = _examples_dir(tmp_path, alice="Alice.", bob="Bob.")
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(
-        paths, "--examples", str(ed), "--characters", "Alice"))
-
-    with pytest.raises(SystemExit) as exc:
-        sd_narrate.main()
-
-    assert exc.value.code == 1
-    assert "bob.md would route to narrator 'Bob'" in capsys.readouterr().err
-
-
-def test_all_global_examples_are_not_a_problem(monkeypatch, tmp_path):
-    """toee's real shape: every examples file is house style, named for a
-    situation rather than a character. Nothing would have routed per-character,
-    so there is no bleed and no reason to refuse — even with no --characters."""
-    paths = _write_fixtures(tmp_path)
-    ed = _examples_dir(
-        tmp_path,
-        combat_and_consequences="How combat reads.",
-        political_maneuvering="How politics reads.",
-    )
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--examples", str(ed)))
-
-    sd_narrate.main()
-
-    assert len(fake_stream.calls) == 2
-    assert "How combat reads." in fake_stream.calls[0]["system"]
-
-
-def test_a_complete_roster_routes_per_character(monkeypatch, tmp_path):
-    paths = _write_fixtures(tmp_path)
-    ed = _examples_dir(tmp_path, alice="ALICE STYLE.", bob="BOB STYLE.")
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(
-        paths, "--examples", str(ed), "--characters", "Alice, Bob"))
-
-    sd_narrate.main()
-
-    alice_prompt, bob_prompt = (c["system"] for c in fake_stream.calls)
-    assert "ALICE STYLE." in alice_prompt and "BOB STYLE." not in alice_prompt
-    assert "BOB STYLE." in bob_prompt and "ALICE STYLE." not in bob_prompt
-
-
-def test_filtering_to_one_narrator_does_not_disable_the_check(
-        monkeypatch, tmp_path, capsys):
-    """`--narrator Alice` must still refuse an unrouted bob.md.
-
-    The global examples block is NOT narrator-scoped: `examples_text` is passed
-    to every `build_narrate_system` call, so `bob.md` falling through reaches
-    ALICE's prompt. Scoping the check to the rendered sections made this exact
-    invocation ship the bleed that the full-plan run refuses — verified before
-    the fix: `BOB STYLE in Alice prompt: True`.
-    """
-    paths = _write_fixtures(tmp_path)
-    ed = _examples_dir(tmp_path, alice="ALICE STYLE.", bob="BOB STYLE.")
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(
-        paths, "--examples", str(ed), "--characters", "Alice",
-        "--narrator", "Alice"))
-
-    with pytest.raises(SystemExit) as exc:
-        sd_narrate.main()
-
-    assert exc.value.code == 1
-    assert fake_stream.calls == []
-    assert "bob.md would route to narrator 'Bob'" in capsys.readouterr().err
-
-
-def test_filtering_still_renders_when_the_roster_is_complete(monkeypatch, tmp_path):
-    """The legitimate half of the above: a complete roster renders one scene."""
-    paths = _write_fixtures(tmp_path)
-    ed = _examples_dir(tmp_path, alice="ALICE STYLE.", bob="BOB STYLE.")
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(
-        paths, "--examples", str(ed), "--characters", "Alice, Bob",
-        "--narrator", "Alice"))
-
-    sd_narrate.main()
-
-    assert len(fake_stream.calls) == 1
-    assert "ALICE STYLE." in fake_stream.calls[0]["system"]
-    assert "BOB STYLE." not in fake_stream.calls[0]["system"]
-
-
-def test_examples_path_that_is_not_a_directory_refuses(monkeypatch, tmp_path, capsys):
-    paths = _write_fixtures(tmp_path)
-    monkeypatch.setattr(sys, "argv", _base_argv(
-        paths, "--examples", str(tmp_path / "nope")))
-
-    with pytest.raises(SystemExit) as exc:
-        sd_narrate.main()
-
-    assert exc.value.code == 1
-    assert "is not a directory" in capsys.readouterr().err
-
-
-def test_empty_examples_dir_is_not_a_refusal(monkeypatch, tmp_path, capsys):
-    """`new_workspace` creates examples/ empty and `derive` fills examples_dir
-    in from its existence — refusing here would break every fresh campaign."""
-    paths = _write_fixtures(tmp_path)
-    ed = tmp_path / "examples"
-    ed.mkdir()
-    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
-    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
-    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--examples", str(ed)))
-
-    sd_narrate.main()
-
-    assert len(fake_stream.calls) == 2
-    assert "holds no style examples" in capsys.readouterr().err
-
-
-# ── #301: the empty-narrator crash ──────────────────────────────────────────
+def test_get_char_examples_is_an_exact_match():
+    from session_doc.examples import get_char_examples as gce
+    per_char = {"alice": "Sample."}
+    assert gce(per_char, "Alice") == "Sample."
+    assert gce(per_char, "Alice Smith") is None
 
 
 def test_get_char_examples_survives_an_empty_narrator():
-    """`parse_plan` accepts a bare `narrator:` line as "", and this raised
-    IndexError on it — taking the render down with a stack trace."""
-    from session_doc.examples import get_char_examples
+    """`parse_plan` accepts a bare `narrator:` line as "", and it reaches Pass
+    5 — which used to raise IndexError and take the render down with a stack
+    trace instead of a message (#301)."""
+    from session_doc.examples import get_char_examples as gce
+    assert gce({"alice": "x"}, "") is None
+    assert gce({}, "") is None
 
-    assert get_char_examples({"alice": "x"}, "") is None
-    assert get_char_examples({"alice": "x"}, "   ") is None
-    assert get_char_examples({"alice": "x"}, "Alice") == "x"
-    assert get_char_examples({"alice": "x"}, "Alice Smith") == "x"
+
+def test_undeclared_files_lists_only_orphans(tmp_path):
+    from session_doc.examples import undeclared_files
+    d = tmp_path / "examples"
+    d.mkdir()
+    kept = d / "alice.md"
+    kept.write_text("x", encoding="utf-8")
+    orphan = d / "grygum.md"
+    orphan.write_text("x", encoding="utf-8")
+    (d / "_genre.md").write_text("x", encoding="utf-8")
+
+    found = undeclared_files(d, [kept])
+    assert found == [orphan]
+
+
+def test_undeclared_files_tolerates_a_missing_directory():
+    from session_doc.examples import undeclared_files
+    assert undeclared_files(None, []) == []
+    assert undeclared_files(Path("/nonexistent/nowhere"), []) == []
+
+
+def test_load_voice_files_still_scans_a_directory(tmp_path):
+    """Kept deliberately: `polish.py` enumerates a directory, and the orphan
+    report needs the census. It is no longer how a narrator finds its spec."""
+    d = tmp_path / "voice"
+    d.mkdir()
+    (d / "alice_voice.md").write_text("Flat.", encoding="utf-8")
+    (d / "_genre.md").write_text("shared", encoding="utf-8")
+    voices = load_voice_files(d)
+    assert voices == {"alice": "Flat."}

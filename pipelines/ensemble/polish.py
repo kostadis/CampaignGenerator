@@ -31,8 +31,9 @@ from campaignlib import (
     save_log,
 )
 from campaignlib.party_config import load_party_config_arg, require_from_config
-from session_doc import load_voice_files, roster_from_config
-from session_doc.voice import _resolve_voice_key
+from session_doc import roster_from_config
+from campaignlib.players_config import load_players_config_arg
+from session_doc.voice import get_voice_note, load_declared_voices
 
 
 DEFAULT_MAX_ITERATIONS = 40
@@ -184,15 +185,16 @@ def tool_read_recap(args: dict, ctx: ToolContext) -> dict:
 
 def tool_read_voice_file(args: dict, ctx: ToolContext) -> dict:
     name = _require_str(args, "character")
-    # Same resolver session_doc.voice.get_voice_note uses (#247), but the
-    # non-warning half of it — this runs on every tool call, so it must not
-    # spam stderr on a routine miss. A dict return either way: this is a
-    # tool result handed back to the model, never raised.
-    key, _ambiguous = _resolve_voice_key(ctx.voices, name)
-    if key is None:
-        return {"error": f"no voice file for {name!r}; "
-                         f"available: {sorted(ctx.voices)}"}
-    return {"character": name, "text": ctx.voices[key]}
+    # Exact match on the character name, against the files the roster DECLARES
+    # (feature 009). This used to run the first-name-prefix resolver, which
+    # would happily hand back `grygum_voice.md` for a narrator called `Gyrgum`
+    # — or, after the rename, nothing at all, silently. A dict return either
+    # way: this is a tool result handed back to the model, never raised.
+    text = get_voice_note(ctx.voices, name)
+    if text is None:
+        return {"error": f"no voice file declared for {name!r}; "
+                         f"declared: {sorted(ctx.voices)}"}
+    return {"character": name, "text": text}
 
 
 def tool_read_context_doc(args: dict, ctx: ToolContext) -> dict:
@@ -777,7 +779,11 @@ def main() -> None:
     parser.add_argument("--recap", required=True,
                         help="GMassistant recap (authoritative source of events)")
     parser.add_argument("--voice-dir", required=True,
-                        help="Directory containing per-character voice files")
+                        help="Directory holding the campaign's voice files. A "
+                             "character's own spec is DECLARED by its 'voice:' "
+                             "entry in party.yaml (feature 009); this path is "
+                             "validated so a typo is caught, not scanned to "
+                             "match names.")
     parser.add_argument("--party", required=True,
                         help="party.md (used to extract canonical narrator roster)")
     parser.add_argument("--party-config", required=True,
@@ -786,6 +792,11 @@ def main() -> None:
                              "sheet frontmatter (issue #265) and there is no party.md "
                              "fallback — a sheet without frontmatter is a hard error. Run "
                              "sheet_frontmatter --apply to add it.")
+    parser.add_argument("--players-config", default=None,
+                        help="players.yaml (conventionally "
+                             "<campaign>/config/players.yaml). Supplies the "
+                             "person's name for each character in the roster "
+                             "block.")
     parser.add_argument("--context", nargs="*", default=[],
                         help="Optional grounding docs (loaded lazily on demand)")
     parser.add_argument("--output", required=True,
@@ -844,16 +855,24 @@ def main() -> None:
         sys.exit(1)
 
     recap_text = recap_path.read_text(encoding="utf-8")
-    voices = load_voice_files(voice_dir)
     party_text = party_path.read_text(encoding="utf-8")
     # The roster comes from each character's sheet frontmatter (#265) — no
-    # party.md fallback. party_text is still read, for the ## Name headers
-    # below and for voice matching.
+    # party.md fallback. The person's name comes from players.yaml (feature
+    # 009); party_text is still read, for the ## Name headers below.
     resolved_party_config = load_party_config_arg(args.party_config)
+    players_config = load_players_config_arg(args.players_config)
     roster_text = require_from_config(
-        roster_from_config(resolved_party_config) if resolved_party_config else None,
+        roster_from_config(resolved_party_config, players_config)
+        if resolved_party_config else None,
         what="character roster",
         party_config_arg=args.party_config,
+    )
+    # Voice specs are DECLARED per character in party.yaml, not found by
+    # scanning voice_dir and matching names. The directory is still validated
+    # above, because a declared path that is not a directory is a typo.
+    voices = (
+        load_declared_voices(resolved_party_config)
+        if resolved_party_config else {}
     )
     roster_names = {
         m.group(1).lower()

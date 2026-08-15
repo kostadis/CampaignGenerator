@@ -45,9 +45,9 @@ from campaignlib import (
     load_agent_prompt,
     find_alias_registry,
     load_alias_map,
+    load_players_config_arg,
     normalize_vtt_speakers,
     parse_gmassist_scenes,
-    player_map_from_config,
     plan_scene_extraction,
     poll_batch,
     read_batch_sidecar,
@@ -59,6 +59,7 @@ from campaignlib import (
     write_batch_sidecar,
 )
 from campaignlib.party_config import load_party_config_arg, require_from_config
+from campaignlib.players_config import speaker_map_from_configs
 from .io import parse_vtt
 
 
@@ -283,11 +284,14 @@ def main() -> None:
                              "character's D&D Beyond sheet frontmatter (issue #265) and "
                              "there is no party.md fallback — a sheet without frontmatter "
                              "is a hard error. Run sheet_frontmatter --apply to add it.")
-    parser.add_argument("--gm-player", metavar="NAME", default=None,
-                        help="Display name the GM appears under in the VTT "
-                             "(e.g. 'Kostadis'). Rewritten to 'GM:' before "
-                             "extraction. Without this flag the GM's lines "
-                             "stay under their player name.")
+    parser.add_argument("--players-config", metavar="FILE", default=None,
+                        help="players.yaml (conventionally "
+                             "<campaign>/config/players.yaml). REQUIRED with "
+                             "--party: it is where every display name a "
+                             "recording has used for a player is recorded, "
+                             "including the game master's. Replaces the old "
+                             "--gm-player, which could hold only one of a "
+                             "person's several labels.")
     parser.add_argument("--model", default=DEFAULT_MODEL)
     add_backend_args(parser)
     parser.add_argument("--fast", action="store_true",
@@ -304,8 +308,8 @@ def main() -> None:
                              "files so partial runs can be resumed.")
     parser.add_argument("--allow-speaker-mismatch", action="store_true",
                         help="Skip the pre-flight check that aborts when --party "
-                             "or --gm-player is provided but no VTT lines match "
-                             "any of those display names. The check exists to "
+                             "is provided but no VTT lines match any recorded "
+                             "display name. The check exists to "
                              "catch wrong-VTT mistakes before spending money on "
                              "extraction; only override if you know the VTT uses "
                              "unrecognised display names.")
@@ -396,39 +400,40 @@ def main() -> None:
         if not party_path.exists():
             print(f"Error: party file not found: {party_path}", file=sys.stderr)
             sys.exit(1)
-        # The player→character map comes from each character's sheet
-        # frontmatter (#265) — no party.md fallback.
+        # Display name → label comes from the player entity (feature 009).
+        # Every label a recording has used for a person is recorded there, the
+        # game master's included, so there is no separate --gm-player to keep
+        # in step and no per-invocation string that can hold only one of them.
         resolved_party_config = load_party_config_arg(args.party_config)
+        players_config = load_players_config_arg(args.players_config)
         player_map = require_from_config(
-            player_map_from_config(resolved_party_config) if resolved_party_config else None,
-            what="player → character map",
+            speaker_map_from_configs(players_config, resolved_party_config)
+            if resolved_party_config else None,
+            what="speaker map",
             party_config_arg=args.party_config,
         )
         if player_map:
             mapping_str = ", ".join(f"{p}→{c}" for p, c in sorted(player_map.items()))
-            print(f"  Player → character map ({len(player_map)}): {mapping_str}")
+            print(f"  Speaker map ({len(player_map)}): {mapping_str}")
         else:
-            # Legitimate: every sheet's `player` field is a placeholder, so no
-            # speaker can be attributed. Distinct from an unusable config,
-            # which require_from_config has already exited on.
-            print("  Warning: every character's sheet has a placeholder `player` "
-                  "field, so no speaker attribution is possible.", file=sys.stderr)
-    if args.gm_player:
-        print(f"  GM player → GM: {args.gm_player}")
-    if player_map or args.gm_player:
+            # Legitimate: every player is recorded but none carries a display
+            # name, so no speaker can be attributed — Hillsfar's state. Distinct
+            # from an unusable config, which require_from_config already exited
+            # on because a character had nobody bound to it at all.
+            print("  Warning: no player has a recorded display name, so no "
+                  "speaker attribution is possible.", file=sys.stderr)
+    if player_map:
         before = len(dialogue)
-        dialogue = normalize_vtt_speakers(dialogue, player_map, args.gm_player)
+        dialogue = normalize_vtt_speakers(dialogue, player_map)
         # Quick visibility — count how many lines changed by re-running
         # the prefix check; cheaper than diffing.
         changed = sum(
             1 for line in dialogue.splitlines()
-            if any(line.startswith(f"{c}:") for c in set(player_map.values()) | {"GM"})
+            if any(line.startswith(f"{c}:") for c in set(player_map.values()))
         )
         print(f"  Speaker labels rewritten: {changed} line(s); dialogue {before:,} → {len(dialogue):,} chars")
         if changed == 0 and not args.allow_speaker_mismatch:
-            expected = sorted(set(player_map.keys()) | (
-                {args.gm_player} if args.gm_player else set()
-            ))
+            expected = sorted(player_map)
             print(
                 f"\nError: speaker-mismatch pre-flight failed.\n"
                 f"  VTT:           {vtt_path}\n"

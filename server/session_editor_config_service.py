@@ -25,7 +25,6 @@ from server.session_editor_config_shared import (
     Backends,
     EditorPaths,
     NarrateKnobs,
-    Roster,
     ScrubKnobs,
     SessionEditorConfig,
     load_session_editor_config,
@@ -136,7 +135,6 @@ class ResolvedEditorConfig:
     paths: EditorPaths
     narrate: NarrateKnobs
     scrub: ScrubKnobs
-    roster: Roster
     backends: Backends
     session_name: str | None
     profiles: list[ProfileEntry]
@@ -360,7 +358,6 @@ class SessionEditorConfigService:
             paths=resolved_paths,
             narrate=cfg.narrate,
             scrub=cfg.scrub,
-            roster=cfg.roster,
             backends=cfg.backends,
             session_name=cfg.session_name,
             profiles=cfg.profiles,

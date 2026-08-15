@@ -167,6 +167,13 @@ watch(() => open.value, (o) => {
       <p v-if="loading" class="muted">Loading…</p>
 
       <div v-else>
+        <p class="cross-link">
+          The people at the table — their names, the labels a recording uses for them,
+          and who plays what — are configured on the
+          <router-link to="/setup/players">Players</router-link> page. This roster owns
+          the characters and their files.
+        </p>
+
         <div v-if="!characters.length" class="empty">
           No characters yet. Click "Add character" to start.
         </div>
@@ -285,6 +292,9 @@ watch(() => open.value, (o) => {
 }
 
 .muted { color: var(--text-muted); font-size: 11px; }
+.cross-link {
+  margin: 0 0 10px; font-size: 10px; color: var(--text-muted); line-height: 1.6;
+}
 .empty {
   color: var(--text-muted); font-size: 11px;
   padding: 12px; text-align: center;
