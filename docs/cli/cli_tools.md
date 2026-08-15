@@ -195,9 +195,50 @@ party \
 Converts a D&D Beyond character sheet PDF to structured markdown using Claude's vision API.
 
 ```bash
-dnd_sheet Soma.pdf --output soma.md
-dnd_sheet *.pdf --output-dir ~/campaigns/characters/
+dnd_sheet Soma.pdf --party-config config/party.yaml    # roster mode (recommended)
+dnd_sheet Soma.pdf --output soma.md                    # legacy: explicit path
+dnd_sheet *.pdf --output-dir ~/campaigns/characters/   # legacy: one .md per PDF
 ```
+
+**Roster mode** (`--party-config`, feature 008). The campaign's `party.yaml`
+becomes the authority for where the sheet goes and who plays the character:
+
+| Step | What happens |
+|---|---|
+| Attribute | The `# ` title of the converted sheet is matched to a roster `name`. **Exact match, case-insensitive, whitespace-trimmed — no fuzzy fallback.** |
+| Name | The sheet is written to `<the roster's sheet directory>/<char-name>.md`, never to the PDF's own name. |
+| Archive | Any sheet already there is moved to `old/level/<N>/<char-name>.md` first, keyed by the level *that* sheet records — so the archive reads as "the sheet as it was at level N". |
+| Player | The roster's `player:` is written over the exported one, in **both** the YAML frontmatter and the `## Identity` block. A D&D Beyond download stamps the *downloader's* name into every sheet, so the export is wrong about this for every character. |
+| Report | Per PDF: `Matched roster entry`, `Archived … (level N)`, `Player: … (from party.yaml)`, `Saved to`. |
+
+`player:` must be the player's **Zoom display name**, not their legal name —
+`normalize_vtt_speakers` matches transcript prefixes exactly, and a near-miss
+silently drops that character's lines from every downstream extraction.
+
+Relative paths in the roster resolve against the **current directory**, and
+every campaign's roster is written campaign-root-relative (`docs/party/…`), so
+run this from the campaign root — the same invariant every other CLI here has.
+If you run it from somewhere else it refuses rather than writing a stray tree.
+
+**Refusals.** Each names the file, shows the values that disagree, says which
+file to fix, and ends `Nothing was written or moved.` — literally nothing: the
+API call completes before the first filesystem mutation, so a refusal costs
+tokens and changes no bytes. The run exits `1`; other PDFs in the same
+invocation still convert.
+
+| Refusal | Fix |
+|---|---|
+| The sheet's name is not in the roster | Edit `party.yaml` or the sheet's `# ` title so one matches exactly. Prefer the sheet: `characters[].name` is also the canonical PC name consumed by `load_pc_names` and `roster_from_config`. |
+| The name matches two roster entries | Roster names must be unique. |
+| The roster's `sheet:` basename isn't what would be written | The message prints the exact replacement line. This tool never edits `party.yaml`. |
+| The displaced sheet records no level, or more than one (`Fighter 9 / Bard 2`) | Archive it by hand, or record a single class & level. Picking one of two invents precision the source lacks. |
+| `old/level/<N>/<char-name>.md` already exists | Never overwritten and never suffixed — losing an archived sheet is the one thing this exists to prevent. |
+| The roster's sheet directory doesn't exist | You are probably running from the wrong directory. It will not create the tree. |
+
+**Legacy modes are unchanged.** With no `--party-config`, or with an explicit
+`--output`/`--output-dir`, sheets are named after their source PDF exactly as
+before — and the run says which mode it is in, so a suppressed roster is never
+silent.
 
 ## npc_table
 
