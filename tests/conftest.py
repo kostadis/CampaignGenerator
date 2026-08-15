@@ -17,12 +17,29 @@ are separate and skip cleanly when ``~/src/campaigns`` is absent.
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FIXTURE_WORKSPACE = REPO_ROOT / "tests" / "fixtures" / "provenance"
+
+# The suite must import the tree it lives in.
+#
+# pytest's `prepend` import mode only puts `tests/` (and `tests/benchmarks/`) on
+# sys.path, the venv's `pytest` entry point does not put the cwd there, and the
+# editable install's .pth points at /home/kroussos/src/CampaignGenerator. So
+# inside a git worktree, any module that does not insert the repo root itself
+# imports the MAIN checkout — and once one has (tests/benchmarks/ is collected
+# first and does exactly that), sys.modules is poisoned for everything after it.
+# A whole-suite run then reports green against code the branch never touched.
+#
+# conftest is imported before any test module, so doing it once here closes that
+# for all of them. In the main checkout this is a no-op: the .pth already put
+# that same path on sys.path.
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 
 @pytest.fixture(scope="session")

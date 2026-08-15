@@ -101,6 +101,24 @@ shorter than `party.md`'s (`Wade` vs `Wade Brown`), and `zalthir.md:5` has a
 trailing space after `Gabe`. Under the ruling the sheet's values are correct;
 the reader must `.strip()`.
 
+> **Superseded for `player` by feature 008 (2026-08-13).** "The sheet's values
+> are correct" no longer holds for that one field. A D&D Beyond export stamps
+> the **downloader's** name into every sheet it produces, so the sheet records
+> the GM as every character's player — wrong for everyone, every time, by
+> construction, not drift. The roster (`config/party.yaml`) gained an optional
+> `player:` and is now authoritative for it: `dnd_sheet --party-config` writes
+> the roster's value over the exported one, in **both** identity channels, on
+> every conversion. Nothing else moved — the sheet stays authoritative for
+> `name`, `species`, `class_level` and `subclass`, and `player_map_from_config`
+> still reads `player` from sheet frontmatter (D10), which is consistent
+> because a converted sheet now carries the roster's value.
+>
+> Residual, recorded and not fixed: a GM who sets `player` in the roster and
+> does not re-convert leaves the sheet stating the old value, and downstream
+> speaker attribution keeps using the sheet. There is no detector for that.
+> The cheap fix, if it bites, is a report — not a silent precedence rule.
+> See `specs/008-sheet-naming-archival/` (FR-008, FR-009, FR-010a, D8, D10).
+
 ---
 
 ## Approach
@@ -332,7 +350,15 @@ had been *worse* than what it replaced:
 frontmatter; 18 subclasses recovered from an explicit source, Daein's left blank
 (Fighter 9 / Bard 2 with no archetype recorded). `player` carries the Zoom
 display name per the GM ruling, since `normalize_vtt_speakers` matches it by
-exact prefix and a near-miss silently drops that PC's lines.
+exact prefix and a near-miss silently drops that PC's lines. **That ruling now
+governs `party.yaml`'s `player:` too** (feature 008) — it is the field the
+conversion copies onto the sheet, so a legal name there breaks the same
+attribution the sheet's value used to.
+
+Daein's `Fighter 9 / Bard 2` also became load-bearing: feature 008 keys its
+sheet archive on a single level, and multiclass is a refusal rather than a sum
+or a first-wins, for the same reason `class_level` was kept as one
+undecomposed string.
 
 **obelisk is dormant** by GM ruling: no character sheets at all, and its
 `config/party.yaml` is the PC-name exclusion list, not a roster. It exits 1 with

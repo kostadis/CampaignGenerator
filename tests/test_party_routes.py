@@ -153,6 +153,68 @@ def test_put_collection_duplicate_names_is_409(client):
     assert r.status_code == 409
 
 
+# ── The player field over the wire (feature 008, FR-023) ───────────────────
+
+def test_player_round_trips_through_the_collection_put(client):
+    """A 200 is not proof. ``save_party_config`` hand-builds its YAML dict, so
+    the failure mode this guards is a save that succeeds and persists nothing
+    — exactly what happened when ``selection`` was added."""
+    c, tmp = client
+    sheet = _touch(tmp, "docs/party/Soma.md")
+    r = c.put("/api/party/characters", json=[
+        {"name": "Soma", "sheet": sheet, "player": "Wade"},
+        {"name": "Vukradin", "sheet": sheet},
+    ])
+    assert r.status_code == 200
+    assert [x.get("player") for x in r.json()] == ["Wade", None]
+
+    assert [x.get("player") for x in c.get("/api/party/characters").json()] == \
+        ["Wade", None]
+    # …and it actually reached disk, not just the response model.
+    assert "player: Wade" in (tmp / "config" / "party.yaml").read_text(encoding="utf-8")
+
+
+def test_player_round_trips_through_the_single_character_routes(client):
+    c, tmp = client
+    sheet = _touch(tmp, "docs/party/Soma.md")
+    c.post("/api/party/characters", json={"name": "Soma", "sheet": sheet,
+                                          "player": "Kostadis"})
+    r = c.put("/api/party/characters/Soma",
+              json={"name": "Soma", "sheet": sheet, "player": "Wade"})
+    assert r.status_code == 200
+    assert c.get("/api/party/characters/Soma").json()["player"] == "Wade"
+    assert "player: Wade" in (tmp / "config" / "party.yaml").read_text(encoding="utf-8")
+
+
+def test_the_shape_the_editor_holds_is_not_the_shape_the_api_accepts(client):
+    """``missing_files`` is server-reported output on the way out and a 422 on
+    the way back in, because PartyCharacter is extra="forbid". The roster
+    editor loads rows carrying it, so it MUST strip the field before saving —
+    otherwise every save from the browser fails and the player field can never
+    be persisted. Asserted here so a future round-trip test that hand-builds
+    its payload cannot hide it again."""
+    c, tmp = client
+    sheet = _touch(tmp, "docs/party/Soma.md")
+    listed = c.put("/api/party/characters",
+                   json=[{"name": "Soma", "sheet": sheet}]).json()
+    assert "missing_files" in listed[0]
+
+    echoed = c.put("/api/party/characters", json=listed)
+    assert echoed.status_code == 422
+
+    stripped = [{k: v for k, v in row.items() if k != "missing_files"}
+                for row in listed]
+    assert c.put("/api/party/characters", json=stripped).status_code == 200
+
+
+def test_a_roster_saved_without_player_does_not_grow_the_key(client):
+    """FR-008a: additive and optional."""
+    c, tmp = client
+    sheet = _touch(tmp, "docs/party/Soma.md")
+    c.put("/api/party/characters", json=[{"name": "Soma", "sheet": sheet}])
+    assert "player" not in (tmp / "config" / "party.yaml").read_text(encoding="utf-8")
+
+
 def test_old_party_yaml_route_is_gone(tmp_path):
     """GET/PUT /api/config/party-yaml took the target file as a browser-supplied
     parameter. It should not exist any more."""

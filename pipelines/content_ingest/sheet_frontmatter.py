@@ -43,7 +43,6 @@ unrecognised keys rather than dropping them): ``server/migrate_session_doc.py``.
 """
 
 import argparse
-import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -51,6 +50,14 @@ from pathlib import Path
 import yaml
 
 from campaignlib.party_md import PartyEntry, parse_party_md
+# The '## Identity' parser moved down to campaignlib for feature 008, which
+# reads the class & level off a sheet it is about to archive. Re-exported
+# here so this module's public surface is unchanged (D3).
+from campaignlib.sheet_identity import (  # noqa: F401
+    SheetParseError,
+    parse_identity_fields,
+    sheet_name,
+)
 from campaignlib.textproc import split_frontmatter
 from campaignlib.util import atomic_write_text
 
@@ -58,61 +65,6 @@ from campaignlib.util import atomic_write_text
 #: (issue #265, D1(b)), in emission order. subclass is always proposed
 #: empty by this importer — see module docstring.
 FRONTMATTER_KEYS: tuple[str, ...] = ("name", "player", "species", "class_level", "subclass")
-
-# The '## Identity' keys dnd_sheet.py's SYSTEM_PROMPT specifies (D1(a) added
-# Subclass). Anything else found in the block is reported as unrecognised,
-# never silently dropped.
-_KNOWN_IDENTITY_KEYS = {
-    "class & level", "subclass", "species", "background",
-    "player", "alignment", "age / gender / size",
-}
-
-_H1_RE = re.compile(r'^#\s+(.+?)\s*$', re.MULTILINE)
-_IDENTITY_HEADING_RE = re.compile(r'^##\s+Identity\s*$', re.MULTILINE)
-_NEXT_HEADING_RE = re.compile(r'^#{1,2}[^#]', re.MULTILINE)
-_FIELD_RE = re.compile(r'^-\s+\*\*([^*:]+):\*\*\s*(.*)$')
-
-
-class SheetParseError(Exception):
-    """No ``## Identity`` block found — clean refusal, no write."""
-
-
-def _find_identity_block(text: str) -> str:
-    m = _IDENTITY_HEADING_RE.search(text)
-    if not m:
-        raise SheetParseError("no '## Identity' section found")
-    rest = text[m.end():]
-    nxt = _NEXT_HEADING_RE.search(rest)
-    return rest[:nxt.start()] if nxt else rest
-
-
-def parse_identity_fields(text: str) -> tuple[dict[str, str], list[str]]:
-    """Parse the ``## Identity`` block into ``({lower_key: value}, [unrecognised keys])``.
-
-    Raises :class:`SheetParseError` when there is no ``## Identity`` heading
-    at all. Unrecognised keys are collected (original case preserved) rather
-    than dropped, per D5.
-    """
-    block = _find_identity_block(text)
-    fields: dict[str, str] = {}
-    unrecognised: list[str] = []
-    for line in block.splitlines():
-        m = _FIELD_RE.match(line.strip())
-        if not m:
-            continue
-        key = m.group(1).strip()
-        value = m.group(2).strip()
-        if key.lower() not in _KNOWN_IDENTITY_KEYS:
-            unrecognised.append(key)
-            continue
-        fields[key.lower()] = value
-    return fields, unrecognised
-
-
-def sheet_name(text: str) -> str | None:
-    """The character name from the sheet's first ``# `` (H1) heading."""
-    m = _H1_RE.search(text)
-    return m.group(1).strip() if m else None
 
 
 @dataclass

@@ -40,6 +40,7 @@ def _sse_response(cmd: list[str]) -> StreamingResponse:
 async def run_dnd_sheet(
     request: Request,
     pdfs: list[str] = Query(default=[]),
+    party_config: str = "",
     output: str = "",
     output_dir: str = "",
     model: str | None = None,
@@ -56,7 +57,16 @@ async def run_dnd_sheet(
         if pdf.strip():
             cmd.append(pdf.strip())
 
-    # --output for single PDF, --output-dir for multiple
+    # Feature 008: the roster names the sheet, archives the one it displaces,
+    # and supplies the player. The router only forwards the flag — attribution,
+    # naming, level reading and archival all live in the CLI (Constitution VI).
+    _cmd_opt(cmd, "--party-config", party_config.strip())
+
+    # --output for single PDF, --output-dir for multiple. Both are forwarded
+    # ONLY when the operator actually set one: an explicit output location
+    # suppresses roster naming and archival (FR-017), so synthesising a default
+    # here would make roster mode unreachable from the browser. The CLI's own
+    # --output-dir default (doc/) covers the legacy case.
     if len(pdfs) == 1 and output.strip():
         cmd += ["--output", output.strip()]
     elif output_dir.strip():

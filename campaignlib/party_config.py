@@ -81,12 +81,23 @@ class PartyCharacter(BaseModel):
     play that the static sheet and backstory don't carry. Which dossier belongs
     to which PC is a campaign-specific attribution decision, so it is always an
     explicit human-authored mapping, never inferred by name-matching.
+
+    ``player`` is who plays the character, and the roster is **authoritative**
+    for it (feature 008, FR-008) — the one field where the roster overrules the
+    character sheet. A D&D Beyond export stamps the *downloader's* name into
+    every sheet it produces, so the sheet is wrong about this for every
+    character, every time, by construction. It must hold the player's **Zoom
+    display name**: ``campaignlib.npc.normalize_vtt_speakers`` matches speaker
+    prefixes exactly, so a legal name where Zoom shows a nickname silently
+    drops that PC's lines from every downstream extraction. Optional — a roster
+    that records no player anywhere stays valid (FR-008a).
     """
 
     model_config = ConfigDict(extra="forbid")
 
     name: str
     sheet: Annotated[str, BeforeValidator(_as_authored)]
+    player: str | None = None
     backstory: AuthoredPath = None
     dossier: AuthoredPath = None
     arc_score: AuthoredPath = None
@@ -119,6 +130,7 @@ class ResolvedCharacter(BaseModel):
 
     name: str
     sheet: Path
+    player: str | None = None
     backstory: Path | None = None
     dossier: Path | None = None
     arc_score: Path | None = None
@@ -191,6 +203,7 @@ def load_party_config(path: Path) -> PartyConfig:
             PartyCharacter(
                 name=str(name),
                 sheet=str(sheet),
+                player=str(entry["player"]) if entry.get("player") else None,
                 backstory=str(entry["backstory"]) if entry.get("backstory") else None,
                 dossier=str(entry["dossier"]) if entry.get("dossier") else None,
                 arc_score=arc_score,
@@ -219,6 +232,8 @@ def save_party_config(path: Path, cfg: PartyConfig) -> None:
     entries: list[dict[str, Any]] = []
     for pc in cfg.characters:
         entry: dict[str, Any] = {"name": pc.name, "sheet": pc.sheet}
+        if pc.player:
+            entry["player"] = pc.player
         if pc.backstory:
             entry["backstory"] = pc.backstory
         if pc.dossier:
@@ -300,6 +315,8 @@ def resolve_party_config(
             ResolvedCharacter(
                 name=pc.name,
                 sheet=_resolve(pc.sheet, "sheet", pc.name),
+                # Not a path — copied through verbatim, like `trackless`.
+                player=pc.player,
                 backstory=_resolve(pc.backstory, "backstory", pc.name),
                 dossier=_resolve(pc.dossier, "dossier", pc.name),
                 arc_score=_resolve(pc.arc_score, "arc_score", pc.name),

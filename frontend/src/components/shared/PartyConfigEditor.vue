@@ -7,6 +7,12 @@ import PathField from './PathField.vue'
 interface PartyChar {
   name: string
   sheet: string
+  /**
+   * Who plays this character. The roster is authoritative for it (feature 008):
+   * a D&D Beyond export stamps the downloader's name into every sheet, so the
+   * sheet is wrong about this for everyone. Must be the ZOOM DISPLAY NAME.
+   */
+  player: string
   backstory: string
   dossier: string
   arc_score: string
@@ -57,6 +63,7 @@ function normalize(rows: PartyChar[]): PartyChar[] {
   return rows.map(c => ({
     name: c.name ?? '',
     sheet: c.sheet ?? '',
+    player: c.player ?? '',
     backstory: c.backstory ?? '',
     dossier: c.dossier ?? '',
     arc_score: c.arc_score ?? '',
@@ -87,9 +94,14 @@ async function save() {
   saving.value = true
   status.value = null
   try {
+    // `missing_files` is server-reported output, not an input field, and
+    // PartyCharacter is extra="forbid" — sending it back makes every save a
+    // 422. Strip it here rather than loosening the model: the strictness is
+    // what turns a typo'd key into an error instead of silent overflow.
+    const payload = characters.value.map(({ missing_files, ...row }) => row)
     // One atomic PUT of the whole roster, not delete-all-then-recreate: row
     // order is meaningful here and the file is never briefly empty.
-    const rows = await apiPut<PartyChar[]>('/api/party/characters', characters.value)
+    const rows = await apiPut<PartyChar[]>('/api/party/characters', payload)
     characters.value = normalize(rows)
     fileExists.value = true
     const missing = missingCount.value
@@ -106,7 +118,7 @@ async function save() {
 
 function addChar() {
   characters.value.push({
-    name: '', sheet: '', backstory: '', dossier: '', arc_score: '',
+    name: '', sheet: '', player: '', backstory: '', dossier: '', arc_score: '',
     trackless: false, missing_files: [],
   })
 }
@@ -175,6 +187,22 @@ watch(() => open.value, (o) => {
           </div>
 
           <div class="char-body">
+            <div class="field">
+              <label class="field-label">Player</label>
+              <input
+                type="text"
+                class="text-input"
+                v-model="c.player"
+                placeholder="Zoom display name (e.g. Wade)"
+              />
+              <p class="field-help">
+                Who plays this character. The roster wins over the sheet here — a D&amp;D
+                Beyond export stamps the <em>downloader's</em> name into every sheet it
+                produces. Use the player's <strong>Zoom display name</strong>, not their
+                legal name: speaker attribution matches transcript prefixes exactly, and
+                a near-miss silently drops this character's lines from every extraction.
+              </p>
+            </div>
             <PathField
               :model-value="c.sheet"
               @update:model-value="(v: string) => (c.sheet = v)"
@@ -291,6 +319,17 @@ watch(() => open.value, (o) => {
 
 .char-body { display: flex; flex-direction: column; gap: 8px; }
 .arc-row { display: flex; flex-direction: column; gap: 6px; }
+
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field-label { font-size: 11px; color: var(--text-sub); font-weight: 600; }
+.text-input {
+  padding: 6px 8px; border-radius: 4px;
+  border: 1px solid var(--bg-surface1); background: var(--bg-mantle);
+  color: var(--text); font-size: 12px;
+  outline: none; box-sizing: border-box;
+}
+.text-input:focus { border-color: var(--mauve); }
+.field-help { font-size: 10px; color: var(--text-muted); line-height: 1.5; }
 
 .checkbox-label {
   font-size: 11px; color: var(--text-sub);
