@@ -242,8 +242,9 @@ def build_steps(args) -> tuple[list[Step], list[str]]:
             if args.party_config:
                 grounding += ["--party-config",
                               str(Path(args.party_config).expanduser())]
-            if args.gm_player:
-                grounding += ["--gm-player", args.gm_player]
+            if args.players_config:
+                grounding += ["--players-config",
+                              str(Path(args.players_config).expanduser())]
             steps.append(Step(
                 "generate", "generate      ",
                 _console("scene_extract") + [
@@ -298,9 +299,13 @@ def build_parser() -> argparse.ArgumentParser:
                         "forwarded to scene_extract. Required alongside --party: "
                         "the player -> character map comes from each character's "
                         "sheet frontmatter (#265) and there is no party.md fallback.")
-    p.add_argument("--gm-player", metavar="NAME",
-                   help="GM's display name in the VTT, forwarded to scene_extract "
-                        "(--stage scenes).")
+    p.add_argument("--players-config", metavar="FILE",
+                   help="players.yaml (conventionally "
+                        "<campaign>/config/players.yaml), forwarded to "
+                        "scene_extract (--stage scenes). It carries every "
+                        "display name a recording has used for each player, "
+                        "the game master's included — which is why the old "
+                        "single-valued --gm-player is gone.")
     p.add_argument("--context", nargs="+", metavar="FILE",
                    help="Grounding docs for the consistency check. Omitted ⇒ "
                         "that step is skipped and the run says so.")

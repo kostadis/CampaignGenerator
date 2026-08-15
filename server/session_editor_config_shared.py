@@ -315,15 +315,6 @@ class VerifyKnobs(BaseModel):
     report_only: bool = False
 
 
-class Roster(BaseModel):
-    """Player/character-name mapping inputs."""
-
-    model_config = ConfigDict(extra="forbid")
-
-    characters: OptStr = None
-    gm_player: OptStr = None
-
-
 class Backends(BaseModel):
     """Per-backend memory (O1) + the active selector.
 
@@ -364,7 +355,6 @@ class SessionEditorConfig(BaseModel):
     narrate: NarrateKnobs = Field(default_factory=NarrateKnobs)
     scrub: ScrubKnobs = Field(default_factory=ScrubKnobs)
     verify: VerifyKnobs = Field(default_factory=VerifyKnobs)
-    roster: Roster = Field(default_factory=Roster)
     backends: Backends = Field(default_factory=Backends)
     session_name: OptStr = None
     profiles: list[ProfileEntry] = Field(default_factory=list)
@@ -393,8 +383,14 @@ TYPED_SESSION_DOC_TO_GROUPED: dict[str, tuple[str, ...]] = {
     "party": ("paths", "party"),
     "voice_dir": ("paths", "voice_dir"),
     "examples_dir": ("paths", "examples_dir"),
-    "characters": ("roster", "characters"),
-    "gm_player": ("roster", "gm_player"),
+    # ``characters`` and ``gm_player`` are deliberately absent (feature 009).
+    # They mapped into a ``roster`` group that no longer exists: the narrating
+    # cast is derived from ``party.yaml``, and who plays what — including the
+    # game master's display names — is recorded in ``players.yaml``. Same
+    # rationale as ``narration_genre`` and ``roleplay_dir`` below: reported as
+    # unrecognised (visible, left behind in the old ui_state.yaml) rather than
+    # migrated into a field that is gone. ``server/migrate_players_config.py``
+    # is what harvests them.
     "narrate_tokens": ("narrate", "tokens"),
     "prose_mode": ("narrate", "prose_mode"),
     "reflections": ("narrate", "reflections"),

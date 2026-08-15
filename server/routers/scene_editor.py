@@ -98,7 +98,6 @@ def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
         "paths": cfg.paths.model_dump(),
         "narrate": cfg.narrate.model_dump(),
         "scrub": cfg.scrub.model_dump(),
-        "roster": cfg.roster.model_dump(),
         "backends": cfg.backends.model_dump(by_alias=True),
         "session_name": cfg.session_name,
         "profiles": [p.model_dump() for p in cfg.profiles],
@@ -755,122 +754,90 @@ def _party_args(cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
     return ["--party", cfg.paths.party, "--party-config", str(party_config)]
 
 
-def _examples_args(cfg: ResolvedEditorConfig, plan_path: Path
-                   ) -> list[str] | tuple[None, str]:
-    """``--examples``/``--characters``, or ``(None, reason)`` (#301).
+def _roster_characters(cfg: ResolvedEditorConfig) -> str:
+    """The campaign's character names, comma-joined, for ``sd_plan``.
+
+    Derived from ``party.yaml`` rather than typed a second time into a
+    ``roster.characters`` string that nothing reconciled with it — both
+    campaigns that had one were stale against their own roster, which is how a
+    narrator ends up matching no example file.
+
+    Returns ``""`` when there is no usable roster, and the caller turns that
+    into a message. Unreadable has to be survivable: obelisk's ``party.yaml``
+    is a PC-name exclusion list rather than a roster and does not load at all.
+    """
+    from campaignlib.party_config import load_party_config
+
+    path = _party_config_path(cfg)
+    if path is None:
+        return ""
+    try:
+        loaded = load_party_config(path)
+    except ValueError:
+        return ""
+    return ", ".join(c.name for c in loaded.characters)
+
+
+def _players_args(cfg: ResolvedEditorConfig) -> list[str]:
+    """``--players-config``, or nothing.
+
+    The player entity is a declared file at one location — resolved the same
+    way ``_party_config_path`` resolves the roster, so a campaign that has
+    renamed its config directory is still honoured and the browser never
+    supplies a path.
+
+    Absent is legitimate for a campaign that has not been adopted yet. The CLI
+    then names every character nobody plays and refuses, which is the message
+    worth surfacing rather than one this router could improve on (FR-024).
+    """
+    from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
+
+    players_config = (
+        Path(cfg.campaign_dir) / cfg.config_dir / PLAYERS_CONFIG_FILENAME
+    )
+    if not players_config.is_file():
+        return []
+    return ["--players-config", str(players_config)]
+
+
+def _declaration_args(cfg: ResolvedEditorConfig, plan_path: Path
+                      ) -> list[str] | tuple[None, str]:
+    """``--voice-dir``/``--examples``, or ``(None, reason)``.
 
     Refused here rather than forwarded, for the reason ``_party_args``
-    refuses: the editor turns ``(None, reason)`` into readable text, where the
-    subprocess's stderr reaches the GM only as a failed run.
-
-    Two conditions:
-
-    - the declared directory does not exist (a typo, and a silent one —
-      ``_load_examples`` returns ``(None, {})`` for a missing path, which is
-      indistinguishable from "no examples configured");
-    - a per-character file is about to reach **every** narrator because the
-      roster does not name its character. That is the #301 bleed, and it is
-      keyed off the plan's narrators rather than the file names alone, so a
-      campaign whose examples are all house style — toee's
-      ``political_maneuvering.md`` and friends — is not refused for it.
-
-    A directory that exists but holds no examples is NOT refused: like
-    ``voice/``, ``examples/`` is created empty by ``new_workspace`` and
-    ``PlatformConfigService.derive`` fills ``examples_dir`` in from its mere
-    existence, so that state is the tool's doing rather than a GM's.
-    """
-    args: list[str] = []
-    if cfg.roster.characters:
-        args += ["--characters", cfg.roster.characters]
-    if not cfg.paths.examples_dir:
-        return args
-
-    examples_dir = Path(cfg.paths.examples_dir).expanduser()
-    if not examples_dir.is_dir():
-        return None, (
-            f"examples_dir {examples_dir} is not a directory. Pass 5 would "
-            f"render with no style examples. Fix the path in Session Config, "
-            f"or clear it to render without them."
-        )
-
-    if str(SCRIPT_DIR) not in sys.path:
-        sys.path.insert(0, str(SCRIPT_DIR))
-    from session_doc import parse_plan
-    from session_doc.examples import examples_routing_problems
-
-    characters = [c.strip() for c in (cfg.roster.characters or "").split(",") if c.strip()]
-    sections = parse_plan(plan_path.read_text(encoding="utf-8"), total_chunks=99)
-    problems = examples_routing_problems(
-        examples_dir, characters, [s["narrator"] for s in sections]
-    )
-    if problems:
-        # Every problem, not just the first: a GM with three mis-routed files
-        # would otherwise learn one name per failed run.
-        return None, (
-            " ".join(problems)
-            + f" Set Characters in Session Config to every narrating character "
-              f"(currently {cfg.roster.characters!r}), or rename the file(s) "
-              f"so they are not per-character."
-        )
-    return args + ["--examples", cfg.paths.examples_dir]
-def _voice_args(cfg: ResolvedEditorConfig, plan_path: Path,
-                scene_num: int) -> list[str] | tuple[None, str]:
-    """``--voice-dir`` for ``_build_narrate_cmd``, or ``(None, reason)`` (#300).
-
-    Refused here rather than forwarded, for the same reason ``_party_args``
     refuses: the editor turns ``(None, reason)`` into readable text, where the
     subprocess's stderr reaches the GM only as a failed run they have to open a
     terminal to read.
 
-    Two conditions, matching ``sd_narrate``'s:
+    **What is checked changed with feature 009.** A character's voice and
+    example files are now DECLARED in ``party.yaml`` and resolved by following
+    a path, so the two old failure modes are gone with the rule that produced
+    them: there is no "this name matched no file" and no "this file matched
+    nobody, so it went to everybody". What remains is a declared directory that
+    is not a directory — still a typo, still worth catching before a run — and
+    a declared file that is absent, which ``sd_narrate``'s own pre-flight names
+    per narrator before spending a token.
 
-    - the declared directory does not exist (a typo — see ``_load_voice_dir``);
-    - **this scene's narrator has no resolvable spec**, which is the likelier
-      real miss and the one worth a precise message. `toee`'s plans say
-      ``sequioa`` where the file is ``sequoia_voice.md``; without this check the
-      router forwards happily, the subprocess exits 1, and the GM gets an
-      opaque failed run in place of the sentence that names the typo.
-
-    A directory that exists but holds no per-character specs is deliberately
-    NOT refused: ``new_workspace`` creates ``voice/`` empty and ``derive``
-    fills ``voice_dir`` in from its mere existence, so that state is usually
-    the tool's doing rather than a GM declaration.
-
-    ``sd_narrate`` re-checks both independently — it is also driven from the
-    CLI, and a check that only exists in the router is a check the CLI lacks.
+    A directory that exists but is empty is NOT refused: ``new_workspace``
+    creates ``voice/`` and ``examples/`` empty and
+    ``PlatformConfigService.derive`` fills both settings in from their mere
+    existence, so that state is the tool's doing rather than a GM's.
     """
-    if not cfg.paths.voice_dir:
-        return []
-    voice_dir = Path(cfg.paths.voice_dir).expanduser()
-    if not voice_dir.is_dir():
-        return None, (
-            f"voice_dir {voice_dir} is not a directory. Pass 5 would render "
-            f"with no voice specs for any narrator. Fix the path in Session "
-            f"Config, or clear it to render without voice specs."
-        )
-
-    sys.path.insert(0, str(SCRIPT_DIR))
-    from session_doc import parse_plan
-    from session_doc.voice import load_voice_files, voice_resolution_problems
-
-    voices = load_voice_files(voice_dir)
-    if not voices:
-        # Nothing authored yet — render without specs, as before.
-        return ["--voice-dir", cfg.paths.voice_dir]
-
-    # Same scene->section indexing sd_narrate uses: plan order, 1-based.
-    sections = parse_plan(plan_path.read_text(encoding="utf-8"), total_chunks=99)
-    if not 1 <= scene_num <= len(sections):
-        return ["--voice-dir", cfg.paths.voice_dir]
-    narrator = sections[scene_num - 1]["narrator"]
-    problems = voice_resolution_problems(voices, [narrator])
-    if problems:
-        return None, (
-            f"{problems[0]} Available voice files: {sorted(voices)}. "
-            f"Fix the narrator's name in plan.md, add the file, or clear "
-            f"voice_dir to render without voice specs."
-        )
-    return ["--voice-dir", cfg.paths.voice_dir]
+    args: list[str] = []
+    for setting, flag, label in (
+        (cfg.paths.voice_dir, "--voice-dir", "voice_dir"),
+        (cfg.paths.examples_dir, "--examples", "examples_dir"),
+    ):
+        if not setting:
+            continue
+        directory = Path(setting).expanduser()
+        if not directory.is_dir():
+            return None, (
+                f"{label} {directory} is not a directory. Fix the path in "
+                f"Session Config, or clear it."
+            )
+        args += [flag, setting]
+    return args
 
 
 def _build_enhance_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
@@ -1083,11 +1050,11 @@ def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
     if isinstance(party_args, tuple):
         return party_args
     cmd += party_args
-    # GM player name lives in cfg.roster.gm_player, resolved per-request
-    # from the session editor config service — always the current value.
-    gm_player = (cfg.roster.gm_player or "").strip()
-    if gm_player:
-        cmd += ["--gm-player", gm_player]
+    # Who the speakers are comes from the player entity (feature 009), which
+    # carries EVERY display name a recording has used for each person, the game
+    # master's included. It replaced a single `roster.gm_player` string that
+    # could hold only one label and was typed separately from the roster.
+    cmd += _players_args(cfg)
     if force:
         cmd.append("--force")
     return cmd
@@ -1139,14 +1106,11 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
     if isinstance(party_args, tuple):
         return party_args
     cmd += party_args
-    voice_args = _voice_args(cfg, plan_path, scene_num)
-    if isinstance(voice_args, tuple):
-        return voice_args
-    cmd += voice_args
-    examples_args = _examples_args(cfg, plan_path)
-    if isinstance(examples_args, tuple):
-        return examples_args
-    cmd += examples_args
+    cmd += _players_args(cfg)
+    declaration_args = _declaration_args(cfg, plan_path)
+    if isinstance(declaration_args, tuple):
+        return declaration_args
+    cmd += declaration_args
     if cfg.narrate.tokens:
         cmd += ["--narrate-tokens", str(cfg.narrate.tokens)]
     if cfg.narrate.prose_mode:
@@ -1648,9 +1612,16 @@ def _build_plan_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[Non
         return None, "narration_dir not configured"
     nd.mkdir(parents=True, exist_ok=True)
 
-    characters = cfg.roster.characters
+    # The narrating cast is the campaign roster (feature 009). It used to be a
+    # second, hand-typed `roster.characters` string that nothing reconciled
+    # with party.yaml — and both campaigns that had one were stale against
+    # their own roster, which is how a narrator ends up with no examples.
+    characters = _roster_characters(cfg)
     if not characters:
-        return None, "characters not configured (sd_plan needs --characters)"
+        return None, (
+            "no characters in party.yaml — add the campaign's roster on the "
+            "Party Document page (sd_plan needs --characters)"
+        )
 
     cmd = [
         console_script("sd_plan"),

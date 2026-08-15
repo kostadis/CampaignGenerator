@@ -12,8 +12,6 @@ const sessionDir = ref('')
 
 // ── Derived / overridable fields ──
 const sdSession = ref('')
-const characters = ref('')
-const gmPlayer = ref('')
 const voiceDir = ref('')
 const examplesDir = ref('')
 const summaries = ref('')
@@ -38,8 +36,6 @@ function loadFromConfig() {
   campaignDir.value = r.campaign_dir || v.campaign_dir || ''
   sessionDir.value = r.runtime?.session_dir || v.session_dir || ''
   sdSession.value = ec?.paths?.session_recap || ''
-  characters.value = ec?.roster?.characters || ''
-  gmPlayer.value = ec?.roster?.gm_player || ''
   voiceDir.value = ec?.paths?.voice_dir || ''
   examplesDir.value = ec?.paths?.examples_dir || ''
   sessionSummaryPath.value = ec?.paths?.session_summary || 'session-summary.md'
@@ -73,10 +69,6 @@ async function persistTypedSections() {
         party: partyPath.value || null,
         voice_dir: voiceDir.value || null,
         examples_dir: examplesDir.value || null,
-      },
-      roster: {
-        characters: characters.value || null,
-        gm_player: gmPlayer.value || null,
       },
     }),
     // The shared canonical-timeline pointer now lives at grounding.yaml's
@@ -244,30 +236,12 @@ onMounted(async () => {
 
       <!-- Shared config -->
       <div class="form-section">
-        <div class="field">
-          <label class="field-label">Characters</label>
-          <input
-            type="text"
-            class="field-input"
-            v-model="characters"
-            placeholder='Zalthir, Grygum, Daz, Thorin'
-          />
-          <div class="field-help">Comma-separated narrator roster</div>
-        </div>
-        <div class="field">
-          <label class="field-label">GM player display name</label>
-          <input
-            type="text"
-            class="field-input"
-            v-model="gmPlayer"
-            placeholder='Kostadis'
-          />
-          <div class="field-help">
-            The name the GM appears under in Zoom captions. Stage 2 (scene extraction) rewrites
-            this player's lines to <code>GM:</code> before the LLM sees the transcript so player
-            names never leak into scaffolds. Player → character mappings come from
-            <code>party.md</code>.
-          </div>
+        <div class="field-help">
+          The narrating cast comes from <code>party.yaml</code>, and who plays each
+          character — including the labels the recording uses for them and for the
+          GM — is configured on the
+          <router-link to="/setup/players">Players</router-link> page. Both used to
+          be typed here a second time, and both were stale against their own roster.
         </div>
       </div>
 

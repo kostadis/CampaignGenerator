@@ -15,7 +15,8 @@ from pathlib import Path
 from fastapi import APIRouter, Query, Request
 from fastapi.responses import StreamingResponse
 
-from server.platform_config_service import resolve_selection, selection_cli_args
+from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
+from server.platform_config_service import resolve_selection, selection_cli_args, require_platform
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
@@ -57,10 +58,19 @@ async def run_dnd_sheet(
         if pdf.strip():
             cmd.append(pdf.strip())
 
-    # Feature 008: the roster names the sheet, archives the one it displaces,
-    # and supplies the player. The router only forwards the flag — attribution,
-    # naming, level reading and archival all live in the CLI (Constitution VI).
+    # Feature 008: the roster names the sheet and archives the one it
+    # displaces. Feature 009: who plays the character comes from the player
+    # entity, so that is a second flag rather than a second field in the
+    # roster. The router only forwards them — attribution, naming, level
+    # reading and archival all live in the CLI (Constitution VI).
     _cmd_opt(cmd, "--party-config", party_config.strip())
+    # Derived, not taken from the browser: players.yaml has ONE declared
+    # location. Omitted when it is not there — the CLI then empties the
+    # sheet's Player line rather than carrying the downloader's name forward,
+    # and says so.
+    players_config = require_platform(request).config_path_base / PLAYERS_CONFIG_FILENAME
+    if players_config.is_file():
+        cmd += ["--players-config", str(players_config)]
 
     # --output for single PDF, --output-dir for multiple. Both are forwarded
     # ONLY when the operator actually set one: an explicit output location

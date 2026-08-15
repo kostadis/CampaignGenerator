@@ -57,13 +57,24 @@ from .npc import (
     load_alias_map,
     find_alias_registry,
     extract_player_character_map,
-    player_map_from_config,
     normalize_vtt_speakers,
     format_npc_roster,
 )
 from .party import (
     load_party_names,
     load_pc_names,
+)
+from .players_config import (
+    GM_LABEL,
+    PLAYERS_CONFIG_FILENAME,
+    Player,
+    PlayersConfig,
+    load_players_config,
+    load_players_config_arg,
+    player_name_for,
+    save_players_config,
+    speaker_map,
+    speaker_map_from_configs,
 )
 from .registry import (
     find_registry,
@@ -169,12 +180,22 @@ __all__ = [
     "load_alias_map",
     "find_alias_registry",
     "extract_player_character_map",
-    "player_map_from_config",
     "normalize_vtt_speakers",
     "format_npc_roster",
     # party / PC names
     "load_party_names",
     "load_pc_names",
+    # player entity (feature 009) — the one place player identity is authored
+    "GM_LABEL",
+    "PLAYERS_CONFIG_FILENAME",
+    "Player",
+    "PlayersConfig",
+    "load_players_config",
+    "load_players_config_arg",
+    "player_name_for",
+    "save_players_config",
+    "speaker_map",
+    "speaker_map_from_configs",
     # entity registry
     "find_registry",
     "load_registry",

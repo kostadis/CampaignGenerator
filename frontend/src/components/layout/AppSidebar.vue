@@ -95,6 +95,7 @@ const navGroups: NavGroup[] = [
   {
     title: 'SETUP',
     items: [
+      { label: 'Players', path: '/setup/players' },
       { label: 'D&D Sheet', path: '/setup/dnd-sheet' },
       { label: 'Make Tracking', path: '/setup/make-tracking' },
     ],

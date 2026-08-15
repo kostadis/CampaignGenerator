@@ -277,16 +277,33 @@ def test_read_doc_section_unknown_index_raises():
         tool_read_doc_section({"section_index": 99}, ctx)
 
 
-# ── read_voice_file (#247 — same resolver as session_doc.voice.get_voice_note,
-#    but must not warn: this tool can be called on every model turn) ──────────
+# ── read_voice_file — exact match on the character name, against the files the
+#    roster DECLARES (feature 009). Must not warn: this tool can be called on
+#    every model turn. ─────────────────────────────────────────────────────────
 
-def test_tool_read_voice_file_resolves_new_pipeline_filename(capsys):
+def test_tool_read_voice_file_resolves_a_declared_voice(capsys):
+    """The map is keyed by CHARACTER NAME now, not by filename stem, because
+    the roster names the file. Phandalin's real file is
+    `brewbarry_new_pipeline.md`; under the rule this replaced, the filename's
+    shape was load-bearing and a rename broke it silently."""
     doc = WorkingDoc.parse(SAMPLE_DOC)
-    ctx = make_ctx(doc, voices={"brewbarry_new_pipeline": "Blustery halfling voice."})
+    ctx = make_ctx(doc, voices={"brewbarry": "Blustery halfling voice."})
 
     result = tool_read_voice_file({"character": "Brewbarry"}, ctx)
 
     assert result == {"character": "Brewbarry", "text": "Blustery halfling voice."}
+    assert capsys.readouterr().err == ""
+
+
+def test_tool_read_voice_file_does_not_match_on_a_prefix(capsys):
+    """`Brewbarry` must not resolve to a file declared for somebody else just
+    because the names start alike (FR-025)."""
+    doc = WorkingDoc.parse(SAMPLE_DOC)
+    ctx = make_ctx(doc, voices={"brewbarry the bold": "Someone else."})
+
+    result = tool_read_voice_file({"character": "Brewbarry"}, ctx)
+
+    assert "error" in result
     assert capsys.readouterr().err == ""
 
 
@@ -299,8 +316,8 @@ def test_tool_read_voice_file_missing_returns_error_dict_not_raise(capsys):
     assert "error" in result
     assert "Brewbarry" in result["error"]
     assert "vukradin" in result["error"]
-    # No stderr spam on a routine tool-call miss — the warning lives in
-    # get_voice_note only (session_doc.voice._resolve_voice_key does not print).
+    # No stderr spam on a routine tool-call miss. The miss that matters is
+    # reported once, by the pre-flight, before any tokens are spent.
     assert capsys.readouterr().err == ""
 
 

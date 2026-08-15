@@ -72,7 +72,16 @@ class TestBuildGroupedConfig:
         # field EditorPaths no longer declares.
         assert not hasattr(cfg.paths, "roleplay_extractions_dir")
         assert "roleplay" not in cfg.model_dump_json()
-        assert cfg.roster.characters == "Zalthir, Grygum"
+        # `characters` and `gm_player` are still in OLD_UI_STATE above but were
+        # dropped from TYPED_SESSION_DOC_TO_GROUPED by feature 009: the whole
+        # `roster` group is gone. The narrating cast is derived from party.yaml
+        # and who plays what lives in players.yaml, so this migration has no
+        # destination to write them to. Same treatment as `roleplay_dir` and
+        # `narration_genre` — reported as unrecognised and left behind, rather
+        # than written into a field that no longer exists.
+        # `server/migrate_players_config.py` is what harvests them.
+        assert not hasattr(cfg, "roster")
+        assert "Grygum" not in cfg.model_dump_json()
         assert cfg.narrate.tokens == 12000
         assert cfg.narrate.prose_mode is True
         # `narration_genre` is still in OLD_UI_STATE above but was dropped from

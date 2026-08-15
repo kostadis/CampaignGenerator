@@ -899,6 +899,13 @@ def test_extract_player_character_map_oota_heading_embedded():
 
 def _pmfc_write_sheet(tmp_path, filename, *, name, player, species="Elf",
                        class_level="Wizard 7"):
+    """A sheet whose `player:` line says ``player``.
+
+    Feature 009 stopped reading that line — it is a rendered copy this pipeline
+    writes, and reading a copy back makes it an authority (FR-023). The
+    fixtures keep writing it precisely so the tests below can prove it is
+    ignored.
+    """
     from campaignlib.party_config import ResolvedCharacter
     path = tmp_path / filename
     path.write_text(
@@ -915,43 +922,75 @@ def _pmfc_write_sheet(tmp_path, filename, *, name, player, species="Elf",
     return ResolvedCharacter(name=name, sheet=path)
 
 
-def test_player_map_from_config_basic(tmp_path):
+def _pmfc_players(*pairs):
+    from campaignlib.players_config import Player, PlayersConfig
+    return PlayersConfig(players=[
+        Player(id=person.split()[0].lower(), name=person,
+               display_names=[person], plays=[character])
+        for person, character in pairs
+    ])
+
+
+def test_speaker_map_from_configs_basic(tmp_path):
     from campaignlib.party_config import ResolvedPartyConfig
+    from campaignlib.players_config import speaker_map_from_configs
     daz = _pmfc_write_sheet(tmp_path, "daz.md", name="Daz", player="Mike Hall")
     thorin = _pmfc_write_sheet(tmp_path, "thorin.md", name="Thorin", player="Joe Beda")
     cfg = ResolvedPartyConfig(characters=[daz, thorin])
-    m = campaignlib.player_map_from_config(cfg)
-    # Same key/value direction as extract_player_character_map: {player: character}.
+    m = speaker_map_from_configs(
+        _pmfc_players(("Mike Hall", "Daz"), ("Joe Beda", "Thorin")), cfg
+    )
+    # display name -> the label the transcript line becomes.
     assert m["Mike Hall"] == "Daz"
     assert m["Joe Beda"] == "Thorin"
 
 
-def test_player_map_from_config_all_or_nothing_none_when_one_lacks_frontmatter(tmp_path, capsys):
-    from campaignlib.party_config import ResolvedCharacter, ResolvedPartyConfig
+def test_speaker_map_ignores_the_sheets_player_line(tmp_path):
+    """The sheet says one person, the entity says another. The entity wins,
+    and the sheet's line is never consulted."""
+    from campaignlib.party_config import ResolvedPartyConfig
+    from campaignlib.players_config import speaker_map_from_configs
+    daz = _pmfc_write_sheet(tmp_path, "daz.md", name="Daz", player="kostadis1")
+    cfg = ResolvedPartyConfig(characters=[daz])
+    m = speaker_map_from_configs(_pmfc_players(("Mike Hall", "Daz")), cfg)
+    assert m == {"Mike Hall": "Daz"}
+
+
+def test_speaker_map_refuses_when_a_character_has_no_player(tmp_path, capsys):
+    """FR-024. A partial map would leave that character's lines carrying a raw
+    transcript label, which is the silent half of the failure feature 009
+    removes — so the run does not start."""
+    from campaignlib.party_config import ResolvedPartyConfig
+    from campaignlib.players_config import speaker_map_from_configs
     daz = _pmfc_write_sheet(tmp_path, "daz.md", name="Daz", player="Mike Hall")
-    # Thorin's sheet predates #265 — no frontmatter at all.
-    thorin_path = tmp_path / "thorin.md"
-    thorin_path.write_text("# Thorin\n\n## Identity\n- **Player:** Joe Beda\n", encoding="utf-8")
-    thorin = ResolvedCharacter(name="Thorin", sheet=thorin_path)
+    thorin = _pmfc_write_sheet(tmp_path, "thorin.md", name="Thorin", player="Joe Beda")
     cfg = ResolvedPartyConfig(characters=[daz, thorin])
-    assert campaignlib.player_map_from_config(cfg) is None
+    assert speaker_map_from_configs(_pmfc_players(("Mike Hall", "Daz")), cfg) is None
     err = capsys.readouterr().err
     assert "Thorin" in err
-    assert "frontmatter" in err
+    # Every unbound character, not just the first.
+    assert "Daz" not in err.split("no player bound")[1].split("->")[0]
 
 
-def test_player_map_from_config_empty_player_is_not_a_failure(tmp_path):
-    """A legitimately empty/placeholder Player field on one sheet must not
-    fail the whole all-or-nothing check — only missing/unusable frontmatter
-    does. Mirrors extract_player_character_map's placeholder handling."""
+def test_speaker_map_empty_is_not_a_failure(tmp_path):
+    """Hillsfar's state: every character is bound, nobody has a display name.
+    Nothing to rewrite is a real configuration, distinct from a broken one."""
     from campaignlib.party_config import ResolvedPartyConfig
-    boney = _pmfc_write_sheet(tmp_path, "boney.md", name="Boney", player="")
-    daz = _pmfc_write_sheet(tmp_path, "daz.md", name="Daz", player="Mike Hall")
-    cfg = ResolvedPartyConfig(characters=[boney, daz])
-    m = campaignlib.player_map_from_config(cfg)
-    assert m is not None
-    # First-name alias (see _apply_first_name_aliases) also applies here.
-    assert m == {"Mike Hall": "Daz", "Mike": "Daz"}
+    from campaignlib.players_config import (
+        Player, PlayersConfig, speaker_map_from_configs,
+    )
+    daz = _pmfc_write_sheet(tmp_path, "daz.md", name="Daz", player="")
+    cfg = ResolvedPartyConfig(characters=[daz])
+    players = PlayersConfig(players=[Player(id="mike", name="Mike", plays=["Daz"])])
+    assert speaker_map_from_configs(players, cfg) == {}
+
+
+def test_speaker_map_none_players_is_a_refusal(tmp_path):
+    from campaignlib.party_config import ResolvedPartyConfig
+    from campaignlib.players_config import speaker_map_from_configs
+    daz = _pmfc_write_sheet(tmp_path, "daz.md", name="Daz", player="Mike")
+    cfg = ResolvedPartyConfig(characters=[daz])
+    assert speaker_map_from_configs(None, cfg) is None
 
 
 # ── campaignlib.normalize_vtt_speakers ─────────────────────────────────────
@@ -960,18 +999,18 @@ def test_player_map_from_config_empty_player_is_not_a_failure(tmp_path):
 def test_normalize_vtt_speakers_rewrites_player_to_character():
     import campaignlib
     vtt = "Mike Hall: We can put her in the bag of holding.\nThorin: Let's roll.\n"
-    out = campaignlib.normalize_vtt_speakers(
-        vtt, player_map={"Mike Hall": "Daz"}
-    )
+    out = campaignlib.normalize_vtt_speakers(vtt, {"Mike Hall": "Daz"})
     assert out.startswith("Daz: We can put her")
     # Existing character-named line is untouched
     assert "Thorin: Let's roll." in out
 
 
-def test_normalize_vtt_speakers_rewrites_gm_player_to_GM():
+def test_normalize_vtt_speakers_rewrites_the_gm_to_GM():
+    """The GM label arrives in the map like any other, built from the entity's
+    `gm` flag rather than from a separate --gm-player string."""
     import campaignlib
     vtt = "Kostadis: The cave grows colder.\nDaz: I draw my axe.\n"
-    out = campaignlib.normalize_vtt_speakers(vtt, gm_player="Kostadis")
+    out = campaignlib.normalize_vtt_speakers(vtt, {"Kostadis": "GM"})
     assert out.startswith("GM: The cave grows colder.")
     assert "Daz: I draw my axe." in out
 
@@ -981,7 +1020,7 @@ def test_normalize_vtt_speakers_longer_names_match_first():
     import campaignlib
     vtt = "Mike Hall: stealth.\nMike: perception.\n"
     out = campaignlib.normalize_vtt_speakers(
-        vtt, player_map={"Mike": "Bob", "Mike Hall": "Daz"}
+        vtt, {"Mike": "Bob", "Mike Hall": "Daz"}
     )
     lines = out.splitlines()
     assert lines[0] == "Daz: stealth."
@@ -992,9 +1031,7 @@ def test_normalize_vtt_speakers_only_label_not_body():
     """Player names appearing inside the dialogue body are NOT rewritten."""
     import campaignlib
     vtt = 'Mike Hall: I tell Mike Hall I love him.\n'
-    out = campaignlib.normalize_vtt_speakers(
-        vtt, player_map={"Mike Hall": "Daz"}
-    )
+    out = campaignlib.normalize_vtt_speakers(vtt, {"Mike Hall": "Daz"})
     assert out == "Daz: I tell Mike Hall I love him."
 
 
@@ -1026,9 +1063,19 @@ def test_get_voice_note_found():
     assert session_doc.get_voice_note(voices, "Vukradin") == "Gruff."
 
 
-def test_get_voice_note_first_name():
+def test_get_voice_note_does_not_match_on_a_first_name():
+    """The rule feature 009 deleted. ``Soma the Tortle`` resolving to ``soma``
+    is a similarity-based identity assertion — the same reasoning that made a
+    renamed ``Grygum`` resolve to nothing and say so to nobody. A character's
+    voice file is named by its roster entry; if the plan and the roster
+    disagree about the name, that disagreement is the finding."""
     voices = {"soma": "Gentle."}
-    assert session_doc.get_voice_note(voices, "Soma the Tortle") == "Gentle."
+    assert session_doc.get_voice_note(voices, "Soma the Tortle") is None
+
+
+def test_get_voice_note_is_whitespace_and_case_insensitive():
+    voices = {"soma": "Gentle."}
+    assert session_doc.get_voice_note(voices, "  SOMA ") == "Gentle."
 
 
 def test_get_voice_note_missing():
@@ -1175,11 +1222,13 @@ def test_build_narrate_prompt_includes_roster():
 
 
 
-def test_player_map_from_config_rejects_a_roster_of_nobody(tmp_path, capsys):
-    """Distinct from the legitimate empty map (every `player` a placeholder):
-    there, sheets were read and had nothing to give. Here nothing was read at
-    all, so {} would report a broken config as "nobody to attribute"."""
+def test_speaker_map_for_a_roster_of_nobody_is_empty_not_a_refusal():
+    """A roster with no characters has nobody to leave unbound, so there is
+    nothing for the speaker map to refuse. The empty-roster refusal belongs to
+    ``roster_from_config``, which is what renders the "never contradict these"
+    block — see tests/test_roster.py."""
     from campaignlib.party_config import ResolvedPartyConfig
-    from campaignlib.npc import player_map_from_config
-    assert player_map_from_config(ResolvedPartyConfig(characters=[])) is None
-    assert "lists no characters at all" in capsys.readouterr().err
+    from campaignlib.players_config import PlayersConfig, speaker_map_from_configs
+    assert speaker_map_from_configs(
+        PlayersConfig(), ResolvedPartyConfig(characters=[])
+    ) == {}

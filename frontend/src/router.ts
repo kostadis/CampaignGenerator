@@ -127,7 +127,12 @@ const routes = [
     path: '/setup',
     component: () => import('./views/SetupTools.vue'),
     children: [
-      { path: '', redirect: '/setup/dnd-sheet' },
+      { path: '', redirect: '/setup/players' },
+      {
+        path: 'players',
+        name: 'players',
+        component: () => import('./views/setup/Players.vue'),
+      },
       {
         path: 'dnd-sheet',
         name: 'dnd-sheet',

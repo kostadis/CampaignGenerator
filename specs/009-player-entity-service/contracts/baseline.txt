@@ -1,0 +1,52 @@
+==============================================================================
+A. party.yaml loadability + player fields
+==============================================================================
+Phandalin            4 chars, 4 with player: ['Brewbarry', 'Valphine Sotorra', 'Soma', 'Vukradin']
+obelisk              LOAD FAILS: character entry in /home/kroussos/src/campaigns/obelisk/config/party.yaml missing 'name' or 'sheet': {'name': 'Zenvon Forepot'}
+out-of-the-abyss     4 chars, 4 with player: ['Zalthir', 'Thorin Giantfriend', 'Gyrgum', 'Daz']
+stormgiants          3 chars, 0 with player: []
+toee                 4 chars, 0 with player: []
+Hillsfar             4 chars, 0 with player: []
+
+==============================================================================
+B. examples routing today (roster from session_doc.yaml or party.yaml)
+==============================================================================
+Phandalin            files=['brewbarry.md', 'soma.md', 'valphine.md', 'vukradin.md']
+                     global block = 0 chars -> reaches EVERY narrator
+                     narrators with NO per-char examples: none
+                     detector: [] (silent)
+out-of-the-abyss     files=['daz.md', 'gyrgum.md', 'thorin.md', 'zalthir.md']
+                     global block = 0 chars -> reaches EVERY narrator
+                     narrators with NO per-char examples: none
+                     detector: [] (silent)
+obelisk              files=['house_style.md', 'zenvon.md']
+                     global block = 6036 chars -> reaches EVERY narrator
+                     narrators with NO per-char examples: none
+                     detector: [] (silent)
+stormgiants          files=['orsik.md', 'thistl.md', 'unla.md', 'vardis.md']
+                     global block = 7285 chars -> reaches EVERY narrator
+                     narrators with NO per-char examples: ['Thistle']
+                     detector: [] (silent)
+toee                 files=['combat_and_consequences.md', 'ensemble_comedy_and_npcs.md', 'introspection_and_observation.md', 'multi_pov_and_pacing.md', 'political_maneuvering.md', 'stakeout_and_interrogation.md']
+                     global block = 51073 chars -> reaches EVERY narrator
+                     narrators with NO per-char examples: ['Zinnia', 'Zephyr', 'Sequoia', 'Calmer']
+                     detector: [] (silent)
+
+==============================================================================
+C. voice resolution today
+==============================================================================
+Phandalin            keys=['brewbarry_new_pipeline', 'soma_new_pipeline', 'valphine_new_pipeline', 'vukradin_new_pipeline']
+                     resolved: {'Brewbarry': 'brewbarry_new_pipeline', 'Soma': 'soma_new_pipeline', 'Valphine': 'valphine_new_pipeline', 'Vukradin': 'vukradin_new_pipeline'}
+                     voice files no PC narrator uses: none
+out-of-the-abyss     keys=['daz', 'gyrgum', 'thorin', 'vizeran', 'zalthir']
+                     resolved: {'Zalthir': 'zalthir', 'Gyrgum': 'gyrgum', 'Thorin': 'thorin', 'Daz': 'daz'}
+                     voice files no PC narrator uses: ['vizeran']
+obelisk              keys=['maela', 'pip', 'veyra', 'zenvon']
+                     resolved: {'Zenvon': 'zenvon'}
+                     voice files no PC narrator uses: ['maela', 'pip', 'veyra']
+stormgiants          keys=['orsik', 'thistle', 'unla_key', 'vardis']
+                     resolved: {'Orsik': 'orsik', 'Thistle': 'thistle', 'Unla Kee': 'unla_key', 'Vardis': 'vardis'}
+                     voice files no PC narrator uses: none
+toee                 keys=['calmer', 'sequoia', 'zephyr', 'zinnia']
+                     resolved: {'Zinnia': 'zinnia', 'Zephyr': 'zephyr', 'Sequoia': 'sequoia', 'Calmer': 'calmer'}
+                     voice files no PC narrator uses: none

@@ -90,7 +90,7 @@ class TestGetEditorConfig:
         assert resp.status_code == 200
         body = resp.json()
         assert set(body.keys()) == {
-            "paths", "narrate", "scrub", "roster", "backends",
+            "paths", "narrate", "scrub", "backends",
             "session_name", "profiles", "active_profile", "model",
             "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
             "genre",
@@ -226,7 +226,7 @@ class TestPutGroupedBody:
             "/api/editor/config",
             json={
                 "scrub": {"enabled": True},
-                "roster": {"characters": "Zalthir, Grygum"},
+                "narrate": {"tokens": 12345},
             },
         )
         assert resp.status_code == 200
@@ -234,7 +234,7 @@ class TestPutGroupedBody:
 
         editor_cfg = client.get("/api/editor/config").json()
         assert editor_cfg["scrub"]["enabled"] is True
-        assert editor_cfg["roster"]["characters"] == "Zalthir, Grygum"
+        assert editor_cfg["narrate"]["tokens"] == 12345
 
 
 class TestSectionDoorNoLongerHandlesSessionDoc:

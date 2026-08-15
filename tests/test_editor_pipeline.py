@@ -18,7 +18,6 @@ from server.session_editor_config_shared import (  # noqa: E402
     Backends,
     EditorPaths,
     NarrateKnobs,
-    Roster,
     ScrubKnobs,
 )
 
@@ -30,9 +29,10 @@ def _cfg(*, vtt: str | None = None, work_dir: str = "", campaign_dir: str = "",
     docs/config/session-editor-isolation.md. `path_overrides` are EditorPaths
     fields (session_recap, session_summary, scene_extractions_dir, ...).
 
-    ``characters`` is lifted out of ``path_overrides`` because it belongs to
-    ``Roster``, not ``EditorPaths`` — it is the one non-path input Pass 5's
-    style routing depends on (#301), so the argv tests below need to set it.
+    ``characters`` is accepted and ignored: feature 009 deleted the ``roster``
+    group, and the narrating cast is now derived from ``party.yaml``. The
+    parameter survives so the call sites below read unchanged; assertions about
+    ``--characters`` live in the party-roster tests instead.
 
     ``campaign_dir`` defaults to "" so ``_party_config_path`` looks for
     ``config/party.yaml`` relative to the cwd — which the repo does not have,
@@ -41,7 +41,6 @@ def _cfg(*, vtt: str | None = None, work_dir: str = "", campaign_dir: str = "",
         paths=EditorPaths(**path_overrides),
         narrate=NarrateKnobs(),
         scrub=ScrubKnobs(),
-        roster=Roster(characters=characters),
         backends=Backends(),
         session_name=None,
         profiles=[],
@@ -237,30 +236,23 @@ def test_narrate_cmd_omits_the_genre_flag_when_unset(tmp_path):
     assert "--narration-genre-file" not in cmd
 
 
-def test_narrate_cmd_forwards_voice_examples_and_characters(tmp_path):
-    """The other three style inputs travel the same `if value:` loop.
-
-    `--characters` is not decoration: it is the routing key `_load_examples`
-    uses to decide whether an examples file is per-character or global, so
-    losing it silently homogenises every narrator's prompt (#301).
-    """
+def test_narrate_cmd_forwards_the_two_style_directories(tmp_path):
+    """Both directories still travel, for one job: reporting files nothing
+    declares. A character's own voice and example files are named by its
+    party.yaml entry now, so `--characters` is gone — it was the routing key
+    for a rule that no longer exists (feature 009)."""
     voice = tmp_path / "voice"
     voice.mkdir()
     examples = tmp_path / "examples"
     examples.mkdir()
-    cfg = _narrate_cfg(
-        tmp_path,
-        voice_dir=str(voice),
-        examples_dir=str(examples),
-        characters="Vukradin, Soma",
-    )
+    cfg = _narrate_cfg(tmp_path, voice_dir=str(voice), examples_dir=str(examples))
 
     cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
 
     assert isinstance(cmd, list), cmd
     assert cmd[cmd.index("--voice-dir") + 1] == str(voice)
     assert cmd[cmd.index("--examples") + 1] == str(examples)
-    assert cmd[cmd.index("--characters") + 1] == "Vukradin, Soma"
+    assert "--characters" not in cmd
 
 
 def test_narrate_cmd_omits_style_flags_when_unset(tmp_path):
@@ -672,30 +664,29 @@ def test_narrate_does_not_refuse_a_voice_dir_with_no_specs_yet(tmp_path):
     assert cmd[cmd.index("--voice-dir") + 1] == str(vd)
 
 
-def test_narrate_refuses_when_this_scenes_narrator_has_no_spec(tmp_path):
-    """The likelier real miss, and the one the router can describe precisely.
+def test_a_narrator_without_a_spec_is_no_longer_the_routers_refusal(tmp_path):
+    """This refusal existed because the router could describe the miss better
+    than the subprocess could: the live `sequioa`/`sequoia_voice.md` case in
+    toee produced an opaque failed run rather than a sentence naming the typo.
 
-    Without this the router forwards happily, the subprocess exits 1, and the
-    GM gets an opaque failed run instead of a sentence naming the typo — which
-    is the live `sequioa`/`sequoia_voice.md` case in toee.
+    Feature 009 moved the question. A narrator's spec is DECLARED by its roster
+    entry, and `sd_narrate`'s pre-flight names the character and the path
+    before spending a token — a better message than this one, and one the CLI
+    has too. Duplicating it here would mean reading party.yaml twice and
+    keeping two wordings in step.
     """
     vd = tmp_path / "voice"
     vd.mkdir()
-    # Scene 1's narrator in the seeded plan is Soma; only Brewbarry has a spec.
     (vd / "brewbarry_new_pipeline.md").write_text("spec\n", encoding="utf-8")
     cfg = _voice_cfg(tmp_path, voice_dir=str(vd), keep_plan=True)
 
-    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
 
-    assert isinstance(result, tuple) and result[0] is None
-    assert "Soma" in result[1]
-    assert "no voice file" in result[1]
-    assert "brewbarry_new_pipeline" in result[1]
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--voice-dir") + 1] == str(vd)
 
 
 def test_narrate_allows_a_scene_whose_own_narrator_resolves(tmp_path):
-    """Scene 2's narrator is Brewbarry, who does have a spec — the refusal is
-    per-scene, matching the per-scene run the editor actually launches."""
     vd = tmp_path / "voice"
     vd.mkdir()
     (vd / "brewbarry_new_pipeline.md").write_text("spec\n", encoding="utf-8")
@@ -730,29 +721,30 @@ def test_no_voice_dir_configured_is_not_a_refusal(tmp_path):
     assert "--voice-dir" not in cmd
 
 
-# ── #301: the examples bleed is refused at the router too ───────────────────
+# ── The router validates the declared directories; the bleed is structural ──
+#
+# The refusals this block used to hold — "a per-character file would reach
+# every narrator", "the roster is incomplete" — described the fall-through
+# feature 009 deleted. There is no longer a way for an undeclared file to reach
+# a prompt, so there is nothing for the router to refuse on those grounds. What
+# remains is the typo: a declared directory that is not a directory.
 
 
 def _ex_cfg(tmp_path: Path, characters: str | None = None,
             **overrides) -> ResolvedEditorConfig:
     """Narrate preconditions satisfied, keeping the seeded Soma/Brewbarry plan.
 
-    `characters` belongs to Roster rather than EditorPaths, so it is applied
-    after construction instead of being passed through as a path override.
+    `characters` no longer exists as config (feature 009); the parameter is
+    accepted and ignored so the call sites below read unchanged.
     """
-    import dataclasses
-
     sd, gm, sx, nd = _seed_session_dir(tmp_path)
-    cfg = _cfg(
+    return _cfg(
         session_recap=str(gm),
         session_summary=str(sd / "session-summary.md"),
         scene_extractions_dir=str(sx),
         narration_dir=str(nd),
         **overrides,
     )
-    if characters is None:
-        return cfg
-    return dataclasses.replace(cfg, roster=Roster(characters=characters))
 
 
 def _examples(tmp_path: Path, *names: str) -> Path:
@@ -772,20 +764,32 @@ def test_narrate_refuses_examples_dir_that_is_not_a_directory(tmp_path):
     assert "is not a directory" in result[1]
 
 
-def test_narrate_refuses_when_a_per_character_file_would_go_global(tmp_path):
-    """Characters unset while soma.md sits in examples/ — every narrator would
-    read Soma's style reference."""
-    ed = _examples(tmp_path, "soma")
-    cfg = _ex_cfg(tmp_path, examples_dir=str(ed))     # roster.characters is None
+def test_narrate_refuses_voice_dir_that_is_not_a_directory(tmp_path):
+    cfg = _ex_cfg(tmp_path, voice_dir=str(tmp_path / "nope"))
 
     result = scene_editor._build_narrate_cmd(None, cfg, 1)
 
     assert isinstance(result, tuple) and result[0] is None
-    assert "soma.md would route to narrator 'Soma'" in result[1]
+    assert "is not a directory" in result[1]
 
 
-def test_narrate_allows_house_style_examples_with_no_roster(tmp_path):
-    """toee's shape: nothing would have routed per-character, so nothing bleeds."""
+def test_a_file_matching_a_narrators_name_is_no_longer_a_refusal(tmp_path):
+    """`soma.md` sitting in examples/ used to mean every narrator would read
+    Soma's style reference, because an unmatched file fell through to a global
+    block. Nothing falls through now: an undeclared file reaches nobody, and
+    the CLI reports it as an orphan rather than the router refusing the run."""
+    ed = _examples(tmp_path, "soma")
+    cfg = _ex_cfg(tmp_path, examples_dir=str(ed))
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--examples") + 1] == str(ed)
+
+
+def test_narrate_allows_house_style_examples(tmp_path):
+    """toee's shape: files that belong to the campaign rather than a character.
+    They reach every narrator because `shared_examples:` says so."""
     ed = _examples(tmp_path, "political_maneuvering", "combat_and_consequences")
     cfg = _ex_cfg(tmp_path, examples_dir=str(ed))
 
@@ -794,27 +798,6 @@ def test_narrate_allows_house_style_examples_with_no_roster(tmp_path):
     assert isinstance(cmd, list), cmd
     assert cmd[cmd.index("--examples") + 1] == str(ed)
     assert "--characters" not in cmd
-
-
-def test_narrate_forwards_examples_and_characters_when_complete(tmp_path):
-    ed = _examples(tmp_path, "soma", "brewbarry")
-    cfg = _ex_cfg(tmp_path, examples_dir=str(ed), characters="Soma, Brewbarry")
-
-    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
-
-    assert isinstance(cmd, list), cmd
-    assert cmd[cmd.index("--examples") + 1] == str(ed)
-    assert cmd[cmd.index("--characters") + 1] == "Soma, Brewbarry"
-
-
-def test_narrate_refuses_an_incomplete_roster(tmp_path):
-    ed = _examples(tmp_path, "soma", "brewbarry")
-    cfg = _ex_cfg(tmp_path, examples_dir=str(ed), characters="Soma")
-
-    result = scene_editor._build_narrate_cmd(None, cfg, 1)
-
-    assert isinstance(result, tuple) and result[0] is None
-    assert "brewbarry.md would route to narrator 'Brewbarry'" in result[1]
 
 
 def test_empty_examples_dir_is_not_refused(tmp_path):

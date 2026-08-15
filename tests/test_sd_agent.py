@@ -147,23 +147,29 @@ def test_backend_flags_reach_generation_only(session):
         assert flag not in ver.cmd
 
 
-def test_scene_grounding_flags_reach_scene_extract(session):
-    """--dossier-dir/--party/--gm-player must survive the hop. Since 6e00f54
-    the roster is the ONLY channel for canonical NPC spellings (the VTT is
-    deliberately never rewritten), so an orchestrator that drops it produces
-    name-shaped quote findings that look like fabrication."""
+def test_scene_grounding_flags_reach_scene_extract(session, tmp_path):
+    """--dossier-dir/--party/--players-config must survive the hop. Since
+    6e00f54 the roster is the ONLY channel for canonical NPC spellings (the VTT
+    is deliberately never rewritten), so an orchestrator that drops it produces
+    name-shaped quote findings that look like fabrication.
+
+    ``--players-config`` replaced ``--gm-player`` in feature 009: one string
+    could hold only one of a person's display names, and the game master has as
+    many as anyone else."""
     dossiers = session / "npcs"
     dossiers.mkdir()
     party = session / "party.md"
     party.write_text("# party\n")
+    players = tmp_path / "players.yaml"
+    players.write_text("players: []\n", encoding="utf-8")
     steps, notes = build_steps(_args(
         session_dir=session, stage="scenes",
-        dossier_dir=dossiers, party=party, gm_player="Kostadis",
+        dossier_dir=dossiers, party=party, players_config=players,
     ))
     gen = next(s for s in steps if s.key == "generate")
     assert "--dossier-dir" in gen.cmd and str(dossiers) in gen.cmd
     assert "--party" in gen.cmd and str(party) in gen.cmd
-    assert "--gm-player" in gen.cmd and "Kostadis" in gen.cmd
+    assert "--players-config" in gen.cmd and str(players) in gen.cmd
     assert not any("dossier" in n for n in notes)
 
 
@@ -194,19 +200,21 @@ def test_scene_grounding_flags_do_not_leak_into_the_summary_stage(session):
     dossiers = session / "npcs"
     dossiers.mkdir()
     steps, _ = build_steps(_args(session_dir=session, stage="summary",
-                                 dossier_dir=dossiers, gm_player="Kostadis"))
+                                 dossier_dir=dossiers,
+                                 players_config=session / "players.yaml"))
     for s in steps:
         assert "--dossier-dir" not in s.cmd
-        assert "--gm-player" not in s.cmd
+        assert "--players-config" not in s.cmd
 
 
 def test_scene_grounding_flags_never_reach_verification(session):
     dossiers = session / "npcs"
     dossiers.mkdir()
     steps, _ = build_steps(_args(session_dir=session, stage="scenes",
-                                 dossier_dir=dossiers, gm_player="Kostadis"))
+                                 dossier_dir=dossiers,
+                                 players_config=session / "players.yaml"))
     ver = next(s for s in steps if s.key == "verify")
-    for flag in ("--dossier-dir", "--party", "--gm-player"):
+    for flag in ("--dossier-dir", "--party", "--players-config"):
         assert flag not in ver.cmd
 
 
