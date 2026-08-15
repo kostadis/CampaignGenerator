@@ -243,9 +243,9 @@ name is named — including when only one of four is absent.
 
 - [X] T071 [P] Write `docs/config/players-isolation.md` in the shape of `docs/config/planning-isolation.md` — ownership, the strict document, the lenient-save contract, the adoption step, and the decisions from research.md
 - [X] T072 [P] Add the Players row to the per-service config table in `CLAUDE.md`, and a short rule under it stating that player identity is authored in one place and every other copy is rendered — the shape of the existing genre-rulebook rule
-- [ ] T073 [P] Add `docs/config/players-isolation.md` to the doc index in `docs/README.md` and the service to the subsystem map in `docs/core/architecture.md`
+- [X] T073 [P] Add `docs/config/players-isolation.md` to the doc index in `docs/README.md` and the service to the subsystem map in `docs/core/architecture.md`
 - [ ] T074 [P] Add a status note to `docs/design/PlayerIdentity.md` recording which of its five open questions this feature answered, and add research M3's stormgiants finding to its "Measured drift" section
-- [ ] T075 [P] Update `docs/cli/session_doc_pipeline.md` for the deleted `--characters` and `--gm-player` flags and the new `--players-config`
+- [X] T075 [P] Update `docs/cli/session_doc_pipeline.md` for the deleted `--characters` and `--gm-player` flags and the new `--players-config`
 - [X] T076 Run the whole suite: `python -m pytest tests/ -q`, including `tests/test_layering.py` and `tests/test_no_prefix_identity.py`
 
 ---
