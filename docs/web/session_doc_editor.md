@@ -13,7 +13,7 @@ The flow that runs from the **Session Doc Editor** page in the web UI.
 5. **Open `session-summary.md` in Typora and review/edit it** — this is the human checkpoint.
 6. Header → **`STAGE 2 — Re-Extract Quotes`** → produces `scene_extractions_new/NN_<slug>.md`.
 7. Header → **`STAGE 3 — Plan & Check`** → produces `narration/plan.md` + `consistency_report.md`. **Review the consistency report.**
-8. For each scene: select it on the left, edit the extraction, click **`Narrate`**, optionally **`Scrub`**, mark **Reviewed** when the order looks right. The four lifecycle dots on the scene card fill in (E · R · N · S).
+8. For each scene: select it on the left, edit the extraction, click **`Narrate`**, mark **Reviewed** when the order looks right. The four lifecycle dots on the scene card fill in (E · R · N · S) — the **S** dot lights up if a `.scrubbed.md` sibling exists, which now comes from running the `/scrub` Claude Code skill outside the web UI (see [Mechanical scrubbing](#mechanical-scrubbing-outside-the-web-ui) below), not from a button here.
 9. Header → **`Assemble →`** → opens the **Review** screen.
 10. On the Review screen: confirm every scene is narrated (any scene that isn't blocks Assemble). Click **`Assemble Doc`** → optionally **`Open in Typora`**.
 
@@ -27,7 +27,7 @@ That's the full loop.
 ┌─ Header ───────────────────────────────────────────────────────────────────┐
 │ Session Doc  [Profile ▾]  ① ● 2h  ② ● 1h  ③ ● 5m  ④ ● 5/8         [Cfg ⚙] │
 │             [Batch] [Backend] [① Enhance] [② Re-Extract] [③ Plan & Check]  │
-│             [Scrub All] [Assemble →]                                       │
+│             [Assemble →]                                                   │
 ├─ Three-column body ────────────────────────────────────────────────────────┤
 │ Scene list      │ Extraction editor + narration output      │ VTT panel    │
 │ • dot dot dot   │ ……                                         │ ……           │
@@ -131,14 +131,27 @@ For each scene:
 1. Click the scene in the left column. The center pane loads the Stage-2 file.
 2. Edit the extraction freely. Save.
 3. Click **Narrate** → produces `narration/session_doc_scene_NN_<slug>.md`. The **N** dot fills in.
-4. (Optional) **Scrub** → produces `*.scrubbed.md` sibling. The **S** dot fills in.
-5. Mark **Reviewed** when the order looks right. The **R** dot fills in.
+4. Mark **Reviewed** when the order looks right. The **R** dot fills in.
 
-The four lifecycle dots are green when complete, grey when cold. (Amber-when-the-input-is-newer-than-the-output rendering is not yet wired into the per-scene dots; the header pipeline strip conveys it globally.)
+The four lifecycle dots are green when complete, grey when cold. (Amber-when-the-input-is-newer-than-the-output rendering is not yet wired into the per-scene dots; the header pipeline strip conveys it globally.) The **S** dot is status only — see below.
 
-### Stage 4½ — Scrub All
+### Mechanical scrubbing (outside the web UI)
 
-Header button. Runs `scrub_mechanics.py` (`session_doc/`) against the whole `narration_dir`, producing a `*.scrubbed.md` sibling for every per-scene narration. Already-scrubbed files are skipped.
+There is no Scrub / Scrub All button in this app any more. The autonomous
+LLM pass that used to live here (`session_doc/scrub_mechanics.py`) was
+retired — it rewrote narration prose with no human review step, and that
+failure mode is what shipped a spell-stripping bug into a real session doc
+(issue #151). Mechanical scrubbing now happens via the **`/scrub` Claude
+Code skill**, run in a Claude conversation outside this app: it proposes
+candidate mechanical residue, the GM confirms every candidate one at a
+time, then a deterministic apply step writes the same `<scene>.scrubbed.md`
+sibling this app used to write.
+
+The `.scrubbed.md` output contract itself is unchanged — `assemble.py`
+still prefers a scene's `.scrubbed.md` variant over its raw `.md` when
+present (`--no-prefer-scrubbed` to opt out), and the editor's **S** lifecycle
+dot / the Review screen's "④½ Scrub" badge still light up whenever that file
+exists on disk, regardless of what produced it.
 
 ### Final — Review & Assemble
 
@@ -158,7 +171,7 @@ The same four-stage strip the editor header shows, with verbose labels and times
 
 ### Activity timeline (left)
 
-Tails `<session_dir>/.cg/activity.jsonl`. Every Enhance / Extract / Plan / Narrate / Scrub run appends one JSON line with timestamp, stage, scene (if applicable), returncode, the knobs in effect, and the output path(s). Newest first; failed rows highlight red.
+Tails `<session_dir>/.cg/activity.jsonl`. Every Enhance / Extract / Plan / Narrate run appends one JSON line with timestamp, stage, scene (if applicable), returncode, the knobs in effect, and the output path(s). Newest first; failed rows highlight red. (A scrub pass run via the `/scrub` skill happens outside this app, so it does not append a line here — the **S** lifecycle dot / Review badge are how the app surfaces that a scrubbed variant exists.)
 
 The file survives server restarts — the timeline is a real audit log, not in-memory state.
 
@@ -208,7 +221,7 @@ summaries/YYYYMMDD/
 │   ├── plan.md                         # Pass 3 output (narrator assignments)
 │   ├── session_doc_scene_01_<slug>.md           # Stage 4 narration
 │   ├── session_doc_scene_01_<slug>.knobs.json   # which knobs were used (Review screen reads this)
-│   ├── session_doc_scene_01_<slug>.scrubbed.md  # Stage 4½ scrub output
+│   ├── session_doc_scene_01_<slug>.scrubbed.md  # produced by the /scrub skill, outside this app
 │   └── …
 ├── .cg/
 │   └── activity.jsonl                  # append-only audit log (Review timeline)
@@ -243,14 +256,16 @@ summaries/YYYYMMDD/
 
 ## Backend pipeline scripts (reference)
 
-All six scripts below live in `session_doc/`:
+All five scripts below live in `session_doc/`:
 
 - `enhance_summary.py` — Stage 1
 - `scene_extract.py` — Stage 2
 - `sd_consistency.py` + `sd_plan.py` — Stage 3 plan & check (chained when `--context` is configured)
 - `sd_narrate.py --scene N` — per-scene narration (reads cached `plan.md`)
-- `scrub_mechanics.py` — Stage 4½ scrub
 - `assemble.py` — Final assembly
+
+(Mechanical scrubbing is no longer one of this app's pipeline scripts — see
+[Mechanical scrubbing](#mechanical-scrubbing-outside-the-web-ui) above.)
 
 The web server (`server/main.py`) wires these to UI buttons via routers in `server/routers/`, primarily `scene_editor.py`. The `ledger.py` router that drove the old Quotes mode has been removed.
 

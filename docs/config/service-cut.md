@@ -50,7 +50,7 @@ open — selection, contracts, ordering.
 
 | Service | Router / entry | Config | CLI engine | Its config/state |
 |---|---|---|---|---|
-| Session Doc Editor | `scene_editor.py` + `SessionEditorConfigService` | own file: `session_doc.yaml` (grouped, strict) | narrate/scrub CLI | backend/dgx knobs, tokens, prose/reflections, session paths, `profiles[]` |
+| Session Doc Editor | `scene_editor.py` + `SessionEditorConfigService` | own file: `session_doc.yaml` (grouped, strict) | narrate CLI | backend/dgx knobs, tokens, prose/reflections, session paths, `profiles[]` |
 | Ensemble *(Extraction & State + Dossier Synthesis — see note below)* | `server/routers/ensemble.py` + `EnsembleConfigService` | own file: `ensemble.yaml` (grouped, strict) | `ensemble_extract`/`ensemble_merge` (extraction+bundling) and `synthesise_*` (rendering) | chapters, per-stage `EnsembleBackend`, artifact `paths` (incl. `drafts_dir`), `tuning`, planning overrides, `manifest.json`, `merge.yaml` |
 | Grounding / Search | `grounding.py` + `GroundingConfigService` | own file: `grounding.yaml` (grouped, strict) | campaign_state, distill, party, planning CLIs | shared `summaries` pointer + a run profile per doc |
 | State Projection | `server/routers/projections.py` + `ProjectionConfigService` | own file: `projections.yaml` (grouped, strict) | `event_spine`/`thread_registry`/`grounding_sections`/`build_recent_events` | `stores` (own durable state), `inputs` (pointers into Ensemble's dossiers), `output` (own `docs/projections/` namespace + the legacy-draft gate) — see [projection-isolation.md](./projection-isolation.md) |

@@ -191,7 +191,6 @@ route, and no `PUT /section/session_doc` shim, writes this file — see
 | `paths.*` (session/campaign based) | `scene_editor.py` resolved paths for the narrate pipeline (via `Depends(get_editor_config)` → `ResolvedEditorConfig`) |
 | `narrate.tokens, prose_mode, reflections, genre, context[]` | `scene_editor.py` narrate knobs (also mirrored from `profiles` via `activate_profile`) |
 | `backends.active, backends.<b>.model, backends.<b>.endpoint, backends.<b>.batch` | `scene_editor._backend_flags`/`_model_args` (dgx/openrouter forward `--backend`/`--endpoint`/`--model`; anthropic/claude-code use the per-backend `model` override, else `runtime.default_model`; `batch` resolves through `resolve_selection`/`selection_cli_args`, 005-ui-batch-selection) and `grounding.py._backend_flags` (global sidebar backend selector for campaign_state/distill/party/planning runs) |
-| `scrub.enabled, scrub.tokens` | `scene_editor.py` scrub stage |
 | `roster.gm_player, roster.characters` | `scene_editor.py` |
 | `profiles[], active_profile` | `scene_editor.py` profile endpoints; `active_profile` set by `activate_profile` |
 

@@ -96,7 +96,16 @@ class TestBuildGroupedConfig:
         assert cfg.backends.active == "dgx"
         assert cfg.backends.dgx.endpoint == "http://box:8001"
         assert cfg.backends.dgx.model == "Qwen-X"
-        assert cfg.scrub.enabled is True
+        # `scrub_enabled` is still in OLD_UI_STATE above (real pre-#010
+        # campaigns have it) but was dropped from
+        # TYPED_SESSION_DOC_TO_GROUPED when the mechanics-scrub CLI retired
+        # (issue #010, superseded by the `/scrub` Claude Code skill): the
+        # `scrub` group no longer exists on SessionEditorConfig at all. Same
+        # treatment as `roleplay_dir`/`narration_genre`/`roster` above —
+        # reported as unrecognised and left behind in ui_state.yaml, rather
+        # than written into a field that no longer exists.
+        assert not hasattr(cfg, "scrub")
+        assert "scrub" not in cfg.model_dump_json()
         assert cfg.profiles[0].name == "Fast Draft"
         assert cfg.profiles[0].knobs["narrate_tokens"] == 4000
         assert cfg.active_profile == "Fast Draft"
