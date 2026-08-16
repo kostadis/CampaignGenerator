@@ -408,9 +408,6 @@ def append_note(filename: str, content: str, separator: str = "\n\n---\n\n") -> 
 # ── Mempalace search tools ───────────────────────────────────────────────────
 
 
-_MP_PALACE_PATH = str(Path.home() / ".mempalace" / "palace")
-
-
 def _mempalace_search(
     query: str,
     wings: list[str],
@@ -423,7 +420,7 @@ def _mempalace_search(
         try:
             resp = search_memories(
                 query=query,
-                palace_path=_MP_PALACE_PATH,
+                palace_path=_resolve_palace_path(),
                 wing=wing,
                 room=room if room else None,
                 n_results=n_results,
