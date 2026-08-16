@@ -24,6 +24,7 @@ const party = ref('')
 const voiceDir = ref('')
 const examplesDir = ref('')
 const context = ref('')
+const extractTokens = ref(8192)
 const narrateTokens = ref(16000)
 const proseMode = ref(false)
 const reflections = ref(false)
@@ -55,6 +56,7 @@ function normalizeBackend(value: any): 'anthropic' | 'dgx' | 'openrouter' | 'cla
 function loadConfigFields() {
   const ec = config.editorConfig
   const paths = ec?.paths ?? {}
+  const extract = ec?.extract ?? {}
   const narrate = ec?.narrate ?? {}
   const backends = ec?.backends ?? {}
 
@@ -67,6 +69,7 @@ function loadConfigFields() {
   voiceDir.value = paths.voice_dir || ''
   examplesDir.value = paths.examples_dir || ''
   context.value = (narrate.context ?? []).join('\n')
+  extractTokens.value = extract.tokens || 8192
   narrateTokens.value = narrate.tokens || 16000
   proseMode.value = !!narrate.prose_mode
   reflections.value = !!narrate.reflections
@@ -104,6 +107,9 @@ function buildEditorConfigPayload() {
       // Campaign-scoped, like the rulebook it points at (#276 fix 2).
       genre_file: resolvePathWithBase(genreFile.value, 'campaign') || undefined,
     },
+    extract: {
+      tokens: extractTokens.value || undefined,
+    },
     narrate: {
       context: contextFiles.value.length ? contextFiles.value : [],
       tokens: narrateTokens.value || undefined,
@@ -134,7 +140,7 @@ function scheduleApply() {
 
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,
-   party, voiceDir, examplesDir, context,
+   party, voiceDir, examplesDir, context, extractTokens,
    narrateTokens, proseMode, reflections, genreFile],
   scheduleApply,
 )
@@ -801,6 +807,7 @@ onMounted(async () => {
       v-model:dgx-endpoint="dgxEndpoint"
       v-model:dgx-model="dgxModel"
       v-model:openrouter-model="openrouterModel"
+      v-model:extract-tokens="extractTokens"
       v-model:narrate-tokens="narrateTokens"
       v-model:prose-mode="proseMode"
       v-model:reflections="reflections"

@@ -20,6 +20,7 @@ const props = defineProps<{
   dgxEndpoint: string
   dgxModel: string
   openrouterModel: string
+  extractTokens: number
   narrateTokens: number
   proseMode: boolean
   reflections: boolean
@@ -52,6 +53,7 @@ const emit = defineEmits<{
   'update:dgxEndpoint': [value: string]
   'update:dgxModel': [value: string]
   'update:openrouterModel': [value: string]
+  'update:extractTokens': [value: number]
   'update:narrateTokens': [value: number]
   'update:proseMode': [value: boolean]
   'update:reflections': [value: boolean]
@@ -227,6 +229,18 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
           Batch (set app-wide via the sidebar) and Backend apply here. The Re-Extract button always forwards
           <code>--force</code> so prior per-scene files are snapshotted to <code>.prev</code> and
           rewritten.
+        </div>
+        <div class="field">
+          <label class="field-label">Token limit</label>
+          <input
+            type="number"
+            class="field-input"
+            :value="extractTokens"
+            min="1000"
+            step="500"
+            @input="emit('update:extractTokens', Number(($event.target as HTMLInputElement).value) || 0)"
+          />
+          <div class="field-help">Per-scene output cap forwarded to <code>scene_extract --max-tokens</code>.</div>
         </div>
       </section>
 

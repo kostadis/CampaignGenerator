@@ -17,6 +17,7 @@ from server.session_editor_config_service import ResolvedEditorConfig  # noqa: E
 from server.session_editor_config_shared import (  # noqa: E402
     Backends,
     EditorPaths,
+    ExtractKnobs,
     NarrateKnobs,
 )
 
@@ -38,6 +39,7 @@ def _cfg(*, vtt: str | None = None, work_dir: str = "", campaign_dir: str = "",
     keeping the flag absent unless a test opts in."""
     return ResolvedEditorConfig(
         paths=EditorPaths(**path_overrides),
+        extract=ExtractKnobs(),
         narrate=NarrateKnobs(),
         backends=Backends(),
         session_name=None,
@@ -330,6 +332,42 @@ def test_build_reextract_cmd_omits_batch_by_default(tmp_path):
     cmd = scene_editor._build_reextract_cmd(None, cfg)
     assert isinstance(cmd, list)
     assert "--batch" not in cmd
+
+
+def test_build_reextract_cmd_forwards_default_max_tokens(tmp_path):
+    """8192 is ExtractKnobs' own default — matches scene_extract.py's own
+    --max-tokens default, so an unconfigured campaign's command is
+    unchanged from before this field existed."""
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+    )
+    cmd = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert "--max-tokens" in cmd
+    assert cmd[cmd.index("--max-tokens") + 1] == "8192"
+
+
+def test_build_reextract_cmd_forwards_configured_max_tokens(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+    )
+    cfg.extract.tokens = 12000
+    cmd = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert "--max-tokens" in cmd
+    assert cmd[cmd.index("--max-tokens") + 1] == "12000"
 
 
 def test_build_narrate_cmd_forwards_batch_when_resolved_selection_true(tmp_path):

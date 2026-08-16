@@ -34,6 +34,7 @@ from server.session_editor_config_service import (  # noqa: E402
 from server.session_editor_config_shared import (  # noqa: E402
     Backends,
     EditorPaths,
+    ExtractKnobs,
     NarrateKnobs,
     SessionEditorConfig,
     load_session_editor_config,
@@ -111,6 +112,37 @@ def test_invalid_update_does_not_corrupt_stored_file(tmp_path):
         svc.update_config({"narrate": {"tokens": "nope"}})
     # The bad partial never got written — prior value survives.
     assert svc.get_config().narrate.tokens == 8000
+
+
+# ── extract knobs (011-extract-max-tokens) ──────────────────────────────
+
+
+def test_extract_tokens_defaults_to_scene_extract_cli_default(tmp_path):
+    # 8192 must match session_doc/scene_extract.py's own --max-tokens
+    # default exactly, so an unset campaign's behavior is unchanged.
+    svc = _service(tmp_path)
+    assert svc.get_config().extract.tokens == 8192
+
+
+def test_update_config_round_trips_and_persists_extract_tokens(tmp_path):
+    svc = _service(tmp_path)
+    updated = svc.update_config({"extract": {"tokens": 12000}})
+
+    assert updated.extract.tokens == 12000
+
+    assert svc.session_doc_path.exists()
+    on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+    assert on_disk["extract"]["tokens"] == 12000
+
+    # A fresh read through the service sees the persisted value.
+    assert svc.get_config().extract.tokens == 12000
+
+
+def test_update_config_unknown_extract_field_raises_400(tmp_path):
+    svc = _service(tmp_path)
+    with pytest.raises(HTTPException) as exc:
+        svc.update_config({"extract": {"bogus_field": True}})
+    assert exc.value.status_code == 400
 
 
 # ── per-backend model memory (O1) ───────────────────────────────────────
@@ -417,6 +449,7 @@ def test_save_load_round_trip_grouped_shape(tmp_path):
     path = tmp_path / "session_doc.yaml"
     cfg = SessionEditorConfig(
         paths=EditorPaths(session_recap="recap.md", party="docs/party.md"),
+        extract=ExtractKnobs(tokens=10000),
         narrate=NarrateKnobs(tokens=12000, genre="noir"),
         backends=Backends(
             active="dgx",
@@ -434,6 +467,7 @@ def test_save_load_round_trip_grouped_shape(tmp_path):
 
     reloaded = load_session_editor_config(path)
     assert reloaded == cfg
+    assert reloaded.extract.tokens == 10000
     assert reloaded.backends.dgx.model == "llama-3-70b"
     assert reloaded.backends.active == "dgx"
     assert reloaded.profiles[0].knobs["narrate_tokens"] == 4000

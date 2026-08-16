@@ -24,6 +24,7 @@ from server.session_editor_config_shared import ProfileEntry
 from server.session_editor_config_shared import (
     Backends,
     EditorPaths,
+    ExtractKnobs,
     NarrateKnobs,
     SessionEditorConfig,
     load_session_editor_config,
@@ -132,6 +133,7 @@ class ResolvedEditorConfig:
     """
 
     paths: EditorPaths
+    extract: ExtractKnobs
     narrate: NarrateKnobs
     backends: Backends
     session_name: str | None
@@ -354,6 +356,7 @@ class SessionEditorConfigService:
 
         return ResolvedEditorConfig(
             paths=resolved_paths,
+            extract=cfg.extract,
             narrate=cfg.narrate,
             backends=cfg.backends,
             session_name=cfg.session_name,

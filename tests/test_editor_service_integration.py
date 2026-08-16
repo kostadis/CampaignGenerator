@@ -90,7 +90,7 @@ class TestGetEditorConfig:
         assert resp.status_code == 200
         body = resp.json()
         assert set(body.keys()) == {
-            "paths", "narrate", "backends",
+            "paths", "extract", "narrate", "backends",
             "session_name", "profiles", "active_profile", "model",
             "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
             "genre",
@@ -99,6 +99,7 @@ class TestGetEditorConfig:
         # the hyphenated claude-code alias).
         assert body["backends"]["active"] == "anthropic"
         assert "claude-code" in body["backends"]
+        assert body["extract"]["tokens"] == 8192
         assert body["narrate"]["tokens"] == 16000
         # The genre rulebook is a file (#276 fix 2): no path configured yet, so
         # the injected read-only summary says "nothing resolved" rather than
