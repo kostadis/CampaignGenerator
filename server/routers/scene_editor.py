@@ -97,7 +97,6 @@ def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
     return {
         "paths": cfg.paths.model_dump(),
         "narrate": cfg.narrate.model_dump(),
-        "scrub": cfg.scrub.model_dump(),
         "backends": cfg.backends.model_dump(by_alias=True),
         "session_name": cfg.session_name,
         "profiles": [p.model_dump() for p in cfg.profiles],
@@ -130,7 +129,7 @@ async def api_put_config(
 
     The single editor-config write door: the body is a grouped
     ``SessionEditorConfig`` partial (any nested subset of ``paths`` /
-    ``narrate`` / ``scrub`` / ``roster`` / ``backends`` / ``session_name`` /
+    ``narrate`` / ``roster`` / ``backends`` / ``session_name`` /
     ``profiles`` / ``active_profile``), merged into the stored config by
     ``SessionEditorConfigService.update_config``.
     """
@@ -1494,70 +1493,6 @@ async def api_narrate(n: int, request: Request, cfg: ResolvedEditorConfig = Depe
 
     return StreamingResponse(
         stream_subprocess(cmd, cwd=cfg.work_dir,
-                          on_complete=_done),
-        media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-    )
-
-
-@router.get("/scrub/{n}")
-async def api_scrub(n: int, request: Request, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
-    """Scrub a single scene's narration.
-
-    Resolves the scene file server-side via `_narration_file_for_scene` so
-    `scrub_mechanics` needs no scene-aware CLI surface. Explicitly
-    refuses already-scrubbed files (the glob in `_narration_file_for_scene`
-    matches both `*.md` and `*.scrubbed.md`; today lexicographic order puts
-    the un-scrubbed source first but that's a fragile accident).
-    """
-    path = _narration_file_for_scene(cfg, n)
-    if path is None or not path.exists():
-        return _sse_error(f"no narration file for scene {n}")
-    if path.name.endswith(".scrubbed.md"):
-        return _sse_error(
-            f"refusing to scrub already-scrubbed file: {path.name}")
-    cmd = [console_script("scrub_mechanics"), str(path)]
-    cmd += _selection_args(request, cfg)
-    if cfg.scrub.tokens:
-        cmd += ["--max-tokens", str(cfg.scrub.tokens)]
-
-    def _done(rc: int | None) -> None:
-        scrubbed = path.with_name(path.stem + ".scrubbed.md")
-        _record_activity(cfg, stage="scrub", rc=rc, scene=n,
-                         outputs=[str(scrubbed)])
-
-    return StreamingResponse(
-        stream_subprocess(cmd, cwd=cfg.work_dir,
-                          env_extra={"CG_CAMPAIGN_DIR": cfg.campaign_dir,
-                                     "CG_CONFIG_DIR": cfg.config_dir},
-                          on_complete=_done),
-        media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-    )
-
-
-@router.get("/scrub-all")
-async def api_scrub_all(request: Request, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
-    """Scrub every session_doc_scene_*.md in narration_dir.
-
-    `scrub_mechanics.collect_targets` already filters out `.scrubbed.md`
-    files so re-runs don't recurse into their own output.
-    """
-    nd = _narration_dir(cfg)
-    if nd is None or not nd.is_dir():
-        return _sse_error("narration_dir not configured")
-    cmd = [console_script("scrub_mechanics"), str(nd)]
-    cmd += _selection_args(request, cfg)
-    if cfg.scrub.tokens:
-        cmd += ["--max-tokens", str(cfg.scrub.tokens)]
-
-    def _done(rc: int | None) -> None:
-        _record_activity(cfg, stage="scrub_all", rc=rc, outputs=[str(nd)])
-
-    return StreamingResponse(
-        stream_subprocess(cmd, cwd=cfg.work_dir,
-                          env_extra={"CG_CAMPAIGN_DIR": cfg.campaign_dir,
-                                     "CG_CONFIG_DIR": cfg.config_dir},
                           on_complete=_done),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},

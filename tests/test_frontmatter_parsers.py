@@ -7,10 +7,12 @@ A third parser, `session_doc.assemble.parse_frontmatter` (a hand-rolled
 with the real YAML parser and disagreed with it on value types. The two that
 remain do genuinely different jobs and must keep disagreeing:
 
-- `session_doc.scrub_mechanics.split_frontmatter_raw` returns the
-  frontmatter block RAW — the literal bytes, delimiters included — with no
-  parsing at all, because `scrub_mechanics` reassembles
-  `frontmatter + prose` and needs the original block back unchanged.
+- `campaignlib.textproc.split_frontmatter_raw` returns the frontmatter block
+  RAW — the literal bytes, delimiters included — with no parsing at all,
+  because a caller that reassembles `frontmatter + prose` (e.g. the `/scrub`
+  Claude Code skill's apply step) needs the original block back unchanged.
+  Relocated here from the now-retired `session_doc.scrub_mechanics` (issue
+  #010) — it was always a shared utility, not part of what was removed.
 - `campaignlib.textproc.split_frontmatter` PARSES the block into a dict and
   returns only the body, discarding the delimiters and raw bytes.
 
@@ -23,8 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from campaignlib.textproc import split_frontmatter  # noqa: E402
-from session_doc.scrub_mechanics import split_frontmatter_raw  # noqa: E402
+from campaignlib.textproc import split_frontmatter, split_frontmatter_raw  # noqa: E402
 
 
 TEXT = "---\nscene: 4\nscene_name: Test Scene\n---\nBody prose here.\n"

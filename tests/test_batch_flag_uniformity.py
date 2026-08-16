@@ -20,7 +20,6 @@ REGISTRAR_CLIS = [
     "session_doc/scene_extract.py",
     "session_doc/sd_plan.py",
     "session_doc/sd_consistency.py",
-    "session_doc/scrub_mechanics.py",
     "session_doc/sd_narrate.py",
     "session_doc/check_consistency.py",
     "session_doc/vtt_voice_compare.py",

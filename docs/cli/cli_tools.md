@@ -15,7 +15,7 @@ during the wait cancels the remote batch. Any failed item exits non-zero;
 succeeded items' files stay on disk, so a re-run submits only what's missing.
 
 Shape per CLI: multi-unit pipelines (`distill`, `planning`, `party`,
-`campaign_state` extract fan-outs; `scene_extract`; `scrub_mechanics`;
+`campaign_state` extract fan-outs; `scene_extract`;
 `query`'s map phase; `extract_facts`) group their independent calls into one
 submission. Order-dependent chains (`prep`'s 5 stages, `sd_narrate`'s
 handoff-threaded scenes) run as sequential one-item batches — slower, same
