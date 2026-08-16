@@ -180,6 +180,21 @@ RETIRED_NARRATE_FIELDS: tuple[str, ...] = ("batch",)
 RELOCATED_NARRATE_FIELDS: tuple[str, ...] = ("genre",)
 
 
+class ExtractKnobs(BaseModel):
+    """Stage-② extract knobs.
+
+    No ``enabled`` flag: unlike ``ScrubKnobs``, Extract always runs when the
+    GM triggers Stage 2 (Extract/Re-Extract) — there is no separate opt-in
+    toggle for it to gate. ``tokens`` defaults to 8192, matching
+    ``scene_extract.py``'s own ``--max-tokens`` default exactly, so a
+    campaign that has never touched this field sees no behavior change.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    tokens: int = 8192
+
+
 class NarrateKnobs(BaseModel):
     """Stage-④ narrate knobs.
 
@@ -352,6 +367,7 @@ class SessionEditorConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     paths: EditorPaths = Field(default_factory=EditorPaths)
+    extract: ExtractKnobs = Field(default_factory=ExtractKnobs)
     narrate: NarrateKnobs = Field(default_factory=NarrateKnobs)
     scrub: ScrubKnobs = Field(default_factory=ScrubKnobs)
     verify: VerifyKnobs = Field(default_factory=VerifyKnobs)

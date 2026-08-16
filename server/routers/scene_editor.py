@@ -96,6 +96,7 @@ def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
     so the two never drift apart."""
     return {
         "paths": cfg.paths.model_dump(),
+        "extract": cfg.extract.model_dump(),
         "narrate": cfg.narrate.model_dump(),
         "scrub": cfg.scrub.model_dump(),
         "backends": cfg.backends.model_dump(by_alias=True),
@@ -1055,6 +1056,7 @@ def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
     # master's included. It replaced a single `roster.gm_player` string that
     # could hold only one label and was typed separately from the roster.
     cmd += _players_args(cfg)
+    cmd += ["--max-tokens", str(cfg.extract.tokens)]
     if force:
         cmd.append("--force")
     return cmd
