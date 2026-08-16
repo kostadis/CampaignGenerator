@@ -7,9 +7,9 @@ frontmatter `scene` field (numeric), and concatenates them into a single
 session document.
 
 If a scene has both a raw `.md` and a `.scrubbed.md` variant (the latter
-produced by `scrub_mechanics`), the scrubbed version is used. Pass
-`--no-prefer-scrubbed` to fall back to the raw narration even when a
-scrubbed variant exists.
+produced by a scrub pass — e.g. the `/scrub` Claude Code skill), the
+scrubbed version is used. Pass `--no-prefer-scrubbed` to fall back to the
+raw narration even when a scrubbed variant exists.
 
 No LLM calls. The point is to make narration incremental: the user can
 edit one scene file, re-run a single scene through `session_doc.py`,

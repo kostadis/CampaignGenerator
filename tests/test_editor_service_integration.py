@@ -90,7 +90,7 @@ class TestGetEditorConfig:
         assert resp.status_code == 200
         body = resp.json()
         assert set(body.keys()) == {
-            "paths", "extract", "narrate", "scrub", "backends",
+            "paths", "extract", "narrate", "backends",
             "session_name", "profiles", "active_profile", "model",
             "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
             "genre",
@@ -109,6 +109,28 @@ class TestGetEditorConfig:
             "preview": "", "sha256": "", "error": None,
         }
         assert "genre" not in body["narrate"]
+
+    def test_loads_pre_existing_session_doc_yaml_with_legacy_scrub_block(
+        self, fresh_campaign
+    ):
+        """FR-005/#010: a session_doc.yaml written before this change (every
+        campaign that has ever opened the config drawer, since the service
+        dumps the full model including defaults) has a persisted top-level
+        ``scrub:`` block on disk already. Reading that file must not fail —
+        the retired field is dropped on load
+        (``SessionEditorConfig._drop_retired_fields``), not rejected by
+        ``extra="forbid"``."""
+        _write(
+            fresh_campaign / CONFIG_SUBDIR / "session_doc.yaml",
+            "narrate:\n  tokens: 9000\n"
+            "scrub:\n  enabled: true\n  tokens: 8000\n",
+        )
+        client = TestClient(_make_app(fresh_campaign))
+        resp = client.get("/api/editor/config")
+        assert resp.status_code == 200, resp.text
+        body = resp.json()
+        assert "scrub" not in body
+        assert body["narrate"]["tokens"] == 9000
 
 
 # ── PUT /api/editor/config — flat payload, single write door ────────────────
@@ -138,7 +160,7 @@ class TestPutPersistsViaService:
         assert editor_cfg["narrate"]["tokens"] == 12000
         assert editor_cfg["paths"]["voice_dir"].endswith("voice")  # absolute via resolve
 
-    def test_put_editor_config_backend_and_scrub_fields(self, fresh_campaign):
+    def test_put_editor_config_backend_fields(self, fresh_campaign):
         client = TestClient(_make_app(fresh_campaign))
         resp = client.put(
             "/api/editor/config",
@@ -147,7 +169,6 @@ class TestPutPersistsViaService:
                     "active": "dgx",
                     "dgx": {"endpoint": "http://localhost:8000", "model": "llama-3-70b"},
                 },
-                "scrub": {"enabled": True, "tokens": 8000},
             },
         )
         assert resp.status_code == 200
@@ -156,8 +177,7 @@ class TestPutPersistsViaService:
         assert editor_cfg["backends"]["active"] == "dgx"
         assert editor_cfg["backends"]["dgx"]["endpoint"] == "http://localhost:8000"
         assert editor_cfg["backends"]["dgx"]["model"] == "llama-3-70b"
-        assert editor_cfg["scrub"]["enabled"] is True
-        assert editor_cfg["scrub"]["tokens"] == 8000
+        assert "scrub" not in editor_cfg
 
     def test_put_editor_config_narrate_batch_is_retired(self, fresh_campaign):
         """005-ui-batch-selection T029: `narrate.batch` was the bespoke
@@ -175,6 +195,28 @@ class TestPutPersistsViaService:
 
         editor_cfg = client.get("/api/editor/config").json()
         assert "batch" not in editor_cfg["narrate"]
+
+    def test_scrub_top_level_group_is_retired(self, fresh_campaign):
+        """Issue #010: the mechanics-scrub CLI (`session_doc/scrub_mechanics.py`)
+        was retired in favor of the `/scrub` Claude Code skill, and
+        `ScrubKnobs`/`scrub` no longer exist on `SessionEditorConfig`. A
+        top-level `scrub:` block — e.g. from a session_doc.yaml written before
+        this change (the service used to dump the full model, defaults
+        included, so every campaign that had opened the config drawer already
+        has one on disk) — is stripped before `extra="forbid"` sees it
+        (`SessionEditorConfig._drop_retired_fields`), same pattern as
+        `test_put_editor_config_narrate_batch_is_retired` above: the PUT still
+        succeeds, the field is simply absent afterward, and nothing about the
+        rest of the config is disturbed."""
+        client = TestClient(_make_app(fresh_campaign))
+        resp = client.put(
+            "/api/editor/config",
+            json={"scrub": {"enabled": True, "tokens": 8000}},
+        )
+        assert resp.status_code == 200, resp.text
+
+        editor_cfg = client.get("/api/editor/config").json()
+        assert "scrub" not in editor_cfg
 
     def test_put_editor_config_rejects_extraneous_top_level_keys(self, fresh_campaign):
         # The flat compat shim (_flat_body_to_grouped / _IGNORED_FLAT_KEYS)
@@ -226,7 +268,7 @@ class TestPutGroupedBody:
         resp = client.put(
             "/api/editor/config",
             json={
-                "scrub": {"enabled": True},
+                "paths": {"voice_dir": "voice/"},
                 "narrate": {"tokens": 12345},
             },
         )
@@ -234,7 +276,7 @@ class TestPutGroupedBody:
         assert resp.json() == {"ok": True}
 
         editor_cfg = client.get("/api/editor/config").json()
-        assert editor_cfg["scrub"]["enabled"] is True
+        assert editor_cfg["paths"]["voice_dir"].endswith("voice")
         assert editor_cfg["narrate"]["tokens"] == 12345
 
 

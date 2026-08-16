@@ -25,7 +25,7 @@ export const useConfigStore = defineStore('config', () => {
 
   // The Session Doc Editor's grouped, resolved configuration — the single
   // source of truth for the editor (GET /api/editor/config):
-  // paths/narrate/scrub/roster/backends/session_name/profiles/
+  // paths/narrate/roster/backends/session_name/profiles/
   // active_profile plus read-only platform extras (model, work_dir,
   // campaign_dir, config_dir, vtt). See
   // docs/config/session-editor-isolation.md.

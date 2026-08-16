@@ -87,7 +87,6 @@ enhance_summary = "session_doc.enhance_summary:main"
 check_consistency = "session_doc.check_consistency:main"
 voice_lint = "session_doc.voice_lint:main"
 vtt_voice_compare = "session_doc.vtt_voice_compare:main"
-scrub_mechanics = "session_doc.scrub_mechanics:main"
 scabard_sync = "scabard_sdk.scabard_sync:main"
 
 [project.optional-dependencies]

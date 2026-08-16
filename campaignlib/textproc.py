@@ -34,9 +34,8 @@ def split_frontmatter(text: str) -> tuple[dict, str]:
     reformatted mapping is not byte-identical to what was written (key order,
     quoting style, comments all vary). A caller that needs to reproduce the
     frontmatter verbatim (e.g. round-tripping it unchanged around an edited
-    body) should use ``session_doc.scrub_mechanics.split_frontmatter_raw``
-    instead, which returns the raw block including its delimiters and does
-    no parsing at all.
+    body) should use ``split_frontmatter_raw`` below instead, which returns
+    the raw block including its delimiters and does no parsing at all.
     """
     m = _FRONTMATTER_RE.match(text)
     if not m:
@@ -48,6 +47,33 @@ def split_frontmatter(text: str) -> tuple[dict, str]:
     if not isinstance(data, dict):
         return {}, text
     return data, text[m.end():]
+
+
+def split_frontmatter_raw(text: str) -> tuple[str, str]:
+    """Return (frontmatter_block_including_delimiters, body). Empty frontmatter ok.
+
+    Does NOT parse — the block comes back as the literal bytes between (and
+    including) the ``---`` delimiters, untouched. That is the whole point:
+    a caller that reassembles ``frontmatter + prose`` (e.g. the ``/scrub``
+    Claude Code skill's apply step, and formerly ``session_doc.
+    scrub_mechanics.finalize_scrub_response``) needs the original block back
+    verbatim, delimiters and all, so a rewritten scene round-trips its
+    frontmatter unchanged instead of it being re-serialized (and potentially
+    reformatted) by a YAML dumper. For a parsed mapping — e.g. to read a
+    field out of the frontmatter — use ``split_frontmatter`` above instead,
+    which returns ``(dict, body)`` but cannot hand back the original block
+    bytes.
+
+    Relocated here from ``session_doc.scrub_mechanics`` (issue #010) when
+    that CLI was retired in favor of the ``/scrub`` Claude Code skill — this
+    function is a real shared utility, not part of what was retired.
+    """
+    if not text.startswith("---\n"):
+        return "", text
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        return "", text
+    return text[: end + 5], text[end + 5 :]
 
 
 def norm_subject(s: str) -> str:

@@ -161,7 +161,7 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
              poll-progress) is now set app-wide from the sidebar and
              inherited here, same as every other service. -->
         <div class="field">
-          <label class="field-label">Backend (also applies to Stage 2, Narrate, Scrub)</label>
+          <label class="field-label">Backend (also applies to Stage 2, Narrate)</label>
           <div class="seg-toggle">
             <button
               class="seg-btn"

@@ -19,7 +19,6 @@ from server.session_editor_config_shared import (  # noqa: E402
     EditorPaths,
     ExtractKnobs,
     NarrateKnobs,
-    ScrubKnobs,
 )
 
 
@@ -42,7 +41,6 @@ def _cfg(*, vtt: str | None = None, work_dir: str = "", campaign_dir: str = "",
         paths=EditorPaths(**path_overrides),
         extract=ExtractKnobs(),
         narrate=NarrateKnobs(),
-        scrub=ScrubKnobs(),
         backends=Backends(),
         session_name=None,
         profiles=[],

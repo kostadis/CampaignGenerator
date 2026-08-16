@@ -285,8 +285,10 @@ of quotes are exact verbatim even from Claude** — the other 36% are mostly
 cross promotions."`), so classification is **three buckets**
 (`verified`/`near`/`unverified`), not binary; a binary check would emit 186
 findings per session, ~90% benign. **Nothing is auto-corrected** — flag and
-report only; the GM applies fixes in Claude (`scrub_mechanics`/#151 is the
-scar). Stage 1 parses `> "…"` blockquotes only — inline `"…"` is not reliably
+report only; the GM applies fixes in Claude (mechanical-residue scrubbing now
+runs through the `/scrub` skill; #151, the spell-stripping incident that
+retired the autonomous CLI it replaced, is the scar). Stage 1 parses
+`> "…"` blockquotes only — inline `"…"` is not reliably
 dialogue (D5); Stage 2 parses `## Verbatim moments` only — `## Scene summary`
 is human-authored gm-assist content (D4). **D13 is a blocking dependency**:
 `scene_extract.py:468` feeds the model an alias-rewritten VTT via

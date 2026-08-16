@@ -183,11 +183,11 @@ RELOCATED_NARRATE_FIELDS: tuple[str, ...] = ("genre",)
 class ExtractKnobs(BaseModel):
     """Stage-② extract knobs.
 
-    No ``enabled`` flag: unlike ``ScrubKnobs``, Extract always runs when the
-    GM triggers Stage 2 (Extract/Re-Extract) — there is no separate opt-in
-    toggle for it to gate. ``tokens`` defaults to 8192, matching
-    ``scene_extract.py``'s own ``--max-tokens`` default exactly, so a
-    campaign that has never touched this field sees no behavior change.
+    No ``enabled`` flag: Extract always runs when the GM triggers Stage 2
+    (Extract/Re-Extract) — there is no separate opt-in toggle for it to gate.
+    ``tokens`` defaults to 8192, matching ``scene_extract.py``'s own
+    ``--max-tokens`` default exactly, so a campaign that has never touched
+    this field sees no behavior change.
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -297,15 +297,6 @@ class NarrateKnobs(BaseModel):
         return {k: v for k, v in data.items() if k not in drop}
 
 
-class ScrubKnobs(BaseModel):
-    """Mechanics-scrub pass knobs."""
-
-    model_config = ConfigDict(extra="forbid")
-
-    enabled: bool = False
-    tokens: int = 16000
-
-
 class VerifyKnobs(BaseModel):
     """Quote-verification knobs (`sd_verify_quotes`).
 
@@ -355,6 +346,19 @@ class Backends(BaseModel):
     openrouter: BackendProfile = Field(default_factory=BackendProfile)
 
 
+# Retired with the mechanics-scrub CLI (`session_doc/scrub_mechanics.py`,
+# issue #010): that autonomous LLM pass is superseded by the `/scrub` Claude
+# Code skill's propose->confirm->apply flow, and `ScrubKnobs` no longer
+# exists on the model. Stripped on load, not rejected, mirroring
+# RETIRED_PATH_FIELDS/RETIRED_NARRATE_FIELDS above: every campaign that has
+# ever opened the Session Doc Editor's config drawer already has a persisted
+# top-level `scrub:` block in its session_doc.yaml (the service dumps the
+# full model, defaults included), and SessionEditorConfig is
+# `extra="forbid"` at the root too — without this, every such campaign would
+# fail schema validation and take the whole editor down on boot.
+RETIRED_SESSION_DOC_FIELDS: tuple[str, ...] = ("scrub",)
+
+
 class SessionEditorConfig(BaseModel):
     """Root model — the target ``<config>/session_doc.yaml`` shape.
 
@@ -369,12 +373,35 @@ class SessionEditorConfig(BaseModel):
     paths: EditorPaths = Field(default_factory=EditorPaths)
     extract: ExtractKnobs = Field(default_factory=ExtractKnobs)
     narrate: NarrateKnobs = Field(default_factory=NarrateKnobs)
-    scrub: ScrubKnobs = Field(default_factory=ScrubKnobs)
     verify: VerifyKnobs = Field(default_factory=VerifyKnobs)
     backends: Backends = Field(default_factory=Backends)
     session_name: OptStr = None
     profiles: list[ProfileEntry] = Field(default_factory=list)
     active_profile: OptStr = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _drop_retired_fields(cls, data: Any) -> Any:
+        """Strip retired top-level keys before ``extra="forbid"`` sees them.
+
+        Announced on stderr rather than dropped silently — see
+        ``EditorPaths._drop_retired_fields`` for the identical rationale. A
+        stale top-level group must not take the whole editor down on boot,
+        but it must not vanish quietly either.
+        """
+        if not isinstance(data, dict):
+            return data
+        retired = [k for k in RETIRED_SESSION_DOC_FIELDS if k in data]
+        if not retired:
+            return data
+        print(
+            f"  config: dropping retired session_doc.yaml top-level "
+            f"field(s) {', '.join(retired)} — the mechanics-scrub CLI they "
+            f"configured was retired in favor of the `/scrub` Claude Code "
+            f"skill, which has no config-driven knobs.",
+            file=sys.stderr,
+        )
+        return {k: v for k, v in data.items() if k not in RETIRED_SESSION_DOC_FIELDS}
 
 
 # Typed `ui.session_doc` field name -> grouped-schema location, expressed as
@@ -432,8 +459,13 @@ TYPED_SESSION_DOC_TO_GROUPED: dict[str, tuple[str, ...]] = {
     "dgx_endpoint": ("backends", "dgx", "endpoint"),
     "dgx_model": ("backends", "dgx", "model"),
     "openrouter_model": ("backends", "openrouter", "model"),
-    "scrub_enabled": ("scrub", "enabled"),
-    "scrub_tokens": ("scrub", "tokens"),
+    # ``scrub_enabled``/``scrub_tokens`` are deliberately absent (issue #010):
+    # they mapped into the ``scrub`` group, which no longer exists on
+    # SessionEditorConfig — the mechanics-scrub CLI it configured was retired
+    # in favor of the `/scrub` Claude Code skill, which has no config-driven
+    # knobs. Same rationale as ``roleplay_dir``/``narration_genre`` above:
+    # reported as unrecognised (visible, left behind in the old ui_state.yaml)
+    # instead of migrated into a field that is gone.
     # -- extras, no typed source field --
     # The old typed `ui.session_doc` model never had a slot for an
     # editor-local anthropic/claude-code model override (O3 was a new

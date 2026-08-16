@@ -201,7 +201,6 @@ const sceneLabel = ref('')
 const estimatedTokens = ref<number | null>(null)
 const hasExtraction = ref(false)
 const narrating = ref(false)
-const scrubbing = ref(false)
 const extracting = ref(false)
 const enhancing = ref(false)
 const planning = ref(false)
@@ -453,56 +452,6 @@ async function narrate() {
     onError() {
       activeSSE.value = null
       narrating.value = false
-      setStatus('Stream error — check terminal.')
-    },
-  })
-}
-
-async function scrubScene() {
-  if (currentScene.value === null || scrubbing.value || narrating.value) return
-  scrubbing.value = true
-  narrationOutput.value = ''
-  setStatus(`Scrubbing scene ${currentScene.value}...`)
-
-  activeSSE.value = connectSSE(`/api/editor/scrub/${currentScene.value}`, {
-    onData(text) { narrationOutput.value += text },
-    onDone(rc, error) {
-      activeSSE.value = null
-      scrubbing.value = false
-      setStatus(rc === 0
-        ? `Scrubbed scene ${currentScene.value} — .scrubbed.md written.`
-        : `Scrub failed${error ? ': ' + error : ''}.`)
-      loadScenes()
-      refreshPipeline()
-    },
-    onError() {
-      activeSSE.value = null
-      scrubbing.value = false
-      setStatus('Stream error — check terminal.')
-    },
-  })
-}
-
-async function scrubAll() {
-  if (scrubbing.value || narrating.value) return
-  scrubbing.value = true
-  narrationOutput.value = ''
-  setStatus('Scrubbing all scene narrations...')
-
-  activeSSE.value = connectSSE('/api/editor/scrub-all', {
-    onData(text) { narrationOutput.value += text },
-    onDone(rc, error) {
-      activeSSE.value = null
-      scrubbing.value = false
-      setStatus(rc === 0
-        ? 'Scrub-All complete — .scrubbed.md files written.'
-        : `Scrub-All failed${error ? ': ' + error : ''}.`)
-      loadScenes()
-      refreshPipeline()
-    },
-    onError() {
-      activeSSE.value = null
-      scrubbing.value = false
       setStatus('Stream error — check terminal.')
     },
   })
@@ -778,16 +727,6 @@ onMounted(async () => {
       </span>
 
       <span class="stage-group">
-        <span class="stage-label">Stage 4½</span>
-        <button
-          class="btn-success btn-sm"
-          :disabled="!configReady || scrubbing || narrating"
-          @click="scrubAll"
-          title="Run the second-pass mechanical scrub over every scene narration."
-        >{{ scrubbing ? 'Scrubbing…' : 'Scrub All' }}</button>
-      </span>
-
-      <span class="stage-group">
         <span class="stage-label">Final</span>
         <button
           class="btn-primary btn-sm"
@@ -823,14 +762,12 @@ onMounted(async () => {
           :current-scene="currentScene"
           :narrating="narrating"
           :extracting="extracting"
-          :scrubbing="scrubbing"
           :prose-mode="proseMode"
           :reflections="reflections"
           :reviewed="currentSceneReviewed"
           @save-extraction="saveExtraction"
           @reload="reload"
           @narrate="narrate"
-          @scrub="scrubScene"
           @open-typora="openTypora"
           @update:extraction-content="extractionContent = $event"
           @update:prose-mode="proseMode = $event"
