@@ -20,6 +20,7 @@ from pathlib import Path
 import pytest
 
 import pipelines.rlm.rpg_retriever as rpgr
+from pipelines.rlm import resolve_refs
 from pipelines.rlm.mempalace_client import FakeMempalaceClient
 
 
@@ -418,3 +419,195 @@ def test_retrieve_book_id_only_targets_expensive(rpglib_http):
     assert out["candidates_expensive_emitted"] == 1
     assert out["candidates_cheap_emitted"] == 0
     assert out["hits"][0]["book_id"] == 42
+
+
+def test_retrieve_end_to_end_with_source_filter(rpglib_http):
+    # Coverage gap called out by the Step 3 plan: `retrieve(..., source=...)`
+    # was never exercised end-to-end. "Goblin" matches an MM monster
+    # (exact) and a VGM monster (prefix) — source="MM" must drop the VGM one.
+    base_url, _responses = rpglib_http
+    fake_mp = FakeMempalaceClient(responses={
+        "mempalace_search_hierarchical": lambda **kw: {
+            "query": kw["query"], "max_depth": kw.get("max_depth", 2),
+            "path": {"wings": [], "rooms": []}, "results": [],
+            "total_before_filter": 0, "fallback": False,
+        },
+    })
+    from pipelines.rlm.fivetools_catalog import CatalogIndex
+    from pipelines.rlm.fivetools_catalog import Candidate as FC
+
+    catalog = CatalogIndex(entities=[
+        FC(entity_type="monster", name="Goblin", source="MM",
+           file_path="/d/bestiary-mm.json", wrapper_key="monster"),
+        FC(entity_type="monster", name="Goblin Boss", source="VGM",
+           file_path="/d/bestiary-vgm.json", wrapper_key="monster"),
+    ])
+    out = rpgr.retrieve(
+        "Goblin", source="MM", fivetools_catalog=catalog,
+        rpg_library_url=base_url, mp_client=fake_mp, include_expensive=False,
+    )
+    cheap_hits = [h for h in out["hits"] if h["kind"] == "candidate"]
+    assert cheap_hits
+    assert {h["source"] for h in cheap_hits} == {"MM"}
+
+
+# ── retrieve_scoped / scope-aware retrieval ──────────────────────────────
+
+
+@pytest.fixture
+def scoped_fivetools_data_root(tmp_path: Path) -> Path:
+    """A tiny on-disk 5etools tree with entities from two sources (MM,
+    VGM) so scope filtering has something to prove. Real
+    ``fivetools_data_root`` (not an injected ``fivetools_catalog=``
+    object) so ``_load_catalog_silently`` -> ``fc.load_or_build(in_scope=...)``
+    is genuinely exercised end-to-end.
+    """
+    root = tmp_path / "data"
+    bestiary = root / "bestiary"
+    bestiary.mkdir(parents=True)
+    (bestiary / "bestiary-mm.json").write_text(json.dumps({
+        "_meta": {},
+        "monster": [{"name": "Goblin", "source": "MM", "page": 166}],
+    }))
+    (bestiary / "bestiary-vgm.json").write_text(json.dumps({
+        "_meta": {},
+        "monster": [{"name": "Goblin Boss", "source": "VGM", "page": 120}],
+    }))
+    return root
+
+
+def _mp_for_scoped_tests() -> FakeMempalaceClient:
+    return FakeMempalaceClient(responses={
+        "mempalace_search_hierarchical": lambda **kw: {
+            "query": kw["query"], "max_depth": kw.get("max_depth", 2),
+            "path": {"wings": [], "rooms": []}, "results": [],
+            "total_before_filter": 0, "fallback": False,
+        },
+    })
+
+
+def _whitelist_scope(sources: list[str]) -> resolve_refs.ResolvedScope:
+    """A minimal ResolvedScope built directly (not via resolve_refs.resolve())
+    — same convention as tests/test_resolve_refs.py's `_scope()` helper.
+    Only canonical_mode/canonical_sources/canonical_excluded matter for
+    `in_scope_source_codes`; the rest are harmless placeholders.
+    """
+    return resolve_refs.ResolvedScope(
+        canonical_mode="whitelist",
+        canonical_sources=sources,
+        canonical_excluded=[],
+        refs=[],
+        roots={},
+        refs_path=Path("/tmp/refs.yaml"),
+        local_path=None,
+    )
+
+
+def _all_mode_scope(sources: list[str]) -> resolve_refs.ResolvedScope:
+    return resolve_refs.ResolvedScope(
+        canonical_mode="all",
+        canonical_sources=sources,
+        canonical_excluded=[],
+        refs=[],
+        roots={},
+        refs_path=Path("/tmp/refs.yaml"),
+        local_path=None,
+    )
+
+
+def test_retrieve_scoped_whitelist_restricts_cheap_candidates(scoped_fivetools_data_root):
+    scope = _whitelist_scope(["MM"])
+    scoped_out = rpgr.retrieve_scoped(
+        "Goblin", scope=scope, fivetools_data_root=scoped_fivetools_data_root,
+        mp_client=_mp_for_scoped_tests(), include_expensive=False,
+    )
+    cheap_hits = [h for h in scoped_out["hits"] if h["kind"] == "candidate"]
+    assert cheap_hits
+    assert {h["source"] for h in cheap_hits} == {"MM"}
+
+
+def test_retrieve_scoped_none_returns_full_unrestricted_set(scoped_fivetools_data_root):
+    unscoped_out = rpgr.retrieve_scoped(
+        "Goblin", scope=None, fivetools_data_root=scoped_fivetools_data_root,
+        mp_client=_mp_for_scoped_tests(), include_expensive=False,
+    )
+    cheap_hits = [h for h in unscoped_out["hits"] if h["kind"] == "candidate"]
+    assert {h["source"] for h in cheap_hits} == {"MM", "VGM"}
+
+
+def test_retrieve_plain_also_returns_full_unrestricted_set(scoped_fivetools_data_root):
+    # Plain retrieve() has no scope knob at all — must behave like
+    # retrieve_scoped(scope=None): the full, unrestricted entity set.
+    out = rpgr.retrieve(
+        "Goblin", fivetools_data_root=scoped_fivetools_data_root,
+        mp_client=_mp_for_scoped_tests(), include_expensive=False,
+    )
+    cheap_hits = [h for h in out["hits"] if h["kind"] == "candidate"]
+    assert {h["source"] for h in cheap_hits} == {"MM", "VGM"}
+
+
+def test_retrieve_scoped_all_mode_no_excludes_matches_scope_none(scoped_fivetools_data_root):
+    # "all" mode with nothing excluded -> in_scope_source_codes() returns
+    # None -> identical unscoped cache + identical entity set as scope=None.
+    # This is the "unrestricted campaigns pay nothing extra" guarantee.
+    scope = _all_mode_scope(["MM", "VGM"])
+    out_all_mode = rpgr.retrieve_scoped(
+        "Goblin", scope=scope, fivetools_data_root=scoped_fivetools_data_root,
+        mp_client=_mp_for_scoped_tests(), include_expensive=False,
+    )
+    out_none = rpgr.retrieve_scoped(
+        "Goblin", scope=None, fivetools_data_root=scoped_fivetools_data_root,
+        mp_client=_mp_for_scoped_tests(), include_expensive=False,
+    )
+    assert out_all_mode["hits"] == out_none["hits"]
+
+
+def test_retrieve_is_faithful_wrapper_around_retrieve_scoped(scoped_fivetools_data_root):
+    # retrieve(...) must be indistinguishable from
+    # retrieve_scoped(..., scope=None) for identical inputs.
+    kwargs = dict(
+        fivetools_data_root=scoped_fivetools_data_root,
+        include_expensive=False,
+        limit=5,
+        k_cheap=10,
+    )
+    out_wrapper = rpgr.retrieve("Goblin", mp_client=_mp_for_scoped_tests(), **kwargs)
+    out_scoped = rpgr.retrieve_scoped(
+        "Goblin", scope=None, mp_client=_mp_for_scoped_tests(), **kwargs
+    )
+    assert out_wrapper == out_scoped
+
+
+class TestLoadCatalogSilentlyThreading:
+    """Direct unit coverage that `in_scope` reaches `fc.load_or_build`,
+    independent of the real-data-root end-to-end tests above.
+    """
+
+    def test_forwards_in_scope_when_given(self, monkeypatch, tmp_path):
+        captured = {}
+
+        def fake_load_or_build(data_root, **kwargs):
+            captured["data_root"] = data_root
+            captured["kwargs"] = kwargs
+            return "sentinel-catalog"
+
+        import pipelines.rlm.fivetools_catalog as fc
+        monkeypatch.setattr(fc, "load_or_build", fake_load_or_build)
+
+        result = rpgr._load_catalog_silently(tmp_path, in_scope={"MM"})
+        assert result == "sentinel-catalog"
+        assert captured["kwargs"] == {"in_scope": {"MM"}}
+
+    def test_omitting_in_scope_passes_none(self, monkeypatch, tmp_path):
+        captured = {}
+
+        def fake_load_or_build(data_root, **kwargs):
+            captured["kwargs"] = kwargs
+            return "sentinel-catalog"
+
+        import pipelines.rlm.fivetools_catalog as fc
+        monkeypatch.setattr(fc, "load_or_build", fake_load_or_build)
+
+        result = rpgr._load_catalog_silently(tmp_path)
+        assert result == "sentinel-catalog"
+        assert captured["kwargs"] == {"in_scope": None}

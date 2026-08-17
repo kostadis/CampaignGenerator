@@ -51,11 +51,14 @@ import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable
 
 from concurrent.futures import ThreadPoolExecutor
 from .mempalace_client import MempalaceClient
 from .suggest_conversion import build_suggestion
+
+if TYPE_CHECKING:  # annotation-only — the runtime import stays lazy (see retrieve_scoped)
+    from . import resolve_refs
 
 logger = logging.getLogger(__name__)
 
@@ -468,9 +471,14 @@ def _resolve_active_palace(palace: str | None) -> str | None:
     return None
 
 
-def _load_catalog_silently(data_root: Path | None):
+def _load_catalog_silently(data_root: Path | None, in_scope: set[str] | None = None):
     """Best-effort load the 5etools catalog. Returns None on any failure
     so cheap-tier candidates degrade gracefully.
+
+    ``in_scope`` threads straight through to
+    ``fivetools_catalog.load_or_build`` — ``None`` (the default) is the
+    unrestricted, cache-path-unchanged behavior every existing caller
+    already gets.
     """
     if data_root is None:
         logger.warning("no fivetools_data_root configured — cheap candidates disabled")
@@ -481,15 +489,16 @@ def _load_catalog_silently(data_root: Path | None):
         logger.warning("fivetools_catalog import failed — cheap candidates disabled")
         return None
     try:
-        return fc.load_or_build(data_root)
+        return fc.load_or_build(data_root, in_scope=in_scope)
     except Exception as exc:  # noqa: BLE001
         logger.warning("fivetools_catalog load failed: %s — cheap candidates disabled", exc)
         return None
 
 
-def retrieve(
+def retrieve_scoped(
     query: str = "",
     *,
+    scope: "resolve_refs.ResolvedScope | None" = None,
     palace: str | None = None,
     rpg_library_url: str | None = _DEFAULT_RPGLIB_URL,
     fivetools_data_root: Path | None = None,
@@ -508,7 +517,7 @@ def retrieve(
     mp_client: MempalaceClient | None = None,
     max_depth: int = 2,
 ) -> dict:
-    """Run one tiered retrieval. Returns the result as a dict.
+    """Run one tiered retrieval, scope-aware. Returns the result as a dict.
 
     Modes (per Step 3 design D5):
         * Mode A — pass ``query``. Searches all sources.
@@ -517,7 +526,30 @@ def retrieve(
         * Mode C — leave ``query`` empty; pass ``file_path`` (with
           optional ``pin_filter``) for a cheap pin, or ``book_id`` for
           an expensive pin.
+
+    ``scope`` — a campaign's resolved ``refs.yaml`` scope
+    (``resolve_refs.ResolvedScope``), or ``None`` for unrestricted (the
+    default, and what the plain :func:`retrieve` wrapper always passes).
+    When set, it is narrowed via ``resolve_refs.in_scope_source_codes`` to
+    the set of canonical 5etools source codes the campaign whitelists, and
+    that set restricts which entities the underlying 5etools catalog
+    exposes (a Step 2 ``fivetools_catalog.build_catalog``/``load_or_build``
+    filter, with its own scope-keyed cache file). ``scope=None`` and a
+    whitelist-free ``"all"``-mode scope both resolve to ``in_scope=None``
+    — unrestricted — so an unrestricted campaign shares the plain unscoped
+    cache and pays no extra rebuild cost. ``scope`` is independent of the
+    pre-existing ``source`` param: ``source`` post-filters *search results*
+    down to one 5etools source code; ``scope`` restricts the underlying
+    *catalog* to the campaign's whitelist before any search runs. Both can
+    be set at once. Mode C's cheap pin (``file_path`` with no ``query``)
+    returns before any catalog load, so ``scope`` has no effect on it.
     """
+    if scope is not None:
+        from . import resolve_refs as rr
+        in_scope = rr.in_scope_source_codes(scope)
+    else:
+        in_scope = None
+
     active_palace = _resolve_active_palace(palace)
     expensive_fallback_reason = (
         "rpg-library unavailable: rpg_library_url not configured"
@@ -559,7 +591,9 @@ def retrieve(
     def run_fivetools() -> list:
         if include_cheap and book_id is None:
             try:
-                cat = fivetools_catalog or _load_catalog_silently(fivetools_data_root)
+                cat = fivetools_catalog or _load_catalog_silently(
+                    fivetools_data_root, in_scope=in_scope
+                )
                 return search_fivetools_catalog(
                     query, catalog=cat, limit=max(k_cheap * 2, 10), source=source
                 )
@@ -620,6 +654,57 @@ def retrieve(
         expensive_fallback_reason=expensive_fallback_reason,
     )
     return reconciled.to_dict()
+
+
+def retrieve(
+    query: str = "",
+    *,
+    palace: str | None = None,
+    rpg_library_url: str | None = _DEFAULT_RPGLIB_URL,
+    fivetools_data_root: Path | None = None,
+    fivetools_catalog=None,
+    limit: int = 10,
+    k_cheap: int = 10,
+    k_expensive: int = 10,
+    include_cheap: bool = True,
+    include_expensive: bool = True,
+    game_system: str | None = None,
+    product_type: str | None = None,
+    source: str | None = None,
+    book_id: int | None = None,
+    file_path: str | None = None,
+    pin_filter: str | None = None,
+    mp_client: MempalaceClient | None = None,
+    max_depth: int = 2,
+) -> dict:
+    """Run one tiered retrieval. Returns the result as a dict.
+
+    Unscoped convenience wrapper around :func:`retrieve_scoped` (called with
+    ``scope=None``, i.e. unrestricted) — see that function for the full
+    mode documentation (Mode A/B/C) and for campaign-scoped retrieval via
+    a resolved ``refs.yaml`` scope.
+    """
+    return retrieve_scoped(
+        query,
+        scope=None,
+        palace=palace,
+        rpg_library_url=rpg_library_url,
+        fivetools_data_root=fivetools_data_root,
+        fivetools_catalog=fivetools_catalog,
+        limit=limit,
+        k_cheap=k_cheap,
+        k_expensive=k_expensive,
+        include_cheap=include_cheap,
+        include_expensive=include_expensive,
+        game_system=game_system,
+        product_type=product_type,
+        source=source,
+        book_id=book_id,
+        file_path=file_path,
+        pin_filter=pin_filter,
+        mp_client=mp_client,
+        max_depth=max_depth,
+    )
 
 
 def _retrieve_cheap_pin(

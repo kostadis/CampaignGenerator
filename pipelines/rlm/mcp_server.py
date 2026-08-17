@@ -11,16 +11,23 @@ Write access is restricted to <campaign_dir>/notes/ only.
 """
 
 import asyncio
+import logging
 import os
 import re
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 try:
     from mempalace.searcher import search_memories
     _HAS_MEMPALACE = True
 except ImportError:
     _HAS_MEMPALACE = False
+
+if TYPE_CHECKING:  # annotation-only — the runtime import stays lazy (see _resolve_campaign_scope)
+    from . import resolve_refs as rr
+
+logger = logging.getLogger(__name__)
 
 # ── Bootstrap ──────────────────────────────────────────────────────────────────
 
@@ -45,6 +52,23 @@ _campaign_dir_str = (
     or str(Path.cwd())
 )
 campaign_dir = Path(_campaign_dir_str).expanduser().resolve()
+
+
+def _resolve_campaign_scope(campaign_dir: Path) -> "rr.ResolvedScope | None":
+    """Best-effort refs.yaml resolution. None on any failure — degrades to
+    unscoped behavior exactly like every other resolver in this module."""
+    try:
+        from . import resolve_refs as rr
+        return rr.resolve(campaign_dir)
+    except SystemExit as exc:
+        logger.warning("refs.yaml scope unavailable: %s — retrieval unscoped", exc)
+        return None
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("refs.yaml scope resolution failed: %s — retrieval unscoped", exc)
+        return None
+
+
+_campaign_scope = _resolve_campaign_scope(campaign_dir)  # resolved once at import, like campaign_dir/config
 
 # Load config: flat campaign_dir/config.yaml (legacy layout) → migrated
 # campaign_dir/config/config.yaml → packaged default as a last resort.
@@ -684,6 +708,7 @@ def rpg_search(
     pin_filter: str = "",
     palace: str = "",
     max_depth: int = 2,
+    full_library: bool = False,
 ) -> str:
     """Search MemPalace + 5etools-canonical + rpg-library; return tiered hits.
 
@@ -719,17 +744,26 @@ def rpg_search(
                           ("name=X[,source=Y]" or "chapter=N").
       palace            — override the active campaign palace name.
       max_depth         — 0 = wings only, 1 = wings+rooms, 2 = full descent.
+      full_library      — set True to search the ENTIRE canonical 5etools
+                          corpus, ignoring this campaign's refs.yaml scope.
+                          Use for "is there a canon stat block for X
+                          anywhere, not just in what this campaign has
+                          scoped in" questions — not as a default; the
+                          campaign's declared scope is correct-by-default.
+                          Affects canonical 5etools breadth only — homebrew
+                          content (via MemPalace) is unaffected either way.
 
     This is a *retrieval* tool. Use propose_dossier to capture the result in
     a reviewable file before letting any render pipeline consume it.
     """
     import json
 
-    from .rpg_retriever import retrieve
+    from .rpg_retriever import retrieve_scoped
 
     try:
-        result = retrieve(
+        result = retrieve_scoped(
             query,
+            scope=None if full_library else _campaign_scope,
             palace=palace or _resolve_palace_path(),
             rpg_library_url=_resolve_rpg_library_url(),
             fivetools_data_root=_resolve_fivetools_data_root(),
@@ -761,6 +795,7 @@ def propose_dossier(
     include_cheap: bool = True,
     include_expensive: bool = True,
     overwrite: bool = True,
+    full_library: bool = False,
 ) -> str:
     """Run rpg_search and write the slotted result to docs/dossier_proposal.md.
 
@@ -772,12 +807,21 @@ def propose_dossier(
     include_cheap      — set False to suppress cheap candidates
     include_expensive  — set False to suppress expensive candidates
     overwrite          — replace an existing proposal; False refuses if present
+    full_library       — set True to search the ENTIRE canonical 5etools
+                         corpus, ignoring this campaign's refs.yaml scope.
+                         Use for "is there a canon stat block for X anywhere,
+                         not just in what this campaign has scoped in"
+                         questions — not as a default; the campaign's
+                         declared scope is correct-by-default. Affects
+                         canonical 5etools breadth only — homebrew content
+                         (via MemPalace) is unaffected either way.
 
     Returns a short status string. The produced file is a CANDIDATES list —
     a human has to review it, edit scope, and change the status banner away
     from `candidates only` before any render pipeline will consume it.
     """
     from .dossier_proposer import propose, render, write_proposal
+    from .rpg_retriever import retrieve_scoped
 
     try:
         proposal = propose(
@@ -791,6 +835,8 @@ def propose_dossier(
             k_expensive=k_expensive,
             include_cheap=include_cheap,
             include_expensive=include_expensive,
+            scope=None if full_library else _campaign_scope,
+            retriever=retrieve_scoped,
         )
     except Exception as exc:
         return f"Error: propose_dossier failed: {exc}"

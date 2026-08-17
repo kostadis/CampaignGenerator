@@ -29,6 +29,7 @@ rpg-library candidates and constructs the ingest one-liner.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import logging
 import pickle
@@ -47,6 +48,7 @@ logger = logging.getLogger(__name__)
 
 
 _CACHE_FILENAME = ".fivetools_catalog.pkl"
+_CACHE_FILENAME_STEM, _CACHE_FILENAME_SUFFIX = _CACHE_FILENAME.rsplit(".", 1)
 _CACHE_VERSION = 1
 # 5etools root is EXTERNAL config (mneme-owned). Precedence:
 # FIVETOOLS_DATA_ROOT → mneme wiring → None. See
@@ -94,6 +96,12 @@ class CatalogIndex:
     deepest_mtime: float = 0.0
     built_at: float = 0.0
     version: int = _CACHE_VERSION
+    # Records the scope this cache was built under — None means unrestricted
+    # (every entity on disk). Not load-bearing for correctness once the cache
+    # path itself is scope-keyed (see cache_path); kept for debugging/status
+    # output. Must stay last-with-a-default so old pickled payloads (built
+    # before this field existed) unpickle fine, defaulting to None.
+    in_scope: frozenset[str] | None = None
 
 
 # ── Build ──────────────────────────────────────────────────────────────────
@@ -103,6 +111,7 @@ def build_catalog(
     data_root: Path,
     *,
     on_warning=None,
+    in_scope: set[str] | None = None,
 ) -> CatalogIndex:
     """Walk ``data_root`` and emit a CatalogIndex over every entity found.
 
@@ -116,11 +125,22 @@ def build_catalog(
     record with ``chapter_ordinal`` set; each named child one level deep
     becomes a ``section`` record (so place names like ``Velkynvelve``
     inside ``Prisoners of the Drow`` are findable).
+
+    ``in_scope`` — when not ``None``, only entities whose ``.source``
+    case-insensitively matches one of the given source codes are kept
+    (same convention as ``rpg_retriever._filter_candidates_by_source``).
+    This is entity-level filtering, so it correctly handles multi-source
+    files (``items.json``, ``races.json``, ``feats.json``, ...) that the
+    MCP launcher's file-level symlink filtering cannot. ``None`` means
+    unrestricted (every entity on disk) — the historical, still-default
+    behavior.
     """
     on_warn = on_warning or (lambda m: logger.warning("catalog: %s", m))
     data_root = Path(data_root).expanduser().resolve()
     if not data_root.is_dir():
         raise FileNotFoundError(f"data root {data_root} does not exist")
+
+    scope_lower = {s.lower() for s in in_scope} if in_scope is not None else None
 
     entities: list[Candidate] = []
     deepest_mtime = 0.0
@@ -139,9 +159,9 @@ def build_catalog(
         file_count += 1
         kind = fivetools_ingest.detect_doc_kind(raw)
         if kind == "catalog":
-            entities.extend(_index_catalog_file(json_path, raw))
+            entities.extend(_filter_in_scope(_index_catalog_file(json_path, raw), scope_lower))
         elif kind == "adventure":
-            entities.extend(_index_adventure_file(json_path, raw))
+            entities.extend(_filter_in_scope(_index_adventure_file(json_path, raw), scope_lower))
         # 'unknown' is silently skipped — gendata-*, index files, etc.
 
     elapsed = time.time() - started
@@ -154,7 +174,28 @@ def build_catalog(
         data_root=str(data_root),
         deepest_mtime=deepest_mtime,
         built_at=time.time(),
+        in_scope=frozenset(in_scope) if in_scope is not None else None,
     )
+
+
+def _filter_in_scope(
+    candidates: Iterator[Candidate], scope_lower: set[str] | None
+) -> Iterator[Candidate]:
+    """Yield only candidates whose lowercased ``.source`` is in ``scope_lower``.
+
+    ``scope_lower is None`` means unrestricted — every candidate passes
+    through untouched. When restricted, a candidate with an empty-string
+    ``.source`` (unset/unparseable — see ``_index_catalog_file`` and
+    ``_adventure_source_code``) is by definition not in any whitelist and
+    is dropped. That's intentional, not an oversight: an entity we can't
+    attribute to a source can't be proven in-scope.
+    """
+    if scope_lower is None:
+        yield from candidates
+        return
+    for c in candidates:
+        if c.source.lower() in scope_lower:
+            yield c
 
 
 def _iter_json_files(root: Path) -> Iterator[Path]:
@@ -335,14 +376,36 @@ def _type_quality(entity_type: str) -> int:
 # ── Cache ──────────────────────────────────────────────────────────────────
 
 
-def cache_path(data_root: Path) -> Path:
-    return Path(data_root).expanduser().resolve() / _CACHE_FILENAME
+def cache_path(data_root: Path, in_scope: set[str] | None = None) -> Path:
+    """Cache file for ``data_root`` under the given scope.
+
+    ``in_scope=None`` (the default) returns exactly
+    ``<data_root>/.fivetools_catalog.pkl`` — byte-identical to every
+    existing on-disk cache and every unscoped caller, unaffected by this
+    parameter's addition.
+
+    A non-``None`` scope — including the empty set, which is deliberately
+    *not* treated the same as ``None`` — gets its own cache file, named
+    ``.fivetools_catalog.<digest12>.pkl`` where ``digest12`` is the first
+    12 hex chars of the sha256 of the sorted, lowercased scope. This keeps
+    distinct scopes over the same ``data_root`` from colliding or
+    thrashing a shared cache (e.g. two campaigns pointed at one 5etools
+    tree with different refs.yaml scopes).
+    """
+    root = Path(data_root).expanduser().resolve()
+    if in_scope is None:
+        return root / _CACHE_FILENAME
+    digest = hashlib.sha256(
+        ",".join(sorted(s.lower() for s in in_scope)).encode("utf-8")
+    ).hexdigest()[:12]
+    return root / f"{_CACHE_FILENAME_STEM}.{digest}.{_CACHE_FILENAME_SUFFIX}"
 
 
 def load_or_build(
     data_root: Path,
     *,
     force_rebuild: bool = False,
+    in_scope: set[str] | None = None,
 ) -> CatalogIndex:
     """Load a cached catalog if fresh, otherwise rebuild and write the cache.
 
@@ -352,6 +415,10 @@ def load_or_build(
     Cache failures (corrupt pickle, version mismatch, write error) are
     logged but never raised — the catalog is always recoverable from
     the source tree.
+
+    ``in_scope`` — see :func:`build_catalog` / :func:`cache_path`. Threaded
+    into both: the scope selects which cache file is read/written, and
+    (on a rebuild) which entities are kept.
     """
     if data_root is None:
         raise SystemExit(
@@ -360,7 +427,7 @@ def load_or_build(
             "(fivetools_data_root — mneme-owned external config)."
         )
     data_root = Path(data_root).expanduser().resolve()
-    cache = cache_path(data_root)
+    cache = cache_path(data_root, in_scope)
 
     if not force_rebuild and cache.is_file():
         payload = _try_load_cache(cache)
@@ -371,7 +438,7 @@ def load_or_build(
                 return payload
             logger.info("catalog: cache stale (mtime drift); rebuilding")
 
-    catalog = build_catalog(data_root)
+    catalog = build_catalog(data_root, in_scope=in_scope)
     try:
         cache.write_bytes(pickle.dumps(catalog))
     except OSError as exc:

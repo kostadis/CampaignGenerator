@@ -317,6 +317,78 @@ class TestCanonicalResolution:
             rr.resolve_canonical({"canonical": "all"}, empty)
 
 
+# ── Shared scope predicate ───────────────────────────────────────────────
+
+
+def _scope(
+    *,
+    canonical_mode: str,
+    canonical_sources: list[str],
+    canonical_excluded: list[str],
+) -> rr.ResolvedScope:
+    """A minimal ResolvedScope for exercising in_scope_source_codes().
+
+    Only canonical_mode/canonical_sources/canonical_excluded matter here;
+    the rest are filled with harmless placeholders.
+    """
+    return rr.ResolvedScope(
+        canonical_mode=canonical_mode,
+        canonical_sources=canonical_sources,
+        canonical_excluded=canonical_excluded,
+        refs=[],
+        roots={},
+        refs_path=Path("/tmp/refs.yaml"),
+        local_path=None,
+    )
+
+
+class TestInScopeSourceCodes:
+    def test_all_mode_no_excludes_returns_none(self):
+        scope = _scope(
+            canonical_mode="all", canonical_sources=["OotA", "MM"], canonical_excluded=[]
+        )
+        assert rr.in_scope_source_codes(scope) is None
+
+    def test_all_mode_with_excludes_returns_sources_not_none(self):
+        # An exclusion list means filtering IS required — "all" alone isn't
+        # enough to take the unrestricted fast path.
+        scope = _scope(
+            canonical_mode="all", canonical_sources=["OotA"], canonical_excluded=["MM"]
+        )
+        result = rr.in_scope_source_codes(scope)
+        assert result is not None
+        assert result == {"OotA"}
+
+    def test_whitelist_returns_sources(self):
+        scope = _scope(
+            canonical_mode="whitelist", canonical_sources=["OotA", "CoS"], canonical_excluded=[]
+        )
+        assert rr.in_scope_source_codes(scope) == {"OotA", "CoS"}
+
+    def test_whitelist_empty_returns_empty_set_not_none(self):
+        # An empty set is falsy but is NOT None — a future `if not in_scope`
+        # regression would silently treat "nothing whitelisted" as
+        # "unrestricted", so pin both checks separately.
+        scope = _scope(canonical_mode="whitelist", canonical_sources=[], canonical_excluded=[])
+        result = rr.in_scope_source_codes(scope)
+        assert result == set()
+        assert result is not None
+
+    def test_result_is_a_set(self):
+        scope = _scope(
+            canonical_mode="whitelist", canonical_sources=["OotA"], canonical_excluded=[]
+        )
+        assert isinstance(rr.in_scope_source_codes(scope), set)
+
+    def test_mutating_result_does_not_mutate_scope(self):
+        scope = _scope(
+            canonical_mode="whitelist", canonical_sources=["OotA"], canonical_excluded=[]
+        )
+        result = rr.in_scope_source_codes(scope)
+        result.add("MM")
+        assert scope.canonical_sources == ["OotA"]
+
+
 # ── rpglib sidecar resolution ────────────────────────────────────────────
 
 

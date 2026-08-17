@@ -11,7 +11,10 @@ retriever stub so the test never spawns mempalace-mcp.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pipelines.rlm.dossier_proposer as dp
+import pipelines.rlm.resolve_refs as resolve_refs
 
 
 # ── classify() ───────────────────────────────────────────────────────────
@@ -373,3 +376,83 @@ def test_write_proposal_creates_parents(tmp_path):
     p = dp.write_proposal("# hi", out)
     assert p.read_text() == "# hi"
     assert p.parent.is_dir()
+
+
+# ── propose() scope kwarg (issue #114 step 4) ──────────────────────────────
+#
+# `propose()` threads `scope` into `retriever_kwargs` CONDITIONALLY — only
+# when the caller actually passes one — mirroring the existing
+# `rpg_library_url`/`fivetools_data_root` pattern already in the function
+# body. This matters because the default `retriever=retrieve` does not
+# accept a `scope` kwarg by design (retrieve()'s signature is untouched by
+# step 3), so a caller that omits `scope` must never leak a `scope=None`
+# kwarg to a retriever that doesn't expect one.
+
+
+def _capturing_retriever(captured: dict):
+    def _inner(query, **kwargs):
+        captured["query"] = query
+        captured.update(kwargs)
+        return {
+            "query": query,
+            "hits": [],
+            "path": {"wings": [], "rooms": []},
+            "total_before_filter": 0,
+            "fallback": False,
+            "fallback_reason": None,
+        }
+    return _inner
+
+
+def _fake_scope() -> resolve_refs.ResolvedScope:
+    return resolve_refs.ResolvedScope(
+        canonical_mode="whitelist",
+        canonical_sources=["MM"],
+        canonical_excluded=[],
+        refs=[],
+        roots={},
+        refs_path=Path("/tmp/refs.yaml"),
+        local_path=None,
+    )
+
+
+def test_propose_threads_scope_into_retriever_kwargs_when_given(tmp_path):
+    captured: dict = {}
+    scope = _fake_scope()
+    dp.propose(
+        "test query",
+        campaign_dir=tmp_path,
+        scope=scope,
+        retriever=_capturing_retriever(captured),
+    )
+    assert captured.get("scope") is scope
+
+
+def test_propose_omits_scope_kwarg_when_not_given(tmp_path):
+    # The default `retriever=retrieve`-protecting case: no scope passed at
+    # all -> the retriever never receives a `scope` key, not even
+    # `scope=None`. Confirms the conditional guard, not just that a value
+    # round-trips.
+    captured: dict = {}
+    dp.propose(
+        "test query",
+        campaign_dir=tmp_path,
+        retriever=_capturing_retriever(captured),
+    )
+    assert "scope" not in captured
+
+
+def test_stub_retriever_tolerates_scope_kwarg(tmp_path):
+    # Confirms the existing _stub_retriever fake (used throughout this
+    # file's `propose()` coverage) would not break if a caller passed
+    # `scope` — its inner function is `def _inner(query, **kwargs)`, so it
+    # already tolerates an unexpected `scope` kwarg without asserting on
+    # an exact received-kwargs set. This is what makes the conditional
+    # design in propose() safe for this file's existing tests.
+    proposal = dp.propose(
+        "test query",
+        campaign_dir=tmp_path,
+        scope=_fake_scope(),
+        retriever=_stub_retriever([]),
+    )
+    assert proposal.raw_hit_count == 0

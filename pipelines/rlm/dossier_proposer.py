@@ -47,9 +47,12 @@ import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .rpg_retriever import retrieve
+
+if TYPE_CHECKING:  # annotation-only — propose() never imports resolve_refs at runtime
+    from . import resolve_refs as rr
 
 logger = logging.getLogger(__name__)
 
@@ -504,10 +507,20 @@ def propose(
     k_expensive: int = 5,
     include_cheap: bool = True,
     include_expensive: bool = True,
+    scope: "rr.ResolvedScope | None" = None,
     retriever=retrieve,
     **retriever_kwargs: Any,
 ) -> Proposal:
-    """Run retrieval and slot the hits. Does not call Claude."""
+    """Run retrieval and slot the hits. Does not call Claude.
+
+    ``scope`` — a campaign's resolved ``refs.yaml`` scope
+    (``resolve_refs.ResolvedScope``). Threaded into ``retriever_kwargs``
+    only when not ``None`` — the default ``retriever=retrieve`` does not
+    accept a ``scope`` kwarg by design (see ``rpg_retriever.retrieve``),
+    so a caller that omits ``scope`` never sends it an unexpected kwarg.
+    Pass ``retriever=retrieve_scoped`` (and a resolved ``scope``) to opt
+    into campaign-scoped retrieval.
+    """
     campaign_dir_str = str(Path(campaign_dir).expanduser().resolve()) if campaign_dir else str(
         Path.cwd().resolve()
     )
@@ -518,6 +531,8 @@ def propose(
         retriever_kwargs["fivetools_data_root"] = (
             Path(fivetools_data_root).expanduser()
         )
+    if scope is not None:
+        retriever_kwargs["scope"] = scope
     retriever_result = retriever(
         query,
         palace=palace,
