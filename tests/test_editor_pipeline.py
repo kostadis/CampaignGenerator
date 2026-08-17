@@ -334,6 +334,36 @@ def test_build_reextract_cmd_omits_batch_by_default(tmp_path):
     assert "--batch" not in cmd
 
 
+def test_build_reextract_cmd_omits_force_by_default(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+    )
+    cmd = scene_editor._build_reextract_cmd(None, cfg)
+    assert isinstance(cmd, list)
+    assert "--force" not in cmd
+
+
+def test_build_reextract_cmd_forwards_force_when_requested(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        vtt=str(vtt),
+    )
+    cmd = scene_editor._build_reextract_cmd(None, cfg, force=True)
+    assert isinstance(cmd, list)
+    assert "--force" in cmd
+
+
 def test_build_reextract_cmd_forwards_default_max_tokens(tmp_path):
     """8192 is ExtractKnobs' own default — matches scene_extract.py's own
     --max-tokens default, so an unconfigured campaign's command is

@@ -321,4 +321,16 @@ Predecessors: `specs/005-ui-batch-selection/plan.md` (batch as a selection
 value; `SelectionPanel.vue`), `specs/003-model-selection-resolution/` (the
 `resolve_selection` seam this service's `selection` field plugs into),
 `specs/002-ensemble-run-observability/plan.md` (run streaming + abort).)
+
+Also in flight (unrelated to the above chain): `specs/012-scene-extract-optional-force/plan.md`
+(Optional Force for Scene Re-Extraction — Stage 2's "Re-Extract Quotes"
+button hardcoded `?force=1` on every click
+(`SessionDocEditor.vue:473`), so the button always regenerated every scene
+— including already-reviewed ones — even though the engine underneath
+(`campaignlib/scenes.py::run_scene_extraction`, `scene_extract.py`'s
+`--force` flag, and the route's own `force: int = 0` default) already
+implements skip-if-exists correctly; #323. The fix is narrow: stop
+hardcoding the query param and add a visible, unchecked-by-default Force
+checkbox (pattern: `ConnectionGraph.vue`'s `replace-toggle`) — no engine or
+router logic changes. `research.md` D1–D5 traces the full call chain.)
 <!-- SPECKIT END -->

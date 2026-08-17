@@ -202,6 +202,7 @@ const estimatedTokens = ref<number | null>(null)
 const hasExtraction = ref(false)
 const narrating = ref(false)
 const extracting = ref(false)
+const forceReextract = ref(false)
 const enhancing = ref(false)
 const planning = ref(false)
 const verifying = ref(false)
@@ -470,7 +471,7 @@ async function runExtract() {
   // (005-ui-batch-selection, T029). A batch submission shows up in the
   // streamed output itself ("Batch submitted: …") rather than needing to
   // be predicted here.
-  activeSSE.value = connectSSE('/api/editor/extract?force=1', {
+  activeSSE.value = connectSSE(`/api/editor/extract?force=${forceReextract.value ? 1 : 0}`, {
     onData(text) { narrationOutput.value += text },
     onDone(rc, error) {
       activeSSE.value = null
@@ -704,6 +705,13 @@ onMounted(async () => {
           @click="runExtract"
           title="Stage 2 — rebuild per-scene quote files from session-summary.md"
         >{{ extracting ? 'Re-extracting…' : 'Re-Extract Quotes' }}</button>
+        <label
+          class="force-toggle"
+          title="Unchecked (default): only fills in scenes missing an extraction file. Checked: regenerates every scene and clears reviewed markers."
+        >
+          <input type="checkbox" v-model="forceReextract" :disabled="!configReady || enhancing || extracting || narrating || planning" />
+          Force (redo all)
+        </label>
       </span>
 
       <span class="stage-group">
@@ -933,6 +941,16 @@ onMounted(async () => {
   color: var(--text-muted);
   margin-right: 2px;
 }
+.force-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.force-toggle input { accent-color: var(--mauve); }
+
 .config-btn {
   margin-left: 4px;
 }

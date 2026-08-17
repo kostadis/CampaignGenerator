@@ -1020,9 +1020,10 @@ def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
     resolved selection, same as Stage 1 — no local param anymore (T029).
 
     Pass `force=True` to forward `--force` so existing per-scene files are
-    overwritten (with .prev snapshot) instead of skipped. The UI sets this
-    when the user clicks the Re-Extract button — clicking it should mean
-    "do the work."
+    overwritten (with .prev snapshot) instead of skipped. Defaults to
+    `False` (skip-existing, resumable) — the caller must explicitly opt
+    into a full redo; clicking Re-Extract alone no longer implies it
+    (#323).
     """
     vtt = _vtt_path(cfg)
     if vtt is None or not vtt.exists():
@@ -1453,7 +1454,8 @@ async def api_extract(request: Request, force: int = 0, cfg: ResolvedEditorConfi
     param (005-ui-batch-selection, T029) — see ``_build_reextract_cmd``,
     which already forwards it via ``_selection_args``. `force=1` forwards
     `--force` so existing per-scene files are overwritten (with .prev
-    snapshot) — the UI Re-Extract button always sets this.
+    snapshot); defaults to `0` (skip-existing) — the UI only sets `force=1`
+    when the GM has explicitly enabled the Force control (#323).
     """
     result = _build_reextract_cmd(request, cfg, force=bool(force))
     if isinstance(result, tuple):
