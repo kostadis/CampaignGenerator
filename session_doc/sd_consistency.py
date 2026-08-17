@@ -15,6 +15,7 @@ from pathlib import Path
 from campaignlib import (
     DEFAULT_MODEL,
     add_backend_args,
+    canonical_context_section,
     client_from_args,
     load_agent_prompt,
     run_single_batch,
@@ -54,6 +55,10 @@ def main() -> None:
     recap = recap_path.read_text(encoding="utf-8")
 
     context_parts: list[str] = []
+    canon = canonical_context_section(Path.cwd())
+    if canon:
+        context_parts.append(canon)
+
     for c in args.context:
         cp = Path(c).expanduser()
         if not cp.exists():

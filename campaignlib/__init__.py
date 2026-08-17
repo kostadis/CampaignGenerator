@@ -77,6 +77,7 @@ from .players_config import (
     speaker_map_from_configs,
 )
 from .registry import (
+    canonical_context_section,
     find_registry,
     load_registry,
     resolve_registry_arg,
@@ -197,6 +198,7 @@ __all__ = [
     "speaker_map",
     "speaker_map_from_configs",
     # entity registry
+    "canonical_context_section",
     "find_registry",
     "load_registry",
     "resolve_registry_arg",

@@ -19,8 +19,10 @@ from campaignlib import (
     DEFAULT_MODEL,
     add_backend_args,
     assemble_docs,
+    canonical_context_section,
     client_from_args,
     find_default_config,
+    load_agent_prompt,
     load_config,
     run_single_batch,
     stream_api,
@@ -32,31 +34,6 @@ from campaignlib import (
 # REPO_ROOT explicitly instead (same fix as pipelines/session_prep/prep.py,
 # one .parent shorter since session_doc/ is only one level below repo root).
 REPO_ROOT = Path(__file__).resolve().parent.parent
-
-CONSISTENCY_SYSTEM = """\
-You are a continuity editor for a D&D campaign. You will be given a session recap and
-one or more campaign context documents (campaign state, world state, party document).
-
-Your job: identify every factual error, contradiction, or questionable claim in the recap.
-
-Look for:
-- Wrong NPC names, titles, or factions
-- Events described as completed that haven't happened yet (per campaign state)
-- Attributing actions or items to the wrong character
-- Lore contradictions against world_state (places, factions, history)
-- Character abilities or items that don't match their sheet
-- Timeline issues (referencing events out of order)
-- Ambiguous claims that might confuse future sessions
-
-For each issue, output:
-- **Location**: which section of the recap (Summary / Memorable Moments / Scenes / NPCs / etc.)
-- **Issue**: what is wrong or uncertain
-- **Evidence**: what the context documents say
-- **Suggested fix**: a brief correction
-
-If nothing is wrong, say so clearly.
-Output only the consistency report. No preamble.
-"""
 
 _DEFAULT_CONFIG_DOCS = ["campaign_state", "world_state"]
 
@@ -74,8 +51,10 @@ def main() -> None:
     parser.add_argument(
         "--context",
         nargs="+",
+        action="extend",
         metavar="FILE",
-        help="Additional context files (e.g. docs/party.md docs/mechanics.md)",
+        help="Additional context files (e.g. docs/party.md docs/mechanics.md). "
+             "Repeatable: flags accumulate rather than overwrite.",
     )
     parser.add_argument(
         "--model",
@@ -101,6 +80,14 @@ def main() -> None:
     available_labels = {d["label"] for d in config.get("documents", []) if d.get("path")}
 
     context_parts: list[str] = []
+
+    canon = canonical_context_section(base_dir)
+    if canon:
+        context_parts.append(canon)
+    else:
+        print(f"  Note: no entity_registry.yaml found under {base_dir}, "
+              f"skipping canon section.", file=sys.stderr)
+
     for label in _DEFAULT_CONFIG_DOCS:
         if label in available_labels:
             text = assemble_docs(config, [label], base_dir)
@@ -132,10 +119,11 @@ def main() -> None:
     ])
 
     client = client_from_args(args)
+    system = load_agent_prompt("session_doc/consistency")
     max_tokens = int(os.environ.get("CG_CONSISTENCY_MAX_TOKENS", "32000"))
     if args.batch:
         try:
-            report = run_single_batch(client, system=CONSISTENCY_SYSTEM, user=prompt,
+            report = run_single_batch(client, system=system, user=prompt,
                                       model=args.model, max_tokens=max_tokens,
                                       cache_system=False)
         except RuntimeError as e:
@@ -143,7 +131,7 @@ def main() -> None:
             sys.exit(1)
     else:
         report = stream_api(
-            client, CONSISTENCY_SYSTEM, prompt, args.model,
+            client, system, prompt, args.model,
             max_tokens=max_tokens,
             silent=True, verbose=args.verbose,
         )
