@@ -12,7 +12,7 @@ fails loudly if any single function body calls both an ingredient from
 each list.
 
 Retrieval sentinels (any call within the body):
-  * rpg_retriever.retrieve / any attribute on the imported module
+  * rpg_retriever.retrieve / .retrieve_scoped / any attribute on the imported module
   * mempalace_search_hierarchical (MCP tool name)
   * MempalaceClient.search_hierarchical / .search
 
@@ -43,6 +43,7 @@ SKIP_DIRS = {"tests"}
 RETRIEVAL_NAMES = frozenset(
     {
         "retrieve",
+        "retrieve_scoped",
         "search_within",
         "search_hierarchical",
         "mempalace_search_hierarchical",

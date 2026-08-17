@@ -168,7 +168,7 @@ def _peek_shape(json_path: Path) -> tuple[str, str | None]:
 
 def _all_canonical_sources_in_scope(scope: rr.ResolvedScope) -> bool:
     """True when no filtering of the canonical tree is needed."""
-    return scope.canonical_mode == "all" and not scope.canonical_excluded
+    return rr.in_scope_source_codes(scope) is None
 
 
 def _build_canonical_data(data_dir: Path, scope: rr.ResolvedScope) -> None:
@@ -179,7 +179,11 @@ def _build_canonical_data(data_dir: Path, scope: rr.ResolvedScope) -> None:
         data_dir.symlink_to(canonical_root)
         return
 
-    in_scope: set[str] = set(scope.canonical_sources)
+    # The fast path above already returned when scope is unrestricted, so
+    # in_scope_source_codes() cannot be None here — but nothing at this line
+    # proves that to a reader or a type checker, so fall back to an empty
+    # set rather than asserting.
+    in_scope: set[str] = rr.in_scope_source_codes(scope) or set()
     data_dir.mkdir(parents=True)
 
     # Filter the four source-indexed files.

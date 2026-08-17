@@ -302,6 +302,21 @@ def resolve_canonical(
     )
 
 
+def in_scope_source_codes(scope: ResolvedScope) -> set[str] | None:
+    """Source codes the campaign's refs.yaml scope allows. None = unrestricted.
+
+    Shared scope predicate: both the MCP launcher (symlink-farm filtering)
+    and the retrieval catalog derive "what canonical content is in scope"
+    from this one definition instead of re-deriving it. ``None`` means every
+    canonical source is fair game — "all" mode with nothing excluded — so a
+    caller's fast path can be "don't filter" instead of an always-true
+    membership check.
+    """
+    if scope.canonical_mode == "all" and not scope.canonical_excluded:
+        return None
+    return set(scope.canonical_sources)
+
+
 # ── Ref resolution ───────────────────────────────────────────────────────
 
 

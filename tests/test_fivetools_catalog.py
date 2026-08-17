@@ -252,6 +252,79 @@ class TestSearch:
         assert [(h.name, h.file_path) for h in a] == [(h.name, h.file_path) for h in b]
 
 
+# ── Scope-aware build ────────────────────────────────────────────────────
+
+
+class TestBuildCatalogScoped:
+    def test_scoped_build_filters_by_source(self, data_root: Path):
+        cat = fc.build_catalog(data_root, in_scope={"MM"})
+        sources = {c.source for c in cat.entities}
+        assert sources == {"MM"}
+        names = {c.name for c in cat.entities}
+        assert "Drow" in names
+        # No PHB spells, no OotA chapters/sections.
+        assert "Fireball" not in names
+        assert "Prisoners of the Drow" not in names
+        assert "Velkynvelve" not in names
+
+    def test_scoped_build_is_case_insensitive(self, data_root: Path):
+        # Lowercase scope still matches "MM".
+        cat_lower = fc.build_catalog(data_root, in_scope={"mm"})
+        assert {c.source for c in cat_lower.entities} == {"MM"}
+        assert any(c.name == "Drow" for c in cat_lower.entities)
+
+        # Mixed-case scope still matches "OotA".
+        cat_mixed = fc.build_catalog(data_root, in_scope={"oOtA"})
+        assert {c.source for c in cat_mixed.entities} == {"OotA"}
+        assert any(c.name == "Prisoners of the Drow" for c in cat_mixed.entities)
+
+    def test_in_scope_none_matches_no_arg(self, data_root: Path):
+        default = fc.build_catalog(data_root)
+        explicit_none = fc.build_catalog(data_root, in_scope=None)
+        default_set = {(c.entity_type, c.name, c.source) for c in default.entities}
+        explicit_set = {(c.entity_type, c.name, c.source) for c in explicit_none.entities}
+        assert default_set == explicit_set
+
+    def test_empty_in_scope_yields_zero_entities(self, data_root: Path):
+        # Empty set is a real (maximally restrictive) scope, not "unrestricted".
+        cat = fc.build_catalog(data_root, in_scope=set())
+        assert cat.entities == []
+
+    def test_cross_source_file_filtered_at_entity_level(self, data_root: Path):
+        """The point of this whole design: some 5etools catalog files (items,
+        races, classes/*, feats, variantrules) mix entities from multiple
+        sources in ONE file. The MCP launcher's symlink-based scoping filters
+        whole files and structurally cannot split a mixed-source file — see
+        the "Cross-source files cannot be filtered at this layer" comment in
+        launch_5etools_mcp.py. Catalog build filters per-Candidate via
+        .source, so it succeeds where file-level filtering cannot. This is
+        NOT a redundant duplicate of test_scoped_build_filters_by_source —
+        that test filters whole single-source files; this one proves
+        filtering *within* one shared file.
+        """
+        items_dir = data_root / "items"
+        items_dir.mkdir(parents=True)
+        (items_dir / "items-base.json").write_text(json.dumps({
+            "_meta": {},
+            "item": [
+                {"name": "Alpha Blade", "source": "MM", "page": 1},
+                {"name": "Beta Rod", "source": "PHB", "page": 2},
+            ],
+        }))
+
+        cat = fc.build_catalog(data_root, in_scope={"MM"})
+        names = {c.name for c in cat.entities}
+        assert "Alpha Blade" in names
+        assert "Beta Rod" not in names
+
+    def test_catalog_index_records_in_scope(self, data_root: Path):
+        scoped = fc.build_catalog(data_root, in_scope={"MM"})
+        assert scoped.in_scope == frozenset({"MM"})
+
+        unscoped = fc.build_catalog(data_root)
+        assert unscoped.in_scope is None
+
+
 # ── Cache ─────────────────────────────────────────────────────────────────
 
 
@@ -311,6 +384,93 @@ class TestLoadOrBuild:
         cat = fc.load_or_build(data_root)
         # Built fresh.
         assert any(c.name == "Drow" for c in cat.entities)
+
+    def test_scoped_and_unscoped_caches_coexist(self, data_root: Path):
+        # Build both an unscoped and a scoped catalog over the same data_root.
+        unscoped_first = fc.load_or_build(data_root)
+        scoped_first = fc.load_or_build(data_root, in_scope={"MM"})
+
+        unscoped_cache = fc.cache_path(data_root)
+        scoped_cache = fc.cache_path(data_root, {"MM"})
+        assert unscoped_cache != scoped_cache
+        assert unscoped_cache.is_file()
+        assert scoped_cache.is_file()
+
+        # Plant a sentinel in the UNSCOPED cache only.
+        unscoped_cache.write_bytes(pickle.dumps(fc.CatalogIndex(
+            entities=[fc.Candidate(
+                entity_type="sentinel", name="UNSCOPED_SENTINEL", source="X",
+                file_path="/x", wrapper_key="x",
+            )],
+            data_root=str(data_root),
+            deepest_mtime=unscoped_first.deepest_mtime,
+        )))
+        # A scoped load_or_build must NOT see the unscoped sentinel — it
+        # reads its own cache file, untouched.
+        scoped_reloaded = fc.load_or_build(data_root, in_scope={"MM"})
+        assert all(c.name != "UNSCOPED_SENTINEL" for c in scoped_reloaded.entities)
+
+        # And conversely: plant a sentinel in the SCOPED cache only.
+        scoped_cache.write_bytes(pickle.dumps(fc.CatalogIndex(
+            entities=[fc.Candidate(
+                entity_type="sentinel", name="SCOPED_SENTINEL", source="MM",
+                file_path="/x", wrapper_key="x",
+            )],
+            data_root=str(data_root),
+            deepest_mtime=scoped_first.deepest_mtime,
+            in_scope=frozenset({"MM"}),
+        )))
+        unscoped_reloaded = fc.load_or_build(data_root)
+        assert all(c.name != "SCOPED_SENTINEL" for c in unscoped_reloaded.entities)
+
+    def test_scoped_load_or_build_round_trips_through_its_cache(self, data_root: Path):
+        first = fc.load_or_build(data_root, in_scope={"MM"})
+        scoped_cache = fc.cache_path(data_root, {"MM"})
+        sentinel = fc.CatalogIndex(
+            entities=[fc.Candidate(
+                entity_type="sentinel", name="SCOPED_ROUNDTRIP", source="MM",
+                file_path="/x", wrapper_key="x",
+            )],
+            data_root=str(data_root),
+            deepest_mtime=first.deepest_mtime,
+            in_scope=frozenset({"MM"}),
+        )
+        scoped_cache.write_bytes(pickle.dumps(sentinel))
+        second = fc.load_or_build(data_root, in_scope={"MM"})
+        assert any(c.name == "SCOPED_ROUNDTRIP" for c in second.entities)
+
+
+class TestCachePathScoped:
+    def test_no_scope_matches_no_arg(self, data_root: Path):
+        assert fc.cache_path(data_root) == fc.cache_path(data_root, None)
+
+    def test_unscoped_filename_is_exact_and_backward_compatible(self, data_root: Path):
+        # This is the back-compat guarantee: every existing cache file and
+        # every unscoped caller sees exactly this literal filename.
+        assert fc.cache_path(data_root) == data_root / ".fivetools_catalog.pkl"
+        assert fc.cache_path(data_root, None) == data_root / ".fivetools_catalog.pkl"
+
+    def test_scoped_filename_differs_from_unscoped(self, data_root: Path):
+        scoped = fc.cache_path(data_root, {"MM"})
+        unscoped = fc.cache_path(data_root)
+        assert scoped != unscoped
+        assert scoped.name.endswith(".pkl")
+        assert scoped.name.startswith(".fivetools_catalog.")
+
+    def test_different_scopes_give_different_paths(self, data_root: Path):
+        mm = fc.cache_path(data_root, {"MM"})
+        phb = fc.cache_path(data_root, {"PHB"})
+        assert mm != phb
+
+    def test_same_scope_order_and_case_gives_same_path(self, data_root: Path):
+        a = fc.cache_path(data_root, {"MM", "PHB"})
+        b = fc.cache_path(data_root, {"phb", "mm"})
+        assert a == b
+
+    def test_empty_scope_differs_from_unscoped(self, data_root: Path):
+        empty = fc.cache_path(data_root, set())
+        unscoped = fc.cache_path(data_root)
+        assert empty != unscoped
 
 
 # ── Stats ─────────────────────────────────────────────────────────────────
