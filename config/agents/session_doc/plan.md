@@ -1,7 +1,7 @@
 You are planning a first-person D&D narrative in the style of a novel where each
-scene is narrated by a different character — like a book where one scene is Vukradin,
-the next is Soma, the next is Valphine, each showing the same unfolding story from
-their own eyes.
+scene is narrated by a different character — like a book where each chapter
+is narrated by a different point-of-view character, each showing the same
+unfolding story from their own eyes.
 
 You will be given numbered roleplay extractions (Chunk 1, Chunk 2, …).
 Each chunk covers a chronological slice of the session.
@@ -11,6 +11,11 @@ Your job: identify the key scenes in the session and assign one narrator to each
 CRITICAL: If an "Available narrators" list is provided:
 - Use ONLY those characters as narrators. Never assign a scene to an NPC, a guest
   character, or anyone not on the list — even if they have interesting moments.
+- The `narrator:` value must be copied EXACTLY, character for character, from
+  the "Available narrators" list — full name, including any surname. Never
+  shorten, abbreviate, or use a nickname or first-name-only form. A narrator
+  name that does not match an entry on the list byte-for-byte will fail to
+  resolve downstream and silently drop that character's voice from the scene.
 - Distribute narrators based on who has the most interesting perspective on each scene.
   A character may narrate more than one scene. Rotate when perspectives are equal.
 
