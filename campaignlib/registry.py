@@ -205,6 +205,32 @@ class Registry:
         return "\n".join(lines).rstrip("\n") + "\n"
 
 
+def canonical_context_section(campaign_dir) -> "str | None":
+    """Render the campaign's entity registry as a labeled, highest-trust
+    prompt section, or ``None`` if no registry exists at ``campaign_dir``.
+
+    Used by consistency-check callers (``check_consistency.py``,
+    ``sd_consistency.py``) so the registry's canonical spellings/aliases and
+    anti-merge guards outrank generated grounding docs by construction,
+    instead of depending on someone remembering to pass the registry via
+    ``--context`` (CampaignGenerator#326).
+    """
+    path = find_registry(campaign_dir)
+    if path is None:
+        return None
+    reg = load_registry(path)
+    body = reg.inventory_markdown()
+    if reg.distinct:
+        pairs = "\n".join(
+            f"- **{a}** is NOT the same entity as **{b}**" for a, b in reg.distinct
+        )
+        body += "\n## Confirmed distinct entities (do not merge)\n\n" + pairs + "\n"
+    return (
+        "## AUTHORITATIVE CANON — entity registry (highest trust; wins all conflicts)\n\n"
+        + body
+    )
+
+
 def _valid_scope(scope: str) -> bool:
     return scope in ("persistent", "scene") or bool(_CHAPTER_SCOPE_RE.match(scope or ""))
 
