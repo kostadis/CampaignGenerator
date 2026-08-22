@@ -50,8 +50,8 @@ Engine in `campaignlib/`, CLI in `session_doc/`, server in `server/`, UI in
 result decides whether every later measurement on this branch means anything.
 
 - [ ] T001 Verify the worktree's checkout shadows nothing: run `python -c "import campaignlib, pathlib; print(pathlib.Path(campaignlib.__file__).parent)"` from the repo root and confirm it prints the worktree path, not `/home/kroussos/src/CampaignGenerator` (the editable-install `.pth` hardcodes MAIN — a green test run in the wrong tree proves nothing)
-- [ ] T002 Install the package into the server's venv so console scripts resolve: `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"`, per `CLAUDE.md`
-- [ ] T003 Capture the per-scene baseline for later comparison: run `scene_extract` in per-scene mode on `~/Phandalin/Phandalin/summaries/20260811` into `/tmp/sx_perscene`, recording wall-clock and scene count (baseline for SC-002, and the comparison corpus for SC-003/SC-004)
+- [ ] T002 Install the package into the server's venv so console scripts resolve: `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"`, per `CLAUDE.md`. ⚠️ **This is global**: the editable `.pth` currently points at the main checkout, so this repoints the running server and every console script — including for unrelated work on `main` — at worktree code. T063 restores it
+- [ ] T003 Capture the per-scene baseline into an **immutable** path — `/tmp/sx_perscene_baseline`, never regenerated — running `scene_extract` in per-scene mode on `~/Phandalin/Phandalin/summaries/20260811`, recording wall-clock, transmitted-token count and scene count. This is the single comparison corpus for SC-002 (observation) and SC-003/SC-004 (the fidelity gate); later scenarios must diff against it, never re-run it, or the gate compares against a different non-deterministic corpus than the one that was timed
 
 **Checkpoint**: the worktree runs its own code and a per-scene baseline exists.
 
@@ -129,22 +129,22 @@ be implemented in the shape that looks right and is wrong — see the task text.
 ### CLI (contracts/cli-surface.md)
 
 - [ ] T024 [US1] Add `--batch-scenes` / `--no-batch-scenes` (shared dest, default off) and `--batch-max-tokens` (default `32000`) to `session_doc/scene_extract.py`; leave `--max-tokens` at `8192` applying to the per-scene loop only (FR-017b)
-- [ ] T025 [US1] Route `main()` in `session_doc/scene_extract.py` to `run_batched_scene_extraction` when `--batch-scenes` is set, keeping the existing live per-scene branch and the `--batch` Message-Batches branches untouched
+- [ ] T025 [US1] Route `main()` in `session_doc/scene_extract.py` to `run_batched_scene_extraction` when `--batch-scenes` is set, keeping the existing live per-scene branch and the `--batch` Message-Batches branches untouched. **Refuse `--batch` + `--batch-scenes` together with exit 1** before any work (contracts/cli-surface.md §2): the `if not args.batch:` gate at `:478` would otherwise silently ignore `--batch-scenes` and pay the transcript N times while reporting success
 - [ ] T026 [US1] Note in the `--batch-max-tokens` help and in `session_doc/scene_extract.py`'s module docstring that `--batch` and `--batch-scenes` are different things that compose (contracts/cli-surface.md §1) — one is the 50%-discount submission, the other removes transcript repetition
 
 ### Server
 
 - [ ] T027 [US1] Add `batch_scenes: int | None = None` to `api_extract` in `server/routers/scene_editor.py`; absent means "resolve per DM-18", present means the GM's explicit per-run choice wins
-- [ ] T028 [US1] Implement the DM-18 resolution order in `server/routers/scene_editor.py` — explicit request value, else `cfg.extract.batch_scenes` when not `None`, else `cfg.backends.active == "claude-code"` — and expose the result as read-only `extract.batch_scenes_effective` on the resolved-config payload (contracts/editor-api.md §2)
+- [ ] T028 [US1] Implement the DM-18 resolution order in `server/routers/scene_editor.py` — explicit request value, else `cfg.extract.batch_scenes` when not `None`, else `cfg.backends.active == "claude-code"` — and expose the result as a **top-level** read-only `batch_scenes_effective: bool` on `ResolvedEditorConfig` (`server/session_editor_config_service.py`), beside `genre`/`model`/`work_dir`. **Not under `extract`**: that field IS the persisted `extra="forbid"` `ExtractKnobs`, so a derived field there would become persisted and PUT-able (contracts/editor-api.md §2)
 - [ ] T029 [US1] Forward the resolved value from `_build_reextract_cmd` as an EXPLICIT flag (`--batch-scenes` or `--no-batch-scenes`) plus `--batch-max-tokens {cfg.extract.batch_tokens}` (DM-19), so the streamed command line is fully explicit and copyable
 - [ ] T030 [US1] Include `batch_scenes` in the `_record_activity` knobs dict alongside `batch` and `force`
 
 ### Tests
 
-- [ ] T031 [P] [US1] Test in `tests/test_scene_extract.py` that a batched run over N scenes makes exactly one `stream_api` call for a fitting projection, and that the system prompt is identical across calls when grouped (transcript assembled once)
+- [ ] T031 [P] [US1] Test in `tests/test_scene_extract.py` that a batched run over N scenes makes exactly **one** `stream_api` call for a fitting projection, and — on a separate fixture forced to split by a low `--batch-max-tokens` — that the system prompt is byte-identical across all group calls (transcript assembled once). Also assert call count as a function of the ceiling on a fixed fixture, so SC-009 has automated coverage rather than only quickstart Scenario 6
 - [ ] T032 [P] [US1] Test the force/skip matrix in `tests/test_scene_extract.py` (SC-005a–d): 5-of-8 present + no force ⇒ request contains exactly 3 and the projection is computed over 3 only; all present + no force ⇒ zero calls; force ⇒ all 8 requested and `.prev` written only where content differs; a session half-extracted per-scene then finished batched converges on the same file set
 - [ ] T033 [P] [US1] Test that batched output files are structurally identical to per-scene files above `## Verbatim moments` (SC-006), and that no scene's content lands under another scene's path (SC-007)
-- [ ] T034 [P] [US1] Create `tests/test_scene_extract_isolation.py` asserting the metered path is untouched (SC-008): `run_scene_extraction` unchanged in call count and `cache_system`, `_build_pending_requests` unchanged, `extract.tokens` still `8192`
+- [ ] T034 [P] [US1] Create `tests/test_scene_extract_isolation.py` asserting the metered path is untouched (SC-008): `run_scene_extraction` unchanged in call count and `cache_system`, `_build_pending_requests` unchanged, `extract.tokens` still `8192`. Add one assertion that the batched path also refuses a summary with no `## Scenes` section, so FR-019 (the Stage 1→2 gate) has a test rather than only "unchanged behaviour"
 
 **Checkpoint**: batched extraction works end-to-end for a complete response. US1 is independently demonstrable.
 
@@ -192,7 +192,7 @@ static guards T048–T049 are delegated.
 - [ ] T046 [US3] Record the measurement in `specs/013-batched-scene-extraction/research.md` as a new D13 (both rates, per-scene deltas, the session used), so the gate's evidence lives with the design rather than in a terminal **(Opus)**
 - [ ] T047 [US3] If the exact rate drops more than 5 points or the tail thins: STOP, and tighten `config/agents/scene_extract_batched.md` (per-scene budget guidance, explicit "do not summarise later scenes") before re-measuring — do not proceed to Phase 6 on a failed gate **(Opus)**
 - [ ] T048 [P] [US3] Assert in `tests/test_scene_extract.py` that the batched system prompt contains every verbatim ground rule present in the per-scene prompt (FR-016) — a regression guard against the batched prompt drifting apart from `scene_extract.md`
-- [ ] T049 [P] [US3] Assert no `input_normalizer` reaches the batched path (FR-015, research D11): the VTT must arrive exactly as transcribed, aliases only as roster knowledge via `format_npc_roster` — PR #231 fixed this once and it must not come back
+- [ ] T049 [P] [US3] Assert no **alias-map-derived** normalizer reaches the batched path (FR-015): aliases arrive only as roster knowledge via `format_npc_roster`, never as a rewrite — PR #231 fixed this once and it must not come back. The test must NOT assert byte-identity with the VTT file: `normalize_vtt_speakers` legitimately runs first (`scene_extract.py:427`, FR-015a) and the batched path keeps it
 
 **Checkpoint**: fidelity is measured, recorded, and gated. Only now is batching shippable.
 
@@ -228,7 +228,7 @@ and stay with Opus. T062 is the review itself.
 - [ ] T058 [P] Add `--batch-scenes` / `--batch-max-tokens` to `docs/cli/cli_tools.md`, with the `--batch` vs `--batch-scenes` distinction table from contracts/cli-surface.md §1
 - [ ] T059 Run the full regression: `python -m pytest tests/ -q`, watching `tests/test_retrieve_render_isolation.py`, `tests/test_no_prefix_identity.py` and `tests/test_layering.py` **(Opus)**
 - [ ] T060 Walk every scenario in [quickstart.md](./quickstart.md) end-to-end, including Scenario 8's editor wiring checks (checkbox pre-selected on `claude-code`, unchecked on `anthropic`, override reaches the subprocess) **(Opus)**
-- [ ] T061 Measure SC-002 (wall-clock halved on a full 8-scene subscription re-extract) against the T003 baseline and record it alongside the D13 fidelity numbers **(Opus)**
+- [ ] T061 Record SC-002 as an **observation**: wall-clock for both modes against the T003 baseline, alongside the D13 fidelity numbers. There is no time threshold and time parity is acceptable (GM ruling) — the committed measure is SC-001's transmitted-token reduction. Do not reintroduce a time target without first measuring the prefill/decode split **(Opus)**
 
 ---
 
@@ -237,6 +237,7 @@ and stay with Opus. T062 is the review itself.
 **Purpose**: A fresh read of the whole branch by an agent that did not write it.
 
 - [ ] T062 Run `/code-review medium` over the full branch diff, triage every finding, and either fix it or record why it stands **(Opus)**
+- [ ] T063 Restore the shared venv to the main checkout — `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"` from `/home/kroussos/src/CampaignGenerator` — undoing T002's global repoint so unrelated `main` work is not silently running worktree code **(Opus)**
 
 This runs **after** the phase gates, not instead of them. The gates ask "does this
 phase meet its requirements"; the review asks "is this code correct". The second
@@ -247,8 +248,8 @@ structure has already been gated seven times: fewer, higher-confidence findings,
 not a broad uncertain sweep.
 
 **Definition of done for the branch**: T062's findings are resolved, the full
-suite is green, and the D13 fidelity numbers plus the SC-002 timing are recorded
-in `research.md`.
+suite is green, and the D13 fidelity numbers plus the SC-001 token reduction and
+the SC-002 timing observation are recorded in `research.md`.
 
 ---
 
@@ -335,10 +336,10 @@ the headline saving.
 
 ## Format Validation
 
-All 62 tasks carry: `- [ ]` checkbox · sequential `TNNN` id (T001–T062) · `[P]`
+All 63 tasks carry: `- [ ]` checkbox · sequential `TNNN` id (T001–T063) · `[P]`
 where parallelisable · `[USn]` on every user-story-phase task and on no other ·
 an explicit file path or a named artefact to produce.
 
-12 tasks are marked **(Opus)** — retained in the main thread rather than
+13 tasks are marked **(Opus)** — retained in the main thread rather than
 delegated. The marker sits inside the description, so the checklist format is
 unchanged and the tasks remain machine-parseable.

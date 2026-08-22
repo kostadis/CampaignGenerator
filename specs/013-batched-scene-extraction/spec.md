@@ -26,9 +26,16 @@ Measured on the Phandalin corpus (`~/Phandalin/Phandalin/summaries/`):
 | Scenes per session | 5–8 |
 | Transcript sent per full re-extract, subscription | **5–8×** the transcript (≈ 90–145K tokens) |
 | Transcript sent per full re-extract, if sent once | ≈ 18K tokens |
-| Total extraction **output**, one session (8 scenes) | 117 KB (≈ 29K tokens) |
+| Total extraction file bytes, one session (8 scenes) | 117 KB |
+| Of that, **model-generated** output (see note) | ≈ **23K tokens** |
 | Largest single scene output | 23 KB (≈ 5.8K tokens) |
 | Current per-scene output ceiling | 8,192 tokens |
+
+**Note on the generated figure**: only the `## Verbatim moments` body is produced
+by the model — the front-matter, the `# {name}` heading and the verbatim
+gm-assist summary are assembled locally by `format_scene_output` from values
+already in hand. Measured over the moments sections alone: 16.8K tokens for the
+7-scene session, **23.0K for the 8-scene one** (research D3).
 
 The waste is real and large. The constraint that limits the fix is in the last three rows: collapsing N calls into one converts N separate output ceilings into a single one, and one session's full extraction output is roughly **3.5× the current per-scene ceiling**.
 
@@ -168,9 +175,10 @@ After a run, the GM wants to know it worked: how many scenes came back in one ex
 
 **Fidelity**
 
-- **FR-015**: The transcript MUST continue to reach the model exactly as transcribed — no alias rewriting, no normalisation of names inside the transcript. Entity aliases continue to reach the model as roster knowledge, never as a transform over the transcript. *(Constitution IV; the alias-as-transform defect this repo has already fixed once.)*
+- **FR-015**: No **alias-map-derived** transform may be applied to the transcript on the batched path. Entity aliases reach the model as roster knowledge, never as a rewrite over the transcript. *(Constitution IV; the alias-as-transform defect this repo has already fixed once.)*
+- **FR-015a**: The **player speaker-label** normalisation that already runs before the engine (`normalize_vtt_speakers`, `session_doc/scene_extract.py:427` — mapping each person's Zoom display names to their character/GM label, feature 009) stays in scope and unchanged on the batched path. It is a declared identity mapping authored in `players.yaml`, not a similarity-based rewrite of what was said. FR-015 is about the alias map specifically; it is **not** a claim that the transcript reaches the model byte-identical to the file on disk.
 - **FR-016**: The extraction instructions governing verbatim quoting MUST apply per scene in batched mode with the same force they have per call today, including the prohibition on merging utterances, on editorial insertions inside quotes, and on repairing transcript garbles.
-- **FR-017**: The output ceiling for a batched run MUST default to 32,000 tokens — sized against the measured 29K full-session output — rather than the 8,192 per-scene default, which cannot accommodate a whole session.
+- **FR-017**: The output ceiling for a batched run MUST default to 32,000 tokens — sized against the measured **23K** of model-generated output for a full 8-scene session (research D3), leaving ~28% headroom — rather than the 8,192 per-scene default, which cannot accommodate a whole session.
 - **FR-017a**: The ceiling MUST remain adjustable per run, on the CLI and in the editor. Raising it above a session's projection MUST collapse that run to a single call (FR-006a); the ceiling is the GM's lever over the saving-versus-response-length trade, not a fixed constant.
 - **FR-017b**: Raising the ceiling MUST NOT change the per-scene mode's own default, which stays where it is.
 
@@ -198,9 +206,9 @@ After a run, the GM wants to know it worked: how many scenes came back in one ex
 ### Measurable Outcomes
 
 - **SC-001**: Re-extracting a session of N scenes on the subscription path transmits the transcript **once per group**, not once per scene. On the measured 8-scene, 18K-token-transcript corpus that is one transmission, removing ≈ 125K transmitted tokens per full re-extract.
-- **SC-001a**: A session whose projected output fits the 32K default ceiling uses exactly one call. On the measured corpus (5–8 scenes, ≈ 29K projected at the top of the range) that is every session sampled.
+- **SC-001a**: A session whose projected output fits the 32K default ceiling uses exactly one call. On the measured corpus (5–8 scenes, ≈ 23K generated at the top of the range — research D3) that is every session sampled.
 - **SC-001b**: For any session, transcript transmissions are at most ⌈projected ÷ ceiling⌉ and always strictly fewer than the scene count for sessions of two or more scenes.
-- **SC-002**: Wall-clock time for a full re-extract of an 8-scene session on the subscription path is reduced by at least half against the per-scene baseline, measured on the same session.
+- **SC-002**: Wall-clock time for a full re-extract is **measured and recorded** for both modes on the same session. There is **no time threshold** — see the goal ruling in Assumptions. Time parity is an acceptable outcome; a regression is not.
 - **SC-003**: For a session extracted both ways, the deterministic quote verifier reports a verified-quote rate for the batched run no more than 5 percentage points below the per-scene run.
 - **SC-004**: For a session extracted both ways, no scene loses more than 20% of its extracted moments in the batched run, and the loss is not concentrated in the scenes appearing last in the response.
 - **SC-005**: A run given a response covering only the first K of N scenes writes exactly K files, names the N−K missing scenes, and a subsequent run without Force requests exactly those N−K.
@@ -216,6 +224,10 @@ After a run, the GM wants to know it worked: how many scenes came back in one ex
 ---
 
 ## Assumptions
+
+- **Tokens are the goal; time is not (GM ruling).** The original framing led with elapsed time. The GM has since ruled: *"how much time I save is less important than how many tokens. In fact, if it takes as much time I am okay."* So the committed promise is SC-001 — the transcript transmitted once per group instead of once per scene, ≈ 125K tokens removed from an 8-scene re-extract — and wall-clock is an observation, not a target.
+
+  This is worth stating because the structure argues the time saving would have been modest anyway: batching removes redundant **prefill** and N−1 subprocess startups, but **total decode is unchanged** — the same ~23K output tokens are generated either way — and decode dominates on this backend (`campaignlib/api/backends.py` records 3m57s for 10,100 output tokens). An earlier draft of SC-002 promised ≥50% wall-clock reduction; that number was never sourced and the arithmetic puts the real figure nearer 20–36%. It has been withdrawn rather than defended. **Do not reintroduce a time target without measuring the prefill/decode split first.**
 
 - **The transcript, not the instructions, is the cost.** The transcript dominates the per-call payload; the extraction instructions and NPC roster are small by comparison. Batching is worth doing because it removes the transcript's repetition, and the small shared preamble riding along with it is not what this feature is optimising.
 - **Partial results are kept, not discarded.** When a response ends early, scenes that arrived complete are written and the rest are reported missing. This is the resumable behaviour the per-scene mode already has (skip-if-exists), and it makes the follow-up run cheap. The alternative — discard everything on a short response — would make a batched run strictly riskier than the loop it replaces.

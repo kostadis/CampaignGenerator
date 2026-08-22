@@ -30,15 +30,21 @@ pre-selection and the 32K batched ceiling with no per-scene behaviour change.
 
 ## 2. Resolved-config payload
 
-`ResolvedEditorConfig` gains one **derived, read-only** field:
+`ResolvedEditorConfig` gains one **derived, read-only, TOP-LEVEL** field:
 
 | Field | Type | Meaning |
 |---|---|---|
-| `extract.batch_scenes_effective` | bool | The resolved default per DM-18, for the UI's initial checkbox state |
+| `batch_scenes_effective` | bool | The resolved default per DM-18, for the UI's initial checkbox state |
 
-Derived server-side — the server already knows `cfg.backends.active`, so the
-frontend never reimplements the rule (Constitution VI). Read-only: a `PUT`
-carrying it is rejected like any other unknown field.
+**It must NOT live under `extract`.** `ResolvedEditorConfig.extract` *is* the
+persisted `ExtractKnobs` model (`server/session_editor_config_service.py:136`),
+which is `extra="forbid"` — declaring a derived field there would make it known,
+persisted and `PUT`-able, the exact opposite of read-only.
+
+The precedent is `ResolvedEditorConfig.genre` (`:150`), a top-level field carrying
+the comment *"Injected, never persisted — same class of read-only extra as
+`model`/`work_dir`"*. `batch_scenes_effective` is the same class of thing and sits
+beside it, alongside `model`, `work_dir`, `campaign_dir`, `vtt`.
 
 ## 3. `GET /api/editor/extract`
 
@@ -80,7 +86,7 @@ rather than a literal:
 
 ```ts
 const batchScenes = ref<boolean | null>(null)   // null = untouched by the GM
-// initialised from cfg.extract.batch_scenes_effective on config load
+// initialised from the TOP-LEVEL cfg.batch_scenes_effective on config load
 ```
 
 The URL carries the param **only when the GM has touched the control**:

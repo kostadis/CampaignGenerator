@@ -11,6 +11,11 @@ is nearly free (cached prefix); on the subscription (`claude -p`) it is pure
 waste — every scene is a fresh process with a fresh session, so an 8-scene
 re-extract ships ~125K tokens of repetition.
 
+The goal is **tokens, not elapsed time** — the GM has ruled that time parity
+would be an acceptable outcome (spec §Assumptions). That matters for reading the
+success criteria: batching removes redundant prefill, not decode, and decode is
+what dominates the clock here.
+
 This feature adds a **batched mode**: one exchange carries the transcript plus
 every scene still needing extraction, and the response carries every scene's
 moments, split back apart deterministically by sentinel markers. A session whose
@@ -95,7 +100,7 @@ requirements" and the review checks "is this code correct".
 
 **Project Type**: CLI engine + FastAPI server + Vue frontend (the repo's standing shape)
 
-**Performance Goals**: One transcript transmission per group instead of one per scene — ≥ 50% wall-clock reduction on a full 8-scene subscription re-extract (SC-002)
+**Performance Goals**: **Token-denominated, not time-denominated** (GM ruling, spec §Assumptions). One transcript transmission per group instead of one per scene — ≈ 125K tokens removed from a full 8-scene subscription re-extract (SC-001). Wall-clock is measured and recorded (SC-002) but carries no threshold: total decode is unchanged by batching and dominates on this backend, so time parity is an acceptable outcome
 
 **Constraints**: Zero regression in verbatim fidelity (SC-003/SC-004, measured with the existing zero-token quote verifier); the metered path byte-for-byte unchanged (SC-008); no model call anywhere in the response split (FR-004)
 

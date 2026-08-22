@@ -30,14 +30,20 @@ only (FR-017b). `--force`, `--batch` (Message Batches), `--submit-only`,
 | Backend | `anthropic` only | Any; the point is the subscription |
 | Buys | 50% list discount | Removes transcript repetition |
 
-Both set → the batched exchanges are themselves submitted as a batch job.
-Legal, and rarely useful: on the metered backend caching already makes the
-per-scene shape cheap. The CLI does not refuse it.
+**Both set is REFUSED.** `session_doc/scene_extract.py:478` gates the live path
+on `if not args.batch:` and returns, so a composed run would silently ignore
+`--batch-scenes` and pay the transcript N times while the GM believed they had
+batched — a confident-looking success doing the expensive thing (Constitution I,
+Optimistic Lies). Implementing the composition instead was rejected because it
+buys nothing: `--batch` only works on the metered backend, where `cache_system`
+already makes the repeated transcript cheap. The saving `--batch-scenes` exists
+for does not exist on the path `--batch` runs on.
 
 ## 2. Refusals
 
 | Condition | Behaviour |
 |---|---|
+| `--batch` **and** `--batch-scenes` together | **Refused, exit 1**: "--batch-scenes cannot be combined with --batch. --batch submits per-scene requests to the Message Batches API (metered backend only), where the repeated transcript is already cached; --batch-scenes removes the repetition for backends that have no cache. Pick one." |
 | `--batch-max-tokens` without `--batch-scenes` | Accepted, ignored, with a note — the same shape as other inert-knob cases |
 | `--batch-scenes` with no `## Scenes` section | Existing exit-1 refusal, unchanged (the Stage 1→2 gate, FR-019) |
 | `--batch-scenes` with every scene on disk, no `--force` | Zero calls; "all scenes already extracted" (FR-008b, DM-3). Exit 0 |
