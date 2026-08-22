@@ -18,6 +18,17 @@ token saving is a regression unless partial-response survivability and verbatim
 fidelity both hold, so none of the three ships alone (see spec §User Scenarios).
 US1 is the MVP *increment*, not the MVP *release*.
 
+**Execution**: **Opus orchestrates, Sonnet implements** (plan.md §Execution
+Model). One Sonnet subagent per phase — or per parallel group within a phase —
+each given its task IDs, the contract sections those tasks cite, the files it
+may touch, and the tests it must leave green. Opus reviews each returned diff at
+the phase checkpoint before opening the next phase; a subagent's report is a
+claim, not evidence.
+
+Tasks marked **(Opus)** are NOT delegated — they are judgement calls whose error
+would be inherited downstream rather than caught: the batched prompt (Constitution
+IV), the fidelity gate and its STOP decision, and the D13 write-up.
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: parallelizable — different file, no dependency on incomplete work
@@ -35,6 +46,9 @@ Engine in `campaignlib/`, CLI in `session_doc/`, server in `server/`, UI in
 
 **Purpose**: Confirm the worktree actually runs its own code before anything is measured.
 
+**Delegation**: Opus runs this phase directly. It is three commands, and T001's
+result decides whether every later measurement on this branch means anything.
+
 - [ ] T001 Verify the worktree's checkout shadows nothing: run `python -c "import campaignlib, pathlib; print(pathlib.Path(campaignlib.__file__).parent)"` from the repo root and confirm it prints the worktree path, not `/home/kroussos/src/CampaignGenerator` (the editable-install `.pth` hardcodes MAIN — a green test run in the wrong tree proves nothing)
 - [ ] T002 Install the package into the server's venv so console scripts resolve: `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"`, per `CLAUDE.md`
 - [ ] T003 Capture the per-scene baseline for later comparison: run `scene_extract` in per-scene mode on `~/Phandalin/Phandalin/summaries/20260811` into `/tmp/sx_perscene`, recording wall-clock and scene count (baseline for SC-002, and the comparison corpus for SC-003/SC-004)
@@ -49,6 +63,16 @@ Engine in `campaignlib/`, CLI in `session_doc/`, server in `server/`, UI in
 are side-effect-free and independently unit-testable.
 
 **⚠️ CRITICAL**: no user story work begins until this phase is complete.
+
+**Delegation**: three Sonnet subagents in parallel, on disjoint files —
+**S-A** projection + grouping (T004–T007, `campaignlib/scenes.py`),
+**S-B** wire protocol (T008–T012, `campaignlib/scenes.py` + `tests/test_batched_split.py`),
+**S-C** config (T016–T017, `server/session_editor_config_shared.py` + its test).
+T013–T015 (prompts) are **Opus's** — see below.
+
+⚠️ S-A and S-B both edit `campaignlib/scenes.py`. Run S-A first, then S-B on the
+result, or hand S-B `tests/test_batched_split.py` plus a named insertion point.
+Do not run them concurrently against the same file.
 
 ### Projection and grouping (data-model §3–§4)
 
@@ -67,9 +91,9 @@ are side-effect-free and independently unit-testable.
 
 ### Prompts (research D9)
 
-- [ ] T013 [P] Create `config/agents/scene_extract_batched.md`: copy EVERY verbatim ground rule from `config/agents/scene_extract.md` intact — no merged utterances, no editorial insertions inside a `> "…"` span, no repairing transcript garbles, the transcript owns its own mistakes — restated as applying *within each scene*, plus the sentinel obligations in contracts/wire-protocol.md §6 (one pair per scene, in order, index and name copied verbatim, nothing outside the pairs, emit an empty-bodied pair rather than omitting a scene)
-- [ ] T014 [P] Create `config/agents/scene_extract_batched_user.md` rendering the per-scene request blocks and restating the sentinel output format
-- [ ] T015 [P] Verify `config/agents/scene_extract.md` and `scene_extract_user.md` are byte-unchanged (FR-009) — `git diff --exit-code` on both
+- [ ] T013 [P] Create `config/agents/scene_extract_batched.md`: copy EVERY verbatim ground rule from `config/agents/scene_extract.md` intact — no merged utterances, no editorial insertions inside a `> "…"` span, no repairing transcript garbles, the transcript owns its own mistakes — restated as applying *within each scene*, plus the sentinel obligations in contracts/wire-protocol.md §6 (one pair per scene, in order, index and name copied verbatim, nothing outside the pairs, emit an empty-bodied pair rather than omitting a scene) **(Opus)**
+- [ ] T014 [P] Create `config/agents/scene_extract_batched_user.md` rendering the per-scene request blocks and restating the sentinel output format **(Opus)**
+- [ ] T015 [P] Verify `config/agents/scene_extract.md` and `scene_extract_user.md` are byte-unchanged (FR-009) — `git diff --exit-code` on both **(Opus)**
 
 ### Config (data-model §7, research D7)
 
@@ -85,6 +109,13 @@ are side-effect-free and independently unit-testable.
 **Goal**: A subscription re-extract transmits the transcript once per group instead of once per scene, writing the same files the per-scene mode writes.
 
 **Independent test**: Run a full re-extract of the 8-scene 20260811 session on the subscription; the run reports one transmission and writes 8 files structurally identical to the per-scene run.
+
+**Delegation**: one Sonnet subagent for the engine (T018–T023, sequential — one
+file, one function), then two in parallel: CLI (T024–T026) and server
+(T027–T030). Tests T031–T034 fan out once the engine lands.
+
+**Brief the engine subagent explicitly on T019.** It is the task most likely to
+be implemented in the shape that looks right and is wrong — see the task text.
 
 ### Engine
 
@@ -125,6 +156,9 @@ are side-effect-free and independently unit-testable.
 
 **Independent test**: Feed the pass a response covering the first K of N scenes; K files written, N−K named, exit 3, and a re-run without `--force` requests exactly those N−K.
 
+**Delegation**: one Sonnet subagent for T035–T040 (write/skip/report decisions
+and exit codes are one coherent change), tests T041–T042 in parallel after.
+
 - [ ] T035 [US2] Write every `complete` non-empty section even when later scenes are missing (FR-010), and skip `incomplete` sections entirely — never write a half-formed file (FR-011)
 - [ ] T036 [US2] Skip `empty` sections without writing, recording them separately as "returned no moments" (FR-006) — writing one would make the next run's skip-if-exists treat unfinished work as done
 - [ ] T037 [US2] Fail a group whose response is unreconcilable, writing NOTHING from that group (FR-005, DM-14), and report which reconciliation rule fired
@@ -146,11 +180,17 @@ are side-effect-free and independently unit-testable.
 
 **⚠️ This phase discharges the Constitution Check's one conditional (Principle IV). It is not optional polish.**
 
-- [ ] T043 [US3] Extract the 20260811 session in batched mode into `/tmp/sx_batched` on the subscription backend, alongside the T003 per-scene baseline
-- [ ] T044 [US3] Run `sd_verify_quotes` over both extractions and record the **`verified` (exact)** rates — read the exact rate, NOT the total: a run converting `verified` quotes into `near` ones is a regression even at identical counts, because `near` means "an edit happened", never "safe" (research D10)
-- [ ] T045 [US3] Compare per-scene moment counts **in request order** between the two runs (SC-004) and check specifically for tail thinning — a uniform 10% drop and a 40% drop concentrated in the last scenes are different failures, and only the second indicts batching
-- [ ] T046 [US3] Record the measurement in `specs/013-batched-scene-extraction/research.md` as a new D13 (both rates, per-scene deltas, the session used), so the gate's evidence lives with the design rather than in a terminal
-- [ ] T047 [US3] If the exact rate drops more than 5 points or the tail thins: STOP, and tighten `config/agents/scene_extract_batched.md` (per-scene budget guidance, explicit "do not summarise later scenes") before re-measuring — do not proceed to Phase 6 on a failed gate
+**Delegation**: **Opus runs T043–T047 directly.** Reading the verifier output is
+a scope decision — exact-vs-`near`, uniform loss vs tail thinning — and T047 is
+an explicit STOP. Handing "did fidelity hold?" to the same class of agent that
+generated the output is how a failed gate gets reported as a passed one. Only the
+static guards T048–T049 are delegated.
+
+- [ ] T043 [US3] Extract the 20260811 session in batched mode into `/tmp/sx_batched` on the subscription backend, alongside the T003 per-scene baseline **(Opus)**
+- [ ] T044 [US3] Run `sd_verify_quotes` over both extractions and record the **`verified` (exact)** rates — read the exact rate, NOT the total: a run converting `verified` quotes into `near` ones is a regression even at identical counts, because `near` means "an edit happened", never "safe" (research D10) **(Opus)**
+- [ ] T045 [US3] Compare per-scene moment counts **in request order** between the two runs (SC-004) and check specifically for tail thinning — a uniform 10% drop and a 40% drop concentrated in the last scenes are different failures, and only the second indicts batching **(Opus)**
+- [ ] T046 [US3] Record the measurement in `specs/013-batched-scene-extraction/research.md` as a new D13 (both rates, per-scene deltas, the session used), so the gate's evidence lives with the design rather than in a terminal **(Opus)**
+- [ ] T047 [US3] If the exact rate drops more than 5 points or the tail thins: STOP, and tighten `config/agents/scene_extract_batched.md` (per-scene budget guidance, explicit "do not summarise later scenes") before re-measuring — do not proceed to Phase 6 on a failed gate **(Opus)**
 - [ ] T048 [P] [US3] Assert in `tests/test_scene_extract.py` that the batched system prompt contains every verbatim ground rule present in the per-scene prompt (FR-016) — a regression guard against the batched prompt drifting apart from `scene_extract.md`
 - [ ] T049 [P] [US3] Assert no `input_normalizer` reaches the batched path (FR-015, research D11): the VTT must arrive exactly as transcribed, aliases only as roster knowledge via `format_npc_roster` — PR #231 fixed this once and it must not come back
 
@@ -164,6 +204,8 @@ are side-effect-free and independently unit-testable.
 
 **Independent test**: A completed run states scenes requested, returned, groups used, and transmissions.
 
+**Delegation**: one Sonnet subagent for T050–T053.
+
 - [ ] T050 [US4] Implement the `RunReport` fields from data-model §6 in `session_doc/scene_extract.py` — scenes total / skipped / requested / written, empty, missing (named), groups used, transmissions, `ceiling_exceeded`
 - [ ] T051 [US4] Render the report in the format in contracts/cli-surface.md §3, including the `Transcript sent: Nx (per-scene mode would have sent Mx)` line — this is what makes SC-001 checkable from run output instead of by instrumenting the backend
 - [ ] T052 [US4] When the projection forced a split, say so and name the lever: "projection exceeds ceiling; raise --batch-max-tokens for one call" (FR-006d)
@@ -175,14 +217,38 @@ are side-effect-free and independently unit-testable.
 
 ## Phase 7: Polish & Cross-Cutting
 
+**Delegation**: two Sonnet subagents in parallel — **S-UI** (T054–T056,
+`frontend/src/`) and **S-DOCS** (T057–T058, `docs/`). T059–T061 are verification
+and stay with Opus. T062 is the review itself.
+
 - [ ] T054 [P] Add the "Batch scenes into one call" checkbox to `frontend/src/views/session/SessionDocEditor.vue`, following the `forceReextract` pattern (`:205`), initialised from `extract.batch_scenes_effective` and sending `batch_scenes` in the URL **only when the GM has touched it** (contracts/editor-api.md §4) — absent-vs-present is what keeps the pre-selection overridable in both directions
 - [ ] T055 [P] Add the "Batched token limit" field to Stage ② of `frontend/src/components/scene-editor/KnobDrawer.vue` bound to `extract.batch_tokens`, and clarify the existing "Token limit" help to say **per-scene mode** so the two ceilings are not confusable
 - [ ] T056 [P] Fix the stale help text at `frontend/src/components/scene-editor/KnobDrawer.vue:229` (research D12): it still claims "The Re-Extract button always forwards `--force`", which stopped being true with #323 / spec 012. Leaving a false claim about force semantics beside a new force-sensitive control is how the next reader gets it wrong
 - [ ] T057 [P] Document batched mode in `docs/cli/session_doc_pipeline.md`: what it is, why the subscription needs it and the metered path does not, the two ceilings, the grouping rule, and the exit-3 partial state
 - [ ] T058 [P] Add `--batch-scenes` / `--batch-max-tokens` to `docs/cli/cli_tools.md`, with the `--batch` vs `--batch-scenes` distinction table from contracts/cli-surface.md §1
-- [ ] T059 Run the full regression: `python -m pytest tests/ -q`, watching `tests/test_retrieve_render_isolation.py`, `tests/test_no_prefix_identity.py` and `tests/test_layering.py`
-- [ ] T060 Walk every scenario in [quickstart.md](./quickstart.md) end-to-end, including Scenario 8's editor wiring checks (checkbox pre-selected on `claude-code`, unchecked on `anthropic`, override reaches the subprocess)
-- [ ] T061 Measure SC-002 (wall-clock halved on a full 8-scene subscription re-extract) against the T003 baseline and record it alongside the D13 fidelity numbers
+- [ ] T059 Run the full regression: `python -m pytest tests/ -q`, watching `tests/test_retrieve_render_isolation.py`, `tests/test_no_prefix_identity.py` and `tests/test_layering.py` **(Opus)**
+- [ ] T060 Walk every scenario in [quickstart.md](./quickstart.md) end-to-end, including Scenario 8's editor wiring checks (checkbox pre-selected on `claude-code`, unchecked on `anthropic`, override reaches the subprocess) **(Opus)**
+- [ ] T061 Measure SC-002 (wall-clock halved on a full 8-scene subscription re-extract) against the T003 baseline and record it alongside the D13 fidelity numbers **(Opus)**
+
+---
+
+## Phase 8: Adversarial Review
+
+**Purpose**: A fresh read of the whole branch by an agent that did not write it.
+
+- [ ] T062 Run `/code-review medium` over the full branch diff, triage every finding, and either fix it or record why it stands **(Opus)**
+
+This runs **after** the phase gates, not instead of them. The gates ask "does this
+phase meet its requirements"; the review asks "is this code correct". The second
+question is not answerable by the agents that answered the first — each Sonnet
+subagent saw one phase, and Opus reviewed each diff already holding the belief
+that the design was sound. `medium` is the right level for a branch whose
+structure has already been gated seven times: fewer, higher-confidence findings,
+not a broad uncertain sweep.
+
+**Definition of done for the branch**: T062's findings are resolved, the full
+suite is green, and the D13 fidelity numbers plus the SC-002 timing are recorded
+in `research.md`.
 
 ---
 
@@ -196,6 +262,7 @@ Phase 1 (Setup)
           │             └─> Phase 5 (US3) 🚦 SHIP GATE
           │                    └─> Phase 6 (US4)
           │                           └─> Phase 7 (Polish)
+                                              └─> Phase 8 (/code-review medium)
 ```
 
 **Story dependencies** — unusually, these are *not* independent, and that is
@@ -252,12 +319,26 @@ degrading quotes gets caught.
 
 **Increment 5 — Phases 6+7.** Observability, UI, docs.
 
+**Increment 6 — Phase 8.** `/code-review medium` over the branch, findings
+triaged.
+
+**Delegation shape across all of it**: Opus opens a phase, briefs a Sonnet
+subagent with that phase's task IDs and the contract sections they cite, reviews
+the returned diff at the checkpoint, and only then opens the next phase. The
+phases with no Sonnet subagent at all — Phase 1, the prompts in Phase 2, the
+fidelity gate in Phase 5, the verification tail of Phase 7 — are the ones where
+the work IS the judgement.
+
 **Suggested MVP scope**: Phases 1–5. US4 and the polish phase are genuinely
 deferrable; US2 and US3 are not, despite US1 being the only phase that delivers
 the headline saving.
 
 ## Format Validation
 
-All 61 tasks carry: `- [ ]` checkbox · sequential `TNNN` id · `[P]` where
-parallelisable · `[USn]` on every user-story-phase task and on no other · an
-explicit file path or a named artefact to produce.
+All 62 tasks carry: `- [ ]` checkbox · sequential `TNNN` id (T001–T062) · `[P]`
+where parallelisable · `[USn]` on every user-story-phase task and on no other ·
+an explicit file path or a named artefact to produce.
+
+12 tasks are marked **(Opus)** — retained in the main thread rather than
+delegated. The marker sits inside the description, so the checklist format is
+unchanged and the tasks remain machine-parseable.

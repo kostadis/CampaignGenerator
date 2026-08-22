@@ -25,6 +25,62 @@ cost the same one extra transmission, so the *median* multiplier beats a
 conservative one; and skip-if-exists must filter **before** the request is built
 (D6), or a nearly-finished session costs the same as a fresh one.
 
+## Execution Model — Opus orchestrates, Sonnet implements
+
+This plan is executed by delegation, not by one model writing everything.
+
+**Opus (main thread) is the orchestrator and reviewer.** It holds the spec, the
+constitution and the cross-phase invariants, dispatches each phase's
+implementation to a Sonnet subagent, reviews the returned diff against the
+requirements that phase claims to satisfy, and only then opens the next phase.
+It never hands a phase to the next agent on the subagent's own say-so.
+
+**Sonnet subagents implement.** One subagent per phase (or per parallel group
+within a phase), each given: the task IDs it owns, the contract sections those
+tasks cite, the exact files it may touch, and the tests it must leave green.
+A subagent's report is a claim, not evidence — Opus verifies against the diff
+and the test run.
+
+### What Opus does not delegate
+
+Four kinds of task stay in the main thread, because each is a judgement whose
+error would be inherited and amplified downstream rather than caught:
+
+| Retained | Why |
+|---|---|
+| **The batched prompt** (T013) | Carrying every verbatim ground rule across into a multi-scene prompt is the single point where Constitution IV can be lost quietly. A prompt that *looks* complete and has dropped one rule reads as fine and fails in production |
+| **The fidelity gate** (T043–T047) | Reading the verifier output is a scope decision: exact-vs-`near`, uniform loss vs tail thinning. T047 is an explicit STOP — deciding a measurement failed and the prompt needs work is not implementation |
+| **The D13 write-up** (T046) | Synthesis of what the measurement means, into the document the next reader trusts |
+| **Phase review gates** | The checkpoint between phases. A subagent cannot certify its own phase |
+
+This mirrors the repo's own pipeline rule: a fast model drafts inside a verified
+structure; the structure, the scope calls and the checkpoints stay with the
+orchestrator. **Sonnet extracts and renders; Opus reviews and decides.**
+
+### Review gate between phases
+
+Opus checks, before opening the next phase:
+
+1. The diff touches only the files that phase's tasks name.
+2. Every task in the phase is actually done — not "the important ones".
+3. The phase's own tests pass, and the full suite has not regressed.
+4. The standing structural guards are green: `tests/test_retrieve_render_isolation.py`,
+   `tests/test_no_prefix_identity.py`, `tests/test_layering.py`.
+5. No requirement the phase claims was quietly reinterpreted to fit what was easy.
+
+A failed gate sends the phase back to a subagent with the specific defect — it
+does not get patched in the main thread, and it does not carry forward.
+
+### After implementation
+
+When Phase 7 closes, the whole branch goes through **`/code-review medium`**
+(T062). That is a fresh adversarial read of the diff by an agent that did not
+write it and is not invested in it — deliberately after the phase gates rather
+than instead of them, because the gates check "does this phase meet its
+requirements" and the review checks "is this code correct".
+
+---
+
 ## Technical Context
 
 **Language/Version**: Python 3.11+ (engine, CLI, FastAPI server); TypeScript / Vue 3 (editor UI)
