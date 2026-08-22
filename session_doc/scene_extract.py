@@ -69,6 +69,16 @@ SCENE_EXTRACT_SYSTEM_PREFIX = load_agent_prompt("scene_extract")
 SCENE_EXTRACT_USER_TEMPLATE = load_agent_prompt("scene_extract_user")
 
 
+# Batched-mode counterparts (013). Separate files, not variants of the
+# per-scene pair: the batched prompts add the sentinel protocol and restate
+# every verbatim ground rule as applying WITHIN each scene, and the
+# per-scene prompts must keep working byte-identically (FR-009).
+SCENE_EXTRACT_BATCHED_SYSTEM_PREFIX = load_agent_prompt("scene_extract_batched")
+
+
+SCENE_EXTRACT_BATCHED_USER_TEMPLATE = load_agent_prompt("scene_extract_batched_user")
+
+
 SIDECAR_KIND = "scene_extract"
 SIDECAR_NAME = ".batch.json"
 

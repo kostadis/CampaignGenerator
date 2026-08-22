@@ -508,3 +508,104 @@ def test_collect_with_failed_scene_exits_nonzero_keeps_successes_and_sidecar(
     assert sidecar.exists()  # kept for a retry --collect
     err = capsys.readouterr().err
     assert "FAILED 02_scene_b" in err
+
+
+# ── group_scenes / project_scene_output ───────────────────────────────────────
+
+def _plan_entry(i: int, body: str) -> dict:
+    """A minimal stand-in for one `plan_scene_extraction` dict — group_scenes
+    and project_scene_output only ever look at `body`, but the shape mirrors
+    the real plan entry (013 data-model §1) so a reader can tell these are
+    plan entries, not raw gm-assist scenes."""
+    return {
+        "i": i,
+        "name": f"Scene {i}",
+        "body": body,
+        "slug": f"scene_{i}",
+        "custom_id": f"{i:02d}_scene_{i}",
+        "path": Path(f"/tmp/{i:02d}_scene_{i}.md"),
+        "exists": False,
+    }
+
+
+def test_project_scene_output_uses_median_multiplier():
+    entry = _plan_entry(1, "x" * 100)
+    expected = 100 * campaignlib.scenes.OUTPUT_CHARS_PER_BODY_CHAR / campaignlib.scenes.CHARS_PER_TOKEN
+    assert campaignlib.scenes.project_scene_output(entry) == expected
+
+
+def test_project_scene_output_empty_body_is_zero():
+    assert campaignlib.scenes.project_scene_output(_plan_entry(1, "")) == 0.0
+    assert campaignlib.scenes.project_scene_output({"i": 1}) == 0.0
+
+
+def test_group_scenes_single_group_when_total_fits_ceiling():
+    """DM-7: total projection under the ceiling → exactly one group with
+    every entry."""
+    entries = [_plan_entry(i, "x" * 50) for i in range(1, 4)]
+    groups = campaignlib.scenes.group_scenes(entries, ceiling_tokens=10_000)
+    assert len(groups) == 1
+    assert groups[0]["index"] == 1
+    assert groups[0]["entries"] == entries
+    assert groups[0]["projected_tokens"] == sum(
+        campaignlib.scenes.project_scene_output(e) for e in entries
+    )
+
+
+def test_group_scenes_splits_when_total_exceeds_ceiling():
+    """DM-8: over the ceiling, pack greedily in order; every group here fits
+    (no single scene is individually oversized)."""
+    entries = [_plan_entry(i, "x" * 100) for i in range(1, 5)]  # 105 tok each
+    ceiling = 220  # fits two scenes (210) but not three (315)
+    groups = campaignlib.scenes.group_scenes(entries, ceiling_tokens=ceiling)
+
+    assert len(groups) > 1
+    assert [g["entries"] for g in groups] == [entries[0:2], entries[2:4]]
+    for g in groups:
+        assert g["projected_tokens"] <= ceiling
+
+
+def test_group_scenes_oversized_single_entry_forms_own_group():
+    """DM-9: a scene whose own projection exceeds the ceiling is neither
+    refused nor merged with a neighbour — it gets a group to itself."""
+    small_before = _plan_entry(1, "x" * 10)
+    big = _plan_entry(2, "x" * 1000)  # 1050 tokens, far over the ceiling
+    small_after = _plan_entry(3, "x" * 10)
+    entries = [small_before, big, small_after]
+    ceiling = 50
+
+    groups = campaignlib.scenes.group_scenes(entries, ceiling_tokens=ceiling)
+
+    big_groups = [g for g in groups if g["entries"] == [big]]
+    assert len(big_groups) == 1
+    assert big_groups[0]["projected_tokens"] > ceiling
+    # every other scene still made it into some group, none dropped
+    all_entries = [e for g in groups for e in g["entries"]]
+    assert all_entries == entries
+
+
+def test_group_scenes_is_deterministic():
+    """DM-10: same (entries, ceiling) in → same grouping out, every time."""
+    entries = [_plan_entry(i, "x" * (20 * i)) for i in range(1, 6)]
+    ceiling = 90
+
+    first = campaignlib.scenes.group_scenes(entries, ceiling_tokens=ceiling)
+    second = campaignlib.scenes.group_scenes(entries, ceiling_tokens=ceiling)
+
+    assert first == second
+
+
+def test_group_scenes_preserves_input_order():
+    """DM-11: groups are contiguous slices of plan order — concatenating
+    every group's entries reproduces the input list exactly."""
+    entries = [_plan_entry(i, "x" * (30 * i)) for i in range(1, 6)]
+    ceiling = 80
+
+    groups = campaignlib.scenes.group_scenes(entries, ceiling_tokens=ceiling)
+
+    reconstructed = [e for g in groups for e in g["entries"]]
+    assert reconstructed == entries
+
+
+def test_group_scenes_empty_input_returns_empty_list():
+    assert campaignlib.scenes.group_scenes([], ceiling_tokens=1000) == []

@@ -123,6 +123,42 @@ design must not depend on it. It decides *how many groups to try*, nothing more.
 Correctness comes from the response-splitting and short-response handling
 (D5, D6), which never consult it.
 
+### In-situ validation (2026-08-22, after T004–T007 landed)
+
+Running the implemented `project_scene_output` + `group_scenes` over the real corpus:
+
+| Session | Scenes | Projected | Actual | Error | Groups @32K |
+|---|---|---|---|---|---|
+| 20260811 | 8 | 23,336 tok | 23,007 tok | **1.4%** | 1 ✓ |
+| 20260729 | 7 | 21,862 tok | 16,806 tok | **30.1%** | 1 ✓ |
+
+**The 30% miss is an artifact, not a bad multiplier.** D4's ratios were computed
+with the **stored** scene bodies (the `## Scene summary` block inside each
+extraction file) as the denominator, but the code necessarily projects from the
+**live parse** of `session-summary.md` — that is the only body available before
+extraction runs. Measured difference between the two sources:
+
+| Session | Live-parsed body | Stored body | Δ |
+|---|---|---|---|
+| 20260811 | 22,225 ch | 21,964 ch | +1% |
+| 20260729 | 20,821 ch | 15,716 ch | **+32%** |
+
+20260729's summary was **edited after its extraction ran**, so its stored bodies
+are an older, shorter revision. Pairing the new body with the old output
+over-states the ratio. The only clean pair in the corpus is 20260811, which gives
+4.14 — essentially the 4.2 median.
+
+Two consequences worth carrying forward:
+
+1. **The grouping outcome is unaffected**: both sessions still produce exactly
+   one group at the 32K default, which is the decision the projection exists to
+   make. A 30% over-estimate is well inside what DM-5/DM-6 tolerate.
+2. **Recalibrate against live-parsed bodies, not stored ones.** Anyone re-tuning
+   `OUTPUT_CHARS_PER_BODY_CHAR` from the extraction files will silently inherit
+   this artifact wherever a summary was revised post-extraction. The stored body
+   is a snapshot of what the summary said *then*; the multiplier is applied to
+   what it says *now*.
+
 **Alternatives rejected**: (a) conservative multiplier — mis-splits, see table;
 (b) flat constant per scene — ignores the 2.4–6.5 spread; (c) asking a model to
 estimate — a model call to decide how many model calls to make, and a scope
@@ -315,6 +351,35 @@ toggle and its token knob will be added.
 sentence, it sits in the section being edited, and leaving a stale claim about
 force semantics next to a new force-sensitive control is how the next reader
 gets it wrong.
+
+---
+
+## D13 — Pre-existing test failures (baseline, recorded 2026-08-22)
+
+`python -m pytest tests/ -q` on this branch **before any implementation**:
+
+```
+4 failed, 3719 passed, 189 skipped in 127.22s
+```
+
+The four failures are inherited from `main` — this branch's only commits at the
+time of measurement were spec documents (`specs/`, `CLAUDE.md`,
+`.specify/feature.json`), touching no code:
+
+| Test | |
+|---|---|
+| `tests/test_extract_facts.py::test_cli_parallel_fully_cached` | |
+| `tests/test_mempalace_client.py::TestLiveRoundTrip::test_search_hierarchical_on_fresh_palace_falls_back` | live-service dependent |
+| `tests/test_provenance_mcp.py::test_the_server_builds_when_mcp_is_installed` | |
+| `tests/test_session_doc_prompts.py::test_prompt_matrix_matches_golden` | golden-file drift |
+
+**This is the regression baseline.** "No regression" for T059 means these four
+and no others. Recorded because a green-suite assumption is how a pre-existing
+failure gets attributed to whoever touched the tree last — and because
+`test_session_doc_prompts.py::test_prompt_matrix_matches_golden` is a *prompt
+golden-file* test, which this feature adds prompts to (T013/T014). If that test's
+failure mode changes, it is this feature's doing; if it merely keeps failing the
+same way, it is not.
 
 ---
 

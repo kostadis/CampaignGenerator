@@ -2,9 +2,11 @@
 
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 from .api.client import stream_api
+from .config import load_agent_prompt
 
 
 _SCENE_HEADING_RE = re.compile(r"^### +(.+?)\s*$")
@@ -359,3 +361,325 @@ def plan_scene_extraction(
             "exists": out_file.exists(),
         })
     return plan
+
+
+# The output-size projection used to decide how many scenes a batched request
+# can safely cover before any response exists (research D4, 013 data-model §3).
+#
+# OUTPUT_CHARS_PER_BODY_CHAR is the MEDIAN ratio of extraction-output chars to
+# gm-assist body chars, measured over 15 real scenes across two sessions
+# (Pearson r = 0.784 between body length and output length; observed range
+# 2.4–6.5). The median is used deliberately rather than a conservative upper
+# bound: over-projecting causes an unnecessary split and under-projecting
+# causes a short response whose tail scenes are re-requested next run — both
+# errors cost exactly one extra transcript transmission, so the central
+# estimate minimises expected cost. A conservative ×6.5 was measured to
+# mis-split a session (23.0K actual → 35.7K projected → 2 groups) that fit
+# comfortably in one group at the median multiplier.
+OUTPUT_CHARS_PER_BODY_CHAR = 4.2
+
+# Chars-per-token for GENERATED English/markdown prose (the projection's
+# output side), not the transcript's own density — the source VTT runs at
+# roughly 7.4 chars/token, and that ratio does NOT apply here.
+CHARS_PER_TOKEN = 4.0
+
+
+def project_scene_output(entry: dict) -> float:
+    """Estimate OUTPUT TOKENS for one scene plan entry (research D4).
+
+    `entry` is a dict as returned by `plan_scene_extraction` (keys include
+    `i`, `name`, `body`, `slug`, `path`, `exists`). A missing or empty `body`
+    projects to 0.
+
+    This is an ESTIMATE used only to choose a grouping (`group_scenes`,
+    below) and is then discarded — nothing downstream may treat it as
+    authoritative (013 data-model DM-5). Correctness comes from the response
+    split and the short-response retry path, neither of which consults it.
+    """
+    body = (entry.get("body") or "").strip()
+    if not body:
+        return 0.0
+    return len(body) * OUTPUT_CHARS_PER_BODY_CHAR / CHARS_PER_TOKEN
+
+
+def group_scenes(entries: list[dict], ceiling_tokens: float) -> list[dict]:
+    """Pack scene plan entries into contiguous groups under a token ceiling.
+
+    Returns a list of `{"index": int, "entries": list[dict], "projected_tokens":
+    float}` dicts, `index` 1-based. Each group's `entries` is a contiguous
+    slice of `entries` in the original order — scenes are never reordered
+    (013 data-model DM-11).
+
+    If the total projection over every entry fits `ceiling_tokens`, the whole
+    set comes back as a single group (DM-7). Otherwise entries are packed
+    greedily, in order, into the fewest groups whose individual projections
+    each fit the ceiling (DM-8). A single entry whose own projection exceeds
+    `ceiling_tokens` still gets a group of its own rather than being refused
+    or merged with a neighbour (DM-9) — the caller reports the ceiling as
+    exceeded for that group.
+
+    Pure and deterministic: the same `(entries, ceiling_tokens)` always
+    produces the same grouping (DM-10). No I/O, no randomness.
+    """
+    if not entries:
+        return []
+
+    projections = [project_scene_output(e) for e in entries]
+
+    if sum(projections) <= ceiling_tokens:
+        return [{"index": 1, "entries": list(entries), "projected_tokens": sum(projections)}]
+
+    groups: list[dict] = []
+    current_entries: list[dict] = []
+    current_tokens = 0.0
+
+    for entry, tokens in zip(entries, projections):
+        if current_entries and current_tokens + tokens > ceiling_tokens:
+            groups.append({
+                "index": len(groups) + 1,
+                "entries": current_entries,
+                "projected_tokens": current_tokens,
+            })
+            current_entries = []
+            current_tokens = 0.0
+        current_entries.append(entry)
+        current_tokens += tokens
+
+    if current_entries:
+        groups.append({
+            "index": len(groups) + 1,
+            "entries": current_entries,
+            "projected_tokens": current_tokens,
+        })
+
+    return groups
+
+
+# ── Batched wire protocol (013 contracts/wire-protocol.md) ────────────────────
+#
+# One request per SceneGroup covers several scenes in a single exchange; the
+# response must say, unambiguously and without a model call, which text
+# belongs to which requested scene. `render_batched_user_prompt` builds the
+# request side; `split_batched_response` is the deterministic parser for the
+# reply. Both are pure text functions — no I/O, no API calls (DM-12, FR-004).
+
+# Wire-protocol sentinel syntax (wire-protocol.md §1). `{i:02d}` is always
+# `entry["i"]` from `plan_scene_extraction` — the scene's PLAN index, fixed
+# before any group filtering and never re-derived from a scene's position
+# within its (possibly non-contiguous) group (DM-1). `{name}` is echoed by
+# the model for verification only; attribution is by index (DM-13).
+BATCHED_SCENE_BEGIN = "<<<CG-SCENE {i:02d} BEGIN: {name}>>>"
+BATCHED_SCENE_END = "<<<CG-SCENE {i:02d} END>>>"
+
+# Parsing side. Both marker lines are anchored to column 0 (MULTILINE
+# ^...$), so a scene name that happens to contain the literal text
+# "<<<CG-SCENE" mid-line is just name text — only a line that STARTS with
+# the sentinel prefix is ever read as a marker (research D5: "a scene name
+# cannot forge one because names appear only after BEGIN: on a line that
+# already began with the sentinel"). `.` does not match a newline, so a
+# marker can never span more than one line.
+_BATCHED_BEGIN_RE = re.compile(r"^<<<CG-SCENE (\d+) BEGIN: (.*)>>>$", re.MULTILINE)
+_BATCHED_END_RE = re.compile(r"^<<<CG-SCENE (\d+) END>>>$", re.MULTILINE)
+
+# Reconciliation failure reasons (wire-protocol.md §3). Any one of these
+# fails the WHOLE group — nothing from it is written, for any scene in it
+# (DM-14). Missing indices (a requested scene with no BEGIN at all) are
+# deliberately NOT in this list — an absent scene is unfinished work, not
+# evidence the response can't be trusted (wire-protocol.md §3).
+BATCHED_UNKNOWN_INDEX = "UNKNOWN_INDEX"
+BATCHED_DUPLICATE_INDEX = "DUPLICATE_INDEX"
+BATCHED_NAME_MISMATCH = "NAME_MISMATCH"
+BATCHED_NESTED_SECTION = "NESTED_SECTION"
+BATCHED_NO_SECTIONS = "NO_SECTIONS"
+
+
+def render_batched_user_prompt(entries: list[dict], template: str) -> str:
+    """Render the user prompt for one batched-extraction group.
+
+    Fills `template`'s only placeholder, `{scene_blocks}`, with one indexed
+    block per entry. `template` is passed IN by the caller — the engine never
+    loads a prompt itself, matching `run_scene_extraction`'s
+    `system_prefix`/`extraction_instruction` contract. Prompts are the CLI's
+    business; the engine orchestrates. The caller supplies
+    `config/agents/scene_extract_batched_user.md`:
+
+        ### 03 — The Margaster Hypothesis
+
+        Summary bullets (use as scope):
+
+        <entry's body>
+
+    `entry["i"]` (as produced by `plan_scene_extraction`) is rendered
+    zero-padded to two digits and used exactly as given — never re-derived
+    from the entry's position in `entries` — so a group built from a
+    filtered, non-contiguous slice of the plan (earlier scenes already on
+    disk and skipped) still shows the model each scene's real plan index
+    (DM-1). That heading is what the system prompt asks the model to copy
+    verbatim into its `<<<CG-SCENE NN BEGIN: name>>>` marker, and it is the
+    same index `split_batched_response` attributes the reply back by.
+    """
+    blocks = [
+        f"### {entry['i']:02d} — {entry['name']}\n\n"
+        f"Summary bullets (use as scope):\n\n"
+        f"{(entry.get('body') or '').strip()}"
+        for entry in entries
+    ]
+    return template.format(scene_blocks="\n\n".join(blocks))
+
+
+def _normalize_batched_name(name: str) -> str:
+    """Whitespace-only normalisation for echoed-name comparison (DM-13).
+
+    Strips the ends and collapses internal whitespace runs — THAT IS ALL.
+    Never case-folded, never punctuation-stripped, never similarity-scored.
+    A mismatch is a hard failure, never a re-assignment: attribution is by
+    index, and the name is a checksum on it, not a matching key.
+    """
+    return re.sub(r"\s+", " ", name.strip())
+
+
+def _failed_batch_group(reason: str, detail: str) -> dict:
+    """Build the `failed=True` shape of a SplitResult (see `split_batched_response`)."""
+    return {"failed": True, "failure_reason": reason, "failure_detail": detail, "sections": []}
+
+
+def split_batched_response(text: str, entries: list[dict]) -> dict:
+    """Split one batched-group response back into per-scene sections.
+
+    Deterministic and purely textual — no model call, no similarity
+    matching (DM-12, FR-004). `entries` is the group's
+    `plan_scene_extraction`-shaped request list (only `i` and `name` are
+    read); `text` is the model's raw response for that group. Writing the
+    result to disk is the caller's job (wire-protocol.md §5) — this
+    function never touches the filesystem.
+
+    Returns a SplitResult — a plain dict (matching this module's existing
+    convention: `plan_scene_extraction` and `group_scenes` both return
+    dicts, not classes), shaped:
+
+        {"failed": bool, "failure_reason": str | None, "failure_detail": str,
+         "sections": [{"i": int, "name": str, "status": str, "body": str | None}, ...]}
+
+    `failed=True` means the WHOLE group is unreconcilable (wire-protocol.md
+    §3, DM-14) — `sections` is then empty, and nothing from this response is
+    usable for any scene in it. `failure_reason` is one of
+    `BATCHED_UNKNOWN_INDEX` / `BATCHED_DUPLICATE_INDEX` /
+    `BATCHED_NAME_MISMATCH` / `BATCHED_NESTED_SECTION` / `BATCHED_NO_SECTIONS`.
+
+    When not failed, `sections` holds exactly one entry per requested scene,
+    in request order — not response order, because attribution is by index
+    (DM-13) and a caller should never have to care what order the model
+    happened to close its sections in. `status` is one of:
+
+      - `"complete"`   BEGIN and a matching END are both present, and the
+                       body between them is non-empty after stripping.
+      - `"empty"`      BEGIN and END are both present, but the body is
+                       blank after stripping. This is a FINISHED result —
+                       the transcript genuinely held nothing for that scene
+                       — and is deliberately distinct from `"incomplete"`
+                       (spec Edge Cases): writing an `"empty"` scene to disk
+                       would make the next run's skip-if-exists treat
+                       unfinished work as done.
+      - `"incomplete"` BEGIN is present with no matching END — unfinished
+                       work (a short response, most often).
+      - `"absent"`     No BEGIN at all for this requested index.
+
+    `body` is populated only for `"complete"` sections.
+
+    Text outside any BEGIN/END pair — preamble, inter-scene commentary,
+    trailing notes — is discarded. It is never appended to an adjacent
+    scene: only the span strictly between one scene's own matched markers
+    ever becomes that scene's body.
+    """
+    requested = {e["i"]: e["name"] for e in entries}
+
+    begins = [
+        {"i": int(m.group(1)), "name": m.group(2), "start": m.start(), "end": m.end()}
+        for m in _BATCHED_BEGIN_RE.finditer(text)
+    ]
+    ends = [
+        {"i": int(m.group(1)), "start": m.start(), "end": m.end()}
+        for m in _BATCHED_END_RE.finditer(text)
+    ]
+
+    if not begins:
+        if entries:
+            return _failed_batch_group(
+                BATCHED_NO_SECTIONS,
+                "response contained no <<<CG-SCENE ... BEGIN>>> marker",
+            )
+        return {"failed": False, "failure_reason": None, "failure_detail": "", "sections": []}
+
+    unknown = [b for b in begins if b["i"] not in requested]
+    if unknown:
+        return _failed_batch_group(
+            BATCHED_UNKNOWN_INDEX,
+            f"BEGIN carries index {unknown[0]['i']:02d}, not among the requested scenes",
+        )
+
+    dupes = [i for i, n in Counter(b["i"] for b in begins).items() if n > 1]
+    if dupes:
+        return _failed_batch_group(
+            BATCHED_DUPLICATE_INDEX,
+            f"index {dupes[0]:02d} opened more than once",
+        )
+
+    for b in begins:
+        if _normalize_batched_name(b["name"]) != _normalize_batched_name(requested[b["i"]]):
+            return _failed_batch_group(
+                BATCHED_NAME_MISMATCH,
+                f"scene {b['i']:02d}: echoed name {b['name']!r} != "
+                f"requested {requested[b['i']]!r}",
+            )
+
+    # Merge BEGIN/END events in the order they appear in the TEXT (not in
+    # request order) to pair each BEGIN with its own closing END and to
+    # catch NESTED_SECTION: a section is "open" from its BEGIN until its
+    # matching END, and a new BEGIN is never allowed to appear while one is
+    # still open. Without this check, "the body is the text between the
+    # markers" would let one section's window silently swallow another
+    # section's entire BEGIN/.../END block.
+    events = sorted(
+        [{"kind": "begin", **b} for b in begins] + [{"kind": "end", **e} for e in ends],
+        key=lambda ev: ev["start"],
+    )
+    closes: dict[int, dict] = {}
+    open_begin: dict | None = None
+    for ev in events:
+        if ev["kind"] == "begin":
+            if open_begin is not None:
+                return _failed_batch_group(
+                    BATCHED_NESTED_SECTION,
+                    f"scene {ev['i']:02d} BEGIN appears before scene "
+                    f"{open_begin['i']:02d}'s END",
+                )
+            open_begin = ev
+        elif open_begin is not None and ev["i"] == open_begin["i"]:
+            closes[open_begin["i"]] = {"begin": open_begin, "end": ev}
+            open_begin = None
+        # else: an END whose index doesn't match the currently open section
+        # (or nothing is open at all) — stray, not one of the five defined
+        # failure modes. It closes nothing and is otherwise ignored; this is
+        # what lets a corrupted END marker (a continuation seam landing
+        # inside the sentinel line) degrade its own scene to "incomplete"
+        # rather than being mistaken for some other scene's closing marker.
+
+    begins_by_i = {b["i"]: b for b in begins}
+    sections = []
+    for e in entries:
+        i = e["i"]
+        b = begins_by_i.get(i)
+        if b is None:
+            sections.append({"i": i, "name": e["name"], "status": "absent", "body": None})
+            continue
+        pair = closes.get(i)
+        if pair is None:
+            sections.append({"i": i, "name": e["name"], "status": "incomplete", "body": None})
+            continue
+        body = text[pair["begin"]["end"]:pair["end"]["start"]].strip()
+        if body:
+            sections.append({"i": i, "name": e["name"], "status": "complete", "body": body})
+        else:
+            sections.append({"i": i, "name": e["name"], "status": "empty", "body": None})
+
+    return {"failed": False, "failure_reason": None, "failure_detail": "", "sections": sections}

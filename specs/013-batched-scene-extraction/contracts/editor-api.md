@@ -17,7 +17,15 @@ extract:
 |---|---|---|---|
 | `tokens` | int | `8192` | Unchanged. Existing pin test stays green (FR-017b) |
 | `batch_scenes` | `bool \| None` | `None` | Tri-state: `None` defers to the backend default (DM-18) |
-| `batch_tokens` | int | `32000` | `>= 1000`, matching the existing token-field floor |
+| `batch_tokens` | int | `32000` | Plain `int`, no server-side constraint |
+
+**On the `1000` floor**: it is a **UI affordance, not a server constraint**.
+`KnobDrawer.vue:239`/`:271` set `min="1000"` on the existing token inputs, and
+neither `ExtractKnobs.tokens` nor `NarrateKnobs.tokens` carries a pydantic
+`Field(ge=…)`. `batch_tokens` follows that precedent exactly — a plain `int` on
+the model, `min="1000"` on its input. Adding a server-side floor to this one
+field would make it the only validated token knob in the file, which is a
+divergence, not a hardening.
 
 **Why `batch_scenes` is tri-state**: `None` is "I have not pinned this — follow
 the backend", which is genuinely different from `False` ("per-scene, even on the
