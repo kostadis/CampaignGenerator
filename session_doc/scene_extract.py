@@ -17,10 +17,22 @@ Usage:
       --output-dir scene_extractions/ \\
       [--dossier-dir docs/npcs/]
 
-  # 50% off via the Message Batches API (no live streaming)
+  # 50% off via the Message Batches API (no live streaming). Metered
+  # backend only — it buys a list-price discount on N per-scene requests,
+  # and relies on the metered backend's prompt caching to make the N-times-
+  # repeated transcript cheap.
   scene_extract ... --batch                # block + poll until done
   scene_extract ... --batch --submit-only  # detach: write sidecar, exit
   scene_extract ... --batch --collect      # retrieve from sidecar
+
+  # Collapse all pending scenes into ONE exchange (or a few, grouped
+  # against --batch-max-tokens) instead of one call per scene (013). This
+  # is a DIFFERENT axis from --batch above: it buys no discount, and
+  # exists for backends with no prompt caching at all (the claude-code
+  # subscription backend), where sending the transcript N times is the
+  # real cost --batch's caching would otherwise hide. --batch and
+  # --batch-scenes cannot be combined (see the refusal in main()).
+  scene_extract ... --batch-scenes [--batch-max-tokens 32000]
 
 Output:
   scene_extractions/01_<scene_slug>.md  ... 09_<scene_slug>.md
@@ -52,6 +64,7 @@ from campaignlib import (
     poll_batch,
     read_batch_sidecar,
     run_batch,
+    run_batched_scene_extraction,
     run_scene_extraction,
     save_log,
     submit_batch,
@@ -310,6 +323,45 @@ def main() -> None:
                         help="Max output tokens per scene (default: 8192)")
     parser.add_argument("--no-cache", action="store_true",
                         help="Disable prompt caching of the VTT prefix")
+    # ── Batched scene extraction (013) — a DIFFERENT axis from --batch ──
+    # below (Message Batches, the 50%-discount metered-backend path). This
+    # pair collapses the per-scene loop into one exchange (or a few, sized
+    # against --batch-max-tokens) so the transcript is sent once instead
+    # of once per scene — the saving --batch can't offer a backend with no
+    # prompt caching (the claude-code subscription backend). Shared dest so
+    # the editor can always pass an explicit flag either way (DM-19) and so
+    # an unadorned CLI run is unaffected (default off, FR-009). Combining
+    # this with --batch is refused below, before any input is read — see
+    # the comment at that check for why silently ignoring it would be
+    # worse than refusing it.
+    parser.add_argument("--batch-scenes", dest="batch_scenes",
+                        action="store_true", default=False,
+                        help="Send all pending scenes in one exchange "
+                             "(grouped against --batch-max-tokens if the "
+                             "projected output would exceed it) instead of "
+                             "one call per scene. NOT the same thing as "
+                             "--batch: this buys no discount and targets "
+                             "backends with no prompt caching, where the "
+                             "repeated transcript — not the per-request "
+                             "overhead --batch discounts — is the cost. "
+                             "Cannot be combined with --batch. Default off.")
+    parser.add_argument("--no-batch-scenes", dest="batch_scenes",
+                        action="store_false",
+                        help="Explicitly force the per-scene loop, "
+                             "overriding a caller-supplied default. Exists "
+                             "so a caller (the Session Doc Editor) can "
+                             "always render one of --batch-scenes / "
+                             "--no-batch-scenes explicitly rather than "
+                             "relying on this CLI's own default.")
+    parser.add_argument("--batch-max-tokens", type=int, default=32000,
+                        help="Output ceiling for a --batch-scenes run "
+                             "(default: 32000). This is a per-GROUP "
+                             "ceiling that group sizing packs against, not "
+                             "a per-scene budget — it does not touch "
+                             "--max-tokens (default 8192), which keeps "
+                             "governing the per-scene loop only, with or "
+                             "without --batch-scenes (FR-017b). Accepted "
+                             "but inert without --batch-scenes.")
     parser.add_argument("--force", action="store_true",
                         help="Re-extract even if per-scene files already exist. "
                              "Prior content is snapshotted to <file>.prev "
@@ -344,6 +396,29 @@ def main() -> None:
         parser.error("--submit-only and --collect require --batch")
     if args.submit_only and args.collect:
         parser.error("--submit-only and --collect are mutually exclusive")
+
+    # ── Refuse --batch + --batch-scenes together (contracts/cli-surface.md
+    # §2) BEFORE any work — before out_dir is even resolved, let alone the
+    # VTT or summary read. This has to happen this early because `if not
+    # args.batch:` (below) is the sole gate that reaches the batched-scenes
+    # branch: without this refusal a combined run would silently take the
+    # `--batch` (Message Batches) fork and --batch-scenes would just be
+    # ignored — the GM would pay for the transcript once per scene, N
+    # times, while believing they'd batched. A composed implementation was
+    # considered and rejected (contracts/cli-surface.md §1): --batch only
+    # runs on the metered backend, where cache_system already makes the
+    # repeated transcript cheap, so there is nothing left for
+    # --batch-scenes to save on that path.
+    if args.batch and args.batch_scenes:
+        print(
+            "Error: --batch-scenes cannot be combined with --batch.\n"
+            "  --batch submits per-scene requests to the Message Batches API (metered\n"
+            "  backend only), where the repeated transcript is already cached.\n"
+            "  --batch-scenes removes the repetition for backends that have no cache.\n"
+            "  Pick one.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     out_dir = Path(args.output_dir).expanduser()
 
@@ -486,9 +561,95 @@ def main() -> None:
         print(f"  Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
 
     if not args.batch:
-        # ── Live streaming path (unchanged behaviour) ──
         npc_roster = format_npc_roster(alias_map)
         client = client_from_args(args)
+
+        if args.batch_scenes:
+            # ── Batched scene extraction (013): N scenes per exchange
+            # instead of N calls. Same live (non-Message-Batches) branch as
+            # the per-scene loop below — --batch was already refused above
+            # — but a sibling engine call (`run_batched_scene_extraction`,
+            # not `run_scene_extraction`) with the BATCHED prompt pair and
+            # `--batch-max-tokens` (not `--max-tokens`, which stays the
+            # per-scene loop's knob per FR-017b).
+            print(f"\n[Batched scene extraction | {len(scenes)} scene(s) | "
+                  f"model: {args.model} | ceiling: {args.batch_max_tokens:,} tok]")
+            print("=" * 60)
+            report = run_batched_scene_extraction(
+                client,
+                vtt_text=dialogue,
+                scenes=scenes,
+                extract_dir=out_dir,
+                model=args.model,
+                user_template=SCENE_EXTRACT_BATCHED_USER_TEMPLATE,
+                system_prefix=SCENE_EXTRACT_BATCHED_SYSTEM_PREFIX,
+                system_suffix=npc_roster,
+                cache_vtt=not args.no_cache,
+                max_tokens=args.batch_max_tokens,
+                force=args.force,
+            )
+            print("=" * 60)
+
+            # FR-018 / contracts/cli-surface.md §3 — the run-report tally.
+            # `run_batched_scene_extraction` already narrated each group as
+            # it ran (which scenes, saved/empty/missing, any group
+            # failure); this is the summary the GM reads once at the end.
+            print(f"\n  Scenes in summary:  {report['scenes_total']}")
+            skip_note = ("  (skipped — pass --force to redo)"
+                         if report["scenes_skipped"] else "")
+            print(f"  Already extracted:  {report['scenes_skipped']}{skip_note}")
+            print(f"  Requested:          {report['scenes_requested']}")
+            print(f"  Written:            {report['scenes_written']}")
+            if report["scenes_empty"]:
+                print(f"  Empty (no moments): {len(report['scenes_empty'])}  "
+                      f"({', '.join(report['scenes_empty'])})")
+            print(f"  Groups used:        {report['groups_used']}")
+            if report["scenes_requested"]:
+                print(f"  Transcript sent:    {report['groups_used']}x  "
+                      f"(per-scene mode would have sent "
+                      f"{report['scenes_requested']}x)")
+            if report["ceiling_exceeded"]:
+                print(f"  Note: projection required more than one group at "
+                      f"--batch-max-tokens {args.batch_max_tokens:,} — raise "
+                      f"it to fit in one call, or accept the split above.")
+
+            print(f"\nWrote {report['scenes_written']} scene file(s) to {out_dir}")
+
+            # ── Exit codes (contracts/cli-surface.md §4) ──
+            # `4` outranks `3`: a group failure means reconciliation itself
+            # broke (duplicate/unknown/nested section indices in the
+            # model's response — wire-protocol.md §4), and NOTHING from
+            # that group was written, which is a different failure mode
+            # from a scene that came back individually incomplete inside
+            # an otherwise-successful group. Both leave whatever DID
+            # succeed on disk, so neither is a `1`-style input refusal —
+            # both are resumable: re-run without --force to request only
+            # what's still missing.
+            if report["group_failures"]:
+                n = len(report["group_failures"])
+                print(f"\n{n} group{'s' if n != 1 else ''} failed reconciliation "
+                      f"— nothing from {'them' if n != 1 else 'it'} was written:",
+                      file=sys.stderr)
+                for f in report["group_failures"]:
+                    print(f"  group {f['group']}: {f['reason']} — {f['detail']}",
+                          file=sys.stderr)
+                if report["scenes_missing"]:
+                    print(f"\nNOT extracted: {', '.join(report['scenes_missing'])}",
+                          file=sys.stderr)
+                print("\nRe-run without --force to request only those.",
+                      file=sys.stderr)
+                sys.exit(4)
+
+            if report["scenes_missing"]:
+                print(f"\nNOT extracted: {', '.join(report['scenes_missing'])}",
+                      file=sys.stderr)
+                print("Re-run without --force to request only those.",
+                      file=sys.stderr)
+                sys.exit(3)
+
+            return
+
+        # ── Live streaming path, per-scene (unchanged behaviour) ──
         print(f"\n[Scene extraction | {len(scenes)} scene(s) | model: {args.model}]")
         print("=" * 60)
         saved = run_scene_extraction(

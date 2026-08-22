@@ -1012,18 +1012,29 @@ def _build_verify_cmd(request, cfg: ResolvedEditorConfig,
 
 
 def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
-                         force: bool = False) -> list[str] | tuple[None, str]:
+                         force: bool = False,
+                         batch_scenes: bool = False) -> list[str] | tuple[None, str]:
     """Stage 2: scene_extract {vtt} --summary {summary} --output-dir {sx_dir}.
 
     The batch flag (per-scene calls submitted as one Message Batch — 50% off
     + cache hits compound) is forwarded by ``_selection_args`` from the
     resolved selection, same as Stage 1 — no local param anymore (T029).
+    This is Message Batches, a different feature from ``batch_scenes``
+    below — the two coexist.
 
     Pass `force=True` to forward `--force` so existing per-scene files are
     overwritten (with .prev snapshot) instead of skipped. Defaults to
     `False` (skip-existing, resumable) — the caller must explicitly opt
     into a full redo; clicking Re-Extract alone no longer implies it
     (#323).
+
+    `batch_scenes` is the caller's already-RESOLVED boolean (DM-18 fully
+    applied — explicit per-run choice, else config pin, else backend
+    default; see ``api_extract``) — not the raw tri-state query param. It is
+    always rendered as an explicit ``--batch-scenes``/``--no-batch-scenes``
+    flag, never omitted, so the streamed command line stays fully explicit
+    and copyable (DM-19) — the same reason ``--max-tokens`` below is always
+    forwarded rather than left to scene_extract's own default.
     """
     vtt = _vtt_path(cfg)
     if vtt is None or not vtt.exists():
@@ -1057,6 +1068,8 @@ def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
     # could hold only one label and was typed separately from the roster.
     cmd += _players_args(cfg)
     cmd += ["--max-tokens", str(cfg.extract.tokens)]
+    cmd.append("--batch-scenes" if batch_scenes else "--no-batch-scenes")
+    cmd += ["--batch-max-tokens", str(cfg.extract.batch_tokens)]
     if force:
         cmd.append("--force")
     return cmd
@@ -1447,17 +1460,39 @@ async def api_verify(request: Request, target: str = "both",
 
 
 @router.get("/extract")
-async def api_extract(request: Request, force: int = 0, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+async def api_extract(request: Request, force: int = 0, batch_scenes: int | None = None,
+                      cfg: ResolvedEditorConfig = Depends(get_editor_config)):
     """Stage 2 (Re-Extract Quotes) — calls scene_extract.
 
-    Batch comes from the resolved selection now, not a `?batch=1` query
-    param (005-ui-batch-selection, T029) — see ``_build_reextract_cmd``,
-    which already forwards it via ``_selection_args``. `force=1` forwards
-    `--force` so existing per-scene files are overwritten (with .prev
-    snapshot); defaults to `0` (skip-existing) — the UI only sets `force=1`
-    when the GM has explicitly enabled the Force control (#323).
+    Batch (Message Batches — per-scene calls submitted as one batch, 50% off
+    + cache hits compound) comes from the resolved selection now, not a
+    `?batch=1` query param (005-ui-batch-selection, T029) — see
+    ``_build_reextract_cmd``, which already forwards it via
+    ``_selection_args``. `force=1` forwards `--force` so existing per-scene
+    files are overwritten (with .prev snapshot); defaults to `0`
+    (skip-existing) — the UI only sets `force=1` when the GM has explicitly
+    enabled the Force control (#323).
+
+    `batch_scenes` (013-batched-scene-extraction) is a DIFFERENT feature
+    that coexists with the Message-Batches `batch` above: it sends the whole
+    transcript to the model in one call instead of once per scene.
+    Absent-vs-present is load-bearing (DM-18/FR-007a): `None` (the param
+    omitted) means the GM did not touch the control, so it resolves to
+    ``cfg.batch_scenes_effective`` — already computed per DM-18 steps 2-3
+    (the config pin, else `True` on claude-code / `False` elsewhere).
+    `0` or `1` present means the GM made an explicit per-run choice, which
+    WINS over both the config pin and the backend default (DM-18 step 1) —
+    this is what makes the pre-selected checkbox overridable in both
+    directions. A plain `int = 0` default would make "unchecked" and
+    "untouched" indistinguishable and permanently defeat the subscription
+    default. The resolved boolean is always rendered as an explicit
+    ``--batch-scenes``/``--no-batch-scenes`` flag (DM-19).
     """
-    result = _build_reextract_cmd(request, cfg, force=bool(force))
+    resolved_batch_scenes = (
+        bool(batch_scenes) if batch_scenes is not None else cfg.batch_scenes_effective
+    )
+    result = _build_reextract_cmd(request, cfg, force=bool(force),
+                                  batch_scenes=resolved_batch_scenes)
     if isinstance(result, tuple):
         _, err = result
         return _sse_error(err)
@@ -1467,7 +1502,8 @@ async def api_extract(request: Request, force: int = 0, cfg: ResolvedEditorConfi
     def _done(rc: int | None) -> None:
         outputs = [str(sx)] if sx else []
         _record_activity(cfg, stage="extract", rc=rc,
-                         knobs={"batch": _editor_resolved_batch(request, cfg), "force": bool(force)},
+                         knobs={"batch": _editor_resolved_batch(request, cfg), "force": bool(force),
+                                "batch_scenes": resolved_batch_scenes},
                          outputs=outputs)
 
     return StreamingResponse(

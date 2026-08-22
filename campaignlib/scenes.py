@@ -683,3 +683,193 @@ def split_batched_response(text: str, entries: list[dict]) -> dict:
             sections.append({"i": i, "name": e["name"], "status": "empty", "body": None})
 
     return {"failed": False, "failure_reason": None, "failure_detail": "", "sections": sections}
+
+
+# ── Batched engine (013 data-model.md §2, §6) ─────────────────────────────
+#
+# `run_batched_scene_extraction` is a SIBLING of `run_scene_extraction`, not a
+# `batched=` flag bolted onto it (research D1) — the per-scene loop above is
+# untouched by everything below, byte-for-byte (FR-009, SC-008). It reuses
+# `plan_scene_extraction`, `build_scene_extraction_system_prompt`,
+# `group_scenes`, `render_batched_user_prompt`, `split_batched_response`,
+# `format_scene_output` and `snapshot_scene_for_rerun` rather than
+# reimplementing any of them.
+
+def run_batched_scene_extraction(
+    client,
+    *,
+    vtt_text: str,
+    scenes: list[dict],
+    extract_dir: "Path",
+    model: str,
+    user_template: str,
+    system_prefix: str = "",
+    system_suffix: str = "",
+    input_normalizer=None,
+    cache_vtt: bool = True,
+    filename_template: str = "{i:02d}_{slug}.md",
+    max_tokens: int = 32000,
+    force: bool = False,
+) -> dict:
+    """Extract several scenes per exchange instead of one call per scene.
+
+    Same inputs as `run_scene_extraction` plus `user_template` (the batched
+    user-prompt template — see `render_batched_user_prompt`) and a higher
+    default `max_tokens`, which here is the per-GROUP ceiling `group_scenes`
+    packs against, not a per-scene budget. `user_template` is passed IN by
+    the caller — this engine never loads a prompt itself, matching
+    `run_scene_extraction`'s `extraction_instruction` contract; prompts are
+    the CLI's business (`config/agents/scene_extract_batched_user.md`).
+
+    THE CRITICAL RULE (013 data-model DM-2/DM-3, FR-008a/FR-008b, task T019):
+    already-extracted scenes are filtered out BEFORE projection, grouping or
+    any request is built — never sent, never projected, never counted toward
+    group sizing, and only discarded after the fact. A scene already on disk
+    (per `plan_scene_extraction`'s `exists`) is excluded unless `force=True`,
+    exactly the same criterion `run_scene_extraction` uses, so a session
+    started in one mode and finished in the other converges on the same set
+    (DM-4). If nothing is left to request, this makes ZERO API calls (DM-3) —
+    today's free no-op stays free.
+
+    The system prompt (full VTT + system_prefix/suffix, via
+    `build_scene_extraction_system_prompt`) is built exactly ONCE, outside
+    the group loop, so the transcript is assembled a single time no matter
+    how many groups are sent. Each group then costs exactly one
+    `stream_api` call — `transcript_transmissions` in the returned report
+    equals the number of groups, which is the number this feature exists to
+    shrink.
+
+    Only `"complete"` sections (wire-protocol.md §4) are written, and only
+    through the shared path: `format_scene_output(entry["name"],
+    entry["body"], section["body"])` then `snapshot_scene_for_rerun` — never
+    a bespoke writer, so batched output is structurally indistinguishable
+    from per-scene output (SC-006) and force semantics (`.prev` snapshot only
+    on a real content change, `.reviewed` cleared, no write when identical)
+    come along for free (FR-014). `"empty"` sections are a finished result
+    (the transcript genuinely held nothing for that scene) and are reported
+    but never written — writing them would make the next run's
+    skip-if-exists treat unfinished work as done. `"incomplete"` and
+    `"absent"` sections, and every scene in a `"failed"` group (DM-14), are
+    reported as missing and nothing is written for them either.
+
+    Returns a run-report dict (013 data-model §6) rather than a bare list of
+    paths — the report has to say more than `run_scene_extraction`'s return
+    value does (how many groups, whether the ceiling forced a split, which
+    scenes came back short) so the CLI can render it. This function only
+    orchestrates and reports; it never formats that report into prose
+    (retrieval/render separation — the report IS the human checkpoint's
+    input, not a rendering of one).
+
+    system_prefix, system_suffix, input_normalizer, cache_vtt,
+    filename_template, force — same meaning as `run_scene_extraction`.
+    """
+    if not scenes:
+        print("Error: no scenes provided — cannot run scene-anchored extraction.",
+              file=sys.stderr)
+        raise SystemExit(1)
+
+    extract_dir.mkdir(parents=True, exist_ok=True)
+
+    plan = plan_scene_extraction(
+        scenes=scenes, extract_dir=extract_dir, filename_template=filename_template,
+    )
+
+    # T019 / DM-2 / FR-008a — THE line. `entries` is what gets projected,
+    # grouped and sent; nothing else. Do not build the request set from
+    # `plan` and filter afterwards — that sends every scene, including
+    # already-extracted ones, and only discards them once the response
+    # (and its cost) already exists.
+    entries = plan if force else [p for p in plan if not p["exists"]]
+    skipped = [] if force else [p for p in plan if p["exists"]]
+
+    report: dict = {
+        "scenes_total": len(plan),
+        "scenes_skipped": len(skipped),
+        "scenes_requested": len(entries),
+        "scenes_written": 0,
+        "scenes_empty": [],
+        "scenes_missing": [],
+        "groups_used": 0,
+        "transcript_transmissions": 0,
+        "ceiling_exceeded": False,
+        "saved": [],
+        "group_failures": [],
+    }
+
+    # T020 / DM-3 / FR-008b — nothing left to request, so make NO call.
+    if not entries:
+        print("All scenes already extracted — nothing to do.")
+        return report
+
+    groups = group_scenes(entries, max_tokens)
+    report["ceiling_exceeded"] = len(groups) > 1 or any(
+        g["projected_tokens"] > max_tokens for g in groups
+    )
+
+    # T021 — built ONCE, reused across every group in the loop below.
+    system_prompt = build_scene_extraction_system_prompt(
+        vtt_text=vtt_text,
+        system_prefix=system_prefix,
+        system_suffix=system_suffix,
+        input_normalizer=input_normalizer,
+    )
+
+    total_groups = len(groups)
+    for group in groups:
+        idx = group["index"]
+        group_entries = group["entries"]
+        names = ", ".join(e["name"] for e in group_entries)
+        count = len(group_entries)
+        action = "Batch re-extracting" if force else "Batch-extracting"
+        print(f"  [{idx}/{total_groups}] {action} {count} scene"
+              f"{'s' if count != 1 else ''}: {names}")
+        print("  " + "─" * 56)
+        user_prompt = render_batched_user_prompt(group_entries, user_template)
+        result = stream_api(client, system_prompt, user_prompt, model,
+                            max_tokens=max_tokens, cache_system=cache_vtt)
+        print("  " + "─" * 56)
+
+        report["groups_used"] += 1
+        report["transcript_transmissions"] += 1
+
+        split = split_batched_response(result, group_entries)
+        if split["failed"]:
+            report["group_failures"].append({
+                "group": idx,
+                "reason": split["failure_reason"],
+                "detail": split["failure_detail"],
+            })
+            report["scenes_missing"].extend(e["name"] for e in group_entries)
+            print(f"  Group {idx} FAILED ({split['failure_reason']}): "
+                  f"{split['failure_detail']}\n")
+            continue
+
+        entries_by_i = {e["i"]: e for e in group_entries}
+        for section in split["sections"]:
+            # T022 — map the section back to its plan entry by `i`. The
+            # entry's `body` is the gm-assist SUMMARY BULLETS (scope); the
+            # section's `body` is the MODEL'S EXTRACTED MOMENTS (result).
+            # `format_scene_output(name, body, result)` wants them in that
+            # order — swapping them would silently write the bullets as the
+            # extraction.
+            entry = entries_by_i[section["i"]]
+            status = section["status"]
+            if status == "complete":
+                new_text = format_scene_output(entry["name"], entry["body"], section["body"])
+                out_file = entry["path"]
+                if snapshot_scene_for_rerun(out_file, new_text):
+                    out_file.write_text(new_text, encoding="utf-8")
+                    print(f"  Saved: {out_file.name}")
+                else:
+                    print(f"  Unchanged (no overwrite): {out_file.name}")
+                report["scenes_written"] += 1
+                report["saved"].append(out_file)
+            elif status == "empty":
+                report["scenes_empty"].append(entry["name"])
+                print(f"  Empty (no moments returned): {entry['name']}")
+            else:  # "incomplete" or "absent" — unfinished work, not written.
+                report["scenes_missing"].append(entry["name"])
+                print(f"  Missing ({status}): {entry['name']}")
+        print()
+
+    return report

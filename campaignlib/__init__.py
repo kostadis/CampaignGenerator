@@ -98,6 +98,11 @@ from .scenes import (
     format_scene_output,
     build_scene_extraction_system_prompt,
     plan_scene_extraction,
+    run_batched_scene_extraction,
+    group_scenes,
+    split_batched_response,
+    project_scene_output,
+    render_batched_user_prompt,
 )
 from .pipelines import (
     run_extract_pipeline,
@@ -217,6 +222,12 @@ __all__ = [
     "format_scene_output",
     "build_scene_extraction_system_prompt",
     "plan_scene_extraction",
+    # scenes — batched engine (013-batched-scene-extraction)
+    "run_batched_scene_extraction",
+    "group_scenes",
+    "split_batched_response",
+    "project_scene_output",
+    "render_batched_user_prompt",
     # pipelines
     "run_extract_pipeline",
     "run_synthesize_pipeline",

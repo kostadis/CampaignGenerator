@@ -148,6 +148,16 @@ class ResolvedEditorConfig:
     # Display-only summary of paths.genre_file (#276 fix 2). Injected, never
     # persisted — same class of read-only extra as ``model``/``work_dir``.
     genre: ResolvedGenre | None = None
+    # The resolved default per DM-18 steps 2-3 (config pin, else the backend
+    # default), for the UI's initial checkbox state (DM-20). Injected, never
+    # persisted — same class of read-only extra as ``model``/``work_dir``.
+    # Deliberately NOT under ``extract``: that field IS the persisted
+    # ``ExtractKnobs`` model (``extra="forbid"``), so a derived field there
+    # would become known, stored and PUT-able — the opposite of read-only.
+    # Step 1 of DM-18 (an explicit per-run query-param choice) is NOT folded
+    # in here — this value is computed with no request in scope, so a route
+    # applies step 1 on top of it.
+    batch_scenes_effective: bool = False
 
 
 def _set_nested(target: dict[str, Any], path: tuple[str, ...], value: Any) -> None:
@@ -354,6 +364,17 @@ class SessionEditorConfigService:
             paths_dict[f] = self.platform.resolve_path(paths_dict.get(f), base="campaign")
         resolved_paths = EditorPaths.model_validate(paths_dict)
 
+        # DM-18 steps 2-3: an explicit config pin wins; otherwise the backend
+        # default is `True` on claude-code (no prompt caching, so a batched
+        # single call beats N sequential per-scene calls) and `False`
+        # elsewhere. Step 1 (an explicit per-run choice) has no request to
+        # consult here — it is applied by the route on top of this value.
+        batch_scenes_effective = (
+            cfg.extract.batch_scenes
+            if cfg.extract.batch_scenes is not None
+            else cfg.backends.active == "claude-code"
+        )
+
         return ResolvedEditorConfig(
             paths=resolved_paths,
             extract=cfg.extract,
@@ -369,4 +390,5 @@ class SessionEditorConfigService:
             vtt=None,
             session_dir=session_dir,
             genre=_describe_genre_file(resolved_paths.genre_file),
+            batch_scenes_effective=batch_scenes_effective,
         )

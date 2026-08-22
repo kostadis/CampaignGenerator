@@ -1,5 +1,6 @@
 """Tests for scene-anchored VTT extraction (campaignlib + scene_extract + session_doc wiring)."""
 
+import re
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -609,3 +610,401 @@ def test_group_scenes_preserves_input_order():
 
 def test_group_scenes_empty_input_returns_empty_list():
     assert campaignlib.scenes.group_scenes([], ceiling_tokens=1000) == []
+
+
+# ── run_batched_scene_extraction (013-batched-scene-extraction, T031-T033) ────
+#
+# Shared fixtures/helpers below drive `run_batched_scene_extraction` for the
+# call-count (T031), force/skip matrix (T032), and structural-identity (T033)
+# assertions. Every scene in this section is named "Scene {n}" so one generic
+# fake `stream_api` (`_echoing_batched_stream`) can build a well-formed
+# response for whatever indices a group's own rendered prompt actually names
+# — read back out with `_requested_indices` — without hand-maintaining
+# per-test wire text.
+
+_BATCHED_USER_TEMPLATE = campaignlib.load_agent_prompt("scene_extract_batched_user")
+
+
+def _wrap_batched_scene(i: int, name: str, body: str) -> str:
+    """One well-formed <<<CG-SCENE ...>>> marker pair — mirrors
+    tests/test_batched_split.py's `_wrap` helper, duplicated here so this
+    file doesn't depend on that module."""
+    return (
+        f"<<<CG-SCENE {i:02d} BEGIN: {name}>>>\n"
+        f"{body}\n"
+        f"<<<CG-SCENE {i:02d} END>>>"
+    )
+
+
+def _requested_indices(user_prompt: str) -> list[int]:
+    """Parse the scene indices a rendered batched user prompt actually
+    named, from its own '### NN — name' headings
+    (`render_batched_user_prompt`'s own format). This reads what was SENT,
+    never anything derived from internals."""
+    return sorted(int(m) for m in re.findall(r"^### (\d+) — ", user_prompt, re.MULTILINE))
+
+
+def _echoing_batched_stream(captured: list):
+    """A `stream_api` fake that records each call's (system, user) into
+    `captured` and replies with a well-formed batched response covering
+    exactly the indices that call's own prompt requested — every scene in
+    this section is named "Scene {i}", so the echoed name always matches
+    and every section comes back `"complete"`."""
+    def fake_stream(client, system, user, model, max_tokens=8096, silent=False,
+                    verbose=False, cache_system=False):
+        captured.append({"system": system, "user": user})
+        indices = _requested_indices(user)
+        return "\n".join(
+            _wrap_batched_scene(i, f"Scene {i}", f"MOMENTS for Scene {i}") for i in indices
+        )
+    return fake_stream
+
+
+# ── T031: call count and prompt reuse (also covers SC-009) ─────────────────
+
+def test_run_batched_scene_extraction_single_call_when_projection_fits_ceiling(tmp_path):
+    """A batched run over N scenes whose total projection fits the ceiling
+    makes exactly ONE stream_api call."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in (1, 2, 3)]
+    extract_dir = tmp_path / "out"
+    captured: list = []
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_echoing_batched_stream(captured)):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None,
+            vtt_text="GM: hello\nThorin: hi",
+            scenes=scenes,
+            extract_dir=extract_dir,
+            model="claude-haiku-4-5-20251001",
+            user_template=_BATCHED_USER_TEMPLATE,
+            max_tokens=5000,
+        )
+
+    assert len(captured) == 1
+    assert report["groups_used"] == 1
+    assert report["transcript_transmissions"] == 1
+    assert _requested_indices(captured[0]["user"]) == [1, 2, 3]
+
+
+def test_run_batched_scene_extraction_system_prompt_reused_byte_identical_across_groups(tmp_path):
+    """On a fixture forced to split by a deliberately low max_tokens, the
+    `system` argument is byte-identical across EVERY group call — the
+    transcript is assembled once (T021) and reused, not rebuilt per group."""
+    # Each body is 200 chars -> 200*4.2/4.0 = 210 projected tokens. A ceiling
+    # of 250 fits exactly one scene per group (two would be 420), so three
+    # scenes force a 3-group split.
+    scenes = [{"name": f"Scene {n}", "body": "x" * 200} for n in (1, 2, 3)]
+    extract_dir = tmp_path / "out"
+    captured: list = []
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_echoing_batched_stream(captured)):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None,
+            vtt_text="GM: hello\nThorin: hi",
+            scenes=scenes,
+            extract_dir=extract_dir,
+            model="m",
+            user_template=_BATCHED_USER_TEMPLATE,
+            max_tokens=250,
+        )
+
+    assert report["groups_used"] > 1  # sanity: fixture actually forced a split
+    assert len(captured) == report["groups_used"]
+    systems = [c["system"] for c in captured]
+    assert len(set(systems)) == 1  # every call sent the exact same system string
+
+
+def test_run_batched_scene_extraction_call_count_scales_with_ceiling_sc009(tmp_path):
+    """SC-009: automated coverage that raising the ceiling collapses the run
+    to a single call, on a FIXED fixture — not a manual walkthrough. Same
+    scenes, two ceilings: a high one that fits everything (1 call) and a low
+    one that forces a split (>1 calls)."""
+    scenes = [{"name": f"Scene {n}", "body": "x" * 200} for n in (1, 2, 3, 4)]
+
+    def run_with_ceiling(ceiling: float, subdir: str) -> int:
+        extract_dir = tmp_path / subdir
+        captured: list = []
+        with patch.object(campaignlib.scenes, "stream_api",
+                          side_effect=_echoing_batched_stream(captured)):
+            campaignlib.run_batched_scene_extraction(
+                client=None, vtt_text="VTT", scenes=scenes,
+                extract_dir=extract_dir, model="m",
+                user_template=_BATCHED_USER_TEMPLATE, max_tokens=ceiling,
+            )
+        return len(captured)
+
+    high_ceiling_calls = run_with_ceiling(5000, "high")  # 4*210=840 tok, fits easily
+    low_ceiling_calls = run_with_ceiling(250, "low")     # forces a split (per math above)
+
+    assert high_ceiling_calls == 1
+    assert low_ceiling_calls > 1
+
+
+# ── T032: the force / skip-if-exists matrix (SC-005a-d) ────────────────────
+#
+# Highest-value tests in the phase: a wrong implementation writes correct
+# files while sending everything it was given, so every test here asserts on
+# what was SENT (parsed from the recorded prompt's own indices), not only on
+# what ended up on disk.
+
+def test_run_batched_scene_extraction_force_false_requests_only_missing_scenes(tmp_path):
+    """SC-005a: with K of N scene files already on disk and force=False, the
+    request contains exactly the N-K missing scenes and no others. The K
+    existing files are byte-unchanged afterwards."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in range(1, 6)]  # N=5
+    extract_dir = tmp_path / "out"
+    extract_dir.mkdir()
+    present = {2, 4}  # K=2
+    existing_text = {i: f"PRE-EXISTING scene {i} content — must not change" for i in present}
+    for i, text in existing_text.items():
+        (extract_dir / f"{i:02d}_scene_{i}.md").write_text(text, encoding="utf-8")
+
+    captured: list = []
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_echoing_batched_stream(captured)):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=5000,
+        )
+
+    assert len(captured) == 1  # fits in one group at this ceiling
+    assert _requested_indices(captured[0]["user"]) == [1, 3, 5]  # N-K missing, no others
+    assert report["scenes_requested"] == 3
+    assert report["scenes_skipped"] == 2
+
+    for i, text in existing_text.items():
+        assert (extract_dir / f"{i:02d}_scene_{i}.md").read_text(encoding="utf-8") == text
+
+
+def test_run_batched_scene_extraction_force_false_all_present_makes_zero_calls(tmp_path):
+    """SC-005b: with ALL N on disk and force=False, ZERO stream_api calls
+    are made, and the returned report says scenes_requested == 0 and
+    transcript_transmissions == 0."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in (1, 2, 3)]
+    extract_dir = tmp_path / "out"
+    extract_dir.mkdir()
+    for n in (1, 2, 3):
+        (extract_dir / f"{n:02d}_scene_{n}.md").write_text(f"DONE {n}", encoding="utf-8")
+
+    def fake_stream(*args, **kwargs):
+        raise AssertionError("stream_api must not be called when nothing is missing")
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE,
+        )
+
+    assert report["scenes_requested"] == 0
+    assert report["transcript_transmissions"] == 0
+
+
+def test_run_batched_scene_extraction_force_true_requests_all_and_snapshots_changed_only(tmp_path):
+    """SC-005c: with force=True, all N are requested regardless of what's on
+    disk, and `.prev` snapshots exist only for the files whose content
+    actually changed. Sibling case (FR-014, snapshot_scene_for_rerun's own
+    contract): when the new content is byte-identical to the old, NO `.prev`
+    is written and the file is not rewritten."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in (1, 2)]
+    extract_dir = tmp_path / "out"
+    extract_dir.mkdir()
+
+    # Scene 1: existing content differs from what the fake model returns.
+    (extract_dir / "01_scene_1.md").write_text("OLD scene 1 content", encoding="utf-8")
+
+    # Scene 2: existing content is byte-identical to what format_scene_output
+    # will produce for the fake model's response — the sibling case.
+    identical_text = campaignlib.format_scene_output(
+        "Scene 2", "- bullet 2", "MOMENTS for Scene 2",
+    )
+    scene2_path = extract_dir / "02_scene_2.md"
+    scene2_path.write_text(identical_text, encoding="utf-8")
+    mtime_before = scene2_path.stat().st_mtime_ns
+
+    captured: list = []
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_echoing_batched_stream(captured)):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=5000,
+            force=True,
+        )
+
+    assert _requested_indices(captured[0]["user"]) == [1, 2]  # both requested, present or not
+    assert report["scenes_requested"] == 2
+
+    # Scene 1's content changed -> snapshotted, file rewritten.
+    assert (extract_dir / "01_scene_1.md.prev").read_text(encoding="utf-8") == "OLD scene 1 content"
+    assert "MOMENTS for Scene 1" in (extract_dir / "01_scene_1.md").read_text(encoding="utf-8")
+
+    # Scene 2's content is identical -> no .prev, file not rewritten.
+    assert not (extract_dir / "02_scene_2.md.prev").exists()
+    assert scene2_path.read_text(encoding="utf-8") == identical_text
+    assert scene2_path.stat().st_mtime_ns == mtime_before
+
+
+def test_scene_extraction_converges_on_same_files_regardless_of_mode_order(tmp_path):
+    """SC-005d: a session extracted half by run_scene_extraction and
+    finished by run_batched_scene_extraction (and the reverse) ends with the
+    same N files — both modes read the same on-disk evidence of what is
+    done."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in (1, 2, 3, 4)]
+    expected_files = ["01_scene_1.md", "02_scene_2.md", "03_scene_3.md", "04_scene_4.md"]
+
+    # ── per-scene first, batched finishes ──
+    per_scene_dir = tmp_path / "per_scene_then_batched"
+
+    def fake_stream_per_scene(client, system, user, model, max_tokens=8096, silent=False,
+                              verbose=False, cache_system=False):
+        return "PER-SCENE MOMENTS"
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream_per_scene):
+        campaignlib.run_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes[:2],
+            extract_dir=per_scene_dir, model="m",
+            extraction_instruction="{name} {body}",
+        )
+    assert sorted(p.name for p in per_scene_dir.glob("*.md")) == expected_files[:2]
+
+    captured: list = []
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_echoing_batched_stream(captured)):
+        campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=per_scene_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=5000,
+        )
+    assert _requested_indices(captured[0]["user"]) == [3, 4]
+    assert sorted(p.name for p in per_scene_dir.glob("*.md")) == expected_files
+
+    # ── reverse: batched first, per-scene finishes ──
+    batched_dir = tmp_path / "batched_then_per_scene"
+    captured2: list = []
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_echoing_batched_stream(captured2)):
+        campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes[:2],
+            extract_dir=batched_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=5000,
+        )
+    assert sorted(p.name for p in batched_dir.glob("*.md")) == expected_files[:2]
+
+    calls: list = []
+
+    def fake_stream_per_scene2(client, system, user, model, max_tokens=8096, silent=False,
+                               verbose=False, cache_system=False):
+        calls.append(user)
+        return "PER-SCENE MOMENTS"
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream_per_scene2):
+        campaignlib.run_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=batched_dir, model="m",
+            extraction_instruction="{name} {body}",
+        )
+    assert len(calls) == 2  # only scenes 3-4 got a per-scene call
+    assert sorted(p.name for p in batched_dir.glob("*.md")) == expected_files
+
+
+# ── T033: structural identity and no cross-contamination ───────────────────
+
+def test_batched_and_per_scene_paths_write_byte_identical_files(tmp_path):
+    """SC-006: for the same scene name/bullets/model-output, a file written
+    by the batched path is byte-identical to one written by the per-scene
+    path. Both go through format_scene_output — assert the actual bytes so
+    a future bespoke writer would break this."""
+    scene = {"name": "Scene 1", "body": "- bullet 1"}
+    model_output = "MOMENTS for Scene 1"
+
+    per_scene_dir = tmp_path / "per_scene"
+
+    def fake_stream_single(client, system, user, model, max_tokens=8096, silent=False,
+                           verbose=False, cache_system=False):
+        return model_output
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream_single):
+        campaignlib.run_scene_extraction(
+            client=None, vtt_text="VTT", scenes=[scene],
+            extract_dir=per_scene_dir, model="m",
+            extraction_instruction="{name} {body}",
+        )
+
+    batched_dir = tmp_path / "batched"
+
+    def fake_stream_batched(client, system, user, model, max_tokens=8096, silent=False,
+                            verbose=False, cache_system=False):
+        return _wrap_batched_scene(1, "Scene 1", model_output)
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream_batched):
+        campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=[scene],
+            extract_dir=batched_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE,
+        )
+
+    per_scene_bytes = (per_scene_dir / "01_scene_1.md").read_bytes()
+    batched_bytes = (batched_dir / "01_scene_1.md").read_bytes()
+    assert batched_bytes == per_scene_bytes
+
+
+def test_batched_no_cross_contamination_between_scene_files(tmp_path):
+    """SC-007: no scene's content is written under another scene's path.
+    Each scene gets a distinctive marker, checked against every OTHER
+    scene's file too, not just its own."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in (1, 2, 3)]
+    extract_dir = tmp_path / "out"
+    markers = {
+        1: "ALPHA-ONLY moments, marker AAA111",
+        2: "BETA-ONLY moments, marker BBB222",
+        3: "GAMMA-ONLY moments, marker CCC333",
+    }
+
+    def fake_stream(client, system, user, model, max_tokens=8096, silent=False,
+                    verbose=False, cache_system=False):
+        indices = _requested_indices(user)
+        return "\n".join(_wrap_batched_scene(i, f"Scene {i}", markers[i]) for i in indices)
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream):
+        campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE,
+        )
+
+    contents = {
+        i: (extract_dir / f"{i:02d}_scene_{i}.md").read_text(encoding="utf-8")
+        for i in (1, 2, 3)
+    }
+    for i, marker in markers.items():
+        assert marker in contents[i]
+        for j, other_marker in markers.items():
+            if j != i:
+                assert other_marker not in contents[i]
+
+
+def test_batched_scene_summary_holds_bullets_and_verbatim_moments_holds_model_output(tmp_path):
+    """`format_scene_output(name, body, result)` takes bullets as `body` and
+    model text as `result` — assert run_batched_scene_extraction passes them
+    in that order and never swapped, which would silently write the
+    gm-assist bullets as the extraction."""
+    scene = {"name": "Scene 1", "body": "- these are the gm-assist BULLETS"}
+    model_output = "these are the MODEL-EXTRACTED verbatim moments"
+    extract_dir = tmp_path / "out"
+
+    def fake_stream(client, system, user, model, max_tokens=8096, silent=False,
+                    verbose=False, cache_system=False):
+        return _wrap_batched_scene(1, "Scene 1", model_output)
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream):
+        campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=[scene],
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE,
+        )
+
+    text = (extract_dir / "01_scene_1.md").read_text(encoding="utf-8")
+    summary_idx = text.index("## Scene summary")
+    bullets_idx = text.index("gm-assist BULLETS")
+    moments_idx = text.index("## Verbatim moments")
+    model_idx = text.index("MODEL-EXTRACTED")
+
+    assert summary_idx < bullets_idx < moments_idx < model_idx
