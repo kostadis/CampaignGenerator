@@ -159,14 +159,14 @@ be implemented in the shape that looks right and is wrong — see the task text.
 **Delegation**: one Sonnet subagent for T035–T040 (write/skip/report decisions
 and exit codes are one coherent change), tests T041–T042 in parallel after.
 
-- [ ] T035 [US2] Write every `complete` non-empty section even when later scenes are missing (FR-010), and skip `incomplete` sections entirely — never write a half-formed file (FR-011)
-- [ ] T036 [US2] Skip `empty` sections without writing, recording them separately as "returned no moments" (FR-006) — writing one would make the next run's skip-if-exists treat unfinished work as done
-- [ ] T037 [US2] Fail a group whose response is unreconcilable, writing NOTHING from that group (FR-005, DM-14), and report which reconciliation rule fired
-- [ ] T038 [US2] Add exit codes `3` (partial run — some scenes written, some missing) and `4` (group failed reconciliation) to `session_doc/scene_extract.py` per contracts/cli-surface.md §4, keeping `0`/`1`/`2` as they are; exit 3 is a resumable state with valid files on disk, not a refusal
-- [ ] T039 [US2] Name every missing scene in the run output and add the "Re-run without --force to request only those" line (FR-012, contracts/cli-surface.md §3)
-- [ ] T040 [US2] Surface exit 3 in the editor as **partial**, not failed, in `server/routers/scene_editor.py` and `frontend/src/views/session/SessionDocEditor.vue` — the GM must not read a resumable partial as a failure
-- [ ] T041 [P] [US2] Test the partial path in `tests/test_batched_split.py` and `tests/test_scene_extract.py` (SC-005): 5 complete + 1 incomplete + 2 absent ⇒ 5 files, 3 named, exit 3; then a re-run without force requests exactly those 3
-- [ ] T042 [P] [US2] Test that a reconciliation failure writes nothing from the failing group and exits 4, and that a group failure does not discard successfully-written scenes from OTHER groups
+- [X] T035 [US2] Write every `complete` non-empty section even when later scenes are missing (FR-010), and skip `incomplete` sections entirely — never write a half-formed file (FR-011)
+- [X] T036 [US2] Skip `empty` sections without writing, recording them separately as "returned no moments" (FR-006) — writing one would make the next run's skip-if-exists treat unfinished work as done
+- [X] T037 [US2] Fail a group whose response is unreconcilable, writing NOTHING from that group (FR-005, DM-14), and report which reconciliation rule fired
+- [X] T038 [US2] Add exit codes `3` (partial run — some scenes written, some missing) and `4` (group failed reconciliation) to `session_doc/scene_extract.py` per contracts/cli-surface.md §4, keeping `0`/`1`/`2` as they are; exit 3 is a resumable state with valid files on disk, not a refusal
+- [X] T039 [US2] Name every missing scene in the run output and add the "Re-run without --force to request only those" line (FR-012, contracts/cli-surface.md §3)
+- [X] T040 [US2] Surface exit 3 in the editor as **partial**, not failed, in `server/routers/scene_editor.py` and `frontend/src/views/session/SessionDocEditor.vue` — the GM must not read a resumable partial as a failure
+- [X] T041 [P] [US2] Test the partial path in `tests/test_batched_split.py` and `tests/test_scene_extract.py` (SC-005): 5 complete + 1 incomplete + 2 absent ⇒ 5 files, 3 named, exit 3; then a re-run without force requests exactly those 3
+- [X] T042 [P] [US2] Test that a reconciliation failure writes nothing from the failing group and exits 4, and that a group failure does not discard successfully-written scenes from OTHER groups
 
 **Checkpoint**: batched mode is resumable and never worse than the per-scene loop on failure.
 

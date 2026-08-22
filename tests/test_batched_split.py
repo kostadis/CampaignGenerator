@@ -392,3 +392,39 @@ def test_split_batched_response_reachable_via_campaignlib_scenes():
     module's existing convention (group_scenes, project_scene_output, …)."""
     assert campaignlib.scenes.split_batched_response is split_batched_response
     assert campaignlib.scenes.render_batched_user_prompt is render_batched_user_prompt
+
+
+# ── T041: the SC-005 partial shape at the wire-protocol level ─────────────────
+
+def test_split_batched_response_five_complete_one_incomplete_two_absent_sc005():
+    """SC-005's exact shape: a response covering only the first 6 of 8
+    requested scenes, one of which (06) is cut off mid-body with no closing
+    marker, and two (07, 08) never opened at all. This is the mixed batch
+    `split_batched_response` has to classify correctly for
+    `run_batched_scene_extraction`'s partial-response path (T035-T039) to
+    have anything trustworthy to act on."""
+    entries = [_entry(i, f"Scene {i}") for i in range(1, 9)]
+    parts = [_wrap(i, f"Scene {i}", f"moments {i}") for i in range(1, 6)]
+    parts.append("<<<CG-SCENE 06 BEGIN: Scene 6>>>\ncut off here, no closing marker")
+    # Scenes 07 and 08: no BEGIN at all.
+    text = "\n".join(parts)
+
+    result = split_batched_response(text, entries)
+    assert result["failed"] is False
+    by_i = {s["i"]: s for s in result["sections"]}
+
+    for i in range(1, 6):
+        assert by_i[i]["status"] == "complete"
+        assert by_i[i]["body"] == f"moments {i}"
+    assert by_i[6]["status"] == "incomplete"
+    assert by_i[6]["body"] is None
+    assert by_i[7]["status"] == "absent"
+    assert by_i[7]["body"] is None
+    assert by_i[8]["status"] == "absent"
+    assert by_i[8]["body"] is None
+
+    complete = [s for s in result["sections"] if s["status"] == "complete"]
+    unfinished = [s for s in result["sections"] if s["status"] in ("incomplete", "absent")]
+    assert len(complete) == 5
+    assert len(unfinished) == 3
+    assert {s["i"] for s in unfinished} == {6, 7, 8}

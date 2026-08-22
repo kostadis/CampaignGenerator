@@ -458,6 +458,30 @@ async function narrate() {
   })
 }
 
+// 013-batched-scene-extraction (T040): exit 3/4 from a batched --batch-scenes
+// run are RESUMABLE, not refusals — some scenes are already written to disk
+// and a re-run without Force requests only what's still missing
+// (contracts/cli-surface.md §4). Reading either as "failed" would push the
+// GM toward re-running with Force, which throws away the good work already
+// on disk instead of just topping it up. `rc` is the raw subprocess
+// returncode — `stream_subprocess`'s `done` payload carries it verbatim
+// (server/subprocess_runner.py), so no server-side change was needed to get
+// 3/4 here; `classify_result` is a separate, shared classifier this route
+// does not touch.
+function extractStatusMessage(rc: number, error?: string): string {
+  if (rc === 0) return 'Re-extraction complete.'
+  if (rc === 3) {
+    return 'Re-extraction partial — some scenes written, some still missing. ' +
+      'Re-run without Force to request only those.'
+  }
+  if (rc === 4) {
+    return 'Re-extraction partial — a group failed reconciliation, so nothing from ' +
+      'it was written (other scenes are unaffected). Re-run without Force to request ' +
+      'only the missing scenes.'
+  }
+  return `Re-extraction failed${error ? ': ' + error : ''}.`
+}
+
 async function runExtract() {
   if (extracting.value || narrating.value || enhancing.value || planning.value) return
   extracting.value = true
@@ -476,7 +500,10 @@ async function runExtract() {
     onDone(rc, error) {
       activeSSE.value = null
       extracting.value = false
-      setStatus(rc === 0 ? 'Re-extraction complete.' : `Re-extraction failed${error ? ': ' + error : ''}.`)
+      setStatus(extractStatusMessage(rc, error))
+      // Scenes may have been written even on a partial (3) or group-failure
+      // (4) exit — these are always run so the scene list reflects what's
+      // really on disk rather than lagging behind a "failed"-looking status.
       loadScenes()
       refreshPipeline()
     },

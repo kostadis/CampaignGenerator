@@ -1008,3 +1008,278 @@ def test_batched_scene_summary_holds_bullets_and_verbatim_moments_holds_model_ou
     model_idx = text.index("MODEL-EXTRACTED")
 
     assert summary_idx < bullets_idx < moments_idx < model_idx
+
+
+# ── T041/T042 (013-batched-scene-extraction Phase 4, US2) ──────────────────
+#
+# T041: the partial-response path (SC-005) — some scenes complete, some
+# not, and a re-run without --force requests ONLY what's still missing.
+# T042: reconciliation failure (DM-14) — a group that can't be trusted
+# writes nothing from itself, and a failure in one group must not discard
+# another group's successes.
+#
+# Reuses this file's existing batched helpers: _BATCHED_USER_TEMPLATE,
+# _wrap_batched_scene, _requested_indices (all defined above, T031-T033).
+
+def _eight_scene_gmassist_summary() -> str:
+    """8 scenes named "Scene 1".."Scene 8", matching the naming convention
+    _echoing_batched_stream and friends already rely on."""
+    parts = ["## Scenes"]
+    for n in range(1, 9):
+        parts.append(f"### Scene {n}")
+        parts.append(f"#### Scene {n} description.")
+        parts.append(f"- bullet {n}")
+    return "\n".join(parts) + "\n"
+
+
+def _two_big_scene_gmassist_summary() -> str:
+    """2 scenes with large bodies, for CLI-level tests that need a real
+    --batch-max-tokens split into exactly two groups (one scene each) —
+    mirrors the sizing already proven by
+    test_run_batched_scene_extraction_system_prompt_reused_byte_identical_across_groups,
+    scaled up with margin so the '#### description' line's extra chars
+    can't accidentally change how many groups the projection produces."""
+    parts = ["## Scenes"]
+    for n in (1, 2):
+        parts.append(f"### Scene {n}")
+        parts.append(f"#### Scene {n} description.")
+        parts.append(f"- {'x' * 400}")
+    return "\n".join(parts) + "\n"
+
+
+def _fake_stream_partial_5_1_2(client, system, user, model, max_tokens=8096,
+                               silent=False, verbose=False, cache_system=False):
+    """SC-005 shape: scenes 1-5 complete, scene 6 incomplete (BEGIN, no
+    END), scenes 7-8 absent (no BEGIN at all)."""
+    indices = _requested_indices(user)
+    parts = []
+    for i in indices:
+        if i <= 5:
+            parts.append(_wrap_batched_scene(i, f"Scene {i}", f"MOMENTS for Scene {i}"))
+        elif i == 6:
+            parts.append(f"<<<CG-SCENE {i:02d} BEGIN: Scene {i}>>>\ncut off, no closing marker")
+        # 7, 8: absent — emit nothing.
+    return "\n".join(parts)
+
+
+# ── T041a: engine-level partial response (SC-005, points 1-2) ──────────────
+
+def test_run_batched_scene_extraction_partial_response_writes_5_names_3_missing(tmp_path):
+    """5 complete + 1 incomplete + 2 absent: exactly 5 files land, none for
+    the other 3, and the report says so."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in range(1, 9)]
+    extract_dir = tmp_path / "out"
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_fake_stream_partial_5_1_2):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=32000,
+        )
+
+    written_files = sorted(p.name for p in extract_dir.glob("*.md"))
+    assert written_files == [f"{n:02d}_scene_{n}.md" for n in range(1, 6)]
+    for n in (6, 7, 8):
+        assert not (extract_dir / f"{n:02d}_scene_{n}.md").exists()
+
+    assert report["scenes_written"] == 5
+    assert set(report["scenes_missing"]) == {"Scene 6", "Scene 7", "Scene 8"}
+
+
+# ── T041b: the re-run IS the point — requests only the 3 missing ───────────
+
+def test_run_batched_scene_extraction_rerun_requests_only_the_missing_scenes(tmp_path):
+    """After a partial run leaves 5 files on disk, a second call without
+    --force must request EXACTLY the 3 missing scenes — not all 8 and
+    discard 5, which would look identical on disk but burn the transcript
+    for scenes that were never actually re-needed."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in range(1, 9)]
+    extract_dir = tmp_path / "out"
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_fake_stream_partial_5_1_2):
+        campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=32000,
+        )
+
+    captured: list = []
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_echoing_batched_stream(captured)):
+        report2 = campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=32000,
+        )
+
+    assert report2["scenes_requested"] == 3
+    assert report2["scenes_skipped"] == 5
+    assert len(captured) == 1  # 3 small scenes fit one group
+    assert _requested_indices(captured[0]["user"]) == [6, 7, 8]
+
+    written_files = sorted(p.name for p in extract_dir.glob("*.md"))
+    assert written_files == [f"{n:02d}_scene_{n}.md" for n in range(1, 9)]
+
+
+# ── T041c: the CLI layer — exit 3, then a second CLI run resumes correctly ─
+
+def test_scene_extract_cli_batch_scenes_partial_then_rerun_sc005(monkeypatch, tmp_path, capsys):
+    """The exit code and the resumability are the CLI's own contract, not
+    the engine's — this drives session_doc/scene_extract.py's main()
+    directly, twice, over the same --output-dir."""
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(_eight_scene_gmassist_summary(), encoding="utf-8")
+    out_dir = tmp_path / "out"
+
+    fake_client = MagicMock()
+    monkeypatch.setattr(se, "client_from_args", lambda args: fake_client)
+
+    # ── First run: partial response ──
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_fake_stream_partial_5_1_2):
+        monkeypatch.setattr(sys, "argv", [
+            "scene_extract.py", str(vtt),
+            "--summary", str(summary),
+            "--output-dir", str(out_dir),
+            "--batch-scenes", "--no-log",
+        ])
+        with pytest.raises(SystemExit) as exc_info:
+            se.main()
+
+    assert exc_info.value.code == 3
+
+    written_files = sorted(p.name for p in out_dir.glob("*.md"))
+    assert written_files == [f"{n:02d}_scene_{n}.md" for n in range(1, 6)]
+    for n in (6, 7, 8):
+        assert not (out_dir / f"{n:02d}_scene_{n}.md").exists()
+
+    err = capsys.readouterr().err
+    assert "NOT extracted" in err
+    assert "Scene 6" in err and "Scene 7" in err and "Scene 8" in err
+    assert "Re-run without --force" in err
+
+    # ── Second run: no --force. Must request ONLY the 3 missing scenes. ──
+    captured: list = []
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_echoing_batched_stream(captured)):
+        monkeypatch.setattr(sys, "argv", [
+            "scene_extract.py", str(vtt),
+            "--summary", str(summary),
+            "--output-dir", str(out_dir),
+            "--batch-scenes", "--no-log",
+        ])
+        se.main()  # all 3 now come back complete -> no exit raised (exit 0 path)
+
+    assert len(captured) == 1
+    assert _requested_indices(captured[0]["user"]) == [6, 7, 8]
+
+    written_files = sorted(p.name for p in out_dir.glob("*.md"))
+    assert written_files == [f"{n:02d}_scene_{n}.md" for n in range(1, 9)]
+
+
+# ── T042a: a single failing group writes nothing from itself ───────────────
+
+def test_run_batched_scene_extraction_group_failure_writes_nothing(tmp_path):
+    """DM-14: a group that can't be reconciled (here: a NAME_MISMATCH on
+    one of its scenes) fails as a WHOLE — nothing from ANY scene in that
+    group is written, even the ones whose own section looked fine."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in (1, 2, 3)]
+    extract_dir = tmp_path / "out"
+
+    def fake_stream(client, system, user, model, max_tokens=8096, silent=False,
+                    verbose=False, cache_system=False):
+        # Scenes 1 and 3 echoed correctly; scene 2's name is wrong ->
+        # NAME_MISMATCH fails the whole group (DM-14).
+        return "\n".join([
+            _wrap_batched_scene(1, "Scene 1", "MOMENTS for Scene 1"),
+            _wrap_batched_scene(2, "Not The Right Name", "MOMENTS for Scene 2"),
+            _wrap_batched_scene(3, "Scene 3", "MOMENTS for Scene 3"),
+        ])
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=32000,
+        )
+
+    assert list(extract_dir.glob("*.md")) == []
+    assert report["scenes_written"] == 0
+    assert len(report["group_failures"]) == 1
+    assert report["group_failures"][0]["reason"] == campaignlib.scenes.BATCHED_NAME_MISMATCH
+    assert set(report["scenes_missing"]) == {"Scene 1", "Scene 2", "Scene 3"}
+
+
+# ── T042b: a failing group does not discard another group's successes ─────
+
+def test_run_batched_scene_extraction_group_failure_does_not_discard_other_groups(tmp_path):
+    """Two scenes, forced into two separate groups by a low ceiling (same
+    sizing as test_run_batched_scene_extraction_system_prompt_reused_byte_identical_across_groups:
+    a 200-char body projects to 210 tokens, and a 250-token ceiling packs
+    one scene per group). Group 1 (scene 1) succeeds; group 2 (scene 2)
+    fails reconciliation. Scene 1's file must exist and be correct
+    regardless of what happened to group 2."""
+    scenes = [{"name": "Scene 1", "body": "x" * 200}, {"name": "Scene 2", "body": "x" * 200}]
+    extract_dir = tmp_path / "out"
+
+    def fake_stream(client, system, user, model, max_tokens=8096, silent=False,
+                    verbose=False, cache_system=False):
+        indices = _requested_indices(user)
+        if indices == [1]:
+            return _wrap_batched_scene(1, "Scene 1", "MOMENTS for Scene 1")
+        if indices == [2]:
+            return _wrap_batched_scene(2, "Wrong Echoed Name", "MOMENTS for Scene 2")
+        raise AssertionError(f"unexpected request indices {indices}")
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=250,
+        )
+
+    assert report["groups_used"] == 2  # sanity: the fixture actually forced a split
+    assert len(report["group_failures"]) == 1
+
+    assert (extract_dir / "01_scene_1.md").exists()
+    assert "MOMENTS for Scene 1" in (extract_dir / "01_scene_1.md").read_text(encoding="utf-8")
+    assert not (extract_dir / "02_scene_2.md").exists()
+
+    assert report["scenes_written"] == 1
+    assert "Scene 2" in report["scenes_missing"]
+
+
+# ── T042c: the CLI layer — exit 4, group 1's file survives group 2's failure ─
+
+def test_scene_extract_cli_batch_scenes_group_failure_exits_4(monkeypatch, tmp_path):
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(_two_big_scene_gmassist_summary(), encoding="utf-8")
+    out_dir = tmp_path / "out"
+
+    fake_client = MagicMock()
+    monkeypatch.setattr(se, "client_from_args", lambda args: fake_client)
+
+    def fake_stream(client, system, user, model, max_tokens=8096, silent=False,
+                    verbose=False, cache_system=False):
+        indices = _requested_indices(user)
+        if indices == [1]:
+            return _wrap_batched_scene(1, "Scene 1", "MOMENTS for Scene 1")
+        if indices == [2]:
+            return _wrap_batched_scene(2, "Wrong Echoed Name", "MOMENTS for Scene 2")
+        raise AssertionError(f"unexpected request indices {indices}")
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream):
+        monkeypatch.setattr(sys, "argv", [
+            "scene_extract.py", str(vtt),
+            "--summary", str(summary),
+            "--output-dir", str(out_dir),
+            "--batch-scenes", "--batch-max-tokens", "500", "--no-log",
+        ])
+        with pytest.raises(SystemExit) as exc_info:
+            se.main()
+
+    assert exc_info.value.code == 4
+    assert (out_dir / "01_scene_1.md").exists()
+    assert "MOMENTS for Scene 1" in (out_dir / "01_scene_1.md").read_text(encoding="utf-8")
+    assert not (out_dir / "02_scene_2.md").exists()
