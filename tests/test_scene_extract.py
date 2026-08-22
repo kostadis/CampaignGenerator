@@ -1,5 +1,6 @@
 """Tests for scene-anchored VTT extraction (campaignlib + scene_extract + session_doc wiring)."""
 
+import ast
 import re
 import sys
 from pathlib import Path
@@ -12,6 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import campaignlib
 import session_doc
 from session_doc import scene_extract as se
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 # ── parse_gmassist_scenes ─────────────────────────────────────────────────────
@@ -1283,3 +1286,253 @@ def test_scene_extract_cli_batch_scenes_group_failure_exits_4(monkeypatch, tmp_p
     assert (out_dir / "01_scene_1.md").exists()
     assert "MOMENTS for Scene 1" in (out_dir / "01_scene_1.md").read_text(encoding="utf-8")
     assert not (out_dir / "02_scene_2.md").exists()
+
+
+# ── T048: batched prompt must not drift from the per-scene prompt (FR-016) ────
+#
+# `config/agents/scene_extract.md` (per-scene) and
+# `config/agents/scene_extract_batched.md` (batched) are two independent
+# files; nothing enforces that an edit to one propagates to the other. This
+# guards the load-bearing verbatim ground rules specifically — not the whole
+# prompt, which legitimately differs (multi-scene scoping language, the
+# sentinel/marker protocol, anti-rationing guidance) — so a genuine batching-
+# specific change never trips this test.
+#
+# Each rule's expected text is extracted from the CURRENT per-scene prompt at
+# test time (never hardcoded here), then checked as a verbatim substring of
+# the batched prompt. A rewording of a rule in scene_extract.md is compared
+# against ITS OWN new wording, so a cosmetic copy-edit doesn't make this test
+# stale — but if the rule is tightened (or loosened) in scene_extract.md
+# without the same edit landing in scene_extract_batched.md, the extracted
+# text won't be found there and the parametrised id names exactly which rule
+# went missing.
+
+PER_SCENE_PROMPT_PATH = REPO_ROOT / "config" / "agents" / "scene_extract.md"
+BATCHED_PROMPT_PATH = REPO_ROOT / "config" / "agents" / "scene_extract_batched.md"
+
+#: (rule_id, anchor) — `anchor` is the distinctive leading phrase of one
+#: "- " bullet in scene_extract.md's GROUND RULES / "THE TRANSCRIPT OWNS ITS
+#: OWN MISTAKES" sections. Deliberately excludes the "use the summary as
+#: scope" bullet, which the batched prompt legitimately rewords for the
+#: multi-scene case ("that scene's ... not whichever scene you are currently
+#: writing") rather than copying verbatim.
+VERBATIM_GROUND_RULES = [
+    ("no_paraphrase_verbatim_quoting",
+     "Quote dialogue VERBATIM. Do not paraphrase."),
+    ("no_invention",
+     "Do NOT invent anything."),
+    ("capture_full_texture",
+     "The summary is the structural spec but may still miss detail."),
+    ("preserve_transcript_garbles",
+     'If the tape says "the strength of the pandemic"'),
+    ("preserve_misheard_names",
+     'The same holds for names. If the tape says "Vucherdin"'),
+    ("no_editorial_insertion_in_quotes",
+     'Never put an editorial insertion inside a `> "…"` span.'),
+    ("marker_must_not_carry_a_guess",
+     "A bare (truncated) / (paraphrase) / [inaudible] marker is fine"),
+    ("no_joining_utterances",
+     "Never join two utterances into one quote."),
+    ("no_folding_narration_into_quote",
+     "Never fold your own narration into a quote."),
+]
+
+
+def _extract_bullet(source_text: str, anchor: str, rule_id: str) -> str:
+    """Return the full "- "-bulleted rule in `source_text` that starts with
+    `anchor`, including its indented continuation lines, exactly as
+    currently written — never a value frozen into this test."""
+    anchor_pos = source_text.find(anchor)
+    assert anchor_pos != -1, (
+        f"could not locate rule '{rule_id}' (anchor {anchor!r}) in "
+        f"{PER_SCENE_PROMPT_PATH} — has the per-scene prompt been reworded "
+        "past recognition? Update this test's anchor for this rule."
+    )
+    bullet_start = source_text.rfind("\n- ", 0, anchor_pos + 1)
+    assert bullet_start != -1, (
+        f"anchor for rule '{rule_id}' is not inside a '- ' bullet in "
+        f"{PER_SCENE_PROMPT_PATH}"
+    )
+    bullet_start += 1  # skip the leading newline, keep the "- "
+
+    lines = source_text[bullet_start:].splitlines(keepends=True)
+    bullet_lines = [lines[0]]
+    for line in lines[1:]:
+        # A bullet's continuation is indented two spaces; a blank line or the
+        # next "- " bullet ends it.
+        if line.startswith("  ") and not line.startswith("- "):
+            bullet_lines.append(line)
+        else:
+            break
+    return "".join(bullet_lines).rstrip("\n")
+
+
+@pytest.mark.parametrize("rule_id,anchor", VERBATIM_GROUND_RULES, ids=[r[0] for r in VERBATIM_GROUND_RULES])
+def test_batched_prompt_preserves_verbatim_ground_rules(rule_id, anchor):
+    """FR-016: every load-bearing verbatim rule in the per-scene prompt must
+    still be present, word for word, in the batched prompt. A failing
+    parametrisation id names exactly which rule went missing."""
+    per_scene_text = PER_SCENE_PROMPT_PATH.read_text(encoding="utf-8")
+    batched_text = BATCHED_PROMPT_PATH.read_text(encoding="utf-8")
+
+    rule_text = _extract_bullet(per_scene_text, anchor, rule_id)
+
+    assert rule_text in batched_text, (
+        f"load-bearing verbatim rule '{rule_id}' from "
+        f"{PER_SCENE_PROMPT_PATH.name} is missing (or was weakened) in "
+        f"{BATCHED_PROMPT_PATH.name}:\n\n{rule_text}\n\n"
+        "The batched prompt must carry every verbatim ground rule the "
+        "per-scene prompt has, or batched output quietly degrades while the "
+        "per-scene path improves (FR-016)."
+    )
+
+
+# ── T049: no alias-map-derived normalizer reaches the batched path (FR-015) ───
+#
+# An alias is an identity assertion, never a text transform (PR #231; see
+# tests/test_no_prefix_identity.py for the sibling guard over voice/example
+# routing). This is a STATIC check over the actual call site in
+# session_doc/scene_extract.py, in the same spirit as
+# tests/test_retrieve_render_isolation.py's AST walk: it does not run the
+# CLI, it inspects the source for the shape of the call that would let the
+# defect back in.
+#
+# Deliberately NOT a byte-identity check against the VTT file on disk:
+# `normalize_vtt_speakers` (scene_extract.py:427-ish, FR-015a) is a
+# deterministic, declared player→character speaker-label rewrite and
+# legitimately runs before the batched call — asserting byte-identity would
+# fail on correct code. What's actually asserted is narrower and more
+# precise: the `input_normalizer` argument passed to
+# `run_batched_scene_extraction`, if any, must not be sourced from
+# `build_alias_normalizer` — directly, or via a variable assigned from it
+# (including the `x, _ = build_alias_normalizer(...)` unpacking form used at
+# every other `build_alias_normalizer` call site in this repo) — and the
+# `system_suffix` argument it DOES pass must be traceably sourced from
+# `format_npc_roster`, the declared "aliases as roster knowledge" path.
+
+SCENE_EXTRACT_CLI_PATH = REPO_ROOT / "session_doc" / "scene_extract.py"
+
+
+def _calls_to(tree: ast.AST, name: str) -> list[ast.Call]:
+    """Every ast.Call in `tree` whose function resolves to bare name or
+    attribute `name` (e.g. matches both `run_batched_scene_extraction(...)`
+    and `module.run_batched_scene_extraction(...)`)."""
+    calls = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            f = node.func
+            if (isinstance(f, ast.Name) and f.id == name) or (
+                isinstance(f, ast.Attribute) and f.attr == name
+            ):
+                calls.append(node)
+    return calls
+
+
+def _contains_call_to(node: ast.AST, name: str) -> bool:
+    return any(
+        isinstance(n, ast.Call)
+        and (
+            (isinstance(n.func, ast.Name) and n.func.id == name)
+            or (isinstance(n.func, ast.Attribute) and n.func.attr == name)
+        )
+        for n in ast.walk(node)
+    )
+
+
+def _enclosing_function(tree: ast.AST, target: ast.AST) -> ast.AST:
+    """The innermost def containing `target`, or `tree` itself if none does."""
+    best = None
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            if any(n is target for n in ast.walk(node)):
+                if best is None or (node.end_lineno - node.lineno) < (best.end_lineno - best.lineno):
+                    best = node
+    return best if best is not None else tree
+
+
+def _value_derives_from(value_node: ast.AST, scope: ast.AST, call_name: str) -> bool:
+    """True if `value_node` (an argument expression) contains a call to
+    `call_name` directly, or is a bare Name assigned — anywhere in `scope`,
+    single-target or tuple-unpacked — from an expression that contains a
+    call to `call_name`."""
+    if _contains_call_to(value_node, call_name):
+        return True
+    if not isinstance(value_node, ast.Name):
+        return False
+    target_name = value_node.id
+    for node in ast.walk(scope):
+        if not isinstance(node, ast.Assign):
+            continue
+        if not _contains_call_to(node.value, call_name):
+            continue
+        for t in node.targets:
+            if isinstance(t, ast.Name) and t.id == target_name:
+                return True
+            if isinstance(t, ast.Tuple) and any(
+                isinstance(elt, ast.Name) and elt.id == target_name for elt in t.elts
+            ):
+                return True
+    return False
+
+
+def _the_batched_call() -> tuple[ast.Call, ast.AST]:
+    source = SCENE_EXTRACT_CLI_PATH.read_text(encoding="utf-8")
+    tree = ast.parse(source, filename=str(SCENE_EXTRACT_CLI_PATH))
+    calls = _calls_to(tree, "run_batched_scene_extraction")
+    assert calls, (
+        f"no call to run_batched_scene_extraction found in "
+        f"{SCENE_EXTRACT_CLI_PATH} — has the batched entry point moved? "
+        "Update this test's target."
+    )
+    assert len(calls) == 1, (
+        f"expected exactly one call to run_batched_scene_extraction in "
+        f"{SCENE_EXTRACT_CLI_PATH}, found {len(calls)} — update this test "
+        "if a second call site is now intentional."
+    )
+    call = calls[0]
+    return call, _enclosing_function(tree, call)
+
+
+def test_batched_call_carries_no_alias_derived_normalizer():
+    """FR-015 / PR #231: `input_normalizer`, if passed at all to the batched
+    engine call, must not be sourced from `build_alias_normalizer` — an
+    alias map applied as a rewrite over the transcript is exactly the defect
+    PR #231 fixed once in scene_extract, and it must not come back on the
+    batched path specifically."""
+    call, scope = _the_batched_call()
+    kwargs = {kw.arg: kw.value for kw in call.keywords if kw.arg is not None}
+
+    if "input_normalizer" not in kwargs:
+        return  # not passed at all -> defaults to None -> nothing to check
+
+    offending = _value_derives_from(kwargs["input_normalizer"], scope, "build_alias_normalizer")
+    assert not offending, (
+        "run_batched_scene_extraction's input_normalizer is sourced from "
+        "build_alias_normalizer — an alias map has become a text transform "
+        "applied to the transcript. Aliases may reach the model only as "
+        "roster knowledge via format_npc_roster, passed as system_suffix — "
+        "never as a rewrite. This is the exact defect PR #231 fixed in "
+        "scene_extract once; see docs/config/players-isolation.md and "
+        "tests/test_no_prefix_identity.py for the sibling guard."
+    )
+
+
+def test_batched_call_passes_aliases_only_as_roster_knowledge():
+    """The positive half of FR-015: if the batched call passes
+    `system_suffix` at all, it must be traceably built from
+    `format_npc_roster` — aliases arrive as roster knowledge, not as some
+    other unvetted transform."""
+    call, scope = _the_batched_call()
+    kwargs = {kw.arg: kw.value for kw in call.keywords if kw.arg is not None}
+
+    assert "system_suffix" in kwargs, (
+        "run_batched_scene_extraction call no longer passes system_suffix — "
+        "if aliases still need to reach the model, they must arrive as "
+        "roster knowledge via format_npc_roster(), passed as system_suffix."
+    )
+    is_roster = _value_derives_from(kwargs["system_suffix"], scope, "format_npc_roster")
+    assert is_roster, (
+        "system_suffix passed to run_batched_scene_extraction is not "
+        "traceably built from format_npc_roster() — aliases must reach the "
+        "model as roster knowledge specifically, not some other transform."
+    )

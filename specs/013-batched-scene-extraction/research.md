@@ -391,3 +391,216 @@ same way, it is not.
 - The 4.2 multiplier is calibrated on 15 scenes from two sessions. That is
   enough to choose it over the alternatives and not enough to call it settled;
   the run report (FR-018) is what lets it be re-tuned from evidence later.
+
+---
+
+## D14 — Fidelity gate, measurement 1: FAILED (recorded 2026-08-22)
+
+**Note on numbering**: tasks.md T046 says "record as a new D13". D13 was already
+taken by the pre-existing-test-failure baseline that T059 depends on, so this is
+D14. Do not renumber D13.
+
+**Corpus**: `~/Phandalin/Phandalin/summaries/20260811` — 8 scenes, 146,772-char
+cleaned VTT, 1,441 cues. Both runs `--backend claude-code --model claude-opus-5`,
+`MAX_THINKING_TOKENS=0` (the backend's default), no `--party`/`--party-config`,
+so no deterministic speaker normalisation ran in either.
+
+Baseline frozen read-only at `/tmp/sx_perscene_baseline` (T003). It was produced
+by **main's** per-scene code — see the shadowing note at the end — which is valid
+because `campaignlib/scenes.py` is purely additive on this branch (zero lines
+removed vs `main`), `config/agents/scene_extract.md` is untouched, and
+`session_doc/scene_extract.py` is additive. The per-scene path main ran IS the
+per-scene path this branch ships.
+
+### What the feature buys (SC-001) — confirmed
+
+| | transmitted input tokens | transcript sent |
+|---|---|---|
+| per-scene | 293,608 | 8× |
+| batched | 36,701 | 1× |
+| | **−87.5%** | |
+
+The transcript-bearing system prompt is 146,804 chars ≈ 36,701 tokens at
+`CHARS_PER_TOKEN=4.0`, built once and reused across groups.
+
+Wall-clock, recorded as **observation only** (there is no time threshold — GM
+ruling): per-scene 415.0s, batched 356.6s. Tokens are the committed measure.
+
+### Projection accuracy — good
+
+`group_scenes` projected 23,336 output tokens; the per-scene run actually
+produced 23,684. **−1.5%.** This validates `OUTPUT_CHARS_PER_BODY_CHAR = 4.2`
+against real generation, and supersedes the D4 addendum's 30%-high probe on
+20260729 — that discrepancy was the calibration artifact (stored bodies vs the
+live parse of an edited summary), not a bad constant.
+
+### SC-003 exact rate — PASSED
+
+`sd_verify_quotes --threshold 0.85`, both runs:
+
+| | verified (exact) | near | unverified |
+|---|---|---|---|
+| per-scene | 937 (100%) | 0 | 0 |
+| batched | 702 (100%) | 0 | 0 |
+
+Zero-point drop. Every quote batching produced is a real span of the tape. This
+is the criterion D10 said to read, and it holds.
+
+### SC-004 per-scene moments — FAILED
+
+| scene (request order) | base m/q | batch m/q | moment Δ |
+|---|---|---|---|
+| 01 Arrival at the Counting House | 53/90 | 40/69 | −25% |
+| 02 Securing the Loan | 112/164 | 59/114 | −47% |
+| 03 Auditing the Moral Economy | 86/139 | 46/75 | −47% |
+| 04 The Margaster Hypothesis | 87/105 | 49/79 | −44% |
+| 05 The Heir of Alagondar | 108/131 | 78/123 | −28% |
+| 06 The Notary of House Margaster | 54/87 | 42/67 | −22% |
+| 07 The Shut Down Shipping Hub | 36/47 | 19/34 | −47% |
+| 08 Confrontation at Margaster Logistics | 118/174 | 81/141 | −31% |
+| **TOTAL** | **654** | **414** | **−37%** |
+
+Every scene exceeds the 20% loss bound.
+
+**It is NOT tail thinning** — head mean −35%, tail mean −39%. And the run used
+21,426 of its 32,000-token ceiling, so the model never rationed for room. The
+enumerated T047 triggers (exact-rate drop >5pts, tail thinning) therefore both
+failed to fire on a run that plainly regressed. **T047's trigger list is
+narrower than SC-004; SC-004 is the gate.** Do not pass a run because the two
+named shapes are absent.
+
+Quote-set diff: 199 lost, 35 new, 665 shared. Lost quotes skew short (median 21
+chars — `"Yeah."`, `"Why?"`, `"Nope."`) against a kept-median of 54, but the
+tail of the lost set includes substantive GM narration, so this is not purely
+table noise being tidied away.
+
+### The finding the success criteria did not anticipate: attribution drift
+
+The VTT's speaker labels are **only** Zoom participant names — `Kostadis
+Roussos` (533), `Stéphane Bourdeaud` (330), `David Mendenhall` (312), `Wade
+Brown` (170), `Gary Young` (96). No character name appears as a label anywhere.
+
+| | headers | bracketed | character-name labels absent from the tape |
+|---|---|---|---|
+| per-scene | 654 | 11% | ~5% |
+| batched | 414 | 100% | **66%** — `[Vukradin]` 104, `[Brewbarry]` 101, `[Soma]` 40, `[Valphine]` 29 |
+
+The batched model inferred the player→character mapping and wrote it into the
+speaker label as fact. Quotes stayed verbatim-exact; **who said them was
+silently re-decided.** That is `alias = identity, never substitution` (PR #231,
+Constitution IV) reappearing at a different layer — not as a text transform this
+time, but as a model inference promoted to record.
+
+**The root cause is not prompt drift.** The two prompts were identical on
+speaker rules — same `**[Speaker]**` template, same normalisation block. The
+per-scene run ignored the brackets; the batched run read them as literal syntax.
+The difference is context: reading eight scenes at once supplies enough evidence
+to work out who plays whom, and the model acted on it.
+
+> **Batching increases the model's confidence in cross-scene identity inference,
+> and it acts on that confidence.** More context makes it *more* likely to make
+> the one precision decision it must not make. Any future change that widens a
+> model's view across scene boundaries inherits this risk.
+
+Being right most of the time does not help: nothing downstream can separate a
+correct inference from a wrong one, because both look identical.
+
+### T047 response
+
+`config/agents/scene_extract_batched.md` tightened on three points:
+
+1. **The label comes from the tape** — a new section stating the rule, why it
+   lives in the batched prompt and not the per-scene one, and that a character
+   the model is confident about belongs in the context clause after the em-dash
+   (where it reads as inference) rather than in the label (where it reads as
+   record).
+2. **Brackets are not syntax** — `**[Speaker]**` is a placeholder; scene tags
+   and `[inaudible]` markers own the brackets.
+3. **Granularity** — keep short beats; one moment per speaker turn; do not
+   consolidate a run of turns into one block.
+
+### Operational note: the worktree shadowing trap (cost one run)
+
+The first batched attempt died instantly with `unrecognized arguments:
+--batch-scenes`. `python -m session_doc.scene_extract` puts the CWD on
+`sys.path[0]`, so running it from the campaign directory resolved the module
+through the editable-install `.pth` — which hardcodes the **main** checkout.
+
+The loud failure was luck. `--batch-scenes` does not exist on `main`, so it
+errored. Any flag that exists in both trees (`--force`, `--max-tokens`) would
+have run main's implementation silently and looked like a successful run. Either
+install into the venv and use the console script, or run `python -m` from the
+worktree with absolute paths. Recorded in quickstart.md's prerequisites.
+
+---
+
+## D14 (cont.) — Fidelity gate, measurements 2 and 3: PASSED
+
+Tool: `specs/013-batched-scene-extraction/fidelity_compare.py` (kept with the
+spec so the gate is reproducible). Invoke as
+`fidelity_compare.py <baseline-dir> <new-dir> <baseline-report> <new-report>`.
+
+### Measurement 2 — after the T047 prompt tightening
+
+| criterion | m1 | m2 | bound | verdict |
+|---|---|---|---|---|
+| exact (`verified`) rate | 100%→100% | 100%→100% | ≤5pt drop | pass |
+| worst per-scene moment Δ | −47% | −14% | ≥−20% | pass |
+| total moments vs baseline | −37% | **+15%** | — | pass |
+| tail thinning | none | none | none | pass |
+| speaker labels taken from tape | 32% | **100%** | — | pass |
+
+The attribution fix worked outright: inferred character labels went 283 → **0**,
+and bracketed headers 414 → 8 (those 8 being legitimate context-beat tags).
+
+**But it introduced a new defect.** Stating "brackets belong to scene tags" made
+the model copy the placeholder's own words: 8 headers came out as
+`**[scene tag — Rehearsed to an Empty Room]**`, against 0 in both the baseline
+and m1. The template said `**[scene tag — e.g. The Drow Spy Spotted]**`, which
+names the *slot*; the model wrote the slot name into the content.
+
+### Measurement 3 — after replacing the placeholder with a concrete example
+
+Template changed to `**[The Drow Spy Spotted]**`, with prose saying the bracket
+holds the model's own short title, never the words "scene tag".
+
+| | per-scene baseline | batched m3 | Δ |
+|---|---|---|---|
+| quotes, all `verified` | 937 | **948** | +1.2% |
+| moments | 654 | **835** | +28% |
+| worst per-scene moment Δ | — | −17% (scene 07) | within −20% |
+| inferred-character labels | 195 (**30%**) | 34 (**4%**) | **7× better** |
+| `scene tag` placeholder leak | 0 | **0** | fixed |
+| wall-clock | 415.0s | 457.4s | +10% |
+
+Per-scene moment deltas in request order: +75, +21, +1, +17, +37, +41, −17, +38.
+No monotonic decay; the two low scenes are 03 and 07, neither at the end.
+
+**GATE: PASSED.** Batched output beats the per-scene baseline on every fidelity
+axis measured, at 1 transcript transmission instead of 8.
+
+### A false positive from the gate's own tooling — corrected
+
+`fidelity_compare.py` first reported **TAIL THINNING** on m3 (head +32%, tail
++11%). Both figures are *gains*; the heuristic fired on `tail < head - 0.15`
+without checking the sign, so a run where every scene improved read as a gate
+failure. Corrected to require `tail < -0.05` as well. Recorded because a
+measurement tool that cries failure on a good run trains the reader to
+disbelieve it on a bad one.
+
+### Residual: a PRE-EXISTING defect in the per-scene path (not this feature's)
+
+The baseline's speaker labels are **30% inferred character names** — `Vukradin`
+30, `Brewbarry` 23, `Soma` 22, `Valphine` 9, `Boney` 7 — none of which appear as
+a speaker label anywhere in the tape (the VTT carries only `Kostadis Roussos`,
+`Stéphane Bourdeaud`, `David Mendenhall`, `Wade Brown`, `Gary Young`).
+
+`config/agents/scene_extract.md` has no equivalent of the "THE LABEL COMES FROM
+THE TAPE" rule that `scene_extract_batched.md` now carries. Batching did not
+create this; it magnified it to 68% where it became visible, and fixing the
+batched prompt drove it to 4% — better than the path that ships today.
+
+**This is out of scope for 013 and is deliberately NOT fixed here** (changing
+`scene_extract.md` would invalidate the frozen baseline mid-gate). It should be
+filed on its own: the per-scene prompt needs the same rule, and the fix wants
+its own before/after measurement.

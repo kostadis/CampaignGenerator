@@ -19,6 +19,20 @@ python -c "import campaignlib, pathlib; print(pathlib.Path(campaignlib.__file__)
 # MUST print .../CampaignGenerator-token-util/campaignlib
 ```
 
+> ⚠️ **The check above is only valid from the directory you ran it in.** Every
+> scenario below starts with `cd ~/Phandalin/...`, and that `cd` is exactly what
+> breaks it: `python -m session_doc.scene_extract` puts the CWD on `sys.path[0]`,
+> so from the campaign directory the import falls through to the editable-install
+> `.pth` — which hardcodes the **main** checkout. This bit during the Phase 5
+> measurement: the batched run died with `unrecognized arguments: --batch-scenes`
+> because it was running main's code, which has no such flag.
+>
+> A *silent* version of the same failure is the real danger. Any flag that exists
+> in both trees (`--force`, `--max-tokens`) runs main's implementation without a
+> word, and the run looks like it succeeded. Either install into the venv (below)
+> and use the `scene_extract` console script, or run `python -m` **from the
+> worktree** with absolute paths to the VTT, summary and output dir.
+
 ```bash
 # Console scripts resolve from the SERVER's venv, not $PATH:
 uv pip install -e . --python "$VIRTUAL_ENV/bin/python"

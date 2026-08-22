@@ -51,7 +51,7 @@ result decides whether every later measurement on this branch means anything.
 
 - [X] T001 Verify the worktree's checkout shadows nothing: run `python -c "import campaignlib, pathlib; print(pathlib.Path(campaignlib.__file__).parent)"` from the repo root and confirm it prints the worktree path, not `/home/kroussos/src/CampaignGenerator` (the editable-install `.pth` hardcodes MAIN — a green test run in the wrong tree proves nothing)
 - [ ] T002 **DEFERRED to Phase 7** (only console scripts need it; unit tests resolve via `tests/conftest.py`, and this repoint is global — see the warning). Install the package into the server's venv so console scripts resolve: `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"`, per `CLAUDE.md`. ⚠️ **This is global**: the editable `.pth` currently points at the main checkout, so this repoints the running server and every console script — including for unrelated work on `main` — at worktree code. T063 restores it
-- [ ] T003 **DEFERRED to immediately before Phase 5** (it is a real subscription run costing ~15 min of quota, and nothing before the fidelity gate consumes it). Capture the per-scene baseline into an **immutable** path — `/tmp/sx_perscene_baseline`, never regenerated — running `scene_extract` in per-scene mode on `~/Phandalin/Phandalin/summaries/20260811`, recording wall-clock, transmitted-token count and scene count. This is the single comparison corpus for SC-002 (observation) and SC-003/SC-004 (the fidelity gate); later scenarios must diff against it, never re-run it, or the gate compares against a different non-deterministic corpus than the one that was timed
+- [X] T003 **DEFERRED to immediately before Phase 5** (it is a real subscription run costing ~15 min of quota, and nothing before the fidelity gate consumes it). Capture the per-scene baseline into an **immutable** path — `/tmp/sx_perscene_baseline`, never regenerated — running `scene_extract` in per-scene mode on `~/Phandalin/Phandalin/summaries/20260811`, recording wall-clock, transmitted-token count and scene count. This is the single comparison corpus for SC-002 (observation) and SC-003/SC-004 (the fidelity gate); later scenarios must diff against it, never re-run it, or the gate compares against a different non-deterministic corpus than the one that was timed
 
 **Checkpoint**: the worktree runs its own code and a per-scene baseline exists.
 
@@ -186,15 +186,21 @@ an explicit STOP. Handing "did fidelity hold?" to the same class of agent that
 generated the output is how a failed gate gets reported as a passed one. Only the
 static guards T048–T049 are delegated.
 
-- [ ] T043 [US3] Extract the 20260811 session in batched mode into `/tmp/sx_batched` on the subscription backend, alongside the T003 per-scene baseline **(Opus)**
-- [ ] T044 [US3] Run `sd_verify_quotes` over both extractions and record the **`verified` (exact)** rates — read the exact rate, NOT the total: a run converting `verified` quotes into `near` ones is a regression even at identical counts, because `near` means "an edit happened", never "safe" (research D10) **(Opus)**
-- [ ] T045 [US3] Compare per-scene moment counts **in request order** between the two runs (SC-004) and check specifically for tail thinning — a uniform 10% drop and a 40% drop concentrated in the last scenes are different failures, and only the second indicts batching **(Opus)**
-- [ ] T046 [US3] Record the measurement in `specs/013-batched-scene-extraction/research.md` as a new D13 (both rates, per-scene deltas, the session used), so the gate's evidence lives with the design rather than in a terminal **(Opus)**
-- [ ] T047 [US3] If the exact rate drops more than 5 points or the tail thins: STOP, and tighten `config/agents/scene_extract_batched.md` (per-scene budget guidance, explicit "do not summarise later scenes") before re-measuring — do not proceed to Phase 6 on a failed gate **(Opus)**
-- [ ] T048 [P] [US3] Assert in `tests/test_scene_extract.py` that the batched system prompt contains every verbatim ground rule present in the per-scene prompt (FR-016) — a regression guard against the batched prompt drifting apart from `scene_extract.md`
-- [ ] T049 [P] [US3] Assert no **alias-map-derived** normalizer reaches the batched path (FR-015): aliases arrive only as roster knowledge via `format_npc_roster`, never as a rewrite — PR #231 fixed this once and it must not come back. The test must NOT assert byte-identity with the VTT file: `normalize_vtt_speakers` legitimately runs first (`scene_extract.py:427`, FR-015a) and the batched path keeps it
+- [X] T043 [US3] Extract the 20260811 session in batched mode into `/tmp/sx_batched` on the subscription backend, alongside the T003 per-scene baseline **(Opus)**
+- [X] T044 [US3] Run `sd_verify_quotes` over both extractions and record the **`verified` (exact)** rates — read the exact rate, NOT the total: a run converting `verified` quotes into `near` ones is a regression even at identical counts, because `near` means "an edit happened", never "safe" (research D10) **(Opus)**
+- [X] T045 [US3] Compare per-scene moment counts **in request order** between the two runs (SC-004) and check specifically for tail thinning — a uniform 10% drop and a 40% drop concentrated in the last scenes are different failures, and only the second indicts batching **(Opus)**
+- [X] T046 [US3] Record the measurement in `specs/013-batched-scene-extraction/research.md` as a new D13 (both rates, per-scene deltas, the session used), so the gate's evidence lives with the design rather than in a terminal **(Opus)**
+- [X] T047 [US3] If the exact rate drops more than 5 points, **or SC-004 fails (any scene loses >20% of its moments)**, or the tail thins, **or attribution diverges from the tape's speaker labels**: STOP, and tighten `config/agents/scene_extract_batched.md` (per-scene budget guidance, explicit "do not summarise later scenes") before re-measuring — do not proceed to Phase 6 on a failed gate **(Opus)**
+- [X] T048 [P] [US3] Assert in `tests/test_scene_extract.py` that the batched system prompt contains every verbatim ground rule present in the per-scene prompt (FR-016) — a regression guard against the batched prompt drifting apart from `scene_extract.md`
+- [X] T049 [P] [US3] Assert no **alias-map-derived** normalizer reaches the batched path (FR-015): aliases arrive only as roster knowledge via `format_npc_roster`, never as a rewrite — PR #231 fixed this once and it must not come back. The test must NOT assert byte-identity with the VTT file: `normalize_vtt_speakers` legitimately runs first (`scene_extract.py:427`, FR-015a) and the batched path keeps it
 
 **Checkpoint**: fidelity is measured, recorded, and gated. Only now is batching shippable.
+
+> T047's trigger list was widened after measurement 1 (research D14). The
+> original two shapes — exact-rate drop and tail thinning — BOTH failed to
+> fire on a run that lost 37% of its moments uniformly and re-decided 66% of
+> its speaker attributions. A gate that enumerates failure shapes will miss
+> the ones nobody predicted; SC-004 and the tape's own labels are the test.
 
 ---
 

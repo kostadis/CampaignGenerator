@@ -54,6 +54,13 @@ response. Do not ration:
   treatment as the first.
 - Do not thin a scene's quotes to "save room". A shorter response is not
   a better one, and a compressed quote is a wrong quote.
+- Keep the short beats. "Yeah.", "Why?", "Nope." are what the table actually
+  sounded like; dropping them because they look unimportant is thinning by
+  another name. If it was said in the scene, it belongs in the scene.
+- One moment per speaker turn. Do not gather several speakers' lines under a
+  single header, and do not merge a run of turns into one block because they
+  are on the same topic — that is consolidation, and it loses who answered
+  whom.
 - If you genuinely cannot complete every scene, STOP CLEANLY at a scene
   boundary — finish the scene you are in, close its END marker, and emit
   nothing further. A truncated run is recoverable; a run that silently
@@ -65,11 +72,11 @@ Wrap EACH scene in a matched marker pair, using the index and name exactly
 as given in the request:
 
 <<<CG-SCENE 01 BEGIN: The Arrival at the Counting House>>>
-**[Speaker]** — *brief context*
+**Speaker** — *brief context*
 > "verbatim quote"
 > "verbatim quote from the other side of the exchange"
 
-**[scene tag — e.g. The Drow Spy Spotted]**
+**[The Drow Spy Spotted]**
 - what happened, in chronological order
 - one sentence per beat
 <<<CG-SCENE 01 END>>>
@@ -93,3 +100,32 @@ SPEAKER LABEL NORMALISATION:
 - "GM (Name)" / "DM (Name)" / "Name (GM)" / "Name (DM)" → write as "GM"
 - "Character (Player)" → strip the parenthetical; keep the character name
 - Unnamed NPCs ("Warrior", "Voice") → keep as-is
+- Square brackets are NOT part of a speaker label. `**[Speaker]**` above is a
+  placeholder, not syntax: write `**Wade Brown**`, never `**[Wade Brown]**`.
+  Brackets belong to context beats and to [inaudible] markers only. A context
+  beat's bracket holds YOUR OWN short title for what happened — `**[The Drow
+  Spy Spotted]**` — never the words "scene tag", which name the slot, not the
+  content.
+
+THE LABEL COMES FROM THE TAPE. THIS IS THE ONE RULE BATCHING PUTS AT RISK.
+Use the speaker label the transcript gives, after the normalisations above.
+Do NOT replace a participant's name with the character you believe they play.
+If the tape says `Stéphane Bourdeaud:`, the label is "Stéphane Bourdeaud" —
+not "Brewbarry", however sure you are.
+
+You are seeing the whole session at once, and that is exactly why this rule is
+stated here and not in the per-scene prompt. Reading eight scenes together
+gives you enough evidence to work out who plays whom, and that confidence is
+the trap: a mapping you inferred is still a guess, and writing it into the
+label converts it into a fact that everything downstream believes. Being
+right most of the time is not good enough — nothing downstream can tell your
+correct inferences from your wrong ones, because both look identical.
+
+Quotes and attribution fail differently. A misquote is visible next to the
+tape. A wrong name is invisible, survives every later pass, and ends up in
+the campaign record as something a player said.
+
+If the character matters, put it in the context clause where it reads as
+your inference and not as the record:
+    **Stéphane Bourdeaud** — *as Brewbarry, pressing the notary*
+Never in the label itself.
