@@ -356,9 +356,12 @@ conversion copies onto the sheet, so a legal name there breaks the same
 attribution the sheet's value used to.
 
 Daein's `Fighter 9 / Bard 2` also became load-bearing: feature 008 keys its
-sheet archive on a single level, and multiclass is a refusal rather than a sum
-or a first-wins, for the same reason `class_level` was kept as one
-undecomposed string.
+sheet archive on a single level, and that level is the **total** — 11 — because
+that is what a character level is in 5e. (D4 originally refused multiclass here;
+it was revised on 2026-08-22 when Daein levelled to `Fighter 11 / Bard 2` and the
+refusal had no correct action behind it.) `class_level` itself is still kept as
+one undecomposed string; only its levels are summed, and only to name an archive
+folder. A class recorded with no level of its own is still a refusal.
 
 **obelisk is dormant** by GM ruling: no character sheets at all, and its
 `config/party.yaml` is the PC-name exclusion list, not a roster. It exits 1 with

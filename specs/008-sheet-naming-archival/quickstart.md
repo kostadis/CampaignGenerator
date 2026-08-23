@@ -57,14 +57,17 @@ Must cover, at minimum:
 | name absent from roster | raises, message lists the available roster names |
 | two entries share a name | raises as ambiguous, never first-wins |
 | `"Monk 8"` / `"Druid 5"` | level `8` / `5` |
-| `"Fighter 9 / Bard 2"` | `AmbiguousLevelError` |
+| `"Fighter 9 / Bard 2"` | level `11` — the sum, per D4's revision |
+| `"Fighter 9 / Bard"` | `AmbiguousLevelError`, naming the segment that lost it |
 | sheet with no frontmatter | level still read from `## Identity` |
 | sheet with neither | `AmbiguousLevelError` |
 | archive path | `<dir>/old/level/<N>/<char-name>.md` |
 | archive slot occupied | refuses, original untouched |
-| player substitution | **both** frontmatter and `- **Player:**` updated |
-| roster names no player | both fields empty, downloaded value **not** carried forward |
-| `player` save → load round-trip | value survives (guards the hand-built saver, D9) |
+| declared `sheet_name` | the sheet's spelling attributes to the roster entry |
+| declared `sheet_name` | `name`, not the declaration, still names the output file |
+| blank `sheet_name` in YAML | `load_party_config` refuses, naming the character |
+| `sheet_name: ""` over the API | absent, not invalid — the editor sends every field it renders |
+| `sheet_name` save → load round-trip | value survives (guards the hand-built saver, D9) |
 
 **Guard suites must stay green:**
 
@@ -145,6 +148,37 @@ grep -n 'Player' docs/party/Soma.md   # both lines show the roster's value
 
 ---
 
+## 3b. A sheet whose printed name is wrong (FR-002c)
+
+The live case: a player typed `Akrita` into D&D Beyond for a character the campaign
+has always called Akritas, and the download cannot be corrected.
+
+```bash
+# 1. The first run refuses, and the refusal itself names the three fixes.
+dnd_sheet ~/Downloads/Akrita-1120044.pdf --party-config config/party.yaml
+#    -> REFUSED …: the name on this sheet is not in the roster.
+#       Sheet says:      "Akrita"
+
+# 2. Only because fixes 1 and 2 are unavailable, declare the spelling:
+#       - name: Akritas
+#         sheet: docs/party/Akritas.md
+#         sheet_name: Akrita
+
+# 3. Re-run. It resolves, and the roster's own name is what lands on disk.
+dnd_sheet ~/Downloads/Akrita-1120044.pdf --party-config config/party.yaml
+```
+
+Confirm all three, because the containment is the point of the feature:
+
+- the run reports the matched entry as **Akritas**, not Akrita
+- the file written is `docs/party/Akritas.md` — the declaration reaches attribution
+  and nothing else
+- any sheet it displaces archives under `Akritas.md` too
+- a later refusal listing the roster shows `Akritas (sheet: Akrita)`, so the GM is
+  never told the roster lacks a name the declaration made present
+
+---
+
 ## 4. Refusal matrix (SC-005)
 
 Each leaves the tree untouched and exits `1`. Confirm with `git status` after every one.
@@ -154,7 +188,7 @@ Each leaves the tree untouched and exits `1`. Confirm with `git status` after ev
 | name not in roster | convert a PDF for a character with no roster entry |
 | ambiguous name | temporarily duplicate a `name` in `party.yaml` |
 | filename mismatch | revert one `sheet:` to its lowercase form |
-| multiclass level | point the destination at a sheet reading `Fighter 9 / Bard 2` |
+| a class with no level | point the destination at a sheet reading `Fighter 9 / Bard` (a complete `Fighter 9 / Bard 2` archives at level 11 instead) |
 | no level at all | strip the `**Class & Level:**` line from the destination sheet |
 | occupied archive slot | run the same conversion twice |
 

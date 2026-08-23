@@ -57,6 +57,20 @@ def _as_authored(v: Any) -> Any:
 
 AuthoredPath = Annotated[str | None, BeforeValidator(_as_authored)]
 
+
+def _blank_is_absent(v: Any) -> Any:
+    """An all-whitespace alias means "no alias", not "match the empty string".
+
+    The YAML loader refuses a blank ``sheet_name`` outright — a human who typed
+    the key meant something by it. This is the API's path, where the roster
+    editor sends every field it renders and an untouched text input arrives as
+    ``""``; that is an absent declaration, not a mistake to report.
+    """
+    return None if isinstance(v, str) and not v.strip() else v
+
+
+DeclaredName = Annotated[str | None, BeforeValidator(_blank_is_absent)]
+
 #: Per-character path fields, in the order they are rendered and reported.
 #: ``sheet`` is required; the rest are optional.
 #:
@@ -101,6 +115,19 @@ class PartyCharacter(BaseModel):
     (campaigns#175). Optional — a character that declares neither has neither,
     stated rather than inferred.
 
+    ``sheet_name`` is the character name as the *downloaded PDF prints it*, and
+    exists only for the case where that spelling is wrong and the download
+    cannot be corrected — a typo the player typed into D&D Beyond. Declaring it
+    lets ``dnd_sheet`` attribute the sheet without the roster having to adopt
+    the typo as the character's name: ``name`` still owns the output filename,
+    the ``players.yaml`` join and the ``party.md`` heading. It is an explicit
+    human-authored mapping in the same sense as ``dossier`` — the exact-match
+    ruling in :mod:`campaignlib.sheet_naming` bans *inferring* that two
+    spellings are one character, not *stating* it. When the sheet's spelling is
+    the correct one and the world merely calls the character something else,
+    this is the wrong field: make ``name`` the sheet's spelling and put the
+    other name in the character's prose, where narrators read it.
+
     There is deliberately **no ``player`` field**. It lived here between
     features 008 and 009 and had exactly one production reader; who plays a
     character is now recorded in ``players.yaml``, which
@@ -112,6 +139,7 @@ class PartyCharacter(BaseModel):
 
     name: str
     sheet: Annotated[str, BeforeValidator(_as_authored)]
+    sheet_name: DeclaredName = None
     backstory: AuthoredPath = None
     dossier: AuthoredPath = None
     arc_score: AuthoredPath = None
@@ -157,6 +185,7 @@ class ResolvedCharacter(BaseModel):
 
     name: str
     sheet: Path
+    sheet_name: str | None = None
     backstory: Path | None = None
     dossier: Path | None = None
     arc_score: Path | None = None
@@ -238,10 +267,19 @@ def load_party_config(path: Path) -> PartyConfig:
         else:
             trackless = False
             arc_score = None
+        # A blank declaration would make the entry match nothing at all, which
+        # is worse than not declaring one — refuse rather than quietly orphan it.
+        sheet_name = entry.get("sheet_name")
+        if sheet_name is not None and not str(sheet_name).strip():
+            raise ValueError(
+                f"{path}: character {name!r} has an empty 'sheet_name'. Give it "
+                f"the spelling the downloaded PDF prints, or remove the key."
+            )
         characters.append(
             PartyCharacter(
                 name=str(name),
                 sheet=str(sheet),
+                sheet_name=str(sheet_name) if sheet_name else None,
                 backstory=str(entry["backstory"]) if entry.get("backstory") else None,
                 dossier=str(entry["dossier"]) if entry.get("dossier") else None,
                 arc_score=arc_score,
@@ -276,6 +314,8 @@ def save_party_config(path: Path, cfg: PartyConfig) -> None:
     entries: list[dict[str, Any]] = []
     for pc in cfg.characters:
         entry: dict[str, Any] = {"name": pc.name, "sheet": pc.sheet}
+        if pc.sheet_name:
+            entry["sheet_name"] = pc.sheet_name
         if pc.backstory:
             entry["backstory"] = pc.backstory
         if pc.dossier:
@@ -364,6 +404,11 @@ def resolve_party_config(
             ResolvedCharacter(
                 name=pc.name,
                 sheet=_resolve(pc.sheet, "sheet", pc.name),
+                # Not a path — carried through verbatim so a resolved roster is
+                # still attributable (dnd_sheet reads the authored copy today,
+                # but a resolved config that silently lost the alias would
+                # attribute sheets differently from the one on disk).
+                sheet_name=pc.sheet_name,
                 backstory=_resolve(pc.backstory, "backstory", pc.name),
                 dossier=_resolve(pc.dossier, "dossier", pc.name),
                 arc_score=_resolve(pc.arc_score, "arc_score", pc.name),

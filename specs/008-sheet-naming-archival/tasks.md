@@ -143,7 +143,7 @@ description: "Task list for Roster-Named Sheets & Level Archival"
 - [X] T039 [US4] Add the help text carrying D8's constraint to both `PartyConfigEditor.vue`'s player field and `--party-config`'s CLI help: this is the **Zoom display name**, not a legal name — `normalize_vtt_speakers` matches speaker prefixes exactly and a near-miss silently drops that character's lines
 - [X] T040 [US4] Confirm refusals reach the browser as the CLI's own stderr text through `RunPanel`, unmodified and unsummarised — no new plumbing should be needed (FR-022, FR-025)
 - [X] T041 [P] [US4] Add a round-trip test to `tests/test_party_routes.py`: `PUT /api/party/characters` with `player` set, then `GET`, returns it — and assert it reached `party.yaml` on disk, since a `200` is not proof (depends on T031)
-- [ ] T042 [US4] Reinstall into the server's venv so `console_script("dnd_sheet")` resolves the new signature: `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"`. No server restart needed; skipping this shows as `Stream error — check terminal.`
+- [X] T042 [US4] Reinstall into the server's venv so `console_script("dnd_sheet")` resolves the new signature: `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"`. No server restart needed; skipping this shows as `Stream error — check terminal.`
 
 **Checkpoint**: Every user story is reachable from both surfaces, producing identical files.
 
@@ -157,7 +157,47 @@ description: "Task list for Roster-Named Sheets & Level Archival"
 - [X] T046 Run the full suite: `python -m pytest tests/ -q`, compared against T002's baseline
 - [X] T047 Migrate Phandalin's roster in the **separate `~/src/campaigns` repo**: renamed `docs/party/{soma,brewbarry,valphine}.md` to their roster-shaped names and updated the `sheet:` lines in `config/party.yaml`. The `Valphine` / `Valphine Sotorra` disagreement was settled by GM ruling 2026-08-15 — the roster widens to the sheet's fuller name. Done on branch `feat/roster-player-and-sheet-names`, commits `60db8835` + `6fb8f5e0`; **not pushed, no PR**. out-of-the-abyss got the same treatment (`d3c004eb`) since it had the identical lowercase-filename mismatch
 - [ ] T048 Record each campaign's `player` values in its `config/party.yaml` (`~/src/campaigns`), using Zoom display names per T039 — **2 of 5 done** (Phandalin, out-of-the-abyss: sheet values confirmed against each campaign's own transcript). Hillsfar needs none (every sheet reads `Player: Not specified`, the documented placeholder). **stormgiants and toee are blocked on a GM ruling**, not on lookup: their Zoom names are short forms and a handle (`Wade`, `Dave`, `Jared`, `ncroussos`) that disagree with the sheets' long legal names, so copying the sheet value would silently drop that player's lines; and toee's `calmer` is played by the GM, which is either correct or the FR-009 empty case
+  - **Superseded by feature 009 (2026-08-22).** `party.yaml` has no `player`
+    field any more — the key is refused, not ignored — and who plays a character
+    is recorded in `players.yaml` instead (`docs/config/players-isolation.md`).
+    The remaining work is the same ruling in a different file: stormgiants' and
+    toee's Zoom names are short forms and a handle, and only the GM can say which
+    person each belongs to. Carry it to feature 009's task list rather than doing
+    it here.
+
 - [ ] T049 Execute `quickstart.md` end to end, including the six-refusal matrix with `git status` clean after each, and tick its Definition of Done
+
+---
+
+## Phase 8: Amendment — declared sheet names & multiclass levels (2026-08-22)
+
+Two rulings taken after the feature shipped, on Daein's first real level-up and on
+the two Hillsfar sheets whose printed names are wrong. Both amend `spec.md` rather
+than extending it: FR-002c is new, and FR-013 reverses D4.
+
+- [X] T050 Add `sheet_name` to `PartyCharacter` and `ResolvedCharacter`, with the
+      `_blank_is_absent` validator for the API path and a loader refusal for a blank
+      declaration in YAML (`campaignlib/party_config.py`)
+- [X] T051 Add `match_name` and route `attribute` through it, and show a declaring
+      entry as `Akritas (sheet: Akrita)` in refusals (`campaignlib/sheet_naming.py`)
+- [X] T052 Total a complete multiclass phrase in `parse_level`; keep a segment with
+      no level of its own a refusal (`campaignlib/sheet_identity.py`)
+- [X] T053 Rewrite the two affected refusals in `pipelines/content_ingest/dnd_sheet.py`
+      — the attribution one now names three ordered fixes, the level one no longer
+      says "more than one class"
+- [X] T054 [US4] Add the `sheet_name` input to `PartyConfigEditor.vue`, with help text
+      saying what it is for and what it is not
+- [X] T055 [P] Amend `spec.md` (FR-002c, FR-013, FR-025, Key Entities), `research.md`
+      (D4's revision), the requirements checklist, and
+      `docs/design/PartyRosterCanonicalFormat.md`
+- [X] T056 [P] Amend `data-model.md`, `contracts/cli-dnd-sheet.md`,
+      `contracts/http-api.md` and `quickstart.md` — all four still described the
+      shipped behaviour, and two of them still documented `player`
+- [X] T057 Tests for both rulings: declared-alias attribution, the alias reaching
+      nothing but attribution, blank handling on both paths, multiclass totalling,
+      and a segment with no level
+- [ ] T058 Re-run §3b and the refusal matrix of `quickstart.md` against the amended
+      behaviour (folds into T049 — the matrix changed under it)
 
 ---
 

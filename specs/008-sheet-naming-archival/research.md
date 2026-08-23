@@ -70,7 +70,24 @@ refuse without it (would refuse on every campaign's current sheets).
 
 ---
 
-## D4 — Level: frontmatter first, Identity block second, refuse on multiclass
+## D4 — Level: frontmatter first, Identity block second, total the multiclass
+
+> **Revised 2026-08-22, on Daein's first real level-up.** D4 originally refused a
+> multiclass phrase outright, on the grounds that picking 11 out of
+> `Fighter 9 / Bard 2` invents precision the source lacks. That premise is wrong:
+> 5e *defines* a character's level as the total of their class levels, so 11 is
+> the level the sheet states, arrived at by the game's own rule rather than by a
+> pick. Refusing meant a real, in-play, unambiguous character could never be
+> archived — a refusal with no correct action behind it, since "record a single
+> class & level" asks the GM to falsify the sheet.
+>
+> The rule is now: split, require a level on **every** segment, sum. First-wins
+> and last-wins stay refusals, and so does `Fighter 9 / Bard` — those are picks.
+> Keying on the total also makes `old/level/<N>/` mean one thing for everyone
+> instead of two. The undecomposed-`class_level` argument is untouched: the
+> *string* is still never split into structured fields; only its levels are added
+> for the one purpose of naming an archive folder.
+
 
 **Decision**: `read_class_level(text)` returns the `class_level` frontmatter value when
 present, else the `## Identity` `**Class & Level:**` value, else `None`.
@@ -81,11 +98,10 @@ class-and-level segment.
 **Rationale**: verified against real data — `old/level/5/Soma.md` records
 `- **Class & Level:** Druid 5` and the live `soma.md` records `Druid 6`, which is exactly
 the archive key the GM chose by hand. Frontmatter is preferred when present because #293
-landed it on 19 sheets and it is the machine channel. Multiclass is a refusal, not a sum
-or a first-wins: `Human Fighter 9 / Bard 2` is a real Hillsfar value recorded in
-`PartyRosterCanonicalFormat.md`, and picking 11, 9 or 2 from it is inventing precision the
-source lacks — the same reason `class_level` was deliberately kept as one undecomposed
-string.
+landed it on 19 sheets and it is the machine channel. `Human Fighter 9 / Bard 2` is a
+real Hillsfar value recorded in `PartyRosterCanonicalFormat.md`; per the revision above
+it totals to 11, while `Fighter 9 / Bard` — a class with no level of its own — remains a
+refusal, because there the total really would have to be guessed.
 
 **Alternatives considered**: `old/level/unknown/` for unparseable levels — rejected, it
 turns a refusal into a bucket that silently accumulates and collides.

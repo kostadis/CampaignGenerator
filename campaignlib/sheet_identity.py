@@ -42,7 +42,8 @@ _FIELD_RE = re.compile(r'^-\s+\*\*([^*:]+):\*\*\s*(.*)$')
 _LEVEL_RE = re.compile(r'^(?P<class_>.*\S)\s+(?P<level>\d+)$')
 
 #: What separates two class-and-level segments in a multiclass phrase —
-#: "Human Fighter 9 / Bard 2" is a real Hillsfar value.
+#: "Human Fighter 9 / Bard 2" is a real Hillsfar value. Every segment must
+#: carry its own level; :func:`parse_level` adds them up.
 _MULTICLASS_SPLIT_RE = re.compile(r'\s*[/,;]\s*|\s+\band\b\s+')
 
 
@@ -51,12 +52,14 @@ class SheetParseError(Exception):
 
 
 class AmbiguousLevelError(Exception):
-    """The sheet does not state exactly one level.
+    """The sheet states no level the archive can be keyed by.
 
-    Raised for a missing, non-numeric or multiclass class-and-level phrase.
-    The archive is keyed by a single level, and picking 11, 9 or 2 out of
-    ``Fighter 9 / Bard 2`` would invent precision the source lacks — the same
-    reason ``class_level`` is deliberately kept as one undecomposed string.
+    Raised for a missing or non-numeric class-and-level phrase, and for a
+    multiclass phrase in which any one segment carries no level —
+    ``Fighter 9 / Bard`` has a total only if you guess the missing half.
+
+    A multiclass phrase whose segments *all* carry a level is not ambiguous;
+    see :func:`parse_level`.
     """
 
 
@@ -154,26 +157,35 @@ def read_player(text: str) -> str | None:
 
 
 def parse_level(phrase: str | None) -> int:
-    """The single integer level in a class-and-level phrase.
+    """The character level a class-and-level phrase states.
 
-    ``"Monk 8"`` → ``8``. Raises :class:`AmbiguousLevelError` on an absent
-    value, a phrase with no trailing integer, or a multiclass phrase — see
-    that exception's docstring for why multiclass is a refusal rather than a
-    sum or a first-wins.
+    ``"Monk 8"`` → ``8``. A multiclass phrase is the sum of its segments:
+    ``"Fighter 9 / Bard 2"`` → ``11``. That reverses D4, which refused here on
+    the grounds that picking 11 invents precision the source lacks. It does
+    not: 5e *defines* a character's level as the total of their class levels,
+    so 11 is read off the sheet by the game's own rule, and the single-class
+    case is simply the one-segment case of it. Keying the archive on the total
+    also makes ``old/level/<N>/`` mean one thing for every character rather
+    than two.
+
+    First-wins and last-wins remain refusals — those really would be a pick.
+    So does a segment carrying no level of its own: ``"Fighter 9 / Bard"``
+    states no total, and :class:`AmbiguousLevelError` says which segment lost
+    it rather than quietly summing the readable half.
     """
     if phrase is None or not phrase.strip():
         raise AmbiguousLevelError("no class & level recorded")
 
     text = phrase.strip()
-    segments = [s for s in _MULTICLASS_SPLIT_RE.split(text) if s.strip()]
-    if len(segments) > 1:
-        raise AmbiguousLevelError(
-            f"more than one class & level recorded: {phrase!r}"
-        )
+    segments = [s.strip() for s in _MULTICLASS_SPLIT_RE.split(text) if s.strip()]
+    if not segments:
+        raise AmbiguousLevelError(f"no class & level found in {phrase!r}")
 
-    m = _LEVEL_RE.match(text)
-    if not m:
-        raise AmbiguousLevelError(
-            f"no single level found in {phrase!r}"
-        )
-    return int(m.group("level"))
+    total = 0
+    for segment in segments:
+        m = _LEVEL_RE.match(segment)
+        if not m:
+            where = f"{segment!r} in {phrase!r}" if len(segments) > 1 else repr(phrase)
+            raise AmbiguousLevelError(f"no level found in {where}")
+        total += int(m.group("level"))
+    return total

@@ -66,18 +66,44 @@ def test_single_class_and_level_parses(phrase, level):
     "Fighter 9, Bard 2",
     "Fighter 9 and Bard 2",
 ])
-def test_multiclass_refuses(phrase):
-    """Not a sum, not a first-wins. Picking 11, 9 or 2 out of this invents
-    precision the source lacks — the same reason class_level is kept as one
-    undecomposed string."""
-    with pytest.raises(AmbiguousLevelError):
-        parse_level(phrase)
+def test_multiclass_sums_to_the_character_level(phrase):
+    """Daein's real value. 5e defines character level as the total of the
+    class levels, so 11 is read off the sheet, not picked out of it — the
+    reversal of D4."""
+    assert parse_level(phrase) == 11
+
+
+def test_three_classes_also_sum():
+    assert parse_level("Fighter 9 / Bard 2 / Rogue 1") == 12
+
+
+def test_the_total_shares_a_slot_with_the_single_class_of_that_level():
+    """Not an accident: it is the point of keying on the total. old/level/11/
+    means "this character at level 11" for every character."""
+    assert parse_level("Fighter 9 / Bard 2") == parse_level("Ranger 11")
 
 
 @pytest.mark.parametrize("phrase", [None, "", "   ", "Druid", "Level Five"])
 def test_no_readable_level_refuses(phrase):
     with pytest.raises(AmbiguousLevelError):
         parse_level(phrase)
+
+
+@pytest.mark.parametrize("phrase", [
+    "Fighter 9 / Bard",
+    "Fighter / Bard 2",
+    "Fighter 9 / Bard 2 / Rogue",
+])
+def test_a_class_without_its_own_level_refuses(phrase):
+    """Summing the readable half would report a total the sheet never stated.
+    That is the pick D4 was right to refuse."""
+    with pytest.raises(AmbiguousLevelError):
+        parse_level(phrase)
+
+
+def test_the_refusal_names_the_segment_that_lost_its_level():
+    with pytest.raises(AmbiguousLevelError, match="'Bard'"):
+        parse_level("Fighter 9 / Bard")
 
 
 # ── read_class_level ───────────────────────────────────────────────────────
