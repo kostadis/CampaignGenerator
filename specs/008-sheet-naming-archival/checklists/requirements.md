@@ -58,6 +58,9 @@ Three decisions were the GM's, not defaults, and each carries a consequence for 
 
 Multiclass and missing-level handling were resolved as a refusal (FR-013) rather
 than a fourth clarification, per the project's refuse-rather-than-guess convention.
+**Amended 2026-08-22:** a complete multiclass phrase is now totalled, not refused —
+the character level *is* the sum, so it was never a guess. Missing levels, whether
+the whole phrase or one class within it, still refuse.
 
 The UI requirements (FR-019–FR-025) came in as a follow-up and are worth flagging to
 planning: the existing D&D Sheet page already sends an output location, which under

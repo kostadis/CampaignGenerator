@@ -181,8 +181,10 @@ the run output names the matched roster entry — with no terminal commands.
 - **No level recoverable.** The sheet being displaced records no level (some
   existing sheets carry no machine-readable summary at all). Archival cannot pick
   a folder; the conversion refuses rather than filing under a placeholder.
-- **Multiclass level.** A displaced sheet recording `Fighter 9 / Bard 2` has no
-  single level number. The archive folder cannot be chosen without a rule.
+- **A class recorded without a level.** A displaced sheet recording `Fighter 9 /
+  Bard` states no total — summing the readable half would file it under a level
+  the character is not. (A *complete* multiclass phrase is not an edge case: see
+  FR-013.)
 - **Archive slot already occupied.** A second conversion at the same level would
   overwrite an already-archived sheet — the one thing this feature exists to
   prevent.
@@ -227,6 +229,20 @@ the run output names the matched roster entry — with no terminal commands.
 - **FR-002b**: For every PDF it writes, the conversion MUST report which roster
   entry it was attributed to, so a wrong attribution is visible in the run output
   before the GM relies on the file.
+- **FR-002c**: A roster entry MUST be able to declare the spelling its downloaded
+  sheet prints (`sheet_name`), and attribution MUST then match the sheet against
+  that value instead of the entry's name. The match stays exact per FR-002a — the
+  GM has *stated* that two spellings are one character, which is the opposite of
+  inferring it from similarity. The declaration MUST NOT reach anything else: the
+  output filename (FR-005), the archive slot, the `players.yaml` join and the
+  `party.md` heading all continue to use the entry's name, so an uncorrectable
+  typo in a download can never propagate into the campaign's own documents.
+  This is for a sheet that is *wrong* and cannot be fixed at source — the live
+  Hillsfar case, where two players typed `Akrita` and `Daien` into D&D Beyond for
+  characters the campaign has always called Akritas and Daein. When the sheet is
+  *right* and the world simply knows the character by another name, the entry's
+  name should be the sheet's spelling and the other name belongs in the
+  character's prose, where narrators read it.
 - **FR-003**: When attribution is ambiguous or finds no entry, the conversion MUST
   fail loudly for that PDF: report the file, the name read out of it, and the roster
   names that were available to match against, then skip it leaving every existing
@@ -291,9 +307,13 @@ the run output names the matched roster entry — with no terminal commands.
   (`Phandalin/docs/party/old/level/5/`), so existing archives stay continuous and
   no campaign ends up with two archive layouts side by side.
 - **FR-013**: The level MUST be read from the displaced sheet's own recorded class
-  and level. When no level can be read, or the sheet records more than one class
-  and level, the conversion MUST refuse that PDF with a message naming the file
-  and the value it could not interpret, and MUST NOT move or overwrite anything.
+  and level. A multiclass phrase MUST be totalled — `Fighter 9 / Bard 2` archives
+  at level 11, the same slot a single-class level 11 takes — because 5e defines a
+  character's level as the sum of their class levels, so the total is read off the
+  sheet rather than picked. When no level can be read at all, or any one class is
+  recorded without its own level, the conversion MUST refuse that PDF with a
+  message naming the file and the value it could not interpret, and MUST NOT move
+  or overwrite anything.
 - **FR-014**: The conversion MUST refuse rather than overwrite when the archive
   destination is already occupied.
 - **FR-015**: A conversion that fails after the archive move MUST leave the
@@ -329,9 +349,8 @@ the run output names the matched roster entry — with no terminal commands.
 - **FR-024**: Every UI action in this feature MUST have an equivalent command-line
   invocation producing the same files, and files MUST be the only interchange
   between the two surfaces — no pipeline state that exists solely in the browser.
-- **FR-025**: A refusal (no roster, unattributable PDF, unreadable or multiclass
-  level, occupied archive slot) MUST surface in the UI with its reason, not as a
-  generic failure.
+- **FR-025**: A refusal (no roster, unattributable PDF, unreadable level, occupied
+  archive slot) MUST surface in the UI with its reason, not as a generic failure.
 
 ### Key Entities
 
@@ -346,8 +365,9 @@ the run output names the matched roster entry — with no terminal commands.
   character *except* the player, which comes from the roster.
 - **Archive location**: a folder beneath the sheet directory holding superseded
   sheets, partitioned by the level each recorded. Not a live sheet location.
-- **Character level**: the numeric level recorded on a sheet, used solely to name
-  the archive partition. Multiclass sheets do not have one.
+- **Character level**: the level a sheet records, used solely to name the archive
+  partition. For a multiclass sheet it is the total of the class levels, which is
+  what a character level is.
 
 ## Success Criteria *(mandatory)*
 

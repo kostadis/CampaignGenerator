@@ -224,9 +224,14 @@ def refusal(pdf_name: str, error: SheetNamingError, party_config_arg: str) -> st
             f"{head}the name on this sheet is not in the roster.\n"
             f'  Sheet says:      "{error.extracted_name}"\n'
             f"  Roster has:      {', '.join(error.roster_names) or '(empty)'}\n"
-            f"  The roster and the sheet disagree. Fix {party_config_arg} (or the\n"
-            f"  sheet's own title) so one of them matches exactly — there is no fuzzy\n"
-            f"  matching here on purpose.\n"
+            f"  The roster and the sheet disagree, and there is no fuzzy matching\n"
+            f"  here on purpose. Three ways out, in order of preference:\n"
+            f"    1. Fix the name at source in D&D Beyond and re-download.\n"
+            f"    2. Rename the character in {party_config_arg} to match the sheet.\n"
+            f"    3. If the sheet's spelling is wrong and cannot be corrected, add\n"
+            f'       sheet_name: "{error.extracted_name}" to that character\'s roster\n'
+            f"       entry — the sheet is then matched on it while the roster's own\n"
+            f"       name still names the file.\n"
             f"{tail}"
         )
 
@@ -266,10 +271,11 @@ def refusal(pdf_name: str, error: SheetNamingError, party_config_arg: str) -> st
                 f"{tail}"
             )
         return (
-            f"{head}cannot read a single level from the sheet being replaced.\n"
+            f"{head}cannot read a level from the sheet being replaced.\n"
             f'  {error.sheet} says: "{error.phrase}"\n'
-            f"  The archive is keyed by one level and this sheet records more than\n"
-            f"  one class. Move it by hand, or record a single class & level.\n"
+            f"  The archive is keyed by the character's total level, so every class\n"
+            f"  listed needs its own — fix the \"Class & Level\" line, or move the\n"
+            f"  sheet by hand.\n"
             f"{tail}"
         )
 

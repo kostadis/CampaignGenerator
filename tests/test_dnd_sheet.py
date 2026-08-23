@@ -380,12 +380,29 @@ def test_rerunning_the_same_conversion_refuses_rather_than_overwriting(
     assert "already exists" in capsys.readouterr().err
 
 
-def test_multiclass_sheet_refuses_and_moves_nothing(monkeypatch, stub_convert,
-                                                    tmp_path, capsys):
-    """FR-013: the archive is keyed by one level; picking one out of two is
-    inventing precision the source lacks."""
+def test_a_multiclass_sheet_archives_at_its_total_level(monkeypatch, stub_convert,
+                                                       tmp_path, capsys):
+    """FR-013, reversing D4. Daein's real value: Fighter 9 / Bard 2 is a level
+    11 character by the game's own definition, so the archive has a key."""
     campaign = _campaign(tmp_path, PHANDALIN_ROSTER)
     old = _existing_sheet(campaign, "Soma", "Fighter 9 / Bard 2")
+    old_text = old.read_text(encoding="utf-8")
+    pdf = _pdf(tmp_path, "Soma")
+
+    _run(monkeypatch, campaign, str(pdf), "--party-config", "config/party.yaml")
+
+    archived = campaign / "docs" / "party" / "old" / "level" / "11" / "Soma.md"
+    assert archived.read_text(encoding="utf-8") == old_text
+    assert old.read_text(encoding="utf-8") != old_text
+    assert "(level 11)" in capsys.readouterr().err
+
+
+def test_a_class_recorded_without_a_level_still_refuses(monkeypatch, stub_convert,
+                                                        tmp_path, capsys):
+    """The readable half is not a total. Summing 9 and nothing would file the
+    sheet under a level the character is not."""
+    campaign = _campaign(tmp_path, PHANDALIN_ROSTER)
+    old = _existing_sheet(campaign, "Soma", "Fighter 9 / Bard")
     old_text = old.read_text(encoding="utf-8")
     pdf = _pdf(tmp_path, "Soma")
 
@@ -394,7 +411,7 @@ def test_multiclass_sheet_refuses_and_moves_nothing(monkeypatch, stub_convert,
 
     assert old.read_text(encoding="utf-8") == old_text
     assert not (campaign / "docs" / "party" / "old").exists()
-    assert '"Fighter 9 / Bard 2"' in capsys.readouterr().err
+    assert '"Fighter 9 / Bard"' in capsys.readouterr().err
 
 
 def test_nothing_is_touched_before_the_api_call_returns(monkeypatch, tmp_path):

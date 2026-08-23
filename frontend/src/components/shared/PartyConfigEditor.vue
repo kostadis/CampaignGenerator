@@ -7,6 +7,14 @@ import PathField from './PathField.vue'
 interface PartyChar {
   name: string
   sheet: string
+  /**
+   * The spelling the downloaded D&D Beyond PDF prints, when it differs from
+   * `name` — a typo the player typed into D&D Beyond that cannot be corrected
+   * at source. `dnd_sheet` attributes on this value; everything else (the
+   * output filename, the players.yaml join, the party.md heading) still uses
+   * `name`. Empty means the sheet prints `name`, which is the normal case.
+   */
+  sheet_name: string
   backstory: string
   dossier: string
   /**
@@ -68,6 +76,7 @@ function normalize(rows: PartyChar[]): PartyChar[] {
   return rows.map(c => ({
     name: c.name ?? '',
     sheet: c.sheet ?? '',
+    sheet_name: c.sheet_name ?? '',
     backstory: c.backstory ?? '',
     dossier: c.dossier ?? '',
     voice: c.voice ?? '',
@@ -124,8 +133,8 @@ async function save() {
 
 function addChar() {
   characters.value.push({
-    name: '', sheet: '', backstory: '', dossier: '', voice: '', examples: '',
-    arc_score: '', trackless: false, missing_files: [],
+    name: '', sheet: '', sheet_name: '', backstory: '', dossier: '',
+    voice: '', examples: '', arc_score: '', trackless: false, missing_files: [],
   })
 }
 
@@ -208,6 +217,20 @@ watch(() => open.value, (o) => {
               :base-dir="yamlParentDir"
               help="Path relative to the campaign root (e.g. docs/party/soma.md)."
             />
+            <div class="text-field">
+              <label class="field-label">Name on the downloaded sheet</label>
+              <input
+                type="text"
+                class="field-input"
+                v-model="c.sheet_name"
+                placeholder="(leave empty if the PDF prints the name above)"
+              />
+              <div class="field-help">
+                Optional. Only for a D&amp;D Beyond sheet whose character name is
+                wrong and cannot be fixed at source. dnd_sheet matches the PDF
+                against this; the name above still names the output file.
+              </div>
+            </div>
             <PathField
               :model-value="c.backstory"
               @update:model-value="(v: string) => (c.backstory = v)"
@@ -312,6 +335,34 @@ watch(() => open.value, (o) => {
 .char-header {
   display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
 }
+.text-field { margin-bottom: 10px; }
+.text-field .field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-sub);
+  margin-bottom: 3px;
+}
+.text-field .field-input {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--bg-surface1);
+  background: var(--bg-base);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  outline: none;
+  transition: border-color .1s;
+}
+.text-field .field-input:focus { border-color: var(--mauve); }
+.text-field .field-help {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
 .name-input {
   flex: 1; padding: 6px 8px; border-radius: 4px;
   border: 1px solid var(--bg-surface1); background: var(--bg-mantle);

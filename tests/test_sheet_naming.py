@@ -45,6 +45,7 @@ class StubCharacter:
 
     name: str
     sheet: str = "docs/party/stub.md"
+    sheet_name: str | None = None
 
 
 PHANDALIN = [
@@ -99,6 +100,82 @@ def test_empty_roster_refuses():
         attribute("Soma", [])
     assert exc.value.matches == 0
     assert exc.value.roster_names == []
+
+
+# ── attribute: declared aliases (sheet_name) ───────────────────────────────
+
+HILLSFAR = [
+    # The live case: three of four D&D Beyond sheets print a name the roster
+    # does not use. Akrita/Daien are typos the players typed into D&D Beyond;
+    # Felkur's sheet is correct and needs no alias.
+    StubCharacter("Akritas", "docs/Akritas.md", sheet_name="Akrita"),
+    StubCharacter("Daein", "docs/Daein.md", sheet_name="Daien"),
+    StubCharacter("Bramgrim Stoutale", "docs/Bramgrim Stoutale.md"),
+    StubCharacter("Felkur Olwedond", "docs/Felkur Olwedond.md"),
+]
+
+
+def test_declared_sheet_name_attributes_the_sheet_to_the_roster_name():
+    """The whole point: the sheet says Akrita, the campaign says Akritas, and
+    the GM wrote down that they are one character."""
+    assert attribute("Akrita", HILLSFAR).name == "Akritas"
+    assert attribute("Daien", HILLSFAR).name == "Daein"
+
+
+def test_declared_alias_replaces_the_name_rather_than_widening_the_match():
+    """An alias is a redirection, not a second chance. Once the GM says this
+    entry's sheets print `Akrita`, a sheet printing `Akritas` is a sheet they
+    have not accounted for — silently accepting both is how two downloads land
+    on one file."""
+    with pytest.raises(AttributionError):
+        attribute("Akritas", HILLSFAR)
+
+
+def test_entries_without_an_alias_are_unaffected():
+    assert attribute("Bramgrim Stoutale", HILLSFAR).name == "Bramgrim Stoutale"
+    assert attribute("Felkur Olwedond", HILLSFAR).name == "Felkur Olwedond"
+
+
+@pytest.mark.parametrize("written", ["akrita", "  AKRITA  "])
+def test_alias_matching_is_still_case_and_whitespace_insensitive(written):
+    assert attribute(written, HILLSFAR).name == "Akritas"
+
+
+def test_alias_is_exact_with_no_fuzzy_fallback():
+    """FR-002a still holds inside the alias: declaring one spelling does not
+    licence near-misses of it."""
+    for near_miss in ["Akrit", "Akritaa", "Daie", "Daiene"]:
+        with pytest.raises(AttributionError):
+            attribute(near_miss, HILLSFAR)
+
+
+def test_an_alias_colliding_with_another_entry_refuses():
+    """If one entry's alias is another entry's name, the sheet genuinely is
+    ambiguous — first-wins here would write over a real character."""
+    roster = [
+        StubCharacter("Daein", "docs/Daein.md", sheet_name="Daien"),
+        StubCharacter("Daien", "docs/Daien.md"),
+    ]
+    with pytest.raises(AttributionError) as exc:
+        attribute("Daien", roster)
+    assert exc.value.matches == 2
+
+
+def test_refusal_shows_the_alias_it_was_matching_against():
+    """Listing bare roster names would tell the GM the roster has no `Akrita`,
+    which the alias makes false — the message has to show what was compared."""
+    with pytest.raises(AttributionError) as exc:
+        attribute("Nobody", HILLSFAR)
+    assert "Akritas (sheet: Akrita)" in exc.value.roster_names
+    assert "Bramgrim Stoutale" in exc.value.roster_names
+    assert "Akritas (sheet: Akrita)" in str(exc.value)
+
+
+def test_declared_alias_does_not_reach_the_filename():
+    """FR-005 is untouched: the roster's name still names the file, so an alias
+    can never put the download's spelling on disk."""
+    char = StubCharacter("Akritas", "docs/Akritas.md", sheet_name="Akrita")
+    assert destination_for(char, Path("/campaign")).name == "Akritas.md"
 
 
 @pytest.mark.parametrize("empty", [None, "", "   "])
@@ -251,11 +328,20 @@ def test_occupied_archive_slot_refuses(tmp_path):
     assert occupied.read_text(encoding="utf-8") == before
 
 
-def test_unreadable_level_refuses_and_quotes_the_value(tmp_path):
+def test_a_multiclass_sheet_plans_its_archive_at_the_total(tmp_path):
+    """Fighter 9 / Bard 2 is a level 11 character, and files where one is."""
     dest = _sheet(tmp_path / "party" / "Soma.md", "Fighter 9 / Bard 2")
+    plan = plan_archive(dest, "Soma")
+    assert plan.level == 11
+    assert plan.destination == tmp_path / "party" / "old" / "level" / "11" / "Soma.md"
+
+
+def test_unreadable_level_refuses_and_quotes_the_value(tmp_path):
+    """One class carries no level, so the phrase states no total."""
+    dest = _sheet(tmp_path / "party" / "Soma.md", "Fighter 9 / Bard")
     with pytest.raises(DisplacedLevelUnreadable) as exc:
         plan_archive(dest, "Soma")
-    assert exc.value.phrase == "Fighter 9 / Bard 2"
+    assert exc.value.phrase == "Fighter 9 / Bard"
 
 
 def test_absent_level_refuses_with_phrase_none(tmp_path):

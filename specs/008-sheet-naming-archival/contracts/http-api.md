@@ -39,30 +39,41 @@ CLI, and the party router carries one more model field (Constitution VI).
 
 **Owner**: `server/routers/party_routes.py` over `campaignlib.party_config.PartyCharacter`
 
-No route signature changes. Every endpoint below now carries `player` because it is a
-field on the model the routes already pass through:
+This section described `player` as shipped. Feature 009 moved that field to
+`players.yaml` and `party.yaml` now refuses the key, so what crosses this surface is
+`sheet_name` (FR-002c, the 2026-08-22 amendment). The shape of the requirement is
+unchanged, because the reason is unchanged: the routes pass `PartyCharacter` through
+whole.
+
+No route signature changes. Every endpoint below now carries `sheet_name` because it is
+a field on the model the routes already pass through:
 
 | Endpoint | Change |
 |---|---|
-| `GET /characters` | response objects include `player` |
-| `PUT /characters` | accepts and persists `player` for every entry (atomic whole-roster write) |
-| `POST /characters` | accepts `player` |
-| `GET /characters/{name}` | includes `player` |
-| `PUT /characters/{name}` | accepts and persists `player` |
+| `GET /characters` | response objects include `sheet_name` |
+| `PUT /characters` | accepts and persists `sheet_name` for every entry (atomic whole-roster write) |
+| `POST /characters` | accepts `sheet_name` |
+| `GET /characters/{name}` | includes `sheet_name` |
+| `PUT /characters/{name}` | accepts and persists `sheet_name` |
 | `DELETE /characters/{name}` | unchanged |
 
 ### Required behaviour
 
-- **`player` must survive a round-trip.** `PUT` then `GET` must return what was sent.
+- **`sheet_name` must survive a round-trip.** `PUT` then `GET` must return what was sent.
   `save_party_config` hand-builds its YAML dict, so the field is dropped unless named
   there explicitly — the failure mode is a save that returns `200` and persists nothing
   (D9). A route-level round-trip test is the guard.
-- `player` is optional. Omitting it, or sending `null`/`""`, is valid and means "no player
-  recorded" — which the converter reports rather than filling in (FR-009).
+- `sheet_name` is optional. Omitting it or sending `null` is valid and means the PDF
+  prints the character's own name, which is the normal case.
+- **`""` over the API means absent, not invalid.** The editor sends every field it
+  renders, so an untouched input arrives empty; `_blank_is_absent` reads that as no
+  declaration. This is the one place the API is deliberately more forgiving than the
+  YAML loader, which refuses a blank `sheet_name` outright — there, a human typed the
+  key on purpose and an empty value would orphan the entry.
 - `extra="forbid"` still applies: the model must carry the field before any campaign's
   YAML does.
-- `missing_files` reporting is unaffected — `player` is not a path and is not added to
-  `PATH_FIELDS`.
+- `missing_files` reporting is unaffected — `sheet_name` is not a path and is not added
+  to `PATH_FIELDS`.
 
 ---
 
@@ -71,12 +82,12 @@ field on the model the routes already pass through:
 | Component | Change |
 |---|---|
 | `frontend/src/views/setup/DndSheet.vue` | Add a party-config `PathField` (`resolve-base="campaign"`). Add a notice stating which mode the current inputs select — roster mode requires a party config and **no** output path. Send `party_config` in `runParams`. |
-| `frontend/src/components/shared/PartyConfigEditor.vue` | Add `player` to the `PartyChar` interface, the blank-row factory (`{ name: '', sheet: '', player: '', … }`), the load mapping (`player: c.player ?? ''`), and a column in the table. |
+| `frontend/src/components/shared/PartyConfigEditor.vue` | Add `sheet_name` to the `PartyChar` interface, the blank-row factory (`{ name: '', sheet: '', sheet_name: '', … }`), the load mapping (`sheet_name: c.sheet_name ?? ''`), and a labelled text input in the expanded row — not a table column, since it is empty for almost every character. |
 
-**Help text for the `player` field** (both surfaces) must carry D8's constraint: this is
-the **Zoom display name**, not a legal name — `normalize_vtt_speakers` matches speaker
-prefixes exactly, and a near-miss silently drops that character's lines from every
-downstream extraction.
+**Help text for the `sheet_name` field** must say what it is for and what it is not:
+only for a D&D Beyond sheet whose character name is wrong and cannot be fixed at
+source. The name above still names the output file. Left empty — the normal case —
+the PDF is expected to print the character's own name.
 
 **No browser-held state**: the roster is read and written through the API to
 `party.yaml`; the run is a subprocess whose output is a file. Files remain the only

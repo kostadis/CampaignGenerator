@@ -16,6 +16,17 @@ Case-insensitivity is not fuzziness: ``sheet_frontmatter.propose`` already keys
 its party cross-check on ``name.lower()``, and stripping is required because
 ``zalthir.md:5`` has a documented trailing space.
 
+A **declared** alias is not fuzziness and is allowed: a roster entry may carry
+``sheet_name``, the spelling the downloaded PDF prints, and :func:`attribute`
+then matches the sheet against that value instead of ``name``. The match stays
+exact — the difference is that the GM wrote down which two strings are the same
+character, rather than a similarity band guessing it. Everything else still
+comes from ``name``: the filename, the ``players.yaml`` join, the ``party.md``
+heading. Use it when the sheet is *wrong* and the download cannot be corrected;
+when the sheet is *right* and the world simply calls the character something
+else, ``name`` should be the sheet's spelling and the other name belongs in the
+character's prose, where narrators read it.
+
 Every refusal carries the values that disagree and the one-line fix, and
 nothing on disk is touched — ``dnd_sheet`` runs its API call before the first
 filesystem mutation (D7), so a refusal costs tokens, never damage.
@@ -58,6 +69,7 @@ class RosterCharacter(Protocol):
 
     name: str
     sheet: str
+    sheet_name: str | None
 
 
 C = TypeVar("C", bound=RosterCharacter)
@@ -96,21 +108,49 @@ class AttributionError(SheetNamingError):
             )
 
 
+def match_name(character: RosterCharacter) -> str:
+    """The string a sheet must print to be attributed to ``character``.
+
+    ``sheet_name`` when the entry declares one, otherwise ``name``. This is the
+    ONLY place the two diverge — every other use of a character's identity
+    (filename, archive slot, ``players.yaml`` join, ``party.md`` heading) reads
+    ``name``, so declaring an alias cannot leak the download's spelling into
+    anything the GM reads.
+    """
+    return character.sheet_name if character.sheet_name else character.name
+
+
+def _roster_names(roster: list[C]) -> list[str]:
+    """What the roster offered to match against, for a refusal message.
+
+    An entry with an alias is shown as ``Akritas (sheet: Akrita)`` — the name
+    alone would tell the GM the roster does not contain the string the sheet
+    printed, which is exactly what the alias makes untrue.
+    """
+    return sorted(
+        c.name.strip() if match_name(c) == c.name
+        else f"{c.name.strip()} (sheet: {match_name(c).strip()})"
+        for c in roster
+    )
+
+
 def attribute(extracted_name: str | None, characters: Iterable[C]) -> C:
     """The one roster entry whose name matches ``extracted_name``.
 
-    Both sides are stripped and lowercased; anything short of exactly one hit
-    raises :class:`AttributionError`. See the module docstring for why there is
-    no fallback.
+    Matched against :func:`match_name`, so an entry declaring ``sheet_name``
+    is found by the spelling on the sheet while keeping its own name for
+    everything else. Both sides are stripped and lowercased; anything short of
+    exactly one hit raises :class:`AttributionError`. See the module docstring
+    for why there is no fallback beyond what the GM declared.
     """
     roster = list(characters)
-    roster_names = sorted(c.name.strip() for c in roster)
+    roster_names = _roster_names(roster)
 
     key = (extracted_name or "").strip().lower()
     if not key:
         raise AttributionError("", roster_names, 0)
 
-    hits = [c for c in roster if c.name.strip().lower() == key]
+    hits = [c for c in roster if match_name(c).strip().lower() == key]
     if len(hits) != 1:
         raise AttributionError(extracted_name.strip(), roster_names, len(hits))
     return hits[0]
@@ -205,18 +245,20 @@ def check_destination(character: RosterCharacter, base: Path) -> Path:
 
 
 class DisplacedLevelUnreadable(SheetNamingError):
-    """The sheet about to be replaced does not state exactly one level.
+    """The sheet about to be replaced states no level to key the archive by.
 
-    ``phrase`` is what it said (``None`` when it recorded nothing at all), so
-    the refusal can quote the value it could not interpret rather than making
-    the GM go and find it.
+    A multiclass phrase is not this error — :func:`parse_level` totals it. This
+    fires when nothing was recorded, or when one of the classes recorded has no
+    level of its own. ``phrase`` is what it said (``None`` when it recorded
+    nothing at all), so the refusal can quote the value it could not interpret
+    rather than making the GM go and find it.
     """
 
     def __init__(self, sheet: Path, phrase: str | None):
         self.sheet = sheet
         self.phrase = phrase
         super().__init__(
-            f"cannot read a single level from {sheet}"
+            f"cannot read a level from {sheet}"
             + (f": {phrase!r}" if phrase else "")
         )
 
@@ -262,9 +304,12 @@ def plan_archive(destination: Path, char_name: str) -> ArchivePlan | None:
     character. The level is read from the sheet **being displaced**, not the
     incoming one, so the archive reads as "the sheet as it was at level N".
 
+    A multiclass sheet files under its total: ``Fighter 9 / Bard 2`` archives
+    at ``old/level/11/``, the same slot a single-class level 11 would take.
+
     Raises before touching anything: :class:`DisplacedLevelUnreadable` when the
-    old sheet states no level or more than one, :class:`ArchiveSlotOccupied`
-    when that level is already filed.
+    old sheet records no level, or records a class without one;
+    :class:`ArchiveSlotOccupied` when that level is already filed.
     """
     if not destination.exists():
         return None

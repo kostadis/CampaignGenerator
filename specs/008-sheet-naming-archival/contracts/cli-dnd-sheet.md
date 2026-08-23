@@ -67,10 +67,23 @@ Each names the file, the reason, and the fix. Nothing on disk is touched.
 REFUSED Valphine-1120044.pdf: the name on this sheet is not in the roster.
   Sheet says:      "Valphine Sotorra"
   Roster has:      Brewbarry, Soma, Valphine, Vukradin
-  The roster and the sheet disagree. Fix config/party.yaml (or the sheet's own
-  title) so one of them matches exactly — there is no fuzzy matching here on
-  purpose. Nothing was written or moved.
+  The roster and the sheet disagree, and there is no fuzzy matching
+  here on purpose. Three ways out, in order of preference:
+    1. Fix the name at source in D&D Beyond and re-download.
+    2. Rename the character in config/party.yaml to match the sheet.
+    3. If the sheet's spelling is wrong and cannot be corrected, add
+       sheet_name: "Valphine Sotorra" to that character's roster
+       entry — the sheet is then matched on it while the roster's own
+       name still names the file.
+  Nothing was written or moved.
 ```
+
+The three fixes are ordered deliberately. Correcting the download is always better
+than teaching the roster to live with it, and renaming the character is better than
+carrying two spellings — `sheet_name` (FR-002c) is the last resort, for a download
+that is wrong and cannot be corrected. An entry that declares one is listed as
+`Akritas (sheet: Akrita)` on the `Roster has:` line, because printing the name alone
+would tell the GM the roster lacks a string the declaration just made present.
 
 **Ambiguous match (FR-003)**
 
@@ -97,13 +110,17 @@ The rename half is not decoration. Fixing only the roster line is the one path o
 archival is skipped without an error: the destination no longer exists, so `plan_archive`
 returns "nothing to displace" and the level-N sheet is left orphaned instead of filed.
 
-**Unreadable or multiclass level (FR-013)**
+**Unreadable level (FR-013)**
+
+A complete multiclass phrase is not a refusal — `Fighter 9 / Bard 2` archives at
+level 11. This fires when one of the classes has no level of its own.
 
 ```
-REFUSED Soma.pdf: cannot read a single level from the sheet being replaced.
-  docs/party/Soma.md says: "Fighter 9 / Bard 2"
-  The archive is keyed by one level and this sheet records more than one class.
-  Move it by hand, or record a single class & level. Nothing was written or moved.
+REFUSED Soma.pdf: cannot read a level from the sheet being replaced.
+  docs/party/Soma.md says: "Fighter 9 / Bard"
+  The archive is keyed by the character's total level, so every class listed
+  needs its own — fix the "Class & Level" line, or move the sheet by hand.
+  Nothing was written or moved.
 ```
 
 ```

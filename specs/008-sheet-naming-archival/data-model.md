@@ -14,31 +14,45 @@ referenced as D1–D12 live in [research.md](./research.md).
 |---|---|---|---|---|
 | `name` | `str` | yes | — | Canonical character name. **New role**: the attribution key and the output filename stem. |
 | `sheet` | `str` (authored path) | yes | — | Where the character's sheet lives. **New role**: its parent directory is the conversion destination. |
-| `player` | `str \| None` | no | **NEW** | Who plays the character. Authoritative over the downloaded sheet (FR-008). |
+| `sheet_name` | `str \| None` | no | **NEW (2026-08-22 amendment)** | The spelling the *downloaded PDF* prints, for a download that is wrong and cannot be fixed at source. The attribution key and **nothing else** (FR-002c). |
 | `backstory` | `str \| None` | no | — | |
 | `dossier` | `str \| None` | no | — | |
 | `arc_score` | `str \| None` | no | — | |
 | `trackless` | `bool` | no | — | Three-state encoding with `arc_score`; unchanged. |
 
+**`player` is not here any more.** This feature added it; feature 009 moved it to
+`players.yaml` and `party.yaml` now *refuses* the key outright rather than ignoring
+it (`docs/config/players-isolation.md`). FR-008, FR-008a and the D8 Zoom-display-name
+rule left with it, which is also why T048 below cannot be executed as it is written.
+
 **Validation**
 
-- `player` is optional and additive: a roster with no `player` anywhere stays valid and
-  loads unchanged (FR-008a). Because the model is `extra="forbid"`, the field must exist
-  on the model *before* any campaign writes it into YAML.
-- `player` is stored and compared as authored, but **trimmed** before it is written into
-  a sheet — `zalthir.md:5`'s documented trailing space is the precedent.
-- `player` MUST be the **Zoom display name**, not a legal name (D8).
-  `normalize_vtt_speakers` matches speaker prefixes exactly, and a near-miss silently
-  drops that PC's lines. This is help text, not a validator — the system cannot know what
-  Zoom shows.
+- `sheet_name` is optional and additive: a roster declaring none anywhere stays valid
+  and loads unchanged. Because the model is `extra="forbid"`, the field must exist on
+  the model *before* any campaign writes it into YAML.
+- An **empty** `sheet_name` in YAML is refused by `load_party_config`, naming the
+  character. A human who typed the key meant something by it, and a blank declaration
+  would make the entry match nothing at all — worse than not declaring one.
+- The API path is the deliberate exception. The roster editor sends every field it
+  renders, so an untouched input arrives as `""`; the `_blank_is_absent` validator reads
+  that as *no declaration*, not as a mistake to report back to the GM.
+- Declaring one does **not** relax the match. `attribute` still compares exactly (modulo
+  case and surrounding whitespace) — just against `match_name(character)` instead of
+  `name`. The GM *stating* that two spellings are one character is the opposite of a
+  similarity band *inferring* it, which is what FR-002a bans.
+- `sheet_name` reaches attribution and stops there. The output filename, the archive
+  slot, the `players.yaml` join and the `party.md` heading all still read `name`, so a
+  typo in a download can never propagate into the campaign's own documents.
 - Two entries sharing a `name` (case-insensitively) make attribution ambiguous. Not
   rejected at load time — the roster may legitimately be mid-edit — but every conversion
   that resolves to them refuses (FR-003).
 
 **Persistence trap (D9)**: `load_party_config`, `save_party_config` and
 `resolve_party_config` all **hand-build** their output rather than dumping the model.
-`player` must be named in all three or a save appears to succeed and persists nothing —
-the exact defect feature 003 shipped when it added `selection`.
+`sheet_name` must be named in all three or a save appears to succeed and persists
+nothing — the exact defect feature 003 shipped when it added `selection`. (It is named
+in all three: `load_party_config` reads it, `save_party_config` writes it when set, and
+`resolve_party_config` copies it through.)
 
 ---
 
@@ -46,9 +60,11 @@ the exact defect feature 003 shipped when it added `selection`.
 
 **Owner**: `campaignlib/party_config.py` · **Never persisted**
 
-Gains `player: str | None`, carried through verbatim from `PartyCharacter`. It is not a
-path, so `resolve_party_config`'s `_resolve` does not touch it; it is copied like
-`trackless`. `require_files=False` remains the loading mode for this feature — the
+Gains `sheet_name: str | None`, carried through verbatim from `PartyCharacter`. It is
+not a path, so `resolve_party_config`'s `_resolve` does not touch it; it is copied like
+`trackless`. Carrying it is not cosmetic: `dnd_sheet` reads the authored roster today,
+but a *resolved* roster that silently lost the declaration would attribute sheets
+differently from the one on disk. `require_files=False` remains the loading mode for this feature — the
 destination sheet may legitimately not exist yet (first conversion for a character).
 
 ---
