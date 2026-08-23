@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import ast
 import pathlib
+import re
 from pathlib import Path
 
 import pytest
@@ -339,17 +340,43 @@ def test_no_out_of_seam_messages_batches_reference():
 # _selection_args), so no exception remains.
 
 
+# ``--batch`` as a COMPLETE flag token — not as a prefix. A trailing word
+# character or hyphen means this is some other flag that merely starts the
+# same way, and the guard below must not fire on it (013).
+_BARE_BATCH_FLAG = re.compile(r"--batch(?![\w-])")
+
+
 def test_batch_flag_only_built_by_selection_cli_args():
     """No module under server/routers/ may append the literal ``"--batch"``
     or otherwise build the flag itself — every occurrence must originate in
     ``platform_config_service.selection_cli_args``, so a run's command line
     can never disagree with what the resolved selection says (Constitution
-    V/VI)."""
+    V/VI).
+
+    This matches ``--batch`` as a whole token. The check used to be a plain
+    ``"--batch" in text`` substring test, which was imprecise in a way that
+    only showed up once a differently-named flag shared the prefix: feature
+    013's ``--batch-scenes`` / ``--no-batch-scenes`` / ``--batch-max-tokens``
+    all contain ``--batch`` and tripped it.
+
+    Those are a DIFFERENT feature and the rationale above does not reach
+    them. ``--batch`` is the Message Batches API selection, resolved from
+    ``ModelSelection`` — hence the single-seam rule. ``--batch-scenes`` is
+    scene batching, resolved from ``extract.batch_scenes`` plus the active
+    backend, and the contract (013 editor-api.md §3, DM-19) *requires* the
+    router to emit it literally so the streamed command line stays explicit
+    and copyable.
+
+    Do not re-broaden this to a substring test. If a future flag genuinely
+    needs guarding, add it here by name rather than by prefix — a prefix
+    match would push the next author toward renaming a good flag to dodge a
+    test, which is how a guard starts distorting the code it protects.
+    """
     offenders = []
     routers_dir = (REPO_ROOT / "server" / "routers").resolve()
     for py in sorted(routers_dir.glob("*.py")):
         text = py.read_text(encoding="utf-8", errors="ignore")
-        if "--batch" in text:
+        if _BARE_BATCH_FLAG.search(text):
             offenders.append(str(py.relative_to(REPO_ROOT)))
     assert not offenders, (
         f"server/routers/*.py builds '--batch' directly: {offenders} — "

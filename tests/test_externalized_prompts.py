@@ -26,6 +26,8 @@ CASES = [
     ("session_doc.enhance_summary",  "ENHANCE_USER_TEMPLATE",            "enhance_summary_user"),
     ("session_doc.scene_extract",    "SCENE_EXTRACT_SYSTEM_PREFIX",      "scene_extract"),
     ("session_doc.scene_extract",    "SCENE_EXTRACT_USER_TEMPLATE",      "scene_extract_user"),
+    ("session_doc.scene_extract",    "SCENE_EXTRACT_BATCHED_SYSTEM_PREFIX", "scene_extract_batched"),
+    ("session_doc.scene_extract",    "SCENE_EXTRACT_BATCHED_USER_TEMPLATE", "scene_extract_batched_user"),
     ("pipelines.grounding.distill",          "EXTRACT_SYSTEM_BASE",              "distill_extract"),
     ("pipelines.grounding.distill",          "SYNTHESIZE_SYSTEM_BASE",           "distill_synthesize"),
     ("pipelines.grounding.planning",         "EXTRACT_SYSTEM_BASE",              "planning_extract"),

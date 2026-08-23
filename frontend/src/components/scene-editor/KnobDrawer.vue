@@ -21,6 +21,10 @@ const props = defineProps<{
   dgxModel: string
   openrouterModel: string
   extractTokens: number
+  // Per-group output ceiling for batched extraction (013-batched-scene-
+  // extraction T055), forwarded to `scene_extract --batch-max-tokens`.
+  // Independent of `extractTokens`, which stays the per-scene cap.
+  batchTokens: number
   narrateTokens: number
   proseMode: boolean
   reflections: boolean
@@ -54,6 +58,7 @@ const emit = defineEmits<{
   'update:dgxModel': [value: string]
   'update:openrouterModel': [value: string]
   'update:extractTokens': [value: number]
+  'update:batchTokens': [value: number]
   'update:narrateTokens': [value: number]
   'update:proseMode': [value: boolean]
   'update:reflections': [value: boolean]
@@ -226,9 +231,9 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
       <section class="drawer-section">
         <h3>② Extract</h3>
         <div class="field-help muted-block">
-          Batch (set app-wide via the sidebar) and Backend apply here. The Re-Extract button always forwards
-          <code>--force</code> so prior per-scene files are snapshotted to <code>.prev</code> and
-          rewritten.
+          Batch (set app-wide via the sidebar) and Backend apply here. The Re-Extract button's Force
+          checkbox is unchecked by default — it only fills in scenes missing an extraction file. Check
+          it to regenerate every scene, snapshotting prior per-scene files to <code>.prev</code> first.
         </div>
         <div class="field">
           <label class="field-label">Token limit</label>
@@ -240,7 +245,19 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
             step="500"
             @input="emit('update:extractTokens', Number(($event.target as HTMLInputElement).value) || 0)"
           />
-          <div class="field-help">Per-scene output cap forwarded to <code>scene_extract --max-tokens</code>.</div>
+          <div class="field-help">Per-scene mode's output cap, forwarded to <code>scene_extract --max-tokens</code>. Applies one scene at a time — see Batched token limit below for the per-group ceiling batching packs against.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">Batched token limit</label>
+          <input
+            type="number"
+            class="field-input"
+            :value="batchTokens"
+            min="1000"
+            step="500"
+            @input="emit('update:batchTokens', Number(($event.target as HTMLInputElement).value) || 0)"
+          />
+          <div class="field-help">Output cap for a batched run, forwarded to <code>scene_extract --batch-max-tokens</code>. Raise it above a long session's projection to keep the run to a single call. The 1000 floor here is a UI affordance only — nothing server-side enforces a minimum.</div>
         </div>
       </section>
 

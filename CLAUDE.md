@@ -273,7 +273,41 @@ resolves the path per-request.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/007-two-phase-extraction/plan.md` (Two-Phase Extraction Agent — a
+`specs/013-batched-scene-extraction/plan.md` (Batched Scene Extraction — Stage 2
+sends the **full transcript once per scene**. On the metered API that is nearly
+free (`cache_system=True` makes the VTT a cached prefix, so scenes 2..N hit the
+cache); on the subscription it is pure waste — `_blocks_to_text`
+(`campaignlib/api/backends.py:367`) flattens the cache blocks to plain text and
+every scene is a fresh `claude -p` process with a fresh session, so **nothing is
+reused**. Batch submission cannot rescue it either: the capability map requires
+the `anthropic` backend, so the per-scene loop is the subscription's ONLY mode.
+Measured (research D2): 5–8 scenes over a 106–150 KB VTT ⇒ **~125K tokens of
+pure repetition** per 8-scene re-extract. The fix: one exchange carries the
+transcript plus every pending scene, split back apart by
+`<<<CG-SCENE NN BEGIN: name>>>` / `<<<CG-SCENE NN END>>>` sentinels — **by index,
+never by name-matching** (D5), with an unmatched BEGIN as the "response stopped
+here" signal so partial results are kept and the tail is re-requested. Three GM
+rulings: ceiling **32,000** (a second knob, `extract.batch_tokens`; the per-scene
+8,192 is pinned by a test and stays), **one call when the projection fits, fewest
+fitting groups when it does not**, and the editor **pre-selects** batching on the
+subscription (visible + overridable). Two counter-intuitive findings worth not
+re-deriving: (1) the projection uses the **median** multiplier (body_chars × 4.2,
+r = 0.784), *not* a conservative one — over- and under-estimating each cost one
+extra transcript transmission, so the central estimate minimises expected cost,
+and ×6.5 demonstrably mis-splits a session that fitted (D4); (2) the model
+generates only the `## Verbatim moments` body — front-matter/heading/summary are
+assembled locally by `format_scene_output` — so real generated output is **~23K
+tokens for 8 scenes, not ~29K** (D3). **The trap** (D6/FR-008a): skip-if-exists
+MUST filter before the request is built. Sending all scenes and discarding the
+already-extracted ones writes correct files while spending the full projection on
+a 5/8-done session — exactly the cost this feature removes. Ships only once the
+zero-token quote verifier confirms the **exact** rate holds — `near` is "an edit
+happened", never "safe" (D10). `research.md` D1–D12 holds the survey and the
+15-scene measurement; extend it rather than re-deriving.)
+Direct predecessor: `specs/012-scene-extract-optional-force/plan.md` — same
+button, and the source of the Force semantics this feature must preserve.
+
+Also in flight: `specs/007-two-phase-extraction/plan.md` (Two-Phase Extraction Agent — a
 **deterministic, zero-token quote verifier** over the Session Doc Editor's
 Stage 1 `session-summary.md` and Stage 2 `scene_extractions_new/`, plus a
 **stage-scoped** orchestrator (`sd_agent --stage {summary,scenes}`) that runs
@@ -322,7 +356,7 @@ value; `SelectionPanel.vue`), `specs/003-model-selection-resolution/` (the
 `resolve_selection` seam this service's `selection` field plugs into),
 `specs/002-ensemble-run-observability/plan.md` (run streaming + abort).)
 
-Also in flight (unrelated to the above chain): `specs/012-scene-extract-optional-force/plan.md`
+The current plan's direct predecessor, in full: `specs/012-scene-extract-optional-force/plan.md`
 (Optional Force for Scene Re-Extraction — Stage 2's "Re-Extract Quotes"
 button hardcoded `?force=1` on every click
 (`SessionDocEditor.vue:473`), so the button always regenerated every scene

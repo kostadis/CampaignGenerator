@@ -136,7 +136,7 @@ def test_activate_profile_mirrors_knobs_into_resolved_config(client):
         "paths", "extract", "narrate", "backends",
         "session_name", "profiles", "active_profile", "model",
         "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
-        "genre",
+        "genre", "batch_scenes_effective",
     }
     assert body["narrate"]["tokens"] == 9000
     assert body["narrate"]["prose_mode"] is True

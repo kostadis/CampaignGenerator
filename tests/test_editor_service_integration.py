@@ -93,7 +93,7 @@ class TestGetEditorConfig:
             "paths", "extract", "narrate", "backends",
             "session_name", "profiles", "active_profile", "model",
             "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
-            "genre",
+            "genre", "batch_scenes_effective",
         }
         # Defaults: strict grouped schema, backends keyed by name (incl.
         # the hyphenated claude-code alias).
@@ -109,6 +109,47 @@ class TestGetEditorConfig:
             "preview": "", "sha256": "", "error": None,
         }
         assert "genre" not in body["narrate"]
+        # 013/DM-20 — the resolved batched default the editor pre-selects
+        # from. Top-level, never inside "extract" (that key is the
+        # persisted extra="forbid" ExtractKnobs).
+        assert body["batch_scenes_effective"] is False  # fresh campaign: anthropic
+        assert "batch_scenes_effective" not in body["extract"]
+
+    def test_batch_scenes_effective_is_actually_computed_not_just_declared(
+        self, fresh_campaign
+    ):
+        """The seam that shipped broken: service computes it, dataclass
+        carries it, UI reads it — and `_serialize_resolved` never sent it.
+
+        Every layer's own tests passed. The route tests set the field with
+        `dataclasses.replace`, so they never exercised the computation; the
+        key-set test above pins what IS serialized, not what SHOULD be, so a
+        field added to the dataclass and forgotten here stayed consistent.
+        The only thing that catches it is asserting the VALUE the endpoint
+        returns for a known backend.
+
+        Symptom if it regresses: the checkbox silently never pre-selects on
+        the subscription backend, and nothing anywhere reports it.
+        """
+        client = TestClient(_make_app(fresh_campaign))
+
+        # metered backend, no pin -> False
+        assert client.get("/api/editor/config").json()["batch_scenes_effective"] is False
+
+        # subscription backend, no pin -> True (DM-18 step 3)
+        client.put("/api/editor/config", json={"backends": {"active": "claude-code"}})
+        body = client.get("/api/editor/config").json()
+        assert body["backends"]["active"] == "claude-code"
+        assert body["extract"]["batch_scenes"] is None, "must still be unpinned"
+        assert body["batch_scenes_effective"] is True
+
+        # an explicit pin beats the backend default, both ways (DM-18 step 2)
+        client.put("/api/editor/config", json={"extract": {"batch_scenes": False}})
+        assert client.get("/api/editor/config").json()["batch_scenes_effective"] is False
+
+        client.put("/api/editor/config", json={"backends": {"active": "anthropic"}})
+        client.put("/api/editor/config", json={"extract": {"batch_scenes": True}})
+        assert client.get("/api/editor/config").json()["batch_scenes_effective"] is True
 
     def test_loads_pre_existing_session_doc_yaml_with_legacy_scrub_block(
         self, fresh_campaign

@@ -327,3 +327,198 @@ def test_scenes_stage_omits_party_config_when_not_given(session):
     steps, _notes = build_steps(_args(stage="scenes", session_dir=session))
     generate = next(s for s in steps if s.key == "generate")
     assert "--party-config" not in generate.cmd
+
+
+# ── --batch-scenes forwarding (013-batched-scene-extraction) ─────────────────
+#
+# Before this, `sd_agent --stage scenes` could not reach batched extraction at
+# all: `_selection_args` forwards an enumerated five flags and --batch-scenes
+# was not among them, so a subscription run silently sent the transcript once
+# per scene — the exact 8x cost the feature exists to remove — with nothing in
+# the output saying so.
+
+def _scene_cmd(session, **over):
+    steps, _ = build_steps(_args(session_dir=session, stage="scenes", **over))
+    gen = [s for s in steps if s.key == "generate"]
+    assert gen, "scenes stage must have a generate step"
+    return gen[0].cmd
+
+
+def test_scenes_stage_defaults_batched_on_for_the_subscription_backend(session):
+    """No prompt caching there, so per-scene re-sends the whole transcript."""
+    cmd = _scene_cmd(session, backend="claude-code")
+    assert "--batch-scenes" in cmd
+    assert "--no-batch-scenes" not in cmd
+
+
+def test_scenes_stage_defaults_batched_off_for_the_metered_backend(session):
+    """anthropic caches the repeated transcript; batching buys nothing there."""
+    cmd = _scene_cmd(session, backend="anthropic")
+    assert "--no-batch-scenes" in cmd
+    assert "--batch-scenes" not in cmd
+
+
+def test_explicit_batch_scenes_overrides_the_backend_default_both_ways(session):
+    on_metered = _scene_cmd(session, backend="anthropic", batch_scenes=True)
+    assert "--batch-scenes" in on_metered
+
+    off_subscription = _scene_cmd(session, backend="claude-code",
+                                  no_batch_scenes=True)
+    assert "--no-batch-scenes" in off_subscription
+    assert "--batch-scenes" not in off_subscription
+
+
+def test_the_flag_is_always_explicit_never_omitted(session):
+    """sd_agent prints the resolved command; an omitted flag would hide the
+    choice it made. Every scenes run states which mode it picked."""
+    for backend in ("claude-code", "anthropic", None):
+        cmd = _scene_cmd(session, backend=backend) if backend else _scene_cmd(session)
+        assert ("--batch-scenes" in cmd) or ("--no-batch-scenes" in cmd), backend
+
+
+def test_batch_scenes_never_reaches_the_summary_stage(session):
+    """enhance_summary has no such flag — forwarding it there is an argparse
+    error, which is why this lives outside _selection_args."""
+    steps, _ = build_steps(_args(session_dir=session, stage="summary",
+                                 backend="claude-code"))
+    joined = " ".join(" ".join(s.cmd) for s in steps)
+    assert "batch-scenes" not in joined
+
+
+def test_batch_scenes_is_not_confused_with_batch(session):
+    """--batch (Message Batches) and --batch-scenes are separate features."""
+    cmd = _scene_cmd(session, backend="claude-code")
+    assert "--batch-scenes" in cmd
+    assert "--batch" not in cmd
+
+
+def test_inferred_batch_scenes_stands_down_for_an_explicit_batch(session):
+    """An INFERRED flag must never fight a flag the user actually typed.
+
+    `--batch` (Message Batches) and `--batch-scenes` are mutually exclusive
+    in scene_extract. Before this, `sd_agent --stage scenes --backend
+    claude-code --batch` inferred --batch-scenes from the backend, built both,
+    and died with "--batch-scenes cannot be combined with --batch" — naming a
+    flag the user never wrote, for a choice they never made. The user's
+    explicit --batch wins; the inference stands down.
+    """
+    cmd = _scene_cmd(session, backend="claude-code", batch=True)
+    assert "--batch" in cmd
+    assert "--no-batch-scenes" in cmd
+    assert "--batch-scenes" not in cmd
+
+
+def test_an_explicit_pair_still_conflicts_and_is_diagnosed_by_scene_extract(session):
+    """Both flags typed by hand IS a real conflict — pass it through.
+
+    scene_extract's own refusal names both flags correctly because the user
+    wrote both. Duplicating that guard in sd_agent would give two places to
+    keep in step, so this asserts the pass-through rather than a second
+    refusal.
+    """
+    cmd = _scene_cmd(session, backend="claude-code", batch=True, batch_scenes=True)
+    assert "--batch" in cmd
+    assert "--batch-scenes" in cmd
+
+
+def test_batch_does_not_suppress_an_explicit_no_batch_scenes(session):
+    """--batch plus an explicit opt-out is not a conflict; both are honoured."""
+    cmd = _scene_cmd(session, backend="claude-code", batch=True,
+                     no_batch_scenes=True)
+    assert "--batch" in cmd
+    assert "--no-batch-scenes" in cmd
+
+
+# ── CG_BACKEND reaches the --batch-scenes inference ──────────────────────────
+#
+# `client_from_args` resolves the backend as "an explicit non-anthropic
+# --backend, else CG_BACKEND, else anthropic", and every subprocess this
+# module spawns inherits the env var. An inference that reads only
+# `args.backend` therefore disagrees with the client the child builds — and
+# this particular inference decides whether the child re-sends the whole
+# transcript once per scene.
+
+def test_cg_backend_env_turns_batch_scenes_on(session, monkeypatch):
+    monkeypatch.setenv("CG_BACKEND", "claude-code")
+    cmd = _scene_cmd(session)  # --backend defaults to anthropic
+    assert "--batch-scenes" in cmd
+    assert "--no-batch-scenes" not in cmd
+
+
+def test_cg_backend_env_for_another_backend_leaves_batch_scenes_off(session, monkeypatch):
+    monkeypatch.setenv("CG_BACKEND", "dgx")
+    assert "--no-batch-scenes" in _scene_cmd(session)
+
+
+def test_explicit_backend_beats_the_env_var(session, monkeypatch):
+    """Mirrors client_from_args: an explicit non-anthropic --backend wins."""
+    monkeypatch.setenv("CG_BACKEND", "claude-code")
+    assert "--no-batch-scenes" in _scene_cmd(session, backend="dgx")
+
+
+def test_env_var_inference_still_stands_down_for_an_explicit_batch(session, monkeypatch):
+    """The inferred flag must never fight --batch, however it was inferred."""
+    monkeypatch.setenv("CG_BACKEND", "claude-code")
+    cmd = _scene_cmd(session, batch=True)
+    assert "--batch" in cmd
+    assert "--no-batch-scenes" in cmd
+
+
+def test_no_env_var_leaves_the_backend_default_alone(session, monkeypatch):
+    monkeypatch.delenv("CG_BACKEND", raising=False)
+    assert "--no-batch-scenes" in _scene_cmd(session)
+    assert "--batch-scenes" in _scene_cmd(session, backend="claude-code")
+
+
+# ── A partial generation is checked, not discarded ───────────────────────────
+#
+# scene_extract exits 3 (some scenes not written) or 4 (a group failed
+# reconciliation) with everything that DID succeed on disk. Those are
+# resumable partials, so the checks must still run over what landed.
+
+def _run_scenes_in_process(session, monkeypatch, generate_rc, verify_rc=0):
+    """Drive sd_agent.main() with every subprocess faked, and record the calls."""
+    seen: list[list[str]] = []
+
+    def fake_run(cmd, *a, **kw):
+        seen.append(cmd)
+        rc = generate_rc if any("scene_extract" in str(c) for c in cmd) else verify_rc
+        return subprocess.CompletedProcess(cmd, rc)
+
+    monkeypatch.setattr(sd_agent.subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", [
+        "sd_agent", "--stage", "scenes", "--session-dir", str(session),
+    ])
+    rc = sd_agent.main()
+    return rc, seen
+
+
+@pytest.mark.parametrize("partial_rc", [3, 4])
+def test_partial_generation_still_runs_the_checks(session, monkeypatch, capsys,
+                                                  partial_rc):
+    rc, seen = _run_scenes_in_process(session, monkeypatch, generate_rc=partial_rc)
+    ran = [" ".join(str(c) for c in cmd) for cmd in seen]
+    assert any("scene_extract" in c for c in ran)
+    assert any("sd_verify_quotes" in c for c in ran), \
+        "a resumable partial leaves written scenes on disk — they must be verified"
+    out = capsys.readouterr()
+    assert "nothing to check" not in out.err
+    assert "PARTIAL" in out.err or "PARTIAL" in out.out
+    assert rc == 2, "a partial stage is not a finished stage"
+
+
+@pytest.mark.parametrize("fatal_rc", [1, 2])
+def test_a_real_generation_failure_still_stops(session, monkeypatch, capsys, fatal_rc):
+    """Unchanged: no artifact means there is genuinely nothing to check."""
+    rc, seen = _run_scenes_in_process(session, monkeypatch, generate_rc=fatal_rc)
+    ran = [" ".join(str(c) for c in cmd) for cmd in seen]
+    assert not any("sd_verify_quotes" in c for c in ran)
+    assert "nothing to check" in capsys.readouterr().err
+    assert rc == 2
+
+
+def test_a_clean_generation_is_not_reported_as_partial(session, monkeypatch, capsys):
+    rc, _ = _run_scenes_in_process(session, monkeypatch, generate_rc=0)
+    out = capsys.readouterr()
+    assert "PARTIAL" not in out.out and "PARTIAL" not in out.err
+    assert rc == 0

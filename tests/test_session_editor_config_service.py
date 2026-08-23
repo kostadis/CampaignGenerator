@@ -145,6 +145,75 @@ def test_update_config_unknown_extract_field_raises_400(tmp_path):
     assert exc.value.status_code == 400
 
 
+# ── batch knobs (013-batched-scene-extraction) ──────────────────────────
+
+
+def test_batch_knobs_default_on_fresh_service(tmp_path):
+    # batch_scenes defaults to None ("not pinned — follow the backend
+    # default"); batch_tokens defaults to 32000, the batched ceiling.
+    svc = _service(tmp_path)
+    cfg = svc.get_config()
+    assert cfg.extract.batch_scenes is None
+    assert cfg.extract.batch_tokens == 32000
+
+
+def test_update_config_round_trips_and_persists_batch_knobs(tmp_path):
+    svc = _service(tmp_path)
+    updated = svc.update_config(
+        {"extract": {"batch_scenes": True, "batch_tokens": 40000}}
+    )
+
+    assert updated.extract.batch_scenes is True
+    assert updated.extract.batch_tokens == 40000
+
+    assert svc.session_doc_path.exists()
+    on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+    assert on_disk["extract"]["batch_scenes"] is True
+    assert on_disk["extract"]["batch_tokens"] == 40000
+
+    # A fresh read through the service sees the persisted value.
+    reread = svc.get_config()
+    assert reread.extract.batch_scenes is True
+    assert reread.extract.batch_tokens == 40000
+
+
+def test_batch_tokens_and_tokens_are_independent(tmp_path):
+    # DM-17: changing one never changes the other.
+    svc = _service(tmp_path)
+
+    svc.update_config({"extract": {"batch_tokens": 50000}})
+    cfg = svc.get_config()
+    assert cfg.extract.batch_tokens == 50000
+    assert cfg.extract.tokens == 8192
+
+    svc.update_config({"extract": {"tokens": 12000}})
+    cfg = svc.get_config()
+    assert cfg.extract.tokens == 12000
+    assert cfg.extract.batch_tokens == 50000
+
+
+def test_batch_scenes_tri_state_round_trips_all_three_values(tmp_path):
+    # A persisted False must read back as False, not collapse to None —
+    # that distinction is the entire reason batch_scenes is bool | None
+    # rather than a plain bool.
+    svc = _service(tmp_path)
+
+    svc.update_config({"extract": {"batch_scenes": True}})
+    assert svc.get_config().extract.batch_scenes is True
+    on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+    assert on_disk["extract"]["batch_scenes"] is True
+
+    svc.update_config({"extract": {"batch_scenes": False}})
+    assert svc.get_config().extract.batch_scenes is False
+    on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+    assert on_disk["extract"]["batch_scenes"] is False
+
+    svc.update_config({"extract": {"batch_scenes": None}})
+    assert svc.get_config().extract.batch_scenes is None
+    on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+    assert on_disk["extract"]["batch_scenes"] is None
+
+
 # ── per-backend model memory (O1) ───────────────────────────────────────
 
 

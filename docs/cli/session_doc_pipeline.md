@@ -24,6 +24,183 @@ session_doc.md
 
 The "LLM extracts → human reviews and imposes structure → LLM renders inside that structure" rule (`~/.claude/CLAUDE.md`) drives the boundaries: each stage is the LLM doing one thing the human can verify before the next call inherits its output. Per-scene narration files mean a single bad voice take only requires re-running that scene.
 
+## Batched scene extraction — `scene_extract --batch-scenes`
+
+### What it is
+
+Stage 2 (`scene_extract`) normally runs a loop: the full VTT is cached once as
+a system-prompt prefix, then the script issues **one call per scene**, each
+carrying that scene's name and gm-assist bullets. `--batch-scenes` replaces
+the loop with one exchange — the transcript is assembled once and every
+pending scene is requested together — or, when one exchange would not fit
+the output ceiling, the fewest exchanges that will (see "The grouping rule"
+below). Either way the on-disk result is unchanged: one
+`scene_extractions/NN_<slug>.md` per scene, same front-matter, same `##
+Scene summary` / `## Verbatim moments` structure as the per-scene loop
+produces today.
+
+### Why the subscription backend needs it and the metered one does not
+
+On the `anthropic` backend, the repeated transcript is already close to
+free after the first scene — it is marked as a cached prefix, so scenes
+2..N read it at cache-hit rates, and `--batch` (Message Batches) compounds
+that with a further 50% discount. None of that applies on `claude-code`
+(the subscription path): each scene is a separate `claude -p` subprocess
+with a fresh session, the cache markers are flattened to plain text on the
+way in, and Message Batches submission isn't available there at all. So on
+the subscription, the per-scene loop pays for the full transcript, from
+scratch, once per scene.
+
+Measured on the calibration session (`~/Phandalin/Phandalin/summaries/20260811`,
+8 scenes; research D14): the per-scene loop transmitted **~158,700** input
+tokens across 8 calls; `--batch-scenes` transmitted **~19,800** across 1 —
+an **87.5%** reduction in tokens sent over the wire for the same extraction.
+That percentage is the measured part — the run report counts transmissions, and
+the payload is identical across them. The absolute token figures are estimates:
+the subscription backend reports no usage, so they are character counts over the
+transcript's ~7.4 chars/token.
+
+### `--batch` and `--batch-scenes` are different features, and are refused together
+
+| | `--batch` | `--batch-scenes` |
+|---|---|---|
+| What | Submits N per-scene requests as one Message Batches job | Collapses N scenes into one exchange (or a few) |
+| Calls | N requests, one job | 1, or the fewest groups that fit |
+| Backend | `anthropic` only | Any — the point is the subscription |
+| Buys | 50% list-price discount | Removes transcript repetition |
+
+Passing both is **refused, not silently composed** — `scene_extract` exits 1
+before any input is even read. The combination looks appealing (why not
+both discounts?) but buys nothing: `--batch` only runs on the metered
+backend, and on that backend prompt caching already makes the repeated
+transcript cheap. The saving `--batch-scenes` exists for doesn't exist on
+the path `--batch` runs on, so implementing the composition would spend
+engineering effort making a no-op flag combination "work" instead of just
+saying so. See `specs/013-batched-scene-extraction/contracts/cli-surface.md`
+§1 for the full flag reference.
+
+**In the web UI you never see that refusal.** The two settings arrive from
+different places there — Message Batches from the backend profile, batched
+scenes from the checkbox / config pin / backend default — so both can be on
+without anyone having asked for the pair. The re-extract route resolves it
+rather than failing: Message Batches wins, batched scenes stand down, and the
+run output opens with a note saying so and naming the setting to change. Turn
+Message Batches off in the backend profile if you want batched scenes instead.
+
+### Two ceilings, not one
+
+`--max-tokens` (default `8192`) is the **per-scene** output budget for the
+per-scene loop — unchanged, and it keeps governing that loop whether or not
+`--batch-scenes` is set. `--batch-max-tokens` (default `32000`) is a
+different knob: the **per-group** ceiling a batched run packs scenes
+against. Raising `--max-tokens` does nothing for a batched run, and raising
+`--batch-max-tokens` does nothing for the per-scene loop — they are not
+interchangeable, and the CLI accepts `--batch-max-tokens` even without
+`--batch-scenes` (it's simply inert there, with a note).
+
+### The grouping rule
+
+A batched run projects each pending scene's output size from its
+gm-assist summary-bullet size, then packs scenes into the fewest
+contiguous groups whose projected total fits under `--batch-max-tokens`.
+One call when the whole request fits; the fewest calls that fit otherwise.
+
+Already-extracted scenes are filtered out **before** projection and
+grouping — not sent and discarded afterward — so a partial session
+projects and requests only what's actually missing. A session with 5 of 8
+scenes already on disk projects and groups over the remaining 3, not the
+full 8; with every scene already extracted and `--force` not set, the run
+makes no call at all.
+
+The projection is an estimate made before any response exists, and it only
+has to decide *how many groups to try* — it doesn't have to be exact.
+Measured against the calibration session: projected **23,336** output
+tokens against **23,684** actually produced — **−1.5%** (research D14).
+
+### Exit code 3 — the partial state
+
+If a response ends before covering every requested scene — the model runs
+out of room, the process dies, a group's response is truncated mid-scene —
+the scenes that arrived complete are written, and the run exits **3**,
+naming every scene that didn't come back. This is a **resumable state, not
+a failure**: the files that were written are valid, and re-running without
+`--force` requests only the still-missing scenes.
+
+Exit **4** is a different failure: a group's response could not be
+reconciled against the scenes that were requested of it (a mismatched
+scene, an unparseable split). **Nothing from that group** is written — but
+other groups in the same run are unaffected, and any scenes they wrote
+stay on disk. See `contracts/cli-surface.md` §4 for the full exit-code
+table.
+
+Either way the run leaves a log under `<output-dir>/logs/`, the same as a
+per-scene run does, and it is written *before* the exit — so the partial runs
+worth investigating are not the ones that lose their record. Alongside the
+usual sections it carries the batched specifics: the ceiling, the group count,
+how many times the transcript was sent, which scenes came back empty, which
+were not extracted, and any group that failed reconciliation. `--no-log`
+suppresses it.
+
+### Fidelity — measured, not assumed
+
+Batching changes what the model sees when it writes a quote: instead of
+one scene's bullets with a full output budget to itself, it sees every
+scene boundary in the group at once and rations one budget across all of
+them. That's exactly the condition under which a quote could get
+paraphrased or dropped, so fidelity was measured rather than assumed to
+hold — the same session, extracted both ways, checked with the existing
+deterministic quote verifier (`sd_verify_quotes`).
+
+Final measurement (research D14, after two prompt fixes — see that section
+for what regressed and was corrected along the way): quotes verified exact
+went **937 → 948**, **100% exact-verbatim in both runs** — batching did not
+trade quote accuracy for fewer transmissions. Extracted moments went
+**654 → 835**. The worst single scene's moment count changed by **−17%**,
+inside the −20% bound the gate was measured against. Read
+`specs/013-batched-scene-extraction/research.md` D14 for the method, the
+two intermediate failures the gate caught and how they were fixed, and the
+one pre-existing (non-batching) defect it surfaced in the per-scene path.
+
+### `sd_agent --stage scenes`
+
+The orchestrator forwards the mode too, and picks it from the backend when you
+do not say:
+
+```bash
+sd_agent --stage scenes --session-dir DIR --backend claude-code    # batched
+sd_agent --stage scenes --session-dir DIR --backend anthropic      # per-scene
+sd_agent --stage scenes --session-dir DIR --backend claude-code --no-batch-scenes
+```
+
+`sd_agent` normally forwards an enumerated flag list rather than inferring
+anything — implicit forwarding once dropped `--similarity` silently for a month
+(#197). This flag is the one exception, and it is safe only because `sd_agent`
+prints every resolved command before running it, so the mode it chose is
+visible in the output rather than hidden in a subprocess. The flag is always
+rendered explicitly, never omitted.
+
+It reaches the `scene_extract` step only. `enhance_summary` has no such flag,
+so `--stage summary` never sees it.
+
+`CG_BACKEND` counts as much as `--backend` for this choice, because the child
+process resolves its own client that way — `CG_BACKEND=claude-code sd_agent
+--stage scenes` batches, without `--backend` being typed at all. An explicit
+non-anthropic `--backend` still wins over the variable, and an explicit
+`--batch` still makes the inference stand down.
+
+A partial generation does not end the stage. `scene_extract` exits **3** or
+**4** with everything that succeeded already on disk, so `sd_agent` says the
+generation was PARTIAL, runs the quote verifier over the scenes that landed,
+and returns `2`. Re-run the stage (without `--force`) to request the rest.
+
+### Turning it on
+
+The CLI default is off — an unadorned `scene_extract` invocation behaves
+exactly as it does today. The Session Doc Editor's Re-Extract Quotes
+control exposes batched mode as its own toggle, pre-selected when the
+resolved backend is the subscription and left off on the metered API,
+always overridable by the GM before the run.
+
 ## Quote verification — `sd_verify_quotes`
 
 Stages 1 and 2 both instruct the model to quote dialogue verbatim. `sd_verify_quotes` is what checks that it did. It is **deterministic and free** — a quote is a span of the VTT or it is not, so no model is called and no token is spent.

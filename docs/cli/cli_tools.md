@@ -328,13 +328,46 @@ scene_extract session.vtt \
     --output-dir scene_extractions/ \
     [--dossier-dir docs/npcs/]      # rewrites NPC aliases to canonical names
 
-# Batch mode — N scenes submitted as one batch; cache hits compound
+# Batch mode — N scenes submitted as one Message Batches job; cache hits compound
 scene_extract ... --batch                # block + poll
 scene_extract ... --batch --submit-only  # detach; sidecar in <output-dir>/.batch.json
 scene_extract ... --batch --collect      # retrieve from sidecar
+
+# Batched scene extraction — one exchange for all pending scenes, instead
+# of one call per scene (013). For the subscription backend, not the
+# metered one — see docs/cli/session_doc_pipeline.md § Batched scene
+# extraction for why, and the measured 87.5% reduction in transmitted
+# tokens.
+scene_extract ... --batch-scenes                          # default ceiling: 32,000 tok/group
+scene_extract ... --batch-scenes --batch-max-tokens 48000  # raise the per-group ceiling
+scene_extract ... --no-batch-scenes                        # explicitly force the per-scene loop
 ```
 
 Default model: `claude-sonnet-4-6`.
+
+| Flag | Default | Description |
+|---|---|---|
+| `--batch-scenes` | off | Send every pending scene in one exchange, grouped against `--batch-max-tokens` if the projected output would exceed it, instead of one call per scene. Shares its `dest` with `--no-batch-scenes` so a caller can always render an explicit flag either way. |
+| `--no-batch-scenes` | — | Explicitly force the per-scene loop, overriding a caller-supplied default. |
+| `--batch-max-tokens` | `32000` | Output ceiling a `--batch-scenes` run packs scene groups against. A **per-group** ceiling, not a per-scene one — it does not touch `--max-tokens` (`8192`), which keeps governing the per-scene loop only, with or without `--batch-scenes`. Accepted but inert without `--batch-scenes`. |
+
+**`--batch` and `--batch-scenes` are different features and are refused
+together** (`scene_extract` exits 1 before reading any input if both are
+set):
+
+| | `--batch` | `--batch-scenes` |
+|---|---|---|
+| What | Submits N per-scene requests as one Message Batches job | Collapses N scenes into one exchange |
+| Calls | N requests, one job | 1 (or a few) |
+| Backend | `anthropic` only | Any; the point is the subscription |
+| Buys | 50% list discount | Removes transcript repetition |
+
+`--batch` only works on the metered backend, where the repeated transcript
+is already cached — the saving `--batch-scenes` exists for does not exist
+on that path, so the two aren't alternatives worth composing. Full detail:
+[`docs/cli/session_doc_pipeline.md`](session_doc_pipeline.md) § Batched
+scene extraction and
+`specs/013-batched-scene-extraction/contracts/cli-surface.md`.
 
 ### sd_consistency / sd_plan / sd_narrate
 
