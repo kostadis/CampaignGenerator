@@ -569,7 +569,7 @@ holds the model's own short title, never the words "scene tag".
 | quotes, all `verified` | 937 | **948** | +1.2% |
 | moments | 654 | **835** | +28% |
 | worst per-scene moment Δ | — | −17% (scene 07) | within −20% |
-| inferred-character labels | 195 (**30%**) | 34 (**4%**) | **7× better** |
+| PC-name substitutions | 92 (**15%**) | **0 (0%)** | **eliminated** |
 | `scene tag` placeholder leak | 0 | **0** | fixed |
 | wall-clock | 415.0s | 457.4s | +10% |
 
@@ -590,17 +590,23 @@ disbelieve it on a bad one.
 
 ### Residual: a PRE-EXISTING defect in the per-scene path (not this feature's)
 
-The baseline's speaker labels are **30% inferred character names** — `Vukradin`
-30, `Brewbarry` 23, `Soma` 22, `Valphine` 9, `Boney` 7 — none of which appear as
-a speaker label anywhere in the tape (the VTT carries only `Kostadis Roussos`,
-`Stéphane Bourdeaud`, `David Mendenhall`, `Wade Brown`, `Gary Young`).
+Of the baseline's 603 speaker headers, **92 (15%) substitute a player character's
+name for the participant who spoke** — `Vukradin` 30, `Brewbarry` 23, `Soma` 22,
+`Valphine` 9, plus 8 composites. None appears as a speaker label anywhere in the
+tape, which carries only `Kostadis Roussos`, `Stéphane Bourdeaud`,
+`David Mendenhall`, `Wade Brown`, `Gary Young`.
+
+**NPC labels are NOT part of this defect.** `Boney` (7) and `Perrin` (4) are the
+GM voicing an NPC, which the prompt explicitly permits ("Unnamed NPCs → keep as-is").
+An earlier count in this file conflated the two and reported 30%; 15% is the
+PC-substitution rate and is the number that matters. Batched m3 has **0**.
 
 `config/agents/scene_extract.md` has no equivalent of the "THE LABEL COMES FROM
 THE TAPE" rule that `scene_extract_batched.md` now carries. Batching did not
 create this; it magnified it to 68% where it became visible, and fixing the
-batched prompt drove it to 4% — better than the path that ships today.
+batched prompt drove it to **zero** — against 15% on the path that ships today.
 
 **This is out of scope for 013 and is deliberately NOT fixed here** (changing
-`scene_extract.md` would invalidate the frozen baseline mid-gate). It should be
-filed on its own: the per-scene prompt needs the same rule, and the fix wants
-its own before/after measurement.
+`scene_extract.md` would invalidate the frozen baseline mid-gate). Filed as
+**#330** — the per-scene prompt needs the same rule, and the fix wants its own
+before/after measurement against this same corpus.
