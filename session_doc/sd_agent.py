@@ -142,7 +142,20 @@ def _batch_scenes_args(args) -> list[str]:
     subprocess.
     """
     if args.batch_scenes is not None:
+        # Stated outright. If they ALSO passed --batch, that is a real
+        # conflict between two flags they typed, and scene_extract's own
+        # refusal names both correctly. Pass it through rather than
+        # duplicating the guard here.
         return ["--batch-scenes" if args.batch_scenes else "--no-batch-scenes"]
+    if args.batch:
+        # NEVER let an INFERRED flag fight a flag the user actually typed.
+        # `--batch` (Message Batches) and `--batch-scenes` are mutually
+        # exclusive in scene_extract. Inferring the second from the backend
+        # would make `sd_agent --stage scenes --backend claude-code --batch`
+        # die with "--batch-scenes cannot be combined with --batch" — naming
+        # a flag the user never wrote, for a choice they never made.
+        # Their explicit --batch wins; the inference stands down.
+        return ["--no-batch-scenes"]
     return ["--batch-scenes"] if args.backend == "claude-code" else ["--no-batch-scenes"]
 
 

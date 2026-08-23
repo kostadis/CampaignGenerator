@@ -390,3 +390,40 @@ def test_batch_scenes_is_not_confused_with_batch(session):
     cmd = _scene_cmd(session, backend="claude-code")
     assert "--batch-scenes" in cmd
     assert "--batch" not in cmd
+
+
+def test_inferred_batch_scenes_stands_down_for_an_explicit_batch(session):
+    """An INFERRED flag must never fight a flag the user actually typed.
+
+    `--batch` (Message Batches) and `--batch-scenes` are mutually exclusive
+    in scene_extract. Before this, `sd_agent --stage scenes --backend
+    claude-code --batch` inferred --batch-scenes from the backend, built both,
+    and died with "--batch-scenes cannot be combined with --batch" — naming a
+    flag the user never wrote, for a choice they never made. The user's
+    explicit --batch wins; the inference stands down.
+    """
+    cmd = _scene_cmd(session, backend="claude-code", batch=True)
+    assert "--batch" in cmd
+    assert "--no-batch-scenes" in cmd
+    assert "--batch-scenes" not in cmd
+
+
+def test_an_explicit_pair_still_conflicts_and_is_diagnosed_by_scene_extract(session):
+    """Both flags typed by hand IS a real conflict — pass it through.
+
+    scene_extract's own refusal names both flags correctly because the user
+    wrote both. Duplicating that guard in sd_agent would give two places to
+    keep in step, so this asserts the pass-through rather than a second
+    refusal.
+    """
+    cmd = _scene_cmd(session, backend="claude-code", batch=True, batch_scenes=True)
+    assert "--batch" in cmd
+    assert "--batch-scenes" in cmd
+
+
+def test_batch_does_not_suppress_an_explicit_no_batch_scenes(session):
+    """--batch plus an explicit opt-out is not a conflict; both are honoured."""
+    cmd = _scene_cmd(session, backend="claude-code", batch=True,
+                     no_batch_scenes=True)
+    assert "--batch" in cmd
+    assert "--no-batch-scenes" in cmd
