@@ -406,11 +406,22 @@ cleaned VTT, 1,441 cues. Both runs `--backend claude-code --model claude-opus-5`
 so no deterministic speaker normalisation ran in either.
 
 Baseline frozen read-only at `/tmp/sx_perscene_baseline` (T003). It was produced
-by **main's** per-scene code — see the shadowing note at the end — which is valid
-because `campaignlib/scenes.py` is purely additive on this branch (zero lines
-removed vs `main`), `config/agents/scene_extract.md` is untouched, and
-`session_doc/scene_extract.py` is additive. The per-scene path main ran IS the
-per-scene path this branch ships.
+by **main's** per-scene code — see the shadowing note at the end. That is valid,
+and the check is stronger than "the diff looks additive":
+
+- `campaignlib/scenes.py` removes zero lines vs `main`, and
+  `run_scene_extraction`'s function body is **byte-identical** (4,334 chars)
+- `config/agents/scene_extract.md` is untouched
+- `session_doc/scene_extract.py` removes exactly 2 lines, and **both are
+  comments** that were reworded and expanded — no executable line was removed,
+  and the new batched code sits behind `if args.batch_scenes:`
+
+(An earlier revision of this entry called those 2 lines a diff-renderer
+artifact. They are real removals; they are simply comments. The conclusion was
+right for the wrong reason, which is worth correcting because the whole gate
+rests on this baseline being comparable.)
+
+The per-scene path main ran IS the per-scene path this branch ships.
 
 ### What the feature buys (SC-001) — confirmed
 

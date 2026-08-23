@@ -112,6 +112,15 @@ def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
         # shows path + counts + a preview; it does not offer to edit the file,
         # because a browser textarea is what flattened 88 lines into one (#249).
         "genre": asdict(cfg.genre) if cfg.genre is not None else None,
+        # 013 / DM-20 — the resolved batched-mode default the editor
+        # pre-selects its checkbox from. TOP-LEVEL, deliberately not inside
+        # "extract": that key is the persisted, extra="forbid" ExtractKnobs,
+        # and a derived value there would become storable and PUT-able.
+        # Omitting it here is invisible from either side — the service
+        # computes it, the dataclass carries it, and the UI reads
+        # `undefined` and silently falls back to unchecked, so the
+        # subscription pre-selection never happens and nothing reports it.
+        "batch_scenes_effective": cfg.batch_scenes_effective,
     }
 
 
