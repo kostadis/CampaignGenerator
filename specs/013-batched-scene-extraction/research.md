@@ -610,3 +610,35 @@ batched prompt drove it to **zero** — against 15% on the path that ships today
 `scene_extract.md` would invalidate the frozen baseline mid-gate). Filed as
 **#330** — the per-scene prompt needs the same rule, and the fix wants its own
 before/after measurement against this same corpus.
+
+---
+
+## D15 — SC-002 wall-clock, recorded as an OBSERVATION (T061)
+
+There is no time threshold on this feature. The GM ruled that tokens matter and
+time does not: *"how much time I save is less important than how many tokens. in
+fact, if it takes as much time I am okay."* SC-002's original ≥50% wall-clock
+target was withdrawn during the analyze remediation. This entry exists so the
+numbers are on record, not so they can be graded.
+
+| run | wall-clock | moments produced |
+|---|---|---|
+| per-scene baseline | 415.0s | 654 |
+| batched, prompt v1 | 356.6s | 414 |
+| batched, prompt v2 | 436.4s | 750 |
+| batched, prompt v3 (shipped) | 457.4s | 835 |
+
+**Batching is not reliably faster, and the shipped configuration is ~10%
+slower.** That is the honest reading and it is fine.
+
+The reason is visible in the second column: wall-clock tracks output volume, not
+call count. Batching removes 7 of 8 *prefills* — 256,907 input tokens that no
+longer cross the wire — but decode is unchanged, and prompt v3 decodes 28% more
+content than the baseline because it stopped dropping short beats. A faster run
+that extracted less would be the worse outcome.
+
+**Do not reintroduce a time target without first measuring the prefill/decode
+split.** On a subscription backend the prefill is not separately billed or
+timed, so "batching should be faster" is an inference from call count, and call
+count is the wrong denominator. The committed measure is SC-001's transmitted-
+token reduction (87.5%, D14), which is what the feature was asked for.

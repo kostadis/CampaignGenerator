@@ -25,6 +25,10 @@ const voiceDir = ref('')
 const examplesDir = ref('')
 const context = ref('')
 const extractTokens = ref(8192)
+// Batched-mode output ceiling (013-batched-scene-extraction T055), persisted
+// as extract.batch_tokens — independent of extractTokens (extract.tokens),
+// which stays the per-scene cap. Default matches ExtractKnobs.batch_tokens.
+const batchTokens = ref(32000)
 const narrateTokens = ref(16000)
 const proseMode = ref(false)
 const reflections = ref(false)
@@ -70,6 +74,7 @@ function loadConfigFields() {
   examplesDir.value = paths.examples_dir || ''
   context.value = (narrate.context ?? []).join('\n')
   extractTokens.value = extract.tokens || 8192
+  batchTokens.value = extract.batch_tokens || 32000
   narrateTokens.value = narrate.tokens || 16000
   proseMode.value = !!narrate.prose_mode
   reflections.value = !!narrate.reflections
@@ -109,6 +114,7 @@ function buildEditorConfigPayload() {
     },
     extract: {
       tokens: extractTokens.value || undefined,
+      batch_tokens: batchTokens.value || undefined,
     },
     narrate: {
       context: contextFiles.value.length ? contextFiles.value : [],
@@ -140,7 +146,7 @@ function scheduleApply() {
 
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,
-   party, voiceDir, examplesDir, context, extractTokens,
+   party, voiceDir, examplesDir, context, extractTokens, batchTokens,
    narrateTokens, proseMode, reflections, genreFile],
   scheduleApply,
 )
@@ -203,6 +209,28 @@ const hasExtraction = ref(false)
 const narrating = ref(false)
 const extracting = ref(false)
 const forceReextract = ref(false)
+// Batched-scene-extraction per-run choice (013-batched-scene-extraction
+// T054, contracts/editor-api.md §4 / DM-18 / DM-19 / DM-20 / FR-007a).
+// `batchScenesEffective` mirrors the TOP-LEVEL `batch_scenes_effective` on
+// ResolvedEditorConfig (the config pin, else True on the claude-code
+// backend, False otherwise) — it is deliberately NOT under `extract`,
+// which is the persisted, extra="forbid" ExtractKnobs model, so a derived
+// field there would become stored and PUT-able. `batchScenes` is the
+// checkbox's bound value, pre-seeded from that resolved default so the
+// control shows the right pre-selection (DM-20), and kept following it
+// live (e.g. across a backend switch) until the GM actually touches the
+// checkbox. `batchScenesTouched` is what makes "left at the pre-selected
+// default" and "explicitly chosen" distinguishable at the request: only a
+// touched value is sent as `batch_scenes` on the URL; an untouched one is
+// omitted entirely so the server resolves it itself per DM-18. A checkbox
+// that always echoes its current value can't tell those two states apart
+// and permanently defeats the pre-selection.
+const batchScenesEffective = computed(() => !!(config.editorConfig as any)?.batch_scenes_effective)
+const batchScenesTouched = ref(false)
+const batchScenes = ref(false)
+watch(batchScenesEffective, (v) => {
+  if (!batchScenesTouched.value) batchScenes.value = v
+}, { immediate: true })
 const enhancing = ref(false)
 const planning = ref(false)
 const verifying = ref(false)
@@ -495,7 +523,15 @@ async function runExtract() {
   // (005-ui-batch-selection, T029). A batch submission shows up in the
   // streamed output itself ("Batch submitted: …") rather than needing to
   // be predicted here.
-  activeSSE.value = connectSSE(`/api/editor/extract?force=${forceReextract.value ? 1 : 0}`, {
+  //
+  // `batch_scenes` (013-batched-scene-extraction, distinct from the
+  // Message-Batches `batch` above) is included ONLY once the GM has
+  // touched the checkbox — an untouched control omits the param so
+  // `GET /api/editor/extract` resolves it itself per DM-18, exactly the
+  // same computation that produced the checkbox's own pre-selection.
+  const extractParams = new URLSearchParams({ force: forceReextract.value ? '1' : '0' })
+  if (batchScenesTouched.value) extractParams.set('batch_scenes', batchScenes.value ? '1' : '0')
+  activeSSE.value = connectSSE(`/api/editor/extract?${extractParams}`, {
     onData(text) { narrationOutput.value += text },
     onDone(rc, error) {
       activeSSE.value = null
@@ -739,6 +775,18 @@ onMounted(async () => {
           <input type="checkbox" v-model="forceReextract" :disabled="!configReady || enhancing || extracting || narrating || planning" />
           Force (redo all)
         </label>
+        <label
+          class="force-toggle"
+          title="Sends the whole transcript once, in a single call, instead of once per scene. Matters most on the Subscription backend, which has no prompt caching to offset re-sending the transcript for every scene — pre-selected there for that reason. Leave it off on the metered API, where caching already covers most of the cost."
+        >
+          <input
+            type="checkbox"
+            v-model="batchScenes"
+            @change="batchScenesTouched = true"
+            :disabled="!configReady || enhancing || extracting || narrating || planning"
+          />
+          Batch scenes into one call
+        </label>
       </span>
 
       <span class="stage-group">
@@ -843,6 +891,7 @@ onMounted(async () => {
       v-model:dgx-model="dgxModel"
       v-model:openrouter-model="openrouterModel"
       v-model:extract-tokens="extractTokens"
+      v-model:batch-tokens="batchTokens"
       v-model:narrate-tokens="narrateTokens"
       v-model:prose-mode="proseMode"
       v-model:reflections="reflections"
