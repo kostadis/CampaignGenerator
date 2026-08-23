@@ -33,7 +33,6 @@ from __future__ import annotations
 import argparse
 import ast
 import pathlib
-import re
 from pathlib import Path
 
 import pytest
@@ -340,44 +339,71 @@ def test_no_out_of_seam_messages_batches_reference():
 # _selection_args), so no exception remains.
 
 
-# ``--batch`` as a COMPLETE flag token — not as a prefix. A trailing word
-# character or hyphen means this is some other flag that merely starts the
-# same way, and the guard below must not fire on it (013).
-_BARE_BATCH_FLAG = re.compile(r"--batch(?![\w-])")
+# ``--batch`` as a COMPLETE flag token: an exact string constant. Feature
+# 013's ``--batch-scenes`` / ``--no-batch-scenes`` / ``--batch-max-tokens``
+# are different constants and simply do not compare equal, so the prefix
+# they share needs no special case here.
+_BATCH_FLAG = "--batch"
+
+
+def _batch_flags_built(tree: ast.Module) -> list[int]:
+    """Line numbers where ``"--batch"`` is BUILT rather than merely read.
+
+    A membership test (``if "--batch" in cmd``) is a read: it asks what the
+    seam already emitted. Everything else — an append, a list element, a
+    call argument — is construction, which is what this guard forbids.
+    """
+    read_only = {
+        id(node.left)
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Compare)
+        and any(isinstance(op, (ast.In, ast.NotIn)) for op in node.ops)
+        and isinstance(node.left, ast.Constant)
+        and node.left.value == _BATCH_FLAG
+    }
+    return [
+        node.lineno
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Constant)
+        and isinstance(node.value, str)
+        and node.value == _BATCH_FLAG
+        and id(node) not in read_only
+    ]
 
 
 def test_batch_flag_only_built_by_selection_cli_args():
-    """No module under server/routers/ may append the literal ``"--batch"``
-    or otherwise build the flag itself — every occurrence must originate in
+    """No module under server/routers/ may build the literal ``"--batch"``
+    itself — every occurrence must originate in
     ``platform_config_service.selection_cli_args``, so a run's command line
     can never disagree with what the resolved selection says (Constitution
     V/VI).
 
-    This matches ``--batch`` as a whole token. The check used to be a plain
-    ``"--batch" in text`` substring test, which was imprecise in a way that
-    only showed up once a differently-named flag shared the prefix: feature
-    013's ``--batch-scenes`` / ``--no-batch-scenes`` / ``--batch-max-tokens``
-    all contain ``--batch`` and tripped it.
+    Like Checks 1 and 2, this walks the AST rather than the file text, for
+    the reason the module docstring already gives: a text scan fires on prose
+    that merely mentions what it guards. Two earlier shapes of this check
+    both did. A plain ``"--batch" in text`` substring test tripped on feature
+    013's ``--batch-scenes`` family, which share the prefix; replacing it
+    with a whole-token regex then tripped on 013's *comments*, which discuss
+    ``--batch`` at length to explain why Message Batches wins over batched
+    scenes — and on the membership test that implements that ruling
+    (``scene_editor.py``'s ``if "--batch" in cmd``), which reads the flag off
+    the args just emitted rather than resolving the selection a second time.
+    That read is the seam working, not a second place the flag is built.
 
-    Those are a DIFFERENT feature and the rationale above does not reach
-    them. ``--batch`` is the Message Batches API selection, resolved from
-    ``ModelSelection`` — hence the single-seam rule. ``--batch-scenes`` is
-    scene batching, resolved from ``extract.batch_scenes`` plus the active
-    backend, and the contract (013 editor-api.md §3, DM-19) *requires* the
-    router to emit it literally so the streamed command line stays explicit
-    and copyable.
-
-    Do not re-broaden this to a substring test. If a future flag genuinely
-    needs guarding, add it here by name rather than by prefix — a prefix
-    match would push the next author toward renaming a good flag to dodge a
-    test, which is how a guard starts distorting the code it protects.
+    So: an exact constant, and a membership test is allowed while
+    construction is not. ``cmd.append("--batch")`` and ``cmd += ["--batch"]``
+    both still fail. Do not put this back to a text scan — a guard that
+    fires on comments pushes the next author toward deleting the explanation
+    rather than fixing the code, which is how a guard starts distorting what
+    it protects.
     """
     offenders = []
     routers_dir = (REPO_ROOT / "server" / "routers").resolve()
     for py in sorted(routers_dir.glob("*.py")):
-        text = py.read_text(encoding="utf-8", errors="ignore")
-        if _BARE_BATCH_FLAG.search(text):
-            offenders.append(str(py.relative_to(REPO_ROOT)))
+        offenders += [
+            f"{py.relative_to(REPO_ROOT)}:{lineno}"
+            for lineno in _batch_flags_built(_parse(py))
+        ]
     assert not offenders, (
         f"server/routers/*.py builds '--batch' directly: {offenders} — "
         "route it through selection_cli_args instead."
