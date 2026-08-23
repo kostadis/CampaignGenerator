@@ -242,7 +242,7 @@ and stay with Opus. T062 is the review itself.
 
 **Purpose**: A fresh read of the whole branch by an agent that did not write it.
 
-- [ ] T062 Run `/code-review medium` over the full branch diff, triage every finding, and either fix it or record why it stands **(Opus)**
+- [X] T062 Run `/code-review medium` over the full branch diff, triage every finding, and either fix it or record why it stands **(Opus)**
 - [ ] T063 Restore the shared venv to the main checkout — `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"` from `/home/kroussos/src/CampaignGenerator` — undoing T002's global repoint so unrelated `main` work is not silently running worktree code **(Opus)**
 
 This runs **after** the phase gates, not instead of them. The gates ask "does this

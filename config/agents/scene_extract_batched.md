@@ -100,8 +100,9 @@ SPEAKER LABEL NORMALISATION:
 - "GM (Name)" / "DM (Name)" / "Name (GM)" / "Name (DM)" → write as "GM"
 - "Character (Player)" → strip the parenthetical; keep the character name
 - Unnamed NPCs ("Warrior", "Voice") → keep as-is
-- Square brackets are NOT part of a speaker label. `**[Speaker]**` above is a
-  placeholder, not syntax: write `**Wade Brown**`, never `**[Wade Brown]**`.
+- Square brackets are NOT part of a speaker label: write `**Wade Brown**`,
+  never `**[Wade Brown]**`. The template above shows `**Speaker**` unbracketed
+  for exactly this reason.
   Brackets belong to context beats and to [inaudible] markers only. A context
   beat's bracket holds YOUR OWN short title for what happened — `**[The Drow
   Spy Spotted]**` — never the words "scene tag", which name the slot, not the

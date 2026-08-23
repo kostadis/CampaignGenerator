@@ -425,14 +425,35 @@ The per-scene path main ran IS the per-scene path this branch ships.
 
 ### What the feature buys (SC-001) — confirmed
 
-| | transmitted input tokens | transcript sent |
-|---|---|---|
-| per-scene | 293,608 | 8× |
-| batched | 36,701 | 1× |
-| | **−87.5%** | |
+**What is measured**: transcript transmissions, 8 → 1. The run report prints
+this count, and the payload is identical across them — the system prompt is
+built once, outside the group loop.
 
-The transcript-bearing system prompt is 146,804 chars ≈ 36,701 tokens at
-`CHARS_PER_TOKEN=4.0`, built once and reused across groups.
+Transmitted input tokens therefore fall by exactly **1 − 1/8 = 87.5%**. That
+ratio is a property of the transmission count, not of any tokenizer, so it
+holds whatever the true chars-per-token is.
+
+**What is estimated**: the absolute token counts. The `claude-code` path
+reports no usage at all (`campaignlib/api/backends.py` has no `usage` /
+`input_tokens` handling on that branch), so these are character counts divided
+by a constant:
+
+| | transmitted input tokens (est.) | transcript sent |
+|---|---|---|
+| per-scene | ~158,700 | 8× |
+| batched | ~19,800 | 1× |
+| | **−87.5%** (measured ratio) | |
+
+The transcript-bearing system prompt is 146,804 chars ≈ 19,838 tokens at the
+transcript's **~7.4 ch/tok**.
+
+> ⚠️ An earlier revision of this entry published 293,608 → 36,701, using
+> `CHARS_PER_TOKEN = 4.0`. That constant is wrong for this purpose and this
+> file said so two sections up: 4.0 is the **generated-prose** estimate, and
+> the transcript is precisely the text that runs ~7.4. The old figures
+> overstate the absolute volume by ~1.85×. The 87.5% was never affected — it
+> is a ratio of transmissions of the same payload — but it was presented
+> alongside numbers described as measured when they were derived.
 
 Wall-clock, recorded as **observation only** (there is no time threshold — GM
 ruling): per-scene 415.0s, batched 356.6s. Tokens are the committed measure.

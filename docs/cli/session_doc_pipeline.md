@@ -52,9 +52,13 @@ the subscription, the per-scene loop pays for the full transcript, from
 scratch, once per scene.
 
 Measured on the calibration session (`~/Phandalin/Phandalin/summaries/20260811`,
-8 scenes; research D14): the per-scene loop transmitted **293,608** input
-tokens across 8 calls; `--batch-scenes` transmitted **36,701** across 1 —
+8 scenes; research D14): the per-scene loop transmitted **~158,700** input
+tokens across 8 calls; `--batch-scenes` transmitted **~19,800** across 1 —
 an **87.5%** reduction in tokens sent over the wire for the same extraction.
+That percentage is the measured part — the run report counts transmissions, and
+the payload is identical across them. The absolute token figures are estimates:
+the subscription backend reports no usage, so they are character counts over the
+transcript's ~7.4 chars/token.
 
 ### `--batch` and `--batch-scenes` are different features, and are refused together
 
