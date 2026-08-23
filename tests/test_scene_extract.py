@@ -1288,6 +1288,157 @@ def test_scene_extract_cli_batch_scenes_group_failure_exits_4(monkeypatch, tmp_p
     assert not (out_dir / "02_scene_2.md").exists()
 
 
+# ── T053 (013 Phase 6, US4): the RunReport's counts ─────────────────────────
+#
+# data-model.md §6 lists the required fields: scenes_total / scenes_skipped /
+# scenes_requested / scenes_written, scenes_empty, scenes_missing,
+# groups_used, transcript_transmissions, ceiling_exceeded — plus
+# projected_tokens_total (T050, new in this phase). The two tests below drive
+# a fixture with a KNOWN mix of skipped/written/empty/missing scenes and
+# assert every one of those fields, then assert ceiling_exceeded and
+# projected_tokens_total specifically across both states (fits in one group;
+# forced split by a small --batch-max-tokens).
+
+def _fake_stream_mixed_outcomes(client, system, user, model, max_tokens=8096,
+                                silent=False, verbose=False, cache_system=False):
+    """T053 fixture stream fake: whichever of scenes 1,3,5,6,7,8 the group's
+    own prompt actually requested, reply with scenes 1/3/5 complete, 6 empty
+    (BEGIN/END present, blank body), 7 incomplete (BEGIN, no matching END),
+    and 8 absent (no BEGIN at all) — scenes 2 and 4 are never requested
+    because the test pre-seeds them on disk (skip-if-exists)."""
+    indices = _requested_indices(user)
+    parts = []
+    for i in indices:
+        if i in (1, 3, 5):
+            parts.append(_wrap_batched_scene(i, f"Scene {i}", f"MOMENTS for Scene {i}"))
+        elif i == 6:
+            parts.append(f"<<<CG-SCENE {i:02d} BEGIN: Scene {i}>>>\n   \n<<<CG-SCENE {i:02d} END>>>")
+        elif i == 7:
+            parts.append(f"<<<CG-SCENE {i:02d} BEGIN: Scene {i}>>>\ncut off, no closing marker")
+        elif i == 8:
+            pass  # absent -- emit nothing for it.
+        else:
+            raise AssertionError(f"unexpected requested index {i}")
+    return "\n".join(parts)
+
+
+def test_run_batched_scene_extraction_report_counts_full_fixture(tmp_path):
+    """Every RunReport field against a fixture with a KNOWN mix: 8 scenes
+    total, 2 already on disk (skipped), so 6 requested — of those, 3 land
+    complete (written), 1 comes back empty, 2 are missing (one incomplete,
+    one absent) — all within a single group (ceiling not exceeded)."""
+    scenes = [{"name": f"Scene {n}", "body": f"- bullet {n}"} for n in range(1, 9)]
+    extract_dir = tmp_path / "out"
+    extract_dir.mkdir()
+    for n in (2, 4):  # pre-seed as already-extracted -> skip-if-exists
+        (extract_dir / f"{n:02d}_scene_{n}.md").write_text(f"DONE {n}", encoding="utf-8")
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_fake_stream_mixed_outcomes):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=extract_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=5000,
+        )
+
+    # Independently derived expectation, from the engine's own pure
+    # projection function — not a hand-computed constant that could drift
+    # from OUTPUT_CHARS_PER_BODY_CHAR silently.
+    expected_total = sum(
+        campaignlib.scenes.project_scene_output({"body": f"- bullet {n}"})
+        for n in (1, 3, 5, 6, 7, 8)
+    )
+
+    assert report["scenes_total"] == 8
+    assert report["scenes_skipped"] == 2
+    assert report["scenes_requested"] == 6
+    assert report["projected_tokens_total"] == pytest.approx(expected_total)
+    assert report["scenes_written"] == 3
+    assert report["scenes_empty"] == ["Scene 6"]
+    assert report["scenes_missing"] == ["Scene 7", "Scene 8"]
+    assert report["groups_used"] == 1
+    assert report["transcript_transmissions"] == 1
+    assert report["ceiling_exceeded"] is False
+    assert report["group_failures"] == []
+    assert len(report["saved"]) == 3
+
+    written = sorted(p.name for p in extract_dir.glob("*.md"))
+    # 2, 4 pre-seeded + 1, 3, 5 newly written; 6 (empty) / 7, 8 (missing)
+    # never touch disk.
+    assert written == [
+        "01_scene_1.md", "02_scene_2.md", "03_scene_3.md",
+        "04_scene_4.md", "05_scene_5.md",
+    ]
+
+
+def test_run_batched_scene_extraction_report_ceiling_exceeded_both_states(tmp_path):
+    """FR-006d: `ceiling_exceeded` and `projected_tokens_total` across BOTH
+    states on the identical scene set — a high ceiling that fits everything
+    in one group (`ceiling_exceeded=False`), and a low one that forces a
+    real split (`ceiling_exceeded=True`, `groups_used>1`). Same sizing as
+    `test_run_batched_scene_extraction_call_count_scales_with_ceiling_sc009`.
+    `projected_tokens_total` must come out IDENTICAL in both runs: it is the
+    sum over the entries' own projections, independent of how many groups
+    `group_scenes` happens to pack them into."""
+    scenes = [{"name": f"Scene {n}", "body": "x" * 200} for n in (1, 2, 3, 4)]
+
+    def run_with_ceiling(ceiling: float, subdir: str) -> dict:
+        extract_dir = tmp_path / subdir
+        with patch.object(campaignlib.scenes, "stream_api",
+                          side_effect=_echoing_batched_stream([])):
+            return campaignlib.run_batched_scene_extraction(
+                client=None, vtt_text="VTT", scenes=scenes,
+                extract_dir=extract_dir, model="m",
+                user_template=_BATCHED_USER_TEMPLATE, max_tokens=ceiling,
+            )
+
+    report_fits = run_with_ceiling(5000, "fits")   # 4*210=840 tok, fits easily
+    report_split = run_with_ceiling(250, "split")  # forces a split (per math above)
+
+    expected_total = sum(
+        campaignlib.scenes.project_scene_output({"body": "x" * 200}) for _ in range(4)
+    )
+
+    assert report_fits["ceiling_exceeded"] is False
+    assert report_fits["groups_used"] == 1
+    assert report_fits["projected_tokens_total"] == pytest.approx(expected_total)
+
+    assert report_split["ceiling_exceeded"] is True
+    assert report_split["groups_used"] > 1
+    assert report_split["projected_tokens_total"] == pytest.approx(expected_total)
+
+
+def test_scene_extract_cli_prints_projected_output_line_with_ceiling_note(monkeypatch, tmp_path, capsys):
+    """T051/T052 at the CLI layer: `main()` prints 'Projected output: N tok
+    -> M groups', and appends the FR-006d note naming the lever
+    (--batch-max-tokens) only because this run's projection forced a split.
+    Same 2-scene/500-token sizing as
+    test_scene_extract_cli_batch_scenes_group_failure_exits_4 (a real forced
+    split, not a contrived flag)."""
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(_two_big_scene_gmassist_summary(), encoding="utf-8")
+    out_dir = tmp_path / "out"
+
+    fake_client = MagicMock()
+    monkeypatch.setattr(se, "client_from_args", lambda args: fake_client)
+
+    with patch.object(campaignlib.scenes, "stream_api",
+                      side_effect=_echoing_batched_stream([])):
+        monkeypatch.setattr(sys, "argv", [
+            "scene_extract.py", str(vtt),
+            "--summary", str(summary),
+            "--output-dir", str(out_dir),
+            "--batch-scenes", "--batch-max-tokens", "500", "--no-log",
+        ])
+        se.main()
+
+    out = capsys.readouterr().out
+    assert "Projected output:" in out
+    assert "-> 2 groups" in out
+    assert "projection exceeds ceiling; raise --batch-max-tokens for one call" in out
+
+
 # ── T048: batched prompt must not drift from the per-scene prompt (FR-016) ────
 #
 # `config/agents/scene_extract.md` (per-scene) and

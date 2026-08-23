@@ -163,6 +163,7 @@ projection constants re-tunable from evidence later.
 | `scenes_total` | int | Scenes in the summary. |
 | `scenes_skipped` | int | Already on disk, Force off. |
 | `scenes_requested` | int | `len(request_set.entries)`. |
+| `projected_tokens_total` | float | Sum of every group's `projected_tokens` (§3) — printed next to the group count so the constant is re-tunable from evidence (T050). |
 | `scenes_written` | int | Sections that were `complete` and non-empty. |
 | `scenes_empty` | list[str] | Complete but returned no moments. |
 | `scenes_missing` | list[str] | `incomplete` or `absent` — named, per FR-012. |

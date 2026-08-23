@@ -786,6 +786,7 @@ def run_batched_scene_extraction(
         "scenes_total": len(plan),
         "scenes_skipped": len(skipped),
         "scenes_requested": len(entries),
+        "projected_tokens_total": 0.0,
         "scenes_written": 0,
         "scenes_empty": [],
         "scenes_missing": [],
@@ -805,6 +806,11 @@ def run_batched_scene_extraction(
     report["ceiling_exceeded"] = len(groups) > 1 or any(
         g["projected_tokens"] > max_tokens for g in groups
     )
+    # T050 (013 Phase 6) — the sum of every group's own projection, so the
+    # CLI can print "Projected output: N tok" next to the group count. This
+    # is what lets a future run be compared against its own actual output
+    # and OUTPUT_CHARS_PER_BODY_CHAR re-tuned from evidence instead of guessed.
+    report["projected_tokens_total"] = sum(g["projected_tokens"] for g in groups)
 
     # T021 — built ONCE, reused across every group in the loop below.
     system_prompt = build_scene_extraction_system_prompt(

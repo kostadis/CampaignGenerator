@@ -212,10 +212,10 @@ static guards T048–T049 are delegated.
 
 **Delegation**: one Sonnet subagent for T050–T053.
 
-- [ ] T050 [US4] Implement the `RunReport` fields from data-model §6 in `session_doc/scene_extract.py` — scenes total / skipped / requested / written, empty, missing (named), groups used, transmissions, `ceiling_exceeded`
-- [ ] T051 [US4] Render the report in the format in contracts/cli-surface.md §3, including the `Transcript sent: Nx (per-scene mode would have sent Mx)` line — this is what makes SC-001 checkable from run output instead of by instrumenting the backend
-- [ ] T052 [US4] When the projection forced a split, say so and name the lever: "projection exceeds ceiling; raise --batch-max-tokens for one call" (FR-006d)
-- [ ] T053 [P] [US4] Test the report's counts against a fixture with known skipped/written/missing scenes in `tests/test_scene_extract.py`
+- [X] T050 [US4] Implement the `RunReport` fields from data-model §6 in `session_doc/scene_extract.py` — scenes total / skipped / requested / written, empty, missing (named), groups used, transmissions, `ceiling_exceeded`
+- [X] T051 [US4] Render the report in the format in contracts/cli-surface.md §3, including the `Transcript sent: Nx (per-scene mode would have sent Mx)` line — this is what makes SC-001 checkable from run output instead of by instrumenting the backend
+- [X] T052 [US4] When the projection forced a split, say so and name the lever: "projection exceeds ceiling; raise --batch-max-tokens for one call" (FR-006d)
+- [X] T053 [P] [US4] Test the report's counts against a fixture with known skipped/written/missing scenes in `tests/test_scene_extract.py`
 
 **Checkpoint**: every success criterion is observable from the run itself.
 

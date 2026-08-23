@@ -599,21 +599,48 @@ def main() -> None:
                          if report["scenes_skipped"] else "")
             print(f"  Already extracted:  {report['scenes_skipped']}{skip_note}")
             print(f"  Requested:          {report['scenes_requested']}")
-            print(f"  Written:            {report['scenes_written']}")
+            if report["scenes_requested"]:
+                groups_used = report["groups_used"]
+                group_word = "group" if groups_used == 1 else "groups"
+                # T052 / FR-006d — the split-forcing note rides on the
+                # projection line itself, not a separate "Note:" tacked on
+                # after Transcript sent — that's where the GM's eye already
+                # is when they read the group count, and it names the lever
+                # (--batch-max-tokens) right next to the number that would
+                # change if they pulled it. FR-006d ties the note to "used
+                # more than one" group; `report["ceiling_exceeded"]` is
+                # ALSO true in group_scenes' singleton-overflow edge case
+                # (one scene alone projects past the ceiling and still gets
+                # its own group rather than being refused — DM-9), where
+                # "for one call" would be nonsensical since it's already
+                # one call, so that case gets its own wording.
+                if groups_used > 1:
+                    ceiling_note = ("  (projection exceeds ceiling; raise "
+                                     "--batch-max-tokens for one call)")
+                elif report["ceiling_exceeded"]:
+                    ceiling_note = ("  (this scene's own projection exceeds "
+                                     "the ceiling; raise --batch-max-tokens "
+                                     "to give it room)")
+                else:
+                    ceiling_note = ""
+                print(f"  Projected output:   {report['projected_tokens_total']:,.0f} tok"
+                      f"  -> {groups_used} {group_word}{ceiling_note}")
+                print(f"  Transcript sent:    {report['transcript_transmissions']}x  "
+                      f"(per-scene mode would have sent "
+                      f"{report['scenes_requested']}x)")
             if report["scenes_empty"]:
                 print(f"  Empty (no moments): {len(report['scenes_empty'])}  "
                       f"({', '.join(report['scenes_empty'])})")
-            print(f"  Groups used:        {report['groups_used']}")
-            if report["scenes_requested"]:
-                print(f"  Transcript sent:    {report['groups_used']}x  "
-                      f"(per-scene mode would have sent "
-                      f"{report['scenes_requested']}x)")
-            if report["ceiling_exceeded"]:
-                print(f"  Note: projection required more than one group at "
-                      f"--batch-max-tokens {args.batch_max_tokens:,} — raise "
-                      f"it to fit in one call, or accept the split above.")
 
-            print(f"\nWrote {report['scenes_written']} scene file(s) to {out_dir}")
+            # contracts/cli-surface.md §3: a complete run says where the
+            # files landed; a partial run says how many of how many, since
+            # "to <dir>" would bury the shortfall the missing-scenes block
+            # below is about to name.
+            if report["scenes_missing"]:
+                print(f"\nWrote {report['scenes_written']} of "
+                      f"{report['scenes_requested']} scene file(s).")
+            else:
+                print(f"\nWrote {report['scenes_written']} scene file(s) to {out_dir}")
 
             # ── Exit codes (contracts/cli-surface.md §4) ──
             # `4` outranks `3`: a group failure means reconciliation itself
