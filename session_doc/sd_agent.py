@@ -22,6 +22,11 @@ implicit forwarding and silently dropped `--similarity` for a month
 (EnsembleGroundingInvestigation #197); the fix there was to make the hop
 visible, so this starts visible — every resolved command is printed before it
 runs, secret-free.
+
+The one inferred flag is `--batch-scenes` on `--stage scenes`, which follows
+the backend when unstated (see `_batch_scenes_args`). It is inferred rather
+than enumerated so the token saving reaches a GM who did not read the release
+note, and that is only safe because the resolved command is printed.
 """
 
 import argparse
@@ -108,6 +113,37 @@ def _selection_args(args) -> list[str]:
     if args.batch:
         out += ["--batch"]
     return out
+
+
+def _batch_scenes_args(args) -> list[str]:
+    """Resolve --batch-scenes for the scene_extract step ONLY (013).
+
+    Deliberately not part of `_selection_args`: that feeds `enhance_summary`
+    too (the summary stage's generate step), and `enhance_summary` has no
+    such flag — adding it there would turn a saving into an argparse error
+    on the other stage.
+
+    Resolution mirrors the editor's `batch_scenes_effective` (DM-18) so the
+    two entry points do not disagree about the same backend:
+
+      explicit --batch-scenes / --no-batch-scenes  ->  wins outright
+      neither given                                ->  on for `claude-code`,
+                                                       off everywhere else
+
+    The subscription backend has no prompt caching, so a per-scene run
+    re-sends the whole transcript once per scene; the metered backend caches
+    it and does not need this. Defaulting by backend is what makes the
+    saving reach a GM who did not read the release note.
+
+    This is an inferred default, which normally cuts against this module's
+    "enumerated, not passed through" rule. It is acceptable here only
+    because `sd_agent` prints every resolved command before running it, so
+    the flag it chose is visible in the output rather than hidden in a
+    subprocess.
+    """
+    if args.batch_scenes is not None:
+        return ["--batch-scenes" if args.batch_scenes else "--no-batch-scenes"]
+    return ["--batch-scenes"] if args.backend == "claude-code" else ["--no-batch-scenes"]
 
 
 def _verify_args(args, *, summary: Path | None, scenes: Path | None,
@@ -249,7 +285,7 @@ def build_steps(args) -> tuple[list[Step], list[str]]:
                 "generate", "generate      ",
                 _console("scene_extract") + [
                     str(vtt), "--summary", str(summary), "--output-dir", str(scenes),
-                ] + grounding + _selection_args(args),
+                ] + grounding + _selection_args(args) + _batch_scenes_args(args),
             ))
         steps.append(Step(
             "verify", "verify quotes ",
@@ -320,6 +356,18 @@ def build_parser() -> argparse.ArgumentParser:
                    help="Print the commands and exit. Nothing runs, nothing is spent.")
     p.add_argument("--model", default=None, help="Forwarded to the generation step only.")
     p.add_argument("--fast", action="store_true", help="Forwarded to the generation step only.")
+    # Tri-state (default None = "not stated"), so "left alone" stays
+    # distinguishable from "explicitly off" — the same distinction the
+    # editor route makes with `batch_scenes: int | None` (DM-18).
+    p.add_argument("--batch-scenes", dest="batch_scenes", action="store_true",
+                   default=None,
+                   help="--stage scenes only: send all pending scenes in one "
+                        "exchange instead of one call per scene. Defaults on "
+                        "for --backend claude-code (no prompt caching there), "
+                        "off otherwise. Not the same as --batch.")
+    p.add_argument("--no-batch-scenes", dest="batch_scenes", action="store_false",
+                   help="--stage scenes only: force the per-scene loop, "
+                        "overriding the per-backend default.")
     add_backend_args(p)
     return p
 

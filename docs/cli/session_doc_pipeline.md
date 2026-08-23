@@ -141,6 +141,27 @@ inside the −20% bound the gate was measured against. Read
 two intermediate failures the gate caught and how they were fixed, and the
 one pre-existing (non-batching) defect it surfaced in the per-scene path.
 
+### `sd_agent --stage scenes`
+
+The orchestrator forwards the mode too, and picks it from the backend when you
+do not say:
+
+```bash
+sd_agent --stage scenes --session-dir DIR --backend claude-code    # batched
+sd_agent --stage scenes --session-dir DIR --backend anthropic      # per-scene
+sd_agent --stage scenes --session-dir DIR --backend claude-code --no-batch-scenes
+```
+
+`sd_agent` normally forwards an enumerated flag list rather than inferring
+anything — implicit forwarding once dropped `--similarity` silently for a month
+(#197). This flag is the one exception, and it is safe only because `sd_agent`
+prints every resolved command before running it, so the mode it chose is
+visible in the output rather than hidden in a subprocess. The flag is always
+rendered explicitly, never omitted.
+
+It reaches the `scene_extract` step only. `enhance_summary` has no such flag,
+so `--stage summary` never sees it.
+
 ### Turning it on
 
 The CLI default is off — an unadorned `scene_extract` invocation behaves

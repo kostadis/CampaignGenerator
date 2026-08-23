@@ -327,3 +327,66 @@ def test_scenes_stage_omits_party_config_when_not_given(session):
     steps, _notes = build_steps(_args(stage="scenes", session_dir=session))
     generate = next(s for s in steps if s.key == "generate")
     assert "--party-config" not in generate.cmd
+
+
+# ── --batch-scenes forwarding (013-batched-scene-extraction) ─────────────────
+#
+# Before this, `sd_agent --stage scenes` could not reach batched extraction at
+# all: `_selection_args` forwards an enumerated five flags and --batch-scenes
+# was not among them, so a subscription run silently sent the transcript once
+# per scene — the exact 8x cost the feature exists to remove — with nothing in
+# the output saying so.
+
+def _scene_cmd(session, **over):
+    steps, _ = build_steps(_args(session_dir=session, stage="scenes", **over))
+    gen = [s for s in steps if s.key == "generate"]
+    assert gen, "scenes stage must have a generate step"
+    return gen[0].cmd
+
+
+def test_scenes_stage_defaults_batched_on_for_the_subscription_backend(session):
+    """No prompt caching there, so per-scene re-sends the whole transcript."""
+    cmd = _scene_cmd(session, backend="claude-code")
+    assert "--batch-scenes" in cmd
+    assert "--no-batch-scenes" not in cmd
+
+
+def test_scenes_stage_defaults_batched_off_for_the_metered_backend(session):
+    """anthropic caches the repeated transcript; batching buys nothing there."""
+    cmd = _scene_cmd(session, backend="anthropic")
+    assert "--no-batch-scenes" in cmd
+    assert "--batch-scenes" not in cmd
+
+
+def test_explicit_batch_scenes_overrides_the_backend_default_both_ways(session):
+    on_metered = _scene_cmd(session, backend="anthropic", batch_scenes=True)
+    assert "--batch-scenes" in on_metered
+
+    off_subscription = _scene_cmd(session, backend="claude-code",
+                                  no_batch_scenes=True)
+    assert "--no-batch-scenes" in off_subscription
+    assert "--batch-scenes" not in off_subscription
+
+
+def test_the_flag_is_always_explicit_never_omitted(session):
+    """sd_agent prints the resolved command; an omitted flag would hide the
+    choice it made. Every scenes run states which mode it picked."""
+    for backend in ("claude-code", "anthropic", None):
+        cmd = _scene_cmd(session, backend=backend) if backend else _scene_cmd(session)
+        assert ("--batch-scenes" in cmd) or ("--no-batch-scenes" in cmd), backend
+
+
+def test_batch_scenes_never_reaches_the_summary_stage(session):
+    """enhance_summary has no such flag — forwarding it there is an argparse
+    error, which is why this lives outside _selection_args."""
+    steps, _ = build_steps(_args(session_dir=session, stage="summary",
+                                 backend="claude-code"))
+    joined = " ".join(" ".join(s.cmd) for s in steps)
+    assert "batch-scenes" not in joined
+
+
+def test_batch_scenes_is_not_confused_with_batch(session):
+    """--batch (Message Batches) and --batch-scenes are separate features."""
+    cmd = _scene_cmd(session, backend="claude-code")
+    assert "--batch-scenes" in cmd
+    assert "--batch" not in cmd
