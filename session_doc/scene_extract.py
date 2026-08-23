@@ -642,6 +642,43 @@ def main() -> None:
             else:
                 print(f"\nWrote {report['scenes_written']} scene file(s) to {out_dir}")
 
+            # The run log, same as the per-scene path below. Written BEFORE
+            # the exit-code block: a partial run (exit 3/4) is exactly when
+            # the GM wants a record of which scenes were requested, which
+            # landed and which group failed, so `sys.exit` must not jump
+            # over it. The batched extras (groups, transmissions, empties,
+            # failures) are the whole reason this path exists and none of
+            # them appear anywhere else after the terminal scrolls.
+            if not args.no_log:
+                log_sections = [
+                    ("VTT", f"{vtt_path.name} — {len(dialogue):,} chars"),
+                    ("Summary", summary_text),
+                    ("Scenes", "\n".join(f"{i}. {s['name']}"
+                                         for i, s in enumerate(scenes, 1))),
+                    ("Batching", "\n".join([
+                        f"ceiling: {args.batch_max_tokens:,} tok",
+                        f"requested: {report['scenes_requested']}"
+                        f"  skipped: {report['scenes_skipped']}"
+                        f"  written: {report['scenes_written']}",
+                        f"groups: {report['groups_used']}"
+                        f"  transcript transmissions: "
+                        f"{report['transcript_transmissions']}",
+                        f"projected output: "
+                        f"{report['projected_tokens_total']:,.0f} tok",
+                    ])),
+                    ("Empty (no moments)",
+                     "\n".join(report["scenes_empty"]) or "(none)"),
+                    ("Not extracted",
+                     "\n".join(report["scenes_missing"]) or "(none)"),
+                    ("Group failures", "\n".join(
+                        f"group {f['group']}: {f['reason']} — {f['detail']}"
+                        for f in report["group_failures"]) or "(none)"),
+                    ("Output files", "\n".join(str(p) for p in report["saved"])),
+                ]
+                log_file = save_log(str(out_dir / "logs"), log_sections,
+                                    stem="scene_extract_batched")
+                print(f"Log saved to: {log_file}")
+
             # ── Exit codes (contracts/cli-surface.md §4) ──
             # `4` outranks `3`: a group failure means reconciliation itself
             # broke (duplicate/unknown/nested section indices in the

@@ -30,6 +30,7 @@ note, and that is only safe because the resolved command is printed.
 """
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -39,17 +40,31 @@ from campaignlib import add_backend_args
 
 STAGES = ("summary", "scenes")
 
+# scene_extract's resumable-partial exit codes (013 contracts/cli-surface.md
+# §4): `3` = some requested scenes were not written, `4` = a whole group
+# failed reconciliation. Both leave everything that DID succeed on disk, so
+# they are not "the artifact was never produced" — the checks below them have
+# real output to check. Treating them as fatal would skip the quote verifier
+# on a run where 7 of 8 scenes landed.
+SCENE_EXTRACT_PARTIAL_EXITS = (3, 4)
+
 
 class Step:
     """One subprocess in a stage, with how its exit code should be read."""
 
     def __init__(self, key: str, label: str, cmd: list[str], *,
-                 findings_exit: int | None = None):
+                 findings_exit: int | None = None,
+                 partial_exits: tuple[int, ...] = ()):
         self.key = key
         self.label = label
         self.cmd = cmd
         # Exit code that means "ran fine, found things" rather than "broke".
         self.findings_exit = findings_exit
+        # Exit codes that mean "produced a usable partial artifact" rather
+        # than "produced nothing". Declared per-step rather than globally:
+        # `3`/`4` are scene_extract's contract, and enhance_summary makes no
+        # such promise, so reading them as partial there would be a guess.
+        self.partial_exits = partial_exits
         self.rc: int | None = None
 
     @property
@@ -61,8 +76,13 @@ class Step:
         return self.findings_exit is not None and self.rc == self.findings_exit
 
     @property
+    def partial(self) -> bool:
+        return self.rc is not None and self.rc in self.partial_exits
+
+    @property
     def broke(self) -> bool:
-        return self.rc is not None and self.rc != 0 and not self.found_things
+        return (self.rc is not None and self.rc != 0
+                and not self.found_things and not self.partial)
 
 
 def _console(name: str) -> list[str]:
@@ -115,6 +135,25 @@ def _selection_args(args) -> list[str]:
     return out
 
 
+def _resolved_backend(args) -> str:
+    """The backend the CHILD will actually use, env var included.
+
+    Mirrors `client_from_args`' own `backend or CG_BACKEND` precedence
+    (`campaignlib/api/client.py`) exactly: an explicit non-anthropic
+    `--backend` wins, otherwise `CG_BACKEND`, otherwise anthropic. The env
+    var is inherited by every subprocess this module spawns, so reading
+    `args.backend` alone would make this module's inference disagree with the
+    client the child ends up building — and the one inference here
+    (`--batch-scenes`) is exactly the case where that disagreement costs
+    money: `CG_BACKEND=claude-code sd_agent --stage scenes` would keep the
+    per-scene loop and re-send the transcript once per scene.
+    """
+    arg_backend = getattr(args, "backend", None) or "anthropic"
+    if arg_backend != "anthropic":
+        return arg_backend
+    return os.environ.get("CG_BACKEND") or "anthropic"
+
+
 def _batch_scenes_args(args) -> list[str]:
     """Resolve --batch-scenes for the scene_extract step ONLY (013).
 
@@ -129,6 +168,11 @@ def _batch_scenes_args(args) -> list[str]:
       explicit --batch-scenes / --no-batch-scenes  ->  wins outright
       neither given                                ->  on for `claude-code`,
                                                        off everywhere else
+
+    "for `claude-code`" means the RESOLVED backend (`_resolved_backend`), so
+    `CG_BACKEND=claude-code` counts as much as `--backend claude-code`. The
+    child resolves its own client the same way, and this inference exists to
+    save that child's tokens.
 
     The subscription backend has no prompt caching, so a per-scene run
     re-sends the whole transcript once per scene; the metered backend caches
@@ -156,7 +200,8 @@ def _batch_scenes_args(args) -> list[str]:
         # a flag the user never wrote, for a choice they never made.
         # Their explicit --batch wins; the inference stands down.
         return ["--no-batch-scenes"]
-    return ["--batch-scenes"] if args.backend == "claude-code" else ["--no-batch-scenes"]
+    return (["--batch-scenes"] if _resolved_backend(args) == "claude-code"
+            else ["--no-batch-scenes"])
 
 
 def _verify_args(args, *, summary: Path | None, scenes: Path | None,
@@ -299,6 +344,7 @@ def build_steps(args) -> tuple[list[Step], list[str]]:
                 _console("scene_extract") + [
                     str(vtt), "--summary", str(summary), "--output-dir", str(scenes),
                 ] + grounding + _selection_args(args) + _batch_scenes_args(args),
+                partial_exits=SCENE_EXTRACT_PARTIAL_EXITS,
             ))
         steps.append(Step(
             "verify", "verify quotes ",
@@ -407,12 +453,23 @@ def main() -> int:
         return 0
 
     degraded: list[str] = []
+    partial: list[str] = []
     for i, s in enumerate(steps, 1):
         print(f"\n{'①②③④'[i - 1]} {s.label.strip()}")
         print("─" * 60)
         s.rc = subprocess.run(s.cmd).returncode
 
-        if s.key == "generate" and s.rc != 0:
+        if s.key == "generate" and s.partial:
+            # A resumable partial, not a failure: scene_extract left every
+            # scene it DID write on disk, and those are real artifacts that
+            # the checks below have to see. Stopping here would report "there
+            # is nothing to check" about 7 written scenes.
+            partial.append(s.key)
+            print(f"\nwarning: generation was PARTIAL (exit {s.rc}) — some "
+                  f"scenes were not written. What did land is on disk and is "
+                  f"checked below. Re-run without --force to request only the "
+                  f"rest.", file=sys.stderr)
+        elif s.key == "generate" and s.rc != 0:
             # Checking an artifact that was never produced reports nonsense.
             print(f"\nError: generation failed (exit {s.rc}). Stopping — there "
                   f"is nothing to check.", file=sys.stderr)
@@ -426,7 +483,12 @@ def main() -> int:
     print("\n" + "─" * 60)
     for i, s in enumerate(steps, 1):
         if s.key == "generate":
-            state = "ok" if s.rc == 0 else f"exit {s.rc}"
+            if s.rc == 0:
+                state = "ok"
+            elif s.partial:
+                state = f"PARTIAL (exit {s.rc}) — re-run to finish"
+            else:
+                state = f"exit {s.rc}"
         elif s.found_things:
             state = "findings — see the report"
         elif s.rc == 0:
@@ -447,7 +509,15 @@ def main() -> int:
         print("This run STOPPED at the stage boundary — narration is a separate "
               "step, gated on your review of the extractions.")
 
-    if degraded:
+    if partial:
+        # Say it once more at the very end, after the per-step summary: the
+        # checks that follow a partial generation ran against an INCOMPLETE
+        # artifact, so a clean report here does not mean the stage is done.
+        print("\nGeneration was PARTIAL — the checks above cover only the "
+              "scenes that were written. Re-run this stage (without --force) "
+              "to request the rest, then check again.")
+
+    if degraded or partial:
         return 2
     return 1 if any(s.found_things for s in steps) else 0
 

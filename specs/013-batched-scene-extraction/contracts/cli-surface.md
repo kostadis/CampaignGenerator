@@ -50,6 +50,19 @@ for does not exist on the path `--batch` runs on.
 | Group fails reconciliation | Nothing from that group written; exit non-zero naming the failure (FR-005) |
 | Some scenes missing | Written scenes kept; exit non-zero naming the missing (FR-012, DM-16) |
 
+**The editor never builds the refused pair.** The CLI refusal above is a
+backstop for a hand-typed command, not the path the Session Doc Editor takes:
+`--batch` reaches the re-extract command from the stored selection profile and
+`--batch-scenes` from the per-run control / config pin / backend default
+(DM-18), so neither knows about the other and both can resolve true.
+`_build_reextract_cmd` therefore stands batched scenes DOWN when the resolved
+selection also carries `--batch`, emits an explicit `--no-batch-scenes`, streams
+a note saying so before the run, and records the EFFECTIVE value in the
+activity log. Message Batches wins because §1 already establishes that batched
+scenes save nothing on the metered path — dropping `--batch` instead would cost
+the discount for no gain. `sd_agent._batch_scenes_args` resolves an INFERRED
+`--batch-scenes` against an explicit `--batch` the same way.
+
 ## 3. Run report
 
 Written to stdout at the end of every batched run (FR-018):
@@ -68,7 +81,15 @@ Written to stdout at the end of every batched run (FR-018):
     08_confrontation_at_margaster_logistics  written
 
   Wrote 3 scene file(s) to scene_extractions/
+  Log saved to: scene_extractions/logs/scene_extract_batched-<stamp>.md
 ```
+
+The log is the same `save_log` artifact the per-scene path writes, with the
+batched extras the run report shows on stdout only once (grouping, transcript
+transmissions, empty scenes, missing scenes, group failures). It is written
+BEFORE the exit-code block below, so a partial run (exit 3/4) — the run whose
+record is worth the most — still leaves one. `--no-log` suppresses it on both
+paths.
 
 Incomplete run:
 
@@ -106,3 +127,8 @@ the run output rather than by instrumenting the backend.
 
 Exit `3` is distinct from `1` because it is a *resumable* state with valid files
 on disk, not a refusal. The editor surfaces it as "partial", not "failed".
+
+`sd_agent --stage scenes` reads them the same way: `3` and `4` are declared as
+that step's `partial_exits`, so the stage continues to the quote verifier over
+the scenes that landed, says the generation was PARTIAL, and returns `2` — an
+unfinished stage, but not one where "there is nothing to check" is true.

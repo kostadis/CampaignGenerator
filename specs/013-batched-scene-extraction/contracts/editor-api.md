@@ -74,6 +74,16 @@ pre-selection overridable in both directions (FR-007a).
 {cfg.extract.batch_tokens}`, so the streamed command line is fully explicit
 (DM-19).
 
+**One override, stated in the stream.** `--batch` (Message Batches) reaches the
+same command from the stored selection profile via `_selection_args`, and
+`scene_extract` refuses the two flags together (cli-surface.md §2). When the
+resolved selection carries `--batch`, batched scenes stand down: the command
+gets `--no-batch-scenes`, and the stream opens with a `data:` note naming the
+reason and the setting to change. Message Batches wins because it already sends
+the transcript as a cached prefix, so batched scenes save nothing on that path.
+Without this the route built a command that exits 1 before writing anything,
+naming a flag the GM never typed.
+
 **Response**: unchanged SSE stream of subprocess output. The run report (see
 [cli-surface.md](./cli-surface.md) §3) arrives as ordinary stream content —
 nothing new to parse.
@@ -81,8 +91,13 @@ nothing new to parse.
 **Activity record**: `_record_activity` gains the resolved batching state:
 
 ```python
-knobs={"batch": …, "force": bool(force), "batch_scenes": resolved_batch_scenes}
+knobs={"batch": …, "force": bool(force), "batch_scenes": effective_batch_scenes}
 ```
+
+`effective_batch_scenes` is read back off the built command
+(`"--batch-scenes" in cmd`), not from the resolution above it — DM-19
+guarantees one of the two flags is always present, and a knob record that
+disagreed with its own command line would misreport the stood-down case.
 
 ## 4. Frontend
 

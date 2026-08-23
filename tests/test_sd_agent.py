@@ -427,3 +427,98 @@ def test_batch_does_not_suppress_an_explicit_no_batch_scenes(session):
                      no_batch_scenes=True)
     assert "--batch" in cmd
     assert "--no-batch-scenes" in cmd
+
+
+# ── CG_BACKEND reaches the --batch-scenes inference ──────────────────────────
+#
+# `client_from_args` resolves the backend as "an explicit non-anthropic
+# --backend, else CG_BACKEND, else anthropic", and every subprocess this
+# module spawns inherits the env var. An inference that reads only
+# `args.backend` therefore disagrees with the client the child builds — and
+# this particular inference decides whether the child re-sends the whole
+# transcript once per scene.
+
+def test_cg_backend_env_turns_batch_scenes_on(session, monkeypatch):
+    monkeypatch.setenv("CG_BACKEND", "claude-code")
+    cmd = _scene_cmd(session)  # --backend defaults to anthropic
+    assert "--batch-scenes" in cmd
+    assert "--no-batch-scenes" not in cmd
+
+
+def test_cg_backend_env_for_another_backend_leaves_batch_scenes_off(session, monkeypatch):
+    monkeypatch.setenv("CG_BACKEND", "dgx")
+    assert "--no-batch-scenes" in _scene_cmd(session)
+
+
+def test_explicit_backend_beats_the_env_var(session, monkeypatch):
+    """Mirrors client_from_args: an explicit non-anthropic --backend wins."""
+    monkeypatch.setenv("CG_BACKEND", "claude-code")
+    assert "--no-batch-scenes" in _scene_cmd(session, backend="dgx")
+
+
+def test_env_var_inference_still_stands_down_for_an_explicit_batch(session, monkeypatch):
+    """The inferred flag must never fight --batch, however it was inferred."""
+    monkeypatch.setenv("CG_BACKEND", "claude-code")
+    cmd = _scene_cmd(session, batch=True)
+    assert "--batch" in cmd
+    assert "--no-batch-scenes" in cmd
+
+
+def test_no_env_var_leaves_the_backend_default_alone(session, monkeypatch):
+    monkeypatch.delenv("CG_BACKEND", raising=False)
+    assert "--no-batch-scenes" in _scene_cmd(session)
+    assert "--batch-scenes" in _scene_cmd(session, backend="claude-code")
+
+
+# ── A partial generation is checked, not discarded ───────────────────────────
+#
+# scene_extract exits 3 (some scenes not written) or 4 (a group failed
+# reconciliation) with everything that DID succeed on disk. Those are
+# resumable partials, so the checks must still run over what landed.
+
+def _run_scenes_in_process(session, monkeypatch, generate_rc, verify_rc=0):
+    """Drive sd_agent.main() with every subprocess faked, and record the calls."""
+    seen: list[list[str]] = []
+
+    def fake_run(cmd, *a, **kw):
+        seen.append(cmd)
+        rc = generate_rc if any("scene_extract" in str(c) for c in cmd) else verify_rc
+        return subprocess.CompletedProcess(cmd, rc)
+
+    monkeypatch.setattr(sd_agent.subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", [
+        "sd_agent", "--stage", "scenes", "--session-dir", str(session),
+    ])
+    rc = sd_agent.main()
+    return rc, seen
+
+
+@pytest.mark.parametrize("partial_rc", [3, 4])
+def test_partial_generation_still_runs_the_checks(session, monkeypatch, capsys,
+                                                  partial_rc):
+    rc, seen = _run_scenes_in_process(session, monkeypatch, generate_rc=partial_rc)
+    ran = [" ".join(str(c) for c in cmd) for cmd in seen]
+    assert any("scene_extract" in c for c in ran)
+    assert any("sd_verify_quotes" in c for c in ran), \
+        "a resumable partial leaves written scenes on disk — they must be verified"
+    out = capsys.readouterr()
+    assert "nothing to check" not in out.err
+    assert "PARTIAL" in out.err or "PARTIAL" in out.out
+    assert rc == 2, "a partial stage is not a finished stage"
+
+
+@pytest.mark.parametrize("fatal_rc", [1, 2])
+def test_a_real_generation_failure_still_stops(session, monkeypatch, capsys, fatal_rc):
+    """Unchanged: no artifact means there is genuinely nothing to check."""
+    rc, seen = _run_scenes_in_process(session, monkeypatch, generate_rc=fatal_rc)
+    ran = [" ".join(str(c) for c in cmd) for cmd in seen]
+    assert not any("sd_verify_quotes" in c for c in ran)
+    assert "nothing to check" in capsys.readouterr().err
+    assert rc == 2
+
+
+def test_a_clean_generation_is_not_reported_as_partial(session, monkeypatch, capsys):
+    rc, _ = _run_scenes_in_process(session, monkeypatch, generate_rc=0)
+    out = capsys.readouterr()
+    assert "PARTIAL" not in out.out and "PARTIAL" not in out.err
+    assert rc == 0

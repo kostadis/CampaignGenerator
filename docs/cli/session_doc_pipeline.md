@@ -79,6 +79,14 @@ engineering effort making a no-op flag combination "work" instead of just
 saying so. See `specs/013-batched-scene-extraction/contracts/cli-surface.md`
 §1 for the full flag reference.
 
+**In the web UI you never see that refusal.** The two settings arrive from
+different places there — Message Batches from the backend profile, batched
+scenes from the checkbox / config pin / backend default — so both can be on
+without anyone having asked for the pair. The re-extract route resolves it
+rather than failing: Message Batches wins, batched scenes stand down, and the
+run output opens with a note saying so and naming the setting to change. Turn
+Message Batches off in the backend profile if you want batched scenes instead.
+
 ### Two ceilings, not one
 
 `--max-tokens` (default `8192`) is the **per-scene** output budget for the
@@ -125,6 +133,14 @@ other groups in the same run are unaffected, and any scenes they wrote
 stay on disk. See `contracts/cli-surface.md` §4 for the full exit-code
 table.
 
+Either way the run leaves a log under `<output-dir>/logs/`, the same as a
+per-scene run does, and it is written *before* the exit — so the partial runs
+worth investigating are not the ones that lose their record. Alongside the
+usual sections it carries the batched specifics: the ceiling, the group count,
+how many times the transcript was sent, which scenes came back empty, which
+were not extracted, and any group that failed reconciliation. `--no-log`
+suppresses it.
+
 ### Fidelity — measured, not assumed
 
 Batching changes what the model sees when it writes a quote: instead of
@@ -165,6 +181,17 @@ rendered explicitly, never omitted.
 
 It reaches the `scene_extract` step only. `enhance_summary` has no such flag,
 so `--stage summary` never sees it.
+
+`CG_BACKEND` counts as much as `--backend` for this choice, because the child
+process resolves its own client that way — `CG_BACKEND=claude-code sd_agent
+--stage scenes` batches, without `--backend` being typed at all. An explicit
+non-anthropic `--backend` still wins over the variable, and an explicit
+`--batch` still makes the inference stand down.
+
+A partial generation does not end the stage. `scene_extract` exits **3** or
+**4** with everything that succeeded already on disk, so `sd_agent` says the
+generation was PARTIAL, runs the quote verifier over the scenes that landed,
+and returns `2`. Re-run the stage (without `--force`) to request the rest.
 
 ### Turning it on
 

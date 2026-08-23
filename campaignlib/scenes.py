@@ -228,6 +228,10 @@ def run_scene_extraction(
     snapshotted to `<file>.prev` (only if content differs) and any
     `<file>.reviewed` marker is cleared.
 
+    A scene the model returns nothing for is reported and NOT written
+    (FR-006), so the next run asks for it again instead of skipping it
+    forever. The returned list therefore holds only scenes that have a file.
+
     extraction_instruction — the per-call task description. Receives `{name}`
                               and `{body}` substitutions and is rendered as the
                               user message. The caller controls the prompt — the
@@ -277,6 +281,22 @@ def run_scene_extraction(
         result = stream_api(client, system_prompt, user_prompt, model,
                             max_tokens=max_tokens, cache_system=cache_vtt)
         print("  " + "─" * 56)
+
+        if not result.strip():
+            # FR-006 / DM-4 — a scene the model returned nothing for is NOT
+            # written, and the batched path (`run_batched_scene_extraction`,
+            # status "empty") does the same. `exists` is the sole
+            # skip-if-exists criterion, so writing a file with a blank
+            # `## Verbatim moments` here would retire that scene permanently
+            # on the strength of one empty response — and the two modes would
+            # disagree about a session started in one and finished in the
+            # other. Leaving no file means the next run asks again.
+            #
+            # Under `force=True` this also leaves any PRIOR extraction of
+            # this scene intact rather than overwriting good output with
+            # nothing.
+            print(f"  Empty (no moments returned): {name}\n")
+            continue
 
         new_text = format_scene_output(name, body, result)
         if snapshot_scene_for_rerun(out_file, new_text):
@@ -478,8 +498,16 @@ BATCHED_SCENE_END = "<<<CG-SCENE {i:02d} END>>>"
 # cannot forge one because names appear only after BEGIN: on a line that
 # already began with the sentinel"). `.` does not match a newline, so a
 # marker can never span more than one line.
-_BATCHED_BEGIN_RE = re.compile(r"^<<<CG-SCENE (\d+) BEGIN: (.*)>>>$", re.MULTILINE)
-_BATCHED_END_RE = re.compile(r"^<<<CG-SCENE (\d+) END>>>$", re.MULTILINE)
+#
+# `[ \t\r]*` before the `$`: trailing blanks and a CR must not hide a
+# marker. The `claude -p` subprocess path can hand back CRLF line endings,
+# and `$` sitting hard against `>>>` would then match no BEGIN at all — the
+# whole group fails as NO_SECTIONS and a response the GM already paid for is
+# discarded, which is the most expensive possible reaction to a line ending.
+# This cannot forge a marker: the sentinel prefix still has to start at
+# column 0, and only whitespace is tolerated after the closing `>>>`.
+_BATCHED_BEGIN_RE = re.compile(r"^<<<CG-SCENE (\d+) BEGIN: (.*)>>>[ \t\r]*$", re.MULTILINE)
+_BATCHED_END_RE = re.compile(r"^<<<CG-SCENE (\d+) END>>>[ \t\r]*$", re.MULTILINE)
 
 # Reconciliation failure reasons (wire-protocol.md §3). Any one of these
 # fails the WHOLE group — nothing from it is written, for any scene in it

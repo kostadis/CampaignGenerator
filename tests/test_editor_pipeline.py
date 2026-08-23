@@ -997,3 +997,120 @@ def test_reextract_cmd_forwards_the_batched_ceiling(tmp_path):
     assert "--batch-max-tokens" in cmd
     assert cmd[cmd.index("--batch-max-tokens") + 1] == "48000"
     assert cmd[cmd.index("--max-tokens") + 1] == "8192"
+
+
+# ── Message Batches and batched scenes must never be emitted together ───────
+#
+# scene_extract refuses `--batch` + `--batch-scenes` outright (exit 1, before
+# any work). They arrive here from two places that cannot see each other:
+# `--batch` from the stored selection profile via `_selection_args`, and
+# `batch_scenes` already resolved from the per-run control / config pin /
+# backend default. Both can land true, and the run then died naming a flag
+# the GM never typed, with nothing written.
+
+def _batch_on(cfg):
+    """The same cfg with Message Batches on in the active backend profile."""
+    import dataclasses
+    prof = cfg.backends.anthropic.model_copy(update={"batch": True})
+    return dataclasses.replace(
+        cfg, backends=cfg.backends.model_copy(update={"anthropic": prof}))
+
+
+def _route(cfg, *, batch_scenes=None, rc=0):
+    """Drive the real route; return (argv, streamed chunks, logged knobs)."""
+    import asyncio
+    from unittest.mock import patch
+
+    captured: dict = {}
+
+    def fake_stream_subprocess(cmd, **kw):
+        captured["cmd"] = cmd
+        on_complete = kw.get("on_complete")
+
+        async def _empty():
+            if on_complete is not None:
+                on_complete(rc)
+            if False:
+                yield ""
+        return _empty()
+
+    def fake_record(cfg_, **kw):
+        captured["knobs"] = kw.get("knobs")
+
+    chunks: list[str] = []
+
+    async def _drive():
+        resp = await scene_editor.api_extract(
+            None, force=0, batch_scenes=batch_scenes, cfg=cfg)
+        async for chunk in resp.body_iterator:
+            chunks.append(chunk)
+
+    with patch.object(scene_editor, "stream_subprocess", fake_stream_subprocess), \
+            patch.object(scene_editor, "_record_activity", fake_record):
+        asyncio.run(_drive())
+    return captured["cmd"], chunks, captured.get("knobs")
+
+
+@pytest.mark.parametrize("batch_scenes", [None, 1])
+def test_batch_selection_stands_batched_scenes_down(tmp_path, batch_scenes):
+    """Whether batching came from the config pin (None -> effective True) or
+    from the GM ticking the box this run (1), the pair is never emitted."""
+    import dataclasses
+    cfg = _batch_on(dataclasses.replace(_reextract_cfg(tmp_path),
+                                        batch_scenes_effective=True))
+    cmd, _chunks, _knobs = _route(cfg, batch_scenes=batch_scenes)
+    assert "--batch" in cmd
+    assert "--batch-scenes" not in cmd
+    assert "--no-batch-scenes" in cmd, "DM-19: the flag is still explicit"
+
+
+def test_the_refused_pair_is_never_built(tmp_path):
+    """The property, stated as scene_extract states it: not both."""
+    import dataclasses
+    base = _batch_on(_reextract_cfg(tmp_path))
+    for effective in (True, False):
+        for per_run in (None, 0, 1):
+            cfg = dataclasses.replace(base, batch_scenes_effective=effective)
+            cmd, _c, _k = _route(cfg, batch_scenes=per_run)
+            assert not ("--batch" in cmd and "--batch-scenes" in cmd), (
+                f"effective={effective} per_run={per_run} builds the command "
+                f"scene_extract refuses")
+
+
+def test_without_message_batches_batched_scenes_are_untouched(tmp_path):
+    """The stand-down must not reach further than the conflict it resolves."""
+    import dataclasses
+    cfg = dataclasses.replace(_reextract_cfg(tmp_path),
+                              batch_scenes_effective=True)
+    cmd, _c, _k = _route(cfg)
+    assert "--batch" not in cmd
+    assert "--batch-scenes" in cmd
+
+
+def test_a_stood_down_run_says_so_before_it_starts(tmp_path):
+    import dataclasses
+    cfg = _batch_on(dataclasses.replace(_reextract_cfg(tmp_path),
+                                        batch_scenes_effective=True))
+    _cmd, chunks, _knobs = _route(cfg)
+    assert any("stood down" in c for c in chunks), \
+        "a control that silently does nothing is the failure being prevented"
+
+
+def test_a_normal_run_carries_no_stand_down_notice(tmp_path):
+    import dataclasses
+    cfg = dataclasses.replace(_reextract_cfg(tmp_path),
+                              batch_scenes_effective=True)
+    _cmd, chunks, _knobs = _route(cfg)
+    assert not any("stood down" in c for c in chunks)
+
+
+def test_the_activity_log_records_what_ran_not_what_was_asked(tmp_path):
+    """A knob record that disagrees with its own command line is worse than
+    none — it is the evidence a later cost question gets answered from."""
+    import dataclasses
+    cfg = _batch_on(dataclasses.replace(_reextract_cfg(tmp_path),
+                                        batch_scenes_effective=True))
+    cmd, _chunks, knobs = _route(cfg, batch_scenes=1)
+    assert knobs is not None
+    assert knobs["batch_scenes"] is False
+    assert ("--batch-scenes" in cmd) is knobs["batch_scenes"]

@@ -1687,3 +1687,189 @@ def test_batched_call_passes_aliases_only_as_roster_knowledge():
         "traceably built from format_npc_roster() — aliases must reach the "
         "model as roster knowledge specifically, not some other transform."
     )
+
+
+# ── FR-006 / DM-4: an empty scene is never written, in EITHER mode ──────────
+#
+# DM-4 says `exists` is the sole skip criterion and is the same one both
+# modes use, "so a session started in one mode and finished in the other
+# converges on the same set". The per-scene loop used to write a file for an
+# empty response, which retired that scene permanently on the strength of one
+# empty reply — and made the two modes disagree.
+
+def _scene_dicts(*names):
+    return [{"name": n, "body": f"- bullet for {n}"} for n in names]
+
+
+def _per_scene_stream(empty_for):
+    def _fake(client, system, user, model, **kwargs):
+        return "" if empty_for in user else '> "a line that was spoken"'
+    return _fake
+
+
+def test_per_scene_empty_response_writes_no_file(tmp_path):
+    scenes = _scene_dicts("Loud Scene", "Quiet Scene")
+    with patch.object(campaignlib.scenes, "stream_api",
+                      side_effect=_per_scene_stream("Quiet Scene")):
+        saved = campaignlib.run_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes, extract_dir=tmp_path,
+            model="m", extraction_instruction="{name}\n{body}",
+        )
+    assert sorted(p.name for p in tmp_path.glob("*.md")) == ["01_loud_scene.md"]
+    assert [p.name for p in saved] == ["01_loud_scene.md"]
+
+
+def test_per_scene_empty_response_is_requested_again_next_run(tmp_path):
+    """Not writing it is only useful if the next run actually asks again."""
+    scenes = _scene_dicts("Loud Scene", "Quiet Scene")
+    with patch.object(campaignlib.scenes, "stream_api",
+                      side_effect=_per_scene_stream("Quiet Scene")):
+        campaignlib.run_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes, extract_dir=tmp_path,
+            model="m", extraction_instruction="{name}\n{body}",
+        )
+
+    asked: list[str] = []
+
+    def _second(client, system, user, model, **kwargs):
+        asked.append(user)
+        return '> "found something this time"'
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_second):
+        campaignlib.run_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes, extract_dir=tmp_path,
+            model="m", extraction_instruction="{name}\n{body}",
+        )
+    assert len(asked) == 1 and "Quiet Scene" in asked[0], \
+        "the already-extracted scene must stay skipped, the empty one re-asked"
+    assert sorted(p.name for p in tmp_path.glob("*.md")) == [
+        "01_loud_scene.md", "02_quiet_scene.md"]
+
+
+def test_per_scene_empty_response_under_force_keeps_the_prior_file(tmp_path):
+    """--force must not trade a good extraction for an empty response."""
+    scenes = _scene_dicts("Only Scene")
+    with patch.object(campaignlib.scenes, "stream_api",
+                      side_effect=_per_scene_stream("nothing matches")):
+        campaignlib.run_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes, extract_dir=tmp_path,
+            model="m", extraction_instruction="{name}\n{body}",
+        )
+    out_file = tmp_path / "01_only_scene.md"
+    before = out_file.read_text(encoding="utf-8")
+
+    with patch.object(campaignlib.scenes, "stream_api",
+                      side_effect=lambda *a, **k: "   \n"):
+        campaignlib.run_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes, extract_dir=tmp_path,
+            model="m", extraction_instruction="{name}\n{body}", force=True,
+        )
+    assert out_file.read_text(encoding="utf-8") == before
+
+
+def test_both_modes_agree_about_an_empty_scene(tmp_path):
+    """DM-4 convergence, asserted directly: same scenes, same empty reply,
+    same set of files on disk whichever mode produced them."""
+    scenes = _scene_dicts("Scene 1", "Scene 2")
+
+    per_scene_dir = tmp_path / "per_scene"
+    with patch.object(campaignlib.scenes, "stream_api",
+                      side_effect=_per_scene_stream("Scene 2")):
+        campaignlib.run_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=per_scene_dir, model="m",
+            extraction_instruction="{name}\n{body}",
+        )
+
+    batched_dir = tmp_path / "batched"
+
+    def _batched(client, system, user, model, **kwargs):
+        return ("<<<CG-SCENE 01 BEGIN: Scene 1>>>\n"
+                '> "a line that was spoken"\n'
+                "<<<CG-SCENE 01 END>>>\n"
+                "<<<CG-SCENE 02 BEGIN: Scene 2>>>\n"
+                "\n"
+                "<<<CG-SCENE 02 END>>>\n")
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=_batched):
+        report = campaignlib.run_batched_scene_extraction(
+            client=None, vtt_text="VTT", scenes=scenes,
+            extract_dir=batched_dir, model="m",
+            user_template=_BATCHED_USER_TEMPLATE, max_tokens=32000,
+        )
+
+    assert report["scenes_empty"] == ["Scene 2"]
+    assert (sorted(p.name for p in per_scene_dir.glob("*.md"))
+            == sorted(p.name for p in batched_dir.glob("*.md"))
+            == ["01_scene_1.md"])
+
+
+# ── A batched run leaves a log, exactly as the per-scene run does ───────────
+#
+# The batched branch returned before the shared `save_log` block, so the one
+# path whose grouping, transmission count and group failures are worth
+# recording was the one path that recorded nothing — and --no-log was inert.
+
+def _batched_cli_argv(vtt, summary, out_dir, *extra):
+    return ["scene_extract.py", str(vtt), "--summary", str(summary),
+            "--output-dir", str(out_dir), "--batch-scenes", *extra]
+
+
+def test_batched_run_writes_a_log(monkeypatch, tmp_path):
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(_eight_scene_gmassist_summary(), encoding="utf-8")
+    out_dir = tmp_path / "out"
+    monkeypatch.setattr(se, "client_from_args", lambda args: MagicMock())
+
+    with patch.object(campaignlib.scenes, "stream_api",
+                      side_effect=_echoing_batched_stream([])):
+        monkeypatch.setattr(sys, "argv", _batched_cli_argv(vtt, summary, out_dir))
+        se.main()
+
+    logs = list((out_dir / "logs").glob("*.md"))
+    assert len(logs) == 1, "a batched run must leave a log, like the per-scene run"
+    text = logs[0].read_text(encoding="utf-8")
+    assert "Batching" in text
+    assert "transcript transmissions" in text
+
+
+def test_batched_run_honours_no_log(monkeypatch, tmp_path):
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(_eight_scene_gmassist_summary(), encoding="utf-8")
+    out_dir = tmp_path / "out"
+    monkeypatch.setattr(se, "client_from_args", lambda args: MagicMock())
+
+    with patch.object(campaignlib.scenes, "stream_api",
+                      side_effect=_echoing_batched_stream([])):
+        monkeypatch.setattr(sys, "argv",
+                            _batched_cli_argv(vtt, summary, out_dir, "--no-log"))
+        se.main()
+
+    assert not (out_dir / "logs").exists()
+
+
+def test_a_partial_batched_run_still_writes_its_log(monkeypatch, tmp_path):
+    """Exit 3 must not jump over the log — a partial run is exactly when the
+    record of what was requested and what landed is worth having."""
+    vtt = tmp_path / "session.vtt"
+    _write_vtt(vtt)
+    summary = tmp_path / "summary.md"
+    summary.write_text(_eight_scene_gmassist_summary(), encoding="utf-8")
+    out_dir = tmp_path / "out"
+    monkeypatch.setattr(se, "client_from_args", lambda args: MagicMock())
+
+    with patch.object(campaignlib.scenes, "stream_api",
+                      side_effect=_fake_stream_partial_5_1_2):
+        monkeypatch.setattr(sys, "argv", _batched_cli_argv(vtt, summary, out_dir))
+        with pytest.raises(SystemExit) as exc_info:
+            se.main()
+
+    assert exc_info.value.code == 3
+    logs = list((out_dir / "logs").glob("*.md"))
+    assert len(logs) == 1
+    text = logs[0].read_text(encoding="utf-8")
+    assert "Scene 6" in text and "Scene 7" in text and "Scene 8" in text

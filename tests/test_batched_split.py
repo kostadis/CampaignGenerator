@@ -428,3 +428,63 @@ def test_split_batched_response_five_complete_one_incomplete_two_absent_sc005():
     assert len(complete) == 5
     assert len(unfinished) == 3
     assert {s["i"] for s in unfinished} == {6, 7, 8}
+
+
+# ── Marker lines survive a line ending and trailing blanks ──────────────────
+#
+# The `claude -p` subprocess path can hand back CRLF, and a model can leave a
+# trailing space on a sentinel line. With `$` sitting hard against `>>>`,
+# neither marker matched at all: no BEGIN anywhere means NO_SECTIONS, which
+# fails the WHOLE group and discards a response the GM already paid for.
+
+def test_crlf_markers_are_still_read():
+    entries = [_entry(3, "The Margaster Hypothesis")]
+    text = ("<<<CG-SCENE 03 BEGIN: The Margaster Hypothesis>>>\r\n"
+            "moments 3\r\n"
+            "<<<CG-SCENE 03 END>>>\r\n")
+    result = split_batched_response(text, entries)
+    assert result["failed"] is False
+    assert result["sections"][0]["status"] == "complete"
+    assert result["sections"][0]["body"] == "moments 3"
+
+
+def test_trailing_blanks_on_marker_lines_are_tolerated():
+    entries = [_entry(1, "Scene 1")]
+    text = ("<<<CG-SCENE 01 BEGIN: Scene 1>>>   \n"
+            "moments 1\n"
+            "<<<CG-SCENE 01 END>>>\t\n")
+    result = split_batched_response(text, entries)
+    assert result["failed"] is False
+    assert result["sections"][0]["status"] == "complete"
+    assert result["sections"][0]["body"] == "moments 1"
+
+
+def test_crlf_does_not_leak_a_carriage_return_into_the_body():
+    """The body is written to disk, so a stray \\r would land in the file."""
+    entries = [_entry(2, "Scene 2")]
+    text = ("<<<CG-SCENE 02 BEGIN: Scene 2>>>\r\n"
+            "moments 2\r\n"
+            "<<<CG-SCENE 02 END>>>\r\n")
+    body = split_batched_response(text, entries)["sections"][0]["body"]
+    assert body == "moments 2"
+
+
+def test_tolerating_blanks_does_not_let_a_mid_line_marker_be_forged():
+    """Column-0 anchoring is what stops a scene name forging a marker (D5);
+    allowing trailing whitespace must not weaken the OPENING anchor."""
+    entries = [_entry(3, "The Margaster Hypothesis")]
+    text = ("prose <<<CG-SCENE 03 BEGIN: The Margaster Hypothesis>>>\n"
+            "moments\n")
+    result = split_batched_response(text, entries)
+    assert result["failed"] is True
+    assert result["failure_reason"] == BATCHED_NO_SECTIONS
+
+
+def test_text_after_the_closing_marker_is_still_not_body():
+    entries = [_entry(4, "Scene 4")]
+    text = ("<<<CG-SCENE 04 BEGIN: Scene 4>>>\r\n"
+            "moments 4\r\n"
+            "<<<CG-SCENE 04 END>>>  \r\n"
+            "trailing commentary the model added\r\n")
+    section = split_batched_response(text, entries)["sections"][0]
+    assert section["body"] == "moments 4"

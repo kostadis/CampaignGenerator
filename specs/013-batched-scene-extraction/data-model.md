@@ -52,6 +52,14 @@ reports that everything is already extracted. It is not an error.
 the per-scene mode uses — so a session started in one mode and finished in the
 other converges on the same set.
 
+Convergence puts one requirement on the OTHER mode, which it did not originally
+meet: `run_scene_extraction` wrote a file even when the model returned nothing,
+so an empty result retired that scene permanently — while the batched path
+(FR-006, status `"empty"`) left no file and asked again. Both now decline to
+write an empty scene, so `exists` means the same thing on both paths. Under
+`--force` this also stops an empty response from overwriting a good prior
+extraction.
+
 ---
 
 ## 3. OutputProjection
