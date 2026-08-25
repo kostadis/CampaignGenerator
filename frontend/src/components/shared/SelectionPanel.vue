@@ -28,7 +28,7 @@ const props = defineProps<{
   canOverride?: boolean
 }>()
 
-const emit = defineEmits<{ compatible: [boolean] }>()
+const emit = defineEmits<{ compatible: [boolean]; backend: [string] }>()
 
 const config = useConfigStore()
 
@@ -77,11 +77,16 @@ async function load() {
   try {
     resolved.value = await apiFetch<Resolved>(resolvedUrl.value)
     emit('compatible', resolved.value?.compatible !== false)
+    emit('backend', resolved.value?.backend || 'anthropic')
   } catch (e: any) {
     // A preview that fails must not block the page — the run itself still
     // resolves server-side and will refuse if it has to.
     resolved.value = null
     emit('compatible', true)
+    // Unknown backend — assume anthropic so a stale/failed preview still
+    // requires an API key rather than silently exempting a run that turns
+    // out to need one.
+    emit('backend', 'anthropic')
   }
 }
 

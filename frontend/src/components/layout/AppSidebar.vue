@@ -206,7 +206,7 @@ function navigate(path: string) {
           <option v-for="m in config.models" :key="m" :value="m">{{ m }}</option>
         </select>
       </div>
-      <div v-if="!config.apiKeyPresent && currentBackend !== 'claude-code'" class="api-warning">
+      <div v-if="!config.apiKeyPresent && currentBackend === 'anthropic'" class="api-warning">
         ANTHROPIC_API_KEY not set
       </div>
     </div>
