@@ -98,6 +98,45 @@ Concrete clause: the ensemble chapter picker stores `ui.ensemble.chapters_select
 
 *Kills: the Implicit Blast Radius* — a batch action that silently expands to "everything" because the set was never explicitly chosen.
 
+### XI. Parity is Bidirectional; Every CLI Capability Has a Face
+
+Principle VI points one way (the CLI is the engine, the UI is a face) and Principle IX points back (a UI step that cannot be performed equivalently at the CLI has stolen judgment from the human). This principle closes the loop: **every CLI capability is reachable from the UI**, and a new CLI tool or a new flag on an existing one ships its UI surface in the same feature, not in a follow-up.
+
+The exemption is real but narrow: *unless the human explicitly asked for no UI*. An omission is not an exemption, "phase 2" is not an exemption, and "the operator can just run it" is not an exemption — an unstated decision is not a decision (Principle II's logic applied to scope of delivery). When a capability is deliberately CLI-only, that ruling is recorded in the feature's `## Constitution Check` in `plan.md`, naming who decided and why.
+
+This does not license a walled garden. What the UI must expose is the **invocation** — the ability to reach the capability, choose its inputs, run it, and see what came out — never the judgment between steps, which Principle IX keeps at the CLI and in chat. Parity is about reach, not about relocating the thinking.
+
+Concrete clause: a flag becomes reachable in `_build_*_cmd()` in `server/routers/*.py`. A flag the router hardcodes is a capability with no face — the engine offers a choice the human cannot make. `SessionDocEditor.vue:473` pinning `?force=1` on every Re-Extract click is the scar (#323, `specs/012-scene-extract-optional-force/`): `scene_extract`'s `--force`, `run_scene_extraction`'s skip-if-exists, and the route's own `force: int = 0` were all correct, and the UI silently forced anyway, re-spending tokens on already-reviewed scenes.
+
+*Kills: the Orphaned Capability* — a flag that exists in the engine, works correctly, and no human can reach.
+
+### XII. One Spelling per Option; No Configuration Drift Across CLIs
+
+An option means one thing, is spelled one way, and defaults one way — across every CLI that shares its meaning. A new option is introduced **across its whole family or not at all**. Adding `--foo` to one script and leaving its siblings without it does not produce a small inconsistency; it produces a dialect, and the human must then remember which script speaks which — Principle VIII's tribal state in flag form.
+
+The existing vocabulary is the vocabulary. `--config` is auto-detected identically everywhere via `find_default_config(__file__)` (`campaignlib/config.py`). `--backend` / `--model` mean the same thing on every CLI that calls a model. `--force` means "overwrite what is already there" and never anything else. `--campaign-dir` names the workspace on every migrator. When a concept already has a name, reuse the name; when it needs a new one, apply it to every sibling in the same change.
+
+Defaults are declared once, in the config model that owns them — never re-spelled as a literal at a call site or a route edge. `server/ensemble_config_shared.py`'s `EnsemblePaths` / `EnsembleTuning` is the pattern: routes take a sentinel (`""`, or `None` where `0` is meaningful) and resolve from `EnsembleConfigService.resolved()`, and `tests/test_ensemble_config_defaults.py` fails the build if a defaulted literal reappears in the router. A default duplicated into a second place is a Split-Brain that has not diverged *yet*.
+
+Superseding is also a family-wide act: `--registry` replaced `--aliases` / `--known-names` on every consumer at once and errors when combined with them, rather than landing on some CLIs and leaving others on the old flag.
+
+*Kills: Dialect Drift* — the same idea spelled five ways across five scripts, so the human's knowledge of one tool is worthless at the next.
+
+### XIII. Breaking State Changes Migrate Out of Band and Ship a Migration Document
+
+When a feature changes the *shape* of state on disk — a config schema, a workspace layout, a filename convention — the change is performed by a **separate, one-shot migration CLI the human runs deliberately**. A feature never silently upgrades state as a side effect of running.
+
+Two prohibitions follow:
+
+- **No lazy in-place upgrade.** A pipeline that rewrites state because it happened to read it does the irreversible thing at the moment the human is least prepared for it, usually mid-run, usually against a workspace they were not thinking about.
+- **No dual-location back-compat probe.** This is a single-user system: migrate and delete. Reading "the new place, falling back to the old place" is how the same fact comes to live in three locations and disagree with itself. The retired location is **refused with the migration command in the error message** — as `party.yaml`'s `player:` and `session_doc.yaml`'s `roster` are — not quietly ignored. Silent tolerance is the worse failure: `UIState` is `extra="allow"`, so an unmigrated `ui.ensemble` block loads, is dropped, and the page starts from schema defaults, losing hand-tuned selections without ever reporting a problem.
+
+The migrators are the shape to copy: `server/migrate_*.py`, sharing `--campaign-dir` and a `--force` that refuses to clobber (Principle XII), reading the old file raw rather than through a live typed model so they can rescue fields no current schema declares, reporting unrecognised keys instead of dropping them, and each covered by a `tests/test_migrate_*.py`.
+
+**The migration document is part of the feature's output, not a follow-up.** A feature that breaks state is not done until it ships a document stating: what changed shape, which workspaces are affected, the exact command to run, what happens to a workspace that never runs it, and how to verify it worked. It lives at `specs/<feature>/migration.md`, with the operator-facing instructions in `docs/`. A migration that exists only as a script the author remembers is Principle VIII's tribal state pointed at the most destructive operation in the system.
+
+*Kills: the Silent Schema Break* — a state change that reaches a workspace as an unexplained failure, or as data quietly discarded, months after the author has forgotten it.
+
 ## Architecture is Destiny
 
 Bad architectural choices are liabilities, and in this system the currency is twofold: **token spend** and **precision failures at the table**.
@@ -120,7 +159,7 @@ Humans author structure, identity, and schema. The LLM — including Spec Kit it
 This constitution supersedes conflicting specs, plans, and tasks. A conflict requires written justification or an amendment — not a silent override.
 
 - **Principle precedence:** I (Disk is Truth) and II (The Human Checkpoint) outrank all other principles. When a convenience, a performance gain, or a cleaner abstraction collides with truth-on-disk or the human gate, truth and the gate win.
-- Every spec and plan is tested, by name, against all ten principles before implementation begins.
+- Every spec and plan is tested, by name, against all thirteen principles before implementation begins.
 - Amendments require a stated rationale, a version bump, and a check that dependent templates and docs stay in sync.
 - Semantic versioning of this document:
   - **MAJOR** — a principle removed or redefined in a backward-incompatible way.
@@ -129,6 +168,8 @@ This constitution supersedes conflicting specs, plans, and tasks. A conflict req
 
 Runtime development guidance lives in `CLAUDE.md` (this repo) and `~/.claude/CLAUDE.md` (global). Where those and this constitution agree, this is the canonical statement; where they drift, amend one to match the other.
 
-**Version**: 1.2.0 | **Ratified**: 2026-06-27 | **Last Amended**: 2026-06-27
+**Version**: 1.3.0 | **Ratified**: 2026-06-27 | **Last Amended**: 2026-08-25
 
+> **1.3.0** (MINOR) — Added three principles governing how a feature reaches the human and how it changes state underneath them. **XI** (*Parity is Bidirectional*) closes the loop VI and IX left open: every CLI capability is reachable from the UI in the same feature that adds it, and a CLI-only capability is an explicitly recorded ruling, never an omission — #323's hardcoded `?force=1` is the scar. **XII** (*One Spelling per Option*) forbids CLI dialect drift: an option is introduced across its whole family with one name, one meaning and one default, declared once in the config model that owns it. **XIII** (*Breaking State Changes Migrate Out of Band*) requires a separate one-shot migration CLI rather than a lazy in-place upgrade or a dual-location back-compat probe, and makes a migration document part of the feature's output.
+>
 > **1.2.0** (MINOR) — Added Principle X (*Selection is Explicit; There is No Silent "All"*), arising from the ensemble chapter picker: a batch pass acts only on an explicitly chosen set, and "Select all" must materialize that set rather than be an empty-means-everything default.
