@@ -38,6 +38,16 @@ const returnCode = ref<number | null>(null)
 // tokens are spent, instead of surfacing as a 409 the operator has to
 // interpret mid-stream (FR-009/FR-012).
 const selectionCompatible = ref(true)
+// The backend this run will actually resolve to (mirrored from
+// SelectionPanel's own /selection/resolved fetch). Defaults to 'anthropic'
+// so a page with no selectionService — or a SelectionPanel that hasn't
+// reported yet — keeps the pre-existing conservative behaviour of requiring
+// a key. Only an ANTHROPIC run needs ANTHROPIC_API_KEY; dgx/openrouter/
+// claude-code runs must not be blocked or warned about it (mirrors
+// AppSidebar.vue's `currentBackend !== 'claude-code'` guard, generalised to
+// every non-anthropic backend since none of them touch the Anthropic API).
+const selectionBackend = ref('anthropic')
+const needsApiKey = computed(() => !props.selectionService || selectionBackend.value === 'anthropic')
 
 const buttonLabel = computed(() => {
   if (status.value === 'running') return 'Running\u2026'
@@ -67,7 +77,7 @@ const commandPreview = computed(() => {
 function run() {
   if (status.value === 'running' || props.disabled) return
   if (!selectionCompatible.value) return
-  if (!config.apiKeyPresent) return
+  if (needsApiKey.value && !config.apiKeyPresent) return
 
   status.value = 'running'
   output.value = ''
@@ -119,6 +129,7 @@ function clear() {
       :doc="selectionDoc"
       :can-override="selectionCanOverride"
       @compatible="(ok: boolean) => (selectionCompatible = ok)"
+      @backend="(b: string) => (selectionBackend = b)"
     />
 
     <!-- Command preview -->
@@ -130,11 +141,11 @@ function clear() {
     <div class="run-controls">
       <button
         class="btn-success"
-        :disabled="disabled || status === 'running' || !config.apiKeyPresent || !selectionCompatible"
+        :disabled="disabled || status === 'running' || (needsApiKey && !config.apiKeyPresent) || !selectionCompatible"
         @click="run"
       >{{ buttonLabel }}</button>
 
-      <span v-if="!config.apiKeyPresent" class="warning">
+      <span v-if="needsApiKey && !config.apiKeyPresent" class="warning">
         ANTHROPIC_API_KEY not set
       </span>
 
