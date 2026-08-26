@@ -2,9 +2,12 @@ import { ref } from 'vue'
 import { apiFetch, apiPut } from '../../api/client'
 import { connectSSE } from '../../api/sse'
 
-/** Run an ensemble stage over SSE. Unlike RunPanel this does NOT gate on
- *  ANTHROPIC_API_KEY — the ensemble page supports OpenRouter/DGX backends that
- *  don't need it. */
+/** Run an ensemble stage over SSE.
+ *
+ *  This hook used to be the one runner that did NOT gate on ANTHROPIC_API_KEY,
+ *  because the ensemble page supports OpenRouter/DGX backends that never read
+ *  it. #342 deleted that gate everywhere else too: no runner asks whether a
+ *  credential is present, and every backend refuses for itself at call time. */
 export function useEnsembleRun() {
   const output = ref('')
   const status = ref<'idle' | 'running' | 'done' | 'error' | 'aborted'>('idle')

@@ -17,7 +17,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
-from server.config import DEFAULT_MODEL, MODELS, api_key_present, path_exists
+from server.config import DEFAULT_MODEL, MODELS, path_exists
 from server.platform_config_shared import BACKENDS
 from server.platform_config_service import PlatformConfigService, require_platform
 
@@ -165,9 +165,15 @@ def get_models(request: Request):
 
 @router.get("/status")
 def get_status():
-    """Return API key status and working directory."""
+    """Return the server's working directory.
+
+    #342 removed ``api_key_present`` from this payload. It reported one global
+    boolean — is ANTHROPIC_API_KEY set — which three of the four supported
+    backends never read, which a placeholder value satisfied, and which the
+    claude-code backend actively wants *absent* (``backends.py`` strips it from
+    the child env so billing lands on the subscription). Credentials are checked
+    by the backend that needs them, at call time, where the code knows which one
+    that is.
+    """
     import os
-    return {
-        "api_key_present": api_key_present(),
-        "cwd": os.getcwd(),
-    }
+    return {"cwd": os.getcwd()}

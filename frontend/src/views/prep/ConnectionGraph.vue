@@ -379,7 +379,7 @@ const entityOptions = computed(() => {
     <div class="form-section action-row">
       <button
         class="btn-primary"
-        :disabled="!allSelected.length || extracting || !config.apiKeyPresent"
+        :disabled="!allSelected.length || extracting"
         @click="extract"
       >
         {{ extracting ? 'Extracting...' : 'Extract Connections (calls Claude API)' }}

@@ -239,7 +239,13 @@ pip install anthropic pyyaml pyperclip pyvis fastapi uvicorn
 cd frontend && npm install   # Vue 3 frontend
 ```
 
-`ANTHROPIC_API_KEY` must be set in the environment.
+`ANTHROPIC_API_KEY` must be set **for the `anthropic` backend**. It is not a
+prerequisite for running the app: `claude-code` (subscription) and `dgx` (local
+endpoint) read no credential, `openrouter` reads its own, and the deterministic
+pipelines call no model at all. Nothing gates a run on whether a key is present
+— each backend refuses for itself, at the call, when it needs something it does
+not have (#342). Do not reintroduce a global "is a key set" probe;
+`tests/test_no_credential_gate.py` fails the build if one appears.
 
 For the OpenRouter backend (ensemble workflow synthesis/extraction), `pip install
 openai` and set `OPENROUTER_API_KEY` in the environment. OpenRouter is reached

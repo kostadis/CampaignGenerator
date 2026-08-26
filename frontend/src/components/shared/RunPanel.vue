@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { connectSSE } from '../../api/sse'
-import { useConfigStore } from '../../stores/config'
 import StreamOutput from './StreamOutput.vue'
 import SelectionPanel from './SelectionPanel.vue'
 
@@ -30,7 +29,6 @@ const emit = defineEmits<{
   done: [returncode: number]
 }>()
 
-const config = useConfigStore()
 const output = ref('')
 const status = ref<'idle' | 'running' | 'done' | 'error'>('idle')
 const returnCode = ref<number | null>(null)
@@ -67,7 +65,6 @@ const commandPreview = computed(() => {
 function run() {
   if (status.value === 'running' || props.disabled) return
   if (!selectionCompatible.value) return
-  if (!config.apiKeyPresent) return
 
   status.value = 'running'
   output.value = ''
@@ -130,13 +127,9 @@ function clear() {
     <div class="run-controls">
       <button
         class="btn-success"
-        :disabled="disabled || status === 'running' || !config.apiKeyPresent || !selectionCompatible"
+        :disabled="disabled || status === 'running' || !selectionCompatible"
         @click="run"
       >{{ buttonLabel }}</button>
-
-      <span v-if="!config.apiKeyPresent" class="warning">
-        ANTHROPIC_API_KEY not set
-      </span>
 
       <span v-if="!selectionCompatible" class="warning">
         Fix the selection above before running

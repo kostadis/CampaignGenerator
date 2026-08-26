@@ -206,9 +206,6 @@ function navigate(path: string) {
           <option v-for="m in config.models" :key="m" :value="m">{{ m }}</option>
         </select>
       </div>
-      <div v-if="!config.apiKeyPresent && currentBackend !== 'claude-code'" class="api-warning">
-        ANTHROPIC_API_KEY not set
-      </div>
     </div>
   </aside>
 </template>
@@ -339,10 +336,4 @@ function navigate(path: string) {
   font-family: var(--mono);
 }
 
-.api-warning {
-  margin-top: 8px;
-  font-size: 10px;
-  color: var(--peach);
-  font-weight: 600;
-}
 </style>

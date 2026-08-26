@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { connectSSE } from '../../api/sse'
-import { useConfigStore } from '../../stores/config'
 import StreamOutput from './StreamOutput.vue'
 import SelectionPanel from './SelectionPanel.vue'
 
@@ -33,7 +32,6 @@ const emit = defineEmits<{
   done: [phase: 'extract' | 'synthesize', returncode: number]
 }>()
 
-const config = useConfigStore()
 
 type Status = 'idle' | 'running' | 'done' | 'error'
 
@@ -96,7 +94,7 @@ function buildUrl(endpoint: string, params: Record<string, any>): string {
 }
 
 function runExtract() {
-  if (!canExtract.value || !config.apiKeyPresent) return
+  if (!canExtract.value) return
   extractStatus.value = 'running'
   extractOutput.value = ''
 
@@ -113,7 +111,7 @@ function runExtract() {
 }
 
 function runSynthesize() {
-  if (!canSynthesize.value || !config.apiKeyPresent) return
+  if (!canSynthesize.value) return
   synthStatus.value = 'running'
   synthOutput.value = ''
 
@@ -252,12 +250,9 @@ if (props.extractDir) refreshFiles()
         <div class="controls">
           <button
             class="btn-primary"
-            :disabled="!canExtract || !config.apiKeyPresent"
+            :disabled="!canExtract"
             @click="runExtract"
           >{{ extractButtonLabel }}</button>
-          <span v-if="!config.apiKeyPresent" class="warning">
-            ANTHROPIC_API_KEY not set
-          </span>
         </div>
 
         <!-- Review area -->
@@ -331,7 +326,7 @@ if (props.extractDir) refreshFiles()
         <div class="controls">
           <button
             class="btn-success"
-            :disabled="!canSynthesize || !config.apiKeyPresent"
+            :disabled="!canSynthesize"
             @click="runSynthesize"
           >{{ synthButtonLabel }}</button>
           <span v-if="synthesizeDisabled" class="help">
@@ -405,7 +400,6 @@ if (props.extractDir) refreshFiles()
   background: var(--bg-mantle);
   border-bottom: 1px solid var(--bg-surface0);
 }
-.warning { font-size: 11px; color: var(--peach); font-weight: 600; }
 .help { font-size: 11px; color: var(--text-muted); }
 
 .review {

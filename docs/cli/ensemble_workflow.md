@@ -766,7 +766,9 @@ claude -p \
 >
 > **Also strip the API key.** When `ANTHROPIC_API_KEY` is exported in the shell,
 > `claude -p` bills the metered API instead of the subscription. Prefix every call
-> with `env -u ANTHROPIC_API_KEY` to force subscription billing.
+> with `env -u ANTHROPIC_API_KEY` to force subscription billing. (This used to
+> conflict with the web UI, which disabled every Run button when the key was
+> absent. It no longer does — #342 deleted that check.)
 
 `campaign_state`, `party`, and `planning` all support `--dump-input` / `--dump-only`; use the same pattern as above for those docs (sections 3c–3e show the subscription path for each). Note `--output` is required by argparse even with `--dump-only` (it is the eventual write target; the dump just stops before the API call).
 

@@ -7,7 +7,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .client import _is_retryable
+from .client import _is_retryable, _require_anthropic_credential
 
 
 # ── Batch API ─────────────────────────────────────────────────────────────────
@@ -70,6 +70,7 @@ def submit_batch(client, requests: list[dict]) -> str:
     """
     if not requests:
         raise ValueError("submit_batch: requests list is empty")
+    _require_anthropic_credential(client)
     delays = [10, 20, 40]
     for attempt, delay in enumerate([-1] + delays):
         if delay >= 0:

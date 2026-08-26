@@ -232,7 +232,11 @@ summaries/YYYYMMDD/
 
 ## Required environment
 
-- `ANTHROPIC_API_KEY` must be exported in the shell that launches the server. The sidebar shows a yellow warning if it isn't set.
+- `ANTHROPIC_API_KEY` — needed only by runs that actually target the
+  `anthropic` backend. The server no longer probes for it and no button is
+  disabled when it is absent (#342); a run that needs it refuses by itself,
+  naming it. If you work on the subscription backend, leave it **unset** —
+  `claude -p` bills the metered API when it finds a key in its environment.
 - Python deps installed in the active venv:
   ```bash
   uv pip install -r ~/src/CampaignGenerator/requirements.txt --python ~/.venv/bin/python3
