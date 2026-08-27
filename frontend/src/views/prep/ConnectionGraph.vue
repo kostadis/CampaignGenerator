@@ -11,6 +11,11 @@ const config = useConfigStore()
 // platform-wide backend (server/routers/connections.py's resolve_selection
 // comment), so unlike RunPanel/ExtractSynthesizePanel there is no per-service
 // SelectionPanel to read a resolved backend from. `config.backend` (the
+// sidebar's own tracked value) IS the backend this run will use, which is why
+// the run button names it rather than asserting "calls Claude API". Nothing
+// here gates on a credential: #342 deleted that predicate outright, and each
+// backend refuses for itself at the call.
+
 // Form state is deliberately stateless — see docs/config/ui-state-retirement.md
 // D1 (the reserved `ui.connections` section was never written by anything and
 // is retired). The extracted graph itself IS persisted, but on disk via

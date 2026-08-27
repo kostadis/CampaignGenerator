@@ -403,3 +403,21 @@ def test_list_json_names_the_missing_store_for_a_no_input_section(tmp_path):
     assert threads["state"] == "no-input"
     assert any("thread_registry.yaml" in m for m in threads["missing"]), \
         "the row must name the store, not merely say 'no-input'"
+
+
+def test_assemble_covers_the_whole_doc_even_for_a_single_section_build(tmp_path):
+    """The engine fact the UI signpost depends on: `--sections threads` builds
+    only that section, but assembly still walks the doc's full spec, so a
+    DIFFERENT required section with no input blocks the draft.
+
+    This is why ProjectionSections must not scope its explanation box to the
+    sections the GM ticked (review finding, 2026-08-27).
+    """
+    camp = _campaign(tmp_path)
+    (camp / "docs/thread_registry.yaml").unlink()      # a required section loses its input
+    r = run_cli(camp, "build", "--doc", "planning", "--sections", "emerging")
+    combined = r.stdout + r.stderr
+    # the build of `spine` itself is fine; assembly is what reports `threads`
+    assert "threads" in combined, (
+        "assembly must surface the unselected required section, otherwise the "
+        "UI has nothing to key its signpost on")

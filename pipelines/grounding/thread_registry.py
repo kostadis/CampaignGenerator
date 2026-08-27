@@ -496,6 +496,17 @@ def cmd_rule(args) -> None:
     if pr is None:
         raise SystemExit(f"error: no proposal with norm {args.norm!r} "
                          f"— run propose first")
+    if args.status == "ratified" and not (args.thread or pr.get("ruled_thread")):
+        # Without a thread to point at, the next `propose` cannot tell this
+        # apart from an unruled candidate: the short-circuit covers only
+        # rejected/deferred, `match_thread` finds nothing, and the row is
+        # rewritten as `pending`. The ruling would evaporate, contradicting
+        # "GM rulings are preserved across re-proposes" (review finding).
+        raise SystemExit(
+            "error: --status ratified needs --thread ID (the thread the "
+            "ratification produced), or use `ratify` to create it — a "
+            "ratification with no thread behind it does not survive the next "
+            "propose")
     if args.status == "deferred":
         append_adjudication(args.adjudication, pr, args.note or "")
     pr["status"] = args.status
@@ -606,12 +617,32 @@ def cmd_ratify(args) -> None:
                   "aliases": [], "log": []}
         data["threads"].append(target)
 
+    # A matched candidate keeps its FULL chapter span in the proposal, so a
+    # plan derived from it can carry a chapter the target thread already
+    # logged — appending it again duplicates canon, and `check_registry` does
+    # not flag a repeated chapter (review finding, 2026-08-27). Skip the exact
+    # (chapter, change) pairs that are already present, and SAY so rather than
+    # dropping them silently.
+    existing = {(r.get("chapter"), r.get("change")) for r in (target.get("log") or [])}
+    skipped = []
     for row in rows:
+        key = (row["chapter"], row["change"])
+        if key in existing:
+            skipped.append(f"ch{row['chapter']} ({row['change']})")
+            continue
+        existing.add(key)
         entry = {"chapter": row["chapter"], "change": row["change"],
                  "summary": row.get("summary") or ""}
         if row.get("quote"):
             entry["quote"] = row["quote"]
         target.setdefault("log", []).append(entry)
+    if skipped:
+        notes_out.append("note: already logged on "
+                         f"{target['id']!r}, not duplicated: {', '.join(skipped)}")
+    # Deliberately NOT a refusal when every row was already present. The
+    # registry is unchanged, but the RULING is not a no-op: the GM decided
+    # this candidate is that thread, and recording it is what stops the
+    # candidate coming back forever. The count line says what happened.
     target["log"].sort(key=lambda r: (r.get("chapter", 0), r.get("change", "")))
 
     errors = check_registry(data)
@@ -632,8 +663,10 @@ def cmd_ratify(args) -> None:
     save_proposals(args.proposals, doc)
     for n in notes_out:
         print(n)
+    appended = len(rows) - len(skipped)
     print(f"ok: ratified {args.norm!r} -> thread {target['id']!r} "
-          f"({len(rows)} log row(s))")
+          f"({appended} log row(s) added"
+          + (f", {len(skipped)} already present)" if skipped else ")"))
 
 
 # ── read verbs (machine-readable; the server parses nothing) ─────────────

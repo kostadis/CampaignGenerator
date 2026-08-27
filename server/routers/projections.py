@@ -52,6 +52,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
+from starlette.concurrency import run_in_threadpool
 
 from campaignlib.projection_config import ProjectionConfig
 from campaignlib.selection import ModelSelection
@@ -128,6 +129,17 @@ def _thread_registry_run(args: tuple[str, ...], *, allow_nonzero: bool) -> dict:
             or f"thread_registry {args[0] if args else ''} failed",
         )
     if not result.stdout.strip():
+        # With allow_nonzero, a non-zero exit AND empty stdout means the CLI
+        # crashed (traceback on stderr) — it did not report "no problems".
+        # Returning {} here made the page render "passes every consistency
+        # check" over a registry nobody managed to read: an optimistic lie
+        # about canon (review finding, 2026-08-27).
+        if result.returncode != 0:
+            raise HTTPException(
+                status_code=400,
+                detail=(result.stderr or "").strip()
+                or f"thread_registry {args[0] if args else ''} produced no output",
+            )
         return {}
     try:
         return json.loads(result.stdout)
@@ -137,10 +149,19 @@ def _thread_registry_run(args: tuple[str, ...], *, allow_nonzero: bool) -> dict:
         ) from exc
 
 
-def _thread_registry_write(*args: str) -> dict:
-    """A write verb: no JSON comes back, only success or the CLI's refusal."""
+async def _thread_registry_write(*args: str) -> dict:
+    """A write verb: no JSON comes back, only success or the CLI's refusal.
+
+    The subprocess runs in a threadpool. These routes are `async def` (they
+    `await request.json()`), so calling `subprocess.run` inline would block
+    the event loop for the life of the process — stalling every other request
+    including an in-flight harvest SSE stream. `get_sections` avoids this by
+    being a sync `def` that FastAPI threadpools itself; these cannot be, so
+    they bridge explicitly (review finding, 2026-08-27).
+    """
     cmd = [console_script("thread_registry"), *args]
-    result = subprocess.run(cmd, cwd=str(Path.cwd()), capture_output=True, text=True)
+    result = await run_in_threadpool(
+        subprocess.run, cmd, cwd=str(Path.cwd()), capture_output=True, text=True)
     if result.returncode != 0:
         raise HTTPException(
             status_code=400,
@@ -400,7 +421,22 @@ def threads_corpus(pattern: list[str] = Query(default=[])) -> dict:
     cwd = Path.cwd().resolve()
     files: dict[str, int] = {}
     for pat in picked:
-        for hit in cwd.glob(pat):
+        try:
+            hits = list(cwd.glob(pat))
+        except (NotImplementedError, ValueError) as exc:
+            # `Path.glob` refuses an absolute pattern outright
+            # (NotImplementedError) and rejects some malformed ones
+            # (ValueError). Both are user input from the corpus box — a GM
+            # pasting the absolute path they use at the CLI is the likely
+            # case — so they are a 400 naming the problem, not a 500 with a
+            # traceback.
+            raise HTTPException(
+                status_code=400,
+                detail=f"{pat!r} is not a usable corpus pattern ({exc}). "
+                       f"Corpus globs are relative to the campaign directory; "
+                       f"an absolute path is not accepted.",
+            ) from exc
+        for hit in hits:
             r = hit.resolve()
             if cwd not in r.parents:
                 continue  # confine to the workspace, as list_chapters does
@@ -457,7 +493,7 @@ async def threads_rule(request: Request) -> dict:
         args += ["--note", str(body["note"])]
     if body.get("thread"):
         args += ["--thread", str(body["thread"])]
-    return _thread_registry_write(*args)
+    return await _thread_registry_write(*args)
 
 
 @router.post("/threads/ratify")
@@ -499,8 +535,9 @@ async def threads_ratify(request: Request) -> dict:
 
     cmd = [console_script("thread_registry"), "ratify", "--norm", norm,
            "--plan", "-"]
-    result = subprocess.run(cmd, cwd=str(Path.cwd()), capture_output=True,
-                            text=True, input=json.dumps(plan))
+    result = await run_in_threadpool(
+        subprocess.run, cmd, cwd=str(Path.cwd()), capture_output=True,
+        text=True, input=json.dumps(plan))
     if result.returncode != 0:
         raise HTTPException(
             status_code=400,
@@ -524,7 +561,7 @@ async def threads_log(request: Request) -> dict:
             "--change", str(body["change"]), "--summary", str(body["summary"])]
     if body.get("quote"):
         args += ["--quote", str(body["quote"])]
-    return _thread_registry_write(*args)
+    return await _thread_registry_write(*args)
 
 
 @router.post("/threads/status")
@@ -543,7 +580,7 @@ async def threads_status(request: Request) -> dict:
     args = ["set-status", "--id", str(body["id"]), "--status", str(body["status"])]
     if body.get("chapter"):
         args += ["--chapter", str(body["chapter"])]
-    return _thread_registry_write(*args)
+    return await _thread_registry_write(*args)
 
 
 @router.post("/threads/alias")
@@ -560,5 +597,5 @@ async def threads_alias(request: Request) -> dict:
     for field in ("id", "alias"):
         if body.get(field) in (None, ""):
             raise HTTPException(status_code=400, detail=f"{field} is required")
-    return _thread_registry_write("alias", "--id", str(body["id"]),
-                                  "--alias", str(body["alias"]))
+    return await _thread_registry_write("alias", "--id", str(body["id"]),
+                                        "--alias", str(body["alias"]))

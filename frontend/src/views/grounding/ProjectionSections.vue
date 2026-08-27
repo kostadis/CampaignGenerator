@@ -109,9 +109,12 @@ function onBuildDone(rc: number) {
   // that is the #337 dead end: a filename the GM has no way to act on. The
   // raw output stays (it is the engine's own words); this adds which section
   // is responsible and, for `threads`, where to go and fix it.
-  blockedByMissingInput.value = sections.value.filter(
-    (s) => selected.value.has(s.name) && s.state === 'no-input',
-  )
+  // NOT scoped to the selection. `grounding_sections.py` assembles over
+  // SPECS[doc] — the doc's FULL section list — regardless of `--sections`, so
+  // a build of only `spine` still dies on a missing required `threads` file.
+  // Filtering to the selected sections produced an empty box in exactly the
+  // #337 case this exists to explain (review finding, 2026-08-27).
+  blockedByMissingInput.value = sections.value.filter((s) => s.state === 'no-input')
 }
 
 const STATE_LABEL: Record<string, string> = {
