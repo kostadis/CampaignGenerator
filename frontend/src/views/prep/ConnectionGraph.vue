@@ -7,6 +7,10 @@ import FileTree from '../../components/shared/FileTree.vue'
 
 const config = useConfigStore()
 
+// Connection Graph owns no config document — it always inherits the
+// platform-wide backend (server/routers/connections.py's resolve_selection
+// comment), so unlike RunPanel/ExtractSynthesizePanel there is no per-service
+// SelectionPanel to read a resolved backend from. `config.backend` (the
 // Form state is deliberately stateless — see docs/config/ui-state-retirement.md
 // D1 (the reserved `ui.connections` section was never written by anything and
 // is retired). The extracted graph itself IS persisted, but on disk via
@@ -382,7 +386,7 @@ const entityOptions = computed(() => {
         :disabled="!allSelected.length || extracting"
         @click="extract"
       >
-        {{ extracting ? 'Extracting...' : 'Extract Connections (calls Claude API)' }}
+        {{ extracting ? 'Extracting...' : `Extract Connections (runs on ${config.backend})` }}
       </button>
       <label class="replace-toggle" title="If unchecked, results merge into existing connections.json">
         <input type="checkbox" v-model="replaceExisting" />
@@ -705,6 +709,7 @@ const entityOptions = computed(() => {
 
 .action-row { display: flex; align-items: center; gap: 12px; }
 .cache-info { font-size: 11px; color: var(--text-muted); }
+.warning { font-size: 11px; color: var(--peach); font-weight: 600; }
 .error-msg {
   background: #402020; color: #f38ba8; padding: 8px 12px;
   border-radius: 4px; font-size: 12px; margin-bottom: 12px;
