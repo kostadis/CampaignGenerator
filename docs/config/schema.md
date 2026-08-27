@@ -228,7 +228,7 @@ alone). See [projection-isolation.md](./projection-isolation.md) for the full de
 
 | Group | Fields |
 |---|---|
-| `stores` | `events`, `thread_registry`, `thread_proposals`, `tracking` — this service's own durable state, written and read back by its own CLIs |
+| `stores` | `events`, `thread_registry`, `thread_proposals`, `thread_adjudication`, `tracking` — this service's own durable state, written and read back by its own CLIs |
 | `inputs` | `dossiers`, `dossiers_fallback`, `narrative_importance`, `party`, `planning_notes`, `speculations` — produced by other services, declared here as pointers rather than read from their config documents |
 | `output` | `sections_dir`, `draft`, `legacy_draft`, `recent_events`, `recent_events_window` |
 | `selection` | `ModelSelection` — this service's own model/backend override (feature 003), empty by default (inherit the platform tier) |

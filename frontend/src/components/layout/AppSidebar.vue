@@ -75,6 +75,7 @@ const navGroups: NavGroup[] = [
       { label: 'Party Document', path: '/grounding/party' },
       { label: 'Planning Document', path: '/grounding/planning' },
       { label: 'State Projection', path: '/grounding/projections' },
+      { label: 'Threads', path: '/grounding/threads' },
     ],
   },
   {

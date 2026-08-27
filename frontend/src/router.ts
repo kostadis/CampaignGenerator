@@ -67,6 +67,11 @@ const routes = [
         name: 'projection-sections',
         component: () => import('./views/grounding/ProjectionSections.vue'),
       },
+      {
+        path: 'threads',
+        name: 'threads',
+        component: () => import('./views/grounding/Threads.vue'),
+      },
     ],
   },
   {

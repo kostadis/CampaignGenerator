@@ -24,6 +24,10 @@ interface SectionRow {
   mode: string
   state: string
   inputs: string[]
+  /** The subset of `inputs` that does not exist on disk, computed by
+   *  `grounding_sections` where `section_inputs()` already knows (research
+   *  D11). The browser cannot stat the disk and must never re-derive this. */
+  missing?: string[]
   provenance: Provenance | null
 }
 
@@ -90,8 +94,24 @@ const runParams = computed(() => ({
   force: force.value,
 }))
 
+/** Sections that were selected for the failed build and have no input file.
+ *  Captured at failure time so the explanation survives the reload below. */
+const blockedByMissingInput = ref<SectionRow[]>([])
+
 function onBuildDone(rc: number) {
-  if (rc === 0) loadSections()
+  if (rc === 0) {
+    blockedByMissingInput.value = []
+    loadSections()
+    return
+  }
+  // T057 / FR-026 — `assemble()` refuses to write ANY draft while a REQUIRED
+  // section's file is missing, and its stderr names a bare path. On its own
+  // that is the #337 dead end: a filename the GM has no way to act on. The
+  // raw output stays (it is the engine's own words); this adds which section
+  // is responsible and, for `threads`, where to go and fix it.
+  blockedByMissingInput.value = sections.value.filter(
+    (s) => selected.value.has(s.name) && s.state === 'no-input',
+  )
 }
 
 const STATE_LABEL: Record<string, string> = {
@@ -162,7 +182,22 @@ onMounted(loadSections)
                   {{ STATE_LABEL[s.state] || s.state }}
                 </span>
               </td>
-              <td class="muted">{{ s.inputs.length }} file{{ s.inputs.length === 1 ? '' : 's' }}</td>
+              <td class="muted inputs-cell">
+                <template v-if="s.inputs.length">
+                  <div v-for="p in s.inputs" :key="p" class="input-path">
+                    <span :class="{ 'input-missing': (s.missing || []).includes(p) }">{{ p }}</span>
+                    <span v-if="(s.missing || []).includes(p)" class="missing-tag">missing</span>
+                  </div>
+                </template>
+                <span v-else>—</span>
+                <!-- T056: #337's dead end, converted into a signpost BEFORE a
+                     build is attempted rather than after its stderr. -->
+                <RouterLink
+                  v-if="s.name === 'threads' && s.state === 'no-input'"
+                  class="signpost"
+                  to="/grounding/threads"
+                >no thread registry yet → Threads</RouterLink>
+              </td>
               <td class="muted prov-cell">
                 <template v-if="s.provenance">
                   <span v-if="s.provenance.dossier_set" class="prov-tag">{{ s.provenance.dossier_set }}</span>
@@ -200,6 +235,27 @@ onMounted(loadSections)
         label="Rebuild selected section(s)"
         @done="onBuildDone"
       />
+
+      <div v-if="blockedByMissingInput.length" class="blocked-box">
+        <p>
+          The build stopped because
+          {{ blockedByMissingInput.length === 1 ? 'a required section has' : 'required sections have' }}
+          no input file yet:
+        </p>
+        <ul>
+          <li v-for="s in blockedByMissingInput" :key="s.name">
+            <strong>{{ s.name }}</strong>
+            <span v-if="(s.missing || []).length"> — needs {{ (s.missing || []).join(', ') }}</span>
+            <RouterLink v-if="s.name === 'threads'" class="signpost" to="/grounding/threads">
+              create it on the Threads page →
+            </RouterLink>
+          </li>
+        </ul>
+        <p class="muted">
+          A required section with no file blocks the whole document, not just
+          its own part of it.
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -230,6 +286,21 @@ onMounted(loadSections)
   outline: none; box-sizing: border-box;
 }
 .field-input:focus { border-color: var(--mauve); }
+
+.inputs-cell { max-width: 22rem; }
+.input-path { font-family: monospace; font-size: 11px; line-height: 1.5; }
+.input-missing { text-decoration: line-through; opacity: 0.75; }
+.missing-tag {
+  margin-left: 4px; font-family: inherit; font-size: 10px;
+  color: #b45309; font-weight: 600;
+}
+.signpost { display: inline-block; margin-top: 2px; font-size: 11px; }
+.blocked-box {
+  margin-top: 12px; padding: 10px 12px; border-radius: 4px;
+  border: 1px solid #f5c2c7; background: #fff5f5; color: #842029;
+}
+.blocked-box ul { margin: 6px 0; padding-left: 18px; }
+.blocked-box .muted { color: inherit; opacity: 0.8; font-size: 11px; }
 
 .error-box {
   padding: 8px 12px; background: #3a1e1e; border-radius: 4px;

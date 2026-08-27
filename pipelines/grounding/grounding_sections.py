@@ -277,8 +277,9 @@ def render_emerging(sec: Section, args) -> str:
         "",
         f"_{len(pending)} pending proposal(s) from the extraction corpus "
         f"({ruled} already ruled). These are threads the record *suggests* are "
-        "at play — ratify, alias, or reject via thread-triage; nothing here is "
-        "canon._",
+        "at play — ratify, alias, or reject on the Threads page "
+        "(/grounding/threads), or with the `thread_registry` verbs; nothing "
+        "here is canon._",
         "",
     ]
     if matched:
@@ -528,6 +529,11 @@ def section_row(sec: Section, args, cfg, sections_dir: Path, doc: str) -> dict:
         return {
             "name": sec.name, "mode": sec.mode, "state": "per-npc",
             "inputs": [str(p) for p in inputs], "provenance": provenance,
+            # `missing` is present on EVERY row, this early return included.
+            # Omitting it here would hand the browser one row shaped
+            # differently from all the others, and the Inputs cell would
+            # break on that row alone (014 T053).
+            "missing": [str(p) for p in inputs if not p.exists()],
             "npc_count": len(slugs),
         }
 
@@ -546,6 +552,11 @@ def section_row(sec: Section, args, cfg, sections_dir: Path, doc: str) -> dict:
     return {
         "name": sec.name, "mode": sec.mode, "state": state,
         "inputs": [str(p) for p in inputs], "provenance": provenance,
+        # Which inputs are absent, derived HERE where `section_inputs` already
+        # knows. The browser must not re-derive file existence — it cannot
+        # stat the disk, and guessing from the state enum would be a second,
+        # weaker copy of this fact (014 FR-024, research D11).
+        "missing": [str(p) for p in missing],
     }
 
 

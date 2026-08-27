@@ -36,6 +36,9 @@ pipelines/grounding/npc_table.py        # CLI: generate NPC reference table
 pipelines/grounding/distill.py          # CLI: convert summaries → world_state.md
 pipelines/grounding/campaign_state.py   # CLI: generate completed-content grounding doc
 pipelines/grounding/make_tracking.py    # CLI: extract trackable events from a module
+pipelines/grounding/thread_registry.py  # CLI: narrative-thread canon — propose (harvest),
+                            #   ratify (atomic accept), rule, add/log/set-status/alias,
+                            #   list/proposals/check --json. Surfaced at /grounding/threads
 pipelines/rlm/query.py      # CLI: search summaries
 pipelines/grounding/planning.py         # CLI: NPC dossiers + arc scores → planning.md
 pipelines/grounding/party.py            # CLI: character sheets + summaries → party.md
@@ -78,7 +81,7 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/cli/genre_rulebook_howto.md` | **Start here for the genre rulebook.** One file per campaign (`voice/_genre.md`) addressed by `paths.genre_file`; migrating a campaign, every migration refusal, why a render reads generic, and how to prove a rulebook rule actually arrives |
 | `docs/design/GenreRulebook_implementation.md` | The *why* behind it — three copies, the two fixes, the decision table, and what the verification render found |
 | `docs/cli/quote_verification_howto.md` | Using quote verification: `sd_verify_quotes` / `sd_agent`, the five verdicts, why `near` ≠ safe, raw-vs-`.cleaned` VTT choice, every error message. Deterministic, zero-token, no backend — optional and auto-corrects nothing |
-| `docs/cli/state_projection_howto.md` | Using State Projection: `event_spine` → `thread_registry` → `grounding_sections` order, staleness states, every skip/refuse message, `projections.yaml`, the `/grounding/projections` page |
+| `docs/cli/state_projection_howto.md` | Using State Projection: `event_spine` → `thread_registry` → `grounding_sections` order, staleness states, every skip/refuse message, `projections.yaml`, the `/grounding/projections` page — **and the Threads page** (`/grounding/threads`): harvest → rule → build, the two candidate bands, why an accepted thread keeps resurfacing, every refusal decoded |
 | `docs/cli/provenance_howto.md` | **Start here for `provenance`.** Task-oriented: trust a hit or don't, scope to canon, chapter horizons, resolve a name, cross-campaign, what to do when results look wrong |
 | `docs/cli/provenance_search.md` | The reference behind it — the two hand-authored files (`~/src/campaigns/provenance.yaml`, per-campaign `docs/corrections.yaml`): trust tiers, corrections matching, all ten `check` findings |
 | `docs/web/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |
@@ -279,98 +282,82 @@ resolves the path per-request.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/013-batched-scene-extraction/plan.md` (Batched Scene Extraction — Stage 2
-sends the **full transcript once per scene**. On the metered API that is nearly
-free (`cache_system=True` makes the VTT a cached prefix, so scenes 2..N hit the
-cache); on the subscription it is pure waste — `_blocks_to_text`
-(`campaignlib/api/backends.py:367`) flattens the cache blocks to plain text and
-every scene is a fresh `claude -p` process with a fresh session, so **nothing is
-reused**. Batch submission cannot rescue it either: the capability map requires
-the `anthropic` backend, so the per-scene loop is the subscription's ONLY mode.
-Measured (research D2): 5–8 scenes over a 106–150 KB VTT ⇒ **~125K tokens of
-pure repetition** per 8-scene re-extract. The fix: one exchange carries the
-transcript plus every pending scene, split back apart by
-`<<<CG-SCENE NN BEGIN: name>>>` / `<<<CG-SCENE NN END>>>` sentinels — **by index,
-never by name-matching** (D5), with an unmatched BEGIN as the "response stopped
-here" signal so partial results are kept and the tail is re-requested. Three GM
-rulings: ceiling **32,000** (a second knob, `extract.batch_tokens`; the per-scene
-8,192 is pinned by a test and stays), **one call when the projection fits, fewest
-fitting groups when it does not**, and the editor **pre-selects** batching on the
-subscription (visible + overridable). Two counter-intuitive findings worth not
-re-deriving: (1) the projection uses the **median** multiplier (body_chars × 4.2,
-r = 0.784), *not* a conservative one — over- and under-estimating each cost one
-extra transcript transmission, so the central estimate minimises expected cost,
-and ×6.5 demonstrably mis-splits a session that fitted (D4); (2) the model
-generates only the `## Verbatim moments` body — front-matter/heading/summary are
-assembled locally by `format_scene_output` — so real generated output is **~23K
-tokens for 8 scenes, not ~29K** (D3). **The trap** (D6/FR-008a): skip-if-exists
-MUST filter before the request is built. Sending all scenes and discarding the
-already-extracted ones writes correct files while spending the full projection on
-a 5/8-done session — exactly the cost this feature removes. Ships only once the
-zero-token quote verifier confirms the **exact** rate holds — `near` is "an edit
-happened", never "safe" (D10). `research.md` D1–D12 holds the survey and the
-15-scene measurement; extend it rather than re-deriving.)
-Direct predecessor: `specs/012-scene-extract-optional-force/plan.md` — same
-button, and the source of the Force semantics this feature must preserve.
+`specs/014-thread-registry-ui/plan.md` (Thread Registry Surface — the Planning
+grounding doc cannot assemble until `docs/thread_registry.yaml` exists, and
+**nothing in `server/` or `frontend/` mentions it**: `threads` is a
+non-optional section of `SPECS["planning"]`, so `assemble()` refuses to write
+*any* planning draft while its file is missing, and the store is written only
+by the CLI-only `thread_registry` verbs. #337. The fix is a real surface —
+harvest, a candidate queue with evidence, and **accept / reject / discuss**
+one candidate at a time (GM ruling, 2026-08-25; **no bulk control anywhere** —
+its absence is the test). Three things not to re-derive: (1) **nothing today
+records a ruling** — `propose` only *preserves* rulings it finds already
+written, so a new `rule` verb is the largest piece of work, and "discuss"
+means `deferred` + an appended adjudication JSON a Claude conversation
+consumes (research D2); (2) **measured, not assumed** — a 62-chapter corpus
+harvests to **986 candidates of which 16 span >1 chapter** (toee: 415 and 2),
+because candidates are keyed on the extraction lens's free-text `subject`, so
+the queue filters the *view* (hidden count stated on screen) while
+`propose --min-chapters/--min-evidence` default to `1` — a default that
+dropped 970 of 986 would be software making a scope decision (D15). **There is
+no "Show all" button** (D16): the tail is reached by free-text search over
+titles/variants/evidence plus a chapter filter, spanning already-ruled
+candidates too, and search runs **in the browser** — the proposals payload
+measures 484 KB, so no server-side query route exists and none may be added, or
+the server starts deciding which candidates matter. The default view is **two
+named bands with counts computed from the loaded set** — *Recurring* (≥2
+chapters) and *Single chapter, repeated* — measuring 16/54/916 excluded on
+OOTA, 2/19/394 on toee, 3/12/104 on Hillsfar; a hardcoded count is the exact
+defect this replaced, and note **span≥2 implies ev≥2**, which is what made the
+first attempt wrong (D17a); (3) accept is **one atomic `ratify` verb** — `--norm KEY` plus a
+`--plan` JSON on stdin, locate-or-create, append every log row, mark the
+proposal, validate, write **once** (GM ruling 2026-08-25, D18). It is
+deliberately *not* `add` + N × `log` + `rule`: that sequence could half-apply
+and forced the route to report a 207 partial state. There is no "accept as
+proposed" flag — `--plan` is required, because a thread nobody read the fields
+of is exactly what SC-004 forbids. A candidate with `chapters: []` still cannot
+be accepted until the GM supplies a chapter, because `check_registry` rejects a
+log row without a real int (D3/D4), and that refusal now happens at the route
+edge naming the field; (4)
+`propose()`'s short-circuit fires **before** its `matches`/`logged` filter and
+counts `ratified` as prior, so it MUST be narrowed to `rejected`/`deferred` —
+otherwise ratifying a thread at ch41 hides ch50–60 of that same thread forever
+(D17b). Also: `SPECS["planning"]` has `Section("emerging",
+source="thread_proposals")`, so the engine's own *"nothing downstream reads
+this file"* is already false and every ruling makes that section stale. This
+**deliberately reverses** spec 006's "no route for thread triage" docstring —
+the checkpoint changes keyboards, not owners; rewriting that docstring is a
+task, not an afterthought (D13). `research.md` **D1–D21** holds the survey and
+the corpus/payload measurements; extend it rather than re-deriving. Two
+rulings that shape the UI: the Threads page gets **its own run control**, not a
+prop on the shared `RunPanel` (D19), and the corpus preview **lists files only,
+with no chapter numbers** (D20) — so `chapter_of()` is neither imported nor
+wrapped in a verb. One live external dependency: **SC-001 is gated on PR #343**
+(issue #342), which deletes the `api_key_present` predicate and its ten
+frontend consumers outright, refusing instead at the four metered entry points.
+**Merged 2026-08-27**, superseding `8d49d4f` — which had landed #341's narrow
+"gate on the resolved backend" fix on `main` in the meantime. A keyless machine
+can now start the very build this feature exists to unblock. Note `main`'s
+constitution is **v1.3.0**: Principles XI (every CLI capability has a UI face),
+XII (one spelling per option) and XIII (breaking state changes migrate out of
+band) are in force, and XI requires a deliberately CLI-only capability to have
+its ruling recorded in the feature's Constitution Check.)
 
-Also in flight: `specs/007-two-phase-extraction/plan.md` (Two-Phase Extraction Agent — a
-**deterministic, zero-token quote verifier** over the Session Doc Editor's
-Stage 1 `session-summary.md` and Stage 2 `scene_extractions_new/`, plus a
-**stage-scoped** orchestrator (`sd_agent --stage {summary,scenes}`) that runs
-generation then that stage's checks and STOPS at the stage boundary — the
-Stage 1→2 human gate is preserved, not chained. Verification calls no model:
-a quote is a span of the VTT or it isn't. Measured (research D1): only **64%
-of quotes are exact verbatim even from Claude** — the other 36% are mostly
-*disfluency edits* (`"I do cross promotions."` vs the VTT's `"I do, like,
-cross promotions."`), so classification is **three buckets**
-(`verified`/`near`/`unverified`), not binary; a binary check would emit 186
-findings per session, ~90% benign. **Nothing is auto-corrected** — flag and
-report only; the GM applies fixes in Claude (mechanical-residue scrubbing now
-runs through the `/scrub` skill; #151, the spell-stripping incident that
-retired the autonomous CLI it replaced, is the scar). Stage 1 parses
-`> "…"` blockquotes only — inline `"…"` is not reliably
-dialogue (D5); Stage 2 parses `## Verbatim moments` only — `## Scene summary`
-is human-authored gm-assist content (D4). **D13 is a blocking dependency**:
-`scene_extract.py:468` feeds the model an alias-rewritten VTT via
-`build_alias_normalizer`, so Stage 2 verification must not ship until that
-wiring is removed — *pass the equivalence set as knowledge, never as a
-transform*. The 0.85 threshold is a starting point, **not calibrated for
-DeepSeek** (D8, cf. the `--embed-threshold` precedent). `research.md` D1–D13
-holds the survey and the 522-quote measurement; extend it rather than
-re-deriving.)
-Predecessor: `specs/006-state-projection-service/plan.md` (State-Projection Rendering as
-its own service — the #213 projection engine (`event_spine`,
-`thread_registry`, `grounding_sections`) becomes a service with its own
-strict document `<config>/projections.yaml` (modelled in
-`campaignlib/projection_config.py`, so both the CLIs and the service can read
-it — `test_layering.py` forbids the engine importing `server/`), its own
-output namespace `docs/projections/`, and a UI limited to section staleness +
-per-section rebuild. Four services, not three: `ensemble_batch` +
-`facts_to_state` are a shared **Extraction & State** service; **Per-Tool
-Rendering**, **Dossier Synthesis** and **State Projection** are three sibling
-renderers, each writing to its own subdirectory so they can run in any order
-without clobbering each other. "Service" is the canonical term; "path" is
-reserved for prose. `ensemble.yaml` is deliberately NOT split (research D11);
-`synthesise_world_state` stays Dossier Synthesis's engine and State
-Projection execs it as a declared dependency (D12); the corpus glob stays
-`required=True` with no config default and a test asserts the field's absence
-(D6, Constitution X); pre-move drafts are never moved or deleted — a renderer
-refuses until the GM clears them (FR-007b). `research.md` D1–D14 holds the
-codebase survey; extend it rather than re-deriving.
-Predecessors: `specs/005-ui-batch-selection/plan.md` (batch as a selection
-value; `SelectionPanel.vue`), `specs/003-model-selection-resolution/` (the
-`resolve_selection` seam this service's `selection` field plugs into),
-`specs/002-ensemble-run-observability/plan.md` (run streaming + abort).)
-
-The current plan's direct predecessor, in full: `specs/012-scene-extract-optional-force/plan.md`
-(Optional Force for Scene Re-Extraction — Stage 2's "Re-Extract Quotes"
-button hardcoded `?force=1` on every click
-(`SessionDocEditor.vue:473`), so the button always regenerated every scene
-— including already-reviewed ones — even though the engine underneath
-(`campaignlib/scenes.py::run_scene_extraction`, `scene_extract.py`'s
-`--force` flag, and the route's own `force: int = 0` default) already
-implements skip-if-exists correctly; #323. The fix is narrow: stop
-hardcoding the query param and add a visible, unchecked-by-default Force
-checkbox (pattern: `ConnectionGraph.vue`'s `replace-toggle`) — no engine or
-router logic changes. `research.md` D1–D5 traces the full call chain.)
+Also in flight: `specs/013-batched-scene-extraction/plan.md` (Stage 2 sends the
+full transcript once per scene — free on the metered API via prefix caching,
+pure waste on the subscription where `_blocks_to_text` flattens the cache
+blocks and every scene is a fresh `claude -p`. One exchange carries the
+transcript plus every pending scene, split by `<<<CG-SCENE NN BEGIN/END>>>`
+sentinels **by index, never by name-matching**; ceiling 32,000 via
+`extract.batch_tokens`; the projection uses the **median** ×4.2 multiplier, not
+a conservative one; **the trap** is that skip-if-exists MUST filter before the
+request is built.)
+`specs/007-two-phase-extraction/plan.md` (deterministic, zero-token quote
+verifier + a stage-scoped `sd_agent`; only **64%** of quotes are exact
+verbatim even from Claude, so classification is three buckets, and **D13 is a
+blocking dependency**: `scene_extract.py` feeds the model an alias-rewritten
+VTT — pass the equivalence set as knowledge, never as a transform.)
+`specs/006-state-projection-service/plan.md` (the service 014 extends —
+`projections.yaml`, `docs/projections/`, four services not three, and the
+`corpus`/`sections` fields that must never be added to the schema.)
 <!-- SPECKIT END -->
