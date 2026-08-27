@@ -5,8 +5,8 @@ as ``api_key_present`` on ``GET /api/config/status`` and consumed by ten sites
 in four Vue components. It could not be right, because it asked a global
 question whose only true answer is per-run:
 
-* three of the four supported backends (``dgx``, ``openrouter``,
-  ``claude-code``) never read that variable;
+* four of the five supported backends (``dgx``, ``openrouter``,
+  ``claude-code``, ``codex-cli``) never read that variable;
 * ``claude-code`` wants it **absent** — ``campaignlib/api/backends.py`` strips
   it from the child env so billing lands on the subscription, not the API;
 * any non-empty string satisfied it, so it measured presence, not validity.
@@ -130,19 +130,29 @@ def test_call_without_a_key_refuses_in_a_sentence(monkeypatch) -> None:
 
 
 def test_keyless_backends_are_never_refused(monkeypatch) -> None:
-    """The three adapters need no Anthropic credential and must not be asked."""
+    """The four adapters need no Anthropic credential and must not be asked."""
     from campaignlib.api.backends import (
         _ClaudeCodeClient,
         _OpenAICompatClient,
         _OpenRouterClient,
     )
     from campaignlib.api.client import _require_anthropic_credential
+    from campaignlib.api.codex_cli import _CodexCliClient
 
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
-    for cls in (_ClaudeCodeClient, _OpenAICompatClient, _OpenRouterClient):
+    for cls in (_ClaudeCodeClient, _OpenAICompatClient, _OpenRouterClient,
+                _CodexCliClient):
         # __new__ without __init__: this asserts the *dispatch*, not the
         # constructors, which reach endpoints and registries.
         _require_anthropic_credential(object.__new__(cls))
+
+
+def test_codex_is_not_thinking_capable() -> None:
+    """Keyless classification must not accidentally forward Anthropic extras."""
+    from campaignlib.api.client import _THINKING_EXTRA_CLIENTS
+    from campaignlib.api.codex_cli import _CodexCliClient
+
+    assert _CodexCliClient not in _THINKING_EXTRA_CLIENTS
 
 
 def test_make_client_still_constructs_without_a_key(monkeypatch) -> None:

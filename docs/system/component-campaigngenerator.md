@@ -47,7 +47,8 @@ Refactored from a 1749-line god-module into a package. Public surface re-exporte
 | Submodule | Owns |
 |---|---|
 | `api/client.py` | `make_client`, `call_api`, `stream_api`, `call_api_with_tools` — the **only** place `anthropic` is imported. Retry loop built in. |
-| `api/backends.py` | The three LLM backends: Anthropic (default), `_OpenAICompatClient` (DGX/vLLM), `_ClaudeCodeClient` (claude CLI headless). |
+| `api/backends.py` | Existing HTTP/Claude adapters: Anthropic (default), `_OpenAICompatClient` (DGX/vLLM), `_OpenRouterClient`, and `_ClaudeCodeClient` (claude CLI headless). |
+| `api/codex_cli.py` | Sole Codex boundary: strict single-turn text facade plus isolated, subscription-authenticated `codex exec` process policy. |
 | `api/batch.py` | Anthropic Message Batches orchestration (build → submit → poll → collect; sidecar `.batch.json`). |
 | `config.py` | `find_default_config`, `load_config`, `load_file`, `assemble_docs`, `load_agent_prompt`. |
 | `npc.py` / `scenes.py` / `textproc.py` / `pipelines.py` | Alias normalization, scene helpers, chunking/POV, the extract→synthesize two-pass pattern. |
@@ -61,6 +62,7 @@ Refactored from a 1749-line god-module into a package. Public surface re-exporte
 
 - default → **Anthropic** (`anthropic.Anthropic()`)
 - `CG_BACKEND=claude-code` → **Claude Code** CLI headless (bills Pro/Max, not metered API)
+- `CG_BACKEND=codex-cli` → **Codex CLI** non-interactive execution using the saved ChatGPT login; certified here for consistency audits
 - `DGX_ENDPOINT` set (or `--dgx-endpoint`) → **`_OpenAICompatClient`** pointed at vLLM on the Spark
 
 The DGX backend is an *anthropic-SDK facade* over the `openai` SDK (so the whole
@@ -115,7 +117,8 @@ headline files CG reads/writes: `docs/*.md` (grounding), `docs/dossier_proposal.
 
 | To | How | File |
 |---|---|---|
-| Anthropic / DGX / Claude Code | the three backends above | `campaignlib/api/backends.py` |
+| Anthropic / DGX / OpenRouter / Claude Code | existing adapters above | `campaignlib/api/backends.py` |
+| Codex CLI | isolated `codex exec`, no API keys or provider fallback | `campaignlib/api/codex_cli.py` |
 | MemPalace | subprocess stdio JSON-RPC | `pipelines/rlm/mempalace_client.py` |
 | turbovecdb | **never directly** — only via MemPalace | — |
 | 5etools JSON | filesystem, mtime-cached index | `pipelines/rlm/fivetools_catalog.py`, `pipelines/content_ingest/fivetools_ingest.py` |

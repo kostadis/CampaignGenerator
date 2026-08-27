@@ -4,6 +4,7 @@ import os
 import sys
 
 from .backends import _OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient
+from .codex_cli import _CodexCliClient
 from ..wiring import wiring_get
 
 # Clients that accept the DGX-style `thinking` request extra (mapped per-backend
@@ -11,6 +12,7 @@ from ..wiring import wiring_get
 # MAX_THINKING_TOKENS for the `claude -p` subprocess). The real Anthropic SDK
 # would reject it, so it is only forwarded to these.
 _THINKING_EXTRA_CLIENTS = (_OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient)
+_KEYLESS_CLIENTS = (*_THINKING_EXTRA_CLIENTS, _CodexCliClient)
 
 
 def _require_anthropic_credential(client) -> None:
@@ -25,7 +27,7 @@ def _require_anthropic_credential(client) -> None:
       grounding and ensemble CLIs builds a client it then never uses — the
       documented keyless subscription workflow. Refusing at construction would
       break it.
-    * Only the three adapter classes know they need no key at all. Anything
+    * Only the four adapter classes know they need no key at all. Anything
       that is *not* one of them is the real SDK client, so this is also the
       cheapest correct test for "is this call going to the metered API".
 
@@ -33,15 +35,15 @@ def _require_anthropic_credential(client) -> None:
     the pipeline has done its assembly work — a traceback where the deleted
     button-disable used to be a message.
     """
-    if isinstance(client, _THINKING_EXTRA_CLIENTS):
+    if isinstance(client, _KEYLESS_CLIENTS):
         return
     if os.environ.get("ANTHROPIC_API_KEY"):
         return
     raise SystemExit(
         "ANTHROPIC_API_KEY is not set, and this call goes to the metered "
         "Anthropic API. Export it, or choose a backend that needs no key: "
-        "--backend claude-code (bills your subscription) or --backend dgx "
-        "(local endpoint)."
+        "--backend claude-code or --backend codex-cli (bills your subscription), "
+        "or --backend dgx (local endpoint)."
     )
 
 
@@ -93,6 +95,8 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
     at the DGX in the first place.
     """
     backend = backend or os.environ.get("CG_BACKEND")
+    if backend == "codex-cli":
+        return _CodexCliClient(model_override=model_override)
     if backend == "claude-code":
         return _ClaudeCodeClient(model_override=model_override)
     if backend == "openrouter":
@@ -148,9 +152,9 @@ def add_backend_args(parser, default_backend: str | None = "anthropic") -> None:
         if default_backend is None else f"default: {default_backend}"
     )
     parser.add_argument(
-        "--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+        "--backend", choices=["anthropic", "dgx", "openrouter", "claude-code", "codex-cli"],
         default=default_backend,
-        help=f"LLM backend ({_default_note}). 'dgx'/'openrouter'/'claude-code' route "
+        help=f"LLM backend ({_default_note}). 'dgx'/'openrouter'/'claude-code'/'codex-cli' route "
              "through the campaignlib seam; with no flag, behaviour is unchanged.")
     parser.add_argument(
         "--endpoint", default=None, metavar="URL",
@@ -195,7 +199,9 @@ def client_from_args(args, *, endpoint: str | None = None):
                 f"backend '{resolved_backend}' has no batch support"
             )
     backend = None if getattr(args, "backend", "anthropic") == "anthropic" else args.backend
-    model_override = getattr(args, "model", None) if backend in ("dgx", "openrouter", "claude-code") else None
+    model_override = getattr(args, "model", None) if backend in (
+        "dgx", "openrouter", "claude-code", "codex-cli"
+    ) else None
     resolved_endpoint = endpoint if endpoint is not None else getattr(args, "endpoint", None)
     return make_client(backend=backend, endpoint=resolved_endpoint,
                        model_override=model_override)

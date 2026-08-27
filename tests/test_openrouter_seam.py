@@ -131,6 +131,26 @@ def test_client_from_args_claude_code_passes_model(monkeypatch):
                     "model_override": "claude-opus-4-8"}
 
 
+def test_add_backend_args_accepts_codex_cli():
+    p = argparse.ArgumentParser()
+    p.add_argument("--model", default=None)
+    campaignlib.add_backend_args(p)
+    ns = p.parse_args(["--backend", "codex-cli"])
+    assert ns.backend == "codex-cli"
+
+
+def test_make_client_routes_codex_cli(monkeypatch):
+    sentinel = object()
+    seen = {}
+    monkeypatch.setattr(
+        client_mod,
+        "_CodexCliClient",
+        lambda model_override=None: seen.update(model=model_override) or sentinel,
+    )
+    assert client_mod.make_client(backend="codex-cli", model_override="codex-model") is sentinel
+    assert seen == {"model": "codex-model"}
+
+
 def test_add_backend_args_default_backend_override():
     """A script whose endpoint always resolves (e.g. extract_facts.py) can
     default to dgx instead of anthropic without changing the flag surface."""

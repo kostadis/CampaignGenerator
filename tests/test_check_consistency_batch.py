@@ -91,6 +91,26 @@ def test_check_consistency_batch_item_failure_exits_nonzero(tmp_path, monkeypatc
     assert "Error: batch item failed" in capsys.readouterr().err
 
 
+def test_check_consistency_rejects_codex_batch_before_client(tmp_path, monkeypatch):
+    doc_path, context_path, config_path = _make_inputs(tmp_path)
+    monkeypatch.setattr(
+        check_consistency,
+        "make_client",
+        lambda *a, **k: (_ for _ in ()).throw(AssertionError("client constructed")),
+        raising=False,
+    )
+    monkeypatch.setattr(sys, "argv", [
+        "check_consistency", str(doc_path),
+        "--config", str(config_path),
+        "--context", str(context_path),
+        "--backend", "codex-cli",
+        "--batch",
+    ])
+    with pytest.raises(SystemExit) as excinfo:
+        check_consistency.main()
+    assert "backend 'codex-cli' has no batch support" in str(excinfo.value)
+
+
 def test_check_consistency_default_path_uses_stream_api(tmp_path, monkeypatch):
     """FR-011 regression guard: default (no --batch) path must be unaffected
     by the batch wiring."""

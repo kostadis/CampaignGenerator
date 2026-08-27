@@ -10,7 +10,7 @@ Anthropic Message Batches API at 50% token cost. The command **blocks and
 polls** until the batch completes (progress on stderr; the batch id is
 printed at submission so an orphaned batch can be cancelled by hand).
 Anthropic backend only — combining `--batch` with `--backend dgx/openrouter/
-claude-code` (or `CG_BACKEND`) fails fast before any work. Ctrl-C/SIGTERM
+claude-code/codex-cli` (or `CG_BACKEND`) fails fast before any work. Ctrl-C/SIGTERM
 during the wait cancels the remote batch. Any failed item exits non-zero;
 succeeded items' files stay on disk, so a re-run submits only what's missing.
 
@@ -24,6 +24,28 @@ discount, identical outputs. Single-call CLIs submit a one-item batch.
 it prints a notice and runs live. Not related to `ensemble_batch` (local
 multi-chapter dispatch). `scene_extract`/`enhance_summary` additionally keep
 their detached `--batch --submit-only` / `--batch --collect` mode.
+
+## Shared backend: `codex-cli` consistency audits
+
+`session_doc/check_consistency.py --backend codex-cli` runs the canonical audit
+through one isolated `codex exec` process using the operator's saved ChatGPT
+subscription login. Install Codex and run `codex login` first. The child does
+not receive `OPENAI_API_KEY` or `CODEX_API_KEY`; it runs ephemerally from a
+private temporary directory with repository instructions, user configuration,
+plugins/MCP, web search, subagents, executable tools, and writes disabled.
+
+Model precedence is explicit `--model`, then `CG_CODEX_MODEL`, then the Codex
+subscription default. `CG_CODEX_TIMEOUT` is a positive finite number of seconds
+and defaults to `600`. A missing CLI/login, incompatible `claude-*` model,
+timeout, failed process, or empty result exits nonzero without retrying another
+provider or saving a successful report. `max_tokens` remains accepted by the
+shared facade but Codex exposes no matching CLI output-limit flag.
+
+This feature certifies the single-document consistency auditor and the
+`consistency-check`/`staged-consistency` Codex skills. The shared backend name is
+visible to other CLIs for vocabulary consistency, but other request shapes and
+the web backend selector are outside this feature. `--batch` is the Anthropic
+Message Batches API and is always refused with `codex-cli`.
 
 ## prep
 

@@ -67,7 +67,8 @@ empty and unwritten ([ui-state-retirement.md](../config/ui-state-retirement.md))
    regression-tested per service (`test_another_services_write_cannot_touch_platform_yaml`,
    `test_ensemble_write_cannot_touch_sibling_documents`).
 7. **No secrets in config.** API keys come from the environment; `claude-code` bills the local
-   `claude` CLI instead.
+   `claude` CLI instead. `codex-cli` uses Codex's saved ChatGPT login and strips
+   `OPENAI_API_KEY` and `CODEX_API_KEY` from the child process.
 
 ## Model resolution
 
@@ -78,6 +79,13 @@ Which model a run uses, in precedence order:
    `ensemble.yaml`'s per-stage model).
 3. `platform.yaml`'s `runtime.default_model` — the sidebar picker.
 4. `campaignlib.constants.DEFAULT_MODEL` (env `CAMPAIGN_MODEL`, else the literal).
+
+The consistency auditor has one deliberate subscription exception: with
+`--backend codex-cli`, an omitted `--model` does not inherit the Claude default.
+It resolves explicit `--model`, then `CG_CODEX_MODEL`, then lets Codex use its
+subscription default. `CG_CODEX_TIMEOUT` sets the positive finite child-process
+deadline in seconds and defaults to `600`; neither setting is persisted in a
+campaign config file.
 
 Every `/run/*` router resolves through
 `server/platform_config_service.py::resolve_default_model` rather than hardcoding a default. Which
