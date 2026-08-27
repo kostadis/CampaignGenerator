@@ -22,7 +22,7 @@
  * (GM ruling, research D19): the harvest is deterministic and spends zero
  * tokens, so a model/backend picker would be meaningless noise above it.
  */
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { apiFetch, apiPost } from '../../api/client'
 import { connectSSE } from '../../api/sse'
 
@@ -123,6 +123,13 @@ async function loadAll() {
   }
 }
 onMounted(loadAll)
+
+// A harvest that outlives the page keeps streaming and then calls loadAll()
+// against a component that no longer exists.
+onBeforeUnmount(() => {
+  harvestES?.close()
+  harvestES = null
+})
 
 // ── registry region (T025) ───────────────────────────────────────────────
 
@@ -271,7 +278,48 @@ const bandSource = computed(() => (searching.value ? filtered.value : pendingOnl
 
 const recurring = computed(() => orderBand(bandSource.value.filter((p) => bandOf(p) === 'recurring')))
 const repeated = computed(() => orderBand(bandSource.value.filter((p) => bandOf(p) === 'repeated')))
-const excludedCount = computed(() => bandSource.value.filter((p) => bandOf(p) === 'once').length)
+
+/** The once-mentioned tail — rendered ONLY in response to an explicit query.
+ *
+ *  This is the fix for the defect that shipped in #346: the tail was computed
+ *  into a `once` bucket, counted, and then rendered by nothing, so the line
+ *  telling the GM to "search or filter by chapter to reach them" was false —
+ *  916 of 986 OOTA candidates could not be ruled on from the interface at all
+ *  (FR-029/FR-030).
+ *
+ *  It is NOT a "Show all" control (FR-028): it appears only when the GM has
+ *  typed a query or picked a filter, so the page never dumps ~1000 rows on
+ *  its own. Search is the affordance; this is what search was always supposed
+ *  to reach. */
+const otherMatches = computed(() =>
+  searching.value ? orderBand(bandSource.value.filter((p) => bandOf(p) === 'once')) : [],
+)
+
+/** Hidden, therefore only meaningful when NOT searching — when a query is
+ *  active the tail is on screen and hiding nothing. */
+const excludedCount = computed(() =>
+  searching.value ? 0 : bandSource.value.filter((p) => bandOf(p) === 'once').length,
+)
+
+/** The three bands as data, so one card template serves all of them. The
+ *  duplication this replaces is why the third band was never added. */
+const bands = computed(() => {
+  const out = [
+    { key: 'recurring', title: 'Recurring', items: recurring.value,
+      blurb: 'Appears in two or more chapters.' },
+    { key: 'repeated', title: 'Single chapter, repeated', items: repeated.value,
+      blurb: 'Mentioned more than once, but so far inside a single chapter — where a '
+           + 'thread that opened last session lives before it has had a chance to recur.' },
+  ]
+  if (searching.value) {
+    out.push({
+      key: 'once', title: 'Other matches', items: otherMatches.value,
+      blurb: 'Mentioned once. Shown because your query reached them; not part of the '
+           + 'default view.',
+    })
+  }
+  return out
+})
 
 // Every number on this page is derived from the loaded set. A literal here
 // is the exact defect this replaced: 916 is right for one corpus and wrong
@@ -286,9 +334,25 @@ function evidenceFor(p: Proposal, ch: number): Evidence | undefined {
 
 /** Pre-fill from the proposal. Every field stays editable and NOTHING is
  *  written until Confirm — there is no "accept as proposed" (FR-008). */
+/** Chapters the matched thread has already logged. A matched candidate keeps
+ *  its FULL span in the payload (long-standing engine behaviour), so without
+ *  this the accept form pre-fills a row for a chapter that is already canon
+ *  and Confirm appends it a second time — `check_registry` does not flag a
+ *  duplicate chapter, so nothing catches it (review finding, 2026-08-27). */
+function alreadyLogged(p: Proposal): number[] {
+  if (!p.matches) return []
+  const t = threads.value.find((t) => t.id === p.matches)
+  if (!t) return []
+  return (t.log || []).map((r) => r.chapter).filter((c): c is number => typeof c === 'number')
+}
+
 function startAccept(p: Proposal) {
   formError.value = ''
-  const chapters = [...(p.chapters || [])].filter((c) => typeof c === 'number').sort((a, b) => a - b)
+  const logged = alreadyLogged(p)
+  const chapters = [...(p.chapters || [])]
+    .filter((c) => typeof c === 'number')
+    .filter((c) => !logged.includes(c))
+    .sort((a, b) => a - b)
   plan.value = {
     id: p.matches || p.norm,
     title: p.title,
@@ -379,15 +443,25 @@ async function confirmRule(p: Proposal, status: 'rejected' | 'deferred') {
 
 // ── maintenance (T051) ───────────────────────────────────────────────────
 
-function maintFor(id: string) {
-  if (!maint.value[id]) {
-    maint.value[id] = {
-      open: '', chapter: '', change: 'advanced', summary: '', quote: '',
-      status: 'open', closeChapter: '', alias: '',
-    }
+function blankMaint() {
+  return {
+    open: '', chapter: '', change: 'advanced', summary: '', quote: '',
+    status: 'open', closeChapter: '', alias: '',
   }
-  return maint.value[id]
 }
+
+/** Read-only accessor. It used to create the entry on first call, but it is
+ *  called FROM the template — so the first render of every thread mutated
+ *  reactive state mid-render, re-triggering the render effect (Vue warns
+ *  about this in dev). The map is seeded when threads load instead. */
+function maintFor(id: string) {
+  return maint.value[id] || blankMaint()
+}
+
+/** Seed a form object per thread, preserving any in-progress edit. */
+watch(threads, (list) => {
+  for (const t of list) if (!maint.value[t.id]) maint.value[t.id] = blankMaint()
+}, { immediate: true })
 
 async function post(id: string, path: string, body: any) {
   maintError.value[id] = ''
@@ -510,179 +584,122 @@ const addAlias = (t: Thread) => {
       </template>
 
       <template v-else>
-        <h3>Recurring <span class="count">({{ recurring.length }})</span></h3>
-        <p class="muted small">Appears in two or more chapters.</p>
-        <p v-if="!recurring.length" class="muted">None.</p>
-        <div v-for="p in recurring" :key="p.norm" class="candidate">
-          <!-- card body is shared between bands -->
-          <div class="cand-head">
-            <strong>{{ p.title }}</strong>
-            <span v-if="p.status !== 'pending'" class="badge">{{ p.status }}</span>
-            <span v-if="p.matches" class="badge matched">appends to {{ p.matches }}</span>
-          </div>
-          <p v-if="(p.all_titles || []).length > 1" class="muted small">
-            also recorded as: {{ p.all_titles.join(' · ') }}
-          </p>
-          <p class="muted small">
-            chapters: <span v-if="p.chapters.length">{{ p.chapters.join(', ') }}</span>
-            <span v-else class="warn">no chapter recorded; you must supply one to accept</span>
-            &middot; {{ mentions(p) }} mention(s)
-          </p>
-          <ul class="evidence">
-            <li v-for="(e, i) in p.evidence" :key="i">
-              <span class="ev-ch">ch{{ e.chapter ?? '—' }}</span>
-              <span class="ev-fact">{{ e.fact }}</span>
-              <q v-if="e.quote" class="ev-quote">{{ e.quote }}</q>
-              <span v-if="e.source" class="ev-src">{{ e.source }}</span>
-            </li>
-          </ul>
-          <div class="actions">
-            <button @click="startAccept(p)">Accept</button>
-            <button @click="startRule(p, 'reject')">Reject</button>
-            <button @click="startRule(p, 'discuss')">Discuss</button>
-          </div>
+        <!-- ONE card template, three bands. The card markup used to be pasted
+             once per band, which is how the third band came to be counted and
+             never rendered: adding it meant a third copy, so it was not added
+             and ~916 of 986 OOTA candidates were unreachable by any means
+             (review finding, 2026-08-27). Bands are data now. -->
+        <template v-for="band in bands" :key="band.key">
+          <h3>{{ band.title }} <span class="count">({{ band.items.length }})</span></h3>
+          <p class="muted small">{{ band.blurb }}</p>
+          <p v-if="!band.items.length" class="muted">None.</p>
 
-          <div v-if="openForm && openForm.norm === p.norm" class="form">
-            <template v-if="openForm.kind === 'accept'">
-              <p v-if="p.matches" class="muted small">
-                This candidate matches thread <code>{{ p.matches }}</code> — its
-                identity fields are fixed; only the log rows below are yours to edit.
-              </p>
-              <div class="grid">
-                <label><span>id</span>
-                  <input v-model="plan.id" :disabled="!!p.matches" /></label>
-                <label><span>title</span>
-                  <input v-model="plan.title" :disabled="!!p.matches" /></label>
-                <label><span>status</span>
-                  <select v-model="plan.status" :disabled="!!p.matches">
-                    <option v-for="s in STATUSES" :key="s" :value="s">{{ s }}</option>
-                  </select></label>
-                <label><span>opened</span>
-                  <input v-model.number="plan.opened" type="number"
-                         :disabled="!!p.matches"
-                         :required="!p.chapters.length" /></label>
-                <label><span>tracker</span><input v-model="plan.tracker" /></label>
-                <label><span>notes</span><input v-model="plan.notes" /></label>
-              </div>
-              <h4>Log rows</h4>
-              <div v-for="(row, i) in plan.log" :key="i" class="logrow">
-                <input v-model.number="row.chapter" type="number" placeholder="ch" class="narrow" />
-                <select v-model="row.change">
-                  <option v-for="c in CHANGES" :key="c" :value="c">{{ c }}</option>
-                </select>
-                <input v-model="row.summary" placeholder="summary" />
-                <input v-model="row.quote" placeholder="quote (verbatim)" />
-                <button class="ghost" @click="removeLogRow(i)">remove</button>
-              </div>
-              <button class="ghost" @click="addLogRow">+ add row</button>
-              <p v-if="formError" class="error-box">{{ formError }}</p>
-              <div class="row">
-                <button class="primary" :disabled="busy === p.norm" @click="confirmAccept(p)">
-                  {{ busy === p.norm ? 'Writing…' : 'Confirm' }}
-                </button>
-                <button class="ghost" @click="cancelForm">Cancel</button>
-              </div>
-            </template>
+          <div v-for="p in band.items" :key="p.norm" class="candidate">
+            <div class="cand-head">
+              <strong>{{ p.title }}</strong>
+              <span v-if="p.status !== 'pending'" class="badge">{{ p.status }}</span>
+              <span v-if="p.matches" class="badge matched">appends to {{ p.matches }}</span>
+            </div>
+            <p v-if="(p.all_titles || []).length > 1" class="muted small">
+              also recorded as: {{ p.all_titles.join(' · ') }}
+            </p>
+            <p class="muted small">
+              chapters: <span v-if="p.chapters.length">{{ p.chapters.join(', ') }}</span>
+              <span v-else class="warn">no chapter recorded; you must supply one to accept</span>
+              &middot; {{ mentions(p) }} mention(s)
+            </p>
+            <ul class="evidence">
+              <li v-for="(e, i) in p.evidence" :key="i">
+                <span class="ev-ch">ch{{ e.chapter ?? '—' }}</span>
+                <span class="ev-fact">{{ e.fact }}</span>
+                <q v-if="e.quote" class="ev-quote">{{ e.quote }}</q>
+                <span v-if="e.source" class="ev-src">{{ e.source }}</span>
+              </li>
+            </ul>
+            <div class="actions">
+              <button @click="startAccept(p)">Accept</button>
+              <button @click="startRule(p, 'reject')">Reject</button>
+              <button @click="startRule(p, 'discuss')">Discuss</button>
+            </div>
 
-            <template v-else>
-              <label class="field">
-                <span>Note (optional)</span>
-                <input v-model="ruleNote" />
-              </label>
-              <p v-if="openForm.kind === 'discuss'" class="muted small">
-                Discussing appends this candidate and its evidence to the
-                adjudication bundle (<code>stores.thread_adjudication</code>,
-                by default <code>docs/ensemble/thread_adjudication.json</code>),
-                which you can hand to a conversation whole. The card stays here
-                and can be ruled on again.
-              </p>
-              <p v-if="formError" class="error-box">{{ formError }}</p>
-              <div class="row">
-                <button
-                  class="primary"
-                  :disabled="busy === p.norm"
-                  @click="confirmRule(p, openForm.kind === 'reject' ? 'rejected' : 'deferred')"
-                >Confirm</button>
-                <button class="ghost" @click="cancelForm">Cancel</button>
-              </div>
-            </template>
-          </div>
-        </div>
+            <div v-if="openForm && openForm.norm === p.norm" class="form">
+              <template v-if="openForm.kind === 'accept'">
+                <p v-if="p.matches" class="muted small">
+                  This candidate matches thread <code>{{ p.matches }}</code> — its
+                  identity fields are fixed; only the log rows below are yours to edit.
+                </p>
+                <p v-if="p.matches && alreadyLogged(p).length" class="muted small">
+                  Chapters already logged on that thread are not pre-filled:
+                  {{ alreadyLogged(p).join(', ') }}. Add one back only if it really
+                  needs a second entry.
+                </p>
+                <div class="grid">
+                  <label><span>id</span>
+                    <input v-model="plan.id" :disabled="!!p.matches" /></label>
+                  <label><span>title</span>
+                    <input v-model="plan.title" :disabled="!!p.matches" /></label>
+                  <label><span>status</span>
+                    <select v-model="plan.status" :disabled="!!p.matches">
+                      <option v-for="s in STATUSES" :key="s" :value="s">{{ s }}</option>
+                    </select></label>
+                  <label><span>opened</span>
+                    <input v-model.number="plan.opened" type="number"
+                           :disabled="!!p.matches"
+                           :required="!p.chapters.length" /></label>
+                  <label><span>tracker</span><input v-model="plan.tracker" /></label>
+                  <label><span>notes</span><input v-model="plan.notes" /></label>
+                </div>
+                <h4>Log rows</h4>
+                <div v-for="(row, i) in plan.log" :key="i" class="logrow">
+                  <input v-model.number="row.chapter" type="number" placeholder="ch" class="narrow" />
+                  <select v-model="row.change">
+                    <option v-for="c in CHANGES" :key="c" :value="c">{{ c }}</option>
+                  </select>
+                  <input v-model="row.summary" placeholder="summary" />
+                  <input v-model="row.quote" placeholder="quote (verbatim)" />
+                  <button class="ghost" @click="removeLogRow(i)">remove</button>
+                </div>
+                <button class="ghost" @click="addLogRow">+ add row</button>
+                <p v-if="formError" class="error-box">{{ formError }}</p>
+                <div class="row">
+                  <button class="primary" :disabled="busy === p.norm" @click="confirmAccept(p)">
+                    {{ busy === p.norm ? 'Writing…' : 'Confirm' }}
+                  </button>
+                  <button class="ghost" @click="cancelForm">Cancel</button>
+                </div>
+              </template>
 
-        <h3>Single chapter, repeated <span class="count">({{ repeated.length }})</span></h3>
-        <p class="muted small">
-          Mentioned more than once, but so far inside a single chapter — where a
-          thread that opened last session lives before it has had a chance to recur.
-        </p>
-        <p v-if="!repeated.length" class="muted">None.</p>
-        <div v-for="p in repeated" :key="p.norm" class="candidate">
-          <div class="cand-head">
-            <strong>{{ p.title }}</strong>
-            <span v-if="p.status !== 'pending'" class="badge">{{ p.status }}</span>
-            <span v-if="p.matches" class="badge matched">appends to {{ p.matches }}</span>
+              <template v-else>
+                <label class="field">
+                  <span>Note (optional)</span>
+                  <input v-model="ruleNote" />
+                </label>
+                <p v-if="openForm.kind === 'discuss'" class="muted small">
+                  Discussing appends this candidate and its evidence to the
+                  adjudication bundle (<code>stores.thread_adjudication</code>,
+                  by default <code>docs/ensemble/thread_adjudication.json</code>),
+                  which you can hand to a conversation whole. The card stays here
+                  and can be ruled on again.
+                </p>
+                <p v-if="formError" class="error-box">{{ formError }}</p>
+                <div class="row">
+                  <button
+                    class="primary"
+                    :disabled="busy === p.norm"
+                    @click="confirmRule(p, openForm.kind === 'reject' ? 'rejected' : 'deferred')"
+                  >Confirm</button>
+                  <button class="ghost" @click="cancelForm">Cancel</button>
+                </div>
+              </template>
+            </div>
           </div>
-          <p v-if="(p.all_titles || []).length > 1" class="muted small">
-            also recorded as: {{ p.all_titles.join(' · ') }}
-          </p>
-          <p class="muted small">
-            chapters: <span v-if="p.chapters.length">{{ p.chapters.join(', ') }}</span>
-            <span v-else class="warn">no chapter recorded; you must supply one to accept</span>
-            &middot; {{ mentions(p) }} mention(s)
-          </p>
-          <ul class="evidence">
-            <li v-for="(e, i) in p.evidence" :key="i">
-              <span class="ev-ch">ch{{ e.chapter ?? '—' }}</span>
-              <span class="ev-fact">{{ e.fact }}</span>
-              <q v-if="e.quote" class="ev-quote">{{ e.quote }}</q>
-              <span v-if="e.source" class="ev-src">{{ e.source }}</span>
-            </li>
-          </ul>
-          <div class="actions">
-            <button @click="startAccept(p)">Accept</button>
-            <button @click="startRule(p, 'reject')">Reject</button>
-            <button @click="startRule(p, 'discuss')">Discuss</button>
-          </div>
-          <div v-if="openForm && openForm.norm === p.norm" class="form">
-            <template v-if="openForm.kind === 'accept'">
-              <div class="grid">
-                <label><span>id</span><input v-model="plan.id" :disabled="!!p.matches" /></label>
-                <label><span>title</span><input v-model="plan.title" :disabled="!!p.matches" /></label>
-                <label><span>opened</span>
-                  <input v-model.number="plan.opened" type="number" :disabled="!!p.matches" /></label>
-                <label><span>tracker</span><input v-model="plan.tracker" /></label>
-              </div>
-              <h4>Log rows</h4>
-              <div v-for="(row, i) in plan.log" :key="i" class="logrow">
-                <input v-model.number="row.chapter" type="number" placeholder="ch" class="narrow" />
-                <select v-model="row.change">
-                  <option v-for="c in CHANGES" :key="c" :value="c">{{ c }}</option>
-                </select>
-                <input v-model="row.summary" placeholder="summary" />
-                <input v-model="row.quote" placeholder="quote (verbatim)" />
-                <button class="ghost" @click="removeLogRow(i)">remove</button>
-              </div>
-              <button class="ghost" @click="addLogRow">+ add row</button>
-              <p v-if="formError" class="error-box">{{ formError }}</p>
-              <div class="row">
-                <button class="primary" :disabled="busy === p.norm" @click="confirmAccept(p)">Confirm</button>
-                <button class="ghost" @click="cancelForm">Cancel</button>
-              </div>
-            </template>
-            <template v-else>
-              <label class="field"><span>Note (optional)</span><input v-model="ruleNote" /></label>
-              <p v-if="formError" class="error-box">{{ formError }}</p>
-              <div class="row">
-                <button class="primary" :disabled="busy === p.norm"
-                        @click="confirmRule(p, openForm.kind === 'reject' ? 'rejected' : 'deferred')">
-                  Confirm</button>
-                <button class="ghost" @click="cancelForm">Cancel</button>
-              </div>
-            </template>
-          </div>
-        </div>
+        </template>
 
-        <!-- T030: the hidden count, in words, computed from the loaded set -->
-        <p class="excluded">
+        <!-- The hidden count, in words, computed from the loaded set. When a
+             query is active the tail is RENDERED (third band), so nothing is
+             hidden and this line does not appear — it must never claim to be
+             hiding candidates the page is in fact showing. -->
+        <p v-if="excludedCount" class="excluded">
           {{ excludedCount }} candidate(s) mentioned exactly once are not shown —
           search or filter by chapter to reach them.
         </p>

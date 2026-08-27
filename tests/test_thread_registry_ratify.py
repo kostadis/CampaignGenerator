@@ -130,3 +130,77 @@ def test_registry_is_written_before_the_ruling(tmp_path):
     assert (c / REGISTRY).exists(), "canon must already be written"
     assert registry_doc(c)["threads"][0]["id"] == NORM
     assert proposals_doc(c)["proposals"][0]["status"] == "pending"
+
+
+# ── duplicate log rows on a matched thread (review finding, 2026-08-27) ──
+
+def test_matched_ratify_does_not_duplicate_an_already_logged_chapter(tmp_path):
+    """A matched candidate keeps its FULL chapter span in the payload, so a
+    derived plan can carry a chapter the target thread already logged.
+    Appending it again duplicates canon — and `check_registry` does not flag a
+    repeated chapter, so nothing downstream catches it.
+
+    Reproduces the reported path: the GM hand-creates a thread, then harvests
+    a corpus whose candidate title matches it.
+    """
+    from _thread_fixtures import campaign as mk
+    c = mk(tmp_path)
+    (c / "docs").mkdir(parents=True, exist_ok=True)
+    (c / "docs/thread_registry.yaml").write_text(
+        "version: 1\nthreads:\n"
+        "- {id: hand-made, title: A hand-made thread, status: open, opened: 30,\n"
+        "   resolved: null, tracker: null, notes: '', aliases: [],\n"
+        "   log: [{chapter: 30, change: opened, summary: typed by hand}]}\n")
+    chapter(c, 30, [thread_fact("A hand-made thread", "corpus mentions it."),
+                    thread_fact("A hand-made thread", "twice.")])
+    chapter(c, 41, [thread_fact("A hand-made thread", "and again later.")])
+    cli(c, "propose", "--corpus", CORPUS)
+
+    p = proposals_doc(c)["proposals"][0]
+    assert p["matches"] == "hand-made" and p["chapters"] == [30, 41]
+
+    plan = cli(c, "ratify", "--norm", p["norm"], "--emit-plan").stdout
+    r = cli(c, "ratify", "--norm", p["norm"], "--plan", "-", stdin=plan)
+    assert r.returncode == 0, r.stderr
+
+    threads = registry_doc(c)["threads"]
+    assert len(threads) == 1
+    chapters = [row["chapter"] for row in threads[0]["log"]]
+    assert chapters == [30, 41], f"ch30 duplicated: {chapters}"
+    # the skip is reported, never silent
+    assert "already logged" in r.stdout and "ch30" in r.stdout
+
+
+def test_ratify_records_the_ruling_when_every_row_is_already_present(tmp_path):
+    """Nothing to append is not an error.
+
+    `propose` never offers a candidate whose chapters are all logged, so this
+    is reachable only via a hand-written plan — which is what `--plan`
+    invites. Refusing would be the wrong call: the registry does not change,
+    but the RULING is not a no-op. The GM decided this candidate is that
+    thread, and recording it is what stops the candidate returning forever.
+    What must not happen is a duplicated row or a message that implies one was
+    written.
+    """
+    from _thread_fixtures import campaign as mk
+    c = mk(tmp_path)
+    (c / "docs").mkdir(parents=True, exist_ok=True)
+    (c / "docs/thread_registry.yaml").write_text(
+        "version: 1\nthreads:\n"
+        "- {id: hand-made, title: A hand-made thread, status: open, opened: 30,\n"
+        "   resolved: null, tracker: null, notes: '', aliases: [],\n"
+        "   log: [{chapter: 30, change: opened, summary: typed by hand}]}\n")
+    (c / "docs/ensemble").mkdir(parents=True, exist_ok=True)
+    (c / PROPOSALS).write_text(
+        "proposals:\n- norm: a-hand-made-thread\n  title: A hand-made thread\n"
+        "  all_titles: [A hand-made thread]\n  matches: hand-made\n"
+        "  chapters: [30]\n  status: pending\n  evidence: []\n")
+
+    plan = json.dumps({"id": "hand-made", "title": "A hand-made thread",
+                       "log": [{"chapter": 30, "change": "opened",
+                                "summary": "the same row again"}]})
+    r = cli(c, "ratify", "--norm", "a-hand-made-thread", "--plan", "-", stdin=plan)
+    assert r.returncode == 0, r.stderr
+    assert "0 log row(s) added" in r.stdout and "1 already present" in r.stdout
+    assert len(registry_doc(c)["threads"][0]["log"]) == 1, "canon unchanged"
+    assert proposals_doc(c)["proposals"][0]["status"] == "ratified", "ruling recorded"

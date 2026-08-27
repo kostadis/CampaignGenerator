@@ -352,3 +352,52 @@ def test_threads_routes_name_no_store_and_no_path_literal():
             if isinstance(node, ast.Constant) and isinstance(node.value, str):
                 assert "docs/" not in node.value, (
                     f"{fn.name} carries path literal {node.value!r}")
+
+
+# ── review findings, 2026-08-27 ──────────────────────────────────────────
+
+def test_unusable_corpus_pattern_is_400_not_a_traceback(campaign, fake_cli):
+    """`Path.glob` refuses an absolute pattern with NotImplementedError. That
+    is user input from the corpus box — a GM pasting the absolute path they
+    use at the CLI is the obvious case — so it must be a 400 naming the
+    problem, not a 500 with a traceback."""
+    calls, _ = fake_cli
+    r = client.get("/api/projections/threads/corpus",
+                   params={"pattern": ["/home/kroussos/campaigns/x/*.json"]})
+    assert r.status_code == 400
+    detail = r.json()["detail"]
+    assert "not a usable corpus pattern" in detail
+    assert "absolute" in detail          # FR-033: name a way to proceed
+    assert calls == []
+
+
+def test_check_crash_is_not_reported_as_a_clean_registry(campaign, fake_cli):
+    """`check --json` runs with allow_nonzero because exit 1 means "problems
+    found", which is data. But a non-zero exit with EMPTY stdout means the CLI
+    crashed — returning {} made the page render "passes every consistency
+    check" over a registry nobody managed to read."""
+    calls, outcome = fake_cli
+    outcome["rc"] = 1
+    outcome["stdout"] = ""
+    outcome["stderr"] = "Traceback (most recent call last):\nyaml.scanner.ScannerError"
+    r = client.get("/api/projections/threads/check")
+    assert r.status_code == 400, "a crash must not read as a clean registry"
+    assert "ScannerError" in r.json()["detail"]
+
+
+def test_write_routes_do_not_block_the_event_loop():
+    """The write routes are `async def` (they `await request.json()`), so a
+    bare `subprocess.run` in the body would stall the loop for the life of the
+    process — including an in-flight harvest SSE stream. They must bridge
+    through a threadpool. `get_sections` sidesteps this by being a sync `def`
+    that FastAPI threadpools itself."""
+    src = ROUTER_SRC.read_text(encoding="utf-8")
+    tree = ast.parse(src)
+    offenders = []
+    for fn in ast.walk(tree):
+        if not isinstance(fn, ast.AsyncFunctionDef) or "thread" not in fn.name:
+            continue
+        body = ast.get_source_segment(src, fn) or ""
+        if "subprocess.run" in body and "run_in_threadpool" not in body:
+            offenders.append(fn.name)
+    assert not offenders, f"blocking subprocess.run in async route(s): {offenders}"

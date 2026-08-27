@@ -26,11 +26,32 @@ def _by_norm(c):
 
 
 def test_each_status_writes_back(tmp_path):
-    for status in ("ratified", "rejected", "deferred"):
+    for status in ("rejected", "deferred"):
         c = harvested(tmp_path / status)
         r = cli(c, "rule", "--norm", NORM, "--status", status)
         assert r.returncode == 0, r.stderr
         assert _by_norm(c)[NORM]["status"] == status
+    # `ratified` needs a thread to point at — see the test below.
+    c = harvested(tmp_path / "ratified")
+    r = cli(c, "rule", "--norm", NORM, "--status", "ratified", "--thread", "t1")
+    assert r.returncode == 0, r.stderr
+    assert _by_norm(c)[NORM]["status"] == "ratified"
+
+
+def test_ratified_without_a_thread_is_refused(tmp_path):
+    """A ruling that would not survive the next `propose` is not a ruling.
+
+    `load_prior_rulings` keeps it, but the short-circuit covers only
+    rejected/deferred, `match_thread` finds nothing (no thread was created)
+    and `ruled_thread` is absent — so the next harvest rewrites the row as
+    `pending` and the ruling evaporates, contradicting the docstring's
+    promise that rulings are preserved across re-proposes.
+    """
+    c = harvested(tmp_path)
+    r = cli(c, "rule", "--norm", NORM, "--status", "ratified")
+    assert r.returncode != 0
+    assert "--thread" in r.stderr and "does not survive" in r.stderr
+    assert _by_norm(c)[NORM]["status"] == "pending", "nothing written"
 
 
 def test_note_and_thread_are_recorded(tmp_path):
@@ -81,7 +102,7 @@ def test_deferring_a_second_candidate_appends_rather_than_overwrites(tmp_path):
 def test_re_ruling_deferred_to_ratified_keeps_the_bundle_entry(tmp_path):
     c = harvested(tmp_path)
     cli(c, "rule", "--norm", NORM, "--status", "deferred", "--note", "ask")
-    cli(c, "rule", "--norm", NORM, "--status", "ratified")
+    cli(c, "rule", "--norm", NORM, "--status", "ratified", "--thread", "t1")
     assert _by_norm(c)[NORM]["status"] == "ratified"
     # The conversation happened; the record of it is not a lie.
     entries = json.loads((c / ADJUDICATION).read_text())["entries"]

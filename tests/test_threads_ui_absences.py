@@ -85,8 +85,14 @@ def test_band_and_excluded_counts_are_computed_not_literal():
     `{{ excludedCount }}`), and no interpolation is a bare number.
     """
     src = _source()
-    for expr in ("recurring.length", "repeated.length", "excludedCount"):
+    # Bands are data now (one card template, three bands), so the per-band
+    # count is rendered as `band.items.length`. What matters is unchanged:
+    # every count is an expression over the loaded set.
+    for expr in ("band.items.length", "excludedCount"):
         assert expr in src, f"{expr} is not rendered — counts must be derived"
+    for derived in ("const recurring", "const repeated", "const otherMatches",
+                    "const excludedCount"):
+        assert derived in src, f"{derived} missing — bands must be computed"
 
     # No mustache interpolation may be a bare integer literal.
     literals = [m for m in re.findall(r"\{\{\s*([0-9][0-9,]*)\s*\}\}", src)]
@@ -112,7 +118,10 @@ def test_no_show_all_control(_=None):
     page exposes no such affordance) remains an open GM question and is NOT
     closed by this test.
     """
-    src = _source()
+    # _code_only(): the page's own comment explains that the third band is
+    # NOT a "Show all" control, and a guard that fails on the sentence
+    # documenting the absence punishes documenting it.
+    src = _code_only()
     for bad in ("Show all", "showAll", "show_all", "Show everything", "Load all"):
         assert bad not in src, f"Threads.vue offers {bad!r} (FR-028)"
 
@@ -126,3 +135,73 @@ def test_repeated_band_uses_less_than_two_not_equals_one():
     src = _source()
     assert "spans < 2" in src, "the repeated band must use `< 2`, not `== 1`"
     assert "spans === 1" not in src and "spans == 1" not in src
+
+
+# ── FR-029/FR-030: the tail must be REACHABLE, not merely counted ─────────
+
+def test_every_band_including_the_tail_is_rendered():
+    """The defect that shipped in #346, guarded.
+
+    `bandOf()` sorts candidates into three buckets, but the template rendered
+    only two loops — so a `once`-band candidate was counted by
+    `excludedCount` and displayed by nothing. Typing its exact title into the
+    search box updated the count and produced no card. On an OOTA-sized
+    harvest that was ~916 of 986 candidates unreachable, under a line telling
+    the GM to "search or filter by chapter to reach them".
+
+    The structural fix is that bands are DATA: one card template iterates
+    `bands`, so a bucket cannot be computed and then silently not rendered.
+    """
+    src = _source()
+    # every bucket bandOf() can return has a band entry
+    for key in ("'recurring'", "'repeated'", "'once'"):
+        assert key in src, f"bandOf bucket {key} is missing"
+    assert "v-for=\"band in bands\"" in src, (
+        "bands must be rendered from one data-driven loop; per-band copies of "
+        "the card template are how the third band came to be omitted")
+    assert "v-for=\"p in band.items\"" in src, "cards must come from band.items"
+
+    # ...and there is exactly ONE candidate-card loop, not one per band
+    assert src.count('v-for="p in band.items"') == 1
+    for stale in ('v-for="p in recurring"', 'v-for="p in repeated"'):
+        assert stale not in src, (
+            f"{stale} is a per-band card copy — the duplication this replaced")
+
+
+def test_the_tail_appears_only_in_response_to_a_query():
+    """Reachable by search is not the same as a "Show all" button (FR-028).
+
+    The `once` band must be gated on `searching`, so the page never dumps the
+    whole tail on its own, and `excludedCount` must go to zero when it does
+    render — a page that shows the tail must not simultaneously claim to be
+    hiding it.
+    """
+    src = _code_only()
+    assert "searching.value ? orderBand" in src, (
+        "the tail band must be gated on an active query")
+    assert "searching.value ? 0 :" in src, (
+        "excludedCount must be 0 while the tail is on screen")
+
+
+# ── the signpost must cover #337's own case (review finding) ─────────────
+
+PROJECTIONS_VUE = FRONTEND / "views" / "grounding" / "ProjectionSections.vue"
+
+
+def test_blocked_sections_are_not_scoped_to_the_selection():
+    """`grounding_sections` assembles over SPECS[doc] — the doc's FULL section
+    list — regardless of `--sections`. So a build of only `spine` still dies on
+    a missing required `threads` file.
+
+    Filtering the explanation box to the SELECTED sections therefore produced
+    an empty box in exactly the #337 case it exists to explain: the GM sees a
+    bare `error: missing section file …/threads.md` and no route out.
+    """
+    src = PROJECTIONS_VUE.read_text(encoding="utf-8")
+    # the FILTERING assignment, not the `= []` reset in the success branch
+    i = src.index("blockedByMissingInput.value = sections.value")
+    assignment = src[i:i + 300]
+    assert "selected.value.has" not in assignment, (
+        "blockedByMissingInput must not be scoped to the selection — assemble() "
+        "runs over the whole doc spec")
+    assert "'no-input'" in assignment
