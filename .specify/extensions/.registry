@@ -10,9 +10,14 @@
       "registered_commands": {
         "claude": [
           "speckit.agent-context.update"
+        ],
+        "codex": [
+          "speckit.agent-context.update"
         ]
       },
-      "registered_skills": [],
+      "registered_skills": [
+        "speckit-agent-context-update"
+      ],
       "installed_at": "2026-06-27T21:48:08.109321+00:00"
     }
   }
