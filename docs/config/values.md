@@ -113,7 +113,8 @@ four CLIs (`event_spine`, `thread_registry`, `grounding_sections`, `build_recent
 | Value | Read by | Written by |
 |---|---|---|
 | `stores.events` | `event_spine update`/`render`, `grounding_sections`'s freshness hash **and** its spine/tracking reads (one resolved value — closes the three-site split [projection-isolation.md](./projection-isolation.md) documents), `build_recent_events` | `PUT /api/projections/config` |
-| `stores.thread_registry`, `stores.thread_proposals` | `thread_registry`'s verbs and `propose`; `grounding_sections`'s `threads`/`emerging` sections | `PUT /api/projections/config` |
+| `stores.thread_registry`, `stores.thread_proposals` | `thread_registry`'s verbs and `propose`; `grounding_sections`'s `threads`/`emerging` sections; the Threads page's read routes | `PUT /api/projections/config` |
+| `stores.thread_adjudication` | nothing automated — it is written **for a human conversation to read**. `thread_registry rule --status deferred` appends the candidate and its evidence so the file can be handed to Claude whole, without re-running the harvest | `PUT /api/projections/config` |
 | `stores.tracking` | `grounding_sections`'s `tracking` section (a glob; zero matches skips cleanly) | `PUT /api/projections/config` |
 | `inputs.dossiers`, `inputs.dossiers_fallback` | `grounding_sections`'s synthesis and `npc_outlook` sections — curated preferred, fallback used and **reported** when the curated set has no files (FR-024a) | `PUT /api/projections/config` |
 | `inputs.narrative_importance`, `inputs.party`, `inputs.planning_notes`, `inputs.speculations` | `grounding_sections`'s outlook selection and its `copy`/`emerging` sections | `PUT /api/projections/config` |

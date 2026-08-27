@@ -43,7 +43,16 @@ Users specify **campaign directory** + **session directory** on the Session Conf
 5. **Plan & Check** — run `sd_consistency` + `sd_plan` to produce `plan.md` and `consistency_report.md`
 6. **Session Doc Editor** — two-panel editor (scene list / extraction editor)
 
-**Grounding Docs**: Campaign State, World State, Party Document, Planning Document
+**Grounding Docs**: Campaign State, World State, Party Document, Planning Document,
+State Projection, **Threads**
+
+- **Threads** (`/grounding/threads`) — harvest thread candidates from the
+  extraction corpus, rule on them one at a time (accept / reject / discuss),
+  and maintain the ratified registry. Deterministic and free: no model call,
+  no credential. This is the page that lets `docs/thread_registry.yaml` exist
+  without a terminal — without it, every `planning` build dead-ends on a
+  missing required section (#337). Full walkthrough:
+  [state_projection_howto.md](../cli/state_projection_howto.md#threads-harvest-rule-maintain).
 
 **Ensemble** (four-stage extraction + synthesis workflow):
 - **Setup** (`/ensemble/setup`): chapter selection, a backend per LLM-bearing stage, and

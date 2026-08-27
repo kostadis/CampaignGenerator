@@ -1,12 +1,33 @@
 """State Projection API routes — config, staleness, and per-section rebuild.
 
 Phase 6 of ``specs/006-state-projection-service`` (User Story 4): "See what
-is stale and rebuild just that, from the UI." Release scope is deliberately
-narrow (spec Q2) — staleness and per-section rebuild only. There is no route
-for thread triage, summary-map approval, the lineage report, or promotion;
-those stay CLI/skill driven, and adding a write route for proposals would
-move a judgment checkpoint into the interface (the LLM-pipeline design rule:
-scope/attribution decisions need a human checkpoint, not a button).
+is stale and rebuild just that, from the UI." Release scope was deliberately
+narrow (spec Q2) — staleness and per-section rebuild only.
+
+**Reversed 2026-08-26 for thread triage, on a GM ruling (014 / #337,
+research D13).** This docstring used to say there was no route for thread
+triage because "adding a write route for proposals would move a judgment
+checkpoint into the interface". That reasoning was wrong about *where* the
+checkpoint lives. The checkpoint is the GM reading the evidence and deciding;
+it is not the keyboard they type on. Meanwhile the absence had a cost the
+original scope call did not anticipate: ``threads`` is a required section of
+the ``planning`` doc spec, so ``assemble()`` refuses to write ANY planning
+draft while ``docs/thread_registry.yaml`` is missing — and nothing in
+``server/`` or ``frontend/`` mentioned the file, so every ``--sections`` build
+dead-ended in a raw subprocess error naming a YAML file the UI gave the GM no
+way to create (#337).
+
+The checkpoint is preserved by *constraints*, not by absence:
+
+- one candidate per ruling — no route accepts a list of ``norm`` values, and
+  ``thread_registry rule`` takes exactly one ``--norm`` (FR-007, SC-004);
+- every field that will be written is shown before it is written — ``ratify``
+  requires an explicit ``--plan``; there is no "accept as proposed" (FR-008);
+- nothing here decides thread identity, merges by similarity, or ratifies
+  anything on its own (FR-022, FR-031).
+
+Summary-map approval, the lineage report and promotion remain CLI/skill
+driven; this reversal is scoped to thread triage alone.
 
 This router contains NO generation logic — argv construction and streaming
 only (FR-023, Constitution VI). Every path the ``run/*`` routes need comes
@@ -75,6 +96,58 @@ async def put_projection_config(request: Request) -> ProjectionConfig:
     if not isinstance(partial, dict):
         raise HTTPException(status_code=400, detail="body must be a JSON object")
     return _service(request).update_config(partial)
+
+
+# ── Thread registry seam (014) ────────────────────────────────────────────
+#
+# Every threads route below goes through here. The router builds argv and
+# nothing else: no registry logic, no YAML parsing, no write of its own
+# (Constitution VI, FR-018/FR-019 — guarded by
+# tests/test_thread_registry_routes.py).
+
+
+def _thread_registry(*args: str) -> dict:
+    """Run one ``thread_registry`` verb and return its JSON payload.
+
+    A non-zero exit becomes a 400 carrying the CLI's own message verbatim, so
+    the GM reads the engine's wording rather than a paraphrase invented here
+    (FR-021, SC-008). ``check`` is the one caller that must NOT treat exit 1
+    as failure — a failing consistency check is data to render — so it passes
+    ``allow_nonzero`` and reads the payload anyway.
+    """
+    return _thread_registry_run(args, allow_nonzero=False)
+
+
+def _thread_registry_run(args: tuple[str, ...], *, allow_nonzero: bool) -> dict:
+    cmd = [console_script("thread_registry"), *args]
+    result = subprocess.run(cmd, cwd=str(Path.cwd()), capture_output=True, text=True)
+    if result.returncode != 0 and not allow_nonzero:
+        raise HTTPException(
+            status_code=400,
+            detail=(result.stderr or result.stdout).strip()
+            or f"thread_registry {args[0] if args else ''} failed",
+        )
+    if not result.stdout.strip():
+        return {}
+    try:
+        return json.loads(result.stdout)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=500, detail=f"malformed thread_registry payload: {exc}"
+        ) from exc
+
+
+def _thread_registry_write(*args: str) -> dict:
+    """A write verb: no JSON comes back, only success or the CLI's refusal."""
+    cmd = [console_script("thread_registry"), *args]
+    result = subprocess.run(cmd, cwd=str(Path.cwd()), capture_output=True, text=True)
+    if result.returncode != 0:
+        raise HTTPException(
+            status_code=400,
+            detail=(result.stderr or result.stdout).strip()
+            or "thread_registry write failed",
+        )
+    return {"ok": True, "output": (result.stdout or "").strip()}
 
 
 # ── Command-building helpers (mirror grounding.py / ensemble.py) ───────────
@@ -267,3 +340,225 @@ def get_projection_resolved_selection(request: Request):
         request, service=sel if sel and not sel.is_empty() else None,
         service_name="projections", raise_on_incompatible=False,
     ).as_dict()
+
+
+# ── Thread registry: reads (014 US1) ──────────────────────────────────────
+
+
+@router.get("/threads/registry")
+def threads_registry() -> dict:
+    """The ratified registry, machine-readable. Read-only."""
+    return _thread_registry("list", "--json")
+
+
+@router.get("/threads/proposals")
+def threads_proposals() -> dict:
+    """The FULL candidate queue — every proposal, whatever its ruling.
+
+    Deliberately takes **no** query, filter or paging parameter (FR-028,
+    research D16). The 986-candidate OOTA harvest serialises to 484 KB, which
+    a localhost single-user server sends without noticing, and the page
+    searches in the browser. A server-side query here would put "which
+    candidates matter" in the server — a scope decision that belongs to the
+    GM.
+    """
+    return _thread_registry("proposals", "--json")
+
+
+@router.get("/threads/check")
+def threads_check() -> dict:
+    """Registry invariants. **200 even when problems exist.**
+
+    The CLI exits 1 so shell users and CI keep the behaviour they have, but a
+    failing consistency check is a *state to render*, not a transport error —
+    turning it into a 4xx would make the page show "request failed" where the
+    GM needs to read which thread is broken.
+    """
+    return _thread_registry_run(("check", "--json"), allow_nonzero=True)
+
+
+@router.get("/threads/corpus")
+def threads_corpus(pattern: list[str] = Query(default=[])) -> dict:
+    """Resolve explicit corpus patterns to the file list a harvest would read.
+
+    Files only — **no chapter numbers** (GM ruling, research D20). Deriving a
+    chapter here would mean importing ``chapter_of`` or wrapping it in a new
+    verb, i.e. a second seam onto the engine for a preview. The chapterless
+    warning lives on the candidate card instead, where the GM acts on it.
+
+    No config fallback: reading ``ensemble.yaml`` for a default corpus would
+    be a cross-service config read (research D5), and an implicit corpus is
+    exactly the silent "all" Constitution X forbids.
+    """
+    picked = [p.strip() for p in pattern if p and p.strip()]
+    if not picked:
+        raise HTTPException(
+            status_code=400,
+            detail="pattern is required — give at least one corpus glob "
+                   "before resolving; there is no implicit \"all\".",
+        )
+    cwd = Path.cwd().resolve()
+    files: dict[str, int] = {}
+    for pat in picked:
+        for hit in cwd.glob(pat):
+            r = hit.resolve()
+            if cwd not in r.parents:
+                continue  # confine to the workspace, as list_chapters does
+            if r.is_file():
+                files[str(r.relative_to(cwd))] = r.stat().st_size
+    return {"files": [{"path": p, "size": files[p]} for p in sorted(files)],
+            "count": len(files)}
+
+
+@router.get("/threads/run/propose")
+async def run_threads_propose(corpus: list[str] = Query(default=[])):
+    """Harvest thread candidates (SSE).
+
+    **Deterministic — zero tokens.** No ``resolve_selection``, no
+    ``--model``/``--backend``/``--endpoint``: this pass reads JSON off disk
+    and groups it. That is why the page gives it a dedicated run control
+    rather than the shared ``RunPanel`` (research D19), and why no credential
+    is involved at any point.
+    """
+    picked = [c.strip() for c in corpus if c and c.strip()]
+    if not picked:
+        raise HTTPException(
+            status_code=400,
+            detail="corpus is required — pass at least one --corpus glob.",
+        )
+    cmd = [console_script("thread_registry"), "propose"]
+    for c in picked:
+        cmd += ["--corpus", c]
+    return _sse_response(cmd)
+
+
+# ── Thread registry: rulings (014 US2) ────────────────────────────────────
+
+
+@router.post("/threads/rule")
+async def threads_rule(request: Request) -> dict:
+    """Record ONE ruling on ONE candidate: ratified / rejected / deferred.
+
+    There is deliberately no bulk variant — no endpoint in this router
+    accepts a list of ``norm`` values (SC-004, asserted by
+    tests/test_thread_registry_routes.py).
+    """
+    body: Any = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="body must be a JSON object")
+    norm = (body.get("norm") or "").strip()
+    status = (body.get("status") or "").strip()
+    if not norm:
+        raise HTTPException(status_code=400, detail="norm is required")
+    if not status:
+        raise HTTPException(status_code=400, detail="status is required")
+    args = ["rule", "--norm", norm, "--status", status]
+    if body.get("note"):
+        args += ["--note", str(body["note"])]
+    if body.get("thread"):
+        args += ["--thread", str(body["thread"])]
+    return _thread_registry_write(*args)
+
+
+@router.post("/threads/ratify")
+async def threads_ratify(request: Request) -> dict:
+    """Turn one candidate into canon — **one** subprocess call.
+
+    The body IS the plan (id/title/status/opened/tracker/notes/log[]),
+    forwarded verbatim on stdin to ``thread_registry ratify --plan -``. There
+    is no 207, no per-step report and no partial-apply state for the page to
+    model: that is exactly what the atomic verb bought (research D18).
+    """
+    body: Any = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="body must be a JSON object")
+    norm = (body.get("norm") or "").strip()
+    if not norm:
+        raise HTTPException(status_code=400, detail="norm is required")
+
+    # Route-edge validation BEFORE the subprocess (research D4): a chapterless
+    # accept is a *form* problem, and the GM should be told which field is
+    # missing rather than handed check_registry's wording about log rows.
+    plan = {k: v for k, v in body.items() if k != "norm"}
+    rows = plan.get("log")
+    if not isinstance(rows, list) or not rows:
+        raise HTTPException(
+            status_code=400,
+            detail="log is required — a ratified thread records at least the "
+                   "chapter it opened in.")
+    for i, row in enumerate(rows, 1):
+        ch = row.get("chapter") if isinstance(row, dict) else None
+        if not isinstance(ch, int) or isinstance(ch, bool) or ch < 1:
+            raise HTTPException(
+                status_code=400,
+                detail=f"log row {i}: chapter is required and must be a "
+                       f"chapter number — this candidate has no chapter "
+                       f"recorded, so you must supply one.")
+    if not plan.get("matches") and not str(plan.get("title") or "").strip():
+        raise HTTPException(status_code=400, detail="title is required")
+
+    cmd = [console_script("thread_registry"), "ratify", "--norm", norm,
+           "--plan", "-"]
+    result = subprocess.run(cmd, cwd=str(Path.cwd()), capture_output=True,
+                            text=True, input=json.dumps(plan))
+    if result.returncode != 0:
+        raise HTTPException(
+            status_code=400,
+            detail=(result.stderr or result.stdout).strip() or "ratify failed")
+    return {"ok": True, "output": (result.stdout or "").strip()}
+
+
+# ── Thread registry: maintenance (014 US3) ────────────────────────────────
+
+
+@router.post("/threads/log")
+async def threads_log(request: Request) -> dict:
+    """Append one per-chapter transition to a ratified thread."""
+    body: Any = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="body must be a JSON object")
+    for field in ("id", "chapter", "change", "summary"):
+        if body.get(field) in (None, ""):
+            raise HTTPException(status_code=400, detail=f"{field} is required")
+    args = ["log", "--id", str(body["id"]), "--chapter", str(body["chapter"]),
+            "--change", str(body["change"]), "--summary", str(body["summary"])]
+    if body.get("quote"):
+        args += ["--quote", str(body["quote"])]
+    return _thread_registry_write(*args)
+
+
+@router.post("/threads/status")
+async def threads_status(request: Request) -> dict:
+    """Change a thread's lifecycle status.
+
+    A closing chapter is required for ``resolved``/``abandoned`` — enforced
+    here so the form can say so, AND by the CLI, which is the authority.
+    """
+    body: Any = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="body must be a JSON object")
+    for field in ("id", "status"):
+        if body.get(field) in (None, ""):
+            raise HTTPException(status_code=400, detail=f"{field} is required")
+    args = ["set-status", "--id", str(body["id"]), "--status", str(body["status"])]
+    if body.get("chapter"):
+        args += ["--chapter", str(body["chapter"])]
+    return _thread_registry_write(*args)
+
+
+@router.post("/threads/alias")
+async def threads_alias(request: Request) -> dict:
+    """Record a title variant as the same thread.
+
+    Aliasing is an *identity assertion the GM makes*, never something derived
+    from string similarity — the engine matches on exact normalised titles for
+    the same reason (FR-022, FR-031).
+    """
+    body: Any = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="body must be a JSON object")
+    for field in ("id", "alias"):
+        if body.get(field) in (None, ""):
+            raise HTTPException(status_code=400, detail=f"{field} is required")
+    return _thread_registry_write("alias", "--id", str(body["id"]),
+                                  "--alias", str(body["alias"]))

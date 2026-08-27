@@ -63,6 +63,13 @@ class ProjectionStores(BaseModel):
     events: str = "docs/ensemble/events.jsonl"
     thread_registry: str = "docs/thread_registry.yaml"
     thread_proposals: str = "docs/ensemble/thread_proposals.yaml"
+    # Written by this service's own `thread_registry rule --status deferred`
+    # (014, research D8): the "discuss" bundle a Claude conversation is handed
+    # whole. It belongs here rather than in ProjectionInputs because no other
+    # service produces it — declaring it as an input would make it look like
+    # something arriving from Extraction & State, and a cross-service config
+    # read is what `_backend_flags` was deleted for.
+    thread_adjudication: str = "docs/ensemble/thread_adjudication.json"
     tracking: str = "docs/tracking*.txt"
 
 

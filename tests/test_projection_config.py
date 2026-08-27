@@ -148,6 +148,22 @@ class TestLoadSave:
         save_projection_config(p, ProjectionConfig())
         assert list(tmp_path.glob("*.tmp*")) == []
 
+    def test_thread_adjudication_round_trips(self, tmp_path):
+        """T005 — a store this service writes itself is a legal addition.
+
+        It belongs in `stores`, not `inputs`: no other service produces it, and
+        declaring it as an input would make it look like something arriving
+        from Extraction & State — the cross-service config read `_backend_flags`
+        was deleted for.
+        """
+        path = tmp_path / "projections.yaml"
+        save_projection_config(path, ProjectionConfig.model_validate(
+            {"stores": {"thread_adjudication": "docs/custom/adjudication.json"}}))
+        loaded = load_projection_config(path)
+        assert loaded.stores.thread_adjudication == "docs/custom/adjudication.json"
+        # every other store keeps its default -- a partial PUT is a merge
+        assert loaded.stores.thread_registry == "docs/thread_registry.yaml"
+
     def test_defaults_match_data_model_md(self):
         """Transcribed from data-model.md §1's example YAML. If this drifts,
         the spec and the code have quietly diverged."""
@@ -155,6 +171,9 @@ class TestLoadSave:
         assert cfg.stores.events == "docs/ensemble/events.jsonl"
         assert cfg.stores.thread_registry == "docs/thread_registry.yaml"
         assert cfg.stores.thread_proposals == "docs/ensemble/thread_proposals.yaml"
+        # 014 (research D8): the "discuss" bundle this service's own
+        # `thread_registry rule --status deferred` writes.
+        assert cfg.stores.thread_adjudication == "docs/ensemble/thread_adjudication.json"
         assert cfg.stores.tracking == "docs/tracking*.txt"
         assert cfg.inputs.dossiers == "docs/ensemble/merged_dossiers"
         assert cfg.inputs.dossiers_fallback == "docs/ensemble/state_dossiers"

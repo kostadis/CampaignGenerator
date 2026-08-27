@@ -279,10 +279,20 @@ It does exactly two things: show the staleness table (the same rows as
 `list --json`, provenance column included) and rebuild the sections you tick,
 with the model/backend visible and overridable before the run.
 
-It deliberately does **not** do: thread triage, summary-map approval, the
-lineage report, draft promotion, or editing `projections.yaml`. Those are
-judgment checkpoints and stay CLI/skill-driven. There is no "rebuild all"
-default — an empty selection is a 400, not "everything".
+It deliberately does **not** do: summary-map approval, the lineage report,
+draft promotion, or editing `projections.yaml`. Those are judgment
+checkpoints and stay CLI/skill-driven. There is no "rebuild all" default —
+an empty selection is a 400, not "everything".
+
+**Thread triage moved onto its own page (2026-08-26, #337).** This sentence
+used to exclude it too. The exclusion had a cost nobody had priced: `threads`
+is a *required* section of the `planning` doc, so `assemble()` refuses to
+write any planning draft while `docs/thread_registry.yaml` is missing — and
+no page mentioned that file, so every build dead-ended in a subprocess error
+naming a path the UI gave you no way to create. See
+[the Threads page](#threads-harvest-rule-maintain) below. The checkpoint did
+not move: it is preserved by one-candidate-per-ruling and a form you confirm,
+not by the absence of a button.
 
 ## Document → section reference
 
@@ -381,3 +391,94 @@ diff docs/world_state.md docs/projections/world_state_draft.md
 ```
 
 Then, once you have ratified some threads, `--doc planning`.
+
+
+## Threads: harvest, rule, maintain
+
+`/grounding/threads`. The page that makes `docs/thread_registry.yaml` exist
+without opening a terminal (#337). Everything on it is deterministic — **no
+model is called and no credential is involved at any point**.
+
+### The sequence
+
+1. **Harvest.** Give one or more corpus globs (whitespace-separated), e.g.
+   `docs/ensemble/per_chapter/*/merged.json`. **Resolve** lists the files that
+   matched — files only, no chapter numbers — so you can see what you are
+   about to read before reading it. **Run harvest** streams
+   `thread_registry propose`. An empty corpus is refused: there is no
+   configured default, because an implicit corpus is a silent "all".
+
+   A harvest **never touches the registry**. It writes candidates only.
+
+2. **Rule, one candidate at a time.** Each card shows the title, every other
+   spelling the corpus used for it, the chapters it appears in, and its
+   evidence — the paraphrased fact with the verbatim quote underneath it,
+   visually distinct, unmodified.
+
+   | Action | What it writes |
+   |---|---|
+   | **Accept** | Opens a form pre-filled from the candidate. Every field is editable, log rows can be added or removed, and **nothing is written until you press Confirm**. There is deliberately no one-click accept. |
+   | **Reject** | Marks the candidate `rejected`. It stops appearing in the default view and never returns as pending — but stays findable by search. |
+   | **Discuss** | Marks it `deferred` **and** appends it, with its evidence, to `stores.thread_adjudication` (`docs/ensemble/thread_adjudication.json`). Hand that file to a Claude conversation whole; it is self-sufficient. The card stays and can be ruled on again. |
+
+3. **Build.** `grounding_sections build --doc planning --sections threads` now
+   succeeds — or tick `threads` on the State Projection page.
+
+### Why the queue looks smaller than the harvest
+
+A 62-chapter corpus harvests to ~986 candidates, of which **16** span more
+than one chapter. Candidates are keyed on the extraction lens's free-text
+`subject`, which is not a thread identifier, so most of that number is noise.
+
+The default view shows two named bands:
+
+| Band | Rule |
+|---|---|
+| **Recurring** | appears in ≥2 chapters |
+| **Single chapter, repeated** | fewer than 2 chapters, ≥2 mentions |
+
+Everything else — mentioned exactly once — is **not shown**, and the page
+states how many. There is no "Show all" button: reach the tail with the
+search box (which covers titles, every spelling variant, and evidence prose)
+or the chapter filter. Search spans candidates you have already ruled on, so
+a rejected one is always retrievable.
+
+Every count on the page is computed from what was loaded. None is written in.
+
+### A thread you accepted keeps coming back — on purpose
+
+Accepting a thread at chapter 41 does not silence it. When later chapters
+mention it, the candidate is re-offered carrying **only the chapters not yet
+logged**, matched to the thread you created, so ratifying again appends
+rather than forking a second thread. A rejection is a one-way door; an
+acceptance is not.
+
+### Maintenance
+
+Under **Ratified threads**, each thread offers *Add log row*, *Change status*
+and *Add alias*. Resolving or abandoning requires a closing chapter — the form
+says so and the engine enforces it. Consistency problems are shown both in the
+health region and on the thread they belong to.
+
+### Refusals, decoded
+
+Every message below comes from `thread_registry` itself and is shown verbatim.
+
+| Message | What to do |
+|---|---|
+| `corpus is required — pass at least one --corpus glob.` | Fill the corpus field before harvesting. |
+| `pattern is required …` | Same, for **Resolve**. |
+| `log row 1 has no chapter — a thread's chapters are yours to decide, not the harvest's` | The candidate had no chapter recorded. Type one into the log row. |
+| `error: no proposal with norm 'X' — run propose first` | The queue is stale — reload, or re-harvest. |
+| `error: thread id 'X' already exists` | Edit the `id` field, or accept onto the existing thread instead. |
+| `error: title 'X' matches existing thread 'Y' — use log/alias on it instead` | This is the same thread under another name; add the alias to `Y`. |
+| `error: alias 'X' already matches thread 'Y'` | That alias is taken. |
+| `error: resolving/abandoning needs --chapter` | Supply the closing chapter. |
+| `error: refusing to save a registry that fails check` | The per-problem lines follow it. Nothing was written. |
+
+### What it does not do
+
+No bulk ruling, no "accept remaining", no similarity-based grouping or
+merging of candidates, and no server-side search. Each absence is a
+requirement with a test behind it, not a missing feature: deciding that two
+titles are the same thread is an identity assertion, and it is yours.

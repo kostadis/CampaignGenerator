@@ -362,3 +362,44 @@ def test_batch_is_forwarded_to_the_synthesis_subprocess(monkeypatch):
     _Args.batch = False
     gs.render_synthesis(sec, _Args(), [Path("d.md")], Path("out.md"))
     assert "--batch" not in captured["cmd"]
+
+
+# ── `missing` on the list --json payload (014 T054, FR-024) ──────────────
+
+def test_list_json_carries_missing_on_every_row(tmp_path):
+    """The browser must not re-derive file existence — it cannot stat the
+    disk. `missing` is computed where `section_inputs` already knows.
+
+    The `per-npc` row is checked explicitly because `section_row` has TWO
+    return sites and the outlook branch returns early: a row arriving without
+    the key would break the Inputs cell on that row alone.
+    """
+    camp = _campaign(tmp_path)
+    r = run_cli(camp, "list", "--doc", "planning", "--json")
+    assert r.returncode == 0, r.stderr
+    rows = {s["name"]: s for s in json.loads(r.stdout)["sections"]}
+
+    assert all("missing" in s for s in rows.values()), \
+        f"rows without `missing`: {[n for n, s in rows.items() if 'missing' not in s]}"
+
+    # a section whose inputs are all present reports nothing missing
+    threads = rows["threads"]
+    assert threads["state"] == "fresh" or threads["state"] == "unbuilt"
+    assert threads["missing"] == []
+
+    # the early-return branch carries the key too
+    assert "npc_outlook" not in rows or isinstance(rows["npc_outlook"]["missing"], list)
+
+
+def test_list_json_names_the_missing_store_for_a_no_input_section(tmp_path):
+    """This is #337's dead end, made visible BEFORE a build is attempted:
+    the row names the file the GM has no other way to learn about."""
+    camp = _campaign(tmp_path)
+    (camp / "docs/thread_registry.yaml").unlink()
+    r = run_cli(camp, "list", "--doc", "planning", "--json")
+    assert r.returncode == 0, r.stderr
+    rows = {s["name"]: s for s in json.loads(r.stdout)["sections"]}
+    threads = rows["threads"]
+    assert threads["state"] == "no-input"
+    assert any("thread_registry.yaml" in m for m in threads["missing"]), \
+        "the row must name the store, not merely say 'no-input'"
