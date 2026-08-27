@@ -20,6 +20,7 @@ summary
 server*.pid
 .claude/
 .playwright-mcp
+.specify/extensions/.cache/
 
 # MemPalace per-project files (issue #185)
 mempalace.yaml
