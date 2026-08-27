@@ -22,8 +22,13 @@ A D&D session-prep and post-session documentation toolkit powered by the [Claude
 uv venv
 source .venv/bin/activate
 uv pip install anthropic pyyaml pyperclip pyvis fastapi uvicorn
-export ANTHROPIC_API_KEY=sk-ant-...
+export ANTHROPIC_API_KEY=sk-ant-...   # only for --backend anthropic
 ```
+
+Other backends need no Anthropic key: `--backend claude-code` bills your
+Claude subscription, `--backend dgx` points at a local endpoint, and
+`--backend openrouter` uses `OPENROUTER_API_KEY`. On the subscription path the
+key should be *absent* — `claude -p` bills the metered API when it finds one.
 
 ### Web UI
 

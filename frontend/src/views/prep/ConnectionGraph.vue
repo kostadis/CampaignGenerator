@@ -11,12 +11,6 @@ const config = useConfigStore()
 // platform-wide backend (server/routers/connections.py's resolve_selection
 // comment), so unlike RunPanel/ExtractSynthesizePanel there is no per-service
 // SelectionPanel to read a resolved backend from. `config.backend` (the
-// sidebar's own tracked value) IS the backend this run will use, so gate the
-// API-key requirement on that directly — mirrors AppSidebar.vue's
-// `currentBackend !== 'claude-code'` guard, generalised to every
-// non-anthropic backend.
-const needsApiKey = computed(() => config.backend === 'anthropic')
-
 // Form state is deliberately stateless — see docs/config/ui-state-retirement.md
 // D1 (the reserved `ui.connections` section was never written by anything and
 // is retired). The extracted graph itself IS persisted, but on disk via
@@ -389,7 +383,7 @@ const entityOptions = computed(() => {
     <div class="form-section action-row">
       <button
         class="btn-primary"
-        :disabled="!allSelected.length || extracting || (needsApiKey && !config.apiKeyPresent)"
+        :disabled="!allSelected.length || extracting"
         @click="extract"
       >
         {{ extracting ? 'Extracting...' : `Extract Connections (runs on ${config.backend})` }}
@@ -398,9 +392,6 @@ const entityOptions = computed(() => {
         <input type="checkbox" v-model="replaceExisting" />
         Replace cache (don't merge)
       </label>
-      <span v-if="needsApiKey && !config.apiKeyPresent" class="warning">
-        ANTHROPIC_API_KEY not set
-      </span>
       <span v-if="cacheInfo" class="cache-info">{{ cacheInfo }}</span>
     </div>
 

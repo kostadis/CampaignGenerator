@@ -69,7 +69,6 @@ export const useConfigStore = defineStore('config', () => {
   // how flipping this in the sidebar shows up as "inherited" everywhere else
   // without a page reload.
   const batch = ref<boolean>(false)
-  const apiKeyPresent = ref(false)
   const cwd = ref('')
   const loaded = ref(false)
   let loadPromise: Promise<void> | null = null
@@ -96,7 +95,6 @@ export const useConfigStore = defineStore('config', () => {
       backend.value = cfg.resolved?.runtime?.default_backend || modelsData.default_backend || 'anthropic'
       model.value = cfg.resolved?.runtime?.default_model || modelsData.default
       batch.value = cfg.resolved?.runtime?.default_batch === true
-      apiKeyPresent.value = status.api_key_present
       cwd.value = status.cwd
       editorConfig.value = editorCfg
       groundingConfig.value = groundingCfg
@@ -211,7 +209,6 @@ export const useConfigStore = defineStore('config', () => {
     batch,
     defaultModel,
     model,
-    apiKeyPresent,
     cwd,
     loaded,
     load,

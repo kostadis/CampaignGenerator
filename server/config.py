@@ -43,7 +43,6 @@ a model needs no CampaignGenerator release) is Phase 5b — deferred, needs a
 template change in the separate ``mneme`` repo, not done here.
 """
 
-import os
 from pathlib import Path
 
 from campaignlib import DEFAULT_MODEL
@@ -58,11 +57,6 @@ MODELS = [
     "claude-sonnet-4-6",
     "claude-haiku-4-5",
 ]
-
-
-def api_key_present() -> bool:
-    """Check if ANTHROPIC_API_KEY is set."""
-    return bool(os.environ.get("ANTHROPIC_API_KEY"))
 
 
 def path_exists(path_str: str) -> bool:

@@ -13,6 +13,38 @@ from ..wiring import wiring_get
 _THINKING_EXTRA_CLIENTS = (_OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient)
 
 
+def _require_anthropic_credential(client) -> None:
+    """Refuse an Anthropic call with no credential, in a sentence (#342).
+
+    This is the single road a missing Anthropic key arrives by, now that the
+    UI's ``api_key_present`` pre-flight is gone. It sits at the *call*, not at
+    ``make_client``, for two reasons:
+
+    * Constructing a client is not calling one. ``anthropic.Anthropic()``
+      happily constructs without a key, and every ``--dump-only`` path in the
+      grounding and ensemble CLIs builds a client it then never uses — the
+      documented keyless subscription workflow. Refusing at construction would
+      break it.
+    * Only the three adapter classes know they need no key at all. Anything
+      that is *not* one of them is the real SDK client, so this is also the
+      cheapest correct test for "is this call going to the metered API".
+
+    Without it the failure is an SDK authentication error raised mid-run, after
+    the pipeline has done its assembly work — a traceback where the deleted
+    button-disable used to be a message.
+    """
+    if isinstance(client, _THINKING_EXTRA_CLIENTS):
+        return
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        return
+    raise SystemExit(
+        "ANTHROPIC_API_KEY is not set, and this call goes to the metered "
+        "Anthropic API. Export it, or choose a backend that needs no key: "
+        "--backend claude-code (bills your subscription) or --backend dgx "
+        "(local endpoint)."
+    )
+
+
 def _require_nonempty(text: str) -> str:
     """Guard against a silently-empty model response (Constitution Principle I).
 
@@ -88,6 +120,8 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
     except ImportError:
         print("Error: anthropic not installed. Run: pip install anthropic", file=sys.stderr)
         sys.exit(1)
+    # NOT checked here: see _require_anthropic_credential. Constructing a client
+    # is not calling one — every --dump-only path builds a client it never uses.
     return anthropic.Anthropic()
 
 
@@ -225,6 +259,7 @@ def call_api(client, system: str, content, model: str, max_tokens: int = 8096,
     Retries on transient errors (rate limit, overload, connection) with exponential backoff.
     """
     import time
+    _require_anthropic_credential(client)
     messages = [{"role": "user", "content": content}]
     # `thinking` is a local/OpenRouter knob; the real Anthropic SDK would reject it.
     extra = {"thinking": thinking} if isinstance(client, _THINKING_EXTRA_CLIENTS) else {}
@@ -261,6 +296,7 @@ def call_api_with_tools(client, *, system: str, messages: list, tools: list,
     exponential backoff — same behaviour as call_api / stream_api.
     """
     import time
+    _require_anthropic_credential(client)
     delays = [10, 20, 40]
     for attempt, delay in enumerate([-1] + delays):
         if delay >= 0:
@@ -298,6 +334,7 @@ def stream_api(client, system, user: str, model: str, max_tokens: int = 8096,
              get the prompt-cache discount. Useful when a large fixed context (e.g.
              a full VTT transcript) is reused across many short calls.
     """
+    _require_anthropic_credential(client)
     if verbose:
         print("\n" + "▲" * 60)
         print("SYSTEM PROMPT:")

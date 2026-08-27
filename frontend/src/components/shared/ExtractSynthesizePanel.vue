@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { connectSSE } from '../../api/sse'
-import { useConfigStore } from '../../stores/config'
 import StreamOutput from './StreamOutput.vue'
 import SelectionPanel from './SelectionPanel.vue'
 
@@ -33,7 +32,6 @@ const emit = defineEmits<{
   done: [phase: 'extract' | 'synthesize', returncode: number]
 }>()
 
-const config = useConfigStore()
 
 type Status = 'idle' | 'running' | 'done' | 'error'
 
@@ -62,13 +60,6 @@ const synthButtonLabel = computed(() => {
 // Feature 003 — an incompatible selection blocks BOTH phases here, before
 // tokens are spent, rather than surfacing as a 409 mid-stream.
 const selectionCompatible = ref(true)
-// The backend these runs will actually resolve to (mirrored from
-// SelectionPanel's own /selection/resolved fetch) — see RunPanel.vue's
-// identical guard for the full reasoning. Only an ANTHROPIC run needs
-// ANTHROPIC_API_KEY; dgx/openrouter/claude-code runs must not be blocked or
-// warned about it.
-const selectionBackend = ref('anthropic')
-const needsApiKey = computed(() => !props.selectionService || selectionBackend.value === 'anthropic')
 
 const canExtract = computed(() =>
   !props.disabled
@@ -103,7 +94,7 @@ function buildUrl(endpoint: string, params: Record<string, any>): string {
 }
 
 function runExtract() {
-  if (!canExtract.value || (needsApiKey.value && !config.apiKeyPresent)) return
+  if (!canExtract.value) return
   extractStatus.value = 'running'
   extractOutput.value = ''
 
@@ -120,7 +111,7 @@ function runExtract() {
 }
 
 function runSynthesize() {
-  if (!canSynthesize.value || (needsApiKey.value && !config.apiKeyPresent)) return
+  if (!canSynthesize.value) return
   synthStatus.value = 'running'
   synthOutput.value = ''
 
@@ -234,7 +225,6 @@ if (props.extractDir) refreshFiles()
       :doc="selectionDoc"
       :can-override="selectionCanOverride"
       @compatible="(ok: boolean) => (selectionCompatible = ok)"
-      @backend="(b: string) => (selectionBackend = b)"
     />
 
     <!-- Two columns: Extract on the left, Synthesize on the right. -->
@@ -260,12 +250,9 @@ if (props.extractDir) refreshFiles()
         <div class="controls">
           <button
             class="btn-primary"
-            :disabled="!canExtract || (needsApiKey && !config.apiKeyPresent)"
+            :disabled="!canExtract"
             @click="runExtract"
           >{{ extractButtonLabel }}</button>
-          <span v-if="needsApiKey && !config.apiKeyPresent" class="warning">
-            ANTHROPIC_API_KEY not set
-          </span>
         </div>
 
         <!-- Review area -->
@@ -339,7 +326,7 @@ if (props.extractDir) refreshFiles()
         <div class="controls">
           <button
             class="btn-success"
-            :disabled="!canSynthesize || (needsApiKey && !config.apiKeyPresent)"
+            :disabled="!canSynthesize"
             @click="runSynthesize"
           >{{ synthButtonLabel }}</button>
           <span v-if="synthesizeDisabled" class="help">
@@ -413,7 +400,6 @@ if (props.extractDir) refreshFiles()
   background: var(--bg-mantle);
   border-bottom: 1px solid var(--bg-surface0);
 }
-.warning { font-size: 11px; color: var(--peach); font-weight: 600; }
 .help { font-size: 11px; color: var(--text-muted); }
 
 .review {
