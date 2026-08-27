@@ -233,7 +233,13 @@ FR-033 had no enforcing task anywhere in this list before 2026-08-26; it is
 covered, but by a file that arrives with the merge, not from here.
 
 - [ ] ~~T057a–T057k~~ — **cancelled in this shape**; delivered by PR #343 (open). Restore only if #343 is closed unmerged
-- [ ] T057v (SC-012) Verify only, once #343 is merged: with `env -u ANTHROPIC_API_KEY ./startup`, build the planning document's `threads` section from the State Projection page and confirm it runs. This is quickstart Scenario 5, which stays — the scenario is still the right check, only its explanation changed
+- [x] T057v (SC-012) **VERIFIED 2026-08-27.** Server launched with `env -u ANTHROPIC_API_KEY` (absence confirmed by reading `/proc/<pid>/environ`, not by trusting the launch line), against a scratch campaign, on port 5010.
+      - `GET /api/config/status` → `{"cwd": …}` only. No `api_key_present`. FR-034 confirmed **live**, not just by the AST guard.
+      - `GET /run/build?doc=planning&sections=threads` → **returncode 0**, wrote `docs/projections/planning_draft.md` with the threads section rendered from the registry. **This is the exact operation #337 says is unreachable.**
+      - Went past the task to prove **SC-001** end to end, all through the API with no credential and no terminal: resolve corpus → harvest → queue → ratify a new thread → ratify onto a *matched* thread → rebuild. Final registry: **2 threads, not 3** — ch50 appended to `buppidos-divine-plan` rather than forking (FR-009), and the re-offer carried **only ch50** because ch30/41 were already logged (FR-009a). Quotes verbatim throughout.
+      - Refusals confirmed live: empty corpus → 400 *"corpus is required…"*; empty pattern → 400 *"…there is no implicit \"all\"."*; a chapterless accept → 400 naming the **field**, not `check_registry`'s log-row wording (research D4).
+      - `GET /threads/check` → **HTTP 200** with `problems`, as designed — a failing check is data to render, never a transport error.
+      - `list --json` carries `missing` on **every** row including the `per-npc` early-return branch (T053's two-return-sites fix), confirmed live.
 
 **Rebase note**: if this branch predates #343, rebase before implementing —
 `RunPanel.vue` and `stores/config.ts` are touched by both, and T021's dedicated
@@ -402,16 +408,26 @@ Task: "Add the Threads sidebar entry in frontend/src/components/layout/AppSideba
 
 Four tasks are deliberately NOT done. None is blocked on work in this repo.
 
-- **T001 (editable-install this worktree)** — **not run on purpose.** The
-  editable `.pth` in `~/.venvs/main` hardcodes
-  `/home/kroussos/src/CampaignGenerator`, so installing this worktree would
-  repoint the SHARED venv and make the user's running server execute worktree
-  code without saying so. `pytest` does not need it (the new fixtures pin
-  `PYTHONPATH` to this tree, and `tests/conftest.py` inserts `REPO_ROOT`), so
-  everything testable was tested without it. It IS required before T063's
-  browser run, because `console_script("thread_registry")` resolves against
-  the venv and would otherwise run MAIN's engine — which has none of the new
-  verbs. Run it deliberately, then reinstall main when finished.
+- **T001 (editable-install this worktree)** — **not needed. Superseded by a
+  measurement, 2026-08-27.** The task assumed the venv flip was the only way
+  to make `console_script()` resolve to worktree code. It is not:
+  **`PYTHONPATH` takes precedence over the editable `.pth`.** Measured
+  directly —
+
+  ```
+  $ ~/.venvs/main/bin/thread_registry --help          # main's engine
+    {propose,add,log,set-status,alias,check,render,speculate}
+  $ PYTHONPATH=<worktree> ~/.venvs/main/bin/thread_registry --help
+    {propose,rule,ratify,add,log,set-status,alias,check,list,proposals,render,speculate}
+  ```
+
+  So launching the server with `PYTHONPATH=<worktree>` runs worktree code for
+  both the server AND its console-script subprocesses, while the shared venv
+  keeps pointing at `main`. T057v was verified this way with **four of the
+  GM's servers running on ports 5000-5003 and untouched** — which the venv
+  flip would have silently repointed mid-session. Prefer this for T063 too;
+  reserve the flip for when something genuinely needs the installed entry
+  points to change globally.
 - **T045a** — **ruled 2026-08-26: deferred, tracked as #345.** The static
   guard in `tests/test_threads_ui_absences.py` stands as interim backing; the
   rendered-page proof waits on `frontend/` having any test runner at all,
