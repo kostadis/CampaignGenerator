@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 from campaignlib import (
+    CodexCliError,
     DEFAULT_MODEL,
     add_backend_args,
     assemble_docs,
@@ -58,8 +59,9 @@ def main() -> None:
     )
     parser.add_argument(
         "--model",
-        default=DEFAULT_MODEL,
-        help="Claude model to use",
+        default=None,
+        help="Model to use (existing backends default to the CampaignGenerator "
+             "Claude model; codex-cli uses CG_CODEX_MODEL or the Codex subscription default)",
     )
     add_backend_args(parser)
     parser.add_argument(
@@ -69,6 +71,12 @@ def main() -> None:
     )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
+
+    resolved_backend = args.backend
+    if resolved_backend == "anthropic":
+        resolved_backend = os.environ.get("CG_BACKEND") or "anthropic"
+    if resolved_backend != "codex-cli" and args.model is None:
+        args.model = DEFAULT_MODEL
 
     doc_path = Path(args.document).expanduser()
     if not doc_path.exists():
@@ -110,7 +118,12 @@ def main() -> None:
 
     print(f"Document : {doc_path.name} ({len(document):,} chars)")
     print(f"Context  : {len(context_parts)} document(s)")
-    print(f"Model    : {args.model}")
+    model_display = (
+        args.model
+        if args.model is not None
+        else "Codex subscription default"
+    )
+    print(f"Model    : {model_display}")
     print("=" * 60)
 
     prompt = "\n\n---\n\n".join([
@@ -118,7 +131,11 @@ def main() -> None:
         "## Campaign Context\n\n" + "\n\n---\n\n".join(context_parts),
     ])
 
-    client = client_from_args(args)
+    try:
+        client = client_from_args(args)
+    except CodexCliError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
     system = load_agent_prompt("session_doc/consistency")
     max_tokens = int(os.environ.get("CG_CONSISTENCY_MAX_TOKENS", "32000"))
     if args.batch:
@@ -130,11 +147,15 @@ def main() -> None:
             print(f"Error: batch item failed: {e}", file=sys.stderr)
             sys.exit(1)
     else:
-        report = stream_api(
-            client, system, prompt, args.model,
-            max_tokens=max_tokens,
-            silent=True, verbose=args.verbose,
-        )
+        try:
+            report = stream_api(
+                client, system, prompt, args.model,
+                max_tokens=max_tokens,
+                silent=True, verbose=args.verbose,
+            )
+        except CodexCliError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
     issue_count = report.count("**Location**")
     if issue_count:

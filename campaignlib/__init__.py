@@ -37,6 +37,7 @@ from .api.client import (
     make_client, call_api, call_api_with_tools, stream_api,
     add_backend_args, client_from_args,
 )
+from .api.codex_cli import CodexCliError, _CodexCliClient
 from .api.batch import (
     build_batch_request,
     submit_batch,
@@ -167,6 +168,8 @@ __all__ = [
     "call_api",
     "call_api_with_tools",
     "stream_api",
+    "CodexCliError",
+    "_CodexCliClient",
     # api — batch
     "build_batch_request",
     "submit_batch",

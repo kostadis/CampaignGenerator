@@ -26,9 +26,26 @@ export ANTHROPIC_API_KEY=sk-ant-...   # only for --backend anthropic
 ```
 
 Other backends need no Anthropic key: `--backend claude-code` bills your
-Claude subscription, `--backend dgx` points at a local endpoint, and
-`--backend openrouter` uses `OPENROUTER_API_KEY`. On the subscription path the
-key should be *absent* — `claude -p` bills the metered API when it finds one.
+Claude subscription, `--backend codex-cli` uses your saved ChatGPT/Codex
+subscription login, `--backend dgx` points at a local endpoint, and
+`--backend openrouter` uses `OPENROUTER_API_KEY`. On subscription paths, API
+keys must not select billing accidentally: the Codex adapter removes
+`OPENAI_API_KEY` and `CODEX_API_KEY` from its child environment and forces the
+saved ChatGPT login.
+
+For Codex consistency audits, install the Codex CLI, run `codex login`, then:
+
+```bash
+python3 session_doc/check_consistency.py path/to/document.md \
+  --config path/to/config.yaml \
+  --backend codex-cli \
+  --context path/to/campaign-context.md \
+  --output /tmp/consistency-report.md
+```
+
+`codex-cli` is currently certified for this consistency-auditor workflow and
+its Codex skills; the web backend selector is intentionally deferred. Provider
+`--batch` remains Anthropic-only.
 
 ### Web UI
 

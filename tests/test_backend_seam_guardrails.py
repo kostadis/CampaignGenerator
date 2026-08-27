@@ -165,7 +165,7 @@ def test_add_backend_args_registers_batch_flag():
     assert ns_on.batch is True
 
 
-@pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+@pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code", "codex-cli"])
 def test_client_from_args_rejects_batch_for_non_anthropic_backend(backend, monkeypatch):
     """--batch requires the real Anthropic client — none of the façades
     implement messages.batches, so this must fail before construction."""

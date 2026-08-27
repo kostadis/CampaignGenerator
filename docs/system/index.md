@@ -37,6 +37,7 @@ called by it.
         │ Anthropic API│  │ MemPalace  │   not code) │ 5etools │  │ campaign        │
         │ DGX / vLLM   │  │ (verbatim  │  ┌────────┐ │  MCP    │  │ workspace       │
         │ Claude Code  │  │  memory +  │  │ mytools│ │ (node,  │  │ docs/ voice/    │
+        │ Codex CLI    │  │            │  │        │ │         │  │                  │
         └──────┬───────┘  │  semantic) │  │ rpg-lib│ │ scoped  │  │ summaries/      │
                │          └─────┬──────┘  │ + pdf- │ │ by      │  │ refs.yaml       │
          dgxlib│registry        │ backend │ trans- │ │refs.yaml)│ └─────────────────┘
@@ -114,6 +115,7 @@ This is the table to consult when something breaks at a boundary.
 | CG → **Anthropic API** | Python `import anthropic`, retry loop | `campaignlib/api/client.py`, `api/backends.py` |
 | CG → **DGX / vLLM** | HTTP, OpenAI-compatible client; per-model knobs from dgxlib | `campaignlib/api/backends.py` (`_OpenAICompatClient`) + `dgxlib.resolve_model_config` |
 | CG → **Claude Code** (Pro/Max) | Subprocess, `claude` CLI headless (`CG_BACKEND=claude-code`) | `campaignlib/api/backends.py` (`_ClaudeCodeClient`) |
+| CG → **Codex CLI** (ChatGPT subscription) | Isolated, ephemeral `codex exec`; saved login, stripped API-key variables, no tools or provider fallback (`CG_BACKEND=codex-cli`) | `campaignlib/api/codex_cli.py` (`_CodexCliClient`) |
 | CG → **MemPalace** | Subprocess **stdio JSON-RPC** to `mempalace-mcp` | `pipelines/rlm/mempalace_client.py` (the *only* file that talks to it) |
 | MemPalace → **turbovecdb / ChromaDB** | Python import; backend chosen by `MEMPALACE_BACKEND` | `mempalace/backends/{turbovec,chroma}.py` |
 | CG → **5etools JSON** | Filesystem read (mtime-cached index) | `pipelines/rlm/fivetools_catalog.py`, `pipelines/content_ingest/fivetools_ingest.py` |
