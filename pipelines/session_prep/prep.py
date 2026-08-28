@@ -34,6 +34,7 @@ from campaignlib import (
     save_log,
     stream_api,
 )
+from campaignlib.api.client import resolve_cli_model
 
 # This file lives at pipelines/session_prep/prep.py; find_default_config()'s
 # script-dir fallback expects to sit next to config/ (the repo root), which
@@ -338,7 +339,7 @@ def main() -> None:
                         help="Copy final output to clipboard")
     parser.add_argument("--config", default=find_default_config(str(REPO_ROOT / "prep.py")),
                         help="Path to config YAML")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help="Claude model to use")
     add_backend_args(parser)
     parser.add_argument("--output", "-o", metavar="FILE",
@@ -360,6 +361,9 @@ def main() -> None:
              "the grounding-doc bundle when present.",
     )
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     config, base_dir = load_config(args.config)
 

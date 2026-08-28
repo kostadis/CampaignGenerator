@@ -14,7 +14,7 @@ from server.platform_config_service import ConfigError, PlatformConfigService
 from server.routers import (
     config_routes, connections, ensemble, grounding, prep,
     scene_editor, setup, planning_routes, party_routes, players_routes,
-    projections,
+    projections, integrations,
 )
 
 app = FastAPI(title="CampaignGenerator")
@@ -53,6 +53,7 @@ app.include_router(planning_routes.router, prefix="/api/planning", tags=["planni
 app.include_router(party_routes.router, prefix="/api/party", tags=["party"])
 app.include_router(players_routes.router, prefix="/api/players", tags=["players"])
 app.include_router(projections.router, prefix="/api/projections", tags=["projections"])
+app.include_router(integrations.router, prefix="/api/integrations", tags=["integrations"])
 
 # ── Static files (Vue build) ────────────────────────────────────────────────
 

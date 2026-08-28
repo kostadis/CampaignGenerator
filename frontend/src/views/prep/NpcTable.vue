@@ -24,7 +24,7 @@ const runParams = computed(() => ({
   config: configFile.value,
   output: output.value,
   no_log: noLog.value,
-  model: config.model,
+  model: config.model || undefined,
 }))
 </script>
 

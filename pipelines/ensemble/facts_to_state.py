@@ -55,6 +55,8 @@ from campaignlib import (
     run_batch,
     stream_api,
 )
+from campaignlib.api.client import resolve_cli_model
+from campaignlib.selection import BACKENDS
 from campaignlib.registry import Registry, load_registry, resolve_registry_arg
 from .ensemble_merge import _norm_subject
 from .synthesise_world_state import (
@@ -1108,7 +1110,7 @@ def build_parser() -> argparse.ArgumentParser:
     # with this script's own fan-out --endpoints (plural, one client per
     # worker thread; see client_from_args(args, endpoint=...) in the worker
     # pool below).
-    p.add_argument("--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+    p.add_argument("--backend", choices=BACKENDS,
                    default="anthropic",
                    help="LLM backend (default: anthropic). Combine with --endpoints "
                         "for --backend dgx.")
@@ -1140,6 +1142,9 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=None
+    ).effective_model
 
     # Fail fast (FR-003), once, before any corpus/registry loading or
     # worker-thread creation below — the worker pool's per-thread

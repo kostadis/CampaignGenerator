@@ -1,0 +1,13 @@
+{
+  "text": "I found two pieces of context to review before editing the draft.",
+  "tool_calls": [
+    {
+      "name": "list_sections",
+      "arguments_json": "{}"
+    },
+    {
+      "name": "read_recap",
+      "arguments_json": "{\"section\":\"Summary\"}"
+    }
+  ]
+}

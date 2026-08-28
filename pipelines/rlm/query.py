@@ -34,6 +34,7 @@ from campaignlib import (
     stream_api,
     DEFAULT_MODEL,
 )
+from campaignlib.api.client import resolve_cli_model
 
 FILTER_SYSTEM = """\
 You are searching D&D session notes for information relevant to a specific query.
@@ -201,10 +202,13 @@ def main() -> None:
                         help="Characters per chunk (default: 40000 — smaller = more precise hits)")
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="Show per-chunk progress")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help="Claude model to use")
     add_backend_args(parser)
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     summaries_path = Path(args.input).expanduser()
     if not summaries_path.exists():

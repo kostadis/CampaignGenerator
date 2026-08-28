@@ -43,6 +43,7 @@ from campaignlib import (
     run_extract_pipeline,
     run_synthesize_pipeline,
 )
+from campaignlib.api.client import resolve_cli_model
 
 EXTRACT_SYSTEM_BASE = load_agent_prompt("distill_extract")
 
@@ -81,10 +82,13 @@ def main() -> None:
                              "alias in dossier frontmatter is rewritten to its "
                              "canonical name before extract/synth, and a "
                              "'Known NPCs' roster seeds the system prompts.")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help="Claude model to use")
     add_backend_args(parser)
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     if args.synthesize_only and args.extract_only:
         print("Error: --synthesize-only and --extract-only are mutually exclusive",

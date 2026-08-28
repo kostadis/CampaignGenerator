@@ -70,3 +70,26 @@ def test_speaker_pairs_raises_on_two_headers_concatenated():
     concatenated = RAW + "\n" + RAW
     with pytest.raises(VttError):
         speaker_pairs(concatenated)
+
+
+def test_voice_reader_preserves_dialogue_order_and_embedded_colons():
+    """Voice comparison receives exactly the selected player's lines in order."""
+    raw = """WEBVTT
+
+1
+00:00:01.000 --> 00:00:02.000
+Gabe: First: hold the door.
+
+2
+00:00:03.000 --> 00:00:04.000
+GM: The bell rings.
+
+3
+00:00:05.000 --> 00:00:06.000
+Gabe: Second line.
+"""
+    assert speaker_pairs(raw) == [
+        ("Gabe", "First: hold the door."),
+        ("GM", "The bell rings."),
+        ("Gabe", "Second line."),
+    ]

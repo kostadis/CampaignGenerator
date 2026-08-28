@@ -95,6 +95,31 @@ def test_default_path_uses_stream_api_unchanged(monkeypatch, fake_stream_api, tm
     assert extract_file.exists()
 
 
+def test_codex_scabard_extraction_preserves_request_and_output_path(
+    monkeypatch, fake_stream_api, tmp_path
+):
+    """Extraction-only Codex runs keep the document envelope and write the
+    normal JSON artifact without entering the Scabard sync pass."""
+    ws = _write_world_state(tmp_path)
+    extract_file = tmp_path / "artifacts" / "entities.json"
+    monkeypatch.setattr(
+        scabard_sync, "sync_entities",
+        lambda *args, **kwargs: pytest.fail("extract-only must not sync"),
+    )
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        ws, extract_file, "--backend", "codex-cli", "--model", "gpt-5-codex",
+    ))
+    scabard_sync.main()
+
+    assert len(fake_stream_api.calls) == 1
+    call = fake_stream_api.calls[0]
+    assert call["model"] == "gpt-5-codex"
+    assert "Buppido is a derro serial killer." in call["user"]
+    assert json.loads(extract_file.read_text(encoding="utf-8")) == json.loads(
+        _ENTITIES_JSON
+    )
+
+
 def test_batch_flag_routes_through_run_single_batch(monkeypatch, fake_run_single_batch, tmp_path):
     ws = _write_world_state(tmp_path)
     extract_file = tmp_path / "entities.json"
@@ -120,3 +145,93 @@ def test_batch_failure_exits_nonzero(monkeypatch, tmp_path, capsys):
     err = capsys.readouterr().err
     assert "Error: batch item failed:" in err
     assert not extract_file.exists()
+
+
+def _from_extract_argv(extract_file: Path, *extra: str) -> list[str]:
+    return [
+        "scabard_sync.py",
+        "--campaign-id", "121",
+        "--username", "kostadis",
+        "--from-extract", str(extract_file),
+        "--dry-run",
+        *extra,
+    ]
+
+
+def _write_extract(path: Path) -> None:
+    path.write_text(_ENTITIES_JSON, encoding="utf-8")
+
+
+def test_manual_access_key_wins_over_trimmed_environment(
+    monkeypatch, tmp_path, capsys
+):
+    """The explicit manual CLI contract remains authoritative."""
+    extract_file = tmp_path / "entities.json"
+    _write_extract(extract_file)
+    seen = {}
+
+    def fake_sync(entities, campaign_id, username, access_key, manifest,
+                  manifest_path, dry_run):
+        seen.update(access_key=access_key, campaign_id=campaign_id,
+                    username=username, dry_run=dry_run)
+        return manifest
+
+    monkeypatch.setattr(scabard_sync, "sync_entities", fake_sync)
+    monkeypatch.setenv("SCABARD_ACCESS_KEY", "  env-key  ")
+    monkeypatch.setattr(
+        sys, "argv", _from_extract_argv(extract_file, "--access-key", "manual-key")
+    )
+
+    scabard_sync.main()
+
+    assert seen == {
+        "access_key": "manual-key",
+        "campaign_id": 121,
+        "username": "kostadis",
+        "dry_run": True,
+    }
+    output = capsys.readouterr()
+    assert "manual-key" not in output.out + output.err
+    assert "env-key" not in output.out + output.err
+
+
+def test_trimmed_scabard_access_key_environment_fallback(
+    monkeypatch, tmp_path, capsys
+):
+    """The server-facing child contract may omit argv credentials."""
+    extract_file = tmp_path / "entities.json"
+    _write_extract(extract_file)
+    seen = {}
+
+    def fake_sync(entities, campaign_id, username, access_key, manifest,
+                  manifest_path, dry_run):
+        seen["access_key"] = access_key
+        return manifest
+
+    monkeypatch.setattr(scabard_sync, "sync_entities", fake_sync)
+    monkeypatch.setenv("SCABARD_ACCESS_KEY", "  env-key  ")
+    monkeypatch.setattr(sys, "argv", _from_extract_argv(extract_file))
+
+    scabard_sync.main()
+
+    assert seen["access_key"] == "env-key"
+    output = capsys.readouterr()
+    assert "env-key" not in output.out + output.err
+
+
+def test_missing_scabard_access_key_fails_before_sync(monkeypatch, tmp_path, capsys):
+    """A missing manual and environment key must fail closed."""
+    extract_file = tmp_path / "entities.json"
+    _write_extract(extract_file)
+    monkeypatch.delenv("SCABARD_ACCESS_KEY", raising=False)
+    monkeypatch.setattr(
+        scabard_sync, "sync_entities",
+        lambda *args, **kwargs: pytest.fail("sync must not run without a key"),
+    )
+    monkeypatch.setattr(sys, "argv", _from_extract_argv(extract_file))
+
+    with pytest.raises(SystemExit) as exc_info:
+        scabard_sync.main()
+
+    assert exc_info.value.code == 1
+    assert "access key" in capsys.readouterr().err.lower()

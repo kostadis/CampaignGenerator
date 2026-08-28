@@ -32,6 +32,7 @@ deliberately NOT the old literal, so a pass can't be a false positive.
 
 import sys
 from pathlib import Path
+from typing import get_args
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -39,6 +40,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from campaignlib.constants import DEFAULT_MODEL
+from campaignlib.selection import BACKENDS, Backend, compatible
 from server.main import app
 from server.platform_config_service import PlatformConfigService, TRACKED_CONFIG_NAME
 
@@ -47,6 +49,41 @@ client = TestClient(app)
 # A current, legal model id (present in the refreshed server.config.MODELS)
 # that was never the old hardcoded literal — see module docstring.
 SENTINEL_MODEL = "claude-opus-5"
+
+
+# ── Feature 016: canonical backend vocabulary and compatibility ────────────
+
+def test_codex_cli_is_part_of_the_single_canonical_backend_vocabulary():
+    """The type literal and runtime choices must not drift apart."""
+    assert "codex-cli" in BACKENDS
+    assert tuple(get_args(Backend)) == BACKENDS
+
+
+@pytest.mark.parametrize(
+    ("backend", "model", "expected"),
+    [
+        # Codex accepts provider-neutral/non-Claude ids, but never an explicit
+        # Claude id (the check is intentionally case-insensitive).
+        ("codex-cli", "gpt-5-codex", True),
+        ("codex-cli", "Qwen/Qwen3-Next-80B", True),
+        ("codex-cli", "claude-sonnet-4-6", False),
+        ("codex-cli", "CLAUDE-SONNET-4-6", False),
+        # Existing backend pairings remain unchanged.
+        ("anthropic", "claude-sonnet-4-6", True),
+        ("anthropic", "Qwen/Qwen3-Next-80B", False),
+        ("claude-code", "claude-opus-4-6", True),
+        ("claude-code", "openai/gpt-5", False),
+        ("dgx", "Qwen/Qwen3-Next-80B", True),
+        ("dgx", "claude-opus-4-6", False),
+        ("openrouter", "qwen/qwen3-next-80b", True),
+        ("openrouter", "claude-opus-4-6", False),
+        # An omitted model is always compatible: resolution owns the default.
+        ("codex-cli", None, True),
+        ("anthropic", None, True),
+    ],
+)
+def test_compatible_preserves_backend_pairing_rules(backend, model, expected):
+    assert compatible(model, backend) is expected
 
 
 def _platform(tmp_path: Path) -> PlatformConfigService:

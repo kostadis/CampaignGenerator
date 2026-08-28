@@ -130,6 +130,48 @@ def test_run_scene_extraction_caches_system_by_default(tmp_path):
     assert captured == [True]
 
 
+def test_codex_scene_extraction_preserves_cached_prefix_order_across_sequential_calls(
+    tmp_path,
+):
+    """Each Codex scene call sees one stable, cacheable system prefix in order."""
+    scenes = [
+        {"name": "First Scene", "body": "- first"},
+        {"name": "Second Scene", "body": "- second"},
+    ]
+    captured = []
+
+    def fake_stream(client, system, user, model, max_tokens=8096, silent=False,
+                    verbose=False, cache_system=False):
+        captured.append({
+            "system": system,
+            "user": user,
+            "model": model,
+            "cache": cache_system,
+        })
+        return '> "verbatim moment"'
+
+    with patch.object(campaignlib.scenes, "stream_api", side_effect=fake_stream):
+        campaignlib.run_scene_extraction(
+            client=object(), vtt_text="VTT TRANSCRIPT", scenes=scenes,
+            extract_dir=tmp_path, model="gpt-5-codex",
+            extraction_instruction="Scene: {name}\n{body}",
+            system_prefix="BASE INSTRUCTIONS",
+            system_suffix="KNOWN NPC ROSTER",
+        )
+
+    assert [call["user"] for call in captured] == [
+        "Scene: First Scene\n- first",
+        "Scene: Second Scene\n- second",
+    ]
+    assert [call["model"] for call in captured] == ["gpt-5-codex", "gpt-5-codex"]
+    assert [call["cache"] for call in captured] == [True, True]
+    assert captured[0]["system"] == captured[1]["system"] == (
+        "BASE INSTRUCTIONS\n\n"
+        "# TRANSCRIPT (full session VTT)\n\nVTT TRANSCRIPT\n\n"
+        "KNOWN NPC ROSTER"
+    )
+
+
 def test_run_scene_extraction_resumes_existing_files(tmp_path):
     scenes = [
         {"name": "Scene A", "body": "- a"},

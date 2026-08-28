@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { apiFetch, apiPost } from '../../api/client'
+import { connectSSE } from '../../api/sse'
 
 const router = useRouter()
 
@@ -33,7 +34,7 @@ interface Knobs {
   narration_genre_file?: string | null
   narration_genre_sha?: string | null
   narration_genre_lines?: number | null
-  backend?: 'anthropic' | 'dgx' | 'claude-code'
+  backend?: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code' | 'codex-cli'
 }
 
 interface RosterRow {
@@ -61,18 +62,24 @@ const activity = ref<ActivityEntry[]>([])
 const loading = ref(true)
 const assembling = ref(false)
 const assembleResult = ref<{ ok: boolean; filename?: string; error?: string; scenes_included?: number } | null>(null)
+const assembledExists = ref(false)
+const polishing = ref(false)
+const polishOutput = ref('')
+const polishError = ref('')
 
 async function loadAll() {
   loading.value = true
   try {
-    const [p, r, a] = await Promise.all([
+    const [p, r, a, assembled] = await Promise.all([
       apiFetch('/api/editor/pipeline-status'),
       apiFetch('/api/editor/scene-roster'),
       apiFetch('/api/editor/activity?limit=100'),
+      apiFetch('/api/editor/assembled-exists'),
     ])
     pipeline.value = p
     roster.value = r.scenes ?? []
     activity.value = (a.entries ?? []).slice().reverse()  // newest first
+    assembledExists.value = !!assembled?.exists
   } catch (e) {
     console.error('Review load failed', e)
   } finally {
@@ -133,12 +140,34 @@ async function doAssemble() {
   try {
     const data = await apiPost('/api/editor/assemble')
     assembleResult.value = data
+    assembledExists.value = !!data?.ok
     if (data?.ok) await loadAll()
   } catch (e: any) {
     assembleResult.value = { ok: false, error: e?.message ?? 'assemble error' }
   } finally {
     assembling.value = false
   }
+}
+
+// Polish is deliberately a separate, explicit checkpoint. It consumes the
+// assembled artifact and never triggers assemble/approve/narrate implicitly.
+function doPolish() {
+  if (polishing.value || !assembledExists.value || blocked.value) return
+  polishing.value = true
+  polishOutput.value = ''
+  polishError.value = ''
+  connectSSE('/api/editor/polish', {
+    onData(text) { polishOutput.value += text },
+    onDone(rc, error) {
+      polishing.value = false
+      if (rc !== 0) polishError.value = error || 'polish failed'
+      void loadAll()
+    },
+    onError() {
+      polishing.value = false
+      polishError.value = 'Stream error — check terminal.'
+    },
+  })
 }
 
 async function openAssembled() {
@@ -173,6 +202,7 @@ function stageLabel(stage: string): string {
     case 'narrate': return '④ Narrate'
     case 'scrub':   return '④½ Scrub'
     case 'scrub_all': return '④½ Scrub all'
+    case 'polish': return '⑤ Polish'
     default: return stage
   }
 }
@@ -303,11 +333,18 @@ onMounted(loadAll)
         <span v-if="blocked" class="block-reason">{{ blockReason }}</span>
         <span v-if="assembleResult && assembleResult.ok" class="ok-msg">Saved → {{ assembleResult.filename }} ({{ assembleResult.scenes_included }} scenes)</span>
         <span v-if="assembleResult && !assembleResult.ok" class="bad-msg">{{ assembleResult.error }}</span>
+        <span v-if="polishError" class="bad-msg">{{ polishError }}</span>
         <button
           class="btn-primary"
           :disabled="blocked || assembling"
           @click="doAssemble"
         >{{ assembling ? 'Assembling…' : 'Assemble Doc' }}</button>
+        <button
+          class="btn-neutral btn-sm"
+          :disabled="!assembledExists || blocked || polishing"
+          @click="doPolish"
+          title="Run the explicit polish pass on the assembled document"
+        >{{ polishing ? 'Polishing…' : 'Polish assembled doc' }}</button>
         <button
           v-if="assembleResult && assembleResult.ok"
           class="btn-neutral btn-sm"
@@ -315,6 +352,13 @@ onMounted(loadAll)
         >Open in Typora</button>
       </div>
     </footer>
+    <section v-if="polishOutput || polishing" class="polish-result">
+      <div class="polish-result-head">
+        <strong>{{ polishing ? 'Polish output' : 'Polish complete' }}</strong>
+        <span v-if="!polishing">Writes the polished document and JSON changelog beside the assembled artifact.</span>
+      </div>
+      <pre>{{ polishOutput || 'Waiting for polish output…' }}</pre>
+    </section>
   </div>
 </template>
 
@@ -534,4 +578,27 @@ onMounted(loadAll)
 }
 .ok-msg { font-size: 11px; color: var(--green); }
 .bad-msg { font-size: 11px; color: var(--red); }
+.polish-result {
+  flex-shrink: 0;
+  border-top: 1px solid var(--bg-surface0);
+  background: var(--bg-mantle);
+  padding: 8px 16px;
+}
+.polish-result-head {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  color: var(--text-sub);
+  font-size: 11px;
+}
+.polish-result-head span { color: var(--text-muted); font-size: 10px; }
+.polish-result pre {
+  margin: 5px 0 0;
+  max-height: 120px;
+  overflow: auto;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  white-space: pre-wrap;
+}
 </style>

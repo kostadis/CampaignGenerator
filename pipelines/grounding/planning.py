@@ -81,6 +81,7 @@ from campaignlib import (
     run_single_batch,
     stream_api,
 )
+from campaignlib.api.client import resolve_cli_model
 
 from campaignlib.planning_config import (
     ResolvedEntry as PlanningEntry,
@@ -812,7 +813,7 @@ def main() -> None:
                              "extracts with number >= N. Use after a new session "
                              "(e.g. --since 11 when extract_011.md is the new chunk) to skip "
                              "historical chunks already rolled into dossiers.")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help="Model id (Claude id, or an OpenRouter id for --backend openrouter)")
     add_backend_args(parser)
     parser.add_argument("--campaign-dir", default=None,
@@ -829,6 +830,9 @@ def main() -> None:
     parser.add_argument("--dump-only", action="store_true",
                         help="With --dump-input: stop after writing the dump, making no API call.")
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     # Resolve the proposal check BEFORE the synthesize render call.
     if args.require_proposal:

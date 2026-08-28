@@ -36,7 +36,7 @@ const runParams = computed(() => ({
   party_config: partyConfig.value,
   output: output.value,
   output_dir: outputDir.value,
-  model: config.model,
+  model: config.model || undefined,
 }))
 </script>
 

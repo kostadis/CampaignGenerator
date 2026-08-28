@@ -33,7 +33,7 @@ const emit = defineEmits<{ compatible: [boolean]; backend: [string] }>()
 const config = useConfigStore()
 
 interface Resolved {
-  model: string
+  model: string | null
   backend: string
   model_origin: string
   backend_origin: string
@@ -205,6 +205,11 @@ const batchCausedRefusal = computed(() => {
   return !!r && r.toLowerCase().includes('batch')
 })
 
+// Provider message batching is an Anthropic API feature. Keep the application
+// level grouping controls elsewhere available, but do not let this per-service
+// editor create a known-invalid Codex batch selection.
+const providerBatchUnsupported = computed(() => resolved.value?.backend !== 'anthropic')
+
 // FR-010: state the trade-off before a run that will actually execute as
 // batch on a `degraded` service — not when the run is refused outright (that
 // case is covered by the refusal block instead).
@@ -316,7 +321,7 @@ watch(() => [config.model, config.backend, config.batch, props.doc], load)
         Batch
         <select v-model="draftBatch">
           <option value="">(inherit platform)</option>
-          <option value="on">On</option>
+          <option value="on" :disabled="providerBatchUnsupported">On</option>
           <option value="off">Off</option>
         </select>
       </label>

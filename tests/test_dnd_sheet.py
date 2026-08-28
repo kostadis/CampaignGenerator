@@ -92,6 +92,28 @@ def test_default_path_uses_call_api_unchanged(monkeypatch, fake_call_api, tmp_pa
     assert (out_dir / "soma.md").exists()
 
 
+def test_codex_pdf_ingest_preserves_request_boundary_and_output_path(
+    monkeypatch, fake_call_api, tmp_path
+):
+    """PDF text extraction remains a plain string at the Codex boundary and
+    the explicit single-file destination is preserved."""
+    pdf = _write_pdf_stub(tmp_path)
+    output = tmp_path / "artifacts" / "character.md"
+    monkeypatch.setattr(sys, "argv", [
+        "dnd_sheet.py", str(pdf),
+        "--backend", "codex-cli",
+        "--model", "gpt-5-codex",
+        "--output", str(output),
+    ])
+    dnd_sheet.main()
+
+    assert len(fake_call_api.calls) == 1
+    call = fake_call_api.calls[0]
+    assert call["model"] == "gpt-5-codex"
+    assert "RAW SHEET TEXT" in call["content"]
+    assert output.read_text(encoding="utf-8") == "# Test Character\n"
+
+
 def test_batch_flag_passes_same_string_payload_as_user(
     monkeypatch, fake_run_single_batch, tmp_path
 ):

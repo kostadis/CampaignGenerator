@@ -36,6 +36,7 @@ from campaignlib import (  # noqa: E402
     resolve_source,
     route_plan,
 )
+from campaignlib.selection import BACKENDS  # noqa: E402
 
 ENSEMBLE = _CG_DIR / "ensemble.py"
 
@@ -99,7 +100,7 @@ def _build_parser():
                    help="OpenAI-compatible endpoints")
     p.add_argument("--model", metavar="ID",
                    help="Model id sent to every endpoint")
-    p.add_argument("--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+    p.add_argument("--backend", choices=BACKENDS,
                    default="dgx",
                    help="LLM backend forwarded to ensemble.py -> ensemble_extract.py "
                         "-> extract_facts.py (default: dgx). This driver never builds "
@@ -159,7 +160,7 @@ def _build_ensemble_cmd(chapter: Path, workdir: Path, args,
 
     if args.endpoints:
         cmd += ["--endpoints"] + args.endpoints
-    if args.model:
+    if args.model and args.model.strip():
         cmd += ["--model", args.model]
     cmd += ["--backend", args.backend]
     if args.samples is not None:

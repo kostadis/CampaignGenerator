@@ -23,7 +23,7 @@ const ready = computed(() =>
 const runParams = computed(() => ({
   input: input.value,
   output: output.value,
-  model: config.model,
+  model: config.model || undefined,
 }))
 </script>
 

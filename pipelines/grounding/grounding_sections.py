@@ -668,6 +668,7 @@ def main():
     # render_tracking below — the campaignlib package pulls the API clients in
     # with it, and `list` must stay importable without them.
     from campaignlib import add_backend_args
+    from campaignlib.api.client import resolve_cli_model
 
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -716,6 +717,14 @@ def main():
             add_backend_args(p, default_backend=None)
 
     args = ap.parse_args()
+    if args.cmd == "build":
+        # Keep the parser's None default as the opt-in sentinel.  Resolution
+        # restores no legacy model for this DGX/section-specific path, while
+        # leaving args.backend falsy so a build without --backend remains
+        # deterministic and cannot spend tokens implicitly.
+        args.model = resolve_cli_model(
+            args, legacy_default=None
+        ).effective_model
     # Loaded once — every path this run resolves comes from here, so the
     # sections directory, the draft path and the legacy-draft gate can never
     # disagree about what "output" means (contracts/cli.md's resolution

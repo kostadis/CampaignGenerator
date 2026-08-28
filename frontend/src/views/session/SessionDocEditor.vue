@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useConfigStore } from '../../stores/config'
+import { useConfigStore, type Backend } from '../../stores/config'
 import { resolvePath, resolvePathList, resolvePathWithBase } from '../../utils/paths'
 import { apiFetch, apiPut, apiPost } from '../../api/client'
 import { connectSSE } from '../../api/sse'
@@ -33,10 +33,11 @@ const narrateTokens = ref(16000)
 const proseMode = ref(false)
 const reflections = ref(false)
 const genreFile = ref('')
-const backend = ref<'anthropic' | 'dgx' | 'openrouter' | 'claude-code'>('anthropic')
+const backend = ref<Backend>('anthropic')
 const dgxEndpoint = ref('')
 const dgxModel = ref('')
 const openrouterModel = ref('')
+const codexModel = ref('')
 
 // Drawer open/closed — always starts closed. The Config button opens it, and
 // onMounted auto-opens it on a cold start (required fields missing). Not
@@ -53,8 +54,10 @@ const genreInfo = computed(() => (config.editorConfig as any)?.genre ?? null)
 // ── Field ← store.editorConfig (grouped GET /api/editor/config) ──
 // Coerce an arbitrary backends.active value to one of the four known
 // backends — shared by the initial hydration and profile activation.
-function normalizeBackend(value: any): 'anthropic' | 'dgx' | 'openrouter' | 'claude-code' {
-  return value === 'dgx' || value === 'openrouter' || value === 'claude-code' ? value : 'anthropic'
+function normalizeBackend(value: any): Backend {
+  return value === 'dgx' || value === 'openrouter' || value === 'claude-code' || value === 'codex-cli'
+    ? value
+    : 'anthropic'
 }
 
 function loadConfigFields() {
@@ -83,6 +86,7 @@ function loadConfigFields() {
   dgxEndpoint.value = backends.dgx?.endpoint || ''
   dgxModel.value = backends.dgx?.model || ''
   openrouterModel.value = backends.openrouter?.model || ''
+  codexModel.value = (backends['codex-cli'] ?? backends.codex_cli)?.model || ''
 }
 
 // ── Auto-apply: debounce-PUT changes to /api/editor/config ───────
@@ -199,6 +203,24 @@ watch(openrouterModel, () => {
   openrouterPersistTimer = setTimeout(persistOpenrouter, 350)
 })
 
+// Codex has an optional model: blank means the saved Codex login's own
+// default. Keep it in the editor-owned per-backend profile, separate from the
+// Anthropic/Claude/DGX/OpenRouter memories.
+let codexPersistTimer: ReturnType<typeof setTimeout> | undefined
+async function persistCodex() {
+  try {
+    await config.updateEditor({
+      backends: { 'codex-cli': { model: codexModel.value.trim() || null } },
+    })
+  } catch {
+    /* non-fatal — the next subprocess still resolves the active profile */
+  }
+}
+watch(codexModel, () => {
+  if (codexPersistTimer) clearTimeout(codexPersistTimer)
+  codexPersistTimer = setTimeout(persistCodex, 350)
+})
+
 // ── Scene state ───────────────────────────────────────────────────
 const scenes = ref<Scene[]>([])
 const currentScene = ref<number | null>(null)
@@ -212,7 +234,7 @@ const forceReextract = ref(false)
 // Batched-scene-extraction per-run choice (013-batched-scene-extraction
 // T054, contracts/editor-api.md §4 / DM-18 / DM-19 / DM-20 / FR-007a).
 // `batchScenesEffective` mirrors the TOP-LEVEL `batch_scenes_effective` on
-// ResolvedEditorConfig (the config pin, else True on the claude-code
+// ResolvedEditorConfig (the config pin, else True on the subscription
 // backend, False otherwise) — it is deliberately NOT under `extract`,
 // which is the persisted, extra="forbid" ExtractKnobs model, so a derived
 // field there would become stored and PUT-able. `batchScenes` is the
@@ -234,6 +256,11 @@ watch(batchScenesEffective, (v) => {
 const enhancing = ref(false)
 const planning = ref(false)
 const verifying = ref(false)
+const auditing = ref(false)
+const comparingVoice = ref(false)
+const voicePlayer = ref('')
+const voiceFile = ref('')
+const voiceUpdate = ref(false)
 const narrationOutput = ref('')
 const statusMsg = ref('')
 const assembledExists = ref(false)
@@ -297,7 +324,7 @@ interface ProfileEntry {
     prose_mode?: boolean
     reflections?: boolean
     narration_genre_file?: string
-    backend?: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
+    backend?: Backend
   }
 }
 const profiles = ref<ProfileEntry[]>([])
@@ -629,6 +656,53 @@ async function runVerify() {
   })
 }
 
+async function runConsistency() {
+  if (auditing.value || enhancing.value || extracting.value || narrating.value || planning.value) return
+  auditing.value = true
+  narrationOutput.value = ''
+  setStatus('Running document consistency audit...')
+  activeSSE.value = connectSSE('/api/editor/consistency', {
+    onData(text) { narrationOutput.value += text },
+    onDone(rc, error) {
+      activeSSE.value = null
+      auditing.value = false
+      setStatus(rc === 0 ? 'Consistency audit complete — report saved.' : `Audit failed${error ? ': ' + error : ''}.`)
+    },
+    onError() {
+      activeSSE.value = null
+      auditing.value = false
+      setStatus('Audit stream error — check terminal.')
+    },
+  })
+}
+
+async function runVoiceCompare() {
+  if (comparingVoice.value || !voicePlayer.value.trim() || !voiceFile.value.trim()) return
+  comparingVoice.value = true
+  narrationOutput.value = ''
+  setStatus('Comparing selected speaker voice...')
+  const params = new URLSearchParams({
+    player: voicePlayer.value.trim(),
+    // PathField validates relative values against session_dir; send that
+    // exact resolved path so the server and the UI use the same base.
+    voice_file: resolvePath(voiceFile.value),
+  })
+  if (voiceUpdate.value) params.set('update', 'true')
+  activeSSE.value = connectSSE(`/api/editor/voice-compare?${params}`, {
+    onData(text) { narrationOutput.value += text },
+    onDone(rc, error) {
+      activeSSE.value = null
+      comparingVoice.value = false
+      setStatus(rc === 0 ? 'Voice comparison complete.' : `Voice comparison failed${error ? ': ' + error : ''}.`)
+    },
+    onError() {
+      activeSSE.value = null
+      comparingVoice.value = false
+      setStatus('Voice comparison stream error — check terminal.')
+    },
+  })
+}
+
 async function openTypora(type: string) {
   if (currentScene.value === null) return
   try {
@@ -777,7 +851,7 @@ onMounted(async () => {
         </label>
         <label
           class="force-toggle"
-          title="Sends the whole transcript once, in a single call, instead of once per scene. Matters most on the Subscription backend, which has no prompt caching to offset re-sending the transcript for every scene — pre-selected there for that reason. Leave it off on the metered API, where caching already covers most of the cost."
+          title="Sends the whole transcript once, in a single call, instead of once per scene. Matters most on the subscription backends (Claude Code and Codex CLI), which have no prompt caching to offset re-sending the transcript for every scene — pre-selected there for that reason. Leave it off on the metered API, where caching already covers most of the cost."
         >
           <input
             type="checkbox"
@@ -797,6 +871,26 @@ onMounted(async () => {
           @click="runVerify"
           title="Check every quote against the transcript. Deterministic and free — calls no model. Nothing is auto-corrected; findings go to quote_report.md for you to review."
         >{{ verifying ? 'Verifying…' : 'Verify Quotes' }}</button>
+      </span>
+
+      <span class="stage-group">
+        <span class="stage-label">Audit</span>
+        <button
+          class="btn-neutral btn-sm"
+          :disabled="!configReady || auditing || enhancing || extracting || narrating || planning"
+          @click="runConsistency"
+          title="Run the selected session-summary audit against campaign context; does not alter the plan"
+        >{{ auditing ? 'Auditing…' : 'Check Consistency' }}</button>
+      </span>
+
+      <span class="stage-group">
+        <span class="stage-label">Voice</span>
+        <button
+          class="btn-neutral btn-sm"
+          :disabled="!configReady || comparingVoice || enhancing || extracting || narrating || planning || !voicePlayer.trim() || !voiceFile.trim()"
+          @click="runVoiceCompare"
+          title="Compare one selected VTT speaker with its voice file; optional update is explicit"
+        >{{ comparingVoice ? 'Comparing…' : 'Compare Voice' }}</button>
       </span>
 
       <span class="stage-group">
@@ -890,6 +984,7 @@ onMounted(async () => {
       v-model:dgx-endpoint="dgxEndpoint"
       v-model:dgx-model="dgxModel"
       v-model:openrouter-model="openrouterModel"
+      v-model:codex-model="codexModel"
       v-model:extract-tokens="extractTokens"
       v-model:batch-tokens="batchTokens"
       v-model:narrate-tokens="narrateTokens"
@@ -897,6 +992,9 @@ onMounted(async () => {
       v-model:reflections="reflections"
       v-model:genre-file="genreFile"
       :genre-info="genreInfo"
+      v-model:voice-player="voicePlayer"
+      v-model:voice-file="voiceFile"
+      v-model:voice-update="voiceUpdate"
     />
   </div>
 </template>

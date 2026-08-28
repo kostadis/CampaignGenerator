@@ -204,6 +204,27 @@ class TestRuntimeOwnership:
         assert platform.runtime.session_dir == "summaries/sess1"
         assert platform.runtime.default_model == "claude-opus-4-6"
 
+    def test_backend_model_memory_round_trips_in_platform_yaml(self, fresh_campaign):
+        """The sidebar's per-backend picks are durable platform state."""
+        platform = PlatformConfigService(fresh_campaign)
+        platform.update_runtime({
+            "default_backend": "codex-cli",
+            "default_model": "",
+            "default_models": {
+                "anthropic": "claude-opus-4-6",
+                "codex-cli": None,
+            },
+        })
+
+        assert platform.runtime.default_models == {
+            "anthropic": "claude-opus-4-6",
+            "codex-cli": None,
+        }
+        reloaded = load_platform_config(
+            fresh_campaign / CONFIG_SUBDIR / PLATFORM_CONFIG_NAME
+        )
+        assert reloaded.runtime.default_models == platform.runtime.default_models
+
     def test_runtime_property_reads_platform_yaml_directly(self, fresh_campaign):
         platform = PlatformConfigService(fresh_campaign)
         platform.update_runtime({"session_dir": "summaries/sess1"})
@@ -723,6 +744,7 @@ _COMPATIBLE_MODEL = {
     "dgx": "Qwen-X",
     "openrouter": "anthropic/claude-sonnet-4",
     "claude-code": "claude-sonnet-4-6",
+    "codex-cli": "gpt-5-codex",
 }
 
 
@@ -823,7 +845,7 @@ class TestBatchResolution:
         assert resolved.compatible is True
         assert resolved.refusal is None
 
-    @pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+    @pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code", "codex-cli"])
     def test_batch_true_with_non_anthropic_backend_refuses(self, fresh_campaign, no_wiring, backend):
         platform = PlatformConfigService(fresh_campaign)
         platform.update_runtime({
@@ -837,7 +859,7 @@ class TestBatchResolution:
         assert "batch" in resolved.refusal.lower()
         assert backend in resolved.refusal
 
-    @pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+    @pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code", "codex-cli"])
     def test_batch_refusal_raises_when_raise_on_incompatible(self, fresh_campaign, no_wiring, backend):
         from fastapi import HTTPException
 
@@ -954,7 +976,7 @@ class TestNoRouteBuildsFromIncompatibleBatchSelection:
     def _request(self, platform=None):
         return _FakeRequest(platform)
 
-    @pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+    @pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code", "codex-cli"])
     def test_non_anthropic_backend_raises_before_any_args_could_be_built(self, backend):
         # A backend-compatible model, so the refusal isolates the batch cause
         # from the pre-existing model/backend refusal (mirrors
@@ -1002,3 +1024,111 @@ class TestNoRouteBuildsFromIncompatibleBatchSelection:
             "model", "backend", "model_origin", "backend_origin",
             "batch", "batch_origin", "compatible", "refusal",
         }
+
+
+# ── Codex model provenance (feature 016, T040) ─────────────────────────────
+
+
+def test_request_model_origin_is_preserved_for_codex():
+    resolved = resolve_selection(
+        _FakeRequest(None),
+        request_backend="codex-cli",
+        request_model="gpt-5-codex",
+    )
+
+    assert resolved.backend == "codex-cli"
+    assert resolved.model == "gpt-5-codex"
+    assert resolved.model_origin == "request"
+    assert resolved.backend_origin == "request"
+
+
+def test_service_model_origin_is_preserved_for_codex():
+    resolved = resolve_selection(
+        _FakeRequest(None),
+        service=_svc(backend="codex-cli", model="gpt-5-codex"),
+    )
+
+    assert resolved.backend == "codex-cli"
+    assert resolved.model == "gpt-5-codex"
+    assert resolved.model_origin == "service"
+    assert resolved.backend_origin == "service"
+
+
+def test_platform_model_origin_is_preserved_for_codex(fresh_campaign):
+    platform = PlatformConfigService(fresh_campaign)
+    platform.update_runtime({
+        "default_backend": "anthropic",
+        "default_model": "claude-platform-sentinel",
+    })
+    resolved = resolve_selection(
+        _FakeRequest(platform),
+        request_backend="anthropic",
+    )
+
+    assert resolved.model == "claude-platform-sentinel"
+    assert resolved.model_origin == "platform"
+
+
+def test_literal_model_origin_is_distinct_from_platform(monkeypatch):
+    monkeypatch.setattr(
+        "server.platform_config_service.DEFAULT_MODEL", "claude-literal-sentinel"
+    )
+    resolved = resolve_selection(_FakeRequest(None))
+
+    assert resolved.model == "claude-literal-sentinel"
+    assert resolved.model_origin == "literal"
+
+
+@pytest.mark.parametrize("backend_origin", ["request", "service", "platform"])
+def test_inherited_claude_model_is_omitted_for_codex(
+    fresh_campaign, backend_origin
+):
+    platform = PlatformConfigService(fresh_campaign)
+    platform.update_runtime({
+        "default_backend": "anthropic",
+        "default_model": "claude-inherited-sentinel",
+    })
+    kwargs = {"request_backend": "codex-cli"} if backend_origin == "request" else {}
+    service = _svc(backend="codex-cli") if backend_origin == "service" else None
+    if backend_origin == "platform":
+        platform.update_runtime({"default_backend": "codex-cli"})
+
+    resolved = resolve_selection(
+        _FakeRequest(platform),
+        service=service,
+        **kwargs,
+        raise_on_incompatible=False,
+    )
+
+    assert resolved.backend == "codex-cli"
+    assert resolved.model is None
+    assert resolved.model_origin == "platform"
+    assert resolved.compatible is True
+    assert resolved.refusal is None
+
+
+def test_explicit_codex_model_is_forwarded_by_selection_cli_args():
+    resolved = resolve_selection(
+        _FakeRequest(None),
+        request_backend="codex-cli",
+        request_model="gpt-5-codex",
+    )
+
+    assert selection_cli_args(resolved) == [
+        "--backend", "codex-cli", "--model", "gpt-5-codex"
+    ]
+
+
+def test_explicit_claude_model_for_codex_is_refused():
+    with pytest.raises(IncompatibleSelection) as exc_info:
+        resolve_selection(
+            _FakeRequest(None),
+            request_backend="codex-cli",
+            request_model="claude-opus-4-6",
+        )
+
+    refusal = exc_info.value.resolved
+    assert refusal.model == "claude-opus-4-6"
+    assert refusal.model_origin == "request"
+    assert refusal.compatible is False
+    assert "codex-cli" in refusal.refusal

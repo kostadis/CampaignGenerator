@@ -27,6 +27,7 @@ from campaignlib import (
     stream_api,
     DEFAULT_MODEL,
 )
+from campaignlib.api.client import resolve_cli_model
 
 SYSTEM_PROMPT = """\
 You are reading a D&D adventure module or campaign document and extracting a tracking list.
@@ -71,10 +72,13 @@ def main() -> None:
                         help="Adventure module or campaign markdown file")
     parser.add_argument("--output", "-o", required=True, metavar="FILE",
                         help="Where to save the tracking list (e.g. tracking.txt)")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help="Claude model to use")
     add_backend_args(parser)
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     input_path = Path(args.input).expanduser()
     if not input_path.exists():

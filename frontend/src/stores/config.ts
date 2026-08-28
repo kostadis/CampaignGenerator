@@ -2,6 +2,44 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { apiFetch, apiPut, apiPost, apiDelete } from '../api/client'
 
+// The server returns this same tuple from GET /api/config/models. Keep the
+// fallback here only for a first-launch/older-server response; selectors use
+// the hydrated `backends` value rather than inventing provider-specific paths.
+export const BACKENDS = ['anthropic', 'dgx', 'openrouter', 'claude-code', 'codex-cli'] as const
+export type Backend = typeof BACKENDS[number]
+
+type BackendModelMemory = Partial<Record<Backend, string>>
+
+function readBackendModelMemory(raw: unknown): BackendModelMemory {
+  const result: BackendModelMemory = {}
+  if (!raw || typeof raw !== 'object') return result
+  for (const candidate of BACKENDS) {
+    if (!Object.prototype.hasOwnProperty.call(raw, candidate)) continue
+    const value = (raw as Record<string, unknown>)[candidate]
+    if (typeof value === 'string') result[candidate] = value
+    else if (value === null) result[candidate] = ''
+  }
+  return result
+}
+
+function resolveHydratedModel(
+  runtime: Record<string, any>,
+  backend: Backend,
+  memory: BackendModelMemory,
+  fallback: string,
+): string {
+  if (Object.prototype.hasOwnProperty.call(memory, backend)) return memory[backend] ?? ''
+  const runtimeModel = runtime.default_model
+  // A legacy platform file may select Codex while its schema-populated
+  // default_model is the Anthropic default. Keep the model omitted in that
+  // case so every run can use the saved Codex login default.
+  if (backend === 'codex-cli' &&
+    (typeof runtimeModel !== 'string' || runtimeModel.trim() === '' || runtimeModel.toLowerCase().startsWith('claude-'))) {
+    return ''
+  }
+  return runtimeModel ?? fallback
+}
+
 export const useConfigStore = defineStore('config', () => {
   // Raw mirror of the last GET /api/config/ response, plus a client-side-only
   // scratch bag: SessionConfig.vue broadcasts derived paths onto this object
@@ -53,6 +91,10 @@ export const useConfigStore = defineStore('config', () => {
   // ("one default-model source").
   const defaultModel = ref('')
   const model = ref('')
+  // Durable per-backend model memory owned by platform.yaml. Empty strings
+  // are meaningful for subscription CLIs: they explicitly request the
+  // backend's own saved-login default.
+  const defaultModels = ref<BackendModelMemory>({})
   // The app-wide backend. Feature 003 moved it out of the Session Doc
   // Editor's backends.active (session_doc.yaml) and up to the platform tier
   // beside default_model, so the sidebar's two controls are owned by the same
@@ -60,8 +102,8 @@ export const useConfigStore = defineStore('config', () => {
   // every Grounding run, and a command could carry a model from one owner and
   // a backend from another. The editor keeps its own backends block — it is a
   // legitimate per-service override now, just no longer the global value.
-  const backend = ref<string>('anthropic')
-  const backends = ref<string[]>([])
+  const backend = ref<Backend>('anthropic')
+  const backends = ref<Backend[]>([])
   // The app-wide batch flag (005-ui-batch-selection). Same tier and write
   // path as `backend` — PUT /api/config/runtime is the ONLY app-wide write
   // door (feature 003) — so it is hydrated and refreshed identically. Every
@@ -91,9 +133,19 @@ export const useConfigStore = defineStore('config', () => {
       migrationWarnings.value = cfg.migration_warnings ?? []
       models.value = modelsData.models
       defaultModel.value = modelsData.default
-      backends.value = modelsData.backends || ['anthropic', 'dgx', 'openrouter', 'claude-code']
-      backend.value = cfg.resolved?.runtime?.default_backend || modelsData.default_backend || 'anthropic'
-      model.value = cfg.resolved?.runtime?.default_model || modelsData.default
+      const configuredBackends = Array.isArray(modelsData.backends)
+        ? modelsData.backends.filter((value: unknown): value is Backend =>
+          typeof value === 'string' && (BACKENDS as readonly string[]).includes(value),
+        )
+        : []
+      backends.value = configuredBackends.length ? configuredBackends : [...BACKENDS]
+      const configuredBackend = cfg.resolved?.runtime?.default_backend || modelsData.default_backend
+      backend.value = (BACKENDS as readonly string[]).includes(configuredBackend)
+        ? configuredBackend as Backend
+        : 'anthropic'
+      const runtime = cfg.resolved?.runtime ?? {}
+      defaultModels.value = readBackendModelMemory(runtime.default_models)
+      model.value = resolveHydratedModel(runtime, backend.value, defaultModels.value, modelsData.default)
       batch.value = cfg.resolved?.runtime?.default_batch === true
       cwd.value = status.cwd
       editorConfig.value = editorCfg
@@ -109,8 +161,12 @@ export const useConfigStore = defineStore('config', () => {
     values.value = cfg
     resolved.value = cfg.resolved ?? {}
     migrationWarnings.value = cfg.migration_warnings ?? []
-    if (resolved.value.runtime?.default_backend) backend.value = resolved.value.runtime.default_backend
-    if (resolved.value.runtime?.default_model) model.value = resolved.value.runtime.default_model
+    if ((BACKENDS as readonly string[]).includes(resolved.value.runtime?.default_backend)) {
+      backend.value = resolved.value.runtime.default_backend as Backend
+    }
+    const runtime = resolved.value.runtime ?? {}
+    defaultModels.value = readBackendModelMemory(runtime.default_models)
+    model.value = resolveHydratedModel(runtime, backend.value, defaultModels.value, defaultModel.value)
     if (resolved.value.runtime?.default_batch !== undefined) {
       batch.value = resolved.value.runtime.default_batch === true
     }
@@ -208,6 +264,7 @@ export const useConfigStore = defineStore('config', () => {
     backends,
     batch,
     defaultModel,
+    defaultModels,
     model,
     cwd,
     loaded,

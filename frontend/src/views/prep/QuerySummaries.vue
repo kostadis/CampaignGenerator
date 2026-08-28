@@ -36,7 +36,7 @@ const runParams = computed(() => ({
   hits_only: hitsOnly.value,
   verbose: verbose.value,
   output: output.value,
-  model: config.model,
+  model: config.model || undefined,
 }))
 
 onMounted(() => { loadFromConfig() })

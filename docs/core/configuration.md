@@ -67,7 +67,8 @@ empty and unwritten ([ui-state-retirement.md](../config/ui-state-retirement.md))
    regression-tested per service (`test_another_services_write_cannot_touch_platform_yaml`,
    `test_ensemble_write_cannot_touch_sibling_documents`).
 7. **No secrets in config.** API keys come from the environment; `claude-code` bills the local
-   `claude` CLI instead.
+   `claude` CLI instead. `codex-cli` uses Codex's saved ChatGPT login and strips
+   `OPENAI_API_KEY` and `CODEX_API_KEY` from the child process.
 
 ## Model resolution
 
@@ -79,10 +80,37 @@ Which model a run uses, in precedence order:
 3. `platform.yaml`'s `runtime.default_model` — the sidebar picker.
 4. `campaignlib.constants.DEFAULT_MODEL` (env `CAMPAIGN_MODEL`, else the literal).
 
+The consistency auditor has one deliberate subscription exception: with
+`--backend codex-cli`, an omitted `--model` does not inherit the Claude default.
+It resolves explicit `--model`, then `CG_CODEX_MODEL`, then lets Codex use its
+subscription default. `CG_CODEX_TIMEOUT` sets the positive finite child-process
+deadline in seconds and defaults to `600`; neither setting is persisted in a
+campaign config file.
+
+This omission rule applies to the complete 30-command backend family, not just
+the consistency auditor. An explicitly supplied compatible Codex model is
+forwarded unchanged; an explicit `claude-*` model is refused rather than
+silently replaced. Every Codex request requires a locally installed Codex CLI
+and a completed `codex login`; the saved ChatGPT subscription login is used by
+the isolated child, while `OPENAI_API_KEY` and `CODEX_API_KEY` are removed from
+its environment.
+
+Provider `--batch` is Anthropic Message Batches and is rejected before model or
+child work for Codex. It is distinct from application controls such as
+`--batch-scenes`, ensemble fan-out, resume, and review checkpoints. The
+brokered ensemble `polish` loop keeps tool execution in the parent process and
+uses an isolated Codex child only for structured turn responses. The seven
+new UI invocation faces (consistency audit, transform, voice comparison,
+Scabard sync, synthesis polish, chapter narration, and post-assemble polish)
+reuse existing owning config boundaries; they do not add persisted stage
+configuration. Scabard's access key is request-scoped and child-environment
+only, never an argv or log value.
+
 Every `/run/*` router resolves through
 `server/platform_config_service.py::resolve_default_model` rather than hardcoding a default. Which
-*backend* a service runs against is still four independent selectors — `service-cut.md` gap #3,
-deliberately deferred.
+*backend* a service runs against is resolved by the same canonical request → service → platform
+selection seam; command builders render only that resolved selection. A service-level Codex choice
+therefore remains separate from inherited Claude model defaults and is not silently rewritten.
 
 ## Migrating a pre-isolation campaign
 

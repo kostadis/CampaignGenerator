@@ -23,10 +23,10 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any
 
 import yaml
-from campaignlib.selection import ModelSelection
+from campaignlib.selection import Backend, ModelSelection
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from server.platform_config_shared import OptStr
@@ -77,7 +77,7 @@ class BackendProfile(ModelSelection):
     # Inherits `backend` and `model` from ModelSelection (feature 003); the
     # only field genuinely its own is the SINGULAR `endpoint` — the Session
     # Doc Editor targets one host at a time, where the ensemble fans out.
-    backend: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
+    backend: Backend = "anthropic"
     endpoint: OptStr = None
     # `batch` (005-ui-batch-selection) is inherited from ModelSelection —
     # this profile IS the editor's per-service selection store, so its
@@ -346,23 +346,46 @@ class Backends(BaseModel):
     Each backend keeps its own remembered ``model``/``endpoint`` so
     switching the active backend doesn't lose the others' settings (the
     current flat ``dgx_model``/``openrouter_model`` behavior, generalized).
-    The YAML key for Claude Code is the hyphenated ``claude-code``; the
-    Python attribute is ``claude_code`` (hyphens aren't valid identifiers),
-    bridged via a field alias. ``populate_by_name`` lets internal code
-    construct/merge using the attribute name while ``model_dump(by_alias=
-    True)`` still serializes the hyphenated key for the on-disk shape in
+    The YAML keys for the subscription backends are hyphenated
+    (``claude-code`` and ``codex-cli``); their Python attributes use
+    underscores (hyphens aren't valid identifiers), bridged via field
+    aliases. ``populate_by_name`` lets internal code construct/merge using
+    the attribute names while ``model_dump(by_alias=True)`` still serializes
+    the canonical hyphenated keys for the on-disk shape in
     ``docs/config/session-editor-isolation.md``.
     """
 
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
 
-    active: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
+    active: Backend = "anthropic"
     anthropic: BackendProfile = Field(default_factory=BackendProfile)
     claude_code: BackendProfile = Field(
         default_factory=BackendProfile, alias="claude-code"
     )
     dgx: BackendProfile = Field(default_factory=BackendProfile)
     openrouter: BackendProfile = Field(default_factory=BackendProfile)
+    codex_cli: BackendProfile = Field(
+        default_factory=BackendProfile, alias="codex-cli"
+    )
+
+    def profile_for(self, backend: Backend | None = None) -> BackendProfile:
+        """Return the remembered profile for ``backend`` (or ``active``).
+
+        Keeping this lookup beside the aliased fields prevents callers from
+        indexing the model with a YAML spelling (``codex-cli``) or assuming
+        that hyphenated names are Python attributes.  The backend enum has
+        already validated the value, so this is deliberately a small,
+        provider-neutral dispatch table.
+        """
+        selected = backend or self.active
+        profiles = {
+            "anthropic": self.anthropic,
+            "dgx": self.dgx,
+            "openrouter": self.openrouter,
+            "claude-code": self.claude_code,
+            "codex-cli": self.codex_cli,
+        }
+        return profiles[selected]
 
 
 # Retired with the mechanics-scrub CLI (`session_doc/scrub_mechanics.py`,

@@ -628,6 +628,7 @@ def _editor_service_selection(cfg: ResolvedEditorConfig):
         "claude-code": cfg.backends.claude_code,
         "dgx": cfg.backends.dgx,
         "openrouter": cfg.backends.openrouter,
+        "codex-cli": cfg.backends.codex_cli,
     }[active]
 
     model = (prof.model or "").strip() or None
@@ -1513,6 +1514,81 @@ async def api_verify(request: Request, target: str = "both",
     )
 
 
+@router.get("/consistency")
+async def api_consistency(request: Request,
+                          cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    """Run the direct document audit without chaining into Plan."""
+    result = _build_check_consistency_cmd(request, cfg)
+    if isinstance(result, tuple):
+        _, err = result
+        return _sse_error(err)
+    cmd = result
+    report = _narration_dir(cfg)
+    output = report / "consistency_report.md" if report else None
+
+    def _done(rc: int | None) -> None:
+        _record_activity(
+            cfg,
+            stage="consistency",
+            rc=rc,
+            outputs=[str(output)] if output else [],
+        )
+
+    return StreamingResponse(
+        stream_subprocess(cmd, cwd=cfg.work_dir, on_complete=_done),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@router.get("/voice-compare")
+async def api_voice_compare(
+    request: Request,
+    player: str,
+    voice_file: str,
+    character: str | None = None,
+    update: bool = False,
+    cfg: ResolvedEditorConfig = Depends(get_editor_config),
+):
+    """Compare one selected VTT speaker with one voice file.
+
+    The optional update is explicit and only changes the selected voice file;
+    this action never triggers narration or changes any checkpoint.
+    """
+    result = _build_voice_compare_cmd(
+        request,
+        cfg,
+        player=player,
+        voice_file=voice_file,
+        character=character,
+        update=update,
+    )
+    if isinstance(result, tuple):
+        _, err = result
+        return _sse_error(err)
+    cmd = result
+    voice = Path(voice_file).expanduser()
+    # Match PathField's default ``resolve-base="session"`` contract for API
+    # callers that provide the raw relative value instead of the frontend's
+    # already-resolved absolute path.
+    if not voice.is_absolute() and cfg.session_dir:
+        voice = Path(cfg.session_dir).expanduser() / voice
+
+    def _done(rc: int | None) -> None:
+        _record_activity(
+            cfg,
+            stage="voice-compare",
+            rc=rc,
+            outputs=[str(voice)] if update else [],
+        )
+
+    return StreamingResponse(
+        stream_subprocess(cmd, cwd=cfg.work_dir, on_complete=_done),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
 @router.get("/extract")
 async def api_extract(request: Request, force: int = 0, batch_scenes: int | None = None,
                       cfg: ResolvedEditorConfig = Depends(get_editor_config)):
@@ -1650,6 +1726,131 @@ def _build_consistency_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tu
     # this LAST: nargs="+" greedily swallows subsequent bare tokens
     # regardless of action, so it would otherwise eat --out/--model.
     cmd += ["--context", *context]
+    return cmd
+
+
+def _build_check_consistency_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
+    """Build the standalone ``check_consistency`` audit face.
+
+    The Plan route retains its legacy ``sd_consistency`` preflight builder;
+    this explicit action uses the canonical document-audit CLI and never
+    chains into planning.
+    """
+    summary = _session_summary_path(cfg)
+    if summary is None or not summary.exists():
+        return None, "session-summary.md not found — run Stage 1 first"
+    nd = _narration_dir(cfg)
+    if nd is None:
+        return None, "narration_dir not configured"
+    nd.mkdir(parents=True, exist_ok=True)
+    context = [c for c in (cfg.narrate.context or []) if c]
+    if not context:
+        return None, "no --context files configured"
+    cmd = [
+        console_script("check_consistency"),
+        str(summary),
+        "--output", str(nd / "consistency_report.md"),
+    ]
+    cmd += _selection_args(request, cfg)
+    cmd += ["--context", *context]
+    return cmd
+
+
+def _build_voice_compare_cmd(
+    request,
+    cfg: ResolvedEditorConfig,
+    *,
+    player: str,
+    voice_file: str,
+    character: str | None = None,
+    update: bool = False,
+) -> list[str] | tuple[None, str]:
+    """Build the explicit voice-comparison face for the raw session VTT.
+
+    Comparison is deliberately independent of Plan/Narrate: it reads the
+    selected speaker and voice file, and ``--update`` is the only opt-in that
+    writes the voice file. The route records the run but never advances a
+    pipeline checkpoint.
+    """
+    vtt = _vtt_path(cfg)
+    if vtt is None or not vtt.exists():
+        return None, "no .vtt file resolved (set CONFIG['vtt'] or place a *.vtt in the session dir)"
+    if not player.strip():
+        return None, "player is required"
+    voice = Path(voice_file).expanduser()
+    # Match PathField's default ``resolve-base="session"`` contract for API
+    # callers that provide the raw relative value instead of the frontend's
+    # already-resolved absolute path.
+    if not voice.is_absolute() and cfg.session_dir:
+        voice = Path(cfg.session_dir).expanduser() / voice
+    if not voice.exists() or not voice.is_file():
+        return None, f"voice file not found: {voice}"
+
+    cmd = [
+        console_script("vtt_voice_compare"),
+        str(vtt),
+        "--player", player.strip(),
+        "--voice-file", str(voice),
+    ]
+    if character and character.strip():
+        cmd += ["--character", character.strip()]
+    if update:
+        cmd.append("--update")
+    cmd += _selection_args(request, cfg)
+    return cmd
+
+
+def _build_polish_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[None, str]:
+    """Build the explicit post-assemble polish command.
+
+    Polish consumes the assembled document and writes sibling derived output
+    plus a changelog. It is intentionally a separate action from Assemble;
+    no approval or narration flag is added here, so the human checkpoint
+    remains visible and intact.
+    """
+    if not cfg.paths.session_recap:
+        return None, "CONFIG['session'] (gm-assist.md) is required"
+    assembled = _assembled_output_path(cfg)
+    if not assembled.exists():
+        return None, f"assembled document not found: {assembled} — assemble it first"
+    recap = Path(cfg.paths.session_recap).expanduser()
+    if not recap.exists():
+        return None, f"recap not found: {recap}"
+    voice_dir = Path(cfg.paths.voice_dir).expanduser() if cfg.paths.voice_dir else None
+    if voice_dir is None or not voice_dir.is_dir():
+        return None, "voice_dir is required and must be a directory"
+    if not cfg.paths.party:
+        return None, "party document is required for polish"
+    party = Path(cfg.paths.party).expanduser()
+    if not party.exists():
+        return None, f"party document not found: {party}"
+    party_config = _party_config_path(cfg)
+    if party_config is None:
+        return None, "party.yaml not found — configure the campaign roster first"
+
+    output = assembled.with_name(assembled.stem + ".polished.md")
+    changelog = assembled.with_name(assembled.stem + ".polish-changelog.json")
+    cmd = [
+        console_script("polish"),
+        str(assembled),
+        "--recap", str(recap),
+        "--voice-dir", str(voice_dir),
+        "--party", str(party),
+        "--party-config", str(party_config),
+        "--output", str(output),
+        "--changelog", str(changelog),
+    ]
+    # Keep the declared player roster in the same campaign-owned config
+    # boundary as the party roster when it is present.  The CLI accepts this
+    # optional input and falls back to its established character-name
+    # diagnostics when a campaign has not adopted players.yaml yet.
+    players = _players_args(cfg)
+    if players:
+        cmd += players
+    context = [str(p) for p in (cfg.narrate.context or []) if p]
+    if context:
+        cmd += ["--context", *context]
+    cmd += _selection_args(request, cfg)
     return cmd
 
 
@@ -1916,6 +2117,39 @@ def api_assemble(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
         "scenes_included": len(matches),
         "scenes_missing": [],
     }
+
+
+@router.api_route("/polish", methods=["GET", "POST"])
+async def api_polish(request: Request,
+                     cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    """Run the explicit post-assemble polish pass.
+
+    GET is retained for the browser's EventSource transport; POST is the
+    canonical mutation face and is included for API clients and route guards.
+    Neither method auto-assembles, approves, or narrates anything.
+    """
+    result = _build_polish_cmd(request, cfg)
+    if isinstance(result, tuple):
+        _, err = result
+        return _sse_error(err)
+    cmd = result
+    assembled = _assembled_output_path(cfg)
+    output = assembled.with_name(assembled.stem + ".polished.md")
+    changelog = assembled.with_name(assembled.stem + ".polish-changelog.json")
+
+    def _done(rc: int | None) -> None:
+        _record_activity(
+            cfg,
+            stage="polish",
+            rc=rc,
+            outputs=[str(output), str(changelog)],
+        )
+
+    return StreamingResponse(
+        stream_subprocess(cmd, cwd=cfg.work_dir, on_complete=_done),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @router.post("/open/{file_type}/{n}")

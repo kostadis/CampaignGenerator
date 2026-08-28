@@ -237,6 +237,46 @@ def test_incompatible_platform_pair_refuses_every_run_endpoint(monkeypatch, tmp_
     assert "cmd" not in captured, "no subprocess may be spawned on a refusal"
 
 
+@pytest.mark.parametrize("module,path,params", RUN_ENDPOINTS)
+def test_codex_explicit_selection_reaches_every_run_endpoint(monkeypatch, tmp_path, module, path, params):
+    """Every existing router builder forwards Codex and its explicit model."""
+    captured = _capture(monkeypatch, module)
+    _seed(monkeypatch, tmp_path, "codex-cli", "gpt-5-codex")
+    r = client.get(path, params=params)
+    assert r.status_code == 200, r.text
+    _ = r.text
+    cmd = captured["cmd"]
+    assert "--backend" in cmd
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert "--model" in cmd
+    assert cmd[cmd.index("--model") + 1] == "gpt-5-codex"
+
+
+@pytest.mark.parametrize("module,path,params", RUN_ENDPOINTS)
+def test_codex_omits_inherited_claude_model_everywhere(monkeypatch, tmp_path, module, path, params):
+    """An inherited Claude model is not accidentally forwarded to Codex."""
+    captured = _capture(monkeypatch, module)
+    _seed(monkeypatch, tmp_path, "codex-cli", "claude-inherited")
+    r = client.get(path, params=params)
+    assert r.status_code == 200, r.text
+    _ = r.text
+    cmd = captured["cmd"]
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert "--model" not in cmd
+
+
+def test_codex_explicit_claude_model_refuses_before_any_router_child(monkeypatch, tmp_path):
+    captured = _capture(monkeypatch, "server.routers.grounding")
+    _seed(monkeypatch, tmp_path, "codex-cli", "claude-sonnet-4-6")
+    r = client.get(
+        "/api/grounding/run/campaign-state",
+        params={"input": "docs/x.md"},
+    )
+    assert r.status_code == 409, r.text
+    assert r.json()["detail"]["error"] == "incompatible_selection"
+    assert "cmd" not in captured
+
+
 # ── FR-014: the run record proves what actually ran ────────────────────────
 
 def test_run_log_records_the_resolved_selection(tmp_path):

@@ -1,14 +1,30 @@
 """Tests for campaignlib, prep.py, and session_doc logic."""
 
+import asyncio
 import io
 import sys
 import pytest
 from pathlib import Path
 
+from fastapi import Request
+from starlette.responses import PlainTextResponse
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import campaignlib
 from pipelines.session_prep import prep, transform
 import session_doc
+from server.routers import prep as prep_router
+from server.platform_config_service import ResolvedSelection
+
+
+def _request(path: str) -> Request:
+    return Request({
+        "type": "http",
+        "method": "GET",
+        "path": path,
+        "query_string": b"",
+        "headers": [],
+    })
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -354,6 +370,34 @@ def test_default_no_batch_path_uses_stream_api_only(monkeypatch, pipeline_worksp
     assert len(fake_batch.calls) == 0
 
 
+def test_codex_prep_preserves_request_boundary_and_output_path(
+    monkeypatch, pipeline_workspace, tmp_path
+):
+    """A Codex prep request keeps the selected model and writes the normal
+    single-beat artifact at the caller-selected path."""
+    fake_stream = _FakeStreamAPI()
+    monkeypatch.setattr(prep, "stream_api", fake_stream)
+    monkeypatch.setattr(prep, "client_from_args", lambda args: object())
+    output = tmp_path / "prep.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "prep",
+        "--config", str(pipeline_workspace / "config.yaml"),
+        "--mode", "single",
+        "--beat", "The party enters the dungeon",
+        "--backend", "codex-cli",
+        "--model", "gpt-5-codex",
+        "--output", str(output),
+        "--no-log",
+    ])
+    prep.main()
+
+    assert len(fake_stream.calls) == 1
+    assert fake_stream.calls[0]["model"] == "gpt-5-codex"
+    assert "The party enters the dungeon" in fake_stream.calls[0]["user"]
+    assert output.read_text(encoding="utf-8") == "[stream response]\n"
+
+
 # ── transform.py --batch: single call via run_single_batch ──────────────────
 
 def test_transform_batch_flag_routes_through_run_single_batch(monkeypatch, capsys):
@@ -403,6 +447,125 @@ def test_transform_default_no_batch_path_uses_stream_api_only(monkeypatch):
 
     assert len(fake_stream.calls) == 1
     assert len(fake_batch.calls) == 0
+
+
+def test_codex_transform_preserves_request_boundary_and_output_path(
+    monkeypatch, tmp_path
+):
+    """Transform's Codex call receives the dossier unchanged and preserves
+    the explicit output destination, including a new parent directory."""
+    fake_stream = _FakeStreamAPI()
+    monkeypatch.setattr(transform, "stream_api", fake_stream)
+    monkeypatch.setattr(transform, "client_from_args", lambda args: object())
+    dossier = tmp_path / "dossier.md"
+    dossier.write_text("A dossier of campaign notes.", encoding="utf-8")
+    output = tmp_path / "artifacts" / "outline.md"
+
+    monkeypatch.setattr(sys, "argv", [
+        "transform", str(dossier),
+        "--backend", "codex-cli",
+        "--model", "gpt-5-codex",
+        "--output", str(output),
+    ])
+    transform.main()
+
+    assert len(fake_stream.calls) == 1
+    assert fake_stream.calls[0]["model"] == "gpt-5-codex"
+    assert fake_stream.calls[0]["user"] == "A dossier of campaign notes."
+    assert output.read_text(encoding="utf-8") == "[stream response]\n"
+
+
+def test_transform_route_forwards_selected_dossier_and_codex_without_inventing_model(
+    monkeypatch, tmp_path
+):
+    """The Session Prep transform face is an explicit, human-gated launch.
+
+    A Codex subscription owns its model default.  When the selector resolves
+    an omitted model the route must therefore leave ``--model`` out of argv,
+    while preserving the selected dossier and review output path.  This calls
+    the route endpoint directly so the assertion stays bounded even when the
+    full application's TestClient startup is unavailable.
+    """
+    dossier = tmp_path / "dossier.md"
+    output = tmp_path / "review" / "outline.md"
+    captured = {}
+
+    def capture(cmd):
+        captured["cmd"] = cmd
+        return PlainTextResponse("captured")
+
+    def resolve(_request, *, request_model=None, **_kwargs):
+        return ResolvedSelection(
+            model=request_model,
+            backend="codex-cli",
+            model_origin="request" if request_model else "platform",
+            backend_origin="platform",
+        )
+
+    monkeypatch.setattr(prep_router, "_sse_response", capture, raising=False)
+    monkeypatch.setattr(prep_router, "resolve_selection", resolve, raising=False)
+    route = next(
+        route.endpoint
+        for route in prep_router.router.routes
+        if getattr(route, "path", "") == "/run/transform"
+    )
+
+    result = asyncio.run(route(
+        _request("/run/transform"),
+        input=str(dossier),
+        output=str(output),
+        single=False,
+        model=None,
+    ))
+    assert result.status_code == 200
+    cmd = captured["cmd"]
+    assert "transform" in cmd[0]
+    assert str(dossier) in cmd
+    assert cmd[cmd.index("--output") + 1] == str(output)
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert "--model" not in cmd
+
+
+def test_transform_route_forwards_explicit_codex_model_without_auto_advance(
+    monkeypatch, tmp_path
+):
+    """Typing a model forwards it, but transform still only writes its output."""
+    captured = {}
+
+    def capture(cmd):
+        captured["cmd"] = cmd
+        return PlainTextResponse("captured")
+
+    def resolve(_request, *, request_model=None, **_kwargs):
+        return ResolvedSelection(
+            model=request_model,
+            backend="codex-cli",
+            model_origin="request",
+            backend_origin="platform",
+        )
+
+    monkeypatch.setattr(prep_router, "_sse_response", capture, raising=False)
+    monkeypatch.setattr(prep_router, "resolve_selection", resolve, raising=False)
+    route = next(
+        route.endpoint
+        for route in prep_router.router.routes
+        if getattr(route, "path", "") == "/run/transform"
+    )
+
+    result = asyncio.run(route(
+        _request("/run/transform"),
+        input="docs/dossier.md",
+        output="docs/prep/outline.md",
+        single=True,
+        model="gpt-5-codex",
+    ))
+    assert result.status_code == 200
+    cmd = captured["cmd"]
+    assert cmd[cmd.index("--model") + 1] == "gpt-5-codex"
+    assert "--single" in cmd
+    # The route does not run prep or mark any downstream stage approved.
+    assert "transform" in cmd[0]
+    assert "--session" not in cmd and "--beat" not in cmd
 
 
 # ── Fixtures for session_doc tests ───────────────────────────────────────────

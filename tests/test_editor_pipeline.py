@@ -1,6 +1,7 @@
 """Tests for the new four-stage editor wiring (scene_editor)."""
 
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -516,6 +517,117 @@ def test_missing_everything_returns_the_slug_path_unchanged(tmp_path):
     got = scene_editor._scene_extraction_file_new(cfg, 5, "No Such Scene")
     assert got == sx / "05_no_such_scene.md"
     assert not got.exists()
+
+
+def test_codex_editor_keeps_stage_artifacts_and_explicit_force(tmp_path, monkeypatch):
+    """A subscription selection must not change editor destinations or resume rules."""
+    from campaignlib.selection import ModelSelection
+
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+        vtt=str(vtt),
+    )
+    monkeypatch.setattr(
+        scene_editor,
+        "_editor_service_selection",
+        lambda _cfg: (ModelSelection(backend="codex-cli", model="gpt-5-codex"), None),
+    )
+
+    enhance = scene_editor._build_enhance_cmd(None, cfg)
+    resume = scene_editor._build_reextract_cmd(None, cfg, force=False)
+    force = scene_editor._build_reextract_cmd(None, cfg, force=True)
+
+    assert isinstance(enhance, list) and "codex-cli" in enhance
+    assert str(sd / "session-summary.md") in enhance
+    assert isinstance(resume, list) and "--force" not in resume
+    assert str(sx) in resume
+    assert isinstance(force, list) and "--force" in force
+
+
+def _codex_editor_cfg(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n", encoding="utf-8")
+    return _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+        vtt=str(vtt),
+    )
+
+
+def test_codex_editor_omits_inherited_claude_model(tmp_path, monkeypatch):
+    from campaignlib.selection import ModelSelection
+
+    cfg = _codex_editor_cfg(tmp_path)
+    monkeypatch.setattr(
+        scene_editor,
+        "_editor_service_selection",
+        lambda _cfg: (ModelSelection(backend="codex-cli", model=None), None),
+    )
+    cmd = scene_editor._build_enhance_cmd(None, cfg)
+    assert "codex-cli" in cmd
+    assert "--model" not in cmd
+
+
+def test_codex_editor_refuses_explicit_claude_model(tmp_path, monkeypatch):
+    from campaignlib.selection import ModelSelection
+    from server.platform_config_service import IncompatibleSelection
+
+    cfg = _codex_editor_cfg(tmp_path)
+    monkeypatch.setattr(
+        scene_editor,
+        "_editor_service_selection",
+        lambda _cfg: (ModelSelection(backend="codex-cli", model="claude-sonnet-4-6"), None),
+    )
+    with pytest.raises(IncompatibleSelection):
+        scene_editor._build_enhance_cmd(None, cfg)
+
+
+def test_editor_preserves_openrouter_selection(tmp_path, monkeypatch):
+    from campaignlib.selection import ModelSelection
+
+    cfg = _codex_editor_cfg(tmp_path)
+    monkeypatch.setattr(
+        scene_editor,
+        "_editor_service_selection",
+        lambda _cfg: (ModelSelection(backend="openrouter", model="anthropic/claude-sonnet-4"), "https://router"),
+    )
+    cmd = scene_editor._build_enhance_cmd(None, cfg)
+    assert cmd[cmd.index("--backend") + 1] == "openrouter"
+    assert cmd[cmd.index("--model") + 1] == "anthropic/claude-sonnet-4"
+
+
+def test_editor_status_exposes_codex_run_issue_counts(tmp_path):
+    """The review strip reads the same typed issue counts for any backend."""
+    import json
+
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text("WEBVTT\n", encoding="utf-8")
+    report = nd / "quote_report.md"
+    report.write_text("# report\n", encoding="utf-8")
+    report.with_suffix(".json").write_text(json.dumps({
+        "counts": {"verified": 3, "near": 1, "unverified": 2,
+                    "unscored": 0, "exempt": 0},
+        "refusals": {"total": 1},
+    }), encoding="utf-8")
+    cfg = _cfg(
+        session_recap=str(gm), session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx), narration_dir=str(nd), vtt=str(vtt),
+    )
+
+    status = scene_editor.api_pipeline_status(cfg)
+    assert status["verify"]["verified"] == 3
+    assert status["verify"]["unverified"] == 2
+    assert status["verify"]["refused"] == 1
 
 
 # ── --party-config plumbing (#265) ───────────────────────────────────────────
@@ -1114,3 +1226,114 @@ def test_the_activity_log_records_what_ran_not_what_was_asked(tmp_path):
     assert knobs is not None
     assert knobs["batch_scenes"] is False
     assert ("--batch-scenes" in cmd) is knobs["batch_scenes"]
+
+
+# ── Direct US4 scene-editor faces (feature 016, T044) ──────────────────────
+
+
+def _codex_cfg(cfg: ResolvedEditorConfig) -> ResolvedEditorConfig:
+    """Select Codex in the editor-owned profile for command-builder tests."""
+    cfg.backends.active = "codex-cli"
+    cfg.backends.codex_cli.model = "gpt-5-codex"
+    return cfg
+
+
+def test_check_consistency_cmd_forwards_selected_document_context_and_codex(
+    tmp_path,
+):
+    """The direct audit face preserves its input/context and model selection."""
+    summary = tmp_path / "session-summary.md"
+    summary.write_text("# Session summary\n", encoding="utf-8")
+    context = tmp_path / "world-state.md"
+    context.write_text("# World state\n", encoding="utf-8")
+    narration = tmp_path / "narration"
+    narration.mkdir()
+    cfg = _codex_cfg(
+        _cfg(session_summary=str(summary), narration_dir=str(narration))
+    )
+    cfg.narrate.context = [str(context)]
+
+    cmd = scene_editor._build_check_consistency_cmd(None, cfg)
+
+    assert isinstance(cmd, list), cmd
+    assert "check_consistency" in cmd[0]
+    assert str(summary) in cmd
+    assert cmd[cmd.index("--context") + 1] == str(context)
+    assert "--output" in cmd
+    assert str(narration / "consistency_report.md") in cmd
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert cmd[cmd.index("--model") + 1] == "gpt-5-codex"
+
+
+def test_voice_compare_cmd_forwards_selected_vtt_voice_and_codex(tmp_path):
+    vtt = tmp_path / "session.vtt"
+    vtt.write_text("WEBVTT\n", encoding="utf-8")
+    voice = tmp_path / "soma.md"
+    voice.write_text("Measured, precise, and calm.\n", encoding="utf-8")
+    cfg = _codex_cfg(_cfg(vtt=str(vtt), voice_dir=str(tmp_path)))
+
+    cmd = scene_editor._build_voice_compare_cmd(
+        None, cfg, player="Soma", voice_file=str(voice), update=False
+    )
+
+    assert isinstance(cmd, list), cmd
+    assert "vtt_voice_compare" in cmd[0]
+    assert str(vtt) in cmd
+    assert cmd[cmd.index("--player") + 1] == "Soma"
+    assert cmd[cmd.index("--voice-file") + 1] == str(voice)
+    assert "--update" not in cmd
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert cmd[cmd.index("--model") + 1] == "gpt-5-codex"
+
+
+def test_voice_compare_cmd_resolves_relative_voice_against_session_dir(tmp_path):
+    vtt = tmp_path / "session.vtt"
+    vtt.write_text("WEBVTT\n", encoding="utf-8")
+    voice = tmp_path / "soma.md"
+    voice.write_text("Measured, precise, and calm.\n", encoding="utf-8")
+    cfg = replace(_codex_cfg(_cfg(vtt=str(vtt))), session_dir=str(tmp_path))
+
+    cmd = scene_editor._build_voice_compare_cmd(
+        None, cfg, player="Soma", voice_file="soma.md", update=False
+    )
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--voice-file") + 1] == str(voice)
+
+
+def test_polish_cmd_preserves_assembled_artifacts_and_checkpoint(tmp_path):
+    session = tmp_path / "session"
+    session.mkdir()
+    recap = session / "gm-assist.md"
+    recap.write_text("# Recap\n", encoding="utf-8")
+    assembled = session / "gm-assist-doc.md"
+    assembled.write_text("# Assembled\n", encoding="utf-8")
+    voice = tmp_path / "voice"
+    voice.mkdir()
+    party = tmp_path / "party.md"
+    party.write_text("# Party\n", encoding="utf-8")
+    config = tmp_path / "config"
+    config.mkdir()
+    (config / "party.yaml").write_text("characters: []\n", encoding="utf-8")
+    cfg = _codex_cfg(
+        _cfg(
+            session_recap=str(recap),
+            voice_dir=str(voice),
+            party=str(party),
+            campaign_dir=str(tmp_path),
+        )
+    )
+
+    cmd = scene_editor._build_polish_cmd(None, cfg)
+
+    assert isinstance(cmd, list), cmd
+    assert "polish" in cmd[0]
+    assert str(assembled) in cmd
+    assert cmd[cmd.index("--recap") + 1] == str(recap)
+    assert "--output" in cmd and "--changelog" in cmd
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert cmd[cmd.index("--model") + 1] == "gpt-5-codex"
+    # Polish is an explicit post-assemble review checkpoint: it must not
+    # silently approve narration or chain into another stage.
+    assert "--approve" not in cmd
+    assert "--narrate" not in cmd

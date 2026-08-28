@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import ast
 import pathlib
+from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
@@ -54,6 +55,57 @@ def _is_test_file(rel: pathlib.PurePath) -> bool:
 # Dispatcher scripts that intentionally use a bare --backend instead of
 # add_backend_args (see module docstring) — never build a client themselves.
 ALLOWED_DISPATCHER_FILES = {"ensemble.py", "ensemble_batch.py", "ensemble_extract.py"}
+
+# The production inventory is deliberately discovered from source below.  The
+# expected sets are the contract's baseline, rather than a hand-maintained
+# list of parser call sites: changing a command's parser shape changes the
+# discovered category and fails loudly at the inventory boundary.
+EXPECTED_REGISTRAR_FILES = frozenset(
+    {
+        "session_doc/check_consistency.py",
+        "session_doc/enhance_summary.py",
+        "session_doc/scene_extract.py",
+        "session_doc/sd_agent.py",
+        "session_doc/sd_consistency.py",
+        "session_doc/sd_narrate.py",
+        "session_doc/sd_plan.py",
+        "session_doc/vtt_voice_compare.py",
+        "pipelines/session_prep/prep.py",
+        "pipelines/session_prep/transform.py",
+        "pipelines/content_ingest/dnd_sheet.py",
+        "pipelines/rlm/query.py",
+        "pipelines/grounding/planning.py",
+        "pipelines/grounding/party.py",
+        "pipelines/grounding/make_tracking.py",
+        "pipelines/grounding/distill.py",
+        "pipelines/grounding/campaign_state.py",
+        "pipelines/grounding/npc_table.py",
+        "pipelines/grounding/grounding_sections.py",
+        "pipelines/grounding/thread_registry.py",
+        "pipelines/ensemble/synthesise_world_state.py",
+        "pipelines/ensemble/synthesise_polish.py",
+        "pipelines/ensemble/extract_facts.py",
+        "pipelines/ensemble/narrate_chapter.py",
+        "pipelines/ensemble/polish.py",
+        "scabard_sdk/scabard_sync.py",
+    }
+)
+EXPECTED_HAND_WRITTEN_FILES = frozenset(
+    {
+        "pipelines/ensemble/facts_to_state.py",
+        "pipelines/ensemble/ensemble.py",
+        "pipelines/ensemble/ensemble_batch.py",
+        "pipelines/ensemble/ensemble_extract.py",
+    }
+)
+EXPECTED_DISPATCHER_FILES = frozenset(
+    {
+        "session_doc/sd_agent.py",
+        "pipelines/ensemble/ensemble.py",
+        "pipelines/ensemble/ensemble_batch.py",
+        "pipelines/ensemble/ensemble_extract.py",
+    }
+)
 
 # Files that define their OWN unrelated make_client( — a name collision, not
 # a seam bypass. kanka_mcp.py's make_client() builds a KankaClient (the
@@ -94,8 +146,452 @@ def _all_calls(tree: ast.Module):
             yield node
 
 
+def _has_call(tree: ast.Module, name: str) -> bool:
+    return any(_call_func_name(node) == name for node in _all_calls(tree))
+
+
+def _declares_backend_flag(tree: ast.Module) -> bool:
+    """Return whether source registers an exact ``--backend`` option."""
+    return any(
+        _call_func_name(node) == "add_argument"
+        and node.args
+        and isinstance(node.args[0], ast.Constant)
+        and node.args[0].value == "--backend"
+        for node in _all_calls(tree)
+    )
+
+
+def _backend_choices(tree: ast.Module) -> set[str]:
+    """Extract canonical or literal choices from a backend flag.
+
+    Hand-written parsers may not use ``add_backend_args`` when they own a
+    plural endpoint, but they must still bind ``choices`` to the canonical
+    imported ``BACKENDS`` vocabulary.  A private literal remains inspectable
+    so a drifted or incomplete copy fails the exact-vocabulary assertion.
+    """
+    canonical_imported = any(
+        isinstance(node, ast.ImportFrom)
+        and node.module == "campaignlib.selection"
+        and any(
+            alias.name == "BACKENDS"
+            and (alias.asname is None or alias.asname == "BACKENDS")
+            for alias in node.names
+        )
+        for node in tree.body
+    )
+    for node in _all_calls(tree):
+        if not (
+            _call_func_name(node) == "add_argument"
+            and node.args
+            and isinstance(node.args[0], ast.Constant)
+            and node.args[0].value == "--backend"
+        ):
+            continue
+        for keyword in node.keywords:
+            if keyword.arg != "choices":
+                continue
+            value = keyword.value
+            if (
+                canonical_imported
+                and isinstance(value, ast.Name)
+                and value.id == "BACKENDS"
+            ):
+                return set(client_mod.BACKENDS)
+            if isinstance(value, (ast.List, ast.Tuple, ast.Set)):
+                return {
+                    element.value
+                    for element in value.elts
+                    if isinstance(element, ast.Constant)
+                    and isinstance(element.value, str)
+                }
+    return set()
+
+
+def _source_tree(path: Path) -> ast.Module:
+    return _parse(path)
+
+
+def discover_backend_surfaces() -> tuple[frozenset[str], frozenset[str]]:
+    """Discover registrar and hand-written backend parsers from production AST.
+
+    This is intentionally based on call structure, not a substring search:
+    comments/docstrings and subprocess argv strings must not make a command an
+    inventory member.  Tests and the shared registrar implementation itself
+    are excluded from the production surface.
+    """
+    registrars: set[str] = set()
+    hand_written: set[str] = set()
+    for path in repo_python_files(REPO_ROOT):
+        rel = path.relative_to(REPO_ROOT).as_posix()
+        if _is_test_file(path.relative_to(REPO_ROOT)) or rel == SEAM_FILE:
+            continue
+        tree = _source_tree(path)
+        if _has_call(tree, "add_backend_args"):
+            registrars.add(rel)
+        elif _declares_backend_flag(tree):
+            hand_written.add(rel)
+    return frozenset(registrars), frozenset(hand_written)
+
+
+def _has_process_execution(tree: ast.Module) -> bool:
+    return any(
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr in {"run", "Popen", "call", "check_call", "check_output"}
+        for node in ast.walk(tree)
+    )
+
+
+def discover_runtime_dispatchers(
+    registrars: frozenset[str], hand_written: frozenset[str]
+) -> frozenset[str]:
+    """Classify the four backend-forwarding runtime dispatchers.
+
+    Hand-written ensemble parsers are dispatchers only when they also execute
+    a child process; ``facts_to_state`` is a direct plural-endpoint parser.
+    Among shared registrars, ``sd_agent`` is the session-document forwarding
+    dispatcher.  The grounding sections module also invokes a child, but it
+    is a workflow caller, not one of the four dispatcher surfaces defined by
+    ``contracts/cli-family.md``.
+    """
+    candidates = {
+        rel
+        for rel in hand_written
+        if rel.startswith("pipelines/ensemble/")
+    }
+    candidates.update(
+        rel for rel in registrars if rel == "session_doc/sd_agent.py"
+    )
+    return frozenset(
+        rel
+        for rel in candidates
+        if _has_process_execution(_source_tree(REPO_ROOT / rel))
+    )
+
+
 _CANDIDATE_FILES = list(_iter_candidate_files())
 _CANDIDATE_IDS = [str(p.relative_to(REPO_ROOT)) for p in _CANDIDATE_FILES]
+
+
+# ── Production inventory (spec 016) ────────────────────────────────────────
+
+def test_production_backend_surface_inventory_is_exact():
+    """All and only the 30 production backend surfaces are parser-discovered.
+
+    The old guardrail listed 22 registrar paths and silently let newly moved
+    commands disappear from coverage.  Discovering parser calls from tracked
+    source catches both omissions and accidental duplicate vocabularies.
+    """
+    registrars, hand_written = discover_backend_surfaces()
+
+    assert len(registrars) == 26, sorted(registrars)
+    assert registrars == EXPECTED_REGISTRAR_FILES
+    assert len(hand_written) == 4, sorted(hand_written)
+    assert hand_written == EXPECTED_HAND_WRITTEN_FILES
+    assert len(registrars | hand_written) == 30
+
+
+def test_runtime_dispatcher_inventory_is_exact():
+    """The four forwarding dispatchers preserve backend selection to children."""
+    registrars, hand_written = discover_backend_surfaces()
+    dispatchers = discover_runtime_dispatchers(registrars, hand_written)
+
+    assert dispatchers == EXPECTED_DISPATCHER_FILES
+    assert len(dispatchers) == 4
+
+
+def test_hand_written_backend_choices_include_canonical_codex_cli():
+    """Each explicit backend vocabulary must equal the canonical vocabulary."""
+    _, hand_written = discover_backend_surfaces()
+    missing = {
+        rel
+        for rel in hand_written
+        if _backend_choices(_source_tree(REPO_ROOT / rel)) != set(client_mod.BACKENDS)
+    }
+    assert not missing, (
+        f"hand-written backend choices drift from canonical BACKENDS: "
+        f"{sorted(missing)}"
+    )
+
+
+# ── UI reachability (spec 016, contract/ui-selection.md) ───────────────────
+
+@dataclass(frozen=True)
+class _UIReachability:
+    """Evidence required for one production capability's visible UI face.
+
+    ``direct`` rows point at a route command builder. ``transitive`` rows
+    name the owning workflow and every known dispatch hop. ``new-face`` rows
+    are the seven explicit UI/server faces required by the contract. Keeping
+    this as data makes a newly inventoried CLI fail the mapping assertion
+    rather than disappearing from reachability coverage.
+    """
+
+    kind: str
+    production: tuple[str, ...]
+    ui: tuple[str, ...]
+    # Most faces use one marker tuple for every listed file.  A composed face
+    # (for example Scabard's view, mounted route, and sidebar entry) can supply
+    # file-specific evidence so each file proves its own visible seam rather
+    # than requiring unrelated labels to be copied into it.
+    ui_markers: tuple[str, ...] | dict[str, tuple[str, ...]]
+
+
+_UI_REACHABILITY: dict[str, _UIReachability] = {
+    # Session-document direct builders and their visible editor controls.
+    "enhance_summary": _UIReachability(
+        "direct", ("server/routers/scene_editor.py",),
+        ("frontend/src/views/session/SessionDocEditor.vue",),
+        ("/api/editor/enhance",),
+    ),
+    "scene_extract": _UIReachability(
+        "direct", ("server/routers/scene_editor.py",),
+        ("frontend/src/views/session/SessionDocEditor.vue",),
+        ("/api/editor/extract",),
+    ),
+    "sd_consistency": _UIReachability(
+        "direct", ("server/routers/scene_editor.py",),
+        ("frontend/src/views/session/SessionDocEditor.vue",),
+        ("/api/editor/plan",),
+    ),
+    "sd_plan": _UIReachability(
+        "direct", ("server/routers/scene_editor.py",),
+        ("frontend/src/views/session/SessionDocEditor.vue",),
+        ("/api/editor/plan",),
+    ),
+    "sd_narrate": _UIReachability(
+        "direct", ("server/routers/scene_editor.py",),
+        ("frontend/src/views/session/SessionDocEditor.vue",),
+        ("/api/editor/narrate",),
+    ),
+
+    # Prep, setup, grounding and projection builders.
+    "prep": _UIReachability(
+        "direct", ("server/routers/prep.py",),
+        ("frontend/src/views/prep/SessionPrep.vue",),
+        ("/api/prep/run/session-prep",),
+    ),
+    "dnd_sheet": _UIReachability(
+        "direct", ("server/routers/setup.py",),
+        ("frontend/src/views/setup/DndSheet.vue",),
+        ("/api/setup/run/dnd-sheet",),
+    ),
+    "query": _UIReachability(
+        "direct", ("server/routers/prep.py",),
+        ("frontend/src/views/prep/QuerySummaries.vue",),
+        ("/api/prep/run/query",),
+    ),
+    "planning": _UIReachability(
+        "direct", ("server/routers/grounding.py",),
+        ("frontend/src/views/grounding/PlanningDocument.vue",),
+        ("/api/grounding/run/planning",),
+    ),
+    "party": _UIReachability(
+        "direct", ("server/routers/grounding.py",),
+        ("frontend/src/views/grounding/PartyDocument.vue",),
+        ("/api/grounding/run/party",),
+    ),
+    "make_tracking": _UIReachability(
+        "direct", ("server/routers/setup.py",),
+        ("frontend/src/views/setup/MakeTracking.vue",),
+        ("/api/setup/run/make-tracking",),
+    ),
+    "distill": _UIReachability(
+        "direct", ("server/routers/grounding.py",),
+        ("frontend/src/views/grounding/DistillWorldState.vue",),
+        ("/api/grounding/run/distill",),
+    ),
+    "campaign_state": _UIReachability(
+        "direct", ("server/routers/grounding.py",),
+        ("frontend/src/views/grounding/CampaignState.vue",),
+        ("/api/grounding/run/campaign-state",),
+    ),
+    "npc_table": _UIReachability(
+        "direct", ("server/routers/prep.py",),
+        ("frontend/src/views/prep/NpcTable.vue",),
+        ("/api/prep/run/npc-table",),
+    ),
+    "grounding_sections": _UIReachability(
+        "direct", ("server/routers/projections.py",),
+        ("frontend/src/views/grounding/ProjectionSections.vue",),
+        ("/api/projections/run/build",),
+    ),
+    "thread_registry": _UIReachability(
+        "direct", ("server/routers/projections.py",),
+        ("frontend/src/views/grounding/Threads.vue",),
+        ("/api/projections/threads/run/propose",),
+    ),
+
+    # Ensemble direct builder faces.
+    "synthesise_world_state": _UIReachability(
+        "direct", ("server/routers/ensemble.py",),
+        ("frontend/src/views/ensemble/EnsembleSynthesize.vue",),
+        ("/api/ensemble/run/synthesize",),
+    ),
+    "facts_to_state": _UIReachability(
+        "direct", ("server/routers/ensemble.py",),
+        ("frontend/src/views/ensemble/EnsembleBundle.vue",),
+        ("/api/ensemble/run/bundle",),
+    ),
+
+    # Document and ensemble dispatchers: the listed paths are the visible
+    # owning workflow plus the child forwarding hop(s), not merely imports.
+    "sd_agent": _UIReachability(
+        "transitive",
+        ("session_doc/sd_agent.py", "server/routers/scene_editor.py"),
+        ("frontend/src/views/session/SessionDocEditor.vue",),
+        ("/api/editor/extract",),
+    ),
+    "ensemble": _UIReachability(
+        "transitive", ("server/routers/ensemble.py",),
+        ("frontend/src/views/ensemble/EnsembleExtract.vue",),
+        ("/api/ensemble/run/extract",),
+    ),
+    "ensemble_batch": _UIReachability(
+        "transitive", ("server/routers/ensemble.py", "pipelines/ensemble/ensemble_batch.py"),
+        ("frontend/src/views/ensemble/EnsembleExtract.vue",),
+        ("/api/ensemble/run/extract",),
+    ),
+    "ensemble_extract": _UIReachability(
+        "transitive", ("server/routers/ensemble.py", "pipelines/ensemble/ensemble_extract.py"),
+        ("frontend/src/views/ensemble/EnsembleExtract.vue",),
+        ("/api/ensemble/run/extract",),
+    ),
+    "extract_facts": _UIReachability(
+        "transitive",
+        ("server/routers/ensemble.py", "pipelines/ensemble/ensemble_extract.py", "pipelines/ensemble/extract_facts.py"),
+        ("frontend/src/views/ensemble/EnsembleExtract.vue",),
+        ("/api/ensemble/run/extract",),
+    ),
+
+    # Contract-mandated new invocation faces. Their rows intentionally fail
+    # until the corresponding visible route/control lands in US4.
+    "check_consistency": _UIReachability(
+        "new-face", ("server/routers/scene_editor.py",),
+        ("frontend/src/views/session/SessionDocEditor.vue",),
+        ("/api/editor/consistency", "Check Consistency"),
+    ),
+    "transform": _UIReachability(
+        "new-face", ("server/routers/prep.py",),
+        ("frontend/src/views/prep/SessionPrep.vue",),
+        ("transform",),
+    ),
+    "vtt_voice_compare": _UIReachability(
+        "new-face", ("server/routers/scene_editor.py",),
+        ("frontend/src/views/session/SessionDocEditor.vue",),
+        ("/api/editor/voice-compare", "Compare Voice"),
+    ),
+    "scabard_sync": _UIReachability(
+        "new-face", ("server/routers/integrations.py",),
+        (
+            "frontend/src/views/integrations/ScabardSync.vue",
+            "frontend/src/router.ts",
+            "frontend/src/components/layout/AppSidebar.vue",
+        ),
+        {
+            "frontend/src/views/integrations/ScabardSync.vue": (
+                "/api/integrations/scabard", "Scabard Sync",
+            ),
+            "frontend/src/router.ts": (
+                "/integrations/scabard", "scabard-sync",
+            ),
+            "frontend/src/components/layout/AppSidebar.vue": (
+                "/integrations/scabard", "Scabard Sync",
+            ),
+        },
+    ),
+    "synthesise_polish": _UIReachability(
+        "new-face", ("server/routers/ensemble.py",),
+        ("frontend/src/views/ensemble/EnsembleSynthesize.vue",),
+        ("/api/ensemble/run/synthesise-polish", "synthesisePolish"),
+    ),
+    "narrate_chapter": _UIReachability(
+        "new-face", ("server/routers/ensemble.py",),
+        ("frontend/src/views/ensemble/EnsembleExtract.vue",),
+        ("/api/ensemble/run/narrate-chapter", "narrateChapter"),
+    ),
+    "polish": _UIReachability(
+        "new-face", ("server/routers/scene_editor.py",),
+        ("frontend/src/views/session/ReviewAssemble.vue",),
+        ("polish",),
+    ),
+}
+
+
+def _inventory_command_names() -> frozenset[str]:
+    return frozenset(
+        Path(rel).stem
+        for rel in EXPECTED_REGISTRAR_FILES | EXPECTED_HAND_WRITTEN_FILES
+    )
+
+
+def _has_console_script(tree: ast.Module, command: str) -> bool:
+    return any(
+        _call_func_name(node) == "console_script"
+        and node.args
+        and isinstance(node.args[0], ast.Constant)
+        and node.args[0].value == command
+        for node in _all_calls(tree)
+    )
+
+
+def test_every_canonical_inventory_row_has_ui_reachability_mapping():
+    """The 30-row capability inventory cannot silently lose a UI mapping."""
+    assert len(_inventory_command_names()) == 30
+    assert set(_UI_REACHABILITY) == set(_inventory_command_names())
+    assert {row.kind for row in _UI_REACHABILITY.values()} == {
+        "direct", "transitive", "new-face"
+    }
+    assert sum(row.kind == "new-face" for row in _UI_REACHABILITY.values()) == 7
+
+
+@pytest.mark.parametrize(
+    "command,row", list(_UI_REACHABILITY.items()), ids=list(_UI_REACHABILITY)
+)
+def test_each_inventory_row_has_executable_ui_reachability(command, row):
+    """Require source and visible UI evidence for every inventory row.
+
+    Direct rows must point at an actual ``console_script(command)`` builder;
+    transitive rows must retain every dispatch source and their owner control;
+    new-face rows require both the route marker and the visible control. The
+    failure names the exact missing face so US4 implementation work cannot
+    satisfy the inventory merely by adding an unmounted endpoint.
+    """
+    missing: list[str] = []
+    for rel in row.production:
+        path = REPO_ROOT / rel
+        if not path.is_file():
+            missing.append(f"production file {rel}")
+            continue
+        tree = _parse(path)
+        if row.kind == "direct" and not _has_console_script(tree, command):
+            missing.append(f"console_script({command!r}) in {rel}")
+        if row.kind == "new-face" and not _has_console_script(tree, command):
+            missing.append(f"new route marker {command!r} in {rel}")
+
+    for rel in row.ui:
+        path = REPO_ROOT / rel
+        if not path.is_file():
+            missing.append(f"visible UI file {rel}")
+            continue
+        source = path.read_text(encoding="utf-8")
+        if isinstance(row.ui_markers, dict):
+            if rel not in row.ui_markers:
+                missing.append(f"UI marker evidence for {rel}")
+                continue
+            markers = row.ui_markers[rel]
+        else:
+            markers = row.ui_markers
+        missing.extend(
+            f"UI marker {marker!r} in {rel}"
+            for marker in markers
+            if marker not in source
+        )
+
+    assert not missing, (
+        f"{command} ({row.kind}) has no complete visible reachability: "
+        + "; ".join(missing)
+    )
 
 
 # ── Check 1: make_client( only inside the seam ──────────────────────────────
@@ -165,7 +661,7 @@ def test_add_backend_args_registers_batch_flag():
     assert ns_on.batch is True
 
 
-@pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+@pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code", "codex-cli"])
 def test_client_from_args_rejects_batch_for_non_anthropic_backend(backend, monkeypatch):
     """--batch requires the real Anthropic client — none of the façades
     implement messages.batches, so this must fail before construction."""

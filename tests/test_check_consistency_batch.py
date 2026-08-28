@@ -91,6 +91,26 @@ def test_check_consistency_batch_item_failure_exits_nonzero(tmp_path, monkeypatc
     assert "Error: batch item failed" in capsys.readouterr().err
 
 
+def test_check_consistency_rejects_codex_batch_before_client(tmp_path, monkeypatch):
+    doc_path, context_path, config_path = _make_inputs(tmp_path)
+    monkeypatch.setattr(
+        check_consistency,
+        "make_client",
+        lambda *a, **k: (_ for _ in ()).throw(AssertionError("client constructed")),
+        raising=False,
+    )
+    monkeypatch.setattr(sys, "argv", [
+        "check_consistency", str(doc_path),
+        "--config", str(config_path),
+        "--context", str(context_path),
+        "--backend", "codex-cli",
+        "--batch",
+    ])
+    with pytest.raises(SystemExit) as excinfo:
+        check_consistency.main()
+    assert "backend 'codex-cli' has no batch support" in str(excinfo.value)
+
+
 def test_check_consistency_default_path_uses_stream_api(tmp_path, monkeypatch):
     """FR-011 regression guard: default (no --batch) path must be unaffected
     by the batch wiring."""
@@ -116,3 +136,33 @@ def test_check_consistency_default_path_uses_stream_api(tmp_path, monkeypatch):
     assert len(calls) == 1
     assert calls[0]["max_tokens"] == 32000
     assert calls[0].get("silent") is True
+
+
+def test_codex_consistency_keeps_report_path_and_issue_count(tmp_path, monkeypatch, capsys):
+    """Subscription output uses the normal report artifact and presentation."""
+    doc_path, context_path, config_path = _make_inputs(tmp_path)
+    report_path = tmp_path / "checks" / "codex-consistency.md"
+    report_path.parent.mkdir()
+    calls = []
+
+    def fake_stream_api(client, system, user, model, **kwargs):
+        calls.append((model, system, user))
+        return (
+            "## Consistency Report\n\n"
+            "**Location**: scene 1\n- **Issue**: mismatch\n\n"
+            "**Location**: scene 2\n- **Issue**: missing event\n"
+        )
+
+    monkeypatch.setattr(check_consistency, "client_from_args", lambda *a, **kw: object())
+    monkeypatch.setattr(check_consistency, "stream_api", fake_stream_api)
+    monkeypatch.setattr(sys, "argv", [
+        "check_consistency", str(doc_path), "--config", str(config_path),
+        "--context", str(context_path), "--backend", "codex-cli",
+        "--model", "gpt-5-codex", "--out", str(report_path),
+    ])
+
+    check_consistency.main()
+
+    assert calls and calls[0][0] == "gpt-5-codex"
+    assert report_path.read_text(encoding="utf-8").count("**Location**") == 2
+    assert "Found 2 potential issue(s):" in capsys.readouterr().out

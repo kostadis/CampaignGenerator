@@ -1,0 +1,9 @@
+{
+  "text": "I need the host application to validate this requested operation.",
+  "tool_calls": [
+    {
+      "name": "not_a_polish_operation",
+      "arguments_json": "{}"
+    }
+  ]
+}

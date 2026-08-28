@@ -17,6 +17,8 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+from campaignlib.selection import BACKENDS
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server.platform_config_service import (
@@ -218,3 +220,38 @@ class TestLegacyEndpointsAreGone:
         client = TestClient(_make_app(fresh_campaign))
         assert client.get("/api/config/raw").status_code == 404
         assert client.put("/api/config/raw", json={"text": "x: y"}).status_code == 404
+
+
+# ── Codex config API (feature 016, T040) ────────────────────────────────────
+
+
+class TestCodexConfigApi:
+    def test_models_exposes_canonical_codex_backend_once(self, fresh_campaign):
+        client = TestClient(_make_app(fresh_campaign))
+        body = client.get("/api/config/models").json()
+
+        assert tuple(body["backends"]) == BACKENDS
+        assert body["backends"].count("codex-cli") == 1
+        assert body["default_backend"] == "anthropic"
+
+    def test_runtime_accepts_codex_backend_and_round_trips(self, fresh_campaign):
+        client = TestClient(_make_app(fresh_campaign))
+        response = client.put(
+            "/api/config/runtime",
+            json={"values": {"default_backend": "codex-cli"}},
+        )
+        assert response.status_code == 200, response.text
+
+        config = client.get("/api/config/").json()
+        models = client.get("/api/config/models").json()
+        assert config["resolved"]["runtime"]["default_backend"] == "codex-cli"
+        assert models["default_backend"] == "codex-cli"
+
+    def test_runtime_rejects_noncanonical_backend(self, fresh_campaign):
+        client = TestClient(_make_app(fresh_campaign))
+        response = client.put(
+            "/api/config/runtime",
+            json={"values": {"default_backend": "codex"}},
+        )
+
+        assert response.status_code == 400

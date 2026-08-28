@@ -99,6 +99,7 @@ class TestGetEditorConfig:
         # the hyphenated claude-code alias).
         assert body["backends"]["active"] == "anthropic"
         assert "claude-code" in body["backends"]
+        assert list(body["backends"]).count("codex-cli") == 1
         assert body["extract"]["tokens"] == 8192
         assert body["narrate"]["tokens"] == 16000
         # The genre rulebook is a file (#276 fix 2): no path configured yet, so
@@ -151,6 +152,13 @@ class TestGetEditorConfig:
         client.put("/api/editor/config", json={"extract": {"batch_scenes": True}})
         assert client.get("/api/editor/config").json()["batch_scenes_effective"] is True
 
+        # Application-level scene grouping is independent of provider message
+        # batching: both subscription backends keep the default enabled.
+        client.put("/api/editor/config", json={"backends": {"active": "codex-cli"}})
+        assert client.get("/api/editor/config").json()["batch_scenes_effective"] is True
+        client.put("/api/editor/config", json={"extract": {"batch_scenes": False}})
+        assert client.get("/api/editor/config").json()["batch_scenes_effective"] is False
+
     def test_loads_pre_existing_session_doc_yaml_with_legacy_scrub_block(
         self, fresh_campaign
     ):
@@ -172,6 +180,33 @@ class TestGetEditorConfig:
         body = resp.json()
         assert "scrub" not in body
         assert body["narrate"]["tokens"] == 9000
+
+    def test_loads_old_four_profile_document_and_exposes_codex(self, fresh_campaign):
+        _write(
+            fresh_campaign / CONFIG_SUBDIR / "session_doc.yaml",
+            "backends:\n"
+            "  active: openrouter\n"
+            "  anthropic:\n"
+            "    model: claude-sonnet-4\n"
+            "  dgx:\n"
+            "    endpoint: http://dgx.local:8000\n"
+            "    model: Qwen/Qwen3-32B\n"
+            "  openrouter:\n"
+            "    model: anthropic/claude-3.7-sonnet\n"
+            "  claude-code:\n"
+            "    model: claude-opus-4-1\n",
+        )
+        body = TestClient(_make_app(fresh_campaign)).get(
+            "/api/editor/config"
+        ).json()
+        assert body["backends"]["active"] == "openrouter"
+        assert body["backends"]["anthropic"]["model"] == "claude-sonnet-4"
+        assert body["backends"]["dgx"]["model"] == "Qwen/Qwen3-32B"
+        assert body["backends"]["openrouter"]["model"] == (
+            "anthropic/claude-3.7-sonnet"
+        )
+        assert body["backends"]["claude-code"]["model"] == "claude-opus-4-1"
+        assert body["backends"]["codex-cli"]["model"] is None
 
 
 # ── PUT /api/editor/config — flat payload, single write door ────────────────
@@ -219,6 +254,39 @@ class TestPutPersistsViaService:
         assert editor_cfg["backends"]["dgx"]["endpoint"] == "http://localhost:8000"
         assert editor_cfg["backends"]["dgx"]["model"] == "llama-3-70b"
         assert "scrub" not in editor_cfg
+
+    def test_put_codex_profile_round_trips_without_mutating_anthropic(self, fresh_campaign):
+        client_a = TestClient(_make_app(fresh_campaign))
+        assert client_a.put(
+            "/api/editor/config",
+            json={"backends": {"anthropic": {"model": "claude-sonnet-4"}}},
+        ).status_code == 200
+        response = client_a.put(
+            "/api/editor/config",
+            json={
+                "backends": {
+                    "active": "codex-cli",
+                    "codex-cli": {"model": "gpt-5-codex"},
+                }
+            },
+        )
+        assert response.status_code == 200, response.text
+
+        # A second app instance proves the YAML alias and model survive a
+        # service reload, while the pre-existing profile remains untouched.
+        body = TestClient(_make_app(fresh_campaign)).get(
+            "/api/editor/config"
+        ).json()
+        assert body["backends"]["active"] == "codex-cli"
+        assert body["backends"]["codex-cli"]["model"] == "gpt-5-codex"
+        assert body["backends"]["anthropic"]["model"] == "claude-sonnet-4"
+        on_disk = yaml.safe_load(
+            (fresh_campaign / CONFIG_SUBDIR / "session_doc.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        assert "codex-cli" in on_disk["backends"]
+        assert "codex_cli" not in on_disk["backends"]
 
     def test_put_editor_config_narrate_batch_is_retired(self, fresh_campaign):
         """005-ui-batch-selection T029: `narrate.batch` was the bespoke
@@ -443,6 +511,30 @@ class TestRouteMounting:
         assert client.get("/api/editor/config").status_code == 200
         # ...and the double-prefixed path does NOT exist.
         assert client.get("/api/editor/api/editor/config").status_code == 404
+
+    def test_us4_scene_editor_faces_are_mounted_without_auto_advance(
+        self, fresh_campaign
+    ):
+        """US4 adds distinct, human-triggered audit/compare/polish faces.
+
+        Inspecting FastAPI's flattened route table keeps this guard bounded in
+        environments where TestClient startup can block; the route handlers'
+        focused builder tests live in ``test_editor_pipeline.py``.
+        """
+        paths = _make_app(fresh_campaign).openapi()["paths"]
+
+        assert "/api/editor/consistency" in paths
+        assert "get" in paths["/api/editor/consistency"]
+        assert "/api/editor/voice-compare" in paths
+        assert "get" in paths["/api/editor/voice-compare"]
+        assert "/api/editor/polish" in paths
+        assert "post" in paths["/api/editor/polish"]
+        # The three actions are separate controls. No route is allowed to
+        # collapse them into the existing plan/narrate chain.
+        assert (
+            paths["/api/editor/consistency"]["get"]["operationId"]
+            != paths["/api/editor/plan"]["get"]["operationId"]
+        )
 
 
 # ── O3 — editor-local anthropic/claude-code model override ──────────────────

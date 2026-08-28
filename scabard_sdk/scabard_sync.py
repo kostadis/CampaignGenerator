@@ -30,11 +30,13 @@ Usage:
 
 import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
 
 from campaignlib import add_backend_args, client_from_args, run_single_batch, stream_api, DEFAULT_MODEL
+from campaignlib.api.client import resolve_cli_model
 from . import ScabardAuthError, ScabardClient, ScabardRateLimitError
 
 EXTRACT_SYSTEM = """\
@@ -185,6 +187,30 @@ def sync_entities(entities: list[dict], campaign_id: int, username: str,
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
+
+def _resolve_access_key(explicit: str | None) -> str:
+    """Resolve the Scabard key without exposing it in diagnostics.
+
+    Manual ``--access-key`` remains authoritative for existing invocations.
+    The environment fallback exists for the server integration, which must
+    keep the secret out of child argv; only a non-empty, trimmed environment
+    value is accepted.  Failure happens before any extraction or sync work.
+    """
+    if explicit is not None:
+        return explicit
+
+    from_environment = os.environ.get("SCABARD_ACCESS_KEY", "").strip()
+    if from_environment:
+        return from_environment
+
+    print(
+        "Error: Scabard access key missing; provide --access-key or set a "
+        "non-empty SCABARD_ACCESS_KEY environment variable.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Push campaign docs to Scabard as pages."
@@ -195,7 +221,7 @@ def main() -> None:
                         help="Scabard campaign ID (number in the campaign URL)")
     parser.add_argument("--username", required=True,
                         help="Scabard username")
-    parser.add_argument("--access-key", required=True,
+    parser.add_argument("--access-key",
                         help="Scabard API access key (expires 24 hr after generation)")
 
     # Source docs
@@ -221,11 +247,15 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true",
                         help="Show what would be created/updated without calling the Scabard API")
 
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help="Claude model for extraction (default: campaignlib.DEFAULT_MODEL / $CAMPAIGN_MODEL)")
     add_backend_args(parser)
 
     args = parser.parse_args()
+    args.access_key = _resolve_access_key(args.access_key)
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     # ── Load entities ─────────────────────────────────────────────────────────
     if args.from_extract:
@@ -261,6 +291,7 @@ def main() -> None:
         entities = extract_entities(claude_client, docs_text, args.model, batch=args.batch)
 
         extract_path = Path(args.extract_file).expanduser().resolve()
+        extract_path.parent.mkdir(parents=True, exist_ok=True)
         extract_path.write_text(
             json.dumps(entities, indent=2, ensure_ascii=False), encoding="utf-8"
         )

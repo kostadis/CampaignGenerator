@@ -69,6 +69,30 @@ async def run_session_prep(
     return _sse_response(cmd)
 
 
+@router.get("/run/transform")
+async def run_transform(
+    request: Request,
+    input: str = "",
+    single: bool = False,
+    output: str = "",
+    model: str | None = None,
+):
+    """Transform a selected dossier into prep input for human review.
+
+    This is deliberately a separate action from ``run_session_prep``.  The
+    transform output is an intermediate artifact that the operator reviews
+    and then chooses to feed into prep; the route never starts that second
+    stage or mutates any prep state.
+    """
+    cmd = [console_script("transform")]
+    if input.strip():
+        cmd.append(input.strip())
+    _cmd_flag(cmd, "--single", single)
+    _cmd_opt(cmd, "--output", output)
+    cmd += selection_cli_args(resolve_selection(request, request_model=model))
+    return _sse_response(cmd)
+
+
 # ── NPC Table ───────────────────────────────────────────────────────────────
 
 @router.get("/run/npc-table")

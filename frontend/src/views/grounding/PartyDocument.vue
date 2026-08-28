@@ -67,7 +67,7 @@ const runParams = computed(() => {
     extract_dir: extractDir.value,
     split_chapters: splitChapters.value,
     no_log: noLog.value,
-    model: config.model,
+    model: config.model || undefined,
   }
   if (mode.value === 'config') {
     base.party_config = partyConfigPath.value

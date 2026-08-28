@@ -60,7 +60,7 @@ path resolved at construction time — see
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any
 
 import yaml
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, ValidationError
@@ -167,6 +167,11 @@ class PlatformRuntime(BaseModel):
 
     default_model: str = Field(default_factory=lambda: DEFAULT_MODEL)
     default_backend: Backend = "anthropic"
+    # Remember the last model chosen for each backend.  ``default_model`` is
+    # retained as the active/global compatibility field for older clients and
+    # platform files; this map is the durable owner of the sidebar's
+    # backend-specific model memory.
+    default_models: dict[Backend, OptStr] = Field(default_factory=dict)
     session_dir: OptStr = None
     default_batch: OptBool = False
 

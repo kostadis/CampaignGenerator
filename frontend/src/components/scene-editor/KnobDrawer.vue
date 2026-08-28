@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { Backend } from '../../stores/config'
 import PathField from '../shared/PathField.vue'
 import MultiPathField from '../shared/MultiPathField.vue'
 
@@ -16,10 +17,14 @@ const props = defineProps<{
   examplesDir: string
   context: string
   // ── Stage knobs ───────────────────────────────────────────
-  backend: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
+  backend: Backend
   dgxEndpoint: string
   dgxModel: string
   openrouterModel: string
+  codexModel: string
+  voicePlayer: string
+  voiceFile: string
+  voiceUpdate: boolean
   extractTokens: number
   // Per-group output ceiling for batched extraction (013-batched-scene-
   // extraction T055), forwarded to `scene_extract --batch-max-tokens`.
@@ -53,10 +58,14 @@ const emit = defineEmits<{
   'update:voiceDir': [value: string]
   'update:examplesDir': [value: string]
   'update:context': [value: string]
-  'update:backend': [value: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code']
+  'update:backend': [value: Backend]
   'update:dgxEndpoint': [value: string]
   'update:dgxModel': [value: string]
   'update:openrouterModel': [value: string]
+  'update:codexModel': [value: string]
+  'update:voicePlayer': [value: string]
+  'update:voiceFile': [value: string]
+  'update:voiceUpdate': [value: boolean]
   'update:extractTokens': [value: number]
   'update:batchTokens': [value: number]
   'update:narrateTokens': [value: number]
@@ -189,8 +198,14 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
               :class="{ active: backend === 'openrouter' }"
               @click="emit('update:backend', 'openrouter')"
             >OpenRouter</button>
+            <button
+              class="seg-btn"
+              :class="{ active: backend === 'codex-cli' }"
+              @click="emit('update:backend', 'codex-cli')"
+              title="Route generation through the saved Codex CLI login"
+            >Codex CLI</button>
           </div>
-          <div class="field-help">Stage 3 (Plan &amp; Check) honors Anthropic or Subscription; DGX falls back to the Anthropic API.</div>
+          <div class="field-help">Stage 3 (Plan &amp; Check) honors Anthropic, Subscription, or Codex CLI; DGX falls back to the Anthropic API.</div>
         </div>
         <div v-if="backend === 'dgx'" class="field">
           <label class="field-label">DGX endpoint</label>
@@ -225,6 +240,48 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
           />
           <div class="field-help">OpenRouter model id. Blank → the runtime default. Uses OpenRouter's fixed base URL — no endpoint to configure.</div>
         </div>
+        <div v-if="backend === 'codex-cli'" class="field">
+          <label class="field-label">Codex model (optional)</label>
+          <input
+            type="text"
+            class="field-input"
+            :value="codexModel"
+            placeholder="Saved Codex login default"
+            @input="emit('update:codexModel', ($event.target as HTMLInputElement).value)"
+          />
+          <div class="field-help">Blank preserves the saved Codex CLI login's default model.</div>
+        </div>
+      </section>
+
+      <!-- Direct audit/voice tools. These inputs are intentionally separate
+           from the pipeline checkpoints: using them never advances a stage. -->
+      <section class="drawer-section">
+        <h3>Audit &amp; Voice</h3>
+        <div class="field">
+          <label class="field-label">VTT speaker</label>
+          <input
+            type="text"
+            class="field-input"
+            :value="voicePlayer"
+            placeholder="Player or character name"
+            @input="emit('update:voicePlayer', ($event.target as HTMLInputElement).value)"
+          />
+          <div class="field-help">Speaker name passed to the voice comparison tool.</div>
+        </div>
+        <PathField
+          :model-value="voiceFile"
+          @update:model-value="emit('update:voiceFile', $event)"
+          label="Voice reference file"
+          help="Voice file selected for comparison; update is explicit below."
+        />
+        <label class="checkbox-row">
+          <input
+            type="checkbox"
+            :checked="voiceUpdate"
+            @change="emit('update:voiceUpdate', ($event.target as HTMLInputElement).checked)"
+          />
+          Update voice file when comparison succeeds
+        </label>
       </section>
 
       <!-- Stage 2 — Extract -->
@@ -337,7 +394,7 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
       <!-- Stage 5 — Assemble -->
       <section class="drawer-section muted">
         <h3>⑤ Assemble</h3>
-        <div class="field-help">No tunable knobs today. Polish toggle lands when the optional polish pass is wired in.</div>
+        <div class="field-help">Assemble and Polish are separate review checkpoints. Polish is always explicit and never auto-runs.</div>
       </section>
     </div>
   </aside>

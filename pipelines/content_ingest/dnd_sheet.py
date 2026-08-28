@@ -32,6 +32,7 @@ from pathlib import Path
 import fitz  # pymupdf
 
 from campaignlib import add_backend_args, call_api, client_from_args, run_single_batch, DEFAULT_MODEL
+from campaignlib.api.client import resolve_cli_model
 from campaignlib.party_config import (
     PartyCharacter,
     load_party_config,
@@ -337,10 +338,13 @@ def main() -> None:
     parser.add_argument("--output-dir", metavar="DIR", default=None,
                         help="Output directory (default: doc). One .md per PDF. "
                              "Suppresses roster naming and archival.")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help="Claude model to use")
     add_backend_args(parser)
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     # Mode selection (contracts/cli-dnd-sheet.md). --output-dir's default is
     # None rather than "doc" precisely so "unset" is distinguishable from

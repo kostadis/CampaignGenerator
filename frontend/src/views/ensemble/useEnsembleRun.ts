@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { apiFetch, apiPut } from '../../api/client'
 import { connectSSE } from '../../api/sse'
+import type { Backend } from '../../stores/config'
 
 /** Run an ensemble stage over SSE.
  *
@@ -101,9 +102,11 @@ export function useEnsembleRun() {
 // defaults, which is the drift the isolation work exists to remove.
 
 export interface BackendProfile {
-  backend: 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
+  backend: Backend
   endpoints: string[]
-  model: string
+  // Empty/null is intentional for Codex: the saved CLI login supplies its
+  // own default. It must not be filled with an inherited Claude id.
+  model: string | null
   // Per-stage batch selection (005-ui-batch-selection) — the ensemble's own
   // parallel tier, alongside backend/model above. Mirrors
   // server/ensemble_config_shared.py's EnsembleBackend.batch, which inherits

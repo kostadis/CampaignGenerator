@@ -24,13 +24,39 @@ Usage:
 """
 
 import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
 
+from campaignlib.selection import BACKENDS
+
 HERE = Path(__file__).resolve().parent
 EXTRACT = HERE / "ensemble_extract.py"
 MERGE = HERE / "ensemble_merge.py"
+
+
+def _check_provider_batch(args: argparse.Namespace) -> None:
+    """Reject Anthropic Message Batches for non-Anthropic dispatches.
+
+    ``ensemble.py`` is intentionally only a subprocess dispatcher, so it
+    cannot call ``client_from_args`` merely to validate a flag: doing so would
+    construct a client before the generation child starts. Keep the same
+    CG_BACKEND-aware precedence and diagnostic as the shared client seam and
+    the plural-endpoint facts command.
+    """
+    if not args.batch:
+        return
+    arg_backend = getattr(args, "backend", "anthropic")
+    resolved_backend = (
+        arg_backend if arg_backend != "anthropic"
+        else (os.environ.get("CG_BACKEND") or "anthropic")
+    )
+    if resolved_backend != "anthropic":
+        raise SystemExit(
+            "--batch requires the Claude API backend (--backend anthropic); "
+            f"backend '{resolved_backend}' has no batch support"
+        )
 
 
 def main() -> None:
@@ -69,7 +95,7 @@ def main() -> None:
                              "all passes on a single endpoint.")
     parser.add_argument("--model", default=None, metavar="ID",
                         help="Model id sent to every endpoint (default: $DGX_MODEL).")
-    parser.add_argument("--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+    parser.add_argument("--backend", choices=BACKENDS,
                         default="dgx",
                         help="LLM backend forwarded to ensemble_extract.py -> "
                              "extract_facts.py (default: dgx). This driver never "
@@ -108,6 +134,9 @@ def main() -> None:
     parser.add_argument("--embed-threshold", type=float, default=None, metavar="COS",
                         help="Embedding cosine threshold override.")
     args = parser.parse_args()
+    # Validate before constructing either child command.  In particular, a
+    # Codex provider-batch request must never spawn ensemble_extract.py.
+    _check_provider_batch(args)
 
     # ── Phase 1: generation ──────────────────────────────────────────────────
     extract_cmd = [sys.executable, str(EXTRACT), "--workdir", args.workdir]
@@ -123,7 +152,7 @@ def main() -> None:
     extract_cmd += ["--chunk-parallel", str(args.chunk_parallel)]
     if args.pass_parallel is not None:
         extract_cmd += ["--pass-parallel", str(args.pass_parallel)]
-    if args.model:
+    if args.model and args.model.strip():
         extract_cmd += ["--model", args.model]
     extract_cmd += ["--backend", args.backend]
     if args.batch:

@@ -286,6 +286,33 @@ def test_default_no_batch_path_uses_stream_api_for_both_map_and_reduce(
     assert output.exists()
 
 
+def test_codex_query_preserves_request_boundary_and_output_path(
+    monkeypatch, fake_stream_api, tmp_path
+):
+    """Codex receives the explicit model for both MAP and REDUCE calls while
+    query output keeps its normal selected destination."""
+    input_file = tmp_path / "summaries.md"
+    input_file.write_text("Buppido entered the dungeon.", encoding="utf-8")
+    output = tmp_path / "answer.md"
+    monkeypatch.setattr(query, "client_from_args", lambda *a, **kw: None)
+    monkeypatch.setattr(sys, "argv", [
+        "query.py", str(input_file), "Where did Buppido go?",
+        "--backend", "codex-cli",
+        "--model", "gpt-5-codex",
+        "--output", str(output),
+    ])
+
+    query.main()
+
+    assert len(fake_stream_api.calls) == 2  # one MAP call and one REDUCE call
+    assert all(call["model"] == "gpt-5-codex" for call in fake_stream_api.calls)
+    assert "Where did Buppido go?" in fake_stream_api.calls[0]["system"]
+    assert "Buppido entered the dungeon." in fake_stream_api.calls[0]["user"]
+    assert output.read_text(encoding="utf-8").startswith(
+        "# Query: Where did Buppido go?\n"
+    )
+
+
 def test_default_no_batch_path_never_touches_run_batch(
     monkeypatch, fake_stream_api, fake_batch_entry_points, tmp_path
 ):

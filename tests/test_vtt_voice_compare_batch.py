@@ -118,3 +118,31 @@ def test_vtt_voice_compare_default_path_uses_stream_api(tmp_path, monkeypatch):
     vtt_voice_compare.main()
 
     assert len(calls) == 1
+
+
+def test_codex_voice_comparison_preserves_model_and_update_artifact(
+    tmp_path, monkeypatch
+):
+    """A Codex comparison still updates the caller's ordinary voice file."""
+    vtt_path, voice_path = _make_inputs(tmp_path)
+    calls = []
+
+    def fake_run_single_batch(client, *, system, user, model, **kwargs):
+        calls.append((model, user))
+        return "### New lines\n\n> \"I draw my sword.\""
+
+    monkeypatch.setattr(vtt_voice_compare, "client_from_args", lambda *a, **kw: object())
+    monkeypatch.setattr(vtt_voice_compare, "run_single_batch", fake_run_single_batch)
+    monkeypatch.setattr(sys, "argv", [
+        "vtt_voice_compare.py", str(vtt_path), "--player", "Gabe",
+        "--voice-file", str(voice_path), "--no-log", "--batch",
+        "--backend", "codex-cli", "--model", "gpt-5-codex", "--update",
+    ])
+
+    vtt_voice_compare.main()
+
+    assert calls and calls[0][0] == "gpt-5-codex"
+    assert "Existing voice file" in calls[0][1]
+    assert "## Suggested additions from VTT analysis" in voice_path.read_text(
+        encoding="utf-8"
+    )

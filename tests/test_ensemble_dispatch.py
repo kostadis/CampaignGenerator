@@ -6,6 +6,7 @@ free endpoint should speculatively re-run — is a pure function and is where th
 straggler-mitigation correctness lives. These cover it directly.
 """
 import sys
+import pytest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -66,9 +67,52 @@ def test_settled_key_skipped():
                              min_age=MIN_AGE, max_copies=MAX_COPIES) is None
 
 
+
 # ── build_extract_cmd ────────────────────────────────────────────────────────
 
 PASS = {"name": "small", "chunk_size": 6000, "agent": "extract_facts"}
+
+
+# ── Codex forwarding and dispatcher boundaries (016 parity) ─────────────────
+
+def test_extract_child_command_forwards_codex_and_explicit_model(tmp_path):
+    cmd = ee.build_extract_cmd(
+        tmp_path / "doc.txt", PASS, tmp_path / "small.json",
+        tmp_path / "cache", endpoint=None, model="gpt-5-codex",
+        backend="codex-cli",
+    )
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert cmd[cmd.index("--model") + 1] == "gpt-5-codex"
+    assert cmd[0] == sys.executable
+    assert "codex" not in cmd[0].lower()
+
+
+def test_extract_child_command_omits_inherited_codex_model(tmp_path):
+    cmd = ee.build_extract_cmd(
+        tmp_path / "doc.txt", PASS, tmp_path / "small.json",
+        tmp_path / "cache", endpoint=None, model=None, backend="codex-cli",
+    )
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert "--model" not in cmd
+
+
+def test_codex_extract_dispatcher_dry_run_starts_no_validation_child(
+    tmp_path, monkeypatch, capsys
+):
+    """ensemble_extract only dispatches generation work; dry-run starts none."""
+    document = tmp_path / "chapter.md"
+    document.write_text("chapter\n")
+    monkeypatch.setattr(
+        ee.subprocess,
+        "Popen",
+        lambda *args, **kwargs: pytest.fail("dispatcher started a child"),
+    )
+    monkeypatch.setattr(sys, "argv", [
+        "ensemble_extract.py", str(document), "--workdir", str(tmp_path / "run"),
+        "--dry-run", "--backend", "codex-cli",
+    ])
+    ee.main()
+    assert "Backend:  codex-cli" in capsys.readouterr().out
 
 
 def test_build_extract_cmd_forwards_chunk_parallel(tmp_path):

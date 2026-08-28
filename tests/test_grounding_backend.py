@@ -154,6 +154,29 @@ def test_routes_forward_openrouter_flag(monkeypatch, tmp_path, path, params):
     assert _flag_value(captured["cmd"], "--model") == "anthropic/claude-sonnet-4"
 
 
+@pytest.mark.parametrize("path,params", ALL_ROUTES)
+def test_all_routes_forward_explicit_codex_selection(monkeypatch, tmp_path, path, params):
+    captured = _run(monkeypatch, tmp_path, path, {"backend": "codex-cli", "model": "gpt-5-codex"}, params)
+    assert _flag_value(captured["cmd"], "--backend") == "codex-cli"
+    assert _flag_value(captured["cmd"], "--model") == "gpt-5-codex"
+
+
+@pytest.mark.parametrize("path,params", ALL_ROUTES)
+def test_all_routes_omit_inherited_claude_model_for_codex(monkeypatch, tmp_path, path, params):
+    captured = _run(monkeypatch, tmp_path, path, {"backend": "codex-cli", "model": "claude-inherited"}, params)
+    assert _flag_value(captured["cmd"], "--backend") == "codex-cli"
+    assert "--model" not in captured["cmd"]
+
+
+def test_codex_explicit_claude_model_refuses_before_grounding_child(monkeypatch, tmp_path):
+    captured = _capture_cmd(monkeypatch)
+    _set_selection(monkeypatch, tmp_path, {"backend": "codex-cli", "model": "claude-sonnet-4-6"})
+    r = client.get("/api/grounding/run/campaign-state", params={"input": "docs/x.md"})
+    assert r.status_code == 409, r.text
+    assert r.json()["detail"]["error"] == "incompatible_selection"
+    assert "cmd" not in captured
+
+
 # ── dgx is forwarded as --backend/--endpoint/--model ─────────────────────────
 
 def test_campaign_state_forwards_dgx_flags(monkeypatch, tmp_path):
@@ -262,3 +285,91 @@ def test_grounding_does_not_read_the_session_editor():
         "_backend_flags was the cross-service read; it is replaced by "
         "resolve_selection"
     )
+
+
+def test_codex_grounding_forwards_selected_input_and_normal_output(tmp_path, monkeypatch):
+    """Changing only the backend preserves grounding inputs and destinations."""
+    import asyncio
+    import server.routers.grounding as grounding
+    from campaignlib.selection import ModelSelection
+    from server.grounding_config_shared import GroundingConfig
+
+    class FakeService:
+        def resolved(self):
+            return GroundingConfig()
+
+        def get_selection(self):
+            return ModelSelection(backend="codex-cli", model="gpt-5-codex")
+
+    captured = {}
+    monkeypatch.setattr(grounding, "_service", lambda _request: FakeService())
+    monkeypatch.setattr(
+        grounding, "_sse_response", lambda cmd: captured.setdefault("cmd", cmd)
+    )
+    asyncio.run(grounding.run_campaign_state(
+        None, input="docs/events.md", output="docs/campaign_state.md",
+        track_file_extra=[], track=[],
+    ))
+    cmd = captured["cmd"]
+    assert _flag_value(cmd, "--backend") == "codex-cli"
+    assert _flag_value(cmd, "--model") == "gpt-5-codex"
+    assert "docs/events.md" in cmd
+    assert _flag_value(cmd, "--output") == "docs/campaign_state.md"
+
+
+def test_grounding_sections_codex_is_opt_in_and_keeps_draft_path(tmp_path, monkeypatch):
+    """Sections synthesis starts a child only after explicit Codex selection."""
+    import importlib
+
+    gs = importlib.import_module("pipelines.grounding.grounding_sections")
+    camp = tmp_path
+    (camp / "docs/ensemble/merged_dossiers").mkdir(parents=True)
+    (camp / "docs/ensemble/merged_dossiers/npc_lyra.md").write_text(
+        "---\nname: Lyra\n---\nA patient archivist.\n", encoding="utf-8"
+    )
+    monkeypatch.chdir(camp)
+    calls = []
+
+    def fake_run(cmd, *args, **kwargs):
+        calls.append([str(part) for part in cmd])
+        output = Path(cmd[cmd.index("--output") + 1])
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text("## Codex section\nLyra\n", encoding="utf-8")
+        return __import__("subprocess").CompletedProcess(cmd, 0)
+
+    monkeypatch.setattr(gs.subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", [
+        "grounding_sections", "build", "--doc", "world_state",
+        "--backend", "codex-cli", "--model", "gpt-5-codex",
+    ])
+    gs.main()
+
+    assert calls
+    assert "--backend" in calls[0]
+    assert calls[0][calls[0].index("--backend") + 1] == "codex-cli"
+    assert calls[0][calls[0].index("--model") + 1] == "gpt-5-codex"
+    assert (camp / "docs/projections/world_state_draft.md").exists()
+
+
+def test_grounding_sections_without_backend_spends_no_tokens(tmp_path, monkeypatch, capsys):
+    """A projection build without --backend remains deterministic-only."""
+    import importlib
+
+    gs = importlib.import_module("pipelines.grounding.grounding_sections")
+    camp = tmp_path
+    dossier_dir = camp / "docs/ensemble/merged_dossiers"
+    dossier_dir.mkdir(parents=True)
+    (dossier_dir / "npc_lyra.md").write_text("Lyra dossier", encoding="utf-8")
+    monkeypatch.chdir(camp)
+
+    def fail_if_called(*args, **kwargs):
+        raise AssertionError("synthesis child started without explicit backend")
+
+    monkeypatch.setattr(gs.subprocess, "run", fail_if_called)
+    monkeypatch.setattr(sys, "argv", [
+        "grounding_sections", "build", "--doc", "world_state",
+        "--no-assemble",
+    ])
+    gs.main()
+
+    assert "synthesis — pass --backend to render" in capsys.readouterr().out
