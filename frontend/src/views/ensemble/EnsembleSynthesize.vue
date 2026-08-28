@@ -63,6 +63,10 @@ const inventoryPath = ref('')
 // existing (see /run/synthesize's registry requirement); surfaced here so the
 // operator sees the problem before clicking Run rather than from a failed SSE.
 const registry = ref<RegistrySummary | null>(null)
+// Explicit Layer-2 render: the merged checkpoint is reviewed input, and the
+// destination is a separate artifact. This action never promotes the result.
+const polishInput = ref('')
+const polishOutput = ref('docs/ensemble/polished.md')
 
 onMounted(async () => {
   await config.load()
@@ -86,6 +90,7 @@ onMounted(async () => {
   planningDepth.value = pl.depth
   planningForceInclude.value = pl.force_include.join('\n')
   inventoryPath.value = loaded.paths.inventory
+  polishInput.value = loaded.paths.merged_out
   registry.value = await fetchRegistrySummary()
 })
 
@@ -180,6 +185,14 @@ function synthesize() {
   run.run('/api/ensemble/run/synthesize', params, (rc) => { if (rc === 0) emit('changed') })
 }
 
+function synthesisePolish() {
+  if (!polishInput.value.trim() || !polishOutput.value.trim()) return
+  run.run('/api/ensemble/run/synthesise-polish', {
+    merged: polishInput.value,
+    output: polishOutput.value,
+  })
+}
+
 async function showDiff(doc: string) {
   const r = await apiFetch(
     `/api/ensemble/diff?draft=docs/${doc}_draft.md&live=docs/${doc}.md`)
@@ -267,6 +280,20 @@ async function promote(doc: string) {
     </div>
     <StreamOutput v-if="run.output.value" :text="run.output.value" />
 
+    <div class="polish-action">
+      <h3>Render merged checkpoint <span class="tag">human review</span></h3>
+      <p class="hint">
+        Render the reviewed <code>merged.json</code> into a markdown artifact.
+        This is an explicit action and does not promote or advance another stage.
+      </p>
+      <PathField v-model="polishInput" label="Merged checkpoint" resolve-base="campaign" />
+      <PathField v-model="polishOutput" label="Polished output" is-output resolve-base="campaign" />
+      <button class="btn-neutral" :disabled="run.status.value === 'running' || !polishInput.trim() || !polishOutput.trim()"
+        @click="synthesisePolish">
+        ▶ Render polished artifact
+      </button>
+    </div>
+
     <h3>Diff &amp; promote <span class="tag">human checkpoint</span></h3>
     <table class="promote-tbl">
       <tr v-for="d in DOCS" :key="d.id">
@@ -292,6 +319,9 @@ select { font-size: 12px; padding: 5px 7px; background: var(--bg-surface0); colo
 .ok { color: var(--green); font-size: 12px; font-weight: 600; }
 .err { color: var(--red); font-size: 12px; font-weight: 600; }
 .aborted { color: var(--peach); font-size: 12px; font-weight: 600; }
+.polish-action { border-top: 1px solid var(--bg-surface0); padding-top: 8px; }
+.polish-action .hint { margin-bottom: 8px; }
+.polish-action .btn-neutral { margin-top: 2px; }
 .promote-tbl td { padding: 4px 10px 4px 0; font-size: 12px; }
 .diff { background: #141420; border: 1px solid var(--bg-surface0); border-radius: 4px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
 </style>

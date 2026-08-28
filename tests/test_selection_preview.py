@@ -144,6 +144,44 @@ def test_platform_incompatibility_is_previewed_for_inheriting_services(platform)
     assert body["model_origin"] == "platform"
 
 
+def test_codex_preview_omits_inherited_platform_claude_model(platform):
+    """Codex accepts an omitted model when the platform value is inherited."""
+    platform.update_runtime({"default_backend": "codex-cli", "default_model": "claude-inherited"})
+    body = client.get("/api/prep/selection/resolved").json()
+
+    assert body["backend"] == "codex-cli"
+    assert body["model"] is None
+    assert body["model_origin"] == "platform"
+    assert body["compatible"] is True
+    assert body["refusal"] is None
+
+
+def test_codex_preview_forwards_explicit_model_and_refuses_explicit_claude(platform):
+    """Service selectors distinguish a compatible explicit id from a Claude id."""
+    response = client.put(
+        "/api/grounding/selection",
+        json={"backend": "codex-cli", "model": "gpt-5-codex"},
+    )
+    assert response.status_code == 200, response.text
+    body = client.get("/api/grounding/selection/resolved").json()
+    assert body["backend"] == "codex-cli"
+    assert body["model"] == "gpt-5-codex"
+    assert body["model_origin"] == "service"
+    assert body["compatible"] is True
+
+    response = client.put(
+        "/api/grounding/selection",
+        json={"backend": "codex-cli", "model": "claude-sonnet-4-6"},
+    )
+    assert response.status_code == 200, response.text
+    body = client.get("/api/grounding/selection/resolved").json()
+    assert body["backend"] == "codex-cli"
+    assert body["model"] == "claude-sonnet-4-6"
+    assert body["model_origin"] == "service"
+    assert body["compatible"] is False
+    assert "claude-sonnet-4-6" in body["refusal"]
+
+
 def test_ensemble_preview_is_per_stage(platform):
     """Ensemble's selection is per stage — the canonical workflow runs extract
     on DGX and synthesize on Anthropic in one campaign, so a single answer for

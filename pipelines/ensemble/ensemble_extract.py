@@ -65,6 +65,8 @@ import threading
 import time
 from pathlib import Path
 
+from campaignlib.selection import BACKENDS
+
 EXTRACT_SCRIPT = Path(__file__).resolve().parent / "extract_facts.py"
 
 
@@ -87,7 +89,7 @@ def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
     ]
     if endpoint:
         cmd += ["--endpoint", endpoint]
-    if model:
+    if model and model.strip():
         cmd += ["--model", model]
     if pass_spec.get("annotate_pov"):
         cmd += ["--annotate-pov"]
@@ -282,7 +284,7 @@ def main() -> None:
                              "else extract_facts.py's default). All endpoints must "
                              "serve this same model id, since the merge treats "
                              "their facts uniformly.")
-    parser.add_argument("--backend", choices=["anthropic", "dgx", "openrouter", "claude-code"],
+    parser.add_argument("--backend", choices=BACKENDS,
                         default="dgx",
                         help="LLM backend forwarded to each extract_facts.py child "
                              "(default: dgx). This dispatcher never builds a client "
@@ -445,7 +447,12 @@ def main() -> None:
     # next unit instead of idling). [None] means "no explicit endpoint" — each
     # extract_facts.py falls back to $DGX_ENDPOINT or its own default.
     endpoints = args.endpoints if args.endpoints else [os.environ.get("DGX_ENDPOINT")]
-    model = args.model or os.environ.get("DGX_MODEL")
+    # This dispatcher forwards only an explicitly selected model.  When the
+    # model is omitted, extract_facts resolves its backend-specific environment
+    # default (including DGX_MODEL) at the actual client seam; forwarding that
+    # value here would turn inherited intent into an explicit child selection
+    # and would be wrong for the Codex subscription backend.
+    model = args.model
 
     units = [(p, k) for p in active_passes for k in range(1, args.samples + 1)]
     print(f"Backend:  {args.backend}")

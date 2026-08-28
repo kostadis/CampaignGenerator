@@ -64,6 +64,25 @@ def test_path_traversal_rejected(tmp_path, monkeypatch):
     assert r.status_code == 400
 
 
+def test_synthesise_polish_is_a_separate_human_triggered_face():
+    """Polish rendering is an explicit review action, not synthesize's tail.
+
+    Keeping this route-level guard independent of TestClient also makes the
+    intended boundary visible before the implementation exists: the action
+    accepts its reviewed merged input/output and selection, and has no
+    approval or auto-advance control of its own.
+    """
+    paths = app.openapi()["paths"]
+    path = "/api/ensemble/run/synthesise-polish"
+    assert path in paths
+    operation = next(iter(paths[path].values()))
+    names = {p["name"] for p in operation.get("parameters", [])}
+    assert {"merged", "output", "backend", "model"} <= names
+    assert "approval" not in names
+    assert "approve" not in names
+    assert "/api/ensemble/run/synthesize" in paths
+
+
 # ── Stale backend-profile leakage (a switched-back-to-anthropic run must not
 # ── inherit a previous non-anthropic model/endpoint) ─────────────────────────
 
@@ -601,6 +620,52 @@ def test_bundle_forwards_claude_code_backend_and_model(tmp_path, monkeypatch):
     assert "--out-dir" in cmd
     assert "--min-facts" in cmd
     assert not captured["env_extra"]
+
+
+@pytest.mark.parametrize(
+    "path,base_params",
+    [
+        ("/api/ensemble/run/synthesize", {"doc": "world_state"}),
+        ("/api/ensemble/run/bundle", {}),
+        ("/api/ensemble/run/extract", {"chapters": ["docs/chapters/chapter_01.md"]}),
+    ],
+)
+def test_ensemble_routes_forward_explicit_codex_selection(tmp_path, monkeypatch, path, base_params):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    _write_registry(tmp_path)
+    params = dict(base_params)
+    params.update(backend="codex-cli", model="gpt-5-codex")
+    r = client.get(path, params=params)
+    assert r.status_code == 200, r.text
+    _ = r.text
+    cmd = captured["cmd"]
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert cmd[cmd.index("--model") + 1] == "gpt-5-codex"
+
+
+def test_ensemble_codex_omits_inherited_claude_model(ensemble_platform, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    _write_registry(ensemble_platform.campaign_dir)
+    r = client.get("/api/ensemble/run/synthesize", params={"doc": "world_state", "backend": "codex-cli"})
+    assert r.status_code == 200, r.text
+    _ = r.text
+    cmd = captured["cmd"]
+    assert cmd[cmd.index("--backend") + 1] == "codex-cli"
+    assert "--model" not in cmd
+
+
+def test_ensemble_codex_explicit_claude_model_refuses_before_child(tmp_path, monkeypatch):
+    captured = _capture_cmd(monkeypatch)
+    monkeypatch.chdir(tmp_path)
+    _write_registry(tmp_path)
+    r = client.get(
+        "/api/ensemble/run/synthesize",
+        params={"doc": "world_state", "backend": "codex-cli", "model": "claude-sonnet-4-6"},
+    )
+    assert r.status_code == 409, r.text
+    assert r.json()["detail"]["error"] == "incompatible_selection"
+    assert "cmd" not in captured
 
 
 # ── party synthesis: party.yaml preferred over staged extracts ─────────────

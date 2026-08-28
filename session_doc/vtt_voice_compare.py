@@ -35,6 +35,7 @@ from campaignlib import (
     save_log,
     DEFAULT_MODEL,
 )
+from campaignlib.api.client import resolve_cli_model
 from campaignlib.vtt import VttError
 from campaignlib.vtt import parse as parse_transcript
 
@@ -181,10 +182,23 @@ def main() -> None:
     parser.add_argument("--character", "-c", help="Character name if different from player label")
     parser.add_argument("--voice-file", "-v", required=True, help="Existing voice file to compare against")
     parser.add_argument("--update", action="store_true", help="Append suggested lines to the voice file")
-    parser.add_argument("--model", default=DEFAULT_MODEL, help="Claude model to use")
+    parser.add_argument(
+        "--model",
+        default=None,
+        help="Model to use (existing backends default to the CampaignGenerator "
+             "Claude model; codex-cli uses CG_CODEX_MODEL or the Codex subscription default)",
+    )
     parser.add_argument("--no-log", action="store_true", help="Skip saving a log file")
     add_backend_args(parser)
     args = parser.parse_args()
+
+    try:
+        model_intent = resolve_cli_model(args, legacy_default=DEFAULT_MODEL)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    effective_model = model_intent.effective_model
+    args.model = effective_model
 
     vtt_path = Path(args.vtt).expanduser()
     if not vtt_path.exists():

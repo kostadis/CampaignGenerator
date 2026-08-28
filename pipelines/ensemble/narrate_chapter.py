@@ -69,6 +69,7 @@ from campaignlib import (
     utc_now_iso,
     wiring_get,
 )
+from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text as _atomic_write_text
 
 # Same two heading tiers chunk_by_scenes()/annotate_chunks_with_pov() scan
@@ -266,6 +267,9 @@ def main() -> None:
              "convention) and exit — no model calls, no output written.")
     add_backend_args(parser, default_backend="dgx")
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=None
+    ).effective_model
 
     # Same fallback extract_facts.py uses: an explicit --endpoint always
     # wins; otherwise, only when the resolved backend really is "dgx" do we

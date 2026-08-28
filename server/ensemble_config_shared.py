@@ -39,7 +39,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import yaml
-from campaignlib.selection import ModelSelection
+from campaignlib.selection import Backend, ModelSelection
 from pydantic import BaseModel, ConfigDict, Field
 
 from campaignlib.util import atomic_write_text
@@ -70,7 +70,7 @@ class EnsembleBackend(ModelSelection):
     # default this schema has always had. resolve_selection recognises that
     # default as "deferring" when no model is set, so an unconfigured stage
     # still inherits the platform's backend.
-    backend: Literal["anthropic", "dgx", "openrouter", "claude-code"] = "anthropic"
+    backend: Backend = "anthropic"
     endpoints: list[str] = Field(default_factory=list)
 
     def is_empty(self) -> bool:

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useConfigStore } from '../../stores/config'
+import { computed, ref, watch } from 'vue'
+import { BACKENDS, type Backend, useConfigStore } from '../../stores/config'
 import { useRouter, useRoute } from 'vue-router'
 
 const config = useConfigStore()
@@ -15,15 +15,43 @@ const route = useRoute()
 // another service's config to find it, and editing the Session Doc Editor
 // silently re-targeted every Grounding run.
 // 'claude-code' routes generation through the Claude Code CLI, billing the
-// Pro/Max subscription instead of the metered Anthropic API.
-type Backend = 'anthropic' | 'dgx' | 'openrouter' | 'claude-code'
+// Pro/Max subscription instead of the metered Anthropic API. `codex-cli` is
+// the saved-login Codex CLI path; this component never invokes either CLI.
+const availableBackends = computed<Backend[]>(() =>
+  config.backends.length ? config.backends : [...BACKENDS],
+)
 const currentBackend = computed<Backend>(() => {
   const b = config.backend
-  return b === 'dgx' || b === 'openrouter' || b === 'claude-code' ? b : 'anthropic'
+  return availableBackends.value.includes(b) ? b : 'anthropic'
 })
+
+// Runtime stores one global model, while the editor/service profiles already
+// keep model ids per backend. Preserve that same intent when the sidebar
+// switches to Codex, especially so a Claude default is not presented as a
+// Codex model. An empty value means "let this backend choose its own default".
+const modelMemory = ref<Partial<Record<Backend, string>>>({})
+watch(
+  [() => config.defaultModels, () => config.loaded],
+  ([stored, loaded]) => {
+    if (!loaded) return
+    modelMemory.value = { ...stored }
+  },
+  { immediate: true, deep: true },
+)
+const displayedModel = computed(() => modelMemory.value[currentBackend.value] ?? config.model)
+
 async function setBackend(b: Backend) {
   if (currentBackend.value === b) return
-  await config.updateRuntime({ default_backend: b })
+  modelMemory.value[currentBackend.value] = config.model
+  if (b === 'codex-cli' && modelMemory.value[b] === undefined) modelMemory.value[b] = ''
+  const nextModel = modelMemory.value[b] ?? (b === 'anthropic' || b === 'claude-code' ? config.defaultModel : '')
+  config.model = nextModel
+  const update: Record<string, unknown> = {
+    default_backend: b,
+    default_model: nextModel,
+    default_models: { ...modelMemory.value },
+  }
+  await config.updateRuntime(update)
 }
 
 // The MODELS registry is Anthropic-only — DGX and OpenRouter ids are
@@ -32,10 +60,18 @@ async function setBackend(b: Backend) {
 // operator must be able to type an id. Without this the platform pair is
 // permanently incompatible on a local backend (every listed model is a
 // claude-* id) and the 003 refusal would block every run.
-const modelIsFreeText = computed(() => currentBackend.value === 'dgx' || currentBackend.value === 'openrouter')
+const modelIsFreeText = computed(() =>
+  currentBackend.value === 'dgx'
+  || currentBackend.value === 'openrouter'
+  || currentBackend.value === 'codex-cli',
+)
 async function setModel(value: string) {
+  modelMemory.value[currentBackend.value] = value.trim()
   config.model = value
-  await config.updateRuntime({ default_model: value })
+  await config.updateRuntime({
+    default_model: value,
+    default_models: { ...modelMemory.value },
+  })
 }
 
 // Batch selector (app-wide, 005-ui-batch-selection). Platform tier, same
@@ -45,6 +81,7 @@ async function setModel(value: string) {
 // resolves when this changes, so it shows up everywhere as "inherited"
 // without a reload (T023's sidebar<->page round trip).
 async function setBatch(b: boolean) {
+  if (b && currentBackend.value !== 'anthropic') return
   if (config.batch === b) return
   await config.updateRuntime({ default_batch: b })
 }
@@ -99,6 +136,12 @@ const navGroups: NavGroup[] = [
       { label: 'Players', path: '/setup/players' },
       { label: 'D&D Sheet', path: '/setup/dnd-sheet' },
       { label: 'Make Tracking', path: '/setup/make-tracking' },
+    ],
+  },
+  {
+    title: 'INTEGRATIONS',
+    items: [
+      { label: 'Scabard Sync', path: '/integrations/scabard' },
     ],
   },
 ]
@@ -162,6 +205,12 @@ function navigate(path: string) {
           >Sub</button>
           <button
             class="backend-btn"
+            :class="{ active: currentBackend === 'codex-cli' }"
+            title="Codex CLI — uses the saved Codex login, no metered API key"
+            @click="setBackend('codex-cli')"
+          >Codex</button>
+          <button
+            class="backend-btn"
             :class="{ active: currentBackend === 'dgx' }"
             title="Local DGX / vLLM endpoint"
             @click="setBackend('dgx')"
@@ -185,6 +234,7 @@ function navigate(path: string) {
           <button
             class="backend-btn"
             :class="{ active: config.batch }"
+            :disabled="currentBackend !== 'anthropic'"
             title="Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)"
             @click="setBatch(true)"
           >On</button>
@@ -197,13 +247,13 @@ function navigate(path: string) {
         <label class="model-label">MODEL</label>
         <input
           v-if="modelIsFreeText"
-          :value="config.model"
+          :value="displayedModel"
           class="model-select"
-          :placeholder="currentBackend === 'dgx' ? 'e.g. Qwen3-Next-80B' : 'e.g. qwen/qwen3-next-80b'"
+          :placeholder="currentBackend === 'codex-cli' ? 'optional — Codex default' : currentBackend === 'dgx' ? 'e.g. Qwen3-Next-80B' : 'e.g. qwen/qwen3-next-80b'"
           title="This backend's model ids are free-form — type the id your endpoint serves"
           @change="setModel(($event.target as HTMLInputElement).value)"
         />
-        <select v-else :value="config.model" class="model-select" @change="setModel(($event.target as HTMLSelectElement).value)">
+        <select v-else :value="displayedModel" class="model-select" @change="setModel(($event.target as HTMLSelectElement).value)">
           <option v-for="m in config.models" :key="m" :value="m">{{ m }}</option>
         </select>
       </div>

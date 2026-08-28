@@ -130,6 +130,34 @@ This is the table to consult when something breaks at a boundary.
 
 ---
 
+## The canonical model-command family
+
+CampaignGenerator has one backend vocabulary, `codex-cli`, across 30 commands:
+
+| Family | Commands |
+|---|---|
+| Session document (8) | `check_consistency`, `enhance_summary`, `scene_extract`, `sd_agent`, `sd_consistency`, `sd_plan`, `sd_narrate`, `vtt_voice_compare` |
+| Prep, ingest, search, integration (5) | `prep`, `transform`, `dnd_sheet`, `query`, `scabard_sync` |
+| Grounding (8) | `planning`, `party`, `make_tracking`, `distill`, `campaign_state`, `npc_table`, `grounding_sections`, `thread_registry` |
+| Ensemble (9) | `synthesise_world_state`, `synthesise_polish`, `extract_facts`, `facts_to_state`, `narrate_chapter`, `polish`, `ensemble`, `ensemble_batch`, `ensemble_extract` |
+
+Codex use requires the installed Codex CLI and a completed `codex login`; each
+request runs in a fresh ephemeral, tool-free child using the saved ChatGPT
+subscription login. The child receives neither `OPENAI_API_KEY` nor
+`CODEX_API_KEY`, and no provider fallback is attempted. An omitted model lets
+Codex apply `CG_CODEX_MODEL` and then its subscription default. An explicit
+compatible model is forwarded; an explicit `claude-*` model is refused.
+
+Provider `--batch` is Anthropic Message Batches and is refused for Codex before
+model or child work. It remains distinct from application-level grouping,
+ensemble fan-out, resume, and human/HTML review. The ensemble `polish` loop is
+brokered: the isolated child returns typed requests, while the parent validates
+and performs all declared document operations. Seven explicit UI faces cover
+consistency audit, transform, voice comparison, Scabard sync, synthesis polish,
+chapter narration, and post-assemble polish; other commands are reached through
+their existing workflow faces. Scabard credentials are request-scoped and passed
+only through a child environment override, never argv or logs.
+
 ## Where state lives (local vs. global)
 
 The single most confusing thing about this system is that some state is

@@ -1,0 +1,7 @@
+{
+  "text": "This structured response is intentionally truncated.",
+  "tool_calls": [
+    {
+      "name": "read_recap",
+      "arguments_json": "{}"
+    }

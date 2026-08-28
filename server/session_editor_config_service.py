@@ -178,6 +178,39 @@ def _deep_merge(base: dict[str, Any], partial: dict[str, Any]) -> dict[str, Any]
     return out
 
 
+def _canonicalize_backend_aliases(partial: dict[str, Any]) -> dict[str, Any]:
+    """Normalize YAML backend aliases before merging a partial update.
+
+    ``model_dump()`` uses Python field names for the merge base, while the
+    editor wire/YAML shape uses ``claude-code`` and ``codex-cli``.  Translate
+    only those field aliases at this boundary so old Python-name callers and
+    canonical UI/YAML callers both update the same profile.  The stored
+    representation is still emitted by ``save_session_editor_config`` with
+    aliases enabled.
+    """
+    raw_backends = partial.get("backends")
+    if not isinstance(raw_backends, dict):
+        return partial
+
+    backends = dict(raw_backends)
+    for alias, field_name in (
+        ("claude-code", "claude_code"),
+        ("codex-cli", "codex_cli"),
+    ):
+        if alias not in backends:
+            continue
+        alias_value = backends.pop(alias)
+        existing_value = backends.get(field_name)
+        if isinstance(alias_value, dict) and isinstance(existing_value, dict):
+            backends[field_name] = _deep_merge(alias_value, existing_value)
+        elif field_name not in backends:
+            backends[field_name] = alias_value
+
+    normalized = dict(partial)
+    normalized["backends"] = backends
+    return normalized
+
+
 class SessionEditorConfigService:
     """Owns the Session Doc Editor's configuration slice.
 
@@ -249,7 +282,7 @@ class SessionEditorConfigService:
         contract.
         """
         current = self.get_config().model_dump(mode="json")
-        merged = _deep_merge(current, partial)
+        merged = _deep_merge(current, _canonicalize_backend_aliases(partial))
         try:
             validated = SessionEditorConfig.model_validate(merged)
         except Exception as exc:
@@ -365,14 +398,15 @@ class SessionEditorConfigService:
         resolved_paths = EditorPaths.model_validate(paths_dict)
 
         # DM-18 steps 2-3: an explicit config pin wins; otherwise the backend
-        # default is `True` on claude-code (no prompt caching, so a batched
-        # single call beats N sequential per-scene calls) and `False`
-        # elsewhere. Step 1 (an explicit per-run choice) has no request to
-        # consult here — it is applied by the route on top of this value.
+        # default is `True` on the subscription backends (Claude Code and
+        # Codex CLI have no prompt caching, so one batched call beats N
+        # sequential per-scene calls) and `False` elsewhere. Step 1 (an
+        # explicit per-run choice) has no request to consult here — it is
+        # applied by the route on top of this value.
         batch_scenes_effective = (
             cfg.extract.batch_scenes
             if cfg.extract.batch_scenes is not None
-            else cfg.backends.active == "claude-code"
+            else cfg.backends.active in ("claude-code", "codex-cli")
         )
 
         return ResolvedEditorConfig(

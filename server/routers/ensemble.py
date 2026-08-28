@@ -723,6 +723,84 @@ def run_extract(
     return _run_locked("extract", cmd)
 
 
+@router.get("/run/synthesise-polish")
+def run_synthesise_polish(
+    request: Request,
+    merged: str = "",
+    output: str = "",
+    backend: str = "",
+    endpoint: str = "",
+    model: str = "",
+    batch: bool | None = None,
+    service: EnsembleConfigService = Depends(get_ensemble_service),
+):
+    """Render the reviewed merged checkpoint into a polish artifact.
+
+    This is intentionally separate from ``run_synthesize``: the merged facts
+    are the input checkpoint, and this action only writes the requested output
+    artifact. It never promotes a draft or starts another stage.
+    """
+    cfg = service.resolved()
+    merged_path = _resolve_ensemble_path(merged or cfg.paths.merged_out)
+    output_path = _resolve_ensemble_path(output) if output else (
+        Path.cwd() / "docs/ensemble/polished.md"
+    ).resolve()
+    backend = backend or cfg.synthesize.backend
+    model = model or cfg.synthesize.model or ""
+    endpoint = endpoint or (
+        cfg.synthesize.endpoints[0] if cfg.synthesize.endpoints else ""
+    )
+    if batch is None:
+        batch = cfg.synthesize.batch
+
+    cmd = [console_script("synthesise_polish"), str(merged_path),
+           "--output", str(output_path)]
+    cmd += _backend_args(
+        backend, model, request, endpoint=endpoint, batch=batch,
+    )
+    return _run_locked("synthesise-polish", cmd)
+
+
+@router.get("/run/narrate-chapter")
+def run_narrate_chapter(
+    request: Request,
+    chapter: str,
+    output: str = "",
+    backend: str = "",
+    endpoint: str = "",
+    model: str = "",
+    batch: bool | None = None,
+    force: bool = False,
+    service: EnsembleConfigService = Depends(get_ensemble_service),
+):
+    """Narrate one explicitly selected chapter for human review.
+
+    ``narrate_chapter`` always writes ``approved: false``. The route forwards
+    only this chapter and never approves it or advances to synthesis.
+    """
+    cfg = service.resolved()
+    chapter_path = _resolve_ensemble_path(chapter)
+    if output:
+        output_path = _resolve_ensemble_path(output)
+    else:
+        output_path = (
+            Path.cwd() / cfg.paths.per_chapter_dir / chapter_path.stem / "narrative.md"
+        ).resolve()
+    backend = backend or cfg.extract.backend
+    model = model or cfg.extract.model or ""
+    endpoint = endpoint or (cfg.extract.endpoints[0] if cfg.extract.endpoints else "")
+    if batch is None:
+        batch = cfg.extract.batch
+
+    cmd = [console_script("narrate_chapter"), str(chapter_path),
+           "--output", str(output_path)]
+    _cmd_opt(cmd, "--force", force)
+    cmd += _backend_args(
+        backend, model, request, endpoint=endpoint, batch=batch,
+    )
+    return _run_locked("narrate-chapter", cmd)
+
+
 @router.get("/run/bundle")
 def run_bundle(
     request: Request,

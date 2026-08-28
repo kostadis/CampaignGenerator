@@ -12,8 +12,6 @@ service that once wrote through it owns its own document now
 ``planning.yaml``, ``platform.yaml``), each with its own typed route.
 """
 
-from typing import Any
-
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 

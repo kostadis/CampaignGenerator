@@ -344,9 +344,10 @@ def _scene_cmd(session, **over):
     return gen[0].cmd
 
 
-def test_scenes_stage_defaults_batched_on_for_the_subscription_backend(session):
+@pytest.mark.parametrize("backend", ["claude-code", "codex-cli"])
+def test_scenes_stage_defaults_batched_on_for_subscription_backends(session, backend):
     """No prompt caching there, so per-scene re-sends the whole transcript."""
-    cmd = _scene_cmd(session, backend="claude-code")
+    cmd = _scene_cmd(session, backend=backend)
     assert "--batch-scenes" in cmd
     assert "--no-batch-scenes" not in cmd
 
@@ -358,11 +359,14 @@ def test_scenes_stage_defaults_batched_off_for_the_metered_backend(session):
     assert "--batch-scenes" not in cmd
 
 
-def test_explicit_batch_scenes_overrides_the_backend_default_both_ways(session):
+@pytest.mark.parametrize("subscription_backend", ["claude-code", "codex-cli"])
+def test_explicit_batch_scenes_overrides_the_backend_default_both_ways(
+    session, subscription_backend
+):
     on_metered = _scene_cmd(session, backend="anthropic", batch_scenes=True)
     assert "--batch-scenes" in on_metered
 
-    off_subscription = _scene_cmd(session, backend="claude-code",
+    off_subscription = _scene_cmd(session, backend=subscription_backend,
                                   no_batch_scenes=True)
     assert "--no-batch-scenes" in off_subscription
     assert "--batch-scenes" not in off_subscription
@@ -470,6 +474,54 @@ def test_no_env_var_leaves_the_backend_default_alone(session, monkeypatch):
     assert "--batch-scenes" in _scene_cmd(session, backend="claude-code")
 
 
+
+# ── Codex selection forwarding (016 parity) ─────────────────────────────────
+
+def test_codex_backend_and_explicit_model_reach_generation_only(session):
+    """The dispatcher preserves an explicit Codex model at the generation hop.
+
+    The verification step is validation-only and must not receive a backend or
+    model, since it never starts an LLM client.
+    """
+    steps, _ = build_steps(_args(
+        session_dir=session, backend="codex-cli", model="gpt-5-codex",
+    ))
+    generate = next(step for step in steps if step.key == "generate")
+    verify = next(step for step in steps if step.key == "verify")
+    assert generate.cmd[generate.cmd.index("--backend") + 1] == "codex-cli"
+    assert generate.cmd[generate.cmd.index("--model") + 1] == "gpt-5-codex"
+    assert "--backend" not in verify.cmd
+    assert "--model" not in verify.cmd
+
+
+def test_codex_backend_omits_model_when_selection_is_inherited(session):
+    """An omitted Codex model remains omitted; no legacy Claude id is invented."""
+    steps, _ = build_steps(_args(session_dir=session, backend="codex-cli"))
+    generate = next(step for step in steps if step.key == "generate")
+    assert generate.cmd[generate.cmd.index("--backend") + 1] == "codex-cli"
+    assert "--model" not in generate.cmd
+
+
+def test_codex_sd_agent_never_starts_a_validation_child_as_codex(
+    session, monkeypatch
+):
+    """A check-only stage runs its normal verifier, never a Codex child."""
+    seen: list[list[str]] = []
+
+    def fake_run(cmd, *args, **kwargs):
+        seen.append([str(part) for part in cmd])
+        return subprocess.CompletedProcess(cmd, 0)
+
+    monkeypatch.setattr(sd_agent.subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", [
+        "sd_agent", "--stage", "summary", "--session-dir", str(session),
+        "--skip-generate", "--report-only", "--backend", "codex-cli",
+    ])
+    assert sd_agent.main() == 0
+    assert seen
+    assert all(Path(cmd[0]).name != "codex" for cmd in seen)
+
+
 # ── A partial generation is checked, not discarded ───────────────────────────
 #
 # scene_extract exits 3 (some scenes not written) or 4 (a group failed
@@ -522,3 +574,47 @@ def test_a_clean_generation_is_not_reported_as_partial(session, monkeypatch, cap
     out = capsys.readouterr()
     assert "PARTIAL" not in out.out and "PARTIAL" not in out.err
     assert rc == 0
+
+
+def test_codex_summary_run_keeps_artifact_and_human_checkpoint(session, monkeypatch, capsys):
+    """Codex changes the generation child only; summary still stops before scenes."""
+    seen: list[list[str]] = []
+
+    def fake_run(cmd, *args, **kwargs):
+        seen.append([str(part) for part in cmd])
+        return subprocess.CompletedProcess(cmd, 0)
+
+    monkeypatch.setattr(sd_agent.subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", [
+        "sd_agent", "--stage", "summary", "--session-dir", str(session),
+        "--backend", "codex-cli", "--model", "gpt-5-codex",
+    ])
+
+    assert sd_agent.main() == 0
+    generation = next(cmd for cmd in seen if any("enhance_summary" in part for part in cmd))
+    assert generation[generation.index("--backend") + 1] == "codex-cli"
+    assert generation[generation.index("--model") + 1] == "gpt-5-codex"
+    assert "--output" in generation
+    assert str(session / "session-summary.md") in generation
+    assert not any("scene_extract" in " ".join(cmd) for cmd in seen)
+    assert "STOPPED at the stage boundary" in capsys.readouterr().out
+
+
+def test_codex_resume_does_not_regenerate_existing_summary(session, monkeypatch):
+    """The explicit skip path remains a zero-generation, artifact-preserving run."""
+    original = (session / "session-summary.md").read_text(encoding="utf-8")
+    seen: list[list[str]] = []
+
+    def fake_run(cmd, *args, **kwargs):
+        seen.append([str(part) for part in cmd])
+        return subprocess.CompletedProcess(cmd, 0)
+
+    monkeypatch.setattr(sd_agent.subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", [
+        "sd_agent", "--stage", "summary", "--session-dir", str(session),
+        "--skip-generate", "--report-only", "--backend", "codex-cli",
+    ])
+
+    assert sd_agent.main() == 0
+    assert not any("enhance_summary" in cmd for cmd in seen)
+    assert (session / "session-summary.md").read_text(encoding="utf-8") == original

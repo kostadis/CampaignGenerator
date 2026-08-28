@@ -2,10 +2,12 @@
 
 import os
 import sys
+from dataclasses import dataclass
 
 from .backends import _OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient
 from .codex_cli import _CodexCliClient
 from ..wiring import wiring_get
+from ..selection import BACKENDS, compatible
 
 # Clients that accept the DGX-style `thinking` request extra (mapped per-backend
 # to the right knob: enable_thinking for vLLM, `reasoning` for OpenRouter,
@@ -13,6 +15,68 @@ from ..wiring import wiring_get
 # would reject it, so it is only forwarded to these.
 _THINKING_EXTRA_CLIENTS = (_OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient)
 _KEYLESS_CLIENTS = (*_THINKING_EXTRA_CLIENTS, _CodexCliClient)
+
+
+@dataclass(frozen=True)
+class CLIModelIntent:
+    """Resolved model value plus the provenance needed by CLI callers.
+
+    ``argparse`` normally replaces an omitted option with its default, making
+    an inherited Claude model indistinguishable from one explicitly supplied
+    by the operator.  Keeping both values here lets Codex omit an inherited
+    default while preserving the exact legacy default for every other
+    backend.  ``requested_model`` is retained verbatim when non-empty; the
+    resolver does not rewrite an explicit model id.
+    """
+
+    backend: str
+    requested_model: str | None
+    legacy_default: str | None
+    effective_model: str | None
+    explicit: bool
+
+
+def resolve_cli_model(args, *, legacy_default: str | None) -> CLIModelIntent:
+    """Resolve a CLI's model without losing omission versus explicit intent.
+
+    ``args.backend`` follows :func:`client_from_args`: an explicitly selected
+    non-Anthropic backend wins, while the parser's default ``anthropic``
+    defers to ``CG_BACKEND``.  Empty or whitespace-only ``--model`` input is
+    omission.  Codex leaves omitted models unset so its adapter can apply
+    ``CG_CODEX_MODEL`` or the subscription default; other backends retain the
+    command's supplied ``legacy_default`` (including ``None``).
+
+    Explicit Codex Claude model ids are refused here, before a client is
+    constructed.  The check is delegated to the canonical selection seam so
+    its case-insensitive Codex rule is shared with server resolution.
+    """
+    arg_backend = getattr(args, "backend", "anthropic")
+    if arg_backend and arg_backend != "anthropic":
+        backend = arg_backend
+    else:
+        backend = os.environ.get("CG_BACKEND") or "anthropic"
+
+    requested = getattr(args, "model", None)
+    explicit = isinstance(requested, str) and bool(requested.strip())
+    if not explicit:
+        requested = None
+
+    if explicit and backend == "codex-cli" and not compatible(requested, backend):
+        raise ValueError(
+            f"model {requested!r} is incompatible with backend 'codex-cli': "
+            "Claude model ids cannot be used with the Codex subscription"
+        )
+
+    effective = requested if explicit else (
+        None if backend == "codex-cli" else legacy_default
+    )
+    return CLIModelIntent(
+        backend=backend,
+        requested_model=requested,
+        legacy_default=legacy_default,
+        effective_model=effective,
+        explicit=explicit,
+    )
 
 
 def _require_anthropic_credential(client) -> None:
@@ -152,7 +216,7 @@ def add_backend_args(parser, default_backend: str | None = "anthropic") -> None:
         if default_backend is None else f"default: {default_backend}"
     )
     parser.add_argument(
-        "--backend", choices=["anthropic", "dgx", "openrouter", "claude-code", "codex-cli"],
+        "--backend", choices=BACKENDS,
         default=default_backend,
         help=f"LLM backend ({_default_note}). 'dgx'/'openrouter'/'claude-code'/'codex-cli' route "
              "through the campaignlib seam; with no flag, behaviour is unchanged.")
@@ -310,7 +374,13 @@ def call_api_with_tools(client, *, system: str, messages: list, tools: list,
                   flush=True)
             time.sleep(delay)
         try:
-            return client.messages.create(
+            # Most providers expose the Anthropic-shaped ``messages`` API.
+            # Codex's structured polish turn is deliberately a separate
+            # capability on the same client; selecting it by capability keeps
+            # this seam provider-neutral and leaves all operation dispatch in
+            # the caller.
+            messages_api = getattr(client, "brokered_messages", client.messages)
+            return messages_api.create(
                 model=model,
                 max_tokens=max_tokens,
                 system=system,

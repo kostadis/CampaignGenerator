@@ -20,6 +20,11 @@ const prepMode = ref<'single' | 'pipeline'>('single')
 const configFile = ref('')
 const output = ref('')
 const noLog = ref(false)
+// Transform is a separate, human-reviewed bridge from a dossier into prep
+// input. Keep its destination independent from the final prep artifact.
+const transformInput = ref('')
+const transformSingle = ref(false)
+const transformOutput = ref('')
 
 const ready = computed(() => {
   if (inputMode.value === 'beat') return !!beat.value.trim()
@@ -37,7 +42,14 @@ const runParams = computed(() => ({
   config: configFile.value,
   output: output.value,
   no_log: noLog.value,
-  model: config.model,
+  model: config.model || undefined,
+}))
+
+const transformParams = computed(() => ({
+  input: transformInput.value,
+  single: transformSingle.value,
+  output: transformOutput.value,
+  model: config.model || undefined,
 }))
 </script>
 
@@ -118,6 +130,37 @@ const runParams = computed(() => ({
         label="Run Session Prep"
         @done="() => {}"
       />
+
+      <!-- Explicit dossier-to-prep bridge. Its output is reviewed and then
+           pasted/selected above; it never auto-starts Session Prep. -->
+      <div class="form-section transform-section">
+        <h3>Transform dossier for review</h3>
+        <p class="field-help">
+          Convert a NotebookLM/dossier extract into prep input. Review the
+          output before running Session Prep.
+        </p>
+        <PathField v-model="transformInput" label="Dossier or extract file"
+          required resolve-base="campaign" />
+        <PathField v-model="transformOutput" label="Review output file"
+          is-output resolve-base="campaign"
+          help="Optional; saves the transformed outline or beat to disk." />
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" :value="false" v-model="transformSingle" /> Session outline
+          </label>
+          <label class="radio-label">
+            <input type="radio" :value="true" v-model="transformSingle" /> Single beat
+          </label>
+        </div>
+        <RunPanel
+          selection-service="prep"
+          endpoint="/api/prep/run/transform"
+          :params="transformParams"
+          :disabled="!transformInput.trim()"
+          label="Transform dossier (review)"
+          @done="() => {}"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -134,6 +177,10 @@ const runParams = computed(() => ({
   border-bottom: 1px solid var(--bg-surface0);
 }
 .form-section:last-child { border-bottom: none; }
+.transform-section h3 {
+  font-size: 13px; font-weight: 700; color: var(--text); margin: 0 0 4px;
+}
+.transform-section .run-panel { margin-top: 10px; }
 
 .field { margin-bottom: 10px; }
 .field-label {

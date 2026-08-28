@@ -2,7 +2,7 @@
 
 Lives in ``campaignlib`` rather than ``server`` because this is the layer that
 actually talks to the backends: ``campaignlib/api/client.py`` already declares
-the same four names as its ``--backend`` choices, and ``campaignlib.constants``
+the same canonical names as its ``--backend`` choices, and ``campaignlib.constants``
 already owns ``DEFAULT_MODEL``. Principle V — one seam per boundary — argues
 for the vocabulary living with the boundary it describes.
 
@@ -20,9 +20,11 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict
 
-Backend = Literal["anthropic", "dgx", "openrouter", "claude-code"]
+Backend = Literal["anthropic", "dgx", "openrouter", "claude-code", "codex-cli"]
 
-BACKENDS: tuple[str, ...] = ("anthropic", "dgx", "openrouter", "claude-code")
+BACKENDS: tuple[str, ...] = (
+    "anthropic", "dgx", "openrouter", "claude-code", "codex-cli"
+)
 
 
 def _empty_to_none(v: Any) -> Any:
@@ -93,7 +95,7 @@ class ModelSelection(BaseModel):
 def compatible(model: str | None, backend: str | None) -> bool:
     """Can ``backend`` serve ``model``?
 
-    The check is a ``claude-`` prefix rather than membership of
+    Existing backend checks use a ``claude-`` prefix rather than membership of
     ``server.config.MODELS`` on purpose. MODELS is a hand-maintained snapshot;
     testing against it would silently reject a legitimate Claude id that simply
     hadn't been added yet — quietly refusing a model the caller is entitled to
@@ -105,12 +107,19 @@ def compatible(model: str | None, backend: str | None) -> bool:
     ``server/routers/ensemble.py::_backend_args``. The *rule* survives here;
     the silent substitution that accompanied it did not.)
 
-    An absent model is vacuously compatible: it means "nothing chosen", which
-    resolution handles by falling back, not by refusing.
+    Codex uses that same prefix check case-insensitively and rejects Claude
+    model ids; all other backend checks retain their historical case-sensitive
+    behavior. An absent model is vacuously compatible: it means "nothing
+    chosen", which resolution handles by falling back, not by refusing.
     """
-    if not model:
+    if model is None or (isinstance(model, str) and not model.strip()):
         return True
     is_claude = model.startswith("claude-")
+    # Codex model ids must not be Claude ids. Unlike the historical backend
+    # checks below, this is deliberately case-insensitive: an explicitly
+    # supplied ``CLAUDE-*`` value must not evade the Codex guard.
+    if backend == "codex-cli":
+        return not model.lower().startswith("claude-")
     if backend in ("anthropic", "claude-code", None, ""):
         return is_claude
     if backend == "dgx":

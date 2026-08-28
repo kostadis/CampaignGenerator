@@ -806,9 +806,14 @@ def main():
     sp.add_argument("--model", default=None, metavar="ID")
     sp.add_argument("--max-tokens", type=int, default=4096)
     from campaignlib import add_backend_args
+    from campaignlib.api.client import resolve_cli_model
     add_backend_args(sp, default_backend="dgx")
 
     args = ap.parse_args()
+    if args.cmd == "speculate":
+        args.model = resolve_cli_model(
+            args, legacy_default=None
+        ).effective_model
     # Loaded once, before any work begins (contracts/cli.md's resolution
     # rule) — every None sentinel above resolves from here; an explicit
     # flag always wins.

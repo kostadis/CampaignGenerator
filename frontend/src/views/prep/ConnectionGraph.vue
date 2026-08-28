@@ -127,7 +127,7 @@ async function extract() {
   try {
     const res = await apiPost('/api/connections/extract', {
       files: allSelected.value,
-      model: config.model,
+      model: config.model || undefined,
       dossier_dir: dossierDir.value.trim(),
       cache_path: cachePath.value.trim(),
       replace: replaceExisting.value,

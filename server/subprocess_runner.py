@@ -59,8 +59,30 @@ def _log_stem(cmd: list[str]) -> str:
     return Path(cmd[0]).stem if cmd else "run"
 
 
+def _redact_text(text: str, values: tuple[str, ...]) -> str:
+    """Replace non-empty secret values in a diagnostic string."""
+    for value in values:
+        if value:
+            text = text.replace(value, "[REDACTED]")
+    return text
+
+
+def _redactable_prefix(text: str, values: tuple[str, ...]) -> tuple[str, str]:
+    """Split output before a possibly split secret from the safe suffix."""
+    if not values:
+        return text, ""
+    hold_at = len(text)
+    for index in range(len(text)):
+        suffix = text[index:]
+        if any(value.startswith(suffix) for value in values):
+            hold_at = index
+            break
+    return text[:hold_at], text[hold_at:]
+
+
 def _save_run_log(cmd: list[str], cwd: str | None, output: str,
-                  returncode: int | None, result: str, duration: float) -> None:
+                  returncode: int | None, result: str, duration: float,
+                  redact_values: tuple[str, ...] = ()) -> None:
     """Persist the run to `logs/` so it survives the SSE buffer (FR-007, SC-006).
 
     Mirrors the format of `campaignlib.save_log` — markdown sections, one file
@@ -73,7 +95,9 @@ def _save_run_log(cmd: list[str], cwd: str | None, output: str,
         log_dir.mkdir(parents=True, exist_ok=True)
         ts = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         log_file = log_dir / f"{ts}_{_log_stem(cmd)}.md"
-        cmd_block = " \\\n  ".join(cmd)
+        separator = " " + chr(92) + "\n  "
+        cmd_block = _redact_text(separator.join(cmd), redact_values)
+        output = _redact_text(output, redact_values)
         body = (
             f"# Subprocess run — {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
             f"## Command\n\n```\n{cmd_block}\n```\n\n"
@@ -96,6 +120,7 @@ async def stream_subprocess(
     env_extra: dict[str, str] | None = None,
     on_complete: Callable[[int | None], None] | None = None,
     emit_done: bool = True,
+    redact_env_keys: set[str] | frozenset[str] | None = None,
 ) -> AsyncGenerator[str, None]:
     """Run a subprocess and yield Server-Sent Events as output arrives.
 
@@ -139,9 +164,24 @@ async def stream_subprocess(
     if env_extra:
         env.update(env_extra)
 
-    env_prefix = " \\\n  ".join(f"{k}={v}" for k, v in (env_extra or {}).items())
+    # Scabard's request-body key is the one sensitive child-only override
+    # currently supported.  Other callers retain their historical display and
+    # logging behavior unless they explicitly opt into another key.
+    redacted_keys = frozenset(
+        redact_env_keys if redact_env_keys is not None else {"SCABARD_ACCESS_KEY"}
+    )
+    redact_values = tuple(
+        str(value)
+        for key, value in (env_extra or {}).items()
+        if key in redacted_keys and value
+    )
+    separator = " " + chr(92) + "\n  "
+    env_prefix = separator.join(
+        f"{k}={'[REDACTED]' if k in redacted_keys else v}"
+        for k, v in (env_extra or {}).items()
+    )
     cmd_parts = ([env_prefix] if env_prefix else []) + list(cmd)
-    cmd_display = " \\\n  ".join(cmd_parts)
+    cmd_display = _redact_text(separator.join(cmd_parts), redact_values)
 
     # proc is initialised here so the finally can reference it even if aclose()
     # is called before the subprocess starts (e.g. during the command yields).
@@ -156,7 +196,8 @@ async def stream_subprocess(
         # still triggers the finally (on_complete / log write).
         yield f"event: command\ndata: {json.dumps(cmd_display)}\n\n"
         # Back-compat inline chunk (clients ignoring the command event still see it)
-        yield f"data: {json.dumps(f'$ {cmd_display}\\n\\n')}\n\n"
+        legacy_command = f"$ {cmd_display}" + chr(92) + "n" + chr(92) + "n"
+        yield f"data: {json.dumps(legacy_command)}\n\n"
 
         proc = await asyncio.create_subprocess_exec(
             *cmd,
@@ -174,13 +215,16 @@ async def stream_subprocess(
                 break
             buf += chunk.decode("utf-8", errors="replace")
             if len(buf) >= 20 or "\n" in buf:
-                captured.append(buf)
-                yield f"data: {json.dumps(buf)}\n\n"
-                buf = ""
+                visible, buf = _redactable_prefix(buf, redact_values)
+                if visible:
+                    safe_buf = _redact_text(visible, redact_values)
+                    captured.append(safe_buf)
+                    yield f"data: {json.dumps(safe_buf)}\n\n"
 
         if buf:
-            captured.append(buf)
-            yield f"data: {json.dumps(buf)}\n\n"
+            safe_buf = _redact_text(buf, redact_values)
+            captured.append(safe_buf)
+            yield f"data: {json.dumps(safe_buf)}\n\n"
 
         await proc.wait()
 
@@ -205,7 +249,7 @@ async def stream_subprocess(
         returncode = proc.returncode if proc is not None else None
         result = classify_result(returncode)
         _save_run_log(cmd, cwd, "".join(captured), returncode, result,
-                      time.monotonic() - started)
+                      time.monotonic() - started, redact_values)
         if on_complete is not None:
             try:
                 on_complete(returncode)

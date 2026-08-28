@@ -62,7 +62,7 @@ Refactored from a 1749-line god-module into a package. Public surface re-exporte
 
 - default → **Anthropic** (`anthropic.Anthropic()`)
 - `CG_BACKEND=claude-code` → **Claude Code** CLI headless (bills Pro/Max, not metered API)
-- `CG_BACKEND=codex-cli` → **Codex CLI** non-interactive execution using the saved ChatGPT login; certified here for consistency audits
+- `CG_BACKEND=codex-cli` → **Codex CLI** non-interactive execution using the saved ChatGPT login; supported across the canonical 30-command family, including brokered polish
 - `DGX_ENDPOINT` set (or `--dgx-endpoint`) → **`_OpenAICompatClient`** pointed at vLLM on the Spark
 
 The DGX backend is an *anthropic-SDK facade* over the `openai` SDK (so the whole
@@ -72,6 +72,33 @@ knob threads from `stream_api`/`call_api` down to the request `extra_body`, and
 is stripped for non-DGX clients so Anthropic never sees it. Swapping the served
 model is a one-line edit to `dgxlib/models.yaml`, not code surgery here. See
 `tests/test_dgx_registry.py`.
+
+### Canonical command family and Codex boundary
+
+The backend selector is shared by 30 model-bearing or dispatching commands:
+
+| Family | Commands |
+|---|---|
+| Session document (8) | `check_consistency`, `enhance_summary`, `scene_extract`, `sd_agent`, `sd_consistency`, `sd_plan`, `sd_narrate`, `vtt_voice_compare` |
+| Prep, ingest, search, integration (5) | `prep`, `transform`, `dnd_sheet`, `query`, `scabard_sync` |
+| Grounding (8) | `planning`, `party`, `make_tracking`, `distill`, `campaign_state`, `npc_table`, `grounding_sections`, `thread_registry` |
+| Ensemble (9) | `synthesise_world_state`, `synthesise_polish`, `extract_facts`, `facts_to_state`, `narrate_chapter`, `polish`, `ensemble`, `ensemble_batch`, `ensemble_extract` |
+
+Codex requires an installed compatible CLI and `codex login`; it uses the saved
+ChatGPT subscription login in a fresh ephemeral, tool-free child. Metered API
+keys are stripped from that environment and no provider fallback is attempted.
+Omitted model intent reaches `CG_CODEX_MODEL`, then the subscription default;
+explicit compatible models are forwarded and explicit `claude-*` models are
+refused. Provider `--batch` is Anthropic-only and fails before Codex work, while
+application grouping (`--batch-scenes`), local ensemble fan-out, resume, and
+review remain independent. The `polish` loop is brokered: the parent owns tool
+validation and document mutation, and Codex supplies only typed turn results.
+
+Seven new UI faces expose consistency audit, transform, voice comparison,
+Scabard sync, synthesis polish, per-chapter narration, and post-assemble polish;
+other commands remain available through existing workflow faces. Scabard's
+access key is passed only as a child-environment override and never appears in
+argv, previews, logs, or diagnostics.
 
 ### Layer 2/3 — Web server & frontend
 

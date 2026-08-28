@@ -59,6 +59,7 @@ from campaignlib import (
     stream_api,
     wiring_get,
 )
+from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text as _atomic_write_text
 
 # DGX endpoint + model are EXTERNAL config (they name the DGX) — owned by mneme and
@@ -497,6 +498,9 @@ def main() -> None:
                              "--max-num-seqs 4, so 4 saturates a box.")
     add_backend_args(parser, default_backend="dgx")
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=None
+    ).effective_model
     # This script always resolved to a real DGX endpoint before the --backend
     # seam existed — preserve that default (env var, then mneme wiring) so an
     # invocation with no --endpoint flag is unchanged. Gated on the resolved

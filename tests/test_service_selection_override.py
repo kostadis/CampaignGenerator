@@ -247,3 +247,52 @@ def test_no_new_config_file_is_created(platform, tmp_path):
         "config.yaml", "platform.yaml", "grounding.yaml", "party.yaml",
         "planning.yaml", "session_doc.yaml", "ensemble.yaml",
     }, f"unexpected config document created: {written}"
+
+
+# ── Codex model provenance (feature 016, T040) ─────────────────────────────
+
+
+def test_codex_override_omits_inherited_platform_claude_model(platform):
+    """Switching backend must not forward the platform's Claude default."""
+    response = client.put(
+        "/api/grounding/selection", json={"backend": "codex-cli"}
+    )
+    assert response.status_code == 200, response.text
+
+    resolved = client.get("/api/grounding/selection/resolved").json()
+    assert resolved["backend"] == "codex-cli"
+    assert resolved["model"] is None
+    assert resolved["model_origin"] == "platform"
+    assert resolved["compatible"] is True
+    assert resolved["refusal"] is None
+
+
+def test_codex_service_model_is_forwarded_and_remains_service_origin(platform):
+    response = client.put(
+        "/api/grounding/selection",
+        json={"backend": "codex-cli", "model": "gpt-5-codex"},
+    )
+    assert response.status_code == 200, response.text
+
+    resolved = client.get("/api/grounding/selection/resolved").json()
+    assert resolved["backend"] == "codex-cli"
+    assert resolved["model"] == "gpt-5-codex"
+    assert resolved["model_origin"] == "service"
+    assert resolved["compatible"] is True
+
+
+def test_explicit_claude_service_model_for_codex_is_refused_without_substitution(
+    platform,
+):
+    response = client.put(
+        "/api/grounding/selection",
+        json={"backend": "codex-cli", "model": "claude-opus-4-6"},
+    )
+    assert response.status_code == 200, response.text
+
+    resolved = client.get("/api/grounding/selection/resolved").json()
+    assert resolved["backend"] == "codex-cli"
+    assert resolved["model"] == "claude-opus-4-6"
+    assert resolved["model_origin"] == "service"
+    assert resolved["compatible"] is False
+    assert "claude-opus-4-6" in resolved["refusal"]

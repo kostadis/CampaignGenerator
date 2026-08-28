@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT))
 
 from pipelines.ensemble import facts_to_state as fts  # noqa: E402
 from campaignlib import add_backend_args  # noqa: E402
+from campaignlib.api.client import resolve_cli_model  # noqa: E402
 from campaignlib.registry import load_registry  # noqa: E402
 from pipelines.ensemble.synthesise_world_state import (  # noqa: E402
     read_dossiers, split_dossiers,
@@ -364,6 +365,26 @@ def test_batch_defaults_false_and_toggles_on():
     assert args.batch is True
 
 
+def test_codex_fanout_parser_preserves_omitted_and_explicit_model_intent():
+    """Plural-endpoint fan-out accepts Codex without inventing a model."""
+    parser = fts.build_parser()
+    omitted = parser.parse_args([
+        "--corpus", "facts.json", "--out-dir", "dossiers",
+        "--backend", "codex-cli",
+    ])
+    omitted_intent = resolve_cli_model(omitted, legacy_default=None)
+    assert omitted_intent.effective_model is None
+    assert omitted_intent.explicit is False
+
+    explicit = parser.parse_args([
+        "--corpus", "facts.json", "--out-dir", "dossiers",
+        "--backend", "codex-cli", "--model", "gpt-5-codex",
+    ])
+    explicit_intent = resolve_cli_model(explicit, legacy_default=None)
+    assert explicit_intent.effective_model == "gpt-5-codex"
+    assert explicit_intent.explicit is True
+
+
 # ── check_batch_backend: fires once, up front, before any work ───────────────
 
 def test_check_batch_backend_noop_when_batch_absent():
@@ -377,7 +398,7 @@ def test_check_batch_backend_allows_anthropic(monkeypatch):
     fts.check_batch_backend(ns)  # must not raise
 
 
-@pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code"])
+@pytest.mark.parametrize("backend", ["dgx", "openrouter", "claude-code", "codex-cli"])
 def test_check_batch_backend_rejects_non_anthropic(backend, monkeypatch):
     monkeypatch.delenv("CG_BACKEND", raising=False)
     ns = argparse.Namespace(batch=True, backend=backend)
@@ -398,7 +419,8 @@ def test_check_batch_backend_rejects_via_cg_backend_env(monkeypatch):
     assert "backend 'openrouter' has no batch support" in str(exc_info.value)
 
 
-def test_main_rejects_batch_before_any_corpus_or_client_work(tmp_path, monkeypatch):
+@pytest.mark.parametrize("backend", ["dgx", "codex-cli"])
+def test_main_rejects_batch_before_any_corpus_or_client_work(tmp_path, monkeypatch, backend):
     """End-to-end: --batch + a non-anthropic backend must abort before
     expand_globs (corpus loading) or client construction — not merely before
     the worker threads. Trips an assertion if either runs."""
@@ -415,12 +437,12 @@ def test_main_rejects_batch_before_any_corpus_or_client_work(tmp_path, monkeypat
         "facts_to_state.py",
         "--corpus", str(tmp_path / "gen-ch*" / "merged.json"),
         "--out-dir", str(tmp_path / "out"),
-        "--backend", "dgx",
+        "--backend", backend,
         "--batch",
     ])
     with pytest.raises(SystemExit) as exc_info:
         fts.main()
-    assert "backend 'dgx' has no batch support" in str(exc_info.value)
+    assert f"backend '{backend}' has no batch support" in str(exc_info.value)
 
 
 # ── batch aggregation path: grouped submission + partial failure ────────────

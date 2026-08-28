@@ -155,6 +155,11 @@ const routes = [
     name: 'settings',
     component: () => import('./views/Settings.vue'),
   },
+  {
+    path: '/integrations/scabard',
+    name: 'scabard-sync',
+    component: () => import('./views/integrations/ScabardSync.vue'),
+  },
 ]
 
 export default createRouter({

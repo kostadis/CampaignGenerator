@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 from pathlib import Path
@@ -11,6 +12,7 @@ import pytest
 
 from campaignlib.api import client as client_mod
 from campaignlib.api.codex_cli import CodexCliError, _CodexCliClient
+from tests.helpers.fake_codex_cli import FakeCodexCli
 
 
 SYSTEM = "Audit faithfully.\nKeep roles separate."
@@ -67,7 +69,7 @@ def _create(client=None, **overrides):
 @pytest.mark.parametrize(
     ("overrides", "match"),
     [
-        ({"system": [{"type": "text", "text": "system"}]}, "system"),
+        ({"system": [{"type": "image", "source": {}}]}, "text-only"),
         ({"messages": []}, "exactly one"),
         ({"messages": _message() + _message("second")}, "exactly one"),
         ({"messages": [{"role": "assistant", "content": "old"}]}, "user"),
@@ -94,6 +96,26 @@ def test_text_blocks_are_preserved_in_order(monkeypatch):
     assert captured[0]["input"] == "first\nsecond"
 
 
+def test_system_text_blocks_preserve_order_and_ignore_cache_metadata(monkeypatch):
+    """Anthropic cache hints are metadata, not content for Codex transport."""
+    captured = []
+    monkeypatch.setattr(subprocess, "run", _successful_run(captured))
+    system = [
+        {"type": "text", "text": "first instruction\n", "cache_control": {"type": "ephemeral"}},
+        {"type": "text", "text": "second instruction", "cache_control": {"type": "ephemeral"}},
+    ]
+
+    response = _create(system=system)
+
+    assert response.content[0].text == REPORT
+    developer_arg = next(
+        value for value in captured[0]["cmd"]
+        if value.startswith("developer_instructions=")
+    )
+    assert json.loads(developer_arg.split("=", 1)[1]) == (
+        "first instruction\nsecond instruction"
+    )
+    assert "cache_control" not in developer_arg
 def test_create_uses_exact_role_transport_and_isolated_child(monkeypatch):
     captured = []
     monkeypatch.setenv("OPENAI_API_KEY", "metered-openai")
@@ -160,6 +182,363 @@ def test_stream_yields_one_complete_chunk_and_runs_once(monkeypatch):
     ) as stream:
         assert list(stream.text_stream) == [REPORT]
     assert len(captured) == 1
+
+
+def test_process_backed_child_keeps_saved_login_context_and_strips_metered_keys(
+    monkeypatch, tmp_path
+):
+    """The fake executable verifies the actual child environment, not a mock."""
+    fake = FakeCodexCli(tmp_path, response=FakeCodexCli.direct(REPORT))
+    fake.install(monkeypatch)
+    monkeypatch.setenv("HOME", "/home/subscriber")
+    monkeypatch.setenv("CODEX_HOME", "/home/subscriber/.codex")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "metered-anthropic")
+    monkeypatch.setenv("OPENAI_API_KEY", "metered-openai")
+    monkeypatch.setenv("CODEX_API_KEY", "metered-codex")
+
+    response = _create()
+
+    assert response.content[0].text == REPORT
+    call = fake.last_call
+    assert call is not None
+    assert call.env["HOME"] == "/home/subscriber"
+    assert call.env["CODEX_HOME"] == "/home/subscriber/.codex"
+    for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CODEX_API_KEY"):
+        assert key not in call.env
+    assert call.structured is False
+    assert not call.cwd.exists()
+    assert call.output_last_message is not None
+    assert not call.output_last_message.exists()
+
+
+def test_brokered_call_uses_structured_capability_and_returns_tool_use_facade(
+    monkeypatch, tmp_path
+):
+    fake = FakeCodexCli(
+        tmp_path,
+        response=FakeCodexCli.structured(
+            "I will inspect the draft first.",
+            tool_calls=[{"name": "list_sections", "arguments_json": "{}"}],
+        ),
+    )
+    fake.install(monkeypatch)
+
+    response = client_mod.call_api_with_tools(
+        _CodexCliClient(),
+        system=SYSTEM,
+        messages=[{"role": "user", "content": "Inspect the draft."}],
+        tools=[{"name": "list_sections", "input_schema": {"type": "object"}}],
+        model=None,
+    )
+
+    assert response.stop_reason == "tool_use"
+    assert [block.type for block in response.content] == ["text", "tool_use"]
+    assert response.content[0].text == "I will inspect the draft first."
+    assert response.content[1].name == "list_sections"
+    assert response.content[1].input == {}
+    assert response.content[1].id
+    assert response.usage.input_tokens is None
+    assert response.usage.output_tokens is None
+    assert len(fake.calls) == 1
+    assert fake.last_call.structured is True
+
+
+def _broker_request(client, messages):
+    return client_mod.call_api_with_tools(
+        client,
+        system=SYSTEM,
+        messages=messages,
+        tools=[{"name": "read_doc_section", "input_schema": {"type": "object"}}],
+        model=None,
+    )
+
+
+def test_broker_transcript_preserves_user_and_assistant_text_order(
+    monkeypatch, tmp_path
+):
+    fake = FakeCodexCli(tmp_path, response=FakeCodexCli.structured("done"))
+    fake.install(monkeypatch)
+
+    _broker_request(
+        _CodexCliClient(),
+        [
+            {"role": "user", "content": "user text"},
+            {"role": "assistant", "content": "assistant text"},
+        ],
+    )
+
+    invocation = fake.last_call
+    assert invocation is not None
+    transcript = json.loads(invocation.stdin)
+    assert transcript["version"] == "codex-brokered-v1"
+    assert transcript["messages"] == [
+        {"role": "user", "blocks": [{"type": "text", "text": "user text"}]},
+        {"role": "assistant", "blocks": [{"type": "text", "text": "assistant text"}]},
+    ]
+
+
+def test_broker_transcript_preserves_tool_order_and_replays_opaque_ids(
+    monkeypatch, tmp_path
+):
+    """A later turn must carry host-assigned IDs back as typed results."""
+    fake = FakeCodexCli(
+        tmp_path,
+        responses=[
+            FakeCodexCli.structured(
+                "I will inspect both sections.",
+                tool_calls=[
+                    {"name": "read_doc_section", "arguments_json": '{"section":"A"}'},
+                    {"name": "read_doc_section", "arguments_json": '{"section":"B"}'},
+                ],
+            ),
+            FakeCodexCli.structured("finished"),
+        ],
+    )
+    fake.install(monkeypatch)
+    client = _CodexCliClient()
+
+    first = _broker_request(
+        client, [{"role": "user", "content": "Inspect A and B."}]
+    )
+    action_blocks = [block for block in first.content if block.type == "tool_use"]
+    ids = [block.id for block in action_blocks]
+    assert len(action_blocks) == 2
+    assert all(isinstance(tool_id, str) and tool_id for tool_id in ids)
+    assert len(set(ids)) == 2
+    assert all(tool_id not in {block.name for block in action_blocks} for tool_id in ids)
+    assert first.stop_reason == "tool_use"
+    assert first.usage.input_tokens is None
+    assert first.usage.output_tokens is None
+
+    second = _broker_request(
+        client,
+        [
+            {"role": "user", "content": "Inspect A and B."},
+            {
+                "role": "assistant",
+                "content": [
+                    {"type": "text", "text": "I will inspect both sections."},
+                    {
+                        "type": "tool_use",
+                        "id": ids[0],
+                        "name": action_blocks[0].name,
+                        "input": action_blocks[0].input,
+                    },
+                    {
+                        "type": "tool_use",
+                        "id": ids[1],
+                        "name": action_blocks[1].name,
+                        "input": action_blocks[1].input,
+                    },
+                ],
+            },
+            {
+                "role": "user",
+                "content": [
+                    {"type": "tool_result", "tool_use_id": ids[0], "content": "A text", "is_error": False},
+                    {"type": "tool_result", "tool_use_id": ids[1], "content": "B text", "is_error": False},
+                ],
+            },
+        ],
+    )
+
+    assert second.stop_reason == "end_turn"
+    assert second.usage.input_tokens is None
+    assert second.usage.output_tokens is None
+    assert len(fake.calls) == 2
+    transcript = json.loads(fake.calls[1].stdin)
+    assert [message["role"] for message in transcript["messages"]] == [
+        "user", "assistant", "user"
+    ]
+    assert [block["type"] for block in transcript["messages"][1]["blocks"]] == [
+        "text", "tool_use", "tool_use"
+    ]
+    assert [block["id"] for block in transcript["messages"][1]["blocks"][1:]] == ids
+    assert [
+        block["input"] for block in transcript["messages"][1]["blocks"][1:]
+    ] == [action_blocks[0].input, action_blocks[1].input]
+    assert [
+        block["tool_use_id"] for block in transcript["messages"][2]["blocks"]
+    ] == ids
+    assert [
+        block["is_error"] for block in transcript["messages"][2]["blocks"]
+    ] == [False, False]
+
+
+def test_broker_text_only_result_has_end_turn_and_null_usage(monkeypatch, tmp_path):
+    fake = FakeCodexCli(tmp_path, response=FakeCodexCli.structured("finished"))
+    fake.install(monkeypatch)
+
+    response = _broker_request(
+        _CodexCliClient(), [{"role": "user", "content": "Finish."}]
+    )
+
+    assert response.stop_reason == "end_turn"
+    assert response.content[0].text == "finished"
+    assert response.usage.input_tokens is None
+    assert response.usage.output_tokens is None
+
+
+@pytest.mark.parametrize(
+    "messages",
+    [
+        [
+            {"role": "user", "content": "request"},
+            {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "dup", "name": "a", "input": {}},
+                {"type": "tool_use", "id": "dup", "name": "b", "input": {}},
+            ]},
+        ],
+        [
+            {"role": "user", "content": [
+                {"type": "tool_result", "tool_use_id": "missing", "content": "x", "is_error": False},
+            ]},
+        ],
+        [
+            {"role": "user", "content": "request"},
+            {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "one", "name": "a", "input": {}},
+            ]},
+            {"role": "user", "content": [
+                {"type": "tool_result", "tool_use_id": "one", "content": "x", "is_error": False},
+                {"type": "tool_result", "tool_use_id": "one", "content": "again", "is_error": False},
+            ]},
+        ],
+    ],
+    ids=["duplicate-id", "unresolved-id", "duplicate-result"],
+)
+def test_broker_rejects_duplicate_or_unresolved_action_ids(
+    monkeypatch, tmp_path, messages
+):
+    fake = FakeCodexCli(tmp_path, response=FakeCodexCli.structured("unused"))
+    fake.install(monkeypatch)
+
+    with pytest.raises(CodexCliError):
+        _broker_request(_CodexCliClient(), messages)
+
+    assert fake.calls == []
+
+
+@pytest.mark.parametrize(
+    "messages",
+    [
+        [
+            {"role": "user", "content": "request"},
+            {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "bad", "name": "action", "input": []},
+            ]},
+        ],
+        [
+            {"role": "user", "content": [
+                {"type": "tool_result", "tool_use_id": "missing", "content": "x", "is_error": "false"},
+            ]},
+        ],
+    ],
+    ids=["non-object-action-input", "invalid-result-error-flag"],
+)
+def test_broker_rejects_malformed_typed_action_blocks(
+    monkeypatch, tmp_path, messages
+):
+    fake = FakeCodexCli(tmp_path, response=FakeCodexCli.structured("unused"))
+    fake.install(monkeypatch)
+
+    with pytest.raises(CodexCliError):
+        _broker_request(_CodexCliClient(), messages)
+
+    assert fake.calls == []
+
+
+@pytest.mark.parametrize(
+    "raw_result",
+    [
+        "not json",
+        "[]",
+        "{}",
+        '{"text":"ok"}',
+        '{"text":"ok","tool_calls":{},"extra":true}',
+        '{"text":"","tool_calls":[]}',
+    ],
+    ids=["invalid-json", "array", "missing-fields", "missing-tool-calls", "unknown-field", "empty"],
+)
+def test_broker_rejects_malformed_result_envelopes(monkeypatch, tmp_path, raw_result):
+    fake = FakeCodexCli(
+        tmp_path,
+        response=FakeCodexCli.direct("unused", raw_result=raw_result),
+    )
+    fake.install(monkeypatch)
+
+    with pytest.raises(CodexCliError):
+        _broker_request(_CodexCliClient(), [{"role": "user", "content": "request"}])
+
+    assert len(fake.calls) == 1
+    assert fake.last_call is not None and fake.last_call.structured is True
+    assert not fake.last_call.cwd.exists()
+
+
+@pytest.mark.parametrize(
+    "arguments_json",
+    ["not-json", "[]", "null", "1", '"text"', ""],
+    ids=["invalid-json", "array", "null", "number", "string", "empty"],
+)
+def test_broker_rejects_non_object_tool_arguments(monkeypatch, tmp_path, arguments_json):
+    result = json.dumps({
+        "text": "I need an action.",
+        "tool_calls": [{"name": "read_doc_section", "arguments_json": arguments_json}],
+    })
+    fake = FakeCodexCli(tmp_path, response=FakeCodexCli.direct("unused", raw_result=result))
+    fake.install(monkeypatch)
+
+    with pytest.raises(CodexCliError):
+        _broker_request(_CodexCliClient(), [{"role": "user", "content": "request"}])
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"system": [{"type": "image", "source": {}}]},
+        {"messages": _message() + _message("second")},
+        {"messages": [{"role": "assistant", "content": "old"}]},
+        {"messages": _message([{"type": "tool_use", "id": "x", "name": "x", "input": {}}])},
+        {"messages": _message([{"type": "tool_result", "tool_use_id": "x", "content": "x"}])},
+        {"tools": [{"name": "read_doc_section"}]},
+    ],
+    ids=["system-image", "multi-turn", "assistant-history", "user-tool", "user-tool-result", "tools"],
+)
+def test_direct_shape_refusal_happens_before_fake_child(
+    monkeypatch, tmp_path, overrides
+):
+    fake = FakeCodexCli(tmp_path, response=FakeCodexCli.direct(REPORT))
+    fake.install(monkeypatch)
+
+    with pytest.raises(CodexCliError):
+        _create(client=_CodexCliClient(), **overrides)
+
+    assert fake.calls == []
+
+
+def test_failed_child_makes_no_provider_fallback_and_cleans_up(monkeypatch, tmp_path):
+    fake = FakeCodexCli(
+        tmp_path,
+        response=FakeCodexCli.direct(
+            "partial output must not win",
+            returncode=23,
+            stderr="subscription child failed",
+        ),
+    )
+    fake.install(monkeypatch)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("CODEX_API_KEY", raising=False)
+
+    with pytest.raises(CodexCliError, match="exited 23"):
+        _create()
+
+    assert len(fake.calls) == 1
+    call = fake.last_call
+    assert call is not None
+    assert not call.cwd.exists()
+    assert call.output_last_message is not None
+    assert not call.output_last_message.exists()
 
 
 @pytest.mark.parametrize(

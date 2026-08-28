@@ -33,7 +33,10 @@ keys must not select billing accidentally: the Codex adapter removes
 `OPENAI_API_KEY` and `CODEX_API_KEY` from its child environment and forces the
 saved ChatGPT login.
 
-For Codex consistency audits, install the Codex CLI, run `codex login`, then:
+For any Codex-backed command, install a Codex CLI version that supports
+ephemeral structured execution and run `codex login` first. The saved ChatGPT
+subscription login is the only credential used by the child; no API key is a
+substitute. For example:
 
 ```bash
 python3 session_doc/check_consistency.py path/to/document.md \
@@ -43,9 +46,34 @@ python3 session_doc/check_consistency.py path/to/document.md \
   --output /tmp/consistency-report.md
 ```
 
-`codex-cli` is currently certified for this consistency-auditor workflow and
-its Codex skills; the web backend selector is intentionally deferred. Provider
-`--batch` remains Anthropic-only.
+The same `codex-cli` selection is available across the canonical 30-command
+family and its direct/transitive UI faces. An omitted Codex `--model` is left
+unset so Codex can use `CG_CODEX_MODEL`, then its subscription default; an
+explicit compatible model is forwarded, while an explicit `claude-*` model is
+refused. Provider `--batch` means Anthropic Message Batches and is refused for
+Codex; application grouping such as `--batch-scenes` and local ensemble fan-out
+remains available.
+
+The ensemble `polish` capability uses a parent-brokered structured turn: Codex
+may request only the declared operations, while the parent applies edits and
+owns the document checkpoint. The Scabard integration accepts
+`SCABARD_ACCESS_KEY` in the request body and passes it only through a child
+environment override; it is never placed in argv, previews, or ordinary logs.
+
+### Canonical command family (30)
+
+| Family | Commands |
+|---|---|
+| Session document (8) | `check_consistency`, `enhance_summary`, `scene_extract`, `sd_agent`, `sd_consistency`, `sd_plan`, `sd_narrate`, `vtt_voice_compare` |
+| Prep, ingest, search, integration (5) | `prep`, `transform`, `dnd_sheet`, `query`, `scabard_sync` |
+| Grounding (8) | `planning`, `party`, `make_tracking`, `distill`, `campaign_state`, `npc_table`, `grounding_sections`, `thread_registry` |
+| Ensemble (9) | `synthesise_world_state`, `synthesise_polish`, `extract_facts`, `facts_to_state`, `narrate_chapter`, `polish`, `ensemble`, `ensemble_batch`, `ensemble_extract` |
+
+Seven capabilities also have explicit UI faces: consistency audit,
+Session Prep transform, voice comparison, Scabard sync, ensemble polish,
+per-chapter narration, and post-assemble polish. Existing workflow faces expose
+the remaining commands transitively; UI actions preserve disk-backed outputs
+and human review checkpoints.
 
 ### Web UI
 
@@ -300,7 +328,12 @@ python -m pytest tests/
 
 ## Model choice
 
-All scripts default to **Claude Sonnet** (`claude-sonnet-4-6`) and accept `--model` for overrides. Narration scripts accept `--fast` for **Claude Haiku** (~4× cheaper), useful for iterating before a final run.
+With the default Anthropic backend, scripts use **Claude Sonnet**
+(`claude-sonnet-4-6`) when `--model` is omitted; all scripts accept `--model`
+for overrides. Selecting `--backend codex-cli` intentionally omits the model
+when no compatible value is supplied, allowing `CG_CODEX_MODEL` or the saved
+Codex subscription default to decide. Narration scripts accept `--fast` for
+**Claude Haiku** (~4× cheaper), useful for iterating before a final run.
 
 ```bash
 sd_narrate ... --fast                       # Haiku — iterate quickly

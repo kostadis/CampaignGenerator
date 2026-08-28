@@ -126,6 +126,11 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
       and synthesis are chosen independently. Files on disk are the source of truth —
       this only records your selections.
     </p>
+    <p class="hint action-note">
+      After extraction, use the explicit chapter narration/review action on the
+      Extract step. The Synthesize step separately renders a reviewed merged
+      checkpoint; neither action auto-approves or advances another stage.
+    </p>
 
     <div class="fld">
       <span>Chapters</span>
@@ -152,6 +157,7 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
             <option value="dgx">DGX / Spark (local)</option>
             <option value="openrouter">OpenRouter</option>
             <option value="claude-code">Subscription (Claude Code)</option>
+            <option value="codex-cli">Subscription (Codex CLI)</option>
           </select>
         </label>
         <label class="fld" v-if="cfg[stage].backend === 'dgx' && stage === 'extract'">
@@ -168,9 +174,10 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
           <input v-model="cfg[stage].model" type="text"
                  :placeholder="cfg[stage].backend === 'openrouter' ? 'anthropic/claude-sonnet-4' : 'Qwen/Qwen3-Next-80B-A3B-Instruct-FP8'" />
         </label>
-        <label class="fld" v-if="cfg[stage].backend === 'claude-code'">
+        <label class="fld" v-if="cfg[stage].backend === 'claude-code' || cfg[stage].backend === 'codex-cli'">
           <span>Model id (optional — defaults to the subscription's own default)</span>
-          <input v-model="cfg[stage].model" type="text" placeholder="claude-opus-4-8" />
+          <input v-model="cfg[stage].model" type="text"
+            :placeholder="cfg[stage].backend === 'codex-cli' ? 'gpt-5-codex' : 'claude-opus-4-8'" />
         </label>
         <p v-if="stage === 'synthesize' && cfg.synthesize.backend !== 'anthropic'" class="warn-note">
           Synthesis assumes a model at least as capable as Sonnet; a weak or
@@ -271,6 +278,7 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
 .step { padding: 16px 20px; overflow-y: auto; }
 h2 { font-size: 16px; margin-bottom: 6px; }
 .hint { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; max-width: 60ch; }
+.action-note { border-left: 2px solid var(--peach); padding-left: 8px; }
 .fld { display: block; margin-bottom: 10px; font-size: 12px; }
 .fld > span { display: block; margin-bottom: 3px; color: var(--text-sub); }
 .fld input, .fld textarea, .fld select {

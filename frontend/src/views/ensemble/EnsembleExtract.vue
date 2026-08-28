@@ -4,6 +4,7 @@ import { useEnsembleRun, fetchEnsembleConfig, saveEnsembleConfig, type EnsembleC
 import StreamOutput from '../../components/shared/StreamOutput.vue'
 import RunCommandBar from '../../components/shared/RunCommandBar.vue'
 import ChapterPicker from './ChapterPicker.vue'
+import PathField from '../../components/shared/PathField.vue'
 
 const emit = defineEmits<{ changed: [] }>()
 const cfg = ref<EnsembleConfig | null>(null)
@@ -11,6 +12,8 @@ const { output, status, returnCode, command, run, abort, clear } = useEnsembleRu
 
 onMounted(async () => {
   cfg.value = await fetchEnsembleConfig()
+  const first = cfg.value.chapters_selected[0]
+  if (first) selectNarrationChapter(first)
 })
 
 const backendLabel = computed(() => cfg.value?.extract.backend ?? '')
@@ -18,6 +21,20 @@ const backendLabel = computed(() => cfg.value?.extract.backend ?? '')
 // fallback: an empty selection cannot start a run.
 const selectedCount = computed(() => cfg.value?.chapters_selected.length ?? 0)
 const canRun = computed(() => selectedCount.value > 0)
+const narrationChapter = ref('')
+const narrationOutput = ref('')
+
+function chapterStem(path: string): string {
+  const name = path.split('/').pop() || path
+  return name.replace(/\.[^.]+$/, '')
+}
+
+function selectNarrationChapter(path: string) {
+  narrationChapter.value = path
+  if (cfg.value) {
+    narrationOutput.value = `${cfg.value.paths.per_chapter_dir}/${chapterStem(path)}/narrative.md`
+  }
+}
 
 async function persistChapters() {
   if (!cfg.value) return
@@ -36,6 +53,16 @@ function start() {
   run('/api/ensemble/run/extract', {
     chapters: cfg.value.chapters_selected,
   }, (rc) => { if (rc === 0) emit('changed') })
+}
+
+function narrateChapter() {
+  if (!narrationChapter.value || !narrationOutput.value || status.value === 'running') return
+  // Narration always writes approved:false. Approval is a later human edit;
+  // this action does not promote or advance into synthesis.
+  run('/api/ensemble/run/narrate-chapter', {
+    chapter: narrationChapter.value,
+    output: narrationOutput.value,
+  })
 }
 </script>
 
@@ -71,6 +98,28 @@ function start() {
       <button v-if="output && status !== 'running'" class="btn-neutral btn-sm" @click="clear">Clear</button>
     </div>
     <StreamOutput v-if="output" :text="output" />
+
+    <div class="narration-action">
+      <h3>Review chapter narration <span class="tag">human checkpoint</span></h3>
+      <p class="hint">
+        Narrate one selected chapter into a disk-backed <code>narrative.md</code>.
+        The artifact starts <code>approved: false</code>; review it before any
+        later synthesis uses it.
+      </p>
+      <label class="field-label" for="narration-chapter">Chapter</label>
+      <select id="narration-chapter" :value="narrationChapter"
+        @change="selectNarrationChapter(($event.target as HTMLSelectElement).value)">
+        <option value="" disabled>Select a chapter</option>
+        <option v-for="chapter in cfg.chapters_selected" :key="chapter" :value="chapter">
+          {{ chapter }}
+        </option>
+      </select>
+      <PathField v-model="narrationOutput" label="Narrative output" is-output resolve-base="campaign" />
+      <button class="btn-neutral" :disabled="status === 'running' || !narrationChapter || !narrationOutput"
+        @click="narrateChapter">
+        ▶ Narrate selected chapter
+      </button>
+    </div>
   </div>
 </template>
 
@@ -83,4 +132,9 @@ h2 { font-size: 16px; margin-bottom: 6px; }
 .err { color: var(--red); font-size: 12px; font-weight: 600; }
 .aborted { color: var(--peach); font-size: 12px; font-weight: 600; }
 .need { color: var(--peach); font-size: 12px; }
+.narration-action { border-top: 1px solid var(--bg-surface0); margin-top: 14px; padding-top: 8px; }
+.narration-action h3 { font-size: 13px; margin: 0 0 6px; }
+.narration-action .field-label { font-size: 11px; color: var(--text-sub); display: block; margin-bottom: 3px; }
+.narration-action select { max-width: 560px; margin-bottom: 8px; }
+.tag { font-size: 9px; background: var(--peach); color: var(--bg-mantle); border-radius: 8px; padding: 1px 7px; margin-left: 6px; font-weight: 700; }
 </style>

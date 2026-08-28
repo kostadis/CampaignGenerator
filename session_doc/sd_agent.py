@@ -126,7 +126,7 @@ def _selection_args(args) -> list[str]:
         out += ["--backend", args.backend]
     if args.endpoint:
         out += ["--endpoint", args.endpoint]
-    if args.model:
+    if args.model and args.model.strip():
         out += ["--model", args.model]
     if args.fast:
         out += ["--fast"]
@@ -166,13 +166,14 @@ def _batch_scenes_args(args) -> list[str]:
     two entry points do not disagree about the same backend:
 
       explicit --batch-scenes / --no-batch-scenes  ->  wins outright
-      neither given                                ->  on for `claude-code`,
+      neither given                                ->  on for subscription
+                                                       backends,
                                                        off everywhere else
 
-    "for `claude-code`" means the RESOLVED backend (`_resolved_backend`), so
-    `CG_BACKEND=claude-code` counts as much as `--backend claude-code`. The
-    child resolves its own client the same way, and this inference exists to
-    save that child's tokens.
+    Subscription backends (`claude-code` and `codex-cli`) have no prompt
+    caching, so the inference exists to save the child's repeated tokens.
+    The backend is resolved through `_resolved_backend`, so an environment
+    override counts as much as an explicit backend flag.
 
     The subscription backend has no prompt caching, so a per-scene run
     re-sends the whole transcript once per scene; the metered backend caches
@@ -200,7 +201,7 @@ def _batch_scenes_args(args) -> list[str]:
         # a flag the user never wrote, for a choice they never made.
         # Their explicit --batch wins; the inference stands down.
         return ["--no-batch-scenes"]
-    return (["--batch-scenes"] if _resolved_backend(args) == "claude-code"
+    return (["--batch-scenes"] if _resolved_backend(args) in ("claude-code", "codex-cli")
             else ["--no-batch-scenes"])
 
 
@@ -422,8 +423,9 @@ def build_parser() -> argparse.ArgumentParser:
                    default=None,
                    help="--stage scenes only: send all pending scenes in one "
                         "exchange instead of one call per scene. Defaults on "
-                        "for --backend claude-code (no prompt caching there), "
-                        "off otherwise. Not the same as --batch.")
+                        "for subscription backends (Claude Code/Codex CLI; "
+                        "no prompt caching), off otherwise. Not the same "
+                        "as --batch.")
     p.add_argument("--no-batch-scenes", dest="batch_scenes", action="store_false",
                    help="--stage scenes only: force the per-scene loop, "
                         "overriding the per-backend default.")

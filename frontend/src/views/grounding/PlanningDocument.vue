@@ -97,7 +97,7 @@ const synthParams = computed(() => {
     extract_dir: extractDir.value,
     split_chapters: splitChapters.value,
     no_log: noLog.value,
-    model: config.model,
+    model: config.model || undefined,
   }
   if (synthMode.value === 'config') {
     base.planning_config = planningConfigPath.value
@@ -125,7 +125,7 @@ const dossierParams = computed(() => ({
   split_chapters: dossierSplitChapters.value,
   since: dossierSince.value,
   no_log: noLog.value,
-  model: config.model,
+  model: config.model || undefined,
 }))
 
 watch(output, (newOutput) => {

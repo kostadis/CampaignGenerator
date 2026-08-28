@@ -7,6 +7,7 @@ venv/
 dist/
 *.egg-info/
 .env
+.env*
 node_modules/
 frontend/dist/
 build/

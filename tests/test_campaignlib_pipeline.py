@@ -7,6 +7,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import campaignlib
+from campaignlib.api import client as client_mod
+from campaignlib.api.codex_cli import _CodexCliClient
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -26,6 +28,33 @@ class FakeStreamAPI:
         if self._responses:
             return self._responses.pop(0)
         return f"[stub-response-{len(self.calls)}]"
+
+
+class _OneChunkStream:
+    """Minimal stream context manager for the Codex streaming facade seam."""
+
+    def __init__(self, text):
+        self.text = text
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        return False
+
+    @property
+    def text_stream(self):
+        return iter((self.text,))
+
+
+class _RecordingMessages:
+    def __init__(self, response="complete codex response"):
+        self.calls = []
+        self.response = response
+
+    def stream(self, **kwargs):
+        self.calls.append(kwargs)
+        return _OneChunkStream(self.response)
 
 
 @pytest.fixture
@@ -164,6 +193,70 @@ def test_extract_resumes_after_partial_completion(fake_stream_api, tmp_path):
     assert (extract_dir / "extract_001.md").read_text() == "precomputed"
     # stream_api was called only for the non-cached chunks
     assert len(fake_stream_api.calls) == len(result) - 1
+
+
+def test_codex_extract_pipeline_dispatches_chunks_sequentially_in_order(
+    fake_stream_api, tmp_path
+):
+    """Codex uses the same ordered one-call-per-chunk pipeline contract."""
+    text = "# Chapter 1\nalpha\n# Chapter 2\nbeta\n"
+    fake_stream_api._responses = ["codex-result-1", "codex-result-2"]
+
+    saved = campaignlib.run_extract_pipeline(
+        client=object(), text=text,
+        extract_system="EXTRACT SYSTEM", model="gpt-5-codex",
+        extract_dir=tmp_path / "codex-extracts", chunk_size=60000,
+        split_chapters="# Chapter",
+    )
+
+    assert [call["model"] for call in fake_stream_api.calls] == [
+        "gpt-5-codex", "gpt-5-codex",
+    ]
+    assert [call["user"] for call in fake_stream_api.calls] == [
+        "# Chapter 1\nalpha", "# Chapter 2\nbeta",
+    ]
+    assert [path.read_text(encoding="utf-8") for path in saved] == [
+        "codex-result-1", "codex-result-2",
+    ]
+
+
+def test_codex_extract_resume_makes_no_extra_model_calls(fake_stream_api, tmp_path):
+    """A fully cached Codex extraction remains a zero-call resume."""
+    extract_dir = tmp_path / "codex-extracts"
+    extract_dir.mkdir()
+    (extract_dir / "extract_001.md").write_text("cached one", encoding="utf-8")
+    (extract_dir / "extract_002.md").write_text("cached two", encoding="utf-8")
+
+    saved = campaignlib.run_extract_pipeline(
+        client=object(), text="# Chapter 1\none\n# Chapter 2\ntwo\n",
+        extract_system="EXTRACT SYSTEM", model="gpt-5-codex",
+        extract_dir=extract_dir, chunk_size=60000,
+        split_chapters="# Chapter",
+    )
+
+    assert [path.name for path in saved] == ["extract_001.md", "extract_002.md"]
+    assert fake_stream_api.calls == []
+
+
+def test_codex_streaming_facade_returns_complete_one_chunk_and_marks_cache_prefix():
+    """A one-chunk child response is returned intact with cache metadata."""
+    client = _CodexCliClient()
+    messages = _RecordingMessages()
+    client.messages = messages
+
+    result = client_mod.stream_api(
+        client, "SYSTEM PREFIX", "user request", "gpt-5-codex",
+        cache_system=True,
+    )
+
+    assert result == "complete codex response"
+    request = messages.calls[0]
+    assert request["system"] == [{
+        "type": "text",
+        "text": "SYSTEM PREFIX",
+        "cache_control": {"type": "ephemeral"},
+    }]
+    assert request["messages"] == [{"role": "user", "content": "user request"}]
 
 
 def test_extract_uses_split_chapters(fake_stream_api, tmp_path):
@@ -591,6 +684,32 @@ def test_extract_no_normalizer_no_suffix_is_default_shape(fake_stream_api, tmp_p
     )
     assert fake_stream_api.calls[0]["system"] == "BASE"
     assert fake_stream_api.calls[0]["user"] == "hello"
+
+
+def test_codex_extract_selected_inputs_keep_order_and_normal_artifact_paths(
+    fake_stream_api, tmp_path
+):
+    """Codex extraction uses the same selected chunks and file naming contract."""
+    fake_stream_api._responses = ["first codex result", "second codex result"]
+    extract_dir = tmp_path / "artifacts" / "codex-extracts"
+    saved = campaignlib.run_extract_pipeline(
+        client=object(),
+        text="# One\nfirst\n# Two\nsecond\n",
+        extract_system="SYS",
+        model="gpt-5-codex",
+        extract_dir=extract_dir,
+        split_chapters="# ",
+        filename_template="scene_{i:02d}.md",
+    )
+
+    assert [p.name for p in saved] == ["scene_01.md", "scene_02.md"]
+    assert [p.parent for p in saved] == [extract_dir, extract_dir]
+    assert [call["user"] for call in fake_stream_api.calls] == [
+        "# One\nfirst", "# Two\nsecond",
+    ]
+    assert [p.read_text(encoding="utf-8") for p in saved] == [
+        "first codex result", "second codex result",
+    ]
 
 
 def test_synthesize_applies_input_normalizer_per_file(fake_stream_api, tmp_path):

@@ -58,6 +58,7 @@ from campaignlib import (
     run_single_batch,
     stream_api,
 )
+from campaignlib.api.client import resolve_cli_model
 
 SYSTEM_PROMPT = """You are a campaign documentation writer for a D&D session. You receive a structured list of atomic facts about one session, grouped by type and subject. You render them as a clean markdown document matching the shape below.
 
@@ -211,7 +212,7 @@ def main() -> None:
                              "to Claude as authoritative reference for spellings, "
                              "factions, and identities. Use the campaign's "
                              "module proper-noun inventory.")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help=f"Claude model id (default: {DEFAULT_MODEL}). "
                              f"Use claude-opus-4-7 for highest quality, "
                              f"claude-sonnet-4-6 for speed/cost.")
@@ -223,6 +224,9 @@ def main() -> None:
                         help="Also write the structured input we send to Claude. "
                              "Useful for debugging the prompt without spending tokens.")
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     merged_path = Path(args.merged).expanduser().resolve()
     output_path = Path(args.output).expanduser().resolve()

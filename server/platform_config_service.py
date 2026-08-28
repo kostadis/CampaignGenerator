@@ -201,7 +201,7 @@ class ResolvedSelection:
     growing a second refusal field (research D2).
     """
 
-    model: str
+    model: str | None
     backend: str
     model_origin: str  # request | service | platform | literal
     backend_origin: str  # request | service | platform
@@ -359,7 +359,11 @@ def resolve_selection(
         # a live server would make them untestable in isolation.
         runtime = None
 
-    plat_model = (getattr(runtime, "default_model", None) or DEFAULT_MODEL) if runtime else DEFAULT_MODEL
+    # Keep the platform and literal fallbacks distinguishable.  This is
+    # important for Codex: an inherited Claude id is omitted, while an
+    # explicitly supplied incompatible id is refused below.
+    plat_model = getattr(runtime, "default_model", None) if runtime else None
+    literal_model = DEFAULT_MODEL
     plat_backend = (getattr(runtime, "default_backend", None) or "anthropic") if runtime else "anthropic"
 
     svc_model = (getattr(service, "model", None) or "").strip() or None if service is not None else None
@@ -395,11 +399,28 @@ def resolve_selection(
         # registry for dgx, OpenRouter's for openrouter), which is what
         # happened before 003 and is a *tool* default rather than a
         # substitution of anybody's pick.
-        model, model_origin = "", backend_origin
+        if backend == "codex-cli":
+            # Keep the source tier for diagnostics even though the inherited
+            # model is deliberately omitted from the Codex invocation.
+            model, model_origin = None, "platform" if plat_model else "literal"
+        else:
+            model, model_origin = "", backend_origin
     elif plat_model:
         model, model_origin = plat_model, "platform"
     else:
-        model, model_origin = DEFAULT_MODEL, "literal"
+        model, model_origin = literal_model, "literal"
+
+    # A platform/literal model is an inherited default, not an operator's
+    # Codex choice.  Do not forward a Claude default after switching the
+    # backend, but leave explicit request/service values intact so the normal
+    # compatibility refusal remains visible to the caller.
+    if (
+        backend == "codex-cli"
+        and model_origin in ("platform", "literal")
+        and isinstance(model, str)
+        and model.lower().startswith("claude-")
+    ):
+        model = None
 
     endpoint = getattr(service, "endpoint", None) if service is not None else None
     endpoints = tuple(getattr(service, "endpoints", ()) or ()) if service is not None else ()

@@ -258,6 +258,33 @@ def test_main_force_regenerates_and_resets_approved_false(monkeypatch, fake_stre
     assert len(fake_stream_api.calls) == 2
 
 
+def test_codex_narration_keeps_html_review_queue_and_approved_false(
+    monkeypatch, tmp_path
+):
+    """Subscription narration preserves the review comment and stays unapproved."""
+    chapter = tmp_path / "chapter_09_test.md"
+    chapter.write_text(SCENE_CHAPTER, encoding="utf-8")
+    output = tmp_path / "narrative.md"
+    calls = []
+
+    def fake_codex_stream(client, system, user, model, *args, **kwargs):
+        calls.append({"model": model, "user": user})
+        return 'Narrated scene.\n<!-- table-speech reclassified: "roll high" -->'
+
+    monkeypatch.setattr(nc, "stream_api", fake_codex_stream)
+    monkeypatch.setattr(nc, "client_from_args", lambda *a, **kw: None)
+    monkeypatch.setattr(sys, "argv", [
+        "narrate_chapter.py", str(chapter), "--output", str(output),
+        "--backend", "codex-cli", "--model", "gpt-5-codex",
+    ])
+    nc.main()
+
+    fm, body = split_frontmatter(output.read_text(encoding="utf-8"))
+    assert fm["approved"] is False
+    assert "<!-- table-speech reclassified: \"roll high\" -->" in body
+    assert calls and all(call["model"] == "gpt-5-codex" for call in calls)
+
+
 def test_main_dry_run_makes_no_model_calls_and_writes_nothing(monkeypatch, fake_stream_api, tmp_path):
     chapter = tmp_path / "chapter_09_test.md"
     chapter.write_text(SCENE_CHAPTER, encoding="utf-8")

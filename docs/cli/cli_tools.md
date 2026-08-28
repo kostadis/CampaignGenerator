@@ -25,7 +25,7 @@ it prints a notice and runs live. Not related to `ensemble_batch` (local
 multi-chapter dispatch). `scene_extract`/`enhance_summary` additionally keep
 their detached `--batch --submit-only` / `--batch --collect` mode.
 
-## Shared backend: `codex-cli` consistency audits
+## Shared backend: `codex-cli` across the CLI family
 
 `session_doc/check_consistency.py --backend codex-cli` runs the canonical audit
 through one isolated `codex exec` process using the operator's saved ChatGPT
@@ -41,11 +41,55 @@ timeout, failed process, or empty result exits nonzero without retrying another
 provider or saving a successful report. `max_tokens` remains accepted by the
 shared facade but Codex exposes no matching CLI output-limit flag.
 
-This feature certifies the single-document consistency auditor and the
-`consistency-check`/`staged-consistency` Codex skills. The shared backend name is
-visible to other CLIs for vocabulary consistency, but other request shapes and
-the web backend selector are outside this feature. `--batch` is the Anthropic
-Message Batches API and is always refused with `codex-cli`.
+The Codex adapter supports the direct text shapes used across this command
+family and a separate brokered structured-turn shape for the ensemble polish
+loop. The consistency-auditor and `consistency-check`/`staged-consistency`
+Codex skills remain supported. `--batch` is the Anthropic Message Batches API
+and is always refused with `codex-cli`.
+
+## Canonical command family (30)
+
+The shared backend vocabulary covers these 30 production commands: 26 shared-
+registrar entries, the plural-endpoint `facts_to_state` command, and three
+hand-written forwarding dispatchers (`ensemble`, `ensemble_batch`, and
+`ensemble_extract`). `sd_agent` is also a runtime dispatcher even though it uses
+the shared registrar. Every dispatcher forwards the same resolved backend and
+model intent to its children. All commands preserve their existing inputs,
+artifacts, resume/skip behavior, and human checkpoints.
+
+| Family | Commands |
+|---|---|
+| Session document (8) | `check_consistency`, `enhance_summary`, `scene_extract`, `sd_agent`, `sd_consistency`, `sd_plan`, `sd_narrate`, `vtt_voice_compare` |
+| Prep, ingest, search, integration (5) | `prep`, `transform`, `dnd_sheet`, `query`, `scabard_sync` |
+| Grounding (8) | `planning`, `party`, `make_tracking`, `distill`, `campaign_state`, `npc_table`, `grounding_sections`, `thread_registry` |
+| Ensemble (9) | `synthesise_world_state`, `synthesise_polish`, `extract_facts`, `facts_to_state`, `narrate_chapter`, `polish`, `ensemble`, `ensemble_batch`, `ensemble_extract` |
+
+### Codex setup and model rules
+
+Install the Codex CLI with the required ephemeral/structured execution support
+and run `codex login` before selecting `--backend codex-cli`. Each direct or
+brokered turn uses a fresh isolated child and the saved ChatGPT subscription
+login. The child does not receive `OPENAI_API_KEY` or `CODEX_API_KEY`, and no
+other provider or API-key fallback is attempted.
+
+Model precedence for Codex is explicit `--model`, then `CG_CODEX_MODEL`, then
+the subscription's own default. An omitted model is intentionally omitted from
+argv; an explicit compatible model is forwarded unchanged, while an explicit
+`claude-*` model fails clearly. `CG_CODEX_TIMEOUT` sets the positive finite
+child deadline (default `600` seconds). The brokered `polish` loop replays typed
+history to Codex, but only the parent process executes declared document tools
+and applies mutations.
+
+The provider `--batch` flag is Anthropic-only and refuses Codex before child
+work. It must not be confused with application-level `--batch-scenes`, local
+ensemble fan-out, resume/skip, or HTML/human review. The seven explicit UI
+faces are consistency audit, Session Prep transform, voice comparison, Scabard
+sync, synthesis polish, per-chapter narration, and post-assemble polish; the
+remaining commands are exposed through existing workflow faces.
+
+`scabard_sync` takes `SCABARD_ACCESS_KEY` from the request boundary and supplies
+it only as a child-environment override. Never put that secret in argv,
+previews, logs, or diagnostics.
 
 ## prep
 
@@ -85,7 +129,7 @@ prep --no-log --beat "..."
 | `--mode` / `-m` | `single` | `single` or `pipeline` |
 | `--clipboard` / `-c` | off | Copy output instead of (or after) API call |
 | `--config` | CWD `config.yaml` or `config/config.yaml` | Path to config YAML |
-| `--model` | `claude-sonnet-4-20250514` | Claude model to use |
+| `--model` | omitted | Optional model; resolved by the selected backend (Claude keeps its runtime default, Codex uses its saved-login default) |
 | `--no-log` | off | Skip saving log file |
 
 ### Pipeline mode
@@ -334,7 +378,7 @@ enhance_summary ... --batch --submit-only  # detach; sidecar in <output>.batch.j
 enhance_summary ... --batch --collect      # retrieve from sidecar
 ```
 
-Default model: `claude-sonnet-4-6`. `--fast` switches to Haiku.
+Model: omitted by default; the selected backend supplies its default. `--fast` switches to Haiku where supported.
 
 ### scene_extract
 
@@ -365,7 +409,7 @@ scene_extract ... --batch-scenes --batch-max-tokens 48000  # raise the per-group
 scene_extract ... --no-batch-scenes                        # explicitly force the per-scene loop
 ```
 
-Default model: `claude-sonnet-4-6`.
+Model: omitted by default; the selected backend supplies its default.
 
 | Flag | Default | Description |
 |---|---|---|
@@ -426,7 +470,7 @@ sd_narrate session-summary.md \
 sd_narrate ... --scene 3
 ```
 
-Default model: `claude-sonnet-4-6`. `--fast` switches to Haiku.
+Model: omitted by default; the selected backend supplies its default. `--fast` switches to Haiku where supported.
 
 ### assemble
 
@@ -439,6 +483,23 @@ assemble narration/ \
     --title  "Chapter 37 — A Gem of a Problem"
 ```
 
+
+## scabard_sync
+
+Synchronizes campaign entities to Scabard. The CLI accepts `--access-key` for
+manual use (or `SCABARD_ACCESS_KEY` from the environment); the Web UI accepts
+the key in the request body and supplies it only as a child-process environment
+override. The key is never included in argv, command previews, logs, or error
+diagnostics. Select `--backend codex-cli` for the extraction pass only after
+installing Codex and completing `codex login`.
+
+```bash
+export SCABARD_ACCESS_KEY='…'   # keep the secret out of argv
+scabard_sync --campaign-id 121 --username gm \
+    --world-state docs/world_state.md \
+    --campaign-state docs/campaign_state.md \
+    --party docs/party.md --backend codex-cli
+```
 
 ## migrate_session_doc
 

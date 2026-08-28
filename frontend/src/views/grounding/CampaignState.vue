@@ -53,7 +53,7 @@ const runParams = computed(() => ({
   extract_dir: extractDir.value,
   split_chapters: splitChapters.value,
   no_log: noLog.value,
-  model: config.model,
+  model: config.model || undefined,
 }))
 
 watch(output, (newOutput) => {

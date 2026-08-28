@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://campaigngenerator.local/contracts/codex-brokered-turn.schema.json",
+  "title": "CodexBrokeredTurnResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["text", "tool_calls"],
+  "anyOf": [
+    {
+      "properties": {
+        "text": {"minLength": 1}
+      }
+    },
+    {
+      "properties": {
+        "tool_calls": {"minItems": 1}
+      }
+    }
+  ],
+  "properties": {
+    "text": {
+      "type": "string"
+    },
+    "tool_calls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "arguments_json"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "arguments_json": {
+            "type": "string",
+            "minLength": 2
+          }
+        }
+      }
+    }
+  }
+}

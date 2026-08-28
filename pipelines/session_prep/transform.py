@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 from campaignlib import add_backend_args, client_from_args, run_single_batch, stream_api, DEFAULT_MODEL
+from campaignlib.api.client import resolve_cli_model
 
 
 OUTLINE_SYSTEM = """\
@@ -75,11 +76,14 @@ def main() -> None:
     )
     parser.add_argument(
         "--model",
-        default=DEFAULT_MODEL,
+        default=None,
         help="Claude model to use (default: campaignlib.DEFAULT_MODEL / $CAMPAIGN_MODEL)",
     )
     add_backend_args(parser)
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     dossier = read_input(args.input)
 

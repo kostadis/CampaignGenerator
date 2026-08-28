@@ -238,6 +238,103 @@ def test_per_backend_model_memory_survives_switching_active(tmp_path):
     assert cfg.backends.openrouter.model == "anthropic/claude-3"
 
 
+def test_old_four_profile_document_loads_and_gains_codex_profile(tmp_path):
+    """A pre-Codex editor document remains readable after the schema grows.
+
+    The four named profiles are the on-disk shape used before feature 016.
+    Loading it must preserve each remembered model while supplying the new
+    subscription profile as an empty, opt-in choice.
+    """
+    svc = _service(tmp_path)
+    svc.session_doc_path.write_text(
+        yaml.safe_dump(
+            {
+                "backends": {
+                    "active": "openrouter",
+                    "anthropic": {"model": "claude-sonnet-4"},
+                    "dgx": {
+                        "endpoint": "http://dgx.local:8000",
+                        "model": "Qwen/Qwen3-32B",
+                    },
+                    "openrouter": {"model": "anthropic/claude-3.7-sonnet"},
+                    "claude-code": {"model": "claude-opus-4-1"},
+                }
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+
+    cfg = svc.get_config()
+    assert cfg.backends.active == "openrouter"
+    assert cfg.backends.anthropic.model == "claude-sonnet-4"
+    assert cfg.backends.dgx.model == "Qwen/Qwen3-32B"
+    assert cfg.backends.dgx.endpoint == "http://dgx.local:8000"
+    assert cfg.backends.openrouter.model == "anthropic/claude-3.7-sonnet"
+    assert cfg.backends.claude_code.model == "claude-opus-4-1"
+    assert cfg.backends.codex_cli.model is None
+
+
+def test_default_codex_profile_is_canonical_and_empty(tmp_path):
+    cfg = _service(tmp_path).get_config()
+    codex = cfg.backends.codex_cli
+    assert codex.model is None
+    assert codex.endpoint is None
+    assert codex.batch is None
+
+
+def test_codex_cli_yaml_alias_loads_and_serializes(tmp_path):
+    path = tmp_path / "session_doc.yaml"
+    path.write_text(
+        "backends:\n"
+        "  active: codex-cli\n"
+        "  codex-cli:\n"
+        "    model: gpt-5-codex\n",
+        encoding="utf-8",
+    )
+
+    cfg = load_session_editor_config(path)
+    assert cfg.backends.active == "codex-cli"
+    assert cfg.backends.codex_cli.model == "gpt-5-codex"
+
+    save_session_editor_config(path, cfg)
+    on_disk = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert on_disk["backends"]["codex-cli"]["model"] == "gpt-5-codex"
+    assert "codex_cli" not in on_disk["backends"]
+
+
+def test_codex_model_memory_is_isolated_from_existing_backends(tmp_path):
+    svc = _service(tmp_path)
+    svc.update_config(
+        {
+            "backends": {
+                "active": "anthropic",
+                "anthropic": {"model": "claude-sonnet-4"},
+            }
+        }
+    )
+    svc.update_config(
+        {
+            "backends": {
+                "active": "codex-cli",
+                "codex-cli": {"model": "gpt-5-codex"},
+            }
+        }
+    )
+
+    cfg = svc.get_config()
+    assert cfg.backends.active == "codex-cli"
+    assert cfg.backends.codex_cli.model == "gpt-5-codex"
+    assert cfg.backends.anthropic.model == "claude-sonnet-4"
+
+    # Switching the active selector is not allowed to leak a model from one
+    # provider profile into another.
+    svc.update_config({"backends": {"active": "anthropic"}})
+    assert svc.get_config().backends.anthropic.model == "claude-sonnet-4"
+    svc.update_config({"backends": {"active": "codex-cli"}})
+    assert svc.get_config().backends.codex_cli.model == "gpt-5-codex"
+
+
 # ── profile CRUD + 404/409 ──────────────────────────────────────────────
 
 

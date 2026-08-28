@@ -81,6 +81,7 @@ from campaignlib import (
     split_frontmatter,
     stream_api,
 )
+from campaignlib.api.client import resolve_cli_model
 
 # Same synthesis prompt distill.py uses — this script only swaps the input
 # corpus, so the prompt must stay identical for the comparison to be honest.
@@ -479,7 +480,7 @@ def main() -> None:
                         help="Include each fact's source_quote in the synthesis "
                              "input for grounding (default: on). --no-quotes for "
                              "a clean baseline comparison against the extracts.")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help=f"Model id (default: {DEFAULT_MODEL}). "
                              f"Use claude-opus-4-7 for highest-quality synthesis; "
                              f"an OpenRouter id (e.g. anthropic/claude-sonnet-4) for --backend openrouter.")
@@ -495,6 +496,9 @@ def main() -> None:
                              "making no API call (e.g. to run the synthesis "
                              "through `claude -p` instead).")
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     corpus_paths = expand_globs(args.corpus) if args.corpus else []
     dossier_paths = expand_globs(args.dossiers) if args.dossiers else []

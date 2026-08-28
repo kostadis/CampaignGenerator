@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import ast
 import re
+from argparse import Namespace
 
 import pytest
 from pathlib import Path
@@ -192,3 +193,77 @@ def test_every_anthropic_entry_point_is_guarded() -> None:
             if "_require_anthropic_credential" in calls:
                 found.add(node.name)
     assert found == guarded, f"unguarded Anthropic entry points: {guarded - found}"
+
+
+@pytest.mark.parametrize(
+    "family,relative_path",
+    [
+        ("session-document", "session_doc/check_consistency.py"),
+        ("prep-ingest-search", "pipelines/session_prep/prep.py"),
+        ("grounding", "pipelines/grounding/planning.py"),
+        ("ensemble", "pipelines/ensemble/extract_facts.py"),
+    ],
+)
+def test_four_family_codex_child_receives_no_metered_credentials(
+    monkeypatch, tmp_path, family, relative_path
+):
+    """The fake child path is keyless for every command family."""
+    # Keep the family inventory import-safe while exercising the actual
+    # process-backed adapter.  The representative source is intentionally
+    # read, not imported, because DGX-only dependencies are optional.
+    source = (REPO_ROOT / relative_path).read_text(encoding="utf-8")
+    assert "resolve_cli_model" in source
+
+    from campaignlib.api.client import client_from_args
+    from tests.helpers.fake_codex_cli import FakeCodexCli
+
+    fake = FakeCodexCli(tmp_path, response=FakeCodexCli.direct(f"{family} ok"))
+    fake.install(monkeypatch)
+    for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CODEX_API_KEY"):
+        monkeypatch.setenv(key, f"metered-{key.lower()}")
+
+    args = Namespace(
+        backend="codex-cli", endpoint=None, batch=False, model=None
+    )
+    client = client_from_args(args)
+    response = client.messages.create(
+        model=None,
+        max_tokens=64,
+        system=f"Credential gate for {family}",
+        messages=[{"role": "user", "content": "return ok"}],
+    )
+    assert response.content[0].text == f"{family} ok"
+    assert fake.last_call is not None
+    assert all(key not in fake.last_call.env for key in (
+        "ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CODEX_API_KEY"
+    ))
+
+
+def test_codex_child_failure_is_not_retried_as_anthropic(monkeypatch, tmp_path):
+    """A Codex failure remains a Codex error even when no key is present."""
+    from campaignlib.api.client import client_from_args
+    from campaignlib.api.codex_cli import CodexCliError
+    from tests.helpers.fake_codex_cli import FakeCodexCli
+
+    fake = FakeCodexCli(
+        tmp_path,
+        response=FakeCodexCli.direct(
+            "must not be used", returncode=31, stderr="subscription unavailable"
+        ),
+    )
+    fake.install(monkeypatch)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("CODEX_API_KEY", raising=False)
+
+    client = client_from_args(
+        Namespace(backend="codex-cli", endpoint=None, batch=False, model=None)
+    )
+    with pytest.raises(CodexCliError, match="exited 31"):
+        client.messages.create(
+            model=None,
+            max_tokens=64,
+            system="No provider fallback",
+            messages=[{"role": "user", "content": "fail"}],
+        )
+    assert len(fake.calls) == 1

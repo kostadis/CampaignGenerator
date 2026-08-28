@@ -71,6 +71,7 @@ from campaignlib import (
     utc_now_iso,
     write_batch_sidecar,
 )
+from campaignlib.api.client import resolve_cli_model
 from campaignlib.party_config import load_party_config_arg, require_from_config
 from campaignlib.players_config import speaker_map_from_configs
 from .io import parse_vtt
@@ -315,7 +316,7 @@ def main() -> None:
                              "including the game master's. Replaces the old "
                              "--gm-player, which could hold only one of a "
                              "person's several labels.")
-    parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--model", default=None)
     add_backend_args(parser)
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku instead of Sonnet (~4x cheaper, faster)")
@@ -391,6 +392,14 @@ def main() -> None:
     if args.fast:
         args.model = "claude-haiku-4-5-20251001"
         print("  [fast mode: claude-haiku-4-5-20251001]")
+
+    try:
+        model_intent = resolve_cli_model(args, legacy_default=DEFAULT_MODEL)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    effective_model = model_intent.effective_model
+    args.model = effective_model
 
     if (args.submit_only or args.collect) and not args.batch:
         parser.error("--submit-only and --collect require --batch")

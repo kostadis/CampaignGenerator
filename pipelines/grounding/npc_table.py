@@ -25,6 +25,7 @@ from campaignlib import (
     save_log,
     stream_api,
 )
+from campaignlib.api.client import resolve_cli_model
 
 # This file lives at pipelines/grounding/npc_table.py; find_default_config()'s
 # script-dir fallback expects to sit next to config/ (the repo root), which
@@ -65,11 +66,14 @@ def main() -> None:
                         help="Copy the table to clipboard")
     parser.add_argument("--config", default=find_default_config(str(REPO_ROOT / "npc_table.py")),
                         help="Path to config YAML")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help="Claude model to use")
     add_backend_args(parser)
     parser.add_argument("--no-log", action="store_true", help="Skip saving a log file")
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     config, config_dir = load_config(args.config)
     user_prompt = assemble_docs(config, args.docs, config_dir)

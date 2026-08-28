@@ -364,6 +364,7 @@ class MockClient:
     def __init__(self, responses: list[MockResponse]):
         self._responses = list(responses)
         self.calls = 0
+        self.requests = []
 
     @property
     def messages(self):
@@ -372,6 +373,12 @@ class MockClient:
     def create(self, **_kwargs):
         if not self._responses:
             raise RuntimeError("MockClient ran out of scripted responses")
+        # ``run_agent_loop`` appends the next assistant/tool-result messages
+        # after the API call.  Snapshot the message list so assertions inspect
+        # the exact request that was sent on each turn.
+        request = dict(_kwargs)
+        request["messages"] = list(_kwargs.get("messages", []))
+        self.requests.append(request)
         self.calls += 1
         return self._responses.pop(0)
 
@@ -485,6 +492,165 @@ def test_loop_returns_tool_error_to_model(tmp_path):
     # No section was inserted, no apply_edit-style changelog entry from the failed insert.
     assert len(doc.sections) == 3
     assert all(e.tool != "insert_section" for e in doc.changelog)
+
+
+def _tool_response(*blocks: MockBlock) -> MockResponse:
+    return MockResponse(
+        content=list(blocks), stop_reason="tool_use", usage=MockUsage()
+    )
+
+
+def _finish_response(summary: str = "Finished after feedback.") -> MockResponse:
+    return _tool_response(
+        MockBlock(type="tool_use", id="finish", name="finish",
+                  input={"summary": summary})
+    )
+
+
+def _run_tool_feedback(tmp_path, *blocks: MockBlock):
+    doc = WorkingDoc.parse(SAMPLE_DOC)
+    ctx = make_ctx(doc, voices={
+        "brewbarry_new_pipeline": "New voice.",
+        "brewbarry_old_pipeline": "Old voice.",
+    })
+    client = MockClient([_tool_response(*blocks), _finish_response()])
+    trace = _trace(tmp_path)
+    finished, summary = run_agent_loop(
+        client, system="(codex-neutral test)", ctx=ctx, model="codex-model",
+        max_iterations=10, trace=trace,
+    )
+    trace.close()
+    return doc, ctx, client, finished, summary
+
+
+@pytest.mark.parametrize(
+    ("label", "block"),
+    [
+        (
+            "malformed",
+            MockBlock(type="tool_use", id="bad", name="apply_edit", input={}),
+        ),
+        (
+            "unknown",
+            MockBlock(type="tool_use", id="unknown", name="delete_everything", input={}),
+        ),
+        (
+            "out-of-scope",
+            MockBlock(
+                type="tool_use", id="scope", name="insert_section",
+                input={
+                    "after_section_index": 1,
+                    "narrator": "NotInRoster",
+                    "new_text": "x" * 200,
+                    "reason": "This operation must remain within the declared roster",
+                    "recap_quote": "After the goblin retreat",
+                },
+            ),
+        ),
+        (
+            "ambiguous",
+            MockBlock(
+                type="tool_use", id="ambiguous", name="read_voice_file",
+                input={"character": "Brewbarry"},
+            ),
+        ),
+    ],
+)
+def test_invalid_or_ambiguous_operations_return_feedback_without_edits(
+    tmp_path, label, block
+):
+    """Codex action refusals are feedback, never successful edit entries."""
+    doc, _ctx, client, finished, _summary = _run_tool_feedback(tmp_path, block)
+
+    assert finished is True
+    assert client.calls == 2
+    # The second turn receives the host-generated result before it can finish.
+    result_blocks = client.requests[1]["messages"][-1]["content"]
+    assert result_blocks and any("error" in result["content"] for result in result_blocks)
+    assert not any(entry.tool in {"apply_edit", "insert_section"}
+                   for entry in doc.changelog)
+
+
+def test_repeated_and_conflicting_invalid_operations_have_no_successful_edits(
+    tmp_path,
+):
+    """Repeated/conflicting invalid actions remain errors, not partial edits."""
+    repeated_bad_edit = MockBlock(
+        type="tool_use", id="repeat", name="apply_edit",
+        input={
+            "section_index": 999,
+            "new_text": "x" * 200,
+            "reason": "This repeated edit targets no declared document section",
+            "dimension": "prose",
+        },
+    )
+    conflicting_bad_edit = MockBlock(
+        type="tool_use", id="conflict", name="apply_edit",
+        input={
+            "section_index": "not-an-index",
+            "new_text": "x" * 200,
+            "reason": "This conflicting edit has malformed section scope",
+            "dimension": "prose",
+        },
+    )
+    doc, _ctx, client, finished, _summary = _run_tool_feedback(
+        tmp_path, repeated_bad_edit, repeated_bad_edit, conflicting_bad_edit
+    )
+
+    assert finished is True
+    result_blocks = client.requests[1]["messages"][-1]["content"]
+    assert len(result_blocks) == 3
+    assert all(result.get("is_error") is True for result in result_blocks)
+    assert not any(entry.tool == "apply_edit" for entry in doc.changelog)
+
+
+def test_finish_at_turn_40_is_clean_and_does_not_force_finish(tmp_path):
+    """The documented 40-turn ceiling still permits a finish on turn 40."""
+    responses = [
+        _tool_response(MockBlock(type="tool_use", id=f"list-{i}",
+                                 name="list_sections", input={}))
+        for i in range(39)
+    ] + [_finish_response("Completed on the final allowed turn.")]
+    client = MockClient(responses)
+    doc = WorkingDoc.parse(SAMPLE_DOC)
+    ctx = make_ctx(doc)
+    trace = _trace(tmp_path)
+    finished, summary = run_agent_loop(
+        client, system="(codex-neutral test)", ctx=ctx, model="codex-model",
+        max_iterations=40, trace=trace,
+    )
+    trace.close()
+
+    assert finished is True
+    assert "final allowed turn" in summary
+    assert client.calls == 40
+    assert not any(entry.tool == "(forced)" for entry in doc.changelog)
+
+
+def test_finish_conflict_does_not_count_a_later_edit_as_success(tmp_path):
+    """A finish plus an unsafe edit in one response cannot create an edit."""
+    doc = WorkingDoc.parse(SAMPLE_DOC)
+    ctx = make_ctx(doc)
+    client = MockClient([
+        _tool_response(
+            MockBlock(type="tool_use", id="finish", name="finish",
+                      input={"summary": "Stop now."}),
+            MockBlock(type="tool_use", id="bad-edit", name="apply_edit",
+                      input={"section_index": 1, "new_text": "A valid-looking replacement " * 10,
+                             "reason": "This conflicting edit must not be applied after finish",
+                             "dimension": "prose"}),
+        ),
+    ])
+    trace = _trace(tmp_path)
+    finished, _summary = run_agent_loop(
+        client, system="(codex-neutral test)", ctx=ctx, model="codex-model",
+        max_iterations=40, trace=trace,
+    )
+    trace.close()
+
+    assert finished is True
+    assert client.calls == 1
+    assert not any(entry.tool == "apply_edit" for entry in doc.changelog)
 
 
 # ── Sanity check ──────────────────────────────────────────────────────────────

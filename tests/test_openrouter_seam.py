@@ -13,6 +13,7 @@ import pytest
 import campaignlib
 from campaignlib.api import client as client_mod
 from campaignlib.api import backends as backends_mod
+from campaignlib.selection import BACKENDS
 
 
 from repo_sources import repo_python_files  # noqa: E402
@@ -137,6 +138,54 @@ def test_add_backend_args_accepts_codex_cli():
     campaignlib.add_backend_args(p)
     ns = p.parse_args(["--backend", "codex-cli"])
     assert ns.backend == "codex-cli"
+
+
+def test_add_backend_args_consumes_the_canonical_backend_tuple():
+    p = argparse.ArgumentParser()
+    p.add_argument("--model", default=None)
+    campaignlib.add_backend_args(p)
+    backend_action = next(a for a in p._actions if a.dest == "backend")
+    assert tuple(backend_action.choices) == BACKENDS
+
+
+def _intent_field(intent, field):
+    """Read the resolver's documented intent fields from a model or mapping."""
+    if isinstance(intent, dict):
+        return intent[field]
+    return getattr(intent, field)
+
+
+@pytest.mark.parametrize(
+    ("backend", "model", "legacy_default", "expected", "explicit"),
+    [
+        # Omitted Codex models stay omitted so CG_CODEX_MODEL/subscription
+        # defaults remain in charge; a Claude legacy default must not leak.
+        ("codex-cli", None, "claude-fable-5", None, False),
+        # An explicit compatible model is retained unchanged.
+        ("codex-cli", "gpt-5-codex", "claude-fable-5", "gpt-5-codex", True),
+        # Empty input is the same as omission for Codex.
+        ("codex-cli", "   ", "claude-fable-5", None, False),
+        # Existing backends retain their command-specific legacy default.
+        ("anthropic", None, "claude-fable-5", "claude-fable-5", False),
+        ("anthropic", "claude-opus-4-6", "claude-fable-5", "claude-opus-4-6", True),
+        ("openrouter", "qwen/qwen3-next-80b", "claude-fable-5", "qwen/qwen3-next-80b", True),
+        # Some DGX/dispatcher commands intentionally have no legacy model.
+        ("dgx", None, None, None, False),
+    ],
+)
+def test_resolve_cli_model_preserves_omission_and_legacy_default_intent(
+    backend, model, legacy_default, expected, explicit
+):
+    args = argparse.Namespace(backend=backend, model=model)
+    intent = client_mod.resolve_cli_model(args, legacy_default=legacy_default)
+    assert _intent_field(intent, "effective_model") == expected
+    assert _intent_field(intent, "explicit") is explicit
+
+
+def test_resolve_cli_model_rejects_explicit_incompatible_codex_model():
+    args = argparse.Namespace(backend="codex-cli", model="CLAUDE-SONNET-4-6")
+    with pytest.raises((ValueError, RuntimeError, SystemExit), match="incompatible|Claude"):
+        client_mod.resolve_cli_model(args, legacy_default="claude-fable-5")
 
 
 def test_make_client_routes_codex_cli(monkeypatch):

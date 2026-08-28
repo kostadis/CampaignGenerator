@@ -28,6 +28,7 @@ from campaignlib import (
     run_single_batch,
     stream_api,
 )
+from campaignlib.api.client import resolve_cli_model
 
 # This file lives at session_doc/check_consistency.py; find_default_config()'s
 # script-dir fallback expects to sit next to config/ (the repo root), which
@@ -72,11 +73,13 @@ def main() -> None:
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
-    resolved_backend = args.backend
-    if resolved_backend == "anthropic":
-        resolved_backend = os.environ.get("CG_BACKEND") or "anthropic"
-    if resolved_backend != "codex-cli" and args.model is None:
-        args.model = DEFAULT_MODEL
+    try:
+        model_intent = resolve_cli_model(args, legacy_default=DEFAULT_MODEL)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    effective_model = model_intent.effective_model
+    args.model = effective_model
 
     doc_path = Path(args.document).expanduser()
     if not doc_path.exists():

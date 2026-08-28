@@ -73,6 +73,7 @@ from campaignlib import (
     run_synthesize_pipeline,
     stream_api,
 )
+from campaignlib.api.client import resolve_cli_model
 
 from campaignlib.party_config import (
     ResolvedCharacter as PartyCharacter,
@@ -238,7 +239,7 @@ def main() -> None:
                              "alias in dossier frontmatter is rewritten to its "
                              "canonical name before extract/synth, and a "
                              "'Known NPCs' roster seeds the system prompts.")
-    parser.add_argument("--model", default=DEFAULT_MODEL,
+    parser.add_argument("--model", default=None,
                         help="Model id (Claude id, or an OpenRouter id for --backend openrouter)")
     add_backend_args(parser)
     parser.add_argument("--dump-input", default=None, metavar="FILE",
@@ -247,6 +248,9 @@ def main() -> None:
     parser.add_argument("--dump-only", action="store_true",
                         help="With --dump-input: stop after writing the dump, making no API call.")
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     if args.synthesize_only and args.extract_only:
         print("Error: --synthesize-only and --extract-only are mutually exclusive",

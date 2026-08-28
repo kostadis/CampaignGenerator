@@ -30,6 +30,7 @@ from campaignlib import (
     load_config,
     save_log,
 )
+from campaignlib.api.client import resolve_cli_model
 from campaignlib.party_config import load_party_config_arg, require_from_config
 from session_doc import roster_from_config
 from campaignlib.players_config import load_players_config_arg
@@ -620,6 +621,7 @@ def run_agent_loop(client, *, system: str, ctx: ToolContext, model: str,
                     tool_results.append({
                         "type": "tool_result", "tool_use_id": block.id,
                         "content": "Acknowledged. Loop terminating.",
+                        "is_error": False,
                     })
                     trace.log_tool_call(turn, "finish", tool_input,
                                         f"summary len={len(finish_summary)}", False)
@@ -630,6 +632,11 @@ def run_agent_loop(client, *, system: str, ctx: ToolContext, model: str,
                         "is_error": True,
                     })
                     trace.log_tool_call(turn, "finish", tool_input, str(e), True)
+                if finished_this_turn:
+                    # A valid finish is terminal for this response. Ignore any
+                    # later model-supplied operations so they cannot mutate the
+                    # document after the parent accepted the final summary.
+                    break
                 continue
 
             fn = TOOL_DISPATCH.get(tool_name)
@@ -649,6 +656,7 @@ def run_agent_loop(client, *, system: str, ctx: ToolContext, model: str,
                 tool_results.append({
                     "type": "tool_result", "tool_use_id": block.id,
                     "content": content,
+                    "is_error": False,
                 })
                 trace.log_tool_call(turn, tool_name, tool_input, content, False)
             except ToolError as e:
@@ -808,7 +816,7 @@ def main() -> None:
     parser.add_argument("--max-iterations", type=int, default=DEFAULT_MAX_ITERATIONS,
                         help=f"Hard cap on agent loop turns (default {DEFAULT_MAX_ITERATIONS})")
     parser.add_argument("--config", default=find_default_config(__file__))
-    parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--model", default=None)
     add_backend_args(parser)
     parser.add_argument("--no-log", action="store_true",
                         help="Skip the run-summary log in <output_dir>/logs/")
@@ -817,6 +825,9 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true",
                         help="Print the system prompt and tool inventory, then exit")
     args = parser.parse_args()
+    args.model = resolve_cli_model(
+        args, legacy_default=DEFAULT_MODEL
+    ).effective_model
 
     # Load config (not strictly needed but matches every other CLI's UX)
     try:

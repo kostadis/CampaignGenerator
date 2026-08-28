@@ -22,6 +22,7 @@ from campaignlib import (
     run_single_batch,
     stream_api,
 )
+from campaignlib.api.client import resolve_cli_model
 from session_doc.io import load_extractions, load_scene_extractions, parse_plan
 
 
@@ -48,7 +49,7 @@ def main() -> None:
                              '(e.g. "Session 12 — Icespire Hold").')
     parser.add_argument("--out", metavar="FILE", default="plan.md",
                         help="Where to write plan.md (default: plan.md in cwd).")
-    parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--model", default=None)
     add_backend_args(parser)
     parser.add_argument("--fast", action="store_true",
                         help="Use Haiku (~4x cheaper, faster).")
@@ -64,6 +65,14 @@ def main() -> None:
 
     if args.fast:
         args.model = "claude-haiku-4-5-20251001"
+
+    try:
+        model_intent = resolve_cli_model(args, legacy_default=DEFAULT_MODEL)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    effective_model = model_intent.effective_model
+    args.model = effective_model
 
     # Proposal gate runs BEFORE anything else so unapproved proposals abort
     # before scene-extraction loading or any Claude calls.
