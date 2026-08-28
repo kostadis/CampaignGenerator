@@ -116,8 +116,6 @@ def test_system_text_blocks_preserve_order_and_ignore_cache_metadata(monkeypatch
         "first instruction\nsecond instruction"
     )
     assert "cache_control" not in developer_arg
-
-
 def test_create_uses_exact_role_transport_and_isolated_child(monkeypatch):
     captured = []
     monkeypatch.setenv("OPENAI_API_KEY", "metered-openai")

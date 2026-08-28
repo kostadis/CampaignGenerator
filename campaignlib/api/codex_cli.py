@@ -49,7 +49,6 @@ _BROKER_RESULT_SCHEMA = {
         },
     },
 }
-
 _DISABLED_FEATURES = (
     "apps",
     "hooks",
@@ -88,7 +87,6 @@ execute, invent, or describe tool results as completed work. Tool names are
 opaque strings; arguments_json must be a JSON object encoded as a string.
 """
 
-
 class CodexCliError(RuntimeError):
     """Actionable, non-retryable failure at the Codex subscription boundary."""
 
@@ -114,8 +112,6 @@ class _CodexUsage:
 
     input_tokens = None
     output_tokens = None
-
-
 class _CodexCliResponse:
     """Minimal response shape consumed by ``campaignlib.api.call_api``."""
 
@@ -675,8 +671,6 @@ class _CodexCliBrokeredMessages:
             output_schema=_BROKER_RESULT_SCHEMA,
         )
         return _brokered_response(raw)
-
-
 class _CodexCliClient:
     """Small Anthropic-shaped facade over ``codex exec`` subscription use."""
 

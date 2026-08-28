@@ -105,7 +105,6 @@ Scabard sync, synthesis polish, chapter narration, and post-assemble polish)
 reuse existing owning config boundaries; they do not add persisted stage
 configuration. Scabard's access key is request-scoped and child-environment
 only, never an argv or log value.
-
 Every `/run/*` router resolves through
 `server/platform_config_service.py::resolve_default_model` rather than hardcoding a default. Which
 *backend* a service runs against is resolved by the same canonical request → service → platform
