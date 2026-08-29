@@ -938,3 +938,72 @@ class TestSwitchNeverPinsTheOldSession:
 
         # 017's read-side healing (US3) is what recovers from this state;
         # US2's client change is what stops it being created. Both are needed.
+
+
+class TestRepointedPathsReportExistence:
+    """017 US4 (FR-008, FR-009) — the backend half, automated.
+
+    US4 needs no new product code: PathField and MultiPathField already
+    probe GET /api/config/path-status and render per-path existence. They
+    reported the wrong thing before this feature only because the value they
+    were handed was stale. What IS worth locking here is the contract those
+    components depend on (C-14): after a switch, the resolved path is the
+    one under the NEW session, and path-status answers about that path.
+
+    The visual half — the ✅/❌ marker, and it clearing when the GM edits the
+    field — has no test runner in this repo and stays a manual step in
+    quickstart.md §4.
+    """
+
+    def _campaign(self, tmp_path):
+        _write(
+            tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        )
+        old = tmp_path / "summaries" / "20260811"
+        new = tmp_path / "summaries" / "20260901"
+        old.mkdir(parents=True)
+        new.mkdir(parents=True)
+        # The old session has a recap; the new one does not yet.
+        (old / "gm-assist.md").write_text("old recap", encoding="utf-8")
+        return tmp_path, old, new
+
+    def test_missing_target_is_reported_missing_not_blanked(self, tmp_path):
+        campaign, old, new = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(old)}})
+        client.put(
+            "/api/editor/config", json={"paths": {"session_recap": "gm-assist.md"}}
+        )
+        # Present under the old session.
+        before = client.get("/api/editor/config").json()
+        assert client.get(
+            "/api/config/path-status", params={"path": before["paths"]["session_recap"]}
+        ).json()["exists"] is True
+
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(new)}})
+        after = client.get("/api/editor/config").json()
+
+        # FR-008: the name survives the switch — not blanked, not
+        # auto-discovered into something else.
+        assert after["paths_stored"]["session_recap"] == "gm-assist.md"
+        # ...and it now resolves under the new session, where it is missing.
+        assert after["paths"]["session_recap"] == str((new / "gm-assist.md").resolve())
+        assert client.get(
+            "/api/config/path-status", params={"path": after["paths"]["session_recap"]}
+        ).json()["exists"] is False
+
+    def test_existing_target_is_reported_present(self, tmp_path):
+        campaign, _, new = self._campaign(tmp_path)
+        (new / "scene_extractions").mkdir()
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(new)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        body = client.get("/api/editor/config").json()
+        assert client.get(
+            "/api/config/path-status",
+            params={"path": body["paths"]["scene_extractions_dir"]},
+        ).json()["exists"] is True

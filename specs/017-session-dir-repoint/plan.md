@@ -237,3 +237,44 @@ diff before the gate is called.
 
 **Worktree**: implementation happens in a dedicated git worktree off `main`
 (this repo already keeps `.claude/worktrees/`), never on a shared checkout.
+
+---
+
+## Post-Implementation Constitution Re-Check (T031)
+
+Re-run against the delivered diff. **No verdict changed.** Principle XIII's
+three grounds are now executable rather than argued:
+
+| Ground | Test |
+|---|---|
+| Nothing changes shape | `test_healthy_campaign_is_byte_identical_through_load_modify_save` |
+| The read never writes | `test_read_never_writes` (asserts bytes **and** mtime across two reads of a damaged config) |
+| Nothing is silent | `test_warning_names_the_field_and_both_values`, `test_one_warning_per_stale_field` |
+
+Weakening any of those three turns this feature into the lazy in-place
+upgrade Principle XIII prohibits, and the one-shot migrator fallback above
+becomes required. They are the load-bearing tests of this feature.
+
+Principle XII (one spelling, defaults declared once) held under pressure: no
+relativization logic entered the frontend, and `frontend/src/utils/paths.ts`
+has a **zero-line diff**.
+
+Principle VI/XI held: `server/routers/scene_editor.py`'s only source change
+is two keys inside `_serialize_resolved`; no `_build_*_cmd()` was touched, so
+no run command and no CLI capability moved.
+
+### One scoping error, recorded
+
+The plan's blast-radius list (`tests/` in Project Structure) was **wrong** —
+it named 7 test files, and the change actually broke 71 tests in files it did
+not name (`test_editor_pipeline.py`, `test_editor_verify_routes.py` and
+others). Cause: `ResolvedEditorConfig` is constructed directly as a fake in
+~70 places across the suite, and the two new fields were added as *required*.
+The phase checkpoints ran only the named subset and reported green while the
+tree was red.
+
+Fixed by defaulting both fields — an additive field must never break a
+constructor — and the full suite is back to the exact 7 pre-existing
+failures. The lesson for the next feature: **a phase gate that runs a subset
+is not a gate.** The subset is useful for fast iteration; only the full suite
+closes a phase.

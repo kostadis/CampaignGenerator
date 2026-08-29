@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import hashlib
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -240,19 +240,6 @@ class ResolvedEditorConfig:
     """
 
     paths: EditorPaths
-    # 017 — the HEALED, as-stored form of `paths`: relative wherever a
-    # relative form preserves the meaning, absolute only for a deliberate
-    # out-of-tree override. This is what the editor binds and echoes back
-    # in PUT /api/editor/config. `paths` above stays the resolved-absolute
-    # projection every _build_*_cmd() in routers/scene_editor.py reads, and
-    # the invariant `paths[k] == resolve(paths_stored[k])` holds for every
-    # field. Binding the absolute projection and PUTting it back is what
-    # let a session switch pin the session you just left.
-    paths_stored: EditorPaths
-    # 017 — one entry per stale pin re-pointed on this read, naming the
-    # field, the stored value and the value now in use. Empty on a healthy
-    # config. A correction to stored configuration is never silent (FR-006).
-    warnings: list[str]
     extract: ExtractKnobs
     narrate: NarrateKnobs
     backends: Backends
@@ -278,6 +265,27 @@ class ResolvedEditorConfig:
     # in here — this value is computed with no request in scope, so a route
     # applies step 1 on top of it.
     batch_scenes_effective: bool = False
+    # 017 — the HEALED, as-stored form of `paths`: relative wherever a
+    # relative form preserves the meaning, absolute only for a deliberate
+    # out-of-tree override. This is what the editor binds and echoes back in
+    # PUT /api/editor/config. `paths` above stays the resolved-absolute
+    # projection every _build_*_cmd() in routers/scene_editor.py reads, and
+    # the invariant `paths[k] == resolve(paths_stored[k])` holds for every
+    # field. Binding the absolute projection and PUTting it back is what let
+    # a session switch pin the session you just left.
+    #
+    # DEFAULTED, deliberately. resolved_editor_config() — the only place in
+    # server/ that constructs this — always passes both explicitly. But the
+    # test suite builds ResolvedEditorConfig fakes directly in ~70 places,
+    # and an additive field must not break a constructor. A fake that never
+    # exercises the wire shape gets an empty EditorPaths and no warnings,
+    # which is the honest "not computed" value rather than a fallback to
+    # `paths` (that would be the dual-location probe Principle XIII forbids).
+    paths_stored: EditorPaths = field(default_factory=EditorPaths)
+    # 017 — one entry per stale pin re-pointed on this read, naming the
+    # field, the stored value and the value now in use. Empty on a healthy
+    # config. A correction to stored configuration is never silent (FR-006).
+    warnings: list[str] = field(default_factory=list)
 
 
 def _set_nested(target: dict[str, Any], path: tuple[str, ...], value: Any) -> None:

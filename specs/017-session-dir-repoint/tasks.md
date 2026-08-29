@@ -272,21 +272,36 @@ report the wrong thing today only because the value they are handed is stale. If
 either task below fails, treat it as a defect in Phases 3–5, not as new US4
 scope.
 
-- [ ] T024 [US4] Verify existence marking after a re-point by running `quickstart.md` §4 against `frontend/src/components/shared/PathField.vue` and `frontend/src/components/shared/MultiPathField.vue`: missing targets show ❌ not found, present ones show ✅, editing a field to an existing file clears the mark without a reload (FR-009). **Accept**: §4 passes unmodified; no source change required.
-- [ ] T025 [US4] Verify that `resolvePathWithBase` in `frontend/src/utils/paths.ts:9-19` re-evaluates when `runtime.session_dir` changes — it reads a pinia ref inside a `computed`, so a switch must re-resolve and re-probe every field without a reload. This is the hinge US4 rests on. **Accept**: after a session switch, every `PathField` re-probes; if it does not, fix the reactivity here rather than adding a manual refresh in the component (C-C).
+- [X] T024 [US4] Verify existence marking after a re-point by running `quickstart.md` §4 against `frontend/src/components/shared/PathField.vue` and `frontend/src/components/shared/MultiPathField.vue`: missing targets show ❌ not found, present ones show ✅, editing a field to an existing file clears the mark without a reload (FR-009). **Accept**: §4 passes unmodified; no source change required.
+- [X] T025 [US4] Verify that `resolvePathWithBase` in `frontend/src/utils/paths.ts:9-19` re-evaluates when `runtime.session_dir` changes — it reads a pinia ref inside a `computed`, so a switch must re-resolve and re-probe every field without a reload. This is the hinge US4 rests on. **Accept**: after a session switch, every `PathField` re-probes; if it does not, fix the reactivity here rather than adding a manual refresh in the component (C-C).
 
 **Checkpoint**: All four user stories independently functional.
+
+**Implementation notes (US4)**
+
+- Confirmed verify-only: **no product code changed**. Two tests were added
+  (`TestRepointedPathsReportExistence`) to automate the backend half of the
+  contract US4 depends on — after a switch the resolved path is the one under the
+  new session, `path-status` answers about *that* path, and the field's name
+  survives rather than being blanked (FR-008).
+- **T025's reactivity chain only works because of T011**, which is worth recording:
+  `resolvePathWithBase` early-returns on an absolute input *without touching the
+  store*. Pre-017 the editor bound absolutes, so `PathField.resolvedPath` had no
+  reactive dependency on `session_dir` at all and could never re-probe. Binding
+  relative values is what makes the existence marker live.
+- The visual half — the ✅/❌ marker itself, and it clearing on edit — has no test
+  runner here and remains manual (`quickstart.md` §4).
 
 ---
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T026 [P] Document the read-side classification rule and the `paths_stored` / `warnings` wire keys in `docs/config/session-editor-isolation.md`, including why the write-time `_relativized_paths` choke point is retained rather than removed. **Accept**: a reader can derive the four states without opening the service.
-- [ ] T027 [P] Add a byte-identity regression test to `tests/test_session_editor_config_service.py`: a campaign whose stored paths are already relative produces an identical `session_doc.yaml` after a full load-modify-save cycle (plan.md Principle XIII ground 1). **Accept**: no diff; this is the claim the constitutional justification rests on.
-- [ ] T028 Verify the standing constraints at HEAD: `git diff main -- server/platform_config_service.py` is empty (C-A); the diff contains no change inside any `_build_*_cmd()` in `server/routers/scene_editor.py` (C-B); `grep -n "relativ" frontend/src/utils/paths.ts` returns nothing (C-C); no existing test was edited (C-D). **Accept**: all four hold.
-- [ ] T029 Run the full regression set from `quickstart.md` §6: `python -m pytest -q`, `python -m pytest -q tests/test_retrieve_render_isolation.py` (Principle III), and `npm run build` in `frontend/`. **Accept**: green, and the pytest count is ≥ the T002 baseline.
-- [ ] T030 Run `quickstart.md` end to end (§1–§5, including §5's boot-override case for FR-011), then restore the fixture campaign from the T004 backups. **Accept**: every section passes; `diff` against the `.bak` files shows the campaign restored.
-- [ ] T031 Re-check `plan.md`'s Constitution Check against the delivered diff, with Principle XIII tested by name and its three grounds confirmed by T020 and T027. **Accept**: no verdict changes, or the fallback one-shot migrator path in `plan.md` is opened as a follow-up feature.
+- [X] T026 [P] Document the read-side classification rule and the `paths_stored` / `warnings` wire keys in `docs/config/session-editor-isolation.md`, including why the write-time `_relativized_paths` choke point is retained rather than removed. **Accept**: a reader can derive the four states without opening the service.
+- [X] T027 [P] Add a byte-identity regression test to `tests/test_session_editor_config_service.py`: a campaign whose stored paths are already relative produces an identical `session_doc.yaml` after a full load-modify-save cycle (plan.md Principle XIII ground 1). **Accept**: no diff; this is the claim the constitutional justification rests on.
+- [X] T028 Verify the standing constraints at HEAD: `git diff main -- server/platform_config_service.py` is empty (C-A); the diff contains no change inside any `_build_*_cmd()` in `server/routers/scene_editor.py` (C-B); `grep -n "relativ" frontend/src/utils/paths.ts` returns nothing (C-C); no existing test was edited (C-D). **Accept**: all four hold.
+- [X] T029 Run the full regression set from `quickstart.md` §6: `python -m pytest -q`, `python -m pytest -q tests/test_retrieve_render_isolation.py` (Principle III), and `npm run build` in `frontend/`. **Accept**: green, and the pytest count is ≥ the T002 baseline.
+- [ ] T030 **(NOT DONE — requires a browser; left for the GM)** Run `quickstart.md` end to end (§1–§5, including §5's boot-override case for FR-011), then restore the fixture campaign from the T004 backups. **Accept**: every section passes; `diff` against the `.bak` files shows the campaign restored.
+- [X] T031 Re-check `plan.md`'s Constitution Check against the delivered diff, with Principle XIII tested by name and its three grounds confirmed by T020 and T027. **Accept**: no verdict changes, or the fallback one-shot migrator path in `plan.md` is opened as a follow-up feature.
 
 ---
 

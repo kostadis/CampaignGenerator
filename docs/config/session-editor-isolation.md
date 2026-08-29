@@ -650,3 +650,90 @@ all five phases; schema → redesigned; backend storage → `backends` map.
 | API change | net-new REST collection | mostly internal; existing `GET/PUT /api/editor/config` stays |
 | Read sites to unwind | tests only | ~20 helpers in `scene_editor.py` |
 | Hardest part | (none — additive) | deleting the `CONFIG` global without changing behavior |
+
+## Addendum (feature 017) — the resolved view is a projection, not an editing buffer
+
+Phase 5 established that session-scoped paths are **stored relative** to
+`runtime.session_dir` and **resolved absolute on read**, with
+`_relativized_paths` as the write-time choke point so a stored value
+re-tracks a later `session_dir` change. That was correct, and
+`tests/test_session_editor_config_service.py` proved it.
+
+What it did not anticipate is that the *frontend* would use the resolved
+projection as its editing buffer. `GET /api/editor/config` returned paths
+already absolute; the editor loaded those into its inputs; the drawer's
+debounced auto-save PUT them back. After a session switch those absolutes
+point into the previous session, and `relativize_path` cannot collapse a
+path that is not under the current `session_dir` — so it stored them
+verbatim as "genuine out-of-tree overrides". **A stale display value was
+promoted into a permanent pin, and the field stopped tracking
+`session_dir` forever.** See `specs/017-session-dir-repoint/`.
+
+### What changed
+
+`ResolvedEditorConfig` (and the wire shape) now carries **three** path-ish
+things, and the distinction between them is the whole point:
+
+| Key | Form | Who reads it |
+|---|---|---|
+| `paths` | resolved absolute | every `_build_*_cmd()` in `routers/scene_editor.py`, server-side. Unchanged. |
+| `paths_stored` | as-stored (relative, or absolute for a deliberate override) | the frontend binds this and echoes **this** back on PUT |
+| `warnings` | list of strings | the editor renders them; empty on a healthy config |
+
+Invariant, asserted by test: `paths[k] == resolve(paths_stored[k])` for
+every field. `paths` is resolved *from* `paths_stored` rather than derived
+separately, so the two cannot disagree.
+
+The frontend never relativizes. `frontend/src/utils/paths.ts` resolves for
+display only and must not gain an inverse — relativization has exactly one
+implementation, server-side.
+
+### The read-side classification
+
+`relativize_path` handles the write side and stays unmodified. It cannot,
+however, tell a stale value from a deliberate override: at write time the
+two are byte-identical. Only a read, which can see where the current session
+directory sits among its siblings, has that context. Hence
+`_classify_session_path` in `session_editor_config_service.py`, and its four
+states — relative, in-session absolute, **stale pin**, deliberate override.
+`specs/017-session-dir-repoint/data-model.md` has the table.
+
+A stale pin — absolute, under `parent(session_dir)`, not under
+`session_dir`, and within `campaign_dir` — is re-pointed on read and
+announced. Two guards keep it from over-firing: a root parent disqualifies
+(otherwise every absolute path on the machine is "under the parent"), and
+the value must be inside the campaign. Both err toward "deliberate
+override", because silently moving a GM's deliberate pointer is worse than
+leaving one stale value visible.
+
+### Why this is not a lazy in-place upgrade
+
+Constitution Principle XIII forbids rewriting state because you happened to
+read it. This is compatible, and deliberately built to stay so:
+
+- **Nothing changes shape.** No field is added, removed, renamed or retyped
+  in `session_doc.yaml`. `test_healthy_campaign_is_byte_identical_through_load_modify_save`
+  is that claim in executable form.
+- **The read does not write.** `get_config()` returns the raw document; no
+  `_save` is reachable from `resolved_editor_config()`;
+  `test_read_never_writes` asserts bytes *and* mtime are unchanged across
+  two reads of a damaged config. The healed value lands only on a later
+  write the GM triggered for their own reasons, through the unchanged
+  choke point.
+- **Nothing is silent.** Every correction is announced with before and
+  after, on the wire and on stderr — the same posture as
+  `EditorPaths._drop_retired_fields`.
+
+Those two tests are the argument. Weakening either turns this into the
+thing Principle XIII prohibits, and the fallback is the one-shot migrator
+described in `specs/017-session-dir-repoint/plan.md`.
+
+### Known gap, deliberately out of scope
+
+`narrate.context` is a **list** under `narrate`, not a field of
+`EditorPaths`. It is resolved to absolute client-side and the server never
+relativizes it, so it remains a second session-pinning vector: context
+entries pointing inside a session directory stay pinned across a switch.
+Fixing it means changing its storage semantics from absolute to relative,
+which is a schema-meaning change needing its own ruling under Principle
+XIII. Not folded into 017.
