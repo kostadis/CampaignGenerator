@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfigStore, type Backend } from '../../stores/config'
 import { resolvePath, resolvePathList, resolvePathWithBase } from '../../utils/paths'
@@ -62,7 +62,17 @@ function normalizeBackend(value: any): Backend {
 
 function loadConfigFields() {
   const ec = config.editorConfig
-  const paths = ec?.paths ?? {}
+  // 017 — bind the STORED form, not the resolved-absolute projection.
+  // `paths` is absolute; loading it here and letting the drawer's
+  // debounced auto-save PUT it back is what pinned the session you just
+  // left: relativize_path cannot collapse a path that is not under the
+  // current session_dir, so it stored the stale absolute verbatim as a
+  // "genuine out-of-tree override" and the field stopped tracking forever.
+  // A relative name carries no session identity, so it cannot pin anything.
+  // Deliberately NO `?? ec?.paths` fallback — a dual-location back-compat
+  // probe is exactly what the constitution's Principle XIII forbids, and
+  // the server always sends this key.
+  const paths = ec?.paths_stored ?? {}
   const extract = ec?.extract ?? {}
   const narrate = ec?.narrate ?? {}
   const backends = ec?.backends ?? {}
@@ -144,9 +154,42 @@ async function applyConfig() {
 
 function scheduleApply() {
   if (!configHydrated) return  // initial load — don't echo back to the server
+  if (rehydrating) return      // 017 — a re-hydration is not a user edit
   if (applyTimer) clearTimeout(applyTimer)
   applyTimer = setTimeout(applyConfig, 350)
 }
+
+// ── 017 — re-hydrate when the session changes ─────────────────────────
+//
+// Session Config writes runtime.session_dir; the store then refetches the
+// editor slice. This component only read that slice in onMounted, so an
+// editor that was already mounted kept the paths of the session the GM
+// just left — and its next auto-save wrote them back.
+//
+// Deliberately keyed on `editorConfig.session_dir` rather than on the whole
+// `editorConfig` object: that ref is REPLACED after every updateEditor(),
+// so watching its identity would re-hydrate mid-typing and clobber
+// keystrokes the GM had entered since the debounce fired. session_dir
+// changes exactly when the session changes, which is the actual trigger.
+// It is still read off the slice this component binds, not from
+// resolved.runtime.session_dir, so there is no second derivation.
+let rehydrating = false
+async function rehydrateFromStore() {
+  // Drop any debounce armed BEFORE the switch — it is holding pre-switch
+  // values, and letting it fire would write the old session's paths back
+  // under the new session_dir (FR-003).
+  if (applyTimer) { clearTimeout(applyTimer); applyTimer = null }
+  rehydrating = true
+  loadConfigFields()
+  await nextTick()
+  rehydrating = false
+}
+
+watch(() => config.editorConfig?.session_dir, (next, prev) => {
+  if (!configHydrated) return
+  if (next === prev) return
+  rehydrateFromStore()
+})
 
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,

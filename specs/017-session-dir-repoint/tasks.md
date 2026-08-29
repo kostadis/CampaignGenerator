@@ -113,15 +113,37 @@ reloading — every session-scoped path resolves under `20260825`
 
 ### Tests for User Story 1
 
-- [ ] T010 [US1] Write a failing end-to-end test in `tests/test_editor_service_integration.py`: with relative stored paths, `PUT /api/config/runtime {"session_dir": S2}` followed by `GET /api/editor/config` returns every session-scoped path under `S2` and every campaign-scoped path unchanged (FR-001, FR-013, spec US1 scenarios 1 and 4). **Accept**: fails before T011–T013, passes after.
+- [X] T010 [US1] Write a failing end-to-end test in `tests/test_editor_service_integration.py`: with relative stored paths, `PUT /api/config/runtime {"session_dir": S2}` followed by `GET /api/editor/config` returns every session-scoped path under `S2` and every campaign-scoped path unchanged (FR-001, FR-013, spec US1 scenarios 1 and 4). **Accept**: fails before T011–T013, passes after.
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Change `loadConfigFields()` in `frontend/src/views/session/SessionDocEditor.vue:63-88` to hydrate the seven path refs from `ec?.paths_stored` instead of `ec?.paths`, keeping the existing per-field fallbacks (`'session-summary.md'`, `'scene_extractions'`, `'narration'`). Leave `outputDir`'s `config.resolved?.runtime?.session_dir` fallback in place. **Accept**: `npm run build` clean; the drawer shows relative names with `PathField`'s `→ /abs/path` hint now rendering (it never has).
-- [ ] T012 [US1] Add a watcher on `config.editorConfig` in `frontend/src/views/session/SessionDocEditor.vue` (near the `onMounted` block at line 738) that re-runs `loadConfigFields()` when the slice changes, guarded so the re-hydration does not re-trigger the debounced auto-save — reuse the existing `configHydrated` flag pattern (line 741) rather than inventing a second guard. **Accept**: `npm run build` clean; switching sessions in another tab and returning shows the new paths without a reload.
-- [ ] T013 [US1] In `frontend/src/stores/config.ts:197`, make `updateRuntime()` additionally `await refreshEditor()` when its partial contains a `session_dir` key — and only then, so the sidebar's backend/model/batch writes do not pay a wasted round trip. `refreshEditor()` already exists at line 177 with no caller outside the store. **Accept**: `npm run build` clean; `quickstart.md` §1 passes by hand.
+- [X] T011 [US1] Change `loadConfigFields()` in `frontend/src/views/session/SessionDocEditor.vue:63-88` to hydrate the seven path refs from `ec?.paths_stored` instead of `ec?.paths`, keeping the existing per-field fallbacks (`'session-summary.md'`, `'scene_extractions'`, `'narration'`). Leave `outputDir`'s `config.resolved?.runtime?.session_dir` fallback in place. **Accept**: `npm run build` clean; the drawer shows relative names with `PathField`'s `→ /abs/path` hint now rendering (it never has).
+- [X] T012 [US1] Add a watcher on `config.editorConfig` in `frontend/src/views/session/SessionDocEditor.vue` (near the `onMounted` block at line 738) that re-runs `loadConfigFields()` when the slice changes, guarded so the re-hydration does not re-trigger the debounced auto-save — reuse the existing `configHydrated` flag pattern (line 741) rather than inventing a second guard. **Accept**: `npm run build` clean; switching sessions in another tab and returning shows the new paths without a reload.
+- [X] T013 [US1] In `frontend/src/stores/config.ts:197`, make `updateRuntime()` additionally `await refreshEditor()` when its partial contains a `session_dir` key — and only then, so the sidebar's backend/model/batch writes do not pay a wasted round trip. `refreshEditor()` already exists at line 177 with no caller outside the store. **Accept**: `npm run build` clean; `quickstart.md` §1 passes by hand.
 
 **Checkpoint**: User Story 1 fully functional — the reported defect is fixed. MVP deliverable.
+
+**Implementation notes (US1)**
+
+- **T010 passed on first run** — recorded honestly rather than presented as red-green.
+  The service already re-tracked (that is what `test_session_editor_config_service.py`
+  proved before this feature), so the route-level assertion was green before any
+  frontend change. It still earns its place: it also pins `paths_stored`, so a future
+  regression that re-points `paths` but not the value the editor binds fails here.
+- **T012 deviated from the task text, deliberately.** The task said watch
+  `config.editorConfig`. Implemented instead as a watch on
+  `config.editorConfig?.session_dir`, because that ref is *replaced* after every
+  `updateEditor()` — watching its identity would re-hydrate mid-typing and clobber
+  keystrokes entered since the 350 ms debounce fired. `session_dir` changes exactly
+  when the session changes, which is the real trigger, and it is still read off the
+  slice this component binds (not `resolved.runtime.session_dir`), so the
+  one-derivation intent of FR-010 is preserved.
+- **T012 also clears a debounce armed before the switch.** Not in the task text, but
+  required by FR-003: a timer scheduled pre-switch holds pre-switch values, and
+  letting it fire would write the old session's paths under the new `session_dir` —
+  reintroducing the exact bug through the back door.
+- **T011 deliberately has no `?? ec?.paths` fallback.** A dual-location back-compat
+  probe is what Principle XIII forbids; the server always sends `paths_stored`.
 
 ---
 

@@ -699,3 +699,98 @@ class TestPathsStoredWireShape:
 
         assert first == second
         assert doc.read_bytes() == before
+
+
+class TestSessionSwitchRepoints:
+    """017 US1 (FR-001, FR-013) — the switch takes, end to end over HTTP.
+
+    The service-level equivalent already existed
+    (test_session_editor_config_service.py's
+    "Switching session_dir alone must retrack the relative value"), which is
+    why this feature is a frontend/wire fix rather than a service fix. This
+    class locks the same guarantee at the route boundary, where the editor
+    actually reads it, and additionally pins `paths_stored` — the value the
+    editor binds — so a regression that re-points `paths` but not
+    `paths_stored` cannot pass.
+    """
+
+    def _campaign(self, tmp_path):
+        _write(
+            tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        )
+        a = tmp_path / "summaries" / "20260811"
+        b = tmp_path / "summaries" / "20260825"
+        a.mkdir(parents=True)
+        b.mkdir(parents=True)
+        return tmp_path, a, b
+
+    def test_switch_repoints_every_session_path(self, tmp_path):
+        campaign, session_a, session_b = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_a)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={
+                "paths": {
+                    "session_recap": "gm-assist.md",
+                    "session_summary": "session-summary.md",
+                    "scene_extractions_dir": "scene_extractions",
+                    "narration_dir": "narration",
+                    "voice_dir": "voice",
+                    "party": "docs/party.md",
+                }
+            },
+        )
+        before = client.get("/api/editor/config").json()
+        assert all(
+            str(session_a.resolve()) in before["paths"][f]
+            for f in ("session_recap", "scene_extractions_dir", "narration_dir")
+        )
+
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_b)}}
+        )
+        after = client.get("/api/editor/config").json()
+
+        # Every session-scoped path moved...
+        for f in ("session_recap", "session_summary",
+                  "scene_extractions_dir", "narration_dir"):
+            assert str(session_b.resolve()) in after["paths"][f], f
+            assert str(session_a.resolve()) not in after["paths"][f], f
+        # ...and the value the EDITOR binds carries no session identity at all.
+        for f in ("session_recap", "session_summary",
+                  "scene_extractions_dir", "narration_dir"):
+            assert "20260811" not in (after["paths_stored"][f] or ""), f
+            assert "20260825" not in (after["paths_stored"][f] or ""), f
+
+        # FR-013: campaign-scoped paths did not move.
+        assert after["paths"]["voice_dir"] == before["paths"]["voice_dir"]
+        assert after["paths"]["party"] == before["paths"]["party"]
+
+    def test_switch_needs_no_write_to_take_effect(self, tmp_path):
+        """FR-001: re-pointing is a property of the read, not of a save."""
+        campaign, session_a, session_b = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_a)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        doc = campaign / CONFIG_SUBDIR / "session_doc.yaml"
+        before_bytes = doc.read_bytes()
+
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_b)}}
+        )
+        after = client.get("/api/editor/config").json()
+
+        assert after["paths"]["scene_extractions_dir"] == str(
+            (session_b / "scene_extractions").resolve()
+        )
+        # session_doc.yaml was never touched by the switch.
+        assert doc.read_bytes() == before_bytes

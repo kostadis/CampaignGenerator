@@ -194,10 +194,23 @@ export const useConfigStore = defineStore('config', () => {
 
   // Runtime update — session_dir, default_model, default_backend.
   // Backed by platform.yaml; the ONLY write path for the app-wide backend.
+  //
+  // 017 — a session_dir change also invalidates the editor slice, whose
+  // every session-scoped path is interpreted against it. refreshEditor()
+  // has existed since Phase 5 with the docstring "call after any write that
+  // touches the session-editor slice" and had NO caller: refresh() below
+  // refetches /api/config/ only, so the Session Doc Editor kept showing the
+  // paths of the session the GM had just left.
+  //
+  // Gated on the key rather than fired unconditionally: the sidebar routes
+  // backend/model/batch changes through here too, and none of those touches
+  // a path. An unconditional refetch would put a wasted round trip on the
+  // app's most-clicked control.
   async function updateRuntime(partial: Record<string, any>) {
     if (!loaded.value) return
     await apiPut('/api/config/runtime', { values: partial })
     await refresh()
+    if ('session_dir' in partial) await refreshEditor()
   }
 
   // ── Session Doc Editor — the single write door ────────────────────
