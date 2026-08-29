@@ -300,7 +300,19 @@ scope.
 - [X] T027 [P] Add a byte-identity regression test to `tests/test_session_editor_config_service.py`: a campaign whose stored paths are already relative produces an identical `session_doc.yaml` after a full load-modify-save cycle (plan.md Principle XIII ground 1). **Accept**: no diff; this is the claim the constitutional justification rests on.
 - [X] T028 Verify the standing constraints at HEAD: `git diff main -- server/platform_config_service.py` is empty (C-A); the diff contains no change inside any `_build_*_cmd()` in `server/routers/scene_editor.py` (C-B); `grep -n "relativ" frontend/src/utils/paths.ts` returns nothing (C-C); no existing test was edited (C-D). **Accept**: all four hold.
 - [X] T029 Run the full regression set from `quickstart.md` §6: `python -m pytest -q`, `python -m pytest -q tests/test_retrieve_render_isolation.py` (Principle III), and `npm run build` in `frontend/`. **Accept**: green, and the pytest count is ≥ the T002 baseline.
-- [ ] T030 **(NOT DONE — requires a browser; left for the GM)** Run `quickstart.md` end to end (§1–§5, including §5's boot-override case for FR-011), then restore the fixture campaign from the T004 backups. **Accept**: every section passes; `diff` against the `.bak` files shows the campaign restored.
+- [X] T030 Run `quickstart.md` end to end (§1–§5, including §5's boot-override case for FR-011), then restore the fixture campaign from the T004 backups. **Accept**: every section passes; `diff` against the `.bak` files shows the campaign restored.
+  - **Run by the GM, 2026-08-29, after the merge of #354: the quickstart passed.** This
+    was the last unverified surface in the feature, and the one that mattered: US1 and
+    US2 are entirely frontend, this repo has no frontend test runner, and the pytest
+    suite verifies the *fixed client's contract* rather than the client. Until this run
+    the user-facing half had only `vue-tsc` and a clean build behind it.
+  - Recorded as the GM reported it — "I did the quickstart and it worked" — without
+    claiming section-by-section results. §1 (the switch takes) is the section the
+    reported defect lives in. Whether §3's deliberately-poisoned-config heal was
+    exercised by hand was not separately confirmed, so the Principle XIII behaviour
+    should still be treated as test-verified (`test_read_never_writes`,
+    `test_healthy_campaign_is_byte_identical_through_load_modify_save`) rather than
+    hand-verified.
 - [X] T031 Re-check `plan.md`'s Constitution Check against the delivered diff, with Principle XIII tested by name and its three grounds confirmed by T020 and T027. **Accept**: no verdict changes, or the fallback one-shot migrator path in `plan.md` is opened as a follow-up feature.
 
 ---
