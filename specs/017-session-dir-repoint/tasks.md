@@ -161,15 +161,50 @@ write side can be made safe. Same files, different lines.
 
 ### Tests for User Story 2
 
-- [ ] T014 [US2] Write a failing round-trip test in `tests/test_editor_service_integration.py`: after `PUT /api/config/runtime` moves `session_dir` from S1 to S2, a subsequent `PUT /api/editor/config` carrying the values from `paths_stored` leaves `session_doc.yaml` with no path containing S1 (FR-002, FR-003, contract C-11). **Accept**: fails if the payload carries resolved absolutes.
-- [ ] T015 [US2] Extend `tests/test_editor_service_integration.py` with the ordering case: writing the editor paths and `runtime.session_dir` in either order yields the same stored result, interpreted against the new session directory (spec US2 scenario 2). Also assert the three-switches-in-a-row case (US2 scenario 3) leaves only the third session named. **Accept**: both orders converge; sequential with T014 (same file).
+- [X] T014 [US2] Write a failing round-trip test in `tests/test_editor_service_integration.py`: after `PUT /api/config/runtime` moves `session_dir` from S1 to S2, a subsequent `PUT /api/editor/config` carrying the values from `paths_stored` leaves `session_doc.yaml` with no path containing S1 (FR-002, FR-003, contract C-11). **Accept**: fails if the payload carries resolved absolutes.
+- [X] T015 [US2] Extend `tests/test_editor_service_integration.py` with the ordering case: writing the editor paths and `runtime.session_dir` in either order yields the same stored result, interpreted against the new session directory (spec US2 scenario 2). Also assert the three-switches-in-a-row case (US2 scenario 3) leaves only the third session named. **Accept**: both orders converge; sequential with T014 (same file).
 
 ### Implementation for User Story 2
 
-- [ ] T016 [US2] In `buildEditorConfigPayload()` at `frontend/src/views/session/SessionDocEditor.vue:107-118`, stop calling `resolvePath()` on `session_recap`, `session_summary`, `scene_extractions_dir`, `narration_dir`, `party`, `voice_dir`, `examples_dir` — send the ref values as held (contract C-09). Leave `genre_file`'s `resolvePathWithBase(..., 'campaign')` decision to T017's review; do not delete `resolvePath` from `frontend/src/utils/paths.ts`, which `voice_file` (line 688) and `resolvePathList` still use. **Accept**: `npm run build` clean; T014 passes.
-- [ ] T017 [US2] In `saveConfig()` at `frontend/src/views/session/SessionConfig.vue:183-193`, move the `config.updateRuntime({ session_dir })` call **before** `persistTypedSections()`, so path fields written in the same save are relativized against the new session directory (FR-002 scenario 2, contract C-13). Update the comment at line 187-189, which currently explains the old order. **Accept**: `npm run build` clean; T015 passes; `quickstart.md` §2 passes by hand.
+- [X] T016 [US2] In `buildEditorConfigPayload()` at `frontend/src/views/session/SessionDocEditor.vue:107-118`, stop calling `resolvePath()` on `session_recap`, `session_summary`, `scene_extractions_dir`, `narration_dir`, `party`, `voice_dir`, `examples_dir` — send the ref values as held (contract C-09). Leave `genre_file`'s `resolvePathWithBase(..., 'campaign')` decision to T017's review; do not delete `resolvePath` from `frontend/src/utils/paths.ts`, which `voice_file` (line 688) and `resolvePathList` still use. **Accept**: `npm run build` clean; T014 passes.
+- [X] T017 [US2] In `saveConfig()` at `frontend/src/views/session/SessionConfig.vue:183-193`, move the `config.updateRuntime({ session_dir })` call **before** `persistTypedSections()`, so path fields written in the same save are relativized against the new session directory (FR-002 scenario 2, contract C-13). Update the comment at line 187-189, which currently explains the old order. **Accept**: `npm run build` clean; T015 passes; `quickstart.md` §2 passes by hand.
 
 **Checkpoint**: User Stories 1 and 2 both work. The bug can no longer create new damage.
+
+**Implementation notes (US2)**
+
+- **T014/T015 passed on first run**, because they simulate the *fixed* client. The
+  server was always capable of this; what changed is what the client echoes. With no
+  frontend test runner in this repo, the real guarantee for FR-003 is T016/T017 plus
+  `quickstart.md` §2 — the pytest suite does **not** prove US2 end to end, and should
+  not be read as if it does.
+- **Added a characterization test** (`test_echoing_the_resolved_paths_is_what_pinned_
+  the_old_session`) that deliberately asserts the BAD outcome. It is the closest thing
+  to a guard on the client obligation in contract C-09: if someone later 'simplifies'
+  the client back to sending `paths`, that test documents exactly what they will get.
+- **T017 grew beyond its task text, and had to.** Fixing only the write order would
+  not have made FR-003 hold: `SessionConfig.vue` has the *same* round-trip hazard —
+  `loadFromConfig()` read the resolved absolutes and `persistTypedSections()` wrote
+  them straight back. `deriveAll()` masks it only when discovery finds a file, so on
+  a session with no recap the old absolute survived and was written under the new
+  `session_dir`. The two session-scoped fields there now bind `paths_stored`;
+  campaign-scoped ones deliberately do not (they cannot pin a session, and their
+  `PathField`s are declared `absolute`).
+- **T016 retired a latent base mismatch** found while editing: `party`, `voice_dir`
+  and `examples_dir` are campaign-scoped but were passed through `resolvePath()`,
+  which resolves against `session_dir`. It never bit because Session Config seeded
+  them absolute, but a relative `docs/party.md` would have been sent as
+  `<session>/docs/party.md` and stored as `summaries/<date>/docs/party.md`.
+
+**Out of scope, found while implementing — `narrate.context`**
+
+`narrate.context` is a LIST of paths under `narrate`, not a field of `EditorPaths`.
+It is resolved to absolute client-side (`resolvePathList`) and the server never
+relativizes it, so it is a genuine second session-pinning vector: context entries
+pointing into a session directory stay pinned across a switch. It is **deliberately
+not fixed here** — changing its storage semantics from absolute to relative is a
+schema-meaning change that needs its own migration ruling under Principle XIII, and
+the spec scopes this feature to the editor's path *fields*. Worth its own issue.
 
 ---
 

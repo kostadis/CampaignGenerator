@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfigStore, type Backend } from '../../stores/config'
-import { resolvePath, resolvePathList, resolvePathWithBase } from '../../utils/paths'
+import { resolvePath, resolvePathList } from '../../utils/paths'
 import { apiFetch, apiPut, apiPost } from '../../api/client'
 import { connectSSE } from '../../api/sse'
 import SceneList from '../../components/scene-editor/SceneList.vue'
@@ -115,16 +115,28 @@ let configHydrated = false
 
 function buildEditorConfigPayload() {
   return {
+    // 017 — send the values AS HELD (contract C-09). These refs are bound
+    // from `paths_stored`, so they are relative names wherever a relative
+    // form preserves the meaning, and absolute only for a deliberate
+    // out-of-tree override. A relative name carries no session identity,
+    // so a PUT that lands after a session switch cannot pin the session
+    // just left. Resolution is the server's job and happens on read.
+    //
+    // This also retires a latent base mismatch: `party`, `voice_dir` and
+    // `examples_dir` are CAMPAIGN-scoped but were run through
+    // resolvePath(), which resolves against session_dir. It never bit
+    // because SessionConfig seeded them absolute, but a relative
+    // "docs/party.md" would have been sent as <session>/docs/party.md and
+    // stored as summaries/<date>/docs/party.md.
     paths: {
-      session_recap: resolvePath(session.value),
-      session_summary: resolvePath(sessionSummary.value) || undefined,
-      scene_extractions_dir: resolvePath(sceneExtractionsDir.value) || undefined,
-      narration_dir: resolvePath(narrationDir.value) || undefined,
-      party: resolvePath(party.value) || undefined,
-      voice_dir: resolvePath(voiceDir.value) || undefined,
-      examples_dir: resolvePath(examplesDir.value) || undefined,
-      // Campaign-scoped, like the rulebook it points at (#276 fix 2).
-      genre_file: resolvePathWithBase(genreFile.value, 'campaign') || undefined,
+      session_recap: session.value,
+      session_summary: sessionSummary.value || undefined,
+      scene_extractions_dir: sceneExtractionsDir.value || undefined,
+      narration_dir: narrationDir.value || undefined,
+      party: party.value || undefined,
+      voice_dir: voiceDir.value || undefined,
+      examples_dir: examplesDir.value || undefined,
+      genre_file: genreFile.value || undefined,
     },
     extract: {
       tokens: extractTokens.value || undefined,

@@ -794,3 +794,147 @@ class TestSessionSwitchRepoints:
         )
         # session_doc.yaml was never touched by the switch.
         assert doc.read_bytes() == before_bytes
+
+
+class TestSwitchNeverPinsTheOldSession:
+    """017 US2 (FR-002, FR-003, contract C-09/C-11) — the write side.
+
+    The damage mechanism this locks out: the editor used to hold the
+    RESOLVED absolute paths and PUT them back. After a switch those
+    absolutes point into the previous session, relativize_path cannot
+    collapse a path that is not under the current session_dir, so it stored
+    them verbatim as "genuine out-of-tree overrides" -- and the field never
+    tracked session_dir again. A relative name carries no session identity,
+    which is why echoing paths_stored makes this unrepresentable.
+    """
+
+    def _campaign(self, tmp_path):
+        _write(
+            tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        )
+        dirs = []
+        for name in ("20260811", "20260825", "20260901"):
+            d = tmp_path / "summaries" / name
+            d.mkdir(parents=True)
+            dirs.append(d)
+        return tmp_path, dirs
+
+    def _stored(self, campaign):
+        return (campaign / CONFIG_SUBDIR / "session_doc.yaml").read_text(
+            encoding="utf-8"
+        )
+
+    def test_echoing_paths_stored_after_a_switch_pins_nothing(self, tmp_path):
+        campaign, (a, b, _) = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(a)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions",
+                            "narration_dir": "narration"}},
+        )
+        # Switch, then do what the editor does: read, then echo back the
+        # value it binds along with an unrelated knob change.
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(b)}})
+        stored = client.get("/api/editor/config").json()["paths_stored"]
+        client.put(
+            "/api/editor/config",
+            json={"paths": stored, "narrate": {"tokens": 12345}},
+        )
+
+        on_disk = self._stored(campaign)
+        assert "20260811" not in on_disk
+        assert "20260825" not in on_disk
+        # And it still resolves under the CURRENT session.
+        after = client.get("/api/editor/config").json()
+        assert after["paths"]["scene_extractions_dir"] == str(
+            (b / "scene_extractions").resolve()
+        )
+
+    def test_both_write_orders_converge(self, tmp_path):
+        """FR-002 scenario 2 — the Session Config save writes two documents;
+        neither order may leave a value anchored to the session being left."""
+        campaign, (a, b, _) = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(a)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+
+        # Order 1: session_dir first, then the paths (the order 017 adopts).
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(b)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        order_1 = client.get("/api/editor/config").json()
+
+        # Order 2: paths first, then session_dir.
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(a)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(b)}})
+        order_2 = client.get("/api/editor/config").json()
+
+        assert order_1["paths"] == order_2["paths"]
+        assert order_1["paths_stored"] == order_2["paths_stored"]
+
+    def test_three_switches_leave_only_the_last(self, tmp_path):
+        """US2 scenario 3 — no accumulation across repeated switches."""
+        campaign, (a, b, c) = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        for d in (a, b, c):
+            client.put("/api/config/runtime", json={"values": {"session_dir": str(d)}})
+            stored = client.get("/api/editor/config").json()["paths_stored"]
+            client.put("/api/editor/config", json={"paths": stored})
+
+        on_disk = self._stored(campaign)
+        assert "20260811" not in on_disk
+        assert "20260825" not in on_disk
+        assert "20260901" not in on_disk
+        assert client.get("/api/editor/config").json()["paths"][
+            "scene_extractions_dir"
+        ] == str((c / "scene_extractions").resolve())
+
+    def test_echoing_the_resolved_paths_is_what_pinned_the_old_session(self, tmp_path):
+        """Characterization of the 017 defect — deliberately asserts the BAD
+        outcome, so the reason contract C-09 exists cannot be lost.
+
+        This is what the editor did before 017: it held `paths` (absolute,
+        resolved against the session it was showing) and PUT that back. If a
+        future change "simplifies" the client into sending `paths` again,
+        the behaviour below is what it will get -- and the field will stop
+        tracking session_dir permanently. There is no frontend test runner in
+        this repo, so this server-side test is the closest thing to a guard
+        on that client obligation.
+        """
+        campaign, (a, b, _) = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(a)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        # The old client read the ABSOLUTE block...
+        resolved_under_a = client.get("/api/editor/config").json()["paths"]
+        assert str(a.resolve()) in resolved_under_a["scene_extractions_dir"]
+
+        # ...then the session switched, and the debounce echoed it back.
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(b)}})
+        client.put("/api/editor/config", json={"paths": resolved_under_a})
+
+        # The damage: session A is now pinned into stored config verbatim,
+        # because it is not under session B and has no relative form.
+        on_disk = self._stored(campaign)
+        assert "20260811" in on_disk, "the pin is the defect this feature removes"
+
+        # 017's read-side healing (US3) is what recovers from this state;
+        # US2's client change is what stops it being created. Both are needed.
