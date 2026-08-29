@@ -89,8 +89,14 @@ class TestGetEditorConfig:
         resp = client.get("/api/editor/config")
         assert resp.status_code == 200
         body = resp.json()
+        # This is an EXHAUSTIVE lock on the wire shape, deliberately: a key
+        # appearing or vanishing unnoticed is how the two producers of this
+        # shape would drift. `paths_stored` and `warnings` were added by
+        # feature 017 (specs/017-session-dir-repoint/contracts/
+        # editor-config.md C-01..C-04) as a deliberate additive change, so
+        # the lock grows with them. Nothing else changed name or meaning.
         assert set(body.keys()) == {
-            "paths", "extract", "narrate", "backends",
+            "paths", "paths_stored", "warnings", "extract", "narrate", "backends",
             "session_name", "profiles", "active_profile", "model",
             "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
             "genre", "batch_scenes_effective",
@@ -596,3 +602,408 @@ class TestO3ModelResolution:
         service.update_config({"backends": {"active": "dgx"}})
         cfg = service.resolved_editor_config()
         assert scene_editor._selection_args(None, cfg, allow_openai_compat=False) == []
+
+
+# ── 017: paths_stored / warnings on the wire ────────────────────────────
+#
+# specs/017-session-dir-repoint/contracts/editor-config.md C-01..C-06.
+# Additive only: no existing key changes name, type or meaning. The editor
+# binds `paths_stored` and echoes THAT back — never `paths` — which is what
+# makes it impossible for a session switch to pin the session just left.
+
+
+class TestPathsStoredWireShape:
+    def _campaign_with_session(self, tmp_path, name="sess1"):
+        _write(
+            tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        )
+        session_dir = tmp_path / "summaries" / name
+        session_dir.mkdir(parents=True)
+        return tmp_path, session_dir
+
+    def test_get_config_carries_paths_stored_and_warnings(self, fresh_campaign):
+        client = TestClient(_make_app(fresh_campaign))
+        body = client.get("/api/editor/config").json()
+
+        # C-04: always present, always a list, empty on a healthy config.
+        assert body["warnings"] == []
+        # C-02: same keys as `paths`.
+        assert set(body["paths_stored"]) == set(body["paths"])
+
+    def test_paths_stored_is_relative_while_paths_is_absolute(self, tmp_path):
+        campaign, session_dir = self._campaign_with_session(tmp_path)
+        app = _make_app(campaign)
+        client = TestClient(app)
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_dir)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+
+        body = client.get("/api/editor/config").json()
+        assert body["paths_stored"]["scene_extractions_dir"] == "scene_extractions"
+        assert body["paths"]["scene_extractions_dir"] == str(
+            (session_dir / "scene_extractions").resolve()
+        )
+
+    def test_resolve_invariant_on_the_wire(self, tmp_path):
+        """C-02: paths[k] == resolve(paths_stored[k]) for every key."""
+        campaign, session_dir = self._campaign_with_session(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_dir)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={
+                "paths": {
+                    "session_recap": "gm-assist.md",
+                    "scene_extractions_dir": "scene_extractions",
+                    "voice_dir": "voice",
+                }
+            },
+        )
+        body = client.get("/api/editor/config").json()
+        service = SessionEditorConfigService(
+            PlatformConfigService(campaign)
+        )
+        session_fields = {
+            "session_recap", "session_summary",
+            "scene_extractions_dir", "narration_dir", "output_dir",
+        }
+        for key, stored in body["paths_stored"].items():
+            base = "session" if key in session_fields else "campaign"
+            assert body["paths"][key] == service.platform.resolve_path(
+                stored, base=base, session_dir=str(session_dir)
+            ), key
+
+    def test_get_is_idempotent_and_does_not_write(self, tmp_path):
+        """C-06: two GETs are byte-identical and leave the document alone."""
+        campaign, session_dir = self._campaign_with_session(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_dir)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        doc = campaign / CONFIG_SUBDIR / "session_doc.yaml"
+        before = doc.read_bytes()
+
+        first = client.get("/api/editor/config").json()
+        second = client.get("/api/editor/config").json()
+
+        assert first == second
+        assert doc.read_bytes() == before
+
+
+class TestSessionSwitchRepoints:
+    """017 US1 (FR-001, FR-013) — the switch takes, end to end over HTTP.
+
+    The service-level equivalent already existed
+    (test_session_editor_config_service.py's
+    "Switching session_dir alone must retrack the relative value"), which is
+    why this feature is a frontend/wire fix rather than a service fix. This
+    class locks the same guarantee at the route boundary, where the editor
+    actually reads it, and additionally pins `paths_stored` — the value the
+    editor binds — so a regression that re-points `paths` but not
+    `paths_stored` cannot pass.
+    """
+
+    def _campaign(self, tmp_path):
+        _write(
+            tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        )
+        a = tmp_path / "summaries" / "20260811"
+        b = tmp_path / "summaries" / "20260825"
+        a.mkdir(parents=True)
+        b.mkdir(parents=True)
+        return tmp_path, a, b
+
+    def test_switch_repoints_every_session_path(self, tmp_path):
+        campaign, session_a, session_b = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_a)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={
+                "paths": {
+                    "session_recap": "gm-assist.md",
+                    "session_summary": "session-summary.md",
+                    "scene_extractions_dir": "scene_extractions",
+                    "narration_dir": "narration",
+                    "voice_dir": "voice",
+                    "party": "docs/party.md",
+                }
+            },
+        )
+        before = client.get("/api/editor/config").json()
+        assert all(
+            str(session_a.resolve()) in before["paths"][f]
+            for f in ("session_recap", "scene_extractions_dir", "narration_dir")
+        )
+
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_b)}}
+        )
+        after = client.get("/api/editor/config").json()
+
+        # Every session-scoped path moved...
+        for f in ("session_recap", "session_summary",
+                  "scene_extractions_dir", "narration_dir"):
+            assert str(session_b.resolve()) in after["paths"][f], f
+            assert str(session_a.resolve()) not in after["paths"][f], f
+        # ...and the value the EDITOR binds carries no session identity at all.
+        for f in ("session_recap", "session_summary",
+                  "scene_extractions_dir", "narration_dir"):
+            assert "20260811" not in (after["paths_stored"][f] or ""), f
+            assert "20260825" not in (after["paths_stored"][f] or ""), f
+
+        # FR-013: campaign-scoped paths did not move.
+        assert after["paths"]["voice_dir"] == before["paths"]["voice_dir"]
+        assert after["paths"]["party"] == before["paths"]["party"]
+
+    def test_switch_needs_no_write_to_take_effect(self, tmp_path):
+        """FR-001: re-pointing is a property of the read, not of a save."""
+        campaign, session_a, session_b = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_a)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        doc = campaign / CONFIG_SUBDIR / "session_doc.yaml"
+        before_bytes = doc.read_bytes()
+
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_b)}}
+        )
+        after = client.get("/api/editor/config").json()
+
+        assert after["paths"]["scene_extractions_dir"] == str(
+            (session_b / "scene_extractions").resolve()
+        )
+        # session_doc.yaml was never touched by the switch.
+        assert doc.read_bytes() == before_bytes
+
+
+class TestSwitchNeverPinsTheOldSession:
+    """017 US2 (FR-002, FR-003, contract C-09/C-11) — the write side.
+
+    The damage mechanism this locks out: the editor used to hold the
+    RESOLVED absolute paths and PUT them back. After a switch those
+    absolutes point into the previous session, relativize_path cannot
+    collapse a path that is not under the current session_dir, so it stored
+    them verbatim as "genuine out-of-tree overrides" -- and the field never
+    tracked session_dir again. A relative name carries no session identity,
+    which is why echoing paths_stored makes this unrepresentable.
+    """
+
+    def _campaign(self, tmp_path):
+        _write(
+            tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        )
+        dirs = []
+        for name in ("20260811", "20260825", "20260901"):
+            d = tmp_path / "summaries" / name
+            d.mkdir(parents=True)
+            dirs.append(d)
+        return tmp_path, dirs
+
+    def _stored(self, campaign):
+        return (campaign / CONFIG_SUBDIR / "session_doc.yaml").read_text(
+            encoding="utf-8"
+        )
+
+    def test_echoing_paths_stored_after_a_switch_pins_nothing(self, tmp_path):
+        campaign, (a, b, _) = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(a)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions",
+                            "narration_dir": "narration"}},
+        )
+        # Switch, then do what the editor does: read, then echo back the
+        # value it binds along with an unrelated knob change.
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(b)}})
+        stored = client.get("/api/editor/config").json()["paths_stored"]
+        client.put(
+            "/api/editor/config",
+            json={"paths": stored, "narrate": {"tokens": 12345}},
+        )
+
+        on_disk = self._stored(campaign)
+        assert "20260811" not in on_disk
+        assert "20260825" not in on_disk
+        # And it still resolves under the CURRENT session.
+        after = client.get("/api/editor/config").json()
+        assert after["paths"]["scene_extractions_dir"] == str(
+            (b / "scene_extractions").resolve()
+        )
+
+    def test_both_write_orders_converge(self, tmp_path):
+        """FR-002 scenario 2 — the Session Config save writes two documents;
+        neither order may leave a value anchored to the session being left."""
+        campaign, (a, b, _) = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(a)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+
+        # Order 1: session_dir first, then the paths (the order 017 adopts).
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(b)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        order_1 = client.get("/api/editor/config").json()
+
+        # Order 2: paths first, then session_dir.
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(a)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(b)}})
+        order_2 = client.get("/api/editor/config").json()
+
+        assert order_1["paths"] == order_2["paths"]
+        assert order_1["paths_stored"] == order_2["paths_stored"]
+
+    def test_three_switches_leave_only_the_last(self, tmp_path):
+        """US2 scenario 3 — no accumulation across repeated switches."""
+        campaign, (a, b, c) = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        for d in (a, b, c):
+            client.put("/api/config/runtime", json={"values": {"session_dir": str(d)}})
+            stored = client.get("/api/editor/config").json()["paths_stored"]
+            client.put("/api/editor/config", json={"paths": stored})
+
+        on_disk = self._stored(campaign)
+        assert "20260811" not in on_disk
+        assert "20260825" not in on_disk
+        assert "20260901" not in on_disk
+        assert client.get("/api/editor/config").json()["paths"][
+            "scene_extractions_dir"
+        ] == str((c / "scene_extractions").resolve())
+
+    def test_echoing_the_resolved_paths_is_what_pinned_the_old_session(self, tmp_path):
+        """Characterization of the 017 defect — deliberately asserts the BAD
+        outcome, so the reason contract C-09 exists cannot be lost.
+
+        This is what the editor did before 017: it held `paths` (absolute,
+        resolved against the session it was showing) and PUT that back. If a
+        future change "simplifies" the client into sending `paths` again,
+        the behaviour below is what it will get -- and the field will stop
+        tracking session_dir permanently. There is no frontend test runner in
+        this repo, so this server-side test is the closest thing to a guard
+        on that client obligation.
+        """
+        campaign, (a, b, _) = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(a)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        # The old client read the ABSOLUTE block...
+        resolved_under_a = client.get("/api/editor/config").json()["paths"]
+        assert str(a.resolve()) in resolved_under_a["scene_extractions_dir"]
+
+        # ...then the session switched, and the debounce echoed it back.
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(b)}})
+        client.put("/api/editor/config", json={"paths": resolved_under_a})
+
+        # The damage: session A is now pinned into stored config verbatim,
+        # because it is not under session B and has no relative form.
+        on_disk = self._stored(campaign)
+        assert "20260811" in on_disk, "the pin is the defect this feature removes"
+
+        # 017's read-side healing (US3) is what recovers from this state;
+        # US2's client change is what stops it being created. Both are needed.
+
+
+class TestRepointedPathsReportExistence:
+    """017 US4 (FR-008, FR-009) — the backend half, automated.
+
+    US4 needs no new product code: PathField and MultiPathField already
+    probe GET /api/config/path-status and render per-path existence. They
+    reported the wrong thing before this feature only because the value they
+    were handed was stale. What IS worth locking here is the contract those
+    components depend on (C-14): after a switch, the resolved path is the
+    one under the NEW session, and path-status answers about that path.
+
+    The visual half — the ✅/❌ marker, and it clearing when the GM edits the
+    field — has no test runner in this repo and stays a manual step in
+    quickstart.md §4.
+    """
+
+    def _campaign(self, tmp_path):
+        _write(
+            tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        )
+        old = tmp_path / "summaries" / "20260811"
+        new = tmp_path / "summaries" / "20260901"
+        old.mkdir(parents=True)
+        new.mkdir(parents=True)
+        # The old session has a recap; the new one does not yet.
+        (old / "gm-assist.md").write_text("old recap", encoding="utf-8")
+        return tmp_path, old, new
+
+    def test_missing_target_is_reported_missing_not_blanked(self, tmp_path):
+        campaign, old, new = self._campaign(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(old)}})
+        client.put(
+            "/api/editor/config", json={"paths": {"session_recap": "gm-assist.md"}}
+        )
+        # Present under the old session.
+        before = client.get("/api/editor/config").json()
+        assert client.get(
+            "/api/config/path-status", params={"path": before["paths"]["session_recap"]}
+        ).json()["exists"] is True
+
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(new)}})
+        after = client.get("/api/editor/config").json()
+
+        # FR-008: the name survives the switch — not blanked, not
+        # auto-discovered into something else.
+        assert after["paths_stored"]["session_recap"] == "gm-assist.md"
+        # ...and it now resolves under the new session, where it is missing.
+        assert after["paths"]["session_recap"] == str((new / "gm-assist.md").resolve())
+        assert client.get(
+            "/api/config/path-status", params={"path": after["paths"]["session_recap"]}
+        ).json()["exists"] is False
+
+    def test_existing_target_is_reported_present(self, tmp_path):
+        campaign, _, new = self._campaign(tmp_path)
+        (new / "scene_extractions").mkdir()
+        client = TestClient(_make_app(campaign))
+        client.put("/api/config/runtime", json={"values": {"session_dir": str(new)}})
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        body = client.get("/api/editor/config").json()
+        assert client.get(
+            "/api/config/path-status",
+            params={"path": body["paths"]["scene_extractions_dir"]},
+        ).json()["exists"] is True

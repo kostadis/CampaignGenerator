@@ -282,82 +282,51 @@ resolves the path per-request.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/014-thread-registry-ui/plan.md` (Thread Registry Surface — the Planning
-grounding doc cannot assemble until `docs/thread_registry.yaml` exists, and
-**nothing in `server/` or `frontend/` mentions it**: `threads` is a
-non-optional section of `SPECS["planning"]`, so `assemble()` refuses to write
-*any* planning draft while its file is missing, and the store is written only
-by the CLI-only `thread_registry` verbs. #337. The fix is a real surface —
-harvest, a candidate queue with evidence, and **accept / reject / discuss**
-one candidate at a time (GM ruling, 2026-08-25; **no bulk control anywhere** —
-its absence is the test). Three things not to re-derive: (1) **nothing today
-records a ruling** — `propose` only *preserves* rulings it finds already
-written, so a new `rule` verb is the largest piece of work, and "discuss"
-means `deferred` + an appended adjudication JSON a Claude conversation
-consumes (research D2); (2) **measured, not assumed** — a 62-chapter corpus
-harvests to **986 candidates of which 16 span >1 chapter** (toee: 415 and 2),
-because candidates are keyed on the extraction lens's free-text `subject`, so
-the queue filters the *view* (hidden count stated on screen) while
-`propose --min-chapters/--min-evidence` default to `1` — a default that
-dropped 970 of 986 would be software making a scope decision (D15). **There is
-no "Show all" button** (D16): the tail is reached by free-text search over
-titles/variants/evidence plus a chapter filter, spanning already-ruled
-candidates too, and search runs **in the browser** — the proposals payload
-measures 484 KB, so no server-side query route exists and none may be added, or
-the server starts deciding which candidates matter. The default view is **two
-named bands with counts computed from the loaded set** — *Recurring* (≥2
-chapters) and *Single chapter, repeated* — measuring 16/54/916 excluded on
-OOTA, 2/19/394 on toee, 3/12/104 on Hillsfar; a hardcoded count is the exact
-defect this replaced, and note **span≥2 implies ev≥2**, which is what made the
-first attempt wrong (D17a); (3) accept is **one atomic `ratify` verb** — `--norm KEY` plus a
-`--plan` JSON on stdin, locate-or-create, append every log row, mark the
-proposal, validate, write **once** (GM ruling 2026-08-25, D18). It is
-deliberately *not* `add` + N × `log` + `rule`: that sequence could half-apply
-and forced the route to report a 207 partial state. There is no "accept as
-proposed" flag — `--plan` is required, because a thread nobody read the fields
-of is exactly what SC-004 forbids. A candidate with `chapters: []` still cannot
-be accepted until the GM supplies a chapter, because `check_registry` rejects a
-log row without a real int (D3/D4), and that refusal now happens at the route
-edge naming the field; (4)
-`propose()`'s short-circuit fires **before** its `matches`/`logged` filter and
-counts `ratified` as prior, so it MUST be narrowed to `rejected`/`deferred` —
-otherwise ratifying a thread at ch41 hides ch50–60 of that same thread forever
-(D17b). Also: `SPECS["planning"]` has `Section("emerging",
-source="thread_proposals")`, so the engine's own *"nothing downstream reads
-this file"* is already false and every ruling makes that section stale. This
-**deliberately reverses** spec 006's "no route for thread triage" docstring —
-the checkpoint changes keyboards, not owners; rewriting that docstring is a
-task, not an afterthought (D13). `research.md` **D1–D21** holds the survey and
-the corpus/payload measurements; extend it rather than re-deriving. Two
-rulings that shape the UI: the Threads page gets **its own run control**, not a
-prop on the shared `RunPanel` (D19), and the corpus preview **lists files only,
-with no chapter numbers** (D20) — so `chapter_of()` is neither imported nor
-wrapped in a verb. One live external dependency: **SC-001 is gated on PR #343**
-(issue #342), which deletes the `api_key_present` predicate and its ten
-frontend consumers outright, refusing instead at the four metered entry points.
-**Merged 2026-08-27**, superseding `8d49d4f` — which had landed #341's narrow
-"gate on the resolved backend" fix on `main` in the meantime. A keyless machine
-can now start the very build this feature exists to unblock. Note `main`'s
-constitution is **v1.3.0**: Principles XI (every CLI capability has a UI face),
-XII (one spelling per option) and XIII (breaking state changes migrate out of
-band) are in force, and XI requires a deliberately CLI-only capability to have
-its ruling recorded in the feature's Constitution Check.)
-
-Also in flight: `specs/013-batched-scene-extraction/plan.md` (Stage 2 sends the
-full transcript once per scene — free on the metered API via prefix caching,
-pure waste on the subscription where `_blocks_to_text` flattens the cache
-blocks and every scene is a fresh `claude -p`. One exchange carries the
-transcript plus every pending scene, split by `<<<CG-SCENE NN BEGIN/END>>>`
-sentinels **by index, never by name-matching**; ceiling 32,000 via
-`extract.batch_tokens`; the projection uses the **median** ×4.2 multiplier, not
-a conservative one; **the trap** is that skip-if-exists MUST filter before the
-request is built.)
-`specs/007-two-phase-extraction/plan.md` (deterministic, zero-token quote
-verifier + a stage-scoped `sd_agent`; only **64%** of quotes are exact
-verbatim even from Claude, so classification is three buckets, and **D13 is a
-blocking dependency**: `scene_extract.py` feeds the model an alias-rewritten
-VTT — pass the equivalence set as knowledge, never as a transform.)
-`specs/006-state-projection-service/plan.md` (the service 014 extends —
-`projections.yaml`, `docs/projections/`, four services not three, and the
-`corpus`/`sections` fields that must never be added to the schema.)
+`specs/017-session-dir-repoint/plan.md` (Session Directory Re-Points Editor
+Paths — setting the session directory on Session Config does not move the
+Session Doc Editor's paths; they stay on the session you left. **The server
+side is already correct** and must not be "fixed": session-scoped paths are
+stored relative to `runtime.session_dir` and resolved absolute on read, and
+`tests/test_session_editor_config_service.py:568` already proves a switch
+re-tracks them. Do not touch `resolve_path`/`relativize_path` — that seam is
+right. The defect is a **round trip**: `GET /api/editor/config` returns paths
+*absolute*, the editor loads those into its inputs, the drawer's debounced
+auto-save PUTs them back, and `relativize_path` cannot collapse a path that is
+not under the current session dir — so it stores it verbatim as a "genuine
+out-of-tree override" (`platform_config_service.py:805-808`). A stale display
+value is thereby **promoted to a permanent pin**, and that field never tracks
+the session directory again. Fix (research D1): the editor binds a new
+`paths_stored` (relative) and never PUTs `paths`; the absolute block stays for
+read-only consumers. Note `refreshEditor()` already exists and has **no caller
+outside the store** (`stores/config.ts:177`) — `updateRuntime` refetches
+`/api/config/` only, which is the display half of the bug. Four things not to
+re-derive: (1) every run command is built **server-side** from
+`resolved_editor_config()` — ~14 `cfg.paths.*` reads in
+`routers/scene_editor.py` — and the frontend sends no paths to any run route,
+so the `_build_*_cmd()` diff must be **empty** and no run route gains a path
+parameter; (2) `PathField` **already** renders ✅/❌ not-found via
+`GET /api/config/path-status`, and all ten drawer paths are `PathField`/
+`MultiPathField`, so User Story 4 is a *verification*, not a build — it reports
+the wrong thing today only because the value it is handed is stale; (3) the
+stale-pin test is "resolves under `parent(session_dir)` but **not** under
+`session_dir`" — derived from the value the GM set, never a hardcoded
+`summaries/`, and the re-point preserves the name the value carried *within its
+own session dir* (`…/20260811/narration/pass5` → `narration/pass5`, not
+`pass5`); (4) no schema changes shape — a campaign whose paths are already
+relative must come through **byte-identical**, which is also the regression
+test. The one live constitutional gate is **XIII** (no lazy in-place upgrade):
+heal-on-read is justified in plan.md's Constitution Check on three grounds
+(nothing changes shape; the read never writes, FR-007; every correction is
+announced with before/after, FR-006), with announced load-time normalisation
+already the in-tree pattern (`EditorPaths._drop_retired_fields`) and the
+retired `UIStateService._normalize_stored_paths` as the direct precedent. If
+that gate is overruled at review, the prescribed fallback is a one-shot
+`server/migrate_session_doc_paths.py` plus `migration.md`, and only User Story
+3 moves. Delivery (GM-stated): implement in a dedicated git worktree off
+`main`; Opus orchestrates and Sonnet implements, so every task must name its
+files and its acceptance check inline. Phases 2–3 (service, wire) are fully
+pytest-gated; phase 4 (frontend) has **no test runner in this repo** —
+`frontend/package.json` is `dev`/`build`/`preview` only — so its gate is
+`npm run build` (`vue-tsc -b`) plus the manual `quickstart.md`, and it is the
+phase where the diff gets reviewed before the gate is called.)
 <!-- SPECKIT END -->

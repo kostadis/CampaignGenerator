@@ -35,10 +35,21 @@ function loadFromConfig() {
   const ec = config.editorConfig
   campaignDir.value = r.campaign_dir || v.campaign_dir || ''
   sessionDir.value = r.runtime?.session_dir || v.session_dir || ''
-  sdSession.value = ec?.paths?.session_recap || ''
+  // 017 — the two SESSION-scoped fields are read from `paths_stored`, not
+  // `paths`. persistTypedSections() writes both straight back, so reading
+  // the resolved absolute here is the same pin mechanism the Session Doc
+  // Editor had: deriveAll() only overwrites them when discovery actually
+  // finds a file, so on a session with no recap the old absolute survived
+  // and got written under the new session_dir.
+  //
+  // voiceDir / examplesDir / party stay on `paths` deliberately: they are
+  // CAMPAIGN-scoped, so they cannot pin a session, and their PathFields are
+  // declared `absolute` — binding relative values would break their
+  // existence probe without fixing anything.
+  sdSession.value = ec?.paths_stored?.session_recap || ''
   voiceDir.value = ec?.paths?.voice_dir || ''
   examplesDir.value = ec?.paths?.examples_dir || ''
-  sessionSummaryPath.value = ec?.paths?.session_summary || 'session-summary.md'
+  sessionSummaryPath.value = ec?.paths_stored?.session_summary || 'session-summary.md'
   partyPath.value = ec?.paths?.party || ''
   // Shared canonical-timeline pointer — grounding.yaml's root (ui.grounding
   // is retired; see docs/config/grounding-isolation.md).
@@ -182,14 +193,20 @@ function onBlur() {
 
 async function saveConfig() {
   saveToConfig()
-  // Typed sections — survive a server restart through the unified service.
-  await persistTypedSections()
-  // session_dir lives in ui_state.runtime, not under a typed UI section.
-  // campaign_dir is encoded by where ui_state.yaml lives and is never
-  // persisted to disk.
+  // 017 — session_dir FIRST. It is the base every session-scoped path below
+  // is interpreted against, so writing the paths first relativized them
+  // against the session being left (FR-002 scenario 2). The values happen
+  // to be relative today, which made the bug latent rather than live; the
+  // order is fixed here so it stays that way.
+  //
+  // session_dir lives in platform.yaml's runtime block, not under a typed
+  // UI section. campaign_dir is encoded by where the config dir lives and
+  // is never persisted to disk.
   if (sessionDir.value.trim()) {
     await config.updateRuntime({ session_dir: sessionDir.value.trim() })
   }
+  // Typed sections — survive a server restart through the unified service.
+  await persistTypedSections()
 }
 
 onMounted(async () => {

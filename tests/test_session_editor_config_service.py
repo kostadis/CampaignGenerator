@@ -654,3 +654,382 @@ def test_load_invalid_yaml_raises(tmp_path):
     path.write_text("paths: [this is not: a mapping", encoding="utf-8")
     with pytest.raises(ValueError):
         load_session_editor_config(path)
+
+
+# ── 017: paths_stored / warnings — the read-side classification ─────────
+#
+# Feature 017 (specs/017-session-dir-repoint). The editor used to bind the
+# RESOLVED (absolute) paths and PUT them back; relativize_path cannot
+# collapse a path that is not under the current session_dir, so it stored
+# it verbatim as a "genuine out-of-tree override" and the field stopped
+# tracking session_dir forever. resolved_editor_config() now also exposes
+# `paths_stored` — the healed, as-stored form the UI binds and echoes back
+# — plus `warnings`. See specs/017-session-dir-repoint/data-model.md for
+# the four-state table.
+#
+# This class covers the three BENIGN states only. The stale-pin state has
+# its own class further down (TestStalePinHealing).
+
+
+class TestPathsStoredBenignStates:
+    def _with_session(self, tmp_path, name="sess1"):
+        session_dir = tmp_path / "summaries" / name
+        session_dir.mkdir(parents=True)
+        svc = _service(tmp_path)
+        svc.platform.update_runtime({"session_dir": str(session_dir)})
+        return svc, session_dir
+
+    def test_relative_session_path_passes_through_unchanged(self, tmp_path):
+        svc, session_dir = self._with_session(tmp_path)
+        svc.update_config({"paths": {"scene_extractions_dir": "scene_extractions"}})
+
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.scene_extractions_dir == "scene_extractions"
+        assert resolved.paths.scene_extractions_dir == str(
+            (session_dir / "scene_extractions").resolve()
+        )
+        assert resolved.warnings == []
+
+    def test_in_session_absolute_is_collapsed_in_paths_stored(self, tmp_path):
+        svc, session_dir = self._with_session(tmp_path)
+        # Write the raw document directly so the write-time choke point does
+        # not collapse it first — this is the "hand-authored absolute" case.
+        save_session_editor_config(
+            svc.session_doc_path,
+            SessionEditorConfig(
+                paths=EditorPaths(
+                    narration_dir=str(session_dir / "narration")
+                )
+            ),
+        )
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.narration_dir == "narration"
+        assert resolved.paths.narration_dir == str((session_dir / "narration").resolve())
+        assert resolved.warnings == []
+
+    def test_out_of_tree_absolute_is_preserved_and_unreported(self, tmp_path):
+        svc, _ = self._with_session(tmp_path)
+        svc.update_config({"paths": {"narration_dir": "/totally/other/place"}})
+
+        resolved = svc.resolved_editor_config()
+        # A genuine override has no relative form that preserves its meaning.
+        assert resolved.paths_stored.narration_dir == "/totally/other/place"
+        assert resolved.paths.narration_dir == "/totally/other/place"
+        assert resolved.warnings == []
+
+    def test_resolve_invariant_holds_for_every_field(self, tmp_path):
+        """data-model.md invariant: paths[k] == resolve(paths_stored[k])."""
+        svc, session_dir = self._with_session(tmp_path)
+        svc.update_config(
+            {
+                "paths": {
+                    "session_recap": "gm-assist.md",
+                    "session_summary": "session-summary.md",
+                    "scene_extractions_dir": "scene_extractions",
+                    "narration_dir": "/totally/other/place",
+                    "party": "docs/party.md",
+                    "voice_dir": "voice",
+                    "examples_dir": "examples",
+                    "genre_file": "voice/_genre.md",
+                }
+            }
+        )
+        resolved = svc.resolved_editor_config()
+        session_fields = (
+            "session_recap", "session_summary",
+            "scene_extractions_dir", "narration_dir", "output_dir",
+        )
+        campaign_fields = ("party", "voice_dir", "examples_dir", "genre_file")
+        for field in session_fields + campaign_fields:
+            stored = getattr(resolved.paths_stored, field)
+            base = "session" if field in session_fields else "campaign"
+            expected = svc.platform.resolve_path(
+                stored, base=base, session_dir=str(session_dir)
+            )
+            assert getattr(resolved.paths, field) == expected, field
+
+    def test_campaign_fields_unaffected_by_session_switch(self, tmp_path):
+        """FR-013: a session switch must not move a campaign-scoped path."""
+        session_b = tmp_path / "summaries" / "sessB"
+        session_b.mkdir(parents=True)
+        svc, _ = self._with_session(tmp_path)
+        svc.update_config({"paths": {"voice_dir": "voice", "party": "docs/party.md"}})
+
+        before = svc.resolved_editor_config()
+        svc.platform.update_runtime({"session_dir": str(session_b)})
+        after = svc.resolved_editor_config()
+
+        assert before.paths.voice_dir == after.paths.voice_dir
+        assert before.paths.party == after.paths.party
+        assert after.paths_stored.voice_dir == "voice"
+        assert after.paths_stored.party == "docs/party.md"
+
+    def test_no_session_dir_leaves_session_paths_untouched(self, tmp_path):
+        """Preserves the existing defensive rule: with no session_dir there
+        is no base to interpret a session-scoped value against, so nothing
+        is classified and nothing is healed."""
+        svc = _service(tmp_path)  # note: no update_runtime — session_dir unset
+        save_session_editor_config(
+            svc.session_doc_path,
+            SessionEditorConfig(
+                paths=EditorPaths(scene_extractions_dir="/somewhere/else/scenes")
+            ),
+        )
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.scene_extractions_dir == "/somewhere/else/scenes"
+        assert resolved.warnings == []
+
+    def test_none_fields_stay_none(self, tmp_path):
+        svc, _ = self._with_session(tmp_path)
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.output_dir is None
+        assert resolved.paths.output_dir is None
+
+
+class TestStalePinHealing:
+    """017 US3 (FR-004..FR-008, FR-012) — the stale-pin state.
+
+    A stored session path that resolves under the PARENT of the current
+    session directory, but not under the session directory itself, is a
+    sibling-session pin. That is never a meaningful thing to intend, and it
+    is exactly what the pre-017 editor produced. It is re-pointed on read
+    and announced. Anything absolute outside that tree is a deliberate
+    override and is left alone.
+    """
+
+    def _campaign(self, tmp_path):
+        old = tmp_path / "summaries" / "20260811"
+        cur = tmp_path / "summaries" / "20260825"
+        old.mkdir(parents=True)
+        cur.mkdir(parents=True)
+        svc = _service(tmp_path)
+        svc.platform.update_runtime({"session_dir": str(cur)})
+        return svc, old, cur
+
+    def _store_raw(self, svc, **paths):
+        """Write the document directly, bypassing the write-time choke point
+        — this is how a damaged config actually looks on disk."""
+        save_session_editor_config(
+            svc.session_doc_path,
+            SessionEditorConfig(paths=EditorPaths(**paths)),
+        )
+
+    def test_sibling_session_pin_is_repointed(self, tmp_path):
+        svc, old, cur = self._campaign(tmp_path)
+        self._store_raw(svc, scene_extractions_dir=str(old / "scene_extractions"))
+
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.scene_extractions_dir == "scene_extractions"
+        assert resolved.paths.scene_extractions_dir == str(
+            (cur / "scene_extractions").resolve()
+        )
+
+    def test_repoint_preserves_a_nested_name(self, tmp_path):
+        """FR-008 — the value's path WITHIN its own session dir survives,
+        not merely its basename."""
+        svc, old, cur = self._campaign(tmp_path)
+        self._store_raw(svc, narration_dir=str(old / "narration" / "pass5"))
+
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.narration_dir == "narration/pass5"
+        assert resolved.paths.narration_dir == str(
+            (cur / "narration" / "pass5").resolve()
+        )
+
+    def test_out_of_tree_override_survives_and_is_not_reported(self, tmp_path):
+        """FR-005 — outside the session-directory tree is a real override."""
+        svc, _, _ = self._campaign(tmp_path)
+        self._store_raw(svc, narration_dir="/tmp/shared-narration")
+
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.narration_dir == "/tmp/shared-narration"
+        assert resolved.paths.narration_dir == "/tmp/shared-narration"
+        assert resolved.warnings == []
+
+    def test_warning_names_the_field_and_both_values(self, tmp_path):
+        """FR-006 — a correction to stored config is never silent."""
+        svc, old, cur = self._campaign(tmp_path)
+        stale = str(old / "scene_extractions")
+        self._store_raw(svc, scene_extractions_dir=stale)
+
+        resolved = svc.resolved_editor_config()
+        assert len(resolved.warnings) == 1
+        message = resolved.warnings[0]
+        assert "scene_extractions_dir" in message
+        assert stale in message
+        assert str((cur / "scene_extractions").resolve()) in message
+
+    def test_one_warning_per_stale_field(self, tmp_path):
+        svc, old, _ = self._campaign(tmp_path)
+        self._store_raw(
+            svc,
+            scene_extractions_dir=str(old / "scene_extractions"),
+            narration_dir=str(old / "narration"),
+            session_recap=str(old / "gm-assist.md"),
+        )
+        assert len(svc.resolved_editor_config().warnings) == 3
+
+    def test_read_never_writes(self, tmp_path):
+        """FR-007 / Principle XIII — the whole constitutional argument for
+        healing on read rests on this test. A read must not mutate the
+        workspace; the healed value reaches disk only on a later write the
+        GM triggered for their own reasons."""
+        svc, old, _ = self._campaign(tmp_path)
+        self._store_raw(svc, scene_extractions_dir=str(old / "scene_extractions"))
+        before_bytes = svc.session_doc_path.read_bytes()
+        before_mtime = svc.session_doc_path.stat().st_mtime_ns
+
+        svc.resolved_editor_config()
+        svc.resolved_editor_config()
+
+        assert svc.session_doc_path.read_bytes() == before_bytes
+        assert svc.session_doc_path.stat().st_mtime_ns == before_mtime
+        # And the raw stored view is untouched — get_config() is not healed.
+        assert svc.get_config().paths.scene_extractions_dir == str(
+            old / "scene_extractions"
+        )
+
+    def test_healing_is_idempotent(self, tmp_path):
+        """FR-012 — a second read produces the same result, and a config
+        that is already healthy produces no warning at all."""
+        svc, old, _ = self._campaign(tmp_path)
+        self._store_raw(svc, scene_extractions_dir=str(old / "scene_extractions"))
+
+        first = svc.resolved_editor_config()
+        second = svc.resolved_editor_config()
+        assert first.paths_stored == second.paths_stored
+        assert first.paths == second.paths
+
+        # Now let the healed value land through the normal write door...
+        svc.update_config({"paths": {"scene_extractions_dir": "scene_extractions"}})
+        third = svc.resolved_editor_config()
+        assert third.paths_stored.scene_extractions_dir == "scene_extractions"
+        assert third.warnings == []  # nothing left to correct
+
+    def test_healed_value_lands_on_the_next_write(self, tmp_path):
+        """FR-004 final scenario — after any write, the field tracks
+        session_dir from then on."""
+        svc, old, cur = self._campaign(tmp_path)
+        self._store_raw(svc, scene_extractions_dir=str(old / "scene_extractions"))
+
+        stored = svc.resolved_editor_config().paths_stored
+        # This is what the editor does: echo back what it was given.
+        svc.update_config({"paths": stored.model_dump(mode="json")})
+
+        on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+        assert on_disk["paths"]["scene_extractions_dir"] == "scene_extractions"
+        assert "20260811" not in svc.session_doc_path.read_text(encoding="utf-8")
+
+    def test_current_session_subdirectory_is_not_stale(self, tmp_path):
+        """Guard against over-eager healing: a path under the CURRENT
+        session directory is in-session, not a sibling pin."""
+        svc, _, cur = self._campaign(tmp_path)
+        self._store_raw(svc, narration_dir=str(cur / "narration"))
+
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.narration_dir == "narration"
+        assert resolved.warnings == []
+
+
+def test_healthy_campaign_is_byte_identical_through_load_modify_save(tmp_path):
+    """017 / plan.md Principle XIII, ground 1 — nothing changes shape.
+
+    The constitutional argument for healing on read rests on this: a
+    campaign whose stored paths are already relative — which is every
+    campaign in the workspace that has not hit the bug — must come through
+    a full load-modify-save cycle byte-identical apart from the field the
+    GM actually changed. If this ever fails, 017 IS a state-shape change and
+    the one-shot migrator fallback in plan.md is required instead.
+    """
+    session_dir = tmp_path / "summaries" / "20260825"
+    session_dir.mkdir(parents=True)
+    svc = _service(tmp_path)
+    svc.platform.update_runtime({"session_dir": str(session_dir)})
+    svc.update_config(
+        {
+            "paths": {
+                "session_recap": "gm-assist.md",
+                "session_summary": "session-summary.md",
+                "scene_extractions_dir": "scene_extractions",
+                "narration_dir": "narration",
+                "party": "docs/party.md",
+                "voice_dir": "voice",
+                "examples_dir": "examples",
+                "genre_file": "voice/_genre.md",
+            }
+        }
+    )
+    before = svc.session_doc_path.read_text(encoding="utf-8")
+
+    # A read does not touch it...
+    resolved = svc.resolved_editor_config()
+    assert resolved.warnings == []
+    assert svc.session_doc_path.read_text(encoding="utf-8") == before
+
+    # ...and echoing back exactly what the editor was handed is a no-op.
+    svc.update_config({"paths": resolved.paths_stored.model_dump(mode="json")})
+    assert svc.session_doc_path.read_text(encoding="utf-8") == before
+
+
+class TestBootOverrideSessionDir:
+    """017 FR-011 — `--session-dir` for one run gets the same behaviour, and
+    persists nothing.
+
+    The boot override reaches this service through platform.resolved(), so
+    re-pointing and healing apply to the resolved view for free. What must
+    NOT happen is any of it reaching disk: the override is
+    process-lifetime-only, and _relativized_paths is keyed off the
+    PERSISTED runtime.session_dir for exactly that reason.
+    """
+
+    def _svc(self, tmp_path, boot_dir):
+        (tmp_path / "config").mkdir(exist_ok=True)
+        (tmp_path / "config" / "config.yaml").write_text(
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+            encoding="utf-8",
+        )
+        platform = PlatformConfigService(
+            str(tmp_path), boot_overrides={"runtime.session_dir": str(boot_dir)}
+        )
+        return SessionEditorConfigService(platform)
+
+    def test_paths_resolve_against_the_boot_override(self, tmp_path):
+        persisted = tmp_path / "summaries" / "persisted"
+        boot = tmp_path / "summaries" / "boot"
+        persisted.mkdir(parents=True)
+        boot.mkdir(parents=True)
+        svc = self._svc(tmp_path, boot)
+        svc.platform.update_runtime({"session_dir": str(persisted)})
+        svc.update_config({"paths": {"scene_extractions_dir": "scene_extractions"}})
+
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths.scene_extractions_dir == str(
+            (boot / "scene_extractions").resolve()
+        )
+        assert resolved.paths_stored.scene_extractions_dir == "scene_extractions"
+
+    def test_healing_under_a_boot_override_persists_nothing(self, tmp_path):
+        persisted = tmp_path / "summaries" / "persisted"
+        boot = tmp_path / "summaries" / "boot"
+        stale = tmp_path / "summaries" / "20260811"
+        for d in (persisted, boot, stale):
+            d.mkdir(parents=True)
+        svc = self._svc(tmp_path, boot)
+        svc.platform.update_runtime({"session_dir": str(persisted)})
+        save_session_editor_config(
+            svc.session_doc_path,
+            SessionEditorConfig(
+                paths=EditorPaths(scene_extractions_dir=str(stale / "scene_extractions"))
+            ),
+        )
+        before = svc.session_doc_path.read_bytes()
+
+        resolved = svc.resolved_editor_config()
+        # Healed against the OVERRIDE, in the resolved view only...
+        assert resolved.paths_stored.scene_extractions_dir == "scene_extractions"
+        assert resolved.paths.scene_extractions_dir == str(
+            (boot / "scene_extractions").resolve()
+        )
+        assert len(resolved.warnings) == 1
+        # ...and nothing reached disk.
+        assert svc.session_doc_path.read_bytes() == before

@@ -132,8 +132,12 @@ def test_activate_profile_mirrors_knobs_into_resolved_config(client):
     body = r.json()
     # Same shape as GET /api/editor/config — the _serialize_resolved helper
     # is the single source of truth for both.
+    # Grown with GET /api/editor/config's identical lock when feature 017
+    # added paths_stored/warnings. That both locks had to move in the same
+    # commit is the point of having two: it proves _serialize_resolved is
+    # still the single producer and the two responses have not drifted.
     assert set(body.keys()) == {
-        "paths", "extract", "narrate", "backends",
+        "paths", "paths_stored", "warnings", "extract", "narrate", "backends",
         "session_name", "profiles", "active_profile", "model",
         "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
         "genre", "batch_scenes_effective",

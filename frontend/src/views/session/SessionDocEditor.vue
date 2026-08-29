@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfigStore, type Backend } from '../../stores/config'
-import { resolvePath, resolvePathList, resolvePathWithBase } from '../../utils/paths'
+import { resolvePath, resolvePathList } from '../../utils/paths'
 import { apiFetch, apiPut, apiPost } from '../../api/client'
 import { connectSSE } from '../../api/sse'
 import SceneList from '../../components/scene-editor/SceneList.vue'
@@ -51,6 +51,14 @@ const drawerOpen = ref(false)
 // Recomputed from the store, so it refreshes with every config GET/PUT.
 const genreInfo = computed(() => (config.editorConfig as any)?.genre ?? null)
 
+// 017 — stale-pin corrections the server applied on this read, with before
+// and after. A correction to stored configuration is never silent (FR-006),
+// and it must persist rather than flash: the condition lasts until the next
+// write, so a toast would be gone long before the GM could act on it.
+const pathWarnings = computed<string[]>(
+  () => (config.editorConfig as any)?.warnings ?? []
+)
+
 // ── Field ← store.editorConfig (grouped GET /api/editor/config) ──
 // Coerce an arbitrary backends.active value to one of the four known
 // backends — shared by the initial hydration and profile activation.
@@ -62,7 +70,17 @@ function normalizeBackend(value: any): Backend {
 
 function loadConfigFields() {
   const ec = config.editorConfig
-  const paths = ec?.paths ?? {}
+  // 017 — bind the STORED form, not the resolved-absolute projection.
+  // `paths` is absolute; loading it here and letting the drawer's
+  // debounced auto-save PUT it back is what pinned the session you just
+  // left: relativize_path cannot collapse a path that is not under the
+  // current session_dir, so it stored the stale absolute verbatim as a
+  // "genuine out-of-tree override" and the field stopped tracking forever.
+  // A relative name carries no session identity, so it cannot pin anything.
+  // Deliberately NO `?? ec?.paths` fallback — a dual-location back-compat
+  // probe is exactly what the constitution's Principle XIII forbids, and
+  // the server always sends this key.
+  const paths = ec?.paths_stored ?? {}
   const extract = ec?.extract ?? {}
   const narrate = ec?.narrate ?? {}
   const backends = ec?.backends ?? {}
@@ -105,16 +123,28 @@ let configHydrated = false
 
 function buildEditorConfigPayload() {
   return {
+    // 017 — send the values AS HELD (contract C-09). These refs are bound
+    // from `paths_stored`, so they are relative names wherever a relative
+    // form preserves the meaning, and absolute only for a deliberate
+    // out-of-tree override. A relative name carries no session identity,
+    // so a PUT that lands after a session switch cannot pin the session
+    // just left. Resolution is the server's job and happens on read.
+    //
+    // This also retires a latent base mismatch: `party`, `voice_dir` and
+    // `examples_dir` are CAMPAIGN-scoped but were run through
+    // resolvePath(), which resolves against session_dir. It never bit
+    // because SessionConfig seeded them absolute, but a relative
+    // "docs/party.md" would have been sent as <session>/docs/party.md and
+    // stored as summaries/<date>/docs/party.md.
     paths: {
-      session_recap: resolvePath(session.value),
-      session_summary: resolvePath(sessionSummary.value) || undefined,
-      scene_extractions_dir: resolvePath(sceneExtractionsDir.value) || undefined,
-      narration_dir: resolvePath(narrationDir.value) || undefined,
-      party: resolvePath(party.value) || undefined,
-      voice_dir: resolvePath(voiceDir.value) || undefined,
-      examples_dir: resolvePath(examplesDir.value) || undefined,
-      // Campaign-scoped, like the rulebook it points at (#276 fix 2).
-      genre_file: resolvePathWithBase(genreFile.value, 'campaign') || undefined,
+      session_recap: session.value,
+      session_summary: sessionSummary.value || undefined,
+      scene_extractions_dir: sceneExtractionsDir.value || undefined,
+      narration_dir: narrationDir.value || undefined,
+      party: party.value || undefined,
+      voice_dir: voiceDir.value || undefined,
+      examples_dir: examplesDir.value || undefined,
+      genre_file: genreFile.value || undefined,
     },
     extract: {
       tokens: extractTokens.value || undefined,
@@ -144,9 +174,42 @@ async function applyConfig() {
 
 function scheduleApply() {
   if (!configHydrated) return  // initial load — don't echo back to the server
+  if (rehydrating) return      // 017 — a re-hydration is not a user edit
   if (applyTimer) clearTimeout(applyTimer)
   applyTimer = setTimeout(applyConfig, 350)
 }
+
+// ── 017 — re-hydrate when the session changes ─────────────────────────
+//
+// Session Config writes runtime.session_dir; the store then refetches the
+// editor slice. This component only read that slice in onMounted, so an
+// editor that was already mounted kept the paths of the session the GM
+// just left — and its next auto-save wrote them back.
+//
+// Deliberately keyed on `editorConfig.session_dir` rather than on the whole
+// `editorConfig` object: that ref is REPLACED after every updateEditor(),
+// so watching its identity would re-hydrate mid-typing and clobber
+// keystrokes the GM had entered since the debounce fired. session_dir
+// changes exactly when the session changes, which is the actual trigger.
+// It is still read off the slice this component binds, not from
+// resolved.runtime.session_dir, so there is no second derivation.
+let rehydrating = false
+async function rehydrateFromStore() {
+  // Drop any debounce armed BEFORE the switch — it is holding pre-switch
+  // values, and letting it fire would write the old session's paths back
+  // under the new session_dir (FR-003).
+  if (applyTimer) { clearTimeout(applyTimer); applyTimer = null }
+  rehydrating = true
+  loadConfigFields()
+  await nextTick()
+  rehydrating = false
+}
+
+watch(() => config.editorConfig?.session_dir, (next, prev) => {
+  if (!configHydrated) return
+  if (next === prev) return
+  rehydrateFromStore()
+})
 
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,
@@ -921,6 +984,15 @@ onMounted(async () => {
       >Config ⚙</button>
     </header>
 
+      <!-- 017 — session-path corrections. Mirrors the migration banner in
+           views/Settings.vue rather than inventing a second notice style. -->
+      <div v-if="pathWarnings.length" class="path-warning-banner">
+        <strong>Session paths corrected</strong>
+        <ul>
+          <li v-for="(w, i) in pathWarnings" :key="i">{{ w }}</li>
+        </ul>
+      </div>
+
     <!-- Three-column layout -->
     <div v-if="configReady" class="columns">
       <SceneList
@@ -1000,6 +1072,15 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+/* 017 — same treatment as .migration-banner in views/Settings.vue. */
+.path-warning-banner {
+  margin: 0 12px 12px; padding: 10px 12px;
+  background: #3a2e1e; color: var(--peach);
+  border-radius: 4px; font-size: 11px; line-height: 1.5;
+}
+.path-warning-banner strong { display: block; margin-bottom: 4px; color: var(--yellow); }
+.path-warning-banner ul { margin: 0; padding-left: 18px; }
+
 .session-editor {
   height: 100%;
   display: flex;
