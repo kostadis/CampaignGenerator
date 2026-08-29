@@ -14,6 +14,7 @@ reads (``runtime.default_model``, ``runtime.session_dir``, ``campaign_dir``,
 from __future__ import annotations
 
 import hashlib
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -49,6 +50,79 @@ _SESSION_PATH_FIELDS: tuple[str, ...] = (
 _CAMPAIGN_PATH_FIELDS: tuple[str, ...] = (
     "party", "voice_dir", "examples_dir", "genre_file",
 )
+
+# ── 017: read-side classification of a session-scoped path ──────────────
+#
+# A stored session path lands in exactly one of four states (see
+# specs/017-session-dir-repoint/data-model.md). This function returns the
+# state plus the form that should be STORED for it.
+#
+# The reason this exists on the READ side, when `relativize_path` already
+# handles the write side: at write time a stale value from the session we
+# just left and a deliberate override the GM typed are byte-identical, so
+# nothing can tell them apart. Only a read, which can see where the current
+# session directory sits among its siblings, has the context to classify.
+#
+# `STALE_PIN` is the state that matters: the editor used to bind the
+# RESOLVED absolute paths and PUT them back, and `relativize_path` cannot
+# collapse a path that is not under the current session_dir — so it stored
+# it verbatim as a "genuine out-of-tree override" and the field stopped
+# tracking session_dir forever.
+RELATIVE = "relative"
+IN_SESSION = "in_session"
+DELIBERATE_OVERRIDE = "override"
+STALE_PIN = "stale"
+
+
+def _session_base(session_dir: str | None, campaign_dir: Path) -> Path | None:
+    """The resolved current session directory, or None if unset.
+
+    Mirrors the base computation in ``PlatformConfigService.resolve_path``/
+    ``relativize_path`` so the three agree on what "under the session
+    directory" means — a relative session_dir is anchored at campaign_dir.
+    """
+    if not session_dir:
+        return None
+    base = Path(session_dir).expanduser()
+    if not base.is_absolute():
+        base = campaign_dir / base
+    return base.resolve()
+
+
+def _classify_session_path(
+    value: str | None, session_dir: str | None, campaign_dir: Path
+) -> tuple[str, str | None]:
+    """Classify one session-scoped value; return ``(state, stored_form)``.
+
+    ``stored_form`` is what belongs in ``session_doc.yaml`` — relative
+    wherever a relative form preserves the meaning, verbatim otherwise.
+    Nothing here writes: the caller decides what to do with the result, and
+    the healed value only reaches disk through the existing write choke
+    point on a later, independently-triggered write (FR-007).
+    """
+    if value is None:
+        return RELATIVE, None
+    s = str(value).strip()
+    if not s:
+        return RELATIVE, None
+
+    p = Path(s).expanduser()
+    if not p.is_absolute():
+        # Already relative — it re-tracks session_dir by construction.
+        return RELATIVE, value
+
+    base = _session_base(session_dir, campaign_dir)
+    if base is None:
+        # No base to interpret a session-scoped value against. Leave it
+        # exactly as stored rather than guessing — same defensive rule as
+        # relativize_path's "session base unresolvable" branch.
+        return DELIBERATE_OVERRIDE, value
+
+    resolved = p.resolve()
+    if resolved.is_relative_to(base):
+        return IN_SESSION, resolved.relative_to(base).as_posix()
+
+    return DELIBERATE_OVERRIDE, value
 
 # ProfileEntry.knobs key -> grouped location, mirrored on activation.
 _PROFILE_KNOB_TO_GROUPED: dict[str, tuple[str, ...]] = {
@@ -133,6 +207,19 @@ class ResolvedEditorConfig:
     """
 
     paths: EditorPaths
+    # 017 — the HEALED, as-stored form of `paths`: relative wherever a
+    # relative form preserves the meaning, absolute only for a deliberate
+    # out-of-tree override. This is what the editor binds and echoes back
+    # in PUT /api/editor/config. `paths` above stays the resolved-absolute
+    # projection every _build_*_cmd() in routers/scene_editor.py reads, and
+    # the invariant `paths[k] == resolve(paths_stored[k])` holds for every
+    # field. Binding the absolute projection and PUTting it back is what
+    # let a session switch pin the session you just left.
+    paths_stored: EditorPaths
+    # 017 — one entry per stale pin re-pointed on this read, naming the
+    # field, the stored value and the value now in use. Empty on a healthy
+    # config. A correction to stored configuration is never silent (FR-006).
+    warnings: list[str]
     extract: ExtractKnobs
     narrate: NarrateKnobs
     backends: Backends
@@ -388,7 +475,40 @@ class SessionEditorConfigService:
         session_dir = platform_resolved.get("runtime", {}).get("session_dir")
 
         cfg = self.get_config()
-        paths_dict = cfg.paths.model_dump(mode="json")
+        stored_dict = cfg.paths.model_dump(mode="json")
+        warnings: list[str] = []
+
+        # 017 — classify first, resolve SECOND, so `paths` is resolved from
+        # the healed `paths_stored` rather than derived independently. One
+        # derivation, so the two can never disagree (FR-010).
+        for f in _SESSION_PATH_FIELDS:
+            state, stored = _classify_session_path(
+                stored_dict.get(f), session_dir, self.platform.campaign_dir
+            )
+            if state == STALE_PIN:
+                was = stored_dict.get(f)
+                now = self.platform.resolve_path(
+                    stored, base="session", session_dir=session_dir
+                )
+                message = (
+                    f"session_doc.yaml paths.{f} pointed into a different "
+                    f"session directory ({was}); re-pointed to {now}. The "
+                    f"corrected value will be stored on the next save."
+                )
+                warnings.append(message)
+                # Announced on stderr as well as on the wire — the same
+                # posture as EditorPaths._drop_retired_fields. The server
+                # usually runs detached, so stderr alone is not enough; but
+                # a config-load notice belongs there too.
+                print(f"  config: {message}", file=sys.stderr)
+            stored_dict[f] = stored
+        for f in _CAMPAIGN_PATH_FIELDS:
+            stored_dict[f] = self.platform.relativize_path(
+                stored_dict.get(f), base="campaign"
+            )
+        stored_paths = EditorPaths.model_validate(stored_dict)
+
+        paths_dict = stored_paths.model_dump(mode="json")
         for f in _SESSION_PATH_FIELDS:
             paths_dict[f] = self.platform.resolve_path(
                 paths_dict.get(f), base="session", session_dir=session_dir
@@ -411,6 +531,8 @@ class SessionEditorConfigService:
 
         return ResolvedEditorConfig(
             paths=resolved_paths,
+            paths_stored=stored_paths,
+            warnings=warnings,
             extract=cfg.extract,
             narrate=cfg.narrate,
             backends=cfg.backends,

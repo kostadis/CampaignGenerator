@@ -89,8 +89,14 @@ class TestGetEditorConfig:
         resp = client.get("/api/editor/config")
         assert resp.status_code == 200
         body = resp.json()
+        # This is an EXHAUSTIVE lock on the wire shape, deliberately: a key
+        # appearing or vanishing unnoticed is how the two producers of this
+        # shape would drift. `paths_stored` and `warnings` were added by
+        # feature 017 (specs/017-session-dir-repoint/contracts/
+        # editor-config.md C-01..C-04) as a deliberate additive change, so
+        # the lock grows with them. Nothing else changed name or meaning.
         assert set(body.keys()) == {
-            "paths", "extract", "narrate", "backends",
+            "paths", "paths_stored", "warnings", "extract", "narrate", "backends",
             "session_name", "profiles", "active_profile", "model",
             "work_dir", "campaign_dir", "config_dir", "vtt", "session_dir",
             "genre", "batch_scenes_effective",
@@ -596,3 +602,100 @@ class TestO3ModelResolution:
         service.update_config({"backends": {"active": "dgx"}})
         cfg = service.resolved_editor_config()
         assert scene_editor._selection_args(None, cfg, allow_openai_compat=False) == []
+
+
+# ── 017: paths_stored / warnings on the wire ────────────────────────────
+#
+# specs/017-session-dir-repoint/contracts/editor-config.md C-01..C-06.
+# Additive only: no existing key changes name, type or meaning. The editor
+# binds `paths_stored` and echoes THAT back — never `paths` — which is what
+# makes it impossible for a session switch to pin the session just left.
+
+
+class TestPathsStoredWireShape:
+    def _campaign_with_session(self, tmp_path, name="sess1"):
+        _write(
+            tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME,
+            "documents:\n  - label: world_state\n    path: docs/world_state.md\n",
+        )
+        session_dir = tmp_path / "summaries" / name
+        session_dir.mkdir(parents=True)
+        return tmp_path, session_dir
+
+    def test_get_config_carries_paths_stored_and_warnings(self, fresh_campaign):
+        client = TestClient(_make_app(fresh_campaign))
+        body = client.get("/api/editor/config").json()
+
+        # C-04: always present, always a list, empty on a healthy config.
+        assert body["warnings"] == []
+        # C-02: same keys as `paths`.
+        assert set(body["paths_stored"]) == set(body["paths"])
+
+    def test_paths_stored_is_relative_while_paths_is_absolute(self, tmp_path):
+        campaign, session_dir = self._campaign_with_session(tmp_path)
+        app = _make_app(campaign)
+        client = TestClient(app)
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_dir)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+
+        body = client.get("/api/editor/config").json()
+        assert body["paths_stored"]["scene_extractions_dir"] == "scene_extractions"
+        assert body["paths"]["scene_extractions_dir"] == str(
+            (session_dir / "scene_extractions").resolve()
+        )
+
+    def test_resolve_invariant_on_the_wire(self, tmp_path):
+        """C-02: paths[k] == resolve(paths_stored[k]) for every key."""
+        campaign, session_dir = self._campaign_with_session(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_dir)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={
+                "paths": {
+                    "session_recap": "gm-assist.md",
+                    "scene_extractions_dir": "scene_extractions",
+                    "voice_dir": "voice",
+                }
+            },
+        )
+        body = client.get("/api/editor/config").json()
+        service = SessionEditorConfigService(
+            PlatformConfigService(campaign)
+        )
+        session_fields = {
+            "session_recap", "session_summary",
+            "scene_extractions_dir", "narration_dir", "output_dir",
+        }
+        for key, stored in body["paths_stored"].items():
+            base = "session" if key in session_fields else "campaign"
+            assert body["paths"][key] == service.platform.resolve_path(
+                stored, base=base, session_dir=str(session_dir)
+            ), key
+
+    def test_get_is_idempotent_and_does_not_write(self, tmp_path):
+        """C-06: two GETs are byte-identical and leave the document alone."""
+        campaign, session_dir = self._campaign_with_session(tmp_path)
+        client = TestClient(_make_app(campaign))
+        client.put(
+            "/api/config/runtime", json={"values": {"session_dir": str(session_dir)}}
+        )
+        client.put(
+            "/api/editor/config",
+            json={"paths": {"scene_extractions_dir": "scene_extractions"}},
+        )
+        doc = campaign / CONFIG_SUBDIR / "session_doc.yaml"
+        before = doc.read_bytes()
+
+        first = client.get("/api/editor/config").json()
+        second = client.get("/api/editor/config").json()
+
+        assert first == second
+        assert doc.read_bytes() == before

@@ -654,3 +654,133 @@ def test_load_invalid_yaml_raises(tmp_path):
     path.write_text("paths: [this is not: a mapping", encoding="utf-8")
     with pytest.raises(ValueError):
         load_session_editor_config(path)
+
+
+# ── 017: paths_stored / warnings — the read-side classification ─────────
+#
+# Feature 017 (specs/017-session-dir-repoint). The editor used to bind the
+# RESOLVED (absolute) paths and PUT them back; relativize_path cannot
+# collapse a path that is not under the current session_dir, so it stored
+# it verbatim as a "genuine out-of-tree override" and the field stopped
+# tracking session_dir forever. resolved_editor_config() now also exposes
+# `paths_stored` — the healed, as-stored form the UI binds and echoes back
+# — plus `warnings`. See specs/017-session-dir-repoint/data-model.md for
+# the four-state table.
+#
+# This class covers the three BENIGN states only. The stale-pin state has
+# its own class further down (TestStalePinHealing).
+
+
+class TestPathsStoredBenignStates:
+    def _with_session(self, tmp_path, name="sess1"):
+        session_dir = tmp_path / "summaries" / name
+        session_dir.mkdir(parents=True)
+        svc = _service(tmp_path)
+        svc.platform.update_runtime({"session_dir": str(session_dir)})
+        return svc, session_dir
+
+    def test_relative_session_path_passes_through_unchanged(self, tmp_path):
+        svc, session_dir = self._with_session(tmp_path)
+        svc.update_config({"paths": {"scene_extractions_dir": "scene_extractions"}})
+
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.scene_extractions_dir == "scene_extractions"
+        assert resolved.paths.scene_extractions_dir == str(
+            (session_dir / "scene_extractions").resolve()
+        )
+        assert resolved.warnings == []
+
+    def test_in_session_absolute_is_collapsed_in_paths_stored(self, tmp_path):
+        svc, session_dir = self._with_session(tmp_path)
+        # Write the raw document directly so the write-time choke point does
+        # not collapse it first — this is the "hand-authored absolute" case.
+        save_session_editor_config(
+            svc.session_doc_path,
+            SessionEditorConfig(
+                paths=EditorPaths(
+                    narration_dir=str(session_dir / "narration")
+                )
+            ),
+        )
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.narration_dir == "narration"
+        assert resolved.paths.narration_dir == str((session_dir / "narration").resolve())
+        assert resolved.warnings == []
+
+    def test_out_of_tree_absolute_is_preserved_and_unreported(self, tmp_path):
+        svc, _ = self._with_session(tmp_path)
+        svc.update_config({"paths": {"narration_dir": "/totally/other/place"}})
+
+        resolved = svc.resolved_editor_config()
+        # A genuine override has no relative form that preserves its meaning.
+        assert resolved.paths_stored.narration_dir == "/totally/other/place"
+        assert resolved.paths.narration_dir == "/totally/other/place"
+        assert resolved.warnings == []
+
+    def test_resolve_invariant_holds_for_every_field(self, tmp_path):
+        """data-model.md invariant: paths[k] == resolve(paths_stored[k])."""
+        svc, session_dir = self._with_session(tmp_path)
+        svc.update_config(
+            {
+                "paths": {
+                    "session_recap": "gm-assist.md",
+                    "session_summary": "session-summary.md",
+                    "scene_extractions_dir": "scene_extractions",
+                    "narration_dir": "/totally/other/place",
+                    "party": "docs/party.md",
+                    "voice_dir": "voice",
+                    "examples_dir": "examples",
+                    "genre_file": "voice/_genre.md",
+                }
+            }
+        )
+        resolved = svc.resolved_editor_config()
+        session_fields = (
+            "session_recap", "session_summary",
+            "scene_extractions_dir", "narration_dir", "output_dir",
+        )
+        campaign_fields = ("party", "voice_dir", "examples_dir", "genre_file")
+        for field in session_fields + campaign_fields:
+            stored = getattr(resolved.paths_stored, field)
+            base = "session" if field in session_fields else "campaign"
+            expected = svc.platform.resolve_path(
+                stored, base=base, session_dir=str(session_dir)
+            )
+            assert getattr(resolved.paths, field) == expected, field
+
+    def test_campaign_fields_unaffected_by_session_switch(self, tmp_path):
+        """FR-013: a session switch must not move a campaign-scoped path."""
+        session_b = tmp_path / "summaries" / "sessB"
+        session_b.mkdir(parents=True)
+        svc, _ = self._with_session(tmp_path)
+        svc.update_config({"paths": {"voice_dir": "voice", "party": "docs/party.md"}})
+
+        before = svc.resolved_editor_config()
+        svc.platform.update_runtime({"session_dir": str(session_b)})
+        after = svc.resolved_editor_config()
+
+        assert before.paths.voice_dir == after.paths.voice_dir
+        assert before.paths.party == after.paths.party
+        assert after.paths_stored.voice_dir == "voice"
+        assert after.paths_stored.party == "docs/party.md"
+
+    def test_no_session_dir_leaves_session_paths_untouched(self, tmp_path):
+        """Preserves the existing defensive rule: with no session_dir there
+        is no base to interpret a session-scoped value against, so nothing
+        is classified and nothing is healed."""
+        svc = _service(tmp_path)  # note: no update_runtime — session_dir unset
+        save_session_editor_config(
+            svc.session_doc_path,
+            SessionEditorConfig(
+                paths=EditorPaths(scene_extractions_dir="/somewhere/else/scenes")
+            ),
+        )
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.scene_extractions_dir == "/somewhere/else/scenes"
+        assert resolved.warnings == []
+
+    def test_none_fields_stay_none(self, tmp_path):
+        svc, _ = self._with_session(tmp_path)
+        resolved = svc.resolved_editor_config()
+        assert resolved.paths_stored.output_dir is None
+        assert resolved.paths.output_dir is None

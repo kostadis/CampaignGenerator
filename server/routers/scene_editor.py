@@ -109,6 +109,15 @@ def _serialize_resolved(cfg: ResolvedEditorConfig) -> dict:
     so the two never drift apart."""
     return {
         "paths": cfg.paths.model_dump(),
+        # 017 — the healed, as-stored form. The editor binds THIS and echoes
+        # it back on PUT; `paths` above stays the resolved-absolute
+        # projection every _build_*_cmd() below reads. Binding the absolute
+        # projection and PUTting it back is what let a session switch pin
+        # the session just left. Invariant: paths[k] == resolve(paths_stored[k]).
+        "paths_stored": cfg.paths_stored.model_dump(),
+        # 017 — stale-pin corrections applied on this read, with before and
+        # after. Empty on a healthy config; never silent when non-empty.
+        "warnings": list(cfg.warnings),
         "extract": cfg.extract.model_dump(),
         "narrate": cfg.narrate.model_dump(),
         "backends": cfg.backends.model_dump(by_alias=True),

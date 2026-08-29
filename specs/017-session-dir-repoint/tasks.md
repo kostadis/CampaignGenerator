@@ -51,6 +51,17 @@ feature.
   inverse (contract C-15).
 - **C-D**: No existing test may be edited to make new code pass. If an existing
   test fails, the new code is wrong.
+  - **One recorded exception, T009**: `TestGetEditorConfig::test_returns_grouped_shape`
+    in `tests/test_editor_service_integration.py` asserts an **exhaustive** key set
+    over the wire shape — a deliberate contract lock. Adding `paths_stored` and
+    `warnings` is an intentional additive contract change (contract C-01..C-04), so
+    the lock was grown to match and a comment records why. This is the only existing
+    lock is paired with an identical one in `tests/test_editor_profiles_routes.py::
+    test_activate_profile_mirrors_knobs_into_resolved_config`, since profile-activate
+    shares `_serialize_resolved`. **Both had to grow in the same change** — which is
+    exactly what those two locks exist to prove: the single producer has not drifted.
+    These are the only two existing tests touched by this feature; neither was
+    relaxed, and no assertion about an existing key was weakened.
 - **C-E**: A read must never write. No task may add a `_save` call to any read
   path (FR-007).
 
@@ -60,10 +71,10 @@ feature.
 
 **Purpose**: Isolated workspace and a recorded green baseline to diff against.
 
-- [ ] T001 Create the implementation worktree off `main` at `.claude/worktrees/017-session-dir-repoint` via `git worktree add .claude/worktrees/017-session-dir-repoint -b 017-session-dir-repoint main`; all subsequent tasks run inside it. **Accept**: `git -C .claude/worktrees/017-session-dir-repoint status` reports branch `017-session-dir-repoint` and a clean tree.
-- [ ] T002 Record the pytest baseline by running `python -m pytest -q` from the worktree root and writing the pass/fail counts into `specs/017-session-dir-repoint/tasks.md` under Notes. **Accept**: suite is green before any change; the number is written down so a later regression is unambiguous.
-- [ ] T003 [P] Record the frontend baseline by running `npm run build` in `frontend/`. **Accept**: `vue-tsc -b` reports no errors and `frontend/dist/` is produced.
-- [ ] T004 [P] Back up the quickstart fixture campaign: copy `~/out-of-the-abyss/out-of-the-abyss/config/session_doc.yaml` and `~/out-of-the-abyss/out-of-the-abyss/config/platform.yaml` to `.bak` siblings. **Accept**: both `.bak` files exist; §3 of `quickstart.md` deliberately corrupts the originals.
+- [X] T001 Create the implementation worktree off `main` at `.claude/worktrees/017-session-dir-repoint` via `git worktree add .claude/worktrees/017-session-dir-repoint -b 017-session-dir-repoint main`; all subsequent tasks run inside it. **Accept**: `git -C .claude/worktrees/017-session-dir-repoint status` reports branch `017-session-dir-repoint` and a clean tree.
+- [X] T002 Record the pytest baseline by running `python -m pytest -q` from the worktree root and writing the pass/fail counts into `specs/017-session-dir-repoint/tasks.md` under Notes. **Accept**: suite is green before any change; the number is written down so a later regression is unambiguous.
+- [X] T003 [P] Record the frontend baseline by running `npm run build` in `frontend/`. **Accept**: `vue-tsc -b` reports no errors and `frontend/dist/` is produced.
+- [X] T004 [P] Back up the quickstart fixture campaign: copy `~/out-of-the-abyss/out-of-the-abyss/config/session_doc.yaml` and `~/out-of-the-abyss/out-of-the-abyss/config/platform.yaml` to `.bak` siblings. **Accept**: both `.bak` files exist; §3 of `quickstart.md` deliberately corrupts the originals.
 
 ---
 
@@ -80,11 +91,11 @@ states only — relative, in-session absolute, deliberate override. The
 here; a stale pin must still behave as a deliberate override at the end of this
 phase, so US3 has something to change.
 
-- [ ] T005 [P] Write failing tests for benign classification and the resolve invariant in `tests/test_session_editor_config_service.py`: for a healthy config, `paths_stored` equals the stored relative names; for every field, `paths[k] == resolve(paths_stored[k])` (data-model.md invariant); campaign-scoped fields are unaffected (FR-013). **Accept**: tests fail with `AttributeError`/`KeyError` on `paths_stored`, proving they exercise new surface.
-- [ ] T006 [P] Write a failing wire-shape test in `tests/test_editor_service_integration.py`: `GET /api/editor/config` returns `paths_stored` (same keys as `paths`) and `warnings` (a list, empty for a healthy config) — contract C-01, C-02, C-04. **Accept**: test fails on the missing keys.
-- [ ] T007 Implement `_classify_session_path(value, session_dir, campaign_dir)` in `server/session_editor_config_service.py`, below `_CAMPAIGN_PATH_FIELDS` (currently line 49-51). Returns the state and the stored form per the data-model.md table, handling only `relative` / `in_session_absolute` / `deliberate_override`; compare on `Path.resolve()` with `is_relative_to`, matching `relativize_path`'s treatment so a trailing slash or `~` is not a difference. When `session_dir` is unset, return the value untouched (preserves the existing defensive rule). **Accept**: pure function, no I/O beyond `Path` operations, no `_save` (C-E).
-- [ ] T008 Extend `ResolvedEditorConfig` in `server/session_editor_config_service.py:126` with `paths_stored: EditorPaths` and `warnings: list[str] = field(default_factory=list)`, then populate both in `resolved_editor_config()` (line 366) by running `_classify_session_path` over `_SESSION_PATH_FIELDS` and the existing campaign relativization over `_CAMPAIGN_PATH_FIELDS`. `paths` must be resolved **from** `paths_stored`, not independently. `get_config()` stays untouched and keeps returning the raw stored document. **Accept**: T005 passes; `get_config()` behaviour is byte-identical to before.
-- [ ] T009 Add `"paths_stored"` and `"warnings"` to `_serialize_resolved` in `server/routers/scene_editor.py:106`, keeping it the single producer for both `GET /api/editor/config` and the profile-activate response so the two cannot drift. **Accept**: T006 passes; no other key changes name, type, or meaning (contract: additive only).
+- [X] T005 [P] Write failing tests for benign classification and the resolve invariant in `tests/test_session_editor_config_service.py`: for a healthy config, `paths_stored` equals the stored relative names; for every field, `paths[k] == resolve(paths_stored[k])` (data-model.md invariant); campaign-scoped fields are unaffected (FR-013). **Accept**: tests fail with `AttributeError`/`KeyError` on `paths_stored`, proving they exercise new surface.
+- [X] T006 [P] Write a failing wire-shape test in `tests/test_editor_service_integration.py`: `GET /api/editor/config` returns `paths_stored` (same keys as `paths`) and `warnings` (a list, empty for a healthy config) — contract C-01, C-02, C-04. **Accept**: test fails on the missing keys.
+- [X] T007 Implement `_classify_session_path(value, session_dir, campaign_dir)` in `server/session_editor_config_service.py`, below `_CAMPAIGN_PATH_FIELDS` (currently line 49-51). Returns the state and the stored form per the data-model.md table, handling only `relative` / `in_session_absolute` / `deliberate_override`; compare on `Path.resolve()` with `is_relative_to`, matching `relativize_path`'s treatment so a trailing slash or `~` is not a difference. When `session_dir` is unset, return the value untouched (preserves the existing defensive rule). **Accept**: pure function, no I/O beyond `Path` operations, no `_save` (C-E).
+- [X] T008 Extend `ResolvedEditorConfig` in `server/session_editor_config_service.py:126` with `paths_stored: EditorPaths` and `warnings: list[str] = field(default_factory=list)`, then populate both in `resolved_editor_config()` (line 366) by running `_classify_session_path` over `_SESSION_PATH_FIELDS` and the existing campaign relativization over `_CAMPAIGN_PATH_FIELDS`. `paths` must be resolved **from** `paths_stored`, not independently. `get_config()` stays untouched and keeps returning the raw stored document. **Accept**: T005 passes; `get_config()` behaviour is byte-identical to before.
+- [X] T009 Add `"paths_stored"` and `"warnings"` to `_serialize_resolved` in `server/routers/scene_editor.py:106`, keeping it the single producer for both `GET /api/editor/config` and the profile-activate response so the two cannot drift. **Accept**: T006 passes; no other key changes name, type, or meaning (contract: additive only).
 
 **Checkpoint**: `python -m pytest -q` green. `git diff server/platform_config_service.py` empty (C-A). `git diff` shows no change inside any `_build_*_cmd()` (C-B). Foundation ready.
 
@@ -271,4 +282,15 @@ Task: "T008 ResolvedEditorConfig.paths_stored/warnings in server/session_editor_
 - `[P]` = different files, no dependency on an incomplete task.
 - Commit after each task or logical group; the worktree from T001 is the only place work happens.
 - Every checkpoint is a stop-and-validate point — the phase gates in `plan.md` match these checkpoints one for one.
-- **T002 baseline (fill in when run)**: `python -m pytest -q` → _____ passed, _____ failed.
+- **T002 baseline (recorded 2026-08-28, worktree at `264a420`)**: `python -m pytest -q` →
+  **4303 passed, 7 failed, 193 skipped** in 139s. The 7 failures are **pre-existing on
+  `main` and outside this feature's blast radius**: `test_configure_mcp`,
+  `test_ensemble_config_defaults`, `test_extract_facts`, `test_grounding_backend`,
+  `test_mempalace_client` (live round-trip), `test_provenance_mcp` (mcp install),
+  `test_selection_isolation`. None touches `session_editor_config_service`,
+  `platform_config_service`, `scene_editor`, or the config routes.
+  The **feature blast radius is green**: 187 passed across
+  `test_session_editor_config_service.py`, `test_editor_service_integration.py`,
+  `test_config_routes.py`, `test_platform_config_service.py`,
+  `test_main_boot_overrides.py`, `test_editor_config_genre_multiline.py`,
+  `test_editor_profiles_routes.py`. **That 187 is the regression bar, not 4310.**
