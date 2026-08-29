@@ -122,6 +122,39 @@ def _classify_session_path(
     if resolved.is_relative_to(base):
         return IN_SESSION, resolved.relative_to(base).as_posix()
 
+    # A SIBLING session directory of the same campaign. Never a meaningful
+    # thing to intend, and exactly what the pre-017 editor produced, so it
+    # is treated as damage and re-pointed (FR-004).
+    #
+    # Two guards keep this from over-firing, and both matter:
+    #   * `base.parent != base` — if session_dir were "/" or a filesystem
+    #     root, every absolute path on the machine would sit under its
+    #     parent and the whole config would be "healed" into nonsense.
+    #   * containment in campaign_dir — FR-004 says "a different session
+    #     directory **within the current campaign**". A session_dir set
+    #     outside the campaign has no sibling tree we can reason about, so
+    #     such values stay overrides. Conservative on purpose: mistaking an
+    #     override for damage silently moves a GM's deliberate pointer,
+    #     which is worse than leaving one stale value for them to see.
+    parent = base.parent
+    if (
+        parent != base
+        and resolved.is_relative_to(parent)
+        and resolved.is_relative_to(campaign_dir.resolve())
+    ):
+        within = resolved.relative_to(parent).parts
+        # parts[0] is the sibling session directory's own name; everything
+        # after it is the name this field was carrying INSIDE that session,
+        # and that is what must survive the re-point (FR-008) — a nested
+        # "…/20260811/narration/pass5" becomes "narration/pass5", not "pass5".
+        carried = Path(*within[1:]).as_posix() if len(within) > 1 else None
+        # len(within) == 1 means the value IS a sibling session directory
+        # with nothing under it — the realistic case being `output_dir`,
+        # which often just names the session dir. The honest re-point is
+        # "unset", which for output_dir already means "the session
+        # directory". The warning says so either way; nothing is silent.
+        return STALE_PIN, carried
+
     return DELIBERATE_OVERRIDE, value
 
 # ProfileEntry.knobs key -> grouped location, mirrored on activation.
@@ -490,9 +523,18 @@ class SessionEditorConfigService:
                 now = self.platform.resolve_path(
                     stored, base="session", session_dir=session_dir
                 )
+                # `stored is None` means the value named a sibling session
+                # directory with nothing under it, so the honest re-point is
+                # "unset". Say that, rather than printing "re-pointed to None".
+                became = (
+                    f"re-pointed to {now}"
+                    if stored is not None
+                    else f"cleared — it named a session directory, and the "
+                         f"current one is {session_dir}"
+                )
                 message = (
                     f"session_doc.yaml paths.{f} pointed into a different "
-                    f"session directory ({was}); re-pointed to {now}. The "
+                    f"session directory ({was}); {became}. The "
                     f"corrected value will be stored on the next save."
                 )
                 warnings.append(message)

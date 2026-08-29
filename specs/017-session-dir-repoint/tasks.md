@@ -224,17 +224,34 @@ justification up — do not weaken either.
 
 ### Tests for User Story 3
 
-- [ ] T018 [US3] Write failing stale-pin tests in `tests/test_session_editor_config_service.py`: a stored absolute under `parent(session_dir)` but not under `session_dir` is re-pointed onto the current session (FR-004), and a **nested** value (`…/20260811/narration/pass5`) re-points to `narration/pass5`, not `pass5` (FR-008, data-model.md). **Accept**: fails while the stale-pin branch is unimplemented.
-- [ ] T019 [US3] Extend `tests/test_session_editor_config_service.py` with the preservation and announcement cases: an absolute outside `parent(session_dir)` is returned verbatim with **no** warning (FR-005); a re-point emits exactly one warning naming the field, the stored value, and the value now in use (FR-006). **Accept**: sequential with T018 (same file).
-- [ ] T020 [US3] Extend `tests/test_session_editor_config_service.py` with the two constitutional guards: (a) **no write on read** — `session_doc.yaml` mtime and bytes are unchanged across two `resolved_editor_config()` calls on a damaged config (FR-007, C-E); (b) **idempotence** — the second read returns identical `paths_stored` and an empty `warnings` is produced for an already-healthy config (FR-012). **Accept**: sequential with T019; these two tests are the Principle XIII justification in executable form.
+- [X] T018 [US3] Write failing stale-pin tests in `tests/test_session_editor_config_service.py`: a stored absolute under `parent(session_dir)` but not under `session_dir` is re-pointed onto the current session (FR-004), and a **nested** value (`…/20260811/narration/pass5`) re-points to `narration/pass5`, not `pass5` (FR-008, data-model.md). **Accept**: fails while the stale-pin branch is unimplemented.
+- [X] T019 [US3] Extend `tests/test_session_editor_config_service.py` with the preservation and announcement cases: an absolute outside `parent(session_dir)` is returned verbatim with **no** warning (FR-005); a re-point emits exactly one warning naming the field, the stored value, and the value now in use (FR-006). **Accept**: sequential with T018 (same file).
+- [X] T020 [US3] Extend `tests/test_session_editor_config_service.py` with the two constitutional guards: (a) **no write on read** — `session_doc.yaml` mtime and bytes are unchanged across two `resolved_editor_config()` calls on a damaged config (FR-007, C-E); (b) **idempotence** — the second read returns identical `paths_stored` and an empty `warnings` is produced for an already-healthy config (FR-012). **Accept**: sequential with T019; these two tests are the Principle XIII justification in executable form.
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Add the `stale_pin` branch to `_classify_session_path()` in `server/session_editor_config_service.py` (from T007): absolute, not under `session_dir`, but under `parent(session_dir)` → re-point, preserving the value's path relative to *its own* session directory. Return the warning payload alongside; do not write. **Accept**: T018–T020 pass; `resolved_editor_config()` still contains no `_save` call.
-- [ ] T022 [US3] Echo each warning to stderr from `server/session_editor_config_service.py`, mirroring the announced-normalisation pattern of `EditorPaths._drop_retired_fields` in `server/session_editor_config_shared.py`. **Accept**: message names the field and both values; the server still boots on a damaged config (a stale pin must never be fatal).
-- [ ] T023 [US3] Render `editorConfig.warnings` in `frontend/src/views/session/SessionDocEditor.vue`, mirroring the existing migration banner at `frontend/src/views/Settings.vue:43-46` (`.migration-banner`, `v-for` over the list). Persistent, not a toast — the condition lasts until the next write. **Accept**: `npm run build` clean; `quickstart.md` §3 shows the banner.
+- [X] T021 [US3] Add the `stale_pin` branch to `_classify_session_path()` in `server/session_editor_config_service.py` (from T007): absolute, not under `session_dir`, but under `parent(session_dir)` → re-point, preserving the value's path relative to *its own* session directory. Return the warning payload alongside; do not write. **Accept**: T018–T020 pass; `resolved_editor_config()` still contains no `_save` call.
+- [X] T022 [US3] Echo each warning to stderr from `server/session_editor_config_service.py`, mirroring the announced-normalisation pattern of `EditorPaths._drop_retired_fields` in `server/session_editor_config_shared.py`. **Accept**: message names the field and both values; the server still boots on a damaged config (a stale pin must never be fatal).
+- [X] T023 [US3] Render `editorConfig.warnings` in `frontend/src/views/session/SessionDocEditor.vue`, mirroring the existing migration banner at `frontend/src/views/Settings.vue:43-46` (`.migration-banner`, `v-for` over the list). Persistent, not a toast — the condition lasts until the next write. **Accept**: `npm run build` clean; `quickstart.md` §3 shows the banner.
 
 **Checkpoint**: All three behavioural stories independently functional.
+
+**Implementation notes (US3)**
+
+- **Two guards were added to the stale-pin branch that the task text did not call for,
+  and both are load-bearing.** (a) `base.parent != base`: if `session_dir` were a
+  filesystem root, every absolute path on the machine would sit under its parent and
+  the entire config would be 'healed' into nonsense. (b) containment in `campaign_dir`:
+  FR-004 says *within the current campaign*, and a `session_dir` set outside the
+  campaign has no sibling tree to reason about. Both err toward treating a value as a
+  deliberate override — mistaking an override for damage silently moves a GM's
+  deliberate pointer, which is the worse failure.
+- **The `len(parts) == 1` case** — the stored value names a sibling session directory
+  with nothing under it — heals to *unset*. The realistic instance is `output_dir`,
+  which often just names the session dir, and where unset already means 'the session
+  directory'. The warning text says 'cleared' rather than 're-pointed to None'.
+- **T022 was already satisfied by T008b**: the stderr echo was written alongside the
+  warning at that point, but was unreachable until T021 made `STALE_PIN` returnable.
 
 ---
 

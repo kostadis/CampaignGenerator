@@ -51,6 +51,14 @@ const drawerOpen = ref(false)
 // Recomputed from the store, so it refreshes with every config GET/PUT.
 const genreInfo = computed(() => (config.editorConfig as any)?.genre ?? null)
 
+// 017 — stale-pin corrections the server applied on this read, with before
+// and after. A correction to stored configuration is never silent (FR-006),
+// and it must persist rather than flash: the condition lasts until the next
+// write, so a toast would be gone long before the GM could act on it.
+const pathWarnings = computed<string[]>(
+  () => (config.editorConfig as any)?.warnings ?? []
+)
+
 // ── Field ← store.editorConfig (grouped GET /api/editor/config) ──
 // Coerce an arbitrary backends.active value to one of the four known
 // backends — shared by the initial hydration and profile activation.
@@ -976,6 +984,15 @@ onMounted(async () => {
       >Config ⚙</button>
     </header>
 
+      <!-- 017 — session-path corrections. Mirrors the migration banner in
+           views/Settings.vue rather than inventing a second notice style. -->
+      <div v-if="pathWarnings.length" class="path-warning-banner">
+        <strong>Session paths corrected</strong>
+        <ul>
+          <li v-for="(w, i) in pathWarnings" :key="i">{{ w }}</li>
+        </ul>
+      </div>
+
     <!-- Three-column layout -->
     <div v-if="configReady" class="columns">
       <SceneList
@@ -1055,6 +1072,15 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+/* 017 — same treatment as .migration-banner in views/Settings.vue. */
+.path-warning-banner {
+  margin: 0 12px 12px; padding: 10px 12px;
+  background: #3a2e1e; color: var(--peach);
+  border-radius: 4px; font-size: 11px; line-height: 1.5;
+}
+.path-warning-banner strong { display: block; margin-bottom: 4px; color: var(--yellow); }
+.path-warning-banner ul { margin: 0; padding-left: 18px; }
+
 .session-editor {
   height: 100%;
   display: flex;
