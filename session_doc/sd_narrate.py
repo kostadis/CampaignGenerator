@@ -52,6 +52,8 @@ from session_doc.io import (
     extract_scene_text,
     load_scene_extractions,
     parse_plan,
+    resolve_scene_extraction_file,
+    scene_extraction_files,
 )
 from session_doc.narrate import (
     build_narrate_prompt,
@@ -145,6 +147,75 @@ def _voice_dir_arg(path: str | None) -> Path | None:
     return p
 
 
+def _same_resolved_path(left: Path, right: Path) -> bool:
+    return left.resolve() == right.resolve()
+
+
+def _extraction_for_path(extractions: list[dict], path: Path) -> dict | None:
+    for sx in extractions:
+        if _same_resolved_path(sx["path"], path):
+            return sx
+    return None
+
+
+def _die_exact_scene_file(message: str) -> None:
+    print(f"Error: --scene-extraction-file {message}", file=sys.stderr)
+    sys.exit(1)
+
+
+def _load_exact_scene_extraction(
+    raw_path: str,
+    *,
+    scene_index: int,
+    scene_name: str,
+    directory_extractions: list[dict],
+) -> tuple[dict, bool]:
+    """Validate and load a single-scene extraction override.
+
+    The eligible file set and scene association stay delegated to
+    ``session_doc.io``. This function only sequences the CLI refusals and
+    returns the loader-parsed extraction for the exact file.
+    """
+    exact = Path(raw_path).expanduser()
+    if not exact.exists():
+        _die_exact_scene_file(f"{exact} does not exist.")
+    if not exact.is_file():
+        _die_exact_scene_file(f"{exact} is not a regular file.")
+    try:
+        exact.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as e:
+        _die_exact_scene_file(f"{exact} must be readable UTF-8 ({e}).")
+
+    eligible = scene_extraction_files(exact.parent)
+    if not any(_same_resolved_path(candidate, exact)
+               for candidate in eligible.values()):
+        _die_exact_scene_file(
+            f"{exact} is not an eligible NN_*.md scene extraction under "
+            "session_doc.io rules."
+        )
+
+    loaded = _extraction_for_path(directory_extractions, exact)
+    loaded_from_directory = loaded is not None
+    if loaded is None:
+        loaded = _extraction_for_path(load_scene_extractions(exact.parent), exact)
+    if loaded is None:
+        _die_exact_scene_file(
+            f"{exact} is not an eligible NN_*.md scene extraction under "
+            "session_doc.io loader rules."
+        )
+
+    resolved = resolve_scene_extraction_file(exact.parent, scene_index, scene_name)
+    if resolved is None or not _same_resolved_path(resolved, exact):
+        identity = loaded.get("name") or exact.name
+        _die_exact_scene_file(
+            f"{exact} is not associated with selected scene {scene_index} "
+            f"('{scene_name}') by exact scene identity or {scene_index:02d}_ "
+            f"prefix; file identity is '{identity}'."
+        )
+
+    return loaded, loaded_from_directory
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Render per-scene first-person narration from a plan + scene extractions."
@@ -156,6 +227,9 @@ def main() -> None:
                         help="plan.md (sd_plan output).")
     parser.add_argument("--scene-extractions", required=True, metavar="DIR",
                         help="Directory of NN_*.md scene files (scene_extract output).")
+    parser.add_argument("--scene-extraction-file", metavar="FILE",
+                        help="single-scene input override; exactly one "
+                             "--scene N required.")
     parser.add_argument("--per-scene-output", required=True, metavar="DIR",
                         help="Where to write session_doc_scene_NN_<slug>.md files.")
     parser.add_argument("--party", metavar="FILE",
@@ -262,14 +336,23 @@ def main() -> None:
         print(f"Error: --scene-extractions not found: {sx_dir}", file=sys.stderr)
         sys.exit(1)
     scene_extractions = load_scene_extractions(sx_dir)
-    if not scene_extractions:
+    if not scene_extractions and not args.scene_extraction_file:
         print(f"Error: no NN_*.md files in {sx_dir}", file=sys.stderr)
         sys.exit(1)
 
     # A voice-smoothed layer next door is easy to produce and easy to forget to
     # point at; nothing downstream reveals which layer was narrated (#223, C).
     smoothed = sx_dir.parent / f"{sx_dir.name}_smoothed"
-    if smoothed.is_dir() and smoothed.resolve() != sx_dir.resolve():
+    exact_parent = (Path(args.scene_extraction_file).expanduser().parent
+                    if args.scene_extraction_file else None)
+    exact_file_selects_smoothed = (
+        exact_parent is not None and _same_resolved_path(exact_parent, smoothed)
+    )
+    if (
+        smoothed.is_dir()
+        and smoothed.resolve() != sx_dir.resolve()
+        and not exact_file_selects_smoothed
+    ):
         print(f"Warning: {smoothed.name}/ exists alongside {sx_dir.name}/, but "
               f"--scene-extractions points at {sx_dir.name}/ — the voice-smoothed "
               f"extractions will NOT reach narration.\n"
@@ -392,16 +475,62 @@ def main() -> None:
         if not sections:
             print(f"Error: narrator '{args.narrator}' not in plan.", file=sys.stderr)
             sys.exit(1)
+    if args.scene_extraction_file and (
+        not args.scene or len(args.scene) != 1 or args.scene[0] < 1
+    ):
+        _die_exact_scene_file(
+            f"{Path(args.scene_extraction_file).expanduser()} requires exactly "
+            "one --scene N (positive, 1-based)."
+        )
     if args.scene:
         total = len(sections)
         bad = [n for n in args.scene if n < 1 or n > total]
         if bad:
+            if args.scene_extraction_file:
+                _die_exact_scene_file(
+                    f"{Path(args.scene_extraction_file).expanduser()} requires "
+                    f"exactly one --scene N in range; got {bad} (plan has {total})."
+                )
             print(f"Error: scene number(s) out of range: {bad} (plan has {total})",
                   file=sys.stderr)
             sys.exit(1)
         sections = [(n, sections[n - 1]) for n in args.scene]
     else:
         sections = list(enumerate(sections, 1))
+
+    exact_scene_input: tuple[int, dict] | None = None
+    exact_scene_input_loaded_from_directory = False
+    if args.scene_extraction_file:
+        selected_scene_index, selected_section = sections[0]
+        exact_extraction, exact_scene_input_loaded_from_directory = (
+            _load_exact_scene_extraction(
+                args.scene_extraction_file,
+                scene_index=selected_scene_index,
+                scene_name=selected_section.get("scene", ""),
+                directory_extractions=scene_extractions,
+            )
+        )
+        exact_scene_input = (selected_scene_index, exact_extraction)
+
+        # The source-knowledge check uses the pre-normalisation session text.
+        # Directory-loaded overrides are already represented in the original
+        # snapshot; exact files from another directory need to be added once.
+        if not exact_scene_input_loaded_from_directory:
+            session_source = "\n".join(
+                part for part in [
+                    session_source,
+                    (
+                        f"{exact_extraction['moments']}\n"
+                        f"{exact_extraction['summary']}\n"
+                        f"{exact_extraction['body']}"
+                    ),
+                ] if part
+            )
+            if alias_map and not args.no_alias_normalize:
+                normalize, _ = build_alias_normalizer(alias_map, preserve_quoted=True)
+                exact_extraction["moments"] = normalize(exact_extraction["moments"])
+                exact_extraction["summary"] = normalize(exact_extraction["summary"])
+                exact_extraction["body"]    = normalize(exact_extraction["body"])
 
     # Pre-flight: every narrator about to be rendered must resolve to a voice
     # spec. Checked here — after --narrator/--scene filtering, before the first
@@ -478,15 +607,18 @@ def main() -> None:
         label      = f"{narrator} — {scene_name}" if scene_name else narrator
 
         # Find the matching scene file (case-insensitive name match, fallback to index).
-        match: dict | None = None
-        sn = (scene_name or "").lower().strip()
-        if sn:
-            for sx in scene_extractions:
-                if sx["name"].lower().strip() == sn:
-                    match = sx
-                    break
-        if match is None and 1 <= i <= len(scene_extractions):
-            match = scene_extractions[i - 1]
+        if exact_scene_input is not None and i == exact_scene_input[0]:
+            match = exact_scene_input[1]
+        else:
+            match: dict | None = None
+            sn = (scene_name or "").lower().strip()
+            if sn:
+                for sx in scene_extractions:
+                    if sx["name"].lower().strip() == sn:
+                        match = sx
+                        break
+            if match is None and 1 <= i <= len(scene_extractions):
+                match = scene_extractions[i - 1]
         if match is None:
             print(f"Error: no scene extraction matches '{scene_name}' (scene {i}).",
                   file=sys.stderr)

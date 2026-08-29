@@ -153,6 +153,54 @@ def scene_extraction_files(path: Path) -> dict[str, Path]:
     return by_stem
 
 
+def _frontmatter_scene_name(text: str) -> str | None:
+    m = _SCENE_FRONTMATTER_RE.match(text)
+    if not m:
+        return None
+    for line in m.group(1).splitlines():
+        if line.strip().lower().startswith("scene:"):
+            return line.split(":", 1)[1].strip()
+    return None
+
+
+def resolve_scene_extraction_file(
+    path: Path, scene_index: int, scene_name: str = ""
+) -> Path | None:
+    """Return the eligible file for one scene in one extraction directory.
+
+    Eligibility and scaffold/plain shadowing come only from
+    ``scene_extraction_files``. This resolver adds the per-scene association:
+    prefer an explicit frontmatter scene identity, disambiguate repeated
+    identities with the selected ``NN_`` prefix, then fall back only to that
+    prefix. A unique identity may still cross prefixes because plan retitling
+    can leave the plan index and extraction filename out of sync.
+    """
+    by_stem = scene_extraction_files(path)
+    wanted = scene_name.strip().casefold()
+    prefix = f"{scene_index:02d}_"
+    if wanted:
+        identity_matches: list[tuple[str, Path]] = []
+        for stem in sorted(by_stem):
+            f = by_stem[stem]
+            try:
+                declared = _frontmatter_scene_name(f.read_text(encoding="utf-8"))
+            except (OSError, UnicodeDecodeError):
+                continue
+            if declared and declared.strip().casefold() == wanted:
+                identity_matches.append((stem, f))
+
+        indexed_identity_matches = [
+            f for stem, f in identity_matches if stem.startswith(prefix)
+        ]
+        if indexed_identity_matches:
+            return sorted(indexed_identity_matches)[0]
+        if len(identity_matches) == 1:
+            return identity_matches[0][1]
+
+    matches = [f for stem, f in by_stem.items() if stem.startswith(prefix)]
+    return sorted(matches)[0] if matches else None
+
+
 def _claims_verbatim(body: str) -> bool:
     """Whether a body heads its moments section ``## Verbatim moments``.
 

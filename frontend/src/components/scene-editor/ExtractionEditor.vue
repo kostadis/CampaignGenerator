@@ -4,12 +4,41 @@ import { apiFetch } from '../../api/client'
 
 const REVIEW_BANNER_KEY = 'cg_scene_review_banner_dismissed'
 
+type NarrateLayer = 'smoothed' | 'raw'
+type NarrateStatus = 'ready' | 'unreadable' | 'missing'
+
+interface SceneSourceCandidate {
+  layer: NarrateLayer
+  directory: string | null
+  directory_exists: boolean
+  path: string | null
+  filename: string | null
+  exists: boolean
+  readable: boolean | null
+  reason: string | null
+}
+
+interface NarrateSourceState {
+  scene_index: number
+  scene_name: string
+  smoothed: SceneSourceCandidate
+  raw: SceneSourceCandidate
+  active_layer: NarrateLayer | null
+  active_file: string | null
+  status: NarrateStatus
+  available: boolean
+  fallback_to_raw: boolean
+  message: string
+}
+
 const props = defineProps<{
   extractionContent: string
   sceneLabel: string
   estimatedTokens: number | null
   defaultNarrateTokens: number
   hasExtraction: boolean
+  narrateSource: NarrateSourceState | null
+  narrateSourceAvailable: boolean
   narrating: boolean
   extracting: boolean
   proseMode: boolean
@@ -44,6 +73,28 @@ function dismissReviewBanner() {
 const showReviewBanner = computed(() =>
   props.hasExtraction && !reviewBannerDismissed.value
 )
+
+const narrateSourceLabel = computed(() => {
+  const source = props.narrateSource
+  if (!source) return ''
+  if (source.status === 'ready') {
+    if (source.active_layer === 'smoothed') return 'Smoothed'
+    if (source.active_layer === 'raw') return source.fallback_to_raw ? 'Raw fallback' : 'Raw'
+  }
+  if (source.status === 'missing') return 'Missing'
+  if (source.status === 'unreadable') {
+    if (source.smoothed.exists && source.smoothed.readable === false) return 'Smoothed unreadable'
+    if (source.raw.exists && source.raw.readable === false) return 'Raw unreadable'
+    return 'Unreadable'
+  }
+  return source.status
+})
+
+const smoothedDirectoryState = computed(() => {
+  const source = props.narrateSource
+  if (!source) return ''
+  return source.smoothed.directory_exists ? 'present' : 'not present'
+})
 
 // Token estimate
 function estimateTokens(text: string): number {
@@ -172,6 +223,35 @@ async function toggleDiff() {
       </span>
     </div>
 
+    <div v-if="narrateSource" class="source-banner" aria-live="polite">
+      <div class="source-row">
+        <span class="source-key">Smoothed directory</span>
+        <span class="source-value">{{ narrateSource.smoothed.directory || '—' }}</span>
+        <span class="source-state">{{ smoothedDirectoryState }}</span>
+      </div>
+      <div class="source-row">
+        <span class="source-key">Narrate source</span>
+        <span class="source-value">{{ narrateSourceLabel }}</span>
+      </div>
+      <div v-if="narrateSource.status === 'ready' && narrateSource.active_file" class="source-row">
+        <span class="source-key">Active file</span>
+        <span class="source-value">{{ narrateSource.active_file }}</span>
+      </div>
+      <div
+        v-if="narrateSource.raw.exists && narrateSource.raw.readable === false"
+        class="source-row source-message"
+      >
+        <span class="source-key">Raw editor</span>
+        <span class="source-value">
+          {{ narrateSource.raw.path }} — {{ narrateSource.raw.reason || 'unreadable' }}
+        </span>
+      </div>
+      <div v-if="narrateSource.message" class="source-row source-message">
+        <span class="source-key">Message</span>
+        <span class="source-value">{{ narrateSource.message }}</span>
+      </div>
+    </div>
+
     <!-- Extraction pane -->
     <div class="editor-pane">
       <div v-if="showReviewBanner" class="review-banner">
@@ -234,7 +314,7 @@ async function toggleDiff() {
       >{{ diffMode ? 'Hide diff' : 'Diff vs. last run' }}</button>
       <button
         class="btn-success"
-        :disabled="!hasExtraction || narrating || extracting"
+        :disabled="!narrateSourceAvailable || narrating || extracting || !currentScene"
         @click="emit('narrate')"
       >{{ narrating ? 'Narrating\u2026' : 'Narrate' }}</button>
       <label class="prose-toggle" :title="'Strip mechanical language and GM framing from narration'">
@@ -292,6 +372,62 @@ async function toggleDiff() {
 }
 .token-est { font-size: 11px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
 .token-warn { color: var(--peach) !important; }
+
+.source-banner {
+  border-bottom: 1px solid var(--bg-surface0);
+  padding: 7px 12px;
+  background: var(--bg-mantle);
+  flex-shrink: 0;
+}
+.source-row {
+  display: grid;
+  grid-template-columns: minmax(96px, max-content) minmax(0, 1fr) max-content;
+  column-gap: 8px;
+  row-gap: 2px;
+  align-items: start;
+  font-size: 11px;
+  line-height: 1.35;
+}
+.source-key {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.source-value {
+  color: var(--text-sub);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.source-state {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.source-message .source-value {
+  color: var(--text);
+}
+
+@media (max-width: 720px) {
+  .source-row {
+    grid-template-columns: minmax(90px, max-content) minmax(0, 1fr);
+  }
+  .source-state {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 520px) {
+  .source-row {
+    grid-template-columns: 1fr;
+    margin-bottom: 4px;
+  }
+  .source-key,
+  .source-state {
+    white-space: normal;
+  }
+  .source-state {
+    grid-column: 1;
+  }
+}
 
 .tab-bar {
   background: var(--bg-mantle);

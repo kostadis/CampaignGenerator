@@ -357,6 +357,14 @@ sd_narrate "$SESS/session-summary.md" \
     --per-scene-output  "$SESS/narration/" \
     --scene 3
 
+# Re-narrate a single scene from one exact reviewed/smoothed extraction file
+sd_narrate "$SESS/session-summary.md" \
+    --plan                  "$SESS/narration/plan.md" \
+    --scene-extractions     "$SESS/scene_extractions/" \
+    --scene-extraction-file "$SESS/scene_extractions_smoothed/03_scene_name.md" \
+    --per-scene-output      "$SESS/narration/" \
+    --scene 3
+
 # Inspect the plan only (no narration)
 sd_plan \
     --scene-extractions "$SESS/scene_extractions/" \
@@ -379,6 +387,71 @@ assemble "$SESS/narration/" \
     --output "$SESS/session_doc.md" \
     --title  "Chapter 37 — A Gem of a Problem"
 ```
+
+## Exact single-scene source override — `--scene-extraction-file`
+
+`sd_narrate` has one exact-file override:
+
+```bash
+sd_narrate "$SESS/session-summary.md" \
+    --plan                  "$SESS/narration/plan.md" \
+    --scene-extractions     "$SESS/scene_extractions/" \
+    --scene-extraction-file "$SESS/scene_extractions_smoothed/03_scene_name.md" \
+    --per-scene-output      "$SESS/narration/" \
+    --scene 3
+```
+
+The spelling is deliberately singular: `--scene-extraction-file FILE`.
+It is for one selected scene only. `--scene-extractions DIR` remains
+required because the normal directory load still supplies the rest of the
+session context and keeps the command shape compatible with ordinary
+single-scene reruns.
+
+Validation happens before any model call. The command refuses instead of
+falling back when:
+
+- `--scene-extraction-file` is supplied without `--scene`;
+- the exact-file option is supplied with zero or more than one scene number;
+- `FILE` does not exist, is not a regular file, or is not readable UTF-8;
+- `FILE` is not an eligible `NN_*.md` extraction under the shared
+  `session_doc.io` rules, including scaffold shadowing and ignored sibling
+  artifacts;
+- `FILE` cannot be associated with the sole selected plan scene by exact
+  `scene:` identity or by that scene's two-digit `NN_` prefix.
+
+Every refusal names the option/path/rule. It never silently uses a different
+file from the directory.
+
+The override is read-only. It does not copy, move, rename, rewrite, or
+normalize the source file. Output naming still comes from the selected plan
+scene and `--per-scene-output`, not from the exact input filename.
+
+### How the Editor hands off smoothed extractions
+
+The web Session Doc Editor keeps the raw editor buffer and the Narrate source
+decision separate. The top-level extraction fields still describe the
+configured raw extraction file: Save, Reload, Diff, Open/Edit, and Reviewed
+operate on that raw file only.
+
+For Narrate, the server computes a fresh source state from disk every time
+the detail panel is read and again immediately before launching the SSE run.
+The browser displays the server-returned state; it does not construct paths,
+pick layers, or send a browser-selected source.
+
+Source selection is:
+
+| Disk state | Editor/API state | Narrate command |
+|---|---|---|
+| Readable file in `<session_dir>/scene_extractions_smoothed` | active **Smoothed**, available | keep `--scene-extractions` as the configured raw directory when it exists, and add one exact `--scene-extraction-file <smoothed file>` |
+| Readable smoothed file, no configured raw directory on disk | active **Smoothed**, available | use the smoothed file's parent for required `--scene-extractions`, and add one exact `--scene-extraction-file <smoothed file>` |
+| No eligible smoothed file, readable raw file exists | active **Raw fallback**, available | legacy command shape: `--scene-extractions <raw dir>`, no exact-file flag |
+| Smoothed candidate exists but is unreadable/not UTF-8 | **Smoothed unreadable**, blocked | no subprocess is launched; the message names the failing smoothed file |
+| No eligible smoothed or raw candidate | **Missing**, blocked | no subprocess is launched; the message names both directories checked |
+
+Eligibility is the same for both layers: ignored artifacts such as
+`plan.md`, `consistency_report.md`, underscore-prefixed notes, non-Markdown
+siblings, and non-`NN_` Markdown files do not activate a source. A
+`NN_<slug>.scaffold.md` shadows the matching plain `NN_<slug>.md`.
 
 ## What "review" means at the Stage 2 / scene-extraction checkpoint
 
@@ -432,6 +505,7 @@ Practical implication for the human review step:
 | `--extract-dir DIR` | — | Save `plan.md` + `consistency_report.md` here for human review before narration |
 | `--extract-only` | off | Run Pass 1 + Pass 3, save artefacts to `--extract-dir`, exit before Pass 5 |
 | `--scene N [M …]` | — | Run only the listed scene number(s) from the plan (1-based) |
+| `--scene-extraction-file FILE` | — | Exact source file for a single selected scene. Requires exactly one `--scene N`; validates existence, regular-file status, UTF-8 readability, shared extraction eligibility, and association to that plan scene before any model call. |
 | `--narrate-tokens N` | 16000 | Override the Pass-5 narration token limit. Per-scene override: add `tokens: N` as the first line of the scene-extraction file. |
 | `--prose-mode` | off | Strip mechanical / GM framing from narration (no rolls, HP, "the GM says…") |
 | `--narration-genre-file PATH` | — | File holding the genre/register rulebook injected into Pass 5, conventionally `<campaign>/voice/_genre.md`. A one-line directive or a full document both work; anything longer than a short label gets its own delimited block. **The file is the single source of truth** — a missing path means Pass 5 runs with no register rules at all, and warns. Replaces `--narration-genre TEXT` (#276). |

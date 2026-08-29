@@ -164,8 +164,21 @@ async function applyConfig() {
     await config.updateEditor(buildEditorConfigPayload())
     if (configReady.value) {
       await loadScenes()
+      if (
+        currentScene.value !== null &&
+        scenes.value.some(scene => scene.index === currentScene.value)
+      ) {
+        await refreshEditorSceneDetail(currentScene.value, { preserveDirtyRaw: true })
+          .catch(() => { narrateSource.value = null })
+      } else {
+        clearEditorSceneDetail()
+      }
       await checkAssembled()
       await refreshPipeline()
+    } else {
+      currentScene.value = null
+      scenes.value = []
+      clearEditorSceneDetail()
     }
   } catch (e: any) {
     setStatus(`Config save failed: ${e?.message ?? 'unknown error'}`)
@@ -201,6 +214,9 @@ async function rehydrateFromStore() {
   if (applyTimer) { clearTimeout(applyTimer); applyTimer = null }
   rehydrating = true
   loadConfigFields()
+  currentScene.value = null
+  scenes.value = []
+  clearEditorSceneDetail()
   await nextTick()
   rehydrating = false
 }
@@ -288,9 +304,11 @@ watch(codexModel, () => {
 const scenes = ref<Scene[]>([])
 const currentScene = ref<number | null>(null)
 const extractionContent = ref('')
+const lastLoadedExtractionContent = ref('')
 const sceneLabel = ref('')
 const estimatedTokens = ref<number | null>(null)
 const hasExtraction = ref(false)
+const rawExtractionDirty = ref(false)
 const narrating = ref(false)
 const extracting = ref(false)
 const forceReextract = ref(false)
@@ -329,6 +347,56 @@ const statusMsg = ref('')
 const assembledExists = ref(false)
 
 const activeSSE = ref<EventSource | null>(null)
+
+type NarrateLayer = 'smoothed' | 'raw'
+type NarrateStatus = 'ready' | 'unreadable' | 'missing'
+
+interface SceneSourceCandidate {
+  layer: NarrateLayer
+  directory: string | null
+  directory_exists: boolean
+  path: string | null
+  filename: string | null
+  exists: boolean
+  readable: boolean | null
+  reason: string | null
+}
+
+interface NarrateSourceState {
+  scene_index: number
+  scene_name: string
+  smoothed: SceneSourceCandidate
+  raw: SceneSourceCandidate
+  active_layer: NarrateLayer | null
+  active_file: string | null
+  status: NarrateStatus
+  available: boolean
+  fallback_to_raw: boolean
+  message: string
+}
+
+interface ExtractionDetailResponse {
+  exists: boolean
+  content: string
+  editor_readable?: boolean | null
+  editor_error?: string | null
+  scene_label: string
+  estimated_tokens?: number | null
+  narrate_source: NarrateSourceState
+}
+
+const narrateSource = ref<NarrateSourceState | null>(null)
+const narrateSourceAvailable = computed(() => !!narrateSource.value?.available)
+
+function clearEditorSceneDetail() {
+  extractionContent.value = ''
+  lastLoadedExtractionContent.value = ''
+  sceneLabel.value = ''
+  estimatedTokens.value = null
+  hasExtraction.value = false
+  rawExtractionDirty.value = false
+  narrateSource.value = null
+}
 
 // ── Pipeline status (header strip) ────────────────────────────────
 interface StageStatus {
@@ -506,6 +574,8 @@ async function loadScenes() {
     scenes.value = await apiFetch('/api/editor/scenes')
   } catch {
     scenes.value = []
+    currentScene.value = null
+    clearEditorSceneDetail()
   }
 }
 
@@ -523,25 +593,65 @@ async function setReviewed(reviewed: boolean) {
 
 async function selectScene(n: number) {
   currentScene.value = n
+  narrateSource.value = null
   await loadEditorScene(n)
 }
 
-async function loadEditorScene(n: number) {
-  const data = await apiFetch(`/api/editor/extraction/${n}`)
-  extractionContent.value = data.content || ''
-  hasExtraction.value = data.exists
-  sceneLabel.value = data.scene_label || `Scene ${n}`
+function hydrateExtractionDetail(
+  data: ExtractionDetailResponse,
+  options: { preserveDirtyRaw?: boolean } = {},
+) {
+  const preserveDirtyRaw = !!options.preserveDirtyRaw
+  const shouldPreserveRaw = preserveDirtyRaw && rawExtractionDirty.value
+  if (!shouldPreserveRaw) {
+    extractionContent.value = data.content || ''
+    lastLoadedExtractionContent.value = extractionContent.value
+    rawExtractionDirty.value = false
+  }
+  // A file can exist but be unsafe to load into the raw editor (for example,
+  // invalid UTF-8). Keep editing controls disabled so an empty textarea cannot
+  // overwrite it; Narrate availability remains independently source-driven.
+  hasExtraction.value = data.exists && data.editor_readable !== false
+  sceneLabel.value = data.scene_label || (
+    currentScene.value !== null ? `Scene ${currentScene.value}` : ''
+  )
   estimatedTokens.value = data.estimated_tokens || null
+  narrateSource.value = data.narrate_source
+}
+
+async function refreshEditorSceneDetail(
+  n: number,
+  options: { preserveDirtyRaw?: boolean } = {},
+): Promise<NarrateSourceState | null> {
+  const data = await apiFetch<ExtractionDetailResponse>(`/api/editor/extraction/${n}`)
+  hydrateExtractionDetail(data, options)
+  return narrateSource.value
+}
+
+async function loadEditorScene(n: number) {
+  try {
+    await refreshEditorSceneDetail(n)
+  } catch (e) {
+    clearEditorSceneDetail()
+    throw e
+  }
 
   try {
     await apiFetch(`/api/editor/output/${n}`)
   } catch { /* no output yet */ }
 }
 
+function updateExtractionContent(content: string) {
+  extractionContent.value = content
+  rawExtractionDirty.value = content !== lastLoadedExtractionContent.value
+}
+
 async function saveExtraction(content: string) {
   if (currentScene.value === null) return
   extractionContent.value = content
   await apiPut(`/api/editor/extraction/${currentScene.value}`, { content })
+  lastLoadedExtractionContent.value = content
+  rawExtractionDirty.value = false
   await loadScenes()
 }
 
@@ -554,7 +664,29 @@ async function reload() {
 
 async function narrate() {
   if (currentScene.value === null || narrating.value) return
-  await saveExtraction(extractionContent.value)
+  let source: NarrateSourceState | null = null
+  try {
+    source = await refreshEditorSceneDetail(currentScene.value, {
+      preserveDirtyRaw: true,
+    })
+    if (!source?.available) {
+      setStatus(source?.message || 'Narrate source unavailable.')
+      return
+    }
+    if (source.active_layer === 'raw' && rawExtractionDirty.value) {
+      await saveExtraction(extractionContent.value)
+      source = await refreshEditorSceneDetail(currentScene.value, {
+        preserveDirtyRaw: false,
+      })
+      if (!source?.available) {
+        setStatus(source?.message || 'Narrate source unavailable.')
+        return
+      }
+    }
+  } catch (e: any) {
+    setStatus(`Narrate preflight failed: ${e?.message ?? 'unknown error'}`)
+    return
+  }
   narrating.value = true
   narrationOutput.value = ''
   setStatus('Running narration...')
@@ -631,6 +763,10 @@ async function runExtract() {
       // (4) exit — these are always run so the scene list reflects what's
       // really on disk rather than lagging behind a "failed"-looking status.
       loadScenes()
+      if (currentScene.value !== null) {
+        refreshEditorSceneDetail(currentScene.value, { preserveDirtyRaw: true })
+          .catch(() => { narrateSource.value = null })
+      }
       refreshPipeline()
     },
     onError() {
@@ -1008,6 +1144,8 @@ onMounted(async () => {
           :estimated-tokens="estimatedTokens"
           :default-narrate-tokens="narrateTokens"
           :has-extraction="hasExtraction"
+          :narrate-source="narrateSource"
+          :narrate-source-available="narrateSourceAvailable"
           :current-scene="currentScene"
           :narrating="narrating"
           :extracting="extracting"
@@ -1018,7 +1156,7 @@ onMounted(async () => {
           @reload="reload"
           @narrate="narrate"
           @open-typora="openTypora"
-          @update:extraction-content="extractionContent = $event"
+          @update:extraction-content="updateExtractionContent"
           @update:prose-mode="proseMode = $event"
           @update:reflections="reflections = $event"
           @update:reviewed="setReviewed"

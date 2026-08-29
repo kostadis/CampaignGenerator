@@ -21,6 +21,7 @@ from server.session_editor_config_shared import (  # noqa: E402
     ExtractKnobs,
     NarrateKnobs,
 )
+from session_doc import io as session_io  # noqa: E402
 
 
 def _cfg(*, vtt: str | None = None, work_dir: str = "", campaign_dir: str = "",
@@ -179,6 +180,444 @@ def test_build_narrate_cmd_uses_new_flags(tmp_path):
     # Must not use legacy flags
     assert "--from-extractions" not in result
     assert "--by-scene" not in result
+
+
+# ── 018-prefer-smoothed-extractions: Narrate command source selection ───────
+
+def _write_smoothed_scene(
+    session_dir: Path,
+    *,
+    filename: str = "01_scene_one_smoothed_exact.md",
+    scene_name: str = "Scene One",
+    body: str = "smoothed narrate source\n",
+) -> Path:
+    smoothed = session_dir / "scene_extractions_smoothed"
+    smoothed.mkdir(exist_ok=True)
+    path = smoothed / filename
+    path.write_text(
+        f"---\nscene: {scene_name}\nsource: voice-smoothed\n---\n\n{body}",
+        encoding="utf-8",
+    )
+    return path
+
+
+def _arg_after(cmd: list[str], flag: str) -> str:
+    return cmd[cmd.index(flag) + 1]
+
+
+class _JsonRequest:
+    def __init__(self, payload):
+        self._payload = payload
+
+    async def json(self):
+        return self._payload
+
+
+def test_build_narrate_cmd_prefers_smoothed_when_both_layers_exist(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    smoothed_file = _write_smoothed_scene(sd)
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert _arg_after(cmd, "--scene-extraction-file") == str(smoothed_file)
+    assert _arg_after(cmd, "--scene-extraction-file") != str(sx / "01_scene_one.md")
+
+
+def test_build_narrate_cmd_retains_raw_base_and_adds_smoothed_exact_file(
+    tmp_path,
+):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    smoothed_file = _write_smoothed_scene(
+        sd,
+        filename="01_scene_one_human_smoothed.md",
+        body="smoothed body distinct from raw\n",
+    )
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert _arg_after(cmd, "--scene-extractions") == str(sx)
+    assert _arg_after(cmd, "--scene-extraction-file") == str(smoothed_file)
+
+
+def test_build_narrate_cmd_uses_smoothed_parent_as_required_base_without_raw_dir(
+    tmp_path,
+):
+    sd, gm, _sx, nd = _seed_session_dir(tmp_path)
+    smoothed_file = _write_smoothed_scene(sd)
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert _arg_after(cmd, "--scene-extractions") == str(smoothed_file.parent)
+    assert _arg_after(cmd, "--scene-extraction-file") == str(smoothed_file)
+
+
+def test_build_narrate_cmd_re_resolves_source_after_prior_detail_load(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+    first_detail = scene_editor.api_get_extraction(1, cfg)
+    assert first_detail["narrate_source"]["active_layer"] == "raw"
+
+    smoothed_file = _write_smoothed_scene(
+        sd,
+        filename="01_scene_one_created_after_detail.md",
+        body="fresh smoothed source\n",
+    )
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert _arg_after(cmd, "--scene-extraction-file") == str(smoothed_file)
+
+
+def test_t024_empty_or_artifact_only_smoothed_directory_falls_back_to_raw(
+    tmp_path,
+):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    smoothed = sd / "scene_extractions_smoothed"
+    smoothed.mkdir()
+    (smoothed / "plan.md").write_text("ignored plan", encoding="utf-8")
+    (smoothed / "consistency_report.md").write_text("ignored report", encoding="utf-8")
+    (smoothed / "_01_scene_one.md").write_text("private note", encoding="utf-8")
+    (smoothed / "01_scene_one.txt").write_text("wrong suffix", encoding="utf-8")
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert _arg_after(cmd, "--scene-extractions") == str(sx)
+    assert "--scene-extraction-file" not in cmd
+
+
+def test_t024_partial_smoothed_scenes_one_and_three_do_not_satisfy_scene_two(
+    tmp_path,
+):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    raw_three = sx / "03_scene_three.md"
+    raw_three.write_text(
+        "---\nscene: Scene Three\nsource: gmassist\n---\n\nraw three\n",
+        encoding="utf-8",
+    )
+    (nd / "plan.md").write_text(
+        "## Section 1\nnarrator: Soma\nscene: Scene One\nchunks: 1-1\nfocus: focus 1\n\n"
+        "## Section 2\nnarrator: Brewbarry\nscene: Scene Two\nchunks: 1-1\nfocus: focus 2\n\n"
+        "## Section 3\nnarrator: Soma\nscene: Scene Three\nchunks: 1-1\nfocus: focus 3\n",
+        encoding="utf-8",
+    )
+    smoothed_one = _write_smoothed_scene(
+        sd,
+        filename="01_scene_one.md",
+        scene_name="Scene One",
+    )
+    smoothed_three = _write_smoothed_scene(
+        sd,
+        filename="03_scene_three.md",
+        scene_name="Scene Three",
+    )
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    assert session_io.resolve_scene_extraction_file(
+        smoothed_one.parent, scene_index=2, scene_name="Scene Two"
+    ) is None
+    state = scene_editor._narrate_source_state(cfg, 2, "Scene Two")
+    assert "02_*.md" in (state.smoothed.reason or "")
+    assert state.raw.path == sx / "02_scene_two.md"
+
+    scene_one_cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+    assert isinstance(scene_one_cmd, list), scene_one_cmd
+    assert _arg_after(scene_one_cmd, "--scene-extractions") == str(sx)
+    assert _arg_after(scene_one_cmd, "--scene-extraction-file") == str(smoothed_one)
+
+    scene_two_cmd = scene_editor._build_narrate_cmd(None, cfg, 2)
+    assert isinstance(scene_two_cmd, list), scene_two_cmd
+    assert _arg_after(scene_two_cmd, "--scene-extractions") == str(sx)
+    assert "--scene-extraction-file" not in scene_two_cmd
+
+    scene_three_cmd = scene_editor._build_narrate_cmd(None, cfg, 3)
+    assert isinstance(scene_three_cmd, list), scene_three_cmd
+    assert _arg_after(scene_three_cmd, "--scene-extractions") == str(sx)
+    assert _arg_after(scene_three_cmd, "--scene-extraction-file") == str(smoothed_three)
+
+
+def test_t024_smoothed_exact_identity_beats_differing_slug_and_prefix(
+    tmp_path,
+):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    smoothed_file = _write_smoothed_scene(
+        sd,
+        filename="12_name_from_an_old_plan.md",
+        scene_name="Scene One",
+    )
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert _arg_after(cmd, "--scene-extraction-file") == str(smoothed_file)
+
+
+def test_t024_smoothed_scaffold_shadows_plain_source_in_command(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    smoothed = sd / "scene_extractions_smoothed"
+    smoothed.mkdir()
+    plain = smoothed / "01_scene_one.md"
+    scaffold = smoothed / "01_scene_one.scaffold.md"
+    plain.write_text(
+        "---\nscene: Scene One\nsource: voice-smoothed\n---\n\nplain\n",
+        encoding="utf-8",
+    )
+    scaffold.write_text(
+        "---\nscene: Scene One\nsource: voice-smoothed\n---\n\nscaffold\n",
+        encoding="utf-8",
+    )
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert _arg_after(cmd, "--scene-extraction-file") == str(scaffold)
+    assert _arg_after(cmd, "--scene-extraction-file") != str(plain)
+
+
+def test_t024_smoothed_command_preserves_custom_raw_location_as_base(tmp_path):
+    sd, gm, _sx, nd = _seed_session_dir(tmp_path)
+    custom_raw = tmp_path / "custom-raw-extractions"
+    custom_raw.mkdir()
+    (custom_raw / "01_scene_one.md").write_text(
+        "---\nscene: Scene One\n---\n\ncustom raw\n",
+        encoding="utf-8",
+    )
+    smoothed_file = _write_smoothed_scene(sd)
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(custom_raw),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    cmd = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(cmd, list), cmd
+    assert _arg_after(cmd, "--scene-extractions") == str(custom_raw)
+    assert _arg_after(cmd, "--scene-extraction-file") == str(smoothed_file)
+
+
+def test_t024_unreadable_preferred_smoothed_blocks_raw_fallback(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    smoothed = sd / "scene_extractions_smoothed"
+    smoothed.mkdir()
+    unreadable = smoothed / "01_scene_one.md"
+    unreadable.write_bytes(b"\xff\xfe\x00")
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(result, tuple)
+    assert result[0] is None
+    assert "Narrate source unreadable" in result[1]
+    assert str(unreadable.resolve()) in result[1]
+
+
+def test_t024_neither_source_message_names_smoothed_and_raw_directories(
+    tmp_path,
+):
+    sd, gm, _sx, nd = _seed_session_dir(tmp_path)
+    raw = tmp_path / "empty-raw-extractions"
+    raw.mkdir()
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(raw),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    result = scene_editor._build_narrate_cmd(None, cfg, 1)
+
+    assert isinstance(result, tuple)
+    assert result[0] is None
+    assert "No Narrate source found" in result[1]
+    assert str((sd / "scene_extractions_smoothed").resolve()) in result[1]
+    assert str(raw.resolve()) in result[1]
+
+
+def _smoothed_boundary_cfg(
+    tmp_path: Path,
+) -> tuple[Path, Path, Path, Path, Path, ResolvedEditorConfig]:
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    vtt = sd / "session.vtt"
+    vtt.write_text(
+        "WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nhello\n",
+        encoding="utf-8",
+    )
+    context = tmp_path / "world-state.md"
+    context.write_text("# World State\n", encoding="utf-8")
+    smoothed = _write_smoothed_scene(sd)
+    camp = _campaign_with_party_yaml(tmp_path)
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+            vtt=str(vtt),
+            campaign_dir=str(camp),
+        ),
+        session_dir=str(sd),
+    )
+    cfg.narrate.context = [str(context)]
+    return sd, sx, nd, context, smoothed, cfg
+
+
+def _assert_no_exact_scene_file(cmd: list[str]) -> None:
+    assert "--scene-extraction-file" not in cmd
+
+
+def test_t031_non_narrate_builders_stay_raw_with_smoothed_present(tmp_path):
+    _sd, sx, _nd, context, smoothed, cfg = _smoothed_boundary_cfg(tmp_path)
+
+    extract = scene_editor._build_reextract_cmd(None, cfg)
+    consistency = scene_editor._build_consistency_cmd(None, cfg)
+    direct_consistency = scene_editor._build_check_consistency_cmd(None, cfg)
+    plan = scene_editor._build_plan_cmd(None, cfg)
+
+    for cmd in (extract, consistency, direct_consistency, plan):
+        assert isinstance(cmd, list), cmd
+        _assert_no_exact_scene_file(cmd)
+        assert str(smoothed) not in cmd
+
+    assert _arg_after(extract, "--output-dir") == str(sx)
+    assert _arg_after(plan, "--scene-extractions") == str(sx)
+    assert "--scene-extractions" not in consistency
+    assert "--scene-extractions" not in direct_consistency
+    assert _arg_after(consistency, "--context") == str(context)
+    assert _arg_after(direct_consistency, "--context") == str(context)
+
+
+def test_t031_raw_editor_reads_and_prev_route_ignore_smoothed_source(tmp_path):
+    _sd, sx, _nd, _context, smoothed, cfg = _smoothed_boundary_cfg(tmp_path)
+    raw = sx / "01_scene_one.md"
+    raw_prev = raw.with_name(raw.name + ".prev")
+    raw_prev.write_text("raw previous version\n", encoding="utf-8")
+    smoothed_prev = smoothed.with_name(smoothed.name + ".prev")
+    smoothed_prev.write_text("smoothed previous version\n", encoding="utf-8")
+
+    detail = scene_editor.api_get_extraction(1, cfg)
+    assert isinstance(detail, dict)
+    assert detail["narrate_source"]["active_layer"] == "smoothed"
+    assert detail["content"] == raw.read_text(encoding="utf-8")
+    assert "smoothed narrate source" not in detail["content"]
+
+    prev = scene_editor.api_get_prev_extraction(1, cfg)
+    assert isinstance(prev, dict)
+    assert prev["content"] == "raw previous version\n"
+    assert prev["current"] == raw.read_text(encoding="utf-8")
+    assert "smoothed previous version" not in prev["content"]
+
+
+def test_t031_put_extraction_and_reviewed_marker_stay_on_raw_file(tmp_path):
+    _sd, sx, _nd, _context, smoothed, cfg = _smoothed_boundary_cfg(tmp_path)
+    raw = sx / "01_scene_one.md"
+    original_smoothed = smoothed.read_text(encoding="utf-8")
+
+    import asyncio
+
+    save_result = asyncio.run(
+        scene_editor.api_save_extraction(
+            1, _JsonRequest({"content": "edited raw body\n"}), cfg
+        )
+    )
+    assert save_result == {"ok": True}
+    assert raw.read_text(encoding="utf-8") == "edited raw body\n"
+    assert smoothed.read_text(encoding="utf-8") == original_smoothed
+
+    reviewed_result = asyncio.run(
+        scene_editor.api_set_reviewed(1, _JsonRequest({"reviewed": True}), cfg)
+    )
+    assert reviewed_result == {"ok": True, "reviewed": True}
+    assert raw.with_name(raw.name + ".reviewed").exists()
+    assert not smoothed.with_name(smoothed.name + ".reviewed").exists()
+    assert scene_editor.api_get_reviewed(1, cfg) == {"reviewed": True}
 
 
 # ── Pass 5 style-input forwarding (#299) ─────────────────────────────────────
@@ -459,6 +898,94 @@ def _sx_cfg(tmp_path: Path):
     sx = tmp_path / "scene_extractions_new"
     sx.mkdir()
     return sx, _cfg(scene_extractions_dir=str(sx))
+
+
+def test_shared_scene_resolver_prefers_exact_identity_before_prefix(tmp_path):
+    sx, _cfg = _sx_cfg(tmp_path)
+    prefix_match = sx / "05_wrong_scene.md"
+    prefix_match.write_text(
+        "---\nscene: The Wrong Scene\n---\n\nprefix body\n",
+        encoding="utf-8",
+    )
+    identity_match = sx / "12_the_statue_returned.md"
+    identity_match.write_text(
+        "---\nscene: The Statue Returned\n---\n\nidentity body\n",
+        encoding="utf-8",
+    )
+
+    got = session_io.resolve_scene_extraction_file(
+        sx, scene_index=5, scene_name="The Statue Returned")
+
+    assert got == identity_match
+
+
+def test_shared_scene_resolver_uses_prefix_to_disambiguate_duplicate_identity(
+    tmp_path,
+):
+    sx, _cfg = _sx_cfg(tmp_path)
+    first = sx / "01_combat.md"
+    first.write_text(
+        "---\nscene: Combat\n---\n\nfirst combat\n",
+        encoding="utf-8",
+    )
+    second = sx / "02_combat.md"
+    second.write_text(
+        "---\nscene: Combat\n---\n\nsecond combat\n",
+        encoding="utf-8",
+    )
+
+    got = session_io.resolve_scene_extraction_file(
+        sx, scene_index=2, scene_name="Combat")
+
+    assert got == second
+
+
+def test_shared_scene_resolver_falls_back_to_the_two_digit_prefix(tmp_path):
+    sx, _cfg = _sx_cfg(tmp_path)
+    expected = sx / "05_the_original_stage_title.md"
+    expected.write_text(
+        "---\nscene: The Original Stage Title\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+
+    got = session_io.resolve_scene_extraction_file(
+        sx, scene_index=5, scene_name="The Retitled Plan Scene")
+
+    assert got == expected
+
+
+def test_shared_scene_resolver_ignores_sibling_artifacts(tmp_path):
+    sx, _cfg = _sx_cfg(tmp_path)
+    (sx / "plan.md").write_text("plan", encoding="utf-8")
+    (sx / "consistency_report.md").write_text("report", encoding="utf-8")
+    (sx / "_05_private_notes.md").write_text("notes", encoding="utf-8")
+    (sx / "05_scene_five.txt").write_text("not markdown", encoding="utf-8")
+    (sx / "scene_five.md").write_text("missing prefix", encoding="utf-8")
+
+    got = session_io.resolve_scene_extraction_file(
+        sx, scene_index=5, scene_name="Scene Five")
+
+    assert got is None
+
+
+def test_shared_scene_resolver_uses_scaffold_precedence(tmp_path):
+    sx, _cfg = _sx_cfg(tmp_path)
+    plain = sx / "05_the_statue.md"
+    plain.write_text(
+        "---\nscene: The Statue\n---\n\nsource body\n",
+        encoding="utf-8",
+    )
+    scaffold = sx / "05_the_statue.scaffold.md"
+    scaffold.write_text(
+        "---\nscene: The Statue\n---\n\nedited body\n",
+        encoding="utf-8",
+    )
+
+    got = session_io.resolve_scene_extraction_file(
+        sx, scene_index=5, scene_name="The Statue")
+
+    assert got == scaffold
+    assert got != plain
 
 
 def test_scene_file_prefers_the_exact_slug(tmp_path):
