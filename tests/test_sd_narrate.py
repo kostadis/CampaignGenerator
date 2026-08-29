@@ -53,6 +53,14 @@ SCENE2_NARRATION = (
     '"Until then."'
 )
 
+SCENE_THREE_SECTION = """\
+## Section 3
+narrator: Alice
+chunks: 3-3
+scene: Scene Three
+focus: checking the partial smoothed layer
+"""
+
 
 def _write_fixtures(tmp_path: Path) -> dict:
     recap = tmp_path / "recap.md"
@@ -78,6 +86,27 @@ def _base_argv(paths: dict, *extra: str) -> list:
         "--per-scene-output", str(paths["out_dir"]),
         *extra,
     ]
+
+
+def _assert_exact_scene_input_refused_before_model(
+    monkeypatch, tmp_path, capsys, *extra: str, expected: tuple[str, ...],
+) -> None:
+    paths = _write_fixtures(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    fake_batch = FakeRunSingleBatch([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sd_narrate, "run_single_batch", fake_batch)
+
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, *extra))
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+    assert exc.value.code != 0
+    assert not fake_stream.calls
+    assert not fake_batch.calls
+
+    err = capsys.readouterr().err
+    for text in expected:
+        assert text in err
 
 
 class FakeRunSingleBatch:
@@ -134,6 +163,214 @@ def _no_real_client(monkeypatch):
 def _chdir_tmp(monkeypatch, tmp_path):
     # No docs/entity_registry.yaml or dossiers in tmp_path — alias_map is {}.
     monkeypatch.chdir(tmp_path)
+
+
+# ── --scene-extraction-file: parser and pre-model validation ───────────────
+
+def test_exact_scene_input_help_documents_the_sole_spelling(monkeypatch, capsys):
+    monkeypatch.setattr(sys, "argv", ["sd_narrate", "--help"])
+
+    with pytest.raises(SystemExit) as exc:
+        sd_narrate.main()
+
+    assert exc.value.code == 0
+    out = capsys.readouterr().out
+    assert "--scene-extraction-file FILE" in out
+    assert "single-scene input override" in out
+    assert "exactly one --scene N" in out
+    assert "--scene-file" not in out
+    assert "--extraction-file" not in out
+
+
+def test_exact_scene_input_requires_one_scene_before_model_call(
+    monkeypatch, tmp_path, capsys,
+):
+    exact = tmp_path / "scenes" / "01_scene_one.md"
+
+    _assert_exact_scene_input_refused_before_model(
+        monkeypatch, tmp_path, capsys,
+        "--scene-extraction-file", str(exact),
+        expected=("--scene-extraction-file", "exactly one --scene N"),
+    )
+
+
+def test_exact_scene_input_rejects_multiple_scenes_before_model_call(
+    monkeypatch, tmp_path, capsys,
+):
+    exact = tmp_path / "scenes" / "01_scene_one.md"
+
+    _assert_exact_scene_input_refused_before_model(
+        monkeypatch, tmp_path, capsys,
+        "--scene", "1", "2",
+        "--scene-extraction-file", str(exact),
+        expected=("--scene-extraction-file", "exactly one --scene N"),
+    )
+
+
+@pytest.mark.parametrize(
+    ("filename", "writer", "expected_rule"),
+    [
+        pytest.param("missing.md", None, "does not exist", id="nonexistent"),
+        pytest.param(
+            "01_scene_one.md",
+            "directory",
+            "not a regular file",
+            id="non-file",
+        ),
+        pytest.param(
+            "not_a_scene.md",
+            "text",
+            "eligible NN_*.md scene extraction",
+            id="ineligible",
+        ),
+        pytest.param(
+            "01_invalid_utf8.md",
+            "bytes",
+            "readable UTF-8",
+            id="invalid-utf8",
+        ),
+    ],
+)
+def test_exact_scene_input_requires_eligible_readable_utf8_before_model_call(
+    monkeypatch, tmp_path, capsys, filename, writer, expected_rule,
+):
+    exact = tmp_path / filename
+    if writer == "text":
+        exact.write_text("not an eligible scene extraction\n", encoding="utf-8")
+    elif writer == "directory":
+        exact.mkdir()
+    elif writer == "bytes":
+        exact.write_bytes(b"\xff\xfe\x00")
+
+    _assert_exact_scene_input_refused_before_model(
+        monkeypatch, tmp_path, capsys,
+        "--scene", "1",
+        "--scene-extraction-file", str(exact),
+        expected=("--scene-extraction-file", str(exact), expected_rule),
+    )
+
+
+def test_exact_scene_input_must_associate_with_selected_scene_before_model_call(
+    monkeypatch, tmp_path, capsys,
+):
+    exact = tmp_path / "01_wrong_scene.md"
+    exact.write_text(
+        "---\nscene: A Different Scene\n---\n\nnot scene two\n",
+        encoding="utf-8",
+    )
+
+    _assert_exact_scene_input_refused_before_model(
+        monkeypatch, tmp_path, capsys,
+        "--scene", "2",
+        "--scene-extraction-file", str(exact),
+        expected=("--scene-extraction-file", "scene 2", "A Different Scene"),
+    )
+
+
+def test_exact_scene_input_reaches_selected_prompt_once_without_rewriting_inputs(
+    monkeypatch, tmp_path,
+):
+    paths = _write_fixtures(tmp_path)
+    raw_scene = paths["scenes_dir"] / "01_scene_one.md"
+    raw_scene.write_text(
+        "- RAW_ONLY_BEAT must not be narrated from the selected prompt.\n",
+        encoding="utf-8",
+    )
+    smoothed_dir = tmp_path / "scenes_smoothed"
+    smoothed_dir.mkdir()
+    exact = smoothed_dir / "01_scene_one_smoothed_exact.md"
+    exact.write_text(
+        "---\nscene: Scene One\nsource: voice-smoothed\n---\n\n"
+        "- EXACT_SMOOTHED_BEAT reaches the prompt once.\n",
+        encoding="utf-8",
+    )
+    bible = tmp_path / "known_lore.md"
+    bible.write_text("Alice knows the tavern.\n", encoding="utf-8")
+
+    raw_before = raw_scene.read_bytes()
+    raw_mtime_before = raw_scene.stat().st_mtime_ns
+    exact_before = exact.read_bytes()
+    exact_mtime_before = exact.stat().st_mtime_ns
+
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sd_narrate, "run_single_batch", FakeRunSingleBatch([]))
+    captured_sources: list[list[str]] = []
+
+    def fake_find_unknown_names(_narration, sources):
+        captured_sources.append(list(sources))
+        return []
+
+    monkeypatch.setattr(sd_narrate, "find_unknown_names", fake_find_unknown_names)
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths,
+        "--scene", "1",
+        "--scene-extraction-file", str(exact),
+        "--known-lore", str(bible),
+    ))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 1
+    prompt = fake_stream.calls[0]["user"]
+    assert prompt.count("EXACT_SMOOTHED_BEAT") == 1
+    assert "RAW_ONLY_BEAT" not in prompt
+
+    assert len(captured_sources) == 1
+    assert sum(
+        "EXACT_SMOOTHED_BEAT" in source
+        for source in captured_sources[0]
+    ) == 1
+
+    assert raw_scene.read_bytes() == raw_before
+    assert raw_scene.stat().st_mtime_ns == raw_mtime_before
+    assert exact.read_bytes() == exact_before
+    assert exact.stat().st_mtime_ns == exact_mtime_before
+
+
+def test_exact_scene_input_selects_requested_scene_from_partial_directory(
+    monkeypatch, tmp_path,
+):
+    paths = _write_fixtures(tmp_path)
+    paths["plan"].write_text(PLAN_TEXT + "\n" + SCENE_THREE_SECTION, encoding="utf-8")
+    raw_scene_three = paths["scenes_dir"] / "03_scene_three_raw.md"
+    raw_scene_three.write_text(
+        "---\nscene: Scene Three\n---\n\n"
+        "- RAW_SCENE_THREE_BEAT must not reach the prompt.\n",
+        encoding="utf-8",
+    )
+
+    smoothed_dir = tmp_path / "scenes_smoothed"
+    smoothed_dir.mkdir()
+    smoothed_scene_one = smoothed_dir / "01_scene_one_smoothed.md"
+    smoothed_scene_one.write_text(
+        "---\nscene: Scene One\nsource: voice-smoothed\n---\n\n"
+        "- WRONG_PARTIAL_SCENE_BEAT must not be substituted.\n",
+        encoding="utf-8",
+    )
+    exact = smoothed_dir / "03_different_voice_slug.md"
+    exact.write_text(
+        "---\nscene: Scene Three\nsource: voice-smoothed\n---\n\n"
+        "- EXACT_PARTIAL_SCENE_THREE_BEAT is the selected input.\n",
+        encoding="utf-8",
+    )
+
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sd_narrate, "run_single_batch", FakeRunSingleBatch([]))
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths,
+        "--scene", "3",
+        "--scene-extraction-file", str(exact),
+    ))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 1
+    prompt = fake_stream.calls[0]["user"]
+    assert prompt.count("EXACT_PARTIAL_SCENE_THREE_BEAT") == 1
+    assert "RAW_SCENE_THREE_BEAT" not in prompt
+    assert "WRONG_PARTIAL_SCENE_BEAT" not in prompt
 
 
 # ── --batch: sequential one-item batches, in order, with handoff threading ──

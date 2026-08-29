@@ -30,6 +30,7 @@ a request-scoped ``ResolvedEditorConfig``
 
 from __future__ import annotations
 
+import asyncio
 import dataclasses
 import sys
 from pathlib import Path
@@ -78,6 +79,888 @@ def _make_app(campaign_dir: Path | None) -> FastAPI:
     else:
         app.state.platform = None
     return app
+
+
+EDITOR_DETAIL_PLAN = """\
+## Section 1
+narrator: Alice
+chunks: 1-1
+scene: Scene One
+focus: opening
+"""
+
+RAW_EXTRACTION = "raw editor content\n"
+SMOOTHED_EXTRACTION = "smoothed narrate content\n"
+
+
+def _write_editor_detail_session(
+    tmp_path: Path,
+    *,
+    raw_body: str | None = RAW_EXTRACTION,
+    smoothed_body: str | None = None,
+    smoothed_bytes: bytes | None = None,
+    raw_dir_name: str = "scene_extractions_new",
+) -> tuple[Path, Path, Path]:
+    session_dir = tmp_path / "summaries" / "session1"
+    raw_dir = session_dir / raw_dir_name
+    smoothed_dir = session_dir / "scene_extractions_smoothed"
+    narration_dir = session_dir / "narration"
+
+    _write(tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME, "documents: []\n")
+    _write(session_dir / "gm-assist.md", "# Recap\n")
+    _write(session_dir / "session-summary.md", "# Summary\n")
+    _write(narration_dir / "plan.md", EDITOR_DETAIL_PLAN)
+    raw_dir.mkdir(parents=True)
+    if raw_body is not None:
+        _write(
+            raw_dir / "01_scene_one.md",
+            f"---\nscene: Scene One\n---\n\n{raw_body}",
+        )
+    if smoothed_body is not None or smoothed_bytes is not None:
+        smoothed_dir.mkdir()
+        smoothed_file = smoothed_dir / "01_scene_one.md"
+        if smoothed_bytes is not None:
+            smoothed_file.write_bytes(smoothed_bytes)
+        else:
+            _write(
+                smoothed_file,
+                f"---\nscene: Scene One\n---\n\n{smoothed_body}",
+            )
+
+    save_session_editor_config(
+        tmp_path / CONFIG_SUBDIR / "session_doc.yaml",
+        SessionEditorConfig(
+            paths=EditorPaths(
+                session_recap="gm-assist.md",
+                session_summary="session-summary.md",
+                scene_extractions_dir=raw_dir_name,
+                narration_dir="narration",
+            ),
+        ),
+    )
+    return session_dir, raw_dir, smoothed_dir
+
+
+def _editor_detail_cfg(tmp_path: Path):
+    session_dir = tmp_path / "summaries" / "session1"
+    platform = PlatformConfigService(
+        tmp_path,
+        boot_overrides={"runtime.session_dir": str(session_dir)},
+    )
+    return SessionEditorConfigService(platform).resolved_editor_config()
+
+
+def _get_editor_detail(tmp_path: Path) -> dict:
+    body = scene_editor.api_get_extraction(1, _editor_detail_cfg(tmp_path))
+    assert isinstance(body, dict)
+    return body
+
+
+def _get_editor_detail_scene(tmp_path: Path, scene_index: int) -> dict:
+    body = scene_editor.api_get_extraction(scene_index, _editor_detail_cfg(tmp_path))
+    assert isinstance(body, dict)
+    return body
+
+
+MULTI_SCENE_PLAN = """\
+## Section 1
+narrator: Alice
+chunks: 1-1
+scene: Scene One
+focus: opening
+
+## Section 2
+narrator: Bob
+chunks: 2-2
+scene: Scene Two
+focus: middle
+
+## Section 3
+narrator: Cara
+chunks: 3-3
+scene: Scene Three
+focus: ending
+"""
+
+SCENE_NAMES = {
+    1: "Scene One",
+    2: "Scene Two",
+    3: "Scene Three",
+}
+
+SCENE_SLUGS = {
+    1: "scene_one",
+    2: "scene_two",
+    3: "scene_three",
+}
+
+
+def _write_scene_file(directory: Path, scene_index: int, body: str) -> Path:
+    path = directory / f"{scene_index:02d}_{SCENE_SLUGS[scene_index]}.md"
+    _write(path, f"---\nscene: {SCENE_NAMES[scene_index]}\n---\n\n{body}")
+    return path
+
+
+def _write_multiscene_editor_session(
+    tmp_path: Path,
+    *,
+    raw_scenes: dict[int, str] | None = None,
+    smoothed_scenes: dict[int, str | bytes] | None = None,
+    create_raw_dir: bool = True,
+    raw_dir_name: str = "scene_extractions_new",
+) -> tuple[Path, Path, Path]:
+    session_dir = tmp_path / "summaries" / "session1"
+    raw_dir = session_dir / raw_dir_name
+    smoothed_dir = session_dir / "scene_extractions_smoothed"
+    narration_dir = session_dir / "narration"
+
+    _write(tmp_path / CONFIG_SUBDIR / TRACKED_CONFIG_NAME, "documents: []\n")
+    _write(session_dir / "gm-assist.md", "# Recap\n")
+    _write(session_dir / "session-summary.md", "# Summary\n")
+    _write(narration_dir / "plan.md", MULTI_SCENE_PLAN)
+
+    if create_raw_dir:
+        raw_dir.mkdir(parents=True)
+    for scene_index, body in (raw_scenes or {}).items():
+        _write_scene_file(raw_dir, scene_index, body)
+
+    if smoothed_scenes is not None:
+        smoothed_dir.mkdir(parents=True)
+        for scene_index, body in smoothed_scenes.items():
+            path = smoothed_dir / f"{scene_index:02d}_{SCENE_SLUGS[scene_index]}.md"
+            if isinstance(body, bytes):
+                path.write_bytes(body)
+            else:
+                _write(path, f"---\nscene: {SCENE_NAMES[scene_index]}\n---\n\n{body}")
+
+    save_session_editor_config(
+        tmp_path / CONFIG_SUBDIR / "session_doc.yaml",
+        SessionEditorConfig(
+            paths=EditorPaths(
+                session_recap="gm-assist.md",
+                session_summary="session-summary.md",
+                scene_extractions_dir=raw_dir_name,
+                narration_dir="narration",
+            ),
+        ),
+    )
+    return session_dir, raw_dir, smoothed_dir
+
+
+async def _collect_stream_body(response) -> str:
+    chunks: list[str] = []
+    async for chunk in response.body_iterator:
+        if isinstance(chunk, bytes):
+            chunks.append(chunk.decode("utf-8"))
+        else:
+            chunks.append(chunk)
+    return "".join(chunks)
+
+
+def _run_narrate_and_capture_cmd(monkeypatch, tmp_path: Path, scene_index: int) -> list[str]:
+    captured: dict[str, list[str]] = {}
+
+    async def fake_stream_subprocess(cmd, *, cwd=None, on_complete=None):
+        captured["cmd"] = list(cmd)
+        captured["cwd"] = cwd
+        if on_complete is not None:
+            on_complete(0)
+        yield "data: done\n\n"
+
+    monkeypatch.setattr(scene_editor, "stream_subprocess", fake_stream_subprocess)
+
+    async def run_route() -> None:
+        response = await scene_editor.api_narrate(
+            scene_index, None, _editor_detail_cfg(tmp_path)
+        )
+        await _collect_stream_body(response)
+
+    asyncio.run(run_route())
+    assert "cmd" in captured, "Narrate route should launch the subprocess"
+    return captured["cmd"]
+
+
+def _run_blocked_narrate(monkeypatch, tmp_path: Path, scene_index: int) -> str:
+    launched = False
+
+    async def fake_stream_subprocess(cmd, *, cwd=None, on_complete=None):
+        nonlocal launched
+        launched = True
+        yield "data: should not launch\n\n"
+
+    monkeypatch.setattr(scene_editor, "stream_subprocess", fake_stream_subprocess)
+
+    async def run_route() -> str:
+        response = await scene_editor.api_narrate(
+            scene_index, None, _editor_detail_cfg(tmp_path)
+        )
+        return await _collect_stream_body(response)
+
+    body = asyncio.run(run_route())
+    assert launched is False
+    return body
+
+
+def _assert_candidate(
+    candidate: dict,
+    *,
+    layer: str,
+    directory: Path,
+    directory_exists: bool,
+    path: Path | None,
+    exists: bool,
+    readable: bool | None,
+    reason: str | None = None,
+) -> None:
+    assert set(candidate) == {
+        "layer",
+        "directory",
+        "directory_exists",
+        "path",
+        "filename",
+        "exists",
+        "readable",
+        "reason",
+    }
+    assert candidate["layer"] == layer
+    assert candidate["directory"] == str(directory.resolve())
+    assert candidate["directory_exists"] is directory_exists
+    assert candidate["path"] == (str(path.resolve()) if path else None)
+    assert candidate["filename"] == (path.name if path else None)
+    assert candidate["exists"] is exists
+    assert candidate["readable"] is readable
+    if reason is None:
+        assert candidate["reason"] is None
+    else:
+        assert reason in candidate["reason"]
+
+
+def _assert_active_contract(
+    source: dict,
+    *,
+    scene_index: int,
+    scene_name: str,
+    active_layer: str | None,
+    active_file: Path | None,
+    status: str,
+    available: bool,
+    fallback_to_raw: bool,
+    message_contains: str,
+) -> None:
+    assert set(source) == {
+        "scene_index",
+        "scene_name",
+        "smoothed",
+        "raw",
+        "active_layer",
+        "active_file",
+        "status",
+        "available",
+        "fallback_to_raw",
+        "message",
+    }
+    assert source["scene_index"] == scene_index
+    assert source["scene_name"] == scene_name
+    assert source["active_layer"] == active_layer
+    assert source["active_file"] == (str(active_file.resolve()) if active_file else None)
+    assert source["status"] == status
+    assert source["available"] is available
+    assert source["fallback_to_raw"] is fallback_to_raw
+    assert message_contains in source["message"]
+
+
+# ── GET /api/editor/extraction/{n} — narrate_source projection ─────────────
+
+
+class TestExtractionDetailNarrateSource:
+    def test_smoothed_first_state_preserves_top_level_raw_editor_fields(
+        self, tmp_path,
+    ):
+        session_dir, raw_dir, smoothed_dir = _write_editor_detail_session(
+            tmp_path, smoothed_body=SMOOTHED_EXTRACTION)
+
+        body = _get_editor_detail(tmp_path)
+
+        assert body["exists"] is True
+        assert body["content"].endswith(RAW_EXTRACTION)
+        assert SMOOTHED_EXTRACTION not in body["content"]
+
+        source = body["narrate_source"]
+        _assert_active_contract(
+            source,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="smoothed",
+            active_file=session_dir / "scene_extractions_smoothed" / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=False,
+            message_contains="smoothed",
+        )
+        _assert_candidate(
+            source["smoothed"],
+            layer="smoothed",
+            directory=smoothed_dir,
+            directory_exists=True,
+            path=smoothed_dir / "01_scene_one.md",
+            exists=True,
+            readable=True,
+        )
+        _assert_candidate(
+            source["raw"],
+            layer="raw",
+            directory=raw_dir,
+            directory_exists=True,
+            path=raw_dir / "01_scene_one.md",
+            exists=True,
+            readable=True,
+        )
+
+    def test_raw_fallback_state_keeps_raw_exists_and_content_when_smoothed_absent(
+        self, tmp_path,
+    ):
+        _session_dir, raw_dir, smoothed_dir = _write_editor_detail_session(tmp_path)
+
+        body = _get_editor_detail(tmp_path)
+
+        assert body["exists"] is True
+        assert body["content"].endswith(RAW_EXTRACTION)
+
+        source = body["narrate_source"]
+        _assert_active_contract(
+            source,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="raw",
+            active_file=raw_dir / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=True,
+            message_contains="raw",
+        )
+        _assert_candidate(
+            source["smoothed"],
+            layer="smoothed",
+            directory=smoothed_dir,
+            directory_exists=False,
+            path=None,
+            exists=False,
+            readable=None,
+            reason="does not exist",
+        )
+        _assert_candidate(
+            source["raw"],
+            layer="raw",
+            directory=raw_dir,
+            directory_exists=True,
+            path=raw_dir / "01_scene_one.md",
+            exists=True,
+            readable=True,
+        )
+
+    def test_unreadable_smoothed_state_blocks_without_changing_raw_editor_fields(
+        self, tmp_path,
+    ):
+        _session_dir, raw_dir, smoothed_dir = _write_editor_detail_session(
+            tmp_path, smoothed_bytes=b"\xff\xfe\x00")
+
+        body = _get_editor_detail(tmp_path)
+
+        assert body["exists"] is True
+        assert body["content"].endswith(RAW_EXTRACTION)
+
+        source = body["narrate_source"]
+        _assert_active_contract(
+            source,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer=None,
+            active_file=None,
+            status="unreadable",
+            available=False,
+            fallback_to_raw=False,
+            message_contains=str((smoothed_dir / "01_scene_one.md").resolve()),
+        )
+        _assert_candidate(
+            source["smoothed"],
+            layer="smoothed",
+            directory=smoothed_dir,
+            directory_exists=True,
+            path=smoothed_dir / "01_scene_one.md",
+            exists=True,
+            readable=False,
+            reason="not readable UTF-8",
+        )
+        _assert_candidate(
+            source["raw"],
+            layer="raw",
+            directory=raw_dir,
+            directory_exists=True,
+            path=raw_dir / "01_scene_one.md",
+            exists=True,
+            readable=True,
+        )
+
+    def test_unreadable_raw_editor_still_returns_valid_smoothed_source(
+        self, tmp_path,
+    ):
+        session_dir, raw_dir, _smoothed_dir = _write_editor_detail_session(
+            tmp_path, smoothed_body=SMOOTHED_EXTRACTION)
+        raw_file = raw_dir / "01_scene_one.md"
+        raw_file.write_bytes(b"\xff\xfe\x00")
+
+        body = _get_editor_detail(tmp_path)
+
+        assert body["exists"] is True
+        assert body["content"] == ""
+        assert body["editor_readable"] is False
+        assert str(raw_file.resolve()) in body["editor_error"]
+        assert "not readable UTF-8" in body["editor_error"]
+
+        source = body["narrate_source"]
+        _assert_active_contract(
+            source,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="smoothed",
+            active_file=session_dir / "scene_extractions_smoothed" / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=False,
+            message_contains="smoothed",
+        )
+        _assert_candidate(
+            source["raw"],
+            layer="raw",
+            directory=raw_dir,
+            directory_exists=True,
+            path=raw_file,
+            exists=True,
+            readable=False,
+            reason="not readable UTF-8",
+        )
+
+    def test_unreadable_raw_without_smoothed_returns_source_state_not_error(
+        self, tmp_path,
+    ):
+        _session_dir, raw_dir, _smoothed_dir = _write_editor_detail_session(tmp_path)
+        raw_file = raw_dir / "01_scene_one.md"
+        raw_file.write_bytes(b"\xff\xfe\x00")
+
+        body = _get_editor_detail(tmp_path)
+
+        assert body["exists"] is True
+        assert body["content"] == ""
+        assert body["editor_readable"] is False
+        assert str(raw_file.resolve()) in body["editor_error"]
+        _assert_active_contract(
+            body["narrate_source"],
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer=None,
+            active_file=None,
+            status="unreadable",
+            available=False,
+            fallback_to_raw=False,
+            message_contains=str(raw_file.resolve()),
+        )
+
+    def test_missing_state_names_both_locations_and_keeps_raw_editor_empty(
+        self, tmp_path,
+    ):
+        _session_dir, raw_dir, smoothed_dir = _write_editor_detail_session(
+            tmp_path, raw_body=None)
+
+        body = _get_editor_detail(tmp_path)
+
+        assert body["exists"] is False
+        assert body["content"] == ""
+
+        source = body["narrate_source"]
+        _assert_active_contract(
+            source,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer=None,
+            active_file=None,
+            status="missing",
+            available=False,
+            fallback_to_raw=False,
+            message_contains=str(smoothed_dir.resolve()),
+        )
+        _assert_candidate(
+            source["smoothed"],
+            layer="smoothed",
+            directory=smoothed_dir,
+            directory_exists=False,
+            path=None,
+            exists=False,
+            readable=None,
+            reason="does not exist",
+        )
+        _assert_candidate(
+            source["raw"],
+            layer="raw",
+            directory=raw_dir,
+            directory_exists=True,
+            path=None,
+            exists=False,
+            readable=None,
+            reason="no eligible 01_*.md scene extraction",
+        )
+        assert str(smoothed_dir.resolve()) in source["message"]
+        assert str(raw_dir.resolve()) in source["message"]
+
+    def test_projection_uses_cfg_session_dir_for_absent_smoothed_and_custom_raw_dir(
+        self, tmp_path,
+    ):
+        session_dir, raw_dir, smoothed_dir = _write_editor_detail_session(
+            tmp_path, raw_dir_name="custom_scene_sources")
+
+        body = _get_editor_detail(tmp_path)
+
+        assert body["exists"] is True
+        assert body["content"].endswith(RAW_EXTRACTION)
+        source = body["narrate_source"]
+        _assert_active_contract(
+            source,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="raw",
+            active_file=raw_dir / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=True,
+            message_contains="raw",
+        )
+        _assert_candidate(
+            source["smoothed"],
+            layer="smoothed",
+            directory=session_dir / "scene_extractions_smoothed",
+            directory_exists=False,
+            path=None,
+            exists=False,
+            readable=None,
+            reason="does not exist",
+        )
+        _assert_candidate(
+            source["raw"],
+            layer="raw",
+            directory=raw_dir,
+            directory_exists=True,
+            path=raw_dir / "01_scene_one.md",
+            exists=True,
+            readable=True,
+        )
+        assert source["smoothed"]["directory"] == str(smoothed_dir.resolve())
+
+    def test_projection_re_reads_disk_after_add_rename_and_remove_events(
+        self, tmp_path,
+    ):
+        _session_dir, raw_dir, smoothed_dir = _write_editor_detail_session(tmp_path)
+
+        first = _get_editor_detail(tmp_path)["narrate_source"]
+        _assert_active_contract(
+            first,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="raw",
+            active_file=raw_dir / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=True,
+            message_contains="raw",
+        )
+
+        added = smoothed_dir / "01_scene_one_added.md"
+        _write(added, "---\nscene: Scene One\n---\n\nfresh smoothed\n")
+        after_add = _get_editor_detail(tmp_path)["narrate_source"]
+        _assert_active_contract(
+            after_add,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="smoothed",
+            active_file=added,
+            status="ready",
+            available=True,
+            fallback_to_raw=False,
+            message_contains="smoothed",
+        )
+
+        renamed = smoothed_dir / "01_scene_one_renamed_away.txt"
+        added.rename(renamed)
+        after_rename = _get_editor_detail(tmp_path)["narrate_source"]
+        _assert_active_contract(
+            after_rename,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="raw",
+            active_file=raw_dir / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=True,
+            message_contains="raw",
+        )
+
+        added_again = smoothed_dir / "01_scene_one_added_again.md"
+        _write(added_again, "---\nscene: Scene One\n---\n\nfresh smoothed again\n")
+        added_again.unlink()
+        after_remove = _get_editor_detail(tmp_path)["narrate_source"]
+        _assert_active_contract(
+            after_remove,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="raw",
+            active_file=raw_dir / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=True,
+            message_contains="raw",
+        )
+
+
+def test_narrate_sse_forwards_smoothed_active_file_from_fresh_detail(
+    monkeypatch, tmp_path,
+):
+    _session_dir, raw_dir, smoothed_dir = _write_editor_detail_session(
+        tmp_path, smoothed_body=SMOOTHED_EXTRACTION)
+    cfg = _editor_detail_cfg(tmp_path)
+    detail = scene_editor.api_get_extraction(1, cfg)
+    assert isinstance(detail, dict)
+    active_file = detail["narrate_source"]["active_file"]
+    assert active_file == str((smoothed_dir / "01_scene_one.md").resolve())
+
+    captured: dict[str, list[str]] = {}
+
+    async def fake_stream_subprocess(cmd, *, cwd=None, on_complete=None):
+        captured["cmd"] = list(cmd)
+        captured["cwd"] = cwd
+        if on_complete is not None:
+            on_complete(0)
+        yield "data: done\n\n"
+
+    monkeypatch.setattr(scene_editor, "stream_subprocess", fake_stream_subprocess)
+
+    async def run_route() -> None:
+        response = await scene_editor.api_narrate(1, None, cfg)
+        async for _chunk in response.body_iterator:
+            pass
+
+    asyncio.run(run_route())
+
+    cmd = captured["cmd"]
+    assert cmd[cmd.index("--scene-extractions") + 1] == str(raw_dir.resolve())
+    assert "--scene-extraction-file" in cmd
+    assert cmd[cmd.index("--scene-extraction-file") + 1] == active_file
+
+
+class TestNarrateRouteUs3SourceEdges:
+    def test_raw_only_route_keeps_existing_command_shape(self, monkeypatch, tmp_path):
+        _session_dir, raw_dir, _smoothed_dir = _write_multiscene_editor_session(
+            tmp_path,
+            raw_scenes={1: "raw one\n"},
+            smoothed_scenes=None,
+        )
+
+        detail = _get_editor_detail_scene(tmp_path, 1)
+        _assert_active_contract(
+            detail["narrate_source"],
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="raw",
+            active_file=raw_dir / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=True,
+            message_contains="raw",
+        )
+
+        cmd = _run_narrate_and_capture_cmd(monkeypatch, tmp_path, 1)
+
+        assert cmd[cmd.index("--scene-extractions") + 1] == str(raw_dir.resolve())
+        assert "--scene-extraction-file" not in cmd
+
+    def test_smoothed_only_route_is_available_and_uses_smoothed_parent(
+        self, monkeypatch, tmp_path,
+    ):
+        _session_dir, raw_dir, smoothed_dir = _write_multiscene_editor_session(
+            tmp_path,
+            raw_scenes={},
+            smoothed_scenes={1: "smoothed one\n"},
+            create_raw_dir=False,
+        )
+
+        detail = _get_editor_detail_scene(tmp_path, 1)
+        assert detail["exists"] is False
+        assert detail["content"] == ""
+        _assert_active_contract(
+            detail["narrate_source"],
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="smoothed",
+            active_file=smoothed_dir / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=False,
+            message_contains="smoothed",
+        )
+        _assert_candidate(
+            detail["narrate_source"]["raw"],
+            layer="raw",
+            directory=raw_dir,
+            directory_exists=False,
+            path=None,
+            exists=False,
+            readable=None,
+            reason="does not exist",
+        )
+
+        cmd = _run_narrate_and_capture_cmd(monkeypatch, tmp_path, 1)
+
+        assert cmd[cmd.index("--scene-extractions") + 1] == str(smoothed_dir.resolve())
+        assert cmd[cmd.index("--scene-extraction-file") + 1] == str(
+            (smoothed_dir / "01_scene_one.md").resolve()
+        )
+
+    def test_partial_smoothed_layer_falls_back_per_scene(
+        self, monkeypatch, tmp_path,
+    ):
+        _session_dir, raw_dir, smoothed_dir = _write_multiscene_editor_session(
+            tmp_path,
+            raw_scenes={
+                1: "raw one\n",
+                2: "raw two\n",
+                3: "raw three\n",
+            },
+            smoothed_scenes={
+                1: "smoothed one\n",
+                3: "smoothed three\n",
+            },
+        )
+
+        first = _get_editor_detail_scene(tmp_path, 1)["narrate_source"]
+        second = _get_editor_detail_scene(tmp_path, 2)["narrate_source"]
+        third = _get_editor_detail_scene(tmp_path, 3)["narrate_source"]
+        assert first["active_file"] == str(
+            (smoothed_dir / "01_scene_one.md").resolve()
+        )
+        _assert_active_contract(
+            second,
+            scene_index=2,
+            scene_name="Scene Two",
+            active_layer="raw",
+            active_file=raw_dir / "02_scene_two.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=True,
+            message_contains="raw",
+        )
+        assert second["smoothed"]["path"] is None
+        assert third["active_file"] == str(
+            (smoothed_dir / "03_scene_three.md").resolve()
+        )
+
+        cmd = _run_narrate_and_capture_cmd(monkeypatch, tmp_path, 2)
+
+        assert cmd[cmd.index("--scene-extractions") + 1] == str(raw_dir.resolve())
+        assert "--scene-extraction-file" not in cmd
+
+    def test_unreadable_smoothed_blocks_even_when_raw_exists(
+        self, monkeypatch, tmp_path,
+    ):
+        _session_dir, raw_dir, smoothed_dir = _write_multiscene_editor_session(
+            tmp_path,
+            raw_scenes={1: "raw one\n"},
+            smoothed_scenes={1: b"\xff\xfe\x00"},
+        )
+
+        detail = _get_editor_detail_scene(tmp_path, 1)
+        _assert_active_contract(
+            detail["narrate_source"],
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer=None,
+            active_file=None,
+            status="unreadable",
+            available=False,
+            fallback_to_raw=False,
+            message_contains=str((smoothed_dir / "01_scene_one.md").resolve()),
+        )
+        _assert_candidate(
+            detail["narrate_source"]["raw"],
+            layer="raw",
+            directory=raw_dir,
+            directory_exists=True,
+            path=raw_dir / "01_scene_one.md",
+            exists=True,
+            readable=True,
+        )
+
+        body = _run_blocked_narrate(monkeypatch, tmp_path, 1)
+
+        assert "Narrate source unreadable" in body
+        assert str((smoothed_dir / "01_scene_one.md").resolve()) in body
+        assert str((raw_dir / "01_scene_one.md").resolve()) not in body
+
+    def test_neither_source_route_message_names_both_checked_locations(
+        self, monkeypatch, tmp_path,
+    ):
+        _session_dir, raw_dir, smoothed_dir = _write_multiscene_editor_session(
+            tmp_path,
+            raw_scenes={},
+            smoothed_scenes=None,
+        )
+
+        detail = _get_editor_detail_scene(tmp_path, 1)
+        _assert_active_contract(
+            detail["narrate_source"],
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer=None,
+            active_file=None,
+            status="missing",
+            available=False,
+            fallback_to_raw=False,
+            message_contains=str(smoothed_dir.resolve()),
+        )
+        assert str(raw_dir.resolve()) in detail["narrate_source"]["message"]
+
+        body = _run_blocked_narrate(monkeypatch, tmp_path, 1)
+
+        assert "No Narrate source found" in body
+        assert str(smoothed_dir.resolve()) in body
+        assert str(raw_dir.resolve()) in body
+
+    def test_live_removed_smoothed_file_recomputes_to_raw_fallback(
+        self, monkeypatch, tmp_path,
+    ):
+        _session_dir, raw_dir, smoothed_dir = _write_multiscene_editor_session(
+            tmp_path,
+            raw_scenes={1: "raw one\n"},
+            smoothed_scenes={1: "smoothed one\n"},
+        )
+        before = _get_editor_detail_scene(tmp_path, 1)["narrate_source"]
+        assert before["active_layer"] == "smoothed"
+
+        (smoothed_dir / "01_scene_one.md").unlink()
+
+        after = _get_editor_detail_scene(tmp_path, 1)["narrate_source"]
+        _assert_active_contract(
+            after,
+            scene_index=1,
+            scene_name="Scene One",
+            active_layer="raw",
+            active_file=raw_dir / "01_scene_one.md",
+            status="ready",
+            available=True,
+            fallback_to_raw=True,
+            message_contains="raw",
+        )
+
+        cmd = _run_narrate_and_capture_cmd(monkeypatch, tmp_path, 1)
+
+        assert cmd[cmd.index("--scene-extractions") + 1] == str(raw_dir.resolve())
+        assert "--scene-extraction-file" not in cmd
 
 
 # ── GET /api/editor/config — grouped resolved shape ─────────────────────────

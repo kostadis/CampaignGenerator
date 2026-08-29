@@ -23,6 +23,7 @@ from server.session_editor_config_shared import (  # noqa: E402
     SessionEditorConfig,
     VerifyKnobs,
 )
+from server.session_editor_config_service import ResolvedEditorConfig  # noqa: E402
 from server.routers.scene_editor import _parse_quote_report_counts  # noqa: E402
 
 
@@ -159,6 +160,60 @@ def test_verify_cmd_forwards_no_model_selection():
     assert "_selection_args" not in body
     for flag in ("--backend", "--model", "--batch", "--fast", "--endpoint"):
         assert flag not in body
+
+
+def test_t031_verify_cmd_stays_on_raw_extractions_with_smoothed_present(tmp_path):
+    from server.routers import scene_editor
+
+    session_dir = tmp_path / "20260414"
+    session_dir.mkdir()
+    vtt = session_dir / "session.vtt"
+    vtt.write_text("WEBVTT\n", encoding="utf-8")
+    summary = session_dir / "session-summary.md"
+    summary.write_text("# Summary\n", encoding="utf-8")
+    raw = session_dir / "scene_extractions_new"
+    raw.mkdir()
+    (raw / "01_scene_one.md").write_text(
+        "---\nscene: Scene One\n---\n\nraw verify source\n",
+        encoding="utf-8",
+    )
+    smoothed = session_dir / "scene_extractions_smoothed"
+    smoothed.mkdir()
+    smoothed_file = smoothed / "01_scene_one.md"
+    smoothed_file.write_text(
+        "---\nscene: Scene One\nsource: voice-smoothed\n---\n\nsmoothed narrate source\n",
+        encoding="utf-8",
+    )
+    narration = session_dir / "narration"
+    narration.mkdir()
+
+    base = SessionEditorConfig()
+    cfg = ResolvedEditorConfig(
+        paths=base.paths.model_copy(update={
+            "session_summary": str(summary),
+            "scene_extractions_dir": str(raw),
+            "narration_dir": str(narration),
+        }),
+        extract=base.extract,
+        narrate=base.narrate,
+        backends=base.backends,
+        session_name=None,
+        profiles=[],
+        active_profile=None,
+        model=None,
+        work_dir=str(session_dir),
+        campaign_dir=str(tmp_path),
+        config_dir="config",
+        vtt=str(vtt),
+    )
+    object.__setattr__(cfg, "verify", base.verify)
+
+    cmd = scene_editor._build_verify_cmd(None, cfg, target="both")
+
+    assert isinstance(cmd, list), cmd
+    assert "--scene-extraction-file" not in cmd
+    assert cmd[cmd.index("--scene-extractions") + 1] == str(raw)
+    assert str(smoothed_file) not in cmd
 
 
 # ── Refusal count (extraction contract #250) ─────────────────────────────────

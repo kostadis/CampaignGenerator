@@ -19,7 +19,7 @@ import json
 import re
 import subprocess
 import sys
-from dataclasses import asdict, replace
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -28,6 +28,8 @@ from campaignlib.party_config import PARTY_CONFIG_FILENAME
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
+
+from session_doc.io import resolve_scene_extraction_file
 
 from server.backend_forwarding import backend_cli_args
 from server.platform_config_service import resolve_selection, selection_cli_args
@@ -447,42 +449,251 @@ def _stage_status(output: Path | None,
 
 
 def _scene_extraction_file_new(cfg: ResolvedEditorConfig, n: int, scene_name: str) -> Path | None:
-    """New-flow scene file. Prefer the cleaned scaffold
-    (`NN_<slug>.scaffold.md`) when it exists; otherwise return the
-    Stage-2 source file (`NN_<slug>.md`). The scaffold is what the
-    user edits and what Narrate consumes; the Stage-2 file is the
-    expensive LLM source that we never overwrite."""
+    """New-flow scene file for the configured raw extraction directory."""
     sx = _scene_extractions_dir(cfg)
     if not sx:
         return None
+    resolved = resolve_scene_extraction_file(sx, n, scene_name)
+    if resolved is not None:
+        return resolved
     slug = _slugify(scene_name) or f"scene_{n}"
-    scaffold = sx / f"{n:02d}_{slug}.scaffold.md"
-    if scaffold.exists():
-        return scaffold
     exact = sx / f"{n:02d}_{slug}.md"
-    if exact.exists():
-        return exact
-
-    # Index fallback. sd_plan retitles scenes, so a plan title need not
-    # slugify to the stage-2 filename it was derived from ("The Statue
-    # Returned, a Quest Begun" vs 05_the_return_of_the_meliamne_statue...).
-    # Without this the file reads as missing, has_extraction goes False and
-    # the editor greys out Narrate for a scene the CLI would narrate fine —
-    # sd_narrate already does "name match, fallback to index". The NN_ prefix
-    # is unique per scene, so matching on it cannot mis-resolve.
-    scaffolds = sorted(sx.glob(f"{n:02d}_*.scaffold.md"))
-    if scaffolds:
-        return scaffolds[0]
-    plains = sorted(
-        p for p in sx.glob(f"{n:02d}_*.md")
-        if not p.name.endswith(".scaffold.md")
-    )
-    if plains:
-        return plains[0]
-
-    # Genuinely absent — return the slug path so .exists() callers behave
-    # exactly as before.
     return exact
+
+
+@dataclass(frozen=True)
+class SceneSourceCandidate:
+    """One disk-probed source candidate for Narrate.
+
+    Request-scoped and derived only from current files. It is never persisted:
+    the editor's raw extraction path stays the configured editing target, while
+    Narrate can prefer a smoothed read-only layer.
+    """
+
+    layer: str
+    directory: Path | None
+    directory_exists: bool
+    path: Path | None
+    exists: bool
+    readable: bool | None
+    reason: str | None
+
+    def to_dict(self) -> dict:
+        directory = str(self.directory.resolve()) if self.directory else None
+        path = str(self.path.resolve()) if self.path else None
+        return {
+            "layer": self.layer,
+            "directory": directory,
+            "directory_exists": self.directory_exists,
+            "path": path,
+            "filename": self.path.name if self.path else None,
+            "exists": self.exists,
+            "readable": self.readable,
+            "reason": self.reason,
+        }
+
+
+@dataclass(frozen=True)
+class NarrateSourceState:
+    """Resolved source decision for one scene's Narrate request."""
+
+    scene_index: int
+    scene_name: str
+    smoothed: SceneSourceCandidate
+    raw: SceneSourceCandidate
+    active_layer: str | None
+    active_file: Path | None
+    status: str
+    available: bool
+    fallback_to_raw: bool
+    message: str
+
+    def to_dict(self) -> dict:
+        return {
+            "scene_index": self.scene_index,
+            "scene_name": self.scene_name,
+            "smoothed": self.smoothed.to_dict(),
+            "raw": self.raw.to_dict(),
+            "active_layer": self.active_layer,
+            "active_file": (
+                str(self.active_file.resolve()) if self.active_file else None
+            ),
+            "status": self.status,
+            "available": self.available,
+            "fallback_to_raw": self.fallback_to_raw,
+            "message": self.message,
+        }
+
+
+def _probe_utf8_file(path: Path) -> tuple[bool, str | None]:
+    if not path.is_file():
+        return False, f"{path.resolve()} is not a regular file"
+    try:
+        path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        return False, f"{path.resolve()} is not readable UTF-8: {exc}"
+    return True, None
+
+
+def _scene_source_candidate(
+    *,
+    layer: str,
+    directory: Path | None,
+    scene_index: int,
+    scene_name: str,
+) -> SceneSourceCandidate:
+    if directory is None:
+        return SceneSourceCandidate(
+            layer=layer,
+            directory=None,
+            directory_exists=False,
+            path=None,
+            exists=False,
+            readable=None,
+            reason=f"{layer} extraction directory is not configured",
+        )
+
+    directory = directory.expanduser()
+    directory_exists = directory.is_dir()
+    candidate = (
+        resolve_scene_extraction_file(directory, scene_index, scene_name)
+        if directory_exists else None
+    )
+    if candidate is None:
+        reason = (
+            f"{directory.resolve()} does not exist"
+            if not directory_exists
+            else (
+                f"no eligible {scene_index:02d}_*.md scene extraction for "
+                f"'{scene_name}' in {directory.resolve()}"
+            )
+        )
+        return SceneSourceCandidate(
+            layer=layer,
+            directory=directory,
+            directory_exists=directory_exists,
+            path=None,
+            exists=False,
+            readable=None,
+            reason=reason,
+        )
+
+    exists = candidate.exists()
+    if not exists:
+        return SceneSourceCandidate(
+            layer=layer,
+            directory=directory,
+            directory_exists=directory_exists,
+            path=candidate,
+            exists=False,
+            readable=None,
+            reason=f"{candidate.resolve()} does not exist",
+        )
+    readable, reason = _probe_utf8_file(candidate)
+    return SceneSourceCandidate(
+        layer=layer,
+        directory=directory,
+        directory_exists=directory_exists,
+        path=candidate,
+        exists=True,
+        readable=readable,
+        reason=reason,
+    )
+
+
+def _narrate_source_state(
+    cfg: ResolvedEditorConfig, scene_index: int, scene_name: str
+) -> NarrateSourceState:
+    session_dir = Path(cfg.session_dir).expanduser() if cfg.session_dir else _session_dir(cfg)
+    smoothed_dir = (
+        session_dir / "scene_extractions_smoothed" if session_dir is not None else None
+    )
+    raw_dir = _scene_extractions_dir(cfg)
+    smoothed = _scene_source_candidate(
+        layer="smoothed",
+        directory=smoothed_dir,
+        scene_index=scene_index,
+        scene_name=scene_name,
+    )
+    raw = _scene_source_candidate(
+        layer="raw",
+        directory=raw_dir,
+        scene_index=scene_index,
+        scene_name=scene_name,
+    )
+
+    if smoothed.path is not None and smoothed.exists and smoothed.readable:
+        return NarrateSourceState(
+            scene_index=scene_index,
+            scene_name=scene_name,
+            smoothed=smoothed,
+            raw=raw,
+            active_layer="smoothed",
+            active_file=smoothed.path,
+            status="ready",
+            available=True,
+            fallback_to_raw=False,
+            message="Narrate will use the smoothed scene extraction.",
+        )
+    if smoothed.path is not None and smoothed.exists and smoothed.readable is False:
+        return NarrateSourceState(
+            scene_index=scene_index,
+            scene_name=scene_name,
+            smoothed=smoothed,
+            raw=raw,
+            active_layer=None,
+            active_file=None,
+            status="unreadable",
+            available=False,
+            fallback_to_raw=False,
+            message=f"Narrate source unreadable: {smoothed.path.resolve()}",
+        )
+    if raw.path is not None and raw.exists and raw.readable:
+        return NarrateSourceState(
+            scene_index=scene_index,
+            scene_name=scene_name,
+            smoothed=smoothed,
+            raw=raw,
+            active_layer="raw",
+            active_file=raw.path,
+            status="ready",
+            available=True,
+            fallback_to_raw=True,
+            message="Narrate will use the raw scene extraction fallback.",
+        )
+    if raw.path is not None and raw.exists and raw.readable is False:
+        return NarrateSourceState(
+            scene_index=scene_index,
+            scene_name=scene_name,
+            smoothed=smoothed,
+            raw=raw,
+            active_layer=None,
+            active_file=None,
+            status="unreadable",
+            available=False,
+            fallback_to_raw=False,
+            message=f"Narrate source unreadable: {raw.path.resolve()}",
+        )
+
+    smoothed_label = (
+        str(smoothed.directory.resolve()) if smoothed.directory else "(no session dir)"
+    )
+    raw_label = str(raw.directory.resolve()) if raw.directory else "(not configured)"
+    return NarrateSourceState(
+        scene_index=scene_index,
+        scene_name=scene_name,
+        smoothed=smoothed,
+        raw=raw,
+        active_layer=None,
+        active_file=None,
+        status="missing",
+        available=False,
+        fallback_to_raw=False,
+        message=(
+            "No Narrate source found. Checked smoothed directory "
+            f"{smoothed_label} and raw directory {raw_label}."
+        ),
+    )
 
 
 # ── Helpers (ported from session_doc_ui.py) ──────────────────────────────────
@@ -1161,8 +1372,6 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
     if summary is None or not summary.exists():
         return None, "session-summary.md not found — run Stage 1 first"
     sx_dir = _scene_extractions_dir(cfg)
-    if sx_dir is None:
-        return None, "scene_extractions_dir not configured"
     nd = _narration_dir(cfg)
     if nd is None:
         return None, "narration_dir not configured"
@@ -1171,15 +1380,38 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
     plan_path = nd / "plan.md"
     if not plan_path.exists():
         return None, "plan.md not found — run Plan & Check first"
+    scenes = _load_scenes(cfg)
+    narrate_source: NarrateSourceState | None = None
+    scene_extractions_arg = sx_dir
+    if 1 <= scene_num <= len(scenes):
+        scene_name = scenes[scene_num - 1].get("scene", "")
+        narrate_source = _narrate_source_state(cfg, scene_num, scene_name)
+        if not narrate_source.available:
+            return None, narrate_source.message
+        if narrate_source.active_layer == "smoothed":
+            if scene_extractions_arg is None or not scene_extractions_arg.is_dir():
+                scene_extractions_arg = (
+                    narrate_source.active_file.parent
+                    if narrate_source.active_file else None
+                )
+
+    if scene_extractions_arg is None:
+        return None, "scene_extractions_dir not configured"
 
     cmd = [
         console_script("sd_narrate"),
         str(summary),
         "--plan", str(plan_path),
-        "--scene-extractions", str(sx_dir),
+        "--scene-extractions", str(scene_extractions_arg),
         "--per-scene-output", str(nd),
         "--scene", str(scene_num),
     ]
+    if (
+        narrate_source is not None
+        and narrate_source.active_layer == "smoothed"
+        and narrate_source.active_file is not None
+    ):
+        cmd += ["--scene-extraction-file", str(narrate_source.active_file)]
     cmd += _selection_args(request, cfg)
     party_args = _party_args(cfg)
     if isinstance(party_args, tuple):
@@ -1363,17 +1595,43 @@ def api_get_extraction(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_co
         return JSONResponse({"exists": False, "content": ""}, status_code=404)
     s = scenes[n - 1]
     path = _get_extraction_path(cfg, n)
+    narrate_source = _narrate_source_state(cfg, n, s.get("scene", "")).to_dict()
     label = s.get("narrator", "")
     if s.get("scene"):
         label += f" — {s['scene']}"
     if path is None or not path.exists():
-        return {"exists": False, "content": "", "scene_label": label}
-    content = path.read_text(encoding="utf-8")
+        return {
+            "exists": False,
+            "content": "",
+            "editor_readable": None,
+            "editor_error": None,
+            "scene_label": label,
+            "narrate_source": narrate_source,
+        }
+    try:
+        content = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        reason = (
+            "not readable UTF-8"
+            if isinstance(exc, UnicodeDecodeError)
+            else f"could not be read: {exc}"
+        )
+        return {
+            "exists": True,
+            "content": "",
+            "editor_readable": False,
+            "editor_error": f"Raw extraction {reason}: {path.resolve()}",
+            "scene_label": label,
+            "narrate_source": narrate_source,
+        }
     return {
         "exists": True,
         "content": content,
+        "editor_readable": True,
+        "editor_error": None,
         "scene_label": label,
         "estimated_tokens": estimate_narration_tokens(content),
+        "narrate_source": narrate_source,
     }
 
 
