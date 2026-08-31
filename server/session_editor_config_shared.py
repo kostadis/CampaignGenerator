@@ -95,6 +95,7 @@ class BackendProfile(ModelSelection):
             and not self.model
             and not self.endpoint
             and self.batch is None
+            and self.codex_reasoning_effort is None
         )
 
 

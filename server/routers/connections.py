@@ -461,6 +461,8 @@ def extract_connections(req: ExtractRequest, request: Request):
     # 32K output gives room for ~300 entities + ~500 edges. 4K truncates large
     # campaigns mid-string and produces unparseable JSON.
     raw = stream_api(client, system, combined, resolved_model, max_tokens=32000, silent=True)
+    identity = getattr(client, "last_run_identity", None)
+    run_identity = identity.as_dict() if identity is not None else None
 
     raw = raw.strip()
     if raw.startswith("```"):
@@ -478,7 +480,11 @@ def extract_connections(req: ExtractRequest, request: Request):
             if looks_truncated else ""
         )
         return JSONResponse(
-            {"error": f"JSON parse error: {e}{hint}", "raw": raw[-2000:]},
+            {
+                "error": f"JSON parse error: {e}{hint}",
+                "raw": raw[-2000:],
+                **({"run_identity": run_identity} if run_identity is not None else {}),
+            },
             status_code=500,
         )
 
@@ -497,13 +503,16 @@ def extract_connections(req: ExtractRequest, request: Request):
 
     cache.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
-    return {
+    response = {
         "entities": len(data.get("entities", [])),
         "edges": len(data.get("edges", [])),
         "data": data,
         "cache_path": str(cache),
         "merged": merged_into_existing,
     }
+    if run_identity is not None:
+        response["run_identity"] = run_identity
+    return response
 
 
 @router.get("/data")

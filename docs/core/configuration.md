@@ -95,6 +95,23 @@ and a completed `codex login`; the saved ChatGPT subscription login is used by
 the isolated child, while `OPENAI_API_KEY` and `CODEX_API_KEY` are removed from
 its environment.
 
+## Codex reasoning effort
+
+All 30 Codex-capable commands accept `--codex-reasoning-effort` with exactly
+`minimal`, `low`, `medium`, `high`, `xhigh`, or `max`. Resolution is explicit
+CLI/UI value, then `CG_CODEX_REASONING_EFFORT`, then omission. Omission sends no
+`model_reasoning_effort` override and is displayed as “Codex default.” Model
+support varies (`gpt-5.6-sol` supports `max`); incompatibility is reported with
+the selected model and effort and never triggers fallback.
+
+The global value is `platform.yaml`'s
+`runtime.default_codex_reasoning_effort`. Service/profile values live beside
+their existing Codex model under the owning service document, including the
+Session Doc Editor backend profile and each ensemble stage. Values remain
+dormant when another backend is active. The sidebar, service override panel,
+Session Doc Editor drawer, and ensemble setup all use the server-published
+vocabulary and serialize “Codex default” as null/omitted.
+
 Provider `--batch` is Anthropic Message Batches and is rejected before model or
 child work for Codex. It is distinct from application controls such as
 `--batch-scenes`, ensemble fan-out, resume, and review checkpoints. The

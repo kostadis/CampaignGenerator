@@ -69,7 +69,9 @@ from campaignlib import DEFAULT_MODEL
 from campaignlib.util import atomic_write_text
 from campaignlib.selection import (  # noqa: F401  (re-exported)
     BACKENDS,
+    CODEX_REASONING_EFFORTS,
     Backend,
+    CodexReasoningEffort,
     ModelSelection,
     compatible,
 )
@@ -174,6 +176,7 @@ class PlatformRuntime(BaseModel):
     default_models: dict[Backend, OptStr] = Field(default_factory=dict)
     session_dir: OptStr = None
     default_batch: OptBool = False
+    default_codex_reasoning_effort: CodexReasoningEffort | None = None
 
 
 class PlatformServer(BaseModel):

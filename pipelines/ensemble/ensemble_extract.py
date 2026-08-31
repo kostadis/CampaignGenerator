@@ -65,6 +65,7 @@ import threading
 import time
 from pathlib import Path
 
+from campaignlib.api.client import add_codex_reasoning_arg, resolve_cli_reasoning
 from campaignlib.selection import BACKENDS
 
 EXTRACT_SCRIPT = Path(__file__).resolve().parent / "extract_facts.py"
@@ -73,7 +74,8 @@ EXTRACT_SCRIPT = Path(__file__).resolve().parent / "extract_facts.py"
 def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
                       extract_dir: Path, endpoint: str | None,
                       model: str | None, backend: str,
-                      chunk_parallel: int = 1) -> list[str]:
+                      chunk_parallel: int = 1,
+                      codex_reasoning_effort: str | None = None) -> list[str]:
     """Build the extract_facts.py command line for one unit. Pure function —
     all the subprocess/bookkeeping mutation lives in run_unit."""
     cmd = [
@@ -91,6 +93,8 @@ def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
         cmd += ["--endpoint", endpoint]
     if model and model.strip():
         cmd += ["--model", model]
+    if codex_reasoning_effort is not None:
+        cmd += ["--codex-reasoning-effort", codex_reasoning_effort]
     if pass_spec.get("annotate_pov"):
         cmd += ["--annotate-pov"]
     if pass_spec.get("structural"):
@@ -111,6 +115,7 @@ def run_unit(
     endpoint: str | None, model: str | None, backend: str,
     register_proc=None, is_cancelled=None, timeout: float | None = None,
     chunk_parallel: int = 1,
+    codex_reasoning_effort: str | None = None,
 ) -> tuple[str, list[dict] | None, str | None, bool]:
     """Run ONE (lens, sample) unit on `endpoint`.
 
@@ -146,8 +151,17 @@ def run_unit(
         except json.JSONDecodeError:
             pass  # corrupt/partial — regenerate below
 
-    cmd = build_extract_cmd(input_path, pass_spec, output_path, extract_dir,
-                            endpoint, model, backend, chunk_parallel)
+    cmd = build_extract_cmd(
+        input_path,
+        pass_spec,
+        output_path,
+        extract_dir,
+        endpoint,
+        model,
+        backend,
+        chunk_parallel,
+        codex_reasoning_effort,
+    )
 
     where = endpoint or "default endpoint"
     if is_cancelled and is_cancelled():
@@ -290,6 +304,7 @@ def main() -> None:
                              "(default: dgx). This dispatcher never builds a client "
                              "itself — it just passes --backend/--endpoint down the "
                              "subprocess chain.")
+    add_codex_reasoning_arg(parser)
     parser.add_argument("--chunk-parallel", type=int, default=4, metavar="N",
                         help="In-flight chunk requests per endpoint, forwarded "
                              "to each extract_facts.py as --parallel (default "
@@ -335,6 +350,10 @@ def main() -> None:
                         help="Max times a single unit may time out and be re-queued "
                              "before it fails the run (default 3).")
     args = parser.parse_args()
+    try:
+        resolve_cli_reasoning(args)
+    except ValueError as exc:
+        parser.error(str(exc))
 
     workdir = Path(args.workdir).expanduser().resolve()
     workdir.mkdir(parents=True, exist_ok=True)
@@ -557,9 +576,10 @@ def main() -> None:
             try:
                 _, facts, err, timed_out = run_unit(
                     pass_spec["input_path"], pass_spec, k, args.samples, workdir, endpoint, model,
-                    args.backend,
-                    register_proc=register, is_cancelled=lambda _key=key: _key in cancelled,
-                    timeout=unit_timeout, chunk_parallel=args.chunk_parallel)
+                args.backend,
+                register_proc=register, is_cancelled=lambda _key=key: _key in cancelled,
+                timeout=unit_timeout, chunk_parallel=args.chunk_parallel,
+                codex_reasoning_effort=args.codex_reasoning_effort)
             except Exception as e:  # a worker must never die silently
                 facts, err, timed_out = None, repr(e), False
 

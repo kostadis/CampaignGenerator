@@ -1,5 +1,10 @@
 # Platform (Global) Configuration Isolation Design
 
+> **Feature 019 extension:** `runtime.default_codex_reasoning_effort` now lives
+> beside the global backend/model choice. It is optional, Codex-only memory;
+> null preserves the Codex default. Current precedence and owning-profile rules
+> are documented in [configuration.md](../core/configuration.md#codex-reasoning-effort).
+
 > **Superseded in part by feature 003** (`specs/003-model-selection-resolution/`):
 > `resolve_default_model` — Phase 5a's model-only resolver, described throughout this document —
 > was replaced by `resolve_selection`, which resolves model *and* backend together across all 22
@@ -335,6 +340,7 @@ Strict (`extra="forbid"`), matching `SessionEditorConfig` and `PlanningConfig`:
 
 ```yaml
 runtime:
+  default_codex_reasoning_effort: # optional; null → Codex default
   default_model:            # sidebar picker; unset → env CAMPAIGN_MODEL → wiring default
   session_dir:              # campaign-based path — the session-resolution anchor
 ```

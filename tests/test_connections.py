@@ -5,13 +5,77 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server.routers import connections
+from campaignlib.api.codex_cli import CodexRunIdentity
 from server.routers.connections import (
+    ExtractRequest,
     _slug,
     canonicalize,
     find_simple_paths,
     merge,
     neighbors_of,
 )
+
+
+def test_extract_returns_codex_run_identity_without_second_model_call(monkeypatch, tmp_path):
+    source = tmp_path / "world.md"
+    source.write_text("A compact world state.", encoding="utf-8")
+    identity = CodexRunIdentity(
+        backend="codex-cli",
+        model="gpt-5.6-sol",
+        model_source="explicit",
+        codex_reasoning_effort="max",
+        codex_reasoning_effort_source="explicit",
+        codex_reasoning_override=True,
+    )
+
+    class Client:
+        last_run_identity = identity
+
+    calls = 0
+
+    def fake_stream(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        return '{"entities": [], "edges": []}'
+
+    monkeypatch.setattr(connections, "resolve_selection", lambda *a, **k: type(
+        "Selection", (), {"model": "gpt-5.6-sol"}
+    )())
+    monkeypatch.setattr(connections, "client_from_args", lambda selection: Client())
+    monkeypatch.setattr(connections, "stream_api", fake_stream)
+
+    result = connections.extract_connections(
+        ExtractRequest(files=[str(source)], cache_path=str(tmp_path / "connections.json")),
+        object(),
+    )
+
+    assert calls == 1
+    assert result["run_identity"] == identity.as_dict()
+
+
+def test_extract_non_codex_response_does_not_invent_run_identity(monkeypatch, tmp_path):
+    source = tmp_path / "world.md"
+    source.write_text("A compact world state.", encoding="utf-8")
+
+    class Client:
+        last_run_identity = None
+
+    monkeypatch.setattr(connections, "resolve_selection", lambda *a, **k: type(
+        "Selection", (), {"model": "claude-sonnet-4-6"}
+    )())
+    monkeypatch.setattr(connections, "client_from_args", lambda selection: Client())
+    monkeypatch.setattr(
+        connections,
+        "stream_api",
+        lambda *a, **k: '{"entities": [], "edges": []}',
+    )
+
+    result = connections.extract_connections(
+        ExtractRequest(files=[str(source)], cache_path=str(tmp_path / "connections.json")),
+        object(),
+    )
+    assert "run_identity" not in result
 
 
 # ── _slug ─────────────────────────────────────────────────────────────────────

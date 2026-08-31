@@ -21,9 +21,20 @@ from typing import Annotated, Any, Literal
 from pydantic import BaseModel, BeforeValidator, ConfigDict
 
 Backend = Literal["anthropic", "dgx", "openrouter", "claude-code", "codex-cli"]
+CodexReasoningEffort = Literal[
+    "minimal", "low", "medium", "high", "xhigh", "max"
+]
 
 BACKENDS: tuple[str, ...] = (
     "anthropic", "dgx", "openrouter", "claude-code", "codex-cli"
+)
+CODEX_REASONING_EFFORTS: tuple[CodexReasoningEffort, ...] = (
+    "minimal",
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max",
 )
 
 
@@ -75,6 +86,7 @@ class ModelSelection(BaseModel):
     backend: Backend | None = None
     model: _OptStr = None
     batch: bool | None = None
+    codex_reasoning_effort: CodexReasoningEffort | None = None
 
     def is_empty(self) -> bool:
         """True when this selection defers entirely to the tier above.
@@ -89,7 +101,12 @@ class ModelSelection(BaseModel):
         would never reach ``resolve_selection``, nor survive a save that
         gates on emptiness (``save_party_config``/``save_planning_config``).
         """
-        return not self.backend and not self.model and self.batch is None
+        return (
+            not self.backend
+            and not self.model
+            and self.batch is None
+            and self.codex_reasoning_effort is None
+        )
 
 
 def compatible(model: str | None, backend: str | None) -> bool:

@@ -2,12 +2,14 @@
 import { ref, computed, onMounted } from 'vue'
 import {
   fetchEnsembleConfig, saveEnsembleConfig, fetchRegistrySummary,
-  type EnsembleConfig, type RegistrySummary,
+  codexReasoningValue, type EnsembleConfig, type RegistrySummary,
 } from './useEnsembleRun'
+import { useConfigStore } from '../../stores/config'
 import ChapterPicker from './ChapterPicker.vue'
 
 // Populated by the GET below; the server owns every default.
 const cfg = ref<EnsembleConfig | null>(null)
+const config = useConfigStore()
 const extractEndpointsText = ref('')
 const saved = ref(false)
 // Read-only — the entity registry (docs/entity_registry.yaml) replaced the
@@ -116,6 +118,11 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
   if (!cfg.value) return
   cfg.value[stage].batch = value === 'on' ? true : value === 'off' ? false : null
 }
+
+function setCodexReasoning(stage: 'extract' | 'synthesize', value: string) {
+  if (!cfg.value) return
+  cfg.value[stage].codex_reasoning_effort = value || null
+}
 </script>
 
 <template>
@@ -178,6 +185,22 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
           <span>Model id (optional — defaults to the subscription's own default)</span>
           <input v-model="cfg[stage].model" type="text"
             :placeholder="cfg[stage].backend === 'codex-cli' ? 'gpt-5-codex' : 'claude-opus-4-8'" />
+        </label>
+        <label class="fld" v-if="cfg[stage].backend === 'codex-cli'">
+          <span>Codex reasoning</span>
+          <select
+            :value="codexReasoningValue(cfg[stage])"
+            :disabled="!config.codexReasoningEfforts.length"
+            @change="setCodexReasoning(stage, ($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">Codex default</option>
+            <option v-for="effort in config.codexReasoningEfforts" :key="effort" :value="effort">
+              {{ effort }}
+            </option>
+          </select>
+          <div class="field-help">
+            {{ config.codexReasoningCompatibilityError || 'Higher effort can take longer; model support varies. gpt-5.6-sol supports max.' }}
+          </div>
         </label>
         <p v-if="stage === 'synthesize' && cfg.synthesize.backend !== 'anthropic'" class="warn-note">
           Synthesis assumes a model at least as capable as Sonnet; a weak or

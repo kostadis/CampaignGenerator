@@ -38,6 +38,7 @@ const dgxEndpoint = ref('')
 const dgxModel = ref('')
 const openrouterModel = ref('')
 const codexModel = ref('')
+const codexReasoning = ref('')
 
 // Drawer open/closed — always starts closed. The Config button opens it, and
 // onMounted auto-opens it on a cold start (required fields missing). Not
@@ -105,6 +106,8 @@ function loadConfigFields() {
   dgxModel.value = backends.dgx?.model || ''
   openrouterModel.value = backends.openrouter?.model || ''
   codexModel.value = (backends['codex-cli'] ?? backends.codex_cli)?.model || ''
+  codexReasoning.value =
+    (backends['codex-cli'] ?? backends.codex_cli)?.codex_reasoning_effort || ''
 }
 
 // ── Auto-apply: debounce-PUT changes to /api/editor/config ───────
@@ -282,20 +285,25 @@ watch(openrouterModel, () => {
   openrouterPersistTimer = setTimeout(persistOpenrouter, 350)
 })
 
-// Codex has an optional model: blank means the saved Codex login's own
-// default. Keep it in the editor-owned per-backend profile, separate from the
-// Anthropic/Claude/DGX/OpenRouter memories.
+// Codex has optional model and reasoning settings. Blank means the saved
+// Codex login's own default. Keep both in the editor-owned per-backend
+// profile, separate from the Anthropic/Claude/DGX/OpenRouter memories.
 let codexPersistTimer: ReturnType<typeof setTimeout> | undefined
 async function persistCodex() {
   try {
     await config.updateEditor({
-      backends: { 'codex-cli': { model: codexModel.value.trim() || null } },
+      backends: {
+        'codex-cli': {
+          model: codexModel.value.trim() || null,
+          codex_reasoning_effort: codexReasoning.value || null,
+        },
+      },
     })
   } catch {
     /* non-fatal — the next subprocess still resolves the active profile */
   }
 }
-watch(codexModel, () => {
+watch([codexModel, codexReasoning], () => {
   if (codexPersistTimer) clearTimeout(codexPersistTimer)
   codexPersistTimer = setTimeout(persistCodex, 350)
 })
@@ -508,6 +516,9 @@ function hydrateKnobsFromEditorConfig(ec: any) {
   reflections.value = !!narrate.reflections
   genreFile.value = ec?.paths?.genre_file || ''
   backend.value = normalizeBackend(backends.active)
+  codexModel.value = (backends['codex-cli'] ?? backends.codex_cli)?.model || ''
+  codexReasoning.value =
+    (backends['codex-cli'] ?? backends.codex_cli)?.codex_reasoning_effort || ''
 }
 
 async function activateProfileByName(name: string) {
@@ -1194,7 +1205,8 @@ onMounted(async () => {
       v-model:dgx-endpoint="dgxEndpoint"
       v-model:dgx-model="dgxModel"
       v-model:openrouter-model="openrouterModel"
-      v-model:codex-model="codexModel"
+    v-model:codex-model="codexModel"
+    v-model:codex-reasoning="codexReasoning"
       v-model:extract-tokens="extractTokens"
       v-model:batch-tokens="batchTokens"
       v-model:narrate-tokens="narrateTokens"

@@ -115,6 +115,32 @@ class CodexInvocation:
     def input(self) -> str:
         return self.stdin
 
+    @property
+    def config_values(self) -> List[str]:
+        """Return each separated ``-c`` value in child argv order."""
+        return [
+            self.argv[index + 1]
+            for index, value in enumerate(self.argv[:-1])
+            if value == "-c"
+        ]
+
+    def config_value(self, key: str) -> Optional[str]:
+        """Return one config value by key, rejecting duplicate overrides."""
+        prefix = f"{key}="
+        matches = [
+            value[len(prefix):]
+            for value in self.config_values
+            if value.startswith(prefix)
+        ]
+        if len(matches) > 1:
+            raise AssertionError(f"duplicate Codex config override for {key!r}")
+        return matches[0] if matches else None
+
+    @property
+    def reasoning_effort(self) -> Optional[str]:
+        """Return the raw TOML value sent for ``model_reasoning_effort``."""
+        return self.config_value("model_reasoning_effort")
+
 
 Response = Union[str, Mapping[str, Any]]
 
@@ -210,6 +236,22 @@ class FakeCodexCli:
         result.update(overrides)
         return result
 
+    @staticmethod
+    def rejected(
+        stderr: str = "unsupported model/reasoning effort combination",
+        *,
+        returncode: int = 2,
+        **overrides: Any,
+    ) -> Dict[str, Any]:
+        """Build a response that rejects before producing a result artifact."""
+        result: Dict[str, Any] = {
+            "returncode": returncode,
+            "stderr": stderr,
+            "write_result": False,
+        }
+        result.update(overrides)
+        return result
+
     @property
     def path(self) -> Path:
         return self.root
@@ -278,6 +320,11 @@ class FakeCodexCli:
     @property
     def invocations(self) -> List[CodexInvocation]:
         return self.calls
+
+    @property
+    def call_count(self) -> int:
+        """Number of child processes observed so far."""
+        return len(self.calls)
 
     @property
     def last_call(self) -> Optional[CodexInvocation]:

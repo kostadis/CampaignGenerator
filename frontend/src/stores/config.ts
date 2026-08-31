@@ -7,6 +7,7 @@ import { apiFetch, apiPut, apiPost, apiDelete } from '../api/client'
 // the hydrated `backends` value rather than inventing provider-specific paths.
 export const BACKENDS = ['anthropic', 'dgx', 'openrouter', 'claude-code', 'codex-cli'] as const
 export type Backend = typeof BACKENDS[number]
+export type CodexReasoningEffort = 'minimal' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'
 
 type BackendModelMemory = Partial<Record<Backend, string>>
 
@@ -95,6 +96,14 @@ export const useConfigStore = defineStore('config', () => {
   // are meaningful for subscription CLIs: they explicitly request the
   // backend's own saved-login default.
   const defaultModels = ref<BackendModelMemory>({})
+  // The accepted vocabulary is published by the server. Keep no runtime
+  // fallback here: an older server must disable the selector visibly rather
+  // than letting a newer UI submit a value that server does not understand.
+  const codexReasoningEfforts = ref<CodexReasoningEffort[]>([])
+  const codexReasoningCompatibilityError = ref('')
+  // Global Codex-only memory. It remains hydrated while another backend is
+  // active, so switching away and back never erases the Codex profile.
+  const codexReasoningEffort = ref<CodexReasoningEffort | ''>('')
   // The app-wide backend. Feature 003 moved it out of the Session Doc
   // Editor's backends.active (session_doc.yaml) and up to the platform tier
   // beside default_model, so the sidebar's two controls are owned by the same
@@ -133,6 +142,16 @@ export const useConfigStore = defineStore('config', () => {
       migrationWarnings.value = cfg.migration_warnings ?? []
       models.value = modelsData.models
       defaultModel.value = modelsData.default
+      if (Array.isArray(modelsData.codex_reasoning_efforts)) {
+        codexReasoningEfforts.value = modelsData.codex_reasoning_efforts.filter(
+          (value: unknown): value is CodexReasoningEffort => typeof value === 'string',
+        )
+        codexReasoningCompatibilityError.value = ''
+      } else {
+        codexReasoningEfforts.value = []
+        codexReasoningCompatibilityError.value =
+          'This server does not publish Codex reasoning choices. Update the server to change this setting.'
+      }
       const configuredBackends = Array.isArray(modelsData.backends)
         ? modelsData.backends.filter((value: unknown): value is Backend =>
           typeof value === 'string' && (BACKENDS as readonly string[]).includes(value),
@@ -145,6 +164,7 @@ export const useConfigStore = defineStore('config', () => {
         : 'anthropic'
       const runtime = cfg.resolved?.runtime ?? {}
       defaultModels.value = readBackendModelMemory(runtime.default_models)
+      codexReasoningEffort.value = runtime.default_codex_reasoning_effort || ''
       model.value = resolveHydratedModel(runtime, backend.value, defaultModels.value, modelsData.default)
       batch.value = cfg.resolved?.runtime?.default_batch === true
       cwd.value = status.cwd
@@ -166,6 +186,7 @@ export const useConfigStore = defineStore('config', () => {
     }
     const runtime = resolved.value.runtime ?? {}
     defaultModels.value = readBackendModelMemory(runtime.default_models)
+    codexReasoningEffort.value = runtime.default_codex_reasoning_effort || ''
     model.value = resolveHydratedModel(runtime, backend.value, defaultModels.value, defaultModel.value)
     if (resolved.value.runtime?.default_batch !== undefined) {
       batch.value = resolved.value.runtime.default_batch === true
@@ -278,6 +299,9 @@ export const useConfigStore = defineStore('config', () => {
     batch,
     defaultModel,
     defaultModels,
+    codexReasoningEfforts,
+    codexReasoningCompatibilityError,
+    codexReasoningEffort,
     model,
     cwd,
     loaded,

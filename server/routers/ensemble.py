@@ -133,7 +133,8 @@ def _cmd_flag(cmd: list[str], flag: str, condition: bool) -> None:
 def _backend_args(backend: str, model: str, request: Request, *,
                   endpoint: str | None = None,
                   endpoints: list[str] | None = None,
-                  batch: bool | None = None) -> list[str]:
+                  batch: bool | None = None,
+                  codex_reasoning_effort: str | None = None) -> list[str]:
     """Resolve this stage's selection and render it as CLI flags.
 
     Feature 003 replaced this function's body with a call to the one seam,
@@ -197,7 +198,12 @@ def _backend_args(backend: str, model: str, request: Request, *,
     # stage that genuinely names dgx/openrouter still wins.
     resolved = resolve_selection(
         request,
-        service=ModelSelection(backend=backend or None, model=model or None, batch=batch),
+        service=ModelSelection(
+            backend=backend or None,
+            model=model or None,
+            batch=batch,
+            codex_reasoning_effort=codex_reasoning_effort,
+        ),
         service_name="ensemble",
     )
     args = backend_cli_args(resolved.backend, endpoint=endpoint, endpoints=endpoints)
@@ -706,7 +712,14 @@ def run_extract(
            "--per-chapter-dir", per_chapter_dir,
            "--out", out]
     _cmd_opt(cmd, "--plan", plan)
-    cmd += _backend_args(backend, model, request, endpoints=endpoints, batch=batch)
+    cmd += _backend_args(
+        backend,
+        model,
+        request,
+        endpoints=endpoints,
+        batch=batch,
+        codex_reasoning_effort=cfg.extract.codex_reasoning_effort,
+    )
     _cmd_opt(cmd, "--chapter-parallel", chapter_parallel)
     _cmd_opt(cmd, "--chunk-parallel", chunk_parallel)
     _cmd_flag(cmd, "--no-speculative", no_speculative)
@@ -756,7 +769,12 @@ def run_synthesise_polish(
     cmd = [console_script("synthesise_polish"), str(merged_path),
            "--output", str(output_path)]
     cmd += _backend_args(
-        backend, model, request, endpoint=endpoint, batch=batch,
+        backend,
+        model,
+        request,
+        endpoint=endpoint,
+        batch=batch,
+        codex_reasoning_effort=cfg.synthesize.codex_reasoning_effort,
     )
     return _run_locked("synthesise-polish", cmd)
 
@@ -796,7 +814,12 @@ def run_narrate_chapter(
            "--output", str(output_path)]
     _cmd_opt(cmd, "--force", force)
     cmd += _backend_args(
-        backend, model, request, endpoint=endpoint, batch=batch,
+        backend,
+        model,
+        request,
+        endpoint=endpoint,
+        batch=batch,
+        codex_reasoning_effort=cfg.extract.codex_reasoning_effort,
     )
     return _run_locked("narrate-chapter", cmd)
 
@@ -848,7 +871,14 @@ def run_bundle(
     else:
         _cmd_opt(cmd, "--out-dir", out_dir)
         _cmd_flag(cmd, "--known-only", known_only)
-        cmd += _backend_args(backend, model, request, endpoints=endpoints, batch=batch)
+        cmd += _backend_args(
+            backend,
+            model,
+            request,
+            endpoints=endpoints,
+            batch=batch,
+            codex_reasoning_effort=cfg.extract.codex_reasoning_effort,
+        )
         _cmd_opt(cmd, "--entity-parallel", entity_parallel)
     # --list does no model work, so it never needs the lock or backend env.
     if list:
@@ -1064,7 +1094,14 @@ def run_synthesize(
             _cmd_opt(cmd, "--depth", depth)
         _cmd_multi(cmd, "--force-include", force_include)
 
-    cmd += _backend_args(backend, model, request, endpoint=endpoint, batch=batch)
+    cmd += _backend_args(
+        backend,
+        model,
+        request,
+        endpoint=endpoint,
+        batch=batch,
+        codex_reasoning_effort=cfg.synthesize.codex_reasoning_effort,
+    )
 
     prelude_parts = []
     # Surface auto-detected party.yaml / context so picking them up isn't
@@ -1129,7 +1166,8 @@ def get_ensemble_resolved_selection(
         request,
         service=ModelSelection(backend=stage_cfg.backend or None,
                                model=stage_cfg.model or None,
-                               batch=stage_cfg.batch),
+                               batch=stage_cfg.batch,
+                               codex_reasoning_effort=stage_cfg.codex_reasoning_effort),
         service_name="ensemble",
         raise_on_incompatible=False,
     ).as_dict()

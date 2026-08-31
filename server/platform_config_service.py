@@ -51,6 +51,7 @@ platform state during its own construction.
 from __future__ import annotations
 
 import threading
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
@@ -66,6 +67,8 @@ from server.platform_config_shared import (
     LOCAL_CONFIG_NAME,
     PLATFORM_CONFIG_NAME,
     ConfigError,
+    CODEX_REASONING_EFFORTS,
+    CodexReasoningEffort,
     ModelSelection,
     PlatformConfig,
     PlatformDocument,
@@ -210,6 +213,9 @@ class ResolvedSelection:
     refusal: str | None = None
     batch: bool = False
     batch_origin: str = "platform"  # request | service | platform
+    codex_reasoning_effort: CodexReasoningEffort | None = None
+    codex_reasoning_effort_origin: str = "omitted"
+    codex_reasoning_override: bool = False
 
     @property
     def compatible(self) -> bool:
@@ -223,6 +229,9 @@ class ResolvedSelection:
             "backend_origin": self.backend_origin,
             "batch": self.batch,
             "batch_origin": self.batch_origin,
+            "codex_reasoning_effort": self.codex_reasoning_effort,
+            "codex_reasoning_effort_origin": self.codex_reasoning_effort_origin,
+            "codex_reasoning_override": self.codex_reasoning_override,
             "compatible": self.compatible,
             "refusal": self.refusal,
         }
@@ -308,6 +317,7 @@ def resolve_selection(
     request_model: str | None = None,
     request_backend: str | None = None,
     request_batch: bool | None = None,
+    request_codex_reasoning_effort: str | None = None,
     service: ModelSelection | Any | None = None,
     service_name: str | None = None,
     raise_on_incompatible: bool = True,
@@ -365,9 +375,17 @@ def resolve_selection(
     plat_model = getattr(runtime, "default_model", None) if runtime else None
     literal_model = DEFAULT_MODEL
     plat_backend = (getattr(runtime, "default_backend", None) or "anthropic") if runtime else "anthropic"
+    plat_effort = (
+        getattr(runtime, "default_codex_reasoning_effort", None)
+        if runtime else None
+    )
 
     svc_model = (getattr(service, "model", None) or "").strip() or None if service is not None else None
     svc_backend = (getattr(service, "backend", None) or "").strip() or None if service is not None else None
+    svc_effort = (
+        getattr(service, "codex_reasoning_effort", None)
+        if service is not None else None
+    )
 
     # A service whose backend is the schema default ("anthropic") while its
     # model is unset is indistinguishable from "unset" — treat it as deferring.
@@ -439,6 +457,49 @@ def resolve_selection(
     if backend == "dgx" and not endpoint and not endpoints:
         endpoint = wiring_get("dgx_endpoint")
 
+    effort_refusal = None
+    codex_reasoning_effort = None
+    codex_reasoning_effort_origin = "omitted"
+    codex_reasoning_override = False
+    if backend == "codex-cli":
+        if request_codex_reasoning_effort is not None:
+            codex_reasoning_effort = request_codex_reasoning_effort
+            codex_reasoning_effort_origin = "request"
+            codex_reasoning_override = True
+        elif svc_effort is not None:
+            codex_reasoning_effort = svc_effort
+            codex_reasoning_effort_origin = "service"
+            codex_reasoning_override = True
+        elif plat_effort is not None:
+            codex_reasoning_effort = plat_effort
+            codex_reasoning_effort_origin = "platform"
+            codex_reasoning_override = True
+        else:
+            raw_effort = os.environ.get("CG_CODEX_REASONING_EFFORT")
+            if raw_effort is not None and raw_effort.strip():
+                codex_reasoning_effort = raw_effort.strip()
+                codex_reasoning_effort_origin = "environment"
+
+        if (
+            codex_reasoning_effort is not None
+            and codex_reasoning_effort not in CODEX_REASONING_EFFORTS
+        ):
+            accepted = ", ".join(CODEX_REASONING_EFFORTS)
+            source = (
+                "CG_CODEX_REASONING_EFFORT"
+                if codex_reasoning_effort_origin == "environment"
+                else "Codex reasoning effort"
+            )
+            effort_refusal = (
+                f"{source} value {codex_reasoning_effort!r} must be one of: "
+                f"{accepted}"
+            )
+    elif request_codex_reasoning_effort is not None:
+        effort_refusal = (
+            "Codex reasoning effort applies only to the codex-cli backend; "
+            f'this run resolves to the "{backend}" backend.'
+        )
+
     # ── Batch (feature 005-ui-batch-selection) ──────────────────────────
     # Same request -> service -> platform precedence as backend, above, but
     # resolved independently of it: the pairing rule is a model/backend-only
@@ -477,6 +538,8 @@ def resolve_selection(
             f'batch is a Claude API option; "{service_name}" has no batch '
             f'capability.'
         )
+    if effort_refusal:
+        refusal = effort_refusal
 
     resolved = ResolvedSelection(
         model=model,
@@ -488,6 +551,9 @@ def resolve_selection(
         refusal=refusal,
         batch=batch,
         batch_origin=batch_origin,
+        codex_reasoning_effort=codex_reasoning_effort,
+        codex_reasoning_effort_origin=codex_reasoning_effort_origin,
+        codex_reasoning_override=codex_reasoning_override,
     )
     if refusal and raise_on_incompatible:
         raise IncompatibleSelection(resolved, service_name)
@@ -528,6 +594,14 @@ def selection_cli_args(resolved: ResolvedSelection) -> list[str]:
     args += ["--model", resolved.model] if resolved.model else []
     if resolved.batch:
         args.append("--batch")
+    if (
+        resolved.codex_reasoning_effort is not None
+        and resolved.codex_reasoning_override
+    ):
+        args += [
+            "--codex-reasoning-effort",
+            resolved.codex_reasoning_effort,
+        ]
     return args
 
 

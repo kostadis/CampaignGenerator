@@ -159,3 +159,17 @@ def test_build_extract_cmd_forwards_scene_chunks_when_structural(tmp_path):
                                tmp_path / "small.json", tmp_path / "cache",
                                endpoint=None, model=None, backend="dgx")
     assert "--scene-chunks" in cmd
+
+
+def test_extract_child_command_forwards_codex_reasoning_effort(tmp_path):
+    cmd = ee.build_extract_cmd(
+        tmp_path / "doc.txt",
+        PASS,
+        tmp_path / "small.json",
+        tmp_path / "cache",
+        endpoint=None,
+        model="gpt-5.6-sol",
+        backend="codex-cli",
+        codex_reasoning_effort="max",
+    )
+    assert cmd[cmd.index("--codex-reasoning-effort") + 1] == "max"

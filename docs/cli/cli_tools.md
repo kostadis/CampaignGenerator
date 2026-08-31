@@ -41,6 +41,15 @@ timeout, failed process, or empty result exits nonzero without retrying another
 provider or saving a successful report. `max_tokens` remains accepted by the
 shared facade but Codex exposes no matching CLI output-limit flag.
 
+Reasoning effort uses one option everywhere: `--codex-reasoning-effort`, with
+exact values `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`. An explicit
+value wins over `CG_CODEX_REASONING_EFFORT`; when both are absent CampaignGenerator
+omits the Codex override and preserves the Codex/model default. Support is model-
+dependent (`gpt-5.6-sol` supports `max`), so a rejected model/effort pair fails
+without retrying another effort or model. Supplying the option with a non-Codex
+backend also fails before model work. Each child start prints `Codex run:` with
+the resolved model, effort, and provenance.
+
 The Codex adapter supports the direct text shapes used across this command
 family and a separate brokered structured-turn shape for the ensemble polish
 loop. The consistency-auditor and `consistency-check`/`staged-consistency`
@@ -64,7 +73,7 @@ artifacts, resume/skip behavior, and human checkpoints.
 | Grounding (8) | `planning`, `party`, `make_tracking`, `distill`, `campaign_state`, `npc_table`, `grounding_sections`, `thread_registry` |
 | Ensemble (9) | `synthesise_world_state`, `synthesise_polish`, `extract_facts`, `facts_to_state`, `narrate_chapter`, `polish`, `ensemble`, `ensemble_batch`, `ensemble_extract` |
 
-### Codex setup and model rules
+### Codex setup, model, and reasoning rules
 
 Install the Codex CLI with the required ephemeral/structured execution support
 and run `codex login` before selecting `--backend codex-cli`. Each direct or
@@ -79,6 +88,13 @@ argv; an explicit compatible model is forwarded unchanged, while an explicit
 child deadline (default `600` seconds). The brokered `polish` loop replays typed
 history to Codex, but only the parent process executes declared document tools
 and applies mutations.
+
+The UI exposes the same fixed reasoning choices anywhere it owns a Codex model:
+the global sidebar, service override panel, Session Doc Editor/scene drawer, and
+each ensemble stage. “Codex default” is an omission, not a guessed value. Saved
+Codex effort remains remembered while another provider is selected; it is never
+forwarded to that provider. Higher effort can increase run time, and the server
+publishes the accepted vocabulary through `GET /api/config/models`.
 
 The provider `--batch` flag is Anthropic-only and refuses Codex before child
 work. It must not be confused with application-level `--batch-scenes`, local

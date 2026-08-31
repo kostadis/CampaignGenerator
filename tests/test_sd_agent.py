@@ -618,3 +618,20 @@ def test_codex_resume_does_not_regenerate_existing_summary(session, monkeypatch)
     assert sd_agent.main() == 0
     assert not any("enhance_summary" in cmd for cmd in seen)
     assert (session / "session-summary.md").read_text(encoding="utf-8") == original
+
+
+def test_codex_reasoning_effort_reaches_generation_only(session):
+    steps, _ = build_steps(
+        _args(
+            session_dir=session,
+            backend="codex-cli",
+            model="gpt-5.6-sol",
+            codex_reasoning_effort="max",
+        )
+    )
+
+    generation = next(step.cmd for step in steps if step.key == "generate")
+    assert generation[generation.index("--codex-reasoning-effort") + 1] == "max"
+    for step in steps:
+        if step.key != "generate":
+            assert "--codex-reasoning-effort" not in step.cmd

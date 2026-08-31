@@ -904,3 +904,20 @@ def test_batch_flag_only_built_by_selection_cli_args():
         f"server/routers/*.py builds '--batch' directly: {offenders} — "
         "route it through selection_cli_args instead."
     )
+
+
+def test_all_30_codex_surfaces_share_reasoning_effort_registration():
+    registrars, hand_written = discover_backend_surfaces()
+    dispatchers = discover_runtime_dispatchers(registrars, hand_written)
+    assert len(registrars | hand_written) == 30
+    assert len(dispatchers) == 4
+
+    for relative_path in sorted(hand_written):
+        tree = _parse(REPO_ROOT / relative_path)
+        calls = {
+            _call_func_name(node)
+            for node in _all_calls(tree)
+        }
+        assert "add_codex_reasoning_arg" in calls, (
+            f"{relative_path} bypasses the shared Codex effort registrar"
+        )

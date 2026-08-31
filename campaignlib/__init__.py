@@ -35,7 +35,8 @@ from .config import (
 from .util import copy_to_clipboard, save_log, atomic_write_text, atomic_write_json
 from .api.client import (
     make_client, call_api, call_api_with_tools, stream_api,
-    add_backend_args, client_from_args,
+    add_backend_args, add_codex_reasoning_arg, client_from_args,
+    resolve_cli_reasoning,
 )
 from .api.codex_cli import CodexCliError, _CodexCliClient
 from .api.batch import (
@@ -164,7 +165,9 @@ __all__ = [
     # api — client
     "make_client",
     "add_backend_args",
+    "add_codex_reasoning_arg",
     "client_from_args",
+    "resolve_cli_reasoning",
     "call_api",
     "call_api_with_tools",
     "stream_api",

@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { apiFetch, apiPost } from '../../api/client'
 import { connectSSE } from '../../api/sse'
+import StreamOutput from '../../components/shared/StreamOutput.vue'
 
 const router = useRouter()
 
@@ -357,7 +358,11 @@ onMounted(loadAll)
         <strong>{{ polishing ? 'Polish output' : 'Polish complete' }}</strong>
         <span v-if="!polishing">Writes the polished document and JSON changelog beside the assembled artifact.</span>
       </div>
-      <pre>{{ polishOutput || 'Waiting for polish output…' }}</pre>
+      <StreamOutput
+        class="polish-stream"
+        color="var(--text-muted)"
+        :text="polishOutput || 'Waiting for polish output…'"
+      />
     </section>
   </div>
 </template>
@@ -592,13 +597,9 @@ onMounted(loadAll)
   font-size: 11px;
 }
 .polish-result-head span { color: var(--text-muted); font-size: 10px; }
-.polish-result pre {
+.polish-stream {
   margin: 5px 0 0;
   max-height: 120px;
-  overflow: auto;
-  color: var(--text-muted);
-  font-family: var(--mono);
-  font-size: 10px;
-  white-space: pre-wrap;
+  overflow: hidden;
 }
 </style>
