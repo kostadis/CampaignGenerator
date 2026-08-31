@@ -499,20 +499,22 @@ const addAlias = (t: Thread) => {
 
 <template>
   <div class="threads">
-    <header class="page-head">
-      <h1>Threads</h1>
-      <p class="lede">
+    <div class="page-header">
+      <h2>Threads</h2>
+      <p class="subtitle">
         Harvest narrative threads from the extraction corpus, rule on them one
         at a time, and maintain the registry the Planning document reads.
       </p>
-    </header>
+    </div>
 
+    <p v-if="loading" class="loading-box">Loading threads…</p>
     <p v-if="loadError" class="error-box">{{ loadError }}</p>
 
     <!-- ── health (T026) ────────────────────────────────────────────── -->
     <section class="card">
       <h2>Registry health</h2>
-      <p class="health">
+      <p class="health" :class="problems.length ? 'health-error' : 'health-success'">
+        <strong>{{ problems.length ? 'Needs attention' : 'Healthy' }}</strong> ·
         <strong>{{ threads.length }}</strong> thread<span v-if="threads.length !== 1">s</span>,
         <strong>{{ problems.length }}</strong> problem<span v-if="problems.length !== 1">s</span>
       </p>
@@ -533,21 +535,25 @@ const addAlias = (t: Thread) => {
         <span>Corpus (whitespace-separated globs)</span>
         <input
           v-model="corpus"
+          class="field-input"
           placeholder="docs/ensemble/per_chapter/*/merged.json"
           spellcheck="false"
         />
       </label>
       <div class="row">
-        <button :disabled="resolving || !corpusPatterns.length" @click="resolveCorpus">
+        <button class="btn-neutral btn-sm" :disabled="resolving || !corpusPatterns.length" @click="resolveCorpus">
           {{ resolving ? 'Resolving…' : 'Resolve' }}
         </button>
         <button
-          class="primary"
+          class="btn-primary btn-sm"
           :disabled="harvestStatus === 'running' || !corpusPatterns.length"
           @click="runHarvest"
         >
           {{ harvestStatus === 'running' ? 'Harvesting…' : 'Run harvest' }}
         </button>
+        <span class="status-badge" :class="`status-${harvestStatus}`">
+          Harvest: {{ harvestStatus }}
+        </span>
       </div>
       <p v-if="corpusError" class="error-box">{{ corpusError }}</p>
       <div v-if="corpusFiles.length" class="files">
@@ -564,9 +570,9 @@ const addAlias = (t: Thread) => {
       <h2>Candidate queue</h2>
 
       <div class="filters">
-        <input v-model="search" placeholder="Search titles, variants, evidence…" />
-        <input v-model="chapterFilter" placeholder="Chapter" class="narrow" />
-        <select v-model="rulingFilter">
+        <input v-model="search" class="field-input" placeholder="Search titles, variants, evidence…" />
+        <input v-model="chapterFilter" placeholder="Chapter" class="field-input narrow" />
+        <select v-model="rulingFilter" class="field-input">
           <option value="">Any ruling</option>
           <option value="pending">Pending</option>
           <option value="ratified">Ratified</option>
@@ -597,8 +603,10 @@ const addAlias = (t: Thread) => {
           <div v-for="p in band.items" :key="p.norm" class="candidate">
             <div class="cand-head">
               <strong>{{ p.title }}</strong>
-              <span v-if="p.status !== 'pending'" class="badge">{{ p.status }}</span>
-              <span v-if="p.matches" class="badge matched">appends to {{ p.matches }}</span>
+              <span class="status-badge" :class="`status-${p.status || 'pending'}`">
+                {{ p.status || 'pending' }}
+              </span>
+              <span v-if="p.matches" class="status-badge status-info">appends to {{ p.matches }}</span>
             </div>
             <p v-if="(p.all_titles || []).length > 1" class="muted small">
               also recorded as: {{ p.all_titles.join(' · ') }}
@@ -617,9 +625,9 @@ const addAlias = (t: Thread) => {
               </li>
             </ul>
             <div class="actions">
-              <button @click="startAccept(p)">Accept</button>
-              <button @click="startRule(p, 'reject')">Reject</button>
-              <button @click="startRule(p, 'discuss')">Discuss</button>
+              <button class="btn-success btn-sm" @click="startAccept(p)">Accept</button>
+              <button class="btn-neutral btn-sm" @click="startRule(p, 'reject')">Reject</button>
+              <button class="btn-neutral btn-sm" @click="startRule(p, 'discuss')">Discuss</button>
             </div>
 
             <div v-if="openForm && openForm.norm === p.norm" class="form">
@@ -635,44 +643,44 @@ const addAlias = (t: Thread) => {
                 </p>
                 <div class="grid">
                   <label><span>id</span>
-                    <input v-model="plan.id" :disabled="!!p.matches" /></label>
+                    <input v-model="plan.id" class="field-input" :disabled="!!p.matches" /></label>
                   <label><span>title</span>
-                    <input v-model="plan.title" :disabled="!!p.matches" /></label>
+                    <input v-model="plan.title" class="field-input" :disabled="!!p.matches" /></label>
                   <label><span>status</span>
-                    <select v-model="plan.status" :disabled="!!p.matches">
+                    <select v-model="plan.status" class="field-input" :disabled="!!p.matches">
                       <option v-for="s in STATUSES" :key="s" :value="s">{{ s }}</option>
                     </select></label>
                   <label><span>opened</span>
-                    <input v-model.number="plan.opened" type="number"
+                    <input v-model.number="plan.opened" class="field-input" type="number"
                            :disabled="!!p.matches"
                            :required="!p.chapters.length" /></label>
-                  <label><span>tracker</span><input v-model="plan.tracker" /></label>
-                  <label><span>notes</span><input v-model="plan.notes" /></label>
+                  <label><span>tracker</span><input v-model="plan.tracker" class="field-input" /></label>
+                  <label><span>notes</span><input v-model="plan.notes" class="field-input" /></label>
                 </div>
                 <h4>Log rows</h4>
                 <div v-for="(row, i) in plan.log" :key="i" class="logrow">
-                  <input v-model.number="row.chapter" type="number" placeholder="ch" class="narrow" />
-                  <select v-model="row.change">
+                  <input v-model.number="row.chapter" type="number" placeholder="ch" class="field-input narrow" />
+                  <select v-model="row.change" class="field-input">
                     <option v-for="c in CHANGES" :key="c" :value="c">{{ c }}</option>
                   </select>
-                  <input v-model="row.summary" placeholder="summary" />
-                  <input v-model="row.quote" placeholder="quote (verbatim)" />
-                  <button class="ghost" @click="removeLogRow(i)">remove</button>
+                  <input v-model="row.summary" class="field-input" placeholder="summary" />
+                  <input v-model="row.quote" class="field-input" placeholder="quote (verbatim)" />
+                  <button class="btn-neutral btn-sm" @click="removeLogRow(i)">remove</button>
                 </div>
-                <button class="ghost" @click="addLogRow">+ add row</button>
+                <button class="btn-neutral btn-sm" @click="addLogRow">+ add row</button>
                 <p v-if="formError" class="error-box">{{ formError }}</p>
                 <div class="row">
-                  <button class="primary" :disabled="busy === p.norm" @click="confirmAccept(p)">
+                  <button class="btn-primary btn-sm" :disabled="busy === p.norm" @click="confirmAccept(p)">
                     {{ busy === p.norm ? 'Writing…' : 'Confirm' }}
                   </button>
-                  <button class="ghost" @click="cancelForm">Cancel</button>
+                  <button class="btn-neutral btn-sm" @click="cancelForm">Cancel</button>
                 </div>
               </template>
 
               <template v-else>
                 <label class="field">
                   <span>Note (optional)</span>
-                  <input v-model="ruleNote" />
+                  <input v-model="ruleNote" class="field-input" />
                 </label>
                 <p v-if="openForm.kind === 'discuss'" class="muted small">
                   Discussing appends this candidate and its evidence to the
@@ -684,11 +692,11 @@ const addAlias = (t: Thread) => {
                 <p v-if="formError" class="error-box">{{ formError }}</p>
                 <div class="row">
                   <button
-                    class="primary"
+                    class="btn-primary btn-sm"
                     :disabled="busy === p.norm"
                     @click="confirmRule(p, openForm.kind === 'reject' ? 'rejected' : 'deferred')"
                   >Confirm</button>
-                  <button class="ghost" @click="cancelForm">Cancel</button>
+                  <button class="btn-neutral btn-sm" @click="cancelForm">Cancel</button>
                 </div>
               </template>
             </div>
@@ -711,7 +719,10 @@ const addAlias = (t: Thread) => {
       <h2>Ratified threads</h2>
       <p v-if="!threads.length" class="muted">No threads yet.</p>
       <div v-for="group in threadsByStatus" :key="group.status" class="group">
-        <h3>{{ group.status }} <span class="count">({{ group.items.length }})</span></h3>
+        <h3>
+          <span class="status-badge" :class="`status-${group.status}`">{{ group.status }}</span>
+          <span class="count">({{ group.items.length }})</span>
+        </h3>
         <div v-for="t in group.items" :key="t.id" class="thread">
           <div class="cand-head">
             <strong>{{ t.title }}</strong>
@@ -735,31 +746,31 @@ const addAlias = (t: Thread) => {
             </li>
           </ul>
           <div class="actions">
-            <button @click="maintFor(t.id).open = maintFor(t.id).open === 'log' ? '' : 'log'">Add log row</button>
-            <button @click="maintFor(t.id).open = maintFor(t.id).open === 'status' ? '' : 'status'">Change status</button>
-            <button @click="maintFor(t.id).open = maintFor(t.id).open === 'alias' ? '' : 'alias'">Add alias</button>
+            <button class="btn-neutral btn-sm" @click="maintFor(t.id).open = maintFor(t.id).open === 'log' ? '' : 'log'">Add log row</button>
+            <button class="btn-neutral btn-sm" @click="maintFor(t.id).open = maintFor(t.id).open === 'status' ? '' : 'status'">Change status</button>
+            <button class="btn-neutral btn-sm" @click="maintFor(t.id).open = maintFor(t.id).open === 'alias' ? '' : 'alias'">Add alias</button>
           </div>
           <div v-if="maintFor(t.id).open === 'log'" class="form logrow">
-            <input v-model="maintFor(t.id).chapter" type="number" placeholder="ch" class="narrow" />
-            <select v-model="maintFor(t.id).change">
+            <input v-model="maintFor(t.id).chapter" type="number" placeholder="ch" class="field-input narrow" />
+            <select v-model="maintFor(t.id).change" class="field-input">
               <option v-for="c in CHANGES" :key="c" :value="c">{{ c }}</option>
             </select>
-            <input v-model="maintFor(t.id).summary" placeholder="summary" />
-            <input v-model="maintFor(t.id).quote" placeholder="quote" />
-            <button class="primary" :disabled="busy === t.id" @click="addLog(t)">Add</button>
+            <input v-model="maintFor(t.id).summary" class="field-input" placeholder="summary" />
+            <input v-model="maintFor(t.id).quote" class="field-input" placeholder="quote" />
+            <button class="btn-primary btn-sm" :disabled="busy === t.id" @click="addLog(t)">Add</button>
           </div>
           <div v-if="maintFor(t.id).open === 'status'" class="form logrow">
-            <select v-model="maintFor(t.id).status">
+            <select v-model="maintFor(t.id).status" class="field-input">
               <option v-for="s in STATUSES" :key="s" :value="s">{{ s }}</option>
             </select>
-            <input v-model="maintFor(t.id).closeChapter" type="number"
-                   placeholder="closing chapter" class="narrow" />
-            <button class="primary" :disabled="busy === t.id" @click="setStatus(t)">Apply</button>
+            <input v-model="maintFor(t.id).closeChapter" type="number" class="field-input narrow"
+                   placeholder="closing chapter" />
+            <button class="btn-primary btn-sm" :disabled="busy === t.id" @click="setStatus(t)">Apply</button>
             <span class="muted small">Resolving or abandoning needs a closing chapter.</span>
           </div>
           <div v-if="maintFor(t.id).open === 'alias'" class="form logrow">
-            <input v-model="maintFor(t.id).alias" placeholder="alternate title" />
-            <button class="primary" :disabled="busy === t.id" @click="addAlias(t)">Add alias</button>
+            <input v-model="maintFor(t.id).alias" class="field-input" placeholder="alternate title" />
+            <button class="btn-primary btn-sm" :disabled="busy === t.id" @click="addAlias(t)">Add alias</button>
           </div>
           <p v-if="maintError[t.id]" class="error-box">{{ maintError[t.id] }}</p>
         </div>
@@ -769,62 +780,199 @@ const addAlias = (t: Thread) => {
 </template>
 
 <style scoped>
-.threads { max-width: 60rem; }
-.page-head { margin-bottom: 1rem; }
-.lede { color: var(--muted, #666); margin: 0.25rem 0 0; }
+.threads {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  max-width: 1400px;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 20px 24px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 12px;
+}
+
+.page-header { margin-bottom: 20px; }
+.page-header h2 {
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+}
+.subtitle { color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+
 .card {
-  border: 1px solid var(--border, #ddd); border-radius: 6px;
-  padding: 1rem; margin-bottom: 1rem;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--bg-surface0);
+  border-radius: 6px;
+  background: var(--bg-mantle);
 }
-h2 { margin-top: 0; }
-h3 { margin-bottom: 0.25rem; }
-.count { color: var(--muted, #666); font-weight: normal; }
-.muted { color: var(--muted, #666); }
-.small { font-size: 0.9em; }
-.warn { color: #b45309; font-weight: 600; }
-.field { display: block; margin: 0.5rem 0; }
-.field span { display: block; font-size: 0.9em; color: var(--muted, #666); }
-.field input { width: 100%; }
-.row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
-.filters { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.card > h2 {
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+h3 { margin: 12px 0 4px; color: var(--text-sub); font-size: 12px; }
+h4 { margin: 12px 0 6px; color: var(--text-sub); font-size: 11px; }
+.count { color: var(--text-muted); font-weight: 400; }
+.muted { color: var(--text-sub); }
+.small { font-size: 11px; }
+.warn { color: var(--peach); font-weight: 600; }
+
+.health { margin-bottom: 6px; color: var(--text-sub); }
+.health-success > strong:first-child { color: var(--green); }
+.health-error > strong:first-child { color: var(--red); }
+
+.field { display: block; margin: 8px 0; }
+.field > span,
+.grid label > span {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--text-sub);
+  font-size: 11px;
+  font-weight: 600;
+}
+.field-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--bg-surface1);
+  border-radius: 4px;
+  outline: none;
+  background: var(--bg-base);
+  color: var(--text);
+  color-scheme: dark;
+  font-family: var(--sans);
+  font-size: 12px;
+}
+.field-input::placeholder { color: var(--text-muted); }
+.field-input:hover:not(:disabled) { border-color: var(--bg-overlay0); }
+.field-input:focus { border-color: var(--mauve); }
+.field-input:disabled {
+  border-color: var(--bg-surface0);
+  background: var(--bg-mantle);
+  color: var(--text-muted);
+  cursor: default;
+  opacity: 0.7;
+}
+
+.row { display: flex; gap: 8px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+.filters { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
 .filters input { flex: 1; }
+.filters select { width: auto; min-width: 120px; }
 .narrow { width: 6rem; flex: none !important; }
-.candidate, .thread {
-  border-top: 1px solid var(--border, #eee); padding: 0.75rem 0;
+
+.threads .btn-primary { background: var(--mauve); color: var(--bg-base); }
+.threads .btn-success { background: var(--green); color: var(--bg-base); }
+.threads .btn-neutral { background: var(--bg-surface0); color: var(--text); }
+.threads button:focus-visible { outline: 2px solid var(--mauve); outline-offset: 2px; }
+
+.candidate,
+.thread {
+  padding: 10px 0;
+  border-top: 1px solid var(--bg-surface0);
 }
-.cand-head { display: flex; gap: 0.5rem; align-items: baseline; flex-wrap: wrap; }
-.badge {
-  font-size: 0.8em; background: var(--chip, #eee); border-radius: 3px;
-  padding: 0 0.35rem;
+.cand-head { display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+.badge,
+.status-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: var(--bg-surface0);
+  color: var(--text-sub);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
-.badge.matched { background: #dbeafe; }
-.evidence, .log, .problems { margin: 0.4rem 0; padding-left: 1rem; }
-.evidence li, .log li { margin-bottom: 0.3rem; }
-.ev-ch { font-family: monospace; margin-right: 0.4rem; color: var(--muted, #666); }
-.ev-fact { }
+.status-open,
+.status-ratified,
+.status-resolved,
+.status-done { color: var(--green); }
+.status-dormant,
+.status-deferred { color: var(--peach); }
+.status-rejected,
+.status-abandoned,
+.status-error { color: var(--red); }
+.status-running,
+.status-info { color: var(--blue); }
+.status-pending,
+.status-idle { color: var(--text-muted); }
+
+.evidence,
+.log,
+.problems { margin: 6px 0; padding-left: 18px; }
+.evidence li,
+.log li { margin-bottom: 5px; line-height: 1.45; }
+.problems { color: var(--red); }
+.ev-ch {
+  margin-right: 6px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 11px;
+}
 /* A quote is the tape's own words — rendered verbatim and visually distinct
    from the paraphrased fact beside it (Constitution IV). */
 .ev-quote {
-  display: block; margin-left: 1.5rem; font-style: italic;
-  border-left: 2px solid var(--border, #ccc); padding-left: 0.5rem;
+  display: block;
+  margin: 4px 0 0 18px;
+  padding-left: 8px;
+  border-left: 2px solid var(--bg-surface1);
+  color: var(--text-sub);
+  font-style: italic;
 }
-.ev-src { font-size: 0.8em; color: var(--muted, #888); margin-left: 0.4rem; }
-.actions { display: flex; gap: 0.5rem; margin-top: 0.4rem; }
-.form { margin-top: 0.6rem; padding: 0.6rem; background: var(--panel, #fafafa); border-radius: 4px; }
-.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
-.grid label span { display: block; font-size: 0.85em; color: var(--muted, #666); }
-.grid input, .grid select { width: 100%; }
-.logrow { display: flex; gap: 0.4rem; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; }
+.ev-src { margin-left: 6px; color: var(--text-muted); font-size: 10px; }
+.actions { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.form {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--bg-surface1);
+  border-radius: 4px;
+  background: var(--bg-surface0);
+}
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.logrow { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
 .logrow input:not(.narrow) { flex: 1; }
-.excluded { margin-top: 1rem; color: var(--muted, #666); font-style: italic; }
+.excluded { margin-top: 12px; color: var(--text-muted); font-size: 11px; font-style: italic; }
+.loading-box,
 .error-box {
-  border: 1px solid #f5c2c7; background: #fff5f5; color: #842029;
-  padding: 0.5rem; border-radius: 4px; white-space: pre-wrap;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.loading-box { background: var(--bg-surface0); color: var(--text-sub); }
+.error-box {
+  border: 1px solid var(--red);
+  background: var(--bg-mantle);
+  color: var(--red);
 }
 .output {
-  background: #111; color: #eee; padding: 0.6rem; border-radius: 4px;
-  max-height: 16rem; overflow: auto; white-space: pre-wrap;
+  max-height: 16rem;
+  margin-top: 8px;
+  padding: 10px;
+  overflow: auto;
+  border: 1px solid var(--bg-surface0);
+  border-radius: 4px;
+  background: var(--bg-crust);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: pre-wrap;
 }
-.files ul { max-height: 10rem; overflow: auto; }
-button.ghost { background: none; border: 1px solid var(--border, #ccc); }
+.files { margin-top: 8px; }
+.files ul { max-height: 10rem; margin-top: 4px; padding-left: 18px; overflow: auto; }
+code {
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--bg-crust);
+  color: var(--text-sub);
+  font-family: var(--mono);
+  font-size: 11px;
+}
 </style>
