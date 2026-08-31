@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
-import { apiFetch, apiPost } from '../../api/client'
+import { ApiError, apiFetch, apiPost } from '../../api/client'
 import PathField from '../../components/shared/PathField.vue'
 import FileTree from '../../components/shared/FileTree.vue'
 
@@ -38,6 +38,22 @@ const searchQuery = ref('')
 // Connection data
 const data = ref<{ entities: any[]; edges: any[] } | null>(null)
 const cacheInfo = ref('')
+interface CodexRunIdentity {
+  backend: 'codex-cli'
+  model: string
+  model_source: string
+  codex_reasoning_effort: string
+  codex_reasoning_effort_source: string
+  codex_reasoning_override: boolean
+}
+const run_identity = ref<CodexRunIdentity | null>(null)
+const runIdentityLabel = computed(() => {
+  const identity = run_identity.value
+  if (!identity) return ''
+  return `Codex run: model=${identity.model} (${identity.model_source}); `
+    + `reasoning_effort=${identity.codex_reasoning_effort} `
+    + `(${identity.codex_reasoning_effort_source})`
+})
 
 // Path finder state
 const pathSource = ref('')
@@ -124,6 +140,7 @@ async function extract() {
   if (!allSelected.value.length) return
   extracting.value = true
   error.value = ''
+  run_identity.value = null
   try {
     const res = await apiPost('/api/connections/extract', {
       files: allSelected.value,
@@ -132,6 +149,9 @@ async function extract() {
       cache_path: cachePath.value.trim(),
       replace: replaceExisting.value,
     })
+    // Set this before branching on error so a structured failed extraction
+    // can still explain the Codex model/effort that produced its response.
+    run_identity.value = res.run_identity || null
     if (res.error) {
       error.value = res.error
     } else {
@@ -141,8 +161,17 @@ async function extract() {
       await renderGraph()
       activeTab.value = 'graph'
     }
-  } catch (e: any) {
-    error.value = e.message || 'Extraction failed'
+  } catch (e: unknown) {
+    if (e instanceof ApiError) {
+      const payload = e.data as {
+        error?: string
+        run_identity?: CodexRunIdentity
+      } | null
+      run_identity.value = payload?.run_identity || null
+      error.value = payload?.error || e.message
+    } else {
+      error.value = e instanceof Error ? e.message : 'Extraction failed'
+    }
   } finally {
     extracting.value = false
   }
@@ -398,6 +427,7 @@ const entityOptions = computed(() => {
         Replace cache (don't merge)
       </label>
       <span v-if="cacheInfo" class="cache-info">{{ cacheInfo }}</span>
+      <span v-if="runIdentityLabel" class="cache-info run-identity">{{ runIdentityLabel }}</span>
     </div>
 
     <div v-if="error" class="error-msg">{{ error }}</div>

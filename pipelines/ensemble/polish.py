@@ -30,7 +30,7 @@ from campaignlib import (
     load_config,
     save_log,
 )
-from campaignlib.api.client import resolve_cli_model
+from campaignlib.api.client import resolve_cli_model, resolve_cli_reasoning
 from campaignlib.party_config import load_party_config_arg, require_from_config
 from session_doc import roster_from_config
 from campaignlib.players_config import load_players_config_arg
@@ -506,7 +506,7 @@ class TraceWriter:
     def close(self) -> None:
         self._fh.close()
 
-    def log_response(self, turn: int, response) -> None:
+    def log_response(self, turn: int, response, *, run_identity=None) -> None:
         blocks = []
         for block in response.content:
             if block.type == "text":
@@ -520,14 +520,17 @@ class TraceWriter:
                 })
             else:
                 blocks.append({"type": block.type})
-        self.emit({
+        event = {
             "event": "response",
             "turn": turn,
             "stop_reason": response.stop_reason,
             "input_tokens": getattr(response.usage, "input_tokens", None),
             "output_tokens": getattr(response.usage, "output_tokens", None),
             "blocks": blocks,
-        })
+        }
+        if run_identity is not None:
+            event.update(run_identity.as_dict())
+        self.emit(event)
 
     def log_tool_call(self, turn: int, name: str, args: dict,
                       result: str, is_error: bool) -> None:
@@ -567,7 +570,11 @@ def run_agent_loop(client, *, system: str, ctx: ToolContext, model: str,
             client, system=system, messages=messages,
             tools=TOOL_SCHEMAS, model=model, max_tokens=8192,
         )
-        trace.log_response(turn, response)
+        trace.log_response(
+            turn,
+            response,
+            run_identity=getattr(client, "last_run_identity", None),
+        )
 
         for block in response.content:
             if block.type == "text" and block.text.strip():
@@ -828,6 +835,7 @@ def main() -> None:
     args.model = resolve_cli_model(
         args, legacy_default=DEFAULT_MODEL
     ).effective_model
+    reasoning = resolve_cli_reasoning(args)
 
     # Load config (not strictly needed but matches every other CLI's UX)
     try:
@@ -924,7 +932,7 @@ def main() -> None:
     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     trace_path = trace_dir / f"{timestamp}_polish_trace.jsonl"
     trace = TraceWriter(trace_path)
-    trace.emit({
+    run_start = {
         "event": "run_start",
         "model": args.model,
         "max_iterations": args.max_iterations,
@@ -932,7 +940,14 @@ def main() -> None:
         "section_count": len(doc.sections),
         "voice_files": len(voices),
         "roster": sorted(roster_names),
-    })
+    }
+    if reasoning.backend == "codex-cli":
+        run_start.update({
+            "codex_reasoning_effort": reasoning.effective_effort or "Codex default",
+            "codex_reasoning_effort_source": reasoning.source,
+            "codex_reasoning_override": reasoning.emit_override,
+        })
+    trace.emit(run_start)
 
     ctx = ToolContext(
         doc=doc, recap_text=recap_text, voices=voices,

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Backend } from '../../stores/config'
+import { useConfigStore, type Backend } from '../../stores/config'
 import PathField from '../shared/PathField.vue'
 import MultiPathField from '../shared/MultiPathField.vue'
+
+const config = useConfigStore()
 
 const props = defineProps<{
   open: boolean
@@ -22,6 +24,7 @@ const props = defineProps<{
   dgxModel: string
   openrouterModel: string
   codexModel: string
+  codexReasoning: string
   voicePlayer: string
   voiceFile: string
   voiceUpdate: boolean
@@ -63,6 +66,7 @@ const emit = defineEmits<{
   'update:dgxModel': [value: string]
   'update:openrouterModel': [value: string]
   'update:codexModel': [value: string]
+  'update:codexReasoning': [value: string]
   'update:voicePlayer': [value: string]
   'update:voiceFile': [value: string]
   'update:voiceUpdate': [value: boolean]
@@ -250,6 +254,23 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
             @input="emit('update:codexModel', ($event.target as HTMLInputElement).value)"
           />
           <div class="field-help">Blank preserves the saved Codex CLI login's default model.</div>
+        </div>
+        <div v-if="backend === 'codex-cli'" class="field">
+          <label class="field-label">Codex reasoning</label>
+          <select
+            class="field-input"
+            :value="codexReasoning"
+            :disabled="!config.codexReasoningEfforts.length"
+            @change="emit('update:codexReasoning', ($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">Codex default</option>
+            <option v-for="effort in config.codexReasoningEfforts" :key="effort" :value="effort">
+              {{ effort }}
+            </option>
+          </select>
+          <div class="field-help">
+            {{ config.codexReasoningCompatibilityError || 'Higher effort can take longer; model support varies. gpt-5.6-sol supports max.' }}
+          </div>
         </div>
       </section>
 

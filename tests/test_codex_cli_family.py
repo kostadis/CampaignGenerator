@@ -228,3 +228,26 @@ def test_four_family_codex_failure_does_not_fallback_to_provider(
 
     assert len(fake.calls) == 1
     assert fake.last_call is not None
+
+
+def test_shared_reasoning_effort_argument_uses_canonical_vocabulary():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model", default=None)
+    client_mod.add_backend_args(parser)
+
+    action = next(
+        action
+        for action in parser._actions
+        if action.dest == "codex_reasoning_effort"
+    )
+    assert tuple(action.choices) == tuple(client_mod.CODEX_REASONING_EFFORTS)
+    assert "CG_CODEX_REASONING_EFFORT" in (action.help or "")
+    assert "gpt-5.6-sol" in (action.help or "")
+
+
+@pytest.mark.parametrize("relative_path", tuple(sorted(HAND_WRITTEN)))
+def test_hand_written_surfaces_consume_shared_reasoning_registrar(relative_path):
+    tree = _parse(ROOT / relative_path)
+    assert _calls(tree, "add_codex_reasoning_arg"), (
+        f"{relative_path} must consume the shared Codex effort registrar"
+    )

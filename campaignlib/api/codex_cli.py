@@ -15,7 +15,10 @@ import subprocess
 import tempfile
 import uuid
 from collections.abc import Mapping
+from dataclasses import dataclass
 from pathlib import Path
+
+from ..selection import CODEX_REASONING_EFFORTS, CodexReasoningEffort
 
 
 CODEX_CLI = "codex"
@@ -89,6 +92,35 @@ opaque strings; arguments_json must be a JSON object encoded as a string.
 
 class CodexCliError(RuntimeError):
     """Actionable, non-retryable failure at the Codex subscription boundary."""
+
+
+@dataclass(frozen=True)
+class CodexRunIdentity:
+    """Actual model and reasoning selection used at the child boundary."""
+
+    backend: str
+    model: str
+    model_source: str
+    codex_reasoning_effort: str
+    codex_reasoning_effort_source: str
+    codex_reasoning_override: bool
+
+    def as_dict(self) -> dict[str, object]:
+        return {
+            "backend": self.backend,
+            "model": self.model,
+            "model_source": self.model_source,
+            "codex_reasoning_effort": self.codex_reasoning_effort,
+            "codex_reasoning_effort_source": self.codex_reasoning_effort_source,
+            "codex_reasoning_override": self.codex_reasoning_override,
+        }
+
+    def status_line(self) -> str:
+        return (
+            f"Codex run: model={self.model} ({self.model_source}); "
+            f"reasoning_effort={self.codex_reasoning_effort} "
+            f"({self.codex_reasoning_effort_source})"
+        )
 
 
 class _CodexTextBlock:
@@ -187,23 +219,58 @@ def _system_text(system) -> str:
     return text
 
 
-def _selected_model(explicit: str | None) -> str | None:
+def _selected_model_identity(explicit: str | None) -> tuple[str | None, str]:
     candidate = explicit
+    source = "explicit"
     if candidate is None or (isinstance(candidate, str) and not candidate.strip()):
         candidate = os.environ.get("CG_CODEX_MODEL")
+        source = "environment"
     if candidate is None:
-        return None
+        return None, "omitted"
     if not isinstance(candidate, str):
         raise CodexCliError("codex-cli model must be a string when supplied")
     candidate = candidate.strip()
     if not candidate:
-        return None
+        return None, "omitted"
     if candidate.lower().startswith("claude-"):
         raise CodexCliError(
             f"codex-cli model is incompatible with Claude model {candidate!r}; "
             "choose a model supported by Codex or omit --model"
         )
-    return candidate
+    return candidate, source
+
+
+def _selected_model(explicit: str | None) -> str | None:
+    return _selected_model_identity(explicit)[0]
+
+
+def _selected_reasoning_effort(
+    explicit: str | None, explicit_source: str | None = None
+) -> tuple[CodexReasoningEffort | None, str]:
+    candidate = explicit
+    source = explicit_source or "explicit"
+    if candidate is None:
+        raw_environment = os.environ.get("CG_CODEX_REASONING_EFFORT")
+        if raw_environment is None or not raw_environment.strip():
+            return None, "omitted"
+        candidate = raw_environment.strip()
+        source = "environment"
+    if not isinstance(candidate, str) or not candidate or candidate.strip() != candidate:
+        accepted = ", ".join(CODEX_REASONING_EFFORTS)
+        raise CodexCliError(
+            f"codex-cli reasoning effort must be one of: {accepted}"
+        )
+    if candidate not in CODEX_REASONING_EFFORTS:
+        accepted = ", ".join(CODEX_REASONING_EFFORTS)
+        variable = (
+            "CG_CODEX_REASONING_EFFORT"
+            if source == "environment"
+            else "--codex-reasoning-effort"
+        )
+        raise CodexCliError(
+            f"{variable} value {candidate!r} must be one of: {accepted}"
+        )
+    return candidate, source
 
 
 def _field(value, name: str, default=_MISSING):
@@ -464,7 +531,9 @@ def _bounded_diagnostic(value) -> str:
 
 
 def _command(*, system: str, temp_dir: Path, result_path: Path,
-             model: str | None, output_schema_path: Path | None = None) -> list[str]:
+             model: str | None,
+             reasoning_effort: CodexReasoningEffort | None = None,
+             output_schema_path: Path | None = None) -> list[str]:
     cmd = [
         CODEX_CLI,
         "exec",
@@ -496,6 +565,11 @@ def _command(*, system: str, temp_dir: Path, result_path: Path,
     ]
     for feature in _DISABLED_FEATURES:
         cmd.extend(("--disable", feature))
+    if reasoning_effort is not None:
+        cmd.extend((
+            "-c",
+            f"model_reasoning_effort={json.dumps(reasoning_effort)}",
+        ))
     cmd.extend((
         "-c",
         f"developer_instructions={json.dumps(system, ensure_ascii=False)}",
@@ -511,10 +585,30 @@ def _command(*, system: str, temp_dir: Path, result_path: Path,
 
 
 def _codex_cli_generate(*, system, user: str, model: str | None,
+                        reasoning_effort: str | None = None,
+                        reasoning_effort_source: str | None = None,
+                        identity_sink=None,
                         output_schema: dict | None = None) -> str:
     system_text = _system_text(system)
-    selected_model = _selected_model(model)
+    selected_model, model_source = _selected_model_identity(model)
+    selected_effort, effort_source = _selected_reasoning_effort(
+        reasoning_effort, reasoning_effort_source
+    )
+    identity = CodexRunIdentity(
+        backend="codex-cli",
+        model=selected_model or "Codex default",
+        model_source=model_source,
+        codex_reasoning_effort=selected_effort or "Codex default",
+        codex_reasoning_effort_source=effort_source,
+        codex_reasoning_override=selected_effort is not None,
+    )
+    # Validate every local launch setting before announcing a run or touching
+    # the child boundary. A malformed timeout must not leave a status line
+    # that implies model work began.
     timeout = _timeout_seconds()
+    if identity_sink is not None:
+        identity_sink(identity)
+    print(identity.status_line(), flush=True)
     env = dict(os.environ)
     env.pop("ANTHROPIC_API_KEY", None)
     env.pop("OPENAI_API_KEY", None)
@@ -535,7 +629,12 @@ def _codex_cli_generate(*, system, user: str, model: str | None,
             temp_dir=temp_dir,
             result_path=result_path,
             model=selected_model,
+            reasoning_effort=selected_effort,
             output_schema_path=output_schema_path,
+        )
+        failure_context = (
+            f"codex-cli failed for model {identity.model!r} with reasoning "
+            f"effort {identity.codex_reasoning_effort!r}"
         )
         try:
             proc = subprocess.run(
@@ -549,11 +648,12 @@ def _codex_cli_generate(*, system, user: str, model: str | None,
             )
         except FileNotFoundError as exc:
             raise CodexCliError(
-                "codex executable not found; install Codex CLI and run `codex login`"
+                f"{failure_context}: codex executable not found; install Codex "
+                "CLI and run `codex login`"
             ) from exc
         except subprocess.TimeoutExpired as exc:
             raise CodexCliError(
-                f"codex-cli timed out after {timeout:g} seconds "
+                f"{failure_context}: timed out after {timeout:g} seconds "
                 f"(CG_CODEX_TIMEOUT); {_bounded_diagnostic(exc.stderr)}"
             ) from exc
 
@@ -561,21 +661,21 @@ def _codex_cli_generate(*, system, user: str, model: str | None,
             diagnostic = _bounded_diagnostic(proc.stderr or proc.stdout)
             if any(marker in diagnostic.lower() for marker in _AUTH_FAILURE_MARKERS):
                 raise CodexCliError(
-                    "codex-cli authentication failed; run `codex login` with a "
+                    f"{failure_context}: authentication failed; run `codex login` with a "
                     f"ChatGPT subscription. Codex said: {diagnostic}"
                 )
             raise CodexCliError(
-                f"codex-cli exited {proc.returncode}: {diagnostic}"
+                f"{failure_context}: codex-cli exited {proc.returncode}: {diagnostic}"
             )
 
         if not result_path.exists():
             raise CodexCliError(
-                "codex-cli succeeded but its final result file is missing"
+                f"{failure_context}: final result file is missing"
             )
         result = result_path.read_text(encoding="utf-8")
         if not result.strip():
             raise CodexCliError(
-                "codex-cli succeeded but returned an empty final result"
+                f"{failure_context}: returned an empty final result"
             )
         return result
 
@@ -583,10 +683,12 @@ def _codex_cli_generate(*, system, user: str, model: str | None,
 class _CodexCliStream:
     """One-chunk context manager matching the Anthropic stream surface."""
 
-    def __init__(self, *, system, user: str, model: str | None):
+    def __init__(self, *, system, user: str, model: str | None,
+                 client: "_CodexCliClient"):
         self._system = system
         self._user = user
         self._model = model
+        self._client = client
         self._text = ""
 
     def __enter__(self):
@@ -594,6 +696,9 @@ class _CodexCliStream:
             system=self._system,
             user=self._user,
             model=self._model,
+            reasoning_effort=self._client.reasoning_effort,
+            reasoning_effort_source=self._client.reasoning_effort_source,
+            identity_sink=self._client._record_run_identity,
         )
         return self
 
@@ -633,7 +738,12 @@ class _CodexCliMessages:
             model=model, system=system, messages=messages, tools=tools
         )
         text = _codex_cli_generate(
-            system=system_text, user=user, model=selected_model
+            system=system_text,
+            user=user,
+            model=selected_model,
+            reasoning_effort=self._client.reasoning_effort,
+            reasoning_effort_source=self._client.reasoning_effort_source,
+            identity_sink=self._client._record_run_identity,
         )
         return _CodexCliResponse(text)
 
@@ -644,7 +754,10 @@ class _CodexCliMessages:
             model=model, system=system, messages=messages, tools=tools
         )
         return _CodexCliStream(
-            system=system_text, user=user, model=selected_model
+            system=system_text,
+            user=user,
+            model=selected_model,
+            client=self._client,
         )
 
 
@@ -668,16 +781,27 @@ class _CodexCliBrokeredMessages:
             system=developer_instructions,
             user=transcript,
             model=selected_model,
+            reasoning_effort=self._client.reasoning_effort,
+            reasoning_effort_source=self._client.reasoning_effort_source,
+            identity_sink=self._client._record_run_identity,
             output_schema=_BROKER_RESULT_SCHEMA,
         )
         return _brokered_response(raw)
 class _CodexCliClient:
     """Small Anthropic-shaped facade over ``codex exec`` subscription use."""
 
-    def __init__(self, model_override: str | None = None):
+    def __init__(self, model_override: str | None = None,
+                 reasoning_effort: CodexReasoningEffort | None = None,
+                 reasoning_effort_source: str | None = None):
         self.model_override = model_override
+        self.reasoning_effort = reasoning_effort
+        self.reasoning_effort_source = reasoning_effort_source
+        self.last_run_identity: CodexRunIdentity | None = None
         self.messages = _CodexCliMessages(self)
         self.brokered_messages = _CodexCliBrokeredMessages(self)
 
+    def _record_run_identity(self, identity: CodexRunIdentity) -> None:
+        self.last_run_identity = identity
 
-__all__ = ["CodexCliError", "_CodexCliClient"]
+
+__all__ = ["CodexCliError", "CodexRunIdentity", "_CodexCliClient"]

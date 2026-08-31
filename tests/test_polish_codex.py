@@ -8,8 +8,10 @@ allowed to mutate the working document.
 
 from __future__ import annotations
 
+import inspect
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 from campaignlib.api.codex_cli import _CodexCliClient
 from pipelines.ensemble import polish
@@ -57,13 +59,17 @@ def _run(
     responses: list[dict],
     *,
     max_iterations: int = 10,
+    reasoning_effort: str | None = None,
 ):
     fake = FakeCodexCli(tmp_path, responses=responses)
     fake.install(monkeypatch)
     ctx = _ctx(tmp_path)
     trace = polish.TraceWriter(tmp_path / "trace.jsonl")
     result = run_agent_loop(
-        _CodexCliClient(),
+        _CodexCliClient(
+            reasoning_effort=reasoning_effort,
+            reasoning_effort_source="explicit" if reasoning_effort else None,
+        ),
         system="You are a careful editor.",
         ctx=ctx,
         model="gpt-5-codex",
@@ -187,6 +193,45 @@ def test_codex_polish_honors_loop_limit_and_trace_usage_is_null(tmp_path, monkey
     assert response_event["input_tokens"] is None
     assert response_event["output_tokens"] is None
     assert fake.calls[0].structured is True
+
+
+def test_codex_polish_response_trace_records_actual_effort_provenance(tmp_path, monkeypatch):
+    response = FakeCodexCli.structured(
+        tool_calls=[_tool("finish", summary="Reviewed without edits.")],
+    )
+    _run(tmp_path, monkeypatch, [response], reasoning_effort="max")
+
+    events = [
+        json.loads(line)
+        for line in (tmp_path / "trace.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    response_event = next(event for event in events if event.get("event") == "response")
+    assert response_event["model"] == "gpt-5-codex"
+    assert response_event["codex_reasoning_effort"] == "max"
+    assert response_event["codex_reasoning_effort_source"] == "explicit"
+    assert response_event["codex_reasoning_override"] is True
+
+
+def test_polish_run_start_uses_effective_backend_for_reasoning_metadata():
+    source = inspect.getsource(polish.main)
+    assert 'if reasoning.backend == "codex-cli":' in source
+    assert 'if getattr(args, "backend", None) == "codex-cli":' not in source
+
+
+def test_non_codex_response_trace_schema_is_unchanged(tmp_path):
+    trace = polish.TraceWriter(tmp_path / "non-codex.jsonl")
+    trace.log_response(
+        1,
+        SimpleNamespace(
+            content=[],
+            stop_reason="end_turn",
+            usage=SimpleNamespace(input_tokens=1, output_tokens=2),
+        ),
+    )
+    trace.close()
+    event = json.loads((tmp_path / "non-codex.jsonl").read_text(encoding="utf-8"))
+    assert "codex_reasoning_effort" not in event
+    assert "model_source" not in event
 
 
 def test_codex_polish_mutates_only_parent_working_document(tmp_path, monkeypatch):

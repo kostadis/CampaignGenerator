@@ -41,6 +41,9 @@ interface Resolved {
   refusal: string | null
   batch: boolean
   batch_origin: string
+  codex_reasoning_effort: string | null
+  codex_reasoning_effort_origin: string
+  codex_reasoning_override: boolean
 }
 
 const resolved = ref<Resolved | null>(null)
@@ -51,6 +54,7 @@ const draftBackend = ref('')
 // A plain boolean can't express "defer" separately from "explicitly off" —
 // see ModelSelection.batch's `bool | null` (data-model.md's tier table).
 const draftBatch = ref<'' | 'on' | 'off'>('')
+const codexReasoning = ref('')
 const busy = ref(false)
 const error = ref('')
 
@@ -93,16 +97,23 @@ async function load() {
 async function loadOverride() {
   if (!props.canOverride) return
   try {
-    const sel = await apiFetch<{ model: string | null; backend: string | null; batch: boolean | null }>(
+    const sel = await apiFetch<{
+      model: string | null
+      backend: string | null
+      batch: boolean | null
+      codex_reasoning_effort: string | null
+    }>(
       `/api/${props.service}/selection`,
     )
     draftModel.value = sel.model || ''
     draftBackend.value = sel.backend || ''
     draftBatch.value = sel.batch === true ? 'on' : sel.batch === false ? 'off' : ''
+    codexReasoning.value = sel.codex_reasoning_effort || ''
   } catch {
     draftModel.value = ''
     draftBackend.value = ''
     draftBatch.value = ''
+    codexReasoning.value = ''
   }
 }
 
@@ -118,6 +129,7 @@ async function save() {
       model: draftModel.value.trim() || null,
       backend: draftBackend.value.trim() || null,
       batch: draftBatch.value === 'on' ? true : draftBatch.value === 'off' ? false : null,
+      codex_reasoning_effort: codexReasoning.value || null,
     })
     editing.value = false
     await load()
@@ -136,6 +148,7 @@ async function clearOverride() {
     draftModel.value = ''
     draftBackend.value = ''
     draftBatch.value = ''
+    codexReasoning.value = ''
     editing.value = false
     await load()
   } catch (e: any) {
@@ -157,13 +170,18 @@ async function clearBatchSelection() {
   busy.value = true
   error.value = ''
   try {
-    const current = await apiFetch<{ model: string | null; backend: string | null }>(
+    const current = await apiFetch<{
+      model: string | null
+      backend: string | null
+      codex_reasoning_effort: string | null
+    }>(
       `/api/${props.service}/selection`,
     )
     await apiPut(`/api/${props.service}/selection`, {
       model: current.model || null,
       backend: current.backend || null,
       batch: false,
+      codex_reasoning_effort: current.codex_reasoning_effort || null,
     })
     if (editing.value) draftBatch.value = 'off'
     await load()
@@ -193,7 +211,12 @@ function originLabel(origin: string): string {
 const hasOverride = computed(() =>
   resolved.value?.model_origin === 'service'
   || resolved.value?.backend_origin === 'service'
-  || resolved.value?.batch_origin === 'service',
+  || resolved.value?.batch_origin === 'service'
+  || resolved.value?.codex_reasoning_effort_origin === 'service',
+)
+
+const draftUsesCodex = computed(() =>
+  (draftBackend.value || resolved.value?.backend) === 'codex-cli',
 )
 
 // A batch selection that cannot be honoured populates `refusal` naming batch
@@ -222,7 +245,10 @@ const showDegradationNotice = computed(() =>
 onMounted(load)
 // The sidebar writes the platform tier, so a change there moves every
 // inheriting service's answer — re-resolve rather than showing a stale one.
-watch(() => [config.model, config.backend, config.batch, props.doc], load)
+watch(
+  () => [config.model, config.backend, config.batch, config.codexReasoningEffort, props.doc],
+  load,
+)
 </script>
 
 <template>
@@ -258,6 +284,13 @@ watch(() => [config.model, config.backend, config.batch, props.doc], load)
       <span class="pair">
         <code>{{ resolved.batch ? 'on' : 'off' }}</code>
         <span class="origin">{{ originLabel(resolved.batch_origin) }}</span>
+      </span>
+    </div>
+    <div v-if="resolved.backend === 'codex-cli'" class="row batch-row">
+      <span class="label">Reasoning</span>
+      <span class="pair">
+        <code>{{ resolved.codex_reasoning_effort || 'Codex default' }}</code>
+        <span class="origin">{{ originLabel(resolved.codex_reasoning_effort_origin) }}</span>
       </span>
     </div>
     <div class="batch-copy">
@@ -324,6 +357,21 @@ watch(() => [config.model, config.backend, config.batch, props.doc], load)
           <option value="on" :disabled="providerBatchUnsupported">On</option>
           <option value="off">Off</option>
         </select>
+      </label>
+      <label v-if="draftUsesCodex">
+        Codex reasoning
+        <select
+          v-model="codexReasoning"
+          :disabled="!config.codexReasoningEfforts.length"
+        >
+          <option value="">Codex default</option>
+          <option v-for="effort in config.codexReasoningEfforts" :key="effort" :value="effort">
+            {{ effort }}
+          </option>
+        </select>
+        <span class="field-help">
+          {{ config.codexReasoningCompatibilityError || 'Higher effort can take longer; model support varies.' }}
+        </span>
       </label>
       <button class="mini primary" :disabled="busy" @click="save">Save</button>
       <button class="mini" :disabled="busy" @click="editing = false">Cancel</button>

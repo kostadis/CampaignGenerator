@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT))
 
 from pipelines.ensemble import facts_to_state as fts  # noqa: E402
 from campaignlib import add_backend_args  # noqa: E402
+from campaignlib.api import client as client_mod  # noqa: E402
 from campaignlib.api.client import resolve_cli_model  # noqa: E402
 from campaignlib.registry import load_registry  # noqa: E402
 from pipelines.ensemble.synthesise_world_state import (  # noqa: E402
@@ -1026,3 +1027,26 @@ def test_missing_scene_index_does_not_break_ordering():
     b.add(62, _fact("event", "X", "no scene_index on this one"), "X")
     ((_ch, out),) = b.ordered()
     assert out.get("scene_index") is None
+
+
+def test_codex_reasoning_effort_parser_uses_shared_vocabulary():
+    parser = fts.build_parser()
+    action = next(
+        action
+        for action in parser._actions
+        if action.dest == "codex_reasoning_effort"
+    )
+    assert tuple(action.choices) == tuple(client_mod.CODEX_REASONING_EFFORTS)
+    args = parser.parse_args(
+        [
+            "--corpus",
+            "facts.json",
+            "--out-dir",
+            "out",
+            "--backend",
+            "codex-cli",
+            "--codex-reasoning-effort",
+            "max",
+        ]
+    )
+    assert args.codex_reasoning_effort == "max"

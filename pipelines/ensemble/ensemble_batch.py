@@ -36,6 +36,10 @@ from campaignlib import (  # noqa: E402
     resolve_source,
     route_plan,
 )
+from campaignlib.api.client import (  # noqa: E402
+    add_codex_reasoning_arg,
+    resolve_cli_reasoning,
+)
 from campaignlib.selection import BACKENDS  # noqa: E402
 
 ENSEMBLE = _CG_DIR / "ensemble.py"
@@ -105,6 +109,7 @@ def _build_parser():
                    help="LLM backend forwarded to ensemble.py -> ensemble_extract.py "
                         "-> extract_facts.py (default: dgx). This driver never builds "
                         "a client itself.")
+    add_codex_reasoning_arg(p)
     p.add_argument("--chunk-parallel", type=int, metavar="N",
                    help="In-flight chunk requests per endpoint (default: ensemble.py default)")
     p.add_argument("--pass-parallel", type=int, metavar="N",
@@ -163,6 +168,8 @@ def _build_ensemble_cmd(chapter: Path, workdir: Path, args,
     if args.model and args.model.strip():
         cmd += ["--model", args.model]
     cmd += ["--backend", args.backend]
+    if args.codex_reasoning_effort is not None:
+        cmd += ["--codex-reasoning-effort", args.codex_reasoning_effort]
     if args.samples is not None:
         cmd += ["--samples", str(args.samples)]
     if args.chunk_parallel is not None:
@@ -196,7 +203,12 @@ def _build_ensemble_cmd(chapter: Path, workdir: Path, args,
 
 
 def main():
-    args = _build_parser().parse_args()
+    parser = _build_parser()
+    args = parser.parse_args()
+    try:
+        resolve_cli_reasoning(args)
+    except ValueError as exc:
+        parser.error(str(exc))
 
     matched: set[Path] = set()
     for pattern in args.chapters:

@@ -1022,7 +1022,9 @@ class TestNoRouteBuildsFromIncompatibleBatchSelection:
         # no router does the wrong thing here.
         assert set(resolved.as_dict()) == {
             "model", "backend", "model_origin", "backend_origin",
-            "batch", "batch_origin", "compatible", "refusal",
+            "batch", "batch_origin",
+            "codex_reasoning_effort", "codex_reasoning_effort_origin",
+            "codex_reasoning_override", "compatible", "refusal",
         }
 
 

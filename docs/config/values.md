@@ -137,6 +137,7 @@ write).
 |---|---|---|
 | `runtime.default_model` | the sidebar MODEL picker's persisted choice; the platform tier of the one resolution rule (see below) | `PUT /runtime` → `PlatformConfigService.update_runtime` |
 | `runtime.default_backend` | the sidebar BACKEND toggle's persisted choice (feature 003). Before 003 that toggle wrote `session_doc.yaml`'s `backends.active` — the Session Doc Editor's own config — while MODEL wrote here: two controls presented as global, owned by different tiers. That asymmetry is why `grounding.py` read another service's document to find a backend. Migrated by `python -m server.migrate_default_backend` | `PUT /runtime` → `PlatformConfigService.update_runtime` |
+| `runtime.default_codex_reasoning_effort` | sidebar REASONING selector's Codex-only remembered choice. Null means “Codex default”; the saved value remains dormant when another backend is active | `PUT /runtime` → `PlatformConfigService.update_runtime` |
 | `runtime.session_dir` | `resolved()` session base for session-scoped paths (`resolve_path`/`relativize_path`, `base="session"`); also read by `SessionEditorConfigService.resolved_editor_config()` for `session_doc.yaml`'s session-based path fields. Loaded during `PlatformConfigService.__init__` | `PUT /runtime` → `PlatformConfigService.update_runtime`; boot `--session-dir` wins for process |
 
 ### The model/backend resolution rule (feature 003) — the single statement
@@ -148,6 +149,8 @@ remove, and five in prose would re-create the same drift one layer up.
 ```
 model   := request ?? service ?? platform.default_model  ?? DEFAULT_MODEL
 backend := request ?? service ?? platform.default_backend
+codex_reasoning_effort := request ?? service ?? platform.default_codex_reasoning_effort
+                          ?? CG_CODEX_REASONING_EFFORT ?? omitted
 ```
 
 Resolved once per run by `server/platform_config_service.py::resolve_selection`, which every one
@@ -191,7 +194,7 @@ route, and no `PUT /section/session_doc` shim, writes this file — see
 |---|---|
 | `paths.*` (session/campaign based) | `scene_editor.py` resolved paths for the narrate pipeline (via `Depends(get_editor_config)` → `ResolvedEditorConfig`) |
 | `narrate.tokens, prose_mode, reflections, genre, context[]` | `scene_editor.py` narrate knobs (also mirrored from `profiles` via `activate_profile`) |
-| `backends.active, backends.<b>.model, backends.<b>.endpoint, backends.<b>.batch` | `scene_editor._backend_flags`/`_model_args` (dgx/openrouter forward `--backend`/`--endpoint`/`--model`; anthropic/claude-code use the per-backend `model` override, else `runtime.default_model`; `batch` resolves through `resolve_selection`/`selection_cli_args`, 005-ui-batch-selection) and `grounding.py._backend_flags` (global sidebar backend selector for campaign_state/distill/party/planning runs) |
+| `backends.active, backends.<b>.model, backends.<b>.endpoint, backends.<b>.batch, backends.codex-cli.codex_reasoning_effort` | `scene_editor._backend_flags`/`_model_args` (dgx/openrouter forward `--backend`/`--endpoint`/`--model`; anthropic/claude-code use the per-backend `model` override, else `runtime.default_model`; `batch` and Codex effort resolve through `resolve_selection`/`selection_cli_args`) and `grounding.py._backend_flags` (global sidebar backend selector for campaign_state/distill/party/planning runs) |
 | `roster.gm_player, roster.characters` | `scene_editor.py` |
 | `profiles[], active_profile` | `scene_editor.py` profile endpoints; `active_profile` set by `activate_profile` |
 

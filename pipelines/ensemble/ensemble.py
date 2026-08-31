@@ -29,6 +29,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from campaignlib.api.client import add_codex_reasoning_arg, resolve_cli_reasoning
 from campaignlib.selection import BACKENDS
 
 HERE = Path(__file__).resolve().parent
@@ -106,6 +107,7 @@ def main() -> None:
              "token cost, asynchronous; blocks and polls until complete). "
              "Anthropic backend only. Unrelated to ensemble_batch (local "
              "dispatch).")
+    add_codex_reasoning_arg(parser)
     parser.add_argument("--skip", action="append", default=[], metavar="NAME",
                         help="Skip a named pass (can repeat).")
     parser.add_argument("--speculative", action=argparse.BooleanOptionalAction,
@@ -134,6 +136,10 @@ def main() -> None:
     parser.add_argument("--embed-threshold", type=float, default=None, metavar="COS",
                         help="Embedding cosine threshold override.")
     args = parser.parse_args()
+    try:
+        resolve_cli_reasoning(args)
+    except ValueError as exc:
+        parser.error(str(exc))
     # Validate before constructing either child command.  In particular, a
     # Codex provider-batch request must never spawn ensemble_extract.py.
     _check_provider_batch(args)
@@ -155,6 +161,11 @@ def main() -> None:
     if args.model and args.model.strip():
         extract_cmd += ["--model", args.model]
     extract_cmd += ["--backend", args.backend]
+    if args.codex_reasoning_effort is not None:
+        extract_cmd += [
+            "--codex-reasoning-effort",
+            args.codex_reasoning_effort,
+        ]
     if args.batch:
         extract_cmd += ["--batch"]
     for s in args.skip:

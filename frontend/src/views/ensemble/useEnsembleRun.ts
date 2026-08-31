@@ -117,6 +117,13 @@ export interface BackendProfile {
   // planning/editor), just scoped to one ensemble stage instead of one
   // service. See data-model.md's "Batch selection, by tier".
   batch: boolean | null
+  // Codex-only remembered value. Null is the deliberate "Codex default"
+  // omission; it stays on this stage profile while another backend is active.
+  codex_reasoning_effort: string | null
+}
+
+export function codexReasoningValue(profile: BackendProfile): string {
+  return profile.codex_reasoning_effort || ''
 }
 
 export interface EnsemblePaths {

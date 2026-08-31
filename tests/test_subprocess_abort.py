@@ -234,6 +234,23 @@ def test_save_run_log_success(tmp_workspace: Path) -> None:
     assert "duration" in body
 
 
+def test_codex_identity_line_survives_sse_and_markdown_log(tmp_workspace: Path) -> None:
+    from server.subprocess_runner import stream_subprocess
+
+    identity = (
+        "Codex run: model=gpt-5.6-sol (environment); "
+        "reasoning_effort=high (environment)"
+    )
+    cmd = [sys.executable, "-c", f"print({identity!r})"]
+
+    events = asyncio.run(_collect(stream_subprocess(cmd, cwd=str(tmp_workspace))))
+
+    assert any(identity in event for event in events)
+    logs = list((tmp_workspace / "logs").glob("*.md"))
+    assert len(logs) == 1
+    assert identity in logs[0].read_text(encoding="utf-8")
+
+
 def test_save_run_log_failure(tmp_workspace: Path) -> None:
     """Failure run writes a log with result=failed and a positive returncode."""
     cmd = [sys.executable, "-c", "import sys; print('fail output'); sys.exit(42)"]

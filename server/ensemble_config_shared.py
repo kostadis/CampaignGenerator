@@ -84,7 +84,7 @@ class EnsembleBackend(ModelSelection):
         be a latent trap for the first caller that does."""
         return (
             self.backend == "anthropic" and not self.model and not self.endpoints
-            and self.batch is None
+            and self.batch is None and self.codex_reasoning_effort is None
         )
 
 

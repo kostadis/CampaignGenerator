@@ -55,7 +55,11 @@ from campaignlib import (
     run_batch,
     stream_api,
 )
-from campaignlib.api.client import resolve_cli_model
+from campaignlib.api.client import (
+    add_codex_reasoning_arg,
+    resolve_cli_model,
+    resolve_cli_reasoning,
+)
 from campaignlib.selection import BACKENDS
 from campaignlib.registry import Registry, load_registry, resolve_registry_arg
 from .ensemble_merge import _norm_subject
@@ -1129,6 +1133,7 @@ def build_parser() -> argparse.ArgumentParser:
              "token cost, asynchronous; blocks and polls until complete). "
              "Anthropic backend only. Unrelated to ensemble_batch (local "
              "dispatch).")
+    add_codex_reasoning_arg(p)
     p.add_argument("--entity-parallel", type=int, default=None, metavar="N",
                    help="Number of entities to aggregate concurrently (default: one per endpoint). "
                         "Set higher than the endpoint count to parallelise on a single endpoint.")
@@ -1142,6 +1147,10 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
+    try:
+        resolve_cli_reasoning(args)
+    except ValueError as exc:
+        parser.error(str(exc))
     args.model = resolve_cli_model(
         args, legacy_default=None
     ).effective_model

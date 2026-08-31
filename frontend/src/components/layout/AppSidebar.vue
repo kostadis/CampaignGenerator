@@ -74,6 +74,12 @@ async function setModel(value: string) {
   })
 }
 
+async function setCodexReasoning(value: string) {
+  // Empty is the persisted omission state: let Codex choose its own default.
+  config.codexReasoningEffort = value as typeof config.codexReasoningEffort
+  await config.updateRuntime({ default_codex_reasoning_effort: value || null })
+}
+
 // Batch selector (app-wide, 005-ui-batch-selection). Platform tier, same
 // write path as backend/model above — PUT /api/config/runtime is the ONLY
 // app-wide write door (feature 003's design; this feature reuses it rather
@@ -243,6 +249,24 @@ function navigate(path: string) {
           Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)
         </div>
       </div>
+      <div v-if="currentBackend === 'codex-cli'" class="codex-reasoning-selector">
+        <label class="model-label">REASONING</label>
+        <select
+          :value="config.codexReasoningEffort"
+          class="model-select"
+          :disabled="!config.codexReasoningEfforts.length"
+          @change="setCodexReasoning(($event.target as HTMLSelectElement).value)"
+        >
+          <option value="">Codex default</option>
+          <option v-for="effort in config.codexReasoningEfforts" :key="effort" :value="effort">
+            {{ effort }}
+          </option>
+        </select>
+        <div class="batch-help">
+          {{ config.codexReasoningCompatibilityError || 'Higher effort can take longer; model support varies. gpt-5.6-sol supports max.' }}
+        </div>
+      </div>
+
       <div class="model-selector">
         <label class="model-label">MODEL</label>
         <input
@@ -365,6 +389,10 @@ function navigate(path: string) {
 }
 
 .batch-selector {
+  margin-bottom: 10px;
+}
+
+.codex-reasoning-selector {
   margin-bottom: 10px;
 }
 

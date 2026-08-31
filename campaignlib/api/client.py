@@ -7,7 +7,12 @@ from dataclasses import dataclass
 from .backends import _OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient
 from .codex_cli import _CodexCliClient
 from ..wiring import wiring_get
-from ..selection import BACKENDS, compatible
+from ..selection import (
+    BACKENDS,
+    CODEX_REASONING_EFFORTS,
+    CodexReasoningEffort,
+    compatible,
+)
 
 # Clients that accept the DGX-style `thinking` request extra (mapped per-backend
 # to the right knob: enable_thinking for vLLM, `reasoning` for OpenRouter,
@@ -36,6 +41,101 @@ class CLIModelIntent:
     explicit: bool
 
 
+@dataclass(frozen=True)
+class CLIReasoningIntent:
+    """Resolved Codex reasoning effort with truthful provenance."""
+
+    backend: str
+    requested_effort: CodexReasoningEffort | None
+    environment_effort: CodexReasoningEffort | None
+    effective_effort: CodexReasoningEffort | None
+    source: str
+    emit_override: bool
+
+
+def _effective_backend(args) -> str:
+    arg_backend = getattr(args, "backend", "anthropic")
+    if arg_backend and arg_backend != "anthropic":
+        return arg_backend
+    return os.environ.get("CG_BACKEND") or "anthropic"
+
+
+def _valid_codex_effort(value, *, source: str) -> CodexReasoningEffort:
+    if not isinstance(value, str) or not value or value.strip() != value:
+        accepted = ", ".join(CODEX_REASONING_EFFORTS)
+        raise ValueError(f"{source} must be one of: {accepted}")
+    if value not in CODEX_REASONING_EFFORTS:
+        accepted = ", ".join(CODEX_REASONING_EFFORTS)
+        raise ValueError(f"{source} value {value!r} must be one of: {accepted}")
+    return value
+
+
+def resolve_cli_reasoning(args) -> CLIReasoningIntent:
+    """Resolve explicit option, environment fallback, or Codex omission.
+
+    Server-side ``ResolvedSelection`` objects expose an environment preview but
+    intentionally set ``codex_reasoning_override`` false.  Treat that value as
+    ambient so the in-process Connection Graph path retains ``environment``
+    provenance instead of relabeling it as an explicit request.
+    """
+    backend = _effective_backend(args)
+    requested = getattr(args, "codex_reasoning_effort", None)
+    origin = getattr(args, "codex_reasoning_effort_origin", None)
+    override = getattr(args, "codex_reasoning_override", None)
+    if override is False and origin in {"environment", "omitted"}:
+        requested = None
+
+    if requested is not None:
+        effort = _valid_codex_effort(
+            requested, source="--codex-reasoning-effort"
+        )
+        if backend != "codex-cli":
+            raise ValueError(
+                "--codex-reasoning-effort applies only to --backend codex-cli; "
+                f"effective backend is {backend!r}"
+            )
+        return CLIReasoningIntent(
+            backend=backend,
+            requested_effort=effort,
+            environment_effort=None,
+            effective_effort=effort,
+            source="explicit",
+            emit_override=True,
+        )
+
+    if backend != "codex-cli":
+        return CLIReasoningIntent(
+            backend=backend,
+            requested_effort=None,
+            environment_effort=None,
+            effective_effort=None,
+            source="omitted",
+            emit_override=False,
+        )
+
+    raw_environment = os.environ.get("CG_CODEX_REASONING_EFFORT")
+    if raw_environment is None or not raw_environment.strip():
+        return CLIReasoningIntent(
+            backend=backend,
+            requested_effort=None,
+            environment_effort=None,
+            effective_effort=None,
+            source="omitted",
+            emit_override=False,
+        )
+    environment = _valid_codex_effort(
+        raw_environment.strip(), source="CG_CODEX_REASONING_EFFORT"
+    )
+    return CLIReasoningIntent(
+        backend=backend,
+        requested_effort=None,
+        environment_effort=environment,
+        effective_effort=environment,
+        source="environment",
+        emit_override=True,
+    )
+
+
 def resolve_cli_model(args, *, legacy_default: str | None) -> CLIModelIntent:
     """Resolve a CLI's model without losing omission versus explicit intent.
 
@@ -50,11 +150,7 @@ def resolve_cli_model(args, *, legacy_default: str | None) -> CLIModelIntent:
     constructed.  The check is delegated to the canonical selection seam so
     its case-insensitive Codex rule is shared with server resolution.
     """
-    arg_backend = getattr(args, "backend", "anthropic")
-    if arg_backend and arg_backend != "anthropic":
-        backend = arg_backend
-    else:
-        backend = os.environ.get("CG_BACKEND") or "anthropic"
+    backend = _effective_backend(args)
 
     requested = getattr(args, "model", None)
     explicit = isinstance(requested, str) and bool(requested.strip())
@@ -131,7 +227,9 @@ def _require_nonempty(text: str) -> str:
 
 
 def make_client(endpoint: str | None = None, model_override: str | None = None,
-                backend: str | None = None):
+                backend: str | None = None,
+                reasoning_effort: CodexReasoningEffort | None = None,
+                reasoning_effort_source: str | None = None):
     """Return an LLM client.
 
     Default: an Anthropic client (existing behaviour).
@@ -160,7 +258,11 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
     """
     backend = backend or os.environ.get("CG_BACKEND")
     if backend == "codex-cli":
-        return _CodexCliClient(model_override=model_override)
+        return _CodexCliClient(
+            model_override=model_override,
+            reasoning_effort=reasoning_effort,
+            reasoning_effort_source=reasoning_effort_source,
+        )
     if backend == "claude-code":
         return _ClaudeCodeClient(model_override=model_override)
     if backend == "openrouter":
@@ -191,6 +293,22 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
     # NOT checked here: see _require_anthropic_credential. Constructing a client
     # is not calling one — every --dump-only path builds a client it never uses.
     return anthropic.Anthropic()
+
+
+def add_codex_reasoning_arg(parser) -> None:
+    """Register the one Codex effort spelling used by every CLI surface."""
+    parser.add_argument(
+        "--codex-reasoning-effort",
+        choices=CODEX_REASONING_EFFORTS,
+        default=None,
+        help=(
+            "Codex CLI reasoning effort. Applies only to --backend codex-cli; "
+            "CG_CODEX_REASONING_EFFORT is the fallback. Omit to send no "
+            "CampaignGenerator override (Codex default). Model support varies; "
+            "gpt-5.6-sol supports max. Unsupported combinations fail without "
+            "downgrade or provider fallback."
+        ),
+    )
 
 
 def add_backend_args(parser, default_backend: str | None = "anthropic") -> None:
@@ -229,6 +347,7 @@ def add_backend_args(parser, default_backend: str | None = "anthropic") -> None:
              "token cost, asynchronous; blocks and polls until complete). "
              "Anthropic backend only. Unrelated to ensemble_batch (local "
              "dispatch).")
+    add_codex_reasoning_arg(parser)
 
 
 def client_from_args(args, *, endpoint: str | None = None):
@@ -251,6 +370,7 @@ def client_from_args(args, *, endpoint: str | None = None):
     ``CG_BACKEND=openrouter`` is caught too, not just an explicit
     ``--backend``.
     """
+    reasoning = resolve_cli_reasoning(args)
     if getattr(args, "batch", False):
         arg_backend = getattr(args, "backend", "anthropic")
         resolved_backend = (
@@ -267,8 +387,17 @@ def client_from_args(args, *, endpoint: str | None = None):
         "dgx", "openrouter", "claude-code", "codex-cli"
     ) else None
     resolved_endpoint = endpoint if endpoint is not None else getattr(args, "endpoint", None)
-    return make_client(backend=backend, endpoint=resolved_endpoint,
-                       model_override=model_override)
+    client_kwargs = {
+        "backend": backend,
+        "endpoint": resolved_endpoint,
+        "model_override": model_override,
+    }
+    if reasoning.backend == "codex-cli" and reasoning.effective_effort is not None:
+        client_kwargs.update(
+            reasoning_effort=reasoning.effective_effort,
+            reasoning_effort_source=reasoning.source,
+        )
+    return make_client(**client_kwargs)
 
 
 def _is_retryable(exc) -> bool:

@@ -191,3 +191,36 @@ def test_polish_batch_notice_only_under_batch(capsys):
     polish._warn_batch_unsupported(True)
     err = capsys.readouterr().err
     assert "--batch has no effect on polish.py" in err
+
+
+def test_ensemble_forwards_codex_reasoning_effort(monkeypatch, tmp_path):
+    captured = _run_ensemble(
+        monkeypatch,
+        tmp_path,
+        [
+            "--backend",
+            "codex-cli",
+            "--model",
+            "gpt-5.6-sol",
+            "--codex-reasoning-effort",
+            "max",
+        ],
+    )
+    assert captured
+    assert captured[0][captured[0].index("--codex-reasoning-effort") + 1] == "max"
+
+
+def test_ensemble_batch_forwards_codex_reasoning_effort(tmp_path):
+    args = _batch_args(
+        tmp_path,
+        "--backend",
+        "codex-cli",
+        "--model",
+        "gpt-5.6-sol",
+        "--codex-reasoning-effort",
+        "max",
+    )
+    cmd = ensemble_batch._build_ensemble_cmd(
+        Path(args.chapters[0]), tmp_path / "work", args
+    )
+    assert cmd[cmd.index("--codex-reasoning-effort") + 1] == "max"

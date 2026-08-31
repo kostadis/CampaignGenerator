@@ -863,7 +863,12 @@ def _editor_service_selection(cfg: ResolvedEditorConfig):
     # (`_selection_args`) and the preview (`get_editor_resolved_selection`).
     # Dropping it here would silently discard the operator's stored batch
     # choice from every editor run and its own preview alike.
-    return ModelSelection(backend=active, model=model, batch=prof.batch), endpoint
+    return ModelSelection(
+        backend=active,
+        model=model,
+        batch=prof.batch,
+        codex_reasoning_effort=prof.codex_reasoning_effort,
+    ), endpoint
 
 
 def _selection_args(request, cfg: ResolvedEditorConfig, *,
