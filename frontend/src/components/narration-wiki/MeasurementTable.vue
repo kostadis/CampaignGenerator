@@ -1,7 +1,14 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { MeasurementCheck } from '../../api/narrationWiki'
 
-defineProps<{ checks: MeasurementCheck[] }>()
+const props = defineProps<{ checks: MeasurementCheck[]; phase?: 'before' | 'after' | null }>()
+
+// Naming the phase keeps the table honest: after a proposal is applied these
+// rows are the comparison, not the baseline they are read against.
+const phaseLabel = computed(() =>
+  props.phase === 'after' ? ' — comparison' : props.phase === 'before' ? ' — baseline' : '',
+)
 
 function budget(check: MeasurementCheck): string {
   return check.budget
@@ -12,7 +19,7 @@ function budget(check: MeasurementCheck): string {
 
 <template>
   <section class="wiki-panel" aria-labelledby="measurement-heading">
-    <h3 id="measurement-heading">Measurement evidence</h3>
+    <h3 id="measurement-heading">Measurement evidence{{ phaseLabel }}</h3>
     <div class="wiki-resizable-panel measurement-scroll" tabindex="0">
       <table>
         <thead>

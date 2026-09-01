@@ -87,3 +87,62 @@ def test_cli_completes_atomic_proposal_rejection(tmp_path):
     )
     assert ruled.returncode == 0, ruled.stderr
     assert final_json(ruled)["decision"] == "reject"
+
+
+def test_status_carries_the_measurement_and_the_staged_diff(tmp_path):
+    """The Gate panels read from status, so status has to supply what they show.
+
+    The page bound a measurement table and a diff pane to fields the CLI never
+    emitted: the table always read "no measurement has been persisted yet" and
+    the diff pane never left its placeholder, while the e2e fixture supplied
+    both and passed.
+    """
+    scope = accepted_scope(tmp_path)
+    payload = final_json(run_cli(*_args(scope, "status")))
+    assert payload["measurement_phase"] == "before"
+    assert {row["key"] for row in payload["measurement_checks"]} == {
+        "shape_of", "portable_portrait", "taxonomy", "filing_sections", "bookkeeping_per_narrator", "em_dash",
+    }
+    # Occurrence rows are dropped so the bounded status envelope stays small.
+    assert all("occurrences" not in row for row in payload["measurement_checks"])
+    assert payload["staged_diff"] is None and payload["staged_diff_truncated"] is False
+
+    staged = run_cli(
+        *_args(scope, "proposal-stage"),
+        "--proposal-id", "proposal-001",
+        "--draft", "incoming/proposal.yaml",
+    )
+    assert staged.returncode == 0, staged.stderr
+    payload = final_json(run_cli(*_args(scope, "status")))
+    diff = (scope.iteration_root / "proposals" / "proposal-001" / "change.diff").read_text()
+    assert payload["staged_diff"] == diff
+    assert payload["staged_diff_truncated"] is False
+
+
+def test_recover_is_reachable_and_resolves_a_written_journal(tmp_path):
+    """Recovery had no caller: a stuck iteration reported needs_attention forever.
+
+    _status re-implemented a read-only view of the same journals and told the GM
+    to inspect hashes, but no command performed the repair.
+    """
+    scope = prepared_scope(tmp_path)
+    ruled = run_cli(
+        *_args(scope, "conflict-rule"),
+        "--conflict-id", "seed-voice",
+        "--resolution", "Use campaign source",
+        "--rationale", "The campaign owns named guidance",
+    )
+    assert ruled.returncode == 0, ruled.stderr
+    journal = sorted((scope.iteration_root / "transactions").glob("*.json"))[0]
+    value = json.loads(journal.read_text())
+    value["state"] = "target_done"
+    value["next_action"] = "verify_targets"
+    journal.write_text(json.dumps(value, sort_keys=True, indent=2) + "\n")
+
+    assert final_json(run_cli(*_args(scope, "status")))["recovery"] is not None
+    recovered = run_cli(*_args(scope, "recover"))
+    assert recovered.returncode == 0, recovered.stderr
+    payload = final_json(recovered)
+    assert payload["resolved"] is True and payload["outstanding"] is None
+    assert json.loads(journal.read_text())["state"] == "committed"
+    assert final_json(run_cli(*_args(scope, "status")))["recovery"] is None

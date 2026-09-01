@@ -38,7 +38,10 @@ export interface WikiStatus extends WikiScope {
     state: string
     next_action: string
   }
-  measurement_checks?: MeasurementCheck[]
+  measurement_phase: 'before' | 'after' | null
+  measurement_checks: MeasurementCheck[]
+  staged_diff: string | null
+  staged_diff_truncated: boolean
 }
 
 export interface MeasurementCheck {
@@ -71,7 +74,7 @@ export async function fetchWikiStatus(scope: WikiScope, signal?: AbortSignal): P
 
 export function runWikiAction(
   action: 'collect' | 'measure' | 'index-check' | 'conflict-rule' | 'pattern-rule'
-    | 'proposal-stage' | 'proposal-apply' | 'proposal-rule',
+    | 'proposal-stage' | 'proposal-apply' | 'proposal-rule' | 'recover',
   body: Record<string, unknown>,
   callbacks: PostSSECallbacks,
   signal?: AbortSignal,

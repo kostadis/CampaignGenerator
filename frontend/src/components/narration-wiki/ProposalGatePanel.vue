@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-defineProps<{ activeProposalId: string | null; diff?: string; disabled?: boolean }>()
+defineProps<{ activeProposalId: string | null; diff?: string; truncated?: boolean; disabled?: boolean }>()
 const emit = defineEmits<{
   stage: [payload: { proposal_id: string; draft_relative: string; override_rationale: string | null }]
   apply: [proposalId: string]
@@ -26,6 +26,9 @@ const overrideRationale = ref('')
         </button>
       </div>
       <pre class="complete-diff">{{ diff || 'The complete non-wrapping staged diff will appear here.' }}</pre>
+      <p v-if="truncated" class="diff-truncated">
+        Diff truncated in transport. Read <code>proposals/{{ activeProposalId }}/change.diff</code> for the complete change before ruling.
+      </p>
       <div v-if="activeProposalId" class="actions">
         <button class="btn-primary" :disabled="disabled" @click="emit('apply', activeProposalId)">Apply for comparison</button>
         <button class="btn-success" :disabled="disabled" @click="emit('rule', { proposal_id: activeProposalId, decision: 'accept' })">Accept change</button>
@@ -41,5 +44,6 @@ h3 { font-size: 12px; margin-bottom: 8px; }
 label { display: block; color: var(--text-sub); font-size: 11px; margin-bottom: 8px; }
 input, textarea { display: block; width: 100%; margin-top: 4px; padding: 6px 8px; border: 1px solid var(--bg-surface1); border-radius: 4px; background: var(--bg-base); color: var(--text); font: 11px var(--mono); }
 .complete-diff { min-width: max-content; margin: 12px 0; padding: 10px; background: var(--bg-crust); color: var(--text-sub); font: 11px/1.45 var(--mono); white-space: pre; }
+.diff-truncated { margin-bottom: 12px; color: var(--peach); font-size: 11px; }
 .actions { display: flex; gap: 8px; min-width: 520px; }
 </style>

@@ -20,7 +20,7 @@ test('reloads disk status after nonzero completion and AbortController cancellat
     return route.fulfill({ json: recoveryStatus })
   })
   await page.getByRole('button', { name: 'Collect' }).click()
-  await expect(page.getByRole('alert')).toContainText('category 5')
+  await expect(page.getByRole('alert')).toContainText('code 5')
   expect(statusRequests).toBeGreaterThan(0)
 
   await page.getByRole('button', { name: 'Apply for comparison' }).click()

@@ -19,13 +19,20 @@ from .storage import (
     read_json,
     record_conflict_ruling,
     record_pattern_ruling,
+    recover_transactions,
 )
 
 
 PUBLIC_COMMANDS = (
     "status", "collect", "measure", "index-check", "conflict-rule",
     "pattern-rule", "proposal-stage", "proposal-apply", "proposal-rule",
+    "recover",
 )
+
+# The status envelope is size-bounded at the process boundary, so a very large
+# staged diff is delivered truncated with the flag set rather than not at all.
+STAGED_DIFF_LIMIT = 120_000
+MEASUREMENT_CHECK_FIELDS = ("key", "scope", "subject", "observed", "budget", "verdict", "reason")
 
 
 class Parser(argparse.ArgumentParser):
@@ -46,7 +53,7 @@ def build_parser() -> Parser:
     parser = Parser(description=__doc__, allow_abbrev=False)
     commands = parser.add_subparsers(dest="command", required=True, parser_class=Parser)
     common = _scope_parser()
-    for name in ("status", "collect", "index-check"):
+    for name in ("status", "collect", "index-check", "recover"):
         commands.add_parser(name, parents=[common], allow_abbrev=False)
     command = commands.add_parser("measure", parents=[common], allow_abbrev=False)
     command.add_argument("--phase", required=True, choices=("before", "after"))
@@ -72,6 +79,38 @@ def build_parser() -> Parser:
     command.add_argument("--proposal-id", required=True)
     command.add_argument("--decision", required=True, choices=("accept", "reject"))
     return parser
+
+
+def _measurement_view(scope: Any, active: str | None) -> tuple[list[dict[str, Any]], str | None]:
+    """Return the persisted checks the GM is currently ruling against.
+
+    Occurrence rows are dropped: the reader is a one-row-per-check table, and the
+    status envelope has to stay inside the process boundary's output bound.
+    """
+    candidates: list[tuple[str, Path]] = []
+    if active:
+        candidates.append(("after", scope.iteration_root / "proposals" / active / "measurement-after.json"))
+    candidates.append(("before", scope.iteration_root / "measurement-before.json"))
+    for phase, path in candidates:
+        if not path.is_file():
+            continue
+        rows = read_json(path).get("checks", [])
+        return [
+            {field: row.get(field) for field in MEASUREMENT_CHECK_FIELDS}
+            for row in rows if isinstance(row, dict)
+        ], phase
+    return [], None
+
+
+def _staged_diff(scope: Any, active: str | None) -> tuple[str | None, bool]:
+    """Return the staged diff so Gate 2 rules on the change, not on its hash."""
+    if not active:
+        return None, False
+    path = scope.iteration_root / "proposals" / active / "change.diff"
+    if not path.is_file():
+        return None, False
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return text[:STAGED_DIFF_LIMIT], len(text) > STAGED_DIFF_LIMIT
 
 
 def _status(scope: Any) -> dict[str, Any]:
@@ -115,6 +154,8 @@ def _status(scope: Any) -> dict[str, Any]:
     state = str(iteration.get("state", "new"))
     if recovery:
         state = "needs_attention" if recovery["state"] == "needs_attention" else state
+    measurement_checks, measurement_phase = _measurement_view(scope, active)
+    staged_diff, staged_diff_truncated = _staged_diff(scope, active)
     return {
         "iteration_id": scope.iteration_id,
         "state": state,
@@ -124,6 +165,10 @@ def _status(scope: Any) -> dict[str, Any]:
         "active_proposal_id": active,
         "dependency": load_companion_capability(scope.portable_root),
         "recovery": recovery,
+        "measurement_phase": measurement_phase,
+        "measurement_checks": measurement_checks,
+        "staged_diff": staged_diff,
+        "staged_diff_truncated": staged_diff_truncated,
     }
 
 
@@ -152,6 +197,10 @@ def _dispatch(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
     elif command == "index-check":
         result = index_check(scope)
         return result, 0 if result["valid"] else 5
+    elif command == "recover":
+        outstanding = recover_transactions(scope)
+        result = {"resolved": outstanding is None, "outstanding": outstanding}
+        return result, 0 if outstanding is None else 4
     elif command == "conflict-rule":
         result = record_conflict_ruling(scope, args.conflict_id, args.resolution, args.rationale)
     elif command == "pattern-rule":

@@ -50,3 +50,27 @@ def test_stage_refuses_unauthorized_multi_target_and_stale_drafts(tmp_path, fixt
     shutil.copy2(PROPOSALS / fixture, incoming / fixture)
     with pytest.raises(Exception):
         stage_proposal(scope, f"proposal-{fixture.split('.')[0]}", f"incoming/{fixture}")
+
+
+def test_a_failed_stage_leaves_the_proposal_id_reusable(tmp_path, monkeypatch):
+    """Staging failure must not permanently burn the proposal ID.
+
+    The staging writes created proposals/<id>/ before the live-target race check,
+    and the guard at the top of stage_proposal then refused every retry -- with no
+    verb anywhere that removes a half-staged proposal.
+    """
+    import session_doc.narration_wiki.proposals as proposals
+
+    scope = accepted_scope(tmp_path)
+
+    def out_of_space(*_args, **_kwargs):
+        raise OSError("no space left on device")
+
+    monkeypatch.setattr(proposals, "write_json", out_of_space)
+    with pytest.raises(OSError, match="no space left"):
+        stage_proposal(scope, "proposal-001", "incoming/proposal.yaml")
+    monkeypatch.undo()
+
+    root = scope.iteration_root / "proposals"
+    assert list(root.iterdir()) == []
+    assert stage_proposal(scope, "proposal-001", "incoming/proposal.yaml")["state"] == "staged"

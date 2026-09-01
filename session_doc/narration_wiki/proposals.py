@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import difflib
 import json
+import os
 import re
+import shutil
 from dataclasses import replace
 from pathlib import Path
 from typing import Any, Iterable, Mapping
@@ -225,14 +227,26 @@ def stage_proposal(
         proposal_fingerprint=fingerprint,
         reconsideration=reconsideration,
     )
-    write_bytes(root / "draft.yaml", source.read_bytes())
-    write_bytes(root / "candidate", after)
-    write_bytes(root / "before.snapshot", before)
-    write_bytes(root / "after.snapshot", after)
-    write_bytes(root / "change.diff", diff.encode("utf-8"))
-    write_json(root / "proposal.json", proposal.to_dict())
-    if target.read_bytes() != before:
-        raise StateError("proposal staging changed or raced with the live target")
+    # Staging lands in a sibling directory and is renamed into place only once
+    # the live target has been re-checked.  Writing straight into `root` created
+    # the proposal directory before that check, so a lost race left a half-staged
+    # directory that made every retry of the same ID refuse.
+    staging = root.with_name(f".{proposal_id}.staging")
+    shutil.rmtree(staging, ignore_errors=True)
+    try:
+        write_bytes(staging / "draft.yaml", source.read_bytes())
+        write_bytes(staging / "candidate", after)
+        write_bytes(staging / "before.snapshot", before)
+        write_bytes(staging / "after.snapshot", after)
+        write_bytes(staging / "change.diff", diff.encode("utf-8"))
+        write_json(staging / "proposal.json", proposal.to_dict())
+        if target.read_bytes() != before:
+            raise StateError("proposal staging changed or raced with the live target")
+        root.parent.mkdir(parents=True, exist_ok=True)
+        os.rename(staging, root)
+    except BaseException:
+        shutil.rmtree(staging, ignore_errors=True)
+        raise
     iteration.state = "proposal_staged"
     iteration.active_proposal_id = proposal_id
     save_iteration(scope, iteration)

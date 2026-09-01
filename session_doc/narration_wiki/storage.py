@@ -89,7 +89,11 @@ def _file_hash(path: Path) -> str | None:
 
 def _transaction_id(scope: CampaignScope, operation: str, subject: str) -> str:
     raw = f"{scope.iteration_id}-{operation}-{subject}".replace("_", "-")
-    return require_stable_id(raw[:64], "transaction-id")
+    if len(raw) > 64:
+        # Bare truncation lets two subjects sharing a 64-character prefix write
+        # the same journal, so the earlier mutation loses its audit record.
+        raw = f"{raw[:52]}-{sha256_bytes(raw.encode('utf-8'))[:11]}"
+    return require_stable_id(raw, "transaction-id")
 
 
 def _relative_artifact(scope: CampaignScope, path: Path) -> str:
@@ -289,7 +293,9 @@ def record_pattern_ruling(
     if decision == "accept" and tier == "portable" and draft.mentions_campaign_identity:
         if not named_portable_override or not str(rationale or "").strip():
             raise ValidationError("named portable placement requires explicit override and rationale")
-    refs = [ruled[key] for key in sorted(draft.conflict_ids)]
+    # Only an acceptance is blocked by an open conflict, so a rejection cites
+    # the rulings that exist rather than raising KeyError on the ones that do not.
+    refs = [ruled[key] for key in sorted(draft.conflict_ids) if key in ruled]
     ruling = Gate1Ruling(
         subject_id=slug,
         ruling="accepted" if decision == "accept" else "rejected",

@@ -96,3 +96,37 @@ def test_atomic_write_text_cleans_up_tmp_on_failure(tmp_path):
 
     assert target.read_text() == "original"
     assert list(tmp_path.iterdir()) == [target]
+
+
+def test_atomic_write_bytes_never_closes_the_descriptor_fdopen_owns(tmp_path, monkeypatch):
+    """A failed replace must not close a number the runtime may have reissued.
+
+    os.fdopen takes ownership of the descriptor, so the context manager has
+    already closed it by the time the failure handler runs. Closing the raw
+    number a second time inside the threadpooled server can reach another
+    request's open file or socket rather than harmlessly raising EBADF.
+    """
+    target = tmp_path / "binary.dat"
+    temp_fds: list[int] = []
+    closed_fds: list[int] = []
+    real_open, real_close = os.open, os.close
+
+    def spy_open(path, flags, mode=0o777, **kwargs):
+        fd = real_open(path, flags, mode, **kwargs)
+        if str(path).endswith(f".tmp.{os.getpid()}"):
+            temp_fds.append(fd)
+        return fd
+
+    def spy_close(fd):
+        closed_fds.append(fd)
+        return real_close(fd)
+
+    monkeypatch.setattr("campaignlib.util.os.open", spy_open)
+    monkeypatch.setattr("campaignlib.util.os.close", spy_close)
+    monkeypatch.setattr("campaignlib.util.os.replace", lambda *_: (_ for _ in ()).throw(OSError("boom")))
+
+    with pytest.raises(OSError, match="boom"):
+        atomic_write_bytes(target, b"payload")
+
+    assert temp_fds, "the temporary file was never opened"
+    assert not set(closed_fds) & set(temp_fds)

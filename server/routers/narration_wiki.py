@@ -17,7 +17,7 @@ from server.subprocess_runner import (
     sse_error_stream,
     stream_subprocess,
 )
-from session_doc.narration_wiki.models import canonical_json, require_stable_id
+from session_doc.narration_wiki.models import NarrationWikiError, canonical_json, require_stable_id
 from session_doc.narration_wiki.paths import campaign_identity
 
 
@@ -42,7 +42,13 @@ class ScopeRequest(BaseModel):
     @field_validator("iteration_id")
     @classmethod
     def stable_iteration(cls, value: str) -> str:
-        return require_stable_id(value, "iteration-id")
+        # Pydantic converts only ValueError/AssertionError into a ValidationError.
+        # A raw NarrationWikiError escapes the model and becomes a 500, so a
+        # malformed iteration ID would be reported as a server fault.
+        try:
+            return require_stable_id(value, "iteration-id")
+        except NarrationWikiError as exc:
+            raise ValueError(str(exc)) from exc
 
     @field_validator("session_relative")
     @classmethod
@@ -169,6 +175,7 @@ def build_command(scope: ScopeRequest, command: str) -> list[str]:
     if command not in {
         "status", "collect", "measure", "index-check", "conflict-rule",
         "pattern-rule", "proposal-stage", "proposal-apply", "proposal-rule",
+        "recover",
     }:
         raise ValueError("unsupported narration-wiki command")
     base = _base_command(scope)
@@ -215,12 +222,15 @@ async def status(
     session_relative: Annotated[str, Query(min_length=1)],
     iteration_id: Annotated[str, Query(min_length=1)],
 ):
-    scope = ScopeRequest(
-        campaign_id=campaign_id,
-        session_relative=session_relative,
-        iteration_id=iteration_id,
-    )
     try:
+        # Built inside the try: pydantic's ValidationError is a ValueError, and
+        # constructing the model above the handler turned every malformed query
+        # value into a 500 instead of the 400 this route already renders.
+        scope = ScopeRequest(
+            campaign_id=campaign_id,
+            session_relative=session_relative,
+            iteration_id=iteration_id,
+        )
         campaign = _campaign_root(request, scope)
         return await run_bounded_json(
             build_command(scope, "status"),
@@ -253,6 +263,11 @@ async def measure(request: Request, body: MeasureRequest):
 @router.post("/index-check")
 async def index_check(request: Request, body: ScopeRequest):
     return _stream(request, body, build_command(body, "index-check"))
+
+
+@router.post("/recover")
+async def recover(request: Request, body: ScopeRequest):
+    return _stream(request, body, build_command(body, "recover"))
 
 
 @router.post("/conflict-rule")

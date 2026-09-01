@@ -22,7 +22,17 @@ def atomic_write_bytes(path: Path | str, data: bytes) -> None:
     tmp = path.with_name(f"{path.name}.tmp.{os.getpid()}")
     fd = os.open(tmp, os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o600)
     try:
-        with os.fdopen(fd, "wb") as handle:
+        handle = os.fdopen(fd, "wb")
+    except BaseException:
+        os.close(fd)
+        tmp.unlink(missing_ok=True)
+        raise
+    # From here the wrapper owns fd and closes it exactly once.  Closing the
+    # raw number again after a failed os.replace() would reach whatever the
+    # runtime has since reissued it to -- another open file or socket in this
+    # same process, since the server runs these writes in a threadpool.
+    try:
+        with handle:
             handle.write(data)
             handle.flush()
             os.fsync(handle.fileno())
@@ -37,10 +47,6 @@ def atomic_write_bytes(path: Path | str, data: bytes) -> None:
             # Directory fsync is unavailable on a few supported filesystems.
             pass
     except BaseException:
-        try:
-            os.close(fd)
-        except OSError:
-            pass
         try:
             tmp.unlink(missing_ok=True)
         except OSError:

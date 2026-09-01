@@ -209,8 +209,15 @@ def load_companion_capability(portable_root: Path) -> dict[str, Any]:
     }
 
 
-def _audit_tier(root: Path, tier: str) -> tuple[dict[str, PatternDraft], list[str]]:
+def _audit_tier(root: Path, tier: str) -> tuple[dict[str, PatternDraft], set[str], list[str]]:
+    """Return every parsed page, the subset that is confirmed canon, and problems.
+
+    The two sets differ on purpose.  Index cross-checks run against every page on
+    disk, but only a page that raised no problem of its own may authorize a
+    guidance change -- a pending or mis-tiered page never passed Gate 1.
+    """
     pages: dict[str, PatternDraft] = {}
+    confirmed: set[str] = set()
     problems: list[str] = []
     patterns = root / "patterns"
     if patterns.is_dir():
@@ -218,12 +225,16 @@ def _audit_tier(root: Path, tier: str) -> tuple[dict[str, PatternDraft], list[st
             try:
                 draft = parse_pattern_page(path, expected_slug=path.stem)
                 metadata, _ = _frontmatter(path)
+                page_problems: list[str] = []
                 if metadata.get("tier") != tier:
-                    problems.append(f"{tier}: tier mismatch in {path.name}")
+                    page_problems.append(f"{tier}: tier mismatch in {path.name}")
                 if metadata.get("status") != "confirmed":
-                    problems.append(f"{tier}: unresolved promotion state in {path.name}")
+                    page_problems.append(f"{tier}: unresolved promotion state in {path.name}")
                 if draft.slug in pages:
-                    problems.append(f"{tier}: duplicate slug {draft.slug}")
+                    page_problems.append(f"{tier}: duplicate slug {draft.slug}")
+                problems.extend(page_problems)
+                if not page_problems:
+                    confirmed.add(draft.slug)
                 pages[draft.slug] = draft
             except ValidationError as exc:
                 problems.append(f"{tier}: {exc}")
@@ -244,15 +255,16 @@ def _audit_tier(root: Path, tier: str) -> tuple[dict[str, PatternDraft], list[st
             problems.append(f"{tier}: page {slug} is absent from index")
     if len(links) != len(set(links)):
         problems.append(f"{tier}: duplicate index slug")
-    return pages, problems
+    return pages, confirmed, problems
 
 
 def index_check(scope: CampaignScope) -> dict[str, Any]:
-    campaign, problems = _audit_tier(scope.campaign_wiki_root, "campaign")
+    campaign, confirmed, problems = _audit_tier(scope.campaign_wiki_root, "campaign")
     dependency = load_companion_capability(scope.portable_root)
     portable: dict[str, PatternDraft] = {}
     if dependency["compatible"]:
-        portable, portable_problems = _audit_tier(scope.portable_root, "portable")
+        portable, portable_confirmed, portable_problems = _audit_tier(scope.portable_root, "portable")
+        confirmed |= portable_confirmed
         problems.extend(portable_problems)
     collisions = sorted(set(campaign) & set(portable))
     problems.extend(f"cross-tier duplicate slug: {slug}" for slug in collisions)
@@ -269,6 +281,7 @@ def index_check(scope: CampaignScope) -> dict[str, Any]:
         "problems": sorted(problems),
         "campaign_slugs": sorted(campaign),
         "portable_slugs": sorted(portable),
+        "confirmed_slugs": sorted(confirmed),
         "pending_portable_sync": pending,
         "dependency": dependency,
     }
@@ -278,4 +291,4 @@ def visible_confirmed_slugs(scope: CampaignScope) -> set[str]:
     result = index_check(scope)
     # Index problems do not silently grant eligibility.  Valid individual
     # confirmed pages remain visible when only the companion dependency is absent.
-    return set(result["campaign_slugs"]) | set(result["portable_slugs"])
+    return set(result["confirmed_slugs"])

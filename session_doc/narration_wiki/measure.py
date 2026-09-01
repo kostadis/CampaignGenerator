@@ -61,7 +61,10 @@ def _occurrences(text: str, expression: re.Pattern[str], path: str, narrator: st
                 "path": path,
                 "line": line_number,
                 "section": section,
-                "narrator": section or narrator,
+                # The manifest declares the narrator.  Reading one off a scene
+                # heading is an identity assertion by similarity, and it filed
+                # every "## ..." in a document as a separate speaker.
+                "narrator": narrator,
                 "matched": match.group(0),
             })
     return rows
@@ -106,8 +109,8 @@ def _maximal_reuse(documents: list[tuple[str, str | None, str]]) -> list[dict[st
     phrase_sites: dict[tuple[str, ...], list[dict[str, Any]]] = defaultdict(list)
     phrase_narrators: dict[tuple[str, ...], set[str]] = defaultdict(set)
     for path, narrator, text in documents:
-        for line_number, line, section in _eligible_lines(text):
-            effective_narrator = section or narrator or "unknown"
+        for line_number, line, _section in _eligible_lines(text):
+            effective_narrator = narrator or "unknown"
             words = WORD_RE.findall(line)
             normalized = [word.casefold() for word in words]
             for size in range(3, min(12, len(words)) + 1):
@@ -149,7 +152,12 @@ def _load_corpus(scope: CampaignScope, manifest: dict[str, Any]) -> list[tuple[s
         if artifact is None:
             raise ValidationError(f"measurement corpus path is absent from manifest: {relative}")
         path = scope.session_root / relative
-        raw = path.read_bytes()
+        try:
+            raw = path.read_bytes()
+        except FileNotFoundError as exc:
+            raise StateError(f"source corpus drifted after collection: {relative}") from exc
+        except OSError as exc:
+            raise StateError(f"measurement corpus cannot be read: {relative}") from exc
         digest = sha256_bytes(raw)
         if digest != artifact.get("sha256"):
             raise StateError(f"source corpus drifted after collection: {relative}")
@@ -207,6 +215,20 @@ def _checks(corpus: list[tuple[str, str | None, str, str]], config: Any) -> list
     return sorted(rows, key=lambda row: (row["key"], row["scope"], row["subject"] or ""))
 
 
+def _has_bound_ruling(scope: CampaignScope) -> bool:
+    """Report whether any persisted ruling is already bound to this baseline.
+
+    A conflict ruling records the baseline hash exactly as a pattern ruling does,
+    but it lands in conflict-rulings.json -- so reading gate1.json alone let the
+    baseline be rewritten underneath every ConflictRuling.baseline it had bound.
+    """
+    for name in ("gate1.json", "conflict-rulings.json"):
+        path = scope.iteration_root / name
+        if path.exists() and read_json(path).get("rulings"):
+            return True
+    return False
+
+
 def measure(scope: CampaignScope, phase: str, proposal_id: str | None = None) -> dict[str, Any]:
     if phase not in {"before", "after"}:
         raise ValidationError("measurement phase must be before or after")
@@ -257,11 +279,8 @@ def measure(scope: CampaignScope, phase: str, proposal_id: str | None = None) ->
         cross_narrator_reuse=_maximal_reuse([(path, narrator, text) for path, narrator, text, _ in corpus]),
     )
     encoded = canonical_json(snapshot.to_dict()).encode("utf-8")
-    gate1_path = scope.iteration_root / "gate1.json"
-    if phase == "before" and output.exists() and gate1_path.exists():
-        gate1 = read_json(gate1_path)
-        if gate1.get("rulings") and output.read_bytes() != encoded:
-            raise StateError("baseline drift after a Gate 1 ruling requires a new iteration")
+    if phase == "before" and output.exists() and _has_bound_ruling(scope) and output.read_bytes() != encoded:
+        raise StateError("baseline drift after a Gate 1 ruling requires a new iteration")
     write_json(output, snapshot.to_dict())
     if phase == "before":
         iteration.state = "measured_before"

@@ -17,7 +17,6 @@ const running = ref(false)
 const output = ref('')
 const command = ref('')
 const error = ref('')
-const stagedDiff = ref('')
 let controller: AbortController | null = null
 
 const scope = computed<WikiScope>(() => ({
@@ -27,6 +26,9 @@ const scope = computed<WikiScope>(() => ({
 }))
 const scopeReady = computed(() => Object.values(scope.value).every(Boolean))
 const firstConflict = computed(() => status.value?.unresolved_conflict_ids[0] ?? null)
+// The staged diff comes from disk with the rest of the status, which reloads
+// after every action -- so staging a proposal shows the GM the change itself.
+const stagedDiff = computed(() => status.value?.staged_diff ?? '')
 
 function basename(path: string): string {
   return path.replace(/[\\/]+$/, '').split(/[\\/]/).pop() ?? ''
@@ -45,12 +47,15 @@ function initialSelection() {
   }
 }
 
-async function reloadStatus() {
+async function reloadStatus(keepError = false) {
   if (!scopeReady.value) return
   loadingStatus.value = true
   try {
     status.value = await fetchWikiStatus(scope.value)
-    error.value = ''
+    // A reload must not erase the reason the action before it failed.  Clearing
+    // unconditionally left the refusal on screen only for the length of this
+    // fetch -- about ten milliseconds -- so the GM never got to read it.
+    if (!keepError) error.value = ''
   } catch (reason) {
     status.value = null
     error.value = reason instanceof Error ? reason.message : String(reason)
@@ -71,7 +76,7 @@ async function run(action: Parameters<typeof runWikiAction>[0], fields: Record<s
       onCommand(value) { command.value = value },
       onData(value) { output.value += value },
       onDone(returncode, detail) {
-        if (returncode !== 0) error.value = detail ?? `Command exited with category ${returncode}`
+        if (returncode !== 0) error.value = detail ?? `Command exited with code ${returncode}`
       },
       onError(reason) { error.value = reason.message },
     }, controller.signal)
@@ -82,7 +87,7 @@ async function run(action: Parameters<typeof runWikiAction>[0], fields: Record<s
   } finally {
     running.value = false
     controller = null
-    await reloadStatus()
+    await reloadStatus(error.value !== '')
   }
 }
 
@@ -103,7 +108,7 @@ onBeforeUnmount(cancel)
     <header class="page-header">
       <div><h2>Narration Wiki</h2><p>Collect evidence, review durable lessons, and decide each guidance change at two human Gates.</p></div>
       <div class="header-actions">
-        <button class="btn-neutral" :disabled="!scopeReady || loadingStatus || running" @click="reloadStatus">Reload status</button>
+        <button class="btn-neutral" :disabled="!scopeReady || loadingStatus || running" @click="reloadStatus()">Reload status</button>
         <button class="btn-neutral" :disabled="!running" @click="cancel">Cancel running action</button>
       </div>
     </header>
@@ -153,17 +158,19 @@ onBeforeUnmount(cancel)
         <button class="btn-primary" :disabled="!scopeReady || running" @click="run('collect')">Collect</button>
         <button class="btn-primary" :disabled="!scopeReady || running" @click="run('measure', { phase: 'before', proposal_id: null })">Measure baseline</button>
         <button class="btn-neutral" :disabled="!scopeReady || running" @click="run('index-check')">Check indexes</button>
+        <button class="btn-neutral" :disabled="!scopeReady || running" @click="run('recover')">Recover transactions</button>
         <button class="btn-primary" :disabled="!scopeReady || running || !status?.active_proposal_id"
           @click="run('measure', { phase: 'after', proposal_id: status?.active_proposal_id })">Measure comparison</button>
       </div>
     </section>
 
-    <MeasurementTable :checks="status?.measurement_checks ?? []" />
+    <MeasurementTable :checks="status?.measurement_checks ?? []" :phase="status?.measurement_phase ?? null" />
     <ConflictRulingCard :conflict-id="firstConflict" :disabled="running" @rule="run('conflict-rule', $event)" />
     <PatternGateCard :disabled="running" @rule="run('pattern-rule', $event)" />
     <ProposalGatePanel
       :active-proposal-id="status?.active_proposal_id ?? null"
       :diff="stagedDiff"
+      :truncated="status?.staged_diff_truncated ?? false"
       :disabled="running"
       @stage="run('proposal-stage', { ...$event, evidence_bindings: [] })"
       @apply="run('proposal-apply', { proposal_id: $event })"

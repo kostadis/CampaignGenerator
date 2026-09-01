@@ -11,6 +11,10 @@ const checks = Array.from({ length: 18 }, (_, index) => ({
   reason: null,
 }))
 
+export const largeDiff = Array.from({ length: 40 }, (_, index) =>
+  `-${index} old very wide line ${'before '.repeat(20)}\n+${index} new very wide line ${'after '.repeat(20)}`,
+).join('\n')
+
 export const selectedStatus: WikiStatus = {
   ok: true,
   command: 'status',
@@ -30,7 +34,10 @@ export const selectedStatus: WikiStatus = {
     capabilities: ['maintainer', 'proposer'],
   },
   recovery: null,
+  measurement_phase: 'before',
   measurement_checks: checks,
+  staged_diff: largeDiff,
+  staged_diff_truncated: false,
 }
 
 export const emptyStatus: WikiStatus = {
@@ -39,7 +46,10 @@ export const emptyStatus: WikiStatus = {
   pattern_counts: { pending: 0, accepted: 0, rejected: 0, pending_portable_sync: 0 },
   unresolved_conflict_ids: [],
   active_proposal_id: null,
+  measurement_phase: null,
   measurement_checks: [],
+  staged_diff: null,
+  staged_diff_truncated: false,
 }
 
 export const recoveryStatus: WikiStatus = {
@@ -52,10 +62,6 @@ export const recoveryStatus: WikiStatus = {
     next_action: 'inspect_hashes',
   },
 }
-
-export const largeDiff = Array.from({ length: 40 }, (_, index) =>
-  `-${index} old very wide line ${'before '.repeat(20)}\n+${index} new very wide line ${'after '.repeat(20)}`,
-).join('\n')
 
 export async function installNarrationWikiMocks(page: Page, state: WikiStatus = selectedStatus) {
   await page.route('**/api/config/', route => route.fulfill({ json: {

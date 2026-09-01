@@ -354,7 +354,7 @@ async def run_bounded_json(
             if cwd:
                 safe = safe.replace(str(Path(cwd).resolve()), "<campaign>")
             raise BoundedJSONError(
-                safe or f"command exited with category {proc.returncode}",
+                safe or f"command exited with code {proc.returncode}",
                 returncode=int(proc.returncode or 70),
                 category="nonzero_exit",
             )
