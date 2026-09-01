@@ -1,0 +1,8 @@
+pattern_slugs: [distinct-bookkeeping]
+affected_rule: bookkeeping-per-narrator
+target_kind: rulebook
+target_path: voice/_genre.md
+candidate: candidate
+reconsideration:
+  kind: new_evidence
+  bindings: []

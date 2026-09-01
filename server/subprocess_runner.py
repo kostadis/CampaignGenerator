@@ -19,6 +19,15 @@ from collections.abc import AsyncGenerator, Callable
 from datetime import datetime
 from pathlib import Path
 
+
+class BoundedJSONError(RuntimeError):
+    """A bounded JSON child failed without exposing untrusted diagnostics."""
+
+    def __init__(self, message: str, *, returncode: int = 70, category: str = "process_failure"):
+        super().__init__(message)
+        self.returncode = returncode
+        self.category = category
+
 GRACE_SECONDS = 4.0  # SIGTERM grace window before SIGKILL (FR-008)
 
 
@@ -121,6 +130,7 @@ async def stream_subprocess(
     on_complete: Callable[[int | None], None] | None = None,
     emit_done: bool = True,
     redact_env_keys: set[str] | frozenset[str] | None = None,
+    save_run_log: bool = True,
 ) -> AsyncGenerator[str, None]:
     """Run a subprocess and yield Server-Sent Events as output arrives.
 
@@ -248,8 +258,9 @@ async def stream_subprocess(
 
         returncode = proc.returncode if proc is not None else None
         result = classify_result(returncode)
-        _save_run_log(cmd, cwd, "".join(captured), returncode, result,
-                      time.monotonic() - started, redact_values)
+        if save_run_log:
+            _save_run_log(cmd, cwd, "".join(captured), returncode, result,
+                          time.monotonic() - started, redact_values)
         if on_complete is not None:
             try:
                 on_complete(returncode)
@@ -263,6 +274,125 @@ async def stream_subprocess(
         if result == "aborted":
             done_payload["aborted"] = True
         yield f"event: done\ndata: {json.dumps(done_payload)}\n\n"
+
+
+async def run_bounded_json(
+    cmd: list[str],
+    *,
+    cwd: str | None = None,
+    env_extra: dict[str, str] | None = None,
+    timeout_seconds: float = 10.0,
+    max_output_bytes: int = 1_048_576,
+    redact_env_keys: set[str] | frozenset[str] | None = None,
+    save_run_log: bool = True,
+) -> dict[str, object]:
+    """Run one fixed command and accept exactly one bounded JSON object.
+
+    This is the non-streaming sibling of :func:`stream_subprocess`.  It owns
+    process-group cancellation, timeout and byte bounds so routers never need
+    to launch children directly.
+    """
+    env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+    if env_extra:
+        env.update(env_extra)
+    redacted_keys = frozenset(redact_env_keys or {"SCABARD_ACCESS_KEY"})
+    redact_values = tuple(
+        str(value) for key, value in (env_extra or {}).items()
+        if key in redacted_keys and value
+    )
+    started = time.monotonic()
+    proc: asyncio.subprocess.Process | None = None
+    stdout = b""
+    stderr = b""
+
+    async def read_limited(stream: asyncio.StreamReader | None) -> bytes:
+        if stream is None:
+            return b""
+        chunks: list[bytes] = []
+        size = 0
+        while True:
+            chunk = await stream.read(min(65536, max_output_bytes + 1))
+            if not chunk:
+                return b"".join(chunks)
+            chunks.append(chunk)
+            size += len(chunk)
+            if size > max_output_bytes:
+                raise BoundedJSONError(
+                    "command output exceeded the configured byte limit",
+                    returncode=70,
+                    category="output_limit",
+                )
+
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            cwd=cwd,
+            env=env,
+            start_new_session=True,
+        )
+        try:
+            stdout, stderr, _ = await asyncio.wait_for(
+                asyncio.gather(read_limited(proc.stdout), read_limited(proc.stderr), proc.wait()),
+                timeout=timeout_seconds,
+            )
+        except asyncio.TimeoutError as exc:
+            raise BoundedJSONError(
+                "command timed out",
+                returncode=70,
+                category="timeout",
+            ) from exc
+        if proc.returncode != 0:
+            safe = _redact_text(stderr.decode("utf-8", errors="replace"), redact_values).strip()
+            try:
+                error_payload = json.loads(stdout.decode("utf-8"))
+                safe = str(error_payload.get("error") or safe) if isinstance(error_payload, dict) else safe
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                pass
+            safe = _redact_text(safe, redact_values)
+            if cwd:
+                safe = safe.replace(str(Path(cwd).resolve()), "<campaign>")
+            raise BoundedJSONError(
+                safe or f"command exited with category {proc.returncode}",
+                returncode=int(proc.returncode or 70),
+                category="nonzero_exit",
+            )
+        try:
+            text = stdout.decode("utf-8")
+            decoder = json.JSONDecoder()
+            value, end = decoder.raw_decode(text.lstrip())
+            consumed = len(text) - len(text.lstrip()) + end
+            if text[consumed:].strip():
+                raise ValueError("trailing output")
+        except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
+            raise BoundedJSONError(
+                "command did not emit exactly one JSON object",
+                category="invalid_json",
+            ) from exc
+        if not isinstance(value, dict):
+            raise BoundedJSONError("command JSON result must be an object", category="invalid_json")
+        return value
+    finally:
+        if proc is not None and proc.returncode is None:
+            try:
+                pgid = os.getpgid(proc.pid)
+                _killpg_safe(pgid, signal.SIGTERM)
+                try:
+                    await asyncio.wait_for(proc.wait(), timeout=GRACE_SECONDS)
+                except (asyncio.TimeoutError, asyncio.CancelledError):
+                    _killpg_safe(pgid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        if save_run_log:
+            returncode = proc.returncode if proc is not None else None
+            result = classify_result(returncode)
+            captured = _redact_text(
+                (stdout + stderr).decode("utf-8", errors="replace"),
+                redact_values,
+            )
+            _save_run_log(cmd, cwd, captured, returncode, result,
+                          time.monotonic() - started, redact_values)
 
 
 async def sse_error_stream(message: str, returncode: int = 1) -> AsyncGenerator[str, None]:

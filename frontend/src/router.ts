@@ -28,6 +28,11 @@ const routes = [
         name: 'editor-review',
         component: () => import('./views/session/ReviewAssemble.vue'),
       },
+      {
+        path: 'wiki',
+        name: 'narration-wiki',
+        component: () => import('./views/session/NarrationWiki.vue'),
+      },
     ],
   },
   {

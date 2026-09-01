@@ -104,6 +104,34 @@ PORTABLE_TICS = (
     ("with-the-X-of-a-man-who", "with_the_x_of_a_man_who", PORTRAIT_RE),
     ("the-way-X-do-when", "the_way_x_do_when", TAXONOMY_RE),
 )
+
+
+@dataclass(frozen=True)
+class D4CheckDefinition:
+    """Structured projection used by narration-wiki measurement profile d4-v1.
+
+    The legacy ``lint`` function below deliberately continues to render its
+    established messages from ``PORTABLE_TICS``; both APIs point at the same
+    compiled expressions so the machine contract cannot drift from the CLI.
+    """
+
+    key: str
+    scope: str
+    expression: re.Pattern[str]
+    budget_unit: str
+    default_budget: int | None
+
+
+CHECKER_SCHEMA_VERSION = 1
+MEASUREMENT_PROFILE = "d4-v1"
+D4_CHECK_REGISTRY = (
+    D4CheckDefinition("shape_of", "document", SHAPE_RE, "occurrences", 1),
+    D4CheckDefinition("portable_portrait", "document", PORTRAIT_RE, "occurrences", 1),
+    D4CheckDefinition("taxonomy", "document", TAXONOMY_RE, "occurrences", 1),
+    D4CheckDefinition("filing_sections", "corpus", FP_FILE_RE, "sections", None),
+    D4CheckDefinition("bookkeeping_per_narrator", "narrator", FP_FILE_RE, "occurrences", None),
+    D4CheckDefinition("em_dash", "document", re.compile("—"), "occurrences", 0),
+)
 # Max tolerated doc-wide. 1 reproduces the pre-#125 behaviour exactly: a lone occurrence
 # warns (the target is 0), a second one is a hard error.
 DEFAULT_TIC_CAP = 1

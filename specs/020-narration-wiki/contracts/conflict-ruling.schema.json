@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://campaigngenerator.local/schemas/narration-wiki-conflict-ruling-v1.json",
+  "title": "Narration Wiki Seed Conflict Ruling",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "conflict_id",
+    "campaign_id",
+    "rule_key",
+    "sources",
+    "resolution",
+    "rationale",
+    "iteration_id",
+    "baseline"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "conflict_id": {
+      "$ref": "#/$defs/stableId"
+    },
+    "campaign_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rule_key": {
+      "$ref": "#/$defs/stableId"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "resolution": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "iteration_id": {
+      "$ref": "#/$defs/stableId"
+    },
+    "baseline": {
+      "$ref": "#/$defs/baseline"
+    }
+  },
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_ref",
+        "source_sha256",
+        "statement"
+      ],
+      "properties": {
+        "source_ref": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "measurement_path",
+        "measurement_sha256",
+        "corpus_id",
+        "guidance_sha256",
+        "profile"
+      ],
+      "properties": {
+        "measurement_path": {
+          "const": "measurement-before.json"
+        },
+        "measurement_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "corpus_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "guidance_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "profile": {
+          "const": "d4-v1"
+        }
+      }
+    }
+  }
+}

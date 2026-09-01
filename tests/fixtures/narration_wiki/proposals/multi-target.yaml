@@ -1,0 +1,6 @@
+pattern_slugs: [distinct-bookkeeping]
+affected_rule: bookkeeping-per-narrator
+targets:
+  - {target_kind: rulebook, target_path: voice/_genre.md}
+  - {target_kind: voice, target_path: voice/Aria.md}
+candidate: candidate

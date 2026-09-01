@@ -60,3 +60,22 @@ button:disabled { opacity: .35; cursor: default; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--bg-surface1); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--bg-overlay0); }
+
+/* Narration-wiki panels share one resize/overflow contract. Both scrollbars
+   remain available at the supported 1280x720 viewport and exact 320x160
+   minimum, so long evidence and complete diffs are never clipped. */
+.wiki-resizable-panel {
+  width: 100%;
+  height: 220px;
+  min-width: 320px;
+  min-height: 160px;
+  max-width: 100%;
+  resize: both;
+  overflow: scroll;
+  padding: 10px;
+  border: 1px solid var(--bg-surface0);
+  border-radius: 4px;
+  background: var(--bg-base);
+  scrollbar-color: var(--bg-surface1) transparent;
+  scrollbar-width: thin;
+}

@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 import pytest
 
-from campaignlib.util import atomic_write_text
+from campaignlib.util import atomic_write_bytes, atomic_write_text
 
 
 def test_atomic_write_text_leaves_no_tmp_file(tmp_path):
@@ -20,6 +20,26 @@ def test_atomic_write_text_leaves_no_tmp_file(tmp_path):
     atomic_write_text(target, "[]")
     assert target.read_text() == "[]"
     assert list(tmp_path.iterdir()) == [target]
+
+
+def test_atomic_write_bytes_preserves_non_utf8_and_fsyncs_file(tmp_path, monkeypatch):
+    target = tmp_path / "binary.dat"
+    calls: list[int] = []
+    monkeypatch.setattr(os, "fsync", lambda fd: calls.append(fd))
+    atomic_write_bytes(target, b"\xff\x00\xfe")
+    assert target.read_bytes() == b"\xff\x00\xfe"
+    assert calls
+    assert not list(tmp_path.glob("*.tmp.*"))
+
+
+def test_atomic_write_bytes_replacement_failure_preserves_destination(tmp_path, monkeypatch):
+    target = tmp_path / "binary.dat"
+    target.write_bytes(b"before")
+    monkeypatch.setattr(os, "replace", lambda *_: (_ for _ in ()).throw(OSError("boom")))
+    with pytest.raises(OSError, match="boom"):
+        atomic_write_bytes(target, b"after")
+    assert target.read_bytes() == b"before"
+    assert not list(tmp_path.glob("*.tmp.*"))
 
 
 def test_atomic_write_text_overwrites_existing_content(tmp_path):

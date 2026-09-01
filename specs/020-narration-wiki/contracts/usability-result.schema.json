@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://campaigngenerator.local/schemas/narration-wiki-usability-result-v1.json",
+  "title": "Narration Wiki Operator Usability Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "exercise_id",
+    "started_at",
+    "ended_at",
+    "viewport",
+    "minimum_panel",
+    "total_elapsed_seconds",
+    "excluded_model_response_seconds",
+    "active_operator_seconds",
+    "gate1_ruling_ref",
+    "gate2_ruling_ref",
+    "persisted_ruling_path",
+    "passed"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "exercise_id": {
+      "$ref": "#/$defs/stableId"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "viewport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height"
+      ],
+      "properties": {
+        "width": {
+          "const": 1280
+        },
+        "height": {
+          "const": 720
+        }
+      }
+    },
+    "minimum_panel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height"
+      ],
+      "properties": {
+        "width": {
+          "const": 320
+        },
+        "height": {
+          "const": 160
+        }
+      }
+    },
+    "total_elapsed_seconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "excluded_model_response_seconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "active_operator_seconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "gate1_ruling_ref": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "gate2_ruling_ref": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "persisted_ruling_path": {
+      "$ref": "#/$defs/relativePath"
+    },
+    "passed": {
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "passed": {
+            "const": true
+          }
+        },
+        "required": [
+          "passed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "active_operator_seconds": {
+            "maximum": 899
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

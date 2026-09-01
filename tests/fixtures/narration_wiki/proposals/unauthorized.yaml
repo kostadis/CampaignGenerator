@@ -1,0 +1,5 @@
+pattern_slugs: [distinct-bookkeeping]
+affected_rule: bookkeeping-per-narrator
+target_kind: renderer
+target_path: session_doc/sd_narrate.py
+candidate: candidate

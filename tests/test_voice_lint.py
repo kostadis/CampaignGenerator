@@ -32,6 +32,7 @@ from pathlib import Path
 import pytest
 
 import session_doc.voice_lint as _vl
+from session_doc import voice_lint as voice_lint_module
 from session_doc.voice_lint import (
     PORTRAIT_RE,
     TAXONOMY_RE,
@@ -429,3 +430,14 @@ def test_each_skip_states_its_own_cause(config_factory, fragment):
     """One message for five causes told a GM "no filing register" when the path was a typo."""
     _, _, notes = _lint("## Daz — Scene 01\n\ntext\n", config_factory())
     assert any(fragment in n for n in notes), notes
+
+
+def test_d4_v1_registry_projects_every_category_without_changing_legacy_api():
+    assert voice_lint_module.CHECKER_SCHEMA_VERSION == 1
+    assert voice_lint_module.MEASUREMENT_PROFILE == "d4-v1"
+    assert {item.key for item in voice_lint_module.D4_CHECK_REGISTRY} == {
+        "shape_of", "portable_portrait", "taxonomy", "filing_sections",
+        "bookkeeping_per_narrator", "em_dash",
+    }
+    errors, warnings, notes = voice_lint_module.lint("## Aria — One\n\nThe shape of fear.")
+    assert isinstance(errors, list) and isinstance(warnings, list) and isinstance(notes, list)

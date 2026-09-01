@@ -1,0 +1,28 @@
+{
+  "active_operator_seconds": 6,
+  "ended_at": "2026-09-01T05:01:33Z",
+  "excluded_model_response_seconds": 0,
+  "exercise_id": "validation-001",
+  "gate1_ruling_ref": {
+    "path": "specs/020-narration-wiki/validation/gate1-exercise.json",
+    "sha256": "38f81bec0755ab85a842c0d017d9ddd42faf0fd72c464454b3dc034ca9524d22"
+  },
+  "gate2_ruling_ref": {
+    "path": "specs/020-narration-wiki/validation/gate2-exercise.json",
+    "sha256": "b19d6efbe58c23841e13e25832ade445c81691e1f0a90e9a18196884ddb7cd6b"
+  },
+  "minimum_panel": {
+    "height": 160,
+    "width": 320
+  },
+  "notes": "Isolated fixture rejection flow plus the exact 1280x720 Playwright resize, scrollbar, cancellation, and keyboard acceptance scenarios; no companion model call was required.",
+  "passed": true,
+  "persisted_ruling_path": "specs/020-narration-wiki/validation/gate2-exercise.json",
+  "schema_version": 1,
+  "started_at": "2026-09-01T05:01:27Z",
+  "total_elapsed_seconds": 6,
+  "viewport": {
+    "height": 720,
+    "width": 1280
+  }
+}
