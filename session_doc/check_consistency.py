@@ -13,6 +13,7 @@ Usage:
 import argparse
 import os
 import sys
+import tempfile
 from pathlib import Path
 
 from campaignlib import (
@@ -29,6 +30,12 @@ from campaignlib import (
     stream_api,
 )
 from campaignlib.api.client import resolve_cli_model
+from campaignlib.consistency import (
+    ConsistencyDocument,
+    GroupedConsistencyProtocolError,
+    normalize_grouped_response,
+    render_grouped_prompt,
+)
 
 # This file lives at session_doc/check_consistency.py; find_default_config()'s
 # script-dir fallback expects to sit next to config/ (the repo root), which
@@ -44,7 +51,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Consistency-check a session document against campaign context."
     )
-    parser.add_argument("document", help="Path to the document to check")
+    parser.add_argument(
+        "documents",
+        nargs="+",
+        metavar="DOCUMENT",
+        help=(
+            "Path(s) to the document(s) to check. Multiple explicit paths are "
+            "audited together in one model call."
+        ),
+    )
     parser.add_argument(
         "--config",
         default=find_default_config(str(REPO_ROOT / "check_consistency.py")),
@@ -81,11 +96,30 @@ def main() -> None:
     effective_model = model_intent.effective_model
     args.model = effective_model
 
-    doc_path = Path(args.document).expanduser()
-    if not doc_path.exists():
-        print(f"Error: document not found: {doc_path}", file=sys.stderr)
-        sys.exit(1)
-    document = doc_path.read_text(encoding="utf-8").strip()
+    doc_paths = [Path(value).expanduser() for value in args.documents]
+    resolved_paths: set[Path] = set()
+    for doc_path in doc_paths:
+        resolved = doc_path.resolve()
+        if resolved in resolved_paths:
+            print(f"Error: duplicate document: {doc_path}", file=sys.stderr)
+            sys.exit(1)
+        resolved_paths.add(resolved)
+        if not doc_path.exists():
+            print(f"Error: document not found: {doc_path}", file=sys.stderr)
+            sys.exit(1)
+        if not doc_path.is_file():
+            print(f"Error: document is not a file: {doc_path}", file=sys.stderr)
+            sys.exit(1)
+
+    documents = [
+        ConsistencyDocument(
+            identifier=f"D{index:02d}",
+            path=doc_path,
+            text=doc_path.read_text(encoding="utf-8").strip(),
+        )
+        for index, doc_path in enumerate(doc_paths, start=1)
+    ]
+    grouped = len(documents) > 1
 
     config, base_dir = load_config(args.config)
     available_labels = {d["label"] for d in config.get("documents", []) if d.get("path")}
@@ -119,8 +153,29 @@ def main() -> None:
         print("Error: no context documents found. Check config or pass --context files.", file=sys.stderr)
         sys.exit(1)
 
-    print(f"Document : {doc_path.name} ({len(document):,} chars)")
-    print(f"Context  : {len(context_parts)} document(s)")
+    system = load_agent_prompt(
+        "session_doc/consistency_grouped" if grouped else "session_doc/consistency"
+    )
+    context_text = "## Campaign Context\n\n" + "\n\n---\n\n".join(context_parts)
+    common_context_chars = len(system) + len(context_text)
+
+    if grouped:
+        target_chars = sum(len(document.text) for document in documents)
+        avoided_chars = (len(documents) - 1) * common_context_chars
+        print(f"Documents : {len(documents)} ({target_chars:,} target chars)")
+        print(f"Context   : {len(context_parts)} document(s), {common_context_chars:,} shared chars")
+        print("Model calls: 1 (grouped, fail-closed)")
+        print(f"Avoided   : {avoided_chars:,} repeated common-context chars")
+        print(
+            "Telemetry : "
+            f"model_calls=1 shared_context_chars={common_context_chars} "
+            f"target_chars={target_chars} "
+            f"repeated_context_chars_avoided={avoided_chars}"
+        )
+    else:
+        document = documents[0]
+        print(f"Document : {document.path.name} ({len(document.text):,} chars)")
+        print(f"Context  : {len(context_parts)} document(s)")
     model_display = (
         args.model
         if args.model is not None
@@ -129,17 +184,19 @@ def main() -> None:
     print(f"Model    : {model_display}")
     print("=" * 60)
 
-    prompt = "\n\n---\n\n".join([
-        f"## Document to Check\n\n{document}",
-        "## Campaign Context\n\n" + "\n\n---\n\n".join(context_parts),
-    ])
+    if grouped:
+        prompt = render_grouped_prompt(documents, context_parts)
+    else:
+        prompt = "\n\n---\n\n".join([
+            f"## Document to Check\n\n{documents[0].text}",
+            context_text,
+        ])
 
     try:
         client = client_from_args(args)
     except CodexCliError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
-    system = load_agent_prompt("session_doc/consistency")
     max_tokens = int(os.environ.get("CG_CONSISTENCY_MAX_TOKENS", "32000"))
     if args.batch:
         try:
@@ -160,7 +217,16 @@ def main() -> None:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
 
-    issue_count = report.count("**Location**")
+    if grouped:
+        try:
+            grouped_result = normalize_grouped_response(report, documents)
+        except GroupedConsistencyProtocolError as e:
+            print(f"Error: invalid grouped consistency response: {e}", file=sys.stderr)
+            sys.exit(1)
+        report = grouped_result.report
+        issue_count = grouped_result.issue_count
+    else:
+        issue_count = report.count("**Location**")
     if issue_count:
         print(f"Found {issue_count} potential issue(s):")
         for line in report.splitlines():
@@ -173,7 +239,24 @@ def main() -> None:
 
     if args.output:
         out = Path(args.output).expanduser()
-        out.write_text(report, encoding="utf-8")
+        # Validate first, then replace atomically. A grouped protocol failure
+        # must never overwrite a prior report with partial findings.
+        temp_path = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w",
+                encoding="utf-8",
+                dir=out.parent,
+                prefix=f".{out.name}.",
+                suffix=".tmp",
+                delete=False,
+            ) as temp_file:
+                temp_file.write(report)
+                temp_path = Path(temp_file.name)
+            temp_path.replace(out)
+        finally:
+            if temp_path is not None and temp_path.exists():
+                temp_path.unlink()
         print(f"\nReport saved: {out}")
 
 
