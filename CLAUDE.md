@@ -281,52 +281,6 @@ resolves the path per-request.
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan:
-`specs/017-session-dir-repoint/plan.md` (Session Directory Re-Points Editor
-Paths — setting the session directory on Session Config does not move the
-Session Doc Editor's paths; they stay on the session you left. **The server
-side is already correct** and must not be "fixed": session-scoped paths are
-stored relative to `runtime.session_dir` and resolved absolute on read, and
-`tests/test_session_editor_config_service.py:568` already proves a switch
-re-tracks them. Do not touch `resolve_path`/`relativize_path` — that seam is
-right. The defect is a **round trip**: `GET /api/editor/config` returns paths
-*absolute*, the editor loads those into its inputs, the drawer's debounced
-auto-save PUTs them back, and `relativize_path` cannot collapse a path that is
-not under the current session dir — so it stores it verbatim as a "genuine
-out-of-tree override" (`platform_config_service.py:805-808`). A stale display
-value is thereby **promoted to a permanent pin**, and that field never tracks
-the session directory again. Fix (research D1): the editor binds a new
-`paths_stored` (relative) and never PUTs `paths`; the absolute block stays for
-read-only consumers. Note `refreshEditor()` already exists and has **no caller
-outside the store** (`stores/config.ts:177`) — `updateRuntime` refetches
-`/api/config/` only, which is the display half of the bug. Four things not to
-re-derive: (1) every run command is built **server-side** from
-`resolved_editor_config()` — ~14 `cfg.paths.*` reads in
-`routers/scene_editor.py` — and the frontend sends no paths to any run route,
-so the `_build_*_cmd()` diff must be **empty** and no run route gains a path
-parameter; (2) `PathField` **already** renders ✅/❌ not-found via
-`GET /api/config/path-status`, and all ten drawer paths are `PathField`/
-`MultiPathField`, so User Story 4 is a *verification*, not a build — it reports
-the wrong thing today only because the value it is handed is stale; (3) the
-stale-pin test is "resolves under `parent(session_dir)` but **not** under
-`session_dir`" — derived from the value the GM set, never a hardcoded
-`summaries/`, and the re-point preserves the name the value carried *within its
-own session dir* (`…/20260811/narration/pass5` → `narration/pass5`, not
-`pass5`); (4) no schema changes shape — a campaign whose paths are already
-relative must come through **byte-identical**, which is also the regression
-test. The one live constitutional gate is **XIII** (no lazy in-place upgrade):
-heal-on-read is justified in plan.md's Constitution Check on three grounds
-(nothing changes shape; the read never writes, FR-007; every correction is
-announced with before/after, FR-006), with announced load-time normalisation
-already the in-tree pattern (`EditorPaths._drop_retired_fields`) and the
-retired `UIStateService._normalize_stored_paths` as the direct precedent. If
-that gate is overruled at review, the prescribed fallback is a one-shot
-`server/migrate_session_doc_paths.py` plus `migration.md`, and only User Story
-3 moves. Delivery (GM-stated): implement in a dedicated git worktree off
-`main`; Opus orchestrates and Sonnet implements, so every task must name its
-files and its acceptance check inline. Phases 2–3 (service, wire) are fully
-pytest-gated; phase 4 (frontend) has **no test runner in this repo** —
-`frontend/package.json` is `dev`/`build`/`preview` only — so its gate is
-`npm run build` (`vue-tsc -b`) plus the manual `quickstart.md`, and it is the
-phase where the diff gets reviewed before the gate is called.)
+shell commands, and other important information, read the current plan
+at specs/018-prefer-smoothed-extractions/plan.md
 <!-- SPECKIT END -->
