@@ -1,0 +1,363 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://campaigngenerator.local/schemas/narration-wiki-measurement-v1.json",
+  "title": "Narration Wiki Measurement Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "iteration_id",
+    "phase",
+    "proposal_id",
+    "corpus_id",
+    "guidance",
+    "documents",
+    "checks",
+    "cross_narrator_reuse"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "iteration_id": {
+      "$ref": "#/$defs/stableId"
+    },
+    "phase": {
+      "enum": [
+        "before",
+        "after"
+      ]
+    },
+    "proposal_id": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/stableId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "corpus_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "guidance": {
+      "$ref": "#/$defs/guidance"
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/document"
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "$ref": "#/$defs/check"
+      }
+    },
+    "cross_narrator_reuse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reuseFinding"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "const": "before"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "proposal_id": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "phase": {
+            "const": "after"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "proposal_id": {
+            "$ref": "#/$defs/stableId"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"
+    },
+    "guidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "checker_schema_version",
+        "profile"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "checker_schema_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "profile": {
+          "const": "d4-v1"
+        }
+      }
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "narrators"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "narrators": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator",
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "operator": {
+          "enum": [
+            "<=",
+            "="
+          ]
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "occurrence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "line",
+        "section",
+        "narrator",
+        "matched"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "line": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "section": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "narrator": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "matched": {
+          "type": "string"
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "scope",
+        "subject",
+        "observed",
+        "budget",
+        "verdict",
+        "reason",
+        "occurrences"
+      ],
+      "properties": {
+        "key": {
+          "enum": [
+            "shape_of",
+            "portable_portrait",
+            "taxonomy",
+            "filing_sections",
+            "bookkeeping_per_narrator",
+            "em_dash"
+          ]
+        },
+        "scope": {
+          "enum": [
+            "document",
+            "corpus",
+            "narrator"
+          ]
+        },
+        "subject": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observed": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "budget": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/budget"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "ok",
+            "breach",
+            "skipped"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "occurrences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/occurrence"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "verdict": {
+                "const": "skipped"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "observed": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "reuseFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phrase",
+        "word_count",
+        "narrators",
+        "occurrences"
+      ],
+      "properties": {
+        "phrase": {
+          "type": "string",
+          "minLength": 1
+        },
+        "word_count": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "narrators": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "occurrences": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/occurrence"
+          }
+        }
+      }
+    }
+  }
+}

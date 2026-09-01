@@ -1,0 +1,7 @@
+{
+  "after_measurement_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "before_measurement_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "decision": "reject",
+  "gate": "gate2",
+  "proposal_id": "proposal-001"
+}

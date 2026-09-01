@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 import pytest
 
-from campaignlib.util import atomic_write_text
+from campaignlib.util import atomic_write_bytes, atomic_write_text
 
 
 def test_atomic_write_text_leaves_no_tmp_file(tmp_path):
@@ -20,6 +20,26 @@ def test_atomic_write_text_leaves_no_tmp_file(tmp_path):
     atomic_write_text(target, "[]")
     assert target.read_text() == "[]"
     assert list(tmp_path.iterdir()) == [target]
+
+
+def test_atomic_write_bytes_preserves_non_utf8_and_fsyncs_file(tmp_path, monkeypatch):
+    target = tmp_path / "binary.dat"
+    calls: list[int] = []
+    monkeypatch.setattr(os, "fsync", lambda fd: calls.append(fd))
+    atomic_write_bytes(target, b"\xff\x00\xfe")
+    assert target.read_bytes() == b"\xff\x00\xfe"
+    assert calls
+    assert not list(tmp_path.glob("*.tmp.*"))
+
+
+def test_atomic_write_bytes_replacement_failure_preserves_destination(tmp_path, monkeypatch):
+    target = tmp_path / "binary.dat"
+    target.write_bytes(b"before")
+    monkeypatch.setattr(os, "replace", lambda *_: (_ for _ in ()).throw(OSError("boom")))
+    with pytest.raises(OSError, match="boom"):
+        atomic_write_bytes(target, b"after")
+    assert target.read_bytes() == b"before"
+    assert not list(tmp_path.glob("*.tmp.*"))
 
 
 def test_atomic_write_text_overwrites_existing_content(tmp_path):
@@ -76,3 +96,37 @@ def test_atomic_write_text_cleans_up_tmp_on_failure(tmp_path):
 
     assert target.read_text() == "original"
     assert list(tmp_path.iterdir()) == [target]
+
+
+def test_atomic_write_bytes_never_closes_the_descriptor_fdopen_owns(tmp_path, monkeypatch):
+    """A failed replace must not close a number the runtime may have reissued.
+
+    os.fdopen takes ownership of the descriptor, so the context manager has
+    already closed it by the time the failure handler runs. Closing the raw
+    number a second time inside the threadpooled server can reach another
+    request's open file or socket rather than harmlessly raising EBADF.
+    """
+    target = tmp_path / "binary.dat"
+    temp_fds: list[int] = []
+    closed_fds: list[int] = []
+    real_open, real_close = os.open, os.close
+
+    def spy_open(path, flags, mode=0o777, **kwargs):
+        fd = real_open(path, flags, mode, **kwargs)
+        if str(path).endswith(f".tmp.{os.getpid()}"):
+            temp_fds.append(fd)
+        return fd
+
+    def spy_close(fd):
+        closed_fds.append(fd)
+        return real_close(fd)
+
+    monkeypatch.setattr("campaignlib.util.os.open", spy_open)
+    monkeypatch.setattr("campaignlib.util.os.close", spy_close)
+    monkeypatch.setattr("campaignlib.util.os.replace", lambda *_: (_ for _ in ()).throw(OSError("boom")))
+
+    with pytest.raises(OSError, match="boom"):
+        atomic_write_bytes(target, b"payload")
+
+    assert temp_fds, "the temporary file was never opened"
+    assert not set(closed_fds) & set(temp_fds)

@@ -21,6 +21,9 @@ from typing import TYPE_CHECKING, Any
 
 from fastapi import HTTPException
 
+from campaignlib.narration_context import resolve_narration_guidance
+from session_doc.narration_wiki.models import ScopeError
+
 from server.session_editor_config_shared import ProfileEntry
 from server.session_editor_config_shared import (
     Backends,
@@ -286,6 +289,7 @@ class ResolvedEditorConfig:
     # field, the stored value and the value now in use. Empty on a healthy
     # config. A correction to stored configuration is never silent (FR-006).
     warnings: list[str] = field(default_factory=list)
+    narration_guidance: dict[str, object] | None = None
 
 
 def _set_nested(target: dict[str, Any], path: tuple[str, ...], value: Any) -> None:
@@ -567,6 +571,26 @@ class SessionEditorConfigService:
             paths_dict[f] = self.platform.resolve_path(paths_dict.get(f), base="campaign")
         resolved_paths = EditorPaths.model_validate(paths_dict)
 
+        # Share the same campaign-only guidance resolver used by the wiki.
+        # The editor preserves its historical graceful display behavior when
+        # a configured file is unavailable; mutating wiki commands surface
+        # that same condition as a scope refusal.
+        try:
+            guidance = resolve_narration_guidance(
+                self.platform.campaign_dir,
+                paths=resolved_paths,
+            )
+            narration_guidance: dict[str, object] | None = {
+                "rulebook": guidance.rulebook.path if guidance.rulebook else None,
+                "voice_files": sorted(item.path for item in guidance.voice_files.values()),
+                "example_files": sorted(
+                    item.path for values in guidance.example_files.values() for item in values
+                ),
+                "guidance_sha256": guidance.guidance_sha256,
+            }
+        except ScopeError:
+            narration_guidance = None
+
         # DM-18 steps 2-3: an explicit config pin wins; otherwise the backend
         # default is `True` on the subscription backends (Claude Code and
         # Codex CLI have no prompt caching, so one batched call beats N
@@ -597,4 +621,5 @@ class SessionEditorConfigService:
             session_dir=session_dir,
             genre=_describe_genre_file(resolved_paths.genre_file),
             batch_scenes_effective=batch_scenes_effective,
+            narration_guidance=narration_guidance,
         )

@@ -1,0 +1,8 @@
+{
+  "baseline_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "gate": "gate1",
+  "iteration_id": "validation-001",
+  "ruling": "accepted",
+  "subject_id": "distinct-bookkeeping",
+  "tier": "campaign"
+}

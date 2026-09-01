@@ -71,3 +71,17 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 ## Archive
 
 Shipped plans, deprecated docs, and one-time audits — kept for rationale, not currency. See [`archive/`](archive/).
+
+## Prospective narration-wiki workflow
+
+The post-session Narration Wiki is available from `/workflow/wiki` and the
+[`narration_wiki` CLI](cli/narration-wiki.md). It collects one selected
+session, persists a deterministic baseline, requires independent GM rulings at
+Gate 1 and Gate 2, and keeps campaign guidance isolated. Portable craft
+knowledge is read from a compatible companion deployment that declares
+contract version 1, `campaign-resolved` guidance, and both maintainer and
+proposer roles; CampaignGenerator never writes that deployment.
+
+The reusable color/resize/scrollbar requirement belongs in the project
+constitution, but that governance change is deliberately deferred to GitHub
+issue #360 and is not part of this feature.

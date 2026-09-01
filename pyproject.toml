@@ -87,6 +87,7 @@ scene_extract = "session_doc.scene_extract:main"
 enhance_summary = "session_doc.enhance_summary:main"
 check_consistency = "session_doc.check_consistency:main"
 voice_lint = "session_doc.voice_lint:main"
+narration_wiki = "session_doc.narration_wiki.cli:main"
 vtt_voice_compare = "session_doc.vtt_voice_compare:main"
 scabard_sync = "scabard_sdk.scabard_sync:main"
 

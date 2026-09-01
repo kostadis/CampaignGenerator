@@ -108,6 +108,7 @@ const navGroups: NavGroup[] = [
     items: [
       { label: '\u2460 Session Config', path: '/workflow/config' },
       { label: '\u2461 Session Doc Editor', path: '/workflow/editor' },
+      { label: '③ Narration Wiki', path: '/workflow/wiki' },
     ],
   },
   {

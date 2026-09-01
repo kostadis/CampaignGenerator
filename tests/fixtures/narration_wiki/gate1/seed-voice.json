@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "conflict_id": "seed-voice",
+  "campaign_id": "campaign",
+  "rule_key": "bookkeeping-per-narrator",
+  "sources": [
+    {"source_ref": "portable", "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "statement": "Avoid all filing language."},
+    {"source_ref": "campaign", "source_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "statement": "One narrator intentionally files observations."}
+  ],
+  "pattern_slugs": ["distinct-bookkeeping"]
+}

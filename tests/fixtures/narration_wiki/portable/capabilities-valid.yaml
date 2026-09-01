@@ -1,0 +1,8 @@
+schema_version: 1
+source_repository: kostadis/narration-wiki-companion
+source_revision: fixture-revision
+narration_wiki_contract: 1
+guidance_source: campaign-resolved
+capabilities:
+  - maintainer
+  - proposer

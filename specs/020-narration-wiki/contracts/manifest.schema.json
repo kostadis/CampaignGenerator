@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://campaigngenerator.local/schemas/narration-wiki-manifest-v1.json",
+  "title": "Narration Wiki Trace Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "iteration_id",
+    "campaign_id",
+    "session_relative",
+    "layouts",
+    "artifacts",
+    "missing",
+    "measurement_corpus",
+    "corpus_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "iteration_id": {
+      "$ref": "#/$defs/stableId"
+    },
+    "campaign_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "session_relative": {
+      "$ref": "#/$defs/relativePath"
+    },
+    "layouts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "critique-flat",
+          "critique-directory",
+          "extractions",
+          "extractions-new",
+          "extractions-smoothed",
+          "gm-assist",
+          "gm-assistant",
+          "gm-assist-doc"
+        ]
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "missing": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/missingArtifact"
+      }
+    },
+    "measurement_corpus": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/relativePath"
+      }
+    },
+    "corpus_id": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"
+    },
+    "artifactKind": {
+      "enum": [
+        "critique",
+        "narration",
+        "scene_extraction",
+        "gm_assist",
+        "source_record",
+        "scrub_manifest",
+        "generation_settings"
+      ]
+    },
+    "layout": {
+      "enum": [
+        "critique-flat",
+        "critique-directory",
+        "extractions",
+        "extractions-new",
+        "extractions-smoothed",
+        "gm-assist",
+        "gm-assistant",
+        "gm-assist-doc",
+        "current-configured"
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "path",
+        "sha256",
+        "bytes",
+        "narrator",
+        "layout"
+      ],
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/artifactKind"
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "narrator": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "layout": {
+          "$ref": "#/$defs/layout"
+        }
+      }
+    },
+    "missingArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "pattern",
+        "reason"
+      ],
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/artifactKind"
+        },
+        "pattern": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

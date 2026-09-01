@@ -7,6 +7,53 @@ from pathlib import Path
 from typing import Any
 
 
+def atomic_write_bytes(path: Path | str, data: bytes) -> None:
+    """Durably replace *path* with exact bytes using a sibling temporary file.
+
+    The temporary file is private to this writer, flushed before replacement,
+    and removed after every failed write.  Keeping it beside the destination
+    makes :func:`os.replace` atomic on the destination filesystem.
+    """
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # Retain the established PID-suffixed sibling name: speculative workers
+    # run in separate processes, and existing callers/tests rely on this
+    # observable cleanup convention.
+    tmp = path.with_name(f"{path.name}.tmp.{os.getpid()}")
+    fd = os.open(tmp, os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o600)
+    try:
+        handle = os.fdopen(fd, "wb")
+    except BaseException:
+        os.close(fd)
+        tmp.unlink(missing_ok=True)
+        raise
+    # From here the wrapper owns fd and closes it exactly once.  Closing the
+    # raw number again after a failed os.replace() would reach whatever the
+    # runtime has since reissued it to -- another open file or socket in this
+    # same process, since the server runs these writes in a threadpool.
+    try:
+        with handle:
+            handle.write(data)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, path)
+        try:
+            directory_fd = os.open(path.parent, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
+        except OSError:
+            # Directory fsync is unavailable on a few supported filesystems.
+            pass
+    except BaseException:
+        try:
+            tmp.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise
+
+
 def atomic_write_text(path: Path | str, text: str, encoding: str = "utf-8") -> None:
     """Write text to path atomically (FR-014: no partial file at the trusted path).
 
@@ -23,18 +70,7 @@ def atomic_write_text(path: Path | str, text: str, encoding: str = "utf-8") -> N
     to the atomic rename, where last-writer-wins is harmless (both wrote the
     same content).
     """
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(f"{path.name}.tmp.{os.getpid()}")
-    try:
-        tmp.write_text(text, encoding=encoding)
-        os.replace(tmp, path)
-    except BaseException:
-        try:
-            tmp.unlink(missing_ok=True)
-        except OSError:
-            pass
-        raise
+    atomic_write_bytes(path, text.encode(encoding))
 
 
 def atomic_write_json(path: Path | str, obj: Any, indent: int = 2) -> None:

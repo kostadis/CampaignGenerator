@@ -1,0 +1,7 @@
+schema_version: 1
+source_repository: fixture
+source_revision: old
+narration_wiki_contract: 0
+guidance_source: copied
+capabilities:
+  - proposer
