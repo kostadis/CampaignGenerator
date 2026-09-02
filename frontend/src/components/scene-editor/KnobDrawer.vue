@@ -25,6 +25,8 @@ const props = defineProps<{
   openrouterModel: string
   codexModel: string
   codexReasoning: string
+  claudeCodeEffort: string
+  claudeCodeThinking: string
   voicePlayer: string
   voiceFile: string
   voiceUpdate: boolean
@@ -67,6 +69,8 @@ const emit = defineEmits<{
   'update:openrouterModel': [value: string]
   'update:codexModel': [value: string]
   'update:codexReasoning': [value: string]
+  'update:claudeCodeEffort': [value: string]
+  'update:claudeCodeThinking': [value: string]
   'update:voicePlayer': [value: string]
   'update:voiceFile': [value: string]
   'update:voiceUpdate': [value: boolean]
@@ -243,6 +247,39 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
             @input="emit('update:openrouterModel', ($event.target as HTMLInputElement).value)"
           />
           <div class="field-help">OpenRouter model id. Blank → the runtime default. Uses OpenRouter's fixed base URL — no endpoint to configure.</div>
+        </div>
+        <div v-if="backend === 'claude-code'" class="field">
+          <label class="field-label">Thinking</label>
+          <select
+            class="field-input"
+            :value="claudeCodeThinking"
+            @change="emit('update:claudeCodeThinking', ($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">(defer to CG_CLAUDE_CODE_THINKING)</option>
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+          <div class="field-help">
+            Off by default — suppressing the trace is measurably faster.
+            Required for effort xhigh and max.
+          </div>
+        </div>
+        <div v-if="backend === 'claude-code'" class="field">
+          <label class="field-label">Effort</label>
+          <select
+            class="field-input"
+            :value="claudeCodeEffort"
+            :disabled="!config.claudeCodeEfforts.length"
+            @change="emit('update:claudeCodeEffort', ($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">Claude Code default</option>
+            <option v-for="effort in config.claudeCodeEfforts" :key="effort" :value="effort">
+              {{ effort }}
+            </option>
+          </select>
+          <div class="field-help">
+            {{ config.claudeCodeCompatibilityError || 'Higher effort can take longer. xhigh and max require Thinking above (or CG_CLAUDE_CODE_THINKING=1).' }}
+          </div>
         </div>
         <div v-if="backend === 'codex-cli'" class="field">
           <label class="field-label">Codex model (optional)</label>

@@ -21,6 +21,8 @@ from datetime import datetime
 from pathlib import Path
 
 from campaignlib import (
+    resolve_cli_claude_effort,
+    resolve_cli_claude_thinking,
     DEFAULT_MODEL,
     add_backend_args,
     call_api_with_tools,
@@ -836,6 +838,8 @@ def main() -> None:
         args, legacy_default=DEFAULT_MODEL
     ).effective_model
     reasoning = resolve_cli_reasoning(args)
+    claude_effort = resolve_cli_claude_effort(args)
+    claude_thinking = resolve_cli_claude_thinking(args)
 
     # Load config (not strictly needed but matches every other CLI's UX)
     try:
@@ -946,6 +950,19 @@ def main() -> None:
             "codex_reasoning_effort": reasoning.effective_effort or "Codex default",
             "codex_reasoning_effort_source": reasoning.source,
             "codex_reasoning_override": reasoning.emit_override,
+        })
+    if claude_effort.backend == "claude-code":
+        # "requested" rather than "effective": the clamp-versus-inherited
+        # split is decided at the seam, per call, from the thinking state —
+        # recording a guess here would be the Optimistic Lie the run banner
+        # exists to prevent.
+        run_start.update({
+            "claude_code_effort": claude_effort.effective_effort or "not set",
+            "claude_code_effort_source": claude_effort.source,
+            "claude_code_effort_override": claude_effort.emit_override,
+            "claude_code_thinking": (
+                "not set" if claude_thinking is None else claude_thinking
+            ),
         })
     trace.emit(run_start)
 

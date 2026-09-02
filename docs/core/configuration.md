@@ -112,6 +112,57 @@ dormant when another backend is active. The sidebar, service override panel,
 Session Doc Editor drawer, and ensemble setup all use the server-published
 vocabulary and serialize “Codex default” as null/omitted.
 
+## Claude Code thinking
+
+All 30 `claude-code`-capable commands accept `--claude-code-thinking` /
+`--no-claude-code-thinking` (issue #365), resolved through the same
+request → service → platform tiers as model and effort, then the seam's
+`CG_CLAUDE_CODE_THINKING` fallback, then off.
+
+The stored value is `bool | None`, and `None` is not the same as `False`:
+`None` defers to the environment, `False` is a sticky off that beats it. The
+global value is `platform.yaml`'s `runtime.default_claude_code_thinking`;
+service/profile values sit beside the effort in the owning service document.
+
+**The default is deliberately unchanged.** Off, per the measurement recorded in
+`campaignlib/api/backends.py`. #365 made thinking reachable; it did not
+re-decide whether it should be on.
+
+Both spellings are emitted to child processes, because a resolved `False`
+forwarded as silence would let the child read `CG_CLAUDE_CODE_THINKING` from
+the inherited environment and override the operator.
+
+## Claude Code effort
+
+All 30 `claude-code`-capable commands accept `--claude-code-effort` with exactly
+`low`, `medium`, `high`, `xhigh`, or `max` — five values, not the Codex six:
+`claude --effort` has no `minimal`. Resolution is explicit CLI/UI value, then
+`CG_CLAUDE_CODE_EFFORT`, then omission.
+
+Omission preserves the pre-021 behaviour exactly and means one of two things,
+which are now reported separately: the engine's **compatibility clamp**
+(`--effort high` when thinking is suppressed on a model whose thinking can be
+disabled — the API refuses `xhigh`/`max` without thinking), or **inherited**,
+where nothing is sent and `claude -p` resolves `effortLevel` from the operator's
+own `~/.claude/settings.json`. An inherited run never claims a level, because
+this process does not read that file.
+
+An explicit `xhigh`/`max` on a run whose thinking is suppressed is **refused
+before any child process starts**, naming both remedies (lower the effort, or
+turn thinking on). No fallback, no silent repair, and the thinking
+setting is never changed on the operator's behalf. The refusal does not fire on
+always-thinking model families.
+
+The global value is `platform.yaml`'s `runtime.default_claude_code_effort`.
+Service/profile values live beside their existing model under the owning
+service document, including the Session Doc Editor's `claude-code` backend
+profile and each ensemble stage. A stored Claude Code effort and a stored Codex
+reasoning effort coexist independently; each lies dormant while the other
+backend is active, and setting one never reads, writes, or clears the other.
+The sidebar, service override panel, Session Doc Editor drawer, and ensemble
+setup all use the server-published vocabulary and serialize “Claude Code
+default” as null/omitted.
+
 Provider `--batch` is Anthropic Message Batches and is rejected before model or
 child work for Codex. It is distinct from application controls such as
 `--batch-scenes`, ensemble fan-out, resume, and review checkpoints. The

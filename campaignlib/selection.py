@@ -24,6 +24,12 @@ Backend = Literal["anthropic", "dgx", "openrouter", "claude-code", "codex-cli"]
 CodexReasoningEffort = Literal[
     "minimal", "low", "medium", "high", "xhigh", "max"
 ]
+# Deliberately NOT the same set as CodexReasoningEffort: `claude --effort`
+# accepts five levels and has no "minimal". Sharing one vocabulary between the
+# two subscription backends would put a value in `--help` that fails at the
+# call, which is the dialect Principle XII forbids — see
+# specs/021-claude-code-effort/research.md R1.
+ClaudeCodeEffort = Literal["low", "medium", "high", "xhigh", "max"]
 
 BACKENDS: tuple[str, ...] = (
     "anthropic", "dgx", "openrouter", "claude-code", "codex-cli"
@@ -36,6 +42,17 @@ CODEX_REASONING_EFFORTS: tuple[CodexReasoningEffort, ...] = (
     "xhigh",
     "max",
 )
+CLAUDE_CODE_EFFORTS: tuple[ClaudeCodeEffort, ...] = (
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max",
+)
+# The two levels `claude -p` refuses when extended thinking is disabled. Kept
+# beside the vocabulary rather than inline at the check so the rule has one
+# home; campaignlib.api.backends reads it.
+CLAUDE_CODE_THINKING_ONLY_EFFORTS: tuple[ClaudeCodeEffort, ...] = ("xhigh", "max")
 
 
 def _empty_to_none(v: Any) -> Any:
@@ -79,6 +96,23 @@ class ModelSelection(BaseModel):
     "Batch selection, by tier" table). An unsatisfiable ``batch: true`` is
     storable-not-rejected for the same reason an incompatible model/backend
     pair is, above.
+
+    ``claude_code_effort`` (feature 021) is the ``claude-code`` twin of
+    ``codex_reasoning_effort`` and behaves exactly like it: independently
+    optional, ``None`` means "defer to the tier above", and an effort stored
+    against a different active backend is storable-not-runnable. The two are
+    deliberately separate fields rather than one shared "effort" — the
+    vocabularies differ (``minimal`` is Codex-only) and omission means
+    different things on each backend, so one field would carry two meanings.
+    Both may be set at once; each lies dormant while the other backend is
+    active.
+
+    ``claude_code_thinking`` (issue #365) is ``bool | None`` for the same
+    reason ``batch`` is, and the distinction is load-bearing here: ``None``
+    defers to ``CG_CLAUDE_CODE_THINKING``, while ``False`` is a sticky
+    "explicitly off" that beats the environment. Collapsing the two would make
+    an operator's deliberate "off" indistinguishable from silence, and an
+    exported variable would then quietly override them.
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -87,6 +121,8 @@ class ModelSelection(BaseModel):
     model: _OptStr = None
     batch: bool | None = None
     codex_reasoning_effort: CodexReasoningEffort | None = None
+    claude_code_effort: ClaudeCodeEffort | None = None
+    claude_code_thinking: bool | None = None
 
     def is_empty(self) -> bool:
         """True when this selection defers entirely to the tier above.
@@ -106,6 +142,8 @@ class ModelSelection(BaseModel):
             and not self.model
             and self.batch is None
             and self.codex_reasoning_effort is None
+            and self.claude_code_effort is None
+            and self.claude_code_thinking is None
         )
 
 

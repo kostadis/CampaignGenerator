@@ -121,6 +121,58 @@ wall-clock. The page says so before the run.
 inside a single web request rather than as a streamed background run, so a
 batch run there could outlive the request. Tracked as issue #192.
 
+### Subscription effort selectors
+
+Both subscription backends expose an effort control, and each appears only
+while its own backend is active — sidebar (app-wide), the per-service override
+panel, the Session Doc Editor drawer, and each ensemble stage.
+
+- **`codex-cli` → "Codex reasoning"**: `minimal … max`, plus "Codex default".
+- **`claude-code` → "Effort"**: `low … max`, plus "Claude Code default". No
+  `minimal`; `claude --effort` does not accept one.
+
+The vocabulary comes from the server (`GET /api/config/models`), never from a
+list in the frontend — an older server disables the selector visibly rather
+than letting the UI submit a value it cannot understand.
+
+**Switching backends erases nothing.** The two selections are stored in
+separate per-backend profiles, so a campaign can hold both at once; each lies
+dormant while the other backend is active, and setting one never touches the
+other. Choosing the "default" option stores *omission* (the field is removed),
+not the level the platform tier happens to hold today.
+
+**What a claude-code run reports.** Every run prints one `claude-code run:`
+line into the output stream, naming the model, the effort, which of four
+sources decided it, and the thinking state. Two of those sources are what
+"default" used to hide: a **compatibility clamp** (the engine pinned `high`
+because thinking is off and the provider refuses `xhigh`/`max` without it —
+overriding whatever your own `~/.claude/settings.json` says), and
+**inherited** (nothing was sent; your settings.json decided, and the line does
+not guess which level that was).
+
+**`xhigh` and `max` are refused without thinking**, before any child process
+starts, with both remedies in the message.
+
+### The Thinking control
+
+Beside the effort selector on every claude-code surface, and tri-state
+(issue #365):
+
+| Choice | Meaning |
+|---|---|
+| *(defer to CG_CLAUDE_CODE_THINKING)* | No stored choice; the environment decides |
+| On | Thinking enabled — and `xhigh`/`max` become usable |
+| Off | Explicitly off, **beating the environment variable** |
+
+"Defer" and "Off" are deliberately separate. If they were one checkbox, an
+`export CG_CLAUDE_CODE_THINKING=1` in an unrelated shell would silently
+override an operator who had chosen off, and nothing would say so.
+
+**The default stays off** — suppressing the reasoning trace is measurably
+faster on this backend, and #365 made the setting reachable rather than
+re-deciding it. Fable/Mythos models always think; the control is accepted
+there and inert, and the run identity reports `thinking=on (always)`.
+
 ## Session Doc Editor
 
 Two-panel layout for the extract → edit → narrate → assemble workflow:

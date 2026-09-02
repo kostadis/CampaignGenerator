@@ -50,6 +50,78 @@ without retrying another effort or model. Supplying the option with a non-Codex
 backend also fails before model work. Each child start prints `Codex run:` with
 the resolved model, effort, and provenance.
 
+### Claude Code effort
+
+The `claude-code` subscription backend has the same control under its own
+spelling: `--claude-code-effort`, with exact values `low`, `medium`, `high`,
+`xhigh`, and `max`. There is no `minimal` — `claude --effort` does not accept
+one, and the two subscription backends deliberately do not share a vocabulary.
+An explicit value wins over `CG_CLAUDE_CODE_EFFORT`; supplying it with a
+non-`claude-code` backend fails before model work.
+
+**Omission is not "send nothing" on this backend, and this is the part worth
+reading.** `claude -p` resolves `effortLevel` from your own
+`~/.claude/settings.json`, and the API refuses `xhigh`/`max` when extended
+thinking is disabled — which it is by default here, deliberately and by
+measurement (suppressing the trace took a 130,412-char extraction from 17m43s
+to 3m57s). So with no selection, CampaignGenerator does one of two things:
+
+| Situation | What is sent | Reported as |
+|---|---|---|
+| Thinking off, model's thinking *can* be disabled | `--effort high` | **compatibility clamp**, with its reason |
+| Thinking on, or an always-thinking model (Fable/Mythos) | nothing | **inherited** from your settings.json |
+
+Both were previously silent. The clamp in particular *overrides a level you
+pinned yourself* — if your `settings.json` says `xhigh`, a default run has
+always executed at `high` and nothing said so. Every run now prints one
+`claude-code run:` line naming the model, the effort, which of the four sources
+decided it (`explicit` / `CG_CLAUDE_CODE_EFFORT` / clamp / inherited), and the
+thinking state. An `inherited` run reports no level, because this process never
+reads that file and will not guess.
+
+**Asking for `xhigh` or `max` with thinking off is refused, not repaired.** The
+message names both remedies — lower the effort, or turn thinking on — and no
+child process starts. CampaignGenerator
+will not enable thinking on your behalf (it is a ~4x run-time decision), will
+not quietly lower the level, and will not start the child and let the provider
+reject it. The refusal does not fire on Fable/Mythos, where thinking cannot be
+disabled and the top levels are legal.
+
+### Claude Code thinking
+
+`--claude-code-thinking` / `--no-claude-code-thinking` (issue #365). Before it,
+extended thinking on this backend had no flag and no UI control — the only
+lever was `CG_CLAUDE_CODE_THINKING`, which made two of the five effort levels
+selectable everywhere but usable only from a shell that had exported a
+variable.
+
+The option is **tri-state, and the third state is load-bearing**:
+
+| argv | Meaning |
+|---|---|
+| absent | Defer to `CG_CLAUDE_CODE_THINKING` |
+| `--claude-code-thinking` | On |
+| `--no-claude-code-thinking` | Off, **and it beats the environment variable** |
+
+Collapsing "absent" and "off" into a boolean would make a deliberate off
+indistinguishable from silence, and an unrelated `export` in the operator's
+shell would then quietly override them. This is the same reason
+`ModelSelection.batch` is `bool | None`.
+
+Resolution at the seam is: a per-call argument, then this selection, then
+`CG_CLAUDE_CODE_THINKING`, then off. **The default is unchanged** — off, per
+the measurement in `campaignlib/api/backends.py`'s module comment. Making
+thinking selectable is not the same as deciding it should be on; re-deciding
+that deserves a fresh measurement rather than arriving as a side effect.
+
+A resolved `False` is forwarded to child processes as an explicit
+`--no-claude-code-thinking`, never as silence — the child inherits the
+environment and would otherwise turn thinking back on.
+
+On the Fable/Mythos families thinking cannot be disabled at all.
+`--no-claude-code-thinking` is accepted there and has no effect; the run
+identity reports `thinking=on (always)` rather than echoing what was asked.
+
 The Codex adapter supports the direct text shapes used across this command
 family and a separate brokered structured-turn shape for the ensemble polish
 loop. The consistency-auditor and `consistency-check`/`staged-consistency`

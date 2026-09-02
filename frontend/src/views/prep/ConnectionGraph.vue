@@ -46,10 +46,29 @@ interface CodexRunIdentity {
   codex_reasoning_effort_source: string
   codex_reasoning_override: boolean
 }
-const run_identity = ref<CodexRunIdentity | null>(null)
+// 021 — the claude-code twin. `claude_code_effort` may read 'inherited',
+// which means CampaignGenerator sent no override and the operator's own
+// ~/.claude/settings.json decided; it is deliberately not a level, because
+// this process never reads that file.
+interface ClaudeCodeRunIdentity {
+  backend: 'claude-code'
+  model: string
+  claude_code_effort: string
+  claude_code_effort_source: string
+  claude_code_effort_override: boolean
+  thinking: boolean
+}
+type RunIdentity = CodexRunIdentity | ClaudeCodeRunIdentity
+const run_identity = ref<RunIdentity | null>(null)
 const runIdentityLabel = computed(() => {
   const identity = run_identity.value
   if (!identity) return ''
+  if (identity.backend === 'claude-code') {
+    return `claude-code run: model=${identity.model}; `
+      + `effort=${identity.claude_code_effort} `
+      + `(${identity.claude_code_effort_source}) `
+      + `thinking=${identity.thinking ? 'on' : 'off'}`
+  }
   return `Codex run: model=${identity.model} (${identity.model_source}); `
     + `reasoning_effort=${identity.codex_reasoning_effort} `
     + `(${identity.codex_reasoning_effort_source})`
@@ -165,7 +184,7 @@ async function extract() {
     if (e instanceof ApiError) {
       const payload = e.data as {
         error?: string
-        run_identity?: CodexRunIdentity
+        run_identity?: RunIdentity
       } | null
       run_identity.value = payload?.run_identity || null
       error.value = payload?.error || e.message

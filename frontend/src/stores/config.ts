@@ -8,6 +8,10 @@ import { apiFetch, apiPut, apiPost, apiDelete } from '../api/client'
 export const BACKENDS = ['anthropic', 'dgx', 'openrouter', 'claude-code', 'codex-cli'] as const
 export type Backend = typeof BACKENDS[number]
 export type CodexReasoningEffort = 'minimal' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'
+// Five values, not six: `claude --effort` has no 'minimal'. The two
+// subscription backends deliberately do NOT share one vocabulary — see
+// specs/021-claude-code-effort/research.md R1.
+export type ClaudeCodeEffort = 'low' | 'medium' | 'high' | 'xhigh' | 'max'
 
 type BackendModelMemory = Partial<Record<Backend, string>>
 
@@ -104,6 +108,16 @@ export const useConfigStore = defineStore('config', () => {
   // Global Codex-only memory. It remains hydrated while another backend is
   // active, so switching away and back never erases the Codex profile.
   const codexReasoningEffort = ref<CodexReasoningEffort | ''>('')
+  const claudeCodeEfforts = ref<ClaudeCodeEffort[]>([])
+  const claudeCodeCompatibilityError = ref('')
+  // Global claude-code-only memory, hydrated alongside the Codex one and
+  // independent of it: a profile may hold both, and switching backends must
+  // erase neither.
+  const claudeCodeEffort = ref<ClaudeCodeEffort | ''>('')
+  // Tri-state (#365) carried as a string so a <select> can bind it:
+  // '' = defer to CG_CLAUDE_CODE_THINKING, 'on'/'off' = an explicit choice.
+  // A boolean ref could not express "defer" separately from "off".
+  const claudeCodeThinking = ref<'' | 'on' | 'off'>('')
   // The app-wide backend. Feature 003 moved it out of the Session Doc
   // Editor's backends.active (session_doc.yaml) and up to the platform tier
   // beside default_model, so the sidebar's two controls are owned by the same
@@ -152,6 +166,21 @@ export const useConfigStore = defineStore('config', () => {
         codexReasoningCompatibilityError.value =
           'This server does not publish Codex reasoning choices. Update the server to change this setting.'
       }
+      // Same contract as the Codex list above: the vocabulary is the server's
+      // to publish. No runtime fallback literal here — an older server must
+      // disable the selector visibly rather than let a newer UI submit a value
+      // it cannot understand, and a hardcoded copy would be a second
+      // declaration of a vocabulary that already has an owner.
+      if (Array.isArray(modelsData.claude_code_efforts)) {
+        claudeCodeEfforts.value = modelsData.claude_code_efforts.filter(
+          (value: unknown): value is ClaudeCodeEffort => typeof value === 'string',
+        )
+        claudeCodeCompatibilityError.value = ''
+      } else {
+        claudeCodeEfforts.value = []
+        claudeCodeCompatibilityError.value =
+          'This server does not publish Claude Code effort choices. Update the server to change this setting.'
+      }
       const configuredBackends = Array.isArray(modelsData.backends)
         ? modelsData.backends.filter((value: unknown): value is Backend =>
           typeof value === 'string' && (BACKENDS as readonly string[]).includes(value),
@@ -165,6 +194,10 @@ export const useConfigStore = defineStore('config', () => {
       const runtime = cfg.resolved?.runtime ?? {}
       defaultModels.value = readBackendModelMemory(runtime.default_models)
       codexReasoningEffort.value = runtime.default_codex_reasoning_effort || ''
+      claudeCodeEffort.value = runtime.default_claude_code_effort || ''
+      claudeCodeThinking.value = runtime.default_claude_code_thinking === true
+        ? 'on'
+        : runtime.default_claude_code_thinking === false ? 'off' : ''
       model.value = resolveHydratedModel(runtime, backend.value, defaultModels.value, modelsData.default)
       batch.value = cfg.resolved?.runtime?.default_batch === true
       cwd.value = status.cwd
@@ -187,6 +220,10 @@ export const useConfigStore = defineStore('config', () => {
     const runtime = resolved.value.runtime ?? {}
     defaultModels.value = readBackendModelMemory(runtime.default_models)
     codexReasoningEffort.value = runtime.default_codex_reasoning_effort || ''
+    claudeCodeEffort.value = runtime.default_claude_code_effort || ''
+    claudeCodeThinking.value = runtime.default_claude_code_thinking === true
+      ? 'on'
+      : runtime.default_claude_code_thinking === false ? 'off' : ''
     model.value = resolveHydratedModel(runtime, backend.value, defaultModels.value, defaultModel.value)
     if (resolved.value.runtime?.default_batch !== undefined) {
       batch.value = resolved.value.runtime.default_batch === true
@@ -302,6 +339,10 @@ export const useConfigStore = defineStore('config', () => {
     codexReasoningEfforts,
     codexReasoningCompatibilityError,
     codexReasoningEffort,
+    claudeCodeEfforts,
+    claudeCodeCompatibilityError,
+    claudeCodeEffort,
+    claudeCodeThinking,
     model,
     cwd,
     loaded,

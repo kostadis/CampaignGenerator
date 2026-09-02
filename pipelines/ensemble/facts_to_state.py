@@ -57,8 +57,12 @@ from campaignlib import (
 )
 from campaignlib.api.client import (
     add_codex_reasoning_arg,
+    add_claude_code_effort_arg,
+    add_claude_code_thinking_arg,
     resolve_cli_model,
     resolve_cli_reasoning,
+    resolve_cli_claude_effort,
+    resolve_cli_claude_thinking,
 )
 from campaignlib.selection import BACKENDS
 from campaignlib.registry import Registry, load_registry, resolve_registry_arg
@@ -1118,6 +1122,12 @@ def build_parser() -> argparse.ArgumentParser:
                    default="anthropic",
                    help="LLM backend (default: anthropic). Combine with --endpoints "
                         "for --backend dgx.")
+    # add_backend_args would have registered this for us; this parser can't
+    # call it (the --endpoint/--endpoints collision above), so the option is
+    # registered explicitly. Without this line one CLI in the family silently
+    # lacks the flag — the dialect Principle XII forbids.
+    add_claude_code_effort_arg(p)
+    add_claude_code_thinking_arg(p)
     p.add_argument("--endpoints", nargs="+", default=None, metavar="URL",
                    help="Multiple OpenAI-compatible endpoints to fan out across "
                         "concurrently (one worker per endpoint, work-stealing). "
@@ -1149,6 +1159,8 @@ def main() -> None:
     args = parser.parse_args()
     try:
         resolve_cli_reasoning(args)
+        resolve_cli_claude_effort(args)
+        resolve_cli_claude_thinking(args)
     except ValueError as exc:
         parser.error(str(exc))
     args.model = resolve_cli_model(

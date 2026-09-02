@@ -2,7 +2,8 @@
 import { ref, computed, onMounted } from 'vue'
 import {
   fetchEnsembleConfig, saveEnsembleConfig, fetchRegistrySummary,
-  codexReasoningValue, type EnsembleConfig, type RegistrySummary,
+  codexReasoningValue, claudeCodeEffortValue, claudeCodeThinkingValue,
+  type EnsembleConfig, type RegistrySummary,
 } from './useEnsembleRun'
 import { useConfigStore } from '../../stores/config'
 import ChapterPicker from './ChapterPicker.vue'
@@ -119,6 +120,17 @@ function setBatchSelect(stage: 'extract' | 'synthesize', value: string) {
   cfg.value[stage].batch = value === 'on' ? true : value === 'off' ? false : null
 }
 
+function setClaudeCodeThinking(stage: 'extract' | 'synthesize', value: string) {
+  if (!cfg.value) return
+  cfg.value[stage].claude_code_thinking =
+    value === 'on' ? true : value === 'off' ? false : null
+}
+
+function setClaudeCodeEffort(stage: 'extract' | 'synthesize', value: string) {
+  if (!cfg.value) return
+  cfg.value[stage].claude_code_effort = value || null
+}
+
 function setCodexReasoning(stage: 'extract' | 'synthesize', value: string) {
   if (!cfg.value) return
   cfg.value[stage].codex_reasoning_effort = value || null
@@ -185,6 +197,37 @@ function setCodexReasoning(stage: 'extract' | 'synthesize', value: string) {
           <span>Model id (optional — defaults to the subscription's own default)</span>
           <input v-model="cfg[stage].model" type="text"
             :placeholder="cfg[stage].backend === 'codex-cli' ? 'gpt-5-codex' : 'claude-opus-4-8'" />
+        </label>
+        <label class="fld" v-if="cfg[stage].backend === 'claude-code'">
+          <span>Thinking</span>
+          <select
+            :value="claudeCodeThinkingValue(cfg[stage])"
+            @change="setClaudeCodeThinking(stage, ($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">(defer to CG_CLAUDE_CODE_THINKING)</option>
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+          <span class="hint">
+            Off by default — suppressing the trace is measurably faster.
+            Required for effort xhigh and max.
+          </span>
+        </label>
+        <label class="fld" v-if="cfg[stage].backend === 'claude-code'">
+          <span>Effort</span>
+          <select
+            :value="claudeCodeEffortValue(cfg[stage])"
+            :disabled="!config.claudeCodeEfforts.length"
+            @change="setClaudeCodeEffort(stage, ($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">Claude Code default</option>
+            <option v-for="effort in config.claudeCodeEfforts" :key="effort" :value="effort">
+              {{ effort }}
+            </option>
+          </select>
+          <span class="hint">
+            {{ config.claudeCodeCompatibilityError || 'Higher effort can take longer. xhigh and max require Thinking above (or CG_CLAUDE_CODE_THINKING=1).' }}
+          </span>
         </label>
         <label class="fld" v-if="cfg[stage].backend === 'codex-cli'">
           <span>Codex reasoning</span>
