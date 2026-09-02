@@ -1028,6 +1028,10 @@ class TestNoRouteBuildsFromIncompatibleBatchSelection:
             # 021 — the claude-code twin of the three Codex keys above.
             "claude_code_effort", "claude_code_effort_origin",
             "claude_code_effort_override",
+            # #365 — the tri-state thinking selection. No "_override" twin:
+            # both True and False are forwarded explicitly, so there is
+            # nothing for a separate override flag to distinguish.
+            "claude_code_thinking", "claude_code_thinking_origin",
             "compatible", "refusal",
         }
 

@@ -30,7 +30,7 @@ import sys
 from pathlib import Path
 
 from campaignlib.api.client import (
-    add_codex_reasoning_arg, add_claude_code_effort_arg,
+    add_codex_reasoning_arg, add_claude_code_effort_arg, add_claude_code_thinking_arg,
     resolve_cli_reasoning, resolve_cli_claude_effort,
 )
 from campaignlib.selection import BACKENDS
@@ -112,6 +112,7 @@ def main() -> None:
              "dispatch).")
     add_codex_reasoning_arg(parser)
     add_claude_code_effort_arg(parser)
+    add_claude_code_thinking_arg(parser)
     parser.add_argument("--skip", action="append", default=[], metavar="NAME",
                         help="Skip a named pass (can repeat).")
     parser.add_argument("--speculative", action=argparse.BooleanOptionalAction,
@@ -175,6 +176,12 @@ def main() -> None:
             "--claude-code-effort",
             args.claude_code_effort,
         ]
+    if args.claude_code_thinking is not None:
+        # Forwarded in BOTH directions on purpose: a stored "off" must reach
+        # the child explicitly, or the child reads CG_CLAUDE_CODE_THINKING
+        # from the inherited environment and overrides it.
+        extract_cmd += ["--claude-code-thinking" if args.claude_code_thinking
+                        else "--no-claude-code-thinking"]
     if args.batch:
         extract_cmd += ["--batch"]
     for s in args.skip:

@@ -55,9 +55,21 @@ def test_store_does_not_hardcode_the_vocabulary():
     assert '"low", "medium", "high", "xhigh", "max"' not in source
 
 
+# A surface can name the selection at any of three layers, and which one it
+# uses is a legitimate local choice: the store ref (`claudeCodeEffort`), the
+# wire field the API speaks (`claude_code_effort`), or a local draft ref
+# (`claudeEffort` in SelectionPanel, which holds an unsaved edit). Asserting
+# one spelling would fail a surface that correctly uses another — so these
+# checks ask "does this file know about the selection at all", which is the
+# actual Principle XI question.
+EFFORT_TOKENS = ("claudeCodeEffort", "claude_code_effort", "claudeEffort")
+THINKING_TOKENS = ("claudeCodeThinking", "claude_code_thinking", "claudeThinking")
+
+
 @pytest.mark.parametrize("relative", SELECTOR_OWNERS)
 def test_every_selector_owner_exposes_claude_code_effort(relative):
-    assert "claudeCodeEffort" in _source(relative), (
+    source = _source(relative)
+    assert any(token in source for token in EFFORT_TOKENS), (
         f"{relative} offers claude-code but has no effort path — "
         "Principle XI, the orphaned capability"
     )
@@ -84,7 +96,7 @@ def test_no_surface_offers_codex_effort_without_the_claude_code_one():
     for relative in SELECTOR_OWNERS:
         source = _source(relative)
         if "codexReasoning" in source:
-            assert "claudeCodeEffort" in source, (
+            assert any(token in source for token in EFFORT_TOKENS), (
                 f"{relative} exposes Codex effort but not Claude Code effort"
             )
 
@@ -119,3 +131,52 @@ def test_streamed_results_and_graph_expose_the_run_identity():
     graph = _source("frontend/src/views/prep/ConnectionGraph.vue")
     assert "ClaudeCodeRunIdentity" in graph
     assert "claude_code_effort_source" in graph
+
+
+# --------------------------------------------------------------------------
+# Thinking control parity (issue #365)
+# --------------------------------------------------------------------------
+
+@pytest.mark.parametrize("relative", SELECTOR_OWNERS)
+def test_every_effort_surface_also_exposes_thinking(relative):
+    """#365's whole point: the effort control offers two levels that only a
+    thinking-enabled run can use, so a surface offering effort without
+    thinking hands the operator a choice that fails."""
+    source = _source(relative)
+    assert any(token in source for token in THINKING_TOKENS), (
+        f"{relative} exposes Claude Code effort but not the thinking control"
+    )
+
+
+@pytest.mark.parametrize("relative", FIXED_CHOICE_SURFACES)
+def test_thinking_control_is_tri_state_not_a_checkbox(relative):
+    """'' (defer to the environment) must stay distinguishable from 'off'.
+    A checkbox cannot express that, and collapsing them would let an exported
+    variable silently override a deliberate off."""
+    source = _source(relative)
+    assert 'value="on"' in source
+    assert 'value="off"' in source
+    assert "CG_CLAUDE_CODE_THINKING" in source
+
+
+@pytest.mark.parametrize("relative", FIXED_CHOICE_SURFACES)
+def test_effort_help_points_at_the_control_not_only_the_env_var(relative):
+    """Before #365 the help could only name an environment variable, because
+    that was the only remedy. With a control beside it, pointing at the
+    variable alone is stale advice."""
+    source = _source(relative)
+    assert "Thinking above" in source
+
+
+def test_selection_panel_shows_resolved_thinking_and_origin():
+    source = _source("frontend/src/components/shared/SelectionPanel.vue")
+    assert "claude_code_thinking_origin" in source
+    assert "defer to environment" in source
+
+
+def test_session_editor_persists_thinking_to_its_own_backend_profile():
+    source = _source("frontend/src/views/session/SessionDocEditor.vue")
+    profile = source.split("'claude-code': {")[1].split("},")[0]
+    assert "claude_code_thinking" in profile
+    # null, not false, for the deferring state
+    assert ": null" in profile

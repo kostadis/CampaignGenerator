@@ -1,5 +1,6 @@
 """Client factory and the live API call surface (streaming, non-streaming, tools)."""
 
+import argparse
 import os
 import sys
 from dataclasses import dataclass
@@ -226,6 +227,30 @@ def resolve_cli_claude_effort(args) -> ClaudeCodeEffortIntent:
     )
 
 
+def resolve_cli_claude_thinking(args) -> bool | None:
+    """Resolve the operator's tri-state thinking choice from argv (issue #365).
+
+    Returns ``True``/``False`` for an explicit choice, or ``None`` for
+    "defer" — the environment tier is deliberately NOT read here. The seam
+    (`_claude_code_thinking`) owns that fallback, and reading it in two places
+    is how the two would come to disagree.
+
+    Mirrors the effort resolver's asymmetry: an explicit flag on another
+    backend is refused, because the operator typed something that cannot take
+    effect. There is no environment case to be ambient about.
+    """
+    requested = getattr(args, "claude_code_thinking", None)
+    if requested is None:
+        return None
+    backend = _effective_backend(args)
+    if backend != "claude-code":
+        raise ValueError(
+            "--claude-code-thinking applies only to --backend claude-code; "
+            f"effective backend is {backend!r}"
+        )
+    return bool(requested)
+
+
 def resolve_cli_model(args, *, legacy_default: str | None) -> CLIModelIntent:
     """Resolve a CLI's model without losing omission versus explicit intent.
 
@@ -321,7 +346,8 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
                 reasoning_effort: CodexReasoningEffort | None = None,
                 reasoning_effort_source: str | None = None,
                 claude_code_effort: ClaudeCodeEffort | None = None,
-                claude_code_effort_source: str | None = None):
+                claude_code_effort_source: str | None = None,
+                claude_code_thinking: bool | None = None):
     """Return an LLM client.
 
     Default: an Anthropic client (existing behaviour).
@@ -360,6 +386,7 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
             model_override=model_override,
             claude_code_effort=claude_code_effort,
             claude_code_effort_source=claude_code_effort_source,
+            claude_code_thinking=claude_code_thinking,
         )
     if backend == "openrouter":
         return _OpenRouterClient(model_override=model_override)
@@ -431,6 +458,32 @@ def add_claude_code_effort_arg(parser) -> None:
     )
 
 
+def add_claude_code_thinking_arg(parser) -> None:
+    """Register the one claude-code thinking spelling (issue #365).
+
+    ``BooleanOptionalAction`` gives ``--claude-code-thinking`` and
+    ``--no-claude-code-thinking`` from one declaration, with ``default=None``
+    so the tri-state survives argv: absent defers to
+    ``CG_CLAUDE_CODE_THINKING``, ``--no-…`` is a sticky off that beats it.
+
+    Registered from add_backend_args beside the two effort registrars, so all
+    30 model-bearing CLIs inherit it together (Principle XII).
+    """
+    parser.add_argument(
+        "--claude-code-thinking",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help=(
+            "Extended thinking on the claude-code backend. Applies only to "
+            "--backend claude-code. Omit to defer to CG_CLAUDE_CODE_THINKING "
+            "(off by default: suppressing the trace is measurably faster). "
+            "Required for --claude-code-effort xhigh/max. Cannot be disabled "
+            "on the Fable/Mythos families, where --no-claude-code-thinking is "
+            "accepted and has no effect."
+        ),
+    )
+
+
 def add_backend_args(parser, default_backend: str | None = "anthropic") -> None:
     """Register the uniform --backend/--endpoint selection on a CLI.
 
@@ -469,6 +522,7 @@ def add_backend_args(parser, default_backend: str | None = "anthropic") -> None:
              "dispatch).")
     add_codex_reasoning_arg(parser)
     add_claude_code_effort_arg(parser)
+    add_claude_code_thinking_arg(parser)
 
 
 def client_from_args(args, *, endpoint: str | None = None):
@@ -493,6 +547,7 @@ def client_from_args(args, *, endpoint: str | None = None):
     """
     reasoning = resolve_cli_reasoning(args)
     claude_effort = resolve_cli_claude_effort(args)
+    claude_thinking = resolve_cli_claude_thinking(args)
     if claude_effort.effective_effort is not None:
         # Fail fast at the edge when the conflict is ALREADY determined: the
         # model and the environment thinking opt-in are both known here. The
@@ -501,7 +556,7 @@ def client_from_args(args, *, endpoint: str | None = None):
         # so there is one wording rather than two that drift.
         conflict = claude_code_effort_conflict(
             claude_effort.effective_effort,
-            thinking_on=_claude_code_thinking(None),
+            thinking_on=_claude_code_thinking(None, selection=claude_thinking),
             model=getattr(args, "model", None) or "",
         )
         if conflict:
@@ -538,6 +593,8 @@ def client_from_args(args, *, endpoint: str | None = None):
             claude_code_effort=claude_effort.effective_effort,
             claude_code_effort_source=claude_effort.source,
         )
+    if backend == "claude-code" and claude_thinking is not None:
+        client_kwargs.update(claude_code_thinking=claude_thinking)
     return make_client(**client_kwargs)
 
 

@@ -364,6 +364,10 @@ def _narrate_knobs_snapshot(cfg: ResolvedEditorConfig) -> dict:
         snapshot["claude_code_effort"] = (
             getattr(profile, "claude_code_effort", None) or "not set"
         )
+        thinking = getattr(profile, "claude_code_thinking", None)
+        snapshot["claude_code_thinking"] = (
+            "not set" if thinking is None else bool(thinking)
+        )
     # Record which rulebook was used, by identity rather than by copy (#276
     # fix 2). This field used to hold the whole genre document, so every
     # per-scene sidecar carried its own 16K duplicate; the digest answers the
@@ -884,6 +888,7 @@ def _editor_service_selection(cfg: ResolvedEditorConfig):
         # preview. Dropping it here would discard the operator's stored effort
         # from every editor run while the UI still displayed it.
         claude_code_effort=prof.claude_code_effort,
+        claude_code_thinking=prof.claude_code_thinking,
     ), endpoint
 
 

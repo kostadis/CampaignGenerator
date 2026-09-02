@@ -100,6 +100,7 @@ class BackendProfile(ModelSelection):
             and self.batch is None
             and self.codex_reasoning_effort is None
             and self.claude_code_effort is None
+            and self.claude_code_thinking is None
         )
 
 

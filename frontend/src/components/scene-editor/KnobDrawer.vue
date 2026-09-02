@@ -26,6 +26,7 @@ const props = defineProps<{
   codexModel: string
   codexReasoning: string
   claudeCodeEffort: string
+  claudeCodeThinking: string
   voicePlayer: string
   voiceFile: string
   voiceUpdate: boolean
@@ -69,6 +70,7 @@ const emit = defineEmits<{
   'update:codexModel': [value: string]
   'update:codexReasoning': [value: string]
   'update:claudeCodeEffort': [value: string]
+  'update:claudeCodeThinking': [value: string]
   'update:voicePlayer': [value: string]
   'update:voiceFile': [value: string]
   'update:voiceUpdate': [value: boolean]
@@ -247,6 +249,22 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
           <div class="field-help">OpenRouter model id. Blank → the runtime default. Uses OpenRouter's fixed base URL — no endpoint to configure.</div>
         </div>
         <div v-if="backend === 'claude-code'" class="field">
+          <label class="field-label">Thinking</label>
+          <select
+            class="field-input"
+            :value="claudeCodeThinking"
+            @change="emit('update:claudeCodeThinking', ($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">(defer to CG_CLAUDE_CODE_THINKING)</option>
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+          <div class="field-help">
+            Off by default — suppressing the trace is measurably faster.
+            Required for effort xhigh and max.
+          </div>
+        </div>
+        <div v-if="backend === 'claude-code'" class="field">
           <label class="field-label">Effort</label>
           <select
             class="field-input"
@@ -260,7 +278,7 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
             </option>
           </select>
           <div class="field-help">
-            {{ config.claudeCodeCompatibilityError || 'Higher effort can take longer. xhigh and max require thinking (CG_CLAUDE_CODE_THINKING=1).' }}
+            {{ config.claudeCodeCompatibilityError || 'Higher effort can take longer. xhigh and max require Thinking above (or CG_CLAUDE_CODE_THINKING=1).' }}
           </div>
         </div>
         <div v-if="backend === 'codex-cli'" class="field">

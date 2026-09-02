@@ -114,6 +114,10 @@ export const useConfigStore = defineStore('config', () => {
   // independent of it: a profile may hold both, and switching backends must
   // erase neither.
   const claudeCodeEffort = ref<ClaudeCodeEffort | ''>('')
+  // Tri-state (#365) carried as a string so a <select> can bind it:
+  // '' = defer to CG_CLAUDE_CODE_THINKING, 'on'/'off' = an explicit choice.
+  // A boolean ref could not express "defer" separately from "off".
+  const claudeCodeThinking = ref<'' | 'on' | 'off'>('')
   // The app-wide backend. Feature 003 moved it out of the Session Doc
   // Editor's backends.active (session_doc.yaml) and up to the platform tier
   // beside default_model, so the sidebar's two controls are owned by the same
@@ -191,6 +195,9 @@ export const useConfigStore = defineStore('config', () => {
       defaultModels.value = readBackendModelMemory(runtime.default_models)
       codexReasoningEffort.value = runtime.default_codex_reasoning_effort || ''
       claudeCodeEffort.value = runtime.default_claude_code_effort || ''
+      claudeCodeThinking.value = runtime.default_claude_code_thinking === true
+        ? 'on'
+        : runtime.default_claude_code_thinking === false ? 'off' : ''
       model.value = resolveHydratedModel(runtime, backend.value, defaultModels.value, modelsData.default)
       batch.value = cfg.resolved?.runtime?.default_batch === true
       cwd.value = status.cwd
@@ -214,6 +221,9 @@ export const useConfigStore = defineStore('config', () => {
     defaultModels.value = readBackendModelMemory(runtime.default_models)
     codexReasoningEffort.value = runtime.default_codex_reasoning_effort || ''
     claudeCodeEffort.value = runtime.default_claude_code_effort || ''
+    claudeCodeThinking.value = runtime.default_claude_code_thinking === true
+      ? 'on'
+      : runtime.default_claude_code_thinking === false ? 'off' : ''
     model.value = resolveHydratedModel(runtime, backend.value, defaultModels.value, defaultModel.value)
     if (resolved.value.runtime?.default_batch !== undefined) {
       batch.value = resolved.value.runtime.default_batch === true
@@ -332,6 +342,7 @@ export const useConfigStore = defineStore('config', () => {
     claudeCodeEfforts,
     claudeCodeCompatibilityError,
     claudeCodeEffort,
+    claudeCodeThinking,
     model,
     cwd,
     loaded,

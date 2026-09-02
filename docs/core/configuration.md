@@ -112,6 +112,26 @@ dormant when another backend is active. The sidebar, service override panel,
 Session Doc Editor drawer, and ensemble setup all use the server-published
 vocabulary and serialize “Codex default” as null/omitted.
 
+## Claude Code thinking
+
+All 30 `claude-code`-capable commands accept `--claude-code-thinking` /
+`--no-claude-code-thinking` (issue #365), resolved through the same
+request → service → platform tiers as model and effort, then the seam's
+`CG_CLAUDE_CODE_THINKING` fallback, then off.
+
+The stored value is `bool | None`, and `None` is not the same as `False`:
+`None` defers to the environment, `False` is a sticky off that beats it. The
+global value is `platform.yaml`'s `runtime.default_claude_code_thinking`;
+service/profile values sit beside the effort in the owning service document.
+
+**The default is deliberately unchanged.** Off, per the measurement recorded in
+`campaignlib/api/backends.py`. #365 made thinking reachable; it did not
+re-decide whether it should be on.
+
+Both spellings are emitted to child processes, because a resolved `False`
+forwarded as silence would let the child read `CG_CLAUDE_CODE_THINKING` from
+the inherited environment and override the operator.
+
 ## Claude Code effort
 
 All 30 `claude-code`-capable commands accept `--claude-code-effort` with exactly
@@ -129,7 +149,7 @@ this process does not read that file.
 
 An explicit `xhigh`/`max` on a run whose thinking is suppressed is **refused
 before any child process starts**, naming both remedies (lower the effort, or
-`CG_CLAUDE_CODE_THINKING=1`). No fallback, no silent repair, and the thinking
+turn thinking on). No fallback, no silent repair, and the thinking
 setting is never changed on the operator's behalf. The refusal does not fire on
 always-thinking model families.
 

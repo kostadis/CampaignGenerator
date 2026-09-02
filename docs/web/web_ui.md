@@ -151,9 +151,27 @@ overriding whatever your own `~/.claude/settings.json` says), and
 not guess which level that was).
 
 **`xhigh` and `max` are refused without thinking**, before any child process
-starts, with both remedies in the message. The selector says so under the
-control. Thinking itself has no UI control today — only
-`CG_CLAUDE_CODE_THINKING=1` — which is why the help text names the variable.
+starts, with both remedies in the message.
+
+### The Thinking control
+
+Beside the effort selector on every claude-code surface, and tri-state
+(issue #365):
+
+| Choice | Meaning |
+|---|---|
+| *(defer to CG_CLAUDE_CODE_THINKING)* | No stored choice; the environment decides |
+| On | Thinking enabled — and `xhigh`/`max` become usable |
+| Off | Explicitly off, **beating the environment variable** |
+
+"Defer" and "Off" are deliberately separate. If they were one checkbox, an
+`export CG_CLAUDE_CODE_THINKING=1` in an unrelated shell would silently
+override an operator who had chosen off, and nothing would say so.
+
+**The default stays off** — suppressing the reasoning trace is measurably
+faster on this backend, and #365 made the setting reachable rather than
+re-deciding it. Fable/Mythos models always think; the control is accepted
+there and inert, and the run identity reports `thinking=on (always)`.
 
 ## Session Doc Editor
 

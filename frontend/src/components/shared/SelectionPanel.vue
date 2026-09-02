@@ -47,6 +47,8 @@ interface Resolved {
   claude_code_effort: string | null
   claude_code_effort_origin: string
   claude_code_effort_override: boolean
+  claude_code_thinking: boolean | null
+  claude_code_thinking_origin: string
 }
 
 const resolved = ref<Resolved | null>(null)
@@ -59,6 +61,9 @@ const draftBackend = ref('')
 const draftBatch = ref<'' | 'on' | 'off'>('')
 const codexReasoning = ref('')
 const claudeEffort = ref('')
+// '' = defer to the environment, 'on'/'off' = this service's own choice —
+// the same three-state shape draftBatch uses, and for the same reason.
+const claudeThinking = ref<'' | 'on' | 'off'>('')
 const busy = ref(false)
 const error = ref('')
 
@@ -107,6 +112,7 @@ async function loadOverride() {
       batch: boolean | null
       codex_reasoning_effort: string | null
       claude_code_effort: string | null
+      claude_code_thinking: boolean | null
     }>(
       `/api/${props.service}/selection`,
     )
@@ -115,12 +121,15 @@ async function loadOverride() {
     draftBatch.value = sel.batch === true ? 'on' : sel.batch === false ? 'off' : ''
     codexReasoning.value = sel.codex_reasoning_effort || ''
     claudeEffort.value = sel.claude_code_effort || ''
+    claudeThinking.value = sel.claude_code_thinking === true
+      ? 'on' : sel.claude_code_thinking === false ? 'off' : ''
   } catch {
     draftModel.value = ''
     draftBackend.value = ''
     draftBatch.value = ''
     codexReasoning.value = ''
     claudeEffort.value = ''
+    claudeThinking.value = ''
   }
 }
 
@@ -143,6 +152,8 @@ async function save() {
       // why setting one backend's effort never disturbs the other's — both
       // are always sent as they stand.
       claude_code_effort: claudeEffort.value || null,
+      claude_code_thinking: claudeThinking.value === 'on' ? true
+        : claudeThinking.value === 'off' ? false : null,
     })
     editing.value = false
     await load()
@@ -163,6 +174,7 @@ async function clearOverride() {
     draftBatch.value = ''
     codexReasoning.value = ''
     claudeEffort.value = ''
+    claudeThinking.value = ''
     editing.value = false
     await load()
   } catch (e: any) {
@@ -189,6 +201,7 @@ async function clearBatchSelection() {
       backend: string | null
       codex_reasoning_effort: string | null
       claude_code_effort: string | null
+      claude_code_thinking: boolean | null
     }>(
       `/api/${props.service}/selection`,
     )
@@ -198,6 +211,7 @@ async function clearBatchSelection() {
       batch: false,
       codex_reasoning_effort: current.codex_reasoning_effort || null,
       claude_code_effort: current.claude_code_effort || null,
+      claude_code_thinking: current.claude_code_thinking,
     })
     if (editing.value) draftBatch.value = 'off'
     await load()
@@ -229,7 +243,8 @@ const hasOverride = computed(() =>
   || resolved.value?.backend_origin === 'service'
   || resolved.value?.batch_origin === 'service'
   || resolved.value?.codex_reasoning_effort_origin === 'service'
-  || resolved.value?.claude_code_effort_origin === 'service',
+  || resolved.value?.claude_code_effort_origin === 'service'
+  || resolved.value?.claude_code_thinking_origin === 'service',
 )
 
 const draftUsesCodex = computed(() =>
@@ -313,6 +328,14 @@ watch(
       <span class="pair">
         <code>{{ resolved.codex_reasoning_effort || 'Codex default' }}</code>
         <span class="origin">{{ originLabel(resolved.codex_reasoning_effort_origin) }}</span>
+      </span>
+    </div>
+    <div v-if="resolved.backend === 'claude-code'" class="row batch-row">
+      <span class="label">Thinking</span>
+      <span class="pair">
+        <code>{{ resolved.claude_code_thinking === null ? 'defer to environment'
+          : resolved.claude_code_thinking ? 'on' : 'off' }}</code>
+        <span class="origin">{{ originLabel(resolved.claude_code_thinking_origin) }}</span>
       </span>
     </div>
     <div v-if="resolved.backend === 'claude-code'" class="row batch-row">
@@ -403,6 +426,18 @@ watch(
         </span>
       </label>
       <label v-if="draftUsesClaudeCode">
+        Thinking
+        <select v-model="claudeThinking">
+          <option value="">(defer to CG_CLAUDE_CODE_THINKING)</option>
+          <option value="on">On</option>
+          <option value="off">Off</option>
+        </select>
+        <span class="field-help">
+          Off by default — suppressing the trace is measurably faster. Required
+          for effort xhigh and max. Always on for Fable/Mythos models.
+        </span>
+      </label>
+      <label v-if="draftUsesClaudeCode">
         Effort
         <select
           v-model="claudeEffort"
@@ -415,7 +450,7 @@ watch(
         </select>
         <span class="field-help">
           {{ config.claudeCodeCompatibilityError
-            || 'Higher effort can take longer. xhigh and max require thinking (CG_CLAUDE_CODE_THINKING=1).' }}
+            || 'Higher effort can take longer. xhigh and max require Thinking above (or CG_CLAUDE_CODE_THINKING=1).' }}
         </span>
       </label>
       <button class="mini primary" :disabled="busy" @click="save">Save</button>

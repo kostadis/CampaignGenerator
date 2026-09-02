@@ -357,17 +357,37 @@ def _claude_code_always_thinking(model: str) -> bool:
     return any(m in (model or "").lower() for m in CLAUDE_CODE_ALWAYS_THINKING_MARKERS)
 
 
-def _claude_code_thinking(thinking: bool | None) -> bool:
-    """Resolve per-call reasoning intent for the `claude -p` backend.
+def _claude_code_thinking(
+    thinking: bool | None, *, selection: bool | None = None,
+) -> bool:
+    """Resolve reasoning intent for the `claude -p` backend.
 
-    ``None`` (the caller expressed no preference) resolves to OFF — see the
-    module comment above for the measurement that motivates the inverted
-    default. ``CG_CLAUDE_CODE_THINKING`` opts back in; an explicit
-    ``True``/``False`` from the caller always wins over the env var.
+    Three tiers, most specific first:
+
+    1. ``thinking`` — the per-call argument ``stream_api``/``call_api``
+       forward. A caller that names it for this one call always wins.
+    2. ``selection`` — the operator's stored/typed choice (issue #365):
+       ``--claude-code-thinking`` / ``--no-claude-code-thinking``, or the UI
+       toggle, resolved through the same tiers as model and effort.
+    3. ``CG_CLAUDE_CODE_THINKING`` — the environment opt-in, which was the
+       ONLY reachable lever before #365.
+
+    All three absent resolves to OFF — see the module comment above for the
+    measurement that motivates the inverted default. That default is
+    deliberately unchanged by #365: making thinking selectable is not the same
+    as deciding it should be on, and re-deciding it deserves a fresh
+    measurement rather than a side effect of adding a control.
+
+    Note that ``selection=False`` is a genuine, sticky "off" that beats the
+    environment variable, while ``selection=None`` defers to it. A plain bool
+    could not express that difference — the same reason ``ModelSelection.batch``
+    is ``bool | None``.
     """
-    if thinking is None:
-        return bool(os.environ.get("CG_CLAUDE_CODE_THINKING"))
-    return bool(thinking)
+    if thinking is not None:
+        return bool(thinking)
+    if selection is not None:
+        return bool(selection)
+    return bool(os.environ.get("CG_CLAUDE_CODE_THINKING"))
 
 
 def claude_code_effort_conflict(
@@ -401,8 +421,9 @@ def claude_code_effort_conflict(
         f"--claude-code-effort {effort!r} requires extended thinking, which is "
         f"disabled for this call. Either lower the effort to "
         f"{CLAUDE_CODE_NO_THINKING_EFFORT!r} or below, or enable thinking with "
-        f"CG_CLAUDE_CODE_THINKING=1. Refusing rather than changing your thinking "
-        f"setting or silently lowering the effort."
+        f"--claude-code-thinking (the Thinking control in the UI, or "
+        f"CG_CLAUDE_CODE_THINKING=1). Refusing rather than changing your "
+        f"thinking setting or silently lowering the effort."
     )
 
 
@@ -554,7 +575,8 @@ def _messages_user_text(messages: list) -> str:
 def _claude_code_generate(
     *, system, user: str, model: str, max_tokens: int | None = None,
     thinking: bool | None = None, effort: str | None = None,
-    effort_source: str | None = None, announce=None,
+    effort_source: str | None = None, thinking_selection: bool | None = None,
+    announce=None,
 ) -> str:
     """Invoke `claude -p` headless and return the assistant text.
 
@@ -622,7 +644,7 @@ def _claude_code_generate(
     env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
     if max_tokens:
         env["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] = str(max_tokens)
-    thinking_on = _claude_code_thinking(thinking)
+    thinking_on = _claude_code_thinking(thinking, selection=thinking_selection)
     if thinking_on:
         # Opted in — inherit whatever the CLI/model would do on its own. Drop any
         # inherited MAX_THINKING_TOKENS=0 so the opt-in actually takes effect.
@@ -768,7 +790,8 @@ class _ClaudeCodeStream:
 
     def __init__(self, *, system, user: str, model: str, max_tokens: int | None = None,
                  thinking: bool | None = None, effort: str | None = None,
-                 effort_source: str | None = None, announce=None):
+                 effort_source: str | None = None,
+                 thinking_selection: bool | None = None, announce=None):
         self._system = system
         self._user = user
         self._model = model
@@ -776,6 +799,7 @@ class _ClaudeCodeStream:
         self._thinking = thinking
         self._effort = effort
         self._effort_source = effort_source
+        self._thinking_selection = thinking_selection
         self._announce = announce
         self._text = ""
 
@@ -784,6 +808,7 @@ class _ClaudeCodeStream:
             system=self._system, user=self._user, model=self._model,
             max_tokens=self._max_tokens, thinking=self._thinking,
             effort=self._effort, effort_source=self._effort_source,
+            thinking_selection=self._thinking_selection,
             announce=self._announce)
         return self
 
@@ -822,6 +847,7 @@ class _ClaudeCodeMessages:
             thinking=thinking,
             effort=self._client.claude_code_effort,
             effort_source=self._client.claude_code_effort_source,
+            thinking_selection=self._client.claude_code_thinking,
             announce=self._client.announce_once,
         )
         return _OpenAICompatResponse(text)
@@ -835,6 +861,7 @@ class _ClaudeCodeMessages:
             thinking=thinking,
             effort=self._client.claude_code_effort,
             effort_source=self._client.claude_code_effort_source,
+            thinking_selection=self._client.claude_code_thinking,
             announce=self._client.announce_once,
         )
 
@@ -848,10 +875,14 @@ class _ClaudeCodeClient:
 
     def __init__(self, model_override: str | None = None,
                  claude_code_effort: str | None = None,
-                 claude_code_effort_source: str | None = None):
+                 claude_code_effort_source: str | None = None,
+                 claude_code_thinking: bool | None = None):
         self.model_override = model_override or os.environ.get("CG_CLAUDE_CODE_MODEL")
         self.claude_code_effort = claude_code_effort
         self.claude_code_effort_source = claude_code_effort_source
+        # Tri-state (#365): None defers to CG_CLAUDE_CODE_THINKING, False is a
+        # sticky "off" that beats it.
+        self.claude_code_thinking = claude_code_thinking
         self._announced = False
         self.last_run_identity: ClaudeCodeRunIdentity | None = None
         self.messages = _ClaudeCodeMessages(self)

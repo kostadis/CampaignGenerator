@@ -38,6 +38,7 @@ from pathlib import Path
 
 from campaignlib import (
     add_backend_args, resolve_cli_reasoning, resolve_cli_claude_effort,
+    resolve_cli_claude_thinking,
 )
 
 STAGES = ("summary", "scenes")
@@ -138,6 +139,9 @@ def _selection_args(args) -> list[str]:
         out += ["--codex-reasoning-effort", args.codex_reasoning_effort]
     if args.claude_code_effort is not None:
         out += ["--claude-code-effort", args.claude_code_effort]
+    if args.claude_code_thinking is not None:
+        out += ["--claude-code-thinking" if args.claude_code_thinking
+                else "--no-claude-code-thinking"]
     return out
 
 
@@ -243,6 +247,7 @@ def build_steps(args) -> tuple[list[Step], list[str]]:
     """Return (steps, notes). `notes` are things the human should be told."""
     resolve_cli_reasoning(args)
     resolve_cli_claude_effort(args)
+    resolve_cli_claude_thinking(args)
     sd = Path(args.session_dir).expanduser()
     notes: list[str] = []
 

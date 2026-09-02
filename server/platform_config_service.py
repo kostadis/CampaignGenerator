@@ -221,6 +221,10 @@ class ResolvedSelection:
     claude_code_effort: ClaudeCodeEffort | None = None
     claude_code_effort_origin: str = "omitted"
     claude_code_effort_override: bool = False
+    # Tri-state (#365). None means "no tier chose" and the seam falls through
+    # to CG_CLAUDE_CODE_THINKING; False is a sticky off that beats it.
+    claude_code_thinking: bool | None = None
+    claude_code_thinking_origin: str = "omitted"
 
     @property
     def compatible(self) -> bool:
@@ -240,6 +244,8 @@ class ResolvedSelection:
             "claude_code_effort": self.claude_code_effort,
             "claude_code_effort_origin": self.claude_code_effort_origin,
             "claude_code_effort_override": self.claude_code_effort_override,
+            "claude_code_thinking": self.claude_code_thinking,
+            "claude_code_thinking_origin": self.claude_code_thinking_origin,
             "compatible": self.compatible,
             "refusal": self.refusal,
         }
@@ -327,6 +333,7 @@ def resolve_selection(
     request_batch: bool | None = None,
     request_codex_reasoning_effort: str | None = None,
     request_claude_code_effort: str | None = None,
+    request_claude_code_thinking: bool | None = None,
     service: ModelSelection | Any | None = None,
     service_name: str | None = None,
     raise_on_incompatible: bool = True,
@@ -401,6 +408,14 @@ def resolve_selection(
     )
     svc_claude_effort = (
         getattr(service, "claude_code_effort", None)
+        if service is not None else None
+    )
+    plat_claude_thinking = (
+        getattr(runtime, "default_claude_code_thinking", None)
+        if runtime else None
+    )
+    svc_claude_thinking = (
+        getattr(service, "claude_code_thinking", None)
         if service is not None else None
     )
 
@@ -571,6 +586,31 @@ def resolve_selection(
             f'this run resolves to the "{backend}" backend.'
         )
 
+    # ── Claude Code thinking (issue #365) ───────────────────────────────
+    # Tri-state, resolved with the same request -> service -> platform
+    # precedence and — like `batch` — independently of the model/backend
+    # pairing rule. `None` at every tier means no tier chose, and the SEAM
+    # falls through to CG_CLAUDE_CODE_THINKING; the environment is
+    # deliberately not read here, so there is exactly one place that knows
+    # the fallback.
+    claude_code_thinking = None
+    claude_code_thinking_origin = "omitted"
+    if backend == "claude-code":
+        if request_claude_code_thinking is not None:
+            claude_code_thinking = bool(request_claude_code_thinking)
+            claude_code_thinking_origin = "request"
+        elif svc_claude_thinking is not None:
+            claude_code_thinking = bool(svc_claude_thinking)
+            claude_code_thinking_origin = "service"
+        elif plat_claude_thinking is not None:
+            claude_code_thinking = bool(plat_claude_thinking)
+            claude_code_thinking_origin = "platform"
+    elif request_claude_code_thinking is not None:
+        effort_refusal = (
+            "Claude Code thinking applies only to the claude-code backend; "
+            f'this run resolves to the "{backend}" backend.'
+        )
+
     # ── Batch (feature 005-ui-batch-selection) ──────────────────────────
     # Same request -> service -> platform precedence as backend, above, but
     # resolved independently of it: the pairing rule is a model/backend-only
@@ -628,6 +668,8 @@ def resolve_selection(
         claude_code_effort=claude_code_effort,
         claude_code_effort_origin=claude_code_effort_origin,
         claude_code_effort_override=claude_code_effort_override,
+        claude_code_thinking=claude_code_thinking,
+        claude_code_thinking_origin=claude_code_thinking_origin,
     )
     if refusal and raise_on_incompatible:
         raise IncompatibleSelection(resolved, service_name)
@@ -684,6 +726,16 @@ def selection_cli_args(resolved: ResolvedSelection) -> list[str]:
             "--claude-code-effort",
             resolved.claude_code_effort,
         ]
+    if resolved.claude_code_thinking is not None:
+        # Both spellings are emitted explicitly. A resolved False must reach
+        # the child as --no-claude-code-thinking rather than as silence: the
+        # child would otherwise read CG_CLAUDE_CODE_THINKING from the
+        # inherited environment and turn thinking back on, overriding the
+        # operator's stored "off".
+        args.append(
+            "--claude-code-thinking" if resolved.claude_code_thinking
+            else "--no-claude-code-thinking"
+        )
     return args
 
 

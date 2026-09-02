@@ -40,6 +40,7 @@ const openrouterModel = ref('')
 const codexModel = ref('')
 const codexReasoning = ref('')
 const claudeCodeEffort = ref('')
+const claudeCodeThinking = ref<'' | 'on' | 'off'>('')
 
 // Drawer open/closed — always starts closed. The Config button opens it, and
 // onMounted auto-opens it on a cold start (required fields missing). Not
@@ -111,6 +112,10 @@ function loadConfigFields() {
     (backends['codex-cli'] ?? backends.codex_cli)?.codex_reasoning_effort || ''
   claudeCodeEffort.value =
     (backends['claude-code'] ?? backends.claude_code)?.claude_code_effort || ''
+  {
+    const t = (backends['claude-code'] ?? backends.claude_code)?.claude_code_thinking
+    claudeCodeThinking.value = t === true ? 'on' : t === false ? 'off' : ''
+  }
 }
 
 // ── Auto-apply: debounce-PUT changes to /api/editor/config ───────
@@ -323,6 +328,8 @@ async function persistClaudeCode() {
       backends: {
         'claude-code': {
           claude_code_effort: claudeCodeEffort.value || null,
+          claude_code_thinking: claudeCodeThinking.value === 'on' ? true
+            : claudeCodeThinking.value === 'off' ? false : null,
         },
       },
     })
@@ -330,7 +337,7 @@ async function persistClaudeCode() {
     /* non-fatal — the next subprocess still resolves the active profile */
   }
 }
-watch(claudeCodeEffort, () => {
+watch([claudeCodeEffort, claudeCodeThinking], () => {
   if (claudeCodePersistTimer) clearTimeout(claudeCodePersistTimer)
   claudeCodePersistTimer = setTimeout(persistClaudeCode, 350)
 })
@@ -548,6 +555,10 @@ function hydrateKnobsFromEditorConfig(ec: any) {
     (backends['codex-cli'] ?? backends.codex_cli)?.codex_reasoning_effort || ''
   claudeCodeEffort.value =
     (backends['claude-code'] ?? backends.claude_code)?.claude_code_effort || ''
+  {
+    const t = (backends['claude-code'] ?? backends.claude_code)?.claude_code_thinking
+    claudeCodeThinking.value = t === true ? 'on' : t === false ? 'off' : ''
+  }
 }
 
 async function activateProfileByName(name: string) {
@@ -1237,6 +1248,7 @@ onMounted(async () => {
     v-model:codex-model="codexModel"
     v-model:codex-reasoning="codexReasoning"
     v-model:claude-code-effort="claudeCodeEffort"
+    v-model:claude-code-thinking="claudeCodeThinking"
       v-model:extract-tokens="extractTokens"
       v-model:batch-tokens="batchTokens"
       v-model:narrate-tokens="narrateTokens"

@@ -347,6 +347,8 @@ runtime:
   default_codex_reasoning_effort: # optional; null → Codex default
   default_claude_code_effort:     # optional; null → omission (clamp or
                                  #   your own settings.json effortLevel)
+  default_claude_code_thinking:  # optional tri-state; null → defer to
+                                 #   CG_CLAUDE_CODE_THINKING, false → sticky off
   default_model:            # sidebar picker; unset → env CAMPAIGN_MODEL → wiring default
   session_dir:              # campaign-based path — the session-resolution anchor
 ```

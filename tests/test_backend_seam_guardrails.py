@@ -947,6 +947,48 @@ def test_all_30_claude_code_surfaces_share_effort_registration():
         )
 
 
+def test_all_30_claude_code_surfaces_share_thinking_registration():
+    """Issue #365. The effort control offers two levels (`xhigh`, `max`) that
+    only a thinking-enabled run can use, so a CLI that accepts effort without
+    thinking hands the operator a choice that always fails there."""
+    registrars, hand_written = discover_backend_surfaces()
+    assert len(registrars | hand_written) == 30
+    for relative_path in sorted(hand_written):
+        tree = _parse(REPO_ROOT / relative_path)
+        calls = {_call_func_name(node) for node in _all_calls(tree)}
+        assert "add_claude_code_thinking_arg" in calls, (
+            f"{relative_path} bypasses the shared Claude Code thinking registrar"
+        )
+
+
+def test_no_dispatcher_forwards_effort_without_thinking():
+    offenders = []
+    for relative_path in sorted(discover_runtime_dispatchers(
+            *discover_backend_surfaces())):
+        source = (REPO_ROOT / relative_path).read_text(encoding="utf-8")
+        if ("--claude-code-effort" in source
+                and "--claude-code-thinking" not in source):
+            offenders.append(relative_path)
+    assert not offenders, (
+        f"dispatchers forward Claude Code effort but not thinking: {offenders}"
+    )
+
+
+def test_thinking_is_forwarded_in_both_directions():
+    """A resolved False must reach the child as an explicit
+    --no-claude-code-thinking. Forwarding only the True case would let the
+    child read CG_CLAUDE_CODE_THINKING from the inherited environment and
+    override the operator's stored 'off' — the exact failure the tri-state
+    exists to prevent."""
+    for relative_path in sorted(discover_runtime_dispatchers(
+            *discover_backend_surfaces())):
+        source = (REPO_ROOT / relative_path).read_text(encoding="utf-8")
+        if "--claude-code-thinking" in source:
+            assert "--no-claude-code-thinking" in source, (
+                f"{relative_path} forwards thinking on but never off"
+            )
+
+
 def test_add_backend_args_registers_both_subscription_effort_options():
     """The structural claim the test above depends on: the two registrars are
     called from the one shared helper, so the 30 CLIs cannot diverge."""
@@ -960,6 +1002,7 @@ def test_add_backend_args_registers_both_subscription_effort_options():
              if action.option_strings}
     assert "--codex-reasoning-effort" in flags
     assert "--claude-code-effort" in flags
+    assert "--claude-code-thinking" in flags
 
 
 def test_no_dispatcher_forwards_codex_effort_without_the_claude_code_one():

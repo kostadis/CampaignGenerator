@@ -106,6 +106,13 @@ class ModelSelection(BaseModel):
     different things on each backend, so one field would carry two meanings.
     Both may be set at once; each lies dormant while the other backend is
     active.
+
+    ``claude_code_thinking`` (issue #365) is ``bool | None`` for the same
+    reason ``batch`` is, and the distinction is load-bearing here: ``None``
+    defers to ``CG_CLAUDE_CODE_THINKING``, while ``False`` is a sticky
+    "explicitly off" that beats the environment. Collapsing the two would make
+    an operator's deliberate "off" indistinguishable from silence, and an
+    exported variable would then quietly override them.
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -115,6 +122,7 @@ class ModelSelection(BaseModel):
     batch: bool | None = None
     codex_reasoning_effort: CodexReasoningEffort | None = None
     claude_code_effort: ClaudeCodeEffort | None = None
+    claude_code_thinking: bool | None = None
 
     def is_empty(self) -> bool:
         """True when this selection defers entirely to the tier above.
@@ -135,6 +143,7 @@ class ModelSelection(BaseModel):
             and self.batch is None
             and self.codex_reasoning_effort is None
             and self.claude_code_effort is None
+            and self.claude_code_thinking is None
         )
 
 

@@ -80,6 +80,15 @@ async function setCodexReasoning(value: string) {
   await config.updateRuntime({ default_codex_reasoning_effort: value || null })
 }
 
+async function setClaudeCodeThinking(value: string) {
+  // Three states, and the empty one is not the same as 'off': '' defers to
+  // CG_CLAUDE_CODE_THINKING, 'off' is a sticky choice that beats it.
+  config.claudeCodeThinking = value as typeof config.claudeCodeThinking
+  await config.updateRuntime({
+    default_claude_code_thinking: value === 'on' ? true : value === 'off' ? false : null,
+  })
+}
+
 async function setClaudeCodeEffort(value: string) {
   // Empty persists as omission (null), NOT as the level the platform happens
   // to hold today: on this backend omission is a real behaviour — a
@@ -260,6 +269,22 @@ function navigate(path: string) {
         </div>
       </div>
       <div v-if="currentBackend === 'claude-code'" class="codex-reasoning-selector">
+        <label class="model-label">THINKING</label>
+        <select
+          :value="config.claudeCodeThinking"
+          class="model-select"
+          @change="setClaudeCodeThinking(($event.target as HTMLSelectElement).value)"
+        >
+          <option value="">(defer to CG_CLAUDE_CODE_THINKING)</option>
+          <option value="on">On</option>
+          <option value="off">Off</option>
+        </select>
+        <div class="batch-help">
+          Off by default — suppressing the reasoning trace is measurably faster.
+          Required for effort xhigh and max. Always on for Fable/Mythos models.
+        </div>
+      </div>
+      <div v-if="currentBackend === 'claude-code'" class="codex-reasoning-selector">
         <label class="model-label">EFFORT</label>
         <select
           :value="config.claudeCodeEffort"
@@ -273,7 +298,7 @@ function navigate(path: string) {
           </option>
         </select>
         <div class="batch-help">
-          {{ config.claudeCodeCompatibilityError || 'Higher effort can take longer. xhigh and max require thinking (CG_CLAUDE_CODE_THINKING=1); without it the run is refused rather than quietly lowered.' }}
+          {{ config.claudeCodeCompatibilityError || 'Higher effort can take longer. xhigh and max require Thinking above (or CG_CLAUDE_CODE_THINKING=1); without it the run is refused rather than quietly lowered.' }}
         </div>
       </div>
       <div v-if="currentBackend === 'codex-cli'" class="codex-reasoning-selector">

@@ -22,6 +22,7 @@ from pathlib import Path
 
 from campaignlib import (
     resolve_cli_claude_effort,
+    resolve_cli_claude_thinking,
     DEFAULT_MODEL,
     add_backend_args,
     call_api_with_tools,
@@ -838,6 +839,7 @@ def main() -> None:
     ).effective_model
     reasoning = resolve_cli_reasoning(args)
     claude_effort = resolve_cli_claude_effort(args)
+    claude_thinking = resolve_cli_claude_thinking(args)
 
     # Load config (not strictly needed but matches every other CLI's UX)
     try:
@@ -958,6 +960,9 @@ def main() -> None:
             "claude_code_effort": claude_effort.effective_effort or "not set",
             "claude_code_effort_source": claude_effort.source,
             "claude_code_effort_override": claude_effort.emit_override,
+            "claude_code_thinking": (
+                "not set" if claude_thinking is None else claude_thinking
+            ),
         })
     trace.emit(run_start)
 

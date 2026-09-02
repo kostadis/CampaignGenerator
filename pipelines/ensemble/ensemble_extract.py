@@ -66,7 +66,7 @@ import time
 from pathlib import Path
 
 from campaignlib.api.client import (
-    add_codex_reasoning_arg, add_claude_code_effort_arg,
+    add_codex_reasoning_arg, add_claude_code_effort_arg, add_claude_code_thinking_arg,
     resolve_cli_reasoning, resolve_cli_claude_effort,
 )
 from campaignlib.selection import BACKENDS
@@ -79,7 +79,8 @@ def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
                       model: str | None, backend: str,
                       chunk_parallel: int = 1,
                       codex_reasoning_effort: str | None = None,
-                      claude_code_effort: str | None = None) -> list[str]:
+                      claude_code_effort: str | None = None,
+                      claude_code_thinking: bool | None = None) -> list[str]:
     """Build the extract_facts.py command line for one unit. Pure function —
     all the subprocess/bookkeeping mutation lives in run_unit."""
     cmd = [
@@ -101,6 +102,9 @@ def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
         cmd += ["--codex-reasoning-effort", codex_reasoning_effort]
     if claude_code_effort is not None:
         cmd += ["--claude-code-effort", claude_code_effort]
+    if claude_code_thinking is not None:
+        cmd += ["--claude-code-thinking" if claude_code_thinking
+                else "--no-claude-code-thinking"]
     if pass_spec.get("annotate_pov"):
         cmd += ["--annotate-pov"]
     if pass_spec.get("structural"):
@@ -123,6 +127,7 @@ def run_unit(
     chunk_parallel: int = 1,
     codex_reasoning_effort: str | None = None,
     claude_code_effort: str | None = None,
+    claude_code_thinking: bool | None = None,
 ) -> tuple[str, list[dict] | None, str | None, bool]:
     """Run ONE (lens, sample) unit on `endpoint`.
 
@@ -169,6 +174,7 @@ def run_unit(
         chunk_parallel,
         codex_reasoning_effort,
         claude_code_effort,
+        claude_code_thinking,
     )
 
     where = endpoint or "default endpoint"
@@ -314,6 +320,7 @@ def main() -> None:
                              "subprocess chain.")
     add_codex_reasoning_arg(parser)
     add_claude_code_effort_arg(parser)
+    add_claude_code_thinking_arg(parser)
     parser.add_argument("--chunk-parallel", type=int, default=4, metavar="N",
                         help="In-flight chunk requests per endpoint, forwarded "
                              "to each extract_facts.py as --parallel (default "
@@ -589,7 +596,8 @@ def main() -> None:
                 register_proc=register, is_cancelled=lambda _key=key: _key in cancelled,
                 timeout=unit_timeout, chunk_parallel=args.chunk_parallel,
                 codex_reasoning_effort=args.codex_reasoning_effort,
-                claude_code_effort=args.claude_code_effort)
+                claude_code_effort=args.claude_code_effort,
+                claude_code_thinking=args.claude_code_thinking)
             except Exception as e:  # a worker must never die silently
                 facts, err, timed_out = None, repr(e), False
 

@@ -86,6 +86,7 @@ class EnsembleBackend(ModelSelection):
             self.backend == "anthropic" and not self.model and not self.endpoints
             and self.batch is None and self.codex_reasoning_effort is None
             and self.claude_code_effort is None
+            and self.claude_code_thinking is None
         )
 
 

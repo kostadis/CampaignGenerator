@@ -264,3 +264,90 @@ def test_models_endpoint_publishes_the_vocabulary():
     assert "minimal" not in body["claude_code_efforts"]
     # ...and the Codex list is untouched beside it
     assert "minimal" in body["codex_reasoning_efforts"]
+
+
+# --------------------------------------------------------------------------
+# Thinking selection, server tiers (issue #365)
+# --------------------------------------------------------------------------
+
+def test_platform_runtime_round_trips_the_optional_thinking_choice():
+    for value in (True, False):
+        runtime = PlatformRuntime(default_claude_code_thinking=value)
+        payload = runtime.model_dump(mode="json")
+        assert payload["default_claude_code_thinking"] is value
+        assert PlatformRuntime.model_validate(payload) == runtime
+    assert PlatformRuntime().default_claude_code_thinking is None
+
+
+@pytest.mark.parametrize(
+    ("request_t", "service_t", "platform_t", "expected", "origin"),
+    [
+        (True, False, False, True, "request"),
+        (None, True, False, True, "service"),
+        (None, None, True, True, "platform"),
+        (None, False, True, False, "service"),   # sticky off beats platform on
+        (None, None, None, None, "omitted"),
+    ],
+)
+def test_thinking_tier_precedence(request_t, service_t, platform_t, expected, origin):
+    resolved = resolve_selection(
+        _request(_claude_runtime(default_claude_code_thinking=platform_t)),
+        request_claude_code_thinking=request_t,
+        service=ModelSelection(
+            backend="claude-code", model="claude-opus-5",
+            claude_code_thinking=service_t,
+        ),
+    )
+    assert resolved.claude_code_thinking is expected
+    assert resolved.claude_code_thinking_origin == origin
+
+
+@pytest.mark.parametrize(
+    ("value", "flag"),
+    [(True, "--claude-code-thinking"), (False, "--no-claude-code-thinking")],
+)
+def test_both_spellings_reach_the_command_line(value, flag):
+    """A resolved False must be forwarded explicitly. Emitting nothing would
+    let the child read CG_CLAUDE_CODE_THINKING from the inherited environment
+    and turn thinking back on, overriding the operator's stored off."""
+    resolved = resolve_selection(
+        _request(_claude_runtime(default_claude_code_thinking=value)))
+    args = selection_cli_args(resolved)
+    assert flag in args
+    other = "--claude-code-thinking" if not value else "--no-claude-code-thinking"
+    assert other not in args
+
+
+def test_omission_emits_no_thinking_flag():
+    resolved = resolve_selection(_request(_claude_runtime()))
+    assert resolved.claude_code_thinking is None
+    args = selection_cli_args(resolved)
+    assert "--claude-code-thinking" not in args
+    assert "--no-claude-code-thinking" not in args
+
+
+def test_thinking_on_another_backend_is_refused():
+    resolved = resolve_selection(
+        _request(PlatformRuntime(default_backend="dgx", default_model="Qwen-X")),
+        request_claude_code_thinking=True,
+        raise_on_incompatible=False,
+    )
+    assert resolved.compatible is False
+    assert "claude-code" in resolved.refusal
+
+
+def test_thinking_only_selection_is_not_empty():
+    """The is_empty trap again, for the field whose False is meaningful."""
+    assert not ModelSelection(claude_code_thinking=False).is_empty()
+    assert not BackendProfile(claude_code_thinking=False).is_empty()
+    assert not EnsembleBackend(claude_code_thinking=False).is_empty()
+
+
+def test_thinking_survives_a_session_doc_round_trip(tmp_path: Path):
+    path = tmp_path / "session_doc.yaml"
+    cfg = SessionEditorConfig()
+    cfg.backends.claude_code.claude_code_thinking = False
+    save_session_editor_config(path, cfg)
+    back = load_session_editor_config(path)
+    # False, not None — the distinction is the whole point of the tri-state.
+    assert back.backends.claude_code.claude_code_thinking is False

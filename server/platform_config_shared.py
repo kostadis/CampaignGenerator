@@ -180,6 +180,7 @@ class PlatformRuntime(BaseModel):
     default_batch: OptBool = False
     default_codex_reasoning_effort: CodexReasoningEffort | None = None
     default_claude_code_effort: ClaudeCodeEffort | None = None
+    default_claude_code_thinking: bool | None = None
 
 
 class PlatformServer(BaseModel):
