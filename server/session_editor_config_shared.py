@@ -89,13 +89,17 @@ class BackendProfile(ModelSelection):
         the base class's null test never fires. `batch` participates for the
         same reason it does on the base class's override: a profile that sets
         only `batch` (backend still the default "anthropic", no model/endpoint)
-        is not empty — see `ModelSelection.is_empty`."""
+        is not empty — see `ModelSelection.is_empty`. `claude_code_effort`
+        (021) participates for the same reason: a `claude-code` profile whose
+        only content is an effort level has something to say, and treating it
+        as empty would drop the operator's choice on save with no error."""
         return (
             self.backend == "anthropic"
             and not self.model
             and not self.endpoint
             and self.batch is None
             and self.codex_reasoning_effort is None
+            and self.claude_code_effort is None
         )
 
 

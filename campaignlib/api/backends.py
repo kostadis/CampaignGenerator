@@ -7,8 +7,14 @@ campaignlib.api.client (stream_api / call_api) depends on.
 import json
 import os
 import sys
+from dataclasses import dataclass
 
 
+from ..selection import (
+    CLAUDE_CODE_EFFORTS,
+    CLAUDE_CODE_THINKING_ONLY_EFFORTS,
+    ClaudeCodeEffort,
+)
 from ..wiring import wiring_get  # noqa: E402
 
 # DGX model is EXTERNAL config (names what the DGX serves) — mneme-owned.
@@ -364,6 +370,145 @@ def _claude_code_thinking(thinking: bool | None) -> bool:
     return bool(thinking)
 
 
+def claude_code_effort_conflict(
+    effort: str | None, *, thinking_on: bool, model: str
+) -> str | None:
+    """Return the refusal message when `effort` cannot run, else None.
+
+    ONE source for this wording. It is called from two places — the CLI edge
+    (`client_from_args`, which fails fast when the state is already known) and
+    the seam (`_claude_code_generate`, immediately before the child spawns,
+    which is the only place that sees a per-call `thinking=True`). Two call
+    sites with two hand-written messages would be the same refusal in two
+    dialects; see specs/021-claude-code-effort/research.md R2.
+
+    The three conditions are all required:
+
+    1. the requested level is one the API refuses with thinking disabled,
+    2. thinking is in fact disabled for this call, and
+    3. the model's thinking CAN be disabled — on the Fable/Mythos families it
+       cannot, so the top levels stay legal and refusing would block a working
+       configuration (FR-009a).
+
+    Returns a message rather than raising so each caller can raise the
+    exception type its layer already uses.
+    """
+    if effort not in CLAUDE_CODE_THINKING_ONLY_EFFORTS:
+        return None
+    if thinking_on or _claude_code_always_thinking(model):
+        return None
+    return (
+        f"--claude-code-effort {effort!r} requires extended thinking, which is "
+        f"disabled for this call. Either lower the effort to "
+        f"{CLAUDE_CODE_NO_THINKING_EFFORT!r} or below, or enable thinking with "
+        f"CG_CLAUDE_CODE_THINKING=1. Refusing rather than changing your thinking "
+        f"setting or silently lowering the effort."
+    )
+
+
+@dataclass(frozen=True)
+class ClaudeCodeRunIdentity:
+    """What a claude-code run actually did — not what was asked for.
+
+    The two are not the same object, and the gap between them is the defect
+    this feature exists to close: today a run can send `--effort high` that
+    nobody chose, silently overriding the level the operator pinned in their
+    own ~/.claude/settings.json, and nothing anywhere says so.
+    """
+
+    effective_model: str
+    effort_sent: ClaudeCodeEffort | None
+    source: str          # explicit | environment | clamp | inherited
+    override_sent: bool
+    thinking_on: bool
+
+    @property
+    def always_thinking(self) -> bool:
+        return _claude_code_always_thinking(self.effective_model)
+
+    def banner(self) -> str:
+        # "on (always)" rather than "off" on the Fable/Mythos families. We did
+        # not *request* thinking there, but it cannot be disabled, which is
+        # exactly why the top effort levels stay legal and the clamp is
+        # skipped. Printing a bare "off" beside "effort=max" would read as a
+        # refusal that should have fired and did not.
+        if self.always_thinking:
+            thinking = "on (always)"
+        else:
+            thinking = "on" if self.thinking_on else "off"
+        if self.source == "explicit":
+            effort = f"effort={self.effort_sent} (explicit)"
+        elif self.source == "environment":
+            effort = f"effort={self.effort_sent} (CG_CLAUDE_CODE_EFFORT)"
+        elif self.source == "clamp":
+            # Says WHY. A bare "high" here would attribute the engine's
+            # compatibility decision to the human (FR-020).
+            effort = (
+                f"effort={self.effort_sent} (compatibility clamp — thinking is "
+                f"off, and the provider refuses "
+                f"{'/'.join(CLAUDE_CODE_THINKING_ONLY_EFFORTS)} without it; your "
+                f"settings.json effortLevel was not used)"
+            )
+        else:
+            # Claims no value: we never read ~/.claude/settings.json, so
+            # printing a level from it would be a guess presented as a record.
+            effort = (
+                "effort=inherited from your ~/.claude/settings.json "
+                "(CampaignGenerator sent no override)"
+            )
+        return (
+            f"claude-code run: model={self.effective_model} {effort} "
+            f"thinking={thinking}"
+        )
+
+    def as_dict(self) -> dict:
+        """Wire shape for `client.last_run_identity`, which the Connection
+        Graph renders. Mirrors the Codex client's contract so one consumer
+        can handle both without a second code path."""
+        return {
+            "backend": "claude-code",
+            "model": self.effective_model,
+            "claude_code_effort": self.effort_sent or "inherited",
+            "claude_code_effort_source": self.source,
+            "claude_code_effort_override": self.override_sent,
+            "thinking": self.thinking_on or self.always_thinking,
+        }
+
+
+def claude_code_run_identity(
+    *, model: str, thinking_on: bool,
+    effort: str | None = None, source: str | None = None,
+) -> ClaudeCodeRunIdentity:
+    """Classify what this run will send, and who decided it.
+
+    Four sources, where Codex has three. Today's single silent "omission" is
+    really two different behaviours the operator cannot tell apart:
+
+    - ``clamp``     — nothing was chosen, thinking is suppressed, and the model
+                      permits that, so the engine pins the highest legal level.
+    - ``inherited`` — nothing was chosen and no clamp applies, so no --effort
+                      is sent at all and the child resolves the operator's own
+                      settings.json.
+
+    Splitting them is what makes SC-008 answerable.
+    """
+    if effort is not None:
+        return ClaudeCodeRunIdentity(
+            effective_model=model, effort_sent=effort,
+            source=source or "explicit", override_sent=True,
+            thinking_on=thinking_on,
+        )
+    if not thinking_on and not _claude_code_always_thinking(model):
+        return ClaudeCodeRunIdentity(
+            effective_model=model, effort_sent=CLAUDE_CODE_NO_THINKING_EFFORT,
+            source="clamp", override_sent=True, thinking_on=thinking_on,
+        )
+    return ClaudeCodeRunIdentity(
+        effective_model=model, effort_sent=None,
+        source="inherited", override_sent=False, thinking_on=thinking_on,
+    )
+
+
 def _blocks_to_text(x) -> str:
     """Flatten a string | list-of-content-blocks into plain text.
 
@@ -408,7 +553,8 @@ def _messages_user_text(messages: list) -> str:
 
 def _claude_code_generate(
     *, system, user: str, model: str, max_tokens: int | None = None,
-    thinking: bool | None = None,
+    thinking: bool | None = None, effort: str | None = None,
+    effort_source: str | None = None, announce=None,
 ) -> str:
     """Invoke `claude -p` headless and return the assistant text.
 
@@ -419,12 +565,21 @@ def _claude_code_generate(
 
     Thinking is suppressed via MAX_THINKING_TOKENS=0 unless the caller asks for
     it (`thinking=True`) or CG_CLAUDE_CODE_THINKING is set — see the module
-    comment for why this backend inverts the usual default. Suppressing it also
-    forces `--effort high`: the API refuses effort above that when thinking is
-    off, and the CLI would otherwise resolve the GM's own settings.json
+    comment for why this backend inverts the usual default.
+
+    `effort` is the operator's resolved choice (feature 021), or None. When it
+    is None the pre-021 behaviour is reproduced exactly: suppressing thinking
+    forces `--effort high`, because the API refuses effort above that with
+    thinking off and the CLI would otherwise resolve the GM's own settings.json
     `effortLevel` (xhigh/max for a power user) and 400 on every call. That
     clamp is skipped on models whose thinking can't be disabled in the first
-    place (Fable/Mythos), where the ceiling doesn't apply.
+    place (Fable/Mythos), where the ceiling doesn't apply. An explicit `effort`
+    replaces the clamp; it never stacks with it.
+
+    The clamp used to be invisible, which is the defect 021 closes: it silently
+    overrode a level the operator had deliberately set, and no output said so.
+    `claude_code_run_identity` classifies which of the four things happened and
+    `announce` (called at most once per client) reports it.
 
     `--strict-mcp-config` is passed with no `--mcp-config`, so the CLI ignores
     every configured MCP server. `--disallowed-tools '*'` already stops the
@@ -475,6 +630,22 @@ def _claude_code_generate(
     else:
         env["MAX_THINKING_TOKENS"] = "0"
 
+    # Refuse an impossible effort/thinking pair BEFORE the child exists — that
+    # is what "before any model work starts" means here, and it is the only
+    # place a per-call thinking=True is visible (research R2). No fallback: we
+    # neither enable thinking nor lower the level on the operator's behalf.
+    conflict = claude_code_effort_conflict(
+        effort, thinking_on=thinking_on, model=model)
+    if conflict:
+        raise ValueError(conflict)
+
+    identity = claude_code_run_identity(
+        model=model, thinking_on=thinking_on,
+        effort=effort, source=effort_source,
+    )
+    if announce is not None:
+        announce(identity)
+
     cmd = [
         CLAUDE_CODE_CLI, "-p",
         "--model", model,
@@ -483,12 +654,11 @@ def _claude_code_generate(
         "--disallowed-tools", "*",   # pure text generation; no agentic tool calls
         "--strict-mcp-config",       # ...and don't even spawn the MCP servers
     ]
-    if not thinking_on and not _claude_code_always_thinking(model):
-        # The GM's settings.json effortLevel is read from disk, so a pinned
-        # xhigh/max 400s every no-thinking call unless overridden here. Skipped
-        # on always-thinking models, where the ceiling doesn't apply and the
-        # clamp would only cost the GM effort they asked for.
-        cmd += ["--effort", CLAUDE_CODE_NO_THINKING_EFFORT]
+    if identity.override_sent:
+        # One decision point for --effort: an explicit/environment level, or
+        # the compatibility clamp. Splitting them would let two branches
+        # disagree about what the child receives.
+        cmd += ["--effort", identity.effort_sent]
     sp_file = None
     try:
         if sys_text:
@@ -597,18 +767,24 @@ class _ClaudeCodeStream:
     """
 
     def __init__(self, *, system, user: str, model: str, max_tokens: int | None = None,
-                 thinking: bool | None = None):
+                 thinking: bool | None = None, effort: str | None = None,
+                 effort_source: str | None = None, announce=None):
         self._system = system
         self._user = user
         self._model = model
         self._max_tokens = max_tokens
         self._thinking = thinking
+        self._effort = effort
+        self._effort_source = effort_source
+        self._announce = announce
         self._text = ""
 
     def __enter__(self):
         self._text = _claude_code_generate(
             system=self._system, user=self._user, model=self._model,
-            max_tokens=self._max_tokens, thinking=self._thinking)
+            max_tokens=self._max_tokens, thinking=self._thinking,
+            effort=self._effort, effort_source=self._effort_source,
+            announce=self._announce)
         return self
 
     def __exit__(self, exc_type, exc, tb):
@@ -644,6 +820,9 @@ class _ClaudeCodeMessages:
             model=self._resolve_model(model),
             max_tokens=max_tokens,
             thinking=thinking,
+            effort=self._client.claude_code_effort,
+            effort_source=self._client.claude_code_effort_source,
+            announce=self._client.announce_once,
         )
         return _OpenAICompatResponse(text)
 
@@ -654,6 +833,9 @@ class _ClaudeCodeMessages:
             model=self._resolve_model(model),
             max_tokens=max_tokens,
             thinking=thinking,
+            effort=self._client.claude_code_effort,
+            effort_source=self._client.claude_code_effort_source,
+            announce=self._client.announce_once,
         )
 
 
@@ -664,6 +846,30 @@ class _ClaudeCodeClient:
     stream_api. Tools, vision, batching, and real streaming are unsupported.
     """
 
-    def __init__(self, model_override: str | None = None):
+    def __init__(self, model_override: str | None = None,
+                 claude_code_effort: str | None = None,
+                 claude_code_effort_source: str | None = None):
         self.model_override = model_override or os.environ.get("CG_CLAUDE_CODE_MODEL")
+        self.claude_code_effort = claude_code_effort
+        self.claude_code_effort_source = claude_code_effort_source
+        self._announced = False
+        self.last_run_identity: ClaudeCodeRunIdentity | None = None
         self.messages = _ClaudeCodeMessages(self)
+
+    def announce_once(self, identity: "ClaudeCodeRunIdentity") -> None:
+        """Emit the run-identity banner the first time this client generates.
+
+        Once per client, not once per call. #359 learned this the expensive
+        way on the Codex side: a per-call print flooded streamed polish output,
+        and a fan-out to 40 scenes would put 40 identical banners into one
+        stream. stderr because subprocess_runner merges it into the stream the
+        UI already renders, while leaving stdout clean for CLI piping.
+        """
+        # Recorded even on a repeat call: `last_run_identity` is what the
+        # Connection Graph renders, and it must describe the LATEST call, not
+        # the first one that happened to print.
+        self.last_run_identity = identity
+        if self._announced:
+            return
+        self._announced = True
+        print(identity.banner(), file=sys.stderr, flush=True)

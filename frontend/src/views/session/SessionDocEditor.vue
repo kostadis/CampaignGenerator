@@ -39,6 +39,7 @@ const dgxModel = ref('')
 const openrouterModel = ref('')
 const codexModel = ref('')
 const codexReasoning = ref('')
+const claudeCodeEffort = ref('')
 
 // Drawer open/closed — always starts closed. The Config button opens it, and
 // onMounted auto-opens it on a cold start (required fields missing). Not
@@ -108,6 +109,8 @@ function loadConfigFields() {
   codexModel.value = (backends['codex-cli'] ?? backends.codex_cli)?.model || ''
   codexReasoning.value =
     (backends['codex-cli'] ?? backends.codex_cli)?.codex_reasoning_effort || ''
+  claudeCodeEffort.value =
+    (backends['claude-code'] ?? backends.claude_code)?.claude_code_effort || ''
 }
 
 // ── Auto-apply: debounce-PUT changes to /api/editor/config ───────
@@ -306,6 +309,30 @@ async function persistCodex() {
 watch([codexModel, codexReasoning], () => {
   if (codexPersistTimer) clearTimeout(codexPersistTimer)
   codexPersistTimer = setTimeout(persistCodex, 350)
+})
+
+// 021 — the claude-code effort, written to its OWN profile key. Deliberately
+// a separate function and a separate debounce from persistCodex above: each
+// PUT names one backend's profile, so setting one backend's effort can never
+// read, write, or clear the other's. Blank persists as null (omission), which
+// on this backend is a real behaviour rather than an absence.
+let claudeCodePersistTimer: ReturnType<typeof setTimeout> | undefined
+async function persistClaudeCode() {
+  try {
+    await config.updateEditor({
+      backends: {
+        'claude-code': {
+          claude_code_effort: claudeCodeEffort.value || null,
+        },
+      },
+    })
+  } catch {
+    /* non-fatal — the next subprocess still resolves the active profile */
+  }
+}
+watch(claudeCodeEffort, () => {
+  if (claudeCodePersistTimer) clearTimeout(claudeCodePersistTimer)
+  claudeCodePersistTimer = setTimeout(persistClaudeCode, 350)
 })
 
 // ── Scene state ───────────────────────────────────────────────────
@@ -519,6 +546,8 @@ function hydrateKnobsFromEditorConfig(ec: any) {
   codexModel.value = (backends['codex-cli'] ?? backends.codex_cli)?.model || ''
   codexReasoning.value =
     (backends['codex-cli'] ?? backends.codex_cli)?.codex_reasoning_effort || ''
+  claudeCodeEffort.value =
+    (backends['claude-code'] ?? backends.claude_code)?.claude_code_effort || ''
 }
 
 async function activateProfileByName(name: string) {
@@ -1207,6 +1236,7 @@ onMounted(async () => {
       v-model:openrouter-model="openrouterModel"
     v-model:codex-model="codexModel"
     v-model:codex-reasoning="codexReasoning"
+    v-model:claude-code-effort="claudeCodeEffort"
       v-model:extract-tokens="extractTokens"
       v-model:batch-tokens="batchTokens"
       v-model:narrate-tokens="narrateTokens"

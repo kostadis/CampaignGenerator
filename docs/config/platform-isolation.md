@@ -1,5 +1,9 @@
 # Platform (Global) Configuration Isolation Design
 
+> **Feature 021 extension:** `runtime.default_claude_code_effort` is the
+> `claude-code` twin of the Codex field below, with its own five-value
+> vocabulary. See [configuration.md](../core/configuration.md#claude-code-effort).
+>
 > **Feature 019 extension:** `runtime.default_codex_reasoning_effort` now lives
 > beside the global backend/model choice. It is optional, Codex-only memory;
 > null preserves the Codex default. Current precedence and owning-profile rules
@@ -341,6 +345,8 @@ Strict (`extra="forbid"`), matching `SessionEditorConfig` and `PlanningConfig`:
 ```yaml
 runtime:
   default_codex_reasoning_effort: # optional; null → Codex default
+  default_claude_code_effort:     # optional; null → omission (clamp or
+                                 #   your own settings.json effortLevel)
   default_model:            # sidebar picker; unset → env CAMPAIGN_MODEL → wiring default
   session_dir:              # campaign-based path — the session-resolution anchor
 ```

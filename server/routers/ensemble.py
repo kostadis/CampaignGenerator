@@ -134,7 +134,8 @@ def _backend_args(backend: str, model: str, request: Request, *,
                   endpoint: str | None = None,
                   endpoints: list[str] | None = None,
                   batch: bool | None = None,
-                  codex_reasoning_effort: str | None = None) -> list[str]:
+                  codex_reasoning_effort: str | None = None,
+                  claude_code_effort: str | None = None) -> list[str]:
     """Resolve this stage's selection and render it as CLI flags.
 
     Feature 003 replaced this function's body with a call to the one seam,
@@ -203,6 +204,7 @@ def _backend_args(backend: str, model: str, request: Request, *,
             model=model or None,
             batch=batch,
             codex_reasoning_effort=codex_reasoning_effort,
+            claude_code_effort=claude_code_effort,
         ),
         service_name="ensemble",
     )
@@ -719,6 +721,7 @@ def run_extract(
         endpoints=endpoints,
         batch=batch,
         codex_reasoning_effort=cfg.extract.codex_reasoning_effort,
+        claude_code_effort=cfg.extract.claude_code_effort,
     )
     _cmd_opt(cmd, "--chapter-parallel", chapter_parallel)
     _cmd_opt(cmd, "--chunk-parallel", chunk_parallel)
@@ -775,6 +778,7 @@ def run_synthesise_polish(
         endpoint=endpoint,
         batch=batch,
         codex_reasoning_effort=cfg.synthesize.codex_reasoning_effort,
+        claude_code_effort=cfg.synthesize.claude_code_effort,
     )
     return _run_locked("synthesise-polish", cmd)
 
@@ -820,6 +824,7 @@ def run_narrate_chapter(
         endpoint=endpoint,
         batch=batch,
         codex_reasoning_effort=cfg.extract.codex_reasoning_effort,
+        claude_code_effort=cfg.extract.claude_code_effort,
     )
     return _run_locked("narrate-chapter", cmd)
 
@@ -878,6 +883,7 @@ def run_bundle(
             endpoints=endpoints,
             batch=batch,
             codex_reasoning_effort=cfg.extract.codex_reasoning_effort,
+            claude_code_effort=cfg.extract.claude_code_effort,
         )
         _cmd_opt(cmd, "--entity-parallel", entity_parallel)
     # --list does no model work, so it never needs the lock or backend env.
@@ -1101,6 +1107,7 @@ def run_synthesize(
         endpoint=endpoint,
         batch=batch,
         codex_reasoning_effort=cfg.synthesize.codex_reasoning_effort,
+        claude_code_effort=cfg.synthesize.claude_code_effort,
     )
 
     prelude_parts = []
@@ -1167,7 +1174,8 @@ def get_ensemble_resolved_selection(
         service=ModelSelection(backend=stage_cfg.backend or None,
                                model=stage_cfg.model or None,
                                batch=stage_cfg.batch,
-                               codex_reasoning_effort=stage_cfg.codex_reasoning_effort),
+                               codex_reasoning_effort=stage_cfg.codex_reasoning_effort,
+                               claude_code_effort=stage_cfg.claude_code_effort),
         service_name="ensemble",
         raise_on_incompatible=False,
     ).as_dict()

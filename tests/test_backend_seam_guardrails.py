@@ -921,3 +921,58 @@ def test_all_30_codex_surfaces_share_reasoning_effort_registration():
         assert "add_codex_reasoning_arg" in calls, (
             f"{relative_path} bypasses the shared Codex effort registrar"
         )
+
+
+def test_all_30_claude_code_surfaces_share_effort_registration():
+    """Feature 021's half of the same inventory.
+
+    The registrars get the option for free, because `add_backend_args` calls
+    `add_claude_code_effort_arg` — that is the whole of CLI parity, and a CLI
+    added tomorrow inherits it. The hand-written surfaces are the ones that
+    can drift: they build their own backend arguments (facts_to_state cannot
+    call add_backend_args without colliding on --endpoint/--endpoints), so
+    each must register the option explicitly or one CLI in the family
+    silently speaks a different dialect (Principle XII).
+    """
+    registrars, hand_written = discover_backend_surfaces()
+    dispatchers = discover_runtime_dispatchers(registrars, hand_written)
+    assert len(registrars | hand_written) == 30
+    assert len(dispatchers) == 4
+
+    for relative_path in sorted(hand_written):
+        tree = _parse(REPO_ROOT / relative_path)
+        calls = {_call_func_name(node) for node in _all_calls(tree)}
+        assert "add_claude_code_effort_arg" in calls, (
+            f"{relative_path} bypasses the shared Claude Code effort registrar"
+        )
+
+
+def test_add_backend_args_registers_both_subscription_effort_options():
+    """The structural claim the test above depends on: the two registrars are
+    called from the one shared helper, so the 30 CLIs cannot diverge."""
+    import argparse
+
+    from campaignlib.api.client import add_backend_args
+
+    parser = argparse.ArgumentParser()
+    add_backend_args(parser)
+    flags = {action.option_strings[0] for action in parser._actions
+             if action.option_strings}
+    assert "--codex-reasoning-effort" in flags
+    assert "--claude-code-effort" in flags
+
+
+def test_no_dispatcher_forwards_codex_effort_without_the_claude_code_one():
+    """A dispatcher that learned to forward one subscription backend's effort
+    to its children must forward the other's too, or a fan-out silently drops
+    the operator's selection for half the family."""
+    offenders = []
+    for relative_path in sorted(discover_runtime_dispatchers(
+            *discover_backend_surfaces())):
+        source = (REPO_ROOT / relative_path).read_text(encoding="utf-8")
+        if ("--codex-reasoning-effort" in source
+                and "--claude-code-effort" not in source):
+            offenders.append(relative_path)
+    assert not offenders, (
+        f"dispatchers forward Codex effort but not Claude Code effort: {offenders}"
+    )

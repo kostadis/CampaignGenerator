@@ -4,12 +4,18 @@ import os
 import sys
 from dataclasses import dataclass
 
-from .backends import _OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient
+from .backends import (
+    _OpenAICompatClient, _OpenRouterClient, _ClaudeCodeClient,
+    _claude_code_always_thinking, _claude_code_thinking,
+    claude_code_effort_conflict,
+)
 from .codex_cli import _CodexCliClient
 from ..wiring import wiring_get
 from ..selection import (
     BACKENDS,
+    CLAUDE_CODE_EFFORTS,
     CODEX_REASONING_EFFORTS,
+    ClaudeCodeEffort,
     CodexReasoningEffort,
     compatible,
 )
@@ -49,6 +55,24 @@ class CLIReasoningIntent:
     requested_effort: CodexReasoningEffort | None
     environment_effort: CodexReasoningEffort | None
     effective_effort: CodexReasoningEffort | None
+    source: str
+    emit_override: bool
+
+
+@dataclass(frozen=True)
+class ClaudeCodeEffortIntent:
+    """Resolved claude-code effort with truthful provenance.
+
+    The claude-code twin of CLIReasoningIntent. Deliberately a separate type
+    with a separate vocabulary: `claude --effort` has no "minimal", and
+    omission means something different on each backend (see
+    specs/021-claude-code-effort/research.md R1).
+    """
+
+    backend: str
+    requested_effort: ClaudeCodeEffort | None
+    environment_effort: ClaudeCodeEffort | None
+    effective_effort: ClaudeCodeEffort | None
     source: str
     emit_override: bool
 
@@ -133,6 +157,72 @@ def resolve_cli_reasoning(args) -> CLIReasoningIntent:
         effective_effort=environment,
         source="environment",
         emit_override=True,
+    )
+
+
+def _valid_claude_code_effort(value, *, source: str) -> ClaudeCodeEffort:
+    accepted = ", ".join(CLAUDE_CODE_EFFORTS)
+    if not isinstance(value, str) or not value or value.strip() != value:
+        raise ValueError(f"{source} must be one of: {accepted}")
+    if value not in CLAUDE_CODE_EFFORTS:
+        raise ValueError(f"{source} value {value!r} must be one of: {accepted}")
+    return value
+
+
+def resolve_cli_claude_effort(args) -> ClaudeCodeEffortIntent:
+    """Resolve explicit option, environment fallback, or omission.
+
+    Precedence: explicit --claude-code-effort (or a UI selection forwarded as
+    one) > CG_CLAUDE_CODE_EFFORT > omission.
+
+    Note the asymmetry in the two backend checks, which is deliberate. An
+    EXPLICIT value on another backend is refused — the operator typed
+    something that cannot take effect, and silently ignoring it is how a run
+    quietly does the wrong thing. An AMBIENT environment variable on another
+    backend is merely omission: CG_CLAUDE_CODE_EFFORT exported in a shell is a
+    convenience, and refusing on it would break every unrelated command in that
+    shell.
+
+    Unlike the Codex resolver this returns "omitted" rather than a value for
+    the no-selection case in every branch; the clamp-versus-inherited
+    distinction is not knowable here (it depends on the per-call thinking
+    state) and is classified at the seam by `claude_code_run_identity`.
+    """
+    backend = _effective_backend(args)
+    requested = getattr(args, "claude_code_effort", None)
+
+    if requested is not None:
+        effort = _valid_claude_code_effort(
+            requested, source="--claude-code-effort"
+        )
+        if backend != "claude-code":
+            raise ValueError(
+                "--claude-code-effort applies only to --backend claude-code; "
+                f"effective backend is {backend!r}"
+            )
+        return ClaudeCodeEffortIntent(
+            backend=backend, requested_effort=effort, environment_effort=None,
+            effective_effort=effort, source="explicit", emit_override=True,
+        )
+
+    if backend != "claude-code":
+        return ClaudeCodeEffortIntent(
+            backend=backend, requested_effort=None, environment_effort=None,
+            effective_effort=None, source="omitted", emit_override=False,
+        )
+
+    raw_environment = os.environ.get("CG_CLAUDE_CODE_EFFORT")
+    if raw_environment is None or not raw_environment.strip():
+        return ClaudeCodeEffortIntent(
+            backend=backend, requested_effort=None, environment_effort=None,
+            effective_effort=None, source="omitted", emit_override=False,
+        )
+    environment = _valid_claude_code_effort(
+        raw_environment.strip(), source="CG_CLAUDE_CODE_EFFORT"
+    )
+    return ClaudeCodeEffortIntent(
+        backend=backend, requested_effort=None, environment_effort=environment,
+        effective_effort=environment, source="environment", emit_override=True,
     )
 
 
@@ -229,7 +319,9 @@ def _require_nonempty(text: str) -> str:
 def make_client(endpoint: str | None = None, model_override: str | None = None,
                 backend: str | None = None,
                 reasoning_effort: CodexReasoningEffort | None = None,
-                reasoning_effort_source: str | None = None):
+                reasoning_effort_source: str | None = None,
+                claude_code_effort: ClaudeCodeEffort | None = None,
+                claude_code_effort_source: str | None = None):
     """Return an LLM client.
 
     Default: an Anthropic client (existing behaviour).
@@ -264,7 +356,11 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
             reasoning_effort_source=reasoning_effort_source,
         )
     if backend == "claude-code":
-        return _ClaudeCodeClient(model_override=model_override)
+        return _ClaudeCodeClient(
+            model_override=model_override,
+            claude_code_effort=claude_code_effort,
+            claude_code_effort_source=claude_code_effort_source,
+        )
     if backend == "openrouter":
         return _OpenRouterClient(model_override=model_override)
     if backend == "dgx":
@@ -311,6 +407,30 @@ def add_codex_reasoning_arg(parser) -> None:
     )
 
 
+def add_claude_code_effort_arg(parser) -> None:
+    """Register the one claude-code effort spelling used by every CLI surface.
+
+    Called from add_backend_args, so all 30 model-bearing CLIs inherit it as
+    one act rather than thirty — the family-wide introduction Principle XII
+    requires. Exported separately for the few CLIs that build their own
+    backend arguments (facts_to_state) or forward it to child argv.
+    """
+    parser.add_argument(
+        "--claude-code-effort",
+        choices=CLAUDE_CODE_EFFORTS,
+        default=None,
+        help=(
+            "Claude Code CLI effort level. Applies only to --backend "
+            "claude-code; CG_CLAUDE_CODE_EFFORT is the fallback. Omit to keep "
+            "the current behaviour (a compatibility clamp when thinking is "
+            "suppressed, otherwise your own ~/.claude/settings.json "
+            "effortLevel). 'xhigh' and 'max' require thinking — set "
+            "CG_CLAUDE_CODE_THINKING=1, or the call is refused. Higher levels "
+            "increase run time."
+        ),
+    )
+
+
 def add_backend_args(parser, default_backend: str | None = "anthropic") -> None:
     """Register the uniform --backend/--endpoint selection on a CLI.
 
@@ -348,6 +468,7 @@ def add_backend_args(parser, default_backend: str | None = "anthropic") -> None:
              "Anthropic backend only. Unrelated to ensemble_batch (local "
              "dispatch).")
     add_codex_reasoning_arg(parser)
+    add_claude_code_effort_arg(parser)
 
 
 def client_from_args(args, *, endpoint: str | None = None):
@@ -371,6 +492,20 @@ def client_from_args(args, *, endpoint: str | None = None):
     ``--backend``.
     """
     reasoning = resolve_cli_reasoning(args)
+    claude_effort = resolve_cli_claude_effort(args)
+    if claude_effort.effective_effort is not None:
+        # Fail fast at the edge when the conflict is ALREADY determined: the
+        # model and the environment thinking opt-in are both known here. The
+        # seam guards again before the child spawns, because a per-call
+        # thinking=True is not visible from argv (research R2). Same helper,
+        # so there is one wording rather than two that drift.
+        conflict = claude_code_effort_conflict(
+            claude_effort.effective_effort,
+            thinking_on=_claude_code_thinking(None),
+            model=getattr(args, "model", None) or "",
+        )
+        if conflict:
+            raise SystemExit(conflict)
     if getattr(args, "batch", False):
         arg_backend = getattr(args, "backend", "anthropic")
         resolved_backend = (
@@ -396,6 +531,12 @@ def client_from_args(args, *, endpoint: str | None = None):
         client_kwargs.update(
             reasoning_effort=reasoning.effective_effort,
             reasoning_effort_source=reasoning.source,
+        )
+    if (claude_effort.backend == "claude-code"
+            and claude_effort.effective_effort is not None):
+        client_kwargs.update(
+            claude_code_effort=claude_effort.effective_effort,
+            claude_code_effort_source=claude_effort.source,
         )
     return make_client(**client_kwargs)
 

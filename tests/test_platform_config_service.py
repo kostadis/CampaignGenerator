@@ -1024,7 +1024,11 @@ class TestNoRouteBuildsFromIncompatibleBatchSelection:
             "model", "backend", "model_origin", "backend_origin",
             "batch", "batch_origin",
             "codex_reasoning_effort", "codex_reasoning_effort_origin",
-            "codex_reasoning_override", "compatible", "refusal",
+            "codex_reasoning_override",
+            # 021 — the claude-code twin of the three Codex keys above.
+            "claude_code_effort", "claude_code_effort_origin",
+            "claude_code_effort_override",
+            "compatible", "refusal",
         }
 
 

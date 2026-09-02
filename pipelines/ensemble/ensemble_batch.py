@@ -38,7 +38,9 @@ from campaignlib import (  # noqa: E402
 )
 from campaignlib.api.client import (  # noqa: E402
     add_codex_reasoning_arg,
+    add_claude_code_effort_arg,
     resolve_cli_reasoning,
+    resolve_cli_claude_effort,
 )
 from campaignlib.selection import BACKENDS  # noqa: E402
 
@@ -110,6 +112,7 @@ def _build_parser():
                         "-> extract_facts.py (default: dgx). This driver never builds "
                         "a client itself.")
     add_codex_reasoning_arg(p)
+    add_claude_code_effort_arg(p)
     p.add_argument("--chunk-parallel", type=int, metavar="N",
                    help="In-flight chunk requests per endpoint (default: ensemble.py default)")
     p.add_argument("--pass-parallel", type=int, metavar="N",
@@ -170,6 +173,8 @@ def _build_ensemble_cmd(chapter: Path, workdir: Path, args,
     cmd += ["--backend", args.backend]
     if args.codex_reasoning_effort is not None:
         cmd += ["--codex-reasoning-effort", args.codex_reasoning_effort]
+    if args.claude_code_effort is not None:
+        cmd += ["--claude-code-effort", args.claude_code_effort]
     if args.samples is not None:
         cmd += ["--samples", str(args.samples)]
     if args.chunk_parallel is not None:
@@ -207,6 +212,7 @@ def main():
     args = parser.parse_args()
     try:
         resolve_cli_reasoning(args)
+        resolve_cli_claude_effort(args)
     except ValueError as exc:
         parser.error(str(exc))
 

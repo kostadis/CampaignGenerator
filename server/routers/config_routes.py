@@ -16,7 +16,9 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
 from server.config import DEFAULT_MODEL, MODELS, path_exists
-from server.platform_config_shared import BACKENDS, CODEX_REASONING_EFFORTS
+from server.platform_config_shared import (
+    BACKENDS, CLAUDE_CODE_EFFORTS, CODEX_REASONING_EFFORTS,
+)
 from server.platform_config_service import PlatformConfigService, require_platform
 
 router = APIRouter()
@@ -158,6 +160,7 @@ def get_models(request: Request):
         "default": DEFAULT_MODEL,
         "backends": list(BACKENDS),
         "codex_reasoning_efforts": list(CODEX_REASONING_EFFORTS),
+        "claude_code_efforts": list(CLAUDE_CODE_EFFORTS),
         "default_backend": default_backend,
     }
 

@@ -353,6 +353,17 @@ def _narrate_knobs_snapshot(cfg: ResolvedEditorConfig) -> dict:
         "narration_genre_file": cfg.paths.genre_file,
         "backend": cfg.backends.active or "anthropic",
     }
+    # 021 — the effort this run asked for, recorded beside the model it used.
+    # Only the REQUEST is knowable here: whether the engine ends up sending
+    # that level, the compatibility clamp, or nothing at all depends on the
+    # per-call thinking state, and is classified at the seam. Recording a
+    # guess would be exactly the Optimistic Lie the run banner exists to end,
+    # so this says "not set" rather than naming a level nobody chose.
+    if (cfg.backends.active or "anthropic") == "claude-code":
+        profile = cfg.backends.profile_for("claude-code")
+        snapshot["claude_code_effort"] = (
+            getattr(profile, "claude_code_effort", None) or "not set"
+        )
     # Record which rulebook was used, by identity rather than by copy (#276
     # fix 2). This field used to hold the whole genre document, so every
     # per-scene sidecar carried its own 16K duplicate; the digest answers the
@@ -868,6 +879,11 @@ def _editor_service_selection(cfg: ResolvedEditorConfig):
         model=model,
         batch=prof.batch,
         codex_reasoning_effort=prof.codex_reasoning_effort,
+        # 021 — same reason as `prof.batch` above: this is the one place the
+        # active profile becomes a ModelSelection, for both the run and its
+        # preview. Dropping it here would discard the operator's stored effort
+        # from every editor run while the UI still displayed it.
+        claude_code_effort=prof.claude_code_effort,
     ), endpoint
 
 

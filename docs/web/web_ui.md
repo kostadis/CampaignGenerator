@@ -121,6 +121,40 @@ wall-clock. The page says so before the run.
 inside a single web request rather than as a streamed background run, so a
 batch run there could outlive the request. Tracked as issue #192.
 
+### Subscription effort selectors
+
+Both subscription backends expose an effort control, and each appears only
+while its own backend is active — sidebar (app-wide), the per-service override
+panel, the Session Doc Editor drawer, and each ensemble stage.
+
+- **`codex-cli` → "Codex reasoning"**: `minimal … max`, plus "Codex default".
+- **`claude-code` → "Effort"**: `low … max`, plus "Claude Code default". No
+  `minimal`; `claude --effort` does not accept one.
+
+The vocabulary comes from the server (`GET /api/config/models`), never from a
+list in the frontend — an older server disables the selector visibly rather
+than letting the UI submit a value it cannot understand.
+
+**Switching backends erases nothing.** The two selections are stored in
+separate per-backend profiles, so a campaign can hold both at once; each lies
+dormant while the other backend is active, and setting one never touches the
+other. Choosing the "default" option stores *omission* (the field is removed),
+not the level the platform tier happens to hold today.
+
+**What a claude-code run reports.** Every run prints one `claude-code run:`
+line into the output stream, naming the model, the effort, which of four
+sources decided it, and the thinking state. Two of those sources are what
+"default" used to hide: a **compatibility clamp** (the engine pinned `high`
+because thinking is off and the provider refuses `xhigh`/`max` without it —
+overriding whatever your own `~/.claude/settings.json` says), and
+**inherited** (nothing was sent; your settings.json decided, and the line does
+not guess which level that was).
+
+**`xhigh` and `max` are refused without thinking**, before any child process
+starts, with both remedies in the message. The selector says so under the
+control. Thinking itself has no UI control today — only
+`CG_CLAUDE_CODE_THINKING=1` — which is why the help text names the variable.
+
 ## Session Doc Editor
 
 Two-panel layout for the extract → edit → narrate → assemble workflow:

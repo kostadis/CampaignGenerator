@@ -10,6 +10,13 @@ const el = ref<HTMLElement>()
 const codexRunIdentity = computed(() =>
   props.text.split(/\r?\n/).find(line => line.startsWith('Codex run:')) || '',
 )
+// The claude-code banner (feature 021). Emitted once per run on stderr, which
+// subprocess_runner merges into this same stream. It carries the effort the
+// run actually used AND which of the four sources decided it — including the
+// compatibility clamp, which used to be invisible.
+const claudeCodeRunIdentity = computed(() =>
+  props.text.split(/\r?\n/).find(line => line.startsWith('claude-code run:')) || '',
+)
 
 watch(() => props.text, async () => {
   await nextTick()
@@ -22,6 +29,7 @@ watch(() => props.text, async () => {
 <template>
   <div class="stream-shell">
     <div v-if="codexRunIdentity" class="run-identity">{{ codexRunIdentity }}</div>
+    <div v-if="claudeCodeRunIdentity" class="run-identity">{{ claudeCodeRunIdentity }}</div>
     <pre ref="el" class="stream-output" :style="{ color: color || 'var(--green)' }">{{ text }}</pre>
   </div>
 </template>

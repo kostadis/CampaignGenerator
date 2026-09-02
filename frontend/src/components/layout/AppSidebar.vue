@@ -80,6 +80,15 @@ async function setCodexReasoning(value: string) {
   await config.updateRuntime({ default_codex_reasoning_effort: value || null })
 }
 
+async function setClaudeCodeEffort(value: string) {
+  // Empty persists as omission (null), NOT as the level the platform happens
+  // to hold today: on this backend omission is a real behaviour — a
+  // compatibility clamp, or the operator's own settings.json — and storing a
+  // guessed level would silently take that decision away from them.
+  config.claudeCodeEffort = value as typeof config.claudeCodeEffort
+  await config.updateRuntime({ default_claude_code_effort: value || null })
+}
+
 // Batch selector (app-wide, 005-ui-batch-selection). Platform tier, same
 // write path as backend/model above — PUT /api/config/runtime is the ONLY
 // app-wide write door (feature 003's design; this feature reuses it rather
@@ -248,6 +257,23 @@ function navigate(path: string) {
         </div>
         <div class="batch-help">
           Use Anthropic Message Batches (50% off list price; replaces streaming with poll-progress)
+        </div>
+      </div>
+      <div v-if="currentBackend === 'claude-code'" class="codex-reasoning-selector">
+        <label class="model-label">EFFORT</label>
+        <select
+          :value="config.claudeCodeEffort"
+          class="model-select"
+          :disabled="!config.claudeCodeEfforts.length"
+          @change="setClaudeCodeEffort(($event.target as HTMLSelectElement).value)"
+        >
+          <option value="">Claude Code default</option>
+          <option v-for="effort in config.claudeCodeEfforts" :key="effort" :value="effort">
+            {{ effort }}
+          </option>
+        </select>
+        <div class="batch-help">
+          {{ config.claudeCodeCompatibilityError || 'Higher effort can take longer. xhigh and max require thinking (CG_CLAUDE_CODE_THINKING=1); without it the run is refused rather than quietly lowered.' }}
         </div>
       </div>
       <div v-if="currentBackend === 'codex-cli'" class="codex-reasoning-selector">

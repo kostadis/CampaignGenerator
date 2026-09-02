@@ -44,6 +44,9 @@ interface Resolved {
   codex_reasoning_effort: string | null
   codex_reasoning_effort_origin: string
   codex_reasoning_override: boolean
+  claude_code_effort: string | null
+  claude_code_effort_origin: string
+  claude_code_effort_override: boolean
 }
 
 const resolved = ref<Resolved | null>(null)
@@ -55,6 +58,7 @@ const draftBackend = ref('')
 // see ModelSelection.batch's `bool | null` (data-model.md's tier table).
 const draftBatch = ref<'' | 'on' | 'off'>('')
 const codexReasoning = ref('')
+const claudeEffort = ref('')
 const busy = ref(false)
 const error = ref('')
 
@@ -102,6 +106,7 @@ async function loadOverride() {
       backend: string | null
       batch: boolean | null
       codex_reasoning_effort: string | null
+      claude_code_effort: string | null
     }>(
       `/api/${props.service}/selection`,
     )
@@ -109,11 +114,13 @@ async function loadOverride() {
     draftBackend.value = sel.backend || ''
     draftBatch.value = sel.batch === true ? 'on' : sel.batch === false ? 'off' : ''
     codexReasoning.value = sel.codex_reasoning_effort || ''
+    claudeEffort.value = sel.claude_code_effort || ''
   } catch {
     draftModel.value = ''
     draftBackend.value = ''
     draftBatch.value = ''
     codexReasoning.value = ''
+    claudeEffort.value = ''
   }
 }
 
@@ -130,6 +137,12 @@ async function save() {
       backend: draftBackend.value.trim() || null,
       batch: draftBatch.value === 'on' ? true : draftBatch.value === 'off' ? false : null,
       codex_reasoning_effort: codexReasoning.value || null,
+      // Travels with the others for the same reason: PUT replaces the whole
+      // stored selection, so omitting this would reset the operator's effort
+      // to "defer" every time they saved an unrelated model edit. It is also
+      // why setting one backend's effort never disturbs the other's — both
+      // are always sent as they stand.
+      claude_code_effort: claudeEffort.value || null,
     })
     editing.value = false
     await load()
@@ -149,6 +162,7 @@ async function clearOverride() {
     draftBackend.value = ''
     draftBatch.value = ''
     codexReasoning.value = ''
+    claudeEffort.value = ''
     editing.value = false
     await load()
   } catch (e: any) {
@@ -174,6 +188,7 @@ async function clearBatchSelection() {
       model: string | null
       backend: string | null
       codex_reasoning_effort: string | null
+      claude_code_effort: string | null
     }>(
       `/api/${props.service}/selection`,
     )
@@ -182,6 +197,7 @@ async function clearBatchSelection() {
       backend: current.backend || null,
       batch: false,
       codex_reasoning_effort: current.codex_reasoning_effort || null,
+      claude_code_effort: current.claude_code_effort || null,
     })
     if (editing.value) draftBatch.value = 'off'
     await load()
@@ -212,11 +228,16 @@ const hasOverride = computed(() =>
   resolved.value?.model_origin === 'service'
   || resolved.value?.backend_origin === 'service'
   || resolved.value?.batch_origin === 'service'
-  || resolved.value?.codex_reasoning_effort_origin === 'service',
+  || resolved.value?.codex_reasoning_effort_origin === 'service'
+  || resolved.value?.claude_code_effort_origin === 'service',
 )
 
 const draftUsesCodex = computed(() =>
   (draftBackend.value || resolved.value?.backend) === 'codex-cli',
+)
+
+const draftUsesClaudeCode = computed(() =>
+  (draftBackend.value || resolved.value?.backend) === 'claude-code',
 )
 
 // A batch selection that cannot be honoured populates `refusal` naming batch
@@ -246,7 +267,8 @@ onMounted(load)
 // The sidebar writes the platform tier, so a change there moves every
 // inheriting service's answer — re-resolve rather than showing a stale one.
 watch(
-  () => [config.model, config.backend, config.batch, config.codexReasoningEffort, props.doc],
+  () => [config.model, config.backend, config.batch, config.codexReasoningEffort,
+    config.claudeCodeEffort, props.doc],
   load,
 )
 </script>
@@ -291,6 +313,13 @@ watch(
       <span class="pair">
         <code>{{ resolved.codex_reasoning_effort || 'Codex default' }}</code>
         <span class="origin">{{ originLabel(resolved.codex_reasoning_effort_origin) }}</span>
+      </span>
+    </div>
+    <div v-if="resolved.backend === 'claude-code'" class="row batch-row">
+      <span class="label">Effort</span>
+      <span class="pair">
+        <code>{{ resolved.claude_code_effort || 'Claude Code default' }}</code>
+        <span class="origin">{{ originLabel(resolved.claude_code_effort_origin) }}</span>
       </span>
     </div>
     <div class="batch-copy">
@@ -371,6 +400,22 @@ watch(
         </select>
         <span class="field-help">
           {{ config.codexReasoningCompatibilityError || 'Higher effort can take longer; model support varies.' }}
+        </span>
+      </label>
+      <label v-if="draftUsesClaudeCode">
+        Effort
+        <select
+          v-model="claudeEffort"
+          :disabled="!config.claudeCodeEfforts.length"
+        >
+          <option value="">Claude Code default</option>
+          <option v-for="effort in config.claudeCodeEfforts" :key="effort" :value="effort">
+            {{ effort }}
+          </option>
+        </select>
+        <span class="field-help">
+          {{ config.claudeCodeCompatibilityError
+            || 'Higher effort can take longer. xhigh and max require thinking (CG_CLAUDE_CODE_THINKING=1).' }}
         </span>
       </label>
       <button class="mini primary" :disabled="busy" @click="save">Save</button>

@@ -627,9 +627,12 @@ def test_save_load_round_trip_grouped_shape(tmp_path):
     save_session_editor_config(path, cfg)
 
     text = path.read_text(encoding="utf-8")
-    # Serialized via the field alias, not the Python attribute name.
+    # Serialized via the field alias, not the Python attribute name. Matched as
+    # a YAML *key* (`claude_code:`) rather than a bare substring: feature 021
+    # added a `claude_code_effort` field, whose name legitimately contains
+    # "claude_code" without saying anything about how the profile is keyed.
     assert "claude-code" in text
-    assert "claude_code" not in text
+    assert "claude_code:" not in text
 
     reloaded = load_session_editor_config(path)
     assert reloaded == cfg

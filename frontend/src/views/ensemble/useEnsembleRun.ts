@@ -120,10 +120,17 @@ export interface BackendProfile {
   // Codex-only remembered value. Null is the deliberate "Codex default"
   // omission; it stays on this stage profile while another backend is active.
   codex_reasoning_effort: string | null
+  // 021 — the claude-code twin. Null is the deliberate "Claude Code default"
+  // (omission), never a guessed level.
+  claude_code_effort: string | null
 }
 
 export function codexReasoningValue(profile: BackendProfile): string {
   return profile.codex_reasoning_effort || ''
+}
+
+export function claudeCodeEffortValue(profile: BackendProfile): string {
+  return profile.claude_code_effort || ''
 }
 
 export interface EnsemblePaths {

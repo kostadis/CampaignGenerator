@@ -69,8 +69,10 @@ from campaignlib import DEFAULT_MODEL
 from campaignlib.util import atomic_write_text
 from campaignlib.selection import (  # noqa: F401  (re-exported)
     BACKENDS,
+    CLAUDE_CODE_EFFORTS,
     CODEX_REASONING_EFFORTS,
     Backend,
+    ClaudeCodeEffort,
     CodexReasoningEffort,
     ModelSelection,
     compatible,
@@ -177,6 +179,7 @@ class PlatformRuntime(BaseModel):
     session_dir: OptStr = None
     default_batch: OptBool = False
     default_codex_reasoning_effort: CodexReasoningEffort | None = None
+    default_claude_code_effort: ClaudeCodeEffort | None = None
 
 
 class PlatformServer(BaseModel):

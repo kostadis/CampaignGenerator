@@ -50,6 +50,43 @@ without retrying another effort or model. Supplying the option with a non-Codex
 backend also fails before model work. Each child start prints `Codex run:` with
 the resolved model, effort, and provenance.
 
+### Claude Code effort
+
+The `claude-code` subscription backend has the same control under its own
+spelling: `--claude-code-effort`, with exact values `low`, `medium`, `high`,
+`xhigh`, and `max`. There is no `minimal` — `claude --effort` does not accept
+one, and the two subscription backends deliberately do not share a vocabulary.
+An explicit value wins over `CG_CLAUDE_CODE_EFFORT`; supplying it with a
+non-`claude-code` backend fails before model work.
+
+**Omission is not "send nothing" on this backend, and this is the part worth
+reading.** `claude -p` resolves `effortLevel` from your own
+`~/.claude/settings.json`, and the API refuses `xhigh`/`max` when extended
+thinking is disabled — which it is by default here, deliberately and by
+measurement (suppressing the trace took a 130,412-char extraction from 17m43s
+to 3m57s). So with no selection, CampaignGenerator does one of two things:
+
+| Situation | What is sent | Reported as |
+|---|---|---|
+| Thinking off, model's thinking *can* be disabled | `--effort high` | **compatibility clamp**, with its reason |
+| Thinking on, or an always-thinking model (Fable/Mythos) | nothing | **inherited** from your settings.json |
+
+Both were previously silent. The clamp in particular *overrides a level you
+pinned yourself* — if your `settings.json` says `xhigh`, a default run has
+always executed at `high` and nothing said so. Every run now prints one
+`claude-code run:` line naming the model, the effort, which of the four sources
+decided it (`explicit` / `CG_CLAUDE_CODE_EFFORT` / clamp / inherited), and the
+thinking state. An `inherited` run reports no level, because this process never
+reads that file and will not guess.
+
+**Asking for `xhigh` or `max` with thinking off is refused, not repaired.** The
+message names both remedies — lower the effort, or set
+`CG_CLAUDE_CODE_THINKING=1` — and no child process starts. CampaignGenerator
+will not enable thinking on your behalf (it is a ~4x run-time decision), will
+not quietly lower the level, and will not start the child and let the provider
+reject it. The refusal does not fire on Fable/Mythos, where thinking cannot be
+disabled and the top levels are legal.
+
 The Codex adapter supports the direct text shapes used across this command
 family and a separate brokered structured-turn shape for the ensemble polish
 loop. The consistency-auditor and `consistency-check`/`staged-consistency`

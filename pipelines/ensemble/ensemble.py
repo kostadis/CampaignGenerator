@@ -29,7 +29,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-from campaignlib.api.client import add_codex_reasoning_arg, resolve_cli_reasoning
+from campaignlib.api.client import (
+    add_codex_reasoning_arg, add_claude_code_effort_arg,
+    resolve_cli_reasoning, resolve_cli_claude_effort,
+)
 from campaignlib.selection import BACKENDS
 
 HERE = Path(__file__).resolve().parent
@@ -108,6 +111,7 @@ def main() -> None:
              "Anthropic backend only. Unrelated to ensemble_batch (local "
              "dispatch).")
     add_codex_reasoning_arg(parser)
+    add_claude_code_effort_arg(parser)
     parser.add_argument("--skip", action="append", default=[], metavar="NAME",
                         help="Skip a named pass (can repeat).")
     parser.add_argument("--speculative", action=argparse.BooleanOptionalAction,
@@ -165,6 +169,11 @@ def main() -> None:
         extract_cmd += [
             "--codex-reasoning-effort",
             args.codex_reasoning_effort,
+        ]
+    if args.claude_code_effort is not None:
+        extract_cmd += [
+            "--claude-code-effort",
+            args.claude_code_effort,
         ]
     if args.batch:
         extract_cmd += ["--batch"]

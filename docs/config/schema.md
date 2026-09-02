@@ -56,6 +56,7 @@ class that owned that file.
 | Field | Type | Role |
 |---|---|---|
 | `runtime.default_codex_reasoning_effort` | `minimal \| low \| medium \| high \| xhigh \| max \| None` | App-wide Codex-only remembered effort. `None` means “Codex default” and emits no override; the value is dormant for other providers. |
+| `runtime.default_claude_code_effort` | `low \| medium \| high \| xhigh \| max \| None` | App-wide claude-code-only remembered effort. Null means omission — which on this backend is the compatibility clamp or your own `~/.claude/settings.json`, not "nothing". |
 | `runtime.default_model` | str | `default_factory` reads `campaignlib.constants.DEFAULT_MODEL` (env `CAMPAIGN_MODEL` or `"claude-sonnet-4-6"` — Phase 5a made this the one place that expression is computed; `server/config.py` and `PlatformRuntime` both import it rather than re-deriving it) |
 | `runtime.session_dir` | str \| None | the session-resolution anchor every session-scoped path (`base="session"` in `resolve_path`/`relativize_path`) resolves against |
 
