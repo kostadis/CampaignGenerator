@@ -441,3 +441,124 @@ def test_d4_v1_registry_projects_every_category_without_changing_legacy_api():
     }
     errors, warnings, notes = voice_lint_module.lint("## Aria — One\n\nThe shape of fear.")
     assert isinstance(errors, list) and isinstance(warnings, list) and isinstance(notes, list)
+
+
+# ---------------------------------------------------------------------------
+# extra_tics — campaign-declared banned constructions (CG#365)
+#
+# PORTABLE_TICS is the cross-campaign floor, and the Phandalin ch40-48 sweep showed the
+# same behavioural-taxonomy MOVE that #246/#251 chased still walking past all three of
+# them in shells they cannot see: the simile ("like a man who ..."), the portrait with no
+# `who` ("with the quiet deliberation of a man shopping at a market"), and the possessive
+# habit ("that particular stillness she gets when ..."). Those are Phandalin's corpus, not
+# every campaign's, so they belong in Phandalin's rulebook — which needs the rulebook to
+# be able to carry a pattern, not just a cap. The instances below are pinned verbatim from
+# docs/chapters/chapter_4*.md so a regex tidy-up cannot quietly reopen the hole.
+# ---------------------------------------------------------------------------
+
+PHANDALIN_CH40_48_INSTANCES = [
+    "Valphine was moving through the twig blights like a woman who finds this "
+    "situation aesthetically appropriate.",
+    "He shifted his weight from foot to foot like a man who had misplaced his axe.",
+    "Brewbarry confessed like a man laying flowers on a grave.",
+    "Vukradin listed his new workings with the quiet deliberation of a man shopping "
+    "at a market.",
+    "She watched, head tilted, that particular stillness she gets when she's cataloguing.",
+    "Vukradin moved toward the bodies with the particular energy he gets when a "
+    "principle is at stake.",
+]
+
+EXTRA_TICS_BLOCK = """\
+```yaml voice_lint
+extra_tics:
+  like_a_man_who:
+    label:   "like-a-man-who"
+    pattern: "\\\\blike (?:a|an|the) (?:man|woman|men|women|someone|somebody|person|people|creature)s?\\\\b[^.]{0,60}?(?:\\\\bwho\\\\b|\\\\bwhose\\\\b|ing\\\\b)"
+    cap:     0
+  of_a_man_no_who:
+    label:   "X-of-a-man (no 'who')"
+    pattern: "\\\\bthe [\\\\w ]{0,30}? of (?:a|an|the) (?:man|woman|men|women|someone|person|people|creature)s?\\\\b(?![^.]{0,60}\\\\bwho\\\\b)"
+    cap:     0
+  that_particular_X_he_gets_when:
+    label:   "that-particular-X-he-gets-when"
+    pattern: "\\\\b(?:that|the) particular [\\\\w' ]{0,30}?\\\\b(?:he|she|they|it)\\\\s+(?:get|gets|use|uses|ha[sd]|do|does)\\\\b"
+    cap:     0
+```
+"""
+
+
+@pytest.mark.parametrize("line", PHANDALIN_CH40_48_INSTANCES)
+def test_extra_tics_catch_every_pinned_ch40_48_instance(line):
+    config = parse_config(EXTRA_TICS_BLOCK)
+    assert not config.problems, config.problems
+    assert any(rx.search(line) for _, _, rx in config.extra_tics), \
+        f"no extra tic matched a confirmed ch40-48 instance: {line!r}"
+
+
+@pytest.mark.parametrize("line", PHANDALIN_CH40_48_INSTANCES)
+def test_the_builtin_tics_miss_them_which_is_why_extra_tics_exists(line):
+    """Documents the gap the campaign sweep found; without it these read as clean."""
+    assert not PORTRAIT_RE.search(line)
+    assert not TAXONOMY_RE.search(line)
+
+
+@pytest.mark.parametrize("line", [
+    # A simile whose vehicle is an object or an animal is not person-taxonomy.
+    "It came down like a hammer on a nail.",
+    "Now it's not my problem, she said, like the tide going out.",
+    # Naming one individual is a specific observation, not a class.
+    "He fixed it like Brewbarry would.",
+    # "particular" used deictically — this gift, not a category of gift.
+    "It's not the fire-burst; I spent that particular gift elsewhere.",
+    # The portrait shell with `who` is PORTRAIT_RE's job, not of_a_man_no_who's.
+    "He spoke with the tone of a man who has given up expecting to be followed.",
+])
+def test_extra_tics_do_not_over_fire(line):
+    config = parse_config(EXTRA_TICS_BLOCK)
+    hit = [key for _, key, rx in config.extra_tics if rx.search(line)]
+    assert not hit, f"false positive from {hit} on legitimate prose: {line!r}"
+
+
+def test_extra_tic_hit_is_reported_by_lint_with_its_label():
+    config = parse_config(EXTRA_TICS_BLOCK)
+    doc = "## Vukradin — Scene 02\n\n" + PHANDALIN_CH40_48_INSTANCES[0] + "\n"
+    errors, _, _ = _lint(doc, config)
+    assert any("like-a-man-who" in e for e in errors), errors
+
+
+def test_extra_tic_shorthand_is_a_bare_pattern_string():
+    config = parse_config('```yaml voice_lint\nextra_tics:\n  moot: "\\\\bmoot\\\\b"\n```\n')
+    assert not config.problems
+    assert [key for _, key, _ in config.extra_tics] == ["moot"]
+    # No explicit cap means the shared default, so one occurrence warns rather than errors.
+    errors, warns, _ = _lint("## Daz\n\nThe point is moot.\n", config)
+    assert not errors and any("moot" in w for w in warns)
+
+
+def test_extra_tic_cannot_shadow_a_builtin_tic():
+    """Letting a campaign redefine one of the three floor checks is how #125 happened."""
+    config = parse_config(
+        '```yaml voice_lint\nextra_tics:\n  the_shape_of: "\\\\bnever-matches\\\\b"\n```\n')
+    assert any("shadows a built-in" in p for p in config.problems), config.problems
+    assert config.extra_tics == ()
+    # The real check still runs.
+    errors, warns, _ = _lint("## Daz\n\nI saw the shape of it.\n", config)
+    assert any("the shape of" in m for m in errors + warns)
+
+
+@pytest.mark.parametrize("body,expected", [
+    ("extra_tics: [nope]\n", "must be a mapping"),
+    ("extra_tics:\n  bad: {cap: 0}\n", "no 'pattern'"),
+    ("extra_tics:\n  bad: \"(unclosed\"\n", "does not compile"),
+])
+def test_a_malformed_extra_tic_is_dropped_loudly_not_crashed_on(body, expected):
+    config = parse_config(f"```yaml voice_lint\n{body}```\n")
+    assert config.extra_tics == ()
+    assert any(expected in p for p in config.problems), config.problems
+
+
+def test_no_extra_tics_section_is_not_a_problem():
+    """OOTA's rulebook declares none; that is a legitimate campaign, not a broken one."""
+    config = parse_config(OOTA_RULEBOOK)
+    assert config.extra_tics == ()
+    assert not any("extra_tics" in p for p in config.problems)

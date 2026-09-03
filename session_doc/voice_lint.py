@@ -168,6 +168,7 @@ class LintConfig:
     source: str | None = None
     bookkeeping: Bookkeeping | None = None
     tic_caps: dict[str, int] = field(default_factory=dict)
+    extra_tics: tuple[tuple[str, str, "re.Pattern[str]"], ...] = ()
     problems: tuple[str, ...] = ()
     skip_reason: str = NO_RULEBOOK
     readable: bool = True
@@ -211,7 +212,7 @@ def parse_config(genre_text: str, source: str | None = None) -> LintConfig:
 
     problems: list[str] = []
     for key in data:
-        if key not in ("bookkeeping", "portable_tics"):
+        if key not in ("bookkeeping", "portable_tics", "extra_tics"):
             problems.append(f"unrecognised voice_lint key {key!r} — ignored")
 
     bookkeeping = None
@@ -258,7 +259,10 @@ def parse_config(genre_text: str, source: str | None = None) -> LintConfig:
                     continue
                 tic_caps[key] = _cap_int(value, key, DEFAULT_TIC_CAP, problems)
 
+    extra_tics = _parse_extra_tics(data.get("extra_tics"), tic_caps, problems)
+
     return LintConfig(source=source, bookkeeping=bookkeeping, tic_caps=tic_caps,
+                      extra_tics=extra_tics,
                       problems=tuple(problems), skip_reason=skip_reason)
 
 
@@ -294,6 +298,61 @@ def _name_tuple(value, label: str, problems: list[str]) -> tuple[str, ...]:
         problems.append(f"bookkeeping.{label}: expected a list of narrator names — ignored")
         return ()
     return tuple(v.strip().lower() for v in value if v.strip())
+
+
+def _parse_extra_tics(raw, tic_caps: dict[str, int], problems: list[str]):
+    """Campaign-local banned constructions, declared as regexes in the rulebook.
+
+    ``PORTABLE_TICS`` is the cross-campaign floor: three constructions base.md bans
+    everywhere. But the taxonomy move those three encode keeps rotating into shells they
+    cannot see — a campaign that has read its own corpus and found the local shell has
+    nowhere to put that finding except a comment. This is that place.
+
+    Shape, in the rulebook's ```yaml voice_lint block::
+
+        extra_tics:
+          simile_portrait:
+            pattern: "\\blike (?:a|an) (?:man|woman)\\b[^.]{0,60}?\\bwho\\b"
+            cap:     0
+            label:   "like-a-man-who"      # optional; defaults to the key
+
+    A pattern that does not compile is reported and dropped rather than crashing the run,
+    and a key that shadows a built-in tic is refused — silently overriding one of the three
+    floor checks from a campaign file is exactly the inertness #125 was fixing.
+    """
+    if raw is None:
+        return ()
+    if not isinstance(raw, dict):
+        problems.append("extra_tics: must be a mapping — ignored")
+        return ()
+
+    builtin = {key for _, key, _ in PORTABLE_TICS}
+    out: list[tuple[str, str, re.Pattern[str]]] = []
+    for key, spec in raw.items():
+        if key in builtin:
+            problems.append(f"extra_tics.{key}: shadows a built-in tic — ignored")
+            continue
+        if isinstance(spec, str):
+            spec = {"pattern": spec}
+        if not isinstance(spec, dict):
+            problems.append(f"extra_tics.{key}: expected a pattern string or a mapping "
+                            f"— ignored")
+            continue
+        pattern = spec.get("pattern")
+        if not isinstance(pattern, str) or not pattern.strip():
+            problems.append(f"extra_tics.{key}: no 'pattern' — ignored")
+            continue
+        try:
+            rx = re.compile(pattern, re.I)
+        except re.error as exc:
+            problems.append(f"extra_tics.{key}: pattern does not compile ({exc}) — ignored")
+            continue
+        label = spec.get("label")
+        label = label if isinstance(label, str) and label.strip() else key
+        tic_caps[key] = _cap_int(spec.get("cap"), f"extra_tics.{key}.cap",
+                                 DEFAULT_TIC_CAP, problems)
+        out.append((label, key, rx))
+    return tuple(out)
 
 
 def _cap_int(value, label: str, default: int, problems: list[str]) -> int:
@@ -351,9 +410,10 @@ def lint(text, config: LintConfig | None = None):
 
     notes.extend(f"{CONFIG_NOTE_PREFIX}{p}" for p in config.problems)
 
-    # Doc-level banned constructions. base.md bans these for every campaign, so they run
-    # whether or not a rulebook was supplied; only the cap is campaign-tunable.
-    for label, key, rx in PORTABLE_TICS:
+    # Doc-level banned constructions. The three in PORTABLE_TICS are base.md's floor: they
+    # run whether or not a rulebook was supplied, and only their cap is campaign-tunable.
+    # config.extra_tics are campaign-declared and therefore empty without a rulebook.
+    for label, key, rx in (*PORTABLE_TICS, *config.extra_tics):
         hits = rx.findall(text)
         if not hits:
             continue
