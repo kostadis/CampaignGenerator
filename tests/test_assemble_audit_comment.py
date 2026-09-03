@@ -109,3 +109,56 @@ def test_unrelated_html_comment_survives(tmp_path):
 
     assembled = out.read_text(encoding="utf-8")
     assert unrelated_comment in assembled
+
+
+# --- provenance apparatus beyond Pass 5's own comment -----------------------
+# voice-smooth and the manual post-narration repair pass both write their
+# rulings into the per-scene file as HTML comments. Those are apparatus, not
+# narration: the assembled doc feeds the release append and the chapter split,
+# so anything left in it travels into the bible.
+
+import pytest
+
+
+@pytest.mark.parametrize("marker,comment", [
+    ("hand-fixed", "<!-- hand-fixed after narration, 2026-09-02 (GM instruction):\n"
+                   "     - Cut the second greeting; the dwarves greeted the party twice. -->"),
+    ("Editorial note:", "<!-- Editorial note: unrecovered in both passes. Keep as\n"
+                        "     captured. Do not narrate it as meaningful. -->"),
+    ("Scene boundary note:", "<!-- Scene boundary note: the closing beat lives in scene 01\n"
+                             "     per the GM's de-duplication ruling. -->"),
+])
+def test_provenance_comment_stripped(tmp_path, marker, comment):
+    """Apparatus written by voice-smooth or a manual repair pass is stripped."""
+    narr = tmp_path / "summaries" / "20260706" / "narration"
+    narr.mkdir(parents=True)
+    prose = "She let the silence answer for her."
+    _scene(narr, 1, prose + "\n\n" + comment)
+
+    out = tmp_path / "session_doc.md"
+    proc = _run_assemble(narr, out)
+    assert proc.returncode == 0, proc.stderr
+
+    assembled = out.read_text(encoding="utf-8")
+    assert marker not in assembled
+    assert "<!--" not in assembled
+    assert prose in assembled
+
+
+def test_apparatus_stripped_but_gm_note_in_same_scene_survives(tmp_path):
+    """The two kinds coexist in one scene and are treated differently."""
+    narr = tmp_path / "summaries" / "20260706" / "narration"
+    narr.mkdir(parents=True)
+    prose = "He crossed the threshold without looking back."
+    gm_note = "<!-- GM: check this against the VTT -->"
+    apparatus = "<!-- Editorial note: keep as captured. -->"
+    _scene(narr, 1, prose + "\n\n" + apparatus + "\n\n" + gm_note)
+
+    out = tmp_path / "session_doc.md"
+    proc = _run_assemble(narr, out)
+    assert proc.returncode == 0, proc.stderr
+
+    assembled = out.read_text(encoding="utf-8")
+    assert "Editorial note:" not in assembled
+    assert gm_note in assembled
+    assert prose in assembled
