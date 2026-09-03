@@ -27,18 +27,40 @@ from pathlib import Path
 
 from campaignlib.textproc import split_frontmatter
 
-# Pass 5 appends `<!-- table-speech reclassified: "…" | "…" -->` after the
-# narration when it reclassifies a mislabelled quoted span as GM table speech
-# (issue #245). The comment is the GM's review queue and stays in the per-scene
-# file; it is not part of the assembled document.
+# Provenance apparatus written INTO a scene file by a pipeline pass, recording
+# what that pass did and why. It is the GM's audit trail, it belongs in the
+# per-scene file, and it is not part of the assembled document — the assembled
+# doc feeds the release append and the chapter split, so anything left in it
+# travels into the bible.
+#
+# Recognised markers:
+#   table-speech reclassified:  Pass 5 / sd_narrate  (issue #245)
+#   hand-fixed                  a manual post-narration repair pass
+#   Editorial note:             a per-quote ruling carried down from voice-smooth
+#   Scene boundary note:        a de-duplication ruling carried down from voice-smooth
+#
+# A comment that matches none of these is the GM's own note and SURVIVES
+# assembly untouched — that distinction is deliberate and covered by
+# tests/test_assemble_audit_comment.py::test_unrelated_html_comment_survives.
+_APPARATUS_MARKERS = (
+    r"table-speech\s+reclassified:",
+    r"hand-fixed",
+    r"Editorial\s+note:",
+    r"Scene\s+boundary\s+note:",
+)
 _AUDIT_COMMENT_RE = re.compile(
-    r"[ \t]*<!--\s*table-speech reclassified:.*?-->[ \t]*\n?",
+    r"[ \t]*<!--\s*(?:" + "|".join(_APPARATUS_MARKERS) + r").*?-->[ \t]*\n?",
     re.DOTALL | re.IGNORECASE,
 )
 
 
 def strip_audit_comments(body: str) -> str:
-    """Remove Pass 5's table-speech audit comments from a scene body."""
+    """Remove pipeline provenance comments from a scene body.
+
+    Strips only comments whose opening text matches a known apparatus marker
+    (see _APPARATUS_MARKERS). A hand-written comment the GM added themselves is
+    left alone.
+    """
     return _AUDIT_COMMENT_RE.sub("", body)
 
 
