@@ -54,6 +54,15 @@ The flow is run by these distinct actors. Each step below names which actor is d
 | `dossier-merge` | `/dossier-merge [dir]` | Deduplicates `docs/npcs/*.md` from `pipelines/grounding/planning.py --build-dossiers` (typos, alias-as-filename, garbage filenames) into one canonical file per NPC. Also folds `.new_notes.NNN.md` sidecars back in via batch | Whenever `--build-dossiers` runs |
 | `mempalace-campaign` | (setup) | Stand up a per-campaign MemPalace palace over the curated content | One-time per campaign |
 
+## Ordering: see also
+
+The post-recording segment (VTT → assembled document) has since moved to the
+split-CLI pipeline (`sd_plan` / `sd_narrate`) and gained six skills not in the
+inventory above — `speaker-attribution`, `scene-extract`, `voice-smooth`,
+`scrub`, `no-mech`, `remove-recap`. **[SkillPipelineOrder.md](SkillPipelineOrder.md)**
+records that ordering and the reasoning for each position; where the two docs
+disagree on ordering, it is newer than this one.
+
 ## The flow, end to end
 
 The flow is a loop: prep → session → memoir → updated grounding → next session's prep. I'll describe one full revolution.
