@@ -31,7 +31,9 @@ const handoffOpen = ref(false)
 const savedDecisions = computed(() => Object.fromEntries((run.value?.decisions || []).map((d: any) => [d.finding_id, d])))
 const decisionLabels: Record<string, string> = { approve: 'Approved', reject: 'Rejected', discuss: 'Discuss' }
 const decisionLabel = (value?: string) => decisionLabels[value || ''] || 'Not reviewed'
+const continuation = computed(() => workspace.value?.continuations?.find((item: any) => item.run_id === selectedRun.value))
 const handoff = computed(() => {
+  if (continuation.value) return continuation.value.prompt
   const items = (exported.value?.findings || []).map((f: any) => {
     const d = savedDecisions.value[f.id]
     return d ? `${f.id}: ${d.decision} — ${d.rationale}` : `${f.id}: not reviewed`
@@ -69,7 +71,7 @@ async function invoke(op: string, data: any = {}) {
   return { output, done }
 }
 async function refresh() {
-  workspace.value = await invoke('status')
+  workspace.value = await invoke('resume')
   chapters.value = workspace.value.state.chapters_selected.join('\n')
   notes.value = workspace.value.state.notes_selected.join('\n')
   await router.replace({ query: { ...route.query, session: session.value, run: selectedRun.value || undefined } })
@@ -186,6 +188,14 @@ onMounted(async () => {
       </nav>
       <section v-if="run">
         <h3>{{ run.stage }} · {{ view.status }}</h3>
+        <div v-if="continuation" class="handoff review-toolbar">
+          <h4>Continue with agent</h4>
+          <p>The next stage is <strong>{{ continuation.next_stage }}</strong>. Copy this prompt into your agent chat to prepare it and stop at human review.</p>
+          <label>Next step for agent <textarea :value="handoff" readonly rows="8" /></label>
+          <button :disabled="busy" @click="copyHandoff">Copy next-step prompt</button>
+          <p v-if="notice" role="status">{{ notice }}</p>
+          <p v-if="error" role="alert" class="error">{{ error }}</p>
+        </div>
         <p><strong>Selected input scope:</strong> <span v-for="(input, index) in run.selection" :key="input"><span v-if="index">; </span><code>{{ input }}</code></span></p>
         <p>{{ run.generation.backend }} / {{ run.generation.model || 'backend default' }} / {{ run.generation.effort || 'default effort' }}</p>
         <p>Checks needed: {{ view.missing_checks.join(', ') || 'none' }}. Unresolved: {{ view.unresolved_findings.length }}.</p>
@@ -196,14 +206,14 @@ onMounted(async () => {
           <button @click="downloadReview">Export review JSON</button>
           <label>Import reviewed JSON <input type="file" accept="application/json" @change="importReview" /></label>
         </div>
-        <div class="review-toolbar" aria-label="Review controls">
+        <div v-if="!continuation" class="review-toolbar" aria-label="Review controls">
           <p>Approve, Reject, or Discuss each finding below. Each button saves immediately. Discuss also lets you add an optional note. A finding decision does not approve the whole draft.</p>
           <button :disabled="busy" @click="copyHandoff">Copy handoff for agent</button>
           <p>Paste the handoff into your agent chat when ready. Saved choices and discussion notes are available to the agent; this page does not launch a conversation.</p>
           <p v-if="notice" role="status">{{ notice }}</p>
           <p v-if="error" role="alert" class="error">{{ error }}</p>
         </div>
-        <div v-if="handoffOpen" class="handoff">
+        <div v-if="handoffOpen && !continuation" class="handoff">
           <label>Agent handoff <textarea :value="handoff" readonly rows="8" /></label>
         </div>
         <div class="controls">

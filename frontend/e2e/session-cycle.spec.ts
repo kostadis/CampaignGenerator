@@ -46,12 +46,24 @@ test('human draft approval survives browser reload and a CLI handoff', async ({ 
     await page.getByRole('button', { name: 'I have reviewed this draft — approve' }).click()
     await expect(page.getByRole('heading', { name: 'capture · approved' })).toBeVisible()
     expect(call('status').state.runs[0].approval.actor).toBe('local user')
+    const savedRevision = call('status').state.revision
+    const nextPrompt = page.getByLabel('Next step for agent')
+    await expect(nextPrompt).toBeVisible()
+    expect(await nextPrompt.inputValue()).toContain('through the identify stage and stop at human review')
+    expect(await nextPrompt.inputValue()).toContain(join(campaign, 'config.yaml'))
+    expect(await nextPrompt.inputValue()).toContain(session)
+    expect(await nextPrompt.inputValue()).toContain(id)
+    await page.getByRole('button', { name: 'Copy next-step prompt' }).click()
+    expect(call('status').state.revision).toBe(savedRevision)
+    expect(call('status').state.runs).toHaveLength(1)
+
     await page.reload()
     await expect(page.getByRole('heading', { name: 'capture · approved' })).toBeVisible()
     writeFileSync(join(session, 'source.md'), 'Changed by a CLI collaborator')
     await page.getByRole('button', { name: 'Load / refresh' }).click()
     await expect(page.getByRole('heading', { name: 'capture · stale' })).toBeVisible()
     await expect(page.getByText('changed or missing: source.md')).toBeVisible()
+    await expect(nextPrompt).toHaveCount(0)
   } finally { rmSync(campaign, { recursive: true, force: true }) }
 })
 

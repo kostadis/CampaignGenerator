@@ -130,15 +130,47 @@ def execute(engine, run_id: str, expected_revision: int):
     return engine.status()
 
 
+def continuation_prompt(engine, state, run):
+    """Describe the next handoff without selecting inputs or starting work."""
+    from .stages import STAGES
+
+    next_stage = next((name for name, stage in STAGES.items() if run.stage in stage.parents), None)
+    if next_stage is None:
+        return None
+    return {
+        "run_id": run.id,
+        "next_stage": next_stage,
+        "prompt": (
+            f"Continue this session through the {next_stage} stage and stop at human review.\n"
+            f"Campaign configuration: {state.config}\n"
+            f"Session directory: {engine.store.session}\n"
+            f"Approved run: {run.id} ({run.stage})\n"
+            f"Saved workflow revision: {state.revision}\n"
+            "Read the current workflow, source hashes, saved decisions, and selected inputs from disk first. "
+            "If this stage already has a run, resume that work instead of creating a duplicate. "
+            "Use the existing workflow engine and specialist skills to prepare the draft and required checks. "
+            "Ask me about missing scope or unresolved choices; do not infer rulings or expand selections. "
+            "Stop before draft sign-off or any subsequent production stage."
+        ),
+    }
+
+
 def resume(engine):
     status = engine.status()
     by_id = {r["id"]: r for r in status["runs"]}
     pending = []
-    runs = engine.store.load().runs
+    state = engine.store.load()
+    runs = state.runs
+    continuations = []
     revised = {run.task.get("revises") for run in runs}
     for run in runs:
         view = by_id[run.id]
-        if view["status"] == "approved" or run.id in revised:
+        if run.id in revised:
+            continue
+        if view["status"] == "approved":
+            continuation = continuation_prompt(engine, state, run)
+            if continuation:
+                continuations.append(continuation)
             continue
         if view["status"] == "stale":
             next_action = "start a new run for the affected selection and review affected transitions"
@@ -153,4 +185,4 @@ def resume(engine):
         else:
             next_action = "explicit human draft approval"
         pending.append({"run_id": run.id, "stage": run.stage, "next_action": next_action, "task": run.task})
-    return {**status, "pending": pending}
+    return {**status, "pending": pending, "continuations": continuations}

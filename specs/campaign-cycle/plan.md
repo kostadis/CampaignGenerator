@@ -152,3 +152,18 @@ external seam. XIII needs no migration: disk schema and legacy records are
 unchanged; only optional command inputs gain defaults. Verification covers
 one-click decisions, optional discussion, reload, CLI parity, stale refusals,
 and unchanged clean-audit and unresolved-finding gates.
+
+### Pilot correction: next-stage agent prompt
+
+Fresh approved runs expose a copyable continuation prompt naming the next stage,
+campaign, session, run and revision. Existing `resume` generates the prompt from
+the canonical stage catalog; the editor displays that same text. It directs the
+agent to reload disk state, resume existing work, ask about missing scope, and
+stop at human review. Stale and unapproved runs do not get a next-stage prompt.
+
+Constitution Check: all thirteen obligations still hold. I/II/VIII preserve disk
+authority and separate approval gates; VI/XI reuse the CLI resume boundary with
+matching UI output; IX keeps native work in chat; X prohibits guessed scope.
+No stage executes on copy, no new model/retrieval seam or options are added, and
+no on-disk shape changes (XIII). Tests cover fresh approval, stale suppression,
+read-only prompt generation, and editor/CLI handoff.

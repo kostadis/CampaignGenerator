@@ -150,3 +150,13 @@ as did the frontend type-check and production build. A read-only check of the
 running Phandalin editor on port 8131 confirmed the fields are absent and Events
 remains approved. The operator walkthrough explains how to request recap removal
 in chat after Events sign-off.
+
+### Next-stage continuation prompt
+
+24 focused execution/review/orchestration/route tests passed, all three Chromium
+session-cycle tests passed, and the frontend type-check/build passed. Browser
+coverage verifies that approval reveals the prompt, copying creates no run or
+revision, and stale inputs suppress the continuation. A read-only check of the
+running Phandalin editor confirmed the approved Events run at revision 53 shows
+`remove-recap`, the exact pilot paths, and the instruction to stop at human review.
+No campaign workflow mutation or production stage was performed by this change.

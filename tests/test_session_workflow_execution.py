@@ -67,3 +67,25 @@ def test_selected_party_reaches_speaker_preflight(engine, stage, options):
     from session_doc.workflow.storage import WorkflowError
     with pytest.raises(WorkflowError, match="explicitly selected"):
         build_command(engine, engine.store.load(), run)
+
+
+def test_next_stage_prompt_requires_fresh_approval_and_does_not_start_work(engine):
+    from session_doc.workflow.engine import binding
+    from session_doc.workflow.execution import resume
+    from test_session_workflow_review import check, draft, mutate
+
+    run = check(engine, draft(engine))
+    assert resume(engine)["continuations"] == []
+    mutate(engine, "approve", run_id=run.id, draft_binding=binding(run))
+    original = engine.store.path.read_bytes()
+    result = resume(engine)
+    handoff = result["continuations"][0]
+    assert handoff["run_id"] == run.id
+    assert handoff["next_stage"] == "identify"
+    assert str(engine.store.session) in handoff["prompt"]
+    assert result["state"]["config"] in handoff["prompt"]
+    assert "stop at human review" in handoff["prompt"]
+    assert "instead of creating a duplicate" in handoff["prompt"]
+    assert engine.store.path.read_bytes() == original
+    (engine.store.session / "source.md").write_text("changed source")
+    assert resume(engine)["continuations"] == []

@@ -133,3 +133,12 @@ The pilots started at capture. New stages appear when the agent creates their ru
 - **API 400: campaign configuration is unavailable:** use the updated integration checkout, stop the old server with Ctrl+C, rerun its launch command, and refresh. The production-configuration binding fix requires a server restart.
 
 For command contracts and advanced operations, see [Session workflow CLI reference](session_workflow.md). For existing-session imports, see [Migration instructions](../../specs/campaign-cycle/migration.md). Pilot verification and remaining rollout gates are recorded in [Acceptance evidence](../../specs/campaign-cycle/acceptance.md).
+
+After a fresh draft approval, **Continue with agent** shows the next stage and a
+ready-to-copy **Next step for agent** prompt. Click **Copy next-step prompt** and
+paste it into your agent chat. It includes the campaign configuration, exact
+session directory, approved run, saved revision, and instruction to stop at human
+review. For approved Events, the next stage is `remove-recap`. Copying does not
+start work or change the saved workflow. Unapproved or stale runs retain the
+review handoff instead. CLI users can read the same prompts in `resume` output
+under `continuations`; the stage catalog supplies the next boundary.

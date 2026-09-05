@@ -142,3 +142,12 @@ validated imports. No decision or approval is inferred by loading a workspace.
 Existing YAML records and historical reviewers are unchanged; there is no state
 schema change or migration. Draft/source bindings, required checks, explicit
 selection, and separate draft approval remain enforced.
+
+After a fresh draft approval, **Continue with agent** shows the next stage and a
+ready-to-copy **Next step for agent** prompt. Click **Copy next-step prompt** and
+paste it into your agent chat. It includes the campaign configuration, exact
+session directory, approved run, saved revision, and instruction to stop at human
+review. For approved Events, the next stage is `remove-recap`. Copying does not
+start work or change the saved workflow. Unapproved or stale runs retain the
+review handoff instead. CLI users can read the same prompts in `resume` output
+under `continuations`; the stage catalog supplies the next boundary.
