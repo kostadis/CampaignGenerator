@@ -91,3 +91,28 @@ Narration writes preserve bytes and generation metadata under adjacent
 preserve their corpus at collection time. Historical hash references resolve
 those exact bytes after rerenders; existing guidance gates remain unchanged.
 This is additive evidence preservation, not an upgrade of workflow or wiki state.
+
+## Memory and prep
+
+Save `memory-scope` with explicit campaign-relative `chapters` and `notes`
+lists (the editor has matching fields). Empty notes means no notes. Empty
+chapters refuses execution. `memory-plan` reports existing source-lineage
+choices, source hashes, stale selection, unresolved workflow gates, event-spine
+prerequisites and native tasks for the existing ensemble, dossier, event,
+thread and projection tools. Historical lineage markers do not sign off a new
+draft. No entity alias is inferred from a transcription garble.
+
+A pending `memory` run requires an approved release and the persisted scope.
+Native agents use the existing grounding tools against exactly that scope and
+submit draft output references. `memory-events` takes `run_id`, explicit
+`corpus` paths and optional `previous_store`, all already recorded as run inputs;
+it calls the existing event-spine updater into the run's draft output directory.
+It preserves events from unselected chapters. Its output still needs review.
+
+Before approving a memory draft, invoke `promotion-scope` with `run_id` and a
+`promotions` mapping of output path to campaign-relative destination under docs.
+Targets and their previous hashes are part of the draft approval binding.
+`promote` takes only `run_id`, refuses changed live targets and unapproved drafts,
+preserves previous bytes, and is recoverable/idempotent. `prepare-next` consumes
+the same explicitly selected notes and fresh, approved memory inputs. A guidance
+change still belongs to narration-wiki's independent gates.
