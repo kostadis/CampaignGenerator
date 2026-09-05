@@ -119,3 +119,8 @@ The user explicitly authorized code publication. These draft PRs preserve the co
 | Memory | [CampaignGenerator#381](https://github.com/kostadis/CampaignGenerator/pull/381) | `feat/cycle-orchestration` | `feat/cycle-memory` |
 | Integration | [CampaignGenerator#382](https://github.com/kostadis/CampaignGenerator/pull/382) | `main` | `feat/cycle-integration` |
 | Skills | [mytools#151](https://github.com/kostadis/mytools/pull/151) | `main` | `feat/cycle-skills` |
+
+
+## Pilot editor configuration fix
+
+The workflow router now reads the production server configuration from `app.state.platform`. Its regression test uses the real server app and `PlatformConfigService`, replacing a standalone app fixture that had hidden the mismatched state attribute. Temporary production-server launches against both isolated pilot roots returned HTTP 200 for the editor page and workflow status; both workflow files remained byte-identical at revision 4. Restart an already-running pilot server to load this fix.

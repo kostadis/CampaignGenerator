@@ -34,7 +34,7 @@ def _build_workflow_cmd(body: WorkflowRequest) -> list[str]:
 
 @router.post("/command")
 async def command(request: Request, body: WorkflowRequest):
-    service = getattr(request.app.state, "config_service", None)
+    service = getattr(request.app.state, "platform", None)
     if service is None:
         raise HTTPException(400, "campaign configuration is unavailable")
     campaign = Path(service.campaign_dir).resolve(strict=True)
