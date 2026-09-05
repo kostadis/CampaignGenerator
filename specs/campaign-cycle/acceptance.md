@@ -105,3 +105,17 @@ planned; sibling registry/retrieval work remains separately owned. The five
 TODO workstreams map to the persistent stage/review workspace, shared gates,
 persisted configuration references, selected incremental memory and existing
 batch execution rather than a new parallel pipeline.
+
+
+## Published draft PRs
+
+The user explicitly authorized code publication. These draft PRs preserve the component stack; no default branch was merged. Campaign pilot artifacts remain local, and publication permission does not approve pilot drafts.
+
+| Component | Draft PR | Base | Head |
+| --- | --- | --- | --- |
+| Records | [CampaignGenerator#378](https://github.com/kostadis/CampaignGenerator/pull/378) | `main` | `feat/cycle-records` |
+| Review | [CampaignGenerator#379](https://github.com/kostadis/CampaignGenerator/pull/379) | `feat/cycle-records` | `feat/cycle-review` |
+| Orchestration | [CampaignGenerator#380](https://github.com/kostadis/CampaignGenerator/pull/380) | `feat/cycle-review` | `feat/cycle-orchestration` |
+| Memory | [CampaignGenerator#381](https://github.com/kostadis/CampaignGenerator/pull/381) | `feat/cycle-orchestration` | `feat/cycle-memory` |
+| Integration | [CampaignGenerator#382](https://github.com/kostadis/CampaignGenerator/pull/382) | `main` | `feat/cycle-integration` |
+| Skills | [mytools#151](https://github.com/kostadis/mytools/pull/151) | `main` | `feat/cycle-skills` |

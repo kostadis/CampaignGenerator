@@ -1,6 +1,15 @@
 # Prepared draft PR descriptions
 
-Publication is pending explicit user permission following automatic approval-review rejection. These descriptions are reviewable locally; campaign pilot artifacts are excluded from code pushes.
+The user explicitly approved publication after the initial automatic approval-review rejection. All six code PRs below are published as drafts. Campaign pilot artifacts remain local, and pilot human approvals remain pending.
+
+| Component | Draft PR | Base | Head |
+| --- | --- | --- | --- |
+| Records | [CampaignGenerator#378](https://github.com/kostadis/CampaignGenerator/pull/378) | `main` | `feat/cycle-records` |
+| Review | [CampaignGenerator#379](https://github.com/kostadis/CampaignGenerator/pull/379) | `feat/cycle-records` | `feat/cycle-review` |
+| Orchestration | [CampaignGenerator#380](https://github.com/kostadis/CampaignGenerator/pull/380) | `feat/cycle-review` | `feat/cycle-orchestration` |
+| Memory | [CampaignGenerator#381](https://github.com/kostadis/CampaignGenerator/pull/381) | `feat/cycle-orchestration` | `feat/cycle-memory` |
+| Integration | [CampaignGenerator#382](https://github.com/kostadis/CampaignGenerator/pull/382) | `main` | `feat/cycle-integration` |
+| Skills | [mytools#151](https://github.com/kostadis/mytools/pull/151) | `main` | `feat/cycle-skills` |
 
 ## records
 
