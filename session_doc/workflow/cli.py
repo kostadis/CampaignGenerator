@@ -11,7 +11,7 @@ from .engine import Engine
 from .models import Evidence
 from .storage import WorkflowError
 
-OPERATIONS = ("init", "status", "migrate", "start", "submit", "check", "decide", "approve", "apply", "select-version", "export", "import", "recover", "evidence")
+OPERATIONS = ("catalog", "execute", "resume", "init", "status", "migrate", "start", "submit", "check", "decide", "approve", "apply", "select-version", "export", "import", "recover", "evidence")
 
 
 def build_parser():
@@ -37,6 +37,19 @@ def dispatch(args):
     payload = json.loads(args.request.read_text() if args.request else args.request_json or "{}")
     if not isinstance(payload, dict):
         raise WorkflowError("request must be a JSON object")
+    if args.operation == "catalog":
+        from .stages import catalog
+        return {"stages": catalog()}
+    if args.operation == "execute":
+        from .execution import execute
+        if args.expected_revision is None:
+            raise WorkflowError("--expected-revision is required")
+        return execute(engine, expected_revision=args.expected_revision, **payload)
+    if args.operation == "resume":
+        from .execution import resume
+        if payload:
+            raise WorkflowError("resume does not accept a payload")
+        return resume(engine)
     if args.operation == "migrate":
         from .migrate import migrate
         return migrate(str(campaign), str(session), **payload)

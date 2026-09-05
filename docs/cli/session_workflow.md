@@ -59,3 +59,35 @@ Run `recover` to finish only if target hashes still match the journal. External
 edits cause a refusal, preserving both edits and archived originals for inspection.
 
 For old sessions, follow [the explicit migration guide](../../specs/campaign-cycle/migration.md).
+
+## Production execution
+
+`catalog` lists canonical stages, prerequisite stages, mandatory checks and the
+human decision for each boundary. `start` cannot remove mandatory checks or
+skip approved dependencies. Its optional `options` object supplies fixed CLI
+parameters; `execute` takes `run_id`. Native stages return their resolved task.
+The editor Execute control invokes the same CLI through SSE; `resume` explains
+the next required action. Failed or interrupted execution keeps its log and
+requires a distinct retry run, preserving previous output and reviews.
+
+Render/release selections contain exact input paths. Fixed stage options are
+`input`, `gmassist`, `summary`, `session-summary`, `plan`, `recap`, `party`,
+`characters`, `party-config`, `players-config`, `narration-genre-file`, `batch`,
+`batch-scenes`, `narrate-tokens`, `prose-mode`, `reflections`, and `title`.
+Input options must refer to explicitly selected, hash-recorded inputs.
+CLI stages write under `.session-workflow/work/<run>/outputs`, so backend
+comparisons are distinct runs. Explicitly select the approved version before
+assembly. Never execute a Markdown skill as code.
+
+`sd_plan --party-config config/party.yaml` uses declared characters; optional
+`--characters` is an exact, nonempty subset. Player declarations stay separate
+from character attribution. Optional session `player_overrides.yaml` has
+`schema_version: 1` and a `speakers` map of display name to declared player ID
+or null. Unresolved speakers and duplicate cues are surfaced; no character is
+inferred from a player who voices several characters.
+
+Narration writes preserve bytes and generation metadata under adjacent
+`.versions/<filename>/<sha256>`. Existing narration-wiki collections now
+preserve their corpus at collection time. Historical hash references resolve
+those exact bytes after rerenders; existing guidance gates remain unchanged.
+This is additive evidence preservation, not an upgrade of workflow or wiki state.

@@ -153,7 +153,8 @@ def _load_corpus(scope: CampaignScope, manifest: dict[str, Any]) -> list[tuple[s
             raise ValidationError(f"measurement corpus path is absent from manifest: {relative}")
         path = scope.session_root / relative
         try:
-            raw = path.read_bytes()
+            from session_doc.workflow.versions import historical_bytes
+            raw = historical_bytes(path, artifact["sha256"])
         except FileNotFoundError as exc:
             raise StateError(f"source corpus drifted after collection: {relative}") from exc
         except OSError as exc:
