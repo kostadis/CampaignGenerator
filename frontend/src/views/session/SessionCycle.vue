@@ -11,7 +11,6 @@ const session = ref(String(route.query.session || ''))
 const config = ref('')
 const workspace = ref<any>(null)
 const selectedRun = ref(String(route.query.run || ''))
-const actor = ref('')
 const rationale = ref('')
 const group = ref('')
 const scene = ref('')
@@ -27,7 +26,6 @@ const notes = ref('')
 const result = ref('')
 const notice = ref('')
 const discussion = ref('')
-const pendingDecision = ref<{ id: string; decision: string } | null>(null)
 const discussionNote = ref('')
 const handoffOpen = ref(false)
 const savedDecisions = computed(() => Object.fromEntries((run.value?.decisions || []).map((d: any) => [d.finding_id, d])))
@@ -82,40 +80,29 @@ async function guarded(action: () => Promise<void>) {
   try { await action() } catch (e) { error.value = String(e) } finally { busy.value = false }
 }
 async function chooseRun(id: string) {
-  selectedRun.value = id; chosen.value = []; preview.value = ''; scene.value = ''; discussion.value = ''; pendingDecision.value = null; handoffOpen.value = false
+  selectedRun.value = id; chosen.value = []; preview.value = ''; scene.value = ''; discussion.value = ''; handoffOpen.value = false
   await guarded(refresh)
 }
 async function decide(decision: string, ids: string[] = chosen.value, note?: string) {
   await guarded(async () => {
-    if (!ids.length || !actor.value.trim()) throw Error('Enter your name above the findings before saving a decision.')
+    if (!ids.length) throw Error('Select findings before saving a decision.')
     const reason = note === undefined ? rationale.value.trim() : note.trim()
-    if (decision === 'discuss' && !reason) throw Error('Add your question or intended wording so the agent can discuss this finding with you.')
     await invoke('decide', { run_id: run.value.id, decisions: ids.map(id => ({
       finding_id: id, finding_sha256: exported.value.findings.find((f: any) => f.id === id).finding_sha256,
-      decision, actor: actor.value.trim(), rationale: reason || (decision === 'approve' ? 'Approve the proposed change as shown.' : 'Reject the proposed change; retain the current wording.'),
+      decision, ...(reason ? { rationale: reason } : {}),
       group: ids.length > 1 ? group.value || null : null, at: new Date().toISOString(),
     })) })
     await refresh()
     discussion.value = ''
-    pendingDecision.value = null
     notice.value = `${decisionLabel(decision)} saved for ${ids.length === 1 ? ids[0] : `${ids.length} findings`}. The agent can read your decision and note from disk.`
   })
 }
-async function requestDecision(id: string, decision: string) {
-  if (actor.value.trim()) return decide(decision, [id], '')
-  pendingDecision.value = { id, decision }
-  discussion.value = ''
-  await nextTick()
-  document.getElementById(`reviewer-${id}`)?.focus()
-}
-async function savePendingDecision() {
-  const pending = pendingDecision.value
-  if (pending) await decide(pending.decision, [pending.id], '')
-}
 async function discuss(id: string) {
-  pendingDecision.value = null
+  const previousNote = savedDecisions.value[id]?.decision === 'discuss' ? savedDecisions.value[id].rationale : ''
+  await decide('discuss', [id], previousNote)
+  if (error.value) return
   discussion.value = id
-  discussionNote.value = savedDecisions.value[id]?.decision === 'discuss' ? savedDecisions.value[id].rationale : ''
+  discussionNote.value = previousNote
   await nextTick()
   document.getElementById(`discussion-${id}`)?.focus()
 }
@@ -133,7 +120,7 @@ async function copyHandoff() {
 }
 async function approve() {
   await guarded(async () => {
-    await invoke('approve', { run_id: run.value.id, actor: actor.value, rationale: rationale.value, draft_binding: view.value.approval_binding })
+    await invoke('approve', { run_id: run.value.id, draft_binding: view.value.approval_binding })
     await refresh()
   })
 }
@@ -173,7 +160,7 @@ onMounted(async () => {
       <ol>
         <li>Confirm the campaign server and session, then click <strong>Load / refresh</strong>. Select a run on the left and check its selected inputs. Existing pilots do not need <strong>Initialize record</strong>.</li>
         <li>Read the outputs using the <strong>Read …</strong> buttons. Evidence previews appear below this workspace.</li>
-        <li>Enter <strong>Your name</strong> above the findings. Use <strong>Approve</strong>, <strong>Reject</strong>, or <strong>Discuss</strong> on each card. Discuss opens a note for your question or intended wording; <strong>Save discussion</strong> saves it with that finding. Checkboxes only select cards for bulk actions.</li>
+        <li>Use <strong>Approve</strong>, <strong>Reject</strong>, or <strong>Discuss</strong> on each card. Each click saves your decision. Discuss also opens an optional note for your question or intended wording. Checkboxes only select cards for bulk actions.</li>
         <li>Apply only selected, approved replacements. Ask the agent to check the resulting draft. When all checks and findings are resolved, read every output and click <strong>I have reviewed this draft — approve</strong>. A clean audit still needs your sign-off.</li>
         <li>Click <strong>Copy handoff for agent</strong> and paste it into your agent chat. The agent reads the saved decisions, discusses open questions, and applies approved changes. Then return here and click <strong>Load / refresh</strong>.</li>
       </ol>
@@ -210,8 +197,7 @@ onMounted(async () => {
           <label>Import reviewed JSON <input type="file" accept="application/json" @change="importReview" /></label>
         </div>
         <div class="review-toolbar" aria-label="Review controls">
-          <label>Your name <input v-model="actor" autocomplete="name" placeholder="Name recorded with your decisions" /></label>
-          <p>Approve, Reject, or Discuss each finding below. Approve and Reject save immediately once your name is entered; if it is missing, the card asks for it. Discuss saves when you submit a note. A finding decision does not approve the whole draft.</p>
+          <p>Approve, Reject, or Discuss each finding below. Each button saves immediately. Discuss also lets you add an optional note. A finding decision does not approve the whole draft.</p>
           <button :disabled="busy" @click="copyHandoff">Copy handoff for agent</button>
           <p>Paste the handoff into your agent chat when ready. Saved choices and discussion notes are available to the agent; this page does not launch a conversation.</p>
           <p v-if="notice" role="status">{{ notice }}</p>
@@ -228,12 +214,12 @@ onMounted(async () => {
         <details class="bulk-actions">
           <summary>Bulk actions · {{ chosen.length }} selected</summary>
           <p>Checkboxes select findings for these actions. Each selected finding gets its own saved decision.</p>
-          <label>Bulk rationale or discussion note <textarea v-model="rationale" rows="2" /></label>
+          <label>Optional note for selected findings <textarea v-model="rationale" rows="2" /></label>
           <label>Discussion group (optional) <input v-model="group" /></label>
           <div class="controls">
-            <button :disabled="busy || !chosen.length || !actor.trim()" @click="decide('approve')">Approve selected findings</button>
-            <button :disabled="busy || !chosen.length || !actor.trim()" @click="decide('reject')">Reject selected findings</button>
-            <button :disabled="busy || !chosen.length || !actor.trim() || !rationale.trim()" @click="decide('discuss')">Discuss selected findings</button>
+            <button :disabled="busy || !chosen.length" @click="decide('approve')">Approve selected findings</button>
+            <button :disabled="busy || !chosen.length" @click="decide('reject')">Reject selected findings</button>
+            <button :disabled="busy || !chosen.length" @click="decide('discuss')">Discuss selected findings</button>
             <button :disabled="busy || !chosen.length" @click="apply">Apply selected approved changes</button>
           </div>
         </details>
@@ -249,27 +235,19 @@ onMounted(async () => {
             <div><h5>Proposed replacement</h5><pre>{{ f.change.after }}</pre></div>
           </div>
           <div class="finding-decisions">
-            <div><button :disabled="busy" :aria-pressed="savedDecisions[f.id]?.decision === 'approve'" @click="requestDecision(f.id, 'approve')">Approve</button><p>{{ f.consequences.approve }}</p></div>
-            <div><button :disabled="busy" :aria-pressed="savedDecisions[f.id]?.decision === 'reject'" @click="requestDecision(f.id, 'reject')">Reject</button><p>{{ f.consequences.reject }}</p></div>
+            <div><button :disabled="busy" :aria-pressed="savedDecisions[f.id]?.decision === 'approve'" @click="decide('approve', [f.id], '')">Approve</button><p>{{ f.consequences.approve }}</p></div>
+            <div><button :disabled="busy" :aria-pressed="savedDecisions[f.id]?.decision === 'reject'" @click="decide('reject', [f.id], '')">Reject</button><p>{{ f.consequences.reject }}</p></div>
             <div><button :disabled="busy" :aria-pressed="savedDecisions[f.id]?.decision === 'discuss'" @click="discuss(f.id)">Discuss</button><p>{{ f.consequences.discuss }}</p></div>
           </div>
           <p class="review-hint">You can change a saved decision using any of these buttons. A highlighted button marks the saved choice; it does not lock the other choices.</p>
-          <div v-if="pendingDecision?.id === f.id" class="discussion-editor">
-            <p>Your name is required to save this {{ pendingDecision?.decision === 'approve' ? 'approval' : 'rejection' }}. This choice has not been saved yet.</p>
-            <label :for="`reviewer-${f.id}`">Your name for this decision</label>
-            <input :id="`reviewer-${f.id}`" v-model="actor" autocomplete="name" />
-            <button :disabled="busy || !actor.trim()" @click="savePendingDecision">{{ pendingDecision?.decision === 'approve' ? 'Save approval' : 'Save rejection' }}</button>
-            <button :disabled="busy" @click="pendingDecision = null">Cancel</button>
-          </div>
           <div v-if="discussion === f.id" class="discussion-editor">
-            <label>Your name for this discussion <input v-model="actor" autocomplete="name" /></label>
-            <label :for="`discussion-${f.id}`">Question or intended wording for the agent</label>
+            <label :for="`discussion-${f.id}`">Optional question or intended wording for the agent</label>
             <textarea :id="`discussion-${f.id}`" v-model="discussionNote" rows="3" placeholder="Explain what needs discussion or suggest different wording." />
-            <button :disabled="busy || !actor.trim() || !discussionNote.trim()" @click="decide('discuss', [f.id], discussionNote)">Save discussion</button>
-            <button :disabled="busy" @click="discussion = ''">Cancel</button>
+            <button :disabled="busy" @click="decide('discuss', [f.id], discussionNote)">Save note</button>
+            <button :disabled="busy" @click="discussion = ''">Close</button>
             <p>Saving keeps this finding unresolved and makes your note available to the agent.</p>
           </div>
-          <p v-if="savedDecisions[f.id]" class="saved-decision">Saved {{ decisionLabel(savedDecisions[f.id].decision) }} by {{ savedDecisions[f.id].actor }}: {{ savedDecisions[f.id].rationale }}</p>
+          <p v-if="savedDecisions[f.id]" class="saved-decision">Saved {{ decisionLabel(savedDecisions[f.id].decision) }}: {{ savedDecisions[f.id].rationale }}</p>
           <details v-if="f.rule"><summary>Rule and source reference</summary><p>{{ f.rule.reference }} · {{ f.rule.scope }}</p><code>{{ f.rule.authority.path }}</code></details>
           <div class="controls">
             <button :disabled="busy" @click="showEvidence(f.evidence)">Read evidence</button>
@@ -278,11 +256,10 @@ onMounted(async () => {
         </article>
         <div class="draft-approval">
           <h4>Whole-draft sign-off</h4>
-          <label>Rationale <input v-model="rationale" /></label>
         <button :disabled="busy" @click="guarded(async () => { result = JSON.stringify(await invoke('execute', { run_id: run.id }), null, 2); await refresh() })">Execute / show native task</button>
         <button :disabled="busy" @click="guarded(async () => { result = JSON.stringify(await invoke('resume'), null, 2); await refresh() })">Resume status</button>
         <p>A completed check does not approve a draft. Read every output before signing off.</p>
-        <button :disabled="busy || !actor.trim() || !rationale.trim()" @click="approve">I have reviewed this draft — approve</button>
+        <button :disabled="busy" @click="approve">I have reviewed this draft — approve</button>
         <button :disabled="busy" @click="guarded(async () => { await invoke('select-version', { run_id: run.id }); await refresh() })">Select approved version for downstream work</button>
         </div>
       </section>

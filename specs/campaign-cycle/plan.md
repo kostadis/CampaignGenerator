@@ -134,3 +134,21 @@ The editor puts Approve, Reject, and Discuss on every finding. Reviewer identity
 Constitution Check: I/II retain disk authority, source-bound decisions, and independent draft approval; VI/XI reuse the same CLI request and server boundary; IX stays within the user’s explicit shared-editor exception and preserves chat discussion; X materializes each chosen finding. No new backend, schema, option, or migration is introduced; remaining principles are unchanged. Browser tests exercise all three decisions, discussion notes across reload/CLI export, source-change refusal, no implicit application/approval, and desktop/narrow layouts.
 
 The follow-up reviewer-name fix keeps all three per-finding choices available. Missing identity opens a local name prompt before saving, and a saved Discuss remains changeable to Approve/Reject. Identity is still supplied by the human, not inferred from an earlier reviewer. Constitution Check: unchanged CLI contract, source hashes, per-item decisions and separate draft approval; no schema or migration. Browser coverage includes blank-name approval and Discuss → Approve after reload.
+
+### Pilot correction: single-user review
+
+The user explicitly requested one-click review without reviewer-name or rationale
+prompts. The CLI engine now supplies `local user` and a standard action description
+only for explicit review mutations with omitted fields. The editor uses those
+same defaults, including draft sign-off, and offers optional discussion notes.
+Explicit CLI identities and notes, strict disk contracts, and old history remain.
+
+Constitution Check: all thirteen obligations above still hold. I/II preserve
+source-bound explicit human clicks and the independent draft gate; VI/XI/XII
+share defaults in the CLI engine and expose the same behavior in the editor;
+VIII/IX retain saved discussions and native-agent handoffs; X retains explicit
+finding selection. III/IV/V/VII add no retrieval, source edits, generation, or
+external seam. XIII needs no migration: disk schema and legacy records are
+unchanged; only optional command inputs gain defaults. Verification covers
+one-click decisions, optional discussion, reload, CLI parity, stale refusals,
+and unchanged clean-audit and unresolved-finding gates.

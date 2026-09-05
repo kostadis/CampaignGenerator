@@ -23,8 +23,8 @@ the keyword fields below; unexpected fields refuse rather than disappear.
 | start | stage, selection (explicit IDs), inputs (paths), generation, dependencies (approved run IDs), required_checks |
 | submit | run_id, outputs (session-relative paths), generation |
 | check | run_id, check (name, status, sources, findings, producer, at) |
-| decide | run_id, decisions (individual finding_id, finding_sha256, decision, actor, rationale, at, optional group) |
-| approve | run_id, actor, rationale, draft_binding (from status) |
+| decide | run_id, decisions (individual finding_id, finding_sha256, decision, at; optional actor, rationale, group) |
+| approve | run_id, draft_binding (from status); optional actor, rationale |
 | apply | run_id, finding_ids (explicitly selected, individually approved changes) |
 | select-version | run_id (approved and fresh) |
 | export | run_id |
@@ -128,3 +128,17 @@ Unmarked/pending items refuse import, discussions remain unresolved, and the
 original JSON and mapping are preserved as evidence. No draft approval is imported.
 
 Approved replacements in recorded workflow outputs create a distinct derived version under the new run’s output directory. Previous drafts remain readable at their original paths. Unchanged companion reports retain their original paths and describe that earlier generation; the replacement run’s checks record the incremental verification. Resume directs review to the replacement version, which needs its own checks and explicit draft sign-off.
+
+## Single-user review
+
+The editor saves Approve, Reject, Discuss, and whole-draft approval with one click.
+No name or rationale entry is required. Discuss remains unresolved and offers an
+optional note. The CLI uses the same defaults when `actor` and `rationale` are
+omitted from explicit `decide` or `approve` commands: `local user` and a standard
+description of the action. These are action records, not invented explanations.
+Explicit identities and notes remain supported for existing CLI callers and
+validated imports. No decision or approval is inferred by loading a workspace.
+
+Existing YAML records and historical reviewers are unchanged; there is no state
+schema change or migration. Draft/source bindings, required checks, explicit
+selection, and separate draft approval remain enforced.

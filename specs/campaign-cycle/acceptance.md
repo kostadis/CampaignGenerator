@@ -138,3 +138,15 @@ Per-finding Approve/Reject/Discuss controls now save through the existing CLI-ba
 Validation: frontend build passed; all three session-cycle browser tests passed, covering draft approval, individual decisions, note persistence, stale-source refusal, and 1280px/390px layouts. A read-only browser check of the real Phandalin Events run showed all 27 cards with the three controls and verified 390px layout. No pilot decisions or artifacts were mutated by verification.
 
 Reviewer-name follow-up: all three per-card decisions remain clickable when the name field is blank. Approve/Reject ask for identity inline before saving; saved Discuss choices can be changed. The frontend build and all three browser tests passed, including Discuss → Approve after reload on desktop and narrow layouts. No schema or CLI contract changed.
+
+### Single-user review correction
+
+Reviewer-name and rationale prompts are removed. Explicit editor clicks and CLI
+review commands share engine defaults; discussion notes are optional. Historical
+actors and approvals are preserved, and no pilot decisions were made by this fix.
+Workflow review/routes/records and retrieval-isolation tests passed. All three
+Chromium session-cycle tests passed (draft approval and findings at 1280/390 px),
+as did the frontend type-check and production build. A read-only check of the
+running Phandalin editor on port 8131 confirmed the fields are absent and Events
+remains approved. The operator walkthrough explains how to request recap removal
+in chat after Events sign-off.

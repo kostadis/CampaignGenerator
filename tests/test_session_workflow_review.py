@@ -181,3 +181,26 @@ def test_transcript_application_versions_only_managed_derived_outputs(engine, ta
     pending = resume(engine)["pending"]
     assert [item["run_id"] for item in pending] == [revised.id]
     assert pending[0]["next_action"] == "explicit human draft approval"
+
+
+def test_single_user_decisions_and_approval_need_no_identity_or_reason(engine):
+    run = check(engine, draft(engine), True)
+    finding = engine.export(run.id)["findings"][0]
+    for decision in ["discuss", "reject"]:
+        mutate(engine, "decide", run_id=run.id, decisions=[{
+            "finding_id": finding["id"], "finding_sha256": finding["finding_sha256"],
+            "decision": decision, "at": now(),
+        }])
+        saved = engine.store.load().runs[-1]
+        assert saved.decisions[-1].actor == "local user"
+        assert saved.decisions[-1].rationale
+        assert saved.approval is None
+        if decision == "discuss":
+            with pytest.raises(WorkflowError, match="unresolved"):
+                mutate(engine, "approve", run_id=run.id, draft_binding=binding(saved))
+    mutate(engine, "approve", run_id=run.id, draft_binding=binding(saved))
+    approved = engine.store.load().runs[-1]
+    assert approved.approval.actor == "local user"
+    assert approved.approval.rationale == "Approved this draft."
+    assert approved.decisions[0].decision == "discuss"
+    assert engine.status()["runs"][-1]["status"] == "approved"

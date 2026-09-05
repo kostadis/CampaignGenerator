@@ -8,6 +8,16 @@ from .models import Application, Approval, Check, Decision, Evidence, Generation
 from .storage import Store, WorkflowError, digest, fingerprint, now
 
 
+# Defaults apply only to explicit review commands, never while loading history.
+LOCAL_REVIEWER = "local user"
+REVIEW_ACTIONS = {
+    "approve": "Approved the proposed change as shown.",
+    "reject": "Rejected the proposed change; retain the stated rejection outcome.",
+    "discuss": "Discuss this finding.",
+}
+DRAFT_APPROVAL = "Approved this draft."
+
+
 def selected(values: list[str]) -> list[str]:
     if not values or any(not str(x).strip() for x in values):
         raise WorkflowError("explicit nonempty selection required")
@@ -234,7 +244,11 @@ class Engine:
         known = {f.id: f for f in findings(run)}
         seen = set()
         for raw in decisions:
-            item = Decision.model_validate(raw)
+            item = Decision.model_validate({
+                "actor": LOCAL_REVIEWER,
+                "rationale": REVIEW_ACTIONS.get(raw.get("decision"), ""),
+                **raw,
+            })
             if item.finding_id in seen:
                 raise WorkflowError("duplicate finding selection")
             seen.add(item.finding_id)
@@ -243,7 +257,7 @@ class Engine:
             run.decisions.append(item)
         run.approval = None
 
-    def op_approve(self, state: Workflow, *, run_id: str, actor: str, rationale: str, draft_binding: str):
+    def op_approve(self, state: Workflow, *, run_id: str, draft_binding: str, actor: str = LOCAL_REVIEWER, rationale: str = DRAFT_APPROVAL):
         run = run_by_id(state, run_id)
         require_fresh(self.store, state, run)
         if run.status != "generated" or not run.outputs:
