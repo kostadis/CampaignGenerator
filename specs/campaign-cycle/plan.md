@@ -125,3 +125,10 @@ Constitution Check: all thirteen obligations above still hold. In particular I/I
 Resume retains revised drafts as history and directs pending review only to their replacement. The same regression verifies this handoff.
 
 Events/extraction pilot preflight: the existing `party` option now reaches both fixed CLI commands, enabling their roster-backed wrong-transcript check. Constitution Check: existing selection and human gates remain; one CLI engine gives editor parity, no new schema/options/model boundary. A parameterized command test covers both consumers and rejects unselected party context.
+
+
+### Pilot review controls and conversation handoff
+
+The editor puts Approve, Reject, and Discuss on every finding. Reviewer identity appears before the cards; Discuss records a specific note through the existing `decide` request. Saved decisions remain visible after reload. Checkboxes are explicitly bulk selection, and whole-draft sign-off is separate. A copyable handoff identifies the saved run and notes for native agent continuation; it does not claim to launch or message an agent.
+
+Constitution Check: I/II retain disk authority, source-bound decisions, and independent draft approval; VI/XI reuse the same CLI request and server boundary; IX stays within the user’s explicit shared-editor exception and preserves chat discussion; X materializes each chosen finding. No new backend, schema, option, or migration is introduced; remaining principles are unchanged. Browser tests exercise all three decisions, discussion notes across reload/CLI export, source-change refusal, no implicit application/approval, and desktop/narrow layouts.

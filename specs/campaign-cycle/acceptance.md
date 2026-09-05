@@ -130,3 +130,9 @@ The workflow router now reads the production server configuration from `app.stat
 Two explicit human finding approvals were recorded through the CLI and applied to a new Identify draft. The original transcript and predecessor outputs remained byte-identical. All 1,535 cue identities, timestamps, and speaker labels were preserved; the derivative differs from the prior draft by exactly the two approved replacements. Incremental speaker and spelling checks completed; draft approval remains pending. Repeated application left revision 16 unchanged. Resume reports only the replacement draft’s human gate.
 
 The integration fix permits versioned application to recorded generated/derived outputs, while refusing transcript originals and other workflow internals. All 224 workflow and retrieval/render isolation checks passed; imports resolved inside the integration worktree. No state schema or CLI/API contract changed.
+
+### Events review usability handoff
+
+Per-finding Approve/Reject/Discuss controls now save through the existing CLI-backed engine. Discussion notes survive browser reload and CLI export; a copyable agent handoff identifies the run and includes saved choices. Whole-draft sign-off remains separate, and checkboxes are explicitly for bulk selection.
+
+Validation: frontend build passed; all three session-cycle browser tests passed, covering draft approval, individual decisions, note persistence, stale-source refusal, and 1280px/390px layouts. A read-only browser check of the real Phandalin Events run showed all 27 cards with the three controls and verified 390px layout. No pilot decisions or artifacts were mutated by verification.

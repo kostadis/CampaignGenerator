@@ -11,7 +11,7 @@ Use this walkthrough for a workflow-managed session in **Session → Production 
 | Choose the campaign, session, source transcript, and intended scope | Chat, then verify the selection in the editor | You |
 | Start the next stage, resolve its inputs, run specialist checks, and prepare a draft | Claude/Codex chat, using the shared workflow engine | Agent |
 | Read outputs, inspect findings, approve/reject proposals, and sign off on a draft | Production review editor; equivalent CLI/chat decisions are available | You |
-| Explain a disputed name, speaker, event, or proposed correction | Chat; select **Discuss selected findings** in the editor to persist an open discussion | You and agent |
+| Explain a disputed name, speaker, event, or proposed correction | Chat; use **Discuss** on the finding and **Save discussion** to persist your question | You and agent |
 | Apply explicitly approved changes and prepare the resulting draft for another review | Agent, or **Apply selected approved changes** | Agent/tool under your recorded decisions |
 | Advance to the next production stage | Ask the agent in chat after approving the current draft | Agent |
 
@@ -53,23 +53,23 @@ An original transcript is evidence. A corrected transcript or smoothed dialogue 
 
 ## 3. Decide the findings
 
-A finding is one proposed change or question. It shows its evidence, proposed action, rule reference when available, and the consequences of each decision.
+Each finding has its own **Approve**, **Reject**, and **Discuss** buttons. The current draft and proposed replacement appear separately, with each decision’s consequences beside the controls.
 
-1. Select the checkbox for the finding or findings you want to decide together. **Select displayed findings** selects only the current scene-filter results.
-2. Fill in **Your name** and **Rationale**. State the correction or reason, not just an unexplained yes.
-3. Choose **Approve selected findings**, **Reject selected findings**, or **Discuss selected findings**.
-4. If you choose Discuss, explain the uncertainty in chat. The optional **Discussion group** ties related items together. Discussion remains unresolved until you record a final ruling.
+1. Enter **Your name** above the findings. It is recorded with every decision.
+2. Click **Approve** to authorize that card’s proposed change, or **Reject** to retain its stated rejection outcome. These choices save immediately; the card shows the saved decision and actor.
+3. Click **Discuss** to open a note. Enter your question or intended wording, then **Save discussion**. The note is saved with the finding and remains unresolved until you rule on it.
+4. When ready to return to the agent, click **Copy handoff for agent** and paste it into your Claude/Codex chat. The handoff identifies the campaign/session/run and includes saved decisions and discussion notes. The agent should reload the record from disk before acting. The editor does not automatically launch or message an agent.
 
-Approving a finding authorizes its stated proposal; it neither applies the edit nor approves the whole draft. Rejecting keeps the stated rejection outcome. Unchecked findings have no decision.
+The checkbox on a card is labeled **Select … for bulk actions**. Checking it makes no decision. For a batch, select the desired cards and expand **Bulk actions** above them. Every selected card receives its own decision record. A bulk Discuss operation requires a note; optional discussion groups are supported.
 
-If you approved replacements, ask the agent to apply exactly those changes, or select them and click **Apply selected approved changes**. The resulting draft needs checks and a separate sign-off. Refresh and review the new draft before continuing. Do not sign off on the old draft while intending to change it.
+Approving a finding authorizes its displayed consequence; it does not apply changes or sign off on the whole draft. Ask the agent to apply approved replacements and check the new version, or use **Apply selected approved changes** under Bulk actions. The resulting draft needs separate sign-off.
 
 ## 4. Approve the exact draft
 
 Once the required checks are complete, every finding is resolved, and you have read all outputs:
 
 1. Fill in **Your name** and **Rationale** if needed.
-2. Click **I have reviewed this draft — approve**, below the execution/status controls.
+2. Click **I have reviewed this draft — approve**, in **Whole-draft sign-off**, below the findings.
 3. Confirm that the stage in the left-hand list shows **approved**.
 
 A clean check with zero findings still requires this approval. The approval covers this version and its source hashes. Editing an input or rerendering can invalidate it. If there are multiple approved versions, **Select approved version for downstream work** records which one subsequent work should use.

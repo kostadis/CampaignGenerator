@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiPost } from '../../api/client'
 import { useConfigStore } from '../../stores/config'
@@ -25,6 +25,20 @@ const payload = ref('{}')
 const chapters = ref('')
 const notes = ref('')
 const result = ref('')
+const notice = ref('')
+const discussion = ref('')
+const discussionNote = ref('')
+const handoffOpen = ref(false)
+const savedDecisions = computed(() => Object.fromEntries((run.value?.decisions || []).map((d: any) => [d.finding_id, d])))
+const decisionLabels: Record<string, string> = { approve: 'Approved', reject: 'Rejected', discuss: 'Discuss' }
+const decisionLabel = (value?: string) => decisionLabels[value || ''] || 'Not reviewed'
+const handoff = computed(() => {
+  const items = (exported.value?.findings || []).map((f: any) => {
+    const d = savedDecisions.value[f.id]
+    return d ? `${f.id}: ${d.decision} — ${d.rationale}` : `${f.id}: not reviewed`
+  })
+  return `Continue the session review using the saved workflow state.\nCampaign configuration: ${workspace.value?.state.config}\nSession directory: ${session.value}\nRun: ${selectedRun.value} (${run.value?.stage})\nRead the current findings, source hashes, and saved decisions from disk. Discuss the unresolved items with me; do not infer rulings for unreviewed findings. Apply only explicitly approved replacements and prepare the resulting draft for review. Stop before draft sign-off or the next production stage.\n\nSaved review at revision ${workspace.value?.state.revision}:\n${items.join('\n')}`
+})
 const run = computed(() => workspace.value?.state.runs.find((r: any) => r.id === selectedRun.value))
 const view = computed(() => workspace.value?.runs.find((r: any) => r.id === selectedRun.value))
 const rows = computed(() => (exported.value?.findings || []).filter((f: any) => !scene.value || f.scene === scene.value))
@@ -63,21 +77,44 @@ async function refresh() {
   if (selectedRun.value) exported.value = await invoke('export', { run_id: selectedRun.value })
 }
 async function guarded(action: () => Promise<void>) {
-  busy.value = true; error.value = ''
+  busy.value = true; error.value = ''; notice.value = ''
   try { await action() } catch (e) { error.value = String(e) } finally { busy.value = false }
 }
 async function chooseRun(id: string) {
-  selectedRun.value = id; chosen.value = []; preview.value = ''; scene.value = ''
+  selectedRun.value = id; chosen.value = []; preview.value = ''; scene.value = ''; discussion.value = ''; handoffOpen.value = false
   await guarded(refresh)
 }
-async function decide(decision: string) {
+async function decide(decision: string, ids: string[] = chosen.value, note?: string) {
   await guarded(async () => {
-    if (!chosen.value.length || !actor.value.trim() || !rationale.value.trim()) throw Error('Select findings and enter your name and rationale.')
-    await invoke('decide', { run_id: run.value.id, decisions: chosen.value.map(id => ({
+    if (!ids.length || !actor.value.trim()) throw Error('Enter your name above the findings before saving a decision.')
+    const reason = note === undefined ? rationale.value.trim() : note.trim()
+    if (decision === 'discuss' && !reason) throw Error('Add your question or intended wording so the agent can discuss this finding with you.')
+    await invoke('decide', { run_id: run.value.id, decisions: ids.map(id => ({
       finding_id: id, finding_sha256: exported.value.findings.find((f: any) => f.id === id).finding_sha256,
-      decision, actor: actor.value, rationale: rationale.value, group: group.value || null, at: new Date().toISOString(),
+      decision, actor: actor.value.trim(), rationale: reason || (decision === 'approve' ? 'Approve the proposed change as shown.' : 'Reject the proposed change; retain the current wording.'),
+      group: ids.length > 1 ? group.value || null : null, at: new Date().toISOString(),
     })) })
     await refresh()
+    discussion.value = ''
+    notice.value = `${decisionLabel(decision)} saved for ${ids.length === 1 ? ids[0] : `${ids.length} findings`}. The agent can read your decision and note from disk.`
+  })
+}
+async function discuss(id: string) {
+  discussion.value = id
+  discussionNote.value = savedDecisions.value[id]?.decision === 'discuss' ? savedDecisions.value[id].rationale : ''
+  await nextTick()
+  document.getElementById(`discussion-${id}`)?.focus()
+}
+async function copyHandoff() {
+  await guarded(async () => {
+    await refresh()
+    handoffOpen.value = true
+    try {
+      await navigator.clipboard.writeText(handoff.value)
+      notice.value = 'Handoff copied. Paste it into your agent chat to continue with these saved decisions.'
+    } catch {
+      notice.value = 'Select and copy the handoff text below, then paste it into your agent chat.'
+    }
   })
 }
 async function approve() {
@@ -122,9 +159,9 @@ onMounted(async () => {
       <ol>
         <li>Confirm the campaign server and session, then click <strong>Load / refresh</strong>. Select a run on the left and check its selected inputs. Existing pilots do not need <strong>Initialize record</strong>.</li>
         <li>Read the outputs using the <strong>Read …</strong> buttons. Evidence previews appear below this workspace.</li>
-        <li>Select findings, enter <strong>Your name</strong> and <strong>Rationale</strong>, then Approve, Reject, or Discuss. Read each item's consequences. Discuss stays unresolved; explain it to the agent in chat.</li>
+        <li>Enter <strong>Your name</strong> above the findings. Use <strong>Approve</strong>, <strong>Reject</strong>, or <strong>Discuss</strong> on each card. Discuss opens a note for your question or intended wording; <strong>Save discussion</strong> saves it with that finding. Checkboxes only select cards for bulk actions.</li>
         <li>Apply only selected, approved replacements. Ask the agent to check the resulting draft. When all checks and findings are resolved, read every output and click <strong>I have reviewed this draft — approve</strong>. A clean audit still needs your sign-off.</li>
-        <li>Ask the agent in chat to continue this campaign and session to the next human review. Then return here and click <strong>Load / refresh</strong>.</li>
+        <li>Click <strong>Copy handoff for agent</strong> and paste it into your agent chat. The agent reads the saved decisions, discusses open questions, and applies approved changes. Then return here and click <strong>Load / refresh</strong>.</li>
       </ol>
       <p><strong>Approval does not launch the next stage yet.</strong> <strong>Resume status</strong> reports progress. <strong>Execute / show native task</strong> runs an existing CLI task or displays an agent task; it does not launch Claude/Codex or create the next stage. Results appear under <strong>CLI / agent interchange commands</strong> below. You do not need to edit JSON for normal review.</p>
       <p>After capture, the next stage is <strong>identify</strong>: the agent checks speaker names against the player roster and proposes transcript corrections. You review the identities and wording. A player's identity does not establish which character spoke every line.</p>
@@ -158,32 +195,74 @@ onMounted(async () => {
           <button @click="downloadReview">Export review JSON</button>
           <label>Import reviewed JSON <input type="file" accept="application/json" @change="importReview" /></label>
         </div>
-        <label>Scene <select v-model="scene"><option value="">All scenes</option><option v-for="s in scenes" :key="s">{{ s }}</option></select></label>
-        <button @click="chosen = rows.map((f: any) => f.id)">Select displayed findings</button>
-        <button @click="chosen = []">Clear selection</button>
-        <article v-for="f in rows" :key="f.id">
-          <label><input v-model="chosen" type="checkbox" :value="f.id" /> {{ f.id }} · {{ f.scene }} · {{ f.location }}</label>
-          <p>{{ f.description }}</p><p>Proposed action: {{ f.proposed_action }}</p>
-          <p v-if="f.rule">Rule: {{ f.rule.reference }} · {{ f.rule.scope }} · {{ f.rule.authority.path }}</p>
-          <p v-for="(meaning, decision) in f.consequences" :key="decision">{{ decision }}: {{ meaning }}</p>
-          <pre v-if="f.change">{{ f.change.before }} → {{ f.change.after }}</pre>
-          <button @click="showEvidence(f.evidence)">Read evidence</button>
-          <p>Decision: {{ [...run.decisions].reverse().find((d: any) => d.finding_id === f.id)?.decision || 'unresolved' }}</p>
-        </article>
-        <div class="controls">
-          <label>Your name <input v-model="actor" /></label>
-          <label>Rationale <input v-model="rationale" /></label>
-          <label>Discussion group (optional) <input v-model="group" /></label>
-          <button :disabled="busy || !chosen.length" @click="decide('approve')">Approve selected findings</button>
-          <button :disabled="busy || !chosen.length" @click="decide('reject')">Reject selected findings</button>
-          <button :disabled="busy || !chosen.length" @click="decide('discuss')">Discuss selected findings</button>
-          <button :disabled="busy || !chosen.length" @click="apply">Apply selected approved changes</button>
+        <div class="review-toolbar" aria-label="Review controls">
+          <label>Your name <input v-model="actor" autocomplete="name" placeholder="Name recorded with your decisions" /></label>
+          <p>Approve, Reject, or Discuss each finding below. Approve and Reject save immediately. Discuss saves when you submit a note. A finding decision does not approve the whole draft.</p>
+          <button :disabled="busy" @click="copyHandoff">Copy handoff for agent</button>
+          <p>Paste the handoff into your agent chat when ready. Saved choices and discussion notes are available to the agent; this page does not launch a conversation.</p>
+          <p v-if="notice" role="status">{{ notice }}</p>
+          <p v-if="error" role="alert" class="error">{{ error }}</p>
         </div>
+        <div v-if="handoffOpen" class="handoff">
+          <label>Agent handoff <textarea :value="handoff" readonly rows="8" /></label>
+        </div>
+        <div class="controls">
+          <label>Scene <select v-model="scene" aria-label="Scene"><option value="">All scenes</option><option v-for="s in scenes" :key="s">{{ s }}</option></select></label>
+          <button :disabled="busy" @click="chosen = rows.map((f: any) => f.id)">Select displayed findings</button>
+          <button :disabled="busy" @click="chosen = []">Clear selection</button>
+        </div>
+        <details class="bulk-actions">
+          <summary>Bulk actions · {{ chosen.length }} selected</summary>
+          <p>Checkboxes select findings for these actions. Each selected finding gets its own saved decision.</p>
+          <label>Bulk rationale or discussion note <textarea v-model="rationale" rows="2" /></label>
+          <label>Discussion group (optional) <input v-model="group" /></label>
+          <div class="controls">
+            <button :disabled="busy || !chosen.length || !actor.trim()" @click="decide('approve')">Approve selected findings</button>
+            <button :disabled="busy || !chosen.length || !actor.trim()" @click="decide('reject')">Reject selected findings</button>
+            <button :disabled="busy || !chosen.length || !actor.trim() || !rationale.trim()" @click="decide('discuss')">Discuss selected findings</button>
+            <button :disabled="busy || !chosen.length" @click="apply">Apply selected approved changes</button>
+          </div>
+        </details>
+        <article v-for="f in rows" :key="f.id" :aria-label="`Finding ${f.id}`">
+          <header class="finding-header">
+            <h4>{{ f.location }}<span v-if="f.scene"> · {{ f.scene }}</span></h4>
+            <strong class="decision-state">{{ decisionLabel(savedDecisions[f.id]?.decision) }}</strong>
+          </header>
+          <small>{{ f.id }}</small>
+          <p>{{ f.description }}</p><p>Proposed action: {{ f.proposed_action }}</p>
+          <div v-if="f.change" class="change-comparison">
+            <div><h5>Current draft</h5><pre>{{ f.change.before }}</pre></div>
+            <div><h5>Proposed replacement</h5><pre>{{ f.change.after }}</pre></div>
+          </div>
+          <div class="finding-decisions">
+            <div><button :disabled="busy || !actor.trim()" :aria-pressed="savedDecisions[f.id]?.decision === 'approve'" @click="decide('approve', [f.id], '')">Approve</button><p>{{ f.consequences.approve }}</p></div>
+            <div><button :disabled="busy || !actor.trim()" :aria-pressed="savedDecisions[f.id]?.decision === 'reject'" @click="decide('reject', [f.id], '')">Reject</button><p>{{ f.consequences.reject }}</p></div>
+            <div><button :disabled="busy" :aria-pressed="savedDecisions[f.id]?.decision === 'discuss'" @click="discuss(f.id)">Discuss</button><p>{{ f.consequences.discuss }}</p></div>
+          </div>
+          <p v-if="!actor.trim()" class="review-hint">Enter your name above the findings to save decisions.</p>
+          <div v-if="discussion === f.id" class="discussion-editor">
+            <label :for="`discussion-${f.id}`">Question or intended wording for the agent</label>
+            <textarea :id="`discussion-${f.id}`" v-model="discussionNote" rows="3" placeholder="Explain what needs discussion or suggest different wording." />
+            <button :disabled="busy || !actor.trim() || !discussionNote.trim()" @click="decide('discuss', [f.id], discussionNote)">Save discussion</button>
+            <button :disabled="busy" @click="discussion = ''">Cancel</button>
+            <p>Saving keeps this finding unresolved and makes your note available to the agent.</p>
+          </div>
+          <p v-if="savedDecisions[f.id]" class="saved-decision">Saved {{ decisionLabel(savedDecisions[f.id].decision) }} by {{ savedDecisions[f.id].actor }}: {{ savedDecisions[f.id].rationale }}</p>
+          <details v-if="f.rule"><summary>Rule and source reference</summary><p>{{ f.rule.reference }} · {{ f.rule.scope }}</p><code>{{ f.rule.authority.path }}</code></details>
+          <div class="controls">
+            <button :disabled="busy" @click="showEvidence(f.evidence)">Read evidence</button>
+            <label><input v-model="chosen" type="checkbox" :value="f.id" :disabled="busy" /> Select {{ f.id }} for bulk actions</label>
+          </div>
+        </article>
+        <div class="draft-approval">
+          <h4>Whole-draft sign-off</h4>
+          <label>Rationale <input v-model="rationale" /></label>
         <button :disabled="busy" @click="guarded(async () => { result = JSON.stringify(await invoke('execute', { run_id: run.id }), null, 2); await refresh() })">Execute / show native task</button>
         <button :disabled="busy" @click="guarded(async () => { result = JSON.stringify(await invoke('resume'), null, 2); await refresh() })">Resume status</button>
         <p>A completed check does not approve a draft. Read every output before signing off.</p>
         <button :disabled="busy || !actor.trim() || !rationale.trim()" @click="approve">I have reviewed this draft — approve</button>
         <button :disabled="busy" @click="guarded(async () => { await invoke('select-version', { run_id: run.id }); await refresh() })">Select approved version for downstream work</button>
+        </div>
       </section>
     </div>
     <details v-if="workspace">
@@ -206,12 +285,28 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.cycle { padding: 1.5rem; } .controls { display: flex; gap: .8rem; flex-wrap: wrap; align-items: end; margin: 1rem 0; }
+.cycle { padding: 1.5rem; min-width: 0; overflow-wrap: anywhere; } .controls { display: flex; gap: .8rem; flex-wrap: wrap; align-items: end; margin: 1rem 0; }
 label { display: block; } input:not([type=checkbox]), select, textarea { display: block; padding: .4rem; }
 .workspace { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 1.5rem; }
 nav button { display: block; width: 100%; text-align: left; padding: .6rem; margin-bottom: .4rem; }
 article { border: 1px solid #8886; padding: 1rem; margin: .8rem 0; } .error { color: #cf4d4d; }
 pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 35rem; overflow: auto; } textarea { width: 100%; }
-button { cursor: pointer; } button:disabled { cursor: wait; opacity: .5; }
+button { cursor: pointer; max-width: 100%; overflow-wrap: anywhere; } button:disabled { cursor: not-allowed; opacity: .5; }
+.review-toolbar { border: 1px solid #8886; border-radius: .4rem; padding: 1rem; margin: 1rem 0; }
+.review-toolbar p { margin: .6rem 0; }
+.finding-header { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: baseline; }
+h4, h5 { margin: .3rem 0; } h5 { font-size: 1rem; }
+.decision-state { border: 1px solid #8886; border-radius: 1rem; padding: .2rem .7rem; }
+.change-comparison, .finding-decisions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1rem 0; }
+.finding-decisions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.finding-decisions button { width: 100%; min-height: 2.5rem; font-weight: 600; }
+.finding-decisions button[aria-pressed=true] { outline: 2px solid currentColor; outline-offset: 2px; }
+.finding-decisions p { font-size: .9rem; }
+.change-comparison pre { border-left: 3px solid #8886; padding: .7rem; margin: .4rem 0; }
+.discussion-editor { border: 1px solid #8886; padding: 1rem; }
+textarea { box-sizing: border-box; }
+.bulk-actions, .draft-approval { border: 1px solid #8886; padding: 1rem; margin: 1rem 0; }
+article code, article small { overflow-wrap: anywhere; }
+@media (max-width: 800px) { .change-comparison, .finding-decisions { grid-template-columns: 1fr; } }
 @media (max-width: 800px) { .workspace { grid-template-columns: 1fr; } }
 </style>

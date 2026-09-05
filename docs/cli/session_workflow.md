@@ -46,8 +46,7 @@ objects come from status: path, sha256, snapshot, label. Check status `skipped`
 or `failed` remains visible and blocks draft approval. Unmarked findings and
 Discuss remain unresolved. Group discussions still produce individual records.
 
-The editor offers explicit selection and bulk decisions, scene filters, evidence
-preview, JSON download/import, and separate draft sign-off. Selecting all means
+The editor offers per-finding Approve/Reject/Discuss controls, saved discussion notes, explicit bulk selection, scene filters, evidence preview, JSON download/import, and separate draft sign-off. Copy handoff for agent supplies the campaign/session/run and saved choices for chat; the agent reloads the disk record before acting. Selecting all means
 materializing the displayed IDs; clearing selection disables batch actions.
 Approving a proposed change does not apply it. Applying makes a new derived
 draft with fresh check and approval requirements. Approve a clean draft even
