@@ -11,7 +11,7 @@ from .engine import Engine
 from .models import Evidence
 from .storage import WorkflowError
 
-OPERATIONS = ("memory-scope", "memory-plan", "memory-events", "promotion-scope", "promote", "catalog", "execute", "resume", "init", "status", "migrate", "start", "submit", "check", "decide", "approve", "apply", "select-version", "export", "import", "recover", "evidence")
+OPERATIONS = ("import-legacy", "memory-scope", "memory-plan", "memory-events", "promotion-scope", "promote", "catalog", "execute", "resume", "init", "status", "migrate", "start", "submit", "check", "decide", "approve", "apply", "select-version", "export", "import", "recover", "evidence")
 
 
 def build_parser():

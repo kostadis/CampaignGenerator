@@ -1244,13 +1244,11 @@ def test_narrate_cmd_passes_party_config(tmp_path):
     assert cmd[cmd.index("--party-config") + 1] == str(camp / "config" / "party.yaml")
 
 
-def test_plan_cmd_never_gets_party_config(tmp_path):
-    """sd_plan takes --party as raw prompt text and declares no
-    --party-config; passing one would abort the run with 'unrecognized
-    arguments'."""
+def test_plan_cmd_forwards_declared_party_config(tmp_path):
+    """The plan CLI now validates explicit narrators against the declared roster."""
     import inspect
     src = inspect.getsource(scene_editor._build_plan_cmd)
-    assert "--party-config" not in src
+    assert "--party-config" in src
     assert "_party_args" not in src
 
 

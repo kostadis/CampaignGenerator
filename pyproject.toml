@@ -11,7 +11,7 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "requests",
-    "mcp",
+    "mcp>=1,<2",
     "aiofiles",
     # Declared directly, not left to arrive transitively via fastapi: the
     # `provenance` package's strict (extra="forbid") config models are a CLI
@@ -95,6 +95,9 @@ scabard_sync = "scabard_sdk.scabard_sync:main"
 [project.optional-dependencies]
 test = [
     "pytest",
+    "pymupdf",
+    "numpy",
+    "openai",
 ]
 openrouter = [
     "openai",

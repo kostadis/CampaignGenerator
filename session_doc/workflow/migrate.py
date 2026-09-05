@@ -19,7 +19,7 @@ def migrate(campaign_dir, session_dir, config, artifacts=None, dry_run=False, fo
     if not config_path.is_relative_to(campaign):
         raise WorkflowError("config must belong to campaign")
     raw = yaml.safe_load(store.path.read_text()) if store.path.exists() else None
-    unknown = sorted(set(raw) - {"schema_version", "session_id", "artifacts"}) if isinstance(raw, dict) and raw.get("schema_version") != 1 else []
+    unknown = sorted(set(raw) - (set(Workflow.model_fields) if raw.get("schema_version") == 1 else {"schema_version", "session_id", "artifacts"})) if isinstance(raw, dict) else []
     files = sorted(p.relative_to(session).as_posix() for p in session.rglob("*") if p.is_file() and not any(part.startswith(".") for part in p.relative_to(session).parts) and p != store.path)
     report = {"schema_version": 1, "operation": "inventory", "files": files, "selected": artifacts or [], "legacy_version": raw.get("schema_version") if isinstance(raw, dict) else None, "unknown_fields": unknown, "approval_imported": False, "dry_run": dry_run}
     if dry_run:

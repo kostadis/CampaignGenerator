@@ -29,7 +29,7 @@ const run = computed(() => workspace.value?.state.runs.find((r: any) => r.id ===
 const view = computed(() => workspace.value?.runs.find((r: any) => r.id === selectedRun.value))
 const rows = computed(() => (exported.value?.findings || []).filter((f: any) => !scene.value || f.scene === scene.value))
 const scenes = computed(() => [...new Set<string>((exported.value?.findings || []).map((f: any) => f.scene).filter(Boolean))])
-const operations = ['memory-scope', 'memory-plan', 'memory-events', 'promotion-scope', 'promote', 'catalog', 'execute', 'resume', 'migrate', 'start', 'submit', 'check', 'decide', 'approve', 'apply', 'select-version', 'export', 'import', 'recover', 'evidence']
+const operations = ['import-legacy', 'memory-scope', 'memory-plan', 'memory-events', 'promotion-scope', 'promote', 'catalog', 'execute', 'resume', 'migrate', 'start', 'submit', 'check', 'decide', 'approve', 'apply', 'select-version', 'export', 'import', 'recover', 'evidence']
 
 async function invoke(op: string, data: any = {}) {
   const body = {

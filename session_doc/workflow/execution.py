@@ -58,9 +58,25 @@ def build_command(engine, state, run):
             command += ["--session-summary", source("session-summary")]
     elif stage.command == "sd_narrate":
         command += [source("recap"), "--plan", source("plan"), "--scene-extractions", str(selected_dir), "--per-scene-output", str(root), "--narration-genre-file", run.task["context"]["paths"]["narration-genre-file"]]
-        for key in ("narrate-tokens", "prose-mode"):
+        from session_doc.io import parse_plan, resolve_scene_extraction_file
+        sections = parse_plan(Path(source("plan")).read_text(), 100000)
+        indices = []
+        matched = []
+        for index, section in enumerate(sections, 1):
+            match = resolve_scene_extraction_file(selected_dir, index, section.get("scene", ""))
+            if match is not None:
+                indices.append(index)
+                matched.append(match)
+        if not indices or len(matched) != len(set(matched)) or len(matched) != len(run.selection):
+            raise WorkflowError("selected scenes do not resolve uniquely against the approved plan")
+        command += ["--scene", *map(str, indices)]
+        if len(matched) == 1:
+            command += ["--scene-extraction-file", str(matched[0])]
+        for key in ("narrate-tokens",):
             if key in options:
                 command += ["--" + key, str(options[key])]
+        if options.get("prose-mode"):
+            command += ["--prose-mode"]
         if options.get("reflections"):
             command += ["--reflections"]
     elif stage.command == "assemble":
@@ -92,7 +108,7 @@ def execute(engine, run_id: str, expected_revision: int):
     log = engine.store.contained(f".session-workflow/work/{run.id}/execution.log")
     try:
         with log.open("wb") as handle:
-            result = subprocess.run(command, cwd=engine.campaign, stdout=handle, stderr=subprocess.STDOUT, env={**os.environ, "CAMPAIGN_DIR": str(engine.campaign)})
+            result = subprocess.run(command, cwd=engine.campaign, stdout=handle, stderr=subprocess.STDOUT, env={**os.environ, "CAMPAIGN_DIR": str(engine.campaign), "CG_BACKEND": run.generation.backend})
         if result.returncode:
             raise WorkflowError(f"stage failed with exit code {result.returncode}; inspect {log}")
         outputs = sorted(str(p.relative_to(engine.store.session)) for p in engine.store.contained(run.task["output_dir"]).glob("*.md"))

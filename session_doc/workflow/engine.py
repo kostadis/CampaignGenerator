@@ -146,7 +146,16 @@ class Engine:
         labels = {e.path: e.label for previous in state.runs for e in previous.outputs}
         refs = [self.store.preserve(self.source(p), label=labels.get(p, "derived" if "smoothed" in p or ".cleaned." in p else "source")) for p in selected(inputs)]
         refs.append(self.store.preserve(Path(state.config), label="configuration"))
-        run = Run(id=uuid.uuid4().hex, stage=stage, selection=selected(selection), inputs=refs, generation=Generation.model_validate(generation), dependencies=dependencies, required_checks=required_checks, started_at=now())
+        settings = Generation.model_validate(generation)
+        if not settings.backend.strip() or not settings.model.strip():
+            raise WorkflowError("record an explicit backend and model for the workflow run")
+        if settings.backend in {"codex-cli", "claude-code"}:
+            from argparse import Namespace
+            from campaignlib.api.client import resolve_cli_reasoning, resolve_cli_claude_effort
+            args = Namespace(backend=settings.backend, codex_reasoning_effort=settings.effort if settings.backend == "codex-cli" else None, claude_code_effort=settings.effort if settings.backend == "claude-code" else None)
+            resolver = resolve_cli_reasoning if settings.backend == "codex-cli" else resolve_cli_claude_effort
+            settings.effort = resolver(args).effective_effort
+        run = Run(id=uuid.uuid4().hex, stage=stage, selection=selected(selection), inputs=refs, generation=settings, dependencies=dependencies, required_checks=required_checks, started_at=now())
         run.inputs.extend(configuration)
         if stage in {"plan", "narrate", "release"}:
             if not set(selection) <= set(inputs):
@@ -154,6 +163,13 @@ class Engine:
             if len({Path(p).name for p in selection}) != len(selection):
                 raise WorkflowError("selected scene filenames must be unique")
         run.task = {"decision": definition.decision, "skills": list(definition.skills), "options": options, "context": context, "output_dir": f".session-workflow/work/{run.id}/outputs", "source_policy": "Original transcripts and captured extractions remain verbatim; corrections and smoothing are derived. Preserve new facts, discoveries, level changes, in-world magic, genuine dialogue and actual outcomes."}
+        if stage == "narrate":
+            ordered = [e for parent_id in dependencies for e in run_by_id(state, parent_id).outputs if run_by_id(state, parent_id).stage == "no-mech"]
+            indices = [i for i, e in enumerate(ordered) if e.path in selection]
+            neighbors = {j for i in indices for j in (i - 1, i + 1) if 0 <= j < len(ordered) and ordered[j].path not in selection}
+            run.task["transition_neighbors"] = [ordered[i].model_dump() for i in sorted(neighbors)]
+            known = {e.path for e in run.inputs}
+            run.inputs.extend(ordered[i] for i in sorted(neighbors) if ordered[i].path not in known)
         if stage in {"memory", "prepare-next"}:
             run.task["memory"] = memory
         if stage == "identify":
@@ -309,6 +325,46 @@ class Engine:
         state = self.store.load()
         run = run_by_id(state, run_id)
         return {"schema_version": 1, "session_id": state.session_id, "run_id": run_id, "draft_binding": binding(run), "revision": state.revision, "findings": [{**f.model_dump(), "finding_sha256": fingerprint(f)} for f in findings(run)], "decisions": [d.model_dump() for d in run.decisions]}
+
+    def op_import_legacy(self, state: Workflow, *, run_id: str, draft_binding: str, document: dict, bindings: list[dict], actor: str, rationale: str):
+        """Explicitly validate legacy page decisions against current evidence.
+
+        A human supplies each legacy/current identity and decision equivalence;
+        legacy pages carry no trustworthy current source hashes of their own.
+        Unmarked/pending items cannot be imported as decisions.
+        """
+        import json
+        run = run_by_id(state, run_id)
+        if draft_binding != binding(run):
+            raise WorkflowError("stale legacy import draft binding")
+        if document.get("schemaVersion") != 1 or not document.get("reviewId"):
+            raise WorkflowError("unsupported standalone review format")
+        rows = document.get("decisions")
+        if isinstance(rows, dict):
+            old = rows
+        elif isinstance(rows, list):
+            if len({row.get("id") for row in rows}) != len(rows):
+                raise WorkflowError("duplicate legacy finding identity")
+            old = {row["id"]: row.get("decision", row.get("status")) for row in rows}
+        else:
+            raise WorkflowError("unsupported standalone decision collection")
+        if not bindings:
+            raise WorkflowError("explicit legacy/current finding bindings required")
+        decisions = []
+        seen = set()
+        for item in bindings:
+            if set(item) != {"legacy_id", "legacy_decision", "finding_id", "finding_sha256", "decision"}:
+                raise WorkflowError("each legacy binding must name both decisions and the current finding hash")
+            legacy_id = item["legacy_id"]
+            if legacy_id in seen or old.get(legacy_id) != item["legacy_decision"] or old.get(legacy_id) not in {"approve", "accept", "reject", "discuss"}:
+                raise WorkflowError("legacy decision is unknown, unmarked, duplicate or mismatched")
+            if item["legacy_decision"] == "discuss" and item["decision"] != "discuss":
+                raise WorkflowError("legacy discussion remains unresolved; rule explicitly after import")
+            seen.add(legacy_id)
+            decisions.append({"finding_id": item["finding_id"], "finding_sha256": item["finding_sha256"], "decision": item["decision"], "actor": actor, "rationale": rationale, "at": now(), "group": document["reviewId"]})
+        self.op_decide(state, run_id=run_id, decisions=decisions)
+        evidence = self.store.preserve_bytes(json.dumps(document, sort_keys=True).encode(), path="legacy-review-json", label="source")
+        state.events.append({"operation": "legacy-import", "at": now(), "evidence": evidence.model_dump(), "bindings": bindings, "actor": actor, "rationale": rationale})
 
     def op_import(self, state: Workflow, *, document: dict):
         allowed = {"schema_version", "session_id", "run_id", "draft_binding", "revision", "findings", "decisions"}

@@ -733,9 +733,11 @@ def main() -> None:
             "---\n\n"
         )
         from session_doc.workflow.versions import write_narration
+        from campaignlib.api.client import resolve_cli_reasoning, resolve_cli_claude_effort
+        recorded_effort = resolve_cli_reasoning(args).effective_effort if model_intent.backend == "codex-cli" else resolve_cli_claude_effort(args).effective_effort if model_intent.backend == "claude-code" else None
         write_narration(per_scene_file, frontmatter + narration + "\n", {
-            "backend": args.backend, "model": args.model,
-            "effort": getattr(args, "codex_reasoning_effort", None) if args.backend == "codex-cli" else getattr(args, "claude_code_effort", None),
+            "backend": model_intent.backend, "model": args.model,
+            "effort": recorded_effort,
             "producer": "sd_narrate", "scene": i, "narrator": narrator,
         })
         written.append(per_scene_file)

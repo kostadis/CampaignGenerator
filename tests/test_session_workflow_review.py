@@ -129,3 +129,17 @@ def test_cli_and_router_request_parity():
         assert parsed.expected_revision == 7
         assert parsed.config == request.config
         assert json.loads(parsed.request_json) == request.payload
+
+
+def test_standalone_review_import_requires_exact_explicit_bindings(engine):
+    run = check(engine, draft(engine), True)
+    export = engine.export(run.id)
+    doc = {"schemaVersion": 1, "reviewId": "old-page", "decisions": {"old-1": "discuss", "old-2": "pending"}}
+    mapping = {"legacy_id": "old-1", "legacy_decision": "discuss", "finding_id": "f1", "finding_sha256": export["findings"][0]["finding_sha256"], "decision": "discuss"}
+    mutate(engine, "import-legacy", run_id=run.id, draft_binding=binding(run), document=doc, bindings=[mapping], actor="fixture human", rationale="Validated against current source")
+    assert engine.status()["runs"][0]["unresolved_findings"] == ["f1"]
+    current = engine.store.load().runs[0]
+    assert current.approval is None
+    mapping.update(legacy_id="old-2", legacy_decision="pending", decision="approve")
+    with pytest.raises(WorkflowError, match="unmarked"):
+        mutate(engine, "import-legacy", run_id=run.id, draft_binding=binding(current), document=doc, bindings=[mapping], actor="fixture human", rationale="Cannot import pending")

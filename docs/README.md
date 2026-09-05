@@ -85,3 +85,5 @@ proposer roles; CampaignGenerator never writes that deployment.
 The reusable color/resize/scrollbar requirement belongs in the project
 constitution, but that governance change is deliberately deferred to GitHub
 issue #360 and is not part of this feature.
+
+- [Session production and shared review](cli/session_workflow.md) — durable gates, native agent handoffs, explicit migration, memory scope and local promotion.

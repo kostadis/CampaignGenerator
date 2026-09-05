@@ -98,3 +98,19 @@ binding, writes preserve originals and refuse changed destinations. Existing
 ensemble/thread/projection mechanisms remain the native handoff tools.
 No new model client or automatic guidance promotion. All thirteen principles
 reassessed; empty note scope never expands and human gates remain explicit.
+
+## Integration reassessment
+
+Existing standalone review JSON is admitted only through explicit validated
+legacy/current finding bindings. Final integration adds partial-scene execution
+through the existing resolver, adjacent transition evidence, frozen backend
+effort defaults, and CLI-resolved narration metadata. The editor reaches every
+operation through the shared command schema. The real FastAPI/CLI route and
+Chromium review/reload/CLI handoff tests pass. No human pilot signature was
+inferred. The two capture pilots stop at explicit human approval, as required
+by Principles I and II. Broader production acceptance remains pending.
+
+Fresh environments require MCP v1 (the existing FastMCP seam), PDF/NumPy/OpenAI
+test extras, and the existing local dgxlib dependency for DGX tests. The core
+MCP dependency is bounded below v2 so a fresh editable install remains usable.
+All worktrees have their own editable environment and frontend dependencies.

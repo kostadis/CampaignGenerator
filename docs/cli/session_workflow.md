@@ -116,3 +116,12 @@ Targets and their previous hashes are part of the draft approval binding.
 preserves previous bytes, and is recoverable/idempotent. `prepare-next` consumes
 the same explicitly selected notes and fresh, approved memory inputs. A guidance
 change still belongs to narration-wiki's independent gates.
+
+For an existing standalone review page export (`schemaVersion: 1`, `reviewId`,
+and a decisions dictionary or array), use `import-legacy`. Supply `run_id`, the
+current `draft_binding`, the original `document`, human `actor` and `rationale`,
+and explicit `bindings`. Each binding names `legacy_id`, `legacy_decision`,
+current `finding_id`, `finding_sha256`, and its equivalent current `decision`.
+This is an explicit human validation operation; IDs are never matched by guess.
+Unmarked/pending items refuse import, discussions remain unresolved, and the
+original JSON and mapping are preserved as evidence. No draft approval is imported.
