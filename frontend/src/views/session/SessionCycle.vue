@@ -27,13 +27,31 @@ const run = computed(() => workspace.value?.state.runs.find((r: any) => r.id ===
 const view = computed(() => workspace.value?.runs.find((r: any) => r.id === selectedRun.value))
 const rows = computed(() => (exported.value?.findings || []).filter((f: any) => !scene.value || f.scene === scene.value))
 const scenes = computed(() => [...new Set<string>((exported.value?.findings || []).map((f: any) => f.scene).filter(Boolean))])
-const operations = ['migrate', 'start', 'submit', 'check', 'decide', 'approve', 'apply', 'select-version', 'export', 'import', 'recover', 'evidence']
+const operations = ['catalog', 'execute', 'resume', 'migrate', 'start', 'submit', 'check', 'decide', 'approve', 'apply', 'select-version', 'export', 'import', 'recover', 'evidence']
 
 async function invoke(op: string, data: any = {}) {
-  return await apiPost('/api/session-workflow/command', {
+  const body = {
     operation: op, session_dir: session.value, config: config.value || null,
     expected_revision: workspace.value?.state.revision ?? null, payload: data,
-  })
+  }
+  if (op !== 'execute') return await apiPost('/api/session-workflow/command', body)
+  const response = await fetch('/api/session-workflow/command', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+  if (!response.ok || !response.body) throw Error(await response.text())
+  const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = ''; let output = ''; let done: any = null
+  while (true) {
+    const chunk = await reader.read(); if (chunk.done) break
+    buffer += decoder.decode(chunk.value, { stream: true })
+    const frames = buffer.split('\n\n'); buffer = frames.pop() || ''
+    for (const frame of frames) {
+      const value = frame.split('\n').find(line => line.startsWith('data: '))?.slice(6)
+      if (!value) continue
+      const parsed = JSON.parse(value)
+      if (frame.includes('event: done')) done = parsed
+      else if (typeof parsed === 'string') { output += parsed; result.value = output }
+    }
+  }
+  if (!done || done.returncode !== 0) throw Error(done?.error || output || 'Execution interrupted; inspect resume status.')
+  return { output, done }
 }
 async function refresh() {
   workspace.value = await invoke('status')
@@ -141,6 +159,8 @@ onMounted(async () => {
           <button :disabled="busy || !chosen.length" @click="decide('discuss')">Discuss selected findings</button>
           <button :disabled="busy || !chosen.length" @click="apply">Apply selected approved changes</button>
         </div>
+        <button :disabled="busy" @click="guarded(async () => { result = JSON.stringify(await invoke('execute', { run_id: run.id }), null, 2); await refresh() })">Execute / show native task</button>
+        <button :disabled="busy" @click="guarded(async () => { result = JSON.stringify(await invoke('resume'), null, 2); await refresh() })">Resume status</button>
         <p>A completed check does not approve a draft. Read every output before signing off.</p>
         <button :disabled="busy || !actor.trim() || !rationale.trim()" @click="approve">I have reviewed this draft — approve</button>
         <button :disabled="busy" @click="guarded(async () => { await invoke('select-version', { run_id: run.id }); await refresh() })">Select approved version for downstream work</button>

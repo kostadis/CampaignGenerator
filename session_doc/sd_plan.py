@@ -33,7 +33,8 @@ def main() -> None:
     )
     parser.add_argument("--scene-extractions", required=True, metavar="DIR",
                         help="Directory of NN_*.md scene files (scene_extract output).")
-    parser.add_argument("--characters", required=True, metavar="NAMES",
+    parser.add_argument("--party-config", metavar="FILE", help="Declared party.yaml; omitted --characters uses its roster, explicit subsets must match it.")
+    parser.add_argument("--characters", metavar="NAMES",
                         help='Comma-separated narrator roster '
                              '(e.g. "Vukradin, Valphine, Soma, Brewbarry").')
     parser.add_argument("--party", metavar="FILE",
@@ -105,7 +106,15 @@ def main() -> None:
               "(run scene_extract first)", file=sys.stderr)
         sys.exit(1)
 
-    characters = [c.strip() for c in args.characters.split(",") if c.strip()]
+    from session_doc.workflow.context import narrator_selection
+    characters = [c.strip() for c in args.characters.split(",") if c.strip()] if args.characters is not None else None
+    if args.party_config:
+        try:
+            _, characters = narrator_selection(Path(args.party_config), Path(args.campaign_dir or Path.cwd()), characters)
+        except ValueError as exc:
+            parser.error(str(exc))
+    elif not characters:
+        parser.error("provide --party-config or an explicit --characters roster")
     party = Path(args.party).read_text(encoding="utf-8") if args.party else None
     session_summary = (
         Path(args.session_summary).read_text(encoding="utf-8")
@@ -174,8 +183,7 @@ def main() -> None:
         intruders = [s["narrator"] for s in sections
                      if s["narrator"].lower() not in roster_lower]
         if intruders:
-            print(f"\nWarning: plan contains narrator(s) not in --characters: "
-                  f"{', '.join(intruders)}")
+            parser.error("plan contains undeclared narrator(s): " + ", ".join(intruders))
         missing = [c for c in characters if c not in {s["narrator"] for s in sections}]
         if missing:
             print(f"Warning: these characters have no section: {', '.join(missing)}")

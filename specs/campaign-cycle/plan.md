@@ -76,3 +76,14 @@ type-check/production build passes. No model calls added. CLI and editor ship
 together; per-item decisions and draft approval are distinct. Migration refuses
 unknown state and preserves original bytes. All thirteen principles reassessed
 against the table above; IX remains the explicit shared-review exception.
+
+## Component check: orchestration
+
+275 tests pass, including the new identity, mandatory-stage, resume and narration
+version tests and existing planning, narration, batching and retrieval guardrails.
+Frontend build passes. Existing CLI engines perform rendering; each stage names
+its human decision and enforces approved prerequisite runs. Native work remains
+a persisted task. Generation, automated checks and human approval are distinct.
+Prior narration and sidecar bytes survive replacement and wiki evidence resolves
+the preserved hash. This additive archive does not retire a state location.
+All thirteen principles reassessed; shared-editor exception remains narrow.

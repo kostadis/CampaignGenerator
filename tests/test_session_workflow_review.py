@@ -26,7 +26,7 @@ def mutate(engine, op, **payload):
 
 
 def draft(engine):
-    mutate(engine, "start", stage="fixture", selection=["scene-1"], inputs=["source.md"], generation=GEN, dependencies=[], required_checks=["consistency"])
+    mutate(engine, "start", stage="capture", selection=["scene-1"], inputs=["source.md"], generation=GEN, dependencies=[], required_checks=["capture-integrity"])
     run = engine.store.load().runs[-1]
     (engine.store.session / "draft.md").write_text("A garbled name.")
     mutate(engine, "submit", run_id=run.id, outputs=["draft.md"], generation=GEN)
@@ -36,7 +36,7 @@ def draft(engine):
 def check(engine, run, with_finding=False):
     e = run.outputs[0].model_dump()
     finding = {"id": "f1", "evidence": e, "location": "line 1", "description": "Misspelling", "proposed_action": "correct derived text", "consequences": {"approve": "Apply the correction after selection", "reject": "Retain original spelling", "discuss": "Keep unresolved"}, "change": {"source": e, "target": "draft.md", "before": "garbled", "after": "correct"}}
-    mutate(engine, "check", run_id=run.id, check={"name": "consistency", "status": "complete", "sources": [e], "findings": [finding] if with_finding else [], "producer": "fixture", "at": now()})
+    mutate(engine, "check", run_id=run.id, check={"name": "capture-integrity", "status": "complete", "sources": [e], "findings": [finding] if with_finding else [], "producer": "fixture", "at": now()})
     return engine.store.load().runs[-1]
 
 
@@ -44,7 +44,7 @@ def test_clean_audit_never_approves_draft(engine):
     run = check(engine, draft(engine))
     assert engine.status()["runs"][0]["status"] == "generated"
     with pytest.raises(WorkflowError, match="human draft approval"):
-        mutate(engine, "start", stage="next", selection=["1"], inputs=["draft.md"], generation=GEN, dependencies=[run.id], required_checks=[])
+        mutate(engine, "start", stage="prepare", selection=["1"], inputs=["draft.md"], generation=GEN, dependencies=[run.id], required_checks=[])
     mutate(engine, "approve", run_id=run.id, actor="GM", rationale="Read this draft", draft_binding=binding(run))
     assert engine.status()["runs"][0]["status"] == "approved"
 
@@ -90,7 +90,7 @@ def test_stale_source_and_unmarked_findings_refuse_approval(engine):
 def test_check_coverage_and_empty_selection(engine):
     run = draft(engine)
     with pytest.raises(WorkflowError, match="coverage"):
-        mutate(engine, "check", run_id=run.id, check={"name": "consistency", "status": "complete", "sources": [], "producer": "x", "at": now()})
+        mutate(engine, "check", run_id=run.id, check={"name": "capture-integrity", "status": "complete", "sources": [], "producer": "x", "at": now()})
     with pytest.raises(WorkflowError, match="nonempty"):
         mutate(engine, "apply", run_id=run.id, finding_ids=[])
 
