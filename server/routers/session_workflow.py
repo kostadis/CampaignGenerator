@@ -3,9 +3,10 @@ import json
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-from server.subprocess_runner import BoundedJSONError, console_script, run_bounded_json
+from server.subprocess_runner import BoundedJSONError, console_script, run_bounded_json, stream_subprocess
 from session_doc.workflow.cli import OPERATIONS
 
 router = APIRouter()
@@ -45,6 +46,8 @@ async def command(request: Request, body: WorkflowRequest):
         raise HTTPException(403, "session must be a directory within the selected campaign")
     if body.config and not (campaign / body.config).resolve().is_relative_to(campaign):
         raise HTTPException(403, "configuration must belong to this campaign")
+    if body.operation == "execute":
+        return StreamingResponse(stream_subprocess(_build_workflow_cmd(body), cwd=str(campaign), save_run_log=False), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
     try:
         return await run_bounded_json(_build_workflow_cmd(body), cwd=str(campaign), timeout_seconds=30)
     except ValueError as exc:

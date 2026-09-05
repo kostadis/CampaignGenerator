@@ -143,6 +143,10 @@ def collect(scope: CampaignScope) -> dict[str, object]:
     if scope.iteration_root.exists():
         raise StateError(f"iteration {scope.iteration_id} already exists")
     manifest = build_manifest(scope)
+    from session_doc.workflow.versions import preserve_narration
+    for artifact in manifest.artifacts:
+        if artifact.kind == "narration":
+            preserve_narration(scope.session_root / artifact.path)
     if not manifest.artifacts:
         raise ValidationError("selected session contains no allowlisted narration evidence")
     write_json(scope.iteration_root / "trace-manifest.json", manifest.to_dict())

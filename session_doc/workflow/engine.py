@@ -117,12 +117,36 @@ class Engine:
                 self.store.save(state, expected_revision=revision)
         return self.status()
 
-    def op_start(self, state: Workflow, *, stage: str, selection: list[str], inputs: list[str], generation: dict, dependencies: list[str], required_checks: list[str]):
+    def op_start(self, state: Workflow, *, stage: str, selection: list[str], inputs: list[str], generation: dict, dependencies: list[str], required_checks: list[str], options: dict | None = None):
+        from .stages import STAGES
+        from .context import resolve_context, transcript_identity
+        if stage not in STAGES:
+            raise WorkflowError("unknown production stage")
+        definition = STAGES[stage]
+        parent_stages = {run_by_id(state, parent_id).stage for parent_id in dependencies}
+        if not set(definition.parents) <= parent_stages:
+            raise WorkflowError("missing approved stage dependencies: " + ", ".join(sorted(set(definition.parents) - parent_stages)))
+        required_checks = sorted(set(required_checks) | set(definition.checks))
+        options = options or {}
+        allowed_options = {"input", "gmassist", "summary", "session-summary", "plan", "recap", "party", "characters", "party-config", "players-config", "narration-genre-file", "batch", "batch-scenes", "narrate-tokens", "prose-mode", "reflections", "title"}
+        if set(options) - allowed_options:
+            raise WorkflowError("unsupported stage options: " + ", ".join(sorted(set(options) - allowed_options)))
+        context, configuration = resolve_context(self, state, stage, options)
         for parent_id in dependencies:
             require_approved(self.store, state, run_by_id(state, parent_id))
-        refs = [self.store.preserve(self.source(p), label="source") for p in selected(inputs)]
+        labels = {e.path: e.label for previous in state.runs for e in previous.outputs}
+        refs = [self.store.preserve(self.source(p), label=labels.get(p, "derived" if "smoothed" in p or ".cleaned." in p else "source")) for p in selected(inputs)]
         refs.append(self.store.preserve(Path(state.config), label="configuration"))
         run = Run(id=uuid.uuid4().hex, stage=stage, selection=selected(selection), inputs=refs, generation=Generation.model_validate(generation), dependencies=dependencies, required_checks=required_checks, started_at=now())
+        run.inputs.extend(configuration)
+        if stage in {"plan", "narrate", "release"}:
+            if not set(selection) <= set(inputs):
+                raise WorkflowError("scene selection must materialize input paths")
+            if len({Path(p).name for p in selection}) != len(selection):
+                raise WorkflowError("selected scene filenames must be unique")
+        run.task = {"decision": definition.decision, "skills": list(definition.skills), "options": options, "context": context, "output_dir": f".session-workflow/work/{run.id}/outputs", "source_policy": "Original transcripts and captured extractions remain verbatim; corrections and smoothing are derived. Preserve new facts, discoveries, level changes, in-world magic, genuine dialogue and actual outcomes."}
+        if stage == "identify":
+            run.task["cues"] = [cue for evidence in run.inputs if evidence.path.endswith(".vtt") for cue in transcript_identity(self.store.bytes(evidence).decode(), context["players"], context["paths"].get("player_overrides", {}).get("speakers"))]
         state.runs.append(run)
 
     def op_submit(self, state: Workflow, *, run_id: str, outputs: list[str], generation: dict):

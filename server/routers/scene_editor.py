@@ -2179,6 +2179,9 @@ def _build_plan_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[Non
         "--characters", characters,
         "--out", str(nd / "plan.md"),
     ]
+    party_config = _party_config_path(cfg)
+    if party_config is not None:
+        cmd += ["--party-config", str(party_config)]
     cmd += _selection_args(request, cfg)
     if cfg.paths.party:
         cmd += ["--party", cfg.paths.party]

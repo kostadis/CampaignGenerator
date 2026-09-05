@@ -732,7 +732,12 @@ def main() -> None:
             f"session: {session_id}\n"
             "---\n\n"
         )
-        per_scene_file.write_text(frontmatter + narration + "\n", encoding="utf-8")
+        from session_doc.workflow.versions import write_narration
+        write_narration(per_scene_file, frontmatter + narration + "\n", {
+            "backend": args.backend, "model": args.model,
+            "effort": getattr(args, "codex_reasoning_effort", None) if args.backend == "codex-cli" else getattr(args, "claude_code_effort", None),
+            "producer": "sd_narrate", "scene": i, "narrator": narrator,
+        })
         written.append(per_scene_file)
         print(f"  Wrote {per_scene_file.name}")
 
