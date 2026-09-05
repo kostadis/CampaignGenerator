@@ -732,7 +732,14 @@ def main() -> None:
             f"session: {session_id}\n"
             "---\n\n"
         )
-        per_scene_file.write_text(frontmatter + narration + "\n", encoding="utf-8")
+        from session_doc.workflow.versions import write_narration
+        from campaignlib.api.client import resolve_cli_reasoning, resolve_cli_claude_effort
+        recorded_effort = resolve_cli_reasoning(args).effective_effort if model_intent.backend == "codex-cli" else resolve_cli_claude_effort(args).effective_effort if model_intent.backend == "claude-code" else None
+        write_narration(per_scene_file, frontmatter + narration + "\n", {
+            "backend": model_intent.backend, "model": args.model,
+            "effort": recorded_effort,
+            "producer": "sd_narrate", "scene": i, "narrator": narrator,
+        })
         written.append(per_scene_file)
         print(f"  Wrote {per_scene_file.name}")
 

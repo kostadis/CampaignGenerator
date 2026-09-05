@@ -9,7 +9,8 @@ const steps: WizardStep[] = [
   { number: 4, label: 'Extract Quotes', path: '/workflow/editor', queryStage: 'extract' },
   { number: 5, label: 'Plan & Check', path: '/workflow/editor', queryStage: 'plan' },
   { number: 6, label: 'Editor', path: '/workflow/editor', queryStage: 'edit' },
-  { number: 7, label: 'Narration Wiki', path: '/workflow/wiki' },
+  { number: 7, label: 'Production review', path: '/workflow/cycle' },
+  { number: 8, label: 'Narration Wiki', path: '/workflow/wiki' },
 ]
 </script>
 

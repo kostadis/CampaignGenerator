@@ -29,6 +29,11 @@ const routes = [
         component: () => import('./views/session/ReviewAssemble.vue'),
       },
       {
+        path: 'cycle',
+        name: 'session-cycle',
+        component: () => import('./views/session/SessionCycle.vue'),
+      },
+      {
         path: 'wiki',
         name: 'narration-wiki',
         component: () => import('./views/session/NarrationWiki.vue'),

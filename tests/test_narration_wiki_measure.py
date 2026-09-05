@@ -104,12 +104,13 @@ def test_a_conflict_ruling_also_freezes_the_baseline(tmp_path):
         measure(scope, "before")
 
 
-def test_a_corpus_file_deleted_after_collection_is_reported_as_drift(tmp_path):
-    """The refusal is a state conflict (exit 4), not an unhandled FileNotFoundError."""
-    from session_doc.narration_wiki.models import StateError
-
+def test_collected_evidence_survives_deleted_live_narration(tmp_path):
+    """Collected evidence remains addressable by its exact hash after rerenders."""
     scope = _scope(tmp_path)
     collect(scope)
-    (scope.session_root / "narration" / "Aria.md").unlink()
-    with pytest.raises(StateError, match="drifted after collection"):
-        measure(scope, "before")
+    before = measure(scope, phase="before")
+    manifest = read_json(scope.iteration_root / "trace-manifest.json")
+    for relative in manifest["measurement_corpus"]:
+        (scope.session_root / relative).unlink()
+    after = measure(scope, phase="before")
+    assert before == after

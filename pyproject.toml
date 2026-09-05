@@ -11,7 +11,7 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "requests",
-    "mcp",
+    "mcp>=1,<2",
     "aiofiles",
     # Declared directly, not left to arrive transitively via fastapi: the
     # `provenance` package's strict (extra="forbid") config models are a CLI
@@ -23,6 +23,7 @@ dependencies = [
 Repository = "https://github.com/kostadis/CampaignGenerator"
 
 [project.scripts]
+session_workflow = "session_doc.workflow.cli:main"
 new_workspace = "pipelines.workspace.new_workspace:main"
 players = "pipelines.workspace.players:main"
 configure_mcp = "pipelines.workspace.configure_mcp:main"
@@ -94,6 +95,9 @@ scabard_sync = "scabard_sdk.scabard_sync:main"
 [project.optional-dependencies]
 test = [
     "pytest",
+    "pymupdf",
+    "numpy",
+    "openai",
 ]
 openrouter = [
     "openai",
