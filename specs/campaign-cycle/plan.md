@@ -87,3 +87,14 @@ a persisted task. Generation, automated checks and human approval are distinct.
 Prior narration and sidecar bytes survive replacement and wiki evidence resolves
 the preserved hash. This additive archive does not retire a state location.
 All thirteen principles reassessed; shared-editor exception remains narrow.
+
+## Component check: memory
+
+253 tests pass for workflow storage/review/orchestration/memory, existing lineage
+and chapter identity, and retrieval isolation. Frontend build passes. Memory
+scope is explicit and persisted; event-spine uses its existing incremental
+updater. Promotion targets and previous hashes are included in the approved
+binding, writes preserve originals and refuse changed destinations. Existing
+ensemble/thread/projection mechanisms remain the native handoff tools.
+No new model client or automatic guidance promotion. All thirteen principles
+reassessed; empty note scope never expands and human gates remain explicit.
