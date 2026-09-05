@@ -67,3 +67,12 @@ to shared gates, incremental synthesis to selected changed chapters and cached
 extractions, and batch controls to existing batch capabilities. Historical
 work (scrub removal, batch extraction, scene resolver, lineage and projections)
 must be reused and verified rather than reimplemented.
+
+## Component check: shared review
+
+Records: 198 checks passed, including import provenance, recovery and retrieval
+isolation. Review: 15 records/review/migration/parity tests pass and the Vue
+type-check/production build passes. No model calls added. CLI and editor ship
+together; per-item decisions and draft approval are distinct. Migration refuses
+unknown state and preserves original bytes. All thirteen principles reassessed
+against the table above; IX remains the explicit shared-review exception.
