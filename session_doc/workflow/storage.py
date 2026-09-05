@@ -33,10 +33,11 @@ def fingerprint(value) -> str:
 
 
 class Store:
-    def __init__(self, session: Path | str):
+    def __init__(self, session: Path | str, publication_root: Path | str | None = None):
         self.session = Path(session).resolve(strict=True)
         if not self.session.is_dir():
             raise WorkflowError("session directory is required")
+        self.publication_root = Path(publication_root).resolve(strict=True) if publication_root else None
         self.path = self.session / "session_workflow.yaml"
         self.archive = self.session / ".session-workflow"
 
@@ -49,6 +50,21 @@ class Store:
             raise WorkflowError("artifact path escapes the session")
         if any(p.is_symlink() for p in [target, *target.parents] if p != self.session.parent):
             raise WorkflowError("symlink artifacts are not supported")
+        return target
+
+    def publication_target(self, relative: str) -> Path:
+        if not relative.startswith("@campaign/"):
+            return self.contained(relative)
+        if self.publication_root is None:
+            raise WorkflowError("campaign publication root is required for recovery")
+        path = Path(relative.removeprefix("@campaign/"))
+        if not path.parts or path.is_absolute() or ".." in path.parts or path.parts[0] != "docs" or path.suffix not in {".md", ".yaml", ".json"}:
+            raise WorkflowError("promotion targets must be explicit campaign docs Markdown/YAML/JSON files")
+        target = self.publication_root / path
+        if not target.resolve().is_relative_to(self.publication_root):
+            raise WorkflowError("promotion target escapes campaign")
+        if any(p.is_symlink() for p in [target, *target.parents]):
+            raise WorkflowError("symlink promotion targets are not supported")
         return target
 
     @contextmanager
@@ -125,7 +141,7 @@ class Store:
             raise WorkflowError("interrupted application; run session_workflow recover first")
         before = {}
         for relative, evidence in writes.items():
-            target = self.contained(relative)
+            target = self.publication_target(relative)
             self.bytes(evidence)
             before[relative] = self.preserve(target, label="derived").model_dump() if target.exists() else None
         state.revision = expected_revision + 1
@@ -146,14 +162,14 @@ class Store:
             raise WorkflowError("transaction state conflict; inspect preserved originals")
         # Validate every target before completing any remaining replacement.
         for relative, after in journal["after"].items():
-            target = self.contained(relative)
+            target = self.publication_target(relative)
             actual = digest(target.read_bytes()) if target.exists() else None
             before = journal["before"][relative]
             if actual not in {before["sha256"] if before else None, after["sha256"]}:
                 raise WorkflowError(f"recovery source mismatch: {relative}; originals preserved")
             self.bytes(Evidence.model_validate(after))
         for relative, after in journal["after"].items():
-            atomic_write_bytes(self.contained(relative), self.bytes(Evidence.model_validate(after)))
+            atomic_write_bytes(self.publication_target(relative), self.bytes(Evidence.model_validate(after)))
         atomic_write_text(self.path, yaml.safe_dump(state.model_dump(mode="json"), sort_keys=False))
         receipt = self.contained(f".session-workflow/transactions/{state.revision}.yaml")
         atomic_write_bytes(receipt, journal_path.read_bytes())

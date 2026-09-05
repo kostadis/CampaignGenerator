@@ -22,12 +22,14 @@ const error = ref('')
 const busy = ref(false)
 const operation = ref('start')
 const payload = ref('{}')
+const chapters = ref('')
+const notes = ref('')
 const result = ref('')
 const run = computed(() => workspace.value?.state.runs.find((r: any) => r.id === selectedRun.value))
 const view = computed(() => workspace.value?.runs.find((r: any) => r.id === selectedRun.value))
 const rows = computed(() => (exported.value?.findings || []).filter((f: any) => !scene.value || f.scene === scene.value))
 const scenes = computed(() => [...new Set<string>((exported.value?.findings || []).map((f: any) => f.scene).filter(Boolean))])
-const operations = ['catalog', 'execute', 'resume', 'migrate', 'start', 'submit', 'check', 'decide', 'approve', 'apply', 'select-version', 'export', 'import', 'recover', 'evidence']
+const operations = ['memory-scope', 'memory-plan', 'memory-events', 'promotion-scope', 'promote', 'catalog', 'execute', 'resume', 'migrate', 'start', 'submit', 'check', 'decide', 'approve', 'apply', 'select-version', 'export', 'import', 'recover', 'evidence']
 
 async function invoke(op: string, data: any = {}) {
   const body = {
@@ -55,6 +57,8 @@ async function invoke(op: string, data: any = {}) {
 }
 async function refresh() {
   workspace.value = await invoke('status')
+  chapters.value = workspace.value.state.chapters_selected.join('\n')
+  notes.value = workspace.value.state.notes_selected.join('\n')
   await router.replace({ query: { ...route.query, session: session.value, run: selectedRun.value || undefined } })
   if (selectedRun.value) exported.value = await invoke('export', { run_id: selectedRun.value })
 }
@@ -166,6 +170,13 @@ onMounted(async () => {
         <button :disabled="busy" @click="guarded(async () => { await invoke('select-version', { run_id: run.id }); await refresh() })">Select approved version for downstream work</button>
       </section>
     </div>
+    <details v-if="workspace">
+      <summary>Memory and next-session prep scope</summary>
+      <label>Selected chapter paths (one per line, campaign-relative)<textarea v-model="chapters" rows="4" /></label>
+      <label>Selected note paths (one per line; blank selects no notes)<textarea v-model="notes" rows="4" /></label>
+      <button :disabled="busy || !chapters.trim()" @click="guarded(async () => { await invoke('memory-scope', { chapters: chapters.split('\n').map(x => x.trim()).filter(Boolean), notes: notes.split('\n').map(x => x.trim()).filter(Boolean) }); await refresh() })">Save explicit scope</button>
+      <button :disabled="busy" @click="guarded(async () => { result = JSON.stringify(await invoke('memory-plan'), null, 2) })">Inspect lineage, freshness and event prerequisites</button>
+    </details>
     <pre v-if="preview" class="preview">{{ preview }}</pre>
     <details>
       <summary>CLI / agent interchange commands</summary>

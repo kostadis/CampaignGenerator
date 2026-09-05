@@ -28,7 +28,7 @@ def findings(run: Run):
 
 
 def binding(run: Run) -> str:
-    return fingerprint({"inputs": [x.model_dump() for x in run.inputs], "outputs": [x.model_dump() for x in run.outputs], "checks": [x.model_dump() for x in run.checks], "decisions": [x.model_dump() for x in run.decisions], "generation": run.generation.model_dump(), "selection": run.selection, "dependencies": run.dependencies})
+    return fingerprint({"inputs": [x.model_dump() for x in run.inputs], "outputs": [x.model_dump() for x in run.outputs], "checks": [x.model_dump() for x in run.checks], "decisions": [x.model_dump() for x in run.decisions], "generation": run.generation.model_dump(), "selection": run.selection, "dependencies": run.dependencies, "task": run.task})
 
 
 def stale_reasons(store: Store, state: Workflow, run: Run, seen=None) -> list[str]:
@@ -36,7 +36,8 @@ def stale_reasons(store: Store, state: Workflow, run: Run, seen=None) -> list[st
     if run.id in seen:
         return ["dependency cycle"]
     seen.add(run.id)
-    reasons = [f"changed or missing: {x.path}" for x in [*run.inputs, *run.outputs] if not store.fresh(x)]
+    promoted = {e.path: e for a in state.applications if a.run_id == run.id and not a.finding_ids for e in a.after.values()}
+    reasons = [f"changed or missing: {x.path}" for x in [*run.inputs, *run.outputs] if not store.fresh(x) and not (x.path in promoted and store.fresh(promoted[x.path]))]
     for check in run.checks:
         for finding in check.findings:
             if finding.rule and not store.fresh(finding.rule.authority):
@@ -68,7 +69,7 @@ def require_approved(store: Store, state: Workflow, run: Run):
 
 class Engine:
     def __init__(self, session: Path | str, campaign: Path | str):
-        self.store = Store(session)
+        self.store = Store(session, publication_root=campaign)
         self.campaign = Path(campaign).resolve(strict=True)
         if not self.store.session.is_relative_to(self.campaign):
             raise WorkflowError("session must be contained in campaign")
@@ -123,6 +124,14 @@ class Engine:
         if stage not in STAGES:
             raise WorkflowError("unknown production stage")
         definition = STAGES[stage]
+        if stage == "release" and state.selected_versions.get("narrate") not in dependencies:
+            raise WorkflowError("select an approved narration version explicitly before assembly")
+        if stage in {"memory", "prepare-next"}:
+            from .memory import memory_plan
+            memory = memory_plan(self)
+            if memory["stale_selection"]:
+                raise WorkflowError("memory selection changed; review and save the explicit scope again")
+            inputs = list(dict.fromkeys([*inputs, *[str(self.campaign / p) for p in state.chapters_selected + state.notes_selected]]))
         parent_stages = {run_by_id(state, parent_id).stage for parent_id in dependencies}
         if not set(definition.parents) <= parent_stages:
             raise WorkflowError("missing approved stage dependencies: " + ", ".join(sorted(set(definition.parents) - parent_stages)))
@@ -145,6 +154,8 @@ class Engine:
             if len({Path(p).name for p in selection}) != len(selection):
                 raise WorkflowError("selected scene filenames must be unique")
         run.task = {"decision": definition.decision, "skills": list(definition.skills), "options": options, "context": context, "output_dir": f".session-workflow/work/{run.id}/outputs", "source_policy": "Original transcripts and captured extractions remain verbatim; corrections and smoothing are derived. Preserve new facts, discoveries, level changes, in-world magic, genuine dialogue and actual outcomes."}
+        if stage in {"memory", "prepare-next"}:
+            run.task["memory"] = memory
         if stage == "identify":
             run.task["cues"] = [cue for evidence in run.inputs if evidence.path.endswith(".vtt") for cue in transcript_identity(self.store.bytes(evidence).decode(), context["players"], context["paths"].get("player_overrides", {}).get("speakers"))]
         state.runs.append(run)
@@ -277,6 +288,22 @@ class Engine:
         run = run_by_id(state, run_id)
         require_approved(self.store, state, run)
         state.selected_versions[run.stage] = run_id
+
+    def op_memory_scope(self, state, **payload):
+        from .memory import memory_scope
+        return memory_scope(self, state, **payload)
+
+    def op_memory_events(self, state, **payload):
+        from .memory import memory_events
+        return memory_events(self, state, **payload)
+
+    def op_promotion_scope(self, state, **payload):
+        from .memory import promotion_scope
+        return promotion_scope(self, state, **payload)
+
+    def op_promote(self, state, **payload):
+        from .memory import promote
+        return promote(self, state, **payload)
 
     def export(self, run_id: str):
         state = self.store.load()
