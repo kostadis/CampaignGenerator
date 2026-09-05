@@ -55,8 +55,8 @@ An original transcript is evidence. A corrected transcript or smoothed dialogue 
 
 Each finding has its own **Approve**, **Reject**, and **Discuss** buttons. The current draft and proposed replacement appear separately, with each decision’s consequences beside the controls.
 
-1. Enter **Your name** above the findings. It is recorded with every decision.
-2. Click **Approve** to authorize that card’s proposed change, or **Reject** to retain its stated rejection outcome. These choices save immediately; the card shows the saved decision and actor.
+1. Enter **Your name** above the findings, or click a decision and enter it directly on that card when prompted. A blank name does not disable Approve or Reject. It is recorded with every saved decision.
+2. Click **Approve** to authorize that card’s proposed change, or **Reject** to retain its stated rejection outcome. Once your name is present, these choices save immediately; the card shows the saved decision and actor. You can change a saved Discuss to Approve or Reject using the same buttons.
 3. Click **Discuss** to open a note. Enter your question or intended wording, then **Save discussion**. The note is saved with the finding and remains unresolved until you rule on it.
 4. When ready to return to the agent, click **Copy handoff for agent** and paste it into your Claude/Codex chat. The handoff identifies the campaign/session/run and includes saved decisions and discussion notes. The agent should reload the record from disk before acting. The editor does not automatically launch or message an agent.
 

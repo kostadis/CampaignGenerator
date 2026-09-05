@@ -136,3 +136,5 @@ The integration fix permits versioned application to recorded generated/derived 
 Per-finding Approve/Reject/Discuss controls now save through the existing CLI-backed engine. Discussion notes survive browser reload and CLI export; a copyable agent handoff identifies the run and includes saved choices. Whole-draft sign-off remains separate, and checkboxes are explicitly for bulk selection.
 
 Validation: frontend build passed; all three session-cycle browser tests passed, covering draft approval, individual decisions, note persistence, stale-source refusal, and 1280px/390px layouts. A read-only browser check of the real Phandalin Events run showed all 27 cards with the three controls and verified 390px layout. No pilot decisions or artifacts were mutated by verification.
+
+Reviewer-name follow-up: all three per-card decisions remain clickable when the name field is blank. Approve/Reject ask for identity inline before saving; saved Discuss choices can be changed. The frontend build and all three browser tests passed, including Discuss → Approve after reload on desktop and narrow layouts. No schema or CLI contract changed.
