@@ -10,6 +10,8 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 
 ## CLI tools and workflows
 
+- [**Session cycle: what to do, and where**](cli/session_cycle_walkthrough.md) — start here for the pilot: opening the correct campaign, editor decisions, chat handoffs, and the meaning of each button.
+
 - [CLI tool reference](cli/cli_tools.md) — per-script flags and a typical new-campaign workflow.
 - [Session-prep workflow](cli/session_prep_workflow.md) — end-to-end pre-session pipeline.
 - [Session-doc pipeline](cli/session_doc_pipeline.md) — the 4-stage post-session pipeline (`enhance_summary` → `scene_extract` → `session_doc` → `assemble`) plus the 5-pass internals and design rationale.

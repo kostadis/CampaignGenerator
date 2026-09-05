@@ -1,5 +1,7 @@
 # Session production and shared review
 
+For the user-facing flow, start with [Session cycle: what to do, and where](session_cycle_walkthrough.md). This page is the command and data-contract reference.
+
 Open **Session → Production review** (`/workflow/cycle`) to inspect runs,
 read preserved evidence, review findings, and approve a draft. Set the session
 directory inside the active campaign, then Load or Initialize. Reload and CLI

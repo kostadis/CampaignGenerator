@@ -116,6 +116,21 @@ onMounted(async () => {
   <main class="cycle">
     <h2>Session production and review</h2>
     <p>Review progress is saved beside the session artifacts and shared with CLI and chat.</p>
+    <details class="walkthrough">
+      <summary>How this works — what you do in the editor and in chat</summary>
+      <p><strong>Ask the agent to prepare a stage → review here → approve the draft → ask the agent to continue.</strong></p>
+      <ol>
+        <li>Confirm the campaign server and session, then click <strong>Load / refresh</strong>. Select a run on the left and check its selected inputs. Existing pilots do not need <strong>Initialize record</strong>.</li>
+        <li>Read the outputs using the <strong>Read …</strong> buttons. Evidence previews appear below this workspace.</li>
+        <li>Select findings, enter <strong>Your name</strong> and <strong>Rationale</strong>, then Approve, Reject, or Discuss. Read each item's consequences. Discuss stays unresolved; explain it to the agent in chat.</li>
+        <li>Apply only selected, approved replacements. Ask the agent to check the resulting draft. When all checks and findings are resolved, read every output and click <strong>I have reviewed this draft — approve</strong>. A clean audit still needs your sign-off.</li>
+        <li>Ask the agent in chat to continue this campaign and session to the next human review. Then return here and click <strong>Load / refresh</strong>.</li>
+      </ol>
+      <p><strong>Approval does not launch the next stage yet.</strong> <strong>Resume status</strong> reports progress. <strong>Execute / show native task</strong> runs an existing CLI task or displays an agent task; it does not launch Claude/Codex or create the next stage. Results appear under <strong>CLI / agent interchange commands</strong> below. You do not need to edit JSON for normal review.</p>
+      <p>After capture, the next stage is <strong>identify</strong>: the agent checks speaker names against the player roster and proposes transcript corrections. You review the identities and wording. A player's identity does not establish which character spoke every line.</p>
+      <p>Example chat request: “Continue the Phandalin pilot in its isolated cycle-pilot directory. Read its saved workflow state, prepare the next stage, and stop at the next human review.” Name the campaign and session when switching agents.</p>
+      <p>Stages appear when their runs are created: capture → identify → events → remove-recap → extract → voice-smooth → no-mech → plan → narrate → release → memory → prepare-next. A <strong>pending_agent</strong> run needs agent work; a <strong>generated</strong> run is a draft; an <strong>approved</strong> run has your sign-off. Stale inputs require refreshed work.</p>
+    </details>
     <div class="controls">
       <label>Session directory <input v-model="session" /></label>
       <label>Campaign config (initialization) <input v-model="config" /></label>
@@ -133,6 +148,7 @@ onMounted(async () => {
       </nav>
       <section v-if="run">
         <h3>{{ run.stage }} · {{ view.status }}</h3>
+        <p><strong>Selected input scope:</strong> <span v-for="(input, index) in run.selection" :key="input"><span v-if="index">; </span><code>{{ input }}</code></span></p>
         <p>{{ run.generation.backend }} / {{ run.generation.model || 'backend default' }} / {{ run.generation.effort || 'default effort' }}</p>
         <p>Checks needed: {{ view.missing_checks.join(', ') || 'none' }}. Unresolved: {{ view.unresolved_findings.length }}.</p>
         <p v-for="reason in view.stale_reasons" :key="reason" class="error">{{ reason }}</p>
