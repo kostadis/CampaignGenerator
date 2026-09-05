@@ -83,6 +83,8 @@ def build_command(engine, state, run):
         command += [str(selected_dir), "--output", str(root / "session-document.md")]
         if options.get("title"):
             command += ["--title", options["title"]]
+    if stage.command in {"enhance_summary", "scene_extract"} and options.get("party"):
+        command += ["--party", source("party")]
     if stage.command in {"enhance_summary", "scene_extract", "sd_narrate"}:
         for key in ("party-config", "players-config"):
             if key in run.task["context"]["paths"]:

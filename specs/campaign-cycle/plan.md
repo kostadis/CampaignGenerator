@@ -123,3 +123,5 @@ Approved findings targeting a recorded derived output under a workflow run now p
 Constitution Check: all thirteen obligations above still hold. In particular I/II/IV retain originals and require fresh checks plus separate human approval; VI/XI share the existing CLI/editor operation; X applies only individually approved selected findings. No model calls, options, schema changes, or migration are introduced. Regression coverage verifies two fixes to one transcript, preserved prior bytes, idempotent replay, original/internal target refusal, and an unapproved corrected draft after a clean check.
 
 Resume retains revised drafts as history and directs pending review only to their replacement. The same regression verifies this handoff.
+
+Events/extraction pilot preflight: the existing `party` option now reaches both fixed CLI commands, enabling their roster-backed wrong-transcript check. Constitution Check: existing selection and human gates remain; one CLI engine gives editor parity, no new schema/options/model boundary. A parameterized command test covers both consumers and rejects unselected party context.

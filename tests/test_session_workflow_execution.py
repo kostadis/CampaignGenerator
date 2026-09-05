@@ -49,3 +49,21 @@ def test_generation_effort_is_resolved_once_and_persisted(engine, monkeypatch):
     assert engine.store.load().runs[0].generation.effort == "high"
     monkeypatch.setenv("CG_CODEX_REASONING_EFFORT", "low")
     assert engine.store.load().runs[0].generation.effort == "high"
+
+
+@pytest.mark.parametrize("stage, options", [("events", {"input": "input.vtt", "gmassist": "summary.md"}), ("extract", {"input": "input.vtt", "summary": "summary.md"})])
+def test_selected_party_reaches_speaker_preflight(engine, stage, options):
+    files = ["input.vtt", "summary.md", "party.md"]
+    for name in files:
+        (engine.store.session / name).write_text("fixture")
+    refs = [engine.store.preserve(name, label="source") for name in files]
+    run = Run(id="preflight", stage=stage, selection=files, inputs=refs,
+        generation={"backend": "codex-cli", "model": "fixture-model", "producer": "fixture"}, started_at=now(),
+        task={"options": {**options, "party": "party.md"}, "output_dir": ".session-workflow/work/preflight/outputs", "context": {"paths": {"party-config": "party.yaml", "players-config": "players.yaml"}}})
+    cmd = build_command(engine, engine.store.load(), run)
+    assert cmd[cmd.index("--party") + 1] == str(engine.store.session / "party.md")
+    assert "--party-config" in cmd and "--players-config" in cmd
+    run.inputs = [e for e in run.inputs if e.path != "party.md"]
+    from session_doc.workflow.storage import WorkflowError
+    with pytest.raises(WorkflowError, match="explicitly selected"):
+        build_command(engine, engine.store.load(), run)
