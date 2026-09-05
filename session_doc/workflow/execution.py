@@ -132,9 +132,11 @@ def resume(engine):
     status = engine.status()
     by_id = {r["id"]: r for r in status["runs"]}
     pending = []
-    for run in engine.store.load().runs:
+    runs = engine.store.load().runs
+    revised = {run.task.get("revises") for run in runs}
+    for run in runs:
         view = by_id[run.id]
-        if view["status"] == "approved":
+        if view["status"] == "approved" or run.id in revised:
             continue
         if view["status"] == "stale":
             next_action = "start a new run for the affected selection and review affected transitions"

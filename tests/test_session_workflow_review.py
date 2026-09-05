@@ -143,3 +143,41 @@ def test_standalone_review_import_requires_exact_explicit_bindings(engine):
     mapping.update(legacy_id="old-2", legacy_decision="pending", decision="approve")
     with pytest.raises(WorkflowError, match="unmarked"):
         mutate(engine, "import-legacy", run_id=run.id, draft_binding=binding(current), document=doc, bindings=[mapping], actor="fixture human", rationale="Cannot import pending")
+
+
+@pytest.mark.parametrize("target_kind", ["managed", "original", "internal"])
+def test_transcript_application_versions_only_managed_derived_outputs(engine, target_kind):
+    mutate(engine, "start", stage="capture", selection=["scene-1"], inputs=["source.md"], generation=GEN, dependencies=[], required_checks=[])
+    run = engine.store.load().runs[-1]
+    path = {"managed": f".session-workflow/work/{run.id}/outputs/transcript.derived.vtt", "original": "source.vtt", "internal": ".session-workflow/private.vtt"}[target_kind]
+    target = engine.store.session / path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("WEBVTT\n\n1\n00:00:01.000 --> 00:00:02.000\nGM: garbled and mistaken.\n")
+    original = target.read_bytes()
+    mutate(engine, "submit", run_id=run.id, outputs=[path], generation=GEN)
+    run = engine.store.load().runs[-1]
+    evidence = run.outputs[0].model_dump()
+    findings = [{"id": fid, "evidence": evidence, "location": "cue 1", "description": "Spelling", "proposed_action": "Correct this derived cue", "consequences": {"approve": "Apply", "reject": "Retain", "discuss": "Unresolved"}, "change": {"source": evidence, "target": path, "before": before, "after": after}} for fid, before, after in [("f1", "garbled", "correct"), ("f2", "mistaken", "verified")]]
+    mutate(engine, "check", run_id=run.id, check={"name": "capture-integrity", "status": "complete", "sources": [evidence], "findings": findings, "producer": "fixture", "at": now()})
+    mutate(engine, "decide", run_id=run.id, decisions=[{"finding_id": f["id"], "finding_sha256": f["finding_sha256"], "decision": "approve", "actor": "GM", "rationale": "Reviewed", "at": now()} for f in engine.export(run.id)["findings"]])
+    if target_kind != "managed":
+        with pytest.raises(WorkflowError, match="originals cannot"):
+            mutate(engine, "apply", run_id=run.id, finding_ids=["f1", "f2"])
+        assert target.read_bytes() == original
+        return
+    mutate(engine, "apply", run_id=run.id, finding_ids=["f1", "f2"])
+    state = engine.store.load()
+    revised = state.runs[-1]
+    assert revised.outputs[0].path == f".session-workflow/work/{revised.id}/outputs/transcript.derived.vtt"
+    assert engine.store.bytes(revised.outputs[0]) == original.replace(b"garbled", b"correct").replace(b"mistaken", b"verified")
+    assert target.read_bytes() == engine.store.bytes(run.outputs[0]) == original
+    assert revised.approval is None and revised.checks == []
+    assert engine.status()["runs"][0]["stale_reasons"] == []
+    mutate(engine, "apply", run_id=run.id, finding_ids=["f2", "f1"])
+    assert engine.store.load().revision == state.revision
+    check(engine, revised)
+    assert engine.status()["runs"][-1]["status"] == "generated"
+    from session_doc.workflow.execution import resume
+    pending = resume(engine)["pending"]
+    assert [item["run_id"] for item in pending] == [revised.id]
+    assert pending[0]["next_action"] == "explicit human draft approval"

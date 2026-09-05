@@ -124,3 +124,9 @@ The user explicitly authorized code publication. These draft PRs preserve the co
 ## Pilot editor configuration fix
 
 The workflow router now reads the production server configuration from `app.state.platform`. Its regression test uses the real server app and `PlatformConfigService`, replacing a standalone app fixture that had hidden the mismatched state attribute. Temporary production-server launches against both isolated pilot roots returned HTTP 200 for the editor page and workflow status; both workflow files remained byte-identical at revision 4. Restart an already-running pilot server to load this fix.
+
+### Phandalin approved-correction handoff
+
+Two explicit human finding approvals were recorded through the CLI and applied to a new Identify draft. The original transcript and predecessor outputs remained byte-identical. All 1,535 cue identities, timestamps, and speaker labels were preserved; the derivative differs from the prior draft by exactly the two approved replacements. Incremental speaker and spelling checks completed; draft approval remains pending. Repeated application left revision 16 unchanged. Resume reports only the replacement draft’s human gate.
+
+The integration fix permits versioned application to recorded generated/derived outputs, while refusing transcript originals and other workflow internals. All 224 workflow and retrieval/render isolation checks passed; imports resolved inside the integration worktree. No state schema or CLI/API contract changed.

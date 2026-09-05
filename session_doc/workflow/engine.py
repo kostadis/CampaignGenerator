@@ -276,6 +276,8 @@ class Engine:
         known = {f.id: f for f in findings(run)}
         writes = {}
         originals = {}
+        revised_id = uuid.uuid4().hex
+        destinations = {}
         for fid in finding_ids:
             if fid not in known or fid not in latest or latest[fid].decision != "approve":
                 raise WorkflowError("only individually approved findings can be applied")
@@ -286,16 +288,31 @@ class Engine:
             target = self.store.contained(change.target)
             if target.exists() and digest(target.read_bytes()) != change.source.sha256:
                 raise WorkflowError("source-mismatched application")
-            if change.target.startswith(".session-workflow") or target.name == "session_workflow.yaml" or target.suffix == ".vtt":
+            parts = Path(change.target).parts
+            managed_output = (
+                len(parts) >= 5 and parts[:2] == (".session-workflow", "work")
+                and parts[3] == "outputs" and change.source.label in {"derived", "generated"}
+                and change.target == change.source.path and change.source in run.outputs
+            )
+            destination = change.target
+            if managed_output:
+                destination = str(Path(".session-workflow/work") / revised_id / "outputs" / Path(*parts[4:]))
+                if destination in destinations.values() and destinations.get(change.target) != destination:
+                    raise WorkflowError("derived output destinations collide")
+                if self.store.contained(destination).exists():
+                    raise WorkflowError("derived output destination already exists")
+            elif change.target.startswith(".session-workflow") or target.name == "session_workflow.yaml" or target.suffix == ".vtt":
                 raise WorkflowError("workflow and transcript originals cannot be replacement targets")
+            destinations[change.target] = destination
             text = writes.get(change.target, self.store.bytes(change.source).decode())
             if text.count(change.before) != 1:
                 raise WorkflowError("overlapping or ambiguous approved changes")
             writes[change.target] = text.replace(change.before, change.after, 1)
-            originals[change.target] = digest(target.read_bytes()) if target.exists() else None
-        after = {p: self.store.preserve_bytes(t.encode(), path=p, label="derived") for p, t in writes.items()}
+            originals[destination] = None if managed_output else digest(target.read_bytes()) if target.exists() else None
+        replacements = {p: self.store.preserve_bytes(t.encode(), path=destinations[p], label="derived") for p, t in writes.items()}
+        after = {e.path: e for e in replacements.values()}
         state.applications.append(Application(id=key, run_id=run_id, finding_ids=finding_ids, before=originals, after=after, at=now()))
-        revised = Run(id=uuid.uuid4().hex, stage=run.stage, selection=run.selection, inputs=run.inputs, dependencies=run.dependencies, required_checks=run.required_checks, generation=run.generation, outputs=[after.get(e.path, e) for e in run.outputs] + [e for p, e in after.items() if p not in {x.path for x in run.outputs}], status="generated", started_at=now(), completed_at=now(), task={"revises": run.id})
+        revised = Run(id=revised_id, stage=run.stage, selection=run.selection, inputs=run.inputs, dependencies=run.dependencies, required_checks=run.required_checks, generation=run.generation, outputs=[replacements.get(e.path, e) for e in run.outputs] + [e for p, e in replacements.items() if p not in {x.path for x in run.outputs}], status="generated", started_at=now(), completed_at=now(), task={"revises": run.id})
         state.runs.append(revised)
         self.store.publish(state, after, expected_revision=state.revision)
         return False

@@ -114,3 +114,12 @@ Fresh environments require MCP v1 (the existing FastMCP seam), PDF/NumPy/OpenAI
 test extras, and the existing local dgxlib dependency for DGX tests. The core
 MCP dependency is bounded below v2 so a fresh editable install remains usable.
 All worktrees have their own editable environment and frontend dependencies.
+
+
+### Pilot correction: managed draft application
+
+Approved findings targeting a recorded derived output under a workflow run now publish a distinct output under the revision run. Existing draft bytes remain available. Transcript originals and other workflow internals remain forbidden replacement targets. CLI and editor continue to invoke the same application engine and request contract.
+
+Constitution Check: all thirteen obligations above still hold. In particular I/II/IV retain originals and require fresh checks plus separate human approval; VI/XI share the existing CLI/editor operation; X applies only individually approved selected findings. No model calls, options, schema changes, or migration are introduced. Regression coverage verifies two fixes to one transcript, preserved prior bytes, idempotent replay, original/internal target refusal, and an unapproved corrected draft after a clean check.
+
+Resume retains revised drafts as history and directs pending review only to their replacement. The same regression verifies this handoff.

@@ -127,3 +127,5 @@ current `finding_id`, `finding_sha256`, and its equivalent current `decision`.
 This is an explicit human validation operation; IDs are never matched by guess.
 Unmarked/pending items refuse import, discussions remain unresolved, and the
 original JSON and mapping are preserved as evidence. No draft approval is imported.
+
+Approved replacements in recorded workflow outputs create a distinct derived version under the new run’s output directory. Previous drafts remain readable at their original paths. Unchanged companion reports retain their original paths and describe that earlier generation; the replacement run’s checks record the incremental verification. Resume directs review to the replacement version, which needs its own checks and explicit draft sign-off.
