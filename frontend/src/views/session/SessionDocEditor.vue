@@ -4,11 +4,12 @@ import { useRouter } from 'vue-router'
 import { useConfigStore, type Backend } from '../../stores/config'
 import { resolvePath, resolvePathList } from '../../utils/paths'
 import { apiFetch, apiPut, apiPost } from '../../api/client'
-import { connectSSE } from '../../api/sse'
+import { connectSSE, type SSECompletion } from '../../api/sse'
 import SceneList from '../../components/scene-editor/SceneList.vue'
 import type { Scene } from '../../components/scene-editor/SceneList.vue'
 import ExtractionEditor from '../../components/scene-editor/ExtractionEditor.vue'
 import NarrationOutput from '../../components/scene-editor/NarrationOutput.vue'
+import NarrationBundleDialog from '../../components/scene-editor/NarrationBundleDialog.vue'
 import KnobDrawer from '../../components/scene-editor/KnobDrawer.vue'
 
 const config = useConfigStore()
@@ -30,6 +31,7 @@ const extractTokens = ref(8192)
 // which stays the per-scene cap. Default matches ExtractKnobs.batch_tokens.
 const batchTokens = ref(32000)
 const narrateTokens = ref(16000)
+const narrateBatchTokens = ref(32000)
 const proseMode = ref(false)
 const reflections = ref(false)
 const genreFile = ref('')
@@ -100,6 +102,7 @@ function loadConfigFields() {
   extractTokens.value = extract.tokens || 8192
   batchTokens.value = extract.batch_tokens || 32000
   narrateTokens.value = narrate.tokens || 16000
+  narrateBatchTokens.value = narrate.batch_tokens || 32000
   proseMode.value = !!narrate.prose_mode
   reflections.value = !!narrate.reflections
   genreFile.value = paths.genre_file || ''
@@ -164,6 +167,7 @@ function buildEditorConfigPayload() {
     narrate: {
       context: contextFiles.value.length ? contextFiles.value : [],
       tokens: narrateTokens.value || undefined,
+      batch_tokens: narrateBatchTokens.value || undefined,
       prose_mode: proseMode.value || undefined,
       reflections: reflections.value || undefined,
     },
@@ -241,7 +245,7 @@ watch(() => config.editorConfig?.session_dir, (next, prev) => {
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,
    party, voiceDir, examplesDir, context, extractTokens, batchTokens,
-   narrateTokens, proseMode, reflections, genreFile],
+   narrateTokens, narrateBatchTokens, proseMode, reflections, genreFile],
   scheduleApply,
 )
 
@@ -352,6 +356,7 @@ const estimatedTokens = ref<number | null>(null)
 const hasExtraction = ref(false)
 const rawExtractionDirty = ref(false)
 const narrating = ref(false)
+const narrationBundleDialogOpen = ref(false)
 const extracting = ref(false)
 const forceReextract = ref(false)
 // Batched-scene-extraction per-run choice (013-batched-scene-extraction
@@ -494,6 +499,7 @@ interface ProfileEntry {
   name: string
   knobs: {
     narrate_tokens?: number
+    narrate_batch_tokens?: number
     prose_mode?: boolean
     reflections?: boolean
     narration_genre_file?: string
@@ -511,6 +517,7 @@ function loadProfilesFromStore() {
 
 const currentKnobs = computed(() => ({
   narrate_tokens: narrateTokens.value,
+  narrate_batch_tokens: narrateBatchTokens.value,
   prose_mode: proseMode.value,
   reflections: reflections.value,
   narration_genre_file: genreFile.value,
@@ -527,6 +534,7 @@ const profileDirty = computed(() => {
   const c = currentKnobs.value
   const k = ap.knobs
   return (k.narrate_tokens ?? 16000) !== c.narrate_tokens
+    || (k.narrate_batch_tokens ?? 32000) !== c.narrate_batch_tokens
     || !!k.prose_mode !== c.prose_mode
     || !!k.reflections !== c.reflections
     || (k.narration_genre_file ?? '') !== c.narration_genre_file
@@ -546,6 +554,7 @@ function hydrateKnobsFromEditorConfig(ec: any) {
   const narrate = ec?.narrate ?? {}
   const backends = ec?.backends ?? {}
   narrateTokens.value = narrate.tokens ?? 16000
+  narrateBatchTokens.value = narrate.batch_tokens ?? 32000
   proseMode.value = !!narrate.prose_mode
   reflections.value = !!narrate.reflections
   genreFile.value = ec?.paths?.genre_file || ''
@@ -755,6 +764,124 @@ async function narrate() {
       activeSSE.value = null
       narrating.value = false
       setStatus('Stream error — check terminal.')
+    },
+  })
+}
+
+const editorActionRunning = computed(() =>
+  narrating.value || extracting.value || enhancing.value || planning.value ||
+  verifying.value || auditing.value || comparingVoice.value,
+)
+
+const orderedBundleScenes = computed(() =>
+  [...scenes.value].sort((left, right) => left.index - right.index),
+)
+
+function openNarrationBundleDialog() {
+  if (editorActionRunning.value) return
+  if (orderedBundleScenes.value.length === 0) {
+    setStatus('No plan scenes are available to narrate.')
+    return
+  }
+  narrationBundleDialogOpen.value = true
+}
+
+function closeNarrationBundleDialog() {
+  if (!narrating.value) narrationBundleDialogOpen.value = false
+}
+
+function bundleSceneLabel(value: unknown): string {
+  if (typeof value === 'string') return value
+  if (!value || typeof value !== 'object') return String(value)
+  const item = value as Record<string, unknown>
+  const index = typeof item.index === 'number'
+    ? `Scene ${item.index}`
+    : typeof item.scene === 'number' ? `Scene ${item.scene}` : ''
+  const name = typeof item.scene_name === 'string'
+    ? item.scene_name
+    : typeof item.name === 'string' ? item.name : ''
+  return [index, name].filter(Boolean).join(' — ') || 'unknown scene'
+}
+
+function narrationBundleStatus(
+  rc: number,
+  error: string | undefined,
+  completion: SSECompletion | undefined,
+): string {
+  const requested = completion?.requested_count ?? orderedBundleScenes.value.length
+  const written = completion?.written_count ?? (rc === 0 ? requested : 0)
+  const missing = (completion?.missing ?? []).map(bundleSceneLabel)
+  if (rc === 0) {
+    return `Bundled narration complete — ${written}/${requested} scenes written.`
+  }
+  if (rc === 3) {
+    const detail = missing.length ? ` Missing: ${missing.join(', ')}.` : ''
+    return `Bundled narration partial — ${written}/${requested} written.${detail} ` +
+      'Use Narrate on an affected scene to recover it.'
+  }
+  if (rc === 4) {
+    return 'Bundled response could not be reconciled — no bundle output was written. ' +
+      'Use Narrate on an affected scene to recover it.'
+  }
+  const reason = error || completion?.audit_error || completion?.message
+  return `Bundled narration failed${reason ? ': ' + reason : ''}.`
+}
+
+async function refreshAfterNarrationBundle() {
+  // Both disk-backed summaries must refresh for every terminal outcome. A
+  // failure in either request must not prevent the other refresh.
+  await Promise.allSettled([loadScenes(), refreshPipeline()])
+  if (
+    currentScene.value !== null &&
+    scenes.value.some(scene => scene.index === currentScene.value)
+  ) {
+    await refreshEditorSceneDetail(currentScene.value, { preserveDirtyRaw: true })
+      .catch(() => { narrateSource.value = null })
+  }
+}
+
+async function narrateBundle() {
+  if (editorActionRunning.value || orderedBundleScenes.value.length === 0) return
+
+  try {
+    // A bundle reads every selected source from disk. Commit the current raw
+    // editor first so the explicit all-scenes action cannot start against a
+    // stale copy of the one scene the operator was editing.
+    if (currentScene.value !== null && rawExtractionDirty.value) {
+      await saveExtraction(extractionContent.value)
+    }
+  } catch (e: any) {
+    setStatus(`Bundled narration preflight failed: ${e?.message ?? 'could not save the current extraction'}`)
+    return
+  }
+
+  const params = new URLSearchParams()
+  for (const scene of orderedBundleScenes.value) {
+    params.append('scene', String(scene.index))
+  }
+
+  narrationBundleDialogOpen.value = false
+  narrating.value = true
+  narrationOutput.value = ''
+  setStatus(`Running bundled narration for ${orderedBundleScenes.value.length} scenes...`)
+
+  activeSSE.value = connectSSE(`/api/editor/narrate-bundle?${params.toString()}`, {
+    onCommand(command) {
+      narrationOutput.value += `$ ${command}\n`
+    },
+    onData(text) { narrationOutput.value += text },
+    onDone(rc, error, completion) {
+      activeSSE.value = null
+      narrating.value = false
+      setStatus(narrationBundleStatus(rc, error, completion))
+      void refreshAfterNarrationBundle()
+    },
+    onError() {
+      activeSSE.value?.close()
+      activeSSE.value = null
+      narrating.value = false
+      setStatus('Bundled narration stream error — check terminal.')
+      void refreshAfterNarrationBundle()
     },
   })
 }
@@ -1206,6 +1333,7 @@ onMounted(async () => {
           @save-extraction="saveExtraction"
           @reload="reload"
           @narrate="narrate"
+          @narrate-bundle="openNarrationBundleDialog"
           @open-typora="openTypora"
           @update:extraction-content="updateExtractionContent"
           @update:prose-mode="proseMode = $event"
@@ -1230,6 +1358,15 @@ onMounted(async () => {
       </div>
     </div>
 
+    <NarrationBundleDialog
+      :open="narrationBundleDialogOpen"
+      :scenes="orderedBundleScenes"
+      :batch-tokens="narrateBatchTokens"
+      :busy="editorActionRunning"
+      @cancel="closeNarrationBundleDialog"
+      @run="narrateBundle"
+    />
+
     <KnobDrawer
       v-model:open="drawerOpen"
       v-model:session="session"
@@ -1252,6 +1389,7 @@ onMounted(async () => {
       v-model:extract-tokens="extractTokens"
       v-model:batch-tokens="batchTokens"
       v-model:narrate-tokens="narrateTokens"
+      v-model:narrate-batch-tokens="narrateBatchTokens"
       v-model:prose-mode="proseMode"
       v-model:reflections="reflections"
       v-model:genre-file="genreFile"

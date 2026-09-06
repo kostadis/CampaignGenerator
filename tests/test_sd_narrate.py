@@ -458,6 +458,42 @@ def test_default_path_uses_stream_api_not_run_single_batch(monkeypatch, tmp_path
     ]
 
 
+def test_sequential_single_scene_rerun_replaces_only_that_scene(monkeypatch, tmp_path):
+    paths = _write_fixtures(tmp_path)
+    paths["out_dir"].mkdir()
+    untouched = paths["out_dir"] / "session_doc_scene_02_scene_two.md"
+    untouched.write_text("reviewed scene two\n", encoding="utf-8")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sd_narrate, "run_single_batch", FakeRunSingleBatch([]))
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--scene", "1"))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 1
+    assert untouched.read_text(encoding="utf-8") == "reviewed scene two\n"
+    rerun = paths["out_dir"] / "session_doc_scene_01_scene_one.md"
+    text = rerun.read_text(encoding="utf-8")
+    assert "scene: 01\nslug: scene_one\nnarrator: Alice\n" in text
+    assert SCENE1_NARRATION in text
+
+
+def test_explicit_no_batch_scenes_keeps_sequential_calls_and_ignores_bundle_ceiling(
+    monkeypatch, tmp_path, capsys,
+):
+    paths = _write_fixtures(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sd_narrate, "run_single_batch", FakeRunSingleBatch([]))
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--no-batch-scenes", "--batch-max-tokens", "900",
+    ))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 2
+    assert "--batch-max-tokens is ignored without --batch-scenes" in capsys.readouterr().err
+
 # ── Global examples reach scene mode ────────────────────────────────────────
 
 HOUSE_STYLE = "The deadpan lands in its own one-line paragraph. And he is correct."

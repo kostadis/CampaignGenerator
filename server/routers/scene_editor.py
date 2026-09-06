@@ -19,6 +19,7 @@ import json
 import re
 import subprocess
 import sys
+import uuid
 from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -26,7 +27,7 @@ from pathlib import Path
 from campaignlib import wiring_get
 from campaignlib.party_config import PARTY_CONFIG_FILENAME
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from session_doc.io import resolve_scene_extraction_file
@@ -348,6 +349,7 @@ def _narrate_knobs_snapshot(cfg: ResolvedEditorConfig) -> dict:
     """
     snapshot = {
         "narrate_tokens": cfg.narrate.tokens,
+        "narrate_batch_tokens": getattr(cfg.narrate, "batch_tokens", 32000),
         "prose_mode": bool(cfg.narrate.prose_mode),
         "reflections": bool(cfg.narrate.reflections),
         "narration_genre_file": cfg.paths.genre_file,
@@ -381,6 +383,8 @@ def _narrate_knobs_snapshot(cfg: ResolvedEditorConfig) -> dict:
 
 def _record_activity(cfg: ResolvedEditorConfig, *, stage: str, rc: int | None,
                      scene: int | None = None,
+                     scenes: list[int] | None = None,
+                     run_id: str | None = None,
                      knobs: dict | None = None,
                      outputs: list[str] | None = None) -> None:
     """Append one JSON line to ``<session_dir>/.cg/activity.jsonl``.
@@ -400,6 +404,10 @@ def _record_activity(cfg: ResolvedEditorConfig, *, stage: str, rc: int | None,
         }
         if scene is not None:
             entry["scene"] = scene
+        if scenes is not None:
+            entry["scenes"] = scenes
+        if run_id is not None:
+            entry["run_id"] = run_id
         if knobs is not None:
             entry["knobs"] = knobs
         if outputs:
@@ -1376,6 +1384,41 @@ def _build_reextract_cmd(request, cfg: ResolvedEditorConfig,
     return cmd
 
 
+def _finish_narrate_cmd(
+    request,
+    cfg: ResolvedEditorConfig,
+    plan_path: Path,
+    cmd: list[str],
+) -> list[str] | tuple[None, str]:
+    """Append flags shared by single-scene and bundled narration runs."""
+    cmd += _selection_args(request, cfg)
+    party_args = _party_args(cfg)
+    if isinstance(party_args, tuple):
+        return party_args
+    cmd += party_args
+    cmd += _players_args(cfg)
+    declaration_args = _declaration_args(cfg, plan_path)
+    if isinstance(declaration_args, tuple):
+        return declaration_args
+    cmd += declaration_args
+    if cfg.narrate.tokens:
+        cmd += ["--narrate-tokens", str(cfg.narrate.tokens)]
+    if cfg.narrate.prose_mode:
+        cmd += ["--prose-mode"]
+    if cfg.narrate.reflections:
+        cmd += ["--reflections"]
+        # --reflections needs --context to draw on; without it the flag is a no-op
+        for ctx in cfg.narrate.context or []:
+            if ctx:
+                cmd += ["--context", ctx]
+    if cfg.paths.genre_file:
+        # Pass the path, not the text (#276 fix 2). Resolution already happened
+        # at the route edge, so the copyable command stays fully explicit and
+        # sd_narrate reads the same file the UI previewed.
+        cmd += ["--narration-genre-file", cfg.paths.genre_file]
+    return cmd
+
+
 def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> list[str] | tuple[None, str]:
     """Stage 3: sd_narrate for a single scene.
 
@@ -1388,11 +1431,9 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
     existed (it only ever reached enhance/extract) — ``_selection_args``
     below now forwards it whenever the resolved selection's batch is true,
     for the first time (005-ui-batch-selection). ``session_doc`` is a
-    `degraded`-capability service in the batch map (data-model.md): the
-    handoff-threaded scenes can only submit as sequential one-item batches,
-    not one grouped batch, so this is slower than a normal batched run for
-    the same 50% discount — the KnobDrawer degradation note states that
-    trade-off before the run.
+    `degraded`-capability service in the batch map (data-model.md). This
+    single-scene route remains the sequential option; `/narrate-bundle`
+    explicitly opts into the one-exchange all-scenes mode.
     """
     summary = _session_summary_path(cfg)
     if summary is None or not summary.exists():
@@ -1438,32 +1479,236 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
         and narrate_source.active_file is not None
     ):
         cmd += ["--scene-extraction-file", str(narrate_source.active_file)]
-    cmd += _selection_args(request, cfg)
-    party_args = _party_args(cfg)
-    if isinstance(party_args, tuple):
-        return party_args
-    cmd += party_args
-    cmd += _players_args(cfg)
-    declaration_args = _declaration_args(cfg, plan_path)
-    if isinstance(declaration_args, tuple):
-        return declaration_args
-    cmd += declaration_args
-    if cfg.narrate.tokens:
-        cmd += ["--narrate-tokens", str(cfg.narrate.tokens)]
-    if cfg.narrate.prose_mode:
-        cmd += ["--prose-mode"]
-    if cfg.narrate.reflections:
-        cmd += ["--reflections"]
-        # --reflections needs --context to draw on; without it the flag is a no-op
-        for ctx in cfg.narrate.context or []:
-            if ctx:
-                cmd += ["--context", ctx]
-    if cfg.paths.genre_file:
-        # Pass the path, not the text (#276 fix 2). Resolution already happened
-        # at the route edge, so the copyable command stays fully explicit and
-        # sd_narrate reads the same file the UI previewed.
-        cmd += ["--narration-genre-file", cfg.paths.genre_file]
-    return cmd
+    return _finish_narrate_cmd(request, cfg, plan_path, cmd)
+
+
+def _new_editor_bundle_report_path(cfg: ResolvedEditorConfig) -> Path:
+    """Return a collision-resistant, session-local report path for one run."""
+    nd = _narration_dir(cfg)
+    if nd is None:
+        # Callers run normal narration preflight before using the path. Keeping
+        # this helper total makes direct route tests and diagnostics simpler.
+        nd = _session_dir(cfg) or Path.cwd()
+    return nd / "logs" / f"sd_narrate_bundle_editor_{uuid.uuid4().hex}.json"
+
+
+def _path_is_within(path: Path, directory: Path) -> bool:
+    try:
+        path.resolve().relative_to(directory.resolve())
+    except ValueError:
+        return False
+    return True
+
+
+def _build_narrate_bundle_cmd(
+    request,
+    cfg: ResolvedEditorConfig,
+    scene_nums: list[int],
+    report_path: Path,
+) -> list[str] | tuple[None, str]:
+    """Stage 3 bundled mode: narrate an explicit plan-ordered scene scope."""
+    if not scene_nums:
+        return None, "at least one scene is required for bundled narration"
+    if any(not isinstance(n, int) or isinstance(n, bool) or n < 1 for n in scene_nums):
+        return None, "scene numbers must be positive integers"
+    if len(set(scene_nums)) != len(scene_nums):
+        return None, "duplicate scene numbers are not allowed"
+    if scene_nums != sorted(scene_nums):
+        return None, "scene numbers must be in plan order"
+
+    summary = _session_summary_path(cfg)
+    if summary is None or not summary.exists():
+        return None, "session-summary.md not found — run Stage 1 first"
+    raw_dir = _scene_extractions_dir(cfg)
+    nd = _narration_dir(cfg)
+    if nd is None:
+        return None, "narration_dir not configured"
+    try:
+        nd.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        return None, "narration_dir is not writable"
+
+    plan_path = nd / "plan.md"
+    if not plan_path.exists():
+        return None, "plan.md not found — run Plan & Check first"
+    scenes = _load_scenes(cfg)
+    if scene_nums[-1] > len(scenes):
+        return None, f"scene {scene_nums[-1]} is out of range for the plan (1-{len(scenes)})"
+
+    sources: list[NarrateSourceState] = []
+    for scene_num in scene_nums:
+        scene_name = scenes[scene_num - 1].get("scene", "")
+        source = _narrate_source_state(cfg, scene_num, scene_name)
+        if not source.available:
+            return None, f"Scene {scene_num}: {source.message}"
+        sources.append(source)
+
+    scene_extractions_arg = raw_dir
+    if scene_extractions_arg is None or not scene_extractions_arg.is_dir():
+        source_dirs = {
+            source.active_file.parent.resolve()
+            for source in sources
+            if source.active_file is not None
+        }
+        if len(source_dirs) != 1:
+            return None, "scene_extractions_dir not configured"
+        scene_extractions_arg = next(iter(source_dirs))
+
+    expected_report_dir = (nd / "logs").resolve()
+    if not _path_is_within(report_path, expected_report_dir):
+        return None, "bundle run report must be inside narration_dir/logs"
+    try:
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        return None, "bundle run report directory is not writable"
+
+    cmd = [
+        console_script("sd_narrate"),
+        str(summary),
+        "--plan", str(plan_path),
+        "--scene-extractions", str(scene_extractions_arg),
+        "--per-scene-output", str(nd),
+        "--batch-scenes",
+        "--batch-max-tokens", str(cfg.narrate.batch_tokens),
+    ]
+    cmd += ["--scene", *(str(scene_num) for scene_num in scene_nums)]
+    for source in sources:
+        if source.active_layer == "smoothed" and source.active_file is not None:
+            cmd += ["--scene-extraction-file", str(source.active_file)]
+    cmd += ["--run-report", str(report_path)]
+    return _finish_narrate_cmd(request, cfg, plan_path, cmd)
+
+
+def _validate_editor_bundle_report(
+    report_path: Path,
+    cfg: ResolvedEditorConfig,
+    scene_nums: list[int],
+    returncode: int | None,
+) -> tuple[dict | None, str | None, list[Path]]:
+    """Read and authenticate the exact report produced for an editor run."""
+    try:
+        value = json.loads(report_path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return None, "bundle audit report was not written", []
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return None, "bundle audit report is unreadable or invalid JSON", []
+    if not isinstance(value, dict):
+        return None, "bundle audit report must be a JSON object", []
+    if value.get("version") != 1:
+        return None, "bundle audit report has an unsupported version", []
+    if value.get("mode") != "bundle":
+        return None, "bundle audit report has the wrong mode", []
+    if value.get("run_id") != report_path.stem:
+        return None, "bundle audit report run ID does not match this request", []
+    try:
+        reported_path = Path(value["report_path"])
+    except (KeyError, TypeError):
+        return None, "bundle audit report path is missing", []
+    if reported_path.resolve() != report_path.resolve():
+        return None, "bundle audit report path does not match this request", []
+    if value.get("exit_code") != returncode:
+        return None, "bundle audit report return code does not match the process", []
+
+    status_value = value.get("status")
+    allowed_statuses = {"success", "partial", "unreconcilable", "refused", "failed"}
+    if status_value not in allowed_statuses:
+        return None, "bundle audit report has an invalid status", []
+    expected_codes = {
+        "success": 0,
+        "partial": 3,
+        "unreconcilable": 4,
+        "refused": 1,
+        "failed": 1,
+    }
+    if returncode != expected_codes[status_value]:
+        return None, "bundle audit report status disagrees with its return code", []
+    exchange_count = value.get("exchange_count")
+    if exchange_count not in (0, 1):
+        return None, "bundle audit report has an invalid exchange count", []
+
+    requested = value.get("requested")
+    written = value.get("written")
+    missing = value.get("missing")
+    rejected = value.get("rejected")
+    if not all(isinstance(items, list) for items in (requested, written, missing, rejected)):
+        return None, "bundle audit report result collections must be lists", []
+    if not all(isinstance(item, dict) for item in requested + written + missing + rejected):
+        return None, "bundle audit report result entries must be objects", []
+
+    reported_indices = [item.get("index") for item in requested]
+    if reported_indices != scene_nums:
+        return None, "bundle audit report selection does not match this request", []
+
+    nd = _narration_dir(cfg)
+    scenes = _load_scenes(cfg)
+    if nd is None or len(scenes) < scene_nums[-1]:
+        return None, "bundle audit report no longer matches the current plan", []
+    requested_paths: dict[int, Path] = {}
+    for item, scene_num in zip(requested, scene_nums):
+        current = scenes[scene_num - 1]
+        if item.get("scene_name") != current.get("scene", ""):
+            return None, "bundle audit report scene identity does not match the current plan", []
+        if item.get("narrator") != current.get("narrator", ""):
+            return None, "bundle audit report narrator does not match the current plan", []
+        try:
+            source_path = Path(item["source_path"])
+            output_path = Path(item["output_path"])
+        except (KeyError, TypeError):
+            return None, "bundle audit report scene paths are missing", []
+        source = _narrate_source_state(
+            cfg, scene_num, current.get("scene", "")
+        )
+        if source.active_file is None or source_path.resolve() != source.active_file.resolve():
+            return None, "bundle audit report source path is not current", []
+        expected_source_kind = (
+            "override" if source.active_layer == "smoothed" else "base"
+        )
+        if item.get("source_kind") != expected_source_kind:
+            return None, "bundle audit report source kind does not match the request", []
+        if not _path_is_within(output_path, nd):
+            return None, "bundle audit report output path escapes narration_dir", []
+        if not re.fullmatch(
+            rf"session_doc_scene_{scene_num:02d}_.+\.md", output_path.name
+        ) or output_path.name.endswith(".scrubbed.md"):
+            return None, "bundle audit report output path has the wrong scene identity", []
+        requested_paths[scene_num] = output_path.resolve()
+
+    written_indices = [item.get("index") for item in written]
+    if len(set(written_indices)) != len(written_indices) or any(
+        index not in scene_nums for index in written_indices
+    ):
+        return None, "bundle audit report written selection is invalid", []
+    if status_value == "success" and written_indices != scene_nums:
+        return None, "successful bundle report does not contain every selected scene", []
+    if status_value in {"unreconcilable", "refused"} and written_indices:
+        return None, "non-writing bundle report unexpectedly lists written scenes", []
+
+    missing_indices = [item.get("index") for item in missing]
+    if len(set(missing_indices)) != len(missing_indices) or any(
+        index not in scene_nums for index in missing_indices
+    ):
+        return None, "bundle audit report missing selection is invalid", []
+    if any(item.get("reason") not in {"empty", "incomplete", "absent"} for item in missing):
+        return None, "bundle audit report has an invalid missing-scene reason", []
+    if status_value == "partial" and set(written_indices + missing_indices) != set(scene_nums):
+        return None, "partial bundle report does not account for every selected scene", []
+    if any(not item.get("code") or not item.get("message") for item in rejected):
+        return None, "bundle audit report has an invalid rejection entry", []
+
+    output_paths: list[Path] = []
+    for item in written:
+        index = item.get("index")
+        try:
+            output_path = Path(item["output_path"])
+        except (KeyError, TypeError):
+            return None, "bundle audit report written path is missing", []
+        if output_path.resolve() != requested_paths[index]:
+            return None, "bundle audit report written path does not match its request", []
+        if not output_path.is_file():
+            return None, "bundle audit report names a written file that does not exist", []
+        output_paths.append(output_path)
+
+    return value, None, output_paths
 
 
 # ── Routes ──────────────────────────────────────────────────────────────────
@@ -1959,6 +2204,116 @@ async def api_extract(request: Request, force: int = 0, batch_scenes: int | None
 
     return StreamingResponse(
         _stream_with_notice(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@router.get("/narrate-bundle")
+async def api_narrate_bundle(
+    request: Request,
+    scene: list[int] | None = Query(default=None),
+    cfg: ResolvedEditorConfig = Depends(get_editor_config),
+):
+    """Narrate an explicit scene set in one content-model exchange."""
+    scene_nums = list(scene or [])
+    report_path = _new_editor_bundle_report_path(cfg)
+    result = _build_narrate_bundle_cmd(request, cfg, scene_nums, report_path)
+    if isinstance(result, tuple):
+        _, err = result
+        return _sse_error(err)
+    cmd = result
+    run_id = report_path.stem
+    state: dict = {
+        "returncode": None,
+        "report": None,
+        "audit_error": None,
+        "recorded": False,
+    }
+
+    def _done(rc: int | None) -> None:
+        report, audit_error, outputs = _validate_editor_bundle_report(
+            report_path, cfg, scene_nums, rc
+        )
+        state.update(returncode=rc, report=report, audit_error=audit_error)
+        knobs = _narrate_knobs_snapshot(cfg)
+        knobs.update({
+            "mode": "bundle",
+            "provider_batch": "--batch" in cmd,
+            "bundle_ceiling": cfg.narrate.batch_tokens,
+            "requested_count": len(scene_nums),
+        })
+        if report is not None:
+            knobs.update({
+                "exchange_count": report["exchange_count"],
+                "status": report["status"],
+                "written_count": len(report["written"]),
+                "missing_count": len(report["missing"]),
+                "rejected_count": len(report["rejected"]),
+            })
+            for output in outputs:
+                _write_knobs_sidecar(output, knobs)
+        else:
+            knobs.update({
+                "exchange_count": None,
+                "status": "audit_failure",
+                "written_count": 0,
+                "audit_error": audit_error,
+            })
+        _record_activity(
+            cfg,
+            stage="narrate",
+            rc=rc,
+            scenes=scene_nums,
+            run_id=run_id,
+            knobs=knobs,
+            outputs=[str(output) for output in outputs],
+        )
+        state["recorded"] = True
+
+    inner = stream_subprocess(
+        cmd,
+        cwd=cfg.work_dir,
+        on_complete=_done,
+        emit_done=False,
+    )
+
+    async def _stream_with_bundle_result():
+        async for chunk in inner:
+            yield chunk
+        # The shared runner always invokes on_complete. Keep this guard for
+        # alternate runners used in tests and deployments so the audit row and
+        # terminal event cannot silently disappear.
+        if not state["recorded"]:
+            _done(None)
+        report = state["report"]
+        if report is None:
+            payload = {
+                "returncode": state["returncode"],
+                "status": "failed",
+                "run_id": run_id,
+                "requested_count": len(scene_nums),
+                "written_count": 0,
+                "missing": [],
+                "rejected": [],
+                "audit_error": state["audit_error"],
+            }
+        else:
+            payload = {
+                "returncode": state["returncode"],
+                "status": report["status"],
+                "run_id": report["run_id"],
+                "requested_count": len(report["requested"]),
+                "written_count": len(report["written"]),
+                "missing": report["missing"],
+                "rejected": report["rejected"],
+                "exchange_count": report["exchange_count"],
+                "message": report.get("message", ""),
+            }
+        yield f"event: done\ndata: {json.dumps(payload)}\n\n"
+
+    return StreamingResponse(
+        _stream_with_bundle_result(),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )

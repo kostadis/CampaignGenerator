@@ -1,0 +1,6 @@
+<<<CG-SCENE 02 BEGIN: The Bargain>>>
+I named the price.
+<<<CG-SCENE 02 END>>>
+<<<CG-SCENE 01 BEGIN: Arrival>>>
+I entered the hall.
+<<<CG-SCENE 01 END>>>

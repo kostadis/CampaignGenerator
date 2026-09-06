@@ -47,6 +47,7 @@ IDENTITY_MODULES = (
     "session_doc/voice.py",
     "session_doc/examples.py",
     "session_doc/sd_narrate.py",
+    "session_doc/narrate.py",
     "session_doc/roster.py",
     "campaignlib/players_config.py",
     "campaignlib/party_config.py",
