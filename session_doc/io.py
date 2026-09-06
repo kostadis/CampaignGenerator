@@ -407,15 +407,26 @@ def scene_speakers(moments: str) -> set[str]:
     against Vukradin's sixty-six and both are eligible — a threshold above zero
     would be a tuning knob with no defensible value (FR-009).
     """
-    found: set[str] = set()
+    return set(scene_speaker_counts(moments))
+
+
+def scene_speaker_counts(moments: str) -> dict[str, int]:
+    """``{label: labelled turns}`` for ``moments`` — the same rule, with counts.
+
+    :func:`scene_speakers` is this function's keys. They are one function
+    rather than two because a second parse would be a second definition of
+    "this label is present": an earlier draft counted turns with a
+    ``line.strip().startswith("**")`` scan, which accepts an indented label the
+    anchored regex rejects, so a smoothed extraction could report a dozen turns
+    for a character the eligibility set had already excluded.
+    """
+    counts: dict[str, int] = {}
     for raw in _SCENE_SPEAKER_RE.findall(moments):
         label = raw.strip()
-        if not label or label.startswith("["):
+        if not label or label.startswith("[") or label == GM_LABEL:
             continue
-        if label == GM_LABEL:
-            continue
-        found.add(label)
-    return found
+        counts[label] = counts.get(label, 0) + 1
+    return counts
 
 
 def extract_scene_text(recap: str, scene_name: str) -> str:

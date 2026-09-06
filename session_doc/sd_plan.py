@@ -23,7 +23,11 @@ from campaignlib import (
     stream_api,
 )
 from campaignlib.api.client import resolve_cli_model
-from campaignlib.players_config import load_players_config
+from campaignlib.players_config import (
+    attendance_is_establishable,
+    load_players_config,
+    norm_name,
+)
 from session_doc.io import load_extractions, load_scene_extractions, parse_plan
 from session_doc.plan_alternates import (
     ALTERNATE_KEYS,
@@ -42,9 +46,14 @@ def main() -> None:
         description="Assign one narrator per scene from --characters using the "
                     "scene_extractions/ checklist. Writes plan.md."
     )
-    parser.add_argument("--scene-extractions", required=True, metavar="DIR",
+    # NOT `required=True`: `--choose` is a file copy and needs neither, and the
+    # command every doc, router message and UI note prints is bare
+    # `sd_plan --choose b`. argparse would have rejected it before the branch
+    # ran, so the CLI escape hatch Constitution IX is invoked for did not exist.
+    # A planning run still requires both — enforced below, with the same message.
+    parser.add_argument("--scene-extractions", metavar="DIR",
                         help="Directory of NN_*.md scene files (scene_extract output).")
-    parser.add_argument("--characters", required=True, metavar="NAMES",
+    parser.add_argument("--characters", metavar="NAMES",
                         help='Comma-separated narrator roster '
                              '(e.g. "Vukradin, Valphine, Soma, Brewbarry").')
     parser.add_argument("--vtt", metavar="FILE",
@@ -107,7 +116,23 @@ def main() -> None:
             sys.exit(1)
         out_path.write_text(alternate.read_text(encoding="utf-8"), encoding="utf-8")
         print(f"Chose {alternate.name} -> {out_path}")
+        # The choice is made, so the alternates are spent. Left on disk they
+        # resurface as a pending choice the next time plan.md is absent —
+        # offering last month's treatments for this month's session.
+        for key in ALTERNATE_KEYS:
+            spent = out_path.with_name(f"{out_path.stem}.{key}{out_path.suffix}")
+            if spent.is_file():
+                spent.unlink()
         return
+
+    if not args.scene_extractions or not args.characters:
+        parser.error("the following arguments are required: "
+                     + ", ".join(
+                         flag for flag, value in (
+                             ("--scene-extractions", args.scene_extractions),
+                             ("--characters", args.characters),
+                         ) if not value
+                     ))
 
     if args.fast:
         args.model = "claude-haiku-4-5-20251001"
@@ -180,10 +205,22 @@ def main() -> None:
         print(f"Error: --players-config not found: {players_path}", file=sys.stderr)
         sys.exit(1)
 
+    players_cfg = load_players_config(players_path)
+    if not attendance_is_establishable(players_cfg):
+        print(
+            f"Error: {players_path} declares no display names for any active "
+            "player, so no tape can say who was at the table. Add each player's "
+            "display_names (see `players check --vtt`) — planning with the whole "
+            "roster is the defect #385 is about, and excluding everybody is not "
+            "an answer either.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     eligibility = compute_eligibility(
         scenes=scene_extractions,
         roster=characters,
-        players=load_players_config(players_path),
+        players=players_cfg,
         vtt_text=vtt_path.read_text(encoding="utf-8", errors="replace"),
     )
     report_eligibility(eligibility, vtt_path=vtt_path)
@@ -228,9 +265,15 @@ def main() -> None:
     plan_parts: list[str] = []
     if args.session_name:
         plan_parts.append(f"# Session: {args.session_name}")
-    if characters:
-        plan_parts.append("## Available narrators\n"
-                          + "\n".join(f"- {c}" for c in characters))
+    # The pool, not `--characters`. Listing the full roster under a heading
+    # saying "available" contradicted the per-scene eligible lines below it and
+    # kept offering the model the very character the filter had removed — caught
+    # only downstream, after a full plan call had been paid for.
+    available = [c for c in characters if c in eligibility.pool]
+    if available:
+        plan_parts.append("## Available narrators (this session's cast — "
+                          "characters whose players were at the table)\n"
+                          + "\n".join(f"- {c}" for c in available))
     if summary_extractions:
         s_parts = [f"### Chunk {i}\n\n{content}"
                    for i, (_, content) in enumerate(summary_extractions, 1)]
@@ -249,10 +292,10 @@ def main() -> None:
     # be `### {name}` and nothing else — the extraction bodies were loaded and
     # discarded, so the model chose a first-person narrator from a title (#385).
     scene_lines: list[str] = []
-    for sx in scene_extractions:
-        name = sx["name"]
-        eligible = sorted(eligibility.candidates.get(name, set()))
-        counts = eligibility.line_counts.get(name, {})
+    for scene in eligibility.scenes:
+        name = scene.name
+        eligible = sorted(scene.candidates)
+        counts = scene.counts
         scene_lines.append(f"### {name}")
         if eligible:
             shown = ", ".join(
@@ -299,19 +342,34 @@ def main() -> None:
         print("Error: could not parse plan. Raw output above.", file=sys.stderr)
         sys.exit(1)
 
+    # Positional alignment between the plan and the checklist is load-bearing —
+    # here, in assemble_alternates, and in sd_narrate's `sections[n-1]`. A block
+    # `parse_plan` dropped shifts every scene after it, so a mismatch is refused
+    # rather than silently narrated against the wrong entry.
+    if len(sections) != len(scene_extractions):
+        print(
+            f"\nError: the plan has {len(sections)} scene(s) but the checklist "
+            f"has {len(scene_extractions)}. Every scene must appear, in order — "
+            "a missing or unparseable block shifts every scene after it onto the "
+            "wrong narrator. Raw output above.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     # A narrator the scene never contained is refused, not warned about. The
-    # whole point of the filter is that this is not a judgement call.
+    # whole point of the filter is that this is not a judgement call. Folding is
+    # `norm_name` — THE rule everywhere else in the codebase — so a case variant
+    # is the warning it always was, not a fatal error.
     violations: list[str] = []
-    for i, s in enumerate(sections):
-        if i >= len(scene_extractions):
-            break
-        scene_name = scene_extractions[i]["name"]
-        eligible = eligibility.candidates.get(scene_name, set())
-        narrator = s.get("narrator", "")
-        if eligible and narrator not in eligible:
+    for scene in eligibility.scenes:
+        if not scene.candidates:
+            continue                      # uncoverable; the treatments call owns it
+        narrator = sections[scene.index].get("narrator", "")
+        eligible_folded = {norm_name(c) for c in scene.candidates}
+        if norm_name(narrator) not in eligible_folded:
             violations.append(
-                f"  - {scene_name}: assigned {narrator!r}, but only "
-                f"{', '.join(sorted(eligible))} speak in that scene"
+                f"  - {scene.name}: assigned {narrator!r}, but only "
+                f"{', '.join(sorted(scene.candidates))} speak in that scene"
             )
     if violations:
         print("\nError: the plan assigns narrators who were not in their "
@@ -330,7 +388,8 @@ def main() -> None:
     if eligibility.pool:
         pool_lower = {c.lower() for c in eligibility.pool}
         intruders = [s["narrator"] for s in sections
-                     if s["narrator"].lower() not in pool_lower]
+                     if s["narrator"].lower() not in pool_lower
+                     and s["narrator"].strip().upper() != "NONE"]
         if intruders:
             print(f"\nWarning: plan contains narrator(s) who were not at this "
                   f"session, or not in --characters: {', '.join(intruders)}")
@@ -343,14 +402,26 @@ def main() -> None:
     out_path = Path(args.out).expanduser()
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    if eligibility.uncoverable:
+    alternate_paths = [
+        out_path.with_name(f"{out_path.stem}.{k}{out_path.suffix}")
+        for k in ALTERNATE_KEYS
+    ]
+
+    if eligibility.has_uncoverable:
         # A scene nobody can narrate is not the planner's to settle. Write three
         # treatments of it and NO plan.md — the missing file is what stops Pass
         # 5, using the gate that already exists.
+        #
+        # Which means a plan.md left by an EARLIER run has to go. Otherwise the
+        # gate reads as satisfied by a plan this run has just superseded, and
+        # Pass 5 narrates the assignment the filter was re-run to remove — the
+        # feature silently defeated by its own success.
+        if out_path.exists():
+            out_path.unlink()
+            print(f"\nRemoved the superseded {out_path.name}: a scene in this "
+                  f"run has no eligible narrator, so the choice is open again.")
         names = list(eligibility.uncoverable)
-        indexes = [
-            i for i, sx in enumerate(scene_extractions) if sx["name"] in set(names)
-        ]
+        indexes = eligibility.uncoverable_indexes
         treatment_prompt = "\n\n---\n\n".join(
             [
                 "## The scene(s) with no eligible narrator\n\n"
@@ -392,11 +463,18 @@ def main() -> None:
 
         print(f"\nNo eligible narrator for: {', '.join(names)}")
         print("Three plans written; they are identical except that scene:")
-        for key, alt in zip(ALTERNATE_KEYS, written):
-            print(f"  {key}. {alt.name:20s} — {treatments[ALTERNATE_KEYS.index(key)].label}")
+        for key, alt, treatment in zip(ALTERNATE_KEYS, written, treatments):
+            print(f"  {key}. {alt.name:20s} — {treatment.label}")
         print(f"\nNo {out_path.name} was written. Choose one before narrating:")
         print(f"  sd_plan --choose <{'|'.join(ALTERNATE_KEYS)}> --out {out_path}")
         return
+
+    # Every scene has a narrator, so any alternates on disk are from a previous
+    # run and would otherwise resurface as a pending choice.
+    for spent in alternate_paths:
+        if spent.is_file():
+            spent.unlink()
+            print(f"Removed the superseded {spent.name}.")
 
     out_path.write_text(plan_text, encoding="utf-8")
     print(f"\nPlan: {len(sections)} section(s) -> {out_path}")

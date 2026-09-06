@@ -59,6 +59,17 @@ def split_plan_blocks(plan_text: str) -> list[tuple[str, str]]:
     return blocks
 
 
+def plan_preamble(plan_text: str) -> str:
+    """Anything before the first scene header.
+
+    The prompt says "no preamble", but that is an instruction, not a guarantee.
+    Dropping it would make the alternates path lose content the ordinary path
+    preserves byte-for-byte, so the two would not round-trip the same document.
+    """
+    first = _BLOCK_RE.search(plan_text)
+    return plan_text[: first.start()] if first else ""
+
+
 def parse_treatments(text: str) -> list[Treatment]:
     """Read the treatment call's output.
 
@@ -90,9 +101,16 @@ def parse_treatments(text: str) -> list[Treatment]:
                 rationale = stripped.split(":", 1)[1].strip()
             elif stripped:
                 body.append(stripped)
-        if body:
+        # A block without `narrator:` and `chunks:` is one `parse_plan` will
+        # drop, which shifts every later scene onto the wrong entry. Rejecting
+        # it here turns a silent off-by-one into a loud parse failure.
+        joined = "\n".join(body)
+        has = lambda k: any(  # noqa: E731
+            ln.lower().startswith(k) for ln in body
+        )
+        if body and has("narrator:") and has("chunks:"):
             out.append(Treatment(label=label or "(unlabelled)",
-                                 rationale=rationale, body="\n".join(body)))
+                                 rationale=rationale, body=joined))
     return out
 
 
@@ -125,7 +143,8 @@ def assemble_alternates(
             else:
                 rebuilt.append(f"{header}\n{body}\n")
         preamble = (
-            f"<!-- plan {key.upper()} — treatment: {treatment.label}\n"
+            plan_preamble(plan_text)
+            + f"<!-- plan {key.upper()} — treatment: {treatment.label}\n"
             f"     uncoverable scene(s): {', '.join(uncoverable_names)}\n"
             f"     no player character speaks in "
             f"{'them' if len(uncoverable_names) > 1 else 'it'}, so no honest "

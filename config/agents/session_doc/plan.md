@@ -23,8 +23,11 @@ spoke there — and it is a closed set.
   narrators, never a threshold. One labelled turn is full eligibility: a
   character with two lines may well be the right narrator for a scene that
   happened to them.
-- If a scene's line says NONE, say so in your plan for that scene rather than
-  choosing somebody. Do not borrow a narrator from a neighbouring scene.
+- If a scene's line says NONE, write `narrator: NONE` for it and fill in the
+  other fields as usual. Do not borrow a narrator from a neighbouring scene,
+  and do not omit the scene or any of its fields — a block missing `narrator:`
+  or `chunks:` is dropped when the plan is parsed, which shifts every scene
+  after it onto the wrong narrator.
 
 CRITICAL: If an "Available narrators" list is provided:
 - The `narrator:` value must be copied EXACTLY, character for character, from

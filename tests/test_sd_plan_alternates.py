@@ -146,6 +146,7 @@ def test_treatments_are_materially_different(tmp_path, monkeypatch):
 
 def test_choose_writes_the_pick_to_plan_md(tmp_path, monkeypatch, capsys):
     out = _run(tmp_path, monkeypatch, uncoverable=True)
+    expected = (out.parent / "plan.b.md").read_text(encoding="utf-8")
     monkeypatch.setattr(
         sys, "argv",
         ["sd_plan.py", "--scene-extractions", str(tmp_path / "scene_extractions"),
@@ -153,8 +154,10 @@ def test_choose_writes_the_pick_to_plan_md(tmp_path, monkeypatch, capsys):
     )
     sd_plan.main()
     assert out.exists()
-    assert out.read_text(encoding="utf-8") == (
-        out.parent / "plan.b.md").read_text(encoding="utf-8")
+    assert out.read_text(encoding="utf-8") == expected
+    # The alternates are spent once chosen. Left on disk they resurface as a
+    # pending choice the next time plan.md is absent.
+    assert not list(out.parent.glob("plan.?.md"))
 
 
 def test_choose_is_equivalent_to_a_copy(tmp_path, monkeypatch):

@@ -61,7 +61,11 @@ from session_doc.narrate import (
     estimate_narration_tokens,
 )
 from campaignlib.party_config import load_party_config_arg, require_from_config
-from campaignlib.players_config import absent_characters, load_players_config_arg
+from campaignlib.players_config import (
+    absent_characters,
+    attendance_is_establishable,
+    load_players_config_arg,
+)
 from campaignlib.vtt import speaker_labels
 from session_doc.roster import roster_from_config
 from session_doc.voice import (
@@ -227,6 +231,15 @@ def _unvoiced_characters(args, players_config, party_cfg) -> "set[str] | None":
     be a guess inside the block Pass 5 is told never to contradict.
     """
     if not args.vtt or players_config is None or party_cfg is None:
+        return None
+    if not attendance_is_establishable(players_config):
+        # No active player declares a display name (Hillsfar's players.yaml is
+        # `players: []`), so no tape can say who was voiced. Marking the whole
+        # roster "nobody voiced them" inside the block Pass 5 must never
+        # contradict would be a guess, and the loudest possible one.
+        print("Warning: players.yaml declares no display names for any active "
+              "player; the roster block will not mark unvoiced characters.",
+              file=sys.stderr)
         return None
     vtt_path = Path(args.vtt).expanduser()
     if not vtt_path.is_file():

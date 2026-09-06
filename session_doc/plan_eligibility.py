@@ -31,15 +31,16 @@ import json
 from dataclasses import dataclass, field
 
 from campaignlib.players_config import (
-    GM_LABEL,
     PlayersConfig,
     absent_characters,
+    attendance_is_establishable,
     attending_players,
     norm_name,
     player_name_for,
+    undetermined_characters,
 )
 from campaignlib.vtt import speaker_labels
-from session_doc.io import scene_speakers
+from session_doc.io import scene_speaker_counts
 
 
 @dataclass(frozen=True)
@@ -58,22 +59,49 @@ class Exclusion:
     scene: str | None = None
 
 
+@dataclass(frozen=True)
+class SceneEligibility:
+    """One scene's candidates, keyed by position rather than by name.
+
+    Two extraction files may declare the same ``scene:`` frontmatter value, and
+    a name-keyed dict silently collapsed them — so one scene advertised the
+    other's candidates and the violation check validated the wrong pair.
+    """
+
+    index: int
+    name: str
+    candidates: set[str]
+    counts: dict[str, int]
+    strangers: set[str]
+
+    @property
+    def uncoverable(self) -> bool:
+        return not self.candidates
+
+
 @dataclass
 class Eligibility:
     """The narrator pool, the per-scene candidates, and the evidence for both."""
 
     pool: set[str]
-    candidates: dict[str, set[str]]
-    uncoverable: list[str]
+    scenes: list[SceneEligibility]
     absent_exclusions: list[Exclusion]
     scene_exclusions: list[Exclusion]
     attendance: dict[str, str] = field(default_factory=dict)
-    line_counts: dict[str, dict[str, int]] = field(default_factory=dict)
-    unrecognised_labels: dict[str, set[str]] = field(default_factory=dict)
+    undetermined: set[str] = field(default_factory=set)
+
+    @property
+    def uncoverable(self) -> list[str]:
+        """Names of the scenes with no eligible narrator, in plan order."""
+        return [s.name for s in self.scenes if s.uncoverable]
+
+    @property
+    def uncoverable_indexes(self) -> list[int]:
+        return [s.index for s in self.scenes if s.uncoverable]
 
     @property
     def has_uncoverable(self) -> bool:
-        return bool(self.uncoverable)
+        return any(s.uncoverable for s in self.scenes)
 
 
 def _canonical(roster: list[str]) -> dict[str, str]:
@@ -101,7 +129,7 @@ def compute_eligibility(
 
     # ── Filter A ────────────────────────────────────────────────────────────
     absent = absent_characters(players, roster, labels)
-    attending = attending_players(players, labels)
+    undetermined = undetermined_characters(players, roster)
     attendance = {
         p.name: next((n for n in p.display_names if n in labels), "")
         for p in players.players
@@ -118,32 +146,28 @@ def compute_eligibility(
     pool = {c for c in roster if c not in absent}
 
     # ── Filter B ────────────────────────────────────────────────────────────
-    candidates: dict[str, set[str]] = {}
-    line_counts: dict[str, dict[str, int]] = {}
-    unrecognised: dict[str, set[str]] = {}
+    scene_records: list[SceneEligibility] = []
     scene_exclusions: list[Exclusion] = []
-    uncoverable: list[str] = []
 
-    for scene in scenes:
+    for index, scene in enumerate(scenes):
         name = scene.get("name", "")
-        moments = scene.get("moments") or ""
-        present_labels = scene_speakers(moments)
+        counts = scene_speaker_counts(scene.get("moments") or "")
 
         present: set[str] = set()
         strangers: set[str] = set()
-        for label in present_labels:
+        roster_counts: dict[str, int] = {}
+        for label, n in counts.items():
             known = canonical.get(norm_name(label))
             if known is None:
                 strangers.add(label)
             else:
                 present.add(known)
+                roster_counts[known] = roster_counts.get(known, 0) + n
 
-        eligible = present & pool
-        candidates[name] = eligible
-        line_counts[name] = _count_lines(moments, canonical)
-        if strangers:
-            unrecognised[name] = strangers
-
+        scene_records.append(SceneEligibility(
+            index=index, name=name, candidates=present & pool,
+            counts=roster_counts, strangers=strangers,
+        ))
         for character in sorted(pool - present):
             scene_exclusions.append(
                 Exclusion(
@@ -152,41 +176,40 @@ def compute_eligibility(
                     reason="no speaker label in this scene",
                 )
             )
-        if not eligible:
-            uncoverable.append(name)
 
     return Eligibility(
         pool=pool,
-        candidates=candidates,
-        uncoverable=uncoverable,
+        scenes=scene_records,
         absent_exclusions=absent_exclusions,
         scene_exclusions=scene_exclusions,
         attendance=attendance,
-        line_counts=line_counts,
-        unrecognised_labels=unrecognised,
+        undetermined=undetermined,
     )
 
 
-def _count_lines(moments: str, canonical: dict[str, str]) -> dict[str, int]:
-    """How many labelled turns each roster character has.
+def _stranger_buckets(e: Eligibility) -> "tuple[dict[str, set[str]], int]":
+    """Split unresolved labels into "probably a mis-normalised PC" and the rest.
 
-    Evidence for the GM's eye only. It never gates eligibility: one label is
-    enough, and a threshold above zero would be a tuning knob with no
-    defensible value (FR-009). Soma has two lines against Vukradin's
-    sixty-six in the real scene 03 and both are legitimate narrators of it.
+    A label containing a roster character's name — ``Vukradin (David)`` — is
+    worth the GM's attention because it silently costs that character a scene.
+    A label that is simply an NPC is not, and there are dozens of those per
+    session; listing them buried the notice that the covering-player case
+    depends on.
+
+    Containment, not similarity: this decides what to *print*, never who anybody
+    is, so it asserts no identity.
     """
-    counts: dict[str, int] = {}
-    for line in moments.splitlines():
-        stripped = line.strip()
-        if not stripped.startswith("**"):
-            continue
-        label = stripped[2:].split("**", 1)[0].strip()
-        if not label or label.startswith("[") or label == GM_LABEL:
-            continue
-        known = canonical.get(norm_name(label))
-        if known:
-            counts[known] = counts.get(known, 0) + 1
-    return counts
+    suspects: dict[str, set[str]] = {}
+    other = 0
+    folded_pool = {norm_name(c): c for c in e.pool}
+    for scene in e.scenes:
+        for label in scene.strangers:
+            folded = norm_name(label)
+            if any(name in folded for name in folded_pool):
+                suspects.setdefault(scene.name, set()).add(label)
+            else:
+                other += 1
+    return suspects, other
 
 
 def report_eligibility(e: Eligibility, *, vtt_path=None) -> None:
@@ -211,23 +234,38 @@ def report_eligibility(e: Eligibility, *, vtt_path=None) -> None:
             who = f" (player: {x.player})" if x.player else " (no player bound)"
             print(f"  - {x.character}{who} — {x.reason}")
 
+    if e.undetermined:
+        print("\n[eligibility] attendance could not be established (not excluded — "
+              "nobody active is bound to them, or their player declares no "
+              "display_names). `players check` reports the binding:")
+        for character in sorted(e.undetermined):
+            print(f"  - {character}")
+
     if e.scene_exclusions:
         print("\n[eligibility] at the session, but not in these scenes:")
-        by_scene: dict[str, list[str]] = {}
+        by_index: dict[str, list[str]] = {}
         for x in e.scene_exclusions:
-            by_scene.setdefault(x.scene or "", []).append(x.character)
-        for scene, chars in by_scene.items():
-            eligible = ", ".join(sorted(e.candidates.get(scene, ()))) or "nobody"
+            by_index.setdefault(x.scene or "", []).append(x.character)
+        eligible_by_name = {s.name: s.candidates for s in e.scenes}
+        for scene, chars in by_index.items():
+            eligible = ", ".join(sorted(eligible_by_name.get(scene, ()))) or "nobody"
             print(f"  - {scene}: {', '.join(sorted(chars))} "
                   f"(eligible here: {eligible})")
 
-    if e.unrecognised_labels:
-        print("\n[eligibility] speaker labels that match no roster character — "
-              "check scene_extract's normalisation before trusting the sets above:")
-        for scene, labels in e.unrecognised_labels.items():
+    suspects, other = _stranger_buckets(e)
+    if suspects:
+        print("\n[eligibility] speaker labels that look like a roster character "
+              "but did not resolve — scene_extract's normalisation is the "
+              "likely cause, and each one costs that character a scene:")
+        for scene, labels in suspects.items():
             print(f"  - {scene}: {', '.join(sorted(labels))}")
+    if other:
+        # NPC labels are expected and there are dozens per session. Listing them
+        # buried the line above, which is the one the GM has to read.
+        print(f"\n[eligibility] {other} further non-roster label(s) "
+              f"(NPCs and unnamed voices) — expected, not listed.")
 
-    if e.uncoverable:
+    if e.has_uncoverable:
         print("\n[eligibility] no eligible narrator at all:")
         for scene in e.uncoverable:
             print(f"  - {scene}")
@@ -260,14 +298,20 @@ def write_eligibility_record(e: Eligibility, *, out_dir, vtt_path) -> "Path":
             for name, label in sorted(e.attendance.items())
         },
         "pool": sorted(e.pool),
-        "scenes": {
-            name: {
-                "eligible": sorted(cands),
-                "line_counts": e.line_counts.get(name, {}),
-                "uncoverable": name in e.uncoverable,
+        "undetermined": sorted(e.undetermined),
+        # A list, not a name-keyed object: two scenes may share a frontmatter
+        # `scene:` value, and keying by it silently merged them.
+        "scenes": [
+            {
+                "index": s.index,
+                "name": s.name,
+                "eligible": sorted(s.candidates),
+                "line_counts": s.counts,
+                "uncoverable": s.uncoverable,
+                "unresolved_labels": sorted(s.strangers),
             }
-            for name, cands in e.candidates.items()
-        },
+            for s in e.scenes
+        ],
         "exclusions": {
             "absent_players": [
                 {"character": x.character, "player": x.player, "reason": x.reason}
@@ -277,9 +321,6 @@ def write_eligibility_record(e: Eligibility, *, out_dir, vtt_path) -> "Path":
                 {"character": x.character, "scene": x.scene, "reason": x.reason}
                 for x in e.scene_exclusions
             ],
-        },
-        "unrecognised_labels": {
-            scene: sorted(labels) for scene, labels in e.unrecognised_labels.items()
         },
     }
     path = out_dir / ELIGIBILITY_RECORD

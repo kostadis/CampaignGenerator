@@ -850,7 +850,8 @@ async function refreshPlanAlternates() {
 }
 
 function choosePlan(key: string) {
-  if (choosingPlan.value) return
+  if (choosingPlan.value || planning.value || enhancing.value
+      || extracting.value || narrating.value) return
   choosingPlan.value = true
   narrationOutput.value = ''
   setStatus(`Choosing plan ${key.toUpperCase()}...`)
@@ -875,7 +876,8 @@ function choosePlan(key: string) {
 }
 
 async function runPlan() {
-  if (planning.value || enhancing.value || extracting.value || narrating.value) return
+  if (planning.value || enhancing.value || extracting.value
+      || narrating.value || choosingPlan.value) return
   planning.value = true
   narrationOutput.value = ''
   setStatus('Planning & consistency check (Stage 3)...')

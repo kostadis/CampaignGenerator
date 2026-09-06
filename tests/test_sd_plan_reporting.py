@@ -88,7 +88,10 @@ def test_record_is_written_beside_the_plan(tmp_path, monkeypatch):
     assert sorted(data["pool"]) == ["Soma", "Valphine Sotorra", "Vukradin"]
     assert data["attendance"]["Stéphane Bourdeaud"]["present"] is False
     assert data["attendance"]["Wade Brown"]["matched_label"] == "Wade Brown"
-    assert data["scenes"]["Encounter in the Sewers"]["eligible"] == ["Soma", "Vukradin"]
+    # A list, not a name-keyed object: two scenes may share a `scene:` value.
+    sewers = next(s for s in data["scenes"] if s["name"] == "Encounter in the Sewers")
+    assert sewers["eligible"] == ["Soma", "Vukradin"]
+    assert sewers["index"] == 2
     assert any(x["character"] == "Brewbarry"
                for x in data["exclusions"]["absent_players"])
 
@@ -97,7 +100,7 @@ def test_line_counts_are_evidence_not_a_gate(tmp_path, monkeypatch):
     """Soma has one labelled turn in scene 3 and stays eligible (FR-009)."""
     out = _run(tmp_path, monkeypatch)
     data = json.loads((out.parent / ELIGIBILITY_RECORD).read_text(encoding="utf-8"))
-    scene3 = data["scenes"]["Encounter in the Sewers"]
+    scene3 = next(s for s in data["scenes"] if s["name"] == "Encounter in the Sewers")
     assert scene3["line_counts"]["Soma"] < scene3["line_counts"]["Vukradin"]
     assert "Soma" in scene3["eligible"]
 
@@ -130,4 +133,6 @@ def test_unrecognised_label_is_surfaced(tmp_path, monkeypatch, capsys):
         pass
     printed = capsys.readouterr().out
     assert "Vukradin (David)" in printed
-    assert "match no roster character" in printed
+    # The wording changed when NPC labels were split out of this notice: dozens
+    # of them per session were burying the one line the GM must read.
+    assert "look like a roster character" in printed

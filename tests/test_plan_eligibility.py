@@ -137,15 +137,21 @@ def test_absent_player_yields_an_absent_character(tmp_path):
     assert absent_characters(cfg, ROSTER, speaker_labels(VTT)) == {"Brewbarry"}
 
 
-def test_a_character_nobody_plays_is_never_eligible(tmp_path):
+def test_a_character_nobody_plays_is_undetermined_not_absent(tmp_path):
+    """Reversed after review. An unbound character is a gap in players.yaml,
+    which `players check` already reports — not evidence that nobody played
+    them. Absence is a claim about evidence, so it needs evidence."""
+    from campaignlib.players_config import undetermined_characters
+
     cfg = _players(tmp_path)
     roster = ROSTER + ["Boney"]
-    assert "Boney" in absent_characters(cfg, roster, speaker_labels(VTT))
+    assert "Boney" not in absent_characters(cfg, roster, speaker_labels(VTT))
+    assert "Boney" in undetermined_characters(cfg, roster)
 
 
-def test_an_inactive_player_is_not_resurrected(tmp_path):
-    """`active: false` already drops out of the prompt roster; this must not
-    quietly put them back by counting an archived label."""
+def test_an_inactive_player_is_not_counted_as_attending(tmp_path):
+    """`active: false` already drops out of the prompt roster; an archived
+    label must not quietly put them back at the table."""
     _sx, _vtt, players = write_session(tmp_path)
     players.write_text(
         players.read_text(encoding="utf-8").replace(
@@ -154,12 +160,28 @@ def test_an_inactive_player_is_not_resurrected(tmp_path):
         encoding="utf-8",
     )
     cfg = load_players_config(players)
-    assert "Soma" in absent_characters(cfg, ROSTER, speaker_labels(VTT))
+    assert "wade" not in attending_players(cfg, speaker_labels(VTT))
 
 
 def test_gm_only_tape_leaves_nobody_attending(tmp_path):
     cfg = _players(tmp_path)
     assert absent_characters(cfg, ROSTER, speaker_labels(VTT_GM_ONLY)) == set(ROSTER)
+
+
+def test_an_inactive_players_character_is_undetermined_not_absent(tmp_path):
+    """`active: false` means the person left the campaign, so the tape has
+    nothing to say about them — and Filter A must not claim it does."""
+    from campaignlib.players_config import undetermined_characters
+
+    _sx, _vtt, players = write_session(tmp_path)
+    players.write_text(
+        players.read_text(encoding="utf-8").replace(
+            "  plays:\n  - Soma", "  active: false\n  plays:\n  - Soma"
+        ),
+        encoding="utf-8",
+    )
+    cfg = load_players_config(players)
+    assert "Soma" in undetermined_characters(cfg, ROSTER)
 
 
 # ── T006: the composed result ───────────────────────────────────────────────
@@ -182,7 +204,7 @@ def test_pool_excludes_the_absent_players_character(tmp_path):
 
 def test_candidates_per_scene(tmp_path):
     e = _eligibility(tmp_path)
-    by_scene = {name: cands for name, cands in e.candidates.items()}
+    by_scene = {s.name: s.candidates for s in e.scenes}
     three = {"Vukradin", "Valphine Sotorra", "Soma"}
     assert by_scene["Rumors and Preparations at the Common Chord"] == three
     assert by_scene["The Sewer Stakeout"] == three
@@ -193,7 +215,7 @@ def test_candidates_per_scene(tmp_path):
 
 def test_brewbarry_is_a_candidate_for_no_scene(tmp_path):
     e = _eligibility(tmp_path)
-    assert all("Brewbarry" not in c for c in e.candidates.values())
+    assert all("Brewbarry" not in s.candidates for s in e.scenes)
 
 
 def test_uncoverable_scene_is_reported(tmp_path):
@@ -220,4 +242,4 @@ def test_exclusions_carry_their_cause(tmp_path):
 def test_empty_pool_is_visible_not_silent(tmp_path):
     e = _eligibility(tmp_path, gm_only_vtt=True)
     assert e.pool == set()
-    assert e.candidates and all(c == set() for c in e.candidates.values())
+    assert e.scenes and all(s.candidates == set() for s in e.scenes)
