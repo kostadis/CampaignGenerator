@@ -113,9 +113,11 @@ reason and a one-click remedy ("Clear batch selection"). It never quietly runs
 at full price: that would bill double what you asked for, invisibly. This
 matches the CLI, which refuses the same combination.
 
-**Slower stages.** Session Prep and the narrate stage run their steps in
-order, so under batch they submit one at a time — same discount, longer
-wall-clock. The page says so before the run.
+**Slower stages.** Session Prep and sequential narration run their steps in
+order, so under provider Batch they submit one item at a time — same discount,
+longer wall-clock. The explicit bundled narration action instead carries its
+selected scenes in one prompt and submits one item when provider Batch is on.
+The page shows content mode and provider submission mode separately.
 
 **Not offered on the Connection Graph.** It is the one service that runs
 inside a single web request rather than as a streamed background run, so a
@@ -180,9 +182,19 @@ Two-panel layout for the extract → edit → narrate → assemble workflow:
 - **Left**: scene list with the four lifecycle dots (E/R/N/S)
 - **Centre**: extraction file editor with save/reload, token estimates, streaming narration output
 
-**Workflow**: click a scene → review/edit extraction → Narrate (streams `sd_narrate --plan plan.md --scene N`) → repeat → Assemble Doc.
+**Workflow**: click a scene → review/edit extraction → Narrate (streams
+`sd_narrate --plan plan.md --scene N`) → repeat → Assemble Doc. For a reviewed
+full plan, **Narrate all in one call…** opens an explicit scope/replacement
+dialog and streams `sd_narrate --batch-scenes --scene 1 2 ...`. It writes the
+same per-scene files and leaves the one-scene action available for reruns.
 
-The editor has a config panel for setting paths (session recap, scene extractions dir, narration dir, etc.) that auto-populates from the Session Config page. The config panel also accepts characters, voice_dir, examples, and narrate_tokens.
+The editor has a config panel for setting paths (session recap, scene extractions dir, narration dir, etc.) that auto-populates from the Session Config page. The config panel also accepts characters, voice_dir, examples, per-scene `narrate_tokens`, and the independent total `batch_tokens` ceiling.
+
+Bundled completion is disk-backed. A nonce-scoped JSON report identifies the
+exact editor invocation, and the terminal stream event reports written/requested
+counts and missing scenes. Valid partial output keeps complete files for review;
+the editor refreshes all scene state and offers the normal current-scene action
+for recovery. Narration still stops before approval and assembly.
 
 **Typora integration**: Edit in Typora / Open narration buttons work on WSL via `wslpath -w` + `powershell.exe Start-Process`.
 

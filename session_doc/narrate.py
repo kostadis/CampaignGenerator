@@ -6,9 +6,10 @@ the token-budget estimator used by the per-scene loop.
 """
 
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
-from campaignlib import load_agent_prompt
+from campaignlib import load_agent_prompt, split_batched_response
 
 _PLACEHOLDER_RE = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
@@ -166,6 +167,16 @@ DIALOGUE_INSTRUCTION_CONDITIONAL = _load_template_deferred(
 PROSE_MODE_INSTRUCTION     = _load_template_deferred("session_doc/narrate/prose_mode")
 SCENE_ANCHORED_DIRECTIVE   = _load_template_deferred(
     "session_doc/narrate/scene_anchored", "narrator")
+BUNDLE_SYSTEM_BASE         = _load_template_deferred(
+    "session_doc/narrate/bundle_base",
+    "genre_directive", "shared_examples_block", "prose_mode_block",
+    "shared_context", "scene_count", "dialogue_instruction",
+)
+BUNDLE_SCENE_TEMPLATE      = _load_template_deferred(
+    "session_doc/narrate/bundle_scene",
+    "index", "scene_name", "narrator", "focus", "scene_events",
+    "moments", "voice_block", "examples_block", "contrast_block",
+)
 
 # Longest genre value still delivered as an inline ``GENRE: ...`` label.
 # Anything above this is a document and gets its own delimited block.
@@ -285,6 +296,202 @@ def estimate_narration_tokens(text: str) -> int:
     expansion = 4 if has_dialogue else 3
     estimated = int(len(text) / 4 * expansion)
     return max(500, ((estimated + 249) // 250) * 250)
+
+
+@dataclass(frozen=True)
+class NarrationScene:
+    """One full-plan narration scene prepared before a bundle call."""
+
+    index: int
+    scene_name: str
+    narrator: str
+    focus: str
+    source_path: Path
+    source_kind: str
+    scene_events: str
+    moments: str
+    voice_note: str | None
+    character_examples: str | None
+    previous_narrator: str | None
+    previous_voice_sample: str | None
+    estimated_output_tokens: int
+    output_path: Path
+    output_existed: bool
+
+    def __post_init__(self) -> None:
+        if self.index < 1:
+            raise ValueError("narration scene index must be positive")
+        if self.source_kind not in {"base", "override"}:
+            raise ValueError("narration scene source_kind must be base or override")
+
+    def split_entry(self) -> dict:
+        return {"i": self.index, "name": self.scene_name}
+
+
+@dataclass(frozen=True)
+class BundleSelection:
+    """Validated, ordered scope for exactly one bundled exchange."""
+
+    scenes: tuple[NarrationScene, ...]
+    bundle_ceiling: int
+    provider_batch: bool = False
+
+    def __post_init__(self) -> None:
+        if not self.scenes:
+            raise ValueError("bundled narration requires at least one selected scene")
+        indices = [scene.index for scene in self.scenes]
+        if any(i < 1 for i in indices) or len(set(indices)) != len(indices):
+            raise ValueError("bundled narration scene indices must be unique and positive")
+        if indices != sorted(indices):
+            raise ValueError("bundled narration scenes must be in full-plan order")
+        if self.bundle_ceiling < 1:
+            raise ValueError("--batch-max-tokens must be a positive integer")
+
+    @property
+    def projected_output_tokens(self) -> int:
+        # Covers both sentinel lines and whitespace around each section. It is
+        # deliberately small and fixed; narration prose dominates the estimate.
+        return sum(s.estimated_output_tokens + 32 for s in self.scenes)
+
+
+def _genre_block(genre: str | None) -> str:
+    if not genre or not genre.strip():
+        return ""
+    value = genre.strip()
+    if "\n" in value or len(value) > GENRE_INLINE_MAX_CHARS:
+        return ("GENRE & REGISTER (campaign-specific) — BEGIN\n"
+                f"{value}\nGENRE & REGISTER — END")
+    return f"GENRE: {value}"
+
+
+def _shared_narration_context(*, party: str | None, roster: str,
+                              npc_roster: str,
+                              context_docs: list[str] | None) -> str:
+    parts: list[str] = []
+    if roster:
+        parts.append("## Character Classes (definitive — never contradict these)\n\n" + roster)
+    if npc_roster:
+        parts.append(
+            "## Known NPCs — canonical spellings for NARRATION ONLY\n\n"
+            "Use these spellings only in prose. Never alter words inside quotation marks.\n\n"
+            + npc_roster
+        )
+    if party:
+        parts.append(
+            "## Party Document (authoritative source for character classes, abilities, and roles)\n\n"
+            + party.strip()
+        )
+    if context_docs:
+        parts.append(
+            "## Campaign History\n\nUse this only for brief, relevant memories; do not summarize it.\n\n"
+            + "\n\n---\n\n".join(context_docs)
+        )
+    return "\n\n---\n\n".join(parts)
+
+
+def build_bundled_narrate_prompts(
+    scenes: list[NarrationScene] | tuple[NarrationScene, ...],
+    *,
+    shared_examples: str | None = None,
+    party: str | None = None,
+    roster: str = "",
+    npc_roster: str = "",
+    context_docs: list[str] | None = None,
+    prose_mode: bool = False,
+    genre: str | None = None,
+) -> tuple[str, str]:
+    """Build one shared system prompt and ordered scene-packet user prompt."""
+    _require_templates()
+    if not scenes:
+        raise ValueError("cannot build a narration bundle with no scenes")
+    shared_style = (
+        _fill(EXAMPLES_BLOCK, examples=shared_examples.strip())
+        if shared_examples else ""
+    )
+    system = _fill(
+        BUNDLE_SYSTEM_BASE,
+        genre_directive=_genre_block(genre),
+        shared_examples_block=shared_style,
+        prose_mode_block=PROSE_MODE_INSTRUCTION if prose_mode else "",
+        dialogue_instruction=DIALOGUE_INSTRUCTION_CONDITIONAL,
+        shared_context=_shared_narration_context(
+            party=party, roster=roster, npc_roster=npc_roster,
+            context_docs=context_docs,
+        ),
+        scene_count=str(len(scenes)),
+    )
+    packets: list[str] = []
+    for scene in scenes:
+        voice_block = (
+            _fill(VOICE_SPEC_BLOCK, narrator=scene.narrator,
+                  voice_note=scene.voice_note.strip())
+            if scene.voice_note else ""
+        )
+        examples_block = (
+            _fill(PER_CHAR_EXAMPLES_BLOCK, narrator=scene.narrator,
+                  examples=scene.character_examples.strip())
+            if scene.character_examples else ""
+        )
+        contrast_block = (
+            _fill(PREV_VOICE_CONTRAST_BLOCK,
+                  prev_narrator=scene.previous_narrator,
+                  prev_voice_sample=scene.previous_voice_sample.strip(),
+                  narrator=scene.narrator)
+            if scene.previous_narrator and scene.previous_voice_sample else ""
+        )
+        packets.append(_fill(
+            BUNDLE_SCENE_TEMPLATE,
+            index=f"{scene.index:02d}", scene_name=scene.scene_name,
+            narrator=scene.narrator, focus=scene.focus,
+            scene_events=scene.scene_events.strip(), moments=scene.moments.strip(),
+            voice_block=voice_block, examples_block=examples_block,
+            contrast_block=contrast_block,
+        ))
+    return system.strip(), "\n\n".join(packets).strip()
+
+
+_BUNDLE_MARKER_RE = re.compile(
+    r"^<<<CG-SCENE (\d+) (?:(BEGIN): (.*)|(END))>>>[ \t\r]*$", re.MULTILINE
+)
+
+
+def split_bundled_narration(text: str, scenes: list[NarrationScene] | tuple[NarrationScene, ...]) -> dict:
+    """Validate bundle order/end pairing, then use the shared scene splitter."""
+    expected = [scene.index for scene in scenes]
+    seen_begins: list[int] = []
+    open_index: int | None = None
+    for marker in _BUNDLE_MARKER_RE.finditer(text):
+        index = int(marker.group(1))
+        if marker.group(2) == "BEGIN":
+            seen_begins.append(index)
+            if open_index is not None:
+                return {
+                    "failed": True, "failure_reason": "NESTED_SECTION",
+                    "failure_detail": (
+                        f"scene {index:02d} BEGIN appears before scene "
+                        f"{open_index:02d}'s END"
+                    ),
+                    "sections": [],
+                }
+            open_index = index
+        else:
+            if open_index is None or index != open_index:
+                return {
+                    "failed": True, "failure_reason": "MISMATCHED_END",
+                    "failure_detail": f"END {index:02d} does not close the open scene",
+                    "sections": [],
+                }
+            open_index = None
+    expected_positions = {index: pos for pos, index in enumerate(expected)}
+    known_begins = [i for i in seen_begins if i in expected_positions]
+    if any(expected_positions[a] > expected_positions[b]
+           for a, b in zip(known_begins, known_begins[1:])):
+        return {
+            "failed": True, "failure_reason": "OUT_OF_ORDER",
+            "failure_detail": "response scene sections are not in requested plan order",
+            "sections": [],
+        }
+    return split_batched_response(text, [scene.split_entry() for scene in scenes])
 
 
 def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
