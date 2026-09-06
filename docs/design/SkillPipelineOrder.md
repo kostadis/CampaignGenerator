@@ -2,18 +2,21 @@
 
 Companion to [TheFlow.md](TheFlow.md), which describes the whole loop end to end
 (prep → session → memoir → grounding → next prep). This doc covers **one
-segment** of it in detail: the ordering of the Claude skills and CLIs that run
+segment** of it in detail: the ordering of the Codex/Claude skills and CLIs that run
 between a finished recording and an assembled session document, and *why each
 one sits where it does*.
 
 `TheFlow.md` was written against the older monolithic `session_doc.py`
 (Pass 1–5, `quote_ledger.py`, the `QuotePicker` UI). The chain below is the
-current split-CLI pipeline (`sd_plan` / `sd_narrate`) and includes six skills
-absent from that doc's inventory: `speaker-attribution`, `scene-extract`,
-`voice-smooth`, `scrub`, `no-mech`, `remove-recap`. Where the two disagree on
-ordering, this doc is newer.
+current split-CLI pipeline (`sd_plan` / `sd_narrate`), with upstream cleanup,
+reviewed dialogue editing, and final voice/consistency checks. Where the two
+disagree on post-recording ordering, this document is authoritative.
 
-Skills marked `[ ]` live **outside this repo**, in `~/.claude/skills/`.
+Skills live **outside this repo**. Codex sources are in
+`~/src/mytools/dotfiles/codex/skills/`, linked through `~/.codex/skills/`;
+Claude sources are in the sibling `dotfiles/claude/skills/` collection.
+`dialogue-edit` is a Codex skill. `[ ]` marks an optional pass, not automatic
+execution; every editing pass retains its own human checkpoint.
 
 ## The order
 
@@ -28,8 +31,13 @@ VTT
   → /voice-smooth
   → [ /no-mech ]           ← mechanics, before narration
   → sd_plan
-  → sd_narrate
-  → /scrub
+  → sd_narrate             ← continue using the existing UI
+  → GM review of narration
+  → [ /scrub ]            ← residual cleanup, if needed
+  → [ /dialogue-edit ]    ← exact proposals → per-scene GM rulings → derived revision
+  → /voice-critic         ← inspect the actual selected edited revision
+  → /staged-consistency  phase 3, on that same selected narration
+  → GM selects/promotes final scene versions
   → assemble
 ```
 
@@ -44,10 +52,16 @@ follow, and they are the reason the order is not arbitrary:
 1. **`/scrub` is the fallback, not the plan.** It repairs mechanical residue that
    reached the narration. Everything that can be removed upstream should be, and
    `/scrub` should find less every session it runs.
-2. **Cost rises monotonically to the right.** A defect removed before
+2. **Upstream defects get more expensive downstream.** A defect removed before
    `/scene-extract` costs nothing downstream. The same defect removed after
    `sd_narrate` costs a re-narration, and — if it changes the scene count — a
    re-plan and a full renumber.
+
+Dialogue editing needs the context created by narration: it is deliberately
+after `sd_narrate`. It improves how retained speech reads in the scene through
+reviewed exact edits, without re-running the narrator. Source errors discovered
+there are carried back to their owning stage rather than repaired by invented
+dialogue.
 
 This is the design principle from `TheFlow.md` ("never feed an LLM's output to
 another LLM without human review") applied to *sequencing* rather than to
@@ -67,14 +81,19 @@ means an LLM consumed unreviewed input in the meantime.
 | `/voice-smooth` | Renders verbatim quotes readable and in-voice, into a derived `scene_extractions_smoothed/`. Must run *after* the consistency pass — smoothing a garbled quote produces a fluent mistake, which is much harder to catch than a garbled one. |
 | **`/no-mech`** | After smoothing (so it operates on the layer narration actually reads) and **before `sd_narrate`**, so the narrator never has to convert a die roll into prose. |
 | `sd_plan` | Assigns narrators to scenes. Numbers sections by directory order — see the renumbering hazard below. |
-| `sd_narrate` | Renders. Must read `scene_extractions_smoothed/`, not `scene_extractions/`; it warns if pointed at the wrong one. |
-| `/scrub` | Mechanical residue that still reached the prose, plus the classes only a reading pass finds (anachronism, transcript artifacts). |
-| `assemble` | Prefers `<scene>.scrubbed.md` per scene, falling back to the raw `.md`, so a mixed directory assembles correctly. |
+| `sd_narrate` | Renders through the existing UI or CLI, using the selected reviewed smoothed extraction. Dialogue-edit changes neither its prompt nor its configuration. |
+| `/scrub` | Residual cleanup when needed. Complete it before dialogue editing and voice fixes: a later scrub regeneration can discard downstream edits. |
+| **`/dialogue-edit`** | After narration and any intended scrub pass, before final voice critique. Read the full scene, propose exact supported dialogue edits, obtain per-scene GM rulings, and write a separate revision. |
+| `/voice-critic` | Review the actual approved revision for narrator/prose drift and register problems. Supply original scene identity and run provenance; do not accidentally critique an older raw/scrubbed file. |
+| `/staged-consistency` phase 3 | Final consistency review names the same selected narration version. Missing events and source errors are carried to their owning stage. |
+| GM promotion | Explicitly choose final reviewed scene versions for assembly. A dialogue-edit candidate or revision is not automatically collected. |
+| `assemble` | Existing collection prefers `<scene>.scrubbed.md` per scene, falling back to raw `.md`. Confirm it selects the GM-approved final versions; the skill adds no new collection rule. |
 
-## The two new skills
+## Placement details
 
-Both were built from a full pipeline run of the *obelisk* campaign, chapter 10.
-Neither is in `TheFlow.md`'s inventory.
+The remove-recap and no-mech placements were established by the *obelisk*
+chapter 10 pipeline run. Dialogue editing adds the later narration-context
+checkpoint described below.
 
 ### `/remove-recap` — before `/scene-extract`
 
@@ -121,6 +140,61 @@ It also prevents a hard failure. When a scene is *entirely* mechanical and
 `sd_narrate` writes no reclassification hatch, the tooling reaches the page as
 in-fiction dialogue — ch10 scene 02 narrated `"Quest log."` and
 `"I cannot see your pointer."` as things a character said aloud.
+
+### `/dialogue-edit` — after narration, before final `/voice-critic`
+
+The answer to “after no-mech or before voice-critic?” is **both**, with
+narration between no-mech and dialogue-edit:
+
+`voice-smooth → no-mech → UI narration → scrub if needed → dialogue-edit → voice-critic`.
+
+no-mech removes table operation from the smoothed extraction. Dialogue-edit
+uses the finished prose: it can join fragments, clarify a source-supported
+utterance, or reduce accidental repetition while retaining cadence, uncertainty,
+speaker identity, and inner narration. Meaningful pauses and separate speakers'
+agreement are not automatically disposable.
+
+The Codex skill lives at
+`~/src/mytools/dotfiles/codex/skills/dialogue-edit/SKILL.md`. It runs in the
+conversation, using approach B's editorial guidance and review-derived cadence
+safeguards from CG #387 / campaigns PR #232. Its deterministic helper freezes
+exact proposals and applies actual GM approvals. It adds no CG command or UI button.
+
+**Continue narrating through the UI.** Single-scene and bundled generation now
+share the accepted narration-v1 writing brief in
+[`writing_brief.md`](../../config/agents/session_doc/narrate/writing_brief.md).
+It applies across campaigns, with their declared voice and genre references.
+The brief governs quotation selection, scene construction, knowledge boundaries,
+present tense, and prose mode; references supply diction, cadence, and register.
+Dialogue-edit remains the subsequent GM-reviewed editing pass using approach B.
+
+The generation brief comes from campaigns PR #232's archived
+[`narration_v1.md`](https://github.com/kostadis/campaigns/blob/0355cdd28179650cf11ecb4435e4841fbe61d54c/experiments/sd-narrate/prompts/narration_v1.md).
+Its seven writing paragraphs are unchanged. The output instruction retains CG's
+existing heading-free scene bodies (assembly supplies headings) and bundle
+transport markers. Legacy word targets, mandatory inclusion of every quote,
+and prose-mode speaker guessing no longer compete with v1. Existing narration
+files remain as generated; future Narrate runs use the shared brief.
+
+Each scene follows read → propose → GM review in chat or the shared standalone
+page → apply exact approved changes → read the result and check adjacent seams.
+Outputs live under `<session>/dialogue_edit/<scene-run>/`, outside active
+narration inputs. The original remains intact. `dialogue_edit.sources.yaml`
+records selected sources, decisions, revisions, and unresolved work. No
+candidate is silently promoted into assembly.
+
+Pass the exact approved revision to voice-critic with its original scene
+identity, original `.knobs.json` location when available, and declared reference
+provenance. Do not fabricate a new generation record for an edited scene.
+The critic's prose scans often exclude dialogue: its report is not proof that
+paraphrased dialogue is verbatim or faithful. The source review and GM ruling
+carry that responsibility.
+
+An early critique can diagnose systemic voice problems before local editing.
+The final critique still follows the last approved edit; repeat affected checks
+if further edits follow. If no-mech, scrub, or narration is rerun afterward,
+reconcile the changed inputs and review revised proposals instead of replaying
+stale edits.
 
 ## The renumbering hazard
 

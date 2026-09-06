@@ -3,7 +3,9 @@
 Narrator: {narrator}
 Focus: {focus}
 
-Render this scene through {narrator}'s eyes only. Foreground what {narrator} said, did, noticed, and felt. Every eligible verbatim quote belongs in this section even when another character spoke it.
+Render this scene through {narrator}'s eyes only. Respect who is present and what
+{narrator} can know. Select speech using the shared writing brief, preserving the
+source wording, attribution, conversational purpose, and discovery order.
 
 ### Authoritative scene events
 
