@@ -534,6 +534,12 @@ def _smoothed_boundary_cfg(
     context.write_text("# World State\n", encoding="utf-8")
     smoothed = _write_smoothed_scene(sd)
     camp = _campaign_with_party_yaml(tmp_path)
+    # sd_plan reads attendance from the tape and refuses without players.yaml
+    # to resolve its labels against (#385).
+    (camp / "config" / "players.yaml").write_text(
+        "players:\n- id: stphane\n  name: Stéphane Bourdeaud\n"
+        "  display_names:\n  - Stéphane Bourdeaud\n  plays:\n  - Brewbarry\n",
+        encoding="utf-8")
     cfg = replace(
         _cfg(
             session_recap=str(gm),

@@ -248,6 +248,33 @@ Which use wins is your ruling, so the migration declines rather than inventing a
 
 ---
 
+## A player missed the session
+
+Nothing to do — but here is what changes, so it is not a surprise.
+
+`sd_plan` reads the tape's speaker labels and matches them against
+`display_names` in `players.yaml`. A player with no label was not there, and
+their character is removed from the narrator pool for that session: they will
+not be assigned a scene, and the "characters with no section" warning will not
+name them, because having no section is now the correct outcome.
+
+The exclusion is printed before the model call and recorded in
+`plan.eligibility.json` beside `plan.md`. `sd_narrate --vtt` additionally marks
+them in the roster block as unvoiced, so Pass 5 knows not to write dialogue for
+them while still being able to narrate a GM beat that places them in a scene.
+
+**A character who appears absent but was not.** Two causes, both visible:
+
+- **Their display name is not declared.** The tape says `Wade B.` and
+  `players.yaml` says `Wade Brown`. Matching is exact, so this reads as
+  absence. `players check --vtt <tape>` names every declared label the tape does
+  not contain — run it first.
+- **Somebody covered their character for the night.** Those lines carry the
+  *covering* player's label, so the covered character reads as absent and is
+  excluded. This one the system cannot see, by design: attendance is read from
+  the tape with no override. Reinstate them by editing `plan.md` before Pass 5,
+  which is why the exclusion is always reported rather than applied silently.
+
 ## Why it works this way
 
 One sentence from `docs/design/PlayerIdentity.md`, which surveyed the fourteen stores this

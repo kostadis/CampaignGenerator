@@ -45,21 +45,18 @@ from campaignlib.players_config import (
     load_players_config,
     norm_name,
 )
+from campaignlib.vtt import speaker_labels
 
 
 def _read_vtt_speakers(vtt: Path) -> set[str]:
     """Every ``Name:`` prefix that starts a line in ``vtt``.
 
-    Deliberately the same shape ``normalize_vtt_speakers`` matches — a literal
-    prefix at the start of a line — so "the check says this label is present"
-    and "the rewrite will find this label" cannot disagree.
+    The rule itself is :func:`campaignlib.vtt.speaker_labels` — ``sd_plan``
+    derives session attendance from the same shape, and two copies would be
+    two definitions of presence (Constitution V). This wrapper only reads the
+    file.
     """
-    speakers: set[str] = set()
-    for line in vtt.read_text(encoding="utf-8", errors="replace").splitlines():
-        head, sep, _rest = line.partition(":")
-        if sep and head and head == head.strip() and len(head) < 60:
-            speakers.add(head)
-    return speakers
+    return speaker_labels(vtt.read_text(encoding="utf-8", errors="replace"))
 
 
 #: Where a campaign conventionally keeps its voice specs and style examples.

@@ -4,7 +4,7 @@ import sys
 from typing import TYPE_CHECKING
 
 from campaignlib.party_md import parse_party_md
-from campaignlib.players_config import player_name_for
+from campaignlib.players_config import norm_name, player_name_for
 from campaignlib.textproc import split_frontmatter
 
 if TYPE_CHECKING:
@@ -75,8 +75,27 @@ def extract_character_roster(party_text: str) -> str:
     return "\n".join(roster)
 
 
+#: Appended to a character whose player was not at the session.
+#:
+#: The wording is the whole risk of this feature, and it is deliberately about
+#: VOICING, not about presence in the fiction. Brewbarry's player was absent
+#: from the session behind #385; Brewbarry was *in the tavern*, because the GM
+#: put him there and narrated him walking in. A marker reading "not in this
+#: session" would make the roster block — the one Pass 5 is told never to
+#: contradict — assert something the extraction flatly contradicts, turning a
+#: fabrication guard into a fabrication cause. The character stays fully
+#: grounded; only the claim about who spoke for them is added.
+UNVOICED_MARKER = (
+    " — no player voiced them this session; the GM may still have placed them "
+    "in scenes, so narrate what the extraction shows and invent no dialogue "
+    "for them"
+)
+
+
 def roster_from_config(
-    cfg: "ResolvedPartyConfig", players: "PlayersConfig | None" = None
+    cfg: "ResolvedPartyConfig",
+    players: "PlayersConfig | None" = None,
+    unvoiced: "set[str] | None" = None,
 ) -> str | None:
     """Render the roster from each character's D&D Beyond sheet, per the GM
     ruling in ``docs/design/PartyRosterCanonicalFormat.md`` (issue #265):
@@ -167,11 +186,18 @@ def roster_from_config(
         class_info = f"{species} {class_level}".strip()
         if subclass:
             class_info = f"{class_info} ({subclass})"
-        lines.append(
+        line = (
             f"- {character.name} ({player}): {class_info}"
             if player
             else f"- {character.name}: {class_info}"
         )
+        # `unvoiced` of None is the whole of today's behaviour, byte for byte —
+        # `pipelines/ensemble/polish.py` is a second caller and must stay inert.
+        if unvoiced and norm_name(character.name) in {
+            norm_name(n) for n in unvoiced
+        }:
+            line += UNVOICED_MARKER
+        lines.append(line)
     if problems:
         print(
             "roster_from_config: no usable roster — not every character's "

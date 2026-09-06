@@ -169,6 +169,40 @@ Two things follow, and both are enforced rather than documented:
   group.** Both are refused with the migration command in the message, not
   ignored. See `docs/config/players-isolation.md`.
 
+### A narrator must have been in the scene
+
+`sd_plan` chooses a scene's narrator from a set computed **before** the model
+call, never from the campaign roster. Two deterministic filters, no tokens:
+
+- **Filter A — attendance.** `--vtt`'s speaker labels matched against
+  `players.yaml` `display_names`. A character played only by absent players
+  leaves the pool for the session.
+- **Filter B — scene presence.** Within the pool, a character with no speaker
+  label in a scene's extraction cannot narrate it.
+
+They read different label spaces on purpose — a VTT carries player display
+names, `scene_extract` output carries character names — so do not merge them
+into one helper.
+
+Three rules that are enforced rather than documented:
+
+- **Presence is read from `moments`, anchored on `^**Name**`.** Never from the
+  gm-assist `summary`, and never by substring. In the session this comes from,
+  the GM narrates *about* the absent character eleven times without ever
+  labelling him, and the summary carries bold headers of its own — either
+  reading marks him present in exactly the scene the planner must not give him.
+- **`sd_plan` refuses without a tape or a roster, and refuses an empty pool.**
+  A fallback to the unnarrowed roster is the defect (#385), not a graceful
+  degradation.
+- **Eligibility is presence, not volume.** One labelled turn is full
+  eligibility; turn counts are evidence for the GM, never a threshold.
+
+A scene with no eligible narrator produces three plans (`plan.a|b|c.md`) and no
+`plan.md`; the missing file is the gate, and `sd_plan --choose` resolves it.
+`sd_narrate --vtt` marks unvoiced characters in the roster block — as
+*unvoiced*, never as absent from the fiction, since a GM may still have placed
+them in a scene. See `docs/cli/session_doc_pipeline.md`.
+
 ### The genre rulebook is a file, never a pasted string
 
 `paths.genre_file` in `session_doc.yaml` points at the campaign's genre/register document (conventionally `<campaign>/voice/_genre.md`). **That file is the single source of truth** — `sd_narrate --narration-genre-file` reads it at render time, and nothing mirrors its text back into config.

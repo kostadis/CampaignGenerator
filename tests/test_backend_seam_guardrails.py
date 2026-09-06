@@ -357,7 +357,7 @@ _UI_REACHABILITY: dict[str, _UIReachability] = {
     "sd_plan": _UIReachability(
         "direct", ("server/routers/scene_editor.py",),
         ("frontend/src/views/session/SessionDocEditor.vue",),
-        ("/api/editor/plan",),
+        ("/api/editor/plan", "/api/editor/plan/choose"),
     ),
     "sd_narrate": _UIReachability(
         "direct", ("server/routers/scene_editor.py",),

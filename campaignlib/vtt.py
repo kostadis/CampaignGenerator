@@ -29,6 +29,41 @@ TIMING_RE = re.compile(
 )
 _CUE_NUMBER_RE = re.compile(r"^\d+$")
 
+
+def speaker_labels(text: str) -> set[str]:
+    """Every ``Name:`` prefix that starts a line in ``text``.
+
+    Deliberately the same shape :func:`campaignlib.npc.normalize_vtt_speakers`
+    matches — a literal prefix at the start of a line — so "this label is
+    present" and "the rewrite will find this label" cannot disagree.
+
+    Takes text rather than a path so attendance can be derived without the
+    filesystem. It lived as ``_read_vtt_speakers`` inside
+    ``pipelines/workspace/players.py`` until ``sd_plan`` needed the same
+    answer; a second copy would have been a second definition of presence
+    (Constitution V).
+
+    Structural parsing is deliberately *not* used here. ``parse`` addresses
+    cues, and a label is a property of a line inside one; matching the literal
+    prefix is what the rewrite does, and agreeing with the rewrite is the whole
+    job.
+    """
+    speakers: set[str] = set()
+    for line in text.splitlines():
+        if TIMING_RE.match(line.strip()):
+            # `00:00:01.000 --> 00:00:04.000` partitions to a head of `00`.
+            # The private copy this moved from returned it, harmlessly: its one
+            # caller only ever asked whether a *declared* display name was in
+            # the set. A shared helper should not hand a cue timing to a caller
+            # that reports what it found, so the timing rule is reused from
+            # this module rather than restated (Constitution V). No caller can
+            # observe the difference — nobody is named `00`.
+            continue
+        head, sep, _rest = line.partition(":")
+        if sep and head and head == head.strip() and len(head) < 60:
+            speakers.add(head)
+    return speakers
+
 #: Marks a NOTE block this module wrote. Reading drops these; every other NOTE
 #: in the file is the author's and is preserved. The dash rather than a colon
 #: is historical: ``render`` used to guard against colons because

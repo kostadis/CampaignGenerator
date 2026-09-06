@@ -656,11 +656,32 @@ def test_sd_plan_writes_plan_md(tmp_path, monkeypatch):
     sx_dir = tmp_path / "scene_extractions"
     sx_dir.mkdir()
     (sx_dir / "01_stone_giants.md").write_text(
-        "---\nscene: The Stone Giants\n---\n\nVukradin stared down the giants.\n",
+        "---\nscene: The Stone Giants\n---\n\n"
+        "**Vukradin** — *holding the line*\n> \"You will not pass.\"\n",
         encoding="utf-8",
     )
     (sx_dir / "02_glacier.md").write_text(
-        "---\nscene: The Whispering Glacier\n---\n\nSoma scouted as an eagle.\n",
+        "---\nscene: The Whispering Glacier\n---\n\n"
+        "**Soma** — *scouting as an eagle*\n> \"The pass is clear.\"\n",
+        encoding="utf-8",
+    )
+
+    # sd_plan reads attendance from the tape (#385) and refuses without it.
+    vtt = tmp_path / "session.vtt"
+    vtt.write_text(
+        "WEBVTT\n\n1\n00:00:01.000 --> 00:00:04.000\n"
+        "David Mendenhall: I hold the line.\n\n"
+        "2\n00:00:04.000 --> 00:00:07.000\n"
+        "Wade Brown: I scout ahead.\n",
+        encoding="utf-8",
+    )
+    players = tmp_path / "players.yaml"
+    players.write_text(
+        "players:\n"
+        "- id: david\n  name: David Mendenhall\n"
+        "  display_names:\n  - David Mendenhall\n  plays:\n  - Vukradin\n"
+        "- id: wade\n  name: Wade Brown\n"
+        "  display_names:\n  - Wade Brown\n  plays:\n  - Soma\n",
         encoding="utf-8",
     )
 
@@ -688,6 +709,8 @@ def test_sd_plan_writes_plan_md(tmp_path, monkeypatch):
             "sd_plan.py",
             "--scene-extractions", str(sx_dir),
             "--characters", "Vukradin, Soma",
+            "--vtt", str(vtt),
+            "--players-config", str(players),
             "--out", str(out_path),
         ],
     )

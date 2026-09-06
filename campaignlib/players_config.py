@@ -422,6 +422,60 @@ def speaker_map_from_configs(
     return speaker_map(players, party)
 
 
+def attending_players(players: PlayersConfig, labels: set[str]) -> set[str]:
+    """The ids of players who spoke on a tape whose speaker labels are ``labels``.
+
+    A player attended iff one of their declared ``display_names`` appears. The
+    comparison is **exact**, matching :func:`campaignlib.vtt.speaker_labels`
+    and the rewrite it agrees with — an undeclared spelling reads as absence,
+    which is what ``players check --vtt`` exists to surface.
+
+    Only **active** players count, for the same reason
+    :func:`player_name_for` restricts itself: an archived transcript still
+    carries a departed player's label, and counting it would put somebody back
+    at a table they have left.
+
+    Derived per session and never stored. The GM ruled (2026-09-06) that there
+    is no override: the tape is the record of who was there, and a session-local
+    attendance file would be a second authority over the same fact.
+    """
+    return {
+        p.id
+        for p in players.players
+        if p.active and any(n in labels for n in p.display_names)
+    }
+
+
+def absent_characters(
+    players: PlayersConfig, roster: list[str], labels: set[str]
+) -> set[str]:
+    """Roster characters that no attending player voices.
+
+    A character is absent when nobody who spoke on this tape plays them —
+    including a character nobody plays at all (``plays: []``), since no player
+    means no attendance can be established for them.
+
+    This is Filter A of issue #385. It resolves **people**: labels are player
+    display names. Filter B (:func:`session_doc.io.scene_speakers`) resolves
+    characters, from a different label space entirely, and the two must not be
+    collapsed into one helper.
+
+    Known wrong in one case, deliberately: when one player voices an absent
+    player's character for a night, those lines carry the *covering* player's
+    label, so the covered character reads as absent. The GM reinstates them by
+    hand — which is why every exclusion is reported rather than applied
+    silently.
+    """
+    attending = attending_players(players, labels)
+    voiced = {
+        norm_name(c)
+        for p in players.players
+        if p.id in attending
+        for c in p.plays
+    }
+    return {c for c in roster if norm_name(c) not in voiced}
+
+
 def player_name_for(players: PlayersConfig, character: str) -> str | None:
     """The person's name to render for ``character``, or ``None``.
 
