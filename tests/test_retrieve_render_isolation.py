@@ -129,3 +129,12 @@ def test_no_retrieve_render_colocation(path: Path):
             + "\n\nSplit the function: retrieve in one, render in another, "
             "with the human-reviewed dossier_proposal.md as the handoff."
         )
+
+
+def test_narration_bundle_helpers_are_pure_prompt_and_reconciliation_code():
+    """Bundle preparation must not grow a second model or retrieval boundary."""
+    path = REPO_ROOT / "session_doc/narrate.py"
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    calls = _collect_call_names(tree)
+    assert not calls & RETRIEVAL_NAMES
+    assert not calls & RENDER_NAMES

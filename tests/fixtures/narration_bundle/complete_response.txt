@@ -1,0 +1,9 @@
+<<<CG-SCENE 01 BEGIN: Arrival>>>
+I stepped into the flooded hall. "The water remembers us."
+<<<CG-SCENE 01 END>>>
+<<<CG-SCENE 02 BEGIN: The Bargain>>>
+I heard the price and answered, "One coin. No names."
+<<<CG-SCENE 02 END>>>
+<<<CG-SCENE 03 BEGIN: Departure>>>
+I left before the bells and said, "Do not look back."
+<<<CG-SCENE 03 END>>>

@@ -22,7 +22,9 @@ from ..selection import CODEX_REASONING_EFFORTS, CodexReasoningEffort
 
 
 CODEX_CLI = "codex"
-DEFAULT_CODEX_TIMEOUT = 600.0
+# Large bundled narration turns can spend many minutes in reasoning and
+# generation before producing their final text.
+DEFAULT_CODEX_TIMEOUT = 1800.0
 _MAX_DIAGNOSTIC_CHARS = 1000
 
 _BROKER_RESULT_SCHEMA = {

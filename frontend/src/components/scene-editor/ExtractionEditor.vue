@@ -51,6 +51,7 @@ const emit = defineEmits<{
   'save-extraction': [content: string]
   'reload': []
   'narrate': []
+  'narrate-bundle': []
   'open-typora': [type: string]
   'update:extractionContent': [content: string]
   'update:proseMode': [value: boolean]
@@ -317,6 +318,12 @@ async function toggleDiff() {
         :disabled="!narrateSourceAvailable || narrating || extracting || !currentScene"
         @click="emit('narrate')"
       >{{ narrating ? 'Narrating\u2026' : 'Narrate' }}</button>
+      <button
+        class="btn-success bundle-button"
+        :disabled="narrating || extracting"
+        @click="emit('narrate-bundle')"
+        title="Review the full ordered scene scope, then narrate it in one model exchange"
+      >Narrate all in one call…</button>
       <label class="prose-toggle" :title="'Strip mechanical language and GM framing from narration'">
         <input type="checkbox" :checked="proseMode"
           @change="emit('update:proseMode', ($event.target as HTMLInputElement).checked)" />
@@ -372,6 +379,7 @@ async function toggleDiff() {
 }
 .token-est { font-size: 11px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
 .token-warn { color: var(--peach) !important; }
+.bundle-button { white-space: nowrap; }
 
 .source-banner {
   border-bottom: 1px solid var(--bg-surface0);

@@ -308,7 +308,7 @@ Inside the three `session_doc/sd_*.py` tools:
 | 2 | skipped (`--enhanced-sections` supplies it) | — | Memorable Moments / NPCs / Scenes block (built upstream, e.g. by the Editor) |
 | 3 | always runs (unless `--plan-file`) | `PLAN_SYSTEM` | Assign one narrator per scene from the `scene_extractions/` checklist |
 | 4 | skipped (scene-extraction file supplies it) | — | Character moments — `## Scene summary` + `## Verbatim moments` already in each `NN_*.md` |
-| 5 | runs per scene | `NARRATE_SYSTEM_BASE` | First-person memoir rendered against the scene's summary + moments |
+| 5 | sequential by default; bundled on request | `NARRATE_SYSTEM_BASE` or bundle templates | First-person memoir rendered against each scene's summary + moments |
 
 Pass 5 user-prompt assembly order (in `build_narrate_prompt()`): narrator + focus → character roster → party document → scene scope ("what happened") → voice notes → handoff sentence → narrator's extracted moments.
 
@@ -316,9 +316,10 @@ Pass 5 user-prompt assembly order (in `build_narrate_prompt()`): narrator + focu
 
 All three CLIs accept the shared `--batch` flag (Message Batches, 50% cost —
 see `docs/cli/cli_tools.md` § Shared flag). `sd_consistency`/`sd_plan` submit
-their single call as a one-item batch; `sd_narrate` degrades to sequential
-one-item batches because each scene's narration hands off into the next
-scene's prompt — grouping would break the chain.
+their single call as a one-item batch. `sd_narrate` remains sequential by
+default; `--batch-scenes` explicitly sends all selected narration scenes in
+one exchange. Provider `--batch` is independent: with bundled content it
+submits one bundled item, while sequential content remains one item per scene.
 
 
 ```bash
@@ -349,6 +350,22 @@ sd_narrate "$SESS/session-summary.md" \
     --examples          examples/ \
     --per-scene-output  "$SESS/narration/"
 # REVIEW & EDIT narration/session_doc_scene_NN_*.md (one narrator per file).
+
+# Generate every reviewed plan scene in one exchange. The CLI prints the
+# exact replacement scope and refuses rather than splitting the bundle.
+sd_narrate "$SESS/session-summary.md" \
+    --plan              "$SESS/narration/plan.md" \
+    --scene-extractions "$SESS/scene_extractions/" \
+    --party             docs/party.md \
+    --party-config      config/party.yaml \
+    --characters        "Vukradin, Valphine, Soma, Brewbarry" \
+    --voice-dir         voice/ \
+    --examples          examples/ \
+    --per-scene-output  "$SESS/narration/" \
+    --batch-scenes --batch-max-tokens 32000
+
+# Bundle an explicit full-plan subset instead.
+sd_narrate ... --batch-scenes --scene 2 5
 
 # Re-narrate a single scene after editing its quote file
 sd_narrate "$SESS/session-summary.md" \
@@ -388,9 +405,9 @@ assemble "$SESS/narration/" \
     --title  "Chapter 37 — A Gem of a Problem"
 ```
 
-## Exact single-scene source override — `--scene-extraction-file`
+## Exact source overrides — `--scene-extraction-file`
 
-`sd_narrate` has one exact-file override:
+`sd_narrate` accepts an exact-file override:
 
 ```bash
 sd_narrate "$SESS/session-summary.md" \
@@ -402,16 +419,19 @@ sd_narrate "$SESS/session-summary.md" \
 ```
 
 The spelling is deliberately singular: `--scene-extraction-file FILE`.
-It is for one selected scene only. `--scene-extractions DIR` remains
-required because the normal directory load still supplies the rest of the
-session context and keeps the command shape compatible with ordinary
-single-scene reruns.
+Sequential mode retains the one-file/one-scene contract. In bundled mode the
+option may repeat, once for each selected scene whose exact reviewed source
+does not come from the base `--scene-extractions DIR`. This is how a UI run
+reproduces a mixed raw/smoothed selection without staging copies. Output order
+always follows the reviewed plan, not option order.
 
 Validation happens before any model call. The command refuses instead of
 falling back when:
 
-- `--scene-extraction-file` is supplied without `--scene`;
-- the exact-file option is supplied with zero or more than one scene number;
+- `--scene-extraction-file` is supplied without `--scene` in sequential mode;
+- sequential mode receives more than one exact file or more than one scene;
+- a bundled exact file does not match exactly one selected full-plan scene, or
+  two exact files claim the same scene;
 - `FILE` does not exist, is not a regular file, or is not readable UTF-8;
 - `FILE` is not an eligible `NN_*.md` extraction under the shared
   `session_doc.io` rules, including scaffold shadowing and ignored sibling
@@ -421,6 +441,23 @@ falling back when:
 
 Every refusal names the option/path/rule. It never silently uses a different
 file from the directory.
+
+## Bundled narration outcomes and recovery
+
+`--batch-max-tokens` is a total output ceiling for the one narration exchange;
+`--narrate-tokens` remains the per-scene sequential ceiling. A projection over
+the bundle ceiling exits `1` before client creation and suggests raising the
+ceiling, narrowing `--scene`, or using sequential mode. Bundling never creates
+automatic groups or silently falls back. `--narrator` also remains a sequential
+filter; combine bundled mode with explicit full-plan `--scene` indices instead.
+
+The response uses indexed scene markers. Fully closed, exactly attributed
+sections are written as the usual per-scene files. A structurally valid short
+response exits `3`, keeps every complete section, names the missing scenes, and
+leaves their existing files untouched. An identity, marker-pairing, duplicate,
+or order violation exits `4` and writes nothing from that exchange. Every run
+writes an atomic JSON report under `narration/logs/` by default; `--run-report`
+selects an exact path for callers such as the editor.
 
 The override is read-only. It does not copy, move, rename, rewrite, or
 normalize the source file. Output naming still comes from the selected plan

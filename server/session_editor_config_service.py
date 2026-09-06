@@ -163,6 +163,7 @@ def _classify_session_path(
 # ProfileEntry.knobs key -> grouped location, mirrored on activation.
 _PROFILE_KNOB_TO_GROUPED: dict[str, tuple[str, ...]] = {
     "narrate_tokens": ("narrate", "tokens"),
+    "narrate_batch_tokens": ("narrate", "batch_tokens"),
     "prose_mode": ("narrate", "prose_mode"),
     "reflections": ("narrate", "reflections"),
     # A profile switches which rulebook *file* is used, never a copy of its

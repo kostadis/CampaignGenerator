@@ -361,8 +361,18 @@ _UI_REACHABILITY: dict[str, _UIReachability] = {
     ),
     "sd_narrate": _UIReachability(
         "direct", ("server/routers/scene_editor.py",),
-        ("frontend/src/views/session/SessionDocEditor.vue",),
-        ("/api/editor/narrate",),
+        (
+            "frontend/src/views/session/SessionDocEditor.vue",
+            "frontend/src/components/scene-editor/ExtractionEditor.vue",
+        ),
+        {
+            "frontend/src/views/session/SessionDocEditor.vue": (
+                "/api/editor/narrate", "/api/editor/narrate-bundle",
+            ),
+            "frontend/src/components/scene-editor/ExtractionEditor.vue": (
+                "Narrate all in one call",
+            ),
+        },
     ),
 
     # Prep, setup, grounding and projection builders.
@@ -592,6 +602,15 @@ def test_each_inventory_row_has_executable_ui_reachability(command, row):
         f"{command} ({row.kind}) has no complete visible reachability: "
         + "; ".join(missing)
     )
+
+
+def test_sd_narrate_bundle_reuses_the_cli_and_subprocess_seams():
+    """The new face must remain an explicit argv/SSE adapter around sd_narrate."""
+    route = (REPO_ROOT / "server/routers/scene_editor.py").read_text(encoding="utf-8")
+    assert '"/narrate-bundle"' in route
+    assert '"--batch-scenes"' in route
+    assert "stream_subprocess" in route
+    assert "emit_done=False" in route
 
 
 # ── Check 1: make_client( only inside the seam ──────────────────────────────

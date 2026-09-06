@@ -84,7 +84,7 @@ The consistency auditor has one deliberate subscription exception: with
 `--backend codex-cli`, an omitted `--model` does not inherit the Claude default.
 It resolves explicit `--model`, then `CG_CODEX_MODEL`, then lets Codex use its
 subscription default. `CG_CODEX_TIMEOUT` sets the positive finite child-process
-deadline in seconds and defaults to `600`; neither setting is persisted in a
+deadline in seconds and defaults to `1800` (30 minutes); neither setting is persisted in a
 campaign config file.
 
 This omission rule applies to the complete 30-command backend family, not just

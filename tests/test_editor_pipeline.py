@@ -182,6 +182,142 @@ def test_build_narrate_cmd_uses_new_flags(tmp_path):
     assert "--by-scene" not in result
 
 
+# ── 022-bundle-narration: explicit all-scene command construction ───────
+
+
+def test_build_narrate_bundle_cmd_materializes_scope_ceiling_and_report(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+    )
+    cfg.narrate.batch_tokens = 44000
+    report = nd / "logs" / "editor_bundle_test.json"
+
+    cmd = scene_editor._build_narrate_bundle_cmd(None, cfg, [1, 2], report)
+
+    assert isinstance(cmd, list), cmd
+    assert "--batch-scenes" in cmd
+    assert cmd[cmd.index("--batch-max-tokens") + 1] == "44000"
+    scene_at = cmd.index("--scene")
+    assert cmd[scene_at + 1:scene_at + 3] == ["1", "2"]
+    assert cmd[cmd.index("--run-report") + 1] == str(report)
+    assert "--narrate-tokens" in cmd
+
+
+def test_build_narrate_bundle_cmd_keeps_mixed_raw_and_smoothed_sources(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    smoothed = sd / "scene_extractions_smoothed"
+    smoothed.mkdir()
+    smooth_one = smoothed / "01_scene_one.md"
+    smooth_one.write_text(
+        "---\nscene: Scene One\nsource: voice-smoothed\n---\n\nsmoothed\n",
+        encoding="utf-8",
+    )
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    cmd = scene_editor._build_narrate_bundle_cmd(
+        None, cfg, [1, 2], nd / "logs" / "report.json"
+    )
+
+    assert isinstance(cmd, list), cmd
+    assert cmd[cmd.index("--scene-extractions") + 1] == str(sx)
+    exact = [cmd[i + 1] for i, arg in enumerate(cmd[:-1])
+             if arg == "--scene-extraction-file"]
+    assert exact == [str(smooth_one)]
+
+
+@pytest.mark.parametrize(
+    ("indices", "message"),
+    [([], "at least one"), ([1, 1], "duplicate"), ([2, 1], "plan order"),
+     ([0], "positive"), ([3], "out of range")],
+)
+def test_build_narrate_bundle_cmd_refuses_invalid_explicit_scope(
+    tmp_path, indices, message,
+):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+    )
+
+    result = scene_editor._build_narrate_bundle_cmd(
+        None, cfg, indices, nd / "logs" / "report.json"
+    )
+
+    assert isinstance(result, tuple) and result[0] is None
+    assert message in result[1].lower()
+
+
+def test_build_narrate_bundle_cmd_refuses_if_any_source_is_missing(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    (sx / "02_scene_two.md").unlink()
+    cfg = replace(
+        _cfg(
+            session_recap=str(gm),
+            session_summary=str(sd / "session-summary.md"),
+            scene_extractions_dir=str(sx),
+            narration_dir=str(nd),
+        ),
+        session_dir=str(sd),
+    )
+
+    result = scene_editor._build_narrate_bundle_cmd(
+        None, cfg, [1, 2], nd / "logs" / "report.json"
+    )
+
+    assert isinstance(result, tuple) and result[0] is None
+    assert "scene 2" in result[1].lower()
+    assert "no narrate source" in result[1].lower()
+
+
+def test_build_narrate_bundle_cmd_composes_provider_batch(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    cfg = _cfg(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+    )
+    cfg.backends.anthropic.batch = True
+
+    cmd = scene_editor._build_narrate_bundle_cmd(
+        None, cfg, [1, 2], nd / "logs" / "report.json"
+    )
+
+    assert isinstance(cmd, list), cmd
+    assert "--batch-scenes" in cmd
+    assert "--batch" in cmd
+
+
+def test_editor_bundle_report_paths_are_session_local_and_unique(tmp_path):
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    cfg = _cfg(
+        session_recap=str(gm), session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx), narration_dir=str(nd),
+    )
+
+    first = scene_editor._new_editor_bundle_report_path(cfg)
+    second = scene_editor._new_editor_bundle_report_path(cfg)
+
+    assert first.parent == nd / "logs"
+    assert second.parent == nd / "logs"
+    assert first != second
+    assert first.name.startswith("sd_narrate_bundle_editor_")
+
+
 # ── 018-prefer-smoothed-extractions: Narrate command source selection ───────
 
 def _write_smoothed_scene(

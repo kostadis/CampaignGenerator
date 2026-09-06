@@ -26,7 +26,8 @@ session_doc/scene_extract.py  → scene_extractions/NN_*.md  (per-scene verbatim
 session_doc/sd_consistency.py → consistency check across scenes
 session_doc/sd_plan.py        → plan.md   (scene structure, pacing, arcs)
         ▼  (human review)
-session_doc/sd_narrate.py     → narration/session_doc_scene_NN_*.md   (per-character, per-scene;
+session_doc/sd_narrate.py     → narration/session_doc_scene_NN_*.md   (sequential by default or
+        │                                                   one explicit bundled exchange;
         │                                                   reads voice/<char>_voice.md)
         ▼  (human review)
 session_doc/assemble.py       → session_doc.md   (final concatenation)
@@ -46,6 +47,11 @@ Any pass can run on Anthropic, DGX/vLLM, or Claude Code (see
 [component-campaigngenerator](component-campaigngenerator.md) → backends). The
 two heaviest passes (`enhance_summary`, `scene_extract`) support `--batch`
 (Anthropic Message Batches) and prompt caching of the large VTT context.
+Narration also offers `sd_narrate --batch-scenes`: it sends the explicit
+reviewed plan set in one exchange, shares run-wide context once, and writes the
+same individual narration drafts. Its provider `--batch` choice remains
+separate and composable. Sequential and one-scene narration remain available,
+and every path stops at the existing human review before assembly.
 
 ## Where it runs
 

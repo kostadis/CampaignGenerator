@@ -55,6 +55,7 @@ from server.session_editor_config_shared import (  # noqa: E402
     save_session_editor_config,
 )
 from session_doc import sd_narrate  # noqa: E402
+from session_doc.narrate import NarrationScene, build_bundled_narrate_prompts  # noqa: E402
 
 GENRE_TEXT = """# Register
 
@@ -341,3 +342,44 @@ def test_unset_genre_file_costs_the_prompt_its_whole_rulebook(monkeypatch, tmp_p
     # so nothing downstream looks wrong.
     assert "fair-trade, conflict-free gold" in prompt
     assert "I set the halberd down" in prompt
+
+
+def _bundle_scene(index: int, narrator: str, *, previous: str | None = None):
+    return NarrationScene(
+        index=index, scene_name=f"Scene {index}", narrator=narrator,
+        focus=f"FOCUS_{index}", source_path=Path(f"{index:02d}.md"),
+        source_kind="base", scene_events=f"EVENTS_{index}",
+        moments=f"MOMENTS_{index}", voice_note=f"VOICE_{index}",
+        character_examples=f"EXAMPLES_{index}", previous_narrator=previous,
+        previous_voice_sample=(f"PREVIOUS_{index}" if previous else None),
+        estimated_output_tokens=500, output_path=Path(f"out-{index}.md"),
+        output_existed=False,
+    )
+
+
+def test_bundle_shared_inputs_are_delivered_once_and_private_inputs_stay_scoped():
+    system, user = build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Alice"), _bundle_scene(2, "Bob", previous="Alice")],
+        shared_examples="SHARED_STYLE", party="PARTY_DOCUMENT",
+        roster="CLASS_ROSTER", npc_roster="NPC_ROSTER",
+        context_docs=["HISTORY_ONE", "HISTORY_TWO"],
+        genre="GENRE_RULE", prose_mode=True,
+    )
+    combined = system + "\n" + user
+
+    for shared in (
+        "SHARED_STYLE", "PARTY_DOCUMENT", "CLASS_ROSTER", "NPC_ROSTER",
+        "HISTORY_ONE", "HISTORY_TWO", "GENRE_RULE",
+    ):
+        assert combined.count(shared) == 1, shared
+    for private in (
+        "EVENTS_1", "MOMENTS_1", "VOICE_1", "EXAMPLES_1",
+        "EVENTS_2", "MOMENTS_2", "VOICE_2", "EXAMPLES_2", "PREVIOUS_2",
+    ):
+        assert combined.count(private) == 1, private
+
+    first, second = user.split("## Scene packet 02", 1)
+    assert "VOICE_1" in first and "VOICE_2" not in first
+    assert "EXAMPLES_1" in first and "EXAMPLES_2" not in first
+    assert "VOICE_2" in second and "VOICE_1" not in second
+    assert "EXAMPLES_2" in second and "EXAMPLES_1" not in second

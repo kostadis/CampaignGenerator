@@ -134,7 +134,7 @@ def test_create_uses_exact_role_transport_and_isolated_child(monkeypatch):
     assert cmd[-1] == "-"
     assert call["capture_output"] is True
     assert call["text"] is True
-    assert call["timeout"] == 600.0
+    assert call["timeout"] == 1800.0
     assert "OPENAI_API_KEY" not in call["env"]
     assert "CODEX_API_KEY" not in call["env"]
     assert os.environ["OPENAI_API_KEY"] == "metered-openai"

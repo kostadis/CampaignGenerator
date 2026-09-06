@@ -233,6 +233,10 @@ class NarrateKnobs(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     tokens: int = 16000
+    # Independent output ceiling for the all-scenes, one-exchange mode.
+    # Keep the per-scene default above unchanged so existing runs retain
+    # their current budget and persisted configs acquire this default on load.
+    batch_tokens: int = Field(default=32000, gt=0)
     prose_mode: bool = False
     reflections: bool = False
     context: list[str] = Field(default_factory=list)
@@ -483,6 +487,7 @@ TYPED_SESSION_DOC_TO_GROUPED: dict[str, tuple[str, ...]] = {
     # migrated into a field that is gone. ``server/migrate_players_config.py``
     # is what harvests them.
     "narrate_tokens": ("narrate", "tokens"),
+    "narrate_batch_tokens": ("narrate", "batch_tokens"),
     "prose_mode": ("narrate", "prose_mode"),
     "reflections": ("narrate", "reflections"),
     # ``narration_genre`` is deliberately absent (#276 fix 2): it mapped into

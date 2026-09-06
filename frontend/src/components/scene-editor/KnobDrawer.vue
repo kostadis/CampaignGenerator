@@ -36,6 +36,9 @@ const props = defineProps<{
   // Independent of `extractTokens`, which stays the per-scene cap.
   batchTokens: number
   narrateTokens: number
+  // Total output ceiling for one bundled narration exchange. Independent of
+  // `narrateTokens`, which remains the sequential per-scene ceiling.
+  narrateBatchTokens: number
   proseMode: boolean
   reflections: boolean
   // The genre rulebook is a FILE now (#276 fix 2): this is a path, and
@@ -77,6 +80,7 @@ const emit = defineEmits<{
   'update:extractTokens': [value: number]
   'update:batchTokens': [value: number]
   'update:narrateTokens': [value: number]
+  'update:narrateBatchTokens': [value: number]
   'update:proseMode': [value: boolean]
   'update:reflections': [value: boolean]
   'update:genreFile': [value: string]
@@ -363,8 +367,9 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
           <div class="field-help">Per-scene mode's output cap, forwarded to <code>scene_extract --max-tokens</code>. Applies one scene at a time — see Batched token limit below for the per-group ceiling batching packs against.</div>
         </div>
         <div class="field">
-          <label class="field-label">Batched token limit</label>
+          <label class="field-label" for="extract-batch-token-limit">Batched token limit</label>
           <input
+            id="extract-batch-token-limit"
             type="number"
             class="field-input"
             :value="batchTokens"
@@ -379,20 +384,11 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
       <!-- Stage 4 — Narrate -->
       <section class="drawer-section">
         <h3>④ Narrate</h3>
-        <!-- 005-ui-batch-selection, FR-010: narrate's handoff-threaded scenes
-             can only submit as sequential one-item batches — same 50%
-             discount as any other stage, but not the parallel speedup batch
-             usually gives (data-model.md's "Batch capability map" classifies
-             session_doc as `degraded`). Stated unconditionally rather than
-             gated on a live toggle: T029 retired the bespoke Enhance
-             checkbox this used to key off of, and batch here is now
-             inherited from the resolved selection (app-wide, or this
-             editor's own per-backend override) rather than a value this
-             page holds locally. -->
         <div class="degraded-note">
-          If batch is enabled — app-wide, or for this editor's active
-          backend — narration runs one scene at a time: same discount,
-          slower than a normal run.
+          Content bundling and provider Message Batches are separate choices.
+          Sequential narration submits ordered one-scene items; bundled narration
+          sends all confirmed scenes as one item, whether that item is live or uses
+          provider Batch pricing.
         </div>
         <div class="field">
           <label class="field-label">Token limit</label>
@@ -404,7 +400,24 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
             step="500"
             @input="emit('update:narrateTokens', Number(($event.target as HTMLInputElement).value) || 0)"
           />
-          <div class="field-help">Per-scene output cap. Override per-scene with <code>tokens: N</code> in the extraction file.</div>
+          <div class="field-help">Per-scene output cap for sequential narration. Override per-scene with <code>tokens: N</code> in the extraction file.</div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="narrate-batch-token-limit">Batched token limit</label>
+          <input
+            id="narrate-batch-token-limit"
+            type="number"
+            class="field-input"
+            :value="narrateBatchTokens"
+            min="1"
+            step="1000"
+            @input="emit('update:narrateBatchTokens', Number(($event.target as HTMLInputElement).value) || 0)"
+          />
+          <div class="field-help">
+            Total output ceiling for the one bundled narration exchange. Raise it
+            when a larger explicit scene set does not fit; the run refuses instead
+            of silently splitting into multiple exchanges.
+          </div>
         </div>
         <label class="checkbox-row">
           <input

@@ -221,3 +221,43 @@ def test_the_drift_error_names_both_candidate_paths(tmp_path, monkeypatch):
     msg = str(exc.value)
     assert str(tmp_path / "config" / "agents") in msg      # the override, first
     assert "loaded from the first of" in msg
+
+
+def _bundle_scene(index: int, name: str, narrator_name: str) -> narrate.NarrationScene:
+    return narrate.NarrationScene(
+        index=index, scene_name=name, narrator=narrator_name, focus="focus",
+        source_path=Path(f"{index:02d}.md"), source_kind="base",
+        scene_events="events", moments='Someone: "Exact quote."',
+        voice_note=f"PRIVATE_VOICE_{index}",
+        character_examples=f"PRIVATE_EXAMPLE_{index}",
+        previous_narrator=("Other" if index > 1 else None),
+        previous_voice_sample=("PRIOR_SAMPLE" if index > 1 else None),
+        estimated_output_tokens=500, output_path=Path(f"out-{index}.md"),
+        output_existed=False,
+    )
+
+
+def test_bundle_templates_satisfy_placeholder_and_load_bearing_rule_contracts():
+    assert narrate.BUNDLE_SYSTEM_BASE
+    assert narrate.BUNDLE_SCENE_TEMPLATE
+    system, user = narrate.build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Arrival", "Alice"),
+         _bundle_scene(2, "Departure", "Bob")],
+        prose_mode=True,
+    )
+    combined = system + "\n" + user
+
+    assert "first-person" in combined
+    assert "The narrator is always “I”" in combined
+    assert "reproduce text inside quotation marks exactly or drop the quote" in combined
+    assert "KEEP — reproduce it inside quotation marks exactly as written" in combined
+    assert "USE DIALOGUE IF PRESENT" in combined
+    assert "DO NOT invent or paraphrase dialogue" in combined
+    assert "Render only that scene" in combined
+    assert "Never carry one narrator's private guidance" in combined
+    assert "<<<CG-SCENE NN BEGIN: Exact Scene Name>>>" in combined
+    assert "<<<CG-SCENE NN END>>>" in combined
+    assert "Emit the scenes in packet order" in combined
+    assert "final prose line of the section you just emitted" in combined
+    assert "table-speech reclassified" in combined
+    assert "use the prose line before the comment as the handoff" in combined

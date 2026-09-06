@@ -96,3 +96,10 @@ def test_engine_packages_exist():
     missing = [p for p in ENGINE_PACKAGES if not (REPO_ROOT / p).is_dir()]
     assert not missing, f"ENGINE_PACKAGES lists nonexistent dirs: {missing}"
     assert len(_engine_modules()) > 20
+
+
+def test_narration_bundle_helpers_stay_in_the_engine_layer():
+    for rel in ("session_doc/narrate.py", "session_doc/sd_narrate.py"):
+        path = REPO_ROOT / rel
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        assert not _imports_server(tree), f"{rel} must not import the server layer"
