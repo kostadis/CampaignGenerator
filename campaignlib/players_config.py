@@ -422,6 +422,113 @@ def speaker_map_from_configs(
     return speaker_map(players, party)
 
 
+def attending_players(players: PlayersConfig, labels: set[str]) -> set[str]:
+    """The ids of players who spoke on a tape whose speaker labels are ``labels``.
+
+    A player attended iff one of their declared ``display_names`` appears. The
+    comparison is **exact**, matching :func:`campaignlib.vtt.speaker_labels`
+    and the rewrite it agrees with — an undeclared spelling reads as absence,
+    which is what ``players check --vtt`` exists to surface.
+
+    Only **active** players count, for the same reason
+    :func:`player_name_for` restricts itself: an archived transcript still
+    carries a departed player's label, and counting it would put somebody back
+    at a table they have left.
+
+    Derived per session and never stored. The GM ruled (2026-09-06) that there
+    is no override: the tape is the record of who was there, and a session-local
+    attendance file would be a second authority over the same fact.
+    """
+    return {
+        p.id
+        for p in players.players
+        if p.active and any(n in labels for n in p.display_names)
+    }
+
+
+def determinable_players(players: PlayersConfig) -> set[str]:
+    """Ids of active players whose attendance a tape can actually answer.
+
+    A player with no declared ``display_names`` cannot be found on any
+    transcript, so their absence is unknowable rather than established.
+    :class:`Player` documents zero display names as legitimate.
+    """
+    return {p.id for p in players.players if p.active and p.display_names}
+
+
+def attendance_is_establishable(players: PlayersConfig) -> bool:
+    """Whether this roster can answer "who was at the table" from a tape at all.
+
+    False for ``players: []`` — which is exactly what Hillsfar's
+    ``config/players.yaml`` contains — and for a roster where nobody has
+    declared a display name. Callers refuse or stay silent rather than
+    concluding that everybody was absent.
+    """
+    return bool(determinable_players(players))
+
+
+def undetermined_characters(players: PlayersConfig, roster: list[str]) -> set[str]:
+    """Roster characters whose attendance the tape cannot answer either way.
+
+    Either nobody active is bound to them, or every player who is has no
+    declared display name. Reported, never excluded: an unbound character is a
+    gap in ``players.yaml`` (which ``players check`` already reports), not
+    evidence that nobody played them.
+    """
+    determinable = determinable_players(players)
+    out: set[str] = set()
+    for character in roster:
+        wanted = norm_name(character)
+        bound = [
+            p for p in players.players
+            if p.active and any(norm_name(c) == wanted for c in p.plays)
+        ]
+        if not bound or not any(p.id in determinable for p in bound):
+            out.add(character)
+    return out
+
+
+def absent_characters(
+    players: PlayersConfig, roster: list[str], labels: set[str]
+) -> set[str]:
+    """Roster characters positively evidenced as unplayed at this session.
+
+    A character is absent when every active player bound to them *could* have
+    been found on the tape — each has at least one declared display name — and
+    none of them was. Absence is a claim about evidence, so it requires
+    evidence: a character nobody is bound to, or one whose only player declares
+    no display names, is :func:`undetermined_characters`, not absent.
+
+    An earlier version treated both as absence. Hillsfar's ``players.yaml`` is
+    ``players: []``, so every character in that campaign came back absent —
+    which would have refused every plan and stamped "nobody voiced them" across
+    the whole roster block Pass 5 is told never to contradict.
+
+    This is Filter A of issue #385. It resolves **people**: labels are player
+    display names. Filter B (:func:`session_doc.io.scene_speakers`) resolves
+    characters, from a different label space entirely, and the two must not be
+    collapsed into one helper.
+
+    Known wrong in one case, deliberately: when one player voices an absent
+    player's character for a night, those lines carry the *covering* player's
+    label, so the covered character reads as absent. The GM reinstates them by
+    hand — which is why every exclusion is reported rather than applied
+    silently.
+    """
+    attending = attending_players(players, labels)
+    voiced = {
+        norm_name(c)
+        for p in players.players
+        if p.id in attending
+        for c in p.plays
+    }
+    undetermined = {norm_name(c) for c in undetermined_characters(players, roster)}
+    return {
+        c for c in roster
+        if norm_name(c) not in voiced and norm_name(c) not in undetermined
+    }
+
+
 def player_name_for(players: PlayersConfig, character: str) -> str | None:
     """The person's name to render for ``character``, or ``None``.
 

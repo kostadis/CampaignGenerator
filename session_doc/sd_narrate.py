@@ -64,7 +64,12 @@ from session_doc.narrate import (
     split_bundled_narration,
 )
 from campaignlib.party_config import load_party_config_arg, require_from_config
-from campaignlib.players_config import load_players_config_arg
+from campaignlib.players_config import (
+    absent_characters,
+    attendance_is_establishable,
+    load_players_config_arg,
+)
+from campaignlib.vtt import speaker_labels
 from session_doc.roster import roster_from_config
 from session_doc.voice import (
     extract_contrast_sample,
@@ -303,6 +308,36 @@ def _load_exact_scene_extraction(
     return loaded, loaded_from_directory
 
 
+def _unvoiced_characters(args, players_config, party_cfg) -> "set[str] | None":
+    """Roster characters nobody voiced at this session, or ``None``.
+
+    ``None`` — no ``--vtt``, no ``players.yaml``, or no party config — means
+    "say nothing about voicing", which renders the roster block exactly as it
+    rendered before this existed. Silence is the right default: asserting that
+    a character was unvoiced on the strength of a tape we were not given would
+    be a guess inside the block Pass 5 is told never to contradict.
+    """
+    if not args.vtt or players_config is None or party_cfg is None:
+        return None
+    if not attendance_is_establishable(players_config):
+        # No active player declares a display name (Hillsfar's players.yaml is
+        # `players: []`), so no tape can say who was voiced. Marking the whole
+        # roster "nobody voiced them" inside the block Pass 5 must never
+        # contradict would be a guess, and the loudest possible one.
+        print("Warning: players.yaml declares no display names for any active "
+              "player; the roster block will not mark unvoiced characters.",
+              file=sys.stderr)
+        return None
+    vtt_path = Path(args.vtt).expanduser()
+    if not vtt_path.is_file():
+        print(f"Warning: --vtt not found ({vtt_path}); the roster block will "
+              f"not mark unvoiced characters.", file=sys.stderr)
+        return None
+    labels = speaker_labels(vtt_path.read_text(encoding="utf-8", errors="replace"))
+    roster_names = [c.name for c in party_cfg.characters]
+    return absent_characters(players_config, roster_names, labels)
+
+
 def _load_bundle_scene_overrides(
     raw_paths: list[str], selected: list[tuple[int, dict]],
 ) -> dict[int, dict]:
@@ -372,6 +407,12 @@ def main() -> None:
                              "sheet frontmatter (issue #265) and there is no party.md "
                              "fallback — a sheet without frontmatter is a hard error. Run "
                              "sheet_frontmatter --apply to add it.")
+    parser.add_argument("--vtt", metavar="FILE", default=None,
+                        help="The session transcript. Its speaker labels say "
+                             "which players were at the table, so the roster "
+                             "block can mark a character nobody voiced (#385). "
+                             "Optional: without it the block is exactly what it "
+                             "was before, and no character is marked.")
     parser.add_argument("--players-config", metavar="FILE", default=None,
                         help="players.yaml (conventionally "
                              "<campaign>/config/players.yaml). Supplies the "
@@ -605,9 +646,13 @@ def main() -> None:
                 "bundled narration requires a usable --party-config when party "
                 "information is requested",
             )
+        # `unvoiced` marks a character nobody voiced this session (#385). It is
+        # computed outside the try: a failure to establish attendance is not a
+        # roster failure, and must not be reported as one.
+        unvoiced = _unvoiced_characters(args, players_config, resolved_party_config)
         try:
             roster = require_from_config(
-                roster_from_config(resolved_party_config, players_config)
+                roster_from_config(resolved_party_config, players_config, unvoiced)
                 if resolved_party_config else None,
                 what="character roster",
                 party_config_arg=args.party_config,

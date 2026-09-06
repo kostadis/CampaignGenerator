@@ -1397,6 +1397,14 @@ def _finish_narrate_cmd(
         return party_args
     cmd += party_args
     cmd += _players_args(cfg)
+    # The tape lets the roster block mark a character nobody voiced (#385).
+    # Optional on sd_narrate: without it the block renders exactly as before, so
+    # a campaign with no transcript is not blocked from narrating. It sits in
+    # the shared tail rather than the single-scene builder so bundled runs get
+    # the same roster block.
+    narrate_vtt = _vtt_path(cfg)
+    if narrate_vtt is not None and narrate_vtt.exists():
+        cmd += ["--vtt", str(narrate_vtt)]
     declaration_args = _declaration_args(cfg, plan_path)
     if isinstance(declaration_args, tuple):
         return declaration_args
@@ -1446,6 +1454,20 @@ def _build_narrate_cmd(request, cfg: ResolvedEditorConfig, scene_num: int) -> li
 
     plan_path = nd / "plan.md"
     if not plan_path.exists():
+        # A pending choice looks exactly like "no plan yet" on disk, and that
+        # is deliberate — the missing plan.md is the gate (#385). But the two
+        # need different advice: one says run Plan, the other says pick one of
+        # the three treatments Plan already wrote for a scene nobody can
+        # narrate.
+        alternates = sorted(nd.glob("plan.?.md"))
+        if alternates:
+            return None, (
+                "plan.md not found because a scene has no eligible narrator and "
+                "the planner wrote "
+                + ", ".join(a.name for a in alternates)
+                + " for you to choose between. Pick one "
+                "(sd_plan --choose <a|b|c>) before narrating."
+            )
         return None, "plan.md not found — run Plan & Check first"
     scenes = _load_scenes(cfg)
     narrate_source: NarrateSourceState | None = None
@@ -2528,12 +2550,31 @@ def _build_plan_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[Non
             "Party Document page (sd_plan needs --characters)"
         )
 
+    # sd_plan derives session attendance from the tape and refuses without it
+    # (#385). Both come from the helpers the other stages already use, so the
+    # UI and the CLI cannot narrow the roster differently (Constitution XI).
+    vtt = _vtt_path(cfg)
+    if vtt is None or not vtt.exists():
+        return None, (
+            "no session transcript found — sd_plan reads attendance from it, "
+            "and a character whose player was not at the table must not be "
+            "offered a scene"
+        )
+    players_args = _players_args(cfg)
+    if not players_args:
+        return None, (
+            "players.yaml not found — it maps the transcript's speaker labels "
+            "to the characters they play, which is how attendance is resolved"
+        )
+
     cmd = [
         console_script("sd_plan"),
         "--scene-extractions", str(sx_dir),
         "--characters", characters,
+        "--vtt", str(vtt),
         "--out", str(nd / "plan.md"),
     ]
+    cmd += players_args
     cmd += _selection_args(request, cfg)
     if cfg.paths.party:
         cmd += ["--party", cfg.paths.party]
@@ -2542,6 +2583,73 @@ def _build_plan_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[Non
     if summary is not None and summary.exists():
         cmd += ["--session-summary", str(summary)]
     return cmd
+
+
+def _build_choose_cmd(cfg: ResolvedEditorConfig, key: str) -> list[str] | tuple[None, str]:
+    """``sd_plan --choose`` for a pending three-plan choice (#385).
+
+    The router must not do the copy itself. Choosing is a CLI capability, and
+    reimplementing it here would be the Split-Brain Constitution VI exists to
+    prevent — the GM doing ``cp plan.b.md plan.md`` at the terminal and the GM
+    clicking the button have to mean the same thing.
+    """
+    from session_doc.plan_alternates import ALTERNATE_KEYS
+
+    if key not in ALTERNATE_KEYS:
+        return None, f"unknown plan {key!r} — expected one of {', '.join(ALTERNATE_KEYS)}"
+    nd = _narration_dir(cfg)
+    if nd is None:
+        return None, "narration_dir not configured"
+    if not (nd / f"plan.{key}.md").exists():
+        return None, (
+            f"no plan.{key}.md to choose — the planner writes alternates only "
+            "when a scene has no eligible narrator"
+        )
+    return [
+        console_script("sd_plan"),
+        "--scene-extractions", str(_scene_extractions_dir(cfg) or ""),
+        "--characters", _roster_characters(cfg) or "-",
+        "--out", str(nd / "plan.md"),
+        "--choose", key,
+    ]
+
+
+@router.get("/plan/alternates")
+async def api_plan_alternates(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
+    """The pending choice, if there is one.
+
+    Discoverable from disk rather than from session state: alternates present
+    and plan.md absent *is* the pending-choice state (Constitution VIII).
+    """
+    nd = _narration_dir(cfg)
+    if nd is None:
+        return {"pending": False, "alternates": []}
+    alternates = sorted(nd.glob("plan.?.md"))
+    return {
+        "pending": bool(alternates) and not (nd / "plan.md").exists(),
+        "alternates": [
+            {
+                "key": a.stem.rsplit(".", 1)[-1],
+                "name": a.name,
+                "text": a.read_text(encoding="utf-8"),
+            }
+            for a in alternates
+        ],
+    }
+
+
+@router.get("/plan/choose")
+async def api_plan_choose(
+    key: str, cfg: ResolvedEditorConfig = Depends(get_editor_config)
+):
+    """Resolve a pending choice by shelling out to ``sd_plan --choose``."""
+    result = _build_choose_cmd(cfg, key)
+    if isinstance(result, tuple):
+        return _sse_error(result[1])
+    return StreamingResponse(
+        stream_subprocess(result, cwd=cfg.work_dir),
+        media_type="text/event-stream",
+    )
 
 
 @router.get("/plan")

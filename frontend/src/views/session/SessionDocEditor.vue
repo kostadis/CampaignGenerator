@@ -390,6 +390,15 @@ const voicePlayer = ref('')
 const voiceFile = ref('')
 const voiceUpdate = ref(false)
 const narrationOutput = ref('')
+
+// A scene with no eligible narrator (#385) makes Pass 3 write three plans
+// instead of one, differing in how that scene is treated. The pending state is
+// discoverable from disk — alternates present, plan.md absent — so it is read
+// back rather than tracked in the browser (Constitution VIII/IX).
+interface PlanAlternate { key: string; name: string; text: string }
+const planAlternates = ref<PlanAlternate[]>([])
+const planChoicePending = ref(false)
+const choosingPlan = ref(false)
 const statusMsg = ref('')
 const assembledExists = ref(false)
 
@@ -955,8 +964,47 @@ async function runExtract() {
   })
 }
 
+async function refreshPlanAlternates() {
+  try {
+    const res = await fetch('/api/editor/plan/alternates')
+    if (!res.ok) return
+    const data = await res.json()
+    planAlternates.value = data.alternates || []
+    planChoicePending.value = !!data.pending
+  } catch {
+    // A campaign with no narration dir simply has nothing pending.
+  }
+}
+
+function choosePlan(key: string) {
+  if (choosingPlan.value || planning.value || enhancing.value
+      || extracting.value || narrating.value) return
+  choosingPlan.value = true
+  narrationOutput.value = ''
+  setStatus(`Choosing plan ${key.toUpperCase()}...`)
+  activeSSE.value = connectSSE(`/api/editor/plan/choose?key=${encodeURIComponent(key)}`, {
+    onData(text) { narrationOutput.value += text },
+    onDone(rc, error) {
+      activeSSE.value = null
+      choosingPlan.value = false
+      setStatus(rc === 0
+        ? `Plan ${key.toUpperCase()} chosen — plan.md written.`
+        : `Choosing plan failed${error ? ': ' + error : ''}.`)
+      refreshPlanAlternates()
+      loadScenes()
+      refreshPipeline()
+    },
+    onError() {
+      activeSSE.value = null
+      choosingPlan.value = false
+      setStatus('Stream error — check terminal.')
+    },
+  })
+}
+
 async function runPlan() {
-  if (planning.value || enhancing.value || extracting.value || narrating.value) return
+  if (planning.value || enhancing.value || extracting.value
+      || narrating.value || choosingPlan.value) return
   planning.value = true
   narrationOutput.value = ''
   setStatus('Planning & consistency check (Stage 3)...')
@@ -971,6 +1019,7 @@ async function runPlan() {
         : `Plan & check failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
+      refreshPlanAlternates()
     },
     onError() {
       activeSSE.value = null
@@ -1128,6 +1177,9 @@ onMounted(async () => {
     await loadScenes()
     await checkAssembled()
     await refreshPipeline()
+    // A choice left pending by an earlier session is state on disk, so it has
+    // to be picked up on load rather than only after a plan run.
+    await refreshPlanAlternates()
   } else {
     // Cold start — pop the drawer so the user can fill in required fields.
     drawerOpen.value = true
@@ -1340,6 +1392,32 @@ onMounted(async () => {
           @update:reflections="reflections = $event"
           @update:reviewed="setReviewed"
         />
+        <section v-if="planChoicePending" class="plan-choice">
+          <h3>A scene has no narrator — choose a plan</h3>
+          <p>
+            No player character speaks in one of this session's scenes, so there
+            is no honest first-person narrator for it. The planner wrote three
+            plans that are identical except for that scene. Pick the treatment
+            you want; narration is blocked until you do.
+          </p>
+          <ul class="plan-choice-list">
+            <li v-for="alt in planAlternates" :key="alt.key">
+              <div class="plan-choice-head">
+                <strong>{{ alt.name }}</strong>
+                <button
+                  class="btn-primary"
+                  :disabled="choosingPlan"
+                  @click="choosePlan(alt.key)"
+                >Use this plan</button>
+              </div>
+              <pre class="plan-choice-body">{{ alt.text }}</pre>
+            </li>
+          </ul>
+          <p class="plan-choice-note">
+            Equivalent at the CLI: <code>sd_plan --choose &lt;a|b|c&gt;</code>,
+            or <code>cp plan.b.md plan.md</code>.
+          </p>
+        </section>
         <NarrationOutput
           :output="narrationOutput"
           :current-scene="currentScene"
@@ -1586,4 +1664,30 @@ onMounted(async () => {
   margin-bottom: 14px;
 }
 .empty-card strong { color: var(--mauve); }
+
+/* Pending three-plan choice (#385) — a scene with no eligible narrator. */
+.plan-choice {
+  border: 1px solid var(--warn-border, #b8860b);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--warn-bg, rgba(184, 134, 11, 0.08));
+}
+.plan-choice h3 { margin: 0 0 0.5rem; }
+.plan-choice-list { list-style: none; padding: 0; margin: 0; }
+.plan-choice-list > li { margin-bottom: 1rem; }
+.plan-choice-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.plan-choice-body {
+  max-height: 16rem;
+  overflow: auto;
+  font-size: 0.85em;
+  white-space: pre-wrap;
+  margin: 0.35rem 0 0;
+}
+.plan-choice-note { font-size: 0.85em; opacity: 0.8; margin-bottom: 0; }
 </style>

@@ -557,6 +557,79 @@ Practical implication for the human review step:
 | `--dgx-model NAME` | — | Model name for the DGX endpoint (falls back to `DGX_MODEL` env var) |
 | `--verbose` | off | Print full system and user prompts before each API call |
 
+## Who may narrate — the two eligibility filters
+
+Pass 3 no longer chooses a narrator from the whole campaign roster. Two
+deterministic filters run before the model is called, and neither costs a token.
+
+**Filter A — session attendance.** `sd_plan --vtt` reads the tape's speaker
+labels and matches them against each player's `display_names` in
+`players.yaml`. A player with no label was not at the table, and a character
+played only by absent players leaves the narrator pool for the whole session.
+
+**Filter B — scene presence.** Within that pool, a character with no speaker
+label in a scene's extraction cannot narrate that scene. The plan prompt now
+carries an `eligible narrators` line per scene instead of a bare title, and a
+plan naming somebody outside it is refused.
+
+The two read different label spaces, which is why they are two mechanisms and
+not one applied twice: the VTT carries **player display names**
+(`David Mendenhall`), while `scene_extract` normalises to **character names**
+(`Vukradin`).
+
+Eligibility is presence, not volume. One labelled turn is full eligibility —
+in the session this came from, Soma has two lines in a scene against Vukradin's
+sixty-six and both are legitimate narrators of it. Turn counts appear in the
+prompt and the record as context for choosing, never as a threshold.
+
+### Both inputs are required
+
+`sd_plan` refuses without `--vtt` or `--players-config`, and refuses when no
+roster player has a label at all (which is the wrong tape, not a session nobody
+attended). It never falls back to the unnarrowed roster — that fallback *is*
+the defect this exists to prevent (#385).
+
+### What it prints, and what it leaves behind
+
+Every exclusion is reported before the API call, naming the character, the
+cause, and the artifact it was read from. `plan.eligibility.json` is written
+beside `plan.md` with the attendance, the per-scene candidates and turn counts,
+and every exclusion — so "which pool was this plan drawn from" is answerable
+from disk months later.
+
+Speaker labels matching no roster character are reported rather than dropped. A
+label arriving as `Vukradin (David)` instead of `Vukradin` costs that character
+their eligibility for the scene, and that must not happen quietly.
+
+### A scene nobody can narrate
+
+When a scene has no eligible narrator — pure GM narration, or a stretch the
+party sat out — there is no honest first-person answer, so `sd_plan` does not
+invent one. It writes `plan.a.md`, `plan.b.md`, `plan.c.md` and **no
+`plan.md`**, differing in how that scene is treated: folded into the adjacent
+scene, narrated in an ensemble register, or reported second-hand. Every other
+scene is identical across the three, so the choice is one decision rather than
+a diff.
+
+The missing `plan.md` is the gate — Pass 5 already refuses without one. Resolve
+it with:
+
+```bash
+sd_plan --choose b --out <narration-dir>/plan.md
+```
+
+which is exactly `cp plan.b.md plan.md`. The Session Doc Editor shows the three
+and posts the choice; both write the same file.
+
+### Pass 5 knows who was unvoiced
+
+`sd_narrate --vtt` marks a character nobody voiced in the roster block. The
+marker is about **voicing**, never about presence in the fiction — a GM may
+place an unvoiced character in a scene, and the roster block must not
+contradict the extraction. The character keeps full grounding so that placement
+can still be narrated; what is added is "invent no dialogue for them". Without
+`--vtt` the block renders exactly as it did before.
+
 ## Voice files
 
 Per-character voice files live in `--voice-dir` (e.g. `voice/vukradin_voice.md`). Each file is injected only into that character's narration pass. Players write their own; see [`docs/player/voice_guide.md`](../player/voice_guide.md) for the format.
