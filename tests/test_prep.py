@@ -792,11 +792,12 @@ def test_parse_plan_skips_blocks_with_no_narrator():
 
 # ── session_doc.build_narrate_system — dialogue handling ─────────────────────
 
-def test_chunk_mode_mandates_dialogue():
-    """Chunk mode: strong dialogue mandate (full sessions usually have dialogue)."""
+def test_chunk_mode_selects_source_dialogue():
+    """Chunk mode uses the same source-grounded selection as scene mode."""
     system = session_doc.build_narrate_system(None, scene=None)
-    assert "THE DIALOGUE IS THE STORY" in system
-    assert "DO NOT invent" not in system
+    assert "DIALOGUE SELECTION" in system
+    assert "THE DIALOGUE IS THE STORY" not in system
+    assert "DO NOT invent" in system
 
 
 def test_scene_mode_dialogue_is_conditional():

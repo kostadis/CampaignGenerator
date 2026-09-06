@@ -146,8 +146,10 @@ def _require_templates() -> None:
         raise _TEMPLATE_ERROR
 
 
+NARRATION_WRITING_BRIEF = _load_template_deferred("session_doc/narrate/writing_brief")
 NARRATE_SYSTEM_BASE        = _load_template_deferred(
     "session_doc/narrate/base",
+    "writing_brief",
     "genre_directive", "examples_block", "scene_scope_line", "scene_events_line",
     "rendering_instruction", "length_instruction", "dialogue_instruction",
 )
@@ -169,6 +171,7 @@ SCENE_ANCHORED_DIRECTIVE   = _load_template_deferred(
     "session_doc/narrate/scene_anchored", "narrator")
 BUNDLE_SYSTEM_BASE         = _load_template_deferred(
     "session_doc/narrate/bundle_base",
+    "writing_brief",
     "genre_directive", "shared_examples_block", "prose_mode_block",
     "shared_context", "scene_count", "dialogue_instruction",
 )
@@ -224,24 +227,12 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                  f"  STOP when this scene ends. Do not continue into what happened next.\n"
                  f"  Do not summarise what came before. Do not foreshadow what comes after.\n"
                  f"  This scene only.\n")
-        length = ("Write as many paragraphs as needed to give every extracted moment its due — "
-                  "do not compress multiple distinct beats into a single paragraph. "
-                  "Target 600-900 words for a typical scene; expand each extracted moment into "
-                  "2-3 sentences of observation, voice, or aside. Do NOT summarize the moments — "
-                  "render each one with concrete sensory detail and the narrator's reaction. "
-                  "EXPANSION MEANS NEW CONCRETE DETAIL drawn from the extracted moments. A beat "
-                  "you have already rendered may not be restated, re-realised, or re-described "
-                  "in different words to reach a length — that is padding, not narration. "
-                  "If your draft is under 500 words AND extracted moments remain compressed or "
-                  "unrendered, go back and expand those. If every moment has been given its due, "
-                  "stop: a short complete scene beats a padded one. "
-                  "Stop as soon as the scene is complete. "
-                  "If you find yourself describing a new location or the next event, you have gone too far — stop.")
         dialogue = DIALOGUE_INSTRUCTION_CONDITIONAL
     else:
         scope = ""
-        length = "Write as many paragraphs as needed to cover all the extracted moments — typically 4–8, but do not stop early."
         dialogue = DIALOGUE_INSTRUCTION_FULL
+    length = ("Let the scene's content determine its length. Complete every meaningful "
+              "event and exchange without a fixed expansion formula or a dialogue quota.")
     if has_scene_events:
         scene_events_line = ("- Scene Events (authoritative) — the ordered account of what "
                              "happened; render from this faithfully\n"
@@ -249,11 +240,13 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
         rendering = ("The Scene Events list is the authoritative account of what occurred. "
                      "Render it in this character's voice. Do not add events that are not listed. "
                      "The extracted moments below are your primary source for verbatim quotes — "
-                     "weave those lines in exactly as written.\n\n")
+                     "select exchanges using the writing brief and preserve the spoken "
+                     "words of retained dialogue.\n\n")
     else:
         scene_events_line = ""
         rendering = ""
     result = _fill(NARRATE_SYSTEM_BASE,
+                   writing_brief=NARRATION_WRITING_BRIEF,
                    genre_directive=genre_block,
                    examples_block=block,
                    scene_scope_line=scope,
@@ -275,12 +268,12 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                                  voice_note=voice_note.strip())
     if genre and genre.strip():
         # Repeat the genre directive at the tail of the prompt. The opening copy
-        # is buried under ~150 lines of prose-mode/voice rules by the time
-        # generation starts; smaller models lose the genre signal to recency.
-        # Claude is unaffected by the duplicate — same instruction, same prompt.
+        # can be buried under long voice references. Scope this repeat to style
+        # so legacy genre instructions cannot undo the shared writing brief.
         result += (
-            "\n\nGENRE — FINAL REMINDER (this overrides any generic register the "
-            "above rules suggest):\n" + genre.strip()
+            "\n\nGENRE — FINAL REMINDER (diction and register only; the writing "
+            "brief governs quotation selection, scene construction, knowledge "
+            "boundaries, tense, and prose mode):\n" + genre.strip()
         )
     return result
 
@@ -410,6 +403,7 @@ def build_bundled_narrate_prompts(
     )
     system = _fill(
         BUNDLE_SYSTEM_BASE,
+        writing_brief=NARRATION_WRITING_BRIEF,
         genre_directive=_genre_block(genre),
         shared_examples_block=shared_style,
         prose_mode_block=PROSE_MODE_INSTRUCTION if prose_mode else "",
@@ -529,15 +523,10 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
         parts.append(
             f"## Campaign History\n\n"
             f"This is the accumulated campaign context — past events, faction relationships, "
-            f"NPC histories, world conditions. When the current scene creates a natural "
-            f"opening, draw on this for a brief memory, reflection, or flashback:\n"
-            f"- A past decision that echoes in the current one\n"
-            f"- An NPC the narrator has history with\n"
-            f"- A cost or consequence that has been accumulating\n"
-            f"- A pattern the narrator has noticed repeating\n\n"
-            f"Keep it brief: one or two sentences of interior thought, then return to the "
-            f"present. Do not summarize the history. Let it surface as the narrator's "
-            f"inner life.\n\n"
+            f"NPC histories, world conditions. Use only context the narrator can know "
+            f"and that bears on this scene. Keep interior observations proportionate "
+            f"to the scene's evidence; do not insert backstory as a checklist, reveal "
+            f"GM-only knowledge, or invent a memory or motive.\n\n"
             f"{combined}"
         )
     if scene_text:
@@ -556,10 +545,11 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
                            prev_voice_sample=prev_voice_sample.strip(),
                            narrator=narrator))
     if handoff:
-        parts.append(f"## Handoff from previous narrator\n\"{handoff}\"")
+        parts.append(f"## Handoff from previous narrator\n"
+                     f"Continuity reference only; do not repeat it as dialogue.\n\n{handoff}")
     if scene_text:
         parts.append(f"## Verbatim Quotes — {narrator}\n"
-                     f"(weave these into the narrative exactly as written)\n\n"
+                     f"(select exchanges using the writing brief; preserve retained spoken words)\n\n"
                      f"{char_moments.strip()}")
     else:
         parts.append(

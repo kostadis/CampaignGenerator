@@ -35,7 +35,7 @@ def test_every_shipped_template_satisfies_its_declared_contract():
     """
     assert narrate._TEMPLATE_ERROR is None
     assert narrate.NARRATE_SYSTEM_BASE
-    for placeholder in ("{genre_directive}", "{examples_block}",
+    for placeholder in ("{writing_brief}", "{genre_directive}", "{examples_block}",
                         "{scene_scope_line}", "{scene_events_line}",
                         "{rendering_instruction}", "{length_instruction}",
                         "{dialogue_instruction}"):
@@ -60,6 +60,7 @@ def test_a_template_missing_a_placeholder_fails_loudly(tmp_path, monkeypatch):
     with pytest.raises(ValueError) as exc:
         narrate._load_template(
             "session_doc/narrate/base",
+            "writing_brief",
             "genre_directive", "examples_block", "scene_scope_line",
             "scene_events_line", "rendering_instruction", "length_instruction",
             "dialogue_instruction",
@@ -191,6 +192,7 @@ def test_drift_does_not_break_importing_session_doc(tmp_path, monkeypatch):
     monkeypatch.setattr(narrate, "_TEMPLATE_ERROR", None)
     assert narrate._load_template_deferred(
         "session_doc/narrate/base",
+        "writing_brief",
         "genre_directive", "examples_block", "scene_scope_line",
         "scene_events_line", "rendering_instruction", "length_instruction",
         "dialogue_instruction",
@@ -249,15 +251,18 @@ def test_bundle_templates_satisfy_placeholder_and_load_bearing_rule_contracts():
 
     assert "first-person" in combined
     assert "The narrator is always “I”" in combined
-    assert "reproduce text inside quotation marks exactly or drop the quote" in combined
-    assert "KEEP — reproduce it inside quotation marks exactly as written" in combined
+    assert combined.count(narrate.NARRATION_WRITING_BRIEF.strip()) == 1
+    assert "Use the speakers' actual wording for retained dialogue" in combined
+    assert "without a fixed expansion formula or a dialogue quota" in combined
+    assert "legitimate in-world quantities, evidence, money, and spell names" in combined
+    assert "A player speaking at the table does not by itself place their character in the room" in combined
     assert "USE DIALOGUE IF PRESENT" in combined
-    assert "DO NOT invent or paraphrase dialogue" in combined
+    assert "DO NOT invent or paraphrase dialogue" in " ".join(combined.split())
     assert "Render only that scene" in combined
-    assert "Never carry one narrator's private guidance" in combined
+    assert "Never carry one narrator's private guidance" in " ".join(combined.split())
     assert "<<<CG-SCENE NN BEGIN: Exact Scene Name>>>" in combined
     assert "<<<CG-SCENE NN END>>>" in combined
     assert "Emit the scenes in packet order" in combined
     assert "final prose line of the section you just emitted" in combined
-    assert "table-speech reclassified" in combined
-    assert "use the prose line before the comment as the handoff" in combined
+    assert "table-speech reclassified" not in combined
+    assert "Every eligible verbatim quote belongs" not in combined

@@ -30,13 +30,13 @@ The flow is run by these distinct actors. Each step below names which actor is d
 |---|---|---|
 | **CG-CLI** | CampaignGenerator's python scripts | `~/src/CampaignGenerator/*.py` |
 | **CG-UI** | CampaignGenerator's Vue/FastAPI web UI | `frontend/` + `server/` |
-| **Skill** | A Claude Code skill — slash-command-invoked, runs in a normal Claude Code session | `~/src/mytools/dotfiles/claude/skills/<name>/SKILL.md`, linked into `~/.claude/skills/` |
+| **Skill** | A Codex or Claude skill, invoked in the corresponding conversation with human review gates | `~/src/mytools/dotfiles/{codex,claude}/skills/<name>/SKILL.md`, linked through the corresponding home skill directory |
 | **Anthropic API** | Direct Claude API call (via `campaignlib.stream_api` / `call_api`) | Embedded in CG-CLI and CG-UI |
 | **gm-assist** | External service that ingests Zoom recordings and produces a structured session summary | [gmassist.app](https://gmassist.app) |
 | **MemPalace** | Local-first verbatim retrieval over the curated campaign | `~/src/mempalace/`; per-campaign palace |
 | **Manual** | Human-in-the-loop editing, reviewing, decisions | Editor / browser / brain |
 
-**Important:** the skills are not in this repo. They live in `~/src/mytools/dotfiles/claude/skills/` and are loaded into Claude Code via `~/.claude/`. They are first-class steps in the flow but invisible from inside CampaignGenerator's codebase. Any conversation about "what the flow looks like" that doesn't name them is incomplete.
+**Important:** the skills are not in this repo. Their Codex and Claude collections live under `~/src/mytools/dotfiles/`; use the collection for the agent running the step. They are first-class parts of the flow even when CampaignGenerator provides no UI for them.
 
 ### The skill inventory
 
@@ -50,7 +50,8 @@ The flow is run by these distinct actors. Each step below names which actor is d
 | `voice-file` | `/voice-file <char>` | Builds `{character}_voice.md` for `session_doc.py` Pass 5 by deeply reading source material | One-time per character |
 | `voice-examples` | `/voice-examples <names>` | Per-character `examples/<firstname>.md` files (Phase 1 routing). Makes narrators sound distinct instead of regressing to an average voice | One-time per character; refreshed when prose accumulates |
 | `style-examples` | `/style-examples` | Global verbatim-excerpt style pool for narration | One-time per campaign |
-| `voice-critic` | `/voice-critic <narration>` | Post-hoc critique of generated narration — flags generic prose / voice drift / wrong narrator. Never auto-rewrites | After Pass 5 |
+| `dialogue-edit` (Codex) | `$dialogue-edit <session-or-scene>` | Read full narration and reviewed sources; propose exact edits, obtain per-scene GM rulings, and write a derived revision preserving the original | After UI narration and any scrub pass; before final voice-critic |
+| `voice-critic` | `/voice-critic <narration>` | Critique the exact selected revision for generic prose / voice drift / wrong narrator. Never auto-rewrites | After dialogue editing, before final consistency review and promotion |
 | `dossier-merge` | `/dossier-merge [dir]` | Deduplicates `docs/npcs/*.md` from `pipelines/grounding/planning.py --build-dossiers` (typos, alias-as-filename, garbage filenames) into one canonical file per NPC. Also folds `.new_notes.NNN.md` sidecars back in via batch | Whenever `--build-dossiers` runs |
 | `mempalace-campaign` | (setup) | Stand up a per-campaign MemPalace palace over the curated content | One-time per campaign |
 
@@ -128,6 +129,16 @@ The first place CG-UI is the centre of gravity.
 
 ### Phase G — Narrate
 
+The G4–G6 rows below describe the older application passes. For the current
+sequence, use [SkillPipelineOrder.md](SkillPipelineOrder.md): **no-mech before
+UI narration; scrub if needed; dialogue-edit; voice-critic on the approved
+revision; final consistency review; explicit promotion and assembly**.
+UI and CLI narration now share the accepted narration-v1 writing brief for all
+campaigns, in both single-scene and bundled mode. Campaign voice and genre files
+remain style references. Dialogue-edit follows generation and uses approach B's
+editing guidance in a Codex conversation; invoking the skill does not rerender
+or change the generation configuration.
+
 | # | Step | Actor | Notes |
 |---|---|---|---|
 | G1 | Prerequisite: per-character voice files | Skill: `/voice-file <char>` | One-time per character |
@@ -136,7 +147,8 @@ The first place CG-UI is the centre of gravity.
 | G4 | Generate first-person narration per scene | CG-CLI: `session_doc.py` Pass 5 (Anthropic API) | First-person, grounded in events + verbatim dialogue + player backstory |
 | G5 | Strip mechanical language | CG-CLI: voice pass / `session_doc.py` later pass | "rolls a 17", "AC 14" etc. removed |
 | G6 | Voice pass | CG-CLI: `session_doc.py` voice pass (Anthropic API) | Aligns sentences to the character's voice |
-| G7 | Critique generated narration | Skill: `/voice-critic <narration>` | Flags generic prose / voice drift / wrong narrator — review artifact, never auto-rewrites |
+| G6a | Review contextual dialogue edits | Codex skill: `$dialogue-edit <session-or-scene>` | Exact proposals → per-scene GM rulings → derived revision; original narration remains intact |
+| G7 | Critique selected narration revision | Skill: `/voice-critic <approved-revision>` | Use the edited file and original run provenance, not an older file selected by directory scan; critique remains report-only |
 | G8 | Fix voice issues | Manual + targeted re-runs | |
 | G9 | Final consistency check | Skill: `/consistency-check` (or final gate of `/staged-consistency`) | |
 
@@ -165,6 +177,7 @@ The places the flow currently leaves the UI and falls back to a skill, CLI, or m
 - **C3 (VTT spell pass)** — only available as a skill. The UI has no glossary editor and no interactive unknown-proper-noun prompt. This is one of the most-touched per-session steps and it's invisible to the UI.
 - **C4 / D2 / E3 / G9 (consistency checks at boundaries)** — the *script* (`session_doc/check_consistency.py`) is in the repo, but the **staged pattern** that prevents drift between stages lives only in the `/staged-consistency` skill. The UI runs the script; it doesn't orchestrate the staged human-review gates.
 - **G1–G3 (voice / examples / style files)** — only available as skills. There is no UI for inspecting or refreshing the voice/example library a campaign depends on.
+- **G6a (dialogue-edit)** — deliberately a Codex skill by GM ruling. The conversation owns editorial judgment; deterministic helpers own exact application. Continue generating narration in the UI. The derived revision needs explicit selection/promotion before assembly; this is not a request for another UI feature.
 - **G7 (voice-critic)** — only available as a skill. Post-narration critique is a flagged-sentences report, not a structured artifact the UI knows about.
 - **H5 (dossier-merge)** — only available as a skill. The UI runs `pipelines/grounding/planning.py --build-dossiers`; the deduplication step that makes the output *usable* is outside the UI.
 - **A1 (campaign-prep load)** — a skill exclusively. The UI doesn't have a "drop me into a Claude Code session with these four docs preloaded" affordance.

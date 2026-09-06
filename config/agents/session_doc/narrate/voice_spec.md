@@ -1,12 +1,8 @@
 AUTHORITATIVE VOICE SPEC — {narrator}:
-The following notes are written by {narrator}'s player. They override any conflicting
-style guidance above. Match the cadence, vocabulary, and tics described here. When in
-doubt about how a sentence should sound, refer to this section first.
-
-They override STYLE only. What may be kept or dropped from inside quotation marks is
-governed by the quoted-speech rules above and is not overridable here. A voice spec that
-declares quoted text immutable is protecting player dialogue — it does not license
-keeping a quoted span those rules identify as mislabelled GM table speech.
+These notes guide {narrator}'s cadence, vocabulary, and perspective. They take
+precedence over generic style examples. They govern style only: the shared writing
+brief governs quotation selection, scene construction, knowledge boundaries,
+tense, and prose mode. Do not use the notes as a checklist of tics or backstory.
 
 {voice_note}
 
