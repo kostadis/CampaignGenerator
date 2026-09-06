@@ -177,7 +177,9 @@ def resume(engine):
         elif run.status in {"failed", "running"}:
             next_action = "inspect execution.log and preserved outputs; start a distinct retry run"
         elif run.status == "pending_agent":
-            next_action = "execute fixed CLI stage or perform pending native skill task"
+            from .calibration import load, approved
+            calibration = load(run)
+            next_action = ("continue native skill with saved calibration rulings; submit all selected scenes and checks" if approved(calibration) else "human calibration review before rendering remaining scenes") if calibration else "execute fixed CLI stage or perform pending native skill task"
         elif view["missing_checks"]:
             next_action = "submit missing specialist checks; staged-consistency coordinates without duplicate audits"
         elif view["unresolved_findings"]:

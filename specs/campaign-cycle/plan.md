@@ -167,3 +167,30 @@ matching UI output; IX keeps native work in chat; X prohibits guessed scope.
 No stage executes on copy, no new model/retrieval seam or options are added, and
 no on-disk shape changes (XIII). Tests cover fresh approval, stale suppression,
 read-only prompt generation, and editor/CLI handoff.
+
+
+## Voice-smooth calibration review (2026-09-06)
+
+Close the pending-native-task UI gap by explicitly registering a preserved sample
+and grouped original/smoothed cards in the existing run. Save individual decisions
+and a separate calibration approval before remaining scenes are rendered. Keep
+full draft submission, checks, and sign-off separate. Implement engine contracts,
+editor controls, reload/staleness/gate tests, then register the isolated pilot.
+
+### Constitution Check
+
+I, IV, VIII: YAML workflow owns decisions; original extraction and immutable sample
+bytes remain available. II: calibration is a human gate before further rendering,
+never approval of unseen output. III, V, VII: no retrieval changes, new model calls,
+clients, or extraction reruns. VI, XI: the existing subprocess command boundary
+exposes every new calibration operation in CLI and editor together. IX: the
+previously approved narrow shared-editor-review exception applies; chat handoff
+and JSON interchange remain equivalent. X: cards reference only selected inputs;
+bulk choice materializes IDs; complete submission covers selected scene filenames.
+XII: reuse existing command flags and single-user defaults. XIII: no existing state
+is rewritten on read; optional versioned task metadata is explicitly registered.
+Provisional calibration files remain historical evidence; registration does not
+import decisions or approval. See migration.md and the operator guide.
+
+Validation: focused workflow contracts, reload/CLI browser handoff, mobile layout,
+existing review/orchestration/option parity and retrieval/render isolation tests.

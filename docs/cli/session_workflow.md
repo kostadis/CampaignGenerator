@@ -151,3 +151,57 @@ review. For approved Events, the next stage is `remove-recap`. Copying does not
 start work or change the saved workflow. Unapproved or stale runs retain the
 review handoff instead. CLI users can read the same prompts in `resume` output
 under `continuations`; the stage catalog supplies the next boundary.
+
+
+## Voice-smooth calibration in the editor and CLI
+
+The agent first prepares a representative derived sample. In Session production
+and review, select the pending voice-smooth run. Calibration cards show original
+wording and the proposal, grouped by change type, with speaker/scene filters,
+flagged examples, voice authorities, and a sticky progress tally.
+
+Click **Approve** to accept an example, **Reject** to retain its original wording,
+or **Discuss** to save a question for the agent. Notes are optional; no reviewer
+name is required. Choices save immediately and can be changed after reload.
+**Use this calibration** becomes available when every card is resolved. It approves
+the approach for remaining selected scenes, not the completed draft. Copy the
+agent handoff to continue; the editor does not launch an agent. The agent must
+honor rejected examples and discuss substantive changes, then submit all selected
+scenes and checks for a separate whole-draft review.
+
+CLI operations use the same --campaign-dir, --session-dir, --expected-revision and
+--request JSON flags as other session_workflow commands. All five are also exposed
+under the editor's CLI / agent interchange commands:
+
+- `calibration-register`: `{run_id, report, replaces_binding?}`. Report schema 1
+  has title, method, authorities (resolved Evidence inputs), and nonempty cards.
+  Each card has id, category, scene, speaker, location, source Evidence, sample
+  Evidence, before, after, rationale and optional risk. Source must be selected;
+  sample must be preserved as derived in `.session-workflow/work/<run>/review/`.
+  Both displayed texts must occur in their preserved evidence. This operation
+  registers no decisions. Explicit replacement requires the current calibration
+  binding and preserves the old review in workflow events; all cards need review.
+- `calibration-export`: `{run_id}` returns schema_version, kind, session_id, run_id,
+  revision, and calibration (report, cards with finding_sha256, binding, decisions,
+  unresolved IDs, approval). Read-only; also **Export review JSON**.
+- `calibration-decide`: `{run_id, decisions}` uses existing Decision fields:
+  finding_id, finding_sha256, decision (approve/reject/discuss), optional rationale,
+  actor, at, group. Empty selections, stale hashes, and duplicate IDs are refused.
+- `calibration-approve`: `{run_id, calibration_binding}`. Requires current evidence
+  and every card resolved. A later decision invalidates this calibration approval.
+- `calibration-import`: `{document}` accepts the calibration-export envelope with
+  only new decisions appended to its decisions list; existing history, all other fields, and revision must match. Also **Import
+  reviewed JSON**. Import cannot grant calibration or draft approval.
+
+Sample files are kept separately from production outputs so completing the draft
+cannot overwrite calibration evidence. Missing/changed source, sample, or authority
+bytes block decisions and approval. Agents read `resume` to distinguish calibration
+review from continuing a calibrated native task. For new pending voice-smooth work,
+`submit` requires explicit calibration approval and one output per selected scene
+filename. Filenames alone are not a quality check: the required specialist check
+and human draft sign-off still assess the completed contents.
+
+
+Workflow API JSON responses allow up to 8 MiB, with the existing 30-second command
+timeout. Saved review history and evidence remain intact; they are not truncated
+to fit the shared subprocess runner's smaller default response limit.

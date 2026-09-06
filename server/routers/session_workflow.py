@@ -49,7 +49,7 @@ async def command(request: Request, body: WorkflowRequest):
     if body.operation == "execute":
         return StreamingResponse(stream_subprocess(_build_workflow_cmd(body), cwd=str(campaign), save_run_log=False), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
     try:
-        return await run_bounded_json(_build_workflow_cmd(body), cwd=str(campaign), timeout_seconds=30)
+        return await run_bounded_json(_build_workflow_cmd(body), cwd=str(campaign), timeout_seconds=30, max_output_bytes=8 * 1024 * 1024)
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
     except BoundedJSONError as exc:

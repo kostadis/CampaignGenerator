@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import CalibrationReview from '../../components/CalibrationReview.vue'
 import { apiPost } from '../../api/client'
 import { useConfigStore } from '../../stores/config'
 
@@ -32,7 +33,9 @@ const savedDecisions = computed(() => Object.fromEntries((run.value?.decisions |
 const decisionLabels: Record<string, string> = { approve: 'Approved', reject: 'Rejected', discuss: 'Discuss' }
 const decisionLabel = (value?: string) => decisionLabels[value || ''] || 'Not reviewed'
 const continuation = computed(() => workspace.value?.continuations?.find((item: any) => item.run_id === selectedRun.value))
+const calibration = computed(() => run.value?.status === 'pending_agent' ? view.value?.calibration : null)
 const handoff = computed(() => {
+  if (calibration.value) return `Continue voice-smooth using the saved calibration review.\nCampaign configuration: ${workspace.value.state.config}\nSession directory: ${session.value}\nRun: ${selectedRun.value}\nSaved workflow revision: ${workspace.value.state.revision}\nRead the calibration cards, source hashes, and saved decisions from disk. ${calibration.value.approved ? 'Calibration is approved: use its scoped rulings to finish the remaining selected scenes and submit the complete derived draft and required checks.' : 'Discuss unresolved cards with me. Do not infer rulings or render the remaining scenes before explicit calibration approval.'} Rejected examples retain original wording. Do not expand selections. Stop before whole-draft sign-off or any subsequent stage.\n\n${calibration.value.decisions.map((d: any) => `${d.finding_id}: ${d.decision} — ${d.rationale}`).join('\n')}`
   if (continuation.value) return continuation.value.prompt
   const items = (exported.value?.findings || []).map((f: any) => {
     const d = savedDecisions.value[f.id]
@@ -44,7 +47,7 @@ const run = computed(() => workspace.value?.state.runs.find((r: any) => r.id ===
 const view = computed(() => workspace.value?.runs.find((r: any) => r.id === selectedRun.value))
 const rows = computed(() => (exported.value?.findings || []).filter((f: any) => !scene.value || f.scene === scene.value))
 const scenes = computed(() => [...new Set<string>((exported.value?.findings || []).map((f: any) => f.scene).filter(Boolean))])
-const operations = ['import-legacy', 'memory-scope', 'memory-plan', 'memory-events', 'promotion-scope', 'promote', 'catalog', 'execute', 'resume', 'migrate', 'start', 'submit', 'check', 'decide', 'approve', 'apply', 'select-version', 'export', 'import', 'recover', 'evidence']
+const operations = ['calibration-register', 'calibration-decide', 'calibration-approve', 'calibration-export', 'calibration-import', 'import-legacy', 'memory-scope', 'memory-plan', 'memory-events', 'promotion-scope', 'promote', 'catalog', 'execute', 'resume', 'migrate', 'start', 'submit', 'check', 'decide', 'approve', 'apply', 'select-version', 'export', 'import', 'recover', 'evidence']
 
 async function invoke(op: string, data: any = {}) {
   const body = {
@@ -120,6 +123,13 @@ async function copyHandoff() {
     }
   })
 }
+async function calibrationCommand(op: string, data: any) {
+  await guarded(async () => {
+    await invoke(op, { run_id: run.value.id, ...data })
+    await refresh()
+    notice.value = 'Calibration choice saved. The agent can read it from disk.'
+  })
+}
 async function approve() {
   await guarded(async () => {
     await invoke('approve', { run_id: run.value.id, draft_binding: view.value.approval_binding })
@@ -134,14 +144,14 @@ async function showEvidence(evidence: any) {
 }
 async function downloadReview() {
   await guarded(async () => {
-    const data = await invoke('export', { run_id: run.value.id })
+    const data = await invoke(calibration.value ? 'calibration-export' : 'export', { run_id: run.value.id })
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
     const link = document.createElement('a'); link.href = url; link.download = `review-${run.value.id}.json`; link.click(); URL.revokeObjectURL(url)
   })
 }
 async function importReview(event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0]
-  if (file) await guarded(async () => { await invoke('import', { document: JSON.parse(await file.text()) }); await refresh() })
+  if (file) await guarded(async () => { await invoke(calibration.value ? 'calibration-import' : 'import', { document: JSON.parse(await file.text()) }); await refresh() })
 }
 async function execute() {
   await guarded(async () => { result.value = JSON.stringify(await invoke(operation.value, JSON.parse(payload.value)), null, 2); await refresh() })
@@ -198,7 +208,8 @@ onMounted(async () => {
         </div>
         <p><strong>Selected input scope:</strong> <span v-for="(input, index) in run.selection" :key="input"><span v-if="index">; </span><code>{{ input }}</code></span></p>
         <p>{{ run.generation.backend }} / {{ run.generation.model || 'backend default' }} / {{ run.generation.effort || 'default effort' }}</p>
-        <p>Checks needed: {{ view.missing_checks.join(', ') || 'none' }}. Unresolved: {{ view.unresolved_findings.length }}.</p>
+        <p v-if="calibration">Calibration: {{ calibration.unresolved.length }} unresolved examples. Full-draft checks follow completion of the selected scenes.</p>
+        <p v-else>Checks needed: {{ view.missing_checks.join(', ') || 'none' }}. Unresolved: {{ view.unresolved_findings.length }}.</p>
         <p v-for="reason in view.stale_reasons" :key="reason" class="error">{{ reason }}</p>
         <details><summary>Resolved task, inputs, selection and generation metadata</summary><pre>{{ JSON.stringify(run, null, 2) }}</pre></details>
         <div class="controls">
@@ -206,8 +217,9 @@ onMounted(async () => {
           <button @click="downloadReview">Export review JSON</button>
           <label>Import reviewed JSON <input type="file" accept="application/json" @change="importReview" /></label>
         </div>
+        <CalibrationReview v-if="calibration" :calibration="calibration" :busy="busy" :stale="!!view.stale_reasons.length" :selected-count="run.selection.length" :command="calibrationCommand" @evidence="showEvidence" />
         <div v-if="!continuation" class="review-toolbar" aria-label="Review controls">
-          <p>Approve, Reject, or Discuss each finding below. Each button saves immediately. Discuss also lets you add an optional note. A finding decision does not approve the whole draft.</p>
+          <p v-if="!calibration">Approve, Reject, or Discuss each finding below. Each button saves immediately. Discuss also lets you add an optional note. A finding decision does not approve the whole draft.</p>
           <button :disabled="busy" @click="copyHandoff">Copy handoff for agent</button>
           <p>Paste the handoff into your agent chat when ready. Saved choices and discussion notes are available to the agent; this page does not launch a conversation.</p>
           <p v-if="notice" role="status">{{ notice }}</p>
@@ -216,6 +228,7 @@ onMounted(async () => {
         <div v-if="handoffOpen && !continuation" class="handoff">
           <label>Agent handoff <textarea :value="handoff" readonly rows="8" /></label>
         </div>
+        <template v-if="!calibration">
         <div class="controls">
           <label>Scene <select v-model="scene" aria-label="Scene"><option value="">All scenes</option><option v-for="s in scenes" :key="s">{{ s }}</option></select></label>
           <button :disabled="busy" @click="chosen = rows.map((f: any) => f.id)">Select displayed findings</button>
@@ -264,12 +277,13 @@ onMounted(async () => {
             <label><input v-model="chosen" type="checkbox" :value="f.id" :disabled="busy" /> Select {{ f.id }} for bulk actions</label>
           </div>
         </article>
-        <div class="draft-approval">
+        </template>
+        <div v-if="!calibration" class="draft-approval">
           <h4>Whole-draft sign-off</h4>
         <button :disabled="busy" @click="guarded(async () => { result = JSON.stringify(await invoke('execute', { run_id: run.id }), null, 2); await refresh() })">Execute / show native task</button>
         <button :disabled="busy" @click="guarded(async () => { result = JSON.stringify(await invoke('resume'), null, 2); await refresh() })">Resume status</button>
         <p>A completed check does not approve a draft. Read every output before signing off.</p>
-        <button :disabled="busy" @click="approve">I have reviewed this draft — approve</button>
+        <button :disabled="busy || run.status !== 'generated' || !!view.stale_reasons.length" @click="approve">I have reviewed this draft — approve</button>
         <button :disabled="busy" @click="guarded(async () => { await invoke('select-version', { run_id: run.id }); await refresh() })">Select approved version for downstream work</button>
         </div>
       </section>

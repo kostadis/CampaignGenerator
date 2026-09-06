@@ -11,7 +11,7 @@ from .engine import Engine
 from .models import Evidence
 from .storage import WorkflowError
 
-OPERATIONS = ("import-legacy", "memory-scope", "memory-plan", "memory-events", "promotion-scope", "promote", "catalog", "execute", "resume", "init", "status", "migrate", "start", "submit", "check", "decide", "approve", "apply", "select-version", "export", "import", "recover", "evidence")
+OPERATIONS = ("calibration-register", "calibration-decide", "calibration-approve", "calibration-export", "calibration-import", "import-legacy", "memory-scope", "memory-plan", "memory-events", "promotion-scope", "promote", "catalog", "execute", "resume", "init", "status", "migrate", "start", "submit", "check", "decide", "approve", "apply", "select-version", "export", "import", "recover", "evidence")
 
 
 def build_parser():
@@ -66,6 +66,9 @@ def dispatch(args):
         if payload:
             raise WorkflowError("status does not accept a payload")
         return engine.status()
+    if args.operation == "calibration-export":
+        from .calibration import export
+        return export(engine, **payload)
     if args.operation == "export":
         return engine.export(**payload)
     if args.operation == "evidence":

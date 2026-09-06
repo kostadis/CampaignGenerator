@@ -57,7 +57,8 @@ def stale_reasons(store: Store, state: Workflow, run: Run, seen=None) -> list[st
         if not parent.approval or parent.approval.binding != binding(parent):
             reasons.append(f"unapproved dependency: {parent_id}")
         reasons += stale_reasons(store, state, parent, seen)
-    return sorted(set(reasons))
+    from .calibration import stale
+    return sorted(set(reasons + stale(store, run)))
 
 
 def require_fresh(store: Store, state: Workflow, run: Run):
@@ -109,7 +110,8 @@ class Engine:
         for run in state.runs:
             missing = sorted(set(run.required_checks) - {c.name for c in run.checks if c.status == "complete"})
             reasons = stale_reasons(self.store, state, run)
-            views.append({"id": run.id, "stage": run.stage, "status": "stale" if reasons else "approved" if run.approval and run.approval.binding == binding(run) else run.status, "stale_reasons": reasons, "missing_checks": missing, "unresolved_findings": unresolved(run), "approval_binding": binding(run)})
+            from .calibration import view as calibration_view
+            views.append({"calibration": calibration_view(run),"id": run.id, "stage": run.stage, "status": "stale" if reasons else "approved" if run.approval and run.approval.binding == binding(run) else run.status, "stale_reasons": reasons, "missing_checks": missing, "unresolved_findings": unresolved(run), "approval_binding": binding(run)})
         return {"state": state.model_dump(mode="json"), "runs": views, "recovery_required": self.store.contained(".session-workflow/transaction.yaml").exists()}
 
     def mutate(self, operation: str, payload: dict, revision: int):
@@ -127,6 +129,22 @@ class Engine:
                 state.events.append({"operation": operation, "at": now(), "revision": revision + 1})
                 self.store.save(state, expected_revision=revision)
         return self.status()
+
+    def op_calibration_register(self, state, **payload):
+        from .calibration import register
+        return register(self, state, **payload)
+
+    def op_calibration_decide(self, state, **payload):
+        from .calibration import decide
+        return decide(self, state, **payload)
+
+    def op_calibration_approve(self, state, **payload):
+        from .calibration import approve
+        return approve(self, state, **payload)
+
+    def op_calibration_import(self, state, **payload):
+        from .calibration import import_review
+        return import_review(self, state, **payload)
 
     def op_start(self, state: Workflow, *, stage: str, selection: list[str], inputs: list[str], generation: dict, dependencies: list[str], required_checks: list[str], options: dict | None = None):
         from .stages import STAGES
@@ -191,6 +209,8 @@ class Engine:
         require_fresh(self.store, state, run)
         if run.status not in {"pending_agent", "running"}:
             raise WorkflowError("run already completed; start a distinct run for a new version")
+        from .calibration import require_complete_submission
+        require_complete_submission(run, outputs)
         resolved = Generation.model_validate(generation)
         for key in ("backend", "model", "effort"):
             if getattr(resolved, key) != getattr(run.generation, key):

@@ -160,3 +160,25 @@ revision, and stale inputs suppress the continuation. A read-only check of the
 running Phandalin editor confirmed the approved Events run at revision 53 shows
 `remove-recap`, the exact pilot paths, and the instruction to stop at human review.
 No campaign workflow mutation or production stage was performed by this change.
+
+
+## Voice-smooth calibration UI acceptance — 2026-09-06
+
+Phandalin's existing pending run `c89b51e726e64d9ea04a6904d6ebbe78` now
+has an explicitly registered calibration review at workflow revision 105.
+All 22 before/after pairs and three unchanged upstream wording questions match
+preserved source/sample bytes. Previous YAML/Markdown review artifacts remain
+byte-identical. The sample is separately preserved in the run's review directory;
+no remaining scenes were rendered and no decisions or approvals were imported.
+
+The isolated server on port 8131 serves the new UI and accepts calibration-export.
+A read-only browser walkthrough verified 25 cards, reload persistence, no page
+errors, a disabled calibration gate, and no whole-draft approval control while
+calibration is pending. Desktop/mobile tests additionally exercise Approve,
+Reject, Discuss, saved notes, changing decisions, handoff, source staleness, and
+the separate calibration gate against the actual CLI in temporary campaigns.
+
+Validation: 116 workflow/family tests passed; retrieval/render isolation passed
+in the 220-test focused run. Frontend type checking and production build passed.
+No pilot human rulings were made by these tests. Live campaign directories were
+not used as test or output locations.
