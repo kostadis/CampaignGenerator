@@ -36,7 +36,7 @@ plugins/MCP, web search, subagents, executable tools, and writes disabled.
 
 Model precedence is explicit `--model`, then `CG_CODEX_MODEL`, then the Codex
 subscription default. `CG_CODEX_TIMEOUT` is a positive finite number of seconds
-and defaults to `600`. A missing CLI/login, incompatible `claude-*` model,
+and defaults to `1800` (30 minutes). A missing CLI/login, incompatible `claude-*` model,
 timeout, failed process, or empty result exits nonzero without retrying another
 provider or saving a successful report. `max_tokens` remains accepted by the
 shared facade but Codex exposes no matching CLI output-limit flag.
@@ -157,7 +157,7 @@ Model precedence for Codex is explicit `--model`, then `CG_CODEX_MODEL`, then
 the subscription's own default. An omitted model is intentionally omitted from
 argv; an explicit compatible model is forwarded unchanged, while an explicit
 `claude-*` model fails clearly. `CG_CODEX_TIMEOUT` sets the positive finite
-child deadline (default `600` seconds). The brokered `polish` loop replays typed
+child deadline (default `1800` seconds / 30 minutes). The brokered `polish` loop replays typed
 history to Codex, but only the parent process executes declared document tools
 and applies mutations.
 
