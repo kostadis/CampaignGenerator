@@ -103,7 +103,6 @@ Run `.specify/scripts/bash/check-prerequisites.sh --json --require-spec --requir
 If `spec.md`, `plan.md`, or `tasks.md` is missing, STOP with a clear, actionable message naming the
 prerequisite command to run (`$speckit-specify` for a missing spec, `$speckit-plan` for a missing plan,
 `$speckit-tasks` for missing tasks). Do not produce partial output.
-For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 ### 2. Load Artifacts (Progressive Disclosure)
 
