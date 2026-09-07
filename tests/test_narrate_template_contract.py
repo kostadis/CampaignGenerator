@@ -35,7 +35,8 @@ def test_every_shipped_template_satisfies_its_declared_contract():
     """
     assert narrate._TEMPLATE_ERROR is None
     assert narrate.NARRATE_SYSTEM_BASE
-    for placeholder in ("{writing_brief}", "{genre_directive}", "{examples_block}",
+    for placeholder in ("{writing_brief}", "{audit_hatch}", "{genre_directive}",
+                        "{examples_block}",
                         "{scene_scope_line}", "{scene_events_line}",
                         "{rendering_instruction}", "{length_instruction}",
                         "{dialogue_instruction}"):
@@ -60,7 +61,7 @@ def test_a_template_missing_a_placeholder_fails_loudly(tmp_path, monkeypatch):
     with pytest.raises(ValueError) as exc:
         narrate._load_template(
             "session_doc/narrate/base",
-            "writing_brief",
+            "writing_brief", "audit_hatch",
             "genre_directive", "examples_block", "scene_scope_line",
             "scene_events_line", "rendering_instruction", "length_instruction",
             "dialogue_instruction",
@@ -192,7 +193,7 @@ def test_drift_does_not_break_importing_session_doc(tmp_path, monkeypatch):
     monkeypatch.setattr(narrate, "_TEMPLATE_ERROR", None)
     assert narrate._load_template_deferred(
         "session_doc/narrate/base",
-        "writing_brief",
+        "writing_brief", "audit_hatch",
         "genre_directive", "examples_block", "scene_scope_line",
         "scene_events_line", "rendering_instruction", "length_instruction",
         "dialogue_instruction",
@@ -264,7 +265,6 @@ def test_bundle_templates_satisfy_placeholder_and_load_bearing_rule_contracts():
     assert "<<<CG-SCENE NN END>>>" in combined
     assert "Emit the scenes in packet order" in combined
     assert "final prose line of the section you just emitted" in combined
-    assert "table-speech reclassified" not in combined
     assert "Every eligible verbatim quote belongs" not in combined
     # #395 — the bundle wrapper carried its own copy of the precedence block,
     # so a fix applied only to `base.md` would leave every bundled render
@@ -272,3 +272,14 @@ def test_bundle_templates_satisfy_placeholder_and_load_bearing_rule_contracts():
     assert "present-tense voice" not in combined
     assert "knowledge boundaries, tense" not in combined
     assert "the authority on tense" in combined
+    # #396 — the reclassification judgment reaches the bundle through the
+    # shared brief, so the audit hatch has to reach it too. `26ec5b0` kept the
+    # judgment and deleted the record; this pin is the reverse of the one it
+    # left behind.
+    assert "table-speech reclassified" in combined
+    assert "not a claim of completeness" in " ".join(combined.split())
+    # Transport: `split_batched_response` discards anything outside a
+    # BEGIN/END pair *silently*, and still reports the section complete — so a
+    # hatch emitted after the END marker is a false clean with no signal.
+    assert "as the last line before its END marker" in combined
+    assert "not a prose line" in combined

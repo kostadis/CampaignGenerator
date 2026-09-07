@@ -9,4 +9,4 @@ ambiguities. GM descriptions become experienced facts; speech the GM supplies fo
 an identified NPC or PC stays with that character. A GM label or a player's turn
 at the table alone does not establish a character's presence or spoken dialogue.
 Do not silently guess a new speaker or fabricate a replacement line. Preserve
-uncertainty where the source does not resolve it. Emit no audit comments.
+uncertainty where the source does not resolve it.

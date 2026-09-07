@@ -45,7 +45,9 @@ before doing another manual re-sync.
 ## Already done — do not redo
 
 - **CG#246** (merged): GM-table-speech escape hatch (content-based, self-flag audit
-  comment, `assemble.py` strips), HARD BANS tic-family block in `base.md`, multi-line
+  comment, stripped at assembly) — *deleted by 26ec5b0 when the shared v1 writing
+  brief landed, restored narrowly by #396; the marker registry moved to
+  `session_doc/apparatus.py`* — HARD BANS tic-family block in `base.md`, multi-line
   genre block in `narrate.py`, anti-restatement length directive, dual-format roster
   parser (legacy + Phandalin) with species + empty-roster stderr warning, `_`-skip in
   voice/examples loaders, `cache_system=True`, golden regenerated at tip.

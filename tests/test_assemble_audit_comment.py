@@ -1,5 +1,5 @@
 """Tests for assemble.py stripping Pass 5's table-speech audit comment
-(issue #245, Work Order A).
+(issue #245, Work Order A; deleted by 26ec5b0, restored narrowly by #396).
 
 Pass 5 (narrate) may append a single HTML comment after the narration when
 it reclassifies a mislabelled quoted span as GM table speech:
@@ -11,6 +11,14 @@ That comment is the GM's review queue and belongs in the per-scene
 the per-scene source file must be left untouched by assembly (assemble.py
 only reads scene files, it never writes them). An unrelated hand-written
 HTML comment must survive assembly unchanged.
+
+The hatch records mislabelled-attribution reclassification only. The writing
+brief separately licenses omitting incidental filler; that is ordinary editorial
+work and is deliberately *not* logged here (#386). The marker registry these
+tests exercise lives in ``session_doc/apparatus.py`` — ``sd_narrate`` needs the
+same regex to keep a trailing comment out of the prose handoff and out of the
+unknown-name scan, and ``test_apparatus_marker_pairing.py`` is what now stops
+the producer being deleted out from under this stripper again.
 
 Reuses the subprocess harness pattern from ``test_chapter_identity.py``
 (``_scene`` helper + ``subprocess.run`` against ``session_doc/assemble.py``).

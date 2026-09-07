@@ -27,41 +27,10 @@ from pathlib import Path
 
 from campaignlib.textproc import split_frontmatter
 
-# Provenance apparatus written INTO a scene file by a pipeline pass, recording
-# what that pass did and why. It is the GM's audit trail, it belongs in the
-# per-scene file, and it is not part of the assembled document — the assembled
-# doc feeds the release append and the chapter split, so anything left in it
-# travels into the bible.
-#
-# Recognised markers:
-#   table-speech reclassified:  Pass 5 / sd_narrate  (issue #245)
-#   hand-fixed                  a manual post-narration repair pass
-#   Editorial note:             a per-quote ruling carried down from voice-smooth
-#   Scene boundary note:        a de-duplication ruling carried down from voice-smooth
-#
-# A comment that matches none of these is the GM's own note and SURVIVES
-# assembly untouched — that distinction is deliberate and covered by
-# tests/test_assemble_audit_comment.py::test_unrelated_html_comment_survives.
-_APPARATUS_MARKERS = (
-    r"table-speech\s+reclassified:",
-    r"hand-fixed",
-    r"Editorial\s+note:",
-    r"Scene\s+boundary\s+note:",
-)
-_AUDIT_COMMENT_RE = re.compile(
-    r"[ \t]*<!--\s*(?:" + "|".join(_APPARATUS_MARKERS) + r").*?-->[ \t]*\n?",
-    re.DOTALL | re.IGNORECASE,
-)
-
-
-def strip_audit_comments(body: str) -> str:
-    """Remove pipeline provenance comments from a scene body.
-
-    Strips only comments whose opening text matches a known apparatus marker
-    (see _APPARATUS_MARKERS). A hand-written comment the GM added themselves is
-    left alone.
-    """
-    return _AUDIT_COMMENT_RE.sub("", body)
+# The marker registry lives in session_doc/apparatus.py: sd_narrate (Stage 3)
+# needs the same regex to keep a trailing audit comment out of the prose
+# handoff and out of the unknown-name scan (#396).
+from session_doc.apparatus import strip_audit_comments
 
 
 def humanise_slug(slug: str) -> str:

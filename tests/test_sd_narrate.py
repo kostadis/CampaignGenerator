@@ -48,6 +48,11 @@ SCENE1_NARRATION = (
 )
 SCENE1_HANDOFF_TAIL = "See you at dawn."
 
+# #396 — the restored table-speech audit hatch is written on the scene's final
+# line, exactly where the handoff used to be read from.
+SCENE1_HATCH = '<!-- table-speech reclassified: "Alice, roll me a perception check." -->'
+SCENE1_NARRATION_WITH_HATCH = SCENE1_NARRATION + "\n" + SCENE1_HATCH
+
 SCENE2_NARRATION = (
     'Bob nods and steps out into the rain.\n'
     '"Until then."'
@@ -431,6 +436,50 @@ def test_batch_failure_mid_loop_exits_nonzero_earlier_scenes_stay_on_disk(
     # scene 2 (the failing item) was never written.
     written = sorted(paths["out_dir"].glob("session_doc_scene_*.md"))
     assert [f.name for f in written] == ["session_doc_scene_01_scene_one.md"]
+
+
+# ── #396: the audit hatch is an artifact, never a continuity anchor ─────────
+
+def test_a_trailing_audit_comment_is_not_the_prose_handoff(monkeypatch, tmp_path):
+    """The hatch stays on disk for the GM; it never reaches the next narrator.
+
+    `handoff = narration.rsplit("\\n", 1)[-1]` took the literal last line, so
+    restoring the hatch would have fed the next scene's prompt a stripped table
+    instruction — under a "Handoff from previous narrator" heading, as prose to
+    continue from. `wire-protocol.md` §1 already forbade it; nothing enforced
+    it until `_prose_handoff`.
+    """
+    paths = _write_fixtures(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION_WITH_HATCH, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths))
+    sd_narrate.main()
+
+    scene2_prompt = fake_stream.calls[1]["user"]
+    assert SCENE1_HANDOFF_TAIL in scene2_prompt
+    assert "table-speech reclassified" not in scene2_prompt
+    assert "perception check" not in scene2_prompt
+
+    # ...and the record itself survives untouched in the per-scene file, which
+    # is the whole point: assembly strips it, `/voice-critic` reviews it there.
+    scene1 = (paths["out_dir"] / "session_doc_scene_01_scene_one.md").read_text(
+        encoding="utf-8")
+    assert SCENE1_HATCH in scene1
+
+
+def test_prose_handoff_skips_apparatus_and_survives_a_hatch_only_scene():
+    h = sd_narrate._prose_handoff
+    assert h("She left.") == "She left."
+    assert h(f"She left.\n{SCENE1_HATCH}") == "She left."
+    assert h(f"She left.\n{SCENE1_HATCH}\n\n") == "She left."
+    # Multi-line hatch — `AUDIT_COMMENT_RE` is DOTALL for exactly this.
+    assert h('She left.\n<!-- table-speech reclassified: "a"\n | "b" -->') == "She left."
+    # All four markers, not just the hatch.
+    assert h("She left.\n<!-- hand-fixed: typo -->") == "She left."
+    # A GM's own comment is not apparatus and is left where it is.
+    assert h("She left.\n<!-- GM: check this -->") == "<!-- GM: check this -->"
+    # Nothing but a hatch: empty, not the comment.
+    assert h(SCENE1_HATCH) == ""
 
 
 # ── Default (non-batch) path: byte-identical, unaffected by --batch wiring ──

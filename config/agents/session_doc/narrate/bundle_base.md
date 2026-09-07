@@ -3,6 +3,8 @@ writing brief separately to each scene:
 
 {writing_brief}
 
+{audit_hatch}
+
 The shared campaign material below applies to every section. Each scene packet
 supplies its own narrator, focus, events, quoted moments, voice guidance, and
 examples. Never carry one narrator's private guidance into another narrator's
@@ -30,9 +32,10 @@ For every scene:
 
 Emit the scenes in packet order. For every scene after the first, continue naturally
 from the final prose line of the section you just emitted, without repeating it as
-speech or extending the previous scene beyond its actual boundary.
+speech or extending the previous scene beyond its actual boundary. A trailing
+table-speech audit comment is not a prose line: hand off from the prose above it.
 
-The following transport markers are the only exception to the brief's scene-only
+The transport markers below are the brief's other exception to its scene-only
 output rule. Wrap each result in exactly these column-zero marker lines, copying
 the packet index and scene name verbatim:
 
@@ -40,5 +43,7 @@ the packet index and scene name verbatim:
 narration prose only
 <<<CG-SCENE NN END>>>
 
-Emit exactly one pair per packet and nothing outside the pairs. Finish one section
+Emit exactly one pair per packet and nothing outside the pairs; anything outside a
+pair is discarded. A scene's audit comment, when there is one, goes inside that
+scene's pair, as the last line before its END marker. Finish one section
 before starting the next. Do not put protocol markers inside narration prose.

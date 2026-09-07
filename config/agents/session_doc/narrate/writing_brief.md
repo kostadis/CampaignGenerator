@@ -12,4 +12,4 @@ Respect who is physically present and what the narrator can know. A player speak
 
 Render this scene only, ending at its actual boundary. Let its content determine its length and the balance of dialogue and description. Complete every meaningful event and exchange without a fixed expansion formula or a dialogue quota. This writing brief governs quotation selection, scene construction, and prose mode; the references below supply character and campaign style, including the campaign's tense. In prose mode, render mechanical procedure as its fictional consequence while retaining legitimate in-world quantities, evidence, money, and spell names.
 
-Output only the scene narration. Do not include a heading, explanations, an audit, a recap of other scenes, or a continuation into the next scene.
+Output only the scene narration. Do not include a heading, explanations, a recap of other scenes, or a continuation into the next scene.
