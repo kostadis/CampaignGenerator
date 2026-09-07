@@ -295,8 +295,8 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
         # the campaign on the next run and calls it house style.
         result += (
             "\n\nGENRE — FINAL REMINDER (diction, register, and tense; the writing "
-            "brief governs quotation selection, scene construction, knowledge "
-            "boundaries, and prose mode):\n" + genre.strip()
+            "brief governs point of view, quotation selection, scene construction, "
+            "knowledge boundaries, and prose mode):\n" + genre.strip()
         )
     return result
 

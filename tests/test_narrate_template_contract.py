@@ -500,3 +500,113 @@ def test_the_length_rule_reaches_the_model_from_the_brief_and_nowhere_else():
     # comment above it, cannot be what the scan finds.
     needle = "expansion formula or a " + "dialogue quota"
     assert needle not in source, "the rule is back as a Python literal"
+
+
+# ---------------------------------------------------------------------------
+# #402 — every style-reference block must state its own bound.
+#
+# 26ec5b0 scoped base/bundle_base/voice_spec/scene_anchored/bundle_scene and both
+# dialogue templates ("these govern style only"), and missed the two example
+# blocks, which stayed at 4e22e6c. The design it chose is that each appended
+# block declares its own boundary — a block glued on *after* base.md's scoping
+# paragraph is outside that paragraph's reach, so a shared statement upstream
+# does not cover it. These tests pin the pattern to every block that carries it.
+#
+# Two live conflicts made the gap concrete, and neither is a tense-vs-tense
+# argument between two rules — both are a reference file disagreeing with the
+# brief about grammatical person or tense while the prompt says to match it:
+#
+#   out-of-the-abyss  examples/daz.md is third person ("Daz and his crew collect
+#                     the chamber pots", "he arrives at the winch") against
+#                     voice/_genre.md:12 "First-person past is the spine"
+#   stormgiants       examples/*.md are first-person past; the campaign has no
+#   obelisk           voice/_genre.md at all, so the brief's stated default
+#                     (present) applies and nothing broke the tie — voice_spec's
+#                     carve-out resolved tense to a file these campaigns lack.
+# ---------------------------------------------------------------------------
+
+# The blocks that are appended after base.md's scoping paragraph, and so cannot
+# rely on it. `examples_block.md` is deliberately absent: it is interpolated
+# *inside* base.md directly beneath that paragraph, which governs it by position.
+_APPENDED_STYLE_BLOCKS = (
+    "per_char_examples.md",
+    "prev_voice_contrast.md",
+    "voice_spec.md",
+)
+
+
+@pytest.mark.parametrize("template", _APPENDED_STYLE_BLOCKS)
+def test_every_appended_style_block_bounds_itself_to_style(template):
+    """A block that outranks something must say what it does not outrank."""
+    text = (TEMPLATE_DIR / template).read_text(encoding="utf-8")
+    # Case-folded: the bound is the same whether it opens a sentence or not.
+    flat = " ".join(text.split()).lower()
+    assert "style only" in flat, template
+    assert "point of view" in flat, template
+    # Naming the brief is what makes the bound actionable rather than decorative.
+    assert "writing brief" in flat, template
+
+
+def test_point_of_view_is_the_briefs_and_no_reference_supplies_it():
+    """#395 recorded the decision ("Person stays in the brief"); base.md never
+    got the matching edit and kept `perspective` in the *supply* list, which is
+    what licensed a third-person example file to set the person."""
+    for text in (f.read_text(encoding="utf-8") for f in TEMPLATE_DIR.glob("*.md")):
+        flat = " ".join(text.split())
+        # The old supply-list wording, in either template's phrasing.
+        assert "register, perspective, and tense" not in flat
+    for mode, prompt in (("single", narrate.build_narrate_system(
+                             "Global.", narrator="Daz", char_examples="Daz collects.",
+                             voice_note="Dry.", genre="First-person past is the spine.")),
+                         ("bundle", "\n".join(narrate.build_bundled_narrate_prompts(
+                             [_bundle_scene(1, "Arrival", "Daz")],
+                             genre="First-person past is the spine.")))):
+        flat = " ".join(prompt.split())
+        assert "governs point of view" in flat, mode
+        assert "not the grammatical person, which the brief owns" in flat, mode
+
+
+def test_a_style_reference_cannot_set_person_or_tense_on_either_render_path():
+    """The sentence that resolves out-of-the-abyss and stormgiants.
+
+    A voice sample in the wrong person or tense must be readable as diction to
+    borrow, not as an instruction to follow — on the bundle path too, where the
+    block moves into the per-scene user packet.
+    """
+    licence = "voice sample, not a licence"
+    single = narrate.build_narrate_system(
+        "Global.", narrator="Daz", char_examples="Daz and his crew collect the pots.")
+    assert single.count(licence) == 1
+
+    system, user = narrate.build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Arrival", "Alice"), _bundle_scene(2, "Departure", "Bob")])
+    # One per scene packet: the block is per-scene on this path, not shared.
+    assert (system + "\n" + user).count(licence) == 2
+
+    # No character examples => no claim to bound, and so no orphaned sentence.
+    assert licence not in narrate.build_narrate_system("Global.", narrator="Daz")
+
+
+def test_tense_falls_back_to_the_brief_when_a_campaign_has_no_genre_file():
+    """stormgiants and obelisk ship no voice/_genre.md, so a carve-out that
+    resolves tense to "the campaign genre reference" and stops there points at
+    a document that does not exist and leaves past-tense examples unopposed."""
+    prompt = narrate.build_narrate_system(
+        "Global.", narrator="Thistle", char_examples="The desert had changed.",
+        voice_note="Performer-light.")
+    flat = " ".join(prompt.split())
+    assert "where the campaign supplies no genre reference" in flat
+    assert "the tense the brief states" in flat
+
+
+def test_the_contrast_block_cannot_differentiate_on_person_or_tense():
+    """It is the last block in every bundle scene packet (bundle_scene.md:22),
+    so it holds the recency the original #402 attributed to per_char_examples.
+    "Sound clearly different" must not reach person, tense, or the brief's rules.
+    """
+    user_msg = narrate.build_narrate_prompt(
+        narrator="Daz", focus="f", char_moments="- m", party="p", handoff="",
+        roster="r", prev_narrator="Zalthir", prev_voice_sample="A prior line.")
+    flat = " ".join(user_msg.split())
+    assert "Differentiate style only" in flat
+    assert "never what makes two sections sound different" in flat
