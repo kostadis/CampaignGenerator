@@ -1,0 +1,53 @@
+{
+  "prepared_at": "2026-09-07T16:01:22.597281+00:00",
+  "question": "What do the same three messages produce on the local box?",
+  "replays": {
+    "chapter": "/home/kostadis/CG-find-bug/experiments/20260907-phandalin-adaptation",
+    "scene_ab": "/home/kostadis/CG-find-bug/experiments/20260907-phandalin-scene-composition"
+  },
+  "also_compare_with": "/home/kostadis/CG-find-bug/experiments/20260907-phandalin-fable-medium",
+  "campaign_commit": "bbf4e3c064b4e13b47ed523606a62936638a0cc6",
+  "campaign_repository": "https://github.com/kostadis/campaigns",
+  "generator_commit": "d9c5de87a0ec4831c1cdc999b26491851b1f7c01",
+  "backend": "dgx",
+  "endpoint": "http://192.168.1.147:8001/v1",
+  "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+  "served_context_length": 262144,
+  "resolved_extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  },
+  "effort_note": "NOT a medium-effort arm. The 0731 reasoning_effort scheme is low/high/max with no medium; the deployed image predates it and mis-maps an explicit \"low\" to \"high\"; campaignlib sends no reasoning_effort on this path; and dgxlib pins thinking_default false. These calls have no effort control and no reasoning trace.",
+  "deployment_note": "One cross-box TP=2 endpoint (spark1 head + spark2 headless worker) in throughput mode. Single-stream decode was spot-checked at ~21-31 tok/s and cold prefill at ~1,000-1,200 tok/s, so these are minutes-scale calls. Timing here is one uninstrumented wall-clock number per arm, not a benchmark.",
+  "max_tokens_argument": 32000,
+  "token_limit_note": "vLLM enforces this as a real output ceiling. The Codex adapter ignored the same argument; the claude-code path enforced it. Three renderers, three different treatments of one number.",
+  "arms": [
+    "chapter",
+    "control",
+    "composition"
+  ],
+  "scene_arms": [
+    "control",
+    "composition"
+  ],
+  "scene_heading": "Soma — Harpers Behind the Wall",
+  "chapter_headings": [
+    "Vukradin — Patrons of the Chord",
+    "Vukradin — Nine Crates at Low Tide",
+    "Vukradin — Lost in Rsolk’s Tunnels",
+    "Soma — Denvar’s Unsettled Account",
+    "Soma — Harpers Behind the Wall"
+  ],
+  "input_sha256": {
+    "prompts/chapter_system.md": "21d93cbf733cdaad1c0274b2960f46e4468c8ebc7b00a30e67925dddd39d8a72",
+    "prompts/chapter_user.md": "321ae9500781e23bbcc2260ccf7c0039b55ff56d33f6a551455789b2208d8e6a",
+    "prompts/scene_user.md": "f658f98a9342639e8b260f1d40e0c7a6440c51d09b2ec4023b1f878553dbb560",
+    "prompts/scene_control_system.md": "2da015c540e5f31c7044c23ef6452e371407b7d9d0a17cd6924aa4c61db46db7",
+    "prompts/scene_composition_system.md": "1cc78e6c852088f1beea798b4e0f669c0face5ebe47c6e68fe5f352e939414c5",
+    "run.py": "cdfec90b2f468cc7d701139efc06fdb8d30d58329f8cc26329c20f40d7d6777c"
+  },
+  "assignment_sha256": "994934973df905a5a8f5ec70e99dbbd64115359316c69d1a9b4aad1d9e981bca",
+  "design": "Three independent single-sample calls on messages byte-identical to the archived Astra runs. Renderer is the only deliberate change, and it changes more than the weights — see effort_note.",
+  "limits": "One sample per arm; stochastic; no seed; no repetition. Not an effort-matched comparison. A local 284B/13B-active MoE at fp8 against two hosted frontier models is not a like-for-like quality test and is not offered as one. Nothing here revalidates the production narration path."
+}

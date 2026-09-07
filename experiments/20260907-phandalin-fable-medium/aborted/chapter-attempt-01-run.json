@@ -1,0 +1,11 @@
+{
+  "status": "running",
+  "arm": "chapter",
+  "started_at": "2026-09-07T15:52:18.512978+00:00",
+  "case_sha256": "1b680590490dc657fa5323946500eb9cef2a6ba9afb1718164e5fdbf4e15df1c",
+  "system_sha256": "21d93cbf733cdaad1c0274b2960f46e4468c8ebc7b00a30e67925dddd39d8a72",
+  "user_sha256": "321ae9500781e23bbcc2260ccf7c0039b55ff56d33f6a551455789b2208d8e6a",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium"
+}

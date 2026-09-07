@@ -1,0 +1,26 @@
+{
+  "status": "failed",
+  "arm": "control",
+  "started_at": "2026-09-07T16:08:11.666245+00:00",
+  "case_sha256": "e9a2f43a9dd09337883674feaace0777c17cedb999c7d3368bd6b83db42e1e50",
+  "system_sha256": "2da015c540e5f31c7044c23ef6452e371407b7d9d0a17cd6924aa4c61db46db7",
+  "user_sha256": "f658f98a9342639e8b260f1d40e0c7a6440c51d09b2ec4023b1f878553dbb560",
+  "backend": "dgx",
+  "endpoint": "http://192.168.1.147:8001/v1",
+  "requested_model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+  "resolved_extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  },
+  "response_sha256": "273ff2d8cd59f77ed287a069a8fd4e3803cfa9036e872944c6d1fce77b8c4191",
+  "words": 1204,
+  "headings_verbatim": [
+    "# The Dead Drop at the House of a Thousand Faces"
+  ],
+  "headings_match_after_normalization": false,
+  "headings_match_verbatim": false,
+  "error": "ValueError: Section structure differs from the fixed plan even after folding typography; raw response preserved",
+  "finished_at": "2026-09-07T16:09:46.075479+00:00",
+  "wall_clock_seconds": 94.4
+}

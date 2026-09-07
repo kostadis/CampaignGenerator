@@ -1,0 +1,131 @@
+{
+  "admitted": [
+    "astra:chapter",
+    "astra:composition",
+    "astra:control",
+    "fable:chapter",
+    "fable:composition",
+    "fable:control",
+    "spark:chapter",
+    "spark:composition",
+    "spark:control"
+  ],
+  "not_admitted": [],
+  "records": [
+    {
+      "draft": "astra:chapter",
+      "recorded_status": "rendered",
+      "headings_found": [
+        "# Chapter 51: We’re famous. Why are we famous?",
+        "## Vukradin — Patrons of the Chord",
+        "## Vukradin — Nine Crates at Low Tide",
+        "## Vukradin — Lost in Rsolk’s Tunnels",
+        "## Soma — Denvar’s Unsettled Account",
+        "## Soma — Harpers Behind the Wall"
+      ],
+      "verdict": "accepted — its own run recorded success"
+    },
+    {
+      "draft": "astra:control",
+      "recorded_status": "rendered",
+      "headings_found": [
+        "## Soma — Harpers Behind the Wall"
+      ],
+      "verdict": "accepted — its own run recorded success"
+    },
+    {
+      "draft": "astra:composition",
+      "recorded_status": "rendered",
+      "headings_found": [
+        "## Soma — Harpers Behind the Wall"
+      ],
+      "verdict": "accepted — its own run recorded success"
+    },
+    {
+      "draft": "fable:chapter",
+      "recorded_status": "failed",
+      "headings_found": [
+        "# Chapter 51: We're famous. Why are we famous?",
+        "## Vukradin — Patrons of the Chord",
+        "## Vukradin — Nine Crates at Low Tide",
+        "## Vukradin — Lost in Rsolk's Tunnels",
+        "## Soma — Denvar's Unsettled Account",
+        "## Soma — Harpers Behind the Wall"
+      ],
+      "expected_headings": [
+        "Vukradin — Patrons of the Chord",
+        "Vukradin — Nine Crates at Low Tide",
+        "Vukradin — Lost in Rsolk’s Tunnels",
+        "Soma — Denvar’s Unsettled Account",
+        "Soma — Harpers Behind the Wall"
+      ],
+      "recorded_error": "ValueError: Output headings differ from the fixed plan; raw response preserved",
+      "headings_differing_by_typography_only": [
+        {
+          "expected": "Vukradin — Lost in Rsolk’s Tunnels",
+          "found": "Vukradin — Lost in Rsolk's Tunnels"
+        },
+        {
+          "expected": "Soma — Denvar’s Unsettled Account",
+          "found": "Soma — Denvar's Unsettled Account"
+        }
+      ],
+      "verdict": "admitted — all 5 sections present and in order; 2 heading(s) differ only in apostrophe style"
+    },
+    {
+      "draft": "fable:control",
+      "recorded_status": "rendered",
+      "headings_found": [
+        "## Soma — Harpers Behind the Wall"
+      ],
+      "verdict": "accepted — its own run recorded success"
+    },
+    {
+      "draft": "fable:composition",
+      "recorded_status": "rendered",
+      "headings_found": [
+        "## Soma — Harpers Behind the Wall"
+      ],
+      "verdict": "accepted — its own run recorded success"
+    },
+    {
+      "draft": "spark:chapter",
+      "recorded_status": "rendered",
+      "headings_found": [
+        "# Chapter 51: We're famous. Why are we famous?",
+        "## Vukradin — Patrons of the Chord",
+        "## Vukradin — Nine Crates at Low Tide",
+        "## Vukradin — Lost in Rsolk's Tunnels",
+        "## Soma — Denvar's Unsettled Account",
+        "## Soma — Harpers Behind the Wall"
+      ],
+      "verdict": "accepted — its own run recorded success"
+    },
+    {
+      "draft": "spark:control",
+      "recorded_status": "failed",
+      "headings_found": [
+        "# The Dead Drop at the House of a Thousand Faces"
+      ],
+      "expected_headings": [
+        "Soma — Harpers Behind the Wall"
+      ],
+      "recorded_error": "ValueError: Section structure differs from the fixed plan even after folding typography; raw response preserved",
+      "contract_violation": "The system prompt required \"Output only the finished scene under the supplied section heading. Do not include a chapter title.\" The supplied heading was 'Soma — Harpers Behind the Wall'; the model emitted 'The Dead Drop at the House of a Thousand Faces' instead. The body is still a single unbroken scene, so the prose is comparable, but this is an instruction-following failure and is reported as one.",
+      "verdict": "admitted for prose comparison — output contract not followed"
+    },
+    {
+      "draft": "spark:composition",
+      "recorded_status": "failed",
+      "headings_found": [
+        "# Harpers Behind the Wall"
+      ],
+      "expected_headings": [
+        "Soma — Harpers Behind the Wall"
+      ],
+      "recorded_error": "ValueError: Section structure differs from the fixed plan even after folding typography; raw response preserved",
+      "contract_violation": "The system prompt required \"Output only the finished scene under the supplied section heading. Do not include a chapter title.\" The supplied heading was 'Soma — Harpers Behind the Wall'; the model emitted 'Harpers Behind the Wall' instead. The body is still a single unbroken scene, so the prose is comparable, but this is an instruction-following failure and is reported as one.",
+      "verdict": "admitted for prose comparison — output contract not followed"
+    }
+  ]
+}

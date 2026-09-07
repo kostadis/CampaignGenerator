@@ -1,0 +1,92 @@
+{
+  "astra:chapter": {
+    "words": 5389,
+    "paragraphs": 411,
+    "median_paragraph_words": 9,
+    "quote_led_paragraphs": 210,
+    "quote_led_at_most_5_words": 77,
+    "typographic_apostrophes": 164,
+    "ascii_apostrophes": 0
+  },
+  "astra:composition": {
+    "words": 1699,
+    "paragraphs": 117,
+    "median_paragraph_words": 10,
+    "quote_led_paragraphs": 62,
+    "quote_led_at_most_5_words": 20,
+    "typographic_apostrophes": 35,
+    "ascii_apostrophes": 0
+  },
+  "astra:control": {
+    "words": 1781,
+    "paragraphs": 115,
+    "median_paragraph_words": 11,
+    "quote_led_paragraphs": 58,
+    "quote_led_at_most_5_words": 18,
+    "typographic_apostrophes": 39,
+    "ascii_apostrophes": 0
+  },
+  "fable:chapter": {
+    "words": 7533,
+    "paragraphs": 292,
+    "median_paragraph_words": 17.0,
+    "quote_led_paragraphs": 192,
+    "quote_led_at_most_5_words": 48,
+    "typographic_apostrophes": 0,
+    "ascii_apostrophes": 233
+  },
+  "fable:composition": {
+    "words": 2675,
+    "paragraphs": 101,
+    "median_paragraph_words": 16,
+    "quote_led_paragraphs": 68,
+    "quote_led_at_most_5_words": 17,
+    "typographic_apostrophes": 0,
+    "ascii_apostrophes": 50
+  },
+  "fable:control": {
+    "words": 2388,
+    "paragraphs": 94,
+    "median_paragraph_words": 17.0,
+    "quote_led_paragraphs": 59,
+    "quote_led_at_most_5_words": 17,
+    "typographic_apostrophes": 0,
+    "ascii_apostrophes": 57
+  },
+  "historical:chapter": {
+    "words": 9568,
+    "paragraphs": 675,
+    "median_paragraph_words": 10,
+    "quote_led_paragraphs": 401,
+    "quote_led_at_most_5_words": 155,
+    "typographic_apostrophes": 102,
+    "ascii_apostrophes": 186
+  },
+  "spark:chapter": {
+    "words": 6576,
+    "paragraphs": 369,
+    "median_paragraph_words": 15,
+    "quote_led_paragraphs": 234,
+    "quote_led_at_most_5_words": 71,
+    "typographic_apostrophes": 0,
+    "ascii_apostrophes": 361
+  },
+  "spark:composition": {
+    "words": 2780,
+    "paragraphs": 161,
+    "median_paragraph_words": 11,
+    "quote_led_paragraphs": 123,
+    "quote_led_at_most_5_words": 44,
+    "typographic_apostrophes": 0,
+    "ascii_apostrophes": 151
+  },
+  "spark:control": {
+    "words": 1204,
+    "paragraphs": 67,
+    "median_paragraph_words": 12,
+    "quote_led_paragraphs": 36,
+    "quote_led_at_most_5_words": 13,
+    "typographic_apostrophes": 0,
+    "ascii_apostrophes": 59
+  }
+}

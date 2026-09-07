@@ -1,0 +1,45 @@
+{
+  "status": "rendered",
+  "arm": "soma",
+  "narrator": "soma",
+  "session": "20260818",
+  "title": "Arrival at the Spire",
+  "started_at": "2026-09-07T18:06:35.644580+00:00",
+  "case_sha256": "35c6d04b91ae35f051dc28dd89449729ca0261c83e6f5b4b3d2d9324ec188b3e",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "response_sha256": "aab75c5962bb0ad15f57df7bd678d224691712545478b4dfc356b26f48b42f5e",
+  "words": 1857,
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true
+  },
+  "headings_verbatim": [
+    "## Soma — Arrival at the Spire"
+  ],
+  "headings_match_after_normalization": true,
+  "markers": [
+    "[GM NARRATION — TO BE WRITTEN: It is dawn, and the party arrives at the doors of the Spire of the Morninglord to find clerics at the threshold and a whole crowd of factions already gathered around.]",
+    "[GM NARRATION — TO BE WRITTEN: Among the crowd are skeptical Lathanderite clerics at the doors, watching Valphine with visible doubt.]",
+    "[GM NARRATION — TO BE WRITTEN: There are also several Loviatarite agents in the shadows; the followers of the goddess of pain regard Valphine's searing sacrament as stolen from them, and heretical.]",
+    "[GM NARRATION — TO BE WRITTEN: To the party's surprise, Lord Neverember himself is among the crowd, along with a mass of the faithful and the merely curious, all of whom have arrived very early in the morning.]",
+    "[GM NARRATION — TO BE WRITTEN: There are factions within factions here; these are only the ones the party recognizes, and there are more.]",
+    "[GM NARRATION — TO BE WRITTEN: Just before the party arrives, the dragonscale armorer turns up at the Spire, having spent all night assembling Valphine's white dragon scale armor; he is one of the devout and wants Lathander's blessing on it, and he sets about fitting it on her there at the door, very excited.]",
+    "[GM NARRATION — TO BE WRITTEN: The armor causes an even bigger stir; whispers and commentary run through the crowd as Valphine puts on the dragon-scale, and the armorer is very proud of himself.]",
+    "[GM NARRATION — TO BE WRITTEN: The crowd is quite pleased and in awe of the spellcasting — it is not often anyone sees a Daylight spell inside the Church of Lathander in daytime — and as the whole chamber lights up, some people squint.]",
+    "[GM NARRATION — TO BE WRITTEN: Brother Aldric receives them in a private chamber; he ponders all the liturgical and ceremonial elements Valphine has skipped, but he is in a good mood.]",
+    "[GM NARRATION — TO BE WRITTEN: Brother Aldric is not impressed, and seems a little disappointed.]",
+    "[GM NARRATION — TO BE WRITTEN: Before Aldric can answer, another sun priest among those seated around the chamber — a scarred one — interrupts.]",
+    "[GM NARRATION — TO BE WRITTEN: Aldric smiles; it is plain now that the other cleric was there to trap her and that she has threaded the trap, and he makes the sign of the Morninglord, very pleased.]"
+  ],
+  "marker_count": 12,
+  "gm_turns_in_source": 47,
+  "joint_gm_player_turns": 0,
+  "finished_at": "2026-09-07T18:07:56.202161+00:00",
+  "wall_clock_seconds": 80.6
+}

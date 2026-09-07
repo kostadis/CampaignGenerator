@@ -1,0 +1,39 @@
+{
+  "status": "rendered",
+  "started_at": "2026-09-07T17:20:29.617510+00:00",
+  "case_sha256": "3e6e0ef654d27424cb75b343b3eaf3f4abe8856bc39451da11ec5ec5bac2df0f",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "response_sha256": "42cc9ee7a504fc2e3a767157443e33d21e05cc65fed6eea0528dbcd0c32a8a24",
+  "words": 2223,
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true
+  },
+  "headings_verbatim": [
+    "## Soma — Harpers Behind the Wall"
+  ],
+  "headings_match_after_normalization": true,
+  "markers": [
+    "[GM NARRATION — TO BE WRITTEN: A few hours later Denvar wakes, and the party follows him to a stone wall that backs into a building, where he looks around with careful discretion, pulls a stone free, takes out a bag, and closes the hiding place again.]",
+    "[GM NARRATION — TO BE WRITTEN: Denvar looks at the chit in his hand and smiles before walking off.]",
+    "[GM NARRATION — TO BE WRITTEN: The stone is a two-way compartment; nothing about it shows whether the payment was placed from the street or from inside the building, so learning that would mean going in.]",
+    "[GM NARRATION — TO BE WRITTEN: The building is a stone dwelling, built of stone throughout.]",
+    "[GM NARRATION — TO BE WRITTEN: Walking the perimeter, the party finds the building is a tavern, the House of a Thousand Faces, and though it is early morning the place is open.]",
+    "[GM NARRATION — TO BE WRITTEN: Brewbarry has already gone into the tavern; he had heard of the House of a Thousand Faces when he first came to Neverwinter and could not afford it then.]",
+    "[GM NARRATION — TO BE WRITTEN: The rat slips into a windowless back office on the basement level, with a desk, papers, and supplies, and among them the unmistakable symbol of the Harpers.]",
+    "[GM NARRATION — TO BE WRITTEN: The office is the local headquarters of the Harpers.]",
+    "[GM NARRATION — TO BE WRITTEN: It remains open whether the Harpers are smuggling or arranging the ninth crate; and the Harpers, as the group is reminded, are not good people in this city.]",
+    "[GM NARRATION — TO BE WRITTEN: The reminder extends to the claim that the only good people in this are the Order of the Gauntlet, who were misled by their political masters, have since rejected them, and now stand for the little guy.]",
+    "[GM NARRATION — TO BE WRITTEN: The House of a Thousand Faces is a comfortable tavern of mirrors, mannequins in antiquated fashions, lush couches, and a fire that actually draws — a high-end place in the low-end Bluelake District, with something subtly off about it.]"
+  ],
+  "marker_count": 11,
+  "prose_words": 1867,
+  "finished_at": "2026-09-07T17:21:51.325905+00:00",
+  "wall_clock_seconds": 81.7
+}

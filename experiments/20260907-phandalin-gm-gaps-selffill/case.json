@@ -1,0 +1,38 @@
+{
+  "prepared_at": "2026-09-07T17:36:05.884853+00:00",
+  "question": "Given its own 11 gaps, can fable tell description from lore — narrating the first in the narrator's voice and discarding the second?",
+  "input_draft": "/home/kostadis/CG-find-bug/experiments/20260907-phandalin-gm-gaps-medium",
+  "markers_to_resolve": 11,
+  "markers": [
+    "[GM NARRATION — TO BE WRITTEN: A few hours later Denvar wakes, and the party follows him to a stone wall that backs into a building, where he looks around with careful discretion, pulls a stone free, takes out a bag, and closes the hiding place again.]",
+    "[GM NARRATION — TO BE WRITTEN: Denvar looks at the chit in his hand and smiles before walking off.]",
+    "[GM NARRATION — TO BE WRITTEN: The stone is a two-way compartment; nothing about it shows whether the payment was placed from the street or from inside the building, so learning that would mean going in.]",
+    "[GM NARRATION — TO BE WRITTEN: The building is a stone dwelling, built of stone throughout.]",
+    "[GM NARRATION — TO BE WRITTEN: Walking the perimeter, the party finds the building is a tavern, the House of a Thousand Faces, and though it is early morning the place is open.]",
+    "[GM NARRATION — TO BE WRITTEN: Brewbarry has already gone into the tavern; he had heard of the House of a Thousand Faces when he first came to Neverwinter and could not afford it then.]",
+    "[GM NARRATION — TO BE WRITTEN: The rat slips into a windowless back office on the basement level, with a desk, papers, and supplies, and among them the unmistakable symbol of the Harpers.]",
+    "[GM NARRATION — TO BE WRITTEN: The office is the local headquarters of the Harpers.]",
+    "[GM NARRATION — TO BE WRITTEN: It remains open whether the Harpers are smuggling or arranging the ninth crate; and the Harpers, as the group is reminded, are not good people in this city.]",
+    "[GM NARRATION — TO BE WRITTEN: The reminder extends to the claim that the only good people in this are the Order of the Gauntlet, who were misled by their political masters, have since rejected them, and now stand for the little guy.]",
+    "[GM NARRATION — TO BE WRITTEN: The House of a Thousand Faces is a comfortable tavern of mirrors, mannequins in antiquated fashions, lush couches, and a fire that actually draws — a high-end place in the low-end Bluelake District, with something subtly off about it.]"
+  ],
+  "campaign_commit": "bbf4e3c064b4e13b47ed523606a62936638a0cc6",
+  "generator_commit": "d9c5de87a0ec4831c1cdc999b26491851b1f7c01",
+  "backend": "claude-code",
+  "model": "claude-fable-5-1",
+  "claude_code_effort": "medium",
+  "claude_code_effort_source": "explicit",
+  "max_tokens_argument": 32000,
+  "scene_heading": "Soma — Harpers Behind the Wall",
+  "treatment": "One sentence of the preferred brief replaced with the resolve rule — the same anchor the gap-marking arm replaced, carrying the opposite instruction. User message is the original scene message plus the medium draft appended verbatim.",
+  "design": "One call. Not a controlled comparison against any earlier arm: both the task and the input differ.",
+  "limits": "One sample. This deliberately hands the model a scope decision — which GM material is perceptible description and which is lore — and a wrong call is invisible in the finished prose, which is the precise failure the gap markers exist to prevent. Read it as a probe of the model's judgement, not as a pipeline stage. Whether a discarded marker SHOULD have been discarded is a question only the GM, reading against the source, can answer.",
+  "input_sha256": {
+    "prompts/base_system.md": "2da015c540e5f31c7044c23ef6452e371407b7d9d0a17cd6924aa4c61db46db7",
+    "prompts/draft.md": "42cc9ee7a504fc2e3a767157443e33d21e05cc65fed6eea0528dbcd0c32a8a24",
+    "prompts/treated_system.md": "084cbb4d6347a7798a3355315efecde9fd357acf017592faa17cc0e96f25aad4",
+    "prompts/user.md": "e8f8a00cd199ff83e61e4895062ce0d0d32d5e93de99392fba08da89981f774c",
+    "prompt.diff": "84bc6294537cc4bf2ee271a5b08f54ac46785de5fcd4e4521daece404a505d5b",
+    "run.py": "a030736be3184c11b352771e2579dbcf23117a8717093a31e4a3086177c8bea7"
+  }
+}
