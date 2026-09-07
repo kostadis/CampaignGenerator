@@ -267,7 +267,14 @@ def test_configured_inputs_all_reach_the_system_prompt(monkeypatch, tmp_path):
     # #408/#410 — Version B licenses adaptation instead of requiring "actual
     # wording"; pin the new paragraph's own language.
     assert "Dialogue is editable dramatic material, not a verbatim transcription requirement" in prompt
-    assert "they cannot override those rules" in prompt
+    # #402 moved this clause to the head of its own sentence when point of view
+    # left the supply-list, so match case-insensitively: the assertion is that
+    # the references-cannot-outrank-the-brief rule arrives, not where the
+    # sentence happens to break.
+    assert "cannot override those rules" in prompt.lower()
+    # ...and the rule it now carries: person is the brief's, not a reference's.
+    assert "governs point of view" in prompt
+    assert "not the grammatical person, which the brief owns" in " ".join(prompt.split())
     assert "Target 600-900 words" not in prompt
     assert "First person, past tense" in prompt          # genre rulebook
     assert '"the shape of X"' in prompt                  # ...including its tail

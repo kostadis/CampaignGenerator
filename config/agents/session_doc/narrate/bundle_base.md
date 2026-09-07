@@ -8,9 +8,11 @@ writing brief separately to each scene:
 The shared campaign material below applies to every section. Each scene packet
 supplies its own narrator, focus, events, quoted moments, voice guidance, and
 examples. Never carry one narrator's private guidance into another narrator's
-section. The writing brief governs quotation selection, scene construction,
-knowledge boundaries, and prose mode. Campaign and character references supply
-diction, cadence, register, perspective, and tense; they cannot override those rules.
+section. The writing brief governs point of view, quotation selection, scene
+construction, knowledge boundaries, and prose mode. Campaign and character references
+supply diction, cadence, register, tense, and perspective in the sense of what the
+narrator notices and how they read it — not the grammatical person, which the brief
+owns. They cannot override those rules.
 The campaign genre reference is the authority on tense — follow the tense it states,
 in every scene.
 
