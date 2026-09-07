@@ -24,6 +24,8 @@ in every scene.
 
 {dialogue_instruction}
 
+{name_fidelity}
+
 For every scene:
 - Stay in the named narrator's first-person point of view. The narrator is always “I”.
 - Render only that scene. Do not import events, discoveries, or dialogue from another packet.

@@ -12,6 +12,8 @@ INPUTS FOR THIS SECTION:
 
 {dialogue_instruction}
 
+{name_fidelity}
+
 CAMPAIGN AND CHARACTER STYLE:
 The writing brief above governs quotation selection, scene construction, knowledge
 boundaries, and prose mode. Campaign genre and character references supply diction,

@@ -730,7 +730,7 @@ For single-scene re-runs (`--scene N`), the handoff is empty; the contrast signa
 
 ### 6. VTT roleplay quote tracking
 
-The VTT contains verbatim roleplay quotes that are higher fidelity than what the LLM summary alone produces. These need to be matched to scenes so the narration can use the actual words, not a paraphrase.
+The VTT contains verbatim roleplay quotes that are higher fidelity than what the LLM summary alone produces. These need to be matched to scenes so the narration is built from the tape's actual speech, not a summary's gloss of it — narration may then adapt that wording per the writing brief's dialogue contract (#410); the match supplies grounded source material for Pass 5, not a verbatim guarantee at render time.
 
 **Solution**: scene-anchored extraction happens at Stage 2 (`scene_extract`), not inside the `sd_narrate` loop. Each `NN_*.md` already pairs `## Scene summary` with `## Verbatim moments`.
 
@@ -738,4 +738,4 @@ The VTT contains verbatim roleplay quotes that are higher fidelity than what the
 
 VTT speaker labels often include player names in parentheses: `Thorin (Joe)`, `GM (Kostadis)`. These need normalising before they bleed into narration prose.
 
-Normalisation is now Stage 2's responsibility (in `scene_extract`). `sd_narrate` treats `## Verbatim moments` as authoritative — it does not re-normalise.
+Normalisation is now Stage 2's responsibility (in `scene_extract`). `scene_extractions/` claims verbatim (`## Verbatim moments`); `scene_extractions_smoothed/` claims voiced (`## Voiced moments`), not exact (#250-R5). `sd_narrate` consumes whichever layer it is pointed at without re-normalising speaker labels either way.

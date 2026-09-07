@@ -152,6 +152,7 @@ NARRATE_SYSTEM_BASE        = _load_template_deferred(
     "writing_brief", "audit_hatch",
     "genre_directive", "examples_block", "scene_scope_line", "scene_events_line",
     "rendering_instruction", "length_instruction", "dialogue_instruction",
+    "name_fidelity",
 )
 EXAMPLES_BLOCK             = _load_template_deferred(
     "session_doc/narrate/examples_block", "examples")
@@ -168,6 +169,13 @@ DIALOGUE_INSTRUCTION_CONDITIONAL = _load_template_deferred(
     "session_doc/narrate/dialogue_conditional")
 PROSE_MODE_INSTRUCTION     = _load_template_deferred("session_doc/narrate/prose_mode")
 AUDIT_HATCH_INSTRUCTION    = _load_template_deferred("session_doc/narrate/audit_hatch")
+# The canonical-name channel that CANNOT corrupt a quote. Aliases used to be
+# applied to the source text as a find-and-replace before Pass 5, which rewrote
+# names inside quoted dialogue (#223); they arrive as knowledge now, so the rule
+# has to be explicit or the model does the substitution itself. It reaches both
+# render paths through the two base templates, so it survives an empty alias map
+# (#411) — the canonical-spellings LIST is what depends on a roster, not the rule.
+NAME_FIDELITY_INSTRUCTION = _load_template_deferred("session_doc/narrate/name_fidelity")
 SCENE_ANCHORED_DIRECTIVE   = _load_template_deferred(
     "session_doc/narrate/scene_anchored", "narrator")
 BUNDLE_SYSTEM_BASE         = _load_template_deferred(
@@ -175,6 +183,7 @@ BUNDLE_SYSTEM_BASE         = _load_template_deferred(
     "writing_brief", "audit_hatch",
     "genre_directive", "shared_examples_block", "prose_mode_block",
     "shared_context", "scene_count", "dialogue_instruction",
+    "name_fidelity",
 )
 BUNDLE_SCENE_TEMPLATE      = _load_template_deferred(
     "session_doc/narrate/bundle_scene",
@@ -240,9 +249,8 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                              "- Campaign Context — character backstory, NPC states, world detail\n")
         rendering = ("The Scene Events list is the authoritative account of what occurred. "
                      "Render it in this character's voice. Do not add events that are not listed. "
-                     "The extracted moments below are your primary source for verbatim quotes — "
-                     "select exchanges using the writing brief and preserve the spoken "
-                     "words of retained dialogue.\n\n")
+                     "The extracted moments below are your primary source for the characters' "
+                     "speech — select and shape exchanges using the writing brief.\n\n")
     else:
         scene_events_line = ""
         rendering = ""
@@ -255,7 +263,8 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                    scene_events_line=scene_events_line,
                    rendering_instruction=rendering,
                    length_instruction=length,
-                   dialogue_instruction=dialogue)
+                   dialogue_instruction=dialogue,
+                   name_fidelity=NAME_FIDELITY_INSTRUCTION)
     if scene_anchored and narrator:
         result += "\n\n" + _fill(SCENE_ANCHORED_DIRECTIVE, narrator=narrator)
     if prose_mode:
@@ -372,7 +381,6 @@ def _shared_narration_context(*, party: str | None, roster: str,
     if npc_roster:
         parts.append(
             "## Known NPCs — canonical spellings for NARRATION ONLY\n\n"
-            "Use these spellings only in prose. Never alter words inside quotation marks.\n\n"
             + npc_roster
         )
     if party:
@@ -420,6 +428,7 @@ def build_bundled_narrate_prompts(
             context_docs=context_docs,
         ),
         scene_count=str(len(scenes)),
+        name_fidelity=NAME_FIDELITY_INSTRUCTION,
     )
     packets: list[str] = []
     for scene in scenes:
@@ -507,19 +516,8 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
     if roster:
         parts.append(f"## Character Classes (definitive — never contradict these)\n\n{roster}")
     if npc_roster:
-        # The canonical-name channel that CANNOT corrupt a quote. Aliases used to
-        # be applied to the source text as a find-and-replace before Pass 5, which
-        # rewrote names inside verbatim dialogue (#223); they arrive as knowledge
-        # now, so the caveat below has to be explicit or the model does the
-        # substitution itself.
         parts.append(
             "## Known NPCs — canonical spellings for NARRATION ONLY\n\n"
-            "Use these spellings in the prose you write. Never apply them inside "
-            "quotation marks. A quoted line is a verbatim record of what somebody "
-            "actually said, and the name they chose — a nickname, a title, a partial "
-            "name, the wrong name — is part of what they said and part of what it "
-            "reveals about them. Reproduce the speaker's own wording, then use the "
-            "canonical spelling in your own sentences around it.\n\n"
             f"{npc_roster}"
         )
     if party:
@@ -542,7 +540,7 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
             f"This is the GM's authoritative account of what occurred in this scene. "
             f"Use it as the structural skeleton — the events, decisions, and NPC reactions "
             f"that the narration must cover. The character's Roleplay Moments (below) "
-            f"provide verbatim quotes and character-specific beats to weave in.\n\n"
+            f"provide the speech and character-specific beats to weave in.\n\n"
             f"{scene_text.strip()}"
         )
     if (prev_narrator and prev_voice_sample
@@ -555,8 +553,8 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
         parts.append(f"## Handoff from previous narrator\n"
                      f"Continuity reference only; do not repeat it as dialogue.\n\n{handoff}")
     if scene_text:
-        parts.append(f"## Verbatim Quotes — {narrator}\n"
-                     f"(select exchanges using the writing brief; preserve retained spoken words)\n\n"
+        parts.append(f"## Quoted Moments — {narrator}\n"
+                     f"(select and shape exchanges using the writing brief)\n\n"
                      f"{char_moments.strip()}")
     else:
         parts.append(

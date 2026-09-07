@@ -174,23 +174,52 @@ Dialogue-edit remains the subsequent GM-reviewed editing pass using approach B.
 
 The generation brief comes from campaigns PR #232's archived
 [`narration_v1.md`](https://github.com/kostadis/campaigns/blob/0355cdd28179650cf11ecb4435e4841fbe61d54c/experiments/sd-narrate/prompts/narration_v1.md).
-Its seven writing paragraphs are unchanged bar one clause: v1 opened by
-mandating **present tense**, and CG's brief defers tense to the campaign genre
+Its seven writing paragraphs carry two changed clauses. v1 opened by
+mandating **present tense**; CG's brief defers tense to the campaign genre
 reference instead (#395). Out-of-the-abyss and toee both mandate first-person
 **past** across an existing bible; a shared brief declared to outrank them would
 have flipped both campaigns on their next `sd_narrate` run. Present tense remains
-the default when a campaign supplies no genre reference. The output instruction
-retains CG's existing heading-free scene bodies (assembly supplies headings) and
-bundle transport markers. Legacy word targets, mandatory inclusion of every quote,
-and prose-mode speaker guessing no longer compete with v1. CG also drops v1's
+the default when a campaign supplies no genre reference.
+
+The second changed clause is the dialogue paragraph. #408 ruled narration to be
+campaign fan fiction — accurate events, world facts, discoveries, decisions, and
+knowledge boundaries, but only *recognizable* rather than transcribed dialogue —
+and #410 replaced `writing_brief.md`'s verbatim-preservation clause with #408's
+preferred Version B adaptation contract: dialogue is editable dramatic material,
+so joining fragments, completing a clear thought, trimming filler, and
+paraphrasing are licensed, provided speaker intent, characteristic diction, and
+meaningful hesitation survive the edit. The ruling needed a doctrinal fix first:
+constitution Principle IV bound exactness universally, so licensing adaptation
+in the brief would have read as a violation rather than as compliance. #409
+supplied that fix at v2.0.0, scoping IV to what
+an artifact *declares* (`session_doc/io.py`'s `CLAIM_VERBATIM` / `CLAIM_VOICED` /
+`CLAIM_NONE`); narration declares nothing, so adapting wording is compliant,
+while traceability stays universal. #410 then applied the ratified text. Neither
+ruling moves the fabrication floor: adapting the wording of an exchange that
+happened and inventing one that did not are different acts, and the brief still
+forbids the second outright. #397 — filed correctly against the narration
+prompt's then-current verbatim clause — is closed working-as-designed; the
+collision it caught between doctrine and prompt is the one #408–#410 resolved.
+
+The output instruction retains CG's existing heading-free scene bodies
+(assembly supplies headings) and bundle transport markers. Legacy word
+targets, mandatory inclusion of every quote, and prose-mode speaker guessing
+no longer compete with v1. CG also drops v1's
 blanket ban on an audit: the narrowly scoped table-speech hatch lives in its own
 [`audit_hatch.md`](../../config/agents/session_doc/narrate/audit_hatch.md) block
 and reaches every narration mode (#396), because the reclassification judgment
 it records survived into the brief's sixth paragraph — and a judgment with no
 review queue is an LLM scope decision with no human checkpoint. The hatch covers
 mislabelled attribution only; the brief's licensed omission of incidental filler
-is ordinary editorial work and is never logged there (#386). Existing narration
-files remain as generated; future Narrate runs use the shared brief.
+is ordinary editorial work and is never logged there (#386). The #223
+anti-normalization rule — never alter, inside a quoted line, the name a
+character used, since a nickname, a title, or the wrong name is part of what
+the line reveals about the speaker — gets the same treatment: it now lives in
+its own [`name_fidelity.md`](../../config/agents/session_doc/narrate/name_fidelity.md)
+block reaching every narration mode, rather than riding along behind an
+`if npc_roster:` guard where it vanished entirely for a campaign with no alias
+map (#411). Existing narration files remain as generated; future Narrate runs
+use the shared brief.
 
 Each scene follows read → propose → GM review in chat or the shared standalone
 page → apply exact approved changes → read the result and check adjacent seams.

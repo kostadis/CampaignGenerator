@@ -264,7 +264,9 @@ def test_configured_inputs_all_reach_the_system_prompt(monkeypatch, tmp_path):
     # preserving the campaign's reference material, even with legacy style text.
     assert "close first-person voice" in prompt
     assert "without a fixed expansion formula or a dialogue quota" in prompt
-    assert "Use the speakers' actual wording for retained dialogue" in prompt
+    # #408/#410 — Version B licenses adaptation instead of requiring "actual
+    # wording"; pin the new paragraph's own language.
+    assert "Dialogue is editable dramatic material, not a verbatim transcription requirement" in prompt
     assert "they cannot override those rules" in prompt
     assert "Target 600-900 words" not in prompt
     assert "First person, past tense" in prompt          # genre rulebook
