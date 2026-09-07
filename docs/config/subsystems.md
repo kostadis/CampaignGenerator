@@ -42,7 +42,7 @@ Stage/model knobs:
 | Knob | Type | Rule |
 |---|---|---|
 | extract stage | `EnsembleBackend` | any backend; OpenRouter via env seam |
-| synthesize stage | `EnsembleBackend` | warns if model not in `SYNTHESIS_CAPABLE` |
+| synthesize stage | `EnsembleBackend` | warns if `synthesis_capable(model)` is false |
 | `chapters_selected` | explicit list | empty = nothing (no silent "all"); extraction refuses to run, and the stored value never stands in for an omitted `chapters` request param |
 | `paths.*` / `tuning.*` | per-campaign | were route-signature literals before Phase 3 — a differently laid-out `docs/` needed a code edit |
 | Anthropic `--model` | resolved | explicit request → per-stage config → `platform.runtime.default_model` → `campaignlib` literal (Phase 4). A stale non-Anthropic id is dropped, not forwarded |

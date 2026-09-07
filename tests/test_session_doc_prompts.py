@@ -138,7 +138,7 @@ def test_every_narration_mode_uses_v1_without_conflicting_legacy_rules():
         if mode.startswith("__"):
             continue
         assert prompt.count(NARRATION_WRITING_BRIEF.strip()) == 1, mode
-        assert "close first-person present-tense voice" in prompt, mode
+        assert "close first-person voice" in prompt, mode
         assert "Preserve what remains unknown" in prompt, mode
         for obsolete in (
             "Target 600-900 words", "2-3 sentences", "typically 4–8",
@@ -147,3 +147,25 @@ def test_every_narration_mode_uses_v1_without_conflicting_legacy_rules():
             "they were there",
         ):
             assert obsolete not in prompt, (mode, obsolete)
+
+
+def test_no_narration_mode_lets_the_brief_outrank_the_campaign_on_tense():
+    """#395, across the whole flag matrix.
+
+    Tense reached the model from four templates (`writing_brief`, `base`,
+    `bundle_base`, `voice_spec`) and one f-string in `narrate.py`. Fixing the
+    brief alone leaves the precedence blocks still saying it wins, so this
+    walks every combination rather than the one the fix was written against.
+    """
+    for mode, prompt in _build_matrix().items():
+        if mode.startswith("__"):
+            continue
+        assert "present-tense voice" not in prompt, mode
+        assert "knowledge boundaries, tense" not in prompt, mode
+        assert "diction and register only" not in prompt, mode
+        assert "the campaign's tense" in prompt, mode
+        assert "the authority on tense" in prompt, mode
+        # Only the modes carrying a rulebook emit the tail reminder that
+        # repeats it with recency, which is the copy small local models read.
+        if mode.endswith("_gn1"):
+            assert "diction, register, and tense" in prompt, mode

@@ -269,11 +269,15 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
     if genre and genre.strip():
         # Repeat the genre directive at the tail of the prompt. The opening copy
         # can be buried under long voice references. Scope this repeat to style
-        # so legacy genre instructions cannot undo the shared writing brief.
+        # so legacy genre instructions cannot undo the shared writing brief --
+        # except TENSE, which is the campaign's call and not the brief's (#395).
+        # Two of three campaigns' rulebooks mandate first-person PAST against a
+        # whole bible written that way; a shared brief that outranks them flips
+        # the campaign on the next run and calls it house style.
         result += (
-            "\n\nGENRE — FINAL REMINDER (diction and register only; the writing "
+            "\n\nGENRE — FINAL REMINDER (diction, register, and tense; the writing "
             "brief governs quotation selection, scene construction, knowledge "
-            "boundaries, tense, and prose mode):\n" + genre.strip()
+            "boundaries, and prose mode):\n" + genre.strip()
         )
     return result
 

@@ -12,8 +12,9 @@ INPUTS FOR THIS SECTION:
 
 CAMPAIGN AND CHARACTER STYLE:
 The writing brief above governs quotation selection, scene construction, knowledge
-boundaries, tense, and prose mode. Campaign genre and character references supply
-diction, cadence, register, and perspective; they cannot override those rules.
+boundaries, and prose mode. Campaign genre and character references supply diction,
+cadence, register, perspective, and tense; they cannot override those rules. The
+campaign genre reference is the authority on tense — follow the tense it states.
 Do not turn stylistic examples or character backstory into new events or dialogue.
 
 {genre_directive}

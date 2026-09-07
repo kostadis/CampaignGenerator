@@ -472,12 +472,23 @@ gated on a change in another repo and should not block 0–4.
   bullet set — "once a registry exists" — was met by Phase 5a, and the
   separate call turned out to be small and already implicit in the old
   literal: the stated bar is "at least as capable as Sonnet", which excludes
-  the Haiku tier and nothing else in `MODELS`. `SYNTHESIS_CAPABLE` is now
+  the Haiku tier and nothing else in `MODELS`. `SYNTHESIS_CAPABLE` became
   `{m for m in MODELS if "haiku" not in m}` plus an explicit set of frontier
   non-Anthropic ids (not derivable — `MODELS` is the Anthropic registry).
-  That restores what `specs/001-ensemble-workflow-ui/research.md` R6 described
-  all along, and confines the human judgment to one named exclusion instead of
+  That restored what `specs/001-ensemble-workflow-ui/research.md` R6 described
+  all along, and confined the human judgment to one named exclusion instead of
   a frozen snapshot. Pinned by `tests/test_synthesis_capable_registry.py`.
+
+  **Superseded 2026-09-06 by feature 024** (`specs/024-claude-model-freetext/`).
+  Deriving the set narrowed the drift window without closing it: a registry
+  refresh fixed it, and the next model release reopened it — and the warning
+  fires on `claude-code`, the subscription backend, which is exactly where a GM
+  reaches for a model that shipped this morning. `SYNTHESIS_CAPABLE` is gone;
+  `server/routers/ensemble.py::synthesis_capable(model)` is an ordered predicate
+  over the id's shape — sub-Sonnet tier excluded *first*, then any `claude-` or
+  `anthropic/claude-` id, then the frontier set. The named exclusion survives;
+  the "unknown means weak" inference does not. Contract:
+  `specs/024-claude-model-freetext/contracts/synthesis-capability.md`.
 - **Isolating the remaining ~7 services** out of `ui_state.yaml`.
   `UIStateService` exists to make that debt countable, not to discharge it.
 - **`SessionConfig.vue`'s client-side broadcast.** Phase 1 removes the

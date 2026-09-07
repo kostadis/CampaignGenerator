@@ -262,7 +262,7 @@ def test_configured_inputs_all_reach_the_system_prompt(monkeypatch, tmp_path):
 
     # Verify the actual UI argv -> CLI -> model boundary adopts v1 as well as
     # preserving the campaign's reference material, even with legacy style text.
-    assert "close first-person present-tense voice" in prompt
+    assert "close first-person voice" in prompt
     assert "without a fixed expansion formula or a dialogue quota" in prompt
     assert "Use the speakers' actual wording for retained dialogue" in prompt
     assert "they cannot override those rules" in prompt
@@ -271,6 +271,56 @@ def test_configured_inputs_all_reach_the_system_prompt(monkeypatch, tmp_path):
     assert '"the shape of X"' in prompt                  # ...including its tail
     assert "fair-trade, conflict-free gold" in prompt    # voice spec
     assert "I set the halberd down" in prompt            # per-character examples
+
+
+def test_the_campaign_rulebook_keeps_its_tense_against_the_shared_brief(
+        monkeypatch, tmp_path):
+    """#395 — the shared brief must not outrank a campaign's tense.
+
+    The v1 brief opened by mandating present tense and `base.md` declared the
+    brief to beat the genre reference on exactly that. Two of the three live
+    campaigns' rulebooks say first-person PAST, against a bible already written
+    that way, so the next `sd_narrate` run would have flipped them — silently,
+    and with the genre file explicitly told to lose.
+
+    Asserted at the same real argv -> CLI -> model boundary as the test above,
+    because the failure was never in a single stage: the rulebook DID arrive
+    (that is #295's fix, still asserted here) and the prompt around it told the
+    model to ignore its tense.
+    """
+    campaign, session = _campaign(tmp_path)
+    _write_config(campaign, session, genre_file="voice/_genre.md")
+
+    prompt = _system_prompt(monkeypatch, tmp_path, campaign, scene=1)
+
+    # The rulebook's rule arrives, and nothing in the prompt outranks it.
+    assert "First person, past tense" in prompt
+    assert "present-tense voice" not in prompt
+    assert "knowledge boundaries, tense" not in prompt
+    assert "diction and register only" not in prompt
+
+    # ...and the genre reference is named as the authority, in both the
+    # precedence block and the tail reminder that carries recency.
+    assert "the authority on tense" in prompt
+    assert "diction, register, and tense" in prompt
+
+
+def test_a_campaign_with_no_rulebook_still_gets_a_defined_tense(
+        monkeypatch, tmp_path):
+    """Deferring tense must not mean leaving it unstated.
+
+    A missing genre file already means no register rules at all (#295 / the
+    genre-rulebook howto). If it also meant no tense, dropping the mandate
+    would trade one silent flip for a per-run coin toss, so the brief keeps
+    present tense as the stated default for that case only.
+    """
+    campaign, session = _campaign(tmp_path)
+    _write_config(campaign, session, genre_file=None)
+
+    prompt = _system_prompt(monkeypatch, tmp_path, campaign, scene=1)
+
+    assert "GENRE" not in prompt
+    assert "Where no genre reference is supplied, use present tense." in prompt
 
 
 def test_per_character_examples_do_not_leak_across_narrators(monkeypatch, tmp_path):

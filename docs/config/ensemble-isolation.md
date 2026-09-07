@@ -306,7 +306,10 @@ leaves the tree green.
   `campaignlib.constants.DEFAULT_MODEL`.
 - Note the ensemble-specific wrinkle: ensemble legitimately runs non-Anthropic
   backends (dgx/openrouter/claude-code), so `resolve_default_model` applies to the
-  **anthropic** branch only; the `SYNTHESIS_CAPABLE` warning stays as-is.
+  **anthropic** branch only; the synthesis-capability warning stays as-is.
+  (Feature 024 later replaced `SYNTHESIS_CAPABLE` with the
+  `synthesis_capable(model)` predicate. The warning itself, and this Phase 4
+  decision to leave it alone, are unchanged.)
 
 ### Phase 5 — migration + retire the section
 
