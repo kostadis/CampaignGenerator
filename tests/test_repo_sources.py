@@ -135,3 +135,53 @@ def test_real_repo_finds_the_seam_file_exactly_once():
 def test_real_repo_returns_no_dot_claude_paths():
     assert not [p for p in repo_python_files(_REPO_ROOT)
                 if ".claude" in p.relative_to(_REPO_ROOT).parts]
+
+
+# ── The ignore rules these scanners inherit ──────────────────────────────────
+#
+# `repo_files` enumerates with `git ls-files`, so `.gitignore` is not merely a
+# `git status` convenience here — it is the allowlist five guardrail suites read
+# (test_backend_seam_guardrails, test_retrieve_render_isolation,
+# test_openrouter_seam, test_externalized_prompts, and this module). An ignore
+# rule that is broader than intended does not just hide a file from `git
+# status`; it removes that file from every seam check, silently and with a
+# green suite — the same shape as the worktree bug at the top of this file, in
+# the other direction.
+
+def _is_ignored(repo_root, relpath: str) -> bool:
+    """Would git ignore `relpath`? `--no-index` so the path need not exist."""
+    proc = subprocess.run(
+        ["git", "-C", str(repo_root), "check-ignore", "-q", "--no-index", relpath],
+        capture_output=True, timeout=30)
+    return proc.returncode == 0
+
+
+def test_the_worktrees_ignore_rule_is_anchored_to_the_repo_root():
+    """#403 ignored `worktrees/` to stop a nested checkout showing as untracked.
+
+    Unanchored, that pattern matches the directory name at any depth, so a
+    future `server/worktrees/` or `docs/worktrees/` would be un-addable and —
+    because gitignored files never reach `git ls-files` — exempt from every
+    guardrail above. The root-level checkout is the only thing meant to be
+    covered, and `/worktrees/` covers exactly it.
+    """
+    assert _is_ignored(_REPO_ROOT, "worktrees/cg-353/session_doc/narrate.py")
+    for nested in ("server/worktrees/x.py", "docs/worktrees/x.py",
+                   "campaignlib/api/worktrees/client.py"):
+        assert not _is_ignored(_REPO_ROOT, nested), nested
+
+
+def test_no_ignore_rule_matches_a_directory_that_holds_tracked_source():
+    """An invariant, not a regression test — it passes before the #403 fix too.
+
+    Ignore rules do not evict an already-tracked file, so a match here does not
+    shrink today's guardrail input. What it creates is a trap for the *next*
+    file added beside it: that one is silently un-addable, never reaches
+    `git ls-files`, and so is born exempt from every seam check. Catching the
+    overlap is cheaper than catching the file that goes missing because of it.
+    """
+    tracked = repo_python_files(_REPO_ROOT)
+    assert tracked, "expected a tracked-file listing to check against"
+    hidden = [p for p in tracked
+              if _is_ignored(_REPO_ROOT, p.relative_to(_REPO_ROOT).as_posix())]
+    assert not hidden, [str(p) for p in hidden[:5]]

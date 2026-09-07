@@ -47,5 +47,10 @@ config/wiring.yaml
 # tokensave local code index (31MB db + sidecars)
 .tokensave/
 
-# git worktrees checked out inside the repo (a live checkout, never content)
-worktrees/
+# git worktrees checked out inside the repo (a live checkout, never content).
+# Root-anchored: an unanchored `worktrees/` matches that directory name at ANY
+# depth, and a gitignored path is invisible to `git ls-files`, which is how
+# tests/repo_sources.py enumerates every guardrail's input. So the loose form
+# would silently drop a real `server/worktrees/` out of the seam checks rather
+# than merely hiding it from `git status`.
+/worktrees/
