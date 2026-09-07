@@ -342,3 +342,33 @@ def test_name_fidelity_rule_reaches_bundle_prompts_without_a_roster():
         npc_roster="Nezznar the Spider (also: Spider)")
     assert "NAMES INSIDE QUOTED SPEECH" in system_with_roster
     assert "## Known NPCs" in system_with_roster
+
+
+# #399 — the first-person rule was kept in the bundle template and dropped from
+# the single-scene one, so `sd_narrate` without `--bundle` rendered with a
+# materially weaker POV constraint and nothing caught it. The rule now lives in
+# the writing brief, which BOTH paths interpolate, so the two cannot drift
+# again. These two tests are a pair on purpose: one copy per path is what
+# created the defect, so each path asserts the rule arrives, and the bundle
+# asserts it arrives exactly once.
+
+
+def test_first_person_rule_reaches_single_scene_prompts():
+    for scene_anchored in (False, True):
+        system = narrate.build_narrate_system(
+            None, scene="The Wave Echo Chamber", narrator="Brewbarry",
+            scene_anchored=scene_anchored)
+        assert "The narrator is always “I”" in system, scene_anchored
+        assert "first-person point of view" in system, scene_anchored
+    # `scene_anchored` appends its own softer perspective line. The hard rule
+    # must not depend on it — that dependency is what #399 actually was.
+    unanchored = narrate.build_narrate_system(None, scene="S", narrator="B")
+    assert "close first-person perspective" not in unanchored
+    assert "The narrator is always “I”" in unanchored
+
+
+def test_first_person_rule_reaches_bundle_prompts_exactly_once():
+    system, user = narrate.build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Arrival", "Alice"), _bundle_scene(2, "Departure", "Bob")])
+    combined = system + "\n" + user
+    assert combined.count("The narrator is always “I”") == 1
