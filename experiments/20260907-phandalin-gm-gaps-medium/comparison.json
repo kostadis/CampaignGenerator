@@ -1,0 +1,94 @@
+{
+  "low": {
+    "effort": "low",
+    "words": 2192,
+    "gaps": 17,
+    "seconds": 78.3
+  },
+  "medium": {
+    "effort": "medium",
+    "words": 2223,
+    "gaps": 11,
+    "prose_words": 1867,
+    "seconds": 81.7
+  },
+  "gaps_both_runs_marked": 11,
+  "gaps_only_low_marked": [
+    "several hours pass before Denvar wakes.",
+    "the stone is set into a wall that forms part of a building.",
+    "though it is early in the morning, the tavern is open.",
+    "the office holds a desk, papers, and supplies.",
+    "the room the rat found was not on the ground floor but below it, at the basement level.",
+    "Brewbarry is already inside as the party enters, and they know now that this is a Harper establishment."
+  ],
+  "gaps_only_medium_marked": [],
+  "paired": [
+    {
+      "low": "Denvar leaves his house and the party follows him to a stone wall that backs onto a building, where he looks around discreetly, pulls a stone loose, takes a bag from the hollow behind it, and closes it again.",
+      "medium": "A few hours later Denvar wakes, and the party follows him to a stone wall that backs into a building, where he looks around with careful discretion, pulls a stone free, takes out a bag, and closes the hiding place again.",
+      "identical": false,
+      "similarity": 0.598
+    },
+    {
+      "low": "Denvar examines the chit from the bag and smiles before walking away.",
+      "medium": "Denvar looks at the chit in his hand and smiles before walking off.",
+      "identical": false,
+      "similarity": 0.735
+    },
+    {
+      "low": "the hollow opens from either side, so there is no way to tell from the street whether the payment was placed from outside or from within the building; learning that means going in.",
+      "medium": "The stone is a two-way compartment; nothing about it shows whether the payment was placed from the street or from inside the building, so learning that would mean going in.",
+      "identical": false,
+      "similarity": 0.58
+    },
+    {
+      "low": "the building is a stone dwelling.",
+      "medium": "The building is a stone dwelling, built of stone throughout.",
+      "identical": false,
+      "similarity": 0.71
+    },
+    {
+      "low": "walking the perimeter reveals that the building is a tavern called the House of a Thousand Faces.",
+      "medium": "Walking the perimeter, the party finds the building is a tavern, the House of a Thousand Faces, and though it is early morning the place is open.",
+      "identical": false,
+      "similarity": 0.678
+    },
+    {
+      "low": "Brewbarry has heard of the House of a Thousand Faces for some time; when he first came to Neverwinter he could not afford to go in.",
+      "medium": "Brewbarry has already gone into the tavern; he had heard of the House of a Thousand Faces when he first came to Neverwinter and could not afford it then.",
+      "identical": false,
+      "similarity": 0.768
+    },
+    {
+      "low": "the rat slips through the opened compartment and sneaks around a windowless back office, and on the wall it finds the symbol of the Harpers.",
+      "medium": "The rat slips into a windowless back office on the basement level, with a desk, papers, and supplies, and among them the unmistakable symbol of the Harpers.",
+      "identical": false,
+      "similarity": 0.568
+    },
+    {
+      "low": "the office appears to be the local headquarters of the Harpers.",
+      "medium": "The office is the local headquarters of the Harpers.",
+      "identical": false,
+      "similarity": 0.887
+    },
+    {
+      "low": "there is a distinction between the Harpers smuggling outright and the Harpers arranging the ninth crate, and what was seen does not settle which.",
+      "medium": "It remains open whether the Harpers are smuggling or arranging the ninth crate; and the Harpers, as the group is reminded, are not good people in this city.",
+      "identical": false,
+      "similarity": 0.558
+    },
+    {
+      "low": "the Harpers in this city are not good people; the only good people are the Order of the Gauntlet, who were misled by their political masters, have since rejected those masters, and are now concerned with the little guy.",
+      "medium": "The reminder extends to the claim that the only good people in this are the Order of the Gauntlet, who were misled by their political masters, have since rejected them, and now stand for the little guy.",
+      "identical": false,
+      "similarity": 0.622
+    },
+    {
+      "low": "the House of a Thousand Faces is a comfortable tavern with mirrors, mannequins in antiquated fashions, lush couches, and a fire that draws properly — a high-end place in the low-end Bluelake District, with something subtly off about it.",
+      "medium": "The House of a Thousand Faces is a comfortable tavern of mirrors, mannequins in antiquated fashions, lush couches, and a fire that actually draws — a high-end place in the low-end Bluelake District, with something subtly off about it.",
+      "identical": false,
+      "similarity": 0.613
+    }
+  ],
+  "reading": "A gap both runs marked is evidence the passage really is GM-narrated. A gap only one marked is a question for the GM against the source extraction, not a defect in either run. This is a set comparison, not a score."
+}

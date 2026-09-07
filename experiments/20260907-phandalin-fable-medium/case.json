@@ -1,0 +1,56 @@
+{
+  "prepared_at": "2026-09-07T15:54:57.399468+00:00",
+  "question": "Does the renderer change the result the archived Astra runs produced, with every message held byte-identical?",
+  "replays": {
+    "chapter": "/home/kostadis/CG-find-bug/experiments/20260907-phandalin-adaptation",
+    "scene_ab": "/home/kostadis/CG-find-bug/experiments/20260907-phandalin-scene-composition"
+  },
+  "campaign_commit": "bbf4e3c064b4e13b47ed523606a62936638a0cc6",
+  "campaign_repository": "https://github.com/kostadis/campaigns",
+  "generator_commit": "d9c5de87a0ec4831c1cdc999b26491851b1f7c01",
+  "model": "claude-fable-5-1",
+  "claude_code_effort": "medium",
+  "claude_code_effort_source": "explicit",
+  "backend": "claude-code",
+  "compared_against": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "medium",
+    "backend": "codex-cli"
+  },
+  "effort_note": "The operator's ~/.claude/settings.json pins effortLevel=xhigh, so --effort medium is sent explicitly. A run recording source \"inherited\" would not be this experiment. Note that the adapter's startup banner mis-renders any source string outside explicit/environment/clamp as \"inherited ... sent no override\"; the recorded identity, not the banner, is the record. See aborted/README.md.",
+  "thinking_note": "The Fable family runs adaptive thinking unconditionally; the adapter's MAX_THINKING_TOKENS=0 is a no-op there. Astra's trace behaviour under codex-cli is not equated with it.",
+  "max_tokens_argument": 32000,
+  "token_limit_note": "Forwarded as CLAUDE_CODE_MAX_OUTPUT_TOKENS, which the CLI does enforce as a ceiling. The Codex adapter accepted but ignored the same argument, so this is one uncontrolled difference between the two renderers rather than a matched setting.",
+  "arms": [
+    "chapter",
+    "control",
+    "composition"
+  ],
+  "scene_arms": [
+    "control",
+    "composition"
+  ],
+  "scene_heading": "Soma — Harpers Behind the Wall",
+  "chapter_headings": [
+    "Vukradin — Patrons of the Chord",
+    "Vukradin — Nine Crates at Low Tide",
+    "Vukradin — Lost in Rsolk’s Tunnels",
+    "Soma — Denvar’s Unsettled Account",
+    "Soma — Harpers Behind the Wall"
+  ],
+  "input_sha256": {
+    "prompts/chapter_system.md": "21d93cbf733cdaad1c0274b2960f46e4468c8ebc7b00a30e67925dddd39d8a72",
+    "prompts/chapter_user.md": "321ae9500781e23bbcc2260ccf7c0039b55ff56d33f6a551455789b2208d8e6a",
+    "prompts/scene_user.md": "f658f98a9342639e8b260f1d40e0c7a6440c51d09b2ec4023b1f878553dbb560",
+    "prompts/scene_control_system.md": "2da015c540e5f31c7044c23ef6452e371407b7d9d0a17cd6924aa4c61db46db7",
+    "prompts/scene_composition_system.md": "1cc78e6c852088f1beea798b4e0f669c0face5ebe47c6e68fe5f352e939414c5",
+    "reference/historical_chapter.md": "d5376163a926c99c8a9c22335b54ebd6a640932ca6e353ac7aa95be650ca7034",
+    "reference/astra_chapter.md": "3b929617e6341640b06c129280e922f84e09560add868a142e0c8633a5dd9477",
+    "reference/astra_control.md": "ed26bd1f5ecc77fea50c3d6831cbe367aea0872efef98f58cf6c45fc15b8a74e",
+    "reference/astra_composition.md": "1fe7ad45c5e885ab974f15a40e76d9c826e4b862db3ef1a6bb1a7ed4605745e7",
+    "run.py": "57ac29ca2351dd127205ddbea05e2f0542105c0d2a0d929849618ba331ff2387"
+  },
+  "assignment_sha256": "fc5651702bb10984f20f33acfafa9d63812e81c395de4dbef02b083b6033f950",
+  "design": "Three independent single-sample calls. Every system and user message is byte-identical to the archived Astra run it replays. Renderer is the only deliberate change.",
+  "limits": "One sample per arm; stochastic outputs; no exposed seed; no repeated trials. A single pair of chapters cannot separate model quality from run-to-run variance, and neither can a single A/B pair. Attestation is what the adapter sent (--model / --effort), not a provider echo of what served the request. The output ceiling differs in enforcement between the two backends. Nothing here revalidates the production narration path."
+}

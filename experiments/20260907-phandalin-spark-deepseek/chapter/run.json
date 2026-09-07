@@ -1,0 +1,30 @@
+{
+  "status": "rendered",
+  "arm": "chapter",
+  "started_at": "2026-09-07T16:01:35.824329+00:00",
+  "case_sha256": "e9a2f43a9dd09337883674feaace0777c17cedb999c7d3368bd6b83db42e1e50",
+  "system_sha256": "21d93cbf733cdaad1c0274b2960f46e4468c8ebc7b00a30e67925dddd39d8a72",
+  "user_sha256": "321ae9500781e23bbcc2260ccf7c0039b55ff56d33f6a551455789b2208d8e6a",
+  "backend": "dgx",
+  "endpoint": "http://192.168.1.147:8001/v1",
+  "requested_model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+  "resolved_extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  },
+  "response_sha256": "67be55c178acf2f7d5bb34381bc88f6225c52e261a53b8854b406d257a49e299",
+  "words": 6576,
+  "headings_verbatim": [
+    "# Chapter 51: We're famous. Why are we famous?",
+    "## Vukradin — Patrons of the Chord",
+    "## Vukradin — Nine Crates at Low Tide",
+    "## Vukradin — Lost in Rsolk's Tunnels",
+    "## Soma — Denvar's Unsettled Account",
+    "## Soma — Harpers Behind the Wall"
+  ],
+  "headings_match_after_normalization": true,
+  "headings_match_verbatim": false,
+  "finished_at": "2026-09-07T16:08:11.057371+00:00",
+  "wall_clock_seconds": 395.2
+}

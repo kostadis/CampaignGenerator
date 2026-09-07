@@ -1,0 +1,15 @@
+{
+  "scene": {
+    "A": "fable:control",
+    "B": "spark:control",
+    "C": "spark:composition",
+    "D": "fable:composition",
+    "E": "astra:control",
+    "F": "astra:composition"
+  },
+  "chapter": {
+    "C1": "fable:chapter",
+    "C2": "astra:chapter",
+    "C3": "spark:chapter"
+  }
+}
