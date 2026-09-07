@@ -35,7 +35,6 @@ from campaignlib import (
 from campaignlib.api.client import resolve_cli_model, resolve_cli_reasoning
 from campaignlib.party_config import load_party_config_arg, require_from_config
 from session_doc import roster_from_config
-from campaignlib.players_config import load_players_config_arg
 from session_doc.voice import get_voice_note, load_declared_voices
 
 
@@ -809,11 +808,6 @@ def main() -> None:
                              "sheet frontmatter (issue #265) and there is no party.md "
                              "fallback — a sheet without frontmatter is a hard error. Run "
                              "sheet_frontmatter --apply to add it.")
-    parser.add_argument("--players-config", default=None,
-                        help="players.yaml (conventionally "
-                             "<campaign>/config/players.yaml). Supplies the "
-                             "person's name for each character in the roster "
-                             "block.")
     parser.add_argument("--context", nargs="*", default=[],
                         help="Optional grounding docs (loaded lazily on demand)")
     parser.add_argument("--output", required=True,
@@ -880,12 +874,12 @@ def main() -> None:
     recap_text = recap_path.read_text(encoding="utf-8")
     party_text = party_path.read_text(encoding="utf-8")
     # The roster comes from each character's sheet frontmatter (#265) — no
-    # party.md fallback. The person's name comes from players.yaml (feature
-    # 009); party_text is still read, for the ## Name headers below.
+    # party.md fallback. party_text is still read, for the ## Name headers
+    # below. #398: the roster never names the person playing a character, so
+    # there is no players.yaml input here any more.
     resolved_party_config = load_party_config_arg(args.party_config)
-    players_config = load_players_config_arg(args.players_config)
     roster_text = require_from_config(
-        roster_from_config(resolved_party_config, players_config)
+        roster_from_config(resolved_party_config)
         if resolved_party_config else None,
         what="character roster",
         party_config_arg=args.party_config,

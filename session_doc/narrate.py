@@ -152,7 +152,7 @@ NARRATE_SYSTEM_BASE        = _load_template_deferred(
     "writing_brief", "audit_hatch",
     "genre_directive", "examples_block", "scene_scope_line", "scene_events_line",
     "rendering_instruction", "length_instruction", "dialogue_instruction",
-    "name_fidelity",
+    "name_fidelity", "real_names",
 )
 EXAMPLES_BLOCK             = _load_template_deferred(
     "session_doc/narrate/examples_block", "examples")
@@ -176,6 +176,12 @@ AUDIT_HATCH_INSTRUCTION    = _load_template_deferred("session_doc/narrate/audit_
 # render paths through the two base templates, so it survives an empty alias map
 # (#411) — the canonical-spellings LIST is what depends on a roster, not the rule.
 NAME_FIDELITY_INSTRUCTION = _load_template_deferred("session_doc/narrate/name_fidelity")
+# Deleted wholesale by 26ec5b0 with no replacement (#398): the real-person-name
+# ban that forbade naming anyone at the table in narration prose. Restored as a
+# placeholder rather than a Python-side append — per b4a1f2d, "the placeholder
+# is the point" — so deleting it again fails at load time instead of silently
+# regenerating a golden with the rule missing.
+REAL_NAMES_INSTRUCTION = _load_template_deferred("session_doc/narrate/real_names")
 SCENE_ANCHORED_DIRECTIVE   = _load_template_deferred(
     "session_doc/narrate/scene_anchored", "narrator")
 BUNDLE_SYSTEM_BASE         = _load_template_deferred(
@@ -183,7 +189,7 @@ BUNDLE_SYSTEM_BASE         = _load_template_deferred(
     "writing_brief", "audit_hatch",
     "genre_directive", "shared_examples_block", "prose_mode_block",
     "shared_context", "scene_count", "dialogue_instruction",
-    "name_fidelity",
+    "name_fidelity", "real_names",
 )
 BUNDLE_SCENE_TEMPLATE      = _load_template_deferred(
     "session_doc/narrate/bundle_scene",
@@ -264,7 +270,8 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                    rendering_instruction=rendering,
                    length_instruction=length,
                    dialogue_instruction=dialogue,
-                   name_fidelity=NAME_FIDELITY_INSTRUCTION)
+                   name_fidelity=NAME_FIDELITY_INSTRUCTION,
+                   real_names=REAL_NAMES_INSTRUCTION)
     if scene_anchored and narrator:
         result += "\n\n" + _fill(SCENE_ANCHORED_DIRECTIVE, narrator=narrator)
     if prose_mode:
@@ -429,6 +436,7 @@ def build_bundled_narrate_prompts(
         ),
         scene_count=str(len(scenes)),
         name_fidelity=NAME_FIDELITY_INSTRUCTION,
+        real_names=REAL_NAMES_INSTRUCTION,
     )
     packets: list[str] = []
     for scene in scenes:

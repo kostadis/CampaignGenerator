@@ -439,9 +439,12 @@ def main() -> None:
                              "was before, and no character is marked.")
     parser.add_argument("--players-config", metavar="FILE", default=None,
                         help="players.yaml (conventionally "
-                             "<campaign>/config/players.yaml). Supplies the "
-                             "person's name for each character in the roster "
-                             "block. Only players still at the table are named.")
+                             "<campaign>/config/players.yaml). Used with --vtt "
+                             "to establish who was at the table, so the roster "
+                             "block can mark a character nobody voiced this "
+                             "session (#385). #398: the roster block never "
+                             "names the person playing a character, only the "
+                             "character.")
     parser.add_argument("--voice-dir", metavar="DIR",
                         help="Directory holding the campaign's voice files. Read "
                              "ONLY to report files nothing declares — a "
@@ -676,7 +679,7 @@ def main() -> None:
         unvoiced = _unvoiced_characters(args, players_config, resolved_party_config)
         try:
             roster = require_from_config(
-                roster_from_config(resolved_party_config, players_config, unvoiced)
+                roster_from_config(resolved_party_config, unvoiced)
                 if resolved_party_config else None,
                 what="character roster",
                 party_config_arg=args.party_config,

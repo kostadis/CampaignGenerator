@@ -39,7 +39,7 @@ def test_every_shipped_template_satisfies_its_declared_contract():
                         "{examples_block}",
                         "{scene_scope_line}", "{scene_events_line}",
                         "{rendering_instruction}", "{length_instruction}",
-                        "{dialogue_instruction}", "{name_fidelity}"):
+                        "{dialogue_instruction}", "{name_fidelity}", "{real_names}"):
         assert placeholder in narrate.NARRATE_SYSTEM_BASE, placeholder
 
 
@@ -64,7 +64,7 @@ def test_a_template_missing_a_placeholder_fails_loudly(tmp_path, monkeypatch):
             "writing_brief", "audit_hatch",
             "genre_directive", "examples_block", "scene_scope_line",
             "scene_events_line", "rendering_instruction", "length_instruction",
-            "dialogue_instruction", "name_fidelity",
+            "dialogue_instruction", "name_fidelity", "real_names",
         )
 
     msg = str(exc.value)
@@ -196,7 +196,7 @@ def test_drift_does_not_break_importing_session_doc(tmp_path, monkeypatch):
         "writing_brief", "audit_hatch",
         "genre_directive", "examples_block", "scene_scope_line",
         "scene_events_line", "rendering_instruction", "length_instruction",
-        "dialogue_instruction", "name_fidelity",
+        "dialogue_instruction", "name_fidelity", "real_names",
     ) == ""
     assert narrate._TEMPLATE_ERROR is not None
 
@@ -292,6 +292,14 @@ def test_bundle_templates_satisfy_placeholder_and_load_bearing_rule_contracts():
     assert "NAMES INSIDE QUOTED SPEECH" in combined
     assert "characterization, not a spelling error" in combined
     assert "Never normalize a name inside a quoted line" in " ".join(combined.split())
+    # #398 — the real-people ban (deleted wholesale by 26ec5b0, replaced by
+    # nothing) reaches the bundle through `bundle_base.md`'s own {real_names}
+    # placeholder, same as {name_fidelity}, so it is unconditional here too.
+    flat_combined = " ".join(combined.split())
+    assert "THE PEOPLE AT THE TABLE" in combined
+    assert "their real names never appear in the prose" in flat_combined
+    assert "Only the characters exist in the fiction" in flat_combined
+    assert "The narrator does not receive information from a person at the table" in flat_combined
 
 
 # ── #411 regression: the rule must not depend on having a roster ────────────

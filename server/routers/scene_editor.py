@@ -2510,13 +2510,11 @@ def _build_polish_cmd(request, cfg: ResolvedEditorConfig) -> list[str] | tuple[N
         "--output", str(output),
         "--changelog", str(changelog),
     ]
-    # Keep the declared player roster in the same campaign-owned config
-    # boundary as the party roster when it is present.  The CLI accepts this
-    # optional input and falls back to its established character-name
-    # diagnostics when a campaign has not adopted players.yaml yet.
-    players = _players_args(cfg)
-    if players:
-        cmd += players
+    # #398: no --players-config here. polish's only use for it was the
+    # person's name in the roster block, and the roster no longer renders
+    # one — passing it now would fail argparse. The flag stays on the stages
+    # that read player identity for something other than display:
+    # sd_narrate/scene_extract/enhance_summary, and sd_plan for attendance.
     context = [str(p) for p in (cfg.narrate.context or []) if p]
     if context:
         cmd += ["--context", *context]

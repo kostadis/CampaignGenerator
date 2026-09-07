@@ -4,12 +4,11 @@ import sys
 from typing import TYPE_CHECKING
 
 from campaignlib.party_md import parse_party_md
-from campaignlib.players_config import norm_name, player_name_for
+from campaignlib.players_config import norm_name
 from campaignlib.textproc import split_frontmatter
 
 if TYPE_CHECKING:
     from campaignlib.party_config import ResolvedPartyConfig
-    from campaignlib.players_config import PlayersConfig
 
 
 def extract_character_roster(party_text: str) -> str:
@@ -64,6 +63,13 @@ def extract_character_roster(party_text: str) -> str:
     The layout-detection machinery lives in `campaignlib.party_md`
     (`parse_party_md`) — this is a thin formatter over its `PartyEntry` list,
     shared with `campaignlib.npc.extract_player_character_map` (issue #260).
+
+    NOTE (#398): unlike `roster_from_config` below, this still renders the
+    real person's name in the `(player)` parenthetical — it is a parser for
+    legacy hand-authored `party.md` dialects and has no production consumer
+    today. Do not wire this output into a narration prompt without stripping
+    the parenthetical first; handing the model real names of people at the
+    table is exactly the defect #398 fixes on the `roster_from_config` path.
     """
     roster: list[str] = []
     for entry in parse_party_md(party_text):
@@ -94,26 +100,12 @@ UNVOICED_MARKER = (
 
 def roster_from_config(
     cfg: "ResolvedPartyConfig",
-    players: "PlayersConfig | None" = None,
     unvoiced: "set[str] | None" = None,
 ) -> str | None:
     """Render the roster from each character's D&D Beyond sheet, per the GM
     ruling in ``docs/design/PartyRosterCanonicalFormat.md`` (issue #265):
     the sheet is canonical for character-specific data, ``party.yaml``
     only references it.
-
-    ``players`` supplies the **person's name** (feature 009). The sheet is
-    still canonical for the character — species, class, subclass — but it was
-    never canonical about the human: a D&D Beyond export stamps the
-    *downloader's* name into every sheet it produces, so the sheet is wrong
-    about this for every character, every time, by construction. Only
-    **active** players are named; the roster block describes the table as it is
-    now, while an inactive player is kept so the transcript archive still
-    resolves (FR-011a, FR-019).
-
-    ``players`` of ``None`` renders the no-player variant for every character
-    rather than failing. Whether a run may proceed without player identity is
-    the caller's decision, not this formatter's.
 
     ``cfg`` must already be resolved (:func:`campaignlib.party_config.
     resolve_party_config`) — this function does not choose a base
@@ -123,12 +115,7 @@ def roster_from_config(
     everywhere.)
 
     For each character, reads ``sheet``, splits its YAML frontmatter
-    (:func:`campaignlib.textproc.split_frontmatter`), and formats one line
-    in ``extract_character_roster``'s exact shape::
-
-        - {name} ({player}): {species} {class_level} ({subclass})
-
-    or, when the sheet's ``player`` field is empty, the no-player variant::
+    (:func:`campaignlib.textproc.split_frontmatter`), and formats one line::
 
         - {name}: {species} {class_level} ({subclass})
 
@@ -138,8 +125,18 @@ def roster_from_config(
     the Giant)"), so a blank one silently shortens the roster block that
     goes into the narration prompt.
 
-    Every field is ``.strip()``-ed (one real sheet has a trailing space
-    after the player name). ``name`` comes from ``cfg`` — the party.yaml
+    #398: this never renders the person's name. It used to — a ``players``
+    parameter supplied it (feature 009) and the line shape was
+    ``- {name} ({player}): ...`` — but nothing forbade the model from writing
+    a real person's name into the prose once it was in the prompt, so the fix
+    is to stop supplying it at all. The roster block is scoped to what a
+    narrator needs to know about the *character*: species, class, subclass.
+    Who plays them is not narration-relevant and must never reach this
+    prompt. (``extract_character_roster`` above still renders it, for its own
+    unrelated legacy reasons — see the note on that function.)
+
+    Every field is ``.strip()``-ed (one real sheet has a trailing space after
+    a frontmatter value). ``name`` comes from ``cfg`` — the party.yaml
     entry's own name — not from the sheet's frontmatter, since ``party.yaml``
     is what maps a roster slot to a sheet.
 
@@ -168,12 +165,6 @@ def roster_from_config(
         if not frontmatter:
             problems.append(f"{character.name}: sheet has no YAML frontmatter ({sheet})")
             continue
-        # The person comes from the entity, never from the sheet's own
-        # `player:` line — that line is a rendered copy this pipeline writes,
-        # and reading it back would make the copy the authority (FR-023).
-        player = (
-            player_name_for(players, character.name) or "" if players else ""
-        )
         species = str(frontmatter.get("species") or "").strip()
         class_level = str(frontmatter.get("class_level") or "").strip()
         if not species or not class_level:
@@ -186,11 +177,8 @@ def roster_from_config(
         class_info = f"{species} {class_level}".strip()
         if subclass:
             class_info = f"{class_info} ({subclass})"
-        line = (
-            f"- {character.name} ({player}): {class_info}"
-            if player
-            else f"- {character.name}: {class_info}"
-        )
+        # #398: never render the person's name here — see the docstring.
+        line = f"- {character.name}: {class_info}"
         # `unvoiced` of None is the whole of today's behaviour, byte for byte —
         # `pipelines/ensemble/polish.py` is a second caller and must stay inert.
         if unvoiced and norm_name(character.name) in {

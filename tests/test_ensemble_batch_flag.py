@@ -109,9 +109,10 @@ def test_polish_main_rejects_codex_batch_before_agent_loop(monkeypatch, tmp_path
 
     monkeypatch.setattr(polish, "load_config", lambda *_args, **_kwargs: {})
     monkeypatch.setattr(polish, "load_party_config_arg", lambda *_args: None)
-    monkeypatch.setattr(polish, "load_players_config_arg", lambda *_args: None)
+    # #398: roster_from_config no longer takes a players.yaml input, so
+    # `polish` no longer imports `load_players_config_arg` to patch.
     monkeypatch.setattr(
-        polish, "require_from_config", lambda *_args, **_kwargs: "- Vuk (player)"
+        polish, "require_from_config", lambda *_args, **_kwargs: "- Vuk: Human Fighter 3"
     )
     monkeypatch.setattr(
         polish, "run_agent_loop",
