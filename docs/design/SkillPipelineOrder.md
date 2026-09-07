@@ -165,14 +165,19 @@ share the accepted narration-v1 writing brief in
 [`writing_brief.md`](../../config/agents/session_doc/narrate/writing_brief.md).
 It applies across campaigns, with their declared voice and genre references.
 The brief governs quotation selection, scene construction, knowledge boundaries,
-present tense, and prose mode; references supply diction, cadence, and register.
+and prose mode; references supply diction, cadence, register, and tense.
 Dialogue-edit remains the subsequent GM-reviewed editing pass using approach B.
 
 The generation brief comes from campaigns PR #232's archived
 [`narration_v1.md`](https://github.com/kostadis/campaigns/blob/0355cdd28179650cf11ecb4435e4841fbe61d54c/experiments/sd-narrate/prompts/narration_v1.md).
-Its seven writing paragraphs are unchanged. The output instruction retains CG's
-existing heading-free scene bodies (assembly supplies headings) and bundle
-transport markers. Legacy word targets, mandatory inclusion of every quote,
+Its seven writing paragraphs are unchanged bar one clause: v1 opened by
+mandating **present tense**, and CG's brief defers tense to the campaign genre
+reference instead (#395). Out-of-the-abyss and toee both mandate first-person
+**past** across an existing bible; a shared brief declared to outrank them would
+have flipped both campaigns on their next `sd_narrate` run. Present tense remains
+the default when a campaign supplies no genre reference. The output instruction
+retains CG's existing heading-free scene bodies (assembly supplies headings) and
+bundle transport markers. Legacy word targets, mandatory inclusion of every quote,
 and prose-mode speaker guessing no longer compete with v1. Existing narration
 files remain as generated; future Narrate runs use the shared brief.
 

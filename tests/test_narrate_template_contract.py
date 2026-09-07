@@ -266,3 +266,9 @@ def test_bundle_templates_satisfy_placeholder_and_load_bearing_rule_contracts():
     assert "final prose line of the section you just emitted" in combined
     assert "table-speech reclassified" not in combined
     assert "Every eligible verbatim quote belongs" not in combined
+    # #395 — the bundle wrapper carried its own copy of the precedence block,
+    # so a fix applied only to `base.md` would leave every bundled render
+    # still overriding the campaign's tense.
+    assert "present-tense voice" not in combined
+    assert "knowledge boundaries, tense" not in combined
+    assert "the authority on tense" in combined
