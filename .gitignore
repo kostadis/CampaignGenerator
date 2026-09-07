@@ -46,3 +46,6 @@ config/wiring.yaml
 
 # tokensave local code index (31MB db + sidecars)
 .tokensave/
+
+# git worktrees checked out inside the repo (a live checkout, never content)
+worktrees/
