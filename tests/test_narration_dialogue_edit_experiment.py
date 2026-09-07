@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-DIRECTORY = Path(__file__).resolve().parents[1] / 'docs/experiments/narration-dialogue-edit'
+DIRECTORY = Path(__file__).resolve().parents[1] / 'experiments/narration-dialogue-edit'
 spec = importlib.util.spec_from_file_location('dialogue_edit_experiment', DIRECTORY/'run_test.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
