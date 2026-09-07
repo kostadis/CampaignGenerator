@@ -29,7 +29,6 @@ in every scene.
 {real_names}
 
 For every scene:
-- Stay in the named narrator's first-person point of view. The narrator is always “I”.
 - Render only that scene. Do not import events, discoveries, or dialogue from another packet.
 - Preserve event order and the timing of discoveries, including what remains unknown.
 - Follow that scene's voice and examples. Other characters have no internal monologue.
