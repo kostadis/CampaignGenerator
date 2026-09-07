@@ -74,6 +74,7 @@ def _build_matrix() -> dict[str, str]:
     matrix["__DIALOGUE_INSTRUCTION_FULL"] = session_doc.DIALOGUE_INSTRUCTION_FULL
     matrix["__DIALOGUE_INSTRUCTION_COND"] = session_doc.DIALOGUE_INSTRUCTION_CONDITIONAL
     matrix["__PROSE_MODE_INSTRUCTION"]    = session_doc.PROSE_MODE_INSTRUCTION
+    matrix["__AUDIT_HATCH_INSTRUCTION"]   = session_doc.AUDIT_HATCH_INSTRUCTION
     matrix["__PREV_VOICE_CONTRAST_via_prompt"] = session_doc.build_narrate_prompt(
         narrator="Brewbarry",
         focus="Whittle and watch.",
@@ -143,10 +144,36 @@ def test_every_narration_mode_uses_v1_without_conflicting_legacy_rules():
         for obsolete in (
             "Target 600-900 words", "2-3 sentences", "typically 4–8",
             "every line should appear", "THE DIALOGUE IS THE STORY",
-            "No mechanical numbers", "table-speech reclassified",
+            "No mechanical numbers",
             "they were there",
         ):
             assert obsolete not in prompt, (mode, obsolete)
+
+
+def test_every_narration_mode_carries_the_table_speech_audit_hatch():
+    """#396, across the whole flag matrix.
+
+    `26ec5b0` deleted the hatch from `prose_mode.md` and banned it in
+    `writing_brief.md`, but kept the reclassification judgment — which lives in
+    the always-on brief (¶6, "Table instructions, mechanical procedure, and
+    editorial notes are not spoken dialogue"), not in prose mode. So the record
+    has to reach every mode the judgment reaches, and the pre-26ec5b0 design,
+    which carried it only in `prose_mode.md` and `dialogue_conditional.md`,
+    would fail this walk too.
+    """
+    for mode, prompt in _build_matrix().items():
+        if mode.startswith("__"):
+            continue
+        assert "table-speech reclassified" in prompt, mode
+        assert "the GM's review queue" in prompt, mode
+        # The narrow scope is the load-bearing half: #386 ruled that coverage
+        # of ordinary editorial omission belongs in a separate review pass, so
+        # an audit that logged omitted filler would be the wrong feature.
+        assert "never listed here" in prompt, mode
+        # Honesty about self-flagging — `ExtractionContract_proposal.md`'s
+        # "Why the model is not the flagger" measured both #245 arms missing
+        # the same span, so an empty hatch must never read as a clean scene.
+        assert "not a claim of completeness" in " ".join(prompt.split()), mode
 
 
 def test_no_narration_mode_lets_the_brief_outrank_the_campaign_on_tense():

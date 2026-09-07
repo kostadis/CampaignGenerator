@@ -28,6 +28,7 @@ from session_doc.io import (
     parse_vtt,
 )
 from session_doc.narrate import (
+    AUDIT_HATCH_INSTRUCTION,
     DIALOGUE_INSTRUCTION_CONDITIONAL,
     DIALOGUE_INSTRUCTION_FULL,
     EXAMPLES_BLOCK,
@@ -52,6 +53,7 @@ from session_doc.voice import (
 )
 
 __all__ = [
+    "AUDIT_HATCH_INSTRUCTION",
     "CONSISTENCY_SYSTEM",
     "DIALOGUE_INSTRUCTION_CONDITIONAL",
     "DIALOGUE_INSTRUCTION_FULL",

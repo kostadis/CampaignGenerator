@@ -136,10 +136,14 @@ quietly converted to prose. Removing the mechanics upstream and re-narrating
 produced *visibly better* prose: with die rolls gone from its input the narrator
 stopped spending budget on conversion and spent it on character.
 
-It also prevents a hard failure. When a scene is *entirely* mechanical and
-`sd_narrate` writes no reclassification hatch, the tooling reaches the page as
-in-fiction dialogue — ch10 scene 02 narrated `"Quest log."` and
-`"I cannot see your pointer."` as things a character said aloud.
+It also prevents a hard failure the audit hatch cannot be relied on to catch.
+`sd_narrate` does write `<!-- table-speech reclassified: … -->` when it
+reclassifies a mislabelled span (#396), but that is a best-effort record of the
+calls it *did* make, not a detector. On ch10 scene 02 — a scene that was
+*entirely* mechanical — it produced no hatch at all, and the tooling reached the
+page as in-fiction dialogue: `"Quest log."` and `"I cannot see your pointer."`
+narrated as things a character said aloud. Removing the mechanics upstream is
+what stops that. The hatch is the review queue for whatever survives.
 
 ### `/dialogue-edit` — after narration, before final `/voice-critic`
 
@@ -178,7 +182,14 @@ have flipped both campaigns on their next `sd_narrate` run. Present tense remain
 the default when a campaign supplies no genre reference. The output instruction
 retains CG's existing heading-free scene bodies (assembly supplies headings) and
 bundle transport markers. Legacy word targets, mandatory inclusion of every quote,
-and prose-mode speaker guessing no longer compete with v1. Existing narration
+and prose-mode speaker guessing no longer compete with v1. CG also drops v1's
+blanket ban on an audit: the narrowly scoped table-speech hatch lives in its own
+[`audit_hatch.md`](../../config/agents/session_doc/narrate/audit_hatch.md) block
+and reaches every narration mode (#396), because the reclassification judgment
+it records survived into the brief's sixth paragraph — and a judgment with no
+review queue is an LLM scope decision with no human checkpoint. The hatch covers
+mislabelled attribution only; the brief's licensed omission of incidental filler
+is ordinary editorial work and is never logged there (#386). Existing narration
 files remain as generated; future Narrate runs use the shared brief.
 
 Each scene follows read → propose → GM review in chat or the shared standalone

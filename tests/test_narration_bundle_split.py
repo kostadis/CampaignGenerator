@@ -122,3 +122,47 @@ body
     result = split_bundled_narration(text, SCENES[:1])
     assert result["failed"] is False
     assert result["sections"][0]["status"] == "incomplete"
+
+
+# ── #396: where a scene's audit hatch has to sit, and what happens if it doesn't
+
+def _pair(i: int, name: str, body: str) -> str:
+    return f"<<<CG-SCENE {i:02d} BEGIN: {name}>>>\n{body}\n<<<CG-SCENE {i:02d} END>>>"
+
+
+HATCH = '<!-- table-speech reclassified: "Roll me a perception check." -->'
+
+
+def test_an_audit_hatch_inside_the_pair_survives_into_the_scene_body():
+    """Which is why `bundle_base.md` says "inside that scene's pair"."""
+    text = "\n".join([
+        _pair(1, "Arrival", f"Alice arrives.\n{HATCH}"),
+        _pair(2, "The Bargain", "They bargain."),
+        _pair(3, "Departure", "Alice leaves."),
+    ])
+    result = split_bundled_narration(text, SCENES)
+
+    assert [part["status"] for part in result["sections"]] == ["complete"] * 3
+    assert HATCH in result["sections"][0]["body"]
+    assert "<<<CG-SCENE" not in result["sections"][0]["body"]
+
+
+def test_an_audit_hatch_outside_the_pair_is_discarded_and_the_scene_reads_clean():
+    """The hazard the transport clause exists to prevent.
+
+    `split_batched_response` drops everything outside a BEGIN/END pair, and the
+    section still reports `complete` — so a hatch emitted after the END marker
+    is a scope decision that vanishes with no error, no warning, and a scene
+    that looks like it reclassified nothing. That is #396's false clean, in the
+    one place a prompt instruction rather than a stripper is the only guard.
+    """
+    text = "\n".join([
+        _pair(1, "Arrival", "Alice arrives.") + f"\n{HATCH}",
+        _pair(2, "The Bargain", "They bargain."),
+        _pair(3, "Departure", "Alice leaves."),
+    ])
+    result = split_bundled_narration(text, SCENES)
+
+    assert result["sections"][0]["status"] == "complete"
+    assert HATCH not in result["sections"][0]["body"]
+    assert all(HATCH not in part["body"] for part in result["sections"])

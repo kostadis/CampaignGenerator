@@ -149,7 +149,7 @@ def _require_templates() -> None:
 NARRATION_WRITING_BRIEF = _load_template_deferred("session_doc/narrate/writing_brief")
 NARRATE_SYSTEM_BASE        = _load_template_deferred(
     "session_doc/narrate/base",
-    "writing_brief",
+    "writing_brief", "audit_hatch",
     "genre_directive", "examples_block", "scene_scope_line", "scene_events_line",
     "rendering_instruction", "length_instruction", "dialogue_instruction",
 )
@@ -167,11 +167,12 @@ DIALOGUE_INSTRUCTION_FULL        = _load_template_deferred(
 DIALOGUE_INSTRUCTION_CONDITIONAL = _load_template_deferred(
     "session_doc/narrate/dialogue_conditional")
 PROSE_MODE_INSTRUCTION     = _load_template_deferred("session_doc/narrate/prose_mode")
+AUDIT_HATCH_INSTRUCTION    = _load_template_deferred("session_doc/narrate/audit_hatch")
 SCENE_ANCHORED_DIRECTIVE   = _load_template_deferred(
     "session_doc/narrate/scene_anchored", "narrator")
 BUNDLE_SYSTEM_BASE         = _load_template_deferred(
     "session_doc/narrate/bundle_base",
-    "writing_brief",
+    "writing_brief", "audit_hatch",
     "genre_directive", "shared_examples_block", "prose_mode_block",
     "shared_context", "scene_count", "dialogue_instruction",
 )
@@ -247,6 +248,7 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
         rendering = ""
     result = _fill(NARRATE_SYSTEM_BASE,
                    writing_brief=NARRATION_WRITING_BRIEF,
+                   audit_hatch=AUDIT_HATCH_INSTRUCTION,
                    genre_directive=genre_block,
                    examples_block=block,
                    scene_scope_line=scope,
@@ -408,6 +410,7 @@ def build_bundled_narrate_prompts(
     system = _fill(
         BUNDLE_SYSTEM_BASE,
         writing_brief=NARRATION_WRITING_BRIEF,
+        audit_hatch=AUDIT_HATCH_INSTRUCTION,
         genre_directive=_genre_block(genre),
         shared_examples_block=shared_style,
         prose_mode_block=PROSE_MODE_INSTRUCTION if prose_mode else "",

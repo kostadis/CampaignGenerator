@@ -1,5 +1,7 @@
 {writing_brief}
 
+{audit_hatch}
+
 INPUTS FOR THIS SECTION:
 - The narrator's name and a one-sentence focus
 {scene_scope_line}{scene_events_line}- A handoff line from the previous narrator (if any), for continuity only

@@ -405,6 +405,41 @@ assemble "$SESS/narration/" \
     --title  "Chapter 37 — A Gem of a Problem"
 ```
 
+## The table-speech audit hatch
+
+Upstream extraction sometimes attributes the GM's table narration to a
+character, so a quoted span can carry a speaker who could not have said it.
+`sd_narrate` renders that beat as narration rather than quoting it, and records
+what it did on the scene's final line:
+
+```
+<!-- table-speech reclassified: "Alice, roll me a perception check." -->
+```
+
+**Where it lives.** In the per-scene file, and only there. `assemble` strips it
+(`session_doc/apparatus.py`) because the assembled document feeds the release
+append and the chapter split, so anything left in it travels into the bible.
+The per-scene file is the audit trail; `/voice-critic`'s *Reclassified table
+speech* section is where the GM reviews it, and `/scrub` masks it so its
+contents cannot generate residue candidates.
+
+**What it does and does not cover.** Mislabelled attribution and
+table-instruction/mechanical/editorial spans only. The writing brief separately
+licenses omitting incidental acknowledgments and abandoned procedural
+fragments — that is ordinary editorial work and is deliberately never logged
+here (#386). A hatch listing filler means the prompt needs tightening.
+
+**It is a review queue, not a detector.** The model self-reports, and both
+arms of the #245 benchmark missed the same span in opposite directions
+(`docs/design/ExtractionContract_proposal.md`, "Why the model is not the
+flagger"). An empty hatch means *no call was recorded*, never *the scene is
+clean*. On a scene that is entirely table operation it may produce nothing at
+all — which is what `/no-mech` exists to prevent, upstream.
+
+**Never hand-write one.** That fabricates a record of a decision the pipeline
+never made. Cut the lines by explicit decision instead, and say the hatch is
+absent.
+
 ## Exact source overrides — `--scene-extraction-file`
 
 `sd_narrate` accepts an exact-file override:
@@ -689,7 +724,7 @@ The `voice-examples` and `style-examples` skills can generate these from existin
 
 ### 5. Handoff continuity
 
-Between scenes, the last sentence of the previous narration is passed as a "handoff" to the next narrator's prompt, so each voice picks up naturally from where the previous one left off — without knowing the full text of the previous section.
+Between scenes, the last line of the previous narration's *prose* is passed as a "handoff" to the next narrator's prompt, so each voice picks up naturally from where the previous one left off — without knowing the full text of the previous section. A trailing apparatus comment is skipped (`session_doc.apparatus.strip_audit_comments`), so an audit record never becomes a continuity anchor — see `specs/022-bundle-narration/contracts/wire-protocol.md` §1 and #396.
 
 For single-scene re-runs (`--scene N`), the handoff is empty; the contrast signal instead comes from sampling the previous narrator's per-character examples (see `extract_contrast_sample` and `PREV_VOICE_CONTRAST_BLOCK`).
 

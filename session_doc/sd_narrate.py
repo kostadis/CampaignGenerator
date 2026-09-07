@@ -39,6 +39,7 @@ from campaignlib import (
     stream_api,
 )
 from campaignlib.api.client import resolve_cli_model
+from session_doc.apparatus import strip_audit_comments
 from session_doc.examples import (
     examples_declaration_problems,
     get_char_examples,
@@ -115,6 +116,29 @@ def _write_narration_output(path: Path, *, index: int, scene_name: str,
         index=index, scene_name=scene_name, narrator=narrator,
         session_id=session_id, narration=narration,
     ))
+
+
+def _prose_handoff(narration: str) -> str:
+    """The last line of PROSE. Apparatus is not a handoff.
+
+    `narration.rsplit("\\n", 1)[-1]` handed the next narrator whatever the last
+    line happened to be — and with the table-speech audit hatch restored (#396)
+    that is a `<!-- table-speech reclassified: ... -->` comment quoting a
+    stripped table instruction, re-injected into a narration prompt as a
+    continuity anchor. `specs/022-bundle-narration/contracts/wire-protocol.md`
+    §1 already said "a trailing table-speech audit comment is not a prose
+    handoff"; nothing enforced it.
+
+    All four apparatus markers are skipped, not just the hatch: a re-narration
+    whose input carried an `Editorial note:` should not hand that off either.
+    The blank-line filter is load-bearing — stripping a trailing comment leaves
+    the newline behind, and the old `rsplit` would have returned "".
+    """
+    lines = [ln.strip() for ln in strip_audit_comments(narration).splitlines()
+             if ln.strip()]
+    if not lines:
+        return ""
+    return lines[-1].strip('"').strip("'")
 
 
 def _report_scene(scene: NarrationScene, *, include_source: bool = True) -> dict:
@@ -1157,7 +1181,8 @@ def main() -> None:
             if args.known_lore:
                 warning = format_warning(
                     f"scene {scene.index} ({scene.narrator} — {scene.scene_name})",
-                    find_unknown_names(narration, [*known_lore_texts, session_source]),
+                    find_unknown_names(strip_audit_comments(narration),
+                                       [*known_lore_texts, session_source]),
                 )
                 if warning:
                     print(warning, file=sys.stderr)
@@ -1322,12 +1347,13 @@ def main() -> None:
                                    verbose=args.verbose, cache_system=True)
         print("─" * 60)
         narration = narration.strip()
-        handoff = narration.rsplit("\n", 1)[-1].strip().strip('"').strip("'")
+        handoff = _prose_handoff(narration)
 
         if args.known_lore:
             warning = format_warning(
                 f"scene {i} ({label})",
-                find_unknown_names(narration, [*known_lore_texts, session_source]),
+                find_unknown_names(strip_audit_comments(narration),
+                                   [*known_lore_texts, session_source]),
             )
             if warning:
                 print(warning, file=sys.stderr)
