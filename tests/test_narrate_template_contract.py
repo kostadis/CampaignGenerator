@@ -372,3 +372,58 @@ def test_first_person_rule_reaches_bundle_prompts_exactly_once():
         [_bundle_scene(1, "Arrival", "Alice"), _bundle_scene(2, "Departure", "Bob")])
     combined = system + "\n" + user
     assert combined.count("The narrator is always “I”") == 1
+
+
+# #400 — `examples_block.md` kept a list item, "- Style reference examples
+# showing the voice, structure, and tone to aim for", from when `base.md`
+# interpolated the block inside its "You will be given:" list. `base.md` now
+# places `{examples_block}` last, after `{genre_directive}`, so the item
+# rendered as a bullet attached to no list, directly under a `GENRE:` line.
+# It hit BOTH paths, not just the single-scene one the report named: the bundle
+# uses the same file as `{shared_examples_block}` (`bundle_base.md:19`) and has
+# no inputs list at all. That sharing is also why the item could not simply move
+# back into a list, and why it is not in `base.md`'s list either — the block is
+# conditional on `examples_text`, so a static bullet would promise examples that
+# an empty block never delivers. The block carries its own header instead.
+
+
+def test_shared_examples_template_is_self_contained():
+    """No part of the block may depend on a list a host template supplies."""
+    lines = [ln for ln in narrate.EXAMPLES_BLOCK.strip().splitlines() if ln.strip()]
+    assert lines[0].startswith("STYLE REFERENCE"), lines[0]
+    assert [ln for ln in lines if ln.lstrip().startswith("- ")] == []
+
+
+def test_examples_block_strands_no_list_item_on_either_path():
+    single = narrate.build_narrate_system(
+        "Example prose.", scene="The Wave Echo Chamber", genre="Grim, tactile.")
+    system, user = narrate.build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Arrival", "Alice")], shared_examples="Example prose.")
+    for rendered in (single, system + "\n" + user):
+        assert "STYLE REFERENCE — HANDCRAFTED EXAMPLES:" in rendered
+        assert "- Style reference examples" not in rendered
+
+
+# #400, second half — the same commit deleted `base.md`'s reconciling pair
+# ("ALLOW: Non-linear structure for the narrator's inner life" / "The actual
+# events of the session must appear in the order they occur ... only the
+# narrator's internal thoughts and memories may be non-linear") but left the
+# examples block telling the model the examples show "the non-linear structure"
+# with no bound. Unqualified, that contradicts the brief's "Preserve the order
+# of events and the timing of discoveries" and the model cannot obey both.
+# The allowance is scoped to the inner life again. The event-order rule is NOT
+# restated here: it stays in the brief alone, because one copy per template is
+# exactly what produced #399.
+
+
+def test_non_linear_allowance_is_scoped_to_the_narrators_inner_life():
+    single = narrate.build_narrate_system(
+        "Example prose.", scene="The Wave Echo Chamber")
+    system, user = narrate.build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Arrival", "Alice")], shared_examples="Example prose.")
+    for rendered in (single, system + "\n" + user):
+        assert "non-linear structure of the narrator's inner life" in rendered
+        # The unqualified phrase is the defect itself.
+        assert "the non-linear structure," not in rendered
+        # The rule it contradicted must still arrive, from the brief.
+        assert "Preserve the order of events and the timing of discoveries" in rendered
