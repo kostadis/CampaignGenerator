@@ -67,7 +67,7 @@ system can produce.
 | Service | `server/players_config_service.py` |
 | Routes | `server/routers/players_routes.py` → `/api/players/*` |
 | Page | Setup → Players (`frontend/src/views/setup/Players.vue`) |
-| CLI seam | `--players-config` on `sd_narrate`, `scene_extract`, `enhance_summary`, `dnd_sheet`, `polish` |
+| CLI seam | `--players-config` on `sd_narrate`, `scene_extract`, `enhance_summary`, `dnd_sheet` |
 | Check | `players check [--campaign-dir DIR] [--vtt FILE]` |
 | Adoption | `python -m server.migrate_players_config --campaign-dir DIR [--force]` |
 

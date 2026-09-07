@@ -76,6 +76,7 @@ def _build_matrix() -> dict[str, str]:
     matrix["__PROSE_MODE_INSTRUCTION"]    = session_doc.PROSE_MODE_INSTRUCTION
     matrix["__AUDIT_HATCH_INSTRUCTION"]   = session_doc.AUDIT_HATCH_INSTRUCTION
     matrix["__NAME_FIDELITY_INSTRUCTION"] = session_doc.NAME_FIDELITY_INSTRUCTION
+    matrix["__REAL_NAMES_INSTRUCTION"] = session_doc.REAL_NAMES_INSTRUCTION
     matrix["__PREV_VOICE_CONTRAST_via_prompt"] = session_doc.build_narrate_prompt(
         narrator="Brewbarry",
         focus="Whittle and watch.",
@@ -211,6 +212,28 @@ def test_every_narration_mode_carries_the_name_fidelity_rule():
         assert "NAMES INSIDE QUOTED SPEECH" in prompt, mode
         assert "characterization, not a spelling error" in prompt, mode
         assert "Never normalize a name inside a quoted line" in flat, mode
+
+
+def test_every_narration_mode_carries_the_real_names_rule():
+    """#398, across the whole flag matrix.
+
+    `26ec5b0` deleted the rule forbidding real players'/the GM's names in
+    narration prose from `prose_mode.md` and replaced it with nothing — no
+    other file picked it up. Nothing caught the gap because that same commit
+    regenerated the golden this test's sibling relies on, so the golden
+    baked in the rule's absence instead of catching it. The rule is restored
+    as its own template, `real_names.md`, reached by a `{real_names}`
+    placeholder in both `base.md` and `bundle_base.md` — unconditional on
+    both render paths, the same structure #411 used for `name_fidelity.md`.
+    """
+    for mode, prompt in _build_matrix().items():
+        if mode.startswith("__"):
+            continue
+        flat = " ".join(prompt.split())
+        assert "THE PEOPLE AT THE TABLE" in prompt, mode
+        assert "their real names never appear in the prose" in flat, mode
+        assert "Only the characters exist in the fiction" in flat, mode
+        assert "does not receive information from a person at the table" in flat, mode
 
 
 def test_no_narration_mode_lets_the_brief_outrank_the_campaign_on_tense():

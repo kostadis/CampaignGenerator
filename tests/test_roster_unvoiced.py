@@ -26,9 +26,7 @@ from campaignlib.party_config import (  # noqa: E402
     ResolvedCharacter,
     ResolvedPartyConfig,
 )
-from campaignlib.players_config import load_players_config  # noqa: E402
 from session_doc.roster import UNVOICED_MARKER, roster_from_config  # noqa: E402
-from tests.helpers.eligibility_session import write_session  # noqa: E402
 
 SHEET = """---
 name: {name}
@@ -60,53 +58,52 @@ def _party(tmp_path):
     return ResolvedPartyConfig(characters=characters)
 
 
-def _players(tmp_path):
-    _sx, _vtt, players = write_session(tmp_path)
-    return load_players_config(players)
-
-
 # ── T032: inert without attendance ──────────────────────────────────────────
 
 def test_no_attendance_argument_renders_exactly_as_before(tmp_path):
-    cfg, players = _party(tmp_path), _players(tmp_path)
-    assert roster_from_config(cfg, players) == roster_from_config(cfg, players, None)
+    cfg = _party(tmp_path)
+    assert roster_from_config(cfg) == roster_from_config(cfg, None)
 
 
 def test_no_attendance_argument_marks_nobody(tmp_path):
-    out = roster_from_config(_party(tmp_path), _players(tmp_path))
+    out = roster_from_config(_party(tmp_path))
     assert UNVOICED_MARKER not in out
 
 
 def test_an_empty_unvoiced_set_marks_nobody(tmp_path):
-    out = roster_from_config(_party(tmp_path), _players(tmp_path), set())
+    out = roster_from_config(_party(tmp_path), set())
     assert UNVOICED_MARKER not in out
 
 
 # ── T031: the marker ────────────────────────────────────────────────────────
 
 def test_unvoiced_character_is_marked(tmp_path):
-    out = roster_from_config(_party(tmp_path), _players(tmp_path), {"Brewbarry"})
+    out = roster_from_config(_party(tmp_path), {"Brewbarry"})
     line = next(ln for ln in out.splitlines() if ln.startswith("- Brewbarry"))
     assert UNVOICED_MARKER.strip() in line
 
 
 def test_voiced_characters_are_not_marked(tmp_path):
-    out = roster_from_config(_party(tmp_path), _players(tmp_path), {"Brewbarry"})
+    out = roster_from_config(_party(tmp_path), {"Brewbarry"})
     for name in ("Vukradin", "Soma"):
         line = next(ln for ln in out.splitlines() if ln.startswith(f"- {name}"))
         assert UNVOICED_MARKER.strip() not in line
 
 
 def test_grounding_survives_the_marker(tmp_path):
-    """FR-024: an unvoiced character keeps species, class and player.
+    """FR-024: an unvoiced character keeps species and class through the
+    marker. Omitting them would leave Pass 5 narrating the GM's placement of
+    a character it holds no facts about.
 
-    Omitting them would leave Pass 5 narrating the GM's placement of a
-    character it holds no facts about.
+    #398 rewrite: FR-024 originally covered ``player`` too, and this test
+    asserted the player's name survived alongside them. #398 deletes the
+    person's name from the roster block entirely, so the assertion is now the
+    opposite — the marker must not smuggle a name in either.
     """
-    out = roster_from_config(_party(tmp_path), _players(tmp_path), {"Brewbarry"})
+    out = roster_from_config(_party(tmp_path), {"Brewbarry"})
     line = next(ln for ln in out.splitlines() if ln.startswith("- Brewbarry"))
-    assert "Stéphane Bourdeaud" in line
     assert "Halfling" in line and "Rogue 6" in line
+    assert "(" not in line  # no subclass here, so any "(" would be a name leak
 
 
 # ── D7: the wording is the risk ─────────────────────────────────────────────
@@ -132,8 +129,8 @@ def test_marker_tells_the_renderer_what_to_do_about_it():
 def test_marker_is_a_suffix_not_a_replacement(tmp_path):
     """It extends the existing line shape rather than restructuring the block,
     so every prompt that reads the roster sees the same format."""
-    cfg, players = _party(tmp_path), _players(tmp_path)
-    plain = roster_from_config(cfg, players)
-    marked = roster_from_config(cfg, players, {"Brewbarry"})
+    cfg = _party(tmp_path)
+    plain = roster_from_config(cfg)
+    marked = roster_from_config(cfg, {"Brewbarry"})
     assert len(plain.splitlines()) == len(marked.splitlines())
     assert marked.startswith(plain.split("\n")[0])
