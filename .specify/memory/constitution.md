@@ -35,11 +35,17 @@ Render pipelines (`prep.py`, `sd_narrate.py`, `planning.py`) refuse to run unles
 
 ### IV. Verbatim is Sacred
 
-Quotes and transcript records are reproduced exactly, never paraphrased and never invented. The Zoom VTT is the only record of "what was said" at the table; gm-assist is the authoritative record of "what happened in what order." Neither may be embellished by a model that can see past its boundary.
+Two guarantees live here with different scopes, and conflating them is how this principle gets misread.
+
+**Exactness is a claim, and it binds wherever it is made.** An artifact that declares a span verbatim reproduces it character-for-character — the words and the speaker label alike — and no model may tidy, trim, or normalize inside it. An artifact that declares itself voiced or derived may adapt wording for readability. An artifact that declares nothing has promised nothing, and the rules that police exactness do not fire on it. `session_doc/io.py:split_scene_sections` is the claim reader (`CLAIM_VERBATIM` / `CLAIM_VOICED` / `CLAIM_NONE`); `verify_artifact_contract` returns early on a voiced claim; `warn_if_smoothed_claims_verbatim` reports a layer whose heading outruns its content. Dropping a claim is an explicit, recorded act — a heading, a ruling, an issue — never a default and never silent. A layer may bind itself more tightly than this principle requires; that promise is then its own to keep.
+
+**Traceability is universal.** No layer, however derived, may carry a span, an event, or a fact that no source supports. `sd_verify_quotes` grades traceability wherever it is pointed and enforces exactness only where it is claimed — `unverified` means untraceable, and that stays a defect in a layer that claims only to be tidied. Dropping the exactness claim narrows what was promised about wording; it never licenses invention. Re-attribution is not wording: who said or did what is a precision decision under II, and no layer adapts it.
+
+The Zoom VTT is the only record of "what was said" at the table; gm-assist is the authoritative record of "what happened in what order." Neither is ever embellished by a model that can see past its boundary.
 
 The cost of violating this is not a bad diff — it is a player at the table asking why an NPC said something it never said, or why an action that should have rippled through the world quietly disappeared. A precision failure here breaks the fourth wall. That is the most expensive failure the system can produce.
 
-*Kills: Hallucinated Dialogue* — fabricated or "improved" verbatim content.
+*Kills: Hallucinated Dialogue* — fabricated content at any layer, and "improved" content inside a span that claims to be exact.
 
 ### V. One Seam per Boundary
 
@@ -168,8 +174,10 @@ This constitution supersedes conflicting specs, plans, and tasks. A conflict req
 
 Runtime development guidance lives in `CLAUDE.md` (this repo) and `~/.claude/CLAUDE.md` (global). Where those and this constitution agree, this is the canonical statement; where they drift, amend one to match the other.
 
-**Version**: 1.3.0 | **Ratified**: 2026-06-27 | **Last Amended**: 2026-08-25
+**Version**: 2.0.0 | **Ratified**: 2026-06-27 | **Last Amended**: 2026-09-07
 
+> **2.0.0** (MAJOR) — **IV** (*Verbatim is Sacred*) is scoped by declared claim rather than asserted universally, and its two guarantees are separated. Exactness now binds wherever an artifact *claims* it, in the vocabulary the code already uses (`session_doc/io.py`'s `CLAIM_VERBATIM` / `CLAIM_VOICED` / `CLAIM_NONE`); traceability stays universal, because dropping the exactness claim narrows what was promised about wording and never licenses invention. Re-attribution is named as II's, not IV's, so "derived prose may adapt wording" cannot be read as "may reassign speakers". Two ratified rulings had already moved this boundary without the doctrine following: **#250-R5** took `scene_extractions_smoothed/` off the exactness axis by renaming its heading (refusals 18 → 0, verdict counts unchanged), and **#408** ruled narration to be campaign fan fiction. The scar is **#397** — `/code-review` filed a defect against the narration prompt, correctly, because the prompt licensed adaptation that IV as written forbade. The report was sound and the doctrine was stale; a principle its own codebase violates by design teaches reviewers to discount it. MAJOR because behaviour that was a violation is now compliant. Recorded assessments in `specs/*/plan.md` and `specs/*/checklists/` are left as-is per the 1.3.0 precedent — they record what those features were reviewed against, and back-dating them would falsify the record.
+>
 > **1.3.0** (MINOR) — Added three principles governing how a feature reaches the human and how it changes state underneath them. **XI** (*Parity is Bidirectional*) closes the loop VI and IX left open: every CLI capability is reachable from the UI in the same feature that adds it, and a CLI-only capability is an explicitly recorded ruling, never an omission — #323's hardcoded `?force=1` is the scar. **XII** (*One Spelling per Option*) forbids CLI dialect drift: an option is introduced across its whole family with one name, one meaning and one default, declared once in the config model that owns it. **XIII** (*Breaking State Changes Migrate Out of Band*) requires a separate one-shot migration CLI rather than a lazy in-place upgrade or a dual-location back-compat probe, and makes a migration document part of the feature's output.
 >
 > **1.2.0** (MINOR) — Added Principle X (*Selection is Explicit; There is No Silent "All"*), arising from the ensemble chapter picker: a batch pass acts only on an explicitly chosen set, and "Select all" must materialize that set rather than be an empty-means-everything default.
