@@ -106,6 +106,19 @@ override control by design). The Ensemble keeps its own per-stage selection
 on the Setup page, with a three-state batch control per stage —
 inherit / on / off.
 
+**Typing a model id.** The sidebar's MODEL control is a text field on **every**
+backend: type any id the backend serves. On the two Claude backends it also
+offers the ids from `server/config.py::MODELS` as suggestions, so the familiar
+models stay one click away — but they are a shortlist, not a limit. This is why
+a Claude model released after your last `git pull` is usable immediately, with
+no code change and no restart (feature 024). Leaving the field empty means
+"let this backend choose its own default".
+
+Nothing validates the id locally beyond the model/backend pairing rule — a
+`Qwen/…` id on the Anthropic backend is still reported as incompatible before
+the run starts. A typo in an otherwise well-formed Claude id can only be caught
+by the provider, so that error is what you'll see.
+
 **Batch is a cost constraint, not a preference.** If batch is selected and the
 run cannot honour it — the resolved backend isn't the Claude API — the
 selection is reported as *incompatible* and the run is blocked, with the

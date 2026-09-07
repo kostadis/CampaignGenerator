@@ -21,7 +21,6 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from campaignlib.registry import find_registry, load_registry
 from entity_registry.registry import collect_check_findings
 from server.backend_forwarding import backend_cli_args
-from server.config import MODELS
 from server.ensemble_config_service import EnsembleConfigService
 from server.ensemble_config_shared import EnsembleConfig
 from campaignlib.constants import config_path
@@ -81,35 +80,90 @@ def _draft_path(doc: str, drafts_dir: str) -> str:
     return f"{drafts_dir}/{doc}_draft.md"
 
 
-# Models considered capable enough for synthesis (FR-014 / R6). Anything else
-# selected for the synthesize stage triggers a non-fatal warning.
+# Is a model capable enough for synthesis (FR-014 / R6)? Anything else selected
+# for the synthesize stage triggers a non-fatal warning.
 #
-# Derived from the registry, not snapshotted. The original literal froze the
-# Claude ids of the day and went stale as soon as the registry moved: after
-# platform-isolation Phase 5a refreshed ``MODELS`` this set still listed the
-# retired ``claude-sonnet-4-20250514`` and knew nothing of Opus 5 / Sonnet 5 /
-# Fable 5 — so picking the strongest model on offer earned a "may be too weak"
-# warning. specs/001-ensemble-workflow-ui/research.md R6 always described the
-# allow-list as "the Claude MODELS and a small set of frontier OpenRouter ids";
-# this restores that, so it can no longer drift from the registry.
+# This was a set — first a frozen literal, then one derived from ``MODELS`` —
+# and both spellings had the same defect in different amounts. A membership test
+# answers "have I heard of this id", and then reports the answer as though it
+# were "is this id strong enough". Those are different claims, and they come
+# apart on exactly the day they matter: a model ships, it is not yet in the
+# hand-maintained registry, and the GM picking the strongest thing available is
+# told it may be too weak. The derived set narrowed the window (a registry
+# refresh fixed it) without closing it (the release that follows reopens it).
 #
-# The judgment that is genuinely ours — and the one a human should revisit — is
-# the *exclusion*, not the inclusion. The stated bar is "at least as capable as
-# Sonnet", which rules out the Haiku tier and nothing else currently in the
-# registry. Matched as a substring so a future Haiku id is excluded on arrival
-# rather than silently promoted.
+# Feature 024 replaced membership with a predicate over the id's *shape*. That
+# is not a new idea here — ``campaignlib.selection.compatible`` already refuses
+# to test against ``MODELS`` for the same reason, and says so:
+#
+#     testing against it would silently reject a legitimate Claude id that
+#     simply hadn't been added yet — quietly refusing a model the caller is
+#     entitled to run.
+#
+# What survives is the judgment that was genuinely ours: the stated bar is "at
+# least as capable as Sonnet", which rules out the Haiku tier and nothing else.
+# Matched as a substring so a future Haiku id is excluded on arrival rather than
+# silently promoted — and checked BEFORE the prefix rules, which it must be,
+# since a future ``claude-haiku-*`` id satisfies both.
 _SUB_SONNET_TIER = "haiku"
 
-# Frontier non-Anthropic ids. Not derivable — MODELS is the Anthropic registry
-# — so these stay an explicit, hand-maintained set.
+# Frontier NON-ANTHROPIC ids. Not derivable from anything in this repo — MODELS
+# is the Anthropic registry — so these stay an explicit, hand-maintained set.
+#
+# The two ``anthropic/claude-*`` entries this used to carry are gone: the
+# vendor-prefixed rule in ``synthesis_capable`` covers them and every future
+# sibling, so they were unreachable. Keeping them was worse than cosmetic —
+# ``test_frontier_third_party_ids_survive_the_derivation`` parametrised over
+# all four, and two of the four passed via the prefix rule, so the test read as
+# twice the coverage it had. What is left is exactly the set no rule can infer.
 _THIRD_PARTY_SYNTHESIS_CAPABLE = {
-    "anthropic/claude-sonnet-4", "anthropic/claude-opus-4",
     "openai/gpt-5", "google/gemini-2.5-pro",
 }
 
-SYNTHESIS_CAPABLE = {
-    m for m in MODELS if _SUB_SONNET_TIER not in m
-} | _THIRD_PARTY_SYNTHESIS_CAPABLE
+
+def synthesis_capable(model: str | None) -> bool:
+    """Is ``model`` at least as capable as Sonnet for the synthesize stage?
+
+    Pure function of one string — no I/O, no clock, no registry lookup. The
+    rules are ordered, and the order is load-bearing:
+
+    1. Nothing chosen is not a weak choice. Resolution falls back; it does not
+       warn about a model the GM never named.
+    2. The sub-Sonnet tier is excluded. **Before** rules 3–4, because a future
+       ``claude-haiku-*`` id satisfies those too and would otherwise be
+       promoted — silently, since no test over *known* ids can catch it.
+    3. Any Anthropic API id qualifies, listed or not.
+    4. So does the OpenRouter spelling of one. ``_THIRD_PARTY_SYNTHESIS_CAPABLE``
+       names ``anthropic/claude-*`` ids by hand and goes stale on the same
+       schedule the bare registry did.
+    5. Otherwise, the hand-maintained frontier set.
+    6. Otherwise no — a local or unrecognised model genuinely may underperform
+       here, and that warning is doing its job.
+
+    Note what this does *not* claim: that the id exists. A typo'd Claude id is
+    capable-shaped and will fail at the provider, which is the right place to
+    learn it. Answering "this model may be weak" to "this model is not real"
+    sends the GM to change a knob that is not the problem.
+
+    **Case.** Every shape test here folds case, and that is a deliberate
+    divergence from ``campaignlib.selection.compatible``, which keeps its
+    Anthropic checks case-*sensitive* on purpose. The two functions can differ
+    because their consequences differ: ``compatible`` decides whether a run is
+    refused, so being strict costs the GM an error message they can act on;
+    this decides whether to *warn*, so being strict costs them a false alarm
+    about the strongest model they own. Folding case only where the tier
+    exclusion looked was the actual bug — ``Anthropic/Claude-Opus-5`` on
+    OpenRouter is a legal pair that fell through to the hand-maintained set and
+    earned the exact warning this feature exists to remove.
+    """
+    if not model or not model.strip():
+        return True
+    folded = model.strip().lower()
+    if _SUB_SONNET_TIER in folded:
+        return False
+    if folded.startswith("claude-") or folded.startswith("anthropic/claude-"):
+        return True
+    return folded in {m.lower() for m in _THIRD_PARTY_SYNTHESIS_CAPABLE}
 
 
 # ── Command-building helpers (mirror grounding.py) ──────────────────────────
@@ -1144,8 +1198,11 @@ def run_synthesize(
         prelude_parts.append(f"⚠️  {pc_warning}\n\n")
     if doc in ("world_state", "planning") and not threads and threads_path:
         prelude_parts.append(f"Auto-detected — threads track: {threads_path}\n\n")
-    # FR-014 / R6: warn (don't block) on a sub-Sonnet synthesis model.
-    if backend != "anthropic" and model and model not in SYNTHESIS_CAPABLE:
+    # FR-014 / R6: warn (don't block) on a sub-Sonnet synthesis model. The
+    # ``backend != "anthropic"`` guard is why this never misfired on the metered
+    # API — and why it only ever misfired on claude-code, the subscription path,
+    # which is exactly where a GM reaches for a model that shipped this morning.
+    if backend != "anthropic" and model and not synthesis_capable(model):
         prelude_parts.append(
             f"⚠️  '{model}' is not on the synthesis-capable list — synthesis "
             f"assumes a model at least as capable as Sonnet; output quality may "
