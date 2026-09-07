@@ -700,7 +700,11 @@ def test_known_npc_roster_reaches_the_prompt_even_when_party_is_given(
     prompt = fake_stream.calls[0]["user"]
     assert "## Character Classes" in prompt          # party roster still there
     assert "## Known NPCs" in prompt                 # and so is the NPC roster
-    assert "Never apply them inside quotation marks" in prompt
+    # #411 — the anti-normalization rule became unconditional (carried by
+    # base.md's own {name_fidelity} placeholder), so it no longer rides along
+    # with the NPC roster in the user prompt; it now lives in the system
+    # prompt regardless of whether a roster was supplied.
+    assert "NAMES INSIDE QUOTED SPEECH" in fake_stream.calls[0]["system"]
 
 
 def test_alias_registry_flag_overrides_autodiscovery(monkeypatch, tmp_path):

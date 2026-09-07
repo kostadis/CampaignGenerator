@@ -811,8 +811,12 @@ def test_scene_mode_dialogue_is_conditional():
 def test_scene_mode_no_dialogue_instruction_allows_action_only():
     """Scene mode prompt must explicitly allow action-beat-only narration."""
     system = session_doc.build_narrate_system(None, scene="The Glacier Crossing")
-    assert "action beats" in system.lower() or "action beat" in system.lower()
-    assert "no dialogue" in system.lower() or "no verbatim" in system.lower() or "no dialogue" in system.lower()
+    # #410 rewrapped dialogue_conditional.md's prose, so "action beats" now
+    # spans a line break ("...render its action\nbeats and observations...");
+    # join whitespace before the substring check rather than assert on raw text.
+    flat = " ".join(system.lower().split())
+    assert "action beats" in flat or "action beat" in flat
+    assert "no dialogue" in flat or "no verbatim" in flat or "no dialogue" in flat
 
 
 # ── scene index filtering (the --scene flag logic) ───────────────────────────

@@ -75,6 +75,7 @@ def _build_matrix() -> dict[str, str]:
     matrix["__DIALOGUE_INSTRUCTION_COND"] = session_doc.DIALOGUE_INSTRUCTION_CONDITIONAL
     matrix["__PROSE_MODE_INSTRUCTION"]    = session_doc.PROSE_MODE_INSTRUCTION
     matrix["__AUDIT_HATCH_INSTRUCTION"]   = session_doc.AUDIT_HATCH_INSTRUCTION
+    matrix["__NAME_FIDELITY_INSTRUCTION"] = session_doc.NAME_FIDELITY_INSTRUCTION
     matrix["__PREV_VOICE_CONTRAST_via_prompt"] = session_doc.build_narrate_prompt(
         narrator="Brewbarry",
         focus="Whittle and watch.",
@@ -146,6 +147,19 @@ def test_every_narration_mode_uses_v1_without_conflicting_legacy_rules():
             "every line should appear", "THE DIALOGUE IS THE STORY",
             "No mechanical numbers",
             "they were there",
+            # #408/#410/#411 — retired verbatim-dialogue and destructive-rewrite
+            # wording, replaced by the adaptation-licensed brief and the
+            # unconditional name-fidelity rule.
+            "Use the speakers' actual wording for retained dialogue",
+            "DO NOT invent or paraphrase",
+            "verbatim record",
+            "Never alter words inside quotation marks",
+            "Never apply them inside quotation marks",
+            "preserve the spoken words",
+            "Verbatim Quotes",
+            "preserve retained spoken words",
+            "preserving the source wording",
+            "grounded in the supplied lines",
         ):
             assert obsolete not in prompt, (mode, obsolete)
 
@@ -174,6 +188,29 @@ def test_every_narration_mode_carries_the_table_speech_audit_hatch():
         # "Why the model is not the flagger" measured both #245 arms missing
         # the same span, so an empty hatch must never read as a clean scene.
         assert "not a claim of completeness" in " ".join(prompt.split()), mode
+
+
+def test_every_narration_mode_carries_the_name_fidelity_rule():
+    """#410/#411, across the whole flag matrix.
+
+    The old anti-normalization caveat (#223) lived only inside the `if
+    npc_roster:` block, so a scene with no NPC roster — a new campaign, or a
+    scene where nothing in `docs/npcs/` matched — got no rule at all: nothing
+    to stop the model from "correcting" a name inside a quoted line the moment
+    an alias registry existed anywhere else in the prompt. #411 moved the rule
+    out of that conditional and into `{name_fidelity}` in both `base.md` and
+    `bundle_base.md`, so it is now unconditional on both render paths — it does
+    not depend on having a canonical spellings list to normalize *toward*,
+    because it is a rule about characterization — the name a speaker chose is
+    part of what the line reveals about them — not a spelling-hygiene rule.
+    """
+    for mode, prompt in _build_matrix().items():
+        if mode.startswith("__"):
+            continue
+        flat = " ".join(prompt.split())
+        assert "NAMES INSIDE QUOTED SPEECH" in prompt, mode
+        assert "characterization, not a spelling error" in prompt, mode
+        assert "Never normalize a name inside a quoted line" in flat, mode
 
 
 def test_no_narration_mode_lets_the_brief_outrank_the_campaign_on_tense():
