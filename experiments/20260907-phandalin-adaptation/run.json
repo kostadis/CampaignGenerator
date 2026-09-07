@@ -1,0 +1,25 @@
+{
+  "status": "rendered",
+  "started_at": "2026-09-07T04:23:04.403680+00:00",
+  "case_sha256": "6c462e333aea056a9b5f27d6fabbb90b73af6d0fb1c1dd93dcec98f44555c1fa",
+  "requested_model": "gpt-6-astra",
+  "requested_reasoning_effort": "medium",
+  "backend": "codex-cli",
+  "response_sha256": "3b929617e6341640b06c129280e922f84e09560add868a142e0c8633a5dd9477",
+  "actual_identity": {
+    "backend": "codex-cli",
+    "model": "gpt-6-astra",
+    "model_source": "explicit",
+    "codex_reasoning_effort": "medium",
+    "codex_reasoning_effort_source": "cli",
+    "codex_reasoning_override": true
+  },
+  "headings": [
+    "Vukradin — Patrons of the Chord",
+    "Vukradin — Nine Crates at Low Tide",
+    "Vukradin — Lost in Rsolk’s Tunnels",
+    "Soma — Denvar’s Unsettled Account",
+    "Soma — Harpers Behind the Wall"
+  ],
+  "finished_at": "2026-09-07T04:26:44.146559+00:00"
+}

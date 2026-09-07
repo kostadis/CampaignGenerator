@@ -1,0 +1,16 @@
+{
+  "baseline": {
+    "words": 9568,
+    "paragraphs": 675,
+    "median_paragraph_words": 10,
+    "quote_led_paragraphs": 401,
+    "quote_led_at_most_5_words": 155
+  },
+  "adaptation": {
+    "words": 5389,
+    "paragraphs": 411,
+    "median_paragraph_words": 9,
+    "quote_led_paragraphs": 210,
+    "quote_led_at_most_5_words": 77
+  }
+}

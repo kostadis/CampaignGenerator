@@ -1,0 +1,20 @@
+{
+  "status": "rendered",
+  "arm": "composition",
+  "started_at": "2026-09-07T05:33:02.153527+00:00",
+  "case_sha256": "1fda61d3ca9b6b09d48524e5ccc80a9094188c503e8992c4c43ee3101bc36bc8",
+  "system_sha256": "1cc78e6c852088f1beea798b4e0f669c0face5ebe47c6e68fe5f352e939414c5",
+  "user_sha256": "f658f98a9342639e8b260f1d40e0c7a6440c51d09b2ec4023b1f878553dbb560",
+  "requested_model": "gpt-6-astra",
+  "requested_reasoning_effort": "medium",
+  "response_sha256": "1fe7ad45c5e885ab974f15a40e76d9c826e4b862db3ef1a6bb1a7ed4605745e7",
+  "actual_identity": {
+    "backend": "codex-cli",
+    "model": "gpt-6-astra",
+    "model_source": "explicit",
+    "codex_reasoning_effort": "medium",
+    "codex_reasoning_effort_source": "cli",
+    "codex_reasoning_override": true
+  },
+  "finished_at": "2026-09-07T05:34:15.509519+00:00"
+}
