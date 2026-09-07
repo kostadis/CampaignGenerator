@@ -151,7 +151,7 @@ NARRATE_SYSTEM_BASE        = _load_template_deferred(
     "session_doc/narrate/base",
     "writing_brief", "audit_hatch",
     "genre_directive", "examples_block", "scene_scope_line", "scene_events_line",
-    "rendering_instruction", "length_instruction", "dialogue_instruction",
+    "rendering_instruction", "dialogue_instruction",
     "name_fidelity", "real_names",
 )
 EXAMPLES_BLOCK             = _load_template_deferred(
@@ -247,16 +247,18 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
     else:
         scope = ""
         dialogue = DIALOGUE_INSTRUCTION_FULL
-    length = ("Let the scene's content determine its length. Complete every meaningful "
-              "event and exchange without a fixed expansion formula or a dialogue quota.")
     if has_scene_events:
         scene_events_line = ("- Scene Events (authoritative) — the ordered account of what "
                              "happened; render from this faithfully\n"
                              "- Campaign Context — character backstory, NPC states, world detail\n")
-        rendering = ("The Scene Events list is the authoritative account of what occurred. "
+        # Carries its own blank lines, like {examples_block}: base.md used to
+        # wrap this slot in them, which only worked because {length_instruction}
+        # sat beside it and was never empty (#401). With that gone the empty
+        # branch would leave the wrapping behind as stray blank lines.
+        rendering = ("\nThe Scene Events list is the authoritative account of what occurred. "
                      "Render it in this character's voice. Do not add events that are not listed. "
                      "The extracted moments below are your primary source for the characters' "
-                     "speech — select and shape exchanges using the writing brief.\n\n")
+                     "speech — select and shape exchanges using the writing brief.\n")
     else:
         scene_events_line = ""
         rendering = ""
@@ -268,7 +270,6 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                    scene_scope_line=scope,
                    scene_events_line=scene_events_line,
                    rendering_instruction=rendering,
-                   length_instruction=length,
                    dialogue_instruction=dialogue,
                    name_fidelity=NAME_FIDELITY_INSTRUCTION,
                    real_names=REAL_NAMES_INSTRUCTION)

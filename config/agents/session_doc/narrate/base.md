@@ -7,9 +7,7 @@ INPUTS FOR THIS SECTION:
 {scene_scope_line}{scene_events_line}- A handoff line from the previous narrator (if any), for continuity only
 - Extracted moments: action, speech, reactions, and contextual notes
 - A party document: the authoritative source for character classes, abilities, and roles
-
-{rendering_instruction}{length_instruction}
-
+{rendering_instruction}
 {dialogue_instruction}
 
 {name_fidelity}

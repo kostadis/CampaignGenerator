@@ -38,7 +38,7 @@ def test_every_shipped_template_satisfies_its_declared_contract():
     for placeholder in ("{writing_brief}", "{audit_hatch}", "{genre_directive}",
                         "{examples_block}",
                         "{scene_scope_line}", "{scene_events_line}",
-                        "{rendering_instruction}", "{length_instruction}",
+                        "{rendering_instruction}",
                         "{dialogue_instruction}", "{name_fidelity}", "{real_names}"):
         assert placeholder in narrate.NARRATE_SYSTEM_BASE, placeholder
 
@@ -63,7 +63,7 @@ def test_a_template_missing_a_placeholder_fails_loudly(tmp_path, monkeypatch):
             "session_doc/narrate/base",
             "writing_brief", "audit_hatch",
             "genre_directive", "examples_block", "scene_scope_line",
-            "scene_events_line", "rendering_instruction", "length_instruction",
+            "scene_events_line", "rendering_instruction",
             "dialogue_instruction", "name_fidelity", "real_names",
         )
 
@@ -195,7 +195,7 @@ def test_drift_does_not_break_importing_session_doc(tmp_path, monkeypatch):
         "session_doc/narrate/base",
         "writing_brief", "audit_hatch",
         "genre_directive", "examples_block", "scene_scope_line",
-        "scene_events_line", "rendering_instruction", "length_instruction",
+        "scene_events_line", "rendering_instruction",
         "dialogue_instruction", "name_fidelity", "real_names",
     ) == ""
     assert narrate._TEMPLATE_ERROR is not None
@@ -427,3 +427,76 @@ def test_non_linear_allowance_is_scoped_to_the_narrators_inner_life():
         assert "the non-linear structure," not in rendered
         # The rule it contradicted must still arrive, from the brief.
         assert "Preserve the order of events and the timing of discoveries" in rendered
+
+
+# #401 — `narrate.py` held a `length_instruction` Python literal whose second
+# sentence was character-for-character `writing_brief.md`'s, so every prompt on
+# the single-scene path stated the rule twice. The brief's copy is a strict
+# superset ("Let its content determine its length **and the balance of dialogue
+# and description**"), so the literal added nothing.
+#
+# It was a leftover, not a deliberate recency repeat. Before 26ec5b0 the value
+# genuinely varied by branch — a long `if scene:` variant against a short
+# "typically 4-8" `else` — and that commit collapsed both into one constant,
+# outliving the reason the placeholder existed. The proof is the asymmetry these
+# tests pin: `bundle_base.md` never had the placeholder, so only one of the two
+# render paths repeated itself. The one repeat this module makes on purpose (the
+# genre tail reminder) says so in a comment; this one said nothing.
+#
+# The rule now reaches the model from the brief alone, on both paths. Deleting
+# the placeholder from `base.md` is itself guarded — `_load_template`'s two-way
+# contract raises at import if it reappears there — but re-adding the literal
+# *and* the placeholder together would satisfy that check, which is what the
+# counts below are for.
+
+_LENGTH_RULE = ("Complete every meaningful event and exchange without a fixed "
+                "expansion formula or a dialogue quota.")
+
+
+def test_the_length_rule_is_stated_once_on_every_single_scene_prompt():
+    """Not the one combination the fix was written against — all 32.
+
+    `length` was assigned unconditionally, so the duplication was invariant
+    across the whole flag matrix and any single-combination test would have
+    passed on the defect just as readily as on the fix.
+    """
+    assert _LENGTH_RULE in narrate.NARRATION_WRITING_BRIEF, "the brief must own it"
+    for examples in (None, "Example prose."):
+        for scene in (None, "The Wave Echo Chamber"):
+            for prose_mode in (False, True):
+                for has_events in (False, True):
+                    for anchored in (False, True):
+                        prompt = narrate.build_narrate_system(
+                            examples, scene=scene, prose_mode=prose_mode,
+                            has_scene_events=has_events, scene_anchored=anchored,
+                            narrator="Alice")
+                        combo = (f"ex={examples is not None} scene={scene is not None} "
+                                 f"pm={prose_mode} se={has_events} sa={anchored}")
+                        assert prompt.count(_LENGTH_RULE) == 1, combo
+
+
+def test_the_length_rule_is_stated_once_on_the_bundle_prompt_too():
+    """The path that was already correct, pinned so a "fix" cannot even it up
+    by adding a second copy here instead of removing the one over there."""
+    system, user = narrate.build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Arrival", "Alice"),
+         _bundle_scene(2, "Departure", "Bob")])
+    assert (system + "\n" + user).count(_LENGTH_RULE) == 1
+
+
+def test_the_length_rule_reaches_the_model_from_the_brief_and_nowhere_else():
+    """A second copy anywhere — a template or a Python literal — fails here.
+
+    The brief is the only file allowed to carry it, so the walk covers the
+    shipped narrate templates rather than just the one that regressed.
+    """
+    carriers = sorted(
+        f.name for f in TEMPLATE_DIR.glob("*.md")
+        if _LENGTH_RULE in f.read_text(encoding="utf-8"))
+    assert carriers == ["writing_brief.md"], carriers
+
+    source = (Path(narrate.__file__)).read_text(encoding="utf-8")
+    # The literal is quoted here in halves so this test's own text, and the
+    # comment above it, cannot be what the scan finds.
+    needle = "expansion formula or a " + "dialogue quota"
+    assert needle not in source, "the rule is back as a Python literal"
