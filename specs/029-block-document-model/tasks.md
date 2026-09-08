@@ -34,8 +34,8 @@ it again. Each story stays independently testable; only the sequence changes.
 
 ## Phase 1: Setup
 
-- [ ] T001 Confirm the corpus this feature is validated against is present and unchanged: `experiments/20260907-phandalin-gm-gaps-confirm/{brewbarry,soma,valphine,vukradin}/response.md` carrying 6, 12, 4 and 9 markers — 31 in total
-- [ ] T002 [P] Create the package skeleton: `session_doc/blocks.py`, `session_doc/authored.py`, `session_doc/compose.py` and `session_doc/review/` with no logic, so later tasks land in known files
+- [X] T001 Confirm the corpus this feature is validated against is present and unchanged: `experiments/20260907-phandalin-gm-gaps-confirm/{brewbarry,soma,valphine,vukradin}/response.md` carrying 6, 12, 4 and 9 markers — 31 in total
+- [X] T002 [P] Create the package skeleton: `session_doc/blocks.py`, `session_doc/authored.py`, `session_doc/compose.py` and `session_doc/review/` with no logic, so later tasks land in known files
 
 **Checkpoint**: the corpus is verified and the files exist.
 
@@ -49,11 +49,11 @@ it again. Each story stays independently testable; only the sequence changes.
 composed document differ from its narration *everywhere*, and the diff reads as compose
 misbehaving rather than as a parse bug.
 
-- [ ] T003 Define the marker constant and the block model in `session_doc/blocks.py`: one `GAP_MARKER` string, a frozen `Block` dataclass with `id`, `kind`, `anchor`, `text`, and the `{kind}-{ordinal}` id rule from [data-model.md](./data-model.md)
-- [ ] T004 Implement `parse_blocks(text)` and `join_blocks(blocks)` in `session_doc/blocks.py`. A gap block is a paragraph consisting solely of the marker; a prose block is the **run** of paragraphs between two gaps (research D1). `join_blocks(parse_blocks(t)) == t` for any input
-- [ ] T005 [P] Create `tests/test_block_model.py` with contract P: round-trip on all four corpus scenes (**not** a fixture), the expected block and gap counts (13/6, 25/12, 9/4, 18/9), stable ids across two parses (P3), and a marker-free narration yielding one prose block (P4)
-- [ ] T006 [P] Create `tests/test_gap_marker_pairing.py` (contract X2): the `GAP_MARKER` constant appears in `config/agents/session_doc/narrate/gm_attribution_gap.md`. `26ec5b0` deleted a prompt and left its stripper, its tests and three out-of-repo skills standing with nothing failing — this layer has **two** consumers, so the exposure is worse
-- [ ] T007 [P] Create `tests/test_block_model_no_llm.py` (contract X1): an AST walk over `session_doc/blocks.py`, `authored.py`, `compose.py` for an imported or called API client, after `tests/test_provenance_no_llm.py`. A grep would be fooled by a docstring
+- [X] T003 Define the marker constant and the block model in `session_doc/blocks.py`: one `GAP_MARKER` string, a frozen `Block` dataclass with `id`, `kind`, `anchor`, `text`, and the `{kind}-{ordinal}` id rule from [data-model.md](./data-model.md)
+- [X] T004 Implement `parse_blocks(text)` and `join_blocks(blocks)` in `session_doc/blocks.py`. A gap block is a paragraph consisting solely of the marker; a prose block is the **run** of paragraphs between two gaps (research D1). `join_blocks(parse_blocks(t)) == t` for any input
+- [X] T005 [P] Create `tests/test_block_model.py` with contract P: round-trip on all four corpus scenes (**not** a fixture), the expected block and gap counts (13/6, 25/12, 9/4, 18/9), stable ids across two parses (P3), and a marker-free narration yielding one prose block (P4)
+- [X] T006 [P] Create `tests/test_gap_marker_pairing.py` (contract X2): the `GAP_MARKER` constant appears in `config/agents/session_doc/narrate/gm_attribution_gap.md`. `26ec5b0` deleted a prompt and left its stripper, its tests and three out-of-repo skills standing with nothing failing — this layer has **two** consumers, so the exposure is worse
+- [X] T007 [P] Create `tests/test_block_model_no_llm.py` (contract X1): an AST walk over `session_doc/blocks.py`, `authored.py`, `compose.py` for an imported or called API client, after `tests/test_provenance_no_llm.py`. A grep would be fooled by a docstring
 
 **Checkpoint**: T005 green on all four scenes. The parser is trustworthy; nothing consumes it yet.
 
