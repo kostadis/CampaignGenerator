@@ -568,7 +568,7 @@ Practical implication for the human review step:
 | `--party-config FILE` | — | `config/party.yaml` — the roster, read from each character's sheet frontmatter. Required whenever `--party` is given |
 | `--characters NAMES` | — | Comma-separated narrator roster (`"Vukradin, Valphine, Soma, Brewbarry"`) |
 | `--voice-dir DIR` | — | Directory of per-character voice specs written by players. Filenames need not be `{name}_voice.md` — `{name}.md` and `{name}_<anything>.md` resolve too, and an ambiguous prefix is refused rather than guessed (#247). `_`-prefixed files (`_genre.md`) are shared campaign material, not specs. **A declared directory must deliver (#300):** a path that is not a directory is fatal, and once the directory holds *any* spec, every narrator in the render must resolve to one — checked before the first API call, so a miss stops the run instead of surfacing as one narrator who quietly lost their voice. A directory that exists but holds no specs yet is not an error; it renders without them, as does omitting the flag. |
-| `--examples DIR` | — | Directory of style-reference `.md` files. Files whose stem matches a character's first name route to that character only; others are global. |
+| `--examples DIR` | — | The campaign's example directory. Read **only** to report files nothing declares — it routes nothing. A character's examples come from its `examples:` entry in `party.yaml`, and the campaign-wide ones from `shared_examples:`. Filename-stem matching was removed (#247); see §4. |
 | `--enhanced-sections FILE` | — | Pre-built Memorable Moments / NPCs / Scenes block to inject as scene context |
 | `--narrator NAME` | — | Filter the plan to one character's scenes only |
 | `--plan-file FILE` | — | Supply a pre-written plan; skip Pass 3 |
@@ -713,14 +713,20 @@ The model kept misidentifying classes — calling the bard a paladin, for exampl
 
 ### 4. Style transfer
 
-The handcrafted summaries have a distinctive voice: non-linear structure, narrator intrusion, verbatim dialogue exchanges (both sides), humour, short punchy paragraphs. Getting the model to match this from a system-prompt description alone wasn't reliable.
+The handcrafted summaries have a distinctive voice: narrator intrusion, verbatim dialogue exchanges (both sides), humour, short punchy paragraphs, and a non-linear structure **in the narrator's inner life** — associative memory and interior digression, not a shuffled sequence of events. That last bound matters: the writing brief requires "the order of events and the timing of discoveries" to be preserved, so an unqualified "non-linear structure" would be a rule the model cannot obey alongside it (#400). This paragraph describes what the source material looks like; the render path's copy is bounded the same way in `config/agents/session_doc/narrate/examples_block.md`, and `test_non_linear_allowance_is_scoped_to_the_narrators_inner_life` fails the build if that bound is removed.
 
-**Solution**: few-shot examples via `--examples`. The directory can hold both:
+Getting the model to match this from a system-prompt description alone wasn't reliable.
 
-- Global examples (any `.md` whose stem does not match a character's first name) — shown to every narrator under a `STYLE REFERENCE` block.
-- Per-character examples (e.g. `vukradin_examples.md` or `vukradin.md` when "Vukradin" is in `--characters`) — shown only to that character's narration, under a stronger `STYLE REFERENCE — {narrator}'s VOICE SPECIFICALLY` block that overrides the global examples.
+**Solution**: few-shot examples, **declared per character in `party.yaml`** — never matched by filename:
 
-The `voice-examples` and `style-examples` skills can generate these from existing campaign narration.
+- **Shared examples** — `shared_examples:` at the top level of `party.yaml` names the campaign-wide files, shown to every narrator under a `STYLE REFERENCE` block.
+- **Per-character examples** — a character's own `examples:` field names theirs, shown only to that character's narration under a stronger `STYLE REFERENCE — {narrator}'s VOICE SPECIFICALLY` block. Its `voice:` field names the voice spec the same way.
+
+**There is no fall-through.** A file nothing declares reaches nobody, and `players check` reports it. The rule this replaced matched a filename stem against a character's first name — a similarity-based identity assertion, which `provenance/identity.py` forbids everywhere else — and it produced five defects (#247, #300, #301, #315, campaigns#175). Its return fails the build: see `tests/test_no_prefix_identity.py`, and CLAUDE.md's "A player is an entity; every other copy of them is rendered".
+
+Start from `docs/cli/player_identity_howto.md` for the task-oriented version (a file nothing declares, a renamed character, a narrator that sounds wrong), and `docs/config/players-isolation.md` for the schema behind it.
+
+The `voice-examples` and `style-examples` skills can generate these from existing campaign narration; the generated file still has to be declared in `party.yaml` before it reaches anyone.
 
 ### 5. Handoff continuity
 
