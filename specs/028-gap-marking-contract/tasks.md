@@ -171,10 +171,10 @@ computed after the subprocess exits.
 
 ### Re-confirmation — the only tasks that spend tokens
 
-- [ ] T037 Re-render the four confirmation scenes per-scene into `experiments/<date>-454-reconfirm/per-scene/` with gap marking on, `claude-fable-5-1` at effort `medium`, and compare against `accepted_gaps.json`. Report individually: a gap the GM accepted that vanished, and a gap appearing where the GM ruled the scope wrong. Counts and boundaries are expected to shift and settle nothing on their own (FR-013, SC-003)
-- [ ] T038 Check SC-004 and SC-005 on T037's renders under `experiments/<date>-454-reconfirm/per-scene/`: dialogue lines still outnumber narration lines two to four times over, and no GM description arrives as a player character's speech, perception, memory or inference
-- [ ] T039 Re-render the same four scenes as a **bundle** with gap marking on into `experiments/<date>-454-reconfirm/bundle/` and compare marker counts against T037's. This is SC-009, and it is the evidence the Q2 ruling does not have. A bundle marking materially fewer gaps than the per-scene run is a finding to report, not a rounding error — and it reopens Q2, whose fallback (refusing the combination) stays available
-- [ ] T040 Record the re-confirmation result in `specs/028-gap-marking-contract/` as this feature's own evidence file, stating what transferred, what shifted and what did not — and update the spec's status
+- [X] T037 Re-render the four confirmation scenes per-scene into `experiments/<date>-454-reconfirm/per-scene/` with gap marking on, `claude-fable-5-1` at effort `medium`, and compare against `accepted_gaps.json`. Report individually: a gap the GM accepted that vanished, and a gap appearing where the GM ruled the scope wrong. Counts and boundaries are expected to shift and settle nothing on their own (FR-013, SC-003)
+- [X] T038 Check SC-004 and SC-005 on T037's renders under `experiments/<date>-454-reconfirm/per-scene/`: dialogue lines still outnumber narration lines two to four times over, and no GM description arrives as a player character's speech, perception, memory or inference
+- [X] T039 Re-render the same four scenes as a **bundle** with gap marking on into `experiments/<date>-454-reconfirm/bundle/` and compare marker counts against T037's. This is SC-009, and it is the evidence the Q2 ruling does not have. A bundle marking materially fewer gaps than the per-scene run is a finding to report, not a rounding error — and it reopens Q2, whose fallback (refusing the combination) stays available
+- [X] T040 Record the re-confirmation result in `specs/028-gap-marking-contract/` as this feature's own evidence file, stating what transferred, what shifted and what did not — and update the spec's status
 
 ---
 
@@ -296,3 +296,17 @@ inner-first in `_gm_attribution_brief` / `_gm_attribution_prose`.
 | The marker survives assembly and stays visible to the name scan | `tests/test_apparatus_marker_pairing.py` |
 | A terminal render records the mode and the contract digest | `tests/test_render_record.py` |
 | The server merges outcome without erasing identity | same file — the load-bearing assertion of research D8 |
+
+
+## Re-confirmation record — 2026-09-08
+
+T037–T040 complete. **All 40 tasks done.** Result and corrections:
+[`reconfirmation.md`](./reconfirmation.md); raw runs in
+`experiments/20260908-454-reconfirm/`.
+
+- **31/31 accepted gaps covered**, verified individually. Five markers with no accepted
+  counterpart, all GM description, left for the GM to rule on.
+- **SC-009 satisfied on its own evidence**: 39 markers in one bundled exchange against 36 from
+  four separate calls, every scene marked. The Q2 ruling's failure condition did not occur.
+- **Run 1 found a real defect** — one deleted clause producing two opposite failures. That is
+  what the token spend bought, and no deterministic test could have found it.
