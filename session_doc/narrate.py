@@ -212,8 +212,23 @@ NAME_FIDELITY_INSTRUCTION = _load_template_deferred("session_doc/narrate/name_fi
 # is the point" — so deleting it again fails at load time instead of silently
 # regenerating a golden with the rule missing.
 REAL_NAMES_INSTRUCTION = _load_template_deferred("session_doc/narrate/real_names")
+# ONE statement of the speech-selection rule, interpolated into both per-scene
+# blocks (#435). `scene_anchored.md` and `bundle_scene.md` each restated three
+# rules the brief owns — attribution, conversational purpose, discovery order —
+# and the two restatements had already drifted: "retain their attribution" vs
+# "preserving attribution", "Select exchanges" vs "Select and shape speech".
+# Neither matched the brief either: "discovery order" compressed "the order of
+# events and the timing of discoveries" and dropped the event-order half, which
+# the shared text restores.
+#
+# Kept rather than deleted, deliberately. Both blocks exist to re-scope a
+# general rule onto THIS narrator, and the repeat may be earning its tokens on
+# small local models — the same recency argument the genre tail reminder makes
+# below. One string means that reinforcement cannot become two rules again.
+SPEECH_SELECTION_RULE      = _load_template_deferred(
+    "session_doc/narrate/speech_selection")
 SCENE_ANCHORED_DIRECTIVE   = _load_template_deferred(
-    "session_doc/narrate/scene_anchored", "narrator")
+    "session_doc/narrate/scene_anchored", "narrator", "speech_selection")
 BUNDLE_SYSTEM_BASE         = _load_template_deferred(
     "session_doc/narrate/bundle_base",
     "writing_brief", "audit_hatch",
@@ -225,6 +240,7 @@ BUNDLE_SCENE_TEMPLATE      = _load_template_deferred(
     "session_doc/narrate/bundle_scene",
     "index", "scene_name", "narrator", "focus", "scene_events",
     "moments", "voice_block", "examples_block", "contrast_block",
+    "speech_selection",
 )
 
 # Longest genre value still delivered as an inline ``GENRE: ...`` label.
@@ -311,7 +327,9 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                    name_fidelity=NAME_FIDELITY_INSTRUCTION,
                    real_names=REAL_NAMES_INSTRUCTION)
     if scene_anchored and narrator:
-        result += "\n\n" + _fill(SCENE_ANCHORED_DIRECTIVE, narrator=narrator)
+        result += "\n\n" + _fill(
+            SCENE_ANCHORED_DIRECTIVE, narrator=narrator,
+            speech_selection=SPEECH_SELECTION_RULE.strip())
     if prose_mode:
         result += "\n\n" + PROSE_MODE_INSTRUCTION
     if char_examples and narrator:
@@ -499,6 +517,7 @@ def build_bundled_narrate_prompts(
         )
         packets.append(_fill(
             BUNDLE_SCENE_TEMPLATE,
+            speech_selection=SPEECH_SELECTION_RULE.strip(),
             index=f"{scene.index:02d}", scene_name=scene.scene_name,
             narrator=scene.narrator, focus=scene.focus,
             scene_events=scene.scene_events.strip(), moments=scene.moments.strip(),

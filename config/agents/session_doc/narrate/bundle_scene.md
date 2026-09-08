@@ -4,8 +4,7 @@ Narrator: {narrator}
 Focus: {focus}
 
 Render this scene through {narrator}'s eyes only. Respect who is present and what
-{narrator} can know. Select and shape speech using the shared writing brief,
-preserving attribution, conversational purpose, and discovery order.
+{narrator} can know. {speech_selection}
 
 ### Authoritative scene events
 

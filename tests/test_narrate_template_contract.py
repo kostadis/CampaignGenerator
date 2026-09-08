@@ -731,3 +731,118 @@ def test_both_render_paths_decide_the_contrast_block_identically(
     defect was the two paths disagreeing, so the assertion that matters is that
     they cannot, whatever the shared answer turns out to be."""
     assert _bundle_has_contrast(narrator, prev) == _single_has_contrast(narrator, prev)
+
+
+# ---------------------------------------------------------------------------
+# #435 / #438 — one copy per rule, and where the POV rule's teeth live
+# ---------------------------------------------------------------------------
+
+_SPEECH_RULE = ("preserving attribution, conversational purpose, and the order "
+                "of events and the timing of discoveries.")
+
+
+def _flat(text: str) -> str:
+    return " ".join(text.split())
+
+
+def test_the_speech_selection_rule_is_stated_once_per_render_path():
+    """#435. `scene_anchored.md` and `bundle_scene.md` each restated three rules
+    the brief owns, and the two restatements had already drifted — "retain their
+    attribution" vs "preserving attribution", "Select exchanges" vs "Select and
+    shape speech". Neither matched the brief either: "discovery order" dropped
+    the event-order half of "the order of events and the timing of discoveries".
+
+    Kept rather than deleted (the reinforcement may be earning its tokens on
+    small local models) but sourced from one file, so it cannot become two
+    rules again.
+    """
+    single = narrate.build_narrate_system(None, narrator="Daz", scene_anchored=True)
+    assert _flat(single).count(_SPEECH_RULE) == 1
+
+    system, user = narrate.build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Arrival", "Alice")])
+    assert _flat(system + " " + user).count(_SPEECH_RULE) == 1
+
+
+def test_only_one_file_carries_the_speech_selection_rule():
+    carriers = sorted(f.name for f in TEMPLATE_DIR.glob("*.md")
+                      if _SPEECH_RULE in _flat(f.read_text(encoding="utf-8")))
+    assert carriers == ["speech_selection.md"], carriers
+
+
+def test_the_drifted_restatements_do_not_come_back():
+    """The exact wordings that had diverged, so a revert is visible."""
+    for stale in ("retain their attribution", "and discovery order"):
+        offenders = sorted(f.name for f in TEMPLATE_DIR.glob("*.md")
+                           if stale in f.read_text(encoding="utf-8"))
+        assert not offenders, (stale, offenders)
+
+
+# ── #438: the POV rule keeps the mild variant, on purpose ───────────────────
+#
+# `26ec5b0` had two POV rules, one per render path: a four-component one in
+# base.md (assertion + pronoun ban + self-check/repair + "Third person is a hard
+# failure") and a one-line one in bundle_base.md. #399 correctly moved the rule
+# into the shared brief and, in doing so, applied the BUNDLE's milder wording to
+# both paths.
+#
+# Decided to keep it that way, because the prohibitive half is already in every
+# live campaign's genre file, written in that campaign's own terms:
+#
+#   Phandalin  "Never drift into third person ("he", "she", "Brewbarry felt")
+#              — even close third with the character's vocabulary is wrong here."
+#   oota       "convert third-person observations to first-person
+#              ("Daz noticed X" -> "I noticed X")"
+#   toee       "When adapting from third-person scene notes, convert directly:
+#              "Calmer struck" -> "I struck.""
+#
+# Restoring it to the brief would put a second copy of a rule beside a better,
+# campaign-specific one — the multi-copy drift #399, #400 and #401 each removed.
+# These pin the decision so the next reader of 26ec5b0 does not re-add the
+# strong variant as an oversight.
+
+_POV_ASSERTION = "Stay in the named narrator's first-person point of view."
+#: Prohibitive POV wording. `audit_hatch.md` is exempt below: it says "third
+#: person" for an unrelated job — flagging stage direction and table speech —
+#: not to govern narration POV.
+_POV_PROHIBITIONS = ("hard failure", "Never use \"he\"", "not even in passing")
+
+
+def test_the_brief_states_the_pov_rule_positively_and_owns_it():
+    assert _POV_ASSERTION in narrate.NARRATION_WRITING_BRIEF
+    carriers = sorted(f.name for f in TEMPLATE_DIR.glob("*.md")
+                      if _POV_ASSERTION in f.read_text(encoding="utf-8"))
+    assert carriers == ["writing_brief.md"], carriers
+
+
+@pytest.mark.parametrize("phrase", _POV_PROHIBITIONS)
+def test_no_shipped_template_re_adds_the_prohibitive_pov_half(phrase):
+    """Not an assertion that the strong variant is wrong — an assertion that
+    dropping it was a decision. If it is ever restored, this failing is the
+    prompt to record why, in the brief and nowhere else."""
+    offenders = sorted(f.name for f in TEMPLATE_DIR.glob("*.md")
+                       if phrase in f.read_text(encoding="utf-8")
+                       and f.name != "audit_hatch.md")
+    assert not offenders, (phrase, offenders)
+
+
+def test_the_live_campaigns_still_carry_the_prohibition(live_workspace):
+    """The evidence the decision rests on, checked rather than remembered.
+
+    Skipped, not failed, on a checkout with no campaigns — per this repo's rule
+    that a suite going red on a fresh clone trains everyone to ignore it. If a
+    campaign ever drops this from its genre file, the brief's mild wording
+    becomes the only POV guidance that campaign gets, and reopening #438 is the
+    right response.
+    """
+    campaigns = {"Phandalin": "Never drift into third person",
+                 "out-of-the-abyss": "convert third-person observations",
+                 "toee": "convert directly"}
+    missing = []
+    for name, phrase in campaigns.items():
+        genre = live_workspace / name / "voice" / "_genre.md"
+        if not genre.is_file():
+            continue          # a campaign may legitimately not exist here
+        if phrase not in genre.read_text(encoding="utf-8"):
+            missing.append(name)
+    assert not missing, missing
