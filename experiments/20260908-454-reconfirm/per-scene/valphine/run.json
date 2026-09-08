@@ -1,0 +1,40 @@
+{
+  "status": "rendered",
+  "arm": "valphine",
+  "mode": "per-scene",
+  "started_at": "2026-09-08T14:50:27.925537+00:00",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "system_prompt_source": "session_doc.narrate.build_narrate_system(gap_marking=True)",
+  "system_prompt_sha256": "7f5cc1fa1bdc4893998440c2c9638aae4825677fe359fb89d3fce39e46194ede",
+  "user_prompt_sha256": "dc0283fcb810ccf5ce183650f98a37e7b74d1b02cc152daab899d7c2f9def16f",
+  "user_prompt_from": "experiments/20260907-phandalin-gm-gaps-confirm/prompts/valphine_user.md",
+  "generator_commit": "ae0017d296dc121bc092706eed3e9a325ab72841",
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true,
+    "max_tokens_requested": 32000,
+    "max_tokens_effect": "enforced",
+    "max_tokens_channel": "CLAUDE_CODE_MAX_OUTPUT_TOKENS"
+  },
+  "seconds": 78.7,
+  "response_sha256": "ad3cecf98a4a2adaecf90b5bffb5f5c1ea7ca7d00864c3ee195f31f157777fc0",
+  "words": 2073,
+  "marker_count": 5,
+  "markers": [
+    "[GM NARRATION — TO BE WRITTEN: Aurelan takes out a small piece of paper and a quill and begins scribbling notes as he questions Brewbarry.]",
+    "[GM NARRATION — TO BE WRITTEN: Aurelan produces a sheet of calculations that none of the party can read.]",
+    "[GM NARRATION — TO BE WRITTEN: A small crowd of Counting House clients and clerks has gathered around the desk to watch, and Aurelan signs and hands over the paperwork for a loan of significant size.]",
+    "[GM NARRATION — TO BE WRITTEN: A wealthy client of the Counting House approaches from the crowd, dressed in a sincere silk imitation of Uthgardt barbarian hides.]",
+    "[GM NARRATION — TO BE WRITTEN: The man attempts to imitate Brewbarry's stance and bearing, awkwardly, for an uncomfortable moment.]"
+  ],
+  "dialogue_lines": 51,
+  "narration_lines": 13,
+  "accepted_marker_count": 4,
+  "marker_delta": 1
+}

@@ -284,3 +284,25 @@ def test_a_missing_fragment_names_the_path_it_looked_for():
     with pytest.raises(FileNotFoundError) as exc:
         load_agent_prompt("session_doc/narrate/gm_attribution_gap_absent")
     assert "config/agents/session_doc/narrate/gm_attribution_gap_absent.md" in str(exc.value)
+
+
+def test_gap_mode_keeps_the_rule_that_gm_voiced_npc_speech_is_dialogue():
+    """The clause the first re-confirmation run proved is load-bearing.
+
+    `writing_brief.md`'s sentence had two clauses. Only the first — "GM
+    descriptions become experienced facts" — conflicts with the contract. The
+    second is a rule the contract never restates, and dropping the whole
+    sentence deleted it: in the run of 2026-09-08, soma's two
+    `**GM** — *as the sun priest*` turns, which carry verbatim NPC dialogue,
+    came back as gap markers instead of speech. The accepted render had written
+    them as `"But why do you insist on the pain?"`.
+
+    valphine did not fail the same way, and the contrast is the evidence: its
+    labels are `**[GM, as the banker]**`, so the NPC's identity is in the label
+    itself. soma's is only in the italic context line, which is exactly the case
+    that needs the rule stated.
+    """
+    for prose_mode in (False, True):
+        p = prompt(gap_marking=True, prose_mode=prose_mode)
+        assert "NPC speech voiced by the GM remains NPC speech" in p, prose_mode
+        assert "not as a gap" in p, prose_mode

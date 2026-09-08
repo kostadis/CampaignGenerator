@@ -67,6 +67,40 @@ does not replace.
 in `writing_brief.md` only, leaving `prose_mode.md` untouched — leaves the contradiction live
 whenever prose mode is on, which US2 scenario 2 forbids.
 
+### The half of this decision that was implemented wrong, and what it cost
+
+The rule above — *only the first clause conflicts; keep the second* — was applied to
+`prose_mode.md` and **not** to `writing_brief.md`, whose gap variant replaced the whole sentence
+and so deleted "NPC speech voiced by the GM remains NPC speech". The contract never restates it.
+
+The first re-confirmation run (2026-09-08, `experiments/20260908-454-reconfirm/`,
+`per-scene-run1-missing-npc-clause/`) is what found it, and it is the reason the run exists:
+
+- **soma** turned two `**GM** — *as the sun priest*` turns, which carry verbatim NPC dialogue,
+  into gap markers. The accepted render had written them as `"But why do you insist on the
+  pain?"`.
+- **brewbarry** did the opposite — it absorbed the opening GM recap into the narrator's voice
+  ("The door of the Spire closes behind us…"), the contract's central prohibition.
+- **valphine** and **vukradin** were unaffected. The contrast is the diagnosis: valphine's
+  labels are `**[GM, as the banker]**`, so the NPC's identity is in the label itself, and
+  vukradin has 40 bare `**[GM]**` labels and no qualified ones at all. Only soma's form puts
+  the NPC's identity in an italic context line, which is exactly the case that needs the rule
+  stated rather than inferred.
+
+Restoring the clause — inside the GM-turn taxonomy, so it reads adjudication → dropped, NPC
+speech → dialogue, description → gapped — fixed **both** symptoms in run 2: the sun priest
+speaks again, and brewbarry opens with markers. One missing rule, two opposite failures.
+
+A diagnosis offered in between, and withdrawn: that `writing_brief.md` ¶2 ("give those things
+space in the narration as the POV character encounters them") licensed brewbarry's absorption
+and was a *third* text needing reconciliation. It is not. The single clause restoration fixed
+brewbarry with ¶2 untouched. Recorded because reaching for a prompt-design explanation from one
+arm, when the cause was a rule this document had already got right on paper, is the error worth
+remembering.
+
+`tests/test_gap_marking_prompt.py::test_gap_mode_keeps_the_rule_that_gm_voiced_npc_speech_is_dialogue`
+is the guard.
+
 ---
 
 ## D4 — Prove FR-005 against a frozen pre-feature golden, not against a regenerated one

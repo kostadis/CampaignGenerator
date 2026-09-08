@@ -1,0 +1,39 @@
+{
+  "status": "rendered",
+  "arm": "valphine",
+  "mode": "per-scene",
+  "started_at": "2026-09-08T14:43:55.161196+00:00",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "system_prompt_source": "session_doc.narrate.build_narrate_system(gap_marking=True)",
+  "system_prompt_sha256": "51eeff4d852ba456e9d595739f98fbbe1f8f00e90d0a9b0ff4487216ef6a5716",
+  "user_prompt_sha256": "dc0283fcb810ccf5ce183650f98a37e7b74d1b02cc152daab899d7c2f9def16f",
+  "user_prompt_from": "experiments/20260907-phandalin-gm-gaps-confirm/prompts/valphine_user.md",
+  "generator_commit": "ae0017d296dc121bc092706eed3e9a325ab72841",
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true,
+    "max_tokens_requested": 32000,
+    "max_tokens_effect": "enforced",
+    "max_tokens_channel": "CLAUDE_CODE_MAX_OUTPUT_TOKENS"
+  },
+  "seconds": 85.9,
+  "response_sha256": "7ff3d74ee256f1619e8d934ca23d2a07ed98d08cfdf6c4b3d183dbbb0e0d6a46",
+  "words": 2415,
+  "marker_count": 4,
+  "markers": [
+    "[GM NARRATION — TO BE WRITTEN: Aurelan produces a sheet of calculations the party cannot read.]",
+    "[GM NARRATION — TO BE WRITTEN: A small crowd has gathered around the desk; Aurelan signs and hands over paperwork for a loan of significant size that will let Linene kickstart the bathrobe business.]",
+    "[GM NARRATION — TO BE WRITTEN: One of the wealthy clients, dressed in silk imitations of Uthgardt hides, approaches Brewbarry in sincere admiration.]",
+    "[GM NARRATION — TO BE WRITTEN: The client attempts to mimic Brewbarry's stance, and the effort is awkward.]"
+  ],
+  "dialogue_lines": 40,
+  "narration_lines": 31,
+  "accepted_marker_count": 4,
+  "marker_delta": 0
+}
