@@ -269,7 +269,10 @@ speakers and confirm the markers create no presence and the speakers do.
 ## Assumptions
 
 - **Resolving short-form names is out of scope.** `**[Valphine]**` against a roster
-  `Valphine Sotorra` stays unrecognised and is reported. Name comparison folds case and
+  `Valphine Sotorra` stays unrecognised and is reported. Filed as #460 — it occurs 8 times
+  in the corpus and costs her a scene, so the out-of-scope ruling is a deferral, not a
+  judgement that it does not matter. #459 covers the extraction prompt that writes the short
+  form. Name comparison folds case and
   whitespace and nothing else; treating a shorter name as the same person is an identity
   assertion from resemblance, which this project forbids by rule and by test. If the GM wants
   short forms resolved, that is a separate feature built on the declared alias registry, not

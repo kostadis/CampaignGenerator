@@ -388,8 +388,9 @@ def _stranger_buckets(
     roster name *inside* the label, and ``valphine sotorra`` is not inside
     ``[valphine]``. Short-form labels are structurally unreachable by this
     heuristic. The fix is roster-declared alternate spellings rather than a
-    fuzzier print rule, and it is its own issue; what this function owes the GM
-    meanwhile is not calling the bucket "expected" — see
+    fuzzier print rule (#460), with the extraction prompt that writes the short
+    form in the first place as its other half (#459). What this function owes
+    the GM meanwhile is not calling the bucket "expected" — see
     :func:`report_eligibility`.
     """
     suspects: dict[int, tuple[str, set[str]]] = {}
