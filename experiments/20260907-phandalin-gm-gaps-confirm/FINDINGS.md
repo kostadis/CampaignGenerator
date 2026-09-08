@@ -63,12 +63,24 @@ under it. This is the same class of problem as the apostrophe convention recorde
 in the three-renderer comparison: an assumption that held on the one session it was
 built against.
 
-## What this does not establish
+## What this did not establish — and what has since settled it
 
 **Whether the marked passages are the right ones.** Every number here says the
-contract behaves consistently; none says it marks correctly. Four scenes' worth of
-gaps have not been read against their sources, and only the GM can do that. A run
-that gapped the wrong six passages would look identical in this table.
+contract behaves consistently; none says it marks correctly. A run that gapped the
+wrong six passages would look identical in this table, so nothing above could tell
+the two apart.
+
+> **Settled 2026-09-08.** The GM has read all 31 gaps against their sources and
+> accepted them — every one a right gap, theirs to write. None was ruled wrong
+> scope. The rulings are frozen at
+> `specs/028-gap-marking-contract/accepted_gaps.json`, with each marker's text and
+> the per-arm counts, because they are no longer just a gate that opened: they are
+> the fixture the contract port (#454) is measured against. Re-confirmation on this
+> repo's own prompt now has a criterion instead of an eyeball — a gap accepted here
+> that vanishes after the port is a signal, and one appearing where the ruling was
+> wrong scope is a bigger one.
+
+The caveats below still stand, and the port does not retire them.
 
 One sample per scene, and marker counts are not a quality measure — scenes
 legitimately contain different amounts of GM narration, which is why the counts are

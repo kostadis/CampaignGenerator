@@ -24,7 +24,14 @@ the "whole family" is one script; the UI toggle ships in this feature, not a fol
 | **P3** | With the mode on, the prompt asks for `[GM NARRATION — TO BE WRITTEN: …]` on its own line, and says the markers are required output rather than commentary. |
 | **P4** | With the mode on, the prompt retains "a GM turn that only confirms or adjudicates is table operation and is dropped". |
 | **P5** | P2–P4 hold identically in the per-scene and bundle paths. |
-| **P6** | The rule about the GM appears **once**. Not once per fragment, not once per mode with the other still present. |
+| **P6** | With the mode **on**, the rule about the GM appears **once**: the contract exactly once, the absorbing clause zero times. |
+
+**P6 binds gap-on only, and the narrowing was found in implementation.** As first written it
+bound both modes. It cannot: `writing_brief.md` and `prose_mode.md` each carry the absorbing
+clause, so gap-off with prose mode on has always delivered it **twice**. That duplication is
+part of the state `#454` describes, and P1 forbids touching it — deduplicating would move the
+gap-off prompt for every render a GM never opted into. `test_gap_off_keeps_its_pre_existing_duplication`
+pins the count at 1 and 2 so the asymmetry reads as a decision rather than an oversight.
 
 P1 is the one that can be proven mechanically and completely; P2–P6 are assertions over the
 assembled string. None of them is a claim about what the model *does* with the prompt — that is

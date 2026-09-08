@@ -252,7 +252,7 @@ def test_bundle_templates_satisfy_placeholder_and_load_bearing_rule_contracts():
 
     assert "first-person" in combined
     assert "The narrator is always “I”" in combined
-    assert combined.count(narrate.NARRATION_WRITING_BRIEF.strip()) == 1
+    assert combined.count(narrate._gm_attribution_brief(False).strip()) == 1
     # #408/#410 — Version B licenses adaptation instead of requiring "actual
     # wording"; pin the new paragraph's own language.
     assert "Dialogue is editable dramatic material, not a verbatim transcription requirement" in combined

@@ -242,6 +242,11 @@ identity differs, from disk, without re-deriving it.
   prompt in all four combinations of render path and prose mode.
 - **SC-002**: With gap marking on, no fragment of the assembled prompt instructs absorption of
   GM description, in either render path and with prose mode on or off.
+
+  *Narrowed 2026-09-08, during implementation.* US2 says "whichever rule is in force must be the
+  only one present", which reads as binding both modes. It cannot bind gap-**off**: the absorbing
+  clause lives in two fragments, so gap-off with prose mode on has always carried it twice, and
+  SC-001's byte-identity forbids tidying that. The criterion binds the mode that is new.
 - **SC-003**: A re-run of the four confirmation scenes on the ported prompt produces gap
   markers in the positions the GM accepted. Boundaries may shift and exact counts will not
   match; a gap accepted as correct that vanishes, and a gap appearing where the GM ruled the
