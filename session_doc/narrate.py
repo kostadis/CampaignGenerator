@@ -46,6 +46,36 @@ def _fill(template: str, **values: str) -> str:
     return "".join(out)
 
 
+def _voice_contrast_applies(
+    narrator: str, prev_narrator: str | None, prev_voice_sample: str | None
+) -> bool:
+    """Whether the previous-narrator contrast block belongs in this prompt.
+
+    ONE home for the rule, because it had two and they disagreed (#417). The
+    block tells the model that "{narrator}'s voice should sound clearly
+    different from {prev_narrator}'s", under a heading reading "for contrast —
+    do NOT imitate". Emitting it when they are the same person instructs a
+    narrator to sound unlike themselves.
+
+    `build_narrate_prompt` treated that as the builder's invariant; the bundle
+    builder checked only that a previous narrator and sample existed, and left
+    the identity half to its single caller in `sd_narrate`. The CLI is correct
+    today, so this was never a live defect — but anything else that builds a
+    `NarrationScene` (the server, a batch route, a fixture) got the
+    self-contradicting prompt with nothing raising, and a reader of one builder
+    saw a weaker condition than its sibling with no comment saying why.
+
+    `sd_narrate`'s own check stays: it also decides whether to *fetch* the
+    sample, which is separate work, and a caller that skips the fetch is not
+    the same thing as a builder that refuses the block.
+    """
+    return bool(
+        prev_narrator
+        and prev_voice_sample
+        and prev_narrator.lower() != narrator.lower()
+    )
+
+
 def _template_candidates(name: str) -> list[str]:
     """The paths ``load_agent_prompt`` searches, in its order.
 
@@ -219,7 +249,14 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                          genre: str | None = None) -> str:
     _require_templates()
     if examples_text:
-        block = "\n" + EXAMPLES_BLOCK.replace("{examples}", examples_text.strip()) + "\n"
+        # `_fill`, not `.replace()` (#416). This was the module's last raw
+        # substitution, and the bundle path already used `_fill` for the same
+        # block — so a rename in examples_block.md would have raised on one
+        # render path and silently shipped a literal `{examples}` on the other.
+        # The two-way load check does not cover it: rename the template AND the
+        # declared placeholder in one edit and the check passes while the
+        # `.replace()` quietly stops substituting.
+        block = "\n" + _fill(EXAMPLES_BLOCK, examples=examples_text.strip()) + "\n"
     else:
         block = ""
     if genre and genre.strip():
@@ -456,7 +493,9 @@ def build_bundled_narrate_prompts(
                   prev_narrator=scene.previous_narrator,
                   prev_voice_sample=scene.previous_voice_sample.strip(),
                   narrator=scene.narrator)
-            if scene.previous_narrator and scene.previous_voice_sample else ""
+            if _voice_contrast_applies(
+                scene.narrator, scene.previous_narrator,
+                scene.previous_voice_sample) else ""
         )
         packets.append(_fill(
             BUNDLE_SCENE_TEMPLATE,
@@ -552,8 +591,7 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
             f"provide the speech and character-specific beats to weave in.\n\n"
             f"{scene_text.strip()}"
         )
-    if (prev_narrator and prev_voice_sample
-            and prev_narrator.lower() != narrator.lower()):
+    if _voice_contrast_applies(narrator, prev_narrator, prev_voice_sample):
         parts.append(_fill(PREV_VOICE_CONTRAST_BLOCK,
                            prev_narrator=prev_narrator,
                            prev_voice_sample=prev_voice_sample.strip(),
