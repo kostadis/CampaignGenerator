@@ -351,6 +351,7 @@ def _narrate_knobs_snapshot(cfg: ResolvedEditorConfig) -> dict:
         "narrate_tokens": cfg.narrate.tokens,
         "narrate_batch_tokens": getattr(cfg.narrate, "batch_tokens", 32000),
         "prose_mode": bool(cfg.narrate.prose_mode),
+        "gap_marking": bool(cfg.narrate.gap_marking),
         "reflections": bool(cfg.narrate.reflections),
         "narration_genre_file": cfg.paths.genre_file,
         "backend": cfg.backends.active or "anthropic",
@@ -1413,6 +1414,8 @@ def _finish_narrate_cmd(
         cmd += ["--narrate-tokens", str(cfg.narrate.tokens)]
     if cfg.narrate.prose_mode:
         cmd += ["--prose-mode"]
+    if cfg.narrate.gap_marking:
+        cmd += ["--gap-marking"]
     if cfg.narrate.reflections:
         cmd += ["--reflections"]
         # --reflections needs --context to draw on; without it the flag is a no-op
@@ -1597,6 +1600,19 @@ def _build_narrate_bundle_cmd(
     for source in sources:
         if source.active_layer == "smoothed" and source.active_file is not None:
             cmd += ["--scene-extraction-file", str(source.active_file)]
+    # Q2 ruled that gap marking reaches BOTH render paths. Forwarding it here is
+    # what makes that true of the UI's bundle button as well as the CLI —
+    # without it the mode is on in config, off in the prompt, and the run
+    # produces a whole session of reassigned GM material that looks finished
+    # (#454 FR-009).
+    #
+    # Note `--prose-mode` is NOT forwarded here and never has been, so a bundle
+    # launched from the editor ignores that knob entirely. That is a separate,
+    # pre-existing orphaned capability (Principle XI's scar shape) and fixing it
+    # would change what bundle renders produce, so it is reported rather than
+    # taken on here.
+    if cfg.narrate.gap_marking:
+        cmd += ["--gap-marking"]
     cmd += ["--run-report", str(report_path)]
     return _finish_narrate_cmd(request, cfg, plan_path, cmd)
 

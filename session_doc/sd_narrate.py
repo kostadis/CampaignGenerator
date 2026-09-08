@@ -463,6 +463,14 @@ def main() -> None:
                         help="Render only the listed scene number(s) (1-based).")
     parser.add_argument("--prose-mode", action="store_true",
                         help="Strip mechanical / GM framing from narration.")
+    parser.add_argument("--gap-marking", action="store_true",
+                        help="Where the source attributes description or "
+                             "explanation to the GM, emit "
+                             "[GM NARRATION — TO BE WRITTEN: ...] instead of "
+                             "writing it, and leave the passage for the human "
+                             "author. GM turns that only adjudicate stay "
+                             "dropped as table operation. Off by default; the "
+                             "prompt is byte-identical without it (#454).")
     parser.add_argument("--narration-genre-file", default=None, metavar="PATH",
                         help="File holding the genre/register rulebook injected into "
                              "Pass 5 (conventionally <campaign>/voice/_genre.md). A "
@@ -1098,6 +1106,7 @@ def main() -> None:
                               if args.reflections and context_parts else None),
                 prose_mode=args.prose_mode,
                 genre=narration_genre,
+                gap_marking=args.gap_marking,
             )
         except Exception as exc:
             message = f"bundled narration prompt preflight failed: {exc}"
@@ -1308,6 +1317,7 @@ def main() -> None:
             char_examples=char_examples,
             voice_note=voice_note,
             genre=narration_genre,
+            gap_marking=args.gap_marking,
         )
         narrate_prompt = build_narrate_prompt(
             narrator, focus, char_moments, party, handoff,

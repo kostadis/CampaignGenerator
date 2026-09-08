@@ -2006,3 +2006,64 @@ def test_polish_cmd_preserves_assembled_artifacts_and_checkpoint(tmp_path):
     # silently approve narration or chain into another stage.
     assert "--approve" not in cmd
     assert "--narrate" not in cmd
+
+
+# ── #454 — gap marking reaches both render paths from the editor ────────────
+
+def test_narrate_cmd_forwards_gap_marking_only_when_the_config_asks(tmp_path):
+    """The flag is a mode, so it is off unless the config turns it on.
+
+    Both directions asserted: a flag the router hardcodes is a capability with
+    no face, and a flag it never forwards is a capability with no engine —
+    #323's scar in each direction.
+    """
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    paths = dict(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+    )
+
+    off = scene_editor._build_narrate_cmd(None, _cfg(**paths), 1)
+    assert isinstance(off, list)
+    assert "--gap-marking" not in off
+
+    cfg_on = _cfg(**paths)
+    cfg_on.narrate.gap_marking = True
+    on = scene_editor._build_narrate_cmd(None, cfg_on, 1)
+    assert isinstance(on, list)
+    assert "--gap-marking" in on
+
+
+def test_narrate_bundle_cmd_forwards_gap_marking(tmp_path):
+    """Q2 ruled the mode reaches both render paths. If the bundle route drops
+    the flag, the mode is on in config and off in the prompt, and the run
+    produces a whole session of reassigned GM material that looks finished —
+    the silent variant of the failure this feature removes (FR-009)."""
+    sd, gm, sx, nd = _seed_session_dir(tmp_path)
+    paths = dict(
+        session_recap=str(gm),
+        session_summary=str(sd / "session-summary.md"),
+        scene_extractions_dir=str(sx),
+        narration_dir=str(nd),
+    )
+    report = nd / "logs" / "run.json"
+
+    cfg_on = _cfg(**paths)
+    cfg_on.narrate.gap_marking = True
+    on = scene_editor._build_narrate_bundle_cmd(None, cfg_on, [1], report)
+    if isinstance(on, tuple):
+        pytest.skip(f"bundle cmd unavailable in this fixture: {on[1]}")
+    assert "--gap-marking" in on
+
+    off = scene_editor._build_narrate_bundle_cmd(None, _cfg(**paths), [1], report)
+    if isinstance(off, tuple):
+        pytest.skip(f"bundle cmd unavailable in this fixture: {off[1]}")
+    assert "--gap-marking" not in off
+
+
+def test_gap_marking_defaults_off_on_the_knobs():
+    """Additive with a default, which is why this feature ships no migration:
+    a config written before it loads unchanged and takes today's behaviour."""
+    assert NarrateKnobs().gap_marking is False

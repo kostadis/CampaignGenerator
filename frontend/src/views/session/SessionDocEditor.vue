@@ -33,6 +33,7 @@ const batchTokens = ref(32000)
 const narrateTokens = ref(16000)
 const narrateBatchTokens = ref(32000)
 const proseMode = ref(false)
+const gapMarking = ref(false)
 const reflections = ref(false)
 const genreFile = ref('')
 const backend = ref<Backend>('anthropic')
@@ -104,6 +105,7 @@ function loadConfigFields() {
   narrateTokens.value = narrate.tokens || 16000
   narrateBatchTokens.value = narrate.batch_tokens || 32000
   proseMode.value = !!narrate.prose_mode
+  gapMarking.value = !!narrate.gap_marking
   reflections.value = !!narrate.reflections
   genreFile.value = paths.genre_file || ''
   backend.value = normalizeBackend(backends.active)
@@ -169,6 +171,7 @@ function buildEditorConfigPayload() {
       tokens: narrateTokens.value || undefined,
       batch_tokens: narrateBatchTokens.value || undefined,
       prose_mode: proseMode.value || undefined,
+      gap_marking: gapMarking.value || undefined,
       reflections: reflections.value || undefined,
     },
   }
@@ -245,7 +248,7 @@ watch(() => config.editorConfig?.session_dir, (next, prev) => {
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,
    party, voiceDir, examplesDir, context, extractTokens, batchTokens,
-   narrateTokens, narrateBatchTokens, proseMode, reflections, genreFile],
+   narrateTokens, narrateBatchTokens, proseMode, gapMarking, reflections, genreFile],
   scheduleApply,
 )
 
@@ -510,6 +513,7 @@ interface ProfileEntry {
     narrate_tokens?: number
     narrate_batch_tokens?: number
     prose_mode?: boolean
+    gap_marking?: boolean
     reflections?: boolean
     narration_genre_file?: string
     backend?: Backend
@@ -528,6 +532,7 @@ const currentKnobs = computed(() => ({
   narrate_tokens: narrateTokens.value,
   narrate_batch_tokens: narrateBatchTokens.value,
   prose_mode: proseMode.value,
+  gap_marking: gapMarking.value,
   reflections: reflections.value,
   narration_genre_file: genreFile.value,
   backend: backend.value,
@@ -545,6 +550,7 @@ const profileDirty = computed(() => {
   return (k.narrate_tokens ?? 16000) !== c.narrate_tokens
     || (k.narrate_batch_tokens ?? 32000) !== c.narrate_batch_tokens
     || !!k.prose_mode !== c.prose_mode
+    || !!k.gap_marking !== c.gap_marking
     || !!k.reflections !== c.reflections
     || (k.narration_genre_file ?? '') !== c.narration_genre_file
     || (k.backend ?? 'anthropic') !== c.backend
@@ -565,6 +571,7 @@ function hydrateKnobsFromEditorConfig(ec: any) {
   narrateTokens.value = narrate.tokens ?? 16000
   narrateBatchTokens.value = narrate.batch_tokens ?? 32000
   proseMode.value = !!narrate.prose_mode
+  gapMarking.value = !!narrate.gap_marking
   reflections.value = !!narrate.reflections
   genreFile.value = ec?.paths?.genre_file || ''
   backend.value = normalizeBackend(backends.active)
@@ -1380,6 +1387,7 @@ onMounted(async () => {
           :narrating="narrating"
           :extracting="extracting"
           :prose-mode="proseMode"
+          :gap-marking="gapMarking"
           :reflections="reflections"
           :reviewed="currentSceneReviewed"
           @save-extraction="saveExtraction"
@@ -1389,6 +1397,7 @@ onMounted(async () => {
           @open-typora="openTypora"
           @update:extraction-content="updateExtractionContent"
           @update:prose-mode="proseMode = $event"
+          @update:gap-marking="gapMarking = $event"
           @update:reflections="reflections = $event"
           @update:reviewed="setReviewed"
         />
@@ -1469,6 +1478,7 @@ onMounted(async () => {
       v-model:narrate-tokens="narrateTokens"
       v-model:narrate-batch-tokens="narrateBatchTokens"
       v-model:prose-mode="proseMode"
+      v-model:gap-marking="gapMarking"
       v-model:reflections="reflections"
       v-model:genre-file="genreFile"
       :genre-info="genreInfo"

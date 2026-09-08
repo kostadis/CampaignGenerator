@@ -165,6 +165,11 @@ _PROFILE_KNOB_TO_GROUPED: dict[str, tuple[str, ...]] = {
     "narrate_tokens": ("narrate", "tokens"),
     "narrate_batch_tokens": ("narrate", "batch_tokens"),
     "prose_mode": ("narrate", "prose_mode"),
+    # #454 — a narration mode, so it belongs to a profile the way prose_mode
+    # does. Note what is NOT here: the contract's text. A profile switches
+    # modes, never carries a copy of a document (#276 fix 2 / #220), and the
+    # contract is a repo prompt fragment rather than a per-campaign file at all.
+    "gap_marking": ("narrate", "gap_marking"),
     "reflections": ("narrate", "reflections"),
     # A profile switches which rulebook *file* is used, never a copy of its
     # text (#276 fix 2). The old ``narration_genre`` knob held a paste of a

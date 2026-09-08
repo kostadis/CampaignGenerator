@@ -41,9 +41,16 @@ what re-confirmation is for.
 
 | Condition | Behaviour |
 |---|---|
-| Mode on, contract fragment missing or unreadable | **Refuse**, naming the path. Never render. |
+| Contract fragment missing or unreadable, **either mode** | **Refuse at import**, naming both paths searched. Never render. |
 | Mode on, bundle path | Render, with the contract (Q2 ruling). |
-| Mode off, contract fragment missing | Refuse at import, as any template drift does today. |
+
+*Corrected during implementation.* The table first said the refusal was conditional on the mode.
+It is not, and the unconditional form is both stricter and already true: `GM_ATTRIBUTION_GAP` is a
+module-level constant, and `load_agent_prompt` raises `FileNotFoundError` naming both candidate
+paths before any render happens. A missing repo prompt fragment is corruption rather than a mode
+being unavailable, and `name_fidelity.md`, `real_names.md` and every other fragment already behave
+this way. Adding a gap-specific refusal inside `sd_narrate` would be a second statement of one
+rule — precisely what this feature exists to stop doing.
 
 The refusal on a missing contract is deliberately the opposite of the genre file's ruling, which
 warns and renders on. A missing genre costs register; a missing contract costs attribution, and

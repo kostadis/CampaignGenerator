@@ -253,3 +253,34 @@ def test_both_paths_use_one_contract_text():
     bundled = _bundle(gap_marking=True)
     clause = "must not be absorbed unmarked into the narrator's voice"
     assert clause in per_scene and clause in bundled
+
+
+# ── FR-008: a missing contract refuses; it never renders without it ─────────
+
+def test_the_contract_is_loaded_eagerly_so_a_missing_one_cannot_be_skipped():
+    """FR-008 is satisfied by the existing loader, not by a second mechanism.
+
+    `GM_ATTRIBUTION_GAP` is a module-level constant loaded through
+    `load_agent_prompt`, which raises `FileNotFoundError` naming both candidate
+    paths when the file is absent — at import, before any render. That is
+    *stricter* than the contract asked for: it refuses whether or not gap
+    marking is on, because a missing repo prompt fragment is corruption rather
+    than a mode being unavailable, and it is how `name_fidelity.md`,
+    `real_names.md` and every other fragment already behave.
+
+    A gap-specific refusal inside `sd_narrate` would be a second statement of
+    one rule — the thing this feature exists to stop doing.
+    """
+    from session_doc.narrate import GM_ATTRIBUTION_GAP
+
+    assert GM_ATTRIBUTION_GAP.strip()
+    assert MARKER_OPEN in GM_ATTRIBUTION_GAP
+
+
+def test_a_missing_fragment_names_the_path_it_looked_for():
+    """The half FR-008 cares about: the refusal is actionable."""
+    from campaignlib.config import load_agent_prompt
+
+    with pytest.raises(FileNotFoundError) as exc:
+        load_agent_prompt("session_doc/narrate/gm_attribution_gap_absent")
+    assert "config/agents/session_doc/narrate/gm_attribution_gap_absent.md" in str(exc.value)
