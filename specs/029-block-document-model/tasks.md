@@ -68,19 +68,19 @@ every gap. Delivers the whole review step with no other part of this feature bui
 
 ### Tests for User Story 1
 
-- [ ] T008 [P] [US1] Create `tests/test_review_export.py`: the export carries `version`, `narration`, `generated_sha256`, the scene stat line, blocks with the **same ids the record uses** (FR-018), and the source GM turns; one scene stays in the 14–26 KB band measured in research D9
-- [ ] T009 [P] [US1] Create `tests/test_reviewer_selfcontained.py` (contract W1): `session_doc/review/reviewer.html` contains no external `src`/`href`, no `fetch`, no remote import. This is what makes "works offline on a phone" a property rather than a hope
+- [X] T008 [P] [US1] Create `tests/test_review_export.py`: the export carries `version`, `narration`, `generated_sha256`, the scene stat line, blocks with the **same ids the record uses** (FR-018), and the source GM turns; one scene stays in the 14–26 KB band measured in research D9
+- [X] T009 [P] [US1] Create `tests/test_reviewer_selfcontained.py` (contract W1): `session_doc/review/reviewer.html` contains no external `src`/`href`, no `fetch`, no remote import. This is what makes "works offline on a phone" a property rather than a hope
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Define the export schema in `session_doc/review/schema.py`: a strict Pydantic model with `version: int = 1` and a validator refusing an unknown version, mirroring `campaignlib/transcript_corrections.py`'s `_known_version`
-- [ ] T011 [US1] Implement the source-GM-turn reader in `session_doc/review/export.py` — line, label, context note and quote from the scene extraction, which is what the reviewer's foot table renders (FR-014)
-- [ ] T012 [US1] Implement `sd_review export` in `session_doc/sd_review.py`: one scene per file by default (FR-013), `--all-scenes` to opt into a whole session, `--out` for the path. 82 KB is not what gets pasted on a phone
-- [ ] T013 [US1] Register `sd_review` in `pyproject.toml` `[project.scripts]` and reinstall editable, or the web UI's `console_script()` resolution and the CLI both fail on a fresh venv
-- [ ] T014 [US1] Build `session_doc/review/reviewer.html` — one self-contained file, no build step. Paste box; on load, validate `version` and report a mismatch rather than rendering (W3); report a truncated or malformed paste rather than rendering half a scene (W4)
-- [ ] T015 [US1] Render the scene in `reviewer.html`, reproducing the reviewed page's UX: sticky bar with the scene stat line, prose and gaps interleaved in one reading column, each gap in a well with its text and four ruling controls, and the full source GM turns in a `<details>` at the foot
-- [ ] T016 [US1] Implement the **two** progress figures in `reviewer.html` (W5, SC-002a): *ruled* and *written*, shown separately. A single number would understate a finished triage or overstate an unfinished chapter — this is the whole of the GM's triage-then-write workflow
-- [ ] T017 [US1] Implement persistence in `reviewer.html`, and the honest warning when it is unavailable (FR-016). See the open risk in research: `localStorage` under `file://` is inconsistent across mobile browsers, so the warning stays until verified on the GM's own device
+- [X] T010 [US1] Define the export schema in `session_doc/review/schema.py`: a strict Pydantic model with `version: int = 1` and a validator refusing an unknown version, mirroring `campaignlib/transcript_corrections.py`'s `_known_version`
+- [X] T011 [US1] Implement the source-GM-turn reader in `session_doc/review/export.py` — line, label, context note and quote from the scene extraction, which is what the reviewer's foot table renders (FR-014)
+- [X] T012 [US1] Implement `sd_review export` in `session_doc/sd_review.py`: one scene per file by default (FR-013), `--all-scenes` to opt into a whole session, `--out` for the path. 82 KB is not what gets pasted on a phone
+- [X] T013 [US1] Register `sd_review` in `pyproject.toml` `[project.scripts]` and reinstall editable, or the web UI's `console_script()` resolution and the CLI both fail on a fresh venv
+- [X] T014 [US1] Build `session_doc/review/reviewer.html` — one self-contained file, no build step. Paste box; on load, validate `version` and report a mismatch rather than rendering (W3); report a truncated or malformed paste rather than rendering half a scene (W4)
+- [X] T015 [US1] Render the scene in `reviewer.html`, reproducing the reviewed page's UX: sticky bar with the scene stat line, prose and gaps interleaved in one reading column, each gap in a well with its text and four ruling controls, and the full source GM turns in a `<details>` at the foot
+- [X] T016 [US1] Implement the **two** progress figures in `reviewer.html` (W5, SC-002a): *ruled* and *written*, shown separately. A single number would understate a finished triage or overstate an unfinished chapter — this is the whole of the GM's triage-then-write workflow
+- [X] T017 [US1] Implement persistence in `reviewer.html`, and the honest warning when it is unavailable (FR-016). See the open risk in research: `localStorage` under `file://` is inconsistent across mobile browsers, so the warning stays until verified on the GM's own device
 
 **Checkpoint**: T008 and T009 green; a scene can be exported and ruled offline on a phone.
 
@@ -93,10 +93,10 @@ every gap. Delivers the whole review step with no other part of this feature bui
 **Independent test**: rule a gap, copy, and confirm the clipboard holds enough for a model with no
 other context to draft that passage.
 
-- [ ] T018 [P] [US2] Add a copy-as-prompt test to `tests/test_review_export.py`: the payload names the scene, includes the prose so far, and for each outstanding gap its text and its source GM turns
-- [ ] T019 [US2] Implement *Copy as prompt* in `session_doc/review/reviewer.html` (W7): scene so far, gaps ruled the GM's to write, and the GM turns behind each. It must read as a request to draft, not as a data structure (US2 scenario 2)
-- [ ] T020 [US2] Implement *Copy review* in `session_doc/review/reviewer.html`: the record's content, for the GM to place by hand. Two payloads because the workflow has two moments — drafting on the train, and landing the result
-- [ ] T021 [US2] Confirm a passage pasted into a gap's field is recorded as `authored`, indistinguishable from one typed directly (US2 scenario 3) — the model's involvement is the GM's business, not the record's
+- [X] T018 [P] [US2] Add a copy-as-prompt test to `tests/test_review_export.py`: the payload names the scene, includes the prose so far, and for each outstanding gap its text and its source GM turns
+- [X] T019 [US2] Implement *Copy as prompt* in `session_doc/review/reviewer.html` (W7): scene so far, gaps ruled the GM's to write, and the GM turns behind each. It must read as a request to draft, not as a data structure (US2 scenario 2)
+- [X] T020 [US2] Implement *Copy review* in `session_doc/review/reviewer.html`: the record's content, for the GM to place by hand. Two payloads because the workflow has two moments — drafting on the train, and landing the result
+- [X] T021 [US2] Confirm a passage pasted into a gap's field is recorded as `authored`, indistinguishable from one typed directly (US2 scenario 3) — the model's involvement is the GM's business, not the record's
 
 **Checkpoint**: the mobile loop is complete end to end, with the result on the clipboard.
 
@@ -110,7 +110,7 @@ other context to draft that passage.
 block and from a gap the GM authored.
 
 - [ ] T022 [P] [US3] Add the `edited` disposition to the export and record schemas in `session_doc/review/schema.py` and `session_doc/authored.py`, applying to a `prose` block where the others apply to a `gap`
-- [ ] T023 [US3] Make every prose block editable in `session_doc/review/reviewer.html` (W6) — #418's own framing, because the seam is where a sentence usually needs a tweak
+- [X] T023 [US3] Make every prose block editable in `session_doc/review/reviewer.html` (W6) — #418's own framing, because the seam is where a sentence usually needs a tweak
 - [ ] T024 [P] [US3] Test in `tests/test_block_model.py` that an untouched prose block produces **no** record entry (R4), and an edited one produces an `edited` entry carrying only the human's text
 - [ ] T025 [P] [US3] Test that a prose block edited to empty is recorded as `edited` with empty text, not as untouched — deleting the model's paragraph is a legitimate editorial act and must be distinguishable
 
@@ -180,7 +180,7 @@ that scene.
 - [ ] T042 [P] Document the workflow in `docs/cli/session_doc_pipeline.md`: the three files, the reviewer and how it reaches a phone, the two progress figures, the gate, and that the round trip stops at the clipboard
 - [ ] T043 [P] Write `docs/cli/gap_review_howto.md` — task-oriented, in the style of `player_identity_howto.md`: get the reviewer onto a phone, review a scene at work, land the result, and every refusal decoded
 - [ ] T044 [P] Add the `CLAUDE.md` note: the record is the source of truth and `.composed.md` is output, `unruled` is an absent entry, the gate reads documents not records, and nothing in this layer may call a model
-- [ ] T045 [P] Add the reviewer's version-agreement test to `tests/test_reviewer_selfcontained.py` (W2): the schema version the page declares equals `session_doc/review/schema.py`'s constant. This is the guard that exists *because* the page is no longer regenerated per session
+- [X] T045 [P] Add the reviewer's version-agreement test to `tests/test_reviewer_selfcontained.py` (W2): the schema version the page declares equals `session_doc/review/schema.py`'s constant. This is the guard that exists *because* the page is no longer regenerated per session
 - [ ] T046 Run the full suite (`python -m pytest tests/`) and confirm no regression beyond the known environmental `test_configure_mcp.py::test_git_root_returns_path_itself_when_not_in_a_repo`
 
 ### On a real device — the part no test covers

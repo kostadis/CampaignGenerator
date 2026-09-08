@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gap Reviewer</title>
+<!--
+  The gap reviewer — issue #455.
+
+  ONE FILE, SAVED ONCE. This page is versioned in the repository and copied to a
+  device; it is never regenerated per session. A session arrives as JSON pasted
+  into the box below. That inverts the workflow that produced the 31 accepted
+  rulings, where every review meant publishing a new page.
+
+  NO NETWORK, DELIBERATELY. No external stylesheet, no font, no script, no
+  fetch. The whole point is that this works at work, on a phone, in airplane
+  mode, with nothing switched on at home. `tests/test_reviewer_selfcontained.py`
+  fails the build if a remote reference appears.
+
+  TWO COMPLETIONS, NOT ONE. Ruling and writing are different jobs: the phone is
+  for triage, the desk is for prose. A scene where every gap is ruled and eight
+  are still to write is a SUCCESSFUL session, so the bar shows both figures and
+  neither masks the other.
+
+  SCHEMA_VERSION below must equal EXPORT_VERSION in session_doc/review/schema.py.
+  A test asserts it. That guard exists precisely because the page is no longer
+  regenerated with the data.
+-->
+<style>
+  :root {
+    --bg:#EBEDF0; --surface:#FFFFFF; --well:#E0E3E8; --ink:#171B21; --muted:#5D6773;
+    --rule:#D2D7DE; --brass:#96590F; --brass-soft:#F0E4D2; --teal:#2C6A5C;
+    --teal-soft:#DDEBE6; --focus:#2F5D77; --warn:#8A1F11; --warn-soft:#F6E3E0;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg:#13161A; --surface:#1B1F25; --well:#0E1114; --ink:#E4E7EA; --muted:#8B95A1;
+    --rule:#2A3037; --brass:#D18F35; --brass-soft:#2E2517; --teal:#5FA894;
+    --teal-soft:#152521; --focus:#79AECB; --warn:#E08A7A; --warn-soft:#2E1A17;
+  } }
+  * { box-sizing:border-box; }
+  body { background:var(--bg); color:var(--ink); font-family:var(--sans);
+    margin:0; font-size:16px; line-height:1.55; -webkit-text-size-adjust:100%; }
+  :focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
+  .bar { position:sticky; top:0; z-index:5; background:var(--surface);
+    border-bottom:1px solid var(--rule); padding:.6rem clamp(.7rem,3vw,2rem);
+    display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+  .bar h1 { font-family:var(--serif); font-size:1rem; font-weight:600; margin:0; }
+  .bar .sub { color:var(--muted); font-size:.76rem; }
+  .counts { margin-left:auto; display:flex; gap:.9rem; align-items:center;
+    font-size:.78rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .fig { display:flex; flex-direction:column; gap:.18rem; min-width:5.4rem; }
+  .fig b { color:var(--ink); font-weight:600; }
+  .meter { height:4px; background:var(--rule); border-radius:3px; overflow:hidden; }
+  .meter i { display:block; height:100%; width:0%; transition:width .2s; }
+  .meter.ruled i { background:var(--brass); }
+  .meter.written i { background:var(--teal); }
+  button.act { font:500 .78rem/1 var(--sans); color:var(--ink); background:transparent;
+    border:1px solid var(--rule); border-radius:3px; padding:.45rem .7rem; cursor:pointer; }
+  button.act:hover { border-color:var(--muted); }
+  main { max-width:41rem; margin:0 auto; padding:1.4rem clamp(.7rem,3vw,2rem) 5rem; }
+  .note { font-size:.82rem; color:var(--muted); }
+  .warn { font-size:.82rem; color:var(--warn); background:var(--warn-soft);
+    border:1px solid var(--warn); border-radius:3px; padding:.6rem .8rem; margin:0 0 1.2rem; }
+  .paste textarea { width:100%; min-height:9rem; font:400 .8rem/1.45 var(--mono);
+    color:var(--ink); background:var(--surface); border:1px solid var(--rule);
+    border-radius:3px; padding:.6rem; }
+  .scene { font-family:var(--serif); font-size:1.25rem; font-weight:600; margin:0 0 .3rem; }
+  .stat { font-size:.78rem; color:var(--muted); margin:0 0 1.4rem;
+    font-variant-numeric:tabular-nums; }
+  .stat b { color:var(--ink); font-weight:600; }
+  .prose { margin:0 0 .4rem; }
+  .prose p { font-family:var(--serif); font-size:1.02rem; line-height:1.68; margin:0 0 1rem; }
+  .prose.edited { border-left:2px solid var(--teal); padding-left:.8rem; }
+  .editlink { font:400 .72rem/1 var(--sans); color:var(--muted); background:none;
+    border:0; padding:.2rem 0; cursor:pointer; text-decoration:underline; }
+  .editlink:hover { color:var(--ink); }
+  .well { background:var(--well); border-left:3px solid var(--brass);
+    border-radius:0 3px 3px 0; padding:.85rem 1rem 1rem; margin:1.4rem 0 1.7rem; }
+  .well.ruled { border-left-color:var(--teal); }
+  .wellhead { display:flex; align-items:baseline; gap:.7rem; margin-bottom:.5rem; }
+  .num { font:600 .7rem/1 var(--sans); letter-spacing:.11em; text-transform:uppercase;
+    color:var(--brass); }
+  .well.ruled .num { color:var(--teal); }
+  .num .of { color:var(--muted); font-weight:400; }
+  .state { margin-left:auto; font-size:.7rem; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--brass); background:var(--brass-soft); padding:.16rem .45rem; border-radius:2px; }
+  .well.ruled .state { color:var(--teal); background:var(--teal-soft); }
+  .says { font-family:var(--mono); font-size:.82rem; line-height:1.6; margin:0 0 .8rem; }
+  .lbl { display:block; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); margin:.7rem 0 .3rem; }
+  .chips { display:flex; flex-wrap:wrap; gap:.35rem; }
+  .chip { font:400 .76rem/1 var(--sans); color:var(--muted); background:var(--surface);
+    border:1px solid var(--rule); border-radius:2px; padding:.42rem .6rem; cursor:pointer; }
+  .chip:hover { color:var(--ink); border-color:var(--muted); }
+  .chip[aria-pressed="true"] { color:var(--surface); background:var(--ink);
+    border-color:var(--ink); font-weight:500; }
+  textarea.passage { width:100%; font:400 1rem/1.6 var(--serif); color:var(--ink);
+    background:var(--surface); border:1px solid var(--rule); border-radius:2px;
+    padding:.55rem .65rem; resize:vertical; }
+  textarea.passage::placeholder { color:var(--muted); font-style:italic; }
+  details.src { margin-top:2.2rem; border-top:1px solid var(--rule); padding-top:1.1rem; }
+  details.src summary { cursor:pointer; font-size:.84rem; color:var(--muted); }
+  .tw { overflow-x:auto; margin-top:.9rem; }
+  table { border-collapse:collapse; width:100%; font-size:.78rem; }
+  td { border-bottom:1px solid var(--rule); padding:.35rem .55rem .35rem 0; vertical-align:top; }
+  .ln,.lb { font-family:var(--mono); color:var(--muted); white-space:nowrap; font-size:.73rem; }
+  .nt { color:var(--muted); font-style:italic; min-width:8rem; }
+  .qt { font-family:var(--mono); font-size:.77rem; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div>
+    <h1 id="title">Gap Reviewer</h1>
+    <div class="sub" id="subtitle">Paste a scene export to begin</div>
+  </div>
+  <div class="counts" id="counts" hidden>
+    <div class="fig"><span><b id="ruledN">0</b>/<span id="ruledT">0</span> ruled</span>
+      <div class="meter ruled"><i id="ruledBar"></i></div></div>
+    <div class="fig"><span><b id="writtenN">0</b>/<span id="writtenT">0</span> written</span>
+      <div class="meter written"><i id="writtenBar"></i></div></div>
+  </div>
+  <button class="act" id="btnNext" hidden>Next gap</button>
+  <button class="act" id="btnPrompt" hidden>Copy as prompt</button>
+  <button class="act" id="btnReview" hidden>Copy review</button>
+</div>
+
+<main>
+  <div class="warn" id="storeWarn" hidden></div>
+
+  <section class="paste" id="paste">
+    <p class="note">Paste the scene export written by
+      <code>sd_review export</code>. Nothing is sent anywhere — this page makes no
+      network request of any kind.</p>
+    <textarea id="json" spellcheck="false" placeholder='{ "version": 1, "narration": … }'></textarea>
+    <p><button class="act" id="btnLoad">Load scene</button>
+      <span class="note" id="pasteMsg"></span></p>
+  </section>
+
+  <section id="scene" hidden></section>
+</main>
+
+<script>
+"use strict";
+// Must equal EXPORT_VERSION in session_doc/review/schema.py — a test asserts it.
+const SCHEMA_VERSION = 1;
+
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined) n.textContent = text;
+  return n;
+};
+
+let data = null;          // the loaded export
+let state = {};           // blockId -> {disposition, text, critique}
+let storageOK = false;
+
+// ── persistence ────────────────────────────────────────────────────────────
+// localStorage under file:// is inconsistent across mobile browsers: some
+// treat every file:// document as one origin, some as none. So it is PROBED
+// rather than assumed, and when it is unavailable the GM is told BEFORE they
+// start rather than after twenty rulings are gone.
+function probeStorage() {
+  try {
+    const k = "__gapreview_probe__";
+    localStorage.setItem(k, "1");
+    localStorage.removeItem(k);
+    return true;
+  } catch (e) { return false; }
+}
+const storeKey = () => "gapreview:" + (data ? data.narration + ":" + data.generated_sha256 : "");
+function save() {
+  if (!storageOK || !data) return;
+  try { localStorage.setItem(storeKey(), JSON.stringify(state)); } catch (e) { /* full or blocked */ }
+}
+function restore() {
+  if (!storageOK || !data) return false;
+  try {
+    const raw = localStorage.getItem(storeKey());
+    if (!raw) return false;
+    state = JSON.parse(raw);
+    return true;
+  } catch (e) { return false; }
+}
+
+// ── loading ────────────────────────────────────────────────────────────────
+function load(text) {
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (e) {
+    // A clipboard that truncated mid-paste lands here. Reporting it is the
+    // whole point: rendering half a scene as though it were whole would have
+    // the GM ruling gaps against prose that is not all there.
+    return "That is not valid JSON — if you pasted it on a phone it may have been "
+         + "truncated. Paste it again, or export the scene on its own.";
+  }
+  if (!parsed || typeof parsed !== "object") return "The export should be a JSON object.";
+  if (parsed.version !== SCHEMA_VERSION) {
+    return "This export is version " + parsed.version + " and this page understands "
+         + SCHEMA_VERSION + ". The reviewer on this device is older or newer than the "
+         + "one that wrote the file — copy the current reviewer.html across.";
+  }
+  if (!Array.isArray(parsed.blocks) || parsed.blocks.length === 0) {
+    return "The export has no blocks in it.";
+  }
+  data = parsed;
+  state = {};
+  const restored = restore();
+  render();
+  return restored ? null : null;
+}
+
+// ── ruling state ───────────────────────────────────────────────────────────
+const gapBlocks = () => data.blocks.filter(b => b.kind === "gap");
+const entry = (id) => state[id] || null;
+
+function setDisposition(id, value) {
+  const e = state[id] || {};
+  e.disposition = (e.disposition === value) ? undefined : value;
+  if (e.disposition === undefined) delete e.disposition;
+  if (!e.disposition && !e.text && !e.critique) delete state[id]; else state[id] = e;
+  save(); render();
+}
+function setCritique(id, value) {
+  const e = state[id] || {};
+  e.critique = (e.critique === value) ? undefined : value;
+  if (e.critique === undefined) delete e.critique;
+  if (!e.disposition && !e.text && !e.critique) delete state[id]; else state[id] = e;
+  save(); render();
+}
+function setText(id, value, kind) {
+  const e = state[id] || {};
+  if (value) {
+    e.text = value;
+    // Writing prose settles a gap; editing prose marks the model's block as
+    // touched. `mine` means ruled-but-unwritten, so it is replaced here rather
+    // than kept alongside.
+    e.disposition = (kind === "gap") ? "authored" : "edited";
+  } else {
+    delete e.text;
+    if (kind === "gap" && e.disposition === "authored") e.disposition = "mine";
+    if (kind === "prose") delete e.disposition;
+  }
+  if (!e.disposition && !e.text && !e.critique) delete state[id]; else state[id] = e;
+  save(); updateCounts();
+}
+
+function counts() {
+  const gaps = gapBlocks();
+  const ruled = gaps.filter(b => { const e = entry(b.id); return e && e.disposition; }).length;
+  const written = gaps.filter(b => {
+    const e = entry(b.id);
+    return e && (e.disposition === "authored" || e.disposition === "cut");
+  }).length;
+  return { total: gaps.length, ruled, written };
+}
+
+function updateCounts() {
+  const c = counts();
+  $("ruledN").textContent = c.ruled;   $("ruledT").textContent = c.total;
+  $("writtenN").textContent = c.written; $("writtenT").textContent = c.total;
+  const pct = (n) => c.total ? Math.round(100 * n / c.total) + "%" : "0%";
+  $("ruledBar").style.width = pct(c.ruled);
+  $("writtenBar").style.width = pct(c.written);
+  for (const b of gapBlocks()) {
+    const well = document.querySelector('[data-well="' + b.id + '"]');
+    if (!well) continue;
+    const e = entry(b.id);
+    const disp = e && e.disposition;
+    well.classList.toggle("ruled", !!disp);
+    const label = { mine: "Mine — to write", authored: "Written", cut: "Cut" }[disp] || "Unruled";
+    well.querySelector("[data-state]").textContent = label;
+    well.querySelectorAll("[data-disp]").forEach(c2 =>
+      c2.setAttribute("aria-pressed", String(c2.dataset.disp === disp)));
+    well.querySelectorAll("[data-crit]").forEach(c2 =>
+      c2.setAttribute("aria-pressed", String(!!e && c2.dataset.crit === e.critique)));
+  }
+}
+
+// ── rendering ──────────────────────────────────────────────────────────────
+function paragraphs(host, text) {
+  host.textContent = "";
+  for (const para of text.split(/\n\s*\n/)) {
+    if (para.trim()) host.appendChild(el("p", null, para.trim()));
+  }
+}
+
+function proseBlock(b) {
+  const wrap = el("div", "prose");
+  wrap.dataset.prose = b.id;
+  const body = el("div");
+  const e = entry(b.id);
+  paragraphs(body, (e && e.text !== undefined) ? e.text : b.text);
+  if (e && e.disposition === "edited") wrap.classList.add("edited");
+  wrap.appendChild(body);
+
+  // US3 / #418 — every block is editable, the model's prose as much as the
+  // gaps, "because the seam is where a sentence usually needs a tweak".
+  const edit = el("button", "editlink", (e && e.disposition === "edited") ? "edited — edit again" : "edit this passage");
+  edit.addEventListener("click", () => {
+    const ta = el("textarea", "passage");
+    ta.rows = 8;
+    ta.value = (entry(b.id) && entry(b.id).text !== undefined) ? entry(b.id).text : b.text;
+    const done = el("button", "act", "Done");
+    done.addEventListener("click", () => {
+      const changed = ta.value !== b.text;
+      setText(b.id, changed ? ta.value : "", "prose");
+      render();
+    });
+    wrap.textContent = "";
+    wrap.append(ta, done);
+    ta.focus();
+  });
+  wrap.appendChild(edit);
+  return wrap;
+}
+
+const DISPOSITIONS = [
+  ["mine", "Right gap — mine to write"],
+  ["cut",  "Cut from the chapter"],
+];
+const CRITIQUES = [
+  ["wrong-scope", "Wrong scope"],
+  ["model-should-have-written", "Model should have written it"],
+];
+
+function gapWell(b, n, total) {
+  const well = el("section", "well");
+  well.dataset.well = b.id;
+  const head = el("header", "wellhead");
+  const num = el("span", "num", "Gap " + n);
+  num.appendChild(el("span", "of", " / " + total));
+  head.append(num);
+  const st = el("span", "state", "Unruled");
+  st.setAttribute("data-state", "");
+  head.appendChild(st);
+  well.appendChild(head);
+
+  const says = el("p", "says", gapText(b.text));
+  well.appendChild(says);
+
+  well.appendChild(el("span", "lbl", "This gap"));
+  const row1 = el("div", "chips");
+  for (const [v, label] of DISPOSITIONS) {
+    const c = el("button", "chip", label);
+    c.dataset.disp = v;
+    c.setAttribute("aria-pressed", "false");
+    c.addEventListener("click", () => setDisposition(b.id, v));
+    row1.appendChild(c);
+  }
+  well.appendChild(row1);
+
+  // Orthogonal to the disposition and never reaching the composed document:
+  // this says the MARKING was wrong, which is feedback on the contract rather
+  // than a decision about the chapter.
+  well.appendChild(el("span", "lbl", "The marking (optional)"));
+  const row2 = el("div", "chips");
+  for (const [v, label] of CRITIQUES) {
+    const c = el("button", "chip", label);
+    c.dataset.crit = v;
+    c.setAttribute("aria-pressed", "false");
+    c.addEventListener("click", () => setCritique(b.id, v));
+    row2.appendChild(c);
+  }
+  well.appendChild(row2);
+
+  well.appendChild(el("span", "lbl", "Your passage"));
+  const ta = el("textarea", "passage");
+  ta.rows = 3;
+  ta.placeholder = "Write what goes here, or leave it for the desk…";
+  const e = entry(b.id);
+  if (e && e.text) ta.value = e.text;
+  ta.addEventListener("input", () => setText(b.id, ta.value.trim(), "gap"));
+  well.appendChild(ta);
+  return well;
+}
+
+function gapText(raw) {
+  const s = raw.trim();
+  const open = "[GM NARRATION — TO BE WRITTEN:";
+  if (s.startsWith(open) && s.endsWith("]")) return s.slice(open.length, -1).trim();
+  return s;
+}
+
+function render() {
+  $("paste").hidden = true;
+  $("counts").hidden = false;
+  for (const id of ["btnNext", "btnPrompt", "btnReview"]) $(id).hidden = false;
+  $("title").textContent = (data.narrator || "Scene") + " — " + (data.scene_name || "");
+  $("subtitle").textContent = "session " + (data.session || "?") + " · scene "
+    + data.scene_index + " · " + data.word_count + " words";
+
+  const host = $("scene");
+  host.hidden = false;
+  host.textContent = "";
+  let n = 0;
+  const total = gapBlocks().length;
+  for (const b of data.blocks) {
+    if (b.kind === "gap") { n += 1; host.appendChild(gapWell(b, n, total)); }
+    else host.appendChild(proseBlock(b));
+  }
+  if (data.source_gm_turns && data.source_gm_turns.length) {
+    const d = el("details", "src");
+    d.appendChild(el("summary", null,
+      "All " + data.source_gm_turns.length + " GM turns in this scene's source — rule the gaps against these"));
+    const tw = el("div", "tw");
+    const table = el("table");
+    const tb = el("tbody");
+    for (const t of data.source_gm_turns) {
+      const tr = el("tr");
+      tr.appendChild(el("td", "ln", String(t.line)));
+      tr.appendChild(el("td", "lb", t.label));
+      tr.appendChild(el("td", "nt", t.note || ""));
+      tr.appendChild(el("td", "qt", t.quote || ""));
+      tb.appendChild(tr);
+    }
+    table.appendChild(tb); tw.appendChild(table); d.appendChild(tw);
+    host.appendChild(d);
+  }
+  updateCounts();
+}
+
+// ── the two clipboard payloads ─────────────────────────────────────────────
+// Two, because the workflow has two moments: drafting on the train, and landing
+// the result. One blob cannot serve both.
+function promptText() {
+  const lines = [];
+  lines.push("I am writing a scene of a D&D campaign chronicle in "
+    + (data.narrator || "the narrator") + "'s first-person voice.");
+  lines.push("Below is the scene as it stands. Where the game master described or explained");
+  lines.push("something, the draft leaves a marked gap for me to write. Please draft the");
+  lines.push("passages marked OUTSTANDING, in the narrator's voice, using only what the");
+  lines.push("source turns establish. Do not rewrite anything else.");
+  lines.push("");
+  lines.push("## " + (data.narrator || "") + " — " + (data.scene_name || ""));
+  lines.push("");
+  let n = 0;
+  for (const b of data.blocks) {
+    if (b.kind !== "gap") {
+      const e = entry(b.id);
+      lines.push(((e && e.text !== undefined) ? e.text : b.text).trim(), "");
+      continue;
+    }
+    n += 1;
+    const e = entry(b.id);
+    const disp = e && e.disposition;
+    if (disp === "cut") continue;
+    if (disp === "authored" && e.text) { lines.push(e.text.trim(), ""); continue; }
+    lines.push("[OUTSTANDING — GAP " + n + ": " + gapText(b.text) + "]", "");
+    const turns = (data.source_gm_turns || []).filter(t => t.quote);
+    if (turns.length) {
+      lines.push("  Source GM turns for this scene:");
+      for (const t of turns.slice(0, 40)) {
+        lines.push("    " + (t.note ? t.note + " — " : "") + t.quote);
+      }
+      lines.push("");
+    }
+  }
+  return lines.join("\n");
+}
+
+function reviewText() {
+  const out = {
+    version: SCHEMA_VERSION,
+    narration: data.narration,
+    generated_sha256: data.generated_sha256,
+    blocks: Object.entries(state).map(([id, e]) => {
+      const b = data.blocks.find(x => x.id === id) || {};
+      const row = { id: id, disposition: e.disposition || "mine", anchor: b.anchor || "" };
+      if (e.text !== undefined) row.text = e.text;
+      if (e.critique) row.critique = e.critique;
+      return row;
+    }),
+  };
+  return JSON.stringify(out, null, 2);
+}
+
+function copy(text, button) {
+  const restore = button.textContent;
+  const done = () => { button.textContent = "Copied"; setTimeout(() => { button.textContent = restore; }, 1200); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, () => fallback(text, done));
+  } else fallback(text, done);
+}
+function fallback(text, done) {
+  // file:// on some mobile browsers has no async clipboard. A textarea and
+  // execCommand still work, and a GM who cannot copy cannot use this page.
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); done(); } catch (e) { /* nothing left to try */ }
+  document.body.removeChild(ta);
+}
+
+// ── wiring ─────────────────────────────────────────────────────────────────
+$("btnLoad").addEventListener("click", () => {
+  const err = load($("json").value.trim());
+  if (err) { $("pasteMsg").textContent = err; $("pasteMsg").className = "warn"; }
+});
+$("btnNext").addEventListener("click", () => {
+  const next = gapBlocks().find(b => { const e = entry(b.id); return !e || !e.disposition; });
+  const target = next ? document.querySelector('[data-well="' + next.id + '"]') : null;
+  if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+$("btnPrompt").addEventListener("click", (ev) => copy(promptText(), ev.currentTarget));
+$("btnReview").addEventListener("click", (ev) => copy(reviewText(), ev.currentTarget));
+
+storageOK = probeStorage();
+if (!storageOK) {
+  const w = $("storeWarn");
+  w.hidden = false;
+  w.textContent = "This browser will not let the page save anything, so your rulings "
+    + "will be lost if you reload or close the tab. Copy the review before you leave "
+    + "the page.";
+}
+</script>
+</body>
+</html>
