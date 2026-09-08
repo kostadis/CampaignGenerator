@@ -29,8 +29,6 @@ import argparse
 import sys
 from pathlib import Path
 
-import fitz  # pymupdf
-
 from campaignlib import add_backend_args, call_api, client_from_args, run_single_batch, DEFAULT_MODEL
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.party_config import (
@@ -171,6 +169,19 @@ Rules:
 
 
 def extract_text(pdf_path: Path) -> str:
+    # PyMuPDF is imported here, not at module scope (#424). It is the module's
+    # one heavy optional dependency and its only use is this line, so a
+    # top-level import made `--help`, every other code path, and the whole of
+    # `tests/test_dnd_sheet.py` unrunnable without it — and those tests stub
+    # this function out, so they never needed it. The suite had to be run as
+    # `--ignore=tests/test_dnd_sheet.py` to get a result at all, which is the
+    # habit #424 is about.
+    try:
+        import fitz  # pymupdf
+    except ImportError:
+        print("Error: PyMuPDF not installed. Run: pip install pymupdf",
+              file=sys.stderr)
+        sys.exit(1)
     doc = fitz.open(str(pdf_path))
     pages = [page.get_text() for page in doc]
     doc.close()

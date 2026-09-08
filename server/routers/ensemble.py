@@ -815,9 +815,7 @@ def run_synthesise_polish(
     """
     cfg = service.resolved()
     merged_path = _resolve_ensemble_path(merged or cfg.paths.merged_out)
-    output_path = _resolve_ensemble_path(output) if output else (
-        Path.cwd() / "docs/ensemble/polished.md"
-    ).resolve()
+    output_path = _resolve_ensemble_path(output or cfg.paths.polished_out)
     backend = backend or cfg.synthesize.backend
     model = model or cfg.synthesize.model or ""
     endpoint = endpoint or (
