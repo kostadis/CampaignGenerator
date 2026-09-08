@@ -156,3 +156,220 @@ def test_anchors_are_normalised_and_bounded(arm):
         assert len(block.anchor) <= ANCHOR_CHARS
         assert "\n" not in block.anchor
         assert block.anchor == block.anchor.strip()
+
+
+# ── Contract R — the authored record ────────────────────────────────────────
+
+from datetime import date  # noqa: E402
+
+from session_doc.authored import (  # noqa: E402
+    AuthoredBlock,
+    AuthoredError,
+    AuthoredRecord,
+    load_record,
+    record_path,
+)
+from session_doc.compose import (  # noqa: E402
+    GENERATED_NOTE,
+    ComposeError,
+    compose,
+    open_gap_ids,
+)
+from session_doc.review.export import digest  # noqa: E402
+
+
+def _record(**kw) -> AuthoredRecord:
+    kw.setdefault("narration", "response.md")
+    kw.setdefault("generated_sha256", "sha256:abc")
+    return AuthoredRecord(**kw)
+
+
+def test_an_unrecognised_key_is_refused_naming_it():
+    """R1."""
+    with pytest.raises(Exception, match="surprise"):
+        AuthoredRecord.model_validate({
+            "narration": "x.md", "generated_sha256": "sha256:0", "surprise": 1})
+
+
+def test_an_unknown_record_version_is_refused():
+    """R2 — the same call `transcript_corrections` makes."""
+    with pytest.raises(Exception, match="unknown record version"):
+        AuthoredRecord.model_validate({
+            "version": 7, "narration": "x.md", "generated_sha256": "sha256:0"})
+
+
+def test_two_entries_for_one_block_are_refused():
+    """R3. Which one wins would depend on file order — exactly why two
+    corrections on one cue are refused one layer down."""
+    with pytest.raises(Exception, match="more than one entry"):
+        _record(blocks=[
+            AuthoredBlock(id="gap-1", disposition="mine"),
+            AuthoredBlock(id="gap-1", disposition="cut"),
+        ])
+
+
+def test_an_unknown_disposition_is_refused_and_says_unruled_has_no_entry():
+    with pytest.raises(Exception, match="no entry at all"):
+        AuthoredBlock(id="gap-1", disposition="unruled")
+
+
+def test_mine_and_authored_are_distinct_stored_values():
+    """R5, and the heart of the GM's workflow.
+
+    "Ruled mine, not yet written" is the normal end state of a review done on a
+    phone. Inferring the disposition from whether text is present would merge it
+    with "wrote an empty string" and lose exactly what a triage pass produces.
+    """
+    mine = AuthoredBlock(id="gap-1", disposition="mine")
+    assert mine.text is None
+    with pytest.raises(Exception, match="carries no text"):
+        AuthoredBlock(id="gap-2", disposition="authored")
+
+
+def test_a_cut_block_may_not_also_carry_text():
+    with pytest.raises(Exception, match="which one wins"):
+        AuthoredBlock(id="gap-1", disposition="cut", text="something")
+
+
+def test_an_unknown_critique_is_refused():
+    with pytest.raises(Exception, match="critique must be one of"):
+        AuthoredBlock(id="gap-1", disposition="mine", critique="dislike")
+
+
+def test_has_authored_content_is_about_prose_not_rulings():
+    """What a re-narrate must not destroy. Rulings are cheap to redo; prose is
+    the only thing here a human wrote from scratch."""
+    assert not _record(blocks=[AuthoredBlock(id="gap-1", disposition="mine")]).has_authored_content
+    assert not _record(blocks=[AuthoredBlock(id="gap-1", disposition="cut")]).has_authored_content
+    assert _record(blocks=[
+        AuthoredBlock(id="gap-1", disposition="authored", text="x")]).has_authored_content
+
+
+def test_a_record_round_trips_through_yaml(tmp_path):
+    import yaml
+
+    rec = _record(blocks=[AuthoredBlock(
+        id="gap-1", disposition="authored", text="The door shuts.",
+        critique="wrong-scope", anchor="a", recorded=date(2026, 9, 8))])
+    p = tmp_path / "x.authored.yaml"
+    p.write_text(yaml.safe_dump(rec.model_dump(mode="json"), sort_keys=False),
+                 encoding="utf-8")
+    assert load_record(p).by_id()["gap-1"].text == "The door shuts."
+
+
+def test_a_malformed_record_names_the_file(tmp_path):
+    p = tmp_path / "x.authored.yaml"
+    p.write_text("just a string\n", encoding="utf-8")
+    with pytest.raises(AuthoredError, match="mapping"):
+        load_record(p)
+
+
+def test_the_record_sits_beside_the_narration():
+    assert record_path(Path("a/session_doc_scene_01_x.md")).name == \
+        "session_doc_scene_01_x.authored.yaml"
+
+
+# ── Contract C — composing ──────────────────────────────────────────────────
+
+BREW = CORPUS / "brewbarry" / "response.md"
+
+
+def _real_record(**kw) -> AuthoredRecord:
+    text = BREW.read_text(encoding="utf-8")
+    return AuthoredRecord(narration="response.md", generated_sha256=digest(text),
+                          blocks=kw.get("blocks", []))
+
+
+def test_composing_is_byte_identical_twice():
+    """C1. A generated file that differs between runs cannot be reviewed by
+    diff, which is the only way anyone checks one."""
+    text = BREW.read_text(encoding="utf-8")
+    rec = _real_record(blocks=[AuthoredBlock(id="gap-1", disposition="authored", text="X.")])
+    assert compose(text, rec) == compose(text, rec)
+
+
+def test_each_disposition_composes_per_the_data_model():
+    """C2."""
+    text = BREW.read_text(encoding="utf-8")
+    rec = _real_record(blocks=[
+        AuthoredBlock(id="gap-1", disposition="authored", text="The door shuts."),
+        AuthoredBlock(id="gap-2", disposition="cut"),
+        AuthoredBlock(id="gap-3", disposition="mine"),
+    ])
+    out = compose(text, rec)
+    assert "The door shuts." in out                       # authored -> the prose
+    assert "Aurelan Vance comes hurrying back" not in out  # cut -> nothing
+    assert "pats himself down" in out                      # mine -> still a gap
+
+
+def test_a_stale_record_refuses_naming_both_digests():
+    """C3, and the whole of v1's staleness handling.
+
+    Composing a record against a draft it was not authored for would place the
+    GM's prose against text it was never written for — the failure `was` checking
+    prevents on the tape.
+    """
+    rec = _real_record(blocks=[])
+    with pytest.raises(ComposeError, match="authored against a different draft"):
+        compose(BREW.read_text(encoding="utf-8") + "\n", rec)
+
+
+def test_the_composed_document_says_it_is_generated():
+    """C4. It is output; the record is the thing a human edits."""
+    assert GENERATED_NOTE in compose(BREW.read_text(encoding="utf-8"), _real_record())
+
+
+def test_an_empty_record_reproduces_the_narration_body():
+    """C5. Composing nothing changes nothing — which is what makes the round
+    trip in contract P worth having."""
+    text = BREW.read_text(encoding="utf-8")
+    from campaignlib.textproc import split_frontmatter
+
+    _meta, body = split_frontmatter(text)
+    assert compose(text, _real_record()).endswith(body)
+
+
+def test_a_critique_alone_changes_nothing():
+    """R6. It is feedback on the contract, not a decision about the chapter."""
+    text = BREW.read_text(encoding="utf-8")
+    plain = compose(text, _real_record())
+    with_critique = compose(text, _real_record(blocks=[
+        AuthoredBlock(id="gap-1", disposition="mine", critique="wrong-scope")]))
+    assert plain == with_critique
+
+
+def test_open_gaps_count_mine_and_unruled_alike():
+    """The gate's question. A finished triage still has open gaps — that is
+    success on a phone, and it is still not a chapter."""
+    text = BREW.read_text(encoding="utf-8")
+    rec = _real_record(blocks=[
+        AuthoredBlock(id="gap-1", disposition="authored", text="X."),
+        AuthoredBlock(id="gap-2", disposition="cut"),
+        AuthoredBlock(id="gap-3", disposition="mine"),
+    ])
+    assert open_gap_ids(text, rec) == ["gap-3", "gap-4", "gap-5", "gap-6"]
+    assert len(open_gap_ids(text, None)) == 6
+
+
+# ── US3 — the model's prose, edited ─────────────────────────────────────────
+
+def test_an_untouched_prose_block_produces_no_record_entry():
+    """FR-004 / R4 — the record stores only what the human contributed."""
+    rec = _real_record()
+    assert rec.blocks == []
+
+
+def test_an_edited_prose_block_carries_only_the_human_s_text():
+    text = BREW.read_text(encoding="utf-8")
+    rec = _real_record(blocks=[
+        AuthoredBlock(id="prose-1", disposition="edited", text="She said nothing.")])
+    out = compose(text, rec)
+    assert "She said nothing." in out
+
+
+def test_a_prose_block_edited_to_empty_is_still_an_edit():
+    """Deleting the model's paragraph is a legitimate editorial act, and it must
+    be distinguishable from never having touched it."""
+    block = AuthoredBlock(id="prose-1", disposition="edited", text="")
+    assert block.disposition == "edited"
+    assert block.text == ""

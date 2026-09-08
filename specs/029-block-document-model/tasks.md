@@ -109,10 +109,10 @@ other context to draft that passage.
 **Independent test**: edit one prose block; confirm the record distinguishes it from an untouched
 block and from a gap the GM authored.
 
-- [ ] T022 [P] [US3] Add the `edited` disposition to the export and record schemas in `session_doc/review/schema.py` and `session_doc/authored.py`, applying to a `prose` block where the others apply to a `gap`
+- [X] T022 [P] [US3] Add the `edited` disposition to the export and record schemas in `session_doc/review/schema.py` and `session_doc/authored.py`, applying to a `prose` block where the others apply to a `gap`
 - [X] T023 [US3] Make every prose block editable in `session_doc/review/reviewer.html` (W6) — #418's own framing, because the seam is where a sentence usually needs a tweak
-- [ ] T024 [P] [US3] Test in `tests/test_block_model.py` that an untouched prose block produces **no** record entry (R4), and an edited one produces an `edited` entry carrying only the human's text
-- [ ] T025 [P] [US3] Test that a prose block edited to empty is recorded as `edited` with empty text, not as untouched — deleting the model's paragraph is a legitimate editorial act and must be distinguishable
+- [X] T024 [P] [US3] Test in `tests/test_block_model.py` that an untouched prose block produces **no** record entry (R4), and an edited one produces an `edited` entry carrying only the human's text
+- [X] T025 [P] [US3] Test that a prose block edited to empty is recorded as `edited` with empty text, not as untouched — deleting the model's paragraph is a legitimate editorial act and must be distinguishable
 
 **Checkpoint**: the reviewer is complete. `reviewer.html` is not opened again after this phase.
 
@@ -128,17 +128,17 @@ prose in the right places and is reproducible.
 
 ### Tests for User Story 4
 
-- [ ] T026 [P] [US4] Add contract R to `tests/test_block_model.py`: `extra="forbid"` naming the offending key (R1), an unknown `version` refused (R2), two entries for one block id refused (R3), `mine` and `authored` stored distinctly rather than inferred (R5), a `critique` changing nothing (R6)
-- [ ] T027 [P] [US4] Add contract C to `tests/test_block_model.py`: composing twice is byte-identical (C1), each disposition composes per the data-model table (C2), a digest mismatch refuses naming both (C3), the output carries a generated-file marker (C4), an empty record reproduces the narration (C5)
+- [X] T026 [P] [US4] Add contract R to `tests/test_block_model.py`: `extra="forbid"` naming the offending key (R1), an unknown `version` refused (R2), two entries for one block id refused (R3), `mine` and `authored` stored distinctly rather than inferred (R5), a `critique` changing nothing (R6)
+- [X] T027 [P] [US4] Add contract C to `tests/test_block_model.py`: composing twice is byte-identical (C1), each disposition composes per the data-model table (C2), a digest mismatch refuses naming both (C3), the output carries a generated-file marker (C4), an empty record reproduces the narration (C5)
 
 ### Implementation for User Story 4
 
-- [ ] T028 [US4] Implement the `.authored.yaml` schema in `session_doc/authored.py` — strict, `version: int = 1`, `narration`, `generated_sha256`, and `blocks[]` of `id` / `disposition` / optional `text` / optional `critique` / optional `note` / `anchor` / `recorded` / `recorded_by`
-- [ ] T029 [US4] Enforce in `session_doc/authored.py` that `unruled` is the **absence** of an entry (research D6) — the record stores only what the human contributed, and a part-way record stays small
-- [ ] T030 [US4] Implement `compose(narration, record)` in `session_doc/compose.py`: `authored` and `edited` place the human's text, `cut` removes the block, `mine` and absent leave the gap standing
-- [ ] T031 [US4] Refuse in `session_doc/compose.py` when the record's `generated_sha256` does not match the narration, naming both digests. This is the whole of v1's staleness handling — the same self-invalidating property `transcript_corrections`' `was` check gives the tape
-- [ ] T032 [US4] Write `anchor` values into the record without matching on them (research D2), so a record authored today survives into #456's matcher without a migration
-- [ ] T033 [US4] Implement `sd_compose` in `session_doc/sd_compose.py` — one scene or a narration directory — and register it in `pyproject.toml` `[project.scripts]`
+- [X] T028 [US4] Implement the `.authored.yaml` schema in `session_doc/authored.py` — strict, `version: int = 1`, `narration`, `generated_sha256`, and `blocks[]` of `id` / `disposition` / optional `text` / optional `critique` / optional `note` / `anchor` / `recorded` / `recorded_by`
+- [X] T029 [US4] Enforce in `session_doc/authored.py` that `unruled` is the **absence** of an entry (research D6) — the record stores only what the human contributed, and a part-way record stays small
+- [X] T030 [US4] Implement `compose(narration, record)` in `session_doc/compose.py`: `authored` and `edited` place the human's text, `cut` removes the block, `mine` and absent leave the gap standing
+- [X] T031 [US4] Refuse in `session_doc/compose.py` when the record's `generated_sha256` does not match the narration, naming both digests. This is the whole of v1's staleness handling — the same self-invalidating property `transcript_corrections`' `was` check gives the tape
+- [X] T032 [US4] Write `anchor` values into the record without matching on them (research D2), so a record authored today survives into #456's matcher without a migration
+- [X] T033 [US4] Implement `sd_compose` in `session_doc/sd_compose.py` — one scene or a narration directory — and register it in `pyproject.toml` `[project.scripts]`
 
 **Checkpoint**: a hand-authored record composes deterministically and refuses when stale.
 
