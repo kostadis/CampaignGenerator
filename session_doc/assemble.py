@@ -62,6 +62,89 @@ def collect_scene_files(in_dir: Path, pattern: str, prefer_scrubbed: bool) -> li
     return [by_stem[k] for k in sorted(by_stem)]
 
 
+class SceneCollision(Exception):
+    """Two files claim one scene and nothing in the inputs says which is final."""
+
+
+def resolve_scene_collisions(scenes, chosen: set[str]):
+    """One file per `scene:`, or refuse.
+
+    `collect_scene_files` dedupes on the filename stem, which correctly
+    collapses the `foo.md` / `foo.scrubbed.md` pair it was written for. But
+    scene identity is the `scene:` frontmatter, not the slug — so two renders of
+    one scene saved under different titles are two stems, both survive
+    collection, and both land in the assembled document under the same number
+    (#429). `Assembled 7 scene(s)` reads like success; the exit status is 0.
+
+    That is how a discarded draft ships as canon. Renaming a regenerated scene —
+    the natural thing to do when trying a second title, or keeping a version to
+    compare — is enough to reintroduce the rejected one, and the chapter then
+    tells the same scene twice, two different ways.
+
+    Refusal rather than a warning, and rather than picking one: which revision
+    is final is knowledge only the operator has, and this repo's convention is
+    that a precision decision gets a human checkpoint rather than a silent
+    default — `sd_plan` refuses an empty narrator pool instead of falling back
+    to the roster, for the same reason.
+
+    `chosen` is `--use`, which makes that ruling explicit and recorded in the
+    command rather than implied by which filename sorted first.
+    """
+    by_scene: dict[int, list] = {}
+    for entry in scenes:
+        by_scene.setdefault(entry[0], []).append(entry)
+
+    named = {Path(c).name for c in chosen}
+    unknown = named - {e[3].name for e in scenes}
+    if unknown:
+        # A stale --use must fail loudly rather than silently selecting nothing,
+        # for the reason transcript_corrections checks `was` against the tape.
+        raise SceneCollision(
+            "--use names files that are not in this directory: "
+            + ", ".join(sorted(unknown))
+        )
+
+    resolved, unresolved = [], []
+    for scene_num in sorted(by_scene):
+        entries = by_scene[scene_num]
+        if len(entries) == 1:
+            resolved.append(entries[0])
+            continue
+        picked = [e for e in entries if e[3].name in named]
+        if len(picked) == 1:
+            resolved.append(picked[0])
+        else:
+            unresolved.append((scene_num, entries, len(picked)))
+
+    if unresolved:
+        lines = [
+            "Refusing to assemble: more than one file claims the same scene.",
+            "",
+            "Scene identity is the `scene:` frontmatter, not the filename, so "
+            "these are the same scene told twice —",
+            "assembling them both would put a discarded draft in the chapter "
+            "beside the one that replaced it.",
+        ]
+        for scene_num, entries, n_picked in unresolved:
+            lines.append("")
+            lines.append(f"  scene {scene_num}:")
+            for e in entries:
+                mark = " <-- --use" if e[3].name in named else ""
+                lines.append(f"    {e[3].name}{mark}")
+            if n_picked > 1:
+                lines.append(f"    (--use names {n_picked} of these; name exactly one)")
+        lines += [
+            "",
+            "Choose the final one per scene and re-run, e.g.:",
+            f"    --use {unresolved[0][1][0][3].name}",
+            "",
+            "Deleting or moving the other file works too; --use records the "
+            "decision in the command.",
+        ]
+        raise SceneCollision("\n".join(lines))
+    return resolved
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Stage 4 — combine per-scene narration files into a single session document."
@@ -69,6 +152,9 @@ def main() -> None:
     parser.add_argument("input_dir", metavar="DIR",
                         help="Directory holding session_doc_scene_*.md files "
                              "(written by session_doc.py --per-scene-output).")
+    parser.add_argument("--use", metavar="FILENAME", action="append", default=[],
+                        help="When two files claim the same scene, assemble this "
+                             "one. Repeatable, one per contested scene (#429).")
     parser.add_argument("--output", "-o", required=True, metavar="FILE",
                         help="Where to write the assembled session document.")
     parser.add_argument("--title", metavar="TEXT", default=None,
@@ -122,6 +208,11 @@ def main() -> None:
                   f"(got {scene_str!r})", file=sys.stderr)
             continue
         scenes.append((scene_num, meta, strip_audit_comments(body).strip(), path))
+    try:
+        scenes = resolve_scene_collisions(scenes, set(args.use or []))
+    except SceneCollision as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(1)
     scenes.sort(key=lambda x: x[0])
 
     if not scenes:
