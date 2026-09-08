@@ -266,11 +266,24 @@ def test_codex_omits_inherited_claude_model_everywhere(monkeypatch, tmp_path, mo
 
 
 def test_codex_explicit_claude_model_refuses_before_any_router_child(monkeypatch, tmp_path):
+    """The refusal is for an EXPLICIT incompatible pick, not an inherited one.
+
+    Seeding the model into `runtime` puts it in the PLATFORM tier, which
+    `resolve_selection` deliberately treats as an inherited default and omits
+    rather than refuses — "A platform/literal model is an inherited default,
+    not an operator's Codex choice." A sibling test asserts exactly that
+    omission from the same helper, so the two were making opposite claims about
+    identical input and this one could never pass (#424).
+
+    The model therefore goes in as a query parameter, which is the REQUEST tier
+    and the one the code calls explicit. That is also how the operator supplies
+    it, so the test now exercises the path it is named for.
+    """
     captured = _capture(monkeypatch, "server.routers.grounding")
-    _seed(monkeypatch, tmp_path, "codex-cli", "claude-sonnet-4-6")
+    _seed(monkeypatch, tmp_path, "codex-cli", "")
     r = client.get(
         "/api/grounding/run/campaign-state",
-        params={"input": "docs/x.md"},
+        params={"input": "docs/x.md", "model": "claude-sonnet-4-6"},
     )
     assert r.status_code == 409, r.text
     assert r.json()["detail"]["error"] == "incompatible_selection"

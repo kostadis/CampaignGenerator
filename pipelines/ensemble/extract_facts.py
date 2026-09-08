@@ -534,7 +534,23 @@ def main() -> None:
           f"endpoint: {args.endpoint} | model: {args.model or 'default'}]")
     print("=" * 60)
 
-    client = client_from_args(args)
+    # Built on first use, not here (#424). Every chunk can be cached — that is
+    # what --extract-dir is for, and resuming a partial run is the normal case —
+    # and constructing the client eagerly made such a run depend on a backend it
+    # never calls. On a checkout with no `config/wiring.yaml` (it is generated
+    # and gitignored) the dgx default model resolves to None, so a fully cached
+    # run died inside dgxlib's registry on a model id nobody needed.
+    #
+    # Same principle as #342: nothing gates a run on a credential up front —
+    # each backend refuses for itself, at the call, when it needs something it
+    # does not have.
+    _built: list = []
+
+    def client() -> object:
+        if not _built:
+            _built.append(client_from_args(args))
+        return _built[0]
+
     chunks, label = prepare_chunks(text, args.chunk_size, args.split_chapters,
                                    annotate_pov=args.annotate_pov,
                                    structural=args.scene_chunks)
@@ -547,7 +563,7 @@ def main() -> None:
         if args.parallel > 1:
             print("  [batch] --parallel is ignored under --batch (grouped "
                   "submission is fully concurrent)")
-        results, failures = run_batched(chunks, extract_dir, client,
+        results, failures = run_batched(chunks, extract_dir, client(),
                                         extract_system, args.model,
                                         args.max_tokens)
         if failures:
@@ -564,7 +580,7 @@ def main() -> None:
         facts_by_chunk = [results[i] for i in range(1, len(chunks) + 1)]
     elif args.parallel > 1:
         def call_fn(chunk: str) -> str:
-            return stream_api(client, extract_system, chunk, args.model,
+            return stream_api(client(), extract_system, chunk, args.model,
                               max_tokens=args.max_tokens, silent=True)
 
         print(f"  [parallel] up to {args.parallel} chunk(s) in flight")
@@ -595,7 +611,7 @@ def main() -> None:
                       f"({len(chunk):,} chars)...")
                 print("  " + "─" * 56)
                 raw = stream_api(
-                    client, extract_system, chunk, args.model,
+                    client(), extract_system, chunk, args.model,
                     max_tokens=args.max_tokens,
                 )
                 print("  " + "─" * 56)

@@ -189,15 +189,30 @@ def test_resolve_cli_model_rejects_explicit_incompatible_codex_model():
 
 
 def test_make_client_routes_codex_cli(monkeypatch):
+    """The stub takes **kwargs on purpose (#424).
+
+    It used to accept `model_override` alone, so when `make_client` began
+    forwarding the reasoning-effort pair the test failed with a TypeError from
+    its own lambda — a stale double, not a seam violation. Narrowing the stub to
+    exactly today's arguments would put the same trap back for the next
+    argument, so it accepts whatever it is given and asserts on the contents.
+    """
     sentinel = object()
     seen = {}
-    monkeypatch.setattr(
-        client_mod,
-        "_CodexCliClient",
-        lambda model_override=None: seen.update(model=model_override) or sentinel,
-    )
-    assert client_mod.make_client(backend="codex-cli", model_override="codex-model") is sentinel
-    assert seen == {"model": "codex-model"}
+
+    def _stub(**kwargs):
+        seen.update(kwargs)
+        return sentinel
+
+    monkeypatch.setattr(client_mod, "_CodexCliClient", _stub)
+    assert client_mod.make_client(
+        backend="codex-cli", model_override="codex-model") is sentinel
+    assert seen["model_override"] == "codex-model"
+    # The routing must forward the effort pair rather than dropping it here —
+    # `codex_reasoning_effort_source` is what CodexRunIdentity reports, and a
+    # client built without it records the wrong provenance.
+    assert "reasoning_effort" in seen
+    assert "reasoning_effort_source" in seen
 
 
 def test_add_backend_args_default_backend_override():

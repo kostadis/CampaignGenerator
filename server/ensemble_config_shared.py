@@ -128,6 +128,12 @@ class EnsemblePaths(BaseModel):
     # map is unaffected and stays a router literal (FR-013's promote
     # allow-list, a different concern from this workspace layout).
     drafts_dir: str = "docs/ensemble/drafts"
+    # /run/polish's output. It was the last `docs/ensemble/`-shaped literal
+    # left in the router (#424 via test_ensemble_config_defaults), which is the
+    # one place CLAUDE.md names by hand: "Never add a default literal to
+    # server/routers/ensemble.py". The guard had been reporting it for as long
+    # as the suite was red enough to hide a single line.
+    polished_out: str = "docs/ensemble/polished.md"
     # Module inventory passed as --inventory to synthesise_world_state;
     # empty = don't pass.
     inventory: str = ""

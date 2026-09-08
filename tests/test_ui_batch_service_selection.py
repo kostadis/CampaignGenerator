@@ -44,6 +44,17 @@ RUN_ROUTE = {
 }
 
 
+#: A service selection with nothing overridden. The three effort/thinking
+#: fields are part of the payload and default to None; they were added by the
+#: codex and claude-code effort work and the exact-dict assertions here were
+#: never updated, which is 12 of the 23 failures #424 counted. Defined once so
+#: the next field is one edit rather than six.
+EMPTY_SELECTION = {
+    "backend": None, "model": None, "batch": None,
+    "claude_code_effort": None, "claude_code_thinking": None,
+    "codex_reasoning_effort": None,
+}
+
 @pytest.fixture
 def platform(monkeypatch, tmp_path):
     config_subdir = tmp_path / "config"
@@ -136,7 +147,7 @@ def test_put_persists_batch_alongside_model_and_backend(platform, service):
         json={"backend": "dgx", "model": "Qwen3-Next-80B", "batch": True},
     )
     assert r.status_code == 200, r.text
-    assert client.get(f"/api/{service}/selection").json() == {
+    assert client.get(f"/api/{service}/selection").json() == EMPTY_SELECTION | {
         "backend": "dgx", "model": "Qwen3-Next-80B", "batch": True,
     }
 
@@ -151,9 +162,7 @@ def test_put_batch_only_is_not_treated_as_empty(platform, service):
     """
     r = client.put(f"/api/{service}/selection", json={"batch": True})
     assert r.status_code == 200, r.text
-    assert client.get(f"/api/{service}/selection").json() == {
-        "backend": None, "model": None, "batch": True,
-    }
+    assert client.get(f"/api/{service}/selection").json() == EMPTY_SELECTION | {"batch": True}
     resolved = client.get(f"/api/{service}/selection/resolved").json()
     assert resolved["batch"] is True
     assert resolved["batch_origin"] == "service"
@@ -226,9 +235,7 @@ def test_clearing_override_restores_batch_inheritance(platform, service):
 
     r = client.delete(f"/api/{service}/selection")
     assert r.status_code == 200, r.text
-    assert client.get(f"/api/{service}/selection").json() == {
-        "backend": None, "model": None, "batch": None,
-    }
+    assert client.get(f"/api/{service}/selection").json() == EMPTY_SELECTION
 
     resolved = client.get(f"/api/{service}/selection/resolved").json()
     assert resolved["batch"] is True
