@@ -18,7 +18,9 @@ To regenerate the golden (when a prompt edit is intended):
 import json
 import os
 import sys
+from collections.abc import Mapping
 from pathlib import Path
+from types import MappingProxyType
 
 import pytest
 
@@ -90,14 +92,47 @@ def _build_matrix() -> dict[str, str]:
     return matrix
 
 
-def test_prompt_matrix_matches_golden():
+@pytest.fixture(scope="module")
+def matrix() -> Mapping[str, str]:
+    """The whole flag matrix, built once for the six tests that read it (#405).
+
+    Every test in this file wants the same 265 entries, and each used to call
+    `_build_matrix()` for itself. Module scope rather than a module-level
+    constant so a run that selects none of them (`-k` elsewhere) builds nothing,
+    and so an exception during construction is reported as a fixture error
+    against the tests that needed it rather than as a collection failure for the
+    file.
+
+    Read-only by construction: one shared dict across tests is only safe while
+    nothing writes to it, and `mappingproxy` makes that a property of the object
+    instead of a convention six tests have to keep. Nothing needs to write —
+    `_build_matrix` does all its assembly internally and hands back a finished
+    dict — so the only cost is `dict()` at the one place that re-serialises it.
+    """
+    return MappingProxyType(_build_matrix())
+
+
+def test_the_shared_matrix_cannot_be_mutated_by_a_test(matrix):
+    """#405 traded six private builds for one shared object; this is the guard.
+
+    Six tests reading one dict is only equivalent to six building their own
+    while none of them writes. Enforced rather than asked for, because a write
+    would not fail here — it would surface as a different test failing later,
+    in an order-dependent way, with nothing pointing back at the writer.
+    """
+    with pytest.raises(TypeError):
+        matrix["__injected_by_a_test"] = "x"
+    assert "__injected_by_a_test" not in matrix
+
+
+def test_prompt_matrix_matches_golden(matrix):
     """Every build_narrate_system flag combo + every standalone constant
     must produce byte-identical output to the reviewed golden."""
-    current = _build_matrix()
+    current = matrix
 
     if not GOLDEN.exists() or os.environ.get("UPDATE_PROMPT_GOLDEN") == "1":
         GOLDEN.parent.mkdir(parents=True, exist_ok=True)
-        GOLDEN.write_text(json.dumps(current, indent=2, sort_keys=True),
+        GOLDEN.write_text(json.dumps(dict(current), indent=2, sort_keys=True),
                           encoding="utf-8")
         pytest.fail(
             f"Golden {'regenerated' if GOLDEN.exists() else 'written'}: "
@@ -133,11 +168,11 @@ def test_prompt_matrix_matches_golden():
         )
 
 
-def test_every_narration_mode_uses_v1_without_conflicting_legacy_rules():
+def test_every_narration_mode_uses_v1_without_conflicting_legacy_rules(matrix):
     """A golden refresh must not hide an old wrapper undoing the new brief."""
     from session_doc.narrate import NARRATION_WRITING_BRIEF
 
-    for mode, prompt in _build_matrix().items():
+    for mode, prompt in matrix.items():
         if mode.startswith("__"):
             continue
         assert prompt.count(NARRATION_WRITING_BRIEF.strip()) == 1, mode
@@ -165,7 +200,7 @@ def test_every_narration_mode_uses_v1_without_conflicting_legacy_rules():
             assert obsolete not in prompt, (mode, obsolete)
 
 
-def test_every_narration_mode_carries_the_table_speech_audit_hatch():
+def test_every_narration_mode_carries_the_table_speech_audit_hatch(matrix):
     """#396, across the whole flag matrix.
 
     `26ec5b0` deleted the hatch from `prose_mode.md` and banned it in
@@ -176,7 +211,7 @@ def test_every_narration_mode_carries_the_table_speech_audit_hatch():
     which carried it only in `prose_mode.md` and `dialogue_conditional.md`,
     would fail this walk too.
     """
-    for mode, prompt in _build_matrix().items():
+    for mode, prompt in matrix.items():
         if mode.startswith("__"):
             continue
         assert "table-speech reclassified" in prompt, mode
@@ -191,7 +226,7 @@ def test_every_narration_mode_carries_the_table_speech_audit_hatch():
         assert "not a claim of completeness" in " ".join(prompt.split()), mode
 
 
-def test_every_narration_mode_carries_the_name_fidelity_rule():
+def test_every_narration_mode_carries_the_name_fidelity_rule(matrix):
     """#410/#411, across the whole flag matrix.
 
     The old anti-normalization caveat (#223) lived only inside the `if
@@ -205,7 +240,7 @@ def test_every_narration_mode_carries_the_name_fidelity_rule():
     because it is a rule about characterization — the name a speaker chose is
     part of what the line reveals about them — not a spelling-hygiene rule.
     """
-    for mode, prompt in _build_matrix().items():
+    for mode, prompt in matrix.items():
         if mode.startswith("__"):
             continue
         flat = " ".join(prompt.split())
@@ -214,7 +249,7 @@ def test_every_narration_mode_carries_the_name_fidelity_rule():
         assert "Never normalize a name inside a quoted line" in flat, mode
 
 
-def test_every_narration_mode_carries_the_real_names_rule():
+def test_every_narration_mode_carries_the_real_names_rule(matrix):
     """#398, across the whole flag matrix.
 
     `26ec5b0` deleted the rule forbidding real players'/the GM's names in
@@ -226,7 +261,7 @@ def test_every_narration_mode_carries_the_real_names_rule():
     placeholder in both `base.md` and `bundle_base.md` — unconditional on
     both render paths, the same structure #411 used for `name_fidelity.md`.
     """
-    for mode, prompt in _build_matrix().items():
+    for mode, prompt in matrix.items():
         if mode.startswith("__"):
             continue
         flat = " ".join(prompt.split())
@@ -236,7 +271,7 @@ def test_every_narration_mode_carries_the_real_names_rule():
         assert "does not receive information from a person at the table" in flat, mode
 
 
-def test_no_narration_mode_lets_the_brief_outrank_the_campaign_on_tense():
+def test_no_narration_mode_lets_the_brief_outrank_the_campaign_on_tense(matrix):
     """#395, across the whole flag matrix.
 
     Tense reached the model from four templates (`writing_brief`, `base`,
@@ -244,7 +279,7 @@ def test_no_narration_mode_lets_the_brief_outrank_the_campaign_on_tense():
     brief alone leaves the precedence blocks still saying it wins, so this
     walks every combination rather than the one the fix was written against.
     """
-    for mode, prompt in _build_matrix().items():
+    for mode, prompt in matrix.items():
         if mode.startswith("__"):
             continue
         assert "present-tense voice" not in prompt, mode
