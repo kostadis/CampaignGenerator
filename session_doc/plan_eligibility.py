@@ -381,25 +381,61 @@ def _stranger_buckets(
     meeting]`` — so containment would print both under a notice saying each one
     costs that character a scene, in the one channel #385 built to be read.
 
-    **The cost is real and is paid today, not hypothetical.** ``**[Valphine]**``
-    occurs 8 times across two corpus files against a roster spelling her
-    ``Valphine Sotorra``; it resolves to nobody, goes quiet, and costs her those
-    scenes. Containment could not catch it either, in any bucket: it tests for a
-    roster name *inside* the label, and ``valphine sotorra`` is not inside
-    ``[valphine]``. Short-form labels are structurally unreachable by this
-    heuristic. The fix is roster-declared alternate spellings rather than a
-    fuzzier print rule (#460), with the extraction prompt that writes the short
-    form in the first place as its other half (#459). What this function owes
-    the GM meanwhile is not calling the bucket "expected" — see
-    :func:`report_eligibility`.
+    A **shortened** roster name is the exception, and it is why the bracketed
+    rule is not the last word. ``**[Valphine]**`` occurs 8 times across two
+    corpus files against a roster spelling her ``Valphine Sotorra``; it is
+    bracketed, resolves to nobody, and used to file as apparatus among 17 beat
+    markers while costing her every scene she spoke in (#460). It is now
+    promoted by :func:`truncates_a_roster_name`, which tests containment in the
+    one safe direction — a piece inside a name, never a name inside a piece,
+    since a beat marker is longer than any name and can never match that way.
+
+    Promoted, not resolved. ``party.yaml`` declares the full name and
+    ``speaker_map_from_configs`` rewrites the tape to it in code before the
+    model runs, so a short label is a defect in the extraction prompt (#459),
+    not a spelling the roster should be taught to accept. Teaching it would be
+    similarity asserting identity — what the equality rule exists to refuse.
     """
     suspects: dict[int, tuple[str, set[str]]] = {}
     other = 0
     folded_pool = {norm_name(c): c for c in e.pool}
+    def truncates_a_roster_name(reading: LabelReading) -> bool:
+        """Is an unresolved piece a shortening of a roster character's name?
+
+        Containment in the **safe direction only**: the piece inside the name,
+        never the name inside the piece. ``valphine`` sits inside
+        ``valphine sotorra``, while ``scene tag — vukradin demands a meeting``
+        sits inside nothing — a beat marker is longer than any name, so it can
+        never match this way. The reverse test is the dangerous one and stays
+        confined to bare labels below.
+
+        Tested on the tokenised pieces, not the raw label, because the piece
+        has already had its brackets removed: ``[valphine]`` is not a substring
+        of ``valphine sotorra`` and ``valphine`` is.
+        """
+        return any(piece in name
+                   for piece in (norm_name(p) for p in reading.unresolved)
+                   for name in folded_pool)
+
     for scene in e.scenes:
         for reading in scene.strangers:
             folded = norm_name(reading.label)
-            if reading.characters or reading.names_gm:
+            if truncates_a_roster_name(reading):
+                # `**[Valphine]**` against a roster declaring `Valphine
+                # Sotorra` — 8 occurrences across two corpus sessions, each one
+                # a scene she spoke in and was excluded from (#460). It is
+                # bracketed and resolves to nobody, so it classified as
+                # apparatus and went quiet, filed among the beat markers.
+                #
+                # Printed, never resolved. `party.yaml` declares the full name
+                # and the speaker map rewrites the tape to it in code before
+                # the model runs, so a short label is a defect upstream (#459),
+                # not a spelling the roster should be taught to accept.
+                # Resolving it here would be similarity asserting identity —
+                # the thing the equality rule exists to refuse.
+                suspects.setdefault(scene.index, (scene.name, set()))[1].add(
+                    reading.label)
+            elif reading.characters or reading.names_gm:
                 # This label resolved at least one speaker and still has a slot
                 # that named nobody — so it is a speaker label by demonstration,
                 # not by resemblance, and the unnamed slot is a character the
@@ -474,16 +510,16 @@ def report_eligibility(e: Eligibility, *, vtt_path=None) -> None:
             print(f"  - {name}: {', '.join(sorted(labels))}")
     if other:
         # There are dozens of these per session and listing them buried the line
-        # above, which is the one the GM has to read. But they are NOT all
-        # "expected": reading bracketed labels (#453) routed scene apparatus
-        # here, and a short-form roster label like `[Valphine]` lands here too,
-        # where it is a wrong exclusion rather than an NPC. Saying "expected"
-        # of a bucket that holds both is the claim that was false; naming the
-        # bucket honestly and pointing at the record that lists it is not.
+        # above, which is the one the GM has to read. It used to call them all
+        # "expected", which stopped being true when #453 routed scene apparatus
+        # here and `[Valphine]` came with it — a wrong exclusion filed as an
+        # NPC. #460 promotes that case, so the bucket is once again mostly what
+        # it says. "Mostly" is why the pointer stays: a roster name mangled
+        # rather than shortened still lands here, and the record lists it.
         print(f"\n[eligibility] {other} further label(s) that resolved to nobody "
-              f"— scene apparatus, NPCs and unnamed voices, and any roster name "
-              f"spelled a way the roster does not declare. Not listed here; all "
-              f"of them are in {ELIGIBILITY_RECORD} under `unresolved_labels`.")
+              f"— scene apparatus, NPCs and unnamed voices. Not listed here; "
+              f"every one is in {ELIGIBILITY_RECORD} under `unresolved_labels`, "
+              f"which is the place to look if a character is missing above.")
 
     if e.has_uncoverable:
         print("\n[eligibility] no eligible narrator at all:")

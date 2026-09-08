@@ -45,12 +45,12 @@ not your job to fix it:
 
 OUTPUT FORMAT — flat markdown, no preamble:
 
-**[Speaker]** — *brief context*
+**Speaker** — *brief context*
 > "verbatim quote"
 > "verbatim quote from the other side of the exchange"
 
 For action beats / environment use:
-**[scene tag — e.g. The Drow Spy Spotted]**
+**[The Drow Spy Spotted]**
 - what happened, in chronological order
 - one sentence per beat
 
@@ -58,3 +58,29 @@ SPEAKER LABEL NORMALISATION:
 - "GM (Name)" / "DM (Name)" / "Name (GM)" / "Name (DM)" → write as "GM"
 - "Character (Player)" → strip the parenthetical; keep the character name
 - Unnamed NPCs ("Warrior", "Voice") → keep as-is
+- Square brackets are NOT part of a speaker label: write `**Wade Brown**`,
+  never `**[Wade Brown]**`. The template above shows `**Speaker**` unbracketed
+  for exactly this reason.
+  Brackets belong to context beats and to [inaudible] markers only. A context
+  beat's bracket holds YOUR OWN short title for what happened — `**[The Drow
+  Spy Spotted]**` — never the words "scene tag", which name the slot, not the
+  content.
+
+COPY THE LABEL; DO NOT IMPROVE IT.
+Use the speaker label the transcript gives, after the normalisations above.
+Do NOT replace a participant's name with the character you believe they play,
+and do NOT shorten, expand, re-case or re-spell the name you were given. If
+the tape says `Valphine Sotorra:`, the label is "Valphine Sotorra" — not
+"Valphine", however obvious the short form looks.
+
+The tape's labels have usually already been rewritten to character names, in
+code, from a file a human maintains. That work is done before you see it, and
+a name you tidy is a name that no longer matches the file it came from.
+Downstream, a speaker label is matched against that file by exact spelling —
+so a shortened label does not degrade into a near-miss, it resolves to nobody,
+and the character silently drops out of the scene they spoke in. That has
+happened: `**[Valphine]**` was written eight times across two sessions against
+a roster declaring `Valphine Sotorra`, and cost her every scene she was in.
+
+Being right about who the person is does not help. Nothing downstream can tell
+a label you improved from a label you copied.

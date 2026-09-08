@@ -179,11 +179,19 @@ def test_nothing_is_dropped_silently(name):
     a stranger at all and its `Valphine` slot vanished between the reader and
     the report. `scene_presence` now reports a label with any unresolved slot,
     so the invariant covers partial failures too.
+
+    Counted in **occurrences on both sides**. The loud bucket deduplicates by
+    label — it is a set, because printing `[Valphine]` five times helps nobody
+    — while the quiet bucket is a running count. Comparing one against the
+    other made the invariant fail the moment a loud label occurred twice, which
+    says nothing about whether anything was dropped.
     """
     _, e = eligibility_for(name)
-    suspects, other = _stranger_buckets(e)
-    loud = sum(len(labels) for _name, labels in suspects.values())
-    assert loud + other == sum(len(s.strangers) for s in e.scenes)
+    loud = loud_labels(e)
+    _, other = _stranger_buckets(e)
+    loud_occurrences = sum(1 for s in e.scenes for r in s.strangers
+                           if r.label in loud)
+    assert loud_occurrences + other == sum(len(s.strangers) for s in e.scenes)
 
 
 @pytest.mark.parametrize("name", FILES)
@@ -199,3 +207,29 @@ def test_every_unresolved_slot_is_named_in_the_record(name):
         for reading in scene.strangers:
             assert reading.unresolved
             assert reading.label in scene.stranger_labels
+
+
+# ── #460: the short form reaches the GM ─────────────────────────────────────
+
+@pytest.mark.parametrize("name", BRACKETED)
+def test_the_short_form_of_a_roster_name_is_reported_loudly(name):
+    """`**[Valphine]**`, 8 times across these two files, against a roster
+    declaring `Valphine Sotorra`. Each is a scene she spoke in and was ruled
+    ineligible for.
+
+    It used to file as apparatus — bracketed, resolving to nobody — and sit
+    quietly among 17 `[scene tag — …]` markers. Nothing resolves: `party.yaml`
+    declares the full name and the speaker map rewrites the tape to it in code
+    before the model runs, so a short label is an upstream defect (#459), not a
+    spelling the roster should learn to accept.
+    """
+    _, e = eligibility_for(name)
+    assert "[Valphine]" in loud_labels(e)
+
+
+def test_promoting_the_short_form_did_not_promote_the_beat_markers():
+    """The cost this split was built to avoid, re-checked after widening it."""
+    _, e = eligibility_for("vukradin_source.md")
+    for label in loud_labels(e):
+        assert not label.startswith("[scene tag"), label
+    assert len(loud_labels(e)) == 1

@@ -248,3 +248,28 @@ def test_a_beat_marker_is_still_inert_when_it_contains_a_roster_name():
     assert reading.characters == frozenset()
     assert reading.is_apparatus
     assert reading.unresolved == {"scene tag — Vukradin demands a meeting"}
+
+
+# ── #460: a shortened name is surfaced, never resolved ──────────────────────
+
+def test_a_short_form_is_still_not_resolved():
+    """The rule below changes what is *printed*, never who anybody is.
+    `[Valphine]` places nobody, exactly as before."""
+    assert present("[Valphine]") == set()
+
+
+def test_a_short_form_piece_is_recorded_as_unresolved():
+    """What the report needs: the piece with its brackets already removed, so
+    a substring test against the roster is possible without one."""
+    assert read_label("[Valphine]", CANON).unresolved == {"Valphine"}
+    assert read_label("Valphine", CANON).unresolved == {"Valphine"}
+
+
+def test_a_beat_marker_is_longer_than_any_name_it_mentions():
+    """Why the containment direction is safe. The roster name sits inside the
+    beat marker, never the other way round — so a rule testing *piece inside
+    name* can never promote apparatus, however many roster names it mentions."""
+    piece = next(iter(read_label(
+        "[scene tag — Vukradin demands a meeting]", CANON).unresolved))
+    assert "vukradin" in norm_name(piece)
+    assert not any(norm_name(piece) in norm_name(n) for n in ROSTER)

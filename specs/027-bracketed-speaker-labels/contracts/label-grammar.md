@@ -75,15 +75,22 @@ decision and carries no meaning about identity:
 
 | Label | Bucket |
 |---|---|
-| resolved a speaker, and a slot named nobody | listed individually — *"each one costs that character a scene"* |
+| an unresolved piece is a shortening of a roster name | listed individually — *"each one costs that character a scene"* |
+| resolved a speaker, and a slot named nobody | listed individually — same notice |
 | bare, unresolved, contains a roster name | listed individually — same notice |
 | bare, unresolved, otherwise | counted, not listed |
 | bracketed, no slot resolved | counted, not listed |
 
+The first row's containment runs in one direction only — the piece inside the name, never
+the name inside the piece. `valphine` sits inside `valphine sotorra`; `scene tag — vukradin
+demands a meeting` sits inside nothing, because a beat marker is longer than any name it
+mentions. The reverse test is the dangerous one and stays confined to bare labels.
+
 The counted bucket names what is in it and points at `plan.eligibility.json`, which lists
 every one. It does **not** call itself "expected": scene apparatus is expected, and a
-short-form roster label like `**[Valphine]**` (8 occurrences in the corpus, against a roster
-spelling her `Valphine Sotorra`) is a wrong exclusion sitting in the same bucket.
+short-form roster label reaching it would be a wrong exclusion filed as expected — which is
+what `**[Valphine]**` (8 occurrences, against a roster spelling her `Valphine Sotorra`) did
+until the first row above promoted it.
 
 ## Compatibility
 

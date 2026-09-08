@@ -259,6 +259,7 @@ def test_npc_labels_do_not_bury_a_mis_normalised_pc(tmp_path, monkeypatch, capsy
     assert "Vukradin (David)" in printed
     assert "Toblen Stonehill" not in printed
     assert "further label(s) that resolved to nobody" in printed
+    assert "scene apparatus, NPCs and unnamed voices" in printed
 
 
 # ── F8: the alternates path dropped a preamble ──────────────────────────────

@@ -272,7 +272,11 @@ speakers and confirm the markers create no presence and the speakers do.
   `Valphine Sotorra` stays unrecognised and is reported. Filed as #460 — it occurs 8 times
   in the corpus and costs her a scene, so the out-of-scope ruling is a deferral, not a
   judgement that it does not matter. #459 covers the extraction prompt that writes the short
-  form. Name comparison folds case and
+  form — the model was handed `Valphine Sotorra` by the deterministic speaker map
+  and shortened it, in exactly the two runs that also copied the brackets. It is
+  now **reported loudly** rather than filed among the beat markers, which is the
+  reader's whole obligation here: resolving it would be similarity asserting
+  identity. Name comparison folds case and
   whitespace and nothing else; treating a shorter name as the same person is an identity
   assertion from resemblance, which this project forbids by rule and by test. If the GM wants
   short forms resolved, that is a separate feature built on the declared alias registry, not
