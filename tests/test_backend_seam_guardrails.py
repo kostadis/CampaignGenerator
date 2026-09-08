@@ -52,6 +52,36 @@ SEAM_FILE = "campaignlib/api/client.py"
 def _is_test_file(rel: pathlib.PurePath) -> bool:
     return "tests" in rel.parts
 
+
+def _is_frozen_experiment(rel: pathlib.PurePath) -> bool:
+    """`experiments/` is archived evidence, not maintained source (#425).
+
+    These are byte-frozen records of runs that were actually made — prompts,
+    argv, responses, findings — and issues cite their line numbers. They were
+    written as standalone harnesses *outside* this repo, where calling
+    `make_client` directly was the correct thing to do; committing them moved
+    them inside the boundary this file polices, and the guard noticed. It was
+    working as designed.
+
+    Rewriting them to route through `client_from_args` would restore a green
+    guard by falsifying the evidence: the file would no longer be what was run.
+    So the exemption is by path role, like the `tests` one above, rather than a
+    list of the ten scripts that happen to trip it today.
+
+    Scope is deliberate. This exempts them from the seam *layering* rules, not
+    from being repo source — `repo_sources.py` still returns them, so the other
+    guardrail suites that read it are unaffected. None of those fire on
+    `experiments/` today (checked: no `messages.batches`, no `openrouter.ai`,
+    no retrieval-beside-render), and if one ever does the right answer is the
+    same argument made again there, not a blanket exclusion decided here.
+    """
+    return "experiments" in rel.parts
+
+
+def _is_out_of_seam_scope(rel: pathlib.PurePath) -> bool:
+    """Files the seam rules do not govern: this suite's own, and the archives."""
+    return _is_test_file(rel) or _is_frozen_experiment(rel)
+
 # Dispatcher scripts that intentionally use a bare --backend instead of
 # add_backend_args (see module docstring) — never build a client themselves.
 ALLOWED_DISPATCHER_FILES = {"ensemble.py", "ensemble_batch.py", "ensemble_extract.py"}
@@ -114,7 +144,7 @@ ALLOWED_NAME_COLLISION_FILES = {"kanka_mcp.py"}
 
 
 def _is_candidate_file(path: Path) -> bool:
-    return not _is_test_file(path.relative_to(REPO_ROOT))
+    return not _is_out_of_seam_scope(path.relative_to(REPO_ROOT))
 
 
 def _iter_candidate_files():
@@ -223,7 +253,7 @@ def discover_backend_surfaces() -> tuple[frozenset[str], frozenset[str]]:
     hand_written: set[str] = set()
     for path in repo_python_files(REPO_ROOT):
         rel = path.relative_to(REPO_ROOT).as_posix()
-        if _is_test_file(path.relative_to(REPO_ROOT)) or rel == SEAM_FILE:
+        if _is_out_of_seam_scope(path.relative_to(REPO_ROOT)) or rel == SEAM_FILE:
             continue
         tree = _source_tree(path)
         if _has_call(tree, "add_backend_args"):
@@ -828,7 +858,7 @@ def test_no_out_of_seam_messages_batches_reference():
         rp = py.resolve()
         if seam in rp.parents or rp.parent == seam:
             continue
-        if "/tests/" in str(rp) or rp.name.startswith("test_"):
+        if _is_out_of_seam_scope(rp.relative_to(REPO_ROOT)) or rp.name.startswith("test_"):
             continue
         text = py.read_text(encoding="utf-8", errors="ignore")
         if "messages.batches" in text:
@@ -1038,3 +1068,59 @@ def test_no_dispatcher_forwards_codex_effort_without_the_claude_code_one():
     assert not offenders, (
         f"dispatchers forward Codex effort but not Claude Code effort: {offenders}"
     )
+
+
+# ── The exemptions themselves ───────────────────────────────────────────────
+#
+# #425: ten committed experiment scripts call `make_client` directly and turned
+# this suite red on merge. They are byte-frozen records of runs that were
+# actually made, written as standalone harnesses before they lived in this
+# repo; rewriting them to satisfy a layering rule they predate would restore a
+# green guard by falsifying the evidence. Exempted by path role.
+#
+# The risk of an exemption is that it quietly grows. These pin its edges.
+
+def _rel(p: str) -> pathlib.PurePath:
+    return pathlib.PurePath(p)
+
+
+@pytest.mark.parametrize("path", [
+    "experiments/20260907-phandalin-gm-gaps-confirm/run.py",
+    "experiments/narration-dialogue-edit/run_test.py",
+    "experiments/deeply/nested/thing.py",
+])
+def test_frozen_experiments_are_out_of_seam_scope(path):
+    assert _is_out_of_seam_scope(_rel(path))
+
+
+@pytest.mark.parametrize("path", [
+    "session_doc/assemble.py",
+    "campaignlib/api/backends.py",
+    "server/routers/ensemble.py",
+    "pipelines/session_prep/prep.py",
+    # The near-misses: a name that merely starts with the exempt word, and one
+    # that contains it as a substring rather than as a path segment. `in
+    # rel.parts` is what keeps these in scope; a `str` check would not.
+    "experimental/run.py",
+    "session_doc/experiments_helper.py",
+])
+def test_production_code_is_still_governed(path):
+    assert not _is_out_of_seam_scope(_rel(path))
+
+
+def test_the_exemption_is_by_role_not_a_list_of_todays_offenders():
+    """A filename list would need editing every time an experiment is added,
+    and the next one to be added would be red until someone remembered."""
+    assert _is_out_of_seam_scope(_rel("experiments/not-written-yet-2027/run.py"))
+
+
+def test_the_guard_still_has_production_files_to_check():
+    """The exemption must not have emptied the candidate set — a guard that
+    checks nothing passes for the wrong reason."""
+    candidates = [p.relative_to(REPO_ROOT).as_posix()
+                  for p in _iter_candidate_files()]
+    assert len(candidates) > 100, len(candidates)
+    assert not [c for c in candidates if c.startswith("experiments/")]
+    # The seam's own callers are the point of the guard; they must be in scope.
+    assert any(c.startswith("session_doc/") for c in candidates)
+    assert any(c.startswith("campaignlib/") for c in candidates)
