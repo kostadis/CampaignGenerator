@@ -18,11 +18,14 @@ tests fail the build if the pre-flight predicate returns by copy-paste.
 from __future__ import annotations
 
 import ast
+import os
 import re
 from argparse import Namespace
+from pathlib import Path
 
 import pytest
-from pathlib import Path
+
+import conftest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FRONTEND_SRC = REPO_ROOT / "frontend" / "src"
@@ -267,3 +270,49 @@ def test_codex_child_failure_is_not_retried_as_anthropic(monkeypatch, tmp_path):
             messages=[{"role": "user", "content": "fail"}],
         )
     assert len(fake.calls) == 1
+
+
+# =========================================================================
+# #426 — the suite supplies its own credential, and absence stays testable
+#
+# 28 tests failed purely because the shell running pytest had no
+# ANTHROPIC_API_KEY. They already mock the client; they just did not mock far
+# enough up to clear the metered-API refusal. `tests/conftest.py` now sets a
+# dummy value for every test.
+#
+# That default is only safe while the tests in THIS file — the ones that assert
+# the refusal still exists — can still take it away. These pin both halves.
+# =========================================================================
+
+def test_the_suite_supplies_a_credential_by_default():
+    """A test that manages nothing sees a key, so it cannot fail for the
+    machine's lack of one."""
+    assert os.environ.get("ANTHROPIC_API_KEY") == conftest.DUMMY_ANTHROPIC_KEY
+
+
+def test_the_supplied_credential_cannot_be_a_real_one():
+    """It must be recognisable as a test artifact if it ever surfaces in an
+    error message or a recorded argv, and useless if it escapes."""
+    value = conftest.DUMMY_ANTHROPIC_KEY
+    assert "dummy" in value and "test" in value
+    assert os.environ.get("ANTHROPIC_API_KEY") == value
+
+
+def test_a_test_can_still_take_the_credential_away(monkeypatch):
+    """The escape hatch the whole #342 guard depends on. Four tests above use
+    it; if autouse ever won over `delenv`, they would silently stop asserting
+    the refusal and this file would pass while guarding nothing."""
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    assert "ANTHROPIC_API_KEY" not in os.environ
+
+    from campaignlib.api import client as client_mod
+    with pytest.raises(SystemExit) as excinfo:
+        client_mod._require_anthropic_credential(object())
+    assert "ANTHROPIC_API_KEY" in str(excinfo.value)
+
+
+def test_a_test_can_still_pin_its_own_credential(monkeypatch):
+    """Three files already set their own value; the default must not fight
+    them."""
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-something-else")
+    assert os.environ["ANTHROPIC_API_KEY"] == "sk-ant-something-else"
