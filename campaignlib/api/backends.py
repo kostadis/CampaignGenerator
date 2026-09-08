@@ -12,6 +12,7 @@ from dataclasses import dataclass
 
 from ..selection import (
     CLAUDE_CODE_EFFORTS,
+    MaxTokensEffect,
     CLAUDE_CODE_THINKING_ONLY_EFFORTS,
     ClaudeCodeEffort,
 )
@@ -345,6 +346,11 @@ CLAUDE_CODE_NO_THINKING_EFFORT = "high"
 # one sentence per member, and an unrecognised member used to fall through to
 # the "inherited" wording — asserting that no override was sent while
 # `override_sent` was True and `--effort` was on the command line (#413).
+# How `claude -p` receives an output ceiling: it has no CLI flag for one, but
+# honours this env var. Named once so the variable we set and the channel we
+# record in the run identity cannot drift apart (#414).
+CLAUDE_CODE_MAX_TOKENS_CHANNEL = "CLAUDE_CODE_MAX_OUTPUT_TOKENS"
+
 CLAUDE_CODE_EFFORT_SOURCES: tuple[str, ...] = (
     "explicit", "environment", "clamp", "inherited",
 )
@@ -450,6 +456,12 @@ class ClaudeCodeRunIdentity:
     source: str          # explicit | environment | clamp | inherited
     override_sent: bool
     thinking_on: bool
+    # What became of the caller's output ceiling (#414). Defaulted because this
+    # dataclass is public and frozen, and is constructed directly in tests and
+    # by callers that predate the field.
+    max_tokens_requested: int | None = None
+    max_tokens_effect: MaxTokensEffect = "unset"
+    max_tokens_channel: str | None = None
 
     @property
     def always_thinking(self) -> bool:
@@ -515,12 +527,16 @@ class ClaudeCodeRunIdentity:
             "claude_code_effort_source": self.source,
             "claude_code_effort_override": self.override_sent,
             "thinking": self.thinking_on or self.always_thinking,
+            "max_tokens_requested": self.max_tokens_requested,
+            "max_tokens_effect": self.max_tokens_effect,
+            "max_tokens_channel": self.max_tokens_channel,
         }
 
 
 def claude_code_run_identity(
     *, model: str, thinking_on: bool,
     effort: str | None = None, source: str | None = None,
+    max_tokens: int | None = None,
 ) -> ClaudeCodeRunIdentity:
     """Classify what this run will send, and who decided it.
 
@@ -542,6 +558,17 @@ def claude_code_run_identity(
     Rejecting here puts the error where the caller can fix it, next to the
     typo, rather than at the far end of a run in prose nobody diffs.
     """
+    # Mirrors `_claude_code_generate`'s own `if max_tokens:` exactly, so the
+    # record cannot claim a ceiling the child was never given — 0 and None both
+    # mean no env var is set, and "unset" is a third state that is neither
+    # enforced nor ignored (#414).
+    if max_tokens:
+        ceiling = dict(max_tokens_requested=max_tokens,
+                       max_tokens_effect="enforced",
+                       max_tokens_channel=CLAUDE_CODE_MAX_TOKENS_CHANNEL)
+    else:
+        ceiling = dict(max_tokens_requested=max_tokens or None,
+                       max_tokens_effect="unset", max_tokens_channel=None)
     if source is not None and source not in CLAUDE_CODE_EFFORT_SOURCES:
         accepted = ", ".join(CLAUDE_CODE_EFFORT_SOURCES)
         raise ValueError(
@@ -551,16 +578,18 @@ def claude_code_run_identity(
         return ClaudeCodeRunIdentity(
             effective_model=model, effort_sent=effort,
             source=source or "explicit", override_sent=True,
-            thinking_on=thinking_on,
+            thinking_on=thinking_on, **ceiling,
         )
     if not thinking_on and not _claude_code_always_thinking(model):
         return ClaudeCodeRunIdentity(
             effective_model=model, effort_sent=CLAUDE_CODE_NO_THINKING_EFFORT,
             source="clamp", override_sent=True, thinking_on=thinking_on,
+            **ceiling,
         )
     return ClaudeCodeRunIdentity(
         effective_model=model, effort_sent=None,
         source="inherited", override_sent=False, thinking_on=thinking_on,
+        **ceiling,
     )
 
 
@@ -677,7 +706,7 @@ def _claude_code_generate(
     sys_text = _blocks_to_text(system)
     env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
     if max_tokens:
-        env["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] = str(max_tokens)
+        env[CLAUDE_CODE_MAX_TOKENS_CHANNEL] = str(max_tokens)
     thinking_on = _claude_code_thinking(thinking, selection=thinking_selection)
     if thinking_on:
         # Opted in — inherit whatever the CLI/model would do on its own. Drop any
@@ -697,7 +726,7 @@ def _claude_code_generate(
 
     identity = claude_code_run_identity(
         model=model, thinking_on=thinking_on,
-        effort=effort, source=effort_source,
+        effort=effort, source=effort_source, max_tokens=max_tokens,
     )
     if announce is not None:
         announce(identity)

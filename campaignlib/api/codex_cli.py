@@ -18,7 +18,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
-from ..selection import CODEX_REASONING_EFFORTS, CodexReasoningEffort
+from ..selection import CODEX_REASONING_EFFORTS, CodexReasoningEffort, MaxTokensEffect
 
 
 CODEX_CLI = "codex"
@@ -106,6 +106,12 @@ class CodexRunIdentity:
     codex_reasoning_effort: str
     codex_reasoning_effort_source: str
     codex_reasoning_override: bool
+    # `codex exec` exposes no output-token limit flag, so a caller's ceiling is
+    # discarded. Recorded rather than merely dropped (#414) — the discard is
+    # correct, its invisibility was not.
+    max_tokens_requested: int | None = None
+    max_tokens_effect: MaxTokensEffect = "unset"
+    max_tokens_channel: str | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -115,14 +121,27 @@ class CodexRunIdentity:
             "codex_reasoning_effort": self.codex_reasoning_effort,
             "codex_reasoning_effort_source": self.codex_reasoning_effort_source,
             "codex_reasoning_override": self.codex_reasoning_override,
+            "max_tokens_requested": self.max_tokens_requested,
+            "max_tokens_effect": self.max_tokens_effect,
+            "max_tokens_channel": self.max_tokens_channel,
         }
 
     def status_line(self) -> str:
-        return (
+        line = (
             f"Codex run: model={self.model} ({self.model_source}); "
             f"reasoning_effort={self.codex_reasoning_effort} "
             f"({self.codex_reasoning_effort_source})"
         )
+        if self.max_tokens_effect == "ignored":
+            # Only when one was actually requested. An operator turning
+            # --narrate-tokens on this backend is moving a knob that does
+            # nothing, and finding that out by reading three adapters after the
+            # run is what #414 reports.
+            line += (
+                f"; max_tokens={self.max_tokens_requested} IGNORED "
+                f"(codex exec exposes no output-token limit)"
+            )
+        return line
 
 
 class _CodexTextBlock:
@@ -590,6 +609,7 @@ def _codex_cli_generate(*, system, user: str, model: str | None,
                         reasoning_effort: str | None = None,
                         reasoning_effort_source: str | None = None,
                         identity_sink=None,
+                        max_tokens: int | None = None,
                         output_schema: dict | None = None) -> str:
     system_text = _system_text(system)
     selected_model, model_source = _selected_model_identity(model)
@@ -603,6 +623,11 @@ def _codex_cli_generate(*, system, user: str, model: str | None,
         codex_reasoning_effort=selected_effort or "Codex default",
         codex_reasoning_effort_source=effort_source,
         codex_reasoning_override=selected_effort is not None,
+        # Recorded, never forwarded: there is no flag to forward it to. The
+        # value reaches this function only so the run can say it was dropped.
+        max_tokens_requested=max_tokens or None,
+        max_tokens_effect="ignored" if max_tokens else "unset",
+        max_tokens_channel=None,
     )
     # Validate every local launch setting before announcing a run or touching
     # the child boundary. A malformed timeout must not leave a status line
@@ -686,11 +711,12 @@ class _CodexCliStream:
     """One-chunk context manager matching the Anthropic stream surface."""
 
     def __init__(self, *, system, user: str, model: str | None,
-                 client: "_CodexCliClient"):
+                 client: "_CodexCliClient", max_tokens: int | None = None):
         self._system = system
         self._user = user
         self._model = model
         self._client = client
+        self._max_tokens = max_tokens
         self._text = ""
 
     def __enter__(self):
@@ -701,6 +727,7 @@ class _CodexCliStream:
             reasoning_effort=self._client.reasoning_effort,
             reasoning_effort_source=self._client.reasoning_effort_source,
             identity_sink=self._client._record_run_identity,
+            max_tokens=self._max_tokens,
         )
         return self
 
@@ -735,7 +762,8 @@ class _CodexCliMessages:
 
     def create(self, *, model, max_tokens, system, messages, tools=None,
                **_unsupported):
-        del max_tokens  # codex exec exposes no output-token limit flag
+        # NOT forwarded — codex exec exposes no output-token limit flag. Passed
+        # on only so the run identity can record that it was ignored (#414).
         system_text, user, selected_model = self._request(
             model=model, system=system, messages=messages, tools=tools
         )
@@ -746,12 +774,13 @@ class _CodexCliMessages:
             reasoning_effort=self._client.reasoning_effort,
             reasoning_effort_source=self._client.reasoning_effort_source,
             identity_sink=self._client._record_run_identity,
+            max_tokens=max_tokens,
         )
         return _CodexCliResponse(text)
 
     def stream(self, *, model, max_tokens, system, messages, tools=None,
                **_unsupported):
-        del max_tokens
+        # As in `create`: recorded, not forwarded.
         system_text, user, selected_model = self._request(
             model=model, system=system, messages=messages, tools=tools
         )
@@ -760,6 +789,7 @@ class _CodexCliMessages:
             user=user,
             model=selected_model,
             client=self._client,
+            max_tokens=max_tokens,
         )
 
 
@@ -770,7 +800,7 @@ class _CodexCliBrokeredMessages:
         self._client = client
 
     def create(self, *, model, max_tokens, system, messages, tools, **_unsupported):
-        del max_tokens  # codex exec exposes no output-token limit flag
+        # As in `create`: recorded, not forwarded.
         system_text = _system_text(system)
         transcript = _broker_transcript(messages)
         developer_instructions = _broker_developer_instructions(system_text, tools)
@@ -786,6 +816,7 @@ class _CodexCliBrokeredMessages:
             reasoning_effort=self._client.reasoning_effort,
             reasoning_effort_source=self._client.reasoning_effort_source,
             identity_sink=self._client._record_run_identity,
+            max_tokens=max_tokens,
             output_schema=_BROKER_RESULT_SCHEMA,
         )
         return _brokered_response(raw)

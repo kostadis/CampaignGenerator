@@ -49,6 +49,21 @@ CLAUDE_CODE_EFFORTS: tuple[ClaudeCodeEffort, ...] = (
     "xhigh",
     "max",
 )
+# What a backend actually did with the caller's `max_tokens` (#414).
+#
+# One argument, three behaviours: `codex exec` exposes no output-token flag and
+# discards it; `claude -p` forwards it as CLAUDE_CODE_MAX_OUTPUT_TOKENS; the
+# OpenAI-compatible and Anthropic paths pass it straight through. Every one of
+# those is correct on its own, and the caller could not tell them apart — so a
+# cross-backend comparison holding max_tokens "constant" was silently
+# uncontrolled on one arm.
+#
+# Shared vocabulary rather than a string per adapter, for the reason
+# `ClaudeCodeRunIdentity.as_dict` already gives about mirroring the Codex
+# contract: one consumer should handle both records without a second code path.
+MaxTokensEffect = Literal["enforced", "ignored", "unset"]
+MAX_TOKENS_EFFECTS: tuple[MaxTokensEffect, ...] = ("enforced", "ignored", "unset")
+
 # The two levels `claude -p` refuses when extended thinking is disabled. Kept
 # beside the vocabulary rather than inline at the check so the rule has one
 # home; campaignlib.api.backends reads it.
