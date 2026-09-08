@@ -103,3 +103,46 @@ def rg_or_skip():
     if shutil.which("rg") is None:
         pytest.skip("ripgrep is not on PATH; the rg scanner cannot be exercised here")
     return shutil.which("rg")
+
+
+# ── Credentials ─────────────────────────────────────────────────────────────
+
+#: Obviously not a real key, and never used for a call. Named so that if it
+#: ever escapes into an error message or a recorded argv, it reads as a test
+#: artifact rather than as a redacted secret.
+DUMMY_ANTHROPIC_KEY = "sk-ant-dummy-for-tests"
+
+
+@pytest.fixture(autouse=True)
+def _dummy_anthropic_key(monkeypatch):
+    """Give every test a credential, so no test fails for the shell's lack of one.
+
+    28 tests across five files failed purely because `ANTHROPIC_API_KEY` was not
+    exported in the shell running pytest (#426). They already mock the client —
+    they assert retry logic, truncation banners, batch polling and progress
+    output — but not far enough up to clear the metered-API refusal in
+    `campaignlib/api/client.py`. So a keyless machine reported failures nobody
+    caused, and the habit becomes run -> see red -> re-run or ignore. This file
+    already refuses to do that to people, twice, in its own words:
+
+        a suite that goes red there would train everyone to ignore it (T096)
+
+    **The refusal being cleared is deliberate and is not weakened** (#342). Each
+    backend still refuses for itself, at the call, and
+    `tests/test_no_credential_gate.py` still fails the build if a global "is a
+    key set" probe reappears. Nothing here reaches the network: no test can make
+    a metered call with this value.
+
+    Autouse rather than the per-test fixture #426 sketched. The issue's own
+    follow-up asks for "a guard so this cannot regress — otherwise the next test
+    to reach a live client object silently rejoins the 28", and a default no test
+    has to remember *is* that guard, structurally, instead of a second test that
+    has to enumerate the first one's blind spot. Skipping was rejected for the
+    reason the issue gives: these are real assertions and should run everywhere.
+
+    A test that cares about absence deletes it, which is already the established
+    pattern — `monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)`, used at
+    five sites today, four of them in the #342 guard itself. Function-scoped
+    monkeypatch means a test's own `setenv`/`delenv` runs after this and wins.
+    """
+    monkeypatch.setenv("ANTHROPIC_API_KEY", DUMMY_ANTHROPIC_KEY)
