@@ -454,6 +454,56 @@ def _load_bundle_scene_overrides(
     return resolved
 
 
+def _refuse_over_authored_work(narration_dir: Path, *, reroll: bool) -> None:
+    """Refuse to re-narrate over prose a human wrote, unless asked twice.
+
+    Rulings are cheap to redo and do not block; **prose** does. `--reroll`
+    lifts the refusal and says what becomes of the record before it acts — in
+    v1 that is "nothing, and it will no longer match", because anchor matching
+    is deferred whole: an anchor landing an authored block on the wrong prose is
+    the same attribution error this feature exists to prevent, committed by us
+    instead of by a model (#455, research D2).
+    """
+    from session_doc.authored import AuthoredError, load_record_for
+
+    if not narration_dir.is_dir():
+        return
+    blocked: list[tuple[Path, Path]] = []
+    for narration in sorted(narration_dir.glob("session_doc_scene_*.md")):
+        if narration.name.endswith((".composed.md", ".scrubbed.md")):
+            continue
+        try:
+            record = load_record_for(narration)
+        except AuthoredError:
+            continue          # a broken record is sd_compose's problem to report
+        if record is not None and record.has_authored_content:
+            blocked.append((narration, narration.with_name(
+                narration.stem + ".authored.yaml")))
+    if not blocked:
+        return
+    if reroll:
+        print(
+            "\n[reroll] Narrating over scenes that already have authored prose:\n"
+            + "\n".join(f"  {n.name}  (record: {r.name})" for n, r in blocked)
+            + "\n  The records are left exactly as they are. They will no longer\n"
+              "  match the new drafts, so `sd_compose` will refuse each of them\n"
+              "  until the scene is reviewed again. Nothing you wrote is deleted.\n",
+            file=sys.stderr,
+        )
+        return
+    print(
+        "Error: refusing to narrate over work you wrote by hand.\n\n"
+        + "\n".join(f"  {n.name}  has authored prose in {r.name}" for n, r in blocked)
+        + "\n\nRe-narrating replaces the draft those records were authored\n"
+          "against, so `sd_compose` would refuse them and the prose would be\n"
+          "reachable only by restoring the old narration by hand.\n\n"
+          "Pass --reroll to narrate anyway (the records are kept, and will need\n"
+          "re-reviewing), or move the .authored.yaml aside first.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Render per-scene first-person narration from a plan + scene extractions."
@@ -515,6 +565,12 @@ def main() -> None:
                         help="Render only the listed scene number(s) (1-based).")
     parser.add_argument("--prose-mode", action="store_true",
                         help="Strip mechanical / GM framing from narration.")
+    parser.add_argument("--reroll", action="store_true",
+                        help="Narrate over scenes whose .authored.yaml already "
+                             "holds prose the GM wrote. Refused without this "
+                             "(#455). In v1 this LIFTS the refusal; it does not "
+                             "merge — the record is left untouched and will not "
+                             "match the new draft until it is re-reviewed.")
     parser.add_argument("--gap-marking", action="store_true",
                         help="Where the source attributes description or "
                              "explanation to the GM, emit "
@@ -690,6 +746,16 @@ def main() -> None:
               f"extractions will NOT reach narration.\n"
               f"  -> pass --scene-extractions {smoothed} if that was the intent.",
               file=sys.stderr)
+
+    # #455 — refuse before spending anything. The only thing in this pipeline a
+    # human wrote from scratch is the prose in an .authored.yaml, and narrating
+    # over the draft it was authored against strands it: the record's digest no
+    # longer matches, so composing refuses, and the work is reachable only by
+    # restoring the old narration by hand.
+    #
+    # Checked here rather than at write time because spending tokens and THEN
+    # refusing to write is the worst ordering available.
+    _refuse_over_authored_work(per_scene_output_dir, reroll=args.reroll)
 
     try:
         per_scene_output_dir.mkdir(parents=True, exist_ok=True)

@@ -151,11 +151,11 @@ prose in the right places and is reproducible.
 **Independent test**: assemble a session where one scene has an unanswered gap; the refusal names
 that scene.
 
-- [ ] T034 [P] [US5] Create `tests/test_assemble_gate.py` with contract G: the gate refuses on a marker (G1), names **every** scene rather than the first (G2), and is off by default so today's behaviour is unchanged (G4)
-- [ ] T035 [P] [US5] Add contract V to `tests/test_assemble_gate.py`: one stem with both `.scrubbed.md` and `.composed.md` refuses naming both (V1), `--use` resolves it (V2), and the message distinguishes this from #429's collision (V3)
-- [ ] T036 [US5] Implement `--require-composed` in `session_doc/assemble.py`, reading the **assembled documents** for markers rather than consulting any record (research D3) — so the gate holds for a scene composed by hand, by #456, or by anything else
-- [ ] T037 [US5] Make `collect_scene_files` in `session_doc/assemble.py` raise the existing `SceneCollision` for a scrubbed/composed variant clash, reusing `--use` rather than adding a second flag with the same meaning (research D4, Principle XII)
-- [ ] T038 [US5] Word the two collision messages in `session_doc/assemble.py` so they are not confused: #429's is *two scenes with one number*, this one is *one scene with two final variants*
+- [X] T034 [P] [US5] Create `tests/test_assemble_gate.py` with contract G: the gate refuses on a marker (G1), names **every** scene rather than the first (G2), and is off by default so today's behaviour is unchanged (G4)
+- [X] T035 [P] [US5] Add contract V to `tests/test_assemble_gate.py`: one stem with both `.scrubbed.md` and `.composed.md` refuses naming both (V1), `--use` resolves it (V2), and the message distinguishes this from #429's collision (V3)
+- [X] T036 [US5] Implement `--require-composed` in `session_doc/assemble.py`, reading the **assembled documents** for markers rather than consulting any record (research D3) — so the gate holds for a scene composed by hand, by #456, or by anything else
+- [X] T037 [US5] Make `collect_scene_files` in `session_doc/assemble.py` raise the existing `SceneCollision` for a scrubbed/composed variant clash, reusing `--use` rather than adding a second flag with the same meaning (research D4, Principle XII)
+- [X] T038 [US5] Word the two collision messages in `session_doc/assemble.py` so they are not confused: #429's is *two scenes with one number*, this one is *one scene with two final variants*
 
 **Checkpoint**: a marker cannot reach an assembled chapter, and no variant is chosen by sort order.
 
@@ -167,9 +167,9 @@ that scene.
 
 **Independent test**: author a record, re-run narration, confirm the refusal names the file.
 
-- [ ] T039 [P] [US6] Create `tests/test_narrate_authored_refusal.py` with contract N: a record with authored content blocks a re-run naming the record (N1), `--reroll` lifts it and states what becomes of the record **before** acting (N2), an empty record does not block (N3)
-- [ ] T040 [US6] Implement the refusal in `session_doc/sd_narrate.py` before any model call — spending tokens and then refusing to write is the worst ordering
-- [ ] T041 [US6] Implement `--reroll` in `session_doc/sd_narrate.py` as a refusal-lift, **not** a merge. Anchor matching is deferred whole (research D2); merge review is #456's, with its UX
+- [X] T039 [P] [US6] Create `tests/test_narrate_authored_refusal.py` with contract N: a record with authored content blocks a re-run naming the record (N1), `--reroll` lifts it and states what becomes of the record **before** acting (N2), an empty record does not block (N3)
+- [X] T040 [US6] Implement the refusal in `session_doc/sd_narrate.py` before any model call — spending tokens and then refusing to write is the worst ordering
+- [X] T041 [US6] Implement `--reroll` in `session_doc/sd_narrate.py` as a refusal-lift, **not** a merge. Anchor matching is deferred whole (research D2); merge review is #456's, with its UX
 
 **Checkpoint**: the only hand-written thing in this pipeline cannot be destroyed by accident.
 
