@@ -5,6 +5,8 @@
 that adds this document must not close it. Evidence is frozen under
 [`experiments/`](../../experiments/README.md); the runs it rests on are
 `20260907-phandalin-gm-gaps-medium` and `20260907-phandalin-gm-gaps-confirm`.
+Implementation is tracked in #418's sub-issues: #453 (speaker labels), #454
+(contract port), #455 (document model), #456 (editor).
 
 ## Summary
 
@@ -132,10 +134,13 @@ Every run used its supplied section heading, emitted markers, and left dialogue
 outweighing narration two to four times. The ratio band (0.15–0.26) brackets the
 tuned scene's 0.21 across drafts from 1,174 to 3,101 words.
 
-**What the evidence does not establish:** whether the marked passages are the
-*right* ones. A run that gapped the wrong six would produce an identical table.
-That judgement belongs to the GM against the source, which is why the editor
-puts the source's GM turns beside the gaps rather than in a file.
+**What the evidence did not establish — and what has since settled it:** whether
+the marked passages are the *right* ones. A run that gapped the wrong six would
+produce an identical table. That judgement belongs to the GM against the source,
+and it has now been made: the 31 confirmation gaps were read against their
+sources and accepted. Those rulings are the fixture the contract port is checked
+against (#454). The editor still puts the source's GM turns beside the gaps
+rather than in a file, because the same judgement is owed on every future scene.
 
 ### The ruling is not delegable
 
@@ -346,6 +351,8 @@ It is not a claim that fable is the right model — the confirmation ran on
 contract's behaviour should be re-confirmed on any model swap. It is not a
 finished chapter, a canon change, or a revalidation of the current narration path
 at HEAD; the runs are pinned to generator `d9c5de8` and campaign `bbf4e3c` /
-`421041f3`. And it does not establish that the marked passages are correct — only
-that marking happens consistently. The GM's review of the 31 confirmation gaps
-against their sources is the outstanding evidence.
+`421041f3`. The marked passages have since been reviewed against their sources
+and accepted, which closes the question this section originally left open; what
+is still unestablished is that the contract holds against *this repo's* narration
+prompt, a fragment assembly rather than the flat experiment prompt these runs
+used (#454).
