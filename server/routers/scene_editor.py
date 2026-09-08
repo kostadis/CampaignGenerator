@@ -420,12 +420,40 @@ def _record_activity(cfg: ResolvedEditorConfig, *, stage: str, rc: int | None,
 
 
 def _write_knobs_sidecar(narration_path: Path | None, knobs: dict) -> None:
-    """``session_doc_scene_NN_<slug>.knobs.json`` next to the narration."""
+    """Merge this run's OUTCOME into the record ``sd_narrate`` already wrote.
+
+    Ownership is split, deliberately (#454, Q3 / research D8). The CLI owns
+    **render identity** — model, backend, the modes, and each document's
+    content digest — because it is what actually built the prompt, and because
+    a record only the server produced meant a terminal render recorded nothing
+    at all (Principle VI). This function owns **run outcome**: status, exchange
+    and file counts, which are computed here after the subprocess exits and are
+    not knowable to the CLI.
+
+    Two writers of one file is the shape of a Split-Brain, and it is admitted
+    only because the writes are strictly sequential — this runs after the
+    process it launched has finished — and because the alternative, two files
+    per render, guarantees the disagreement rather than risking it.
+
+    A merge rather than a replace: overwriting would erase the identity fields
+    and leave the sidecar describing a run whose prompt it can no longer name.
+    """
     if narration_path is None:
         return
     try:
         sidecar = narration_path.with_name(narration_path.stem + ".knobs.json")
-        sidecar.write_text(json.dumps(knobs, indent=2) + "\n", encoding="utf-8")
+        merged: dict = {}
+        try:
+            existing = json.loads(sidecar.read_text(encoding="utf-8"))
+            if isinstance(existing, dict):
+                merged.update(existing)
+        except (OSError, ValueError):
+            # No CLI record: an older sd_narrate, or a render that failed
+            # before writing one. The outcome fields are still worth keeping.
+            pass
+        merged.update(knobs)
+        sidecar.write_text(json.dumps(merged, indent=2, ensure_ascii=False) + "\n",
+                           encoding="utf-8")
     except Exception:
         pass
 

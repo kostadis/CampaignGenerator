@@ -18,6 +18,8 @@ with provider ``--batch`` submits that single exchange as one batch item.
 """
 
 import argparse
+import hashlib
+import json
 import re
 import sys
 import uuid
@@ -56,6 +58,7 @@ from session_doc.io import (
     scene_extraction_files,
 )
 from session_doc.narrate import (
+    GM_ATTRIBUTION_GAP,
     BundleSelection,
     NarrationScene,
     build_bundled_narrate_prompts,
@@ -116,6 +119,55 @@ def _write_narration_output(path: Path, *, index: int, scene_name: str,
         index=index, scene_name=scene_name, narrator=narrator,
         session_id=session_id, narration=narration,
     ))
+
+
+def _write_render_record(narration_path: Path, *, args, genre_text: str | None,
+                         model: str, backend: str) -> None:
+    """``session_doc_scene_NN_<slug>.knobs.json`` — what produced this scene.
+
+    Written by the CLI, not by the server (#454, Q3). The sidecar existed
+    before this, but only ``server/routers/scene_editor.py`` wrote it, so a
+    render launched from a terminal recorded nothing at all — the engine's own
+    state living in the face (Principle VI). The server now merges its *run
+    outcome* into the file this writes rather than writing a config snapshot of
+    its own.
+
+    Documents are recorded by **identity, never by copy** (#276): the genre
+    rulebook and the gap contract are named with a content digest, so two
+    scenes can be compared and a mid-session edit is visible, without
+    duplicating 16K of prose into every sidecar.
+
+    Best-effort. A render that succeeded must not be reported as failed
+    because its provenance file could not be written — the narration is the
+    artifact, and the same reasoning the server's own writer uses.
+    """
+    try:
+        record = {
+            "model": model,
+            "backend": backend,
+            "prose_mode": bool(args.prose_mode),
+            "gap_marking": bool(args.gap_marking),
+            "reflections": bool(getattr(args, "reflections", False)),
+            "narrate_tokens": getattr(args, "narrate_tokens", None),
+            "narration_genre_file": getattr(args, "narration_genre_file", None),
+            "narration_genre_sha256": _digest(genre_text),
+        }
+        if args.gap_marking:
+            record["gap_contract"] = (
+                "config/agents/session_doc/narrate/gm_attribution_gap.md")
+            record["gap_contract_sha256"] = _digest(GM_ATTRIBUTION_GAP)
+        sidecar = narration_path.with_name(narration_path.stem + ".knobs.json")
+        sidecar.write_text(json.dumps(record, indent=2, ensure_ascii=False) + "\n",
+                           encoding="utf-8")
+    except Exception:
+        pass
+
+
+def _digest(text: str | None) -> str | None:
+    """SHA-256 of a document's text, or None when there is no document."""
+    if not text:
+        return None
+    return "sha256:" + hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def _prose_handoff(narration: str) -> str:
@@ -1204,6 +1256,10 @@ def main() -> None:
                     scene_name=scene.scene_name, narrator=scene.narrator,
                     session_id=session_id, narration=narration,
                 )
+                _write_render_record(
+                    scene.output_path, args=args, genre_text=narration_genre,
+                    model=effective_model, backend=model_intent.backend,
+                )
             except Exception as exc:
                 message = f"failed writing scene {scene.index}: {exc}"
                 _write_bundle_report(
@@ -1378,6 +1434,10 @@ def main() -> None:
         _write_narration_output(
             per_scene_file, index=i, scene_name=scene_name,
             narrator=narrator, session_id=session_id, narration=narration,
+        )
+        _write_render_record(
+            per_scene_file, args=args, genre_text=narration_genre,
+            model=effective_model, backend=model_intent.backend,
         )
         written.append(per_scene_file)
         print(f"  Wrote {per_scene_file.name}")

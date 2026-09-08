@@ -405,6 +405,71 @@ assemble "$SESS/narration/" \
     --title  "Chapter 37 — A Gem of a Problem"
 ```
 
+## Gap marking — `sd_narrate --gap-marking`
+
+Off by default. With the mode on, a passage the source attributes to the **GM**
+is not written into the prose at all: the model emits a marker where it belongs
+and carries the scene on around it.
+
+```
+[GM NARRATION — TO BE WRITTEN: Aurelan arrives huffing and excited, pats himself
+down and straightens his clothing before he speaks.]
+```
+
+### The defect it removes
+
+`sd_narrate` asks one call to do two jobs — reshape the players' recorded
+dialogue, and author the scene description around it. The contract forbids "the
+GM as a character" and offers no third option, so **silent reassignment is the
+compliant move**. Six drafts of one scene by three renderers, on a single GM
+line explaining a two-way drop: one gave it to a PC as dialogue, one dissolved
+it into another PC's own observation, one dropped it. The finished prose does
+not say which. That is an attribution error, the class this repo reserves for a
+human checkpoint (#418).
+
+### What is gapped, and what is not
+
+| The GM's turn | Result |
+|---|---|
+| Describes or explains something — a place, an event, a world fact, how something works | **Gapped.** Yours to write. |
+| Only confirms or adjudicates a player's question (`"Yep."`) | **Dropped**, as table operation, exactly as today. |
+| Voices a named NPC (`**[GM, as the banker]**`) | **Written as that NPC's dialogue.** Not a gap. |
+
+Everything the players said and did is written normally. The markers are
+required output, not commentary — a scene with no markers means no GM
+description in it, not a model that declined.
+
+### One rule, selected by the mode
+
+The rule about GM attribution has exactly one home. `writing_brief.md` and
+`prose_mode.md` each carry a `{gm_attribution}` slot, and the mode chooses its
+value: today's "GM descriptions become experienced facts" when off, the contract
+when on. Turning the mode off produces a **byte-identical** prompt to the one
+that shipped before the feature — asserted, in
+`tests/test_prompt_golden_pre_feature.py`, against a golden frozen before the
+first edit.
+
+The contract is a repo prompt fragment
+(`config/agents/session_doc/narrate/gm_attribution_gap.md`), not a per-campaign
+file. The genre rulebook is per-campaign because register varies; this does not.
+A missing fragment refuses at import, naming the paths searched, rather than
+rendering without it.
+
+### Reaching it
+
+`--gap-marking` on the CLI, `narrate.gap_marking` in `session_doc.yaml`, a
+profile knob, and a toggle in the Session Doc Editor's Stage-④ knobs. It applies
+to per-scene and bundled renders alike.
+
+### What it does not do
+
+Answering a gap is not part of this. The marker survives assembly as content —
+it is deliberately *not* an apparatus comment, so nothing strips it — and it is
+also deliberately visible to the unknown-name scan, because a proper noun that
+appears only inside a marker is exactly the invention that check exists to
+catch. The authored/composed document model that answers a gap is #455; the
+block editor is #456.
+
 ## The table-speech audit hatch
 
 Upstream extraction sometimes attributes the GM's table narration to a
