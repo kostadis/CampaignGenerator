@@ -28,17 +28,25 @@ form and the roster declares `Valphine Sotorra`. That is the documented out-of-s
 
 ## 1. The defect, before you change anything
 
+`scene_speaker_counts` is the symbol this feature deletes, so the reproduction below runs
+against the *shipped* reader and roster resolver. To see the defect itself, check out the
+commit before this feature's and use `session_doc.io.scene_speaker_counts(text)` in place of
+`scene_presence(text, CANON)`.
+
 ```bash
 python -c "
-from session_doc.io import scene_speaker_counts
 from pathlib import Path
+from campaignlib.players_config import norm_name
+from session_doc.plan_eligibility import scene_presence
+CANON = {norm_name(n): n for n in ['Brewbarry', 'Vukradin', 'Valphine Sotorra', 'Soma']}
 d = Path('experiments/20260907-phandalin-gm-gaps-confirm/inputs')
 for f in sorted(d.glob('*_source.md')):
-    print(f'{f.name:24} -> {scene_speaker_counts(f.read_text())}')
+    counts, unresolved = scene_presence(f.read_text(), CANON)
+    print(f'{f.name:24} -> {counts}')
 "
 ```
 
-Expected today — two of four empty:
+Before this feature — two of four empty:
 
 ```text
 brewbarry_source.md      -> {'Soma': 18, 'Brewbarry': 21, 'Vukradin': 12, 'Valphine Sotorra': 2}
@@ -47,7 +55,9 @@ valphine_source.md       -> {}
 vukradin_source.md       -> {}
 ```
 
-Record the two non-empty results. They are the regression baseline for SC-004.
+Record the two non-empty results. They are the regression baseline for SC-004, and they are
+captured in [`baseline.json`](./baseline.json). After the change the same command prints all
+four non-empty, with the two bare files byte-identical to the rows above.
 
 ## 2. Unit level — the grammar
 
@@ -57,7 +67,12 @@ label in, class and presence out. The cases that must not be dropped:
 - `[GM, as the banker]` → game master, nobody present.
 - `[GM / Brewbarry]` → Brewbarry present, one turn.
 - `[Brewbarry / Soma]` → both present, one turn each.
-- `[GM / Brewbarry / Valphine]` → Brewbarry and Valphine present.
+- `[GM / Brewbarry / Valphine]` → Brewbarry present; `Valphine` resolves to **nobody**
+  (the roster declares `Valphine Sotorra`) and the label is **reported**. A slot naming
+  nobody is surfaced even when the rest of the label resolved — reporting only
+  wholly-unresolved labels dropped this one silently.
+- `[Vukradin, Brewbarry]` → both present. A comma tail is a qualifier only when it resolves
+  to nobody; resolution decides, not punctuation.
 - `[scene tag — Vukradin demands a meeting]` → **nobody** present. This is the one that fails
   if resolution ever becomes containment rather than folded equality.
 - `Vukradin (David)` → unresolved, still listed loudly.

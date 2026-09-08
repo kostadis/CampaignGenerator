@@ -33,12 +33,18 @@ from session_doc.plan_eligibility import (  # noqa: E402
 CORPUS = ROOT / "experiments/20260907-phandalin-gm-gaps-confirm/inputs"
 BASELINE_PATH = ROOT / "specs/027-bracketed-speaker-labels/baseline.json"
 
-pytestmark = pytest.mark.skipif(
-    not CORPUS.is_dir() or not BASELINE_PATH.is_file(),
-    reason="frozen corpus or its baseline is not present",
-)
+# No skipif. Both paths are committed to this repo, so a missing one is a real
+# breakage — the corpus pruned, the spec directory archived, a rename — and this
+# is the feature's only regression suite against real sessions. A skip would
+# turn every one of those into a green run with no signal: SC-001's "two of four
+# used to produce nothing", the exact recovered counts, the bare-convention
+# equivalence. Failing at collection is the point.
+if not CORPUS.is_dir():
+    raise AssertionError(f"the frozen #453 corpus is missing: {CORPUS}")
+if not BASELINE_PATH.is_file():
+    raise AssertionError(f"the #453 baseline is missing: {BASELINE_PATH}")
 
-BASELINE = json.loads(BASELINE_PATH.read_text(encoding="utf-8")) if BASELINE_PATH.is_file() else {}
+BASELINE = json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
 ROSTER = BASELINE.get("roster", [])
 CANON = {norm_name(n): n for n in ROSTER}
 FILES = ["brewbarry_source.md", "soma_source.md", "valphine_source.md", "vukradin_source.md"]
@@ -119,31 +125,77 @@ def test_the_joint_turns_credit_each_character_named():
 
 # ── SC-003 and SC-008 ───────────────────────────────────────────────────────
 
+def loud_labels(e) -> set[str]:
+    suspects, _ = _stranger_buckets(e)
+    return {label for _name, labels in suspects.values() for label in labels}
+
+
 @pytest.mark.parametrize("name", FILES)
-def test_the_loud_report_bucket_did_not_grow(name):
+def test_the_loud_report_bucket_holds_exactly_the_expected_labels(name):
     """The channel #385 built says "each one costs that character a scene", and
     the covering-player workflow depends on the GM reading it. Reading
     bracketed labels put 22 beat markers in reach of it, two of which contain a
-    roster name outright."""
+    roster name outright — none of those may land here.
+
+    Asserted as **equality against a named set**, not as `<= baseline`. The
+    bound alone was satisfied by deleting the loud bucket entirely: every
+    baseline `loud_count` is 0, so `loud <= 0` passes hardest when the channel
+    is broken. Nothing else in this file put a label into it, so the suite
+    could not tell a working split from an absent one.
+    """
+    expected = set(BASELINE["eligibility"][name]["loud_bucket_labels"])
     _, e = eligibility_for(name)
-    suspects, _ = _stranger_buckets(e)
-    loud = sum(len(v) for v in suspects.values())
-    assert loud <= BASELINE["eligibility"][name]["loud_count"]
+    assert loud_labels(e) == expected
+
+
+def test_a_partially_resolved_label_is_loud():
+    """Positive coverage: the bucket must actually receive something.
+
+    `[GM / Brewbarry / Valphine]` resolves the GM and Brewbarry and leaves
+    `Valphine` naming nobody, against a roster that spells her
+    `Valphine Sotorra`. A label that resolved a speaker and still has an
+    unresolved slot is a speaker label by demonstration, so this is the
+    strongest evidence of a mis-normalised character the corpus contains — and
+    it used to be dropped without reaching either bucket.
+    """
+    _, e = eligibility_for("valphine_source.md")
+    assert "[GM / Brewbarry / Valphine]" in loud_labels(e)
 
 
 def test_the_two_scene_tags_naming_a_character_stay_quiet():
     """The concrete pair this rule exists for."""
     _, e = eligibility_for("vukradin_source.md")
-    suspects, _ = _stranger_buckets(e)
-    listed = {label for labels in suspects.values() for label in labels}
+    listed = loud_labels(e)
     assert "[scene tag — Vukradin demands a meeting]" not in listed
     assert "[scene tag — Soma's Arcana check]" not in listed
 
 
 @pytest.mark.parametrize("name", FILES)
 def test_nothing_is_dropped_silently(name):
-    """Every label that resolved to nobody reaches one bucket or the other."""
+    """Every label with an unresolved slot reaches one bucket or the other.
+
+    Counts whole labels, which is why it could not see the case it was written
+    to catch: `[GM / Brewbarry / Valphine]` resolved *somebody*, so it was never
+    a stranger at all and its `Valphine` slot vanished between the reader and
+    the report. `scene_presence` now reports a label with any unresolved slot,
+    so the invariant covers partial failures too.
+    """
     _, e = eligibility_for(name)
     suspects, other = _stranger_buckets(e)
-    loud = sum(len(v) for v in suspects.values())
+    loud = sum(len(labels) for _name, labels in suspects.values())
     assert loud + other == sum(len(s.strangers) for s in e.scenes)
+
+
+@pytest.mark.parametrize("name", FILES)
+def test_every_unresolved_slot_is_named_in_the_record(name):
+    """The report's promise, checked at the part level rather than the label.
+
+    `plan.eligibility.json` is where the quiet bucket says its contents are, so
+    a label counted there and absent from the record would make the printed
+    pointer a lie.
+    """
+    _, e = eligibility_for(name)
+    for scene in e.scenes:
+        for reading in scene.strangers:
+            assert reading.unresolved
+            assert reading.label in scene.stranger_labels

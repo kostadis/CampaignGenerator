@@ -612,11 +612,15 @@ by its shape. Extractions differ on the form — `**Brewbarry**` and
 `**[Brewbarry]**` are one convention apart, `**[GM, as the banker]**` qualifies
 the game master, and `**[GM / Brewbarry]**` names two parties on one turn — while
 the identical bold-bracket shape also carries scene apparatus
-(`**[Reroll With Advantage]**`). A bracketed label is split on `/` and `,`, and
-each part must fold *exactly* onto a roster name or the GM label; a part that
-merely contains one resolves to nobody. A label naming two roster characters
-places both, by GM ruling. Anything resolving to nobody creates no presence and
-is reported rather than dropped. Full grammar:
+(`**[Reroll With Advantage]**`). A bracketed label is split on `/` into
+speaker slots and each slot on `,` into pieces, and each piece must fold
+*exactly* onto a roster name or the GM label; a piece that merely contains one
+resolves to nobody. A later piece that resolves to nobody is a qualifier, not a
+missing speaker — so `**[GM, as the banker]**` is fully understood while
+`**[Vukradin, Brewbarry]**` still credits both. A label naming two roster
+characters places both, by GM ruling. Anything resolving to nobody creates no
+presence, and every slot that resolves to nobody is reported — including when
+another slot of the same label resolved. Full grammar:
 `specs/027-bracketed-speaker-labels/contracts/label-grammar.md` (#453).
 
 The two read different label spaces, which is why they are two mechanisms and

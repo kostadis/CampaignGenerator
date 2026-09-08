@@ -11,8 +11,11 @@ rule discarded every bracketed label, which cost one session 39 labelled turns
 for a single character and emptied the narrator pool that `sd_plan` refuses to
 run without.
 
-Nothing here is decided by a label's shape. A part names somebody iff it folds
-exactly onto a roster name or the game-master label.
+A label's shape decides exactly one thing — whether the text is tokenised, so a
+bare-convention session is structurally untouched. It decides no **identity**:
+a piece names somebody iff it folds exactly onto a roster name or the
+game-master label, and whether a piece is a second speaker or a qualifier is
+settled by whether it resolves, not by the punctuation before it.
 """
 
 import sys
@@ -200,3 +203,48 @@ def test_the_game_master_is_not_reported_as_unresolved():
     """Recognised, so it never reaches the GM's review queue as an unknown name."""
     _, unresolved = scene_presence(moments("GM", "[GM]", "[GM, as the banker]"), CANON)
     assert unresolved == []
+
+
+# ── Partial resolution: the case that used to vanish ────────────────────────
+
+def test_an_unresolved_slot_is_reported_even_when_the_label_resolved_somebody():
+    """`[GM / Brewbarry / Valphine]` against a roster spelling her
+    `Valphine Sotorra`. Brewbarry resolves, the GM resolves, and `Valphine`
+    named nobody — so the label credited Brewbarry and dropped her with no
+    trace at all: not counted, not reported, absent from
+    `plan.eligibility.json`. A partially-resolved label is where a roster
+    character goes missing standing next to a name that worked."""
+    reading = read_label("[GM / Brewbarry / Valphine]", CANON)
+    assert reading.characters == {"Brewbarry"}
+    assert reading.names_gm
+    assert reading.unresolved == {"Valphine"}
+
+    counts, unresolved = scene_presence(
+        moments("[GM / Brewbarry / Valphine]"), CANON)
+    assert counts == {"Brewbarry": 1}
+    assert [r.label for r in unresolved] == ["[GM / Brewbarry / Valphine]"]
+
+
+def test_a_qualifier_is_not_an_unresolved_speaker():
+    """`as the banker` describes the GM's turn; it does not fail to name one.
+    A piece after the first in its slot that resolves to nobody is a
+    qualifier, so a fully-understood label is not reported as a mystery."""
+    reading = read_label("[GM, as the banker]", CANON)
+    assert reading.names_gm
+    assert reading.unresolved == frozenset()
+
+
+def test_a_comma_can_still_join_two_speakers():
+    """Resolution decides, not punctuation. `[Vukradin, Brewbarry]` reads as
+    two speakers because both pieces resolve — treating every comma tail as a
+    qualifier would silently lose the second, the same defect one level down."""
+    assert present("[Vukradin, Brewbarry]") == {"Vukradin", "Brewbarry"}
+
+
+def test_a_beat_marker_is_still_inert_when_it_contains_a_roster_name():
+    """The guard, restated at the slot level: reporting unresolved *pieces*
+    must not become containment by another route."""
+    reading = read_label("[scene tag — Vukradin demands a meeting]", CANON)
+    assert reading.characters == frozenset()
+    assert reading.is_apparatus
+    assert reading.unresolved == {"scene tag — Vukradin demands a meeting"}

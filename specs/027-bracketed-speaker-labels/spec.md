@@ -254,10 +254,17 @@ speakers and confirm the markers create no presence and the speakers do.
   without editing the extraction files by hand.
 - **SC-007**: A turn labelled with two roster characters makes both of them present in that
   scene, and contributes one turn of evidence to each. The corpus contains three such turns.
-- **SC-008**: The count of labels reported to the GM as "looks like a roster character but did
-  not resolve" does not grow. That channel exists to catch a mis-normalised character name
-  that silently costs a scene; beat markers such as `**[scene tag — Soma's Arcana check]**`
-  must not dilute it.
+- **SC-008**: No beat marker is reported to the GM as "looks like a roster character but did
+  not resolve". That channel exists to catch a mis-normalised character name that silently
+  costs a scene; markers such as `**[scene tag — Soma's Arcana check]**` must not dilute it.
+
+  *Narrowed 2026-09-08, after review.* As first written this said the channel's **count** must
+  not grow, which turned out to forbid the one thing it exists for. `**[GM / Brewbarry /
+  Valphine]**` resolves two speakers and leaves `Valphine` naming nobody — the strongest
+  evidence of a mis-normalised character in the corpus, and precisely what the GM must see.
+  It now lands there, taking the count 0 → 1 on `valphine_source.md`. The criterion binds
+  what may *not* appear; the expected set is pinned per file in `baseline.json`, because
+  `loud <= 0` was satisfied by deleting the channel altogether.
 
 ## Assumptions
 

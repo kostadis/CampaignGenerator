@@ -6,7 +6,7 @@
     "Valphine Sotorra",
     "Soma"
   ],
-  "note": "Pre-change behaviour of Filter B. SC-004 diffs the two bare-convention files against scene_speaker_counts; SC-008 diffs loud_count.",
+  "note": "Pre-change behaviour of Filter B (captured 2026-09-08, before #453). SC-004 diffs the two bare-convention files against scene_speaker_counts. `loud_bucket_labels` is NOT a pre-change capture: it is the post-fix expected set, added when review found `loud <= loud_count` unfalsifiable against an all-zero baseline. valphine_source's entry is the one label that resolves a speaker and leaves a slot naming nobody.",
   "pytest": {
     "passed": 5071,
     "skipped": 174,
@@ -44,7 +44,8 @@
       ],
       "loud_bucket": {},
       "loud_count": 0,
-      "quiet_count": 0
+      "quiet_count": 0,
+      "loud_bucket_labels": []
     },
     "soma_source.md": {
       "pool": [
@@ -61,7 +62,8 @@
       ],
       "loud_bucket": {},
       "loud_count": 0,
-      "quiet_count": 0
+      "quiet_count": 0,
+      "loud_bucket_labels": []
     },
     "valphine_source.md": {
       "pool": [
@@ -73,7 +75,10 @@
       "candidates": [],
       "loud_bucket": {},
       "loud_count": 0,
-      "quiet_count": 0
+      "quiet_count": 0,
+      "loud_bucket_labels": [
+        "[GM / Brewbarry / Valphine]"
+      ]
     },
     "vukradin_source.md": {
       "pool": [
@@ -85,7 +90,8 @@
       "candidates": [],
       "loud_bucket": {},
       "loud_count": 0,
-      "quiet_count": 0
+      "quiet_count": 0,
+      "loud_bucket_labels": []
     }
   }
 }

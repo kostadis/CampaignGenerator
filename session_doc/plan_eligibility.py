@@ -45,30 +45,52 @@ from campaignlib.vtt import speaker_labels
 from session_doc.io import scene_speaker_labels
 
 
-#: Separators inside a bracketed label. ``/`` joins two speakers on one turn
-#: (``**[GM / Brewbarry]**``); ``,`` carries a qualifier
-#: (``**[GM, as the banker]**``). Splitting on them claims only that the label
-#: names more than one thing — which is visible in the text. Deciding who each
-#: part *is* happens in :func:`_resolve_part`, against the roster.
-_LABEL_SEPARATORS = re.compile(r"[/,]")
+#: Separators inside a bracketed label, and they mean different things.
+#: ``/`` joins two speakers on one turn (``**[GM / Brewbarry]**``), so it opens
+#: a new *slot*. ``,`` most often carries a qualifier
+#: (``**[GM, as the banker]**``), so it opens a new *piece* of the same slot.
+#: Splitting claims only that the label names more than one thing — which is
+#: visible in the text. Deciding who each piece *is* happens in
+#: :func:`_resolve_part`, against the roster.
+_SLOT_SEPARATOR = "/"
+_PIECE_SEPARATOR = ","
+
+#: ``norm_name(GM_LABEL)`` is a constant. Folding it per part meant recomputing
+#: it 134+ times per scene on the corpus's busiest file, on every ``sd_plan``.
+_GM_FOLDED = norm_name(GM_LABEL)
 
 
-def label_parts(label: str) -> list[str]:
-    """One speaker label -> its candidate name parts.
+def label_slots(label: str) -> list[list[str]]:
+    """One speaker label -> its slots, each slot -> its pieces, in order.
 
-    A **bare** label yields itself, unmodified. Only a bracketed label is
-    tokenised, which is what makes a bare-convention session structurally
-    unaffected by #453 rather than merely tested for.
+    A **bare** label yields one slot of one piece: itself, unmodified. Only a
+    bracketed label is tokenised, which is what makes a bare-convention session
+    structurally unaffected by #453 rather than merely tested for. That is the
+    *only* decision this module takes on a label's shape, and it decides how to
+    read the text, never who anybody is.
 
-    Tokenising is not identifying. Splitting ``[GM / Brewbarry]`` on ``/``
-    asserts that the label names two parties, which the punctuation says
-    outright; it asserts nothing about who they are.
+    The two levels exist because the two separators do different work. Every
+    slot is a speaker and must resolve or be reported. A piece after the first
+    within a slot is a qualifier *if it resolves to nobody* — ``as the banker``
+    in ``[GM, as the banker]`` — and a second speaker if it resolves to
+    somebody, so ``[Vukradin, Brewbarry]`` still credits both. Resolution
+    decides which, not punctuation.
     """
     label = label.strip()
     if not (label.startswith("[") and label.endswith("]")):
-        return [label] if label else []
-    inner = label[1:-1]
-    return [part for part in (p.strip() for p in _LABEL_SEPARATORS.split(inner)) if part]
+        return [[label]] if label else []
+    slots = []
+    for slot in label[1:-1].split(_SLOT_SEPARATOR):
+        pieces = [p.strip() for p in slot.split(_PIECE_SEPARATOR)]
+        pieces = [p for p in pieces if p]
+        if pieces:
+            slots.append(pieces)
+    return slots
+
+
+def label_parts(label: str) -> list[str]:
+    """The flattened view of :func:`label_slots` — every candidate name piece."""
+    return [piece for slot in label_slots(label) for piece in slot]
 
 
 def _resolve_part(part: str, canonical: dict[str, str]) -> str | None:
@@ -85,7 +107,7 @@ def _resolve_part(part: str, canonical: dict[str, str]) -> str | None:
     approximate matching."
     """
     folded = norm_name(part)
-    if folded == norm_name(GM_LABEL):
+    if folded == _GM_FOLDED:
         return GM_LABEL
     return canonical.get(folded)
 
@@ -96,20 +118,28 @@ class LabelReading:
 
     ``characters`` is a *set*: a label naming one character twice contributes
     one turn of evidence, not two.
+
+    ``unresolved`` is the pieces that named nobody the roster knows. It is
+    populated even when the label *also* resolved somebody — that partial case
+    is the one that used to vanish. ``[GM / Brewbarry / Valphine]`` credited
+    Brewbarry and dropped ``Valphine`` with no trace: not counted, not
+    reported, not in ``plan.eligibility.json``. Against a roster spelling her
+    ``Valphine Sotorra`` that is a real exclusion the GM was never shown.
     """
 
     label: str
     characters: frozenset[str]
     names_gm: bool
     bracketed: bool
+    unresolved: frozenset[str] = frozenset()
 
     @property
     def is_apparatus(self) -> bool:
         """Bracketed and resolving to nobody — a beat marker, near enough.
 
-        Only the *reporting* bucket turns on this (see :func:`_stranger_buckets`).
-        Presence never does: an unresolved label creates no presence whatever
-        shape it has.
+        Only the *reporting* bucket turns on this (see :func:`_stranger_buckets`),
+        which is the one caller. Presence never does: an unresolved piece creates
+        no presence whatever shape its label has.
         """
         return self.bracketed and not self.characters and not self.names_gm
 
@@ -122,28 +152,41 @@ def read_label(label: str, canonical: dict[str, str]) -> LabelReading:
     nothing rather than suppressing the label. Per the GM's ruling of
     2026-09-08, **every** roster character a label names is present — so
     ``[Brewbarry / Soma]`` places both. That is the permissive reading, taken
-    knowingly: a turn only one of them spoke can make both eligible, and the
-    turn counts beside the pool are the GM's evidence for overriding it.
+    knowingly and it has no automatic safety net: a turn only one of them spoke
+    makes both eligible, and the printed turn counts cannot distinguish a solo
+    turn from a joint one. The GM's evidence for overriding it is the scene
+    extraction itself.
+
+    A slot that resolves to nobody lands in ``unresolved`` and is reported. A
+    *later piece* of a slot that resolves to nobody is a qualifier and is not —
+    ``as the banker`` describes the GM's turn, it does not fail to name a
+    speaker.
     """
     stripped = label.strip()
     bracketed = stripped.startswith("[") and stripped.endswith("]")
-    characters, names_gm = set(), False
-    for part in label_parts(stripped):
-        resolved = _resolve_part(part, canonical)
-        if resolved == GM_LABEL:
-            names_gm = True
-        elif resolved is not None:
-            characters.add(resolved)
+    characters, names_gm, unresolved = set(), False, set()
+    for slot in label_slots(stripped):
+        for position, piece in enumerate(slot):
+            resolved = _resolve_part(piece, canonical)
+            if resolved == GM_LABEL:
+                names_gm = True
+            elif resolved is not None:
+                characters.add(resolved)
+            elif position == 0:
+                unresolved.add(piece)
     return LabelReading(
         label=stripped,
         characters=frozenset(characters),
         names_gm=names_gm,
         bracketed=bracketed,
+        unresolved=frozenset(unresolved),
     )
 
 
-def scene_presence(moments: str, canonical: dict[str, str]):
-    """``moments`` -> (turns per character, unresolved labels).
+def scene_presence(
+    moments: str, canonical: dict[str, str]
+) -> tuple[dict[str, int], list[LabelReading]]:
+    """``moments`` -> (turns per character, labels with an unresolved slot).
 
     Filter B, whole. One reading of the text feeds presence and counts alike,
     so a GM can never be shown a turn count for a character the filter excluded
@@ -153,15 +196,18 @@ def scene_presence(moments: str, canonical: dict[str, str]):
     Presence is a yes/no fact: one labelled turn is full eligibility. Soma has
     two lines in scene 03 against Vukradin's sixty-six and both are eligible.
     A threshold above zero would be a tuning knob with no defensible value.
+
+    Counting and reporting are independent: a label may do both. Reporting only
+    labels that resolved to *nobody* hid every partially-resolved one, which is
+    exactly where a roster character goes missing beside a name that worked.
     """
     counts: dict[str, int] = {}
     unresolved: list[LabelReading] = []
     for label in scene_speaker_labels(moments):
         reading = read_label(label, canonical)
-        if reading.characters:
-            for character in reading.characters:
-                counts[character] = counts.get(character, 0) + 1
-        elif not reading.names_gm:
+        for character in reading.characters:
+            counts[character] = counts.get(character, 0) + 1
+        if reading.unresolved:
             unresolved.append(reading)
     return counts, unresolved
 
@@ -180,6 +226,10 @@ class Exclusion:
     reason: str
     player: str | None = None
     scene: str | None = None
+    #: Position, because two extractions may declare the same ``scene:`` value.
+    #: The report grouped by name and merged them — the same collapse
+    #: :class:`SceneEligibility` is index-keyed to avoid.
+    scene_index: int | None = None
 
 
 @dataclass(frozen=True)
@@ -195,7 +245,16 @@ class SceneEligibility:
     name: str
     candidates: set[str]
     counts: dict[str, int]
-    strangers: set[str]
+    #: The readings, not their label strings. ``_stranger_buckets`` needs the
+    #: classification :func:`read_label` already made; handing it bare strings
+    #: made it re-derive the bracket test from the raw text, a second copy of
+    #: the predicate that could drift from :attr:`LabelReading.is_apparatus`
+    #: with nothing to fail.
+    strangers: tuple[LabelReading, ...]
+
+    @property
+    def stranger_labels(self) -> set[str]:
+        return {reading.label for reading in self.strangers}
 
     @property
     def uncoverable(self) -> bool:
@@ -277,17 +336,17 @@ def compute_eligibility(
         roster_counts, unresolved = scene_presence(
             scene.get("moments") or "", canonical)
         present = set(roster_counts)
-        strangers = {reading.label for reading in unresolved}
 
         scene_records.append(SceneEligibility(
             index=index, name=name, candidates=present & pool,
-            counts=roster_counts, strangers=strangers,
+            counts=roster_counts, strangers=tuple(unresolved),
         ))
         for character in sorted(pool - present):
             scene_exclusions.append(
                 Exclusion(
                     character=character,
                     scene=name,
+                    scene_index=index,
                     reason="no speaker label in this scene",
                 )
             )
@@ -302,7 +361,9 @@ def compute_eligibility(
     )
 
 
-def _stranger_buckets(e: Eligibility) -> "tuple[dict[str, set[str]], int]":
+def _stranger_buckets(
+    e: Eligibility,
+) -> "tuple[dict[int, tuple[str, set[str]]], int]":
     """Split unresolved labels into "probably a mis-normalised PC" and the rest.
 
     A label containing a roster character's name — ``Vukradin (David)`` — is
@@ -313,32 +374,43 @@ def _stranger_buckets(e: Eligibility) -> "tuple[dict[str, set[str]], int]":
 
     Containment, not similarity: this decides what to *print*, never who anybody
     is, so it asserts no identity.
+
+    Bracketed labels that resolved to nobody go quiet. A beat marker is the
+    common case and two in this corpus contain a roster name outright —
+    ``[scene tag — Soma's Arcana check]``, ``[scene tag — Vukradin demands a
+    meeting]`` — so containment would print both under a notice saying each one
+    costs that character a scene, in the one channel #385 built to be read.
+
+    **The cost is real and is paid today, not hypothetical.** ``**[Valphine]**``
+    occurs 8 times across two corpus files against a roster spelling her
+    ``Valphine Sotorra``; it resolves to nobody, goes quiet, and costs her those
+    scenes. Containment could not catch it either, in any bucket: it tests for a
+    roster name *inside* the label, and ``valphine sotorra`` is not inside
+    ``[valphine]``. Short-form labels are structurally unreachable by this
+    heuristic. The fix is roster-declared alternate spellings rather than a
+    fuzzier print rule, and it is its own issue; what this function owes the GM
+    meanwhile is not calling the bucket "expected" — see
+    :func:`report_eligibility`.
     """
-    suspects: dict[str, set[str]] = {}
+    suspects: dict[int, tuple[str, set[str]]] = {}
     other = 0
     folded_pool = {norm_name(c): c for c in e.pool}
     for scene in e.scenes:
-        for label in scene.strangers:
-            folded = norm_name(label)
-            bracketed = label.startswith("[") and label.endswith("]")
-            if bracketed:
-                # Scene apparatus, near enough. A bracketed label that resolved
-                # to nobody is far more likely a beat marker than a mangled
-                # character name, and two markers in this corpus contain a
-                # roster name outright — `[scene tag — Soma's Arcana check]`,
-                # `[scene tag — Vukradin demands a meeting]`. Containment would
-                # print both under a notice that says each one costs that
-                # character a scene, in the one channel #385 built to be read.
-                # Reading bracketed labels at all (#453) is what put 22 markers
-                # in reach of this split, so the quiet bucket is where they go.
-                #
-                # The cost, recorded: a mis-normalised *bracketed* character
-                # label would go quiet too. None exists in the corpus, and the
-                # loud alternative is paid every run. Bare labels — where
-                # `Vukradin (David)` actually happens — keep the heuristic.
+        for reading in scene.strangers:
+            folded = norm_name(reading.label)
+            if reading.characters or reading.names_gm:
+                # This label resolved at least one speaker and still has a slot
+                # that named nobody — so it is a speaker label by demonstration,
+                # not by resemblance, and the unnamed slot is a character the
+                # roster does not know. Stronger evidence than containment, and
+                # it is how `[GM / Brewbarry / Valphine]` reaches the GM.
+                suspects.setdefault(scene.index, (scene.name, set()))[1].add(
+                    reading.label)
+            elif reading.is_apparatus:
                 other += 1
             elif any(name in folded for name in folded_pool):
-                suspects.setdefault(scene.name, set()).add(label)
+                suspects.setdefault(scene.index, (scene.name, set()))[1].add(
+                    reading.label)
             else:
                 other += 1
     return suspects, other
@@ -357,7 +429,9 @@ def report_eligibility(e: Eligibility, *, vtt_path=None) -> None:
 
     Unrecognised labels are reported rather than dropped: a label arriving as
     ``Vukradin (David)`` instead of ``Vukradin`` would otherwise cost that
-    character their eligibility with nothing to show for it.
+    character their eligibility with nothing to show for it. That holds per
+    *slot*, not per label — ``[GM / Brewbarry / Valphine]`` costs Valphine a
+    scene while looking, from its resolved half, like a label that worked.
     """
     if e.absent_exclusions:
         where = f" ({vtt_path.name})" if vtt_path is not None else ""
@@ -375,13 +449,18 @@ def report_eligibility(e: Eligibility, *, vtt_path=None) -> None:
 
     if e.scene_exclusions:
         print("\n[eligibility] at the session, but not in these scenes:")
-        by_index: dict[str, list[str]] = {}
+        # Grouped by scene POSITION, not by name: two extractions may declare
+        # the same `scene:` value, and grouping by name merged their exclusions
+        # and showed one scene's eligible set against the other's.
+        by_scene: dict[int, list[str]] = {}
         for x in e.scene_exclusions:
-            by_index.setdefault(x.scene or "", []).append(x.character)
-        eligible_by_name = {s.name: s.candidates for s in e.scenes}
-        for scene, chars in by_index.items():
-            eligible = ", ".join(sorted(eligible_by_name.get(scene, ()))) or "nobody"
-            print(f"  - {scene}: {', '.join(sorted(chars))} "
+            by_scene.setdefault(x.scene_index if x.scene_index is not None else -1,
+                                []).append(x.character)
+        eligible_by_index = {s.index: (s.name, s.candidates) for s in e.scenes}
+        for index, chars in by_scene.items():
+            name, candidates = eligible_by_index.get(index, ("", set()))
+            eligible = ", ".join(sorted(candidates)) or "nobody"
+            print(f"  - {name}: {', '.join(sorted(chars))} "
                   f"(eligible here: {eligible})")
 
     suspects, other = _stranger_buckets(e)
@@ -389,13 +468,21 @@ def report_eligibility(e: Eligibility, *, vtt_path=None) -> None:
         print("\n[eligibility] speaker labels that look like a roster character "
               "but did not resolve — scene_extract's normalisation is the "
               "likely cause, and each one costs that character a scene:")
-        for scene, labels in suspects.items():
-            print(f"  - {scene}: {', '.join(sorted(labels))}")
+        for index in sorted(suspects):
+            name, labels = suspects[index]
+            print(f"  - {name}: {', '.join(sorted(labels))}")
     if other:
-        # NPC labels are expected and there are dozens per session. Listing them
-        # buried the line above, which is the one the GM has to read.
-        print(f"\n[eligibility] {other} further non-roster label(s) "
-              f"(NPCs and unnamed voices) — expected, not listed.")
+        # There are dozens of these per session and listing them buried the line
+        # above, which is the one the GM has to read. But they are NOT all
+        # "expected": reading bracketed labels (#453) routed scene apparatus
+        # here, and a short-form roster label like `[Valphine]` lands here too,
+        # where it is a wrong exclusion rather than an NPC. Saying "expected"
+        # of a bucket that holds both is the claim that was false; naming the
+        # bucket honestly and pointing at the record that lists it is not.
+        print(f"\n[eligibility] {other} further label(s) that resolved to nobody "
+              f"— scene apparatus, NPCs and unnamed voices, and any roster name "
+              f"spelled a way the roster does not declare. Not listed here; all "
+              f"of them are in {ELIGIBILITY_RECORD} under `unresolved_labels`.")
 
     if e.has_uncoverable:
         print("\n[eligibility] no eligible narrator at all:")
@@ -440,7 +527,7 @@ def write_eligibility_record(e: Eligibility, *, out_dir, vtt_path) -> "Path":
                 "eligible": sorted(s.candidates),
                 "line_counts": s.counts,
                 "uncoverable": s.uncoverable,
-                "unresolved_labels": sorted(s.strangers),
+                "unresolved_labels": sorted(s.stranger_labels),
             }
             for s in e.scenes
         ],
@@ -450,7 +537,8 @@ def write_eligibility_record(e: Eligibility, *, out_dir, vtt_path) -> "Path":
                 for x in e.absent_exclusions
             ],
             "not_in_scene": [
-                {"character": x.character, "scene": x.scene, "reason": x.reason}
+                {"character": x.character, "scene": x.scene,
+                 "scene_index": x.scene_index, "reason": x.reason}
                 for x in e.scene_exclusions
             ],
         },

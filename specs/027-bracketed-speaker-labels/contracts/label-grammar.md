@@ -60,7 +60,10 @@ whitespace, and in no other way.
 - **E1** — A label naming at least one roster character makes every such character present in
   that scene, and contributes exactly one turn of evidence to each.
 - **E2** — A label naming only the game master makes nobody present.
-- **E3** — A label naming nobody makes nobody present, and is reported to the GM.
+- **E3** — A **slot** naming nobody makes nobody present, and is reported to the GM — even
+  when another slot of the same label resolved. Reporting only wholly-unresolved labels hid
+  the case it mattered most in: `**[GM / Brewbarry / Valphine]**` credited Brewbarry and
+  dropped `Valphine` with no trace at all.
 - **E4** — Presence is a yes/no fact. One turn is full eligibility; counts are evidence for the
   GM's review and never a threshold.
 - **E5** — Presence and counts derive from one reading of the text, so they cannot disagree.
@@ -72,9 +75,15 @@ decision and carries no meaning about identity:
 
 | Label | Bucket |
 |---|---|
-| bare, unresolved, contains a roster name | listed individually — *"each one costs that character a scene"* |
+| resolved a speaker, and a slot named nobody | listed individually — *"each one costs that character a scene"* |
+| bare, unresolved, contains a roster name | listed individually — same notice |
 | bare, unresolved, otherwise | counted, not listed |
-| bracketed, no part resolved | counted, not listed |
+| bracketed, no slot resolved | counted, not listed |
+
+The counted bucket names what is in it and points at `plan.eligibility.json`, which lists
+every one. It does **not** call itself "expected": scene apparatus is expected, and a
+short-form roster label like `**[Valphine]**` (8 occurrences in the corpus, against a roster
+spelling her `Valphine Sotorra`) is a wrong exclusion sitting in the same bucket.
 
 ## Compatibility
 
@@ -83,3 +92,7 @@ decision and carries no meaning about identity:
   label.
 - A form not in this grammar resolves to nobody and is reported. New conventions fail safe
   and visibly, never silently into presence.
+- "Reported" means *surfaced in the printed report and listed in `plan.eligibility.json`*.
+  A qualifier is the one piece deliberately not reported: a later piece of a slot that
+  resolves to nobody describes the turn (`as the banker`) rather than failing to name a
+  speaker.

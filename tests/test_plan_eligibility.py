@@ -21,8 +21,8 @@ from campaignlib.players_config import (  # noqa: E402
     absent_characters,
     attending_players,
     load_players_config,
+    norm_name,
 )
-from campaignlib.players_config import norm_name  # noqa: E402
 from campaignlib.vtt import speaker_labels  # noqa: E402
 from session_doc.io import (  # noqa: E402
     load_scene_extractions,
@@ -32,6 +32,16 @@ from session_doc.plan_eligibility import (  # noqa: E402
     Eligibility,
     compute_eligibility,
     scene_presence,
+)
+from tests.helpers.eligibility_session import (  # noqa: E402
+    MOMENTS_03,
+    MOMENTS_05,
+    MOMENTS_UNCOVERABLE,
+    ROSTER,
+    SCENE_05,
+    VTT,
+    VTT_GM_ONLY,
+    write_session,
 )
 
 #: The fixture roster. Presence is decided against it rather than against the
@@ -50,16 +60,6 @@ def scene_speakers(moments: str, roster: list[str] | None = None) -> set[str]:
     canonical = {norm_name(n): n for n in (roster or FIXTURE_ROSTER)}
     counts, _ = scene_presence(moments, canonical)
     return set(counts)
-from tests.helpers.eligibility_session import (  # noqa: E402
-    MOMENTS_03,
-    MOMENTS_05,
-    MOMENTS_UNCOVERABLE,
-    ROSTER,
-    SCENE_05,
-    VTT,
-    VTT_GM_ONLY,
-    write_session,
-)
 
 
 # ── T003: speaker_labels ────────────────────────────────────────────────────

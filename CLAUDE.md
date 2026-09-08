@@ -184,7 +184,7 @@ They read different label spaces on purpose — a VTT carries player display
 names, `scene_extract` output carries character names — so do not merge them
 into one helper.
 
-Three rules that are enforced rather than documented:
+Four rules that are enforced rather than documented:
 
 - **Presence is read from `moments`, anchored on `^**...**`.** Never from the
   gm-assist `summary`, and never by substring. In the session this comes from,
@@ -201,7 +201,12 @@ Three rules that are enforced rather than documented:
   turns for one character and emptied its pool (#453). Equality is the load-bearing
   half: `**[scene tag — Vukradin demands a meeting]**` *contains* a roster name, and
   containment would place him in a scene on the strength of a beat marker.
-  `tests/test_speaker_label_grammar.py` fails the build if that returns.
+  A label's shape decides only whether the text is tokenised — never identity, and
+  never whether a comma introduces a qualifier or a second speaker, which is
+  settled by whether the piece resolves. Every slot that resolves to nobody is
+  reported *even when the rest of the label resolved*: `**[GM / Brewbarry / Valphine]**`
+  credited Brewbarry and dropped `Valphine` with no trace until it did.
+  `tests/test_speaker_label_grammar.py` fails the build if any of that returns.
 - **`sd_plan` refuses without a tape or a roster, and refuses an empty pool.**
   A fallback to the unnarrowed roster is the defect (#385), not a graceful
   degradation.
