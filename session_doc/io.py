@@ -11,7 +11,6 @@ import sys
 from pathlib import Path
 
 from campaignlib import find_scenes_section
-from campaignlib.players_config import GM_LABEL
 
 
 def parse_vtt(text: str) -> str:
@@ -379,19 +378,28 @@ def parse_plan(plan_text: str, total_chunks: int) -> list[dict]:
     return sections
 
 
-#: A speaker label opens a line: ``**Vukradin** — *context*``. The bracketed
-#: form ``**[The Drow Spy Spotted]**`` is an action-beat header that
-#: ``config/agents/scene_extract.md`` also permits, and is not a person.
+#: A speaker label opens a line: ``**Vukradin** — *context*``. Everything
+#: between the asterisks is captured verbatim, brackets and separators
+#: included; deciding who a label names is not this module's job.
 _SCENE_SPEAKER_RE = re.compile(r"(?m)^\*\*([^*]+?)\*\*")
 
 
-def scene_speakers(moments: str) -> set[str]:
-    """Every character with at least one speaker label in ``moments``.
+def scene_speaker_labels(moments: str) -> list[str]:
+    """Every speaker label in ``moments``, verbatim, in the order written.
 
-    This is Filter B of issue #385: who was actually *in* a scene, as opposed
-    to who the party contains. ``GM`` is dropped — the game master narrates
-    every scene and is never a narrator candidate — and bracketed action-beat
-    headers are skipped.
+    A *reader*, not a filter. It returns the game master, bracketed labels,
+    beat markers and unknown names alike — because who a label names is decided
+    against the campaign's roster, and this module cannot see one.
+
+    That separation is the fix for #453. This function used to drop every label
+    beginning with ``[`` and every label equal to ``GM``, which is an identity
+    rule living in the one place that cannot check it. Sessions differ on
+    whether a speaker label is bracketed: ``**[Vukradin]**`` is a person and
+    ``**[Reroll With Advantage]**`` is scene apparatus, and no property of the
+    text tells them apart. Discarding both cost one session 39 labelled turns
+    for a single character and left the narrator pool empty, which
+    ``sd_plan`` refuses. :mod:`session_doc.plan_eligibility` now classifies
+    them, holding the roster that makes the distinction possible.
 
     **Hand this the moments section, never the whole scene file.** Two things
     in a real extraction defeat a looser reading, and both are in scene 05 of
@@ -403,30 +411,14 @@ def scene_speakers(moments: str) -> set[str]:
     - The gm-assist summary above the moments carries its own **bold** headers,
       so a label scan over the whole document picks up prose as people.
 
-    Presence, not volume: one label is enough. Soma has two lines in scene 03
-    against Vukradin's sixty-six and both are eligible — a threshold above zero
-    would be a tuning knob with no defensible value (FR-009).
-    """
-    return set(scene_speaker_counts(moments))
-
-
-def scene_speaker_counts(moments: str) -> dict[str, int]:
-    """``{label: labelled turns}`` for ``moments`` — the same rule, with counts.
-
-    :func:`scene_speakers` is this function's keys. They are one function
-    rather than two because a second parse would be a second definition of
-    "this label is present": an earlier draft counted turns with a
+    A label is a label only at the start of a line. The anchored regex is
+    deliberate: an earlier draft counted turns with a
     ``line.strip().startswith("**")`` scan, which accepts an indented label the
-    anchored regex rejects, so a smoothed extraction could report a dozen turns
-    for a character the eligibility set had already excluded.
+    anchor rejects, so a smoothed extraction could report a dozen turns for a
+    character the eligibility set had already excluded. One reading feeds both
+    presence and counts, so the two can never disagree (FR-009).
     """
-    counts: dict[str, int] = {}
-    for raw in _SCENE_SPEAKER_RE.findall(moments):
-        label = raw.strip()
-        if not label or label.startswith("[") or label == GM_LABEL:
-            continue
-        counts[label] = counts.get(label, 0) + 1
-    return counts
+    return [raw.strip() for raw in _SCENE_SPEAKER_RE.findall(moments)]
 
 
 def extract_scene_text(recap: str, scene_name: str) -> str:

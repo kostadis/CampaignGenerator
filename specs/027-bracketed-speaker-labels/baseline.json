@@ -1,0 +1,91 @@
+{
+  "captured": "2026-09-08",
+  "roster": [
+    "Brewbarry",
+    "Vukradin",
+    "Valphine Sotorra",
+    "Soma"
+  ],
+  "note": "Pre-change behaviour of Filter B. SC-004 diffs the two bare-convention files against scene_speaker_counts; SC-008 diffs loud_count.",
+  "pytest": {
+    "passed": 5071,
+    "skipped": 174,
+    "failed": 0
+  },
+  "scene_speaker_counts": {
+    "brewbarry_source.md": {
+      "Soma": 18,
+      "Brewbarry": 21,
+      "Vukradin": 12,
+      "Valphine Sotorra": 2
+    },
+    "soma_source.md": {
+      "Vukradin": 19,
+      "Valphine Sotorra": 31,
+      "Soma": 5,
+      "Brewbarry": 10
+    },
+    "valphine_source.md": {},
+    "vukradin_source.md": {}
+  },
+  "eligibility": {
+    "brewbarry_source.md": {
+      "pool": [
+        "Brewbarry",
+        "Soma",
+        "Valphine Sotorra",
+        "Vukradin"
+      ],
+      "candidates": [
+        "Brewbarry",
+        "Soma",
+        "Valphine Sotorra",
+        "Vukradin"
+      ],
+      "loud_bucket": {},
+      "loud_count": 0,
+      "quiet_count": 0
+    },
+    "soma_source.md": {
+      "pool": [
+        "Brewbarry",
+        "Soma",
+        "Valphine Sotorra",
+        "Vukradin"
+      ],
+      "candidates": [
+        "Brewbarry",
+        "Soma",
+        "Valphine Sotorra",
+        "Vukradin"
+      ],
+      "loud_bucket": {},
+      "loud_count": 0,
+      "quiet_count": 0
+    },
+    "valphine_source.md": {
+      "pool": [
+        "Brewbarry",
+        "Soma",
+        "Valphine Sotorra",
+        "Vukradin"
+      ],
+      "candidates": [],
+      "loud_bucket": {},
+      "loud_count": 0,
+      "quiet_count": 0
+    },
+    "vukradin_source.md": {
+      "pool": [
+        "Brewbarry",
+        "Soma",
+        "Valphine Sotorra",
+        "Vukradin"
+      ],
+      "candidates": [],
+      "loud_bucket": {},
+      "loud_count": 0,
+      "quiet_count": 0
+    }
+  }
+}

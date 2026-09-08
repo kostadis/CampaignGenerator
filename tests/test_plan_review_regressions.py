@@ -24,7 +24,8 @@ from campaignlib.players_config import (  # noqa: E402
     undetermined_characters,
 )
 from campaignlib.vtt import speaker_labels  # noqa: E402
-from session_doc.io import scene_speaker_counts, scene_speakers  # noqa: E402
+from campaignlib.players_config import norm_name  # noqa: E402
+from session_doc.plan_eligibility import scene_presence  # noqa: E402
 from session_doc.plan_alternates import (  # noqa: E402
     ALTERNATE_KEYS,
     parse_treatments,
@@ -225,11 +226,17 @@ def test_sd_plan_refuses_when_attendance_is_unknowable(tmp_path, monkeypatch, ca
 
 def test_counts_and_presence_come_from_one_rule():
     """An indented label was counted by the old `_count_lines` and rejected by
-    `scene_speakers`, so a GM could read twelve turns for a character the
-    eligibility set had excluded."""
+    the presence scan, so a GM could read twelve turns for a character the
+    eligibility set had excluded.
+
+    Since #453 the invariant is structural — presence is the key set of the
+    counts, from one reading — but it is asserted rather than assumed, because
+    a second parse is exactly how it broke the first time."""
+    canonical = {norm_name(n): n for n in ("Vukradin", "Soma")}
     moments = '  **Vukradin** — *indented*\n> "hi"\n**Soma**\n> "there"\n'
-    assert set(scene_speaker_counts(moments)) == scene_speakers(moments)
-    assert scene_speakers(moments) == {"Soma"}
+    counts, _ = scene_presence(moments, canonical)
+    assert set(counts) == {"Soma"}
+    assert counts == {"Soma": 1}
 
 
 # ── F7: NPC labels buried the notice that matters ───────────────────────────

@@ -28,9 +28,11 @@ strings and returns data, so the rules can be tested without an API key.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 
 from campaignlib.players_config import (
+    GM_LABEL,
     PlayersConfig,
     absent_characters,
     attendance_is_establishable,
@@ -40,7 +42,128 @@ from campaignlib.players_config import (
     undetermined_characters,
 )
 from campaignlib.vtt import speaker_labels
-from session_doc.io import scene_speaker_counts
+from session_doc.io import scene_speaker_labels
+
+
+#: Separators inside a bracketed label. ``/`` joins two speakers on one turn
+#: (``**[GM / Brewbarry]**``); ``,`` carries a qualifier
+#: (``**[GM, as the banker]**``). Splitting on them claims only that the label
+#: names more than one thing — which is visible in the text. Deciding who each
+#: part *is* happens in :func:`_resolve_part`, against the roster.
+_LABEL_SEPARATORS = re.compile(r"[/,]")
+
+
+def label_parts(label: str) -> list[str]:
+    """One speaker label -> its candidate name parts.
+
+    A **bare** label yields itself, unmodified. Only a bracketed label is
+    tokenised, which is what makes a bare-convention session structurally
+    unaffected by #453 rather than merely tested for.
+
+    Tokenising is not identifying. Splitting ``[GM / Brewbarry]`` on ``/``
+    asserts that the label names two parties, which the punctuation says
+    outright; it asserts nothing about who they are.
+    """
+    label = label.strip()
+    if not (label.startswith("[") and label.endswith("]")):
+        return [label] if label else []
+    inner = label[1:-1]
+    return [part for part in (p.strip() for p in _LABEL_SEPARATORS.split(inner)) if part]
+
+
+def _resolve_part(part: str, canonical: dict[str, str]) -> str | None:
+    """One part -> a roster character's own spelling, ``GM_LABEL``, or ``None``.
+
+    Folded **equality**, never containment — and the corpus is what forces the
+    distinction. ``**[scene tag — Vukradin demands a meeting]**`` is a beat
+    marker that *contains* a roster name. Under containment it would place
+    Vukradin in a scene on the strength of scene apparatus: a fabricated
+    attribution, which is the most expensive failure this system can produce.
+    Under folded equality it resolves to nobody and is correctly inert.
+
+    ``norm_name`` says the same thing for the same reason: "Folding is not
+    approximate matching."
+    """
+    folded = norm_name(part)
+    if folded == norm_name(GM_LABEL):
+        return GM_LABEL
+    return canonical.get(folded)
+
+
+@dataclass(frozen=True)
+class LabelReading:
+    """What one speaker label turned out to mean.
+
+    ``characters`` is a *set*: a label naming one character twice contributes
+    one turn of evidence, not two.
+    """
+
+    label: str
+    characters: frozenset[str]
+    names_gm: bool
+    bracketed: bool
+
+    @property
+    def is_apparatus(self) -> bool:
+        """Bracketed and resolving to nobody — a beat marker, near enough.
+
+        Only the *reporting* bucket turns on this (see :func:`_stranger_buckets`).
+        Presence never does: an unresolved label creates no presence whatever
+        shape it has.
+        """
+        return self.bracketed and not self.characters and not self.names_gm
+
+
+def read_label(label: str, canonical: dict[str, str]) -> LabelReading:
+    """Classify one label against the roster.
+
+    A part resolving to a character outranks one resolving to the game master:
+    ``[GM / Brewbarry]`` is Brewbarry's presence, and the GM half contributes
+    nothing rather than suppressing the label. Per the GM's ruling of
+    2026-09-08, **every** roster character a label names is present — so
+    ``[Brewbarry / Soma]`` places both. That is the permissive reading, taken
+    knowingly: a turn only one of them spoke can make both eligible, and the
+    turn counts beside the pool are the GM's evidence for overriding it.
+    """
+    stripped = label.strip()
+    bracketed = stripped.startswith("[") and stripped.endswith("]")
+    characters, names_gm = set(), False
+    for part in label_parts(stripped):
+        resolved = _resolve_part(part, canonical)
+        if resolved == GM_LABEL:
+            names_gm = True
+        elif resolved is not None:
+            characters.add(resolved)
+    return LabelReading(
+        label=stripped,
+        characters=frozenset(characters),
+        names_gm=names_gm,
+        bracketed=bracketed,
+    )
+
+
+def scene_presence(moments: str, canonical: dict[str, str]):
+    """``moments`` -> (turns per character, unresolved labels).
+
+    Filter B, whole. One reading of the text feeds presence and counts alike,
+    so a GM can never be shown a turn count for a character the filter excluded
+    (FR-009) — the rule :func:`session_doc.io.scene_speaker_labels` is anchored
+    for.
+
+    Presence is a yes/no fact: one labelled turn is full eligibility. Soma has
+    two lines in scene 03 against Vukradin's sixty-six and both are eligible.
+    A threshold above zero would be a tuning knob with no defensible value.
+    """
+    counts: dict[str, int] = {}
+    unresolved: list[LabelReading] = []
+    for label in scene_speaker_labels(moments):
+        reading = read_label(label, canonical)
+        if reading.characters:
+            for character in reading.characters:
+                counts[character] = counts.get(character, 0) + 1
+        elif not reading.names_gm:
+            unresolved.append(reading)
+    return counts, unresolved
 
 
 @dataclass(frozen=True)
@@ -151,18 +274,10 @@ def compute_eligibility(
 
     for index, scene in enumerate(scenes):
         name = scene.get("name", "")
-        counts = scene_speaker_counts(scene.get("moments") or "")
-
-        present: set[str] = set()
-        strangers: set[str] = set()
-        roster_counts: dict[str, int] = {}
-        for label, n in counts.items():
-            known = canonical.get(norm_name(label))
-            if known is None:
-                strangers.add(label)
-            else:
-                present.add(known)
-                roster_counts[known] = roster_counts.get(known, 0) + n
+        roster_counts, unresolved = scene_presence(
+            scene.get("moments") or "", canonical)
+        present = set(roster_counts)
+        strangers = {reading.label for reading in unresolved}
 
         scene_records.append(SceneEligibility(
             index=index, name=name, candidates=present & pool,
@@ -205,7 +320,24 @@ def _stranger_buckets(e: Eligibility) -> "tuple[dict[str, set[str]], int]":
     for scene in e.scenes:
         for label in scene.strangers:
             folded = norm_name(label)
-            if any(name in folded for name in folded_pool):
+            bracketed = label.startswith("[") and label.endswith("]")
+            if bracketed:
+                # Scene apparatus, near enough. A bracketed label that resolved
+                # to nobody is far more likely a beat marker than a mangled
+                # character name, and two markers in this corpus contain a
+                # roster name outright — `[scene tag — Soma's Arcana check]`,
+                # `[scene tag — Vukradin demands a meeting]`. Containment would
+                # print both under a notice that says each one costs that
+                # character a scene, in the one channel #385 built to be read.
+                # Reading bracketed labels at all (#453) is what put 22 markers
+                # in reach of this split, so the quiet bucket is where they go.
+                #
+                # The cost, recorded: a mis-normalised *bracketed* character
+                # label would go quiet too. None exists in the corpus, and the
+                # loud alternative is paid every run. Bare labels — where
+                # `Vukradin (David)` actually happens — keep the heuristic.
+                other += 1
+            elif any(name in folded for name in folded_pool):
                 suspects.setdefault(scene.name, set()).add(label)
             else:
                 other += 1
