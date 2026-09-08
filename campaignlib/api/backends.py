@@ -341,6 +341,14 @@ CLAUDE_CODE_CLI = os.environ.get("CG_CLAUDE_CLI", "claude")
 # Highest effort level the API accepts when thinking is disabled.
 CLAUDE_CODE_NO_THINKING_EFFORT = "high"
 
+# Who decided the effort level this run sends. A closed set: `banner()` renders
+# one sentence per member, and an unrecognised member used to fall through to
+# the "inherited" wording — asserting that no override was sent while
+# `override_sent` was True and `--effort` was on the command line (#413).
+CLAUDE_CODE_EFFORT_SOURCES: tuple[str, ...] = (
+    "explicit", "environment", "clamp", "inherited",
+)
+
 # Substrings identifying model families whose thinking cannot be disabled.
 # Matched against the model id, so they cover bare aliases, date suffixes, and
 # provider-prefixed ids (`anthropic.claude-fable-5`) alike.
@@ -457,7 +465,22 @@ class ClaudeCodeRunIdentity:
             thinking = "on (always)"
         else:
             thinking = "on" if self.thinking_on else "off"
-        if self.source == "explicit":
+        # Branch on `override_sent` FIRST. Keying the "no override" wording off
+        # `source` made it the fall-through for every unrecognised label, so a
+        # run that DID send `--effort medium` reported the opposite (#413) — and
+        # an operator killed a correct experiment on the strength of it. The
+        # ordering makes the contradiction unrepresentable rather than unlikely:
+        # this sentence is now reachable only when nothing was sent, whatever
+        # `source` says, including on an identity built by hand rather than by
+        # `claude_code_run_identity` (which validation below cannot reach).
+        if not self.override_sent:
+            # Claims no value: we never read ~/.claude/settings.json, so
+            # printing a level from it would be a guess presented as a record.
+            effort = (
+                "effort=inherited from your ~/.claude/settings.json "
+                "(CampaignGenerator sent no override)"
+            )
+        elif self.source == "explicit":
             effort = f"effort={self.effort_sent} (explicit)"
         elif self.source == "environment":
             effort = f"effort={self.effort_sent} (CG_CLAUDE_CODE_EFFORT)"
@@ -471,12 +494,11 @@ class ClaudeCodeRunIdentity:
                 f"settings.json effortLevel was not used)"
             )
         else:
-            # Claims no value: we never read ~/.claude/settings.json, so
-            # printing a level from it would be a guess presented as a record.
-            effort = (
-                "effort=inherited from your ~/.claude/settings.json "
-                "(CampaignGenerator sent no override)"
-            )
+            # An override WAS sent under a label this banner has no sentence
+            # for. State the level and name the label rather than guessing at
+            # its meaning: Codex's `status_line` has always rendered its own
+            # source verbatim, which is why it never had this bug.
+            effort = f"effort={self.effort_sent} (source: {self.source})"
         return (
             f"claude-code run: model={self.effective_model} {effort} "
             f"thinking={thinking}"
@@ -512,7 +534,19 @@ def claude_code_run_identity(
                       settings.json.
 
     Splitting them is what makes SC-008 answerable.
+
+    `source` is refused unless it names one of those four. It is only a record,
+    so the temptation is to accept whatever a caller writes — but `banner()`
+    has one sentence per member and nothing sensible to say about a label it
+    has never heard of, and the version that guessed is what #413 reports.
+    Rejecting here puts the error where the caller can fix it, next to the
+    typo, rather than at the far end of a run in prose nobody diffs.
     """
+    if source is not None and source not in CLAUDE_CODE_EFFORT_SOURCES:
+        accepted = ", ".join(CLAUDE_CODE_EFFORT_SOURCES)
+        raise ValueError(
+            f"claude-code effort source value {source!r} must be one of: {accepted}"
+        )
     if effort is not None:
         return ClaudeCodeRunIdentity(
             effective_model=model, effort_sent=effort,

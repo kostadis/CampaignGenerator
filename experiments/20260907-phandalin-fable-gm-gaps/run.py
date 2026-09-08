@@ -46,7 +46,7 @@ SCENE_SRC = ROOT.parent / '20260907-phandalin-scene-composition'
 
 MODEL = 'claude-fable-5-1'
 EFFORT = 'low'
-EFFORT_SOURCE = 'explicit'          # a value banner() actually renders; see CG#413
+EFFORT_SOURCE = 'explicit'          # one of CLAUDE_CODE_EFFORT_SOURCES (CG#413)
 BACKEND = 'claude-code'
 MAX_TOKENS = 32000
 MARKER = 'GM NARRATION — TO BE WRITTEN:'
