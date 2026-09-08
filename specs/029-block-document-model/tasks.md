@@ -177,11 +177,11 @@ that scene.
 
 ## Phase 9: Polish
 
-- [ ] T042 [P] Document the workflow in `docs/cli/session_doc_pipeline.md`: the three files, the reviewer and how it reaches a phone, the two progress figures, the gate, and that the round trip stops at the clipboard
-- [ ] T043 [P] Write `docs/cli/gap_review_howto.md` — task-oriented, in the style of `player_identity_howto.md`: get the reviewer onto a phone, review a scene at work, land the result, and every refusal decoded
-- [ ] T044 [P] Add the `CLAUDE.md` note: the record is the source of truth and `.composed.md` is output, `unruled` is an absent entry, the gate reads documents not records, and nothing in this layer may call a model
+- [X] T042 [P] Document the workflow in `docs/cli/session_doc_pipeline.md`: the three files, the reviewer and how it reaches a phone, the two progress figures, the gate, and that the round trip stops at the clipboard
+- [X] T043 [P] Write `docs/cli/gap_review_howto.md` — task-oriented, in the style of `player_identity_howto.md`: get the reviewer onto a phone, review a scene at work, land the result, and every refusal decoded
+- [X] T044 [P] Add the `CLAUDE.md` note: the record is the source of truth and `.composed.md` is output, `unruled` is an absent entry, the gate reads documents not records, and nothing in this layer may call a model
 - [X] T045 [P] Add the reviewer's version-agreement test to `tests/test_reviewer_selfcontained.py` (W2): the schema version the page declares equals `session_doc/review/schema.py`'s constant. This is the guard that exists *because* the page is no longer regenerated per session
-- [ ] T046 Run the full suite (`python -m pytest tests/`) and confirm no regression beyond the known environmental `test_configure_mcp.py::test_git_root_returns_path_itself_when_not_in_a_repo`
+- [X] T046 Run the full suite (`python -m pytest tests/`) and confirm no regression beyond the known environmental `test_configure_mcp.py::test_git_root_returns_path_itself_when_not_in_a_repo`
 
 ### On a real device — the part no test covers
 
@@ -251,3 +251,54 @@ a lost blank line looks like compose misbehaving.
 **T048**, because it is the only task whose failure would change the design rather than the code.
 If rulings do not survive a reload on the GM's actual device, the reviewer needs a different
 persistence story, and that is worth knowing before Phases 6–8 are built on top of it.
+
+
+## Implementation record — 2026-09-08
+
+**T001–T046 complete.** T047–T049 are the device checks and need the GM's phone;
+they are deliberately not marked, and T048 is the one whose failure would change
+the design rather than the code.
+
+Suite: **5284 passed, 182 skipped**. The one failure,
+`test_configure_mcp.py::test_git_root_returns_path_itself_when_not_in_a_repo`, is
+environmental and pre-existing — a stray empty `/tmp/.git` — and fails identically
+with and without this diff.
+
+### Structural change on the first task
+
+The branch was cut from `main` and **restacked onto `feat/454-gap-marking-contract`**
+before any code was written. #455 genuinely depends on #454: `gm_attribution_gap.md`
+is the prompt that emits the marker, and T006 ties the parser's constant to it. On a
+branch off `main` that file does not exist, so the pairing guard could not have been
+written — and writing it against an absent producer is the exact failure `26ec5b0`
+recorded. Three doc commits, nothing pushed, clean rebase.
+
+### Deviations
+
+- **The reviewer was built in one pass** rather than opened in Phases 3, 4 and 5
+  separately. The task list already grouped US1–US3 for that reason; this is the
+  grouping being honoured, not skipped.
+- **Two guards were added that were not in the task list.** `test_reviewer_selfcontained.py`
+  checks that every `data.X` and `b.X` the page reads is a field the schema defines.
+  The version check (T045) catches a deliberate schema change; nothing caught the
+  careless one — the page reading `sceneName` while the exporter writes `scene_name`.
+  Both sides are hand-edited, in different languages, and the first symptom would be
+  `undefined` on a phone.
+- **`_anchor` had a bug its own test caught.** Truncating at 80 characters lands on a
+  space often enough, and an anchor with a trailing blank compares unequal to the same
+  anchor typed into a record by hand. Stripped after truncating, not before.
+
+### Evidence
+
+| Claim | Where |
+|---|---|
+| The parser round-trips | `test_block_model.py`, four real narrations, byte-identical |
+| Block counts are what research measured | 13/6, 25/12, 9/4, 18/9 — pinned |
+| The GM-turn reader is correct | reproduces the confirmation run's own counts (41, 47, 16, 40) from `summary.json` — a figure this code did not produce |
+| The export is pasteable | 14–26 KB per scene, asserted per arm |
+| The reviewer makes no network request | eight patterns, `test_reviewer_selfcontained.py` |
+| Page and exporter agree | `SCHEMA_VERSION` == `EXPORT_VERSION`, plus field-name agreement |
+| Composing is deterministic and refuses when stale | `test_block_model.py`, contract C |
+| A marker cannot reach a chapter | `test_assemble_gate.py`, contract G |
+| Authored prose cannot be destroyed by accident | `test_narrate_authored_refusal.py`, contract N |
+| No model is reachable from this layer | `test_block_model_no_llm.py`, AST walk, refuses to pass vacuously |

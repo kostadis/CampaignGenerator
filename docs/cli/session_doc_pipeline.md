@@ -405,6 +405,67 @@ assemble "$SESS/narration/" \
     --title  "Chapter 37 — A Gem of a Problem"
 ```
 
+## Answering a gap — the block model and the reviewer
+
+`--gap-marking` leaves the GM's descriptions unwritten. This is what consumes
+them. **Start here for the task**: `docs/cli/gap_review_howto.md`.
+
+### Three files per scene
+
+```
+session_doc_scene_NN_<slug>.md             generated — the draft, with markers
+session_doc_scene_NN_<slug>.authored.yaml  hand-authored — rulings and prose
+session_doc_scene_NN_<slug>.composed.md    generated — the two merged
+```
+
+The tape's `transcript_corrections.yaml` pattern: **the record is the source of
+truth and the composed document is output.** Generated files are never
+hand-edited; only the record is.
+
+`sd_compose` merges them, deterministically, and **refuses** when the record's
+`generated_sha256` no longer matches the narration — the same self-invalidating
+property `was`-checking gives the tape.
+
+### The reviewer is a static file, not a page you regenerate
+
+`session_doc/review/reviewer.html` is versioned here and copied to a device
+**once**. `sd_review export` writes the per-scene JSON that gets pasted into it.
+The page makes no network request of any kind, so it works at work, on a phone,
+in airplane mode.
+
+That inverts the workflow it replaces, where every review meant publishing a new
+page — and it makes the export an interface, so both sides carry a version and a
+test asserts they agree.
+
+### Ruling and writing are two different completions
+
+The reviewer shows **two** figures. *Ruled* is what a mobile session drives to
+completion; *written* is what the assembly gate reads. A scene where every gap
+is ruled and eight are unwritten is a finished triage, and the disposition
+`mine` exists to say exactly that — distinct from a gap nobody has looked at.
+
+Dispositions are `mine`, `authored`, `cut` and `edited`; a block nobody touched
+has **no entry at all**. Alongside them, an optional critique — `wrong-scope`,
+`model-should-have-written` — says the *marking* was wrong rather than that the
+chapter needs something, and never changes the composed document.
+
+### The gate
+
+`assemble --require-composed` refuses any scene still holding a marker, naming
+every one responsible. It reads the **documents**, not the records, so it holds
+for a scene composed by hand too.
+
+A scene with both a `.scrubbed.md` and a `.composed.md` is refused rather than
+guessed — `--use` records the choice, the same flag `#429`'s collision uses.
+
+### What this layer may not do
+
+Call a model. Ever. `tests/test_block_model_no_llm.py` walks the AST, because
+asked to resolve its own eleven markers the model discarded nothing and handed
+both of the GM's Order-of-the-Gauntlet lines to a player character
+(`experiments/20260907-phandalin-gm-gaps-selffill`). Copying a gap out to a chat
+is a human act, one gap at a time; nothing is handed the gaps unasked.
+
 ## Gap marking — `sd_narrate --gap-marking`
 
 Off by default. With the mode on, a passage the source attributes to the **GM**
