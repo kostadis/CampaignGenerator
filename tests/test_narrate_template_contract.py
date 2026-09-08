@@ -610,3 +610,124 @@ def test_the_contrast_block_cannot_differentiate_on_person_or_tense():
     flat = " ".join(user_msg.split())
     assert "Differentiate style only" in flat
     assert "never what makes two sections sound different" in flat
+
+
+# ---------------------------------------------------------------------------
+# #416 — one substitution mechanism, so a template rename cannot go one way
+#
+# `build_narrate_system` built the style-reference block with a raw
+# `.replace("{examples}", ...)` — the module's last one — while the bundle path
+# used `_fill` for the same template. `.replace()` is a no-op on an absent
+# needle, so a rename in `examples_block.md` raised on one render path and
+# shipped a literal placeholder plus none of the campaign's examples on the
+# other.
+#
+# The two-way load check does not cover this: it compares the template's
+# placeholders against the list declared in `_load_template_deferred`, so
+# renaming BOTH in one edit passes the check while the `.replace()` quietly
+# stops substituting. That is why the guard here is behavioural rather than a
+# second reading of the declaration.
+# ---------------------------------------------------------------------------
+
+_DRIFTED_EXAMPLES_BLOCK = "STYLE REFERENCE:\n{style_examples}\nEND OF STYLE REFERENCE"
+
+
+def test_a_renamed_examples_placeholder_raises_on_the_single_scene_path(monkeypatch):
+    monkeypatch.setattr(narrate, "EXAMPLES_BLOCK", _DRIFTED_EXAMPLES_BLOCK)
+    with pytest.raises(ValueError) as excinfo:
+        narrate.build_narrate_system("Handcrafted prose.", narrator="Alice")
+    assert "style_examples" in str(excinfo.value)
+
+
+def test_the_bundle_path_already_raised_and_still_does(monkeypatch):
+    """The behaviour the single-scene path was missing, pinned so a later
+    "simplification" cannot even the two up by removing this one instead."""
+    monkeypatch.setattr(narrate, "EXAMPLES_BLOCK", _DRIFTED_EXAMPLES_BLOCK)
+    with pytest.raises(ValueError) as excinfo:
+        narrate.build_bundled_narrate_prompts(
+            [_bundle_scene(1, "Arrival", "Alice")],
+            shared_examples="Handcrafted prose.")
+    assert "style_examples" in str(excinfo.value)
+
+
+def test_the_module_has_no_raw_placeholder_replace_left():
+    """`_fill`'s docstring is the argument: "a chain is a list of intentions
+    that nothing checks". A new `.replace("{...")` is a new unchecked link."""
+    source = Path(narrate.__file__).read_text(encoding="utf-8")
+    # Assembled so this test's own text cannot be what the scan finds.
+    needle = '.replace("' + "{"
+    assert needle not in source, "a raw placeholder .replace() is back"
+
+
+# ---------------------------------------------------------------------------
+# #417 — the same-narrator contrast rule has one home
+#
+# PREV_VOICE_CONTRAST_BLOCK says "{narrator}'s voice should sound clearly
+# different from {prev_narrator}'s", under a heading reading "for contrast — do
+# NOT imitate". Emitting it when they are the same person instructs a narrator
+# to sound unlike themselves.
+#
+# `build_narrate_prompt` treated that as the builder's invariant. The bundle
+# builder checked only that a previous narrator and a sample existed, leaving
+# the identity half to its one caller in `sd_narrate` — correct today, and
+# wrong for anything else that builds a NarrationScene. Both now call
+# `_voice_contrast_applies`, so the rule cannot be half-applied.
+# ---------------------------------------------------------------------------
+
+_CONTRAST_MARKER = "do NOT imitate"
+
+
+def _bundle_has_contrast(narrator: str, prev: str | None) -> bool:
+    scene = narrate.NarrationScene(
+        index=1, scene_name="Arrival", narrator=narrator, focus="focus",
+        source_path=Path("01.md"), source_kind="base",
+        scene_events="events", moments="moments",
+        voice_note="", character_examples="",
+        previous_narrator=prev,
+        previous_voice_sample="A prior line." if prev else None,
+        estimated_output_tokens=500, output_path=Path("out.md"),
+        output_existed=False,
+    )
+    system, user = narrate.build_bundled_narrate_prompts([scene])
+    return _CONTRAST_MARKER in (system + "\n" + user)
+
+
+def _single_has_contrast(narrator: str, prev: str | None) -> bool:
+    prompt = narrate.build_narrate_prompt(
+        narrator=narrator, focus="focus", char_moments="- moment",
+        party="party", handoff="", roster="roster",
+        prev_narrator=prev,
+        prev_voice_sample="A prior line." if prev else None,
+    )
+    return _CONTRAST_MARKER in prompt
+
+
+# Same person under four spellings, a different person, and nobody. The case
+# variants are the point: the single-scene builder always folded case and the
+# bundle builder had no comparison at all to fold.
+_CONTRAST_CASES = [
+    ("Daz", "Zalthir", True),
+    ("Daz", "Daz", False),
+    ("Daz", "daz", False),
+    ("Daz", "DAZ", False),
+    ("Daz", None, False),
+]
+
+
+@pytest.mark.parametrize("narrator,prev,expected", _CONTRAST_CASES)
+def test_the_bundle_builder_owns_the_same_narrator_rule(narrator, prev, expected):
+    assert _bundle_has_contrast(narrator, prev) is expected
+
+
+@pytest.mark.parametrize("narrator,prev,expected", _CONTRAST_CASES)
+def test_the_single_scene_builder_still_owns_it(narrator, prev, expected):
+    assert _single_has_contrast(narrator, prev) is expected
+
+
+@pytest.mark.parametrize("narrator,prev,_expected", _CONTRAST_CASES)
+def test_both_render_paths_decide_the_contrast_block_identically(
+        narrator, prev, _expected):
+    """Stated as agreement rather than as two independent expectations: the
+    defect was the two paths disagreeing, so the assertion that matters is that
+    they cannot, whatever the shared answer turns out to be."""
+    assert _bundle_has_contrast(narrator, prev) == _single_has_contrast(narrator, prev)
