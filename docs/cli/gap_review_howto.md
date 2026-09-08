@@ -24,7 +24,39 @@ Same rule as the tape's `transcript_corrections.yaml`: **the record is the truth
 and the composed document is output.** Never hand-edit a generated file; the
 next run destroys it and nobody can review what you changed.
 
-## Get the reviewer onto your phone — once
+## The easy way: serve it
+
+```bash
+sd_review serve --dir <session>/narration
+```
+
+Open `http://<this machine>:8765/` on the phone — over a tailnet it works from
+anywhere. Pick a scene; **your rulings save straight to
+`<scene>.authored.yaml` as you make them.** Nothing to copy, nothing to paste,
+and the record is on disk the moment you rule.
+
+Two refusals protect you, both loud:
+
+- a review made against a **different draft** of the narration is refused —
+  reload the scene
+- a save that would **drop prose already on disk** is refused. That is what a
+  stale tab looks like: a review opened this morning, saving over an evening at
+  the desk.
+
+If the save fails — closed laptop, dropped tailnet — the bar says **NOT SAVED**
+and *Copy review* is still there. Your rulings are in the page either way.
+
+The unauthenticated server is meant for a tailnet or a home LAN. It serves one
+campaign's prose and holds no credential, but anyone who can reach the port can
+read and write the review.
+
+## The offline way: put the file on your phone — once
+
+Only needed if you want to review with your machine switched off. **Check it
+runs scripts first**: a file manager's preview will render the page perfectly
+and execute nothing, so every button is dead. That is what happened the first
+time this was tried.
+
 
 Copy `session_doc/review/reviewer.html` to the device however you like: mail it
 to yourself, drop it in a file service, use a cable. Save it somewhere you can

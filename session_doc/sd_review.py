@@ -89,7 +89,14 @@ def _export_one(narration: Path, extraction: Path | None, out: Path,
         )
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    payload = export.model_dump_json(indent=2)
+    # ASCII-only, deliberately. This document's transport is a mobile clipboard
+    # by way of whatever renders it, and that channel is not under our control:
+    # served as `application/json` with no charset, a phone browser guessed
+    # Windows-1252 and every em dash came back as `â€”` — into the anchors, and
+    # into any passage the GM had typed. Escaping non-ASCII as \uXXXX parses
+    # back to the identical characters and cannot be mangled by a charset guess.
+    payload = json.dumps(json.loads(export.model_dump_json()),
+                         indent=2, ensure_ascii=True)
     out.write_text(payload + "\n", encoding="utf-8")
     size_kb = len(payload) / 1024
     print(f"  {narration.name} -> {out}  "
@@ -121,7 +128,58 @@ def main() -> None:
     ex.add_argument("--allow-no-gaps", action="store_true",
                     help="export a scene that has no gap markers.")
 
+    ap = sub.add_parser("apply", help="write a review into <scene>.authored.yaml")
+    ap.add_argument("--scene", required=True, metavar="FILE",
+                    help="the narration the review was made against")
+    ap.add_argument("--from", dest="source", default="-", metavar="FILE",
+                    help="the review JSON; '-' (default) reads stdin, so a "
+                         "clipboard still works: pbpaste | sd_review apply ...")
+    ap.add_argument("--force", action="store_true",
+                    help="save even though it would drop prose already on disk. "
+                         "That is what a stale tab looks like; mean it.")
+
+    sv = sub.add_parser("serve", help="serve the reviewer and take its saves")
+    sv.add_argument("--dir", required=True, metavar="DIR",
+                    help="a narration directory")
+    sv.add_argument("--port", type=int, default=8765)
+    sv.add_argument("--host", default="0.0.0.0",
+                    help="0.0.0.0 by default: the point is to reach it from a "
+                         "phone. Unauthenticated — a tailnet or a home LAN.")
+
     args = parser.parse_args()
+
+    if args.command == "serve":
+        directory = Path(args.dir).expanduser()
+        if not directory.is_dir():
+            print(f"Error: not a directory: {directory}", file=sys.stderr)
+            sys.exit(2)
+        from session_doc.review.serve import serve
+        serve(directory, args.port, args.host)
+        return
+
+    if args.command == "apply":
+        narration = Path(args.scene).expanduser()
+        if not narration.is_file():
+            print(f"Error: narration not found: {narration}", file=sys.stderr)
+            sys.exit(2)
+        raw = (sys.stdin.read() if args.source == "-"
+               else Path(args.source).expanduser().read_text(encoding="utf-8"))
+        from session_doc.authored import AuthoredError
+        from session_doc.review.records import (
+            SaveRefused, review_to_record, save_record, summarise,
+        )
+        try:
+            record = review_to_record(json.loads(raw))
+        except (ValueError, AuthoredError) as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            sys.exit(1)
+        try:
+            written, _ = save_record(narration, record, force=args.force)
+        except SaveRefused as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            sys.exit(1)
+        print(f"  {written.name}  ({summarise(record)})")
+        return
     scene = Path(args.scene).expanduser()
 
     if args.all_scenes:

@@ -251,8 +251,18 @@ refuses and says why.
 
 **The reviewer**
 
-- **FR-009**: The reviewer MUST be a single file that works with no network, no server, and no
-  external resources, so it functions offline and from local storage on a mobile device.
+- **FR-009**: The reviewer MUST be a single file with no external resources, and MUST talk to no
+  origin other than the one that served it. Opened as a plain file it MUST still work, degrading
+  to the clipboard and saying so.
+
+  *Amended 2026-09-08, from use.* As written this forbade a server outright, on the premise that
+  the machine holding the campaign is unreachable from work. **The premise was false** — a
+  tailnet reaches it — and the offline route was worse than unavailable: opened from a file
+  manager the page rendered correctly and ran no JavaScript at all, so every button was inert.
+  The served route worked first time. The design was paying the whole cost of being offline and
+  collecting none of the benefit.
+- **FR-009a**: When served, the reviewer MUST save each change to the scene's authored record,
+  so the clipboard is not the only path and `localStorage` is not the persistence story.
 - **FR-010**: The reviewer MUST NOT be regenerated per session. It is versioned once; a session
   is supplied to it as data.
 - **FR-011**: A session's data MUST be supplied by pasting it into the page.
@@ -337,10 +347,13 @@ refuses and says why.
   deferred: refusing is never wrong, only inconvenient, and an anchor that lands an authored
   block on the wrong prose is the same attribution error this whole feature exists to prevent,
   committed by us instead of by a model. Merge review is `#456`'s, with its UX.
-- **The round trip stops at the clipboard.** Getting a review back into the authored record is
-  explicitly out of scope: no paste-back command, no upload. The record is hand-edited, or
-  written by `#456`. Designing the paste-back format before the workflow has been used for real
-  is what this defers.
+- ~~**The round trip stops at the clipboard.**~~ **Superseded 2026-09-08, by use.** The original
+  ruling deferred the paste-back format until the workflow had been used for real. It was used,
+  and that discharged the reason twice: what gets copied turned out to be exactly the record,
+  so there was nothing left to learn — and copying it through a phone's clipboard corrupted
+  every em dash in the scene, because the channel is a browser's charset guess and is not under
+  our control. `sd_review serve` now saves each change to `.authored.yaml` directly;
+  `sd_review apply` is the CLI underneath it, and the clipboard remains as the offline path.
 - **Copying out is not auto-resolution.** A human copies one gap out and pastes one passage back;
   the model is never handed the gaps unasked and never writes into the document. The guard
   against a button that resolves gaps automatically still stands and still needs its test — the

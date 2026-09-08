@@ -57,6 +57,13 @@
   .meter i { display:block; height:100%; width:0%; transition:width .2s; }
   .meter.ruled i { background:var(--brass); }
   .meter.written i { background:var(--teal); }
+  .seg { display:flex; border:1px solid var(--rule); border-radius:3px; overflow:hidden; }
+  .seg button { font:500 .74rem/1 var(--sans); color:var(--muted); background:transparent;
+    border:0; border-right:1px solid var(--rule); padding:.45rem .6rem; cursor:pointer; }
+  .seg button:last-child { border-right:0; }
+  .seg button b { font-weight:600; font-variant-numeric:tabular-nums; }
+  .seg button[aria-pressed="true"] { background:var(--ink); color:var(--surface); }
+  .empty { color:var(--muted); font-size:.9rem; padding:2rem 0; text-align:center; }
   button.act { font:500 .78rem/1 var(--sans); color:var(--ink); background:transparent;
     border:1px solid var(--rule); border-radius:3px; padding:.45rem .7rem; cursor:pointer; }
   button.act:hover { border-color:var(--muted); }
@@ -125,9 +132,15 @@
     <div class="fig"><span><b id="writtenN">0</b>/<span id="writtenT">0</span> written</span>
       <div class="meter written"><i id="writtenBar"></i></div></div>
   </div>
+  <div class="seg" id="filter" hidden role="group" aria-label="Show">
+    <button type="button" data-view="all" aria-pressed="true">All</button>
+    <button type="button" data-view="unruled" aria-pressed="false">Unruled <b>0</b></button>
+    <button type="button" data-view="unwritten" aria-pressed="false">To write <b>0</b></button>
+  </div>
   <button class="act" id="btnNext" hidden>Next gap</button>
   <button class="act" id="btnPrompt" hidden>Copy as prompt</button>
   <button class="act" id="btnReview" hidden>Copy review</button>
+  <span id="saveState" class="note" hidden></span>
 </div>
 
 <main>
@@ -161,6 +174,19 @@ const el = (tag, cls, text) => {
 let data = null;          // the loaded export
 let state = {};           // blockId -> {disposition, text, critique}
 let storageOK = false;
+//: Which gaps to show. "unanswered" means two different things depending on
+//: which session you are in — triage on a phone leaves everything `mine` and
+//: unwritten, and that is SUCCESS, not a backlog — so the filter names both
+//: rather than collapsing them into one ambiguous toggle.
+let view = "all";
+
+function matchesView(b) {
+  if (view === "all") return true;
+  const e = entry(b.id);
+  const disp = e && e.disposition;
+  if (view === "unruled") return !disp;
+  return disp !== "authored" && disp !== "cut";   // still to write or cut
+}
 
 // ── persistence ────────────────────────────────────────────────────────────
 // localStorage under file:// is inconsistent across mobile browsers: some
@@ -176,6 +202,56 @@ function probeStorage() {
   } catch (e) { return false; }
 }
 const storeKey = () => "gapreview:" + (data ? data.narration + ":" + data.generated_sha256 : "");
+
+// ── saving to disk ─────────────────────────────────────────────────────────
+// When this page is SERVED by `sd_review serve`, rulings go straight to
+// <scene>.authored.yaml and the clipboard stops being the boundary. That is a
+// deliberate amendment to the original design: it was built as an offline file
+// because the machine holding the campaign was assumed unreachable from work,
+// and that turned out to be false — the file:// route did not even run scripts
+// on the device, while the served one did.
+//
+// SAME ORIGIN, ALWAYS. No absolute URL appears anywhere here: the page talks to
+// whatever served it and to nothing else, so it cannot phone home, and opened
+// as a plain file it degrades to the clipboard instead of failing.
+const servedFromDisk = () => location.protocol === "http:" || location.protocol === "https:";
+let saveState = "idle";     // idle | saving | saved | offline | error
+let saveTimer = null;
+
+function scheduleSave() {
+  if (!servedFromDisk() || !data) return;
+  clearTimeout(saveTimer);
+  // Coalesced: typing a passage should not be one request per keystroke.
+  saveTimer = setTimeout(saveToDisk, 700);
+}
+
+async function saveToDisk() {
+  const stem = data.narration.replace(/\.md$/, "");
+  try {
+    const res = await fetch("record/" + encodeURIComponent(stem), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: reviewText(),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) { setSaveState("error", body.error || ("HTTP " + res.status)); return; }
+    setSaveState("saved", body.summary || "");
+  } catch (e) {
+    // The server went away — a closed laptop, a dropped tailnet. Say so, and
+    // keep the clipboard available: the rulings are still in the page.
+    setSaveState("error", "could not reach the server — use Copy review");
+  }
+}
+
+function setSaveState(next, detail) {
+  saveState = next;
+  const el2 = $("saveState");
+  el2.hidden = false;
+  el2.textContent = { saving: "saving…", saved: "saved to disk" + (detail ? " · " + detail : ""),
+                      offline: "not saved — copy the review before you leave",
+                      error: "NOT SAVED: " + (detail || "") }[next] || "";
+  el2.className = (next === "error" || next === "offline") ? "warn" : "note";
+}
 function save() {
   if (!storageOK || !data) return;
   try { localStorage.setItem(storeKey(), JSON.stringify(state)); } catch (e) { /* full or blocked */ }
@@ -227,14 +303,14 @@ function setDisposition(id, value) {
   e.disposition = (e.disposition === value) ? undefined : value;
   if (e.disposition === undefined) delete e.disposition;
   if (!e.disposition && !e.text && !e.critique) delete state[id]; else state[id] = e;
-  save(); render();
+  save(); scheduleSave(); render();
 }
 function setCritique(id, value) {
   const e = state[id] || {};
   e.critique = (e.critique === value) ? undefined : value;
   if (e.critique === undefined) delete e.critique;
   if (!e.disposition && !e.text && !e.critique) delete state[id]; else state[id] = e;
-  save(); render();
+  save(); scheduleSave(); render();
 }
 function setText(id, value, kind) {
   const e = state[id] || {};
@@ -250,7 +326,7 @@ function setText(id, value, kind) {
     if (kind === "prose") delete e.disposition;
   }
   if (!e.disposition && !e.text && !e.critique) delete state[id]; else state[id] = e;
-  save(); updateCounts();
+  save(); scheduleSave(); updateCounts();
 }
 
 function counts() {
@@ -270,6 +346,11 @@ function updateCounts() {
   const pct = (n) => c.total ? Math.round(100 * n / c.total) + "%" : "0%";
   $("ruledBar").style.width = pct(c.ruled);
   $("writtenBar").style.width = pct(c.written);
+  const seg = $("filter");
+  seg.querySelector('[data-view="unruled"] b').textContent = c.total - c.ruled;
+  seg.querySelector('[data-view="unwritten"] b').textContent = c.total - c.written;
+  seg.querySelectorAll("button").forEach(btn =>
+    btn.setAttribute("aria-pressed", String(btn.dataset.view === view)));
   for (const b of gapBlocks()) {
     const well = document.querySelector('[data-well="' + b.id + '"]');
     if (!well) continue;
@@ -304,6 +385,17 @@ function proseBlock(b) {
 
   // US3 / #418 — every block is editable, the model's prose as much as the
   // gaps, "because the seam is where a sentence usually needs a tweak".
+  // Copy what the model proposed, so it can be rewritten somewhere with a real
+  // keyboard and pasted back. Editing eight paragraphs in a phone textarea is
+  // possible and unpleasant; this is what makes "every block is editable"
+  // usable on the device the review actually happens on.
+  const grab = el("button", "editlink", "copy this passage");
+  grab.addEventListener("click", (ev) => {
+    const cur = entry(b.id);
+    copy((cur && cur.text !== undefined) ? cur.text : b.text, ev.currentTarget);
+  });
+  wrap.appendChild(grab);
+
   const edit = el("button", "editlink", (e && e.disposition === "edited") ? "edited — edit again" : "edit this passage");
   edit.addEventListener("click", () => {
     const ta = el("textarea", "passage");
@@ -318,6 +410,7 @@ function proseBlock(b) {
     wrap.textContent = "";
     wrap.append(ta, done);
     ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
   });
   wrap.appendChild(edit);
   return wrap;
@@ -372,7 +465,15 @@ function gapWell(b, n, total) {
   }
   well.appendChild(row2);
 
-  well.appendChild(el("span", "lbl", "Your passage"));
+  const passHead = el("span", "lbl", "Your passage");
+  well.appendChild(passHead);
+  // The gap's own text is the model's proposal for what belongs here. Copying it
+  // alone — rather than the whole-scene prompt — is what you want when you are
+  // drafting one passage and already have the scene in front of you.
+  const grabGap = el("button", "editlink", "copy this gap");
+  grabGap.addEventListener("click", (ev) => copy(gapText(b.text), ev.currentTarget));
+  well.appendChild(grabGap);
+
   const ta = el("textarea", "passage");
   ta.rows = 3;
   ta.placeholder = "Write what goes here, or leave it for the desk…";
@@ -393,7 +494,7 @@ function gapText(raw) {
 function render() {
   $("paste").hidden = true;
   $("counts").hidden = false;
-  for (const id of ["btnNext", "btnPrompt", "btnReview"]) $(id).hidden = false;
+  for (const id of ["filter", "btnNext", "btnPrompt", "btnReview"]) $(id).hidden = false;
   $("title").textContent = (data.narrator || "Scene") + " — " + (data.scene_name || "");
   $("subtitle").textContent = "session " + (data.session || "?") + " · scene "
     + data.scene_index + " · " + data.word_count + " words";
@@ -402,11 +503,27 @@ function render() {
   host.hidden = false;
   host.textContent = "";
   let n = 0;
+  let shown = 0;
   const total = gapBlocks().length;
   for (const b of data.blocks) {
-    if (b.kind === "gap") { n += 1; host.appendChild(gapWell(b, n, total)); }
-    else host.appendChild(proseBlock(b));
+    if (b.kind === "gap") {
+      n += 1;
+      if (!matchesView(b)) continue;
+      shown += 1;
+      // The gap keeps its real number even when filtered: "Gap 4 / 6" tells you
+      // where you are in the scene, which a renumbered worklist would destroy.
+      host.appendChild(gapWell(b, n, total));
+    } else if (view === "all") {
+      host.appendChild(proseBlock(b));
+    }
   }
+  if (view !== "all" && shown === 0) {
+    host.appendChild(el("p", "empty", view === "unruled"
+      ? "Nothing left to rule in this scene."
+      : "Nothing left to write in this scene."));
+  }
+  // The source turns stay put in every view: they are the context a gap is
+  // ruled against, and the surrounding prose is not.
   if (data.source_gm_turns && data.source_gm_turns.length) {
     const d = el("details", "src");
     d.appendChild(el("summary", null,
@@ -468,19 +585,35 @@ function promptText() {
 }
 
 function reviewText() {
+  // Document order, not the order the gaps were ruled in. A record is read and
+  // diffed by a human against the scene it belongs to, and `Object.entries`
+  // hands back click order — which put gap-4 before gap-1 in the first real
+  // review off this page.
+  const order = new Map(data.blocks.map((b, i) => [b.id, i]));
   const out = {
     version: SCHEMA_VERSION,
     narration: data.narration,
     generated_sha256: data.generated_sha256,
-    blocks: Object.entries(state).map(([id, e]) => {
-      const b = data.blocks.find(x => x.id === id) || {};
-      const row = { id: id, disposition: e.disposition || "mine", anchor: b.anchor || "" };
-      if (e.text !== undefined) row.text = e.text;
-      if (e.critique) row.critique = e.critique;
-      return row;
-    }),
+    blocks: Object.entries(state)
+      .sort((a, b) => (order.get(a[0]) ?? 1e9) - (order.get(b[0]) ?? 1e9))
+      .map(([id, e]) => {
+        const b = data.blocks.find(x => x.id === id) || {};
+        const row = { id: id, disposition: e.disposition || "mine", anchor: b.anchor || "" };
+        if (e.text !== undefined) row.text = e.text;
+        if (e.critique) row.critique = e.critique;
+        return row;
+      }),
   };
-  return JSON.stringify(out, null, 2);
+  // Escape every non-ASCII character. The clipboard on a phone is a lossy,
+  // uncontrolled channel — a charset guess turned every em dash into `â€”` on
+  // the way IN, and the way out is the same channel carrying prose the GM
+  // actually wrote.
+  return asciiSafe(JSON.stringify(out, null, 2));
+}
+
+function asciiSafe(s) {
+  return s.replace(/[\u007f-\uffff]/g,
+    (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
 }
 
 function copy(text, button) {
@@ -506,6 +639,13 @@ $("btnLoad").addEventListener("click", () => {
   const err = load($("json").value.trim());
   if (err) { $("pasteMsg").textContent = err; $("pasteMsg").className = "warn"; }
 });
+$("filter").addEventListener("click", (ev) => {
+  const btn = ev.target.closest("button[data-view]");
+  if (!btn) return;
+  view = btn.dataset.view;
+  render();
+  window.scrollTo({ top: 0 });
+});
 $("btnNext").addEventListener("click", () => {
   const next = gapBlocks().find(b => { const e = entry(b.id); return !e || !e.disposition; });
   const target = next ? document.querySelector('[data-well="' + next.id + '"]') : null;
@@ -514,7 +654,37 @@ $("btnNext").addEventListener("click", () => {
 $("btnPrompt").addEventListener("click", (ev) => copy(promptText(), ev.currentTarget));
 $("btnReview").addEventListener("click", (ev) => copy(reviewText(), ev.currentTarget));
 
+// Served with ?scene=<stem>: fetch it and skip the paste box entirely. This is
+// the everyday path now; pasting remains for the offline file.
+(function boot() {
+  const stem = new URLSearchParams(location.search).get("scene");
+  if (!servedFromDisk() || !stem) return;
+  fetch("scene/" + encodeURIComponent(stem) + ".json")
+    .then(r => r.ok ? r.text() : Promise.reject(new Error("HTTP " + r.status)))
+    .then(text => {
+      const err = load(text);
+      if (err) { $("pasteMsg").textContent = err; $("pasteMsg").className = "warn"; return; }
+      // Whatever is already on disk wins over a blank slate.
+      return fetch("record/" + encodeURIComponent(stem))
+        .then(r => r.ok ? r.json() : null)
+        .then(rec => {
+          if (!rec || !rec.blocks) return;
+          for (const b of rec.blocks) {
+            const e = {};
+            if (b.disposition) e.disposition = b.disposition;
+            if (b.text !== undefined) e.text = b.text;
+            if (b.critique) e.critique = b.critique;
+            state[b.id] = e;
+          }
+          render();
+          setSaveState("saved", "loaded from disk");
+        });
+    })
+    .catch(() => { /* fall through to the paste box */ });
+})();
+
 storageOK = probeStorage();
+if (!servedFromDisk()) setSaveState("offline");
 if (!storageOK) {
   const w = $("storeWarn");
   w.hidden = false;

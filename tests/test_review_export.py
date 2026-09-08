@@ -141,3 +141,39 @@ def test_the_export_is_json_serialisable_and_reloads(arm):
     """It is pasted through a clipboard, so it must survive a round trip."""
     raw = export_for(arm).model_dump_json()
     assert SceneExport.model_validate(json.loads(raw)).gap_count == export_for(arm).gap_count
+
+
+# ── The clipboard is a lossy channel, so the payload defends itself ─────────
+
+@pytest.mark.parametrize("arm", sorted(ARMS))
+def test_the_export_written_to_disk_is_pure_ascii(arm, tmp_path):
+    """Found in the field, on the first real review off this page.
+
+    Served as `application/json` with no charset, a phone browser guessed
+    Windows-1252 and every em dash came back as `â€”` — into the anchors, and
+    into any passage the GM had typed. The file on disk was fine; the transport
+    mangled it.
+
+    Fixing one server's headers would not have been enough: this document's
+    channel is a mobile clipboard by way of whatever happens to render it, and
+    that is not under our control. Escaping every non-ASCII character makes the
+    payload immune to a charset guess, and it parses back to the identical text.
+    """
+    import json as _json
+    import subprocess
+
+    out = tmp_path / "scene.json"
+    narration = CORPUS / arm / "response.md"
+    rc = subprocess.run(
+        [sys.executable, "-m", "session_doc.sd_review", "export",
+         "--scene", str(narration),
+         "--extraction", str(CORPUS / "inputs" / f"{arm}_source.md"),
+         "--out", str(out)],
+        capture_output=True, text=True, cwd=ROOT)
+    assert rc.returncode == 0, rc.stderr
+
+    raw = out.read_bytes()
+    assert raw.isascii(), "the export must survive a charset guess"
+    assert b"\xe2\x80\x94" not in raw          # no raw em-dash bytes
+    # …and the escapes must decode back to the real characters, not to hyphens.
+    assert "—" in _json.loads(raw)["blocks"][0]["text"] or export_for(arm).gap_count == 0
