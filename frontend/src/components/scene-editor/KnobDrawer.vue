@@ -40,6 +40,7 @@ const props = defineProps<{
   // `narrateTokens`, which remains the sequential per-scene ceiling.
   narrateBatchTokens: number
   proseMode: boolean
+  gapMarking: boolean
   reflections: boolean
   // The genre rulebook is a FILE now (#276 fix 2): this is a path, and
   // `genreInfo` is the server's read-only summary of what it resolved to.
@@ -82,6 +83,7 @@ const emit = defineEmits<{
   'update:narrateTokens': [value: number]
   'update:narrateBatchTokens': [value: number]
   'update:proseMode': [value: boolean]
+  'update:gapMarking': [value: boolean]
   'update:reflections': [value: boolean]
   'update:genreFile': [value: string]
 }>()
@@ -426,6 +428,14 @@ const genreState = computed<'unset' | 'missing' | 'ok'>(() => {
             @change="emit('update:proseMode', ($event.target as HTMLInputElement).checked)"
           />
           Prose mode (strip mechanical language, GM framing)
+        </label>
+        <label class="checkbox-row">
+          <input
+            type="checkbox"
+            :checked="gapMarking"
+            @change="emit('update:gapMarking', ($event.target as HTMLInputElement).checked)"
+          />
+          Gap marking (leave the GM's descriptions for you to write)
         </label>
         <label class="checkbox-row">
           <input

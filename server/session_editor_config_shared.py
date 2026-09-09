@@ -238,6 +238,18 @@ class NarrateKnobs(BaseModel):
     # their current budget and persisted configs acquire this default on load.
     batch_tokens: int = Field(default=32000, gt=0)
     prose_mode: bool = False
+    # #454 — where the source attributes description to the GM, the model emits
+    # a marker instead of writing it. A narration MODE, not a check, so a config
+    # switch is legitimate. Off by default, and the assembled prompt is
+    # byte-identical without it, so a config written before this feature loads
+    # unchanged and takes the default — additive, no migration (Principle XIII).
+    #
+    # The contract text is NOT addressed from here. It is a repo prompt fragment
+    # beside the other narration rules, because "a passage the source attributes
+    # to the GM may not become a character's" is a pipeline attribution rule
+    # rather than per-campaign register — which is what `paths.genre_file` is
+    # for. See specs/028-gap-marking-contract/spec.md, ruling Q1.
+    gap_marking: bool = False
     reflections: bool = False
     context: list[str] = Field(default_factory=list)
 

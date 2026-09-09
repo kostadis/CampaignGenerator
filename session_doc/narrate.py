@@ -176,7 +176,35 @@ def _require_templates() -> None:
         raise _TEMPLATE_ERROR
 
 
-NARRATION_WRITING_BRIEF = _load_template_deferred("session_doc/narrate/writing_brief")
+# ── The GM-attribution rule, stated ONCE and selected by mode (#454) ────────
+# `writing_brief.md` and `prose_mode.md` each carried a sentence telling the
+# model that "GM descriptions become experienced facts" — precisely the
+# absorption the gap-marking contract forbids. The contract was tested against
+# a standalone experiment prompt that carried neither, so appending it here
+# would have produced two rules arguing, with which one wins a property of the
+# model rather than of the prompt. #435 already paid that bill once.
+#
+# So the sentence became a placeholder in situ, and the mode picks its value.
+# The `_absorb` variants are the original sentences character-for-character,
+# which is what makes "gap marking off changes nothing" a byte-identical claim
+# provable against a frozen golden rather than a hope.
+#
+# TWO slots, not one shared fragment: the two sentences agree on their first
+# clause and differ on the second, and only the first conflicts with the
+# contract. The prose variant keeps its second clause — that NPC speech stays
+# with its character is a rule the contract does not replace, and the tested
+# model got it right unprompted.
+GM_ATTRIBUTION_ABSORB = _load_template_deferred(
+    "session_doc/narrate/gm_attribution_absorb")
+GM_ATTRIBUTION_GAP = _load_template_deferred(
+    "session_doc/narrate/gm_attribution_gap")
+GM_ATTRIBUTION_PROSE_ABSORB = _load_template_deferred(
+    "session_doc/narrate/gm_attribution_prose_absorb")
+GM_ATTRIBUTION_PROSE_GAP = _load_template_deferred(
+    "session_doc/narrate/gm_attribution_prose_gap")
+
+NARRATION_WRITING_BRIEF = _load_template_deferred(
+    "session_doc/narrate/writing_brief", "gm_attribution")
 NARRATE_SYSTEM_BASE        = _load_template_deferred(
     "session_doc/narrate/base",
     "writing_brief", "audit_hatch",
@@ -197,7 +225,8 @@ DIALOGUE_INSTRUCTION_FULL        = _load_template_deferred(
     "session_doc/narrate/dialogue_full")
 DIALOGUE_INSTRUCTION_CONDITIONAL = _load_template_deferred(
     "session_doc/narrate/dialogue_conditional")
-PROSE_MODE_INSTRUCTION     = _load_template_deferred("session_doc/narrate/prose_mode")
+PROSE_MODE_INSTRUCTION     = _load_template_deferred(
+    "session_doc/narrate/prose_mode", "gm_attribution_prose")
 AUDIT_HATCH_INSTRUCTION    = _load_template_deferred("session_doc/narrate/audit_hatch")
 # The canonical-name channel that CANNOT corrupt a quote. Aliases used to be
 # applied to the source text as a find-and-replace before Pass 5, which rewrote
@@ -255,6 +284,37 @@ BUNDLE_SCENE_TEMPLATE      = _load_template_deferred(
 GENRE_INLINE_MAX_CHARS = 200
 
 
+def _gm_attribution_brief(gap_marking: bool) -> str:
+    """The writing brief with its GM-attribution slot filled.
+
+    **Order matters and is the whole trap.** ``_fill`` emits each value verbatim
+    and does not re-scan the joined result — deliberately, so a rulebook
+    containing ``{narrator}`` passes through untouched. That means a
+    ``{gm_attribution}`` sitting inside the value handed to the outer ``_fill``
+    is never substituted: it reaches the model as literal text. Resolve the
+    inner placeholder first, here, and hand the finished string outward.
+
+    That is #302's failure with the direction reversed, and it is silent — the
+    two-way load check passes, because both templates declare the placeholders
+    they contain.
+    """
+    variant = GM_ATTRIBUTION_GAP if gap_marking else GM_ATTRIBUTION_ABSORB
+    return _fill(NARRATION_WRITING_BRIEF, gm_attribution=variant.strip())
+
+
+def _gm_attribution_prose(gap_marking: bool) -> str:
+    """The prose-mode block with its own GM-attribution slot filled.
+
+    A second slot rather than a second use of the first: the two sentences
+    agree on their opening clause and differ after it, and only the opening one
+    conflicts with the contract. Sharing one fragment would make them identical
+    and move the gap-off prompt, which FR-005 forbids.
+    """
+    variant = (GM_ATTRIBUTION_PROSE_GAP if gap_marking
+               else GM_ATTRIBUTION_PROSE_ABSORB)
+    return _fill(PROSE_MODE_INSTRUCTION, gm_attribution_prose=variant.strip())
+
+
 def build_narrate_system(examples_text: str | None, scene: str | None = None,
                          prose_mode: bool = False,
                          has_scene_events: bool = False,
@@ -262,7 +322,8 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                          narrator: str = "",
                          char_examples: str | None = None,
                          voice_note: str | None = None,
-                         genre: str | None = None) -> str:
+                         genre: str | None = None,
+                         gap_marking: bool = False) -> str:
     _require_templates()
     if examples_text:
         # `_fill`, not `.replace()` (#416). This was the module's last raw
@@ -316,7 +377,7 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
         scene_events_line = ""
         rendering = ""
     result = _fill(NARRATE_SYSTEM_BASE,
-                   writing_brief=NARRATION_WRITING_BRIEF,
+                   writing_brief=_gm_attribution_brief(gap_marking),
                    audit_hatch=AUDIT_HATCH_INSTRUCTION,
                    genre_directive=genre_block,
                    examples_block=block,
@@ -331,7 +392,7 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
             SCENE_ANCHORED_DIRECTIVE, narrator=narrator,
             speech_selection=SPEECH_SELECTION_RULE.strip())
     if prose_mode:
-        result += "\n\n" + PROSE_MODE_INSTRUCTION
+        result += "\n\n" + _gm_attribution_prose(gap_marking)
     if char_examples and narrator:
         result += "\n\n" + _fill(PER_CHAR_EXAMPLES_BLOCK,
                                  narrator=narrator,
@@ -469,6 +530,7 @@ def build_bundled_narrate_prompts(
     context_docs: list[str] | None = None,
     prose_mode: bool = False,
     genre: str | None = None,
+    gap_marking: bool = False,
 ) -> tuple[str, str]:
     """Build one shared system prompt and ordered scene-packet user prompt."""
     _require_templates()
@@ -480,11 +542,14 @@ def build_bundled_narrate_prompts(
     )
     system = _fill(
         BUNDLE_SYSTEM_BASE,
-        writing_brief=NARRATION_WRITING_BRIEF,
+        writing_brief=_gm_attribution_brief(gap_marking),
         audit_hatch=AUDIT_HATCH_INSTRUCTION,
         genre_directive=_genre_block(genre),
         shared_examples_block=shared_style,
-        prose_mode_block=PROSE_MODE_INSTRUCTION if prose_mode else "",
+        # One contract text, two render paths (#454 Q2). A bundle-specific
+        # variant is how two statements of one rule start.
+        prose_mode_block=(_gm_attribution_prose(gap_marking) if prose_mode
+                          else ""),
         dialogue_instruction=DIALOGUE_INSTRUCTION_CONDITIONAL,
         shared_context=_shared_narration_context(
             party=party, roster=roster, npc_roster=npc_roster,

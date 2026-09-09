@@ -46,17 +46,28 @@ def _build_matrix() -> dict[str, str]:
                         for char_examples in (None, CHAR_EX):
                             for voice_note in (None, VOICE_NOTE):
                                 for genre in (None, "First-person noir fantasy memoir"):
-                                    flags.append({
-                                        "examples_text": examples_text,
-                                        "scene": scene,
-                                        "prose_mode": prose_mode,
-                                        "has_scene_events": has_scene_events,
-                                        "scene_anchored": scene_anchored,
-                                        "narrator": NARRATOR,
-                                        "char_examples": char_examples,
-                                        "voice_note": voice_note,
-                                        "genre": genre,
-                                    })
+                                    # #454 — the ninth dimension. The gap-off
+                                    # half must stay byte-identical to the
+                                    # pre-feature prompt, which is proved
+                                    # against a frozen copy of this golden in
+                                    # tests/test_prompt_golden_pre_feature.py.
+                                    # This golden guards future drift; that one
+                                    # guards the port itself, because
+                                    # regenerating a golden makes it agree with
+                                    # whatever was built.
+                                    for gap_marking in (False, True):
+                                        flags.append({
+                                            "examples_text": examples_text,
+                                            "scene": scene,
+                                            "prose_mode": prose_mode,
+                                            "has_scene_events": has_scene_events,
+                                            "scene_anchored": scene_anchored,
+                                            "narrator": NARRATOR,
+                                            "char_examples": char_examples,
+                                            "voice_note": voice_note,
+                                            "genre": genre,
+                                            "gap_marking": gap_marking,
+                                        })
 
     def label(f):
         return (
@@ -68,6 +79,7 @@ def _build_matrix() -> dict[str, str]:
             f"_ce{int(f['char_examples'] is not None)}"
             f"_vn{int(f['voice_note'] is not None)}"
             f"_gn{int(f['genre'] is not None)}"
+            f"_gm{int(f['gap_marking'])}"
         )
 
     matrix = {label(f): session_doc.build_narrate_system(**f) for f in flags}
@@ -96,7 +108,7 @@ def _build_matrix() -> dict[str, str]:
 def matrix() -> Mapping[str, str]:
     """The whole flag matrix, built once for the six tests that read it (#405).
 
-    Every test in this file wants the same 265 entries, and each used to call
+    Every test in this file wants the same 521 entries, and each used to call
     `_build_matrix()` for itself. Module scope rather than a module-level
     constant so a run that selects none of them (`-k` elsewhere) builds nothing,
     and so an exception during construction is reported as a fixture error
@@ -169,13 +181,23 @@ def test_prompt_matrix_matches_golden(matrix):
 
 
 def test_every_narration_mode_uses_v1_without_conflicting_legacy_rules(matrix):
-    """A golden refresh must not hide an old wrapper undoing the new brief."""
-    from session_doc.narrate import NARRATION_WRITING_BRIEF
+    """A golden refresh must not hide an old wrapper undoing the new brief.
+
+    Compares against the **rendered** brief, not the stored template. Since
+    #454 the template carries `{gm_attribution}`, which by design never reaches
+    a prompt as literal text, so a template-level count is 0 in every mode. The
+    rendered form also makes this assertion stronger than it was: it now checks
+    that the mode got *its own* variant of the GM-attribution rule, so a
+    gap-marking prompt carrying the absorbing sentence fails here as well as in
+    `tests/test_gap_marking_prompt.py`.
+    """
+    from session_doc.narrate import _gm_attribution_brief
 
     for mode, prompt in matrix.items():
         if mode.startswith("__"):
             continue
-        assert prompt.count(NARRATION_WRITING_BRIEF.strip()) == 1, mode
+        brief = _gm_attribution_brief(mode.endswith("_gm1"))
+        assert prompt.count(brief.strip()) == 1, mode
         assert "close first-person voice" in prompt, mode
         assert "Preserve what remains unknown" in prompt, mode
         for obsolete in (

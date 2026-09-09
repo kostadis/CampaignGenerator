@@ -42,6 +42,7 @@ const props = defineProps<{
   narrating: boolean
   extracting: boolean
   proseMode: boolean
+  gapMarking: boolean
   reflections: boolean
   reviewed: boolean
   currentScene: number | null
@@ -55,6 +56,7 @@ const emit = defineEmits<{
   'open-typora': [type: string]
   'update:extractionContent': [content: string]
   'update:proseMode': [value: boolean]
+  'update:gapMarking': [value: boolean]
   'update:reflections': [value: boolean]
   'update:reviewed': [value: boolean]
 }>()
@@ -328,6 +330,11 @@ async function toggleDiff() {
         <input type="checkbox" :checked="proseMode"
           @change="emit('update:proseMode', ($event.target as HTMLInputElement).checked)" />
         Prose
+      </label>
+      <label class="prose-toggle" :title="'Where the source attributes description or explanation to the GM, leave a marked gap for you to write instead of letting a character absorb it'">
+        <input type="checkbox" :checked="gapMarking"
+          @change="emit('update:gapMarking', ($event.target as HTMLInputElement).checked)" />
+        Gaps
       </label>
       <label class="prose-toggle" :title="'Inject campaign history so the narrator can draw on past events as memories and reflections'">
         <input type="checkbox" :checked="reflections"

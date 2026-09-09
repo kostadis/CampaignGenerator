@@ -26,6 +26,7 @@ interface PipelineState {
 interface Knobs {
   narrate_tokens?: number
   prose_mode?: boolean
+  gap_marking?: boolean
   reflections?: boolean
   // Which rulebook FILE the render used, plus a digest of its contents at
   // that moment (#276 fix 2). The old `narration_genre` stored the whole
@@ -111,6 +112,7 @@ const blockReason = computed(() => {
 const knobsRollup = computed(() => {
   const counts: Record<string, Record<string, number>> = {
     prose_mode: { on: 0, off: 0 },
+    gap_marking: { on: 0, off: 0 },
     reflections: { on: 0, off: 0 },
     backend: {},
   }
@@ -119,6 +121,7 @@ const knobsRollup = computed(() => {
     const k = r.applied_knobs
     if (!k) continue
     counts.prose_mode[k.prose_mode ? 'on' : 'off']++
+    counts.gap_marking[k.gap_marking ? 'on' : 'off']++
     counts.reflections[k.reflections ? 'on' : 'off']++
     const b = k.backend ?? 'anthropic'
     counts.backend[b] = (counts.backend[b] ?? 0) + 1
@@ -298,6 +301,7 @@ onMounted(loadAll)
             </div>
             <div v-if="r.applied_knobs" class="r-chips">
               <span v-if="r.applied_knobs.prose_mode" class="chip">prose</span>
+              <span v-if="r.applied_knobs.gap_marking" class="chip">gaps</span>
               <span v-if="r.applied_knobs.reflections" class="chip">reflections</span>
               <span v-if="r.applied_knobs.backend" class="chip">{{ r.applied_knobs.backend }}</span>
               <span
@@ -321,6 +325,7 @@ onMounted(loadAll)
     <footer class="review-footer">
       <div class="rollup">
         <span>prose: {{ knobsRollup.counts.prose_mode.on }}/{{ knobsRollup.counts.prose_mode.on + knobsRollup.counts.prose_mode.off }}</span>
+        <span>gaps: {{ knobsRollup.counts.gap_marking.on }}/{{ knobsRollup.counts.gap_marking.on + knobsRollup.counts.gap_marking.off }}</span>
         <span>reflections: {{ knobsRollup.counts.reflections.on }}/{{ knobsRollup.counts.reflections.on + knobsRollup.counts.reflections.off }}</span>
         <span>backends:
           <template v-for="(n, k) in knobsRollup.counts.backend" :key="k">{{ k }}={{ n }} </template>

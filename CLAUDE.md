@@ -219,6 +219,35 @@ A scene with no eligible narrator produces three plans (`plan.a|b|c.md`) and no
 *unvoiced*, never as absent from the fiction, since a GM may still have placed
 them in a scene. See `docs/cli/session_doc_pipeline.md`.
 
+### The GM-attribution rule has one home, and the gap marker is content
+
+`sd_narrate --gap-marking` makes the model emit
+`[GM NARRATION — TO BE WRITTEN: …]` where the source attributes description or
+explanation to the GM, instead of letting a character absorb it. Off by default.
+Two facts about it are easy to get wrong from the surrounding code:
+
+- **The rule is stated once, and selected by the mode.** `writing_brief.md` and
+  `prose_mode.md` each carry a `{gm_attribution}` slot rather than a sentence;
+  `session_doc/narrate.py` fills it inner-first, before the outer template fill.
+  That ordering is load-bearing — `_fill` emits values verbatim without
+  re-scanning, so a nested placeholder resolved by the outer call reaches the
+  model as literal text. Do not add a second copy of the rule to a fragment: two
+  restatements of one rule is #435, and they had already drifted when it was
+  found. With the mode off the assembled prompt is **byte-identical** to the
+  pre-feature one, proved against a frozen golden in
+  `tests/test_prompt_golden_pre_feature.py`; do not regenerate that file to make
+  a failure go away.
+- **The gap marker is content, not apparatus.** It must NOT join
+  `APPARATUS_MARKERS` — that registry drives `strip_audit_comments`, which would
+  delete the feature's own output at assembly — and it must NOT be masked from
+  the unknown-name scan, because a proper noun appearing only inside a marker is
+  exactly the invention that check exists to catch. Both are the opposite of how
+  the neighbouring audit comments are handled, and
+  `tests/test_apparatus_marker_pairing.py` fails the build if either flips.
+
+The contract is a repo prompt fragment, not a per-campaign file: register varies
+per campaign, an attribution rule does not. Answering a gap belongs to #455.
+
 ### The genre rulebook is a file, never a pasted string
 
 `paths.genre_file` in `session_doc.yaml` points at the campaign's genre/register document (conventionally `<campaign>/voice/_genre.md`). **That file is the single source of truth** — `sd_narrate --narration-genre-file` reads it at render time, and nothing mirrors its text back into config.

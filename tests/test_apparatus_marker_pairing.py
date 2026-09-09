@@ -104,3 +104,106 @@ def test_an_external_marker_is_exempt_from_the_producer_check_and_says_why():
         assert "skill" in marker.produced_by or "human" in marker.produced_by, marker
     # Flipping one of these to "narrate-prompt" — say, if `Editorial note:`
     # ever gains an in-repo producer — starts enforcing it above automatically.
+
+
+# ── #454 — the gap marker is content, and has a live producer ───────────────
+
+GAP_MARKER = "[GM NARRATION — TO BE WRITTEN:"
+
+
+def test_the_gap_marker_is_not_registered_as_apparatus():
+    """It must NOT join `APPARATUS_MARKERS`, and that is the opposite of the
+    reflex this file otherwise teaches.
+
+    The registry drives `strip_audit_comments`, which *removes* what it matches
+    from the assembled document. A gap marker is the feature's output — #455
+    exists to answer it and #456 to edit it — so registering it would delete the
+    thing at assembly. The registry is also comment-shaped (`<!-- … -->`); the
+    marker is a bracketed line.
+    """
+    assert not any("GM NARRATION" in m.pattern for m in APPARATUS_MARKERS)
+
+
+def test_the_gap_marker_survives_assembly():
+    """The other half of the same fact, asserted on behaviour rather than on
+    the registry's contents — a future stripper written some other way would
+    still fail here."""
+    body = (
+        "She turned toward the door.\n\n"
+        f"{GAP_MARKER} the counting house is loud and full of clerks]\n\n"
+        "<!-- table-speech reclassified: \"roll for it\" -->\n"
+        "\"After you,\" she said.\n"
+    )
+    stripped = strip_audit_comments(body)
+    assert GAP_MARKER in stripped                       # content survives
+    assert "table-speech reclassified" not in stripped  # apparatus does not
+
+
+def test_the_gap_marker_has_a_live_producer():
+    """The binding `26ec5b0` never had: it deleted the prompt that emitted
+    `table-speech reclassified:` and left the stripper, its tests and three
+    out-of-repo skills standing, with nothing failing.
+
+    Deleting `gm_attribution_gap.md`, or unhooking it from the builders, must
+    fail here rather than silently producing markerless renders (SC-008).
+    """
+    from session_doc.narrate import build_bundled_narrate_prompts, build_narrate_system
+    from test_narrate_template_contract import _bundle_scene
+
+    per_scene = build_narrate_system(examples_text=None, narrator="Alice",
+                                     gap_marking=True)
+    system, user = build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Arrival", "Alice")], gap_marking=True)
+    assert GAP_MARKER in per_scene
+    assert GAP_MARKER in system + "\n" + user
+
+
+def test_no_prompt_asks_for_the_gap_marker_with_the_mode_off():
+    """The producer is bound to the mode, not merely present in the repo.
+
+    `_every_narration_prompt()` walks the whole matrix; with #454 that is 512
+    single-scene combinations, half of them gap-on. Filtered to the gap-off
+    half, none may request a marker.
+    """
+    from test_session_doc_prompts import _build_matrix
+
+    for key, prompt in _build_matrix().items():
+        if key.startswith("__") or not key.endswith("_gm0"):
+            continue
+        assert GAP_MARKER not in prompt, key
+
+
+def test_a_name_invented_inside_a_gap_marker_is_still_reported():
+    """Deliberately NOT masked, and that is the opposite call from #396.
+
+    Audit comments are masked before the unknown-name scan because they quote
+    raw table speech *verbatim* — an unmasked scan reports the very words the
+    pass just removed from the fiction. A gap marker is the reverse: it is new
+    prose the model wrote *about* the source. A proper noun appearing only
+    inside one, and nowhere in the session's extractions, is exactly the
+    invention the scan exists to catch, so masking here would build a blind
+    spot into the one check that would notice the model making something up
+    while summarising what it declined to write.
+    """
+    from session_doc.knowledge_check import find_unknown_names
+
+    source = "**Alice** — *the door*\n> \"After you.\"\n"
+    narration = (
+        "She turned toward the door.\n\n"
+        "[GM NARRATION — TO BE WRITTEN: Kazneporium Ketternopappux blocks the way]\n"
+    )
+    unknown = find_unknown_names(strip_audit_comments(narration), [source])
+    assert any("Kazneporium" in name for name in unknown)
+
+
+def test_a_name_drawn_from_the_source_is_not_reported():
+    """The other side: the scan's `known_texts` already include the session's
+    own extractions, so a marker summarising the source stays quiet."""
+    from session_doc.knowledge_check import find_unknown_names
+
+    source = "**Aurelan Vance** — *the counting house*\n> \"What are you making?\"\n"
+    narration = (
+        "[GM NARRATION — TO BE WRITTEN: Aurelan Vance hurries back, out of breath]\n"
+    )
+    unknown = find_unknown_names(strip_audit_comments(narration), [source])
+    assert not any("Aurelan" in name for name in unknown)
