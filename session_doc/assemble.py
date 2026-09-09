@@ -31,6 +31,7 @@ from campaignlib.textproc import split_frontmatter
 # needs the same regex to keep a trailing audit comment out of the prose
 # handoff and out of the unknown-name scan (#396).
 from session_doc.apparatus import strip_audit_comments
+from session_doc.blocks import has_open_gap
 
 
 def humanise_slug(slug: str) -> str:
@@ -38,27 +39,85 @@ def humanise_slug(slug: str) -> str:
     return " ".join(w.capitalize() for w in slug.split("_"))
 
 
-def collect_scene_files(in_dir: Path, pattern: str, prefer_scrubbed: bool) -> list[Path]:
+def collect_scene_files(in_dir: Path, pattern: str, prefer_scrubbed: bool,
+                       chosen: set[str] | None = None) -> list[Path]:
     """Return one file per scene, preferring `.scrubbed.md` when present.
 
-    The glob pattern matches both `foo.md` and `foo.scrubbed.md`, so we
-    dedupe by base stem (filename minus `.scrubbed.md` or `.md`). With
-    `prefer_scrubbed`, the scrubbed variant wins when both exist; without
-    it, the raw `.md` variant wins and `.scrubbed.md` files are ignored.
+    The glob pattern matches `foo.md`, `foo.scrubbed.md` and `foo.composed.md`,
+    so we dedupe by base stem. With `prefer_scrubbed`, the scrubbed variant wins
+    over the raw one; without it, `.scrubbed.md` files are ignored.
+
+    **A scrubbed and a composed variant together is refused** (#455). They come
+    from independent passes — scrubbing polishes prose, composing fills the GM's
+    gaps — and nothing in the inputs says which is final. Picking by sort order
+    would silently drop one, which is the failure `resolve_scene_collisions`
+    already exists to prevent one level up. `--use` records the ruling in the
+    command, exactly as it does there.
+
+    The two refusals are deliberately the same exception and the same flag
+    (Principle XII) and deliberately different sentences: that one is *two
+    scenes with one number*, this one is *one scene with two final variants*.
     """
+    named = {Path(c).name for c in (chosen or ())}
     by_stem: dict[str, Path] = {}
+    variants: dict[str, dict[str, Path]] = {}
     for path in sorted(in_dir.glob(pattern)):
         name = path.name
-        if name.endswith(".scrubbed.md"):
-            base = name[: -len(".scrubbed.md")]
-            if not prefer_scrubbed:
-                continue
-            by_stem[base] = path
-        elif name.endswith(".md"):
-            base = name[: -len(".md")]
-            by_stem.setdefault(base, path)
+        for suffix, kind in ((".scrubbed.md", "scrubbed"),
+                             (".composed.md", "composed")):
+            if name.endswith(suffix):
+                base = name[: -len(suffix)]
+                variants.setdefault(base, {})[kind] = path
+                break
         else:
+            if not name.endswith(".md"):
+                continue
+            base = name[: -len(".md")]
+            variants.setdefault(base, {})["raw"] = path
+
+    clashes: list[tuple[str, Path, Path]] = []
+    for base, found in sorted(variants.items()):
+        scrubbed, composed = found.get("scrubbed"), found.get("composed")
+        if scrubbed is not None and composed is not None:
+            picked = [p for p in (scrubbed, composed) if p.name in named]
+            if len(picked) == 1:
+                by_stem[base] = picked[0]
+                continue
+            clashes.append((base, scrubbed, composed))
             continue
+        if composed is not None:
+            by_stem[base] = composed
+        elif scrubbed is not None and prefer_scrubbed:
+            by_stem[base] = scrubbed
+        elif "raw" in found:
+            by_stem[base] = found["raw"]
+        elif scrubbed is not None:
+            # --no-prefer-scrubbed with no raw sibling: the scrubbed file is the
+            # only thing there, and dropping the scene silently would be worse
+            # than honouring a preference that has nothing to prefer.
+            by_stem[base] = scrubbed
+
+    if clashes:
+        lines = [
+            "Refusing to assemble: a scene has two final variants and nothing "
+            "says which one is it.",
+            "",
+            "A scrubbed file and a composed file come from different passes — "
+            "scrubbing polishes the prose,",
+            "composing fills the GM's gaps — so neither supersedes the other by "
+            "name.",
+        ]
+        for base, scrubbed, composed in clashes:
+            lines += ["", f"  {base}:", f"    {scrubbed.name}", f"    {composed.name}"]
+        lines += [
+            "",
+            "Choose the final one per scene and re-run, e.g.:",
+            f"    --use {clashes[0][2].name}",
+            "",
+            "Deleting or moving the other file works too; --use records the "
+            "decision in the command.",
+        ]
+        raise SceneCollision("\n".join(lines))
     return [by_stem[k] for k in sorted(by_stem)]
 
 
@@ -177,6 +236,12 @@ def main() -> None:
                         help="Use raw .md files even when a .scrubbed.md "
                              "variant exists. Default behaviour prefers "
                              "scrubbed.")
+    parser.add_argument("--require-composed", action="store_true",
+                        help="Refuse to assemble any scene that still holds a "
+                             "gap marker (#455). Off by default. A chapter with "
+                             "[GM NARRATION — TO BE WRITTEN: ...] in it feeds "
+                             "the release append and the chapter split, so a "
+                             "marker that reaches it travels.")
     args = parser.parse_args()
 
     in_dir = Path(args.input_dir).expanduser()
@@ -184,8 +249,13 @@ def main() -> None:
         print(f"Error: input directory not found: {in_dir}", file=sys.stderr)
         sys.exit(1)
 
-    files = collect_scene_files(in_dir, args.pattern,
-                                prefer_scrubbed=not args.no_prefer_scrubbed)
+    try:
+        files = collect_scene_files(in_dir, args.pattern,
+                                    prefer_scrubbed=not args.no_prefer_scrubbed,
+                                    chosen=set(args.use or []))
+    except SceneCollision as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(1)
     if not files:
         print(f"Error: no files matching '{args.pattern}' in {in_dir}", file=sys.stderr)
         sys.exit(1)
@@ -214,6 +284,24 @@ def main() -> None:
         print(f"Error: {exc}", file=sys.stderr)
         sys.exit(1)
     scenes.sort(key=lambda x: x[0])
+
+    if args.require_composed:
+        # Read the DOCUMENTS, never the records (#455 research D3). A file
+        # carrying a marker is unfit for a chapter whatever any record says
+        # about it — including when the record is missing, stale, or describes a
+        # different draft — so this also holds for a scene composed by hand.
+        holding = [(n, p.name) for n, _m, body, p in scenes if has_open_gap(body)]
+        if holding:
+            print(
+                "Error: refusing to assemble — these scenes still have gaps "
+                "nobody has written or cut:\n"
+                + "\n".join(f"  scene {n:02d}: {name}" for n, name in holding)
+                + "\n\nReview them (sd_review export), then compose "
+                  "(sd_compose). Drop --require-composed to assemble anyway, "
+                  "markers and all.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
     if not scenes:
         print(f"Error: no usable scene files in {in_dir} "

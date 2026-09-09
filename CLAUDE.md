@@ -219,6 +219,40 @@ A scene with no eligible narrator produces three plans (`plan.a|b|c.md`) and no
 *unvoiced*, never as absent from the fiction, since a GM may still have placed
 them in a scene. See `docs/cli/session_doc_pipeline.md`.
 
+### A gap is answered in a record, never in the generated file
+
+`sd_narrate --gap-marking` leaves markers; `session_doc/blocks.py` reads them
+back. Three files per scene — `.md` generated, `.authored.yaml` hand-authored,
+`.composed.md` generated — and the rule is `transcript_corrections.yaml`'s: **the
+record is the source of truth and the composed document is output.**
+
+Four things here are enforced rather than documented:
+
+- **The parser round-trips.** `join_blocks(parse_blocks(t)) == t`, asserted on
+  four real narrations. Composing writes a document from these blocks, so a
+  parser that loses a blank line makes every composed file differ from its
+  narration *everywhere* — and the diff reads as compose misbehaving.
+- **`unruled` is an absent entry, and `mine` is not `authored`.** The record
+  stores only what the human contributed. But "ruled mine, not yet written" and
+  "wrote an empty string" are different states, so the disposition is stored
+  rather than inferred from whether `text` is present — that distinction *is*
+  the phone-then-desk workflow, and inferring would erase what a triage pass
+  produces.
+- **The assembly gate reads documents, not records.** A file carrying a marker
+  is unfit for a chapter whatever a record says, so the gate holds for a scene
+  composed by hand or by anything else.
+- **No module in this layer may call a model**, guarded by an AST walk in
+  `tests/test_block_model_no_llm.py`. The evidence is on disk: asked to resolve
+  its own eleven markers, the model discarded nothing and gave both of the GM's
+  Order-of-the-Gauntlet lines to a player character, on the one passage the
+  markers had protected.
+
+The reviewer (`session_doc/review/reviewer.html`) is one static file with **no
+network reference of any kind** — it is used on a phone, offline, at work. It is
+never regenerated per session, which makes the export an interface; a test ties
+the page's `SCHEMA_VERSION` to the exporter's and checks every field the page
+reads exists. See `docs/cli/gap_review_howto.md`.
+
 ### The GM-attribution rule has one home, and the gap marker is content
 
 `sd_narrate --gap-marking` makes the model emit
