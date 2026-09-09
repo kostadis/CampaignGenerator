@@ -184,13 +184,29 @@ They read different label spaces on purpose — a VTT carries player display
 names, `scene_extract` output carries character names — so do not merge them
 into one helper.
 
-Three rules that are enforced rather than documented:
+Four rules that are enforced rather than documented:
 
-- **Presence is read from `moments`, anchored on `^**Name**`.** Never from the
+- **Presence is read from `moments`, anchored on `^**...**`.** Never from the
   gm-assist `summary`, and never by substring. In the session this comes from,
   the GM narrates *about* the absent character eleven times without ever
   labelling him, and the summary carries bold headers of its own — either
   reading marks him present in exactly the scene the planner must not give him.
+- **A label is read verbatim; the roster decides who it names.** `session_doc/io.py`
+  returns every line-start bold label as written — the GM, brackets, beat markers,
+  unknown names — and `plan_eligibility` resolves each part against the roster by
+  folded *equality*. Sessions disagree on the form (`**GM**`, `**[GM]**`,
+  `**[GM, as the banker]**`, `**[GM / Brewbarry]**`), and the same bold-bracket
+  shape is also scene apparatus (`**[Reroll With Advantage]**`), so no property of
+  the text separates them. Discarding every bracketed label cost one session 39
+  turns for one character and emptied its pool (#453). Equality is the load-bearing
+  half: `**[scene tag — Vukradin demands a meeting]**` *contains* a roster name, and
+  containment would place him in a scene on the strength of a beat marker.
+  A label's shape decides only whether the text is tokenised — never identity, and
+  never whether a comma introduces a qualifier or a second speaker, which is
+  settled by whether the piece resolves. Every slot that resolves to nobody is
+  reported *even when the rest of the label resolved*: `**[GM / Brewbarry / Valphine]**`
+  credited Brewbarry and dropped `Valphine` with no trace until it did.
+  `tests/test_speaker_label_grammar.py` fails the build if any of that returns.
 - **`sd_plan` refuses without a tape or a roster, and refuses an empty pool.**
   A fallback to the unnarrowed roster is the defect (#385), not a graceful
   degradation.

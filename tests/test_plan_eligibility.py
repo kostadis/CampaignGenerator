@@ -21,12 +21,17 @@ from campaignlib.players_config import (  # noqa: E402
     absent_characters,
     attending_players,
     load_players_config,
+    norm_name,
 )
 from campaignlib.vtt import speaker_labels  # noqa: E402
-from session_doc.io import load_scene_extractions, scene_speakers  # noqa: E402
+from session_doc.io import (  # noqa: E402
+    load_scene_extractions,
+    scene_speaker_labels,
+)
 from session_doc.plan_eligibility import (  # noqa: E402
     Eligibility,
     compute_eligibility,
+    scene_presence,
 )
 from tests.helpers.eligibility_session import (  # noqa: E402
     MOMENTS_03,
@@ -38,6 +43,23 @@ from tests.helpers.eligibility_session import (  # noqa: E402
     VTT_GM_ONLY,
     write_session,
 )
+
+#: The fixture roster. Presence is decided against it rather than against the
+#: shape of a label (#453), so these tests need one where they used not to.
+FIXTURE_ROSTER = ["Vukradin", "Soma", "Valphine Sotorra", "Brewbarry"]
+
+
+def scene_speakers(moments: str, roster: list[str] | None = None) -> set[str]:
+    """Filter B's answer for one scene: who has a labelled turn in it.
+
+    A test-local wrapper. The rule moved from ``session_doc.io`` — which could
+    not see a roster and therefore guessed from the label's shape — into
+    ``plan_eligibility.scene_presence``, which resolves against one. The
+    assertions below are unchanged; only where they are aimed has moved.
+    """
+    canonical = {norm_name(n): n for n in (roster or FIXTURE_ROSTER)}
+    counts, _ = scene_presence(moments, canonical)
+    return set(counts)
 
 
 # ── T003: speaker_labels ────────────────────────────────────────────────────
@@ -93,18 +115,30 @@ def test_scene_speakers_drops_the_gm():
 
 
 def test_reading_the_whole_scene_file_would_leak_the_summary():
-    """Why `scene_speakers` takes moments and not the document.
+    """Why the reader takes moments and not the document.
 
     A gm-assist summary carries its own **bold** headers. Handed the whole
-    file, the label scan returns one of them as a person — so this asserts the
+    file, the label scan returns one of them as a label — so this asserts the
     wrong reading really is wrong, rather than trusting the docstring.
+
+    Asserted at the *reader*, not at presence. Since #453 the roster is what
+    decides who a label names, and this particular header resolves to nobody,
+    so presence no longer shows the leak. The leak is still real: a bold
+    summary header that happened to equal a character's name would reach the
+    resolver. Testing the reader keeps the guarantee where it still holds.
     """
-    leaked = scene_speakers(SCENE_05) - scene_speakers(MOMENTS_05)
+    leaked = set(scene_speaker_labels(SCENE_05)) - set(scene_speaker_labels(MOMENTS_05))
     assert leaked == {"Brewbarry enters the House of a Thousand Faces"}
 
 
 def test_scene_speakers_skips_bracketed_action_beats():
-    """``**[The Long Road North]**`` is a scene tag, not a person."""
+    """``**[The Long Road North]**`` is a scene tag, not a person.
+
+    Unchanged in meaning, and it now holds for the right reason: the tag is
+    read like any other label and resolves to nobody, rather than being
+    discarded for beginning with ``[``. That discard is what cost
+    ``**[Vukradin]**`` its 39 turns (#453).
+    """
     assert scene_speakers(MOMENTS_UNCOVERABLE) == set()
 
 
