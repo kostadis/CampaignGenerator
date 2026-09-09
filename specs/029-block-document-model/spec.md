@@ -263,6 +263,15 @@ refuses and says why.
   collecting none of the benefit.
 - **FR-009a**: When served, the reviewer MUST save each change to the scene's authored record,
   so the clipboard is not the only path and `localStorage` is not the persistence story.
+- **FR-009b**: The served path is the **only** path anyone uses. Offline-and-paste is a
+  *fallback for a server that has gone away mid-review*, not a mode to design for.
+
+  *Recorded 2026-09-09, from the GM:* "in practice if i am ever using this tool, i am using
+  remote control." Remote Control means a session on the machine that holds the campaign, which
+  means the server can always be started — so nobody will ever save the page to a device and
+  paste JSON into it. The fallback still earns its keep, because a laptop sleeps and a tailnet
+  drops and the rulings are still in the page when that happens. It earns nothing as a
+  first-class surface, and the documentation should stop offering it as a choice.
 - **FR-010**: The reviewer MUST NOT be regenerated per session. It is versioned once; a session
   is supplied to it as data.
 - **FR-011**: A session's data MUST be supplied by pasting it into the page.

@@ -138,6 +138,12 @@ def main() -> None:
                     help="save even though it would drop prose already on disk. "
                          "That is what a stale tab looks like; mean it.")
 
+    st = sub.add_parser("status", help="what is ruled, written and composed")
+    st.add_argument("--dir", required=True, metavar="DIR",
+                    help="a narration directory")
+    st.add_argument("--json", action="store_true", dest="as_json",
+                    help="machine-readable, for a skill or a script")
+
     sv = sub.add_parser("serve", help="serve the reviewer and take its saves")
     sv.add_argument("--dir", required=True, metavar="DIR",
                     help="a narration directory")
@@ -147,6 +153,34 @@ def main() -> None:
                          "phone. Unauthenticated — a tailnet or a home LAN.")
 
     args = parser.parse_args()
+
+    if args.command == "status":
+        directory = Path(args.dir).expanduser()
+        if not directory.is_dir():
+            print(f"Error: not a directory: {directory}", file=sys.stderr)
+            sys.exit(2)
+        from session_doc.review.serve import narrations
+        from session_doc.review.status import scene_status
+        rows = [scene_status(n) for n in narrations(directory)]
+        if args.as_json:
+            print(json.dumps(rows, indent=2))
+            return
+        if not rows:
+            print(f"No narrations in {directory}")
+            return
+        print(f"{'scene':<42} {'gaps':>5} {'ruled':>6} {'written':>8}  composed")
+        for r in rows:
+            print(f"{r['scene']:<42} {r['gaps']:>5} {r['ruled']:>6} "
+                  f"{r['written']:>8}  {'yes' if r['composed'] else '-'}"
+                  + ("   REVIEW STALE" if r["stale"] else ""))
+        outstanding = [r for r in rows if r["gaps"] and r["written"] < r["gaps"]]
+        print()
+        if outstanding:
+            print(f"{len(outstanding)} scene(s) not ready to assemble: "
+                  + ", ".join(r["scene"] for r in outstanding))
+        else:
+            print("Every scene is written or cut — assemble --require-composed will pass.")
+        return
 
     if args.command == "serve":
         directory = Path(args.dir).expanduser()

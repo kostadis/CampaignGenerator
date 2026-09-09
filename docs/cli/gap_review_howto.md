@@ -50,12 +50,25 @@ The unauthenticated server is meant for a tailnet or a home LAN. It serves one
 campaign's prose and holds no credential, but anyone who can reach the port can
 read and write the review.
 
-## The offline way: put the file on your phone — once
+## If the server goes away mid-review
 
-Only needed if you want to review with your machine switched off. **Check it
-runs scripts first**: a file manager's preview will render the page perfectly
-and execute nothing, so every button is dead. That is what happened the first
-time this was tried.
+The bar says **NOT SAVED** and your rulings are still in the page. Tap *Copy
+review* and land it later:
+
+```bash
+pbpaste | sd_review apply --scene <narration>.md --from -
+```
+
+## Reviewing with the machine switched off
+
+Rarely wanted, and worth knowing the traps before you try. Save
+`session_doc/review/reviewer.html` to the device, export a scene with
+`sd_review export`, and paste it into the page.
+
+**Check the page actually runs scripts first.** A file manager's preview — Drive,
+Files, Quick Look — renders it perfectly and executes nothing, so every button
+is dead and it looks like a broken page rather than a preview. That is what
+happened the first time this was tried.
 
 
 Copy `session_doc/review/reviewer.html` to the device however you like: mail it
