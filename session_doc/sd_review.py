@@ -178,8 +178,29 @@ def main() -> None:
         if outstanding:
             print(f"{len(outstanding)} scene(s) not ready to assemble: "
                   + ", ".join(r["scene"] for r in outstanding))
+        elif not any(r["gaps"] for r in rows):
+            # NOT "you are done". A scene with no markers was probably never
+            # rendered with --gap-marking at all, and saying the gate will pass
+            # would report a review as finished before it had started. The
+            # per-scene .knobs.json settles it (#454); a narration older than
+            # that feature records nothing, which is unknown, not unmarked.
+            # Only "every scene was marked and came back clean" is finished, so
+            # anything short of that names the scenes rather than absorbing them.
+            unmarked = [r for r in rows if r["gap_marked"] is not True]
+            if not unmarked:
+                print("Every scene was gap-marked and came back with no GM "
+                      "description to write. Nothing to review; "
+                      "assemble --require-composed will pass.")
+            else:
+                print(f"No scene here has gap markers, and {len(unmarked)} of "
+                      f"{len(rows)} do not record having been rendered with "
+                      f"--gap-marking: "
+                      + ", ".join(r["scene"] for r in unmarked) + "\n"
+                      "There is nothing to review yet — those narrations predate "
+                      "gap marking, or were rendered without it.\n"
+                      "  Re-render with: sd_narrate --gap-marking ...")
         else:
-            print("Every scene is written or cut — assemble --require-composed will pass.")
+            print("Every gap is written or cut — assemble --require-composed will pass.")
         return
 
     if args.command == "serve":
