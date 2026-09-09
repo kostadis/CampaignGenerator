@@ -505,9 +505,9 @@ def absent_characters(
     the whole roster block Pass 5 is told never to contradict.
 
     This is Filter A of issue #385. It resolves **people**: labels are player
-    display names. Filter B (:func:`session_doc.io.scene_speakers`) resolves
-    characters, from a different label space entirely, and the two must not be
-    collapsed into one helper.
+    display names. Filter B (:func:`session_doc.plan_eligibility.scene_presence`)
+    resolves characters, from a different label space entirely, and the two must
+    not be collapsed into one helper.
 
     Known wrong in one case, deliberately: when one player voices an absent
     player's character for a night, those lines carry the *covering* player's
