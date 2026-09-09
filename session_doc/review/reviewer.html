@@ -694,6 +694,7 @@ $("btnReview").addEventListener("click", (ev) => copy(reviewText(), ev.currentTa
             const e = {};
             if (b.disposition) e.disposition = b.disposition;
             if (b.text !== undefined) e.text = b.text;
+            if (b.from_summary) e.from_summary = true;
             if (b.critique) e.critique = b.critique;
             state[b.id] = e;
           }

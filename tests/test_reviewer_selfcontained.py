@@ -281,3 +281,23 @@ def test_clearing_the_field_drops_the_provenance_too():
     """If nothing of the model's is left, saying the passage came from its
     summary would be false."""
     assert "delete e.from_summary" in HTML
+
+
+def test_every_field_the_page_saves_is_read_back_when_it_reloads():
+    """A reload rehydrates the page from the record on disk. A field the page
+    can *write* but does not *read back* is silently dropped by the next save —
+    and the save is automatic, so nobody is asked.
+
+    This is not hypothetical. On the first real review `from_summary` was
+    written by the button and absent from the hydration: the GM reloaded to fix
+    a paste, and the two passages they had accepted from the model came back
+    recorded as their own words. The flag exists precisely so that question has
+    an answer later, so losing it quietly is the whole defect.
+    """
+    written = set(re.findall(r"\brow\.(\w+)\s*=", HTML))
+    assert "from_summary" in written, "the page no longer writes it; drop this test"
+    hydration = HTML.split("Whatever is already on disk wins")[1].split("render();")[0]
+    missing = sorted(f for f in written if f not in hydration)
+    assert not missing, (
+        "the page writes these fields but does not restore them on reload, so a "
+        f"reload followed by any edit erases them: {', '.join(missing)}")
