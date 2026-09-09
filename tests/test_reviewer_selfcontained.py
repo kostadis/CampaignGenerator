@@ -256,3 +256,28 @@ def test_the_source_turns_are_available_in_every_view():
     """The GM turns are the context a gap is ruled against; the surrounding
     prose is not. So filtering hides the prose and never the table."""
     assert "The source turns stay put in every view" in HTML
+
+
+def test_the_model_s_summary_can_be_accepted_in_one_tap():
+    """Sometimes the model's own sentence is simply right, and re-typing it is
+    the friction. Accepting it is a ruling; the record says the words came from
+    the model."""
+    assert "use this summary" in HTML
+    assert "from_summary = true" in HTML
+    assert "row.from_summary = true" in HTML
+
+
+def test_accepting_a_summary_fills_the_field_rather_than_closing_the_gap():
+    """The marker is written as a note to the author — third person, present
+    tense — so dropped into first-person narration it usually wants a pass. The
+    button loads it and puts the cursor at the end; it does not declare the gap
+    finished and move on."""
+    assert "note to the author" in " ".join(HTML.split()).lower() \
+        or "NOTE TO THE AUTHOR" in HTML
+    assert "setSelectionRange" in HTML
+
+
+def test_clearing_the_field_drops_the_provenance_too():
+    """If nothing of the model's is left, saying the passage came from its
+    summary would be false."""
+    assert "delete e.from_summary" in HTML

@@ -66,6 +66,15 @@ class AuthoredBlock(_Strict):
     id: str
     disposition: str
     text: str | None = None
+    #: The text started as the model's own summary of the gap — the marker's
+    #: sentence — which the GM accepted rather than writing their own.
+    #:
+    #: Accepting it is a real ruling, not a shortcut past the checkpoint: a human
+    #: read the sentence and said it was right, which is the whole gate. But the
+    #: chapter then carries a sentence the model wrote, and "did a person write
+    #: this line?" is a question somebody asks later. `authored` alone would
+    #: answer it wrongly, and this repo does not let provenance go unrecorded.
+    from_summary: bool = False
     critique: str | None = None
     note: str | None = None
     anchor: str = ""

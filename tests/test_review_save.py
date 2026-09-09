@@ -163,3 +163,45 @@ def test_summarise_reports_the_two_completions(tmp_path):
         {"id": "gap-1", "disposition": "authored", "text": "x"},
         {"id": "gap-2", "disposition": "mine"}]))
     assert summarise(rec) == "2 ruled, 1 written"
+
+
+# ── "use this summary" — accepting the model's own sentence ─────────────────
+
+def test_accepting_the_model_s_summary_is_recorded_as_such(tmp_path):
+    """The gap marker's sentence is the model's. Accepting it is a real ruling —
+    a human read it and said it was right, which is the whole gate — but the
+    chapter then carries a sentence the model wrote.
+
+    `authored` alone would answer "did a person write this line?" wrongly, and
+    that is a question somebody asks later. So the record says where the words
+    came from.
+    """
+    n = scene(tmp_path)
+    rec = review_to_record(review(n, [{
+        "id": "gap-1", "disposition": "authored",
+        "text": "the GM said a thing", "from_summary": True}]))
+    path, _ = save_record(n, rec)
+    assert load_record(path).by_id()["gap-1"].from_summary is True
+
+
+def test_a_passage_the_gm_wrote_is_not_marked_as_the_model_s(tmp_path):
+    n = scene(tmp_path)
+    rec = review_to_record(review(n, [{
+        "id": "gap-1", "disposition": "authored", "text": "Mine, every word."}]))
+    assert rec.by_id()["gap-1"].from_summary is False
+
+
+def test_it_composes_exactly_like_any_other_authored_passage(tmp_path):
+    """Provenance is recorded, not enforced. The GM ruled the sentence right, so
+    it goes in the chapter — the flag is for answering a question later, never
+    for treating the passage as second class."""
+    from session_doc.compose import compose
+
+    n = scene(tmp_path)
+    text = n.read_text(encoding="utf-8")
+    plain = compose(text, review_to_record(review(n, [{
+        "id": "gap-1", "disposition": "authored", "text": "A sentence."}])))
+    flagged = compose(text, review_to_record(review(n, [{
+        "id": "gap-1", "disposition": "authored", "text": "A sentence.",
+        "from_summary": True}])))
+    assert plain == flagged

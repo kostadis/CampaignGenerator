@@ -322,6 +322,7 @@ function setText(id, value, kind) {
     e.disposition = (kind === "gap") ? "authored" : "edited";
   } else {
     delete e.text;
+    delete e.from_summary;      // nothing of the model's is left
     if (kind === "gap" && e.disposition === "authored") e.disposition = "mine";
     if (kind === "prose") delete e.disposition;
   }
@@ -357,7 +358,8 @@ function updateCounts() {
     const e = entry(b.id);
     const disp = e && e.disposition;
     well.classList.toggle("ruled", !!disp);
-    const label = { mine: "Mine — to write", authored: "Written", cut: "Cut" }[disp] || "Unruled";
+    const label = disp === "authored" && e && e.from_summary ? "Model's summary"
+                : ({ mine: "Mine — to write", authored: "Written", cut: "Cut" }[disp] || "Unruled");
     well.querySelector("[data-state]").textContent = label;
     well.querySelectorAll("[data-disp]").forEach(c2 =>
       c2.setAttribute("aria-pressed", String(c2.dataset.disp === disp)));
@@ -473,6 +475,24 @@ function gapWell(b, n, total) {
   const grabGap = el("button", "editlink", "copy this gap");
   grabGap.addEventListener("click", (ev) => copy(gapText(b.text), ev.currentTarget));
   well.appendChild(grabGap);
+
+  // Sometimes the model's own sentence is simply right. Accepting it is a
+  // ruling — a human read it and said so — but it is written in the register of
+  // a NOTE TO THE AUTHOR: third person, present tense, summary. Dropped into a
+  // first-person narration it usually wants a pass, so this fills the field
+  // rather than settling the gap, and leaves the cursor where the work is.
+  const useIt = el("button", "editlink", "use this summary");
+  useIt.addEventListener("click", () => {
+    const cur = state[b.id] || {};
+    cur.text = gapText(b.text);
+    cur.disposition = "authored";
+    cur.from_summary = true;
+    state[b.id] = cur;
+    save(); scheduleSave(); render();
+    const ta2 = document.querySelector('[data-well="' + b.id + '"] textarea.passage');
+    if (ta2) { ta2.focus(); ta2.setSelectionRange(ta2.value.length, ta2.value.length); }
+  });
+  well.appendChild(useIt);
 
   const ta = el("textarea", "passage");
   ta.rows = 3;
@@ -600,6 +620,7 @@ function reviewText() {
         const b = data.blocks.find(x => x.id === id) || {};
         const row = { id: id, disposition: e.disposition || "mine", anchor: b.anchor || "" };
         if (e.text !== undefined) row.text = e.text;
+        if (e.from_summary) row.from_summary = true;
         if (e.critique) row.critique = e.critique;
         return row;
       }),
