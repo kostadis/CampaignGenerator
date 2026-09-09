@@ -103,7 +103,11 @@ Then, on the phone, offline:
    have written it**. That second row never changes the chapter; it is feedback
    on the contract.
 4. Write the passage if you want to, or leave it for your desk.
-5. Any of the model's own paragraphs can be edited too — *edit this passage*.
+5. If the marker's own sentence is right, **use this summary** loads it into the
+   field. It does not close the gap: the marker is written as a note to the
+   author — third person, present tense — so it usually wants a pass before it
+   reads as narration. The record remembers the words started as the model's.
+6. Any of the model's own paragraphs can be edited too — *edit this passage*.
 
 ### Ruling everything and writing nothing is a finished session
 
@@ -122,14 +126,29 @@ Nothing here resolves a gap for you. You copy one out; you paste one back.
 
 ## Land the result
 
-**Copy review** gives you the record's content. Put it in the scene's
-`.authored.yaml` — by hand, for now — then:
+Served, there is nothing to land: the rulings are already in
+`<scene>.authored.yaml`. Offline, **Copy review** gives you the same content —
+`sd_review apply --scene <narration>.md --from -` writes it. Either way:
 
 ```bash
 sd_compose --scene summaries/20260825/narration/session_doc_scene_01_bank.md
 sd_narrate --gap-marking …   # only after this, and only if you must
 assemble summaries/20260825/narration --output chapter.md --require-composed
 ```
+
+### What is left, and what "nothing left" means
+
+```bash
+sd_review status --dir <session>/narration
+```
+
+A scene with **no gap markers** means one of two things and the output says
+which. *Every scene was gap-marked and came back with no GM description* is a
+finished session. *Nothing to review yet* is the opposite — those narrations
+were rendered without `--gap-marking`, so their review has not started, and the
+scenes responsible are named. A narration older than the `.knobs.json` sidecar
+records nothing about the mode, and counts as one of those rather than being
+assumed fine.
 
 ## Every refusal, decoded
 

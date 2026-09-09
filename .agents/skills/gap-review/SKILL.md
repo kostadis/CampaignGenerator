@@ -64,6 +64,11 @@ and conflating them is the mistake to avoid:
 **A scene where every gap is ruled and none is written is a finished triage, not
 an unfinished scene.** Say so in those terms.
 
+**"No gaps anywhere" is not automatically good news.** The output distinguishes
+a session that was gap-marked and came back clean (finished) from one that was
+never rendered with `--gap-marking` (not started, scenes named). Relay which one
+it is; do not shorten either to "nothing to review".
+
 Two flags in the output deserve to be surfaced without being asked:
 
 - `REVIEW STALE` — the narration changed after the review was made. `sd_compose`
