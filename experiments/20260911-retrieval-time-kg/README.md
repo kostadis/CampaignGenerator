@@ -10,6 +10,13 @@ their original absolute paths (`/home/kostadis/cognee-local`,
 `/home/kostadis/src/Mempalace`) and the environment they ran in. For another
 trial, use a fresh directory and explicit paths.
 
+Four runners were **renamed** on the way in — `test_context.py`,
+`test_prompt.py`, `test_provenance.py` → `probe_*.py`, and `smoke_test.py` →
+`smoke_probe.py`. This repo has no `testpaths` restriction, so pytest's default
+patterns collected them from a bare `pytest`, and they call `asyncio.run(main())`
+at import: collection would have executed live queries against the Spark. They
+are probes, not tests. Contents are unchanged.
+
 ## Campaign source is not copied
 
 Per this repo's convention, campaign source material stays in the `campaigns`
