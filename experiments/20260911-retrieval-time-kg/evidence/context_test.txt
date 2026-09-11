@@ -1,0 +1,155 @@
+
+2026-09-11T02:48:21.246448 [info     ] Deleted old log file: /home/kostadis/.cognee/logs/2026-09-10_22-36-06.log [cognee.shared.logging_utils]
+
+2026-09-11T02:48:21.246814 [info     ] Log file created at: /home/kostadis/.cognee/logs/2026-09-11_02-48-21.log [cognee.shared.logging_utils] log_file=/home/kostadis/.cognee/logs/2026-09-11_02-48-21.log
+
+2026-09-11T02:48:21.246946 [warning  ] Cognee 1.0 changes: New API — remember/recall/forget/improve (V1 add/cognify/search still work). Session memory enabled by default (CACHING=false to disable). Multi-user access control on by default (ENABLE_BACKEND_ACCESS_CONTROL=false to disable). Agents (@cognee.agent) auto-verified on registration. See https://docs.cognee.ai/ [cognee.shared.logging_utils]
+
+2026-09-11T02:48:21.247117 [info     ] Logging initialized            [cognee.shared.logging_utils] cognee_version=1.5.3-local database_path=/home/kostadis/cognee-local/.cognee_system/databases os_info='Linux 7.0.0-30-generic (#30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026)' python_version=3.12.13 structlog_version=25.5.0
+
+2026-09-11T02:48:21.247250 [info     ] Database storage: /home/kostadis/cognee-local/.cognee_system/databases [cognee.shared.logging_utils]
+
+2026-09-11T02:48:21.705326 [info     ] auth posture: authentication=required, multi_tenant=enabled (default (no env vars set)) [get_authenticated_user]
+
+2026-09-11T02:48:25.256180 [info     ] Log file created at: /home/kostadis/.cognee/logs/2026-09-11_02-48-21.log [cognee.shared.logging_utils] log_file=/home/kostadis/.cognee/logs/2026-09-11_02-48-21.log
+
+2026-09-11T02:48:25.256368 [warning  ] Cognee 1.0 changes: New API — remember/recall/forget/improve (V1 add/cognify/search still work). Session memory enabled by default (CACHING=false to disable). Multi-user access control on by default (ENABLE_BACKEND_ACCESS_CONTROL=false to disable). Agents (@cognee.agent) auto-verified on registration. See https://docs.cognee.ai/ [cognee.shared.logging_utils]
+
+2026-09-11T02:48:25.256478 [info     ] Logging initialized            [cognee.shared.logging_utils] cognee_version=1.5.3-local database_path=/home/kostadis/cognee-local/.cognee_system/databases os_info='Linux 7.0.0-30-generic (#30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026)' python_version=3.12.13 structlog_version=25.5.0
+
+2026-09-11T02:48:25.256654 [info     ] Database storage: /home/kostadis/cognee-local/.cognee_system/databases [cognee.shared.logging_utils]
+
+2026-09-11T02:48:25.257987 [warning  ] Could not load a matching tokenizer for embedding model 'qwen3-embedding:0.6b' (No module named 'transformers'). Falling back to TikToken, so token counts are approximate. Token counts drive chunk sizing and the --dry-run estimate, so a tokenizer that does not match the embedding model will mis-size chunks. Set HUGGINGFACE_TOKENIZER to a tokenizer matching your embedding model to fix this. [tokenizer_resolver]
+
+2026-09-11T02:48:28.559333 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=18dd8c51-9cbe-5b45-a98a-add74528c777 [HybridRetriever]
+
+2026-09-11T02:48:28.559774 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=29cf1fff-b85c-5766-b2c0-d108183983a6 [HybridRetriever]
+
+2026-09-11T02:48:28.559940 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=cbd3673d-af3d-52ca-829d-96b5c72bfedf [HybridRetriever]
+
+2026-09-11T02:48:28.560050 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a0c8a95f-3dfb-5c8d-ab86-67868b2cbc3c [HybridRetriever]
+
+2026-09-11T02:48:28.560134 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8890aaf6-d705-5a4b-b137-2acaf6a7376f [HybridRetriever]
+
+2026-09-11T02:48:28.560220 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=d17f5f31-2a29-5a20-b780-a2fe088e84e3 [HybridRetriever]
+
+2026-09-11T02:48:28.560301 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=37d318bc-d866-5a78-bb5f-511c0fcfc512 [HybridRetriever]
+
+2026-09-11T02:48:28.560377 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=1e25ee9b-407e-58e0-b096-90298ba14955 [HybridRetriever]
+
+2026-09-11T02:48:28.660201 [info     ] Neighborhood retrieval (1-hop): 166 nodes and 1709 edges in 0.10s [cognee.shared.logging_utils]
+
+==========================================================================
+PLAY_RECORD  — retrieved context: 90420 chars
+--------------------------------------------------------------------------
+  cragmaw castle     0 occurrence(s)
+  king grol          0 occurrence(s)
+  nezznar            0 occurrence(s)
+  rescue            24 occurrence(s)
+  co-administers     0 occurrence(s)
+
+2026-09-11T02:48:29.059478 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=9ec31c94-921a-57be-afae-40d4c4103d4d [HybridRetriever]
+
+2026-09-11T02:48:29.059736 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=b2dee70f-46f7-578e-9fee-b9ddf9a88d6b [HybridRetriever]
+
+2026-09-11T02:48:29.059846 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=70c75c20-1e8c-569c-85c2-618d3217c3c3 [HybridRetriever]
+
+2026-09-11T02:48:29.059956 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=7e196c39-be9c-5e35-9571-8c5309013c70 [HybridRetriever]
+
+2026-09-11T02:48:29.060046 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=9459cd38-57e4-5fd1-b0ca-44ec8c6f4031 [HybridRetriever]
+
+2026-09-11T02:48:29.060126 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=eb609cff-6e1f-5df7-879c-37c2c3e3f791 [HybridRetriever]
+
+2026-09-11T02:48:29.060214 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=d8fbc149-9fb1-55a5-b2a8-307febbf897f [HybridRetriever]
+
+2026-09-11T02:48:29.110935 [info     ] Neighborhood retrieval (1-hop): 116 nodes and 1094 edges in 0.05s [cognee.shared.logging_utils]
+
+==========================================================================
+MODULE_CANON  — retrieved context: 187404 chars
+--------------------------------------------------------------------------
+  cragmaw castle    16 occurrence(s)
+  king grol          9 occurrence(s)
+  nezznar           20 occurrence(s)
+  rescue            12 occurrence(s)
+  co-administers     2 occurrence(s)
+    >> | — |
+| **Harbin Wester is human** | Verified ✓ (line 767): "a human banker named Harbin Wester." | — |
+
+---
+
+## Core NPCs (recurring / plot-load-bearing)
+
+| Name | What it is | Where | Aliases / variants |
+|---|---|---|
+    >> [intro, ch1, ch7, ch8]
+- **Cragmaw Castle** — Unlocated goblin stronghold characters may seek to rescue Gundren Rockseeker; bugbears in the Redbrands' hideout know its location.
+    >> [intro, ch1, ch2, ch3, ch8, app]
+- **King Grol** / **Grol** — Leader of the Cragmaw goblins, dwelling in Cragmaw Castle; ordered the capture of Gundren Rockseeker on the Spider's behalf.
+    >> ---
+Duoro's reluctant student, not yet transformed | ch7 | Larnon |
+| Vundru | Grell psychic, leader of the grells in the Scavengers' Nook (J7) | ch7 | — |
+| Feedkeeper Naruv | Grell host/chef of the Feeder Trenches rift
+    >> Tresendar Crypts and Crevasse Cave) | ch2 |
+| Town Green | Open space; Daisy's gray-ooze incident | ch6 |
+| Old Narth's farm | Farm just north of town | ch6 |
+
+### Region (chs 1–4)
+
+| Name | What it is | Where |
+|---|---
+    >> ---
+
+## MASTER SUMMARY TABLE (consolidated groups)
+
+| # | Tribe / faction | Monster type | Chapters | Crude fixed count |
+|---|---|---|---|---|
+| 1.1 | Cragmaw | Goblins (+boss) | ch1–4 | 31 + 1d4 + 2d4 |
+| 1.2 | Cragmaw
+
+2026-09-11T02:48:29.486213 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=00d82d81-0673-5f2e-ab02-499905685ef6 [HybridRetriever]
+
+2026-09-11T02:48:29.486634 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=ef7af3a6-970e-5548-8df3-262a020aefce [HybridRetriever]
+
+2026-09-11T02:48:29.486860 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=7fa089ce-d2c4-5190-bb89-c51c39404948 [HybridRetriever]
+
+2026-09-11T02:48:29.486968 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=b5652993-1277-5538-aa84-29f2cb15c257 [HybridRetriever]
+
+2026-09-11T02:48:29.487056 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=33b2ba0c-eda5-5c4d-b87e-915b2ce586c7 [HybridRetriever]
+
+2026-09-11T02:48:29.487139 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=f0730387-437b-59fc-b4d9-4c403c14eb81 [HybridRetriever]
+
+2026-09-11T02:48:29.487221 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=44d0abb2-e809-5aac-93db-1620593610ba [HybridRetriever]
+
+2026-09-11T02:48:29.487325 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=58618436-4819-5ff3-80ae-09b9c5ff8e7a [HybridRetriever]
+
+2026-09-11T02:48:29.487413 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8fd7cef1-b301-55bb-8528-afe64ce8bce2 [HybridRetriever]
+
+2026-09-11T02:48:29.538456 [info     ] Neighborhood retrieval (1-hop): 141 nodes and 1310 edges in 0.05s [cognee.shared.logging_utils]
+
+==========================================================================
+UNFILTERED  — retrieved context: 75410 chars
+--------------------------------------------------------------------------
+  cragmaw castle     4 occurrence(s)
+  king grol          1 occurrence(s)
+  nezznar            1 occurrence(s)
+  rescue            53 occurrence(s)
+  co-administers     0 occurrence(s)
+    >> ---
+---
+
+## After the Castle
+
+The party walks out with:
+- Gundren, alive (hopefully)
+- The map to Wave Echo Cave
+- Confirmation: the Black Spider is a drow
+- Two leads on the Spider: Glasstaff's letter mentioned "the For
+    >> ---
+
+## Anticipated Player Questions
+
+**"Can we ransom Gundren from Grol instead of fighting?"**
+→ Yes.
+    >> - When Grol threatens Gundren as a hostage: hold eye contact with Nikhil.
+    >> Gundren knows it's here — Grol stored it with a taunt about the useless human.
+    >> - Gundren Rockseeker is held unconscious in King Grol's quarters (Room C14).

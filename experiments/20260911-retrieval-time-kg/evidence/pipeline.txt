@@ -1,0 +1,279 @@
+
+2026-09-11T16:25:29.038617 [info     ] Deleted old log file: /home/kostadis/.cognee/logs/2026-09-11_05-31-39.log [cognee.shared.logging_utils]
+
+2026-09-11T16:25:29.038900 [info     ] Log file created at: /home/kostadis/.cognee/logs/2026-09-11_16-25-28.log [cognee.shared.logging_utils] log_file=/home/kostadis/.cognee/logs/2026-09-11_16-25-28.log
+
+2026-09-11T16:25:29.039022 [warning  ] Cognee 1.0 changes: New API — remember/recall/forget/improve (V1 add/cognify/search still work). Session memory enabled by default (CACHING=false to disable). Multi-user access control on by default (ENABLE_BACKEND_ACCESS_CONTROL=false to disable). Agents (@cognee.agent) auto-verified on registration. See https://docs.cognee.ai/ [cognee.shared.logging_utils]
+
+2026-09-11T16:25:29.039117 [info     ] Logging initialized            [cognee.shared.logging_utils] cognee_version=1.5.3-local database_path=/home/kostadis/cognee-local/.cognee_system/databases os_info='Linux 7.0.0-30-generic (#30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026)' python_version=3.12.13 structlog_version=25.5.0
+
+2026-09-11T16:25:29.039245 [info     ] Database storage: /home/kostadis/cognee-local/.cognee_system/databases [cognee.shared.logging_utils]
+
+2026-09-11T16:25:29.447672 [info     ] auth posture: authentication=required, multi_tenant=enabled (default (no env vars set)) [get_authenticated_user]
+
+2026-09-11T16:25:32.862156 [info     ] Log file created at: /home/kostadis/.cognee/logs/2026-09-11_16-25-28.log [cognee.shared.logging_utils] log_file=/home/kostadis/.cognee/logs/2026-09-11_16-25-28.log
+
+2026-09-11T16:25:32.862375 [warning  ] Cognee 1.0 changes: New API — remember/recall/forget/improve (V1 add/cognify/search still work). Session memory enabled by default (CACHING=false to disable). Multi-user access control on by default (ENABLE_BACKEND_ACCESS_CONTROL=false to disable). Agents (@cognee.agent) auto-verified on registration. See https://docs.cognee.ai/ [cognee.shared.logging_utils]
+
+2026-09-11T16:25:32.862493 [info     ] Logging initialized            [cognee.shared.logging_utils] cognee_version=1.5.3-local database_path=/home/kostadis/cognee-local/.cognee_system/databases os_info='Linux 7.0.0-30-generic (#30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026)' python_version=3.12.13 structlog_version=25.5.0
+
+2026-09-11T16:25:32.862606 [info     ] Database storage: /home/kostadis/cognee-local/.cognee_system/databases [cognee.shared.logging_utils]
+
+2026-09-11T16:25:32.863829 [warning  ] Could not load a matching tokenizer for embedding model 'qwen3-embedding:0.6b' (No module named 'transformers'). Falling back to TikToken, so token counts are approximate. Token counts drive chunk sizing and the --dry-run estimate, so a tokenizer that does not match the embedding model will mis-size chunks. Set HUGGINGFACE_TOKENIZER to a tokenizer matching your embedding model to fix this. [tokenizer_resolver]
+
+2026-09-11T16:25:38.693880 [info     ] Neighborhood retrieval (1-hop): 126 nodes and 1162 edges in 0.12s [cognee.shared.logging_utils]
+
+2026-09-11T16:25:38.768500 [info     ] Neighborhood retrieval (1-hop): 134 nodes and 1323 edges in 0.09s [cognee.shared.logging_utils]
+
+2026-09-11T16:25:38.777222 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=e75cbe09-67bd-5671-af2b-05aed61e813f [HybridRetriever]
+
+2026-09-11T16:25:38.777454 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8890aaf6-d705-5a4b-b137-2acaf6a7376f [HybridRetriever]
+
+2026-09-11T16:25:38.777565 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a0c8a95f-3dfb-5c8d-ab86-67868b2cbc3c [HybridRetriever]
+
+2026-09-11T16:25:38.777657 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=e286ffea-ede6-5520-9513-0a5c7b2ac633 [HybridRetriever]
+
+2026-09-11T16:25:38.777785 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=fa2d7249-387a-5bd8-a6e6-dde40dd6fc20 [HybridRetriever]
+
+2026-09-11T16:25:38.777884 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=31d835b5-01f9-51ba-af16-6eaa0a58402a [HybridRetriever]
+
+2026-09-11T16:25:38.777975 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=60ce7be9-0cfd-538e-a660-2cdda2241845 [HybridRetriever]
+
+2026-09-11T16:25:38.789747 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=60ce7be9-0cfd-538e-a660-2cdda2241845 [HybridRetriever]
+
+2026-09-11T16:25:38.789925 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=e75cbe09-67bd-5671-af2b-05aed61e813f [HybridRetriever]
+
+2026-09-11T16:25:38.790104 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=0aebee72-4935-5d70-bf2d-e7ba12f94349 [HybridRetriever]
+
+2026-09-11T16:25:38.790226 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=d057f26c-f0ee-5186-a965-17895dc1c093 [HybridRetriever]
+
+2026-09-11T16:25:38.790316 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=004ab440-4c31-5d06-b19a-e27aad138a05 [HybridRetriever]
+
+2026-09-11T16:25:38.790397 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=cabeab60-3b87-5bdc-9675-c72bbf0bd2ef [HybridRetriever]
+
+2026-09-11T16:25:38.790473 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a0c8a95f-3dfb-5c8d-ab86-67868b2cbc3c [HybridRetriever]
+
+2026-09-11T16:25:38.790578 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=08205d52-8ba2-55c5-9a7d-ca47bce985a4 [HybridRetriever]
+
+2026-09-11T16:25:38.790665 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=fa2d7249-387a-5bd8-a6e6-dde40dd6fc20 [HybridRetriever]
+[FLAGS] obelisk    quotes 0/1 ok, nouns 9/11 ok
+
+2026-09-11T16:25:56.072488 [info     ] Neighborhood retrieval (1-hop): 81 nodes and 537 edges in 0.05s [cognee.shared.logging_utils]
+
+2026-09-11T16:25:56.194932 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=7786a01a-3358-5db3-9392-e88d7f7e26fd [HybridRetriever]
+
+2026-09-11T16:25:56.195182 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=fcb9d4ca-abe0-553e-ba9d-e807f4a7ab8f [HybridRetriever]
+
+2026-09-11T16:25:56.195291 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=d4214016-702d-5425-bb1e-df57f39de1aa [HybridRetriever]
+
+2026-09-11T16:25:56.195391 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=3c68809b-5398-5b49-b5f4-d771f48025ea [HybridRetriever]
+
+2026-09-11T16:25:56.195486 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=b131823d-2c98-5cf3-9a31-68c1c927b237 [HybridRetriever]
+
+2026-09-11T16:25:56.195866 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=d11d47f7-ff52-50a3-8005-3a6c5b853b47 [HybridRetriever]
+
+2026-09-11T16:25:56.255753 [info     ] Neighborhood retrieval (1-hop): 66 nodes and 555 edges in 0.04s [cognee.shared.logging_utils]
+
+2026-09-11T16:25:56.303108 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=60ce7be9-0cfd-538e-a660-2cdda2241845 [HybridRetriever]
+
+2026-09-11T16:25:56.303355 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=e75cbe09-67bd-5671-af2b-05aed61e813f [HybridRetriever]
+
+2026-09-11T16:25:56.303456 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=08205d52-8ba2-55c5-9a7d-ca47bce985a4 [HybridRetriever]
+
+2026-09-11T16:25:56.303540 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=fa2d7249-387a-5bd8-a6e6-dde40dd6fc20 [HybridRetriever]
+
+2026-09-11T16:25:56.303646 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=cabeab60-3b87-5bdc-9675-c72bbf0bd2ef [HybridRetriever]
+
+2026-09-11T16:25:56.303733 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=0aebee72-4935-5d70-bf2d-e7ba12f94349 [HybridRetriever]
+
+2026-09-11T16:25:56.303810 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a0c8a95f-3dfb-5c8d-ab86-67868b2cbc3c [HybridRetriever]
+
+2026-09-11T16:25:56.303963 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=b131823d-2c98-5cf3-9a31-68c1c927b237 [HybridRetriever]
+[clean] flayers    quotes 0/0 ok, nouns 0/0 ok
+
+2026-09-11T16:26:16.805164 [info     ] Neighborhood retrieval (1-hop): 205 nodes and 2078 edges in 0.10s [cognee.shared.logging_utils]
+
+2026-09-11T16:26:16.831237 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=567a9568-d19c-56fc-b1a9-6b4f4e6507f0 [HybridRetriever]
+
+2026-09-11T16:26:16.831512 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=225c3795-669f-5715-aa63-899e4ae9919c [HybridRetriever]
+
+2026-09-11T16:26:16.831616 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=821f413a-8227-5a8b-81cc-54f168661e28 [HybridRetriever]
+
+2026-09-11T16:26:16.831708 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=cbd3673d-af3d-52ca-829d-96b5c72bfedf [HybridRetriever]
+
+2026-09-11T16:26:16.831960 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=3a55106c-d54b-5ef1-aaf8-169689964a9a [HybridRetriever]
+
+2026-09-11T16:26:16.832059 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=5b4e6727-6f4a-5a8f-94be-0f186919be75 [HybridRetriever]
+
+2026-09-11T16:26:16.832162 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=310b5510-6207-5de4-852a-8147ca999411 [HybridRetriever]
+
+2026-09-11T16:26:16.832250 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8890aaf6-d705-5a4b-b137-2acaf6a7376f [HybridRetriever]
+
+2026-09-11T16:26:16.842270 [info     ] Neighborhood retrieval (1-hop): 63 nodes and 457 edges in 0.12s [cognee.shared.logging_utils]
+
+2026-09-11T16:26:16.847927 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=60ce7be9-0cfd-538e-a660-2cdda2241845 [HybridRetriever]
+
+2026-09-11T16:26:16.848087 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=e75cbe09-67bd-5671-af2b-05aed61e813f [HybridRetriever]
+
+2026-09-11T16:26:16.848208 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a0c8a95f-3dfb-5c8d-ab86-67868b2cbc3c [HybridRetriever]
+
+2026-09-11T16:26:16.848304 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8890aaf6-d705-5a4b-b137-2acaf6a7376f [HybridRetriever]
+
+2026-09-11T16:26:16.848387 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=18dd8c51-9cbe-5b45-a98a-add74528c777 [HybridRetriever]
+
+2026-09-11T16:26:16.848465 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=29cf1fff-b85c-5766-b2c0-d108183983a6 [HybridRetriever]
+
+2026-09-11T16:26:16.848542 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=fa2d7249-387a-5bd8-a6e6-dde40dd6fc20 [HybridRetriever]
+
+2026-09-11T16:26:16.848619 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8fb70ec8-a01f-56e9-b33c-140faf7493ee [HybridRetriever]
+
+2026-09-11T16:26:16.848728 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=cabeab60-3b87-5bdc-9675-c72bbf0bd2ef [HybridRetriever]
+[FLAGS] gundren    quotes 1/1 ok, nouns 16/20 ok
+
+2026-09-11T16:26:39.155255 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=60d0c601-06f5-541b-a3d3-4175433c4ac0 [HybridRetriever]
+
+2026-09-11T16:26:39.155949 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=e5116894-8ad4-576f-abae-01ddd6d3485f [HybridRetriever]
+
+2026-09-11T16:26:39.156084 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=1b8f2055-b580-5a64-8694-4a1c5d97a43c [HybridRetriever]
+
+2026-09-11T16:26:39.156183 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=18dd8c51-9cbe-5b45-a98a-add74528c777 [HybridRetriever]
+
+2026-09-11T16:26:39.156322 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=567a9568-d19c-56fc-b1a9-6b4f4e6507f0 [HybridRetriever]
+
+2026-09-11T16:26:39.156427 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=821f413a-8227-5a8b-81cc-54f168661e28 [HybridRetriever]
+
+2026-09-11T16:26:39.156544 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=cbd3673d-af3d-52ca-829d-96b5c72bfedf [HybridRetriever]
+
+2026-09-11T16:26:39.157254 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=225c3795-669f-5715-aa63-899e4ae9919c [HybridRetriever]
+
+2026-09-11T16:26:39.157566 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=3a55106c-d54b-5ef1-aaf8-169689964a9a [HybridRetriever]
+
+2026-09-11T16:26:39.157942 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=60d0c601-06f5-541b-a3d3-4175433c4ac0 [HybridRetriever]
+
+2026-09-11T16:26:39.158100 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=e5116894-8ad4-576f-abae-01ddd6d3485f [HybridRetriever]
+
+2026-09-11T16:26:39.158207 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=0fce496d-8c6e-5adb-b536-7d73b0e514d2 [HybridRetriever]
+
+2026-09-11T16:26:39.158325 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=4aefef9d-7465-506d-b0e9-7f82a2ed1b2d [HybridRetriever]
+
+2026-09-11T16:26:39.158451 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=3c145f5e-e8de-598b-8b78-649e25ead8b2 [HybridRetriever]
+
+2026-09-11T16:26:39.158547 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=c77694de-b251-5b77-9e5c-9fe4be87c146 [HybridRetriever]
+
+2026-09-11T16:26:39.158631 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=ba23f166-1ef7-5334-b61d-ed6b77e22cb8 [HybridRetriever]
+
+2026-09-11T16:26:39.158714 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=9ba8dc23-8cf3-5c6f-9501-94a3ba19e505 [HybridRetriever]
+
+2026-09-11T16:26:39.158838 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=c7373e0b-0472-5e58-ab7e-e706d26a36fd [HybridRetriever]
+
+2026-09-11T16:26:39.222369 [info     ] Neighborhood retrieval (1-hop): 253 nodes and 3056 edges in 0.38s [cognee.shared.logging_utils]
+
+2026-09-11T16:26:39.263000 [info     ] Neighborhood retrieval (1-hop): 221 nodes and 2748 edges in 0.41s [cognee.shared.logging_utils]
+[FLAGS] glasstaff  quotes 0/0 ok, nouns 9/11 ok
+
+2026-09-11T16:26:56.943561 [info     ] Neighborhood retrieval (1-hop): 90 nodes and 663 edges in 0.06s [cognee.shared.logging_utils]
+
+2026-09-11T16:26:56.995135 [info     ] Neighborhood retrieval (1-hop): 130 nodes and 1080 edges in 0.10s [cognee.shared.logging_utils]
+
+2026-09-11T16:26:57.024303 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=99baf125-81c6-5aa6-9eeb-44fc9615f59c [HybridRetriever]
+
+2026-09-11T16:26:57.024537 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=218620ea-c443-52f3-8bcf-06999424f23f [HybridRetriever]
+
+2026-09-11T16:26:57.024805 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=1b8f2055-b580-5a64-8694-4a1c5d97a43c [HybridRetriever]
+
+2026-09-11T16:26:57.024914 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a19a9fbe-45af-5f6e-be4c-bfc3bd7b1a8b [HybridRetriever]
+
+2026-09-11T16:26:57.025001 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=29cf1fff-b85c-5766-b2c0-d108183983a6 [HybridRetriever]
+
+2026-09-11T16:26:57.025097 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=18dd8c51-9cbe-5b45-a98a-add74528c777 [HybridRetriever]
+
+2026-09-11T16:26:57.025201 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=339d32c0-48be-590a-8857-f747d4a88687 [HybridRetriever]
+
+2026-09-11T16:26:57.025295 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=821f413a-8227-5a8b-81cc-54f168661e28 [HybridRetriever]
+
+2026-09-11T16:26:57.027123 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=99baf125-81c6-5aa6-9eeb-44fc9615f59c [HybridRetriever]
+
+2026-09-11T16:26:57.027250 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=991e145c-eadc-58e8-849b-d346b7a6e5e2 [HybridRetriever]
+
+2026-09-11T16:26:57.027340 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8ee747a0-da11-5d43-96bc-098d9ccd87a6 [HybridRetriever]
+
+2026-09-11T16:26:57.027428 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=f2792afb-c7a2-531f-8dca-465ba1ff58f6 [HybridRetriever]
+
+2026-09-11T16:26:57.027514 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=d4214016-702d-5425-bb1e-df57f39de1aa [HybridRetriever]
+
+2026-09-11T16:26:57.027646 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=92862585-4fa8-5da6-b4a4-36750a165685 [HybridRetriever]
+
+2026-09-11T16:26:57.027732 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=5f2840d9-3644-5b65-bbdf-2257e6b97f2e [HybridRetriever]
+[FLAGS] droop      quotes 0/0 ok, nouns 5/7 ok
+
+2026-09-11T16:27:18.002870 [info     ] Neighborhood retrieval (1-hop): 130 nodes and 1086 edges in 0.08s [cognee.shared.logging_utils]
+
+2026-09-11T16:27:18.062242 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=99baf125-81c6-5aa6-9eeb-44fc9615f59c [HybridRetriever]
+
+2026-09-11T16:27:18.062525 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=5bd5911f-b44f-5fa3-8f6f-ff08a679e747 [HybridRetriever]
+
+2026-09-11T16:27:18.062987 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=22cf65a9-2741-5cb7-bc15-9a72b00c7aae [HybridRetriever]
+
+2026-09-11T16:27:18.063169 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=443815fa-ed96-5933-b439-a9e7d6166da9 [HybridRetriever]
+
+2026-09-11T16:27:18.063273 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=ddd23866-45aa-5b57-8ffe-fdb76677e1ff [HybridRetriever]
+
+2026-09-11T16:27:18.063363 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=339d32c0-48be-590a-8857-f747d4a88687 [HybridRetriever]
+
+2026-09-11T16:27:18.063445 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=991e145c-eadc-58e8-849b-d346b7a6e5e2 [HybridRetriever]
+
+2026-09-11T16:27:18.063518 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=e5116894-8ad4-576f-abae-01ddd6d3485f [HybridRetriever]
+
+2026-09-11T16:27:18.063604 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=543eec8c-6267-5579-92ba-e29308f35e09 [HybridRetriever]
+
+2026-09-11T16:27:18.089987 [info     ] Neighborhood retrieval (1-hop): 237 nodes and 2771 edges in 0.14s [cognee.shared.logging_utils]
+
+2026-09-11T16:27:18.103243 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a7fe56e1-04db-553b-9949-053c6a3f4657 [HybridRetriever]
+
+2026-09-11T16:27:18.103483 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=043f0e2a-1b1f-5da6-a08d-013fe8d25efa [HybridRetriever]
+
+2026-09-11T16:27:18.103807 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a9c43ba0-a802-5f86-8cd9-6ae088b39f6c [HybridRetriever]
+
+2026-09-11T16:27:18.103895 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=ddd23866-45aa-5b57-8ffe-fdb76677e1ff [HybridRetriever]
+
+2026-09-11T16:27:18.103978 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=0d65e4e1-0a6d-58c1-9bab-702ddc83ec86 [HybridRetriever]
+
+2026-09-11T16:27:18.104057 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=ffa5db72-5f50-5833-8f5c-8934ce1712ff [HybridRetriever]
+
+2026-09-11T16:27:18.104178 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=7f3f3e3b-86d6-5208-8652-ba81f01ac91b [HybridRetriever]
+[FLAGS] ruxithid   quotes 1/2 ok, nouns 13/15 ok
+
+2026-09-11T16:27:45.264908 [info     ] Neighborhood retrieval (1-hop): 76 nodes and 580 edges in 0.07s [cognee.shared.logging_utils]
+
+2026-09-11T16:27:45.325926 [info     ] Neighborhood retrieval (1-hop): 219 nodes and 2461 edges in 0.12s [cognee.shared.logging_utils]
+
+2026-09-11T16:27:45.339632 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=87e239ef-aa43-50f1-8e7e-d17d343dfaca [HybridRetriever]
+
+2026-09-11T16:27:45.339841 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=41e5f5c7-f795-5244-b02b-7fd486735867 [HybridRetriever]
+
+2026-09-11T16:27:45.340023 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=6abb4c70-d438-51e4-ae6e-0ce9a7921492 [HybridRetriever]
+
+2026-09-11T16:27:45.340147 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a46f9caf-d09d-567e-8834-497b4fb3304f [HybridRetriever]
+
+2026-09-11T16:27:45.340242 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a6479b7b-3785-5313-8c50-68e6c607d7e5 [HybridRetriever]
+
+2026-09-11T16:27:45.340339 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=60d0c601-06f5-541b-a3d3-4175433c4ac0 [HybridRetriever]
+
+2026-09-11T16:27:45.340640 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=99baf125-81c6-5aa6-9eeb-44fc9615f59c [HybridRetriever]
+
+2026-09-11T16:27:45.340767 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8fb70ec8-a01f-56e9-b33c-140faf7493ee [HybridRetriever]
+
+2026-09-11T16:27:45.340866 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=62f67a14-f063-562f-b225-bc80c063eb69 [HybridRetriever]
+
+2026-09-11T16:27:45.340941 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=991e145c-eadc-58e8-849b-d346b7a6e5e2 [HybridRetriever]
+
+2026-09-11T16:27:45.341092 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=ddd23866-45aa-5b57-8ffe-fdb76677e1ff [HybridRetriever]
+
+2026-09-11T16:27:45.341167 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=339d32c0-48be-590a-8857-f747d4a88687 [HybridRetriever]
+
+2026-09-11T16:27:45.341238 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=18dd8c51-9cbe-5b45-a98a-add74528c777 [HybridRetriever]
+
+2026-09-11T16:27:45.341307 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=218620ea-c443-52f3-8bcf-06999424f23f [HybridRetriever]
+[FLAGS] party      quotes 1/1 ok, nouns 14/17 ok
+
+wrote pipeline_results.json
