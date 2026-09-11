@@ -1,0 +1,231 @@
+
+##############################################################################
+# VOSS: What happened to Orryn Voss, Veyra's mentor? Where is he now?
+# TRUTH: Alive per Ssarnak ('not in a place where dead is easy'). Location NOT recorded.
+##############################################################################
+
+--- baseline rep1 ---
+Professor Orryn Voss came to Phandalin shortly before vanishing while investigating black stone fragments he believed belonged to a mind-controlling obelisk. He warned Veyra never to assemble them, fearing he was losing his mind. His specific location remains unknown; he is currently missing.
+
+--- baseline rep2 ---
+Professor Orryn Voss, Veyra's missing mentor, vanished in Phandalin while investigating black stone fragments he believed formed an obelisk connected to mind control. He warned against assembling the pieces.
+
+While the Nothic Ssarnak claimed, "Your teacher is not dead," Voss's specific location remains **unknown**; he is currently missing.
+
+--- baseline rep3 ---
+Professor Orryn Voss, Veyra's missing mentor, vanished in Phandalin while investigating black stone fragments he believed formed a mind-controlling obelisk. He warned Veyra never to assemble them. While the Nothic Ssarnak claims he is "not dead," his specific location remains unknown.
+
+--- strict rep1 ---
+**What happened to Orryn Voss, in order:**
+1.  **Investigation:** He came to Phandalin shortly before vanishing, investigating black stone fragments he believed were pieces of a larger obelisk tied to minds, memory, and transformation.
+2.  **Warning:** He warned Veyra never to assemble the fragments and expressed fear that he was losing his mind.
+3.  **Disappearance:** He disappeared in Phandalin. His last known destination was the town, marked by a half-burned note stating, "The town is not a prize. It is the threshold."
+
+**Current Status:**
+*   **Alive:** The Nothic Ssarnak told Veyra, "Your teacher is not dead. He is not in a place where dead is easy."
+*   **Location:** His specific location is **unknown**.
+*   **Belief:** Veyra believes her mentor’s theories were correct and fears his fate is tied to the obelisk's mind-control capabilities. The record does not confirm his physical whereabouts or his current condition beyond the Nothic's claim that he is not dead.
+
+--- strict rep2 ---
+**What happened to Orryn Voss, in order:**
+
+1.  **Investigation:** He came to Phandalin shortly before vanishing, investigating black stone fragments he believed were pieces of a larger obelisk tied to minds, memory, and transformation.
+2.  **Warning:** He warned Veyra never to assemble the fragments, stating, "never let anyone assemble the fragments." He also feared he was losing his mind.
+3.  **Disappearance:** He disappeared in Phandalin. His last known location was marked by a half-burned note stating: "Was in Phandalin. The town is not a prize. It is the threshold."
+
+**Current Status:**
+*   **Alive:** The Nothic Ssarnak told Veyra, "Your teacher is not dead. He is not in a place where dead is easy."
+*   **Location:** His specific physical location is **not recorded**. The party does not know where he is currently being held or if he is even still in Phandalin.
+*   **Belief:** Veyra believes her mentor’s theories regarding a device controlling people via the obelisk were correct, a belief bolstered by the recent discovery of the crystal-headed goblins and the resonance of Veyra’s blue crystal with the black stones.
+
+--- strict rep3 ---
+**What happened to Orryn Voss, in order:**
+
+1.  **Investigation:** Veyra’s mentor, Professor Orryn Voss, came to Phandalin shortly before vanishing. He was investigating black stone fragments he believed were pieces of a larger obelisk connected to minds, memory, and transformation.
+2.  **Warning:** Before disappearing, Voss warned Veyra never to assemble the fragments, stating, "never let anyone assemble the fragments." He also feared he was losing his mind.
+3.  **Disappearance:** He vanished in Phandalin. His last known trail was marked by a half-burned note found by Veyra that read: "Was in Phandalin. The town is not a prize. It is the threshold."
+4.  **Belief Validated:** In a later session (Chapter 10), after witnessing the resonance of Zenvon’s black stone with Veyra’s crystal and encountering goblins with elongated heads/crystals, Veyra and the party validated Voss's theory that the obelisk fragments were part of a "device that was doing something really bizarre and controlling people."
+
+**Current Status and Location:**
+
+*   **Status:** **Missing.** The record states he vanished and has not been found.
+*   **Location:** **Not recorded.** The context confirms his disappearance occurred in Phandalin, but provides no current physical location, prison, or destination for him. While Veyra believes his theories were correct, his fate is not detailed in the provided context.
+
+##############################################################################
+# RUXITHID: Who or what is Ruxithid?
+# TRUTH: A name spoken once by an elongated-headed goblin at the Ch.1 ambush. NEVER explained.
+##############################################################################
+
+--- baseline rep1 ---
+Ruxithid is an unknown entity or person mentioned by a goblin with an elongated head during the ambush on the Triboar Trail. The goblin whispered to Sildar Hallwinter, "You're not what Ruxithid wants." The identity of Ruxithid and the meaning of the remark remain unexplained.
+
+--- baseline rep2 ---
+Ruxithid is an unknown entity or person. The name was whispered to Sildar Hallwinter by a goblin with an elongated head during the ambush on the Triboar Trail, stating, "You're not what Ruxithid wants." Its true identity and purpose remain unexplained.
+
+--- baseline rep3 ---
+Ruxithid is an unknown entity or person mentioned by an elongated-headed goblin during the ambush of Sildar Hallwinter on the Triboar Trail.
+
+--- strict rep1 ---
+Based on the provided context, **the identity and nature of Ruxithid are unknown.**
+
+The record establishes the following facts regarding this entity:
+
+*   **Source:** The name was spoken by a strange goblin with an elongated head during the ambush on the Triboar Trail.
+*   **Statement:** The goblin whispered to Sildar Hallwinter, "You're not what Ruxithid wants."
+*   **Current Knowledge:** Neither Sildar nor the party has been able to explain the name or the meaning of the remark. It remains an unresolved plot thread.
+*   **Recent Activity:** In Chapter 11, Veyra revisited the name while investigating clues involving strange goblins and crystals, noting that her crystal flared when she wrote it down, but no further details about Ruxithid's identity were established.
+
+--- strict rep2 ---
+Ruxithid is an **unknown entity or person** whose identity and nature have not been established.
+
+The name is introduced when Sildar Hallwinter recalls an ambush on the Triboar Trail involving a strange goblin with an elongated head. This goblin whispered to Sildar, **"You're not what Ruxithid wants."**
+
+**What the record shows:**
+*   **Source:** The name was spoken by an elongated-headed goblin during the ambush of Sildar and Gundren Rockseeker.
+*   **Status:** Neither Sildar nor the party understands the remark or the identity of Ruxithid. It remains an unresolved plot thread.
+*   **Connection to Clues:** Veyra later identifies this account as one of three "strange-goblin clues" she has gathered. Her crystal flared when she reviewed her notes on the name, linking it thematically to other strange goblins and crystals she is investigating, but this did not reveal who or what Ruxithid is.
+
+--- strict rep3 ---
+Based on the campaign record, **Ruxithid is an unknown entity or person.**
+
+**Established Facts:**
+*   **First Mention:** The name was introduced by Sildar Hallwinter, who recalled that an elongated-headed goblin whispered to him during the ambush on the Triboar Trail: **"You're not what Ruxithid wants."**
+*   **Current Status:** Neither Sildar nor the party understands the meaning of the remark or the identity of Ruxithid. It remains an unresolved plot thread.
+*   **Recent Activity:** In Chapter 11, Veyra revisited the name while investigating a charcoal drawing of a goblin with a crystal in its skull. She identified this as her "third strange-goblin clue" alongside Sildar's account, and her crystal flared when she reviewed the notes. However, this investigation **did not reveal** who or what Ruxithid is.
+
+##############################################################################
+# SHARD: What happened to the blackstone shard Pip sold? Was it recovered?
+# TRUTH: Sold to a peddler bound for Phandalin. NOT recovered; peddler never found.
+##############################################################################
+
+--- baseline rep1 ---
+**What happened:** Pip Thistlewick won a blackstone shard in a dice game and sold it to a peddler traveling to Phandalin. The shard causes Pip to hear whispers and have dreams.
+
+**Was it recovered:** **No.** It is not recorded as recovered. In Scene 8 (Session 9), Zenvon produced a different black stone he had kept since the journey began, while Pip was questioned about his sold stone but did not present it.
+
+--- baseline rep2 ---
+Pip Thistlewick won a blackstone shard in a dice game and sold it to a peddler traveling to Phandalin. Since the sale, Pip has experienced haunting dreams and whispers calling his name. The shard was **not recovered**; during a session in Phandalin, Pip was questioned about the stone he had sold, but Zenvon produced a different black stone he had carried since the beginning of the journey. No record indicates the specific shard Pip sold was ever retrieved.
+
+--- baseline rep3 ---
+**What happened:** Pip Thistlewick won a blackstone shard in a dice game and sold it to a peddler traveling to Phandalin. Since the sale, Pip has experienced haunting dreams and whispers calling his name.
+
+**Was it recovered:** **No.** The shard was not recovered. During a discussion in Phandalin, Pip was questioned about the stone he had sold, but Zenvon produced a different black stone he had carried since the beginning of the journey. No record indicates the specific shard Pip sold was ever retrieved.
+
+--- strict rep1 ---
+**What happened to the shard:**
+Pip Thistlewick won the blackstone shard in a dice game near Neverwinter’s docks and sold it to a peddler traveling toward Phandalin. Since the sale, Pip has experienced haunting dreams of broken black stone beneath the earth and heard whispers calling his name. The Nothic revealed this history in a later session, noting Pip’s desire to recover the item.
+
+**Was it recovered:**
+**No.** There is no record of the specific shard Pip sold being recovered. During a discussion in Phandalin (Session 9), Zenvon produced a *different* black stone he had carried secretly since the journey began. While this second stone resonated with Veyra’s crystal, the context confirms this was not Pip’s sold shard, and no retrieval of Pip's original shard is recorded.
+
+--- strict rep2 ---
+Based on the campaign record, **Pip Thistlewick** won a blackstone shard in a dice game near Neverwinter’s docks and sold it to a peddler traveling toward Phandalin. Since the sale, Pip has suffered from nightmares of broken black stone beneath the earth and heard whispers calling his name. He expresses a desire to recover the item by purchasing or stealing it back.
+
+**It has not been recovered.** While the party discussed the stone in Phandalin, Zenvon produced a *different* black stone he had carried since the beginning of their journey (found on the road). There is no record of the specific shard Pip sold being retrieved or returned to him.
+
+--- strict rep3 ---
+**What happened:**
+Pip Thistlewick won a blackstone shard in a dice game near Neverwinter’s docks and sold it to a peddler traveling toward Phandalin. Since the sale, Pip has experienced haunting dreams of broken black stone beneath the earth and heard whispers calling his name. He has expressed a desire to recover the item by buying or stealing it back.
+
+**Was it recovered?**
+**No.** There is no record in the provided context of the specific shard Pip sold being recovered or returned to him.
+
+In Session 9 (Scene 8), when Veyra asked Pip to describe the stone he had sold, **Zenvon** produced a *different* black stone he had carried secretly since the beginning of the journey (picked up from the road near the obelisk shadow). While this second stone resonated with Veyra’s crystal, it was not Pip’s sold shard. No event indicates that the party located the peddler or retrieved Pip's original stone.
+
+##############################################################################
+# BUGBEARS: What happened to the bugbears that survived the fire at Tresendar Manor?
+# TRUTH: Three survived wounded and loose. Party never returned. Fate NOT recorded.
+##############################################################################
+
+--- baseline rep1 ---
+One bugbear was killed outright by the oil fire. The other three **survived but were wounded**. They were last heard hammering on a locked manor door; the party escaped before breaking through, and their current whereabouts are unknown.
+
+--- baseline rep2 ---
+One bugbear was killed outright by the oil fire. The other three survived but were wounded. They were last heard hammering on a locked manor door after breaking through; their current whereabouts are unknown.
+
+--- baseline rep3 ---
+One bugbear was killed by the fire. The other three **survived but were wounded**. They were last heard hammering on a locked door before the party escaped; their current whereabouts are unknown.
+
+--- strict rep1 ---
+Based on the campaign record, one of the four bugbears in the barracks was **killed outright** by the oil fire ignited by Zenvon during the party's retreat.
+
+The remaining **three bugbears survived**, though they were **wounded** and slowed by the difficult terrain created by the burning oil.
+
+**Current Status:**
+The party escaped Tresendar Manor while the surviving bugbears were **last heard hammering on a locked door** (shut by Sister Maela). The bugbears eventually broke through the door, but the party had already fled. **Their current whereabouts are unknown**, and it is not recorded whether they pursued the party or remained in the manor. They remain an unresolved loose end in the campaign.
+
+--- strict rep2 ---
+The record shows that one of the four bugbears in the barracks was killed outright by the oil fire ignited by Zenvon during the party's retreat. The remaining **three bugbears survived** but were **wounded** and slowed by the burning oil.
+
+During the escape, Sister Maela locked a door, and the surviving bugbears were last heard hammering on it. They eventually broke through after three rounds, but the party had already fled Tresendar Manor. **Their current whereabouts are unknown**, and it is not recorded whether they pursued the party or remained in the manor.
+
+--- strict rep3 ---
+One bugbear was **killed outright** by the oil fire set by Zenvon during the party's retreat from the barracks.
+
+The remaining **three bugbears survived** but were **wounded** and slowed by the difficult terrain caused by the burning oil. During the escape, Sister Maela locked a door, and the surviving bugbears were last heard hammering on it. They broke through after three rounds, but the party had already fled Tresendar Manor.
+
+**Their current whereabouts are unknown.** The record notes them as an unresolved loose end, with no confirmation recorded regarding whether they pursued the party or remained in the manor.
+
+##############################################################################
+# CASTLE: Where is Cragmaw Castle located?
+# TRUTH: Location NOT recorded. Hamun Kost knows it and has not yet handed it over.
+##############################################################################
+
+--- baseline rep1 ---
+The exact location of Cragmaw Castle remains unknown; the party knows only that it lies somewhere in the forest. Hamun Kost claims to know its location but has not yet revealed the route.
+
+--- baseline rep2 ---
+The exact location of Cragmaw Castle remains unknown. The party knows only that it lies somewhere in the forest. Hamun Kost has claimed to know the route but has not yet delivered the directions.
+
+--- baseline rep3 ---
+The exact location of Cragmaw Castle remains unknown. The party knows only that it lies somewhere in the forest. Hamun Kost claims to know the location but has not yet revealed the route.
+
+--- strict rep1 ---
+The exact location of Cragmaw Castle remains **unknown**. The record shows that the party only knows it lies somewhere in the forest.
+
+While Hamun Kost claims to know the specific route, he has not yet revealed it. He promised to provide the information in exchange for the party dealing with the marauders at Wyvern Tor, but as of the most recent session, he had not delivered the directions.
+
+--- strict rep2 ---
+The exact location of Cragmaw Castle remains **unknown**.
+
+*   **General Position:** The record shows that the party knows only that it lies somewhere in the forest.
+*   **Specific Directions:** Hamun Kost claims to know the route to the castle and promised to reveal it in exchange for dealing with the marauders at Wyvern Tor. Although the party completed this task, the record notes that Hamun had not yet delivered the directions at the end of the most recent session.
+
+--- strict rep3 ---
+The exact location of Cragmaw Castle remains **unknown**.
+
+*   **General Position:** The record shows that the party knows only that it lies somewhere in the forest.
+*   **Specific Directions:** Hamun Kost claims to know the route to the castle and promised to reveal it in exchange for dealing with the marauders at Wyvern Tor. Although the party completed this task, the record notes that Hamun had not yet delivered the directions at the end of the most recent session.
+
+##############################################################################
+# DROOP: What happened to Droop the goblin?
+# TRUTH: Fainted in the barracks; left behind during the fire. Fate NOT recorded.
+##############################################################################
+
+--- baseline rep1 ---
+Droop is a goblin member of the Scraptops clan who serves as a message runner. During the party's visit to Tresendar Manor, he fainted in terror upon seeing the disguised adventurers.
+
+--- baseline rep2 ---
+During the party's visit to Tresendar Manor, Droop **fainted in terror** upon seeing the disguised adventurers.
+
+--- baseline rep3 ---
+Droop is a Scraptop goblin who fainted in terror when the disguised party entered the bugbear barracks.
+
+--- strict rep1 ---
+During the party's infiltration of the bugbear barracks at Tresendar Manor, Droop **fainted in terror** upon seeing the disguised adventurers.
+
+The lead bugbear, Nosk, identified Droop as a member of the **Scraptops** goblin clan who had wandered into the hideout looking for parts and was being pressured by the Cragmaw to join their band.
+
+The record does not specify what happened to Droop after he fainted, though the party subsequently fled the manor during the ensuing combat with the bugbears.
+
+--- strict rep2 ---
+During the party's infiltration of the bugbear barracks at Tresendar Manor, Droop **fainted in terror** upon seeing the disguised adventurers.
+
+The lead bugbear, Nosk, identified Droop as a member of the **Scraptops** goblin clan who had wandered into the hideout looking for parts and was being pressured by the Cragmaw to join their band.
+
+The record does not specify what happened to Droop after he fainted, though the party subsequently fled the manor during the ensuing combat with the bugbears.
+
+--- strict rep3 ---
+Droop is a goblin from the **Scraptops** clan who wandered into Tresendar Manor looking for parts and was being pressured by the Cragmaw band to join them.
+
+When the disguised party infiltrated the bugbear barracks at Tresendar Manor, Droop **fainted in terror** upon seeing them. The record does not state what happened to him afterward, though combat with the bugbears began shortly after.
