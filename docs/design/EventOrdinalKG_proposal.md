@@ -261,9 +261,17 @@ merged.json (3,014 facts)   →  Cullen: 0  Bimble: 0  Aletra: 0
 
 **The ensemble covers chapters 1–7.** The play record runs to 52. So 45 chapters
 of proper nouns are structurally invisible to `triage-candidates` — which is why
-`Aletra`, `Perrin Alagondar`, `Brother Aldric` and `Rift Weavers` are absent
-from the registry *and* from the queue *and* from the `ignored` list. They were
-never candidates. The live plot's cast sits outside the queue's reach.
+`Perrin Alagondar`, `Brother Aldric` and `Rift Weavers` are absent from the
+registry *and* from the queue *and* from the `ignored` list. They were never
+candidates. The live plot's cast sits outside the queue's reach.
+
+> **Correction (2026-09-19, after this landed).** An earlier draft listed
+> `Aletra` in that set. It is wrong: `Aletra Sotorra` **is** registered, and
+> `Registry.known_names()` applies a multi-word first-token expansion, so bare
+> `Aletra` resolves as known. The original check here matched names and aliases
+> literally and missed that expansion. The three names above were re-verified
+> through `known_names()` itself. The coverage finding is unaffected and is in
+> fact stronger than stated — see the measured figure below.
 
 Consequence worth stating plainly: **running `/entity-triage` today would triage
 the wrong 172 names.** The skill's Phase 0 says regenerate the queue first, but
@@ -276,12 +284,23 @@ proper-noun sweep, because an authored heading is an assertion that something is
 an entity. Offered as a **second candidate source** covering the 45 chapters the
 ensemble does not reach, feeding the existing triage flow. Not a parallel one.
 
-A worked example of what is currently invisible: `Bimble Nackle` is registered
-as an npc. The bare `Bimble` and the party's nickname `Bimbo` are not aliased to
-him, so the graph counts three entities where there is one — across the
-currently-active plot thread (the missing manifold mechanic, chapters 49a–52).
-That is an ordinary alias ruling the skill handles well; it simply never reached
-the queue.
+**Measured.** `experiments/20260919-phandalin-event-kg/triage_from_summaries.py`
+emits a `.triage_queue.json` from `docs/summaries` alone, reusing the real
+`norm_subject`, `known_names`, near-miss and GM-suppression paths so only the
+*corpus* differs. Against the same registry:
+
+| | candidates |
+|---|---|
+| Existing ensemble queue (chapters 1–7) | 148 distinct |
+| Summaries queue (all 52 chapters) | **1,074** — 357 heading, 13 both, 704 mention-only |
+| In the summaries queue only | 1,003 |
+| **Heading/both candidates sourced from chapters 8+** | **326 of 370** |
+
+A worked example: `Bimble Nackle` is registered, and first-token expansion
+covers bare `Bimble` — but the party's nickname `Bimbo` is not aliased to him
+and surfaces as a live candidate (5 occurrences, sessions `050` and `052`),
+right across the currently-active plot thread. An ordinary alias ruling the
+skill handles well; it simply never reached the queue.
 
 ---
 
