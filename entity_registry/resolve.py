@@ -48,6 +48,7 @@ from __future__ import annotations
 
 import re
 from difflib import SequenceMatcher
+from functools import lru_cache
 from pathlib import Path
 
 import yaml
@@ -59,6 +60,108 @@ from campaignlib.textproc import norm_subject
 GLOSSARY_REL = Path("notes") / "vtt_transcription_corrections.md"
 KNOWN_ADDITIONS_REL = Path("notes") / "vtt_known_additions.md"
 DOSSIER_REL = Path("docs") / "npcs"
+
+
+# ── source caching ───────────────────────────────────────────────────────────
+#
+# Resolving one name reads five files. Resolving a whole transcript's worth of
+# proper nouns re-reads them once per name — measured at 0.28s/call against the
+# live Out-of-the-Abyss corpus (a 500-line glossary and a 122KB registry),
+# which is 2+ minutes for a single session's candidates and slow enough that a
+# caller starts batching by hand, or skipping the lookup.
+#
+# Keyed on (path, mtime_ns, size), so an edit to the glossary mid-session is
+# picked up on the next call rather than served stale. That matters here more
+# than in most caches: a GM who has just added a glossary row expects the very
+# next resolution to honour it.
+
+
+def _stat_key(path: Path) -> "tuple | None":
+    try:
+        st = path.stat()
+    except OSError:
+        return None
+    return (str(path), st.st_mtime_ns, st.st_size)
+
+
+@lru_cache(maxsize=32)
+def _glossary_cached(key) -> tuple:
+    return tuple(parse_glossary(Path(key[0])))
+
+
+@lru_cache(maxsize=32)
+def _known_additions_cached(key) -> tuple:
+    return tuple(parse_known_additions(Path(key[0])))
+
+
+@lru_cache(maxsize=32)
+def _party_cached(key, campaign_dir: str) -> tuple:
+    return tuple(load_pc_names(Path(campaign_dir)))
+
+
+@lru_cache(maxsize=32)
+def _registry_cached(key):
+    return load_registry(Path(key[0]))
+
+
+@lru_cache(maxsize=32)
+def _dossiers_cached(key, dossier_dir: str) -> tuple:
+    d = Path(dossier_dir)
+    out = []
+    if d.is_dir():
+        for f in sorted(d.glob("*.md")):
+            if ".new_notes." in f.name:
+                continue
+            ruling = _dossier_ruling(f)
+            if ruling is not None:
+                out.append((f.name, ruling["name"], tuple(ruling["aliases"])))
+    return tuple(out)
+
+
+def _dossier_dir_key(d: Path) -> "tuple | None":
+    """A directory's own mtime misses an edit INSIDE an unchanged-length file,
+    so key on every dossier's stat, not the directory's."""
+    if not d.is_dir():
+        return None
+    return tuple(sorted(
+        (f.name, st.st_mtime_ns, st.st_size)
+        for f in d.glob("*.md")
+        if (st := f.stat()) is not None
+    ))
+
+
+def clear_cache() -> None:
+    """Drop every cached source. Only needed by tests and long-lived servers
+    that want to force a re-read without a file actually changing."""
+    for fn in (_glossary_cached, _known_additions_cached, _party_cached,
+               _registry_cached, _dossiers_cached):
+        fn.cache_clear()
+
+
+def _glossary(campaign_dir: Path) -> list[dict]:
+    path = Path(campaign_dir) / GLOSSARY_REL
+    key = _stat_key(path)
+    return list(_glossary_cached(key)) if key else []
+
+
+def _known_additions(campaign_dir: Path) -> list[dict]:
+    path = Path(campaign_dir) / KNOWN_ADDITIONS_REL
+    key = _stat_key(path)
+    return list(_known_additions_cached(key)) if key else []
+
+
+def _party(campaign_dir: Path) -> list[str]:
+    from campaignlib.constants import config_path
+    from campaignlib.party_config import PARTY_CONFIG_FILENAME
+    key = _stat_key(config_path(Path(campaign_dir), PARTY_CONFIG_FILENAME))
+    return list(_party_cached(key, str(campaign_dir))) if key else []
+
+
+def _dossiers(campaign_dir: Path) -> "tuple[tuple[str, str, tuple], ...]":
+    d = Path(campaign_dir) / DOSSIER_REL
+    key = _dossier_dir_key(d)
+    return _dossiers_cached(key, str(d)) if key else ()
+
 
 # ── glossary parsing ─────────────────────────────────────────────────────────
 #
@@ -213,21 +316,39 @@ def _tokens(s: str) -> list[str]:
     return toks
 
 
-def compatible(a: str, b: str) -> bool:
-    """True when two forms are the same name at different lengths.
+def _depossess(s: str) -> str:
+    """Drop a trailing possessive. "Daz's" and "Daz" are the same name."""
+    return re.sub(r"['\u2019]s$", "", s.strip())
 
-    ``config/party.yaml`` carries "Thorin Giantfriend"; the glossary rules on
-    "Thorin". That is not a disagreement, and reporting it as one — on every
-    single PC name, every time — would train the GM to dismiss the ``ambiguous``
-    status, which destroys its value on the cases that are real. One form being
-    a leading-token prefix of the other is compatible; anything else is not.
+
+def compatible(a: str, b: str, allow_prefix: bool = False) -> bool:
+    """True when two forms are the same name written differently.
+
+    Always forgiven: a leading article and a trailing possessive. Neither is a
+    spelling anyone disagrees about, and flagging them fires on every
+    article-prefixed entity and every possessive in the transcript — a status
+    that cries wolf is one the GM learns to dismiss, which fails the same way
+    as not having it at all.
+
+    Forgiven ONLY with ``allow_prefix`` (tier 1): a trailing surname.
+    ``config/party.yaml`` carries "Thorin Giantfriend" where the rest of the
+    corpus says "Thorin", and that mismatch is a property of how the roster
+    file is written, not a disagreement.
+
+    Prefix matching is confined to tier 1 because everywhere else it overmatches
+    badly, as the live corpus showed at once: "Night" prefix-matched the tavern
+    "The Night Beneath the Night", "Does" prefix-matched the garbling "Does
+    Bookworm", and "Brother" prefix-matched both "Brother Vareth" and
+    "Brother Kel" and came back ambiguous. A bare title or common word is not a
+    short form of every name that starts with it.
     """
+    a, b = _depossess(a), _depossess(b)
     if norm_subject(a) == norm_subject(b):
         return True
     ta, tb = _tokens(a), _tokens(b)
     if ta == tb:
         return True
-    if not ta or not tb:
+    if not allow_prefix or not ta or not tb:
         return False
     short, long_ = (ta, tb) if len(ta) <= len(tb) else (tb, ta)
     return long_[: len(short)] == short
@@ -245,8 +366,8 @@ def compatible(a: str, b: str) -> bool:
 
 
 def _t1_party(campaign_dir: Path, key: str, surface: str) -> "dict | None":
-    for name in load_pc_names(campaign_dir):
-        if norm_subject(name) == key or compatible(surface, name):
+    for name in _party(campaign_dir):
+        if compatible(surface, name, allow_prefix=True):
             return {
                 "tier": 1,
                 "source": "config/party.yaml",
@@ -258,8 +379,7 @@ def _t1_party(campaign_dir: Path, key: str, surface: str) -> "dict | None":
 
 
 def _t2_glossary(campaign_dir: Path, key: str, surface: str) -> "dict | None":
-    path = Path(campaign_dir) / GLOSSARY_REL
-    for row in parse_glossary(path):
+    for row in _glossary(campaign_dir):
         hit = compatible(surface, row["canonical"]) or any(
             compatible(surface, w) for w in row["wrong"]
         )
@@ -297,30 +417,21 @@ def _t3_registry(campaign_dir: Path, key: str, surface: str) -> "dict | None":
 
 
 def _t4_dossier(campaign_dir: Path, key: str, surface: str) -> "dict | None":
-    d = Path(campaign_dir) / DOSSIER_REL
-    if not d.is_dir():
-        return None
-    for f in sorted(d.glob("*.md")):
-        if ".new_notes." in f.name:
-            continue
-        ruling = _dossier_ruling(f)
-        if ruling is None:                     # states no name — not a ruling
-            continue
-        for candidate in [ruling["name"], *ruling["aliases"]]:
+    for fname, name, aliases in _dossiers(campaign_dir):
+        for candidate in [name, *aliases]:
             if compatible(surface, candidate):
                 return {
                     "tier": 4,
-                    "source": f"{DOSSIER_REL.as_posix()}/{f.name}",
-                    "value": ruling["name"],
-                    "evidence": f"frontmatter name: {ruling['name']}",
+                    "source": f"{DOSSIER_REL.as_posix()}/{fname}",
+                    "value": name,
+                    "evidence": f"frontmatter name: {name}",
                     "entity_type": "npc",
                 }
     return None
 
 
 def _t5_known_additions(campaign_dir: Path, key: str, surface: str) -> "dict | None":
-    path = Path(campaign_dir) / KNOWN_ADDITIONS_REL
-    for entry in parse_known_additions(path):
+    for entry in _known_additions(campaign_dir):
         for name in entry["names"]:
             if compatible(surface, name):
                 return {
@@ -347,7 +458,10 @@ TIER_NAMES = {
 
 def _load_registry(campaign_dir: Path) -> "Registry | None":
     path = find_registry(Path(campaign_dir))
-    return load_registry(path) if path is not None else None
+    if path is None:
+        return None
+    key = _stat_key(path)
+    return _registry_cached(key) if key else load_registry(path)
 
 
 # ── near misses ──────────────────────────────────────────────────────────────
@@ -362,23 +476,17 @@ def canonical_catalog(campaign_dir: Path) -> list[tuple[str, int, str]]:
     """
     campaign_dir = Path(campaign_dir)
     out: list[tuple[str, int, str]] = []
-    for name in load_pc_names(campaign_dir):
+    for name in _party(campaign_dir):
         out.append((name, 1, "config/party.yaml"))
-    for row in parse_glossary(campaign_dir / GLOSSARY_REL):
+    for row in _glossary(campaign_dir):
         out.append((row["canonical"], 2, f"{GLOSSARY_REL.as_posix()}:{row['line']}"))
     reg = _load_registry(campaign_dir)
     if reg is not None:
         for e in reg.entities:
             out.append((e.name, 3, "docs/entity_registry.yaml"))
-    d = campaign_dir / DOSSIER_REL
-    if d.is_dir():
-        for f in sorted(d.glob("*.md")):
-            if ".new_notes." in f.name:
-                continue
-            ruling = _dossier_ruling(f)
-            if ruling is not None:
-                out.append((ruling["name"], 4, f"{DOSSIER_REL.as_posix()}/{f.name}"))
-    for entry in parse_known_additions(campaign_dir / KNOWN_ADDITIONS_REL):
+    for fname, name, _aliases in _dossiers(campaign_dir):
+        out.append((name, 4, f"{DOSSIER_REL.as_posix()}/{fname}"))
+    for entry in _known_additions(campaign_dir):
         for name in entry["names"]:
             out.append((name, 5, f"{KNOWN_ADDITIONS_REL.as_posix()}:{entry['line']}"))
     return out
@@ -405,7 +513,8 @@ def higher_authority_drift(campaign_dir: Path, ruling: dict,
     for form, tier, source in canonical_catalog(campaign_dir):
         if tier >= ruling["tier"]:
             continue
-        if compatible(form, ruling["value"]):
+        if compatible(form, ruling["value"],
+                      allow_prefix=1 in (tier, ruling["tier"])):
             continue
         if SequenceMatcher(None, ruled_key, norm_subject(form)).ratio() >= threshold:
             out.append({"value": form, "tier": tier, "source": source,
@@ -477,7 +586,9 @@ def resolve_name(campaign_dir: "Path | str", surface: str,
     conflicts = [
         {"value": h["value"], "tier": h["tier"], "source": h["source"],
          "evidence": h["evidence"]}
-        for h in lower if not compatible(h["value"], ruling["value"])
+        for h in lower
+        if not compatible(h["value"], ruling["value"],
+                          allow_prefix=1 in (h["tier"], ruling["tier"]))
     ]
     conflicts += higher_authority_drift(campaign_dir, ruling, threshold)
     conflicts.sort(key=lambda c: c["tier"])
@@ -513,7 +624,10 @@ def resolve_name(campaign_dir: "Path | str", surface: str,
         "tier": ruling["tier"],
         "authority": ruling["source"],
         "evidence": ruling["evidence"],
-        "is_change": not compatible(surface, ruling["value"]),
+        # Tier 1 is the roster file: "Thorin" resolving to its stored
+        # "Thorin Giantfriend" is not a name change to show the GM.
+        "is_change": not compatible(surface, ruling["value"],
+                                    allow_prefix=ruling["tier"] == 1),
         "entity_type": ruling.get("entity_type"),
         "parenthetical": ruling.get("parenthetical"),
         "also_found_in": [

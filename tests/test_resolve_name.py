@@ -117,11 +117,34 @@ def test_short_pc_form_is_compatible_not_ambiguous(tmp_path):
 
 
 def test_compatible_is_prefix_not_substring():
-    assert resolve.compatible("Thorin", "Thorin Giantfriend")
-    assert resolve.compatible("Thorin Giantfriend", "Thorin")
+    assert resolve.compatible("Thorin", "Thorin Giantfriend", allow_prefix=True)
+    assert resolve.compatible("Thorin Giantfriend", "Thorin", allow_prefix=True)
     assert resolve.compatible("Ilvara", "ilvara!")
-    assert not resolve.compatible("Giantfriend", "Thorin Giantfriend")
+    assert not resolve.compatible("Giantfriend", "Thorin Giantfriend", allow_prefix=True)
     assert not resolve.compatible("Sequoia", "Sequioa")
+
+
+def test_prefix_matching_is_off_by_default():
+    """Found on the live corpus: with prefix matching everywhere, "Night"
+    matched the tavern "The Night Beneath the Night", "Does" matched the
+    garbling "Does Bookworm", and "Brother" matched both "Brother Vareth" and
+    "Brother Kel" and came back ambiguous. A bare title or common word is not a
+    short form of every name beginning with it, so only tier 1 — where
+    party.yaml's full names meet the corpus's short ones — gets the tolerance.
+    """
+    assert not resolve.compatible("Night", "The Night Beneath the Night")
+    assert not resolve.compatible("Does", "Does Bookworm")
+    assert not resolve.compatible("Brother", "Brother Vareth")
+    assert resolve.compatible("Night", "The Night Beneath the Night", allow_prefix=True)
+
+
+def test_possessive_is_not_a_spelling_difference():
+    """"Daz's" against party.yaml's "Daz" was coming back ambiguous, on every
+    possessive in the transcript."""
+    assert resolve.compatible("Daz's", "Daz")
+    assert resolve.compatible("Daz", "Daz's")
+    assert resolve.compatible("Glabbagool\u2019s", "Glabbagool")
+    assert not resolve.compatible("Dazes", "Daz")
 
 
 # ── tier 2: the glossary ────────────────────────────────────────────────────
@@ -347,3 +370,30 @@ def test_article_stripping_is_comparison_only(tmp_path):
         "add", str(c), "--name", "the Overbright", "--type", "location", "--yes",
     ]) == 0
     assert resolve.resolve_name(c, "Overbright")["canonical"] == "the Overbright"
+
+
+# ── source caching ──────────────────────────────────────────────────────────
+
+def test_cache_is_invalidated_when_the_glossary_changes(tmp_path):
+    """A GM who has just added a glossary row expects the very NEXT resolution
+    to honour it. Caching keyed on content-stat, not on process lifetime."""
+    c = _campaign(tmp_path)
+    resolve.clear_cache()
+    assert resolve.resolve_name(c, "Grunkle")["status"] == "not_canon"
+
+    g = c / "notes" / "vtt_transcription_corrections.md"
+    g.write_text(g.read_text(encoding="utf-8").replace(
+        "| Grygum, Graham, Gurrigam | **Gyrgum** |",
+        "| Grygum, Graham, Gurrigam, Grunkle | **Gyrgum** |",
+    ), encoding="utf-8")
+
+    r = resolve.resolve_name(c, "Grunkle")
+    assert r["status"] == "resolved"
+    assert r["canonical"] == "Gyrgum"
+
+
+def test_cache_survives_repeated_reads_of_an_unchanged_source(tmp_path):
+    c = _campaign(tmp_path)
+    resolve.clear_cache()
+    first = resolve.resolve_name(c, "Gurrigam")
+    assert all(resolve.resolve_name(c, "Gurrigam") == first for _ in range(20))
