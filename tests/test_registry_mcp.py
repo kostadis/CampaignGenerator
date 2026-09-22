@@ -6,6 +6,7 @@ and are exercised directly against a real temp registry, no `mcp` package
 needed. build_server()'s tool registration is checked separately, gated on
 `mcp` actually being installed.
 """
+import json
 import sys
 from pathlib import Path
 
@@ -190,3 +191,35 @@ def test_resolve_campaign_dir_prefers_env_over_arg_over_cwd(monkeypatch, tmp_pat
     env_dir.mkdir()
     monkeypatch.setenv("CAMPAIGN_DIR", str(env_dir))
     assert rm.resolve_campaign_dir(["prog", "--campaign-dir", str(tmp_path)]) == env_dir.resolve()
+
+
+def test_resolve_name_tool_returns_json_and_never_errors_on_nonzero(tmp_path, monkeypatch):
+    """`registry resolve` exits 3/4 on ambiguous/not_canon. Those are outcomes,
+    not failures: the wrapper must hand back the JSON body, not an error
+    banner. A tool that looks broken invites being worked around, and the two
+    statuses it would break on are exactly the two that require the GM."""
+    (tmp_path / "config").mkdir(parents=True)
+    (tmp_path / "config" / "party.yaml").write_text(
+        "characters:\n- name: Sequoia\n", encoding="utf-8")
+    (tmp_path / "docs" / "npcs").mkdir(parents=True)
+    (tmp_path / "docs" / "npcs" / "s.md").write_text(
+        "---\nname: Sequioa\n---\n\nbody\n", encoding="utf-8")
+
+    amb = json.loads(rm.registry_resolve_name(tmp_path, "Sequioa"))
+    assert amb["status"] == "ambiguous"
+    assert "canonical" not in amb
+
+    nc = json.loads(rm.registry_resolve_name(tmp_path, "Xyzzyplugh"))
+    assert nc["status"] == "not_canon"
+
+    ok = json.loads(rm.registry_resolve_name(tmp_path, "Sequoia"))
+    assert ok["status"] == "resolved" and ok["canonical"] == "Sequoia"
+
+
+def test_resolve_name_tool_is_registered_and_documented():
+    """It must be listed as read-only alongside check/triage, never beside the
+    five identity-mutating verbs."""
+    pytest.importorskip("mcp")
+    server = rm.build_server(Path("/tmp/does-not-matter"))
+    assert "registry_resolve_name" in server.instructions
+    assert "ambiguous" in server.instructions

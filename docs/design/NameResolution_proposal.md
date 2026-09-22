@@ -1,12 +1,15 @@
 # Name Resolution: making the canon chain a call instead of a paragraph
 
-> **Status:** proposal. Written 2026-09-21 from a read of the Out-of-the-Abyss canon
+> **Status:** implemented. Written 2026-09-21 as a proposal; §7 records what building
+> it changed, and was appended the same day. Original read of the Out-of-the-Abyss canon
 > chain (five files, four formats) against `entity_registry/registry.py` and
 > `entity_registry/registry_mcp.py` as they stand at `67db6db`.
 > **Scope:** a read-only `resolve_name` that walks the chain and returns a ruling —
 > where a name resolves, on whose authority, and whether writing it would change
 > anything. It reads and reports; it never writes.
 > **Tracked by:** [#477](https://github.com/kostadis/CampaignGenerator/issues/477).
+> **Landed by:** PR against #477 — `entity_registry/resolve.py`, `registry resolve`,
+> `registry_resolve_name_tool`, `tests/test_resolve_name.py` (26 tests).
 > **Prompted by:** [EvoOntology, arXiv 2609.15779](https://arxiv.org/abs/2609.15779) — see §6.
 > **Related:** `registry_check` / `registry_triage_candidates` are the existing
 > read-only surfacing tools; this is the third, and the only one that fires
@@ -227,3 +230,63 @@ order, whether two names are one entity — and "the eval improved" is not a rul
 `Sequoia` vs `Sequioa`. This repo's own LLM Pipeline Design Rule names scope,
 ordering and attribution as precision decisions requiring a human checkpoint; a
 metric is not a checkpoint. Take the proposal machinery, keep the GM as the gate.
+
+## 7. What building it changed
+
+Three things the design above got wrong or left out, all found by writing the tests
+and then running the result over the live Out-of-the-Abyss corpus. The design is left
+standing as written and corrected here, because the corrections are the interesting
+part.
+
+### 7.1 Exact-key matching cannot see the case that motivated the whole thing
+
+The `ambiguous` status as designed compares tiers that each matched **the same surface
+form**. Two tiers holding two *spellings* of one name never both match, so `ambiguous`
+would almost never have fired — and worse, the motivating example fails open. Resolving
+`Sequioa` hits the dossier that states `Sequioa`, stops, and answers **resolved, no
+change**, while `config/party.yaml` sitting one tier above says `Sequoia`. The tool
+would have waved through precisely the transposed-letter pair the canon rule exists to
+catch.
+
+Fixed with `higher_authority_drift()`: after a tier rules, tiers that **outrank** it are
+scanned for a near-identical but incompatible canonical form, and any hit makes the
+result `ambiguous` with the higher tier favoured. Restricted to *outranking* tiers on
+purpose — comparing every tier against every other fires on any two similarly-named
+distinct entities and buries the signal, whereas a lower-trust source disagreeing with a
+higher-trust one is always worth stopping for.
+
+### 7.2 A leading article is not a spelling difference
+
+`Overbright` came back `ambiguous` on the live corpus: the registry carries
+**the Overbright**, known-additions carries **Overbright**. That is one name and one
+article. Flagging it would fire on every article-prefixed entity in the campaign, and a
+status that cries wolf is a status the GM learns to dismiss — which is the same failure
+as not having it. `compatible()` now forgives a leading `the`/`a`/`an` for
+**comparison only**; nothing rewrites a stored name, and `the Overbright` stays
+`the Overbright` in the output.
+
+### 7.3 The tiers have to forgive the same things
+
+Tier 1 was specified as surname-tolerant and the rest as exact-key. That splits the
+chain: the same name resolves at a different tier depending on which form you happened
+to type. All five tiers now match on `compatible()`, so the two forgiven differences —
+a trailing surname, a leading article — are forgiven uniformly.
+
+### 7.4 Exit codes
+
+Not in the design, added because a shell caller needs to branch without parsing: the CLI
+exits **0** resolved, **3** ambiguous, **4** not_canon. Nonzero means *stop and ask the
+GM*, which is the correct reflex for a script and the correct reflex for a person.
+
+The MCP wrapper deliberately does **not** propagate those as errors — it returns the
+JSON body in all three cases. A tool that looks broken invites being worked around, and
+the two statuses it would break on are the two that require the GM.
+
+### 7.5 What the live corpus says now
+
+Against `out-of-the-abyss/`, with its 500-line glossary and 122KB registry:
+`Gurrigam` → `Gyrgum` (tier 2, `is_change: true`); `Gladwell` and `Bernie Gutton` both
+→ `Glabbagool`; `Ebonir` → `Ebonmire` with `(Princess Ebonmire)` returned raw and
+unclassified; `Zugtmoy` → `Zuggtmoy` with `(confirmed via 5etools: MTF + OotA)` likewise
+raw; `Thorin` → `Thorin Giantfriend` with `is_change: false`; `Sequioa` → `not_canon`,
+no near miss, ask the GM.
