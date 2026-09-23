@@ -51,8 +51,8 @@ nav markup near lines 183–216, and the nav styles near lines 341–390.
 
 - [ ] T004 In `frontend/src/components/layout/AppSidebar.vue`, extend the nav types per data-model.md: add optional `matchPrefix?: string` to `NavItem`; add a `RenderingPath` interface (`id: 'per-tool' | 'dossier-synthesis' | 'state-projection'`, `label`, `description`, `usesSharedExtraction: boolean`, `matchPrefixes: string[]`, `items: NavItem[]`); make `NavGroup` carry `items?: NavItem[]` and `paths?: RenderingPath[]`, never both.
 - [ ] T005 In the same file, replace `isActive(path)` with `isItemActive(item: NavItem)` (true when the current path equals `item.path`, or starts with `item.path + '/'`, or `item.matchPrefix` is set and the current path starts with it) and `isPathActive(p: RenderingPath)` (true when the current path starts with any of `p.matchPrefixes`), per data-model.md's active-state rules. Keep the standalone Settings entry on the same rule it uses today. Existing items have no `matchPrefix`, so their behaviour is unchanged.
-- [ ] T006 In the same file's markup, add `:data-nav-path="item.path"` to every rendered nav item, and `data-nav-path="/settings"` to Settings. This is the stable hook the reachability tests use, so they stay valid when a label changes. No visual change.
-- [ ] T007 Run `cd frontend && npm run build` and confirm it exits 0.
+- [ ] T006 In `frontend/src/components/layout/AppSidebar.vue`'s markup, add `:data-nav-path="item.path"` to every rendered nav item, and `data-nav-path="/settings"` to Settings. This is the stable hook the reachability tests use, so they stay valid when a label changes. No visual change.
+- [ ] T007 Run `cd frontend && npm run build` and confirm it exits 0 (type-checks `frontend/src/components/layout/AppSidebar.vue`).
 
 **Checkpoint**: The sidebar looks and behaves exactly as before, but now has typed paths, prefix-aware active rules and `data-nav-path` hooks.
 
@@ -83,15 +83,15 @@ nav markup near lines 183–216, and the nav styles near lines 341–390.
 ### Tests for User Story 1 (write first; they must FAIL on the current sidebar)
 
 - [ ] T011 [US1] In `frontend/e2e/sidebar-navigation.spec.ts`, add **"grounding paths form one hierarchy"** (contract C1): exactly one group titled `GROUNDING DOCS`; no group titled `ENSEMBLE WORKFLOW`; three path headings (role `heading`) under `GROUNDING DOCS`, in the order `Per-tool`, `Dossier synthesis`, `State projection`; each path's description visible as text; each path containing exactly the entries listed for it in data-model.md's tree, in order (Per-tool: Campaign State, World State, Party Document, Planning Document; Dossier synthesis: Ensemble; State projection: State Projection, Threads); clicking a path heading leaves the URL unchanged; `SESSION WORKFLOW`, `PREP`, `SETUP`, `INTEGRATIONS` and Settings unchanged in title, entries and order.
-- [ ] T012 [US1] In the same file, add **"active page and its path are both marked"** (contract C3): for each row of the contract's C3 table, go to the address and assert the named item and the named path heading carry the active state, and that no other item or path heading does. Include the `/ensemble/extract` and `/ensemble/synthesize` rows (research R5's regression case) and `/prep/query` (no path heading active).
-- [ ] T013 [US1] Run the spec and confirm T011 and T012 **fail** on the current sidebar while T008 and T009 still pass.
+- [ ] T012 [US1] In `frontend/e2e/sidebar-navigation.spec.ts`, add **"active page and its path are both marked"** (contract C3): for each row of the contract's C3 table, go to the address and assert the named item and the named path heading carry the active state, and that no other item or path heading does. Include the `/ensemble/extract` and `/ensemble/synthesize` rows (research R5's regression case) and `/prep/query` (no path heading active).
+- [ ] T013 [US1] Run `cd frontend && npx playwright test e2e/sidebar-navigation.spec.ts` and confirm T011 and T012 **fail** on the current sidebar while T008 and T009 still pass.
 
 ### Implementation for User Story 1
 
 - [ ] T014 [US1] In `frontend/src/components/layout/AppSidebar.vue`'s `navGroups`, replace the `GROUNDING DOCS` group's `items` with `paths` exactly as data-model.md's tree specifies: the three `RenderingPath` entries in order, with their labels, the **GM-approved descriptions verbatim**, `usesSharedExtraction`, `matchPrefixes`, and items (labels and `path`s unchanged except as in T015).
-- [ ] T015 [US1] In the same `navGroups`, delete the `ENSEMBLE WORKFLOW` group, and put its entry under the `dossier-synthesis` path as `{ label: 'Ensemble', path: '/ensemble/setup', matchPrefix: '/ensemble/' }` (the approved rename; the address is unchanged).
-- [ ] T016 [US1] In the same file's markup, render a group with `paths` as: the existing group title, then for each path a container with an `h3` path heading (label), a `p` description, and its items using the existing nav-item markup (click to navigate, `data-nav-path`, `isItemActive`). The heading gets an active class from `isPathActive` and has no click handler (research R3). Groups with `items` render exactly as today. Settings is unchanged.
-- [ ] T017 [US1] In the same file's `<style scoped>`, add styles for the path container, heading, description and nested items. The heading is visually subordinate to the group title and dominant over items; the description is muted and wraps within the 210px sidebar; nested items get a small indent; the active path heading uses the existing accent colour. Do not change any footer (backend/model/batch/effort) styles.
+- [ ] T015 [US1] In `frontend/src/components/layout/AppSidebar.vue`'s `navGroups`, delete the `ENSEMBLE WORKFLOW` group, and put its entry under the `dossier-synthesis` path as `{ label: 'Ensemble', path: '/ensemble/setup', matchPrefix: '/ensemble/' }` (the approved rename; the address is unchanged).
+- [ ] T016 [US1] In `frontend/src/components/layout/AppSidebar.vue`'s markup, render a group with `paths` as: the existing group title, then for each path a container with an `h3` path heading (label), a `p` description, and its items using the existing nav-item markup (click to navigate, `data-nav-path`, `isItemActive`). The heading gets an active class from `isPathActive` and has no click handler (research R3). Groups with `items` render exactly as today. Settings is unchanged.
+- [ ] T017 [US1] In `frontend/src/components/layout/AppSidebar.vue`'s `<style scoped>`, add styles for the path container, heading, description and nested items. The heading is visually subordinate to the group title and dominant over items; the description is muted and wraps within the 210px sidebar; nested items get a small indent; the active path heading uses the existing accent colour. Do not change any footer (backend/model/batch/effort) styles.
 - [ ] T018 [US1] Run `cd frontend && npx playwright test e2e/sidebar-navigation.spec.ts`. T011, T012, T008 and T009 all pass.
 
 **Checkpoint**: The hierarchy is visible, both P1 stories pass, and the MVP is shippable.
@@ -108,7 +108,7 @@ nav markup near lines 183–216, and the nav styles near lines 341–390.
 
 - [ ] T019 [US3] In `frontend/src/components/layout/AppSidebar.vue`'s markup, add `:data-uses-shared-extraction="String(p.usesSharedExtraction)"` to each path container, so a test can check that the description agrees with the declared flag.
 - [ ] T020 [US3] In `frontend/e2e/sidebar-navigation.spec.ts`, add **"descriptions state the shared extraction truthfully"** (contract C4): the `Dossier synthesis` and `State projection` descriptions contain "shared ensemble extraction" and their containers have `data-uses-shared-extraction="true"`; the `Per-tool` description does not contain it and its container has `"false"`; no description contains "recommended", "preferred", "legacy", "deprecated", "old" or "new" (case-insensitive, whole words).
-- [ ] T021 [US3] Run the spec. All tests pass.
+- [ ] T021 [US3] Run `cd frontend && npx playwright test e2e/sidebar-navigation.spec.ts`. All tests pass.
 
 **Checkpoint**: All three stories pass independently.
 
@@ -116,7 +116,7 @@ nav markup near lines 183–216, and the nav styles near lines 341–390.
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T022 Run `cd frontend && npm run build`. Exits 0.
+- [ ] T022 Run `cd frontend && npm run build` (type-checks every file under `frontend/src/`). Exits 0.
 - [ ] T023 Run `cd frontend && npx playwright test` (the full suite, including `narration-wiki.spec.ts`). Everything passes.
 - [ ] T024 Contract C5 check, per quickstart.md §4: `git diff --stat main -- frontend/src/router.ts frontend/src/views/` prints nothing, and `git diff --stat main -- frontend/` lists only `AppSidebar.vue` and files under `frontend/e2e/`.
 - [ ] T025 Hand quickstart.md §3 to the GM for the judgements the tests can't make: SC-001 (point to all three world-state paths without clicking), SC-005 (which paths share the extraction), the `/ensemble/extract` and `/grounding/world-state` spot checks, and the narrow-window check. Record the outcome in `specs/022-grounding-nav-hierarchy/checklists/requirements.md` Notes.
