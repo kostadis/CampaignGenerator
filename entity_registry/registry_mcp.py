@@ -222,6 +222,22 @@ def registry_triage_candidates(
     return json.dumps(payload, indent=2, ensure_ascii=False) + (f"\n\n{summary}" if summary else "")
 
 
+def registry_resolve_name(campaign_dir: Path, name: str) -> str:
+    """Read-only canon-chain resolution. Returns the result dict as JSON.
+
+    ``registry resolve`` exits 3 on ambiguous and 4 on not_canon — both are
+    *outcomes*, not failures, and the JSON body is the payload in every case.
+    So unlike the mutating wrappers this one never surfaces a nonzero code as
+    an error: doing so would make the two statuses that REQUIRE the GM look
+    like a broken tool, and the natural next move on a broken tool is to work
+    around it.
+    """
+    out, err, code = _run_main(["resolve", str(campaign_dir), name, "--json"])
+    if out.strip():
+        return out.strip()
+    return _format(out, err, code)
+
+
 def registry_import_inventory(
     campaign_dir: Path,
     md: str,
@@ -274,6 +290,17 @@ def build_server(campaign_dir: Path):
             "Start with registry_check (drift between the registry and legacy stores) and "
             "registry_triage_candidates (unregistered proper nouns from session output) — both "
             "read-only, both surface work without deciding anything.\n\n"
+            "registry_resolve_name is the third read-only tool, and the one to reach for "
+            "BEFORE writing a proper noun rather than after. It walks the canon chain "
+            "(config/party.yaml -> the spell-pass glossary -> the registry -> a dossier's "
+            "stated ruling -> known-additions) and returns one of three statuses. "
+            "'resolved' with is_change=true is a name CHANGE: correct direction, but still "
+            "a ruling the GM must SEE — show it with its citing source, and show a bulk "
+            "rename once as one ruling, not as N edits. 'ambiguous' deliberately carries NO "
+            "canonical field: sources disagree, there is nothing to apply, show the GM each "
+            "source and wait. 'not_canon' means the name is absent from all five tiers — do "
+            "not invent a spelling and do not carry the transcript's spelling forward; its "
+            "near_misses are questions, not answers.\n\n"
             "registry_add, registry_alias, registry_merge, registry_mark_distinct, and "
             "registry_mark_rejected all mutate entity identity. Identity is a precision "
             "decision, not a rendering one: only call these once the GM has explicitly "
@@ -410,6 +437,33 @@ def build_server(campaign_dir: Path):
         fact corpus (or raw summaries, for a campaign with no ensemble yet).
         """
         return registry_triage_candidates(campaign_dir, bible, min_len, min_count)
+
+    @mcp.tool()
+    def registry_resolve_name_tool(name: str) -> str:
+        """Read-only. Resolve one proper noun against the campaign's canon chain
+        and return the ruling as JSON. Call this BEFORE writing or changing any
+        proper noun — it is the lookup half of the canon rule; the GM is still
+        the deciding half.
+
+        Chain, first hit wins: config/party.yaml (PCs) -> the spell-pass
+        glossary (bolded column is canon) -> docs/entity_registry.yaml -> a
+        dossier's STATED frontmatter ruling (never its filename) ->
+        notes/vtt_known_additions.md (real, not yet promoted).
+
+        Statuses:
+          resolved   — canonical + tier + citing evidence. is_change=true means
+                       writing it would change the name: show the GM the ruling
+                       and its source; never apply it silently.
+          ambiguous  — tiers disagree. NO canonical field is returned, on
+                       purpose: do not adjudicate, show each source and wait.
+          not_canon  — in none of the five tiers. near_misses are candidates to
+                       ASK about, never an answer. Do not invent a spelling.
+
+        A glossary 'parenthetical' comes back raw and UNCLASSIFIED — the same
+        syntax carries an alias ("(Princess Ebonmire)") and a provenance note
+        ("(confirmed via 5etools)"). Read it; do not resolve it into a name.
+        """
+        return registry_resolve_name(campaign_dir, name)
 
     @mcp.tool()
     def registry_import_inventory_tool(

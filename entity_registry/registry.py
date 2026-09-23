@@ -47,6 +47,14 @@ library). Its subcommands:
                                           never creates a new entity (approved
                                           canonicals are often generic/garbage
                                           strings with no reliable type)
+  resolve <campaign_dir> NAME            READ-ONLY: walk the canon chain
+                                          (party.yaml -> spell-pass glossary ->
+                                          registry -> dossier ruling ->
+                                          known-additions) and report where NAME
+                                          resolves and on whose authority.
+                                          Returns resolved / ambiguous /
+                                          not_canon; the latter two cannot be
+                                          applied without the GM. Never writes.
   check   <campaign_dir>                 surface drift between the registry
                                           and the legacy scattered stores
                                           (``.dedup_state.json``, an inventory
@@ -1654,6 +1662,28 @@ def cmd_merge(args: argparse.Namespace) -> int:
 
 # ── CLI wiring ───────────────────────────────────────────────────────────────
 
+# ── resolve (read-only) ─────────────────────────────────────────────────────
+
+
+def cmd_resolve(args: argparse.Namespace) -> int:
+    """Walk the canon chain for a surface form. Read-only — never writes.
+
+    Exit codes are meaningful to callers and to CI: 0 resolved, 3 ambiguous,
+    4 not_canon. A script that pipes a name in can branch on the code without
+    parsing anything, and a nonzero code is the signal to stop and ask the GM
+    rather than to keep going with a guess.
+    """
+    from . import resolve as resolve_mod  # lazy: resolve imports this module
+
+    r = resolve_mod.resolve_name(Path(args.campaign_dir), args.name)
+    if args.json:
+        print(json.dumps(r, indent=2, ensure_ascii=False))
+    else:
+        print(resolve_mod.format_result(r))
+    return {"resolved": 0, "ambiguous": 3, "not_canon": 4}[r["status"]]
+
+
+
 def main(argv: "list[str] | None" = None) -> int:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -1776,6 +1806,17 @@ def main(argv: "list[str] | None" = None) -> int:
     pmg.add_argument("--into", required=True, help="canonical name or alias of the surviving target entity")
     pmg.add_argument("others", nargs="+", help="canonical name(s) or alias(es) of the entity/entities to fold in")
     pmg.set_defaults(func=cmd_merge)
+
+    prs = sub.add_parser(
+        "resolve",
+        help="READ-ONLY: resolve NAME against the canon chain (party.yaml -> "
+             "glossary -> registry -> dossier -> known-additions); reports a "
+             "ruling, never writes",
+    )
+    prs.add_argument("campaign_dir")
+    prs.add_argument("name", help="the surface form to resolve")
+    prs.add_argument("--json", action="store_true", help="emit the result dict as JSON")
+    prs.set_defaults(func=cmd_resolve)
 
     args = p.parse_args(argv)
     return args.func(args)
