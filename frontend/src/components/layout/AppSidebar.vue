@@ -158,11 +158,32 @@ async function setBatch(b: boolean) {
 interface NavItem {
   label: string
   path: string
+  // Active for any address under this prefix, not only `path`. Ensemble uses
+  // it so every wizard stage (/ensemble/extract, …) marks the one entry.
+  matchPrefix?: string
 }
 
+// One of feature 006's three independent routes from session record to
+// grounding documents (022-grounding-nav-hierarchy, data-model.md). The
+// sidebar shows them as siblings so their overlap is visible; it does not rank
+// them, and the order is 006's own numbering.
+interface RenderingPath {
+  id: 'per-tool' | 'dossier-synthesis' | 'state-projection'
+  label: string
+  // GM-approved wording (research R8). Says how this path differs from its
+  // siblings, and whether it reads the shared ensemble extraction.
+  description: string
+  // Records the claim the description makes, so a test can check they agree.
+  usesSharedExtraction: boolean
+  matchPrefixes: string[]
+  items: NavItem[]
+}
+
+// A group has `items` or `paths`, never both.
 interface NavGroup {
   title: string
-  items: NavItem[]
+  items?: NavItem[]
+  paths?: RenderingPath[]
 }
 
 const navGroups: NavGroup[] = [
@@ -220,6 +241,10 @@ function isActive(path: string): boolean {
   return route.path === path || route.path.startsWith(path + '/')
 }
 
+function isItemActive(item: NavItem): boolean {
+  return isActive(item.path) || (item.matchPrefix !== undefined && isActive(item.matchPrefix))
+}
+
 function navigate(path: string) {
   router.push(path)
 }
@@ -235,10 +260,11 @@ function navigate(path: string) {
       <div v-for="group in navGroups" :key="group.title" class="nav-group">
         <h2 class="nav-group-title">{{ group.title }}</h2>
         <div
-          v-for="item in group.items"
+          v-for="item in group.items ?? []"
           :key="item.path"
           class="nav-item"
-          :class="{ active: isActive(item.path) }"
+          :class="{ active: isItemActive(item) }"
+          :data-nav-path="item.path"
           @click="navigate(item.path)"
         >
           {{ item.label }}
@@ -250,6 +276,7 @@ function navigate(path: string) {
         <div
           class="nav-item"
           :class="{ active: isActive('/settings') }"
+          data-nav-path="/settings"
           @click="navigate('/settings')"
         >
           Settings

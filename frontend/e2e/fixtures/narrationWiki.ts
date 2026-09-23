@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test'
 import type { WikiStatus } from '../../src/api/narrationWiki'
+import { installAppShellMocks } from './appShell'
 
 const checks = Array.from({ length: 18 }, (_, index) => ({
   key: index % 2 ? 'shape_of' : 'em_dash',
@@ -64,16 +65,7 @@ export const recoveryStatus: WikiStatus = {
 }
 
 export async function installNarrationWikiMocks(page: Page, state: WikiStatus = selectedStatus) {
-  await page.route('**/api/config/', route => route.fulfill({ json: {
-    campaign_id: 'campaign',
-    resolved: { campaign_dir: '/campaign', runtime: { session_dir: '/campaign/sessions/one' } },
-  } }))
-  await page.route('**/api/config/models', route => route.fulfill({ json: {
-    models: [], default: '', backends: ['anthropic'], default_backend: 'anthropic', codex_reasoning_efforts: [],
-  } }))
-  await page.route('**/api/config/status', route => route.fulfill({ json: { cwd: '/campaign' } }))
-  await page.route('**/api/editor/config', route => route.fulfill({ json: { campaign_dir: '/campaign', session_dir: '/campaign/sessions/one' } }))
-  await page.route('**/api/grounding/config', route => route.fulfill({ json: {} }))
+  await installAppShellMocks(page)
   await page.route('**/api/narration-wiki/status**', route => route.fulfill({ json: state }))
   await page.addInitScript(() => {
     const originalFetch = window.fetch.bind(window)
