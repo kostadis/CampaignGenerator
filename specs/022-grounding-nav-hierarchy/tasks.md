@@ -28,8 +28,8 @@ feature proves nothing became unreachable (FR-006, FR-007).
 
 Web application; this feature touches `frontend/` only (plan.md Structure Decision).
 The component is `frontend/src/components/layout/AppSidebar.vue`. Its nav types and
-`navGroups` array are near lines 105–170, `isActive`/`navigate` near lines 174–180, the
-nav markup near lines 183–216, and the nav styles near lines 341–390.
+`navGroups` array are at lines 113–172, `isActive`/`navigate` at 174–180, the nav markup at
+183–213, and the nav styles at 341–391. Locate by symbol name if these drift.
 
 ---
 
@@ -37,7 +37,7 @@ nav markup near lines 183–216, and the nav styles near lines 341–390.
 
 **Purpose**: A shared test fixture, so a sidebar test can boot the app shell without a backend.
 
-- [ ] T001 Create `frontend/e2e/fixtures/appShell.ts` exporting `installAppShellMocks(page, { catchAll?: boolean })`. It registers the five startup stubs copied verbatim from `frontend/e2e/fixtures/narrationWiki.ts` (lines 67–76: `**/api/config/`, `**/api/config/models`, `**/api/config/status`, `**/api/editor/config`, `**/api/grounding/config`). When `catchAll` is true, it **first** registers `**/api/**` → `route.fulfill({ json: {} })`, before the five specific stubs. Playwright gives precedence to the most recently registered matching route, so registering the catch-all first lets the specific stubs win.
+- [ ] T001 Create `frontend/e2e/fixtures/appShell.ts` exporting `installAppShellMocks(page, { catchAll?: boolean })`. It registers the five startup stubs copied verbatim from `frontend/e2e/fixtures/narrationWiki.ts` (lines 67–76: `**/api/config/`, `**/api/config/models`, `**/api/config/status`, `**/api/editor/config`, `**/api/grounding/config`). When `catchAll` is true, it **first** registers `page.route(url => url.pathname.startsWith('/api/'), r => r.fulfill({ json: {} }))`, before the five specific stubs. Match on the pathname, **not** the glob `**/api/**`: the glob also matches Vite's module URLs for `frontend/src/api/*.ts` (`/src/api/client.ts`), answers them with JSON, and stops the app from mounting. Playwright gives precedence to the most recently registered matching route, so registering the catch-all first lets the specific stubs win.
 - [ ] T002 Update `frontend/e2e/fixtures/narrationWiki.ts` so `installNarrationWikiMocks` calls `installAppShellMocks(page)` (no catch-all) in place of its five inline startup stubs, keeping its `**/api/narration-wiki/status**` stub and everything after it unchanged.
 - [ ] T003 Run `cd frontend && npx playwright test e2e/narration-wiki.spec.ts` and confirm it passes unchanged. This is the fixture refactor's baseline.
 
@@ -50,7 +50,7 @@ nav markup near lines 183–216, and the nav styles near lines 341–390.
 **⚠️ CRITICAL**: The rendered sidebar must look and behave exactly as today at the end of this phase.
 
 - [ ] T004 In `frontend/src/components/layout/AppSidebar.vue`, extend the nav types per data-model.md: add optional `matchPrefix?: string` to `NavItem`; add a `RenderingPath` interface (`id: 'per-tool' | 'dossier-synthesis' | 'state-projection'`, `label`, `description`, `usesSharedExtraction: boolean`, `matchPrefixes: string[]`, `items: NavItem[]`); make `NavGroup` carry `items?: NavItem[]` and `paths?: RenderingPath[]`, never both.
-- [ ] T005 In `frontend/src/components/layout/AppSidebar.vue`, replace `isActive(path)` with `isItemActive(item: NavItem)` (true when the current path equals `item.path`, or starts with `item.path + '/'`, or `item.matchPrefix` is set and the current path starts with it) and `isPathActive(p: RenderingPath)` (true when the current path starts with any of `p.matchPrefixes`), per data-model.md's active-state rules. Keep the standalone Settings entry on the same rule it uses today. Existing items have no `matchPrefix`, so their behaviour is unchanged.
+- [ ] T005 In `frontend/src/components/layout/AppSidebar.vue`, keep the existing `isActive(path)` helper (Settings keeps calling `isActive('/settings')` unchanged) and add `isItemActive(item: NavItem)` (true when `isActive(item.path)`, or `item.matchPrefix` is set and the current path equals it or starts with `item.matchPrefix + '/'`) and `isPathActive(p: RenderingPath)` (true when the current path equals any of `p.matchPrefixes` or starts with one of them plus `/`), per data-model.md's active-state rules. Switch the group items to `isItemActive`. Existing items have no `matchPrefix`, so their behaviour is unchanged.
 - [ ] T006 In `frontend/src/components/layout/AppSidebar.vue`'s markup, add `:data-nav-path="item.path"` to every rendered nav item, and `data-nav-path="/settings"` to Settings. This is the stable hook the reachability tests use, so they stay valid when a label changes. No visual change.
 - [ ] T007 Run `cd frontend && npm run build` and confirm it exits 0 (type-checks `frontend/src/components/layout/AppSidebar.vue`).
 
@@ -89,7 +89,7 @@ nav markup near lines 183–216, and the nav styles near lines 341–390.
 ### Implementation for User Story 1
 
 - [ ] T014 [US1] In `frontend/src/components/layout/AppSidebar.vue`'s `navGroups`, replace the `GROUNDING DOCS` group's `items` with `paths` exactly as data-model.md's tree specifies: the three `RenderingPath` entries in order, with their labels, the **GM-approved descriptions verbatim**, `usesSharedExtraction`, `matchPrefixes`, and items (labels and `path`s unchanged except as in T015).
-- [ ] T015 [US1] In `frontend/src/components/layout/AppSidebar.vue`'s `navGroups`, delete the `ENSEMBLE WORKFLOW` group, and put its entry under the `dossier-synthesis` path as `{ label: 'Ensemble', path: '/ensemble/setup', matchPrefix: '/ensemble/' }` (the approved rename; the address is unchanged).
+- [ ] T015 [US1] In `frontend/src/components/layout/AppSidebar.vue`'s `navGroups`, delete the `ENSEMBLE WORKFLOW` group, and put its entry under the `dossier-synthesis` path as `{ label: 'Ensemble', path: '/ensemble/setup', matchPrefix: '/ensemble' }` (the approved rename; the address is unchanged).
 - [ ] T016 [US1] In `frontend/src/components/layout/AppSidebar.vue`'s markup, render a group with `paths` as: the existing group title, then for each path a container with an `h3` path heading (label), a `p` description, and its items using the existing nav-item markup (click to navigate, `data-nav-path`, `isItemActive`). The heading gets an active class from `isPathActive` and has no click handler (research R3). Groups with `items` render exactly as today. Settings is unchanged.
 - [ ] T017 [US1] In `frontend/src/components/layout/AppSidebar.vue`'s `<style scoped>`, add styles for the path container, heading, description and nested items. The heading is visually subordinate to the group title and dominant over items; the description is muted and wraps within the 210px sidebar; nested items get a small indent; the active path heading uses the existing accent colour. Do not change any footer (backend/model/batch/effort) styles.
 - [ ] T018 [US1] Run `cd frontend && npx playwright test e2e/sidebar-navigation.spec.ts`. T011, T012, T008 and T009 all pass.
@@ -104,9 +104,11 @@ nav markup near lines 183–216, and the nav styles near lines 341–390.
 
 **Independent Test**: From the sidebar alone, a GM answers "which paths reuse the ensemble extraction?" correctly (SC-005).
 
-### Tests for User Story 3
+### Implementation for User Story 3 (test hook)
 
 - [ ] T019 [US3] In `frontend/src/components/layout/AppSidebar.vue`'s markup, add `:data-uses-shared-extraction="String(p.usesSharedExtraction)"` to each path container, so a test can check that the description agrees with the declared flag.
+### Tests for User Story 3
+
 - [ ] T020 [US3] In `frontend/e2e/sidebar-navigation.spec.ts`, add **"descriptions state the shared extraction truthfully"** (contract C4): the `Dossier synthesis` and `State projection` descriptions contain "shared ensemble extraction" and their containers have `data-uses-shared-extraction="true"`; the `Per-tool` description does not contain it and its container has `"false"`; no description contains "recommended", "preferred", "legacy", "deprecated", "old" or "new" (case-insensitive, whole words).
 - [ ] T021 [US3] Run `cd frontend && npx playwright test e2e/sidebar-navigation.spec.ts`. All tests pass.
 
@@ -117,9 +119,9 @@ nav markup near lines 183–216, and the nav styles near lines 341–390.
 ## Phase 6: Polish & Cross-Cutting Concerns
 
 - [ ] T022 Run `cd frontend && npm run build` (type-checks every file under `frontend/src/`). Exits 0.
-- [ ] T023 Run `cd frontend && npx playwright test` (the full suite, including `narration-wiki.spec.ts`). Everything passes.
-- [ ] T024 Contract C5 check, per quickstart.md §4: `git diff --stat main -- frontend/src/router.ts frontend/src/views/` prints nothing, and `git diff --stat main -- frontend/` lists only `AppSidebar.vue` and files under `frontend/e2e/`.
-- [ ] T025 Hand quickstart.md §3 to the GM for the judgements the tests can't make: SC-001 (point to all three world-state paths without clicking), SC-005 (which paths share the extraction), the `/ensemble/extract` and `/grounding/world-state` spot checks, and the narrow-window check. Record the outcome in `specs/022-grounding-nav-hierarchy/checklists/requirements.md` Notes.
+- [ ] T023 Run `cd frontend && npx playwright test`, the full suite under `frontend/e2e/` including `frontend/e2e/narration-wiki.spec.ts`. Everything passes.
+- [ ] T024 Contract C5 check, per quickstart.md §4: `git diff --stat main -- frontend/src/router.ts frontend/src/views/` prints nothing, and `git diff --stat main -- frontend/` lists only `AppSidebar.vue` and files under `frontend/e2e/`. Then check `git diff main -- frontend/src/components/layout/AppSidebar.vue`: no hunk touches the `sidebar-footer` template block or the `.sidebar-footer`, `.backend-*`, `.model-*` or `.batch-*` styles (contract C5.4), and no hunk adds an `apiFetch` or `fetch` call. Since no store, view or router file changed, that also proves the app's API calls are unchanged (contract C5.3).
+- [ ] T025 Hand quickstart.md §3 to the GM for the judgements the tests can't make: SC-001 (point to all three world-state paths without clicking), SC-005 (which paths share the extraction), the `/ensemble/extract` and `/grounding/world-state` spot checks, the sidebar-height check at 1280×720 (every entry reachable by scrolling), the State Projection page's signpost to Threads still working (`ProjectionSections.vue`), and a path with nothing built yet not looking disabled. Record the outcome in `specs/022-grounding-nav-hierarchy/checklists/requirements.md` Notes.
 
 ---
 

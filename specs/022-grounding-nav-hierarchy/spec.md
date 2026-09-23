@@ -77,7 +77,7 @@ A GM planning which path to run wants to know what the paths share. The hierarch
 - **Threads**: today a separate sidebar entry, but part of the state-projection path. It must sit inside that branch. The State Projection page's existing signpost to Threads must keep working.
 - **World State's legacy address**: an older `world-state` address already opens World State. That must keep working.
 - **A path with nothing built yet**: a branch whose documents don't exist on disk must still appear, and must not look broken or disabled. Showing what is unbuilt is part of the point (constitution Principle VIII).
-- **Narrow windows**: the extra level of hierarchy must not make the sidebar unusable at the app's narrowest supported width.
+- **Sidebar height**: the sidebar is a fixed 210px wide, so width never squeezes it. The real cost of the extra level is height: three header rows plus their descriptions. At the smallest supported window height (1280×720, the test viewport) every entry must stay reachable by scrolling the sidebar.
 - **Two paths producing the same document**: when both the per-tool and dossier-synthesis paths have produced a world-state document, nothing in the reorganization may imply that one supersedes the other. Choosing between them stays the GM's decision (Principle II).
 
 ## Requirements *(mandatory)*
@@ -95,7 +95,7 @@ A GM planning which path to run wants to know what the paths share. The hierarch
 - **FR-009**: The dossier-synthesis and state-projection paths MUST state, in their branch description or page header, that they depend on the shared ensemble extraction. The per-tool path MUST state that it extracts independently.
 - **FR-010**: The reorganization MUST NOT change what any page does, what it runs, or what it writes to disk. This feature changes where pages sit and what they say about each other, nothing else.
 - **FR-011**: The reorganization MUST NOT rank, recommend, or hide any path. All three remain equally available, and choosing between them stays with the GM.
-- **FR-012**: The hierarchy MUST cover all three rendering paths for every grounding document, not only world-state content. The per-tool branch MUST contain World State, Campaign State, Party Document and Planning Document; the dossier-synthesis branch MUST contain the Ensemble stages; the state-projection branch MUST contain State Projection and Threads.
+- **FR-012**: The hierarchy MUST cover all three rendering paths for every grounding document, not only world-state content. The per-tool branch MUST contain World State, Campaign State, Party Document and Planning Document; the dossier-synthesis branch MUST contain the single Ensemble entry, whose own wizard holds the Setup → Extract → Bundle → Synthesize stages; the state-projection branch MUST contain State Projection and Threads.
 
 ### Key Entities
 

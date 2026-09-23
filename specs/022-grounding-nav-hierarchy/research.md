@@ -34,7 +34,7 @@ by construction, because no view, route or component tree is touched.
 **Decision**: The sidebar gets one extra level, and only inside the grounding section:
 
 ```
-GROUNDING DOCUMENTS              ← top-level group title (existing style)
+GROUNDING DOCS                   ← top-level group title (existing style, unchanged)
   Per-tool                       ← path header: label + one-line description
     World State                  ← page items (existing style, indented)
     …
@@ -96,8 +96,10 @@ active when the current address falls under any of them. A page item keeps today
 by prefix also fixes an existing defect: today the only Ensemble entry is
 `/ensemble/setup`, so on `/ensemble/extract`, `/ensemble/bundle` and
 `/ensemble/synthesize` **nothing** in the sidebar is highlighted. With the dossier-synthesis
-path owning `/ensemble/`, the path is marked on every stage, and the Ensemble item is
-marked on every stage too (its match prefix is `/ensemble/`, not `/ensemble/setup`).
+path owning `/ensemble`, the path is marked on every stage, and the Ensemble item is
+marked on every stage too (its match prefix is `/ensemble`, not `/ensemble/setup`).
+Prefixes match on a segment boundary (the address equals the prefix or starts with
+prefix + `/`), the same rule items already use.
 
 **Alternatives considered**: *Mark the path from the active item only*: rejected. It
 would inherit the existing Ensemble gap.
@@ -117,6 +119,17 @@ shared *Extraction & State* service (`ensemble_batch` + `facts_to_state`) as the
 both dossier synthesis and state projection, and says the per-tool path "keeps its own
 extraction and its own config". `tests/test_projection_isolation.py:158` states the same
 dependency: "State Projection depends on the Extraction & State service's OUTPUT".
+
+**A caveat, ruled on (analysis finding I2)**: when Campaign State (per-tool) runs
+synthesize-only with no extract directory, it auto-stages the dossier path's
+`docs/ensemble/drafts/world_state_draft.md` (`pipelines/grounding/campaign_state.py:123-161`;
+006 FR-007a). "Each with its own extraction" is still true of *extraction*. The GM ruled on
+2026-09-23 to keep the Per-tool wording and leave that detail out of the sidebar.
+
+**Terminology (analysis finding I5)**: feature 006 made "service" its canonical term
+("Per-Tool Rendering service") and used "path" only in prose. This feature deliberately
+uses "path" for the navigation entity and "Per-tool" as the label, because the sidebar
+shows ways *through* the system, not services. The two are the same three things.
 
 ## R7. Path order follows feature 006's numbering, not preference
 
@@ -152,7 +165,10 @@ this copy is the only user-facing decision this feature makes.
   (`/api/config/`, `/api/config/models`, `/api/config/status`, `/api/editor/config`,
   `/api/grounding/config`) into a shared `e2e/fixtures/appShell.ts`, and have both specs
   use it. Page-specific APIs are stubbed with a catch-all so that the reachability test
-  asserts navigation, not page behaviour.
+  asserts navigation, not page behaviour. The catch-all matches on URL **pathname**
+  (`url.pathname.startsWith('/api/')`), not the glob `**/api/**`. The glob would also
+  match Vite's module URLs for `frontend/src/api/*.ts` (`/src/api/client.ts`), answer
+  them with `{}` JSON, and stop the app from mounting (analysis finding U1).
 - `npm run build` (`vue-tsc -b && vite build`) must pass.
 
 **Rationale**: The feature is pure UI structure, so an end-to-end check of the rendered

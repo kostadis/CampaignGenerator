@@ -47,14 +47,16 @@ documents.
 |---|---|---|
 | `label` | string | Entry text |
 | `path` | string | Address navigated to on click. **Unchanged for every existing entry** (research R1) |
-| `matchPrefix` | string? | **New, optional.** When set, the item is active for any address under this prefix, instead of only its own `path`. Used by Ensemble (`/ensemble/`) so all four wizard stages mark it (research R5) |
+| `matchPrefix` | string? | **New, optional.** When set, the item is active for any address under this prefix, instead of only its own `path`. Used by Ensemble (`/ensemble`) so all four wizard stages mark it (research R5) |
 
 ## Active-state rules (FR-008)
 
 - An **item** is active when the current address equals its `path`, or starts with
-  `path + '/'`, or (when `matchPrefix` is set) starts with `matchPrefix`.
-- A **path header** is active when the current address starts with any of its
-  `matchPrefixes`.
+  `path + '/'`, or (when `matchPrefix` is set) equals `matchPrefix` or starts with
+  `matchPrefix + '/'`.
+- A **path header** is active when the current address equals one of its
+  `matchPrefixes` or starts with that prefix plus `/`. This is the same segment boundary
+  items use, so `/grounding/party` does not match `/grounding/party-x`.
 - At most one item and at most one path header are active at a time.
 
 ## The tree (wording approved by the GM 2026-09-23, research R8)
@@ -66,17 +68,19 @@ GROUNDING DOCS
 │     "One tool per document, each with its own extraction."
 │     usesSharedExtraction: false
 │     matchPrefixes: /grounding/campaign-state, /grounding/distill,
-│                    /grounding/world-state, /grounding/party, /grounding/planning
+│                    /grounding/party, /grounding/planning
+│     (/grounding/world-state is not listed: the router redirects it to
+│      /grounding/distill before the sidebar ever sees the address)
 │     ├── Campaign State      → /grounding/campaign-state
 │     ├── World State         → /grounding/distill
 │     ├── Party Document      → /grounding/party
 │     └── Planning Document   → /grounding/planning
 │
 ├── Dossier synthesis
-│     "Facts → per-entity dossiers → world state. Reads the shared ensemble extraction."
+│     "Facts → per-entity dossiers → grounding docs. Reads the shared ensemble extraction."
 │     usesSharedExtraction: true
-│     matchPrefixes: /ensemble/
-│     └── Ensemble            → /ensemble/setup   (matchPrefix /ensemble/)
+│     matchPrefixes: /ensemble
+│     └── Ensemble            → /ensemble/setup   (matchPrefix /ensemble)
 │
 └── State projection
       "Rebuilds only the sections that went stale. Reads the shared ensemble extraction."
@@ -86,7 +90,10 @@ GROUNDING DOCS
       └── Threads             → /grounding/threads
 ```
 
-**Wording changes, approved by the GM 2026-09-23 as proposed:**
+**Wording changes, approved by the GM 2026-09-23:**
+- Dossier synthesis originally read "… → world state". `/speckit-analyze` (finding I1)
+  showed the path produces all four grounding documents (`GROUNDING_DOCS`,
+  `server/routers/ensemble.py:68-73`), so the GM re-ruled it to "… → grounding docs".
 - `Ensemble Grounding Docs` → `Ensemble`. Under a *Dossier synthesis* header inside
   *Grounding Docs*, the old suffix repeats both headers. The address is unchanged.
 - The three path labels and descriptions above are new text.

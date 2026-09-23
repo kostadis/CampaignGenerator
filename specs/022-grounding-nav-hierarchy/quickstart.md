@@ -52,8 +52,12 @@ criteria. These are judgements the tests can't make:
 3. Open `/ensemble/extract`. The **Ensemble** entry and the **Dossier synthesis**
    header are both marked. Before this feature, nothing was marked on this stage.
 4. Open `/grounding/world-state`. It lands on World State, with **Per-tool** marked.
-5. Narrow the window to the app's narrowest supported width and check the three extra
-   header rows don't make the sidebar unusable (spec edge case).
+5. At a 1280×720 window, scroll the sidebar: every entry is still reachable with the three
+   extra header rows. The sidebar is a fixed 210px, so height is what's at risk, not width.
+6. On State Projection, a path with no threads yet shows its signpost to Threads, and
+   following it lands on Threads with **State projection** marked.
+7. In a workspace where a path has produced nothing yet, its branch still looks like the
+   others. Unbuilt is not the same as disabled (spec edge case).
 
 ## 4. Confirm the change stayed in its lane (FR-010, contract C5)
 
