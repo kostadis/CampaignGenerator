@@ -106,11 +106,11 @@ The component is `frontend/src/components/layout/AppSidebar.vue`. Its nav types 
 
 ### Implementation for User Story 3 (test hook)
 
-- [ ] T019 [US3] In `frontend/src/components/layout/AppSidebar.vue`'s markup, add `:data-uses-shared-extraction="String(p.usesSharedExtraction)"` to each path container, so a test can check that the description agrees with the declared flag.
+- [X] T019 [US3] In `frontend/src/components/layout/AppSidebar.vue`'s markup, add `:data-uses-shared-extraction="String(p.usesSharedExtraction)"` to each path container, so a test can check that the description agrees with the declared flag.
 ### Tests for User Story 3
 
-- [ ] T020 [US3] In `frontend/e2e/sidebar-navigation.spec.ts`, add **"descriptions state the shared extraction truthfully"** (contract C4): the `Dossier synthesis` and `State projection` descriptions contain "shared ensemble extraction" and their containers have `data-uses-shared-extraction="true"`; the `Per-tool` description does not contain it and its container has `"false"`; no description contains "recommended", "preferred", "legacy", "deprecated", "old" or "new" (case-insensitive, whole words).
-- [ ] T021 [US3] Run `cd frontend && npx playwright test e2e/sidebar-navigation.spec.ts`. All tests pass.
+- [X] T020 [US3] In `frontend/e2e/sidebar-navigation.spec.ts`, add **"descriptions state the shared extraction truthfully"** (contract C4): the `Dossier synthesis` and `State projection` descriptions contain "shared ensemble extraction" and their containers have `data-uses-shared-extraction="true"`; the `Per-tool` description does not contain it and its container has `"false"`; no description contains "recommended", "preferred", "legacy", "deprecated", "old" or "new" (case-insensitive, whole words).
+- [X] T021 [US3] Run `cd frontend && npx playwright test e2e/sidebar-navigation.spec.ts`. All tests pass.
 
 **Checkpoint**: All three stories pass independently.
 

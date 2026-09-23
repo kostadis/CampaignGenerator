@@ -156,3 +156,22 @@ test('active page and its path are both marked', async ({ page }) => {
     else await expect(activePaths, `no active path on ${address}`).toHaveCount(0)
   }
 })
+
+// ── US3: the descriptions tell the truth (contract C4) ─────────────────────
+
+test('descriptions state the shared extraction truthfully', async ({ page }) => {
+  const grounding = group(page, 'GROUNDING DOCS')
+  for (const id of ['per-tool', 'dossier-synthesis', 'state-projection']) {
+    const section = grounding.locator(`[data-path-id="${id}"]`)
+    const desc = (await section.locator('.nav-path-desc').innerText()).trim()
+    const shared = await section.getAttribute('data-uses-shared-extraction')
+    // The description says it reads the shared extraction exactly when the
+    // path declares that it does.
+    expect(desc.includes('shared ensemble extraction'), `${id}: "${desc}"`).toBe(shared === 'true')
+    // FR-011: nothing ranks, recommends or discourages a path.
+    expect(desc, `${id} must not rank paths`).not.toMatch(/\b(recommended|preferred|legacy|deprecated|old|new)\b/i)
+  }
+  await expect(grounding.locator('[data-path-id="per-tool"]')).toHaveAttribute('data-uses-shared-extraction', 'false')
+  await expect(grounding.locator('[data-path-id="dossier-synthesis"]')).toHaveAttribute('data-uses-shared-extraction', 'true')
+  await expect(grounding.locator('[data-path-id="state-projection"]')).toHaveAttribute('data-uses-shared-extraction', 'true')
+})

@@ -312,6 +312,7 @@ function navigate(path: string) {
           :key="p.id"
           class="nav-path"
           :data-path-id="p.id"
+          :data-uses-shared-extraction="String(p.usesSharedExtraction)"
         >
           <h3 class="nav-path-title" :class="{ active: isPathActive(p) }">{{ p.label }}</h3>
           <p class="nav-path-desc">{{ p.description }}</p>
