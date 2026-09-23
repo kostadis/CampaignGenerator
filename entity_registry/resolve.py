@@ -6,6 +6,9 @@ proper noun, resolve it against the canonical source chain, and if what you are
 about to write deviates from canon, ask the GM. The chain is ordered, first hit
 wins:
 
+  0. ``docs/<PC>.md`` (character sheets)        — a PC's own sheet, reached
+                                                  through ``config/party.yaml``'s
+                                                  ``sheet:`` field
   1. ``config/party.yaml``                      — PC names
   2. ``notes/vtt_transcription_corrections.md`` — the spell-pass glossary;
                                                   the **bolded** right-hand
@@ -56,6 +59,11 @@ import yaml
 from campaignlib.party import load_pc_names
 from campaignlib.registry import Registry, find_registry, load_registry
 from campaignlib.textproc import norm_subject
+
+# Tiers 0 and 1 are the PC sources, and both store full names ("Thorin
+# Giantfriend") where the rest of the corpus uses the short form. They are the
+# only tiers where a trailing surname is forgiven -- see compatible().
+PC_TIERS = frozenset({0, 1})
 
 GLOSSARY_REL = Path("notes") / "vtt_transcription_corrections.md"
 KNOWN_ADDITIONS_REL = Path("notes") / "vtt_known_additions.md"
@@ -134,8 +142,58 @@ def clear_cache() -> None:
     """Drop every cached source. Only needed by tests and long-lived servers
     that want to force a re-read without a file actually changing."""
     for fn in (_glossary_cached, _known_additions_cached, _party_cached,
-               _registry_cached, _dossiers_cached):
+               _registry_cached, _dossiers_cached, _sheets_cached):
         fn.cache_clear()
+
+
+
+def _sheet_paths(campaign_dir: Path) -> "list[tuple[str, Path]]":
+    """(roster_name, sheet_path) for every PC whose party.yaml entry DECLARES a
+    sheet. Declared only — never a glob over ``docs/*.md``, because a filename
+    is not evidence and never becomes evidence by being in the right folder."""
+    from campaignlib.constants import config_path
+    from campaignlib.party_config import PARTY_CONFIG_FILENAME
+    path = config_path(Path(campaign_dir), PARTY_CONFIG_FILENAME)
+    if not path.exists():
+        return []
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError:
+        return []
+    out = []
+    for c in data.get("characters", []) or []:
+        sheet = (c or {}).get("sheet")
+        if sheet:
+            out.append((str((c or {}).get("name") or ""),
+                        Path(campaign_dir) / str(sheet)))
+    return out
+
+
+@lru_cache(maxsize=32)
+def _sheets_cached(key, campaign_dir: str) -> tuple:
+    out = []
+    for roster_name, path in _sheet_paths(Path(campaign_dir)):
+        ruling = _dossier_ruling(path)          # same rule: a STATED name only
+        if ruling is not None:
+            out.append((path.name, ruling["name"], roster_name))
+    return tuple(out)
+
+
+def _sheets(campaign_dir: Path) -> tuple:
+    """Character sheets and the names they state.
+
+    A PC's sheet is the document the player actually owns, and it is where a
+    name is least likely to be wrong -- but nothing read it until now. The
+    `Grygum` incident resolved correctly only because config/party.yaml
+    happened to agree with the sheet; had the roster drifted, no tier would
+    have noticed. Reading it costs one file per PC.
+    """
+    keys = tuple(sorted(
+        (p.name, st.st_mtime_ns, st.st_size)
+        for _n, p in _sheet_paths(Path(campaign_dir))
+        if p.exists() and (st := p.stat())
+    ))
+    return _sheets_cached(keys, str(campaign_dir))
 
 
 def _glossary(campaign_dir: Path) -> list[dict]:
@@ -365,16 +423,43 @@ def compatible(a: str, b: str, allow_prefix: bool = False) -> bool:
 # depending on which form you happened to type.
 
 
-def _t1_party(campaign_dir: Path, key: str, surface: str) -> "dict | None":
-    for name in _party(campaign_dir):
+def _t0_sheet(campaign_dir: Path, key: str, surface: str) -> "dict | None":
+    for fname, name, _roster in _sheets(campaign_dir):
         if compatible(surface, name, allow_prefix=True):
             return {
+                "tier": 0,
+                "source": f"docs/{fname}",
+                "value": name,
+                "evidence": f"character sheet frontmatter name: {name}",
+                "entity_type": "pc",
+            }
+    return None
+
+
+def _t1_party(campaign_dir: Path, key: str, surface: str) -> "dict | None":
+    # roster name -> the name its DECLARED sheet states, when they differ
+    paired = {
+        norm_subject(roster): (fname, sheet_name)
+        for fname, sheet_name, roster in _sheets(campaign_dir)
+        if roster and not compatible(roster, sheet_name, allow_prefix=True)
+    }
+    for name in _party(campaign_dir):
+        if compatible(surface, name, allow_prefix=True):
+            hit = {
                 "tier": 1,
                 "source": "config/party.yaml",
                 "value": name,
                 "evidence": f"characters[].name: {name}",
                 "entity_type": "pc",
             }
+            mismatch = paired.get(norm_subject(name))
+            if mismatch:
+                fname, sheet_name = mismatch
+                hit["contradicted_by"] = {
+                    "value": sheet_name, "tier": 0, "source": f"docs/{fname}",
+                    "evidence": f"character sheet frontmatter name: {sheet_name}",
+                }
+            return hit
     return None
 
 
@@ -445,9 +530,10 @@ def _t5_known_additions(campaign_dir: Path, key: str, surface: str) -> "dict | N
     return None
 
 
-TIERS = [_t1_party, _t2_glossary, _t3_registry, _t4_dossier, _t5_known_additions]
+TIERS = [_t0_sheet, _t1_party, _t2_glossary, _t3_registry, _t4_dossier, _t5_known_additions]
 
 TIER_NAMES = {
+    0: "docs/<PC>.md (the character sheet itself)",
     1: "config/party.yaml",
     2: "notes/vtt_transcription_corrections.md (spell-pass glossary)",
     3: "docs/entity_registry.yaml",
@@ -476,6 +562,8 @@ def canonical_catalog(campaign_dir: Path) -> list[tuple[str, int, str]]:
     """
     campaign_dir = Path(campaign_dir)
     out: list[tuple[str, int, str]] = []
+    for fname, name, _roster in _sheets(campaign_dir):
+        out.append((name, 0, f"docs/{fname}"))
     for name in _party(campaign_dir):
         out.append((name, 1, "config/party.yaml"))
     for row in _glossary(campaign_dir):
@@ -514,7 +602,7 @@ def higher_authority_drift(campaign_dir: Path, ruling: dict,
         if tier >= ruling["tier"]:
             continue
         if compatible(form, ruling["value"],
-                      allow_prefix=1 in (tier, ruling["tier"])):
+                      allow_prefix=bool({tier, ruling["tier"]} & PC_TIERS)):
             continue
         if SequenceMatcher(None, ruled_key, norm_subject(form)).ratio() >= threshold:
             out.append({"value": form, "tier": tier, "source": source,
@@ -588,9 +676,21 @@ def resolve_name(campaign_dir: "Path | str", surface: str,
          "evidence": h["evidence"]}
         for h in lower
         if not compatible(h["value"], ruling["value"],
-                          allow_prefix=1 in (h["tier"], ruling["tier"]))
+                          allow_prefix=bool({h["tier"], ruling["tier"]} & PC_TIERS))
     ]
+    # A roster entry NAMES the sheet it belongs to, so a disagreement between
+    # the two is a flat contradiction and needs no similarity test. That matters:
+    # "Grygum" vs "Gyrgum" scores below NEAR_MISS_THRESHOLD -- transposed letters
+    # resemble each other far less than they look like they should, which is the
+    # same property that makes them hard to catch by eye.
+    for h in [ruling, *lower]:
+        if h.get("contradicted_by"):
+            conflicts.append(h["contradicted_by"])
     conflicts += higher_authority_drift(campaign_dir, ruling, threshold)
+    seen_conflicts = set()
+    conflicts = [c for c in conflicts
+                 if not (k := (c["tier"], norm_subject(c["value"]))) in seen_conflicts
+                 and not seen_conflicts.add(k)]
     conflicts.sort(key=lambda c: c["tier"])
 
     if conflicts:
@@ -624,10 +724,10 @@ def resolve_name(campaign_dir: "Path | str", surface: str,
         "tier": ruling["tier"],
         "authority": ruling["source"],
         "evidence": ruling["evidence"],
-        # Tier 1 is the roster file: "Thorin" resolving to its stored
-        # "Thorin Giantfriend" is not a name change to show the GM.
+        # Tiers 0 and 1 are the PC sources, and both store full names:
+        # "Thorin" resolving to "Thorin Giantfriend" is not a change to show.
         "is_change": not compatible(surface, ruling["value"],
-                                    allow_prefix=ruling["tier"] == 1),
+                                    allow_prefix=ruling["tier"] in PC_TIERS),
         "entity_type": ruling.get("entity_type"),
         "parenthetical": ruling.get("parenthetical"),
         "also_found_in": [

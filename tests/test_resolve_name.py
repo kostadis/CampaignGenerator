@@ -397,3 +397,82 @@ def test_cache_survives_repeated_reads_of_an_unchanged_source(tmp_path):
     resolve.clear_cache()
     first = resolve.resolve_name(c, "Gurrigam")
     assert all(resolve.resolve_name(c, "Gurrigam") == first for _ in range(20))
+
+
+# ── tier 0: the character sheet ─────────────────────────────────────────────
+
+def _sheet(campaign, filename, name, roster_name=None):
+    (campaign / "docs").mkdir(parents=True, exist_ok=True)
+    (campaign / "docs" / filename).write_text(
+        f"---\nname: {name}\nplayer: A Player\n---\n\n# {name}\n", encoding="utf-8")
+    p = campaign / "config" / "party.yaml"
+    p.write_text(
+        f"characters:\n- name: {roster_name or name}\n  sheet: docs/{filename}\n",
+        encoding="utf-8")
+
+
+def test_character_sheet_is_the_top_tier(tmp_path):
+    c = _campaign(tmp_path, glossary=None, known=None, registry_entities=False)
+    _sheet(c, "Gyrgum.md", "Gyrgum")
+    resolve.clear_cache()
+    r = resolve.resolve_name(c, "Gyrgum")
+    assert r["status"] == "resolved"
+    assert r["tier"] == 0
+    assert r["authority"] == "docs/Gyrgum.md"
+    assert r["entity_type"] == "pc"
+
+
+def test_sheet_disagreeing_with_the_roster_is_ambiguous(tmp_path):
+    """The gap this tier closes. `Grygum` resolved correctly only because
+    party.yaml happened to agree with the sheet; had the roster drifted,
+    nothing in the chain would have noticed."""
+    c = _campaign(tmp_path, glossary=None, known=None, registry_entities=False)
+    _sheet(c, "Gyrgum.md", "Gyrgum", roster_name="Grygum")
+    resolve.clear_cache()
+    r = resolve.resolve_name(c, "Grygum")
+    assert r["status"] == "ambiguous"
+    assert "canonical" not in r
+    assert r["favoured"]["value"] == "Gyrgum"
+    assert r["favoured"]["tier"] == 0, "the sheet outranks the roster"
+    assert [x["value"] for x in r["conflicts"]] == ["Grygum"]
+
+
+def test_sheet_surname_is_not_a_change(tmp_path):
+    c = _campaign(tmp_path, glossary=None, known=None, registry_entities=False)
+    _sheet(c, "Thorin Giantfriend.md", "Thorin Giantfriend")
+    resolve.clear_cache()
+    r = resolve.resolve_name(c, "Thorin")
+    assert r["status"] == "resolved"
+    assert r["tier"] == 0
+    assert r["is_change"] is False
+
+
+def test_only_declared_sheets_are_read(tmp_path):
+    """A filename is not evidence and does not become evidence by sitting in
+    docs/. Only a sheet party.yaml DECLARES via its `sheet:` field is read."""
+    c = _campaign(tmp_path, glossary=None, known=None, registry_entities=False)
+    _sheet(c, "Gyrgum.md", "Gyrgum")
+    (c / "docs" / "Sequioa.md").write_text(
+        "---\nname: Sequioa\n---\n\nnot in the roster\n", encoding="utf-8")
+    resolve.clear_cache()
+    assert resolve.resolve_name(c, "Sequioa")["status"] == "not_canon"
+
+
+def test_sheet_without_a_stated_name_is_not_a_ruling(tmp_path):
+    c = _campaign(tmp_path, glossary=None, known=None, registry_entities=False)
+    (c / "docs").mkdir(parents=True, exist_ok=True)
+    (c / "docs" / "Gyrgum.md").write_text("# Gyrgum\n\nno frontmatter\n", encoding="utf-8")
+    (c / "config" / "party.yaml").write_text(
+        "characters:\n- name: Gyrgum\n  sheet: docs/Gyrgum.md\n", encoding="utf-8")
+    resolve.clear_cache()
+    r = resolve.resolve_name(c, "Gyrgum")
+    assert r["status"] == "resolved"
+    assert r["tier"] == 1, "falls through to the roster, never to the filename"
+
+
+def test_missing_sheet_file_degrades_silently(tmp_path):
+    c = _campaign(tmp_path, glossary=None, known=None, registry_entities=False)
+    (c / "config" / "party.yaml").write_text(
+        "characters:\n- name: Gyrgum\n  sheet: docs/nope.md\n", encoding="utf-8")
+    resolve.clear_cache()
+    assert resolve.resolve_name(c, "Gyrgum")["tier"] == 1
