@@ -1,0 +1,39 @@
+{
+  "status": "rendered",
+  "arm": "brewbarry",
+  "narrator": "brewbarry",
+  "session": "20260825",
+  "title": "A Banker's Revelation",
+  "started_at": "2026-09-07T18:02:14.730003+00:00",
+  "case_sha256": "35c6d04b91ae35f051dc28dd89449729ca0261c83e6f5b4b3d2d9324ec188b3e",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "response_sha256": "8404da3deb819c2efea9de6bef03dc8098d1fbd1e8e79de68fa3f5780fa86724",
+  "words": 1174,
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true
+  },
+  "headings_verbatim": [
+    "## Brewbarry — A Banker's Revelation"
+  ],
+  "headings_match_after_normalization": true,
+  "markers": [
+    "[GM NARRATION — TO BE WRITTEN: the party has just come out of the Spire of the Morninglord after giving the Necklace of Fireballs, Lady Alagondar's heirloom, to Perrin Alagondar, and Cullen Sharpe and House Margaster continue to grate on their nerves.]",
+    "[GM NARRATION — TO BE WRITTEN: as the party is leaving, Aurelan Vance comes hurrying back from the counting house, out of breath.]",
+    "[GM NARRATION — TO BE WRITTEN: Aurelan arrives huffing and excited, pats himself down and straightens his clothing into proper order before he speaks.]",
+    "[GM NARRATION — TO BE WRITTEN: Aurelan pulls out a piece of paper and shows them the correct spelling, B-I-M-B-L-E.]",
+    "[GM NARRATION — TO BE WRITTEN: Soma remembers the Board Laid Bare, where she used to get the best turtle soup in the whole area — good prices, good food, good atmosphere — and that its proprietor Lim, who runs the small business, might know how a hidden man could be fed.]",
+    "[GM NARRATION — TO BE WRITTEN: Lim never stopped making the soup; Soma stopped going, having left on a two-day guiding trip about a month and a half ago.]"
+  ],
+  "marker_count": 6,
+  "gm_turns_in_source": 41,
+  "joint_gm_player_turns": 0,
+  "finished_at": "2026-09-07T18:03:04.574754+00:00",
+  "wall_clock_seconds": 49.8
+}

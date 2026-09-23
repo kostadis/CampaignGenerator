@@ -169,6 +169,119 @@ Two things follow, and both are enforced rather than documented:
   group.** Both are refused with the migration command in the message, not
   ignored. See `docs/config/players-isolation.md`.
 
+### A narrator must have been in the scene
+
+`sd_plan` chooses a scene's narrator from a set computed **before** the model
+call, never from the campaign roster. Two deterministic filters, no tokens:
+
+- **Filter A — attendance.** `--vtt`'s speaker labels matched against
+  `players.yaml` `display_names`. A character played only by absent players
+  leaves the pool for the session.
+- **Filter B — scene presence.** Within the pool, a character with no speaker
+  label in a scene's extraction cannot narrate it.
+
+They read different label spaces on purpose — a VTT carries player display
+names, `scene_extract` output carries character names — so do not merge them
+into one helper.
+
+Four rules that are enforced rather than documented:
+
+- **Presence is read from `moments`, anchored on `^**...**`.** Never from the
+  gm-assist `summary`, and never by substring. In the session this comes from,
+  the GM narrates *about* the absent character eleven times without ever
+  labelling him, and the summary carries bold headers of its own — either
+  reading marks him present in exactly the scene the planner must not give him.
+- **A label is read verbatim; the roster decides who it names.** `session_doc/io.py`
+  returns every line-start bold label as written — the GM, brackets, beat markers,
+  unknown names — and `plan_eligibility` resolves each part against the roster by
+  folded *equality*. Sessions disagree on the form (`**GM**`, `**[GM]**`,
+  `**[GM, as the banker]**`, `**[GM / Brewbarry]**`), and the same bold-bracket
+  shape is also scene apparatus (`**[Reroll With Advantage]**`), so no property of
+  the text separates them. Discarding every bracketed label cost one session 39
+  turns for one character and emptied its pool (#453). Equality is the load-bearing
+  half: `**[scene tag — Vukradin demands a meeting]**` *contains* a roster name, and
+  containment would place him in a scene on the strength of a beat marker.
+  A label's shape decides only whether the text is tokenised — never identity, and
+  never whether a comma introduces a qualifier or a second speaker, which is
+  settled by whether the piece resolves. Every slot that resolves to nobody is
+  reported *even when the rest of the label resolved*: `**[GM / Brewbarry / Valphine]**`
+  credited Brewbarry and dropped `Valphine` with no trace until it did.
+  `tests/test_speaker_label_grammar.py` fails the build if any of that returns.
+- **`sd_plan` refuses without a tape or a roster, and refuses an empty pool.**
+  A fallback to the unnarrowed roster is the defect (#385), not a graceful
+  degradation.
+- **Eligibility is presence, not volume.** One labelled turn is full
+  eligibility; turn counts are evidence for the GM, never a threshold.
+
+A scene with no eligible narrator produces three plans (`plan.a|b|c.md`) and no
+`plan.md`; the missing file is the gate, and `sd_plan --choose` resolves it.
+`sd_narrate --vtt` marks unvoiced characters in the roster block — as
+*unvoiced*, never as absent from the fiction, since a GM may still have placed
+them in a scene. See `docs/cli/session_doc_pipeline.md`.
+
+### A gap is answered in a record, never in the generated file
+
+`sd_narrate --gap-marking` leaves markers; `session_doc/blocks.py` reads them
+back. Three files per scene — `.md` generated, `.authored.yaml` hand-authored,
+`.composed.md` generated — and the rule is `transcript_corrections.yaml`'s: **the
+record is the source of truth and the composed document is output.**
+
+Four things here are enforced rather than documented:
+
+- **The parser round-trips.** `join_blocks(parse_blocks(t)) == t`, asserted on
+  four real narrations. Composing writes a document from these blocks, so a
+  parser that loses a blank line makes every composed file differ from its
+  narration *everywhere* — and the diff reads as compose misbehaving.
+- **`unruled` is an absent entry, and `mine` is not `authored`.** The record
+  stores only what the human contributed. But "ruled mine, not yet written" and
+  "wrote an empty string" are different states, so the disposition is stored
+  rather than inferred from whether `text` is present — that distinction *is*
+  the phone-then-desk workflow, and inferring would erase what a triage pass
+  produces.
+- **The assembly gate reads documents, not records.** A file carrying a marker
+  is unfit for a chapter whatever a record says, so the gate holds for a scene
+  composed by hand or by anything else.
+- **No module in this layer may call a model**, guarded by an AST walk in
+  `tests/test_block_model_no_llm.py`. The evidence is on disk: asked to resolve
+  its own eleven markers, the model discarded nothing and gave both of the GM's
+  Order-of-the-Gauntlet lines to a player character, on the one passage the
+  markers had protected.
+
+The reviewer (`session_doc/review/reviewer.html`) is one static file with **no
+network reference of any kind** — it is used on a phone, offline, at work. It is
+never regenerated per session, which makes the export an interface; a test ties
+the page's `SCHEMA_VERSION` to the exporter's and checks every field the page
+reads exists. See `docs/cli/gap_review_howto.md`.
+
+### The GM-attribution rule has one home, and the gap marker is content
+
+`sd_narrate --gap-marking` makes the model emit
+`[GM NARRATION — TO BE WRITTEN: …]` where the source attributes description or
+explanation to the GM, instead of letting a character absorb it. Off by default.
+Two facts about it are easy to get wrong from the surrounding code:
+
+- **The rule is stated once, and selected by the mode.** `writing_brief.md` and
+  `prose_mode.md` each carry a `{gm_attribution}` slot rather than a sentence;
+  `session_doc/narrate.py` fills it inner-first, before the outer template fill.
+  That ordering is load-bearing — `_fill` emits values verbatim without
+  re-scanning, so a nested placeholder resolved by the outer call reaches the
+  model as literal text. Do not add a second copy of the rule to a fragment: two
+  restatements of one rule is #435, and they had already drifted when it was
+  found. With the mode off the assembled prompt is **byte-identical** to the
+  pre-feature one, proved against a frozen golden in
+  `tests/test_prompt_golden_pre_feature.py`; do not regenerate that file to make
+  a failure go away.
+- **The gap marker is content, not apparatus.** It must NOT join
+  `APPARATUS_MARKERS` — that registry drives `strip_audit_comments`, which would
+  delete the feature's own output at assembly — and it must NOT be masked from
+  the unknown-name scan, because a proper noun appearing only inside a marker is
+  exactly the invention that check exists to catch. Both are the opposite of how
+  the neighbouring audit comments are handled, and
+  `tests/test_apparatus_marker_pairing.py` fails the build if either flips.
+
+The contract is a repo prompt fragment, not a per-campaign file: register varies
+per campaign, an attribution rule does not. Answering a gap belongs to #455.
+
 ### The genre rulebook is a file, never a pasted string
 
 `paths.genre_file` in `session_doc.yaml` points at the campaign's genre/register document (conventionally `<campaign>/voice/_genre.md`). **That file is the single source of truth** — `sd_narrate --narration-genre-file` reads it at render time, and nothing mirrors its text back into config.

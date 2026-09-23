@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import asyncio
 import dataclasses
+import json
 import sys
 from pathlib import Path
 
@@ -1890,3 +1891,285 @@ class TestRepointedPathsReportExistence:
             "/api/config/path-status",
             params={"path": body["paths"]["scene_extractions_dir"]},
         ).json()["exists"] is True
+
+
+# ── 022-bundle-narration: streamed editor bundle route ──────────────────
+
+
+def _bundle_report(
+    path: Path,
+    cfg,
+    indices: list[int],
+    *,
+    written: list[int],
+    missing: list[int] | None = None,
+    status: str = "success",
+    exit_code: int = 0,
+) -> dict:
+    scenes = scene_editor._load_scenes(cfg)
+
+    def identity(index: int, *, include_input: bool = False) -> dict:
+        scene = scenes[index - 1]
+        output = Path(cfg.paths.narration_dir) / (
+            f"session_doc_scene_{index:02d}_{SCENE_SLUGS[index]}.md"
+        )
+        item = {
+            "index": index,
+            "scene_name": scene["scene"],
+            "narrator": scene["narrator"],
+            "output_path": str(output),
+        }
+        if include_input:
+            item.update({
+                "source_path": str(Path(cfg.paths.scene_extractions_dir)
+                                   / f"{index:02d}_{SCENE_SLUGS[index]}.md"),
+                "source_kind": "base",
+                "output_existed": output.exists(),
+            })
+        return item
+
+    payload = {
+        "version": 1,
+        "run_id": path.stem,
+        "mode": "bundle",
+        "status": status,
+        "exit_code": exit_code,
+        "backend": "anthropic",
+        "model": None,
+        "provider_batch": False,
+        "exchange_count": 1,
+        "projected_output_tokens": 1000,
+        "bundle_ceiling": cfg.narrate.batch_tokens,
+        "requested": [identity(i, include_input=True) for i in indices],
+        "replaced": [],
+        "written": [identity(i) for i in written],
+        "missing": [
+            {**identity(i), "reason": "absent"} for i in (missing or [])
+        ],
+        "rejected": [],
+        "message": f"Wrote {len(written)} of {len(indices)} selected scenes.",
+        "report_path": str(path),
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return payload
+
+
+def _run_bundle_route(
+    monkeypatch,
+    tmp_path: Path,
+    *,
+    indices: list[int] | None,
+    rc: int,
+    written: list[int],
+    missing: list[int] | None = None,
+    status: str = "success",
+    mutate_report=None,
+):
+    cfg = _editor_detail_cfg(tmp_path)
+    captured = {}
+
+    async def fake_stream_subprocess(
+        cmd, *, cwd=None, on_complete=None, emit_done=True, **_kwargs,
+    ):
+        captured["cmd"] = list(cmd)
+        captured["emit_done"] = emit_done
+        report_path = Path(cmd[cmd.index("--run-report") + 1])
+        for index in written:
+            output = Path(cfg.paths.narration_dir) / (
+                f"session_doc_scene_{index:02d}_{SCENE_SLUGS[index]}.md"
+            )
+            output.write_text("---\nscene: test\n---\n\nNarration.\n", encoding="utf-8")
+        report = _bundle_report(
+            report_path, cfg, list(indices or []), written=written,
+            missing=missing, status=status, exit_code=rc,
+        )
+        if mutate_report is not None:
+            mutate_report(report)
+            report_path.write_text(json.dumps(report), encoding="utf-8")
+        yield 'event: command\ndata: "sd_narrate bundle"\n\n'
+        if on_complete is not None:
+            on_complete(rc)
+
+    monkeypatch.setattr(scene_editor, "stream_subprocess", fake_stream_subprocess)
+
+    async def invoke():
+        response = await scene_editor.api_narrate_bundle(
+            None, scene=indices, cfg=cfg,
+        )
+        return await _collect_stream_body(response)
+
+    return cfg, captured, asyncio.run(invoke())
+
+
+@pytest.mark.parametrize("indices", [None, [], [1, 1], [3, 1], [4]])
+def test_narrate_bundle_route_refuses_invalid_scope_before_launch(
+    monkeypatch, tmp_path, indices,
+):
+    _write_multiscene_editor_session(
+        tmp_path, raw_scenes={1: "one", 2: "two", 3: "three"}
+    )
+    launched = False
+
+    async def fake_stream(*_args, **_kwargs):
+        nonlocal launched
+        launched = True
+        yield "data: launched\n\n"
+
+    monkeypatch.setattr(scene_editor, "stream_subprocess", fake_stream)
+
+    async def invoke():
+        response = await scene_editor.api_narrate_bundle(
+            None, scene=indices, cfg=_editor_detail_cfg(tmp_path),
+        )
+        return await _collect_stream_body(response)
+
+    body = asyncio.run(invoke())
+    assert launched is False
+    assert '"returncode": 1' in body
+
+
+def test_narrate_bundle_route_emits_structured_done_and_audits_written_files(
+    monkeypatch, tmp_path,
+):
+    _write_multiscene_editor_session(
+        tmp_path, raw_scenes={1: "one", 2: "two", 3: "three"}
+    )
+
+    cfg, captured, body = _run_bundle_route(
+        monkeypatch, tmp_path, indices=[1, 2], rc=0, written=[1, 2]
+    )
+
+    assert captured["emit_done"] is False
+    assert body.count("event: done") == 1
+    assert '"status": "success"' in body
+    assert '"requested_count": 2' in body
+    assert '"written_count": 2' in body
+    for index in (1, 2):
+        output = Path(cfg.paths.narration_dir) / (
+            f"session_doc_scene_{index:02d}_{SCENE_SLUGS[index]}.md"
+        )
+        assert output.with_name(output.stem + ".knobs.json").exists()
+    activity = Path(cfg.session_dir) / ".cg" / "activity.jsonl"
+    row = json.loads(activity.read_text(encoding="utf-8").splitlines()[-1])
+    assert row["stage"] == "narrate"
+    assert row["scenes"] == [1, 2]
+    assert row["run_id"].startswith("sd_narrate_bundle_editor_")
+    assert row["knobs"]["mode"] == "bundle"
+    assert row["knobs"]["exchange_count"] == 1
+    assert len(row["outputs"]) == 2
+
+
+def test_narrate_bundle_partial_updates_only_report_written_sidecars(
+    monkeypatch, tmp_path,
+):
+    session_dir, _raw, _smoothed = _write_multiscene_editor_session(
+        tmp_path, raw_scenes={1: "one", 2: "two", 3: "three"}
+    )
+    old_two = session_dir / "narration" / "session_doc_scene_02_scene_two.md"
+    old_two.write_text("old narration\n", encoding="utf-8")
+
+    cfg, _captured, body = _run_bundle_route(
+        monkeypatch, tmp_path, indices=[1, 2], rc=3, written=[1],
+        missing=[2], status="partial",
+    )
+
+    assert '"status": "partial"' in body
+    assert '"written_count": 1' in body
+    assert '"scene_name": "Scene Two"' in body
+    one = Path(cfg.paths.narration_dir) / "session_doc_scene_01_scene_one.md"
+    assert one.with_name(one.stem + ".knobs.json").exists()
+    assert not old_two.with_name(old_two.stem + ".knobs.json").exists()
+
+
+def test_narrate_bundle_write_failure_audits_files_written_before_failure(
+    monkeypatch, tmp_path,
+):
+    _write_multiscene_editor_session(
+        tmp_path, raw_scenes={1: "one", 2: "two", 3: "three"}
+    )
+
+    cfg, _captured, body = _run_bundle_route(
+        monkeypatch, tmp_path, indices=[1, 2], rc=1, written=[1],
+        status="failed",
+    )
+
+    assert '"status": "failed"' in body
+    assert '"written_count": 1' in body
+    one = Path(cfg.paths.narration_dir) / "session_doc_scene_01_scene_one.md"
+    assert one.with_name(one.stem + ".knobs.json").exists()
+
+
+@pytest.mark.parametrize(
+    ("rc", "status", "missing", "expected_status"),
+    [(3, "partial", [1, 2], "partial"),
+     (4, "unreconcilable", [], "unreconcilable")],
+)
+def test_narrate_bundle_zero_write_outcomes_are_report_derived(
+    monkeypatch, tmp_path, rc, status, missing, expected_status,
+):
+    _write_multiscene_editor_session(
+        tmp_path, raw_scenes={1: "one", 2: "two", 3: "three"}
+    )
+
+    cfg, _captured, body = _run_bundle_route(
+        monkeypatch, tmp_path, indices=[1, 2], rc=rc, written=[],
+        missing=missing, status=status,
+    )
+
+    assert f'"status": "{expected_status}"' in body
+    assert '"written_count": 0' in body
+    for index in (1, 2):
+        output = Path(cfg.paths.narration_dir) / (
+            f"session_doc_scene_{index:02d}_{SCENE_SLUGS[index]}.md"
+        )
+        assert not output.with_name(output.stem + ".knobs.json").exists()
+
+
+def test_narrate_bundle_invalid_report_becomes_audit_failure(
+    monkeypatch, tmp_path,
+):
+    _write_multiscene_editor_session(
+        tmp_path, raw_scenes={1: "one", 2: "two", 3: "three"}
+    )
+
+    def wrong_selection(report):
+        report["requested"] = report["requested"][:1]
+
+    cfg, _captured, body = _run_bundle_route(
+        monkeypatch, tmp_path, indices=[1, 2], rc=0, written=[1, 2],
+        mutate_report=wrong_selection,
+    )
+
+    assert '"audit_error"' in body
+    assert "selection" in body
+    activity = Path(cfg.session_dir) / ".cg" / "activity.jsonl"
+    row = json.loads(activity.read_text(encoding="utf-8").splitlines()[-1])
+    assert row["knobs"]["audit_error"]
+    for index in (1, 2):
+        output = Path(cfg.paths.narration_dir) / (
+            f"session_doc_scene_{index:02d}_{SCENE_SLUGS[index]}.md"
+        )
+        assert not output.with_name(output.stem + ".knobs.json").exists()
+
+
+@pytest.mark.parametrize(
+    ("mutate_report", "message"),
+    [(lambda report: report.update(run_id="another-run"), "run ID"),
+     (lambda report: report.update(exit_code=3), "return code"),
+     (lambda report: report.update(version=2), "version")],
+)
+def test_narrate_bundle_rejects_mismatched_nonce_returncode_and_version(
+    monkeypatch, tmp_path, mutate_report, message,
+):
+    _write_multiscene_editor_session(
+        tmp_path, raw_scenes={1: "one", 2: "two", 3: "three"}
+    )
+
+    _cfg, _captured, body = _run_bundle_route(
+        monkeypatch, tmp_path, indices=[1, 2], rc=0, written=[1, 2],
+        mutate_report=mutate_report,
+    )
+
+    assert '"audit_error"' in body
+    assert message in body

@@ -17,6 +17,7 @@ from campaignlib import (
     add_backend_args,
     canonical_context_section,
     client_from_args,
+    find_registry,
     load_agent_prompt,
     run_single_batch,
     stream_api,
@@ -64,7 +65,9 @@ def main() -> None:
     recap = recap_path.read_text(encoding="utf-8")
 
     context_parts: list[str] = []
+    registry_path = find_registry(Path.cwd())
     canon = canonical_context_section(Path.cwd())
+    canonical_registry_path = registry_path.resolve() if canon and registry_path else None
     if canon:
         context_parts.append(canon)
 
@@ -73,6 +76,13 @@ def main() -> None:
         if not cp.exists():
             print(f"Error: --context file not found: {cp}", file=sys.stderr)
             sys.exit(1)
+        if canonical_registry_path is not None and cp.resolve() == canonical_registry_path:
+            print(
+                f"  Note: skipping --context {cp}; already included as "
+                "authoritative canon.",
+                file=sys.stderr,
+            )
+            continue
         context_parts.append(cp.read_text(encoding="utf-8"))
 
     parts = [f"## Session Recap\n\n{recap.strip()}"]

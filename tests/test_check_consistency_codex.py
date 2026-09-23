@@ -66,15 +66,31 @@ def test_codex_cli_preserves_prompt_and_report_workflow(tmp_path, monkeypatch, c
 
     assert len(calls) == 1
     _, system, user, model, kwargs = calls[0]
+    assert isinstance(user, list)
+    user_text = "".join(block["text"] for block in user)
     assert "consistency" in system.lower()
-    assert user.index("Document α bytes.") < user.index("Exact Canon")
-    assert user.index("Context A exact.") < user.index("Context B exact.")
+    assert user_text.index("Exact Canon") < user_text.index("Document α bytes.")
+    assert user_text.index("Context A exact.") < user_text.index("Context B exact.")
+    assert user[0]["cache_control"] == {"type": "ephemeral"}
+    assert "cache_control" not in user[1]
     assert model is None
     assert kwargs["silent"] is True
     assert output.read_text(encoding="utf-8") == "## Consistency Report\n\n- **Issue**: Wrong name\n  **Location**: line 1"
     stdout = capsys.readouterr().out
     assert "Found 1 potential issue" in stdout
     assert "Codex subscription default" in stdout
+    context_text = user[0]["text"].removesuffix("\n\n---\n\n")
+    expected_shared_chars = len(system) + len(context_text)
+    assert (
+        f"Context  : 3 document(s), {expected_shared_chars:,} shared chars"
+        in stdout
+    )
+    assert (
+        "Telemetry : model_calls=1 "
+        f"shared_context_chars={expected_shared_chars} "
+        "target_chars=17 repeated_context_chars_avoided=0"
+        in stdout
+    )
 
 
 @pytest.mark.parametrize(

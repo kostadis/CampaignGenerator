@@ -48,6 +48,11 @@ SCENE1_NARRATION = (
 )
 SCENE1_HANDOFF_TAIL = "See you at dawn."
 
+# #396 — the restored table-speech audit hatch is written on the scene's final
+# line, exactly where the handoff used to be read from.
+SCENE1_HATCH = '<!-- table-speech reclassified: "Alice, roll me a perception check." -->'
+SCENE1_NARRATION_WITH_HATCH = SCENE1_NARRATION + "\n" + SCENE1_HATCH
+
 SCENE2_NARRATION = (
     'Bob nods and steps out into the rain.\n'
     '"Until then."'
@@ -433,6 +438,50 @@ def test_batch_failure_mid_loop_exits_nonzero_earlier_scenes_stay_on_disk(
     assert [f.name for f in written] == ["session_doc_scene_01_scene_one.md"]
 
 
+# ── #396: the audit hatch is an artifact, never a continuity anchor ─────────
+
+def test_a_trailing_audit_comment_is_not_the_prose_handoff(monkeypatch, tmp_path):
+    """The hatch stays on disk for the GM; it never reaches the next narrator.
+
+    `handoff = narration.rsplit("\\n", 1)[-1]` took the literal last line, so
+    restoring the hatch would have fed the next scene's prompt a stripped table
+    instruction — under a "Handoff from previous narrator" heading, as prose to
+    continue from. `wire-protocol.md` §1 already forbade it; nothing enforced
+    it until `_prose_handoff`.
+    """
+    paths = _write_fixtures(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION_WITH_HATCH, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sys, "argv", _base_argv(paths))
+    sd_narrate.main()
+
+    scene2_prompt = fake_stream.calls[1]["user"]
+    assert SCENE1_HANDOFF_TAIL in scene2_prompt
+    assert "table-speech reclassified" not in scene2_prompt
+    assert "perception check" not in scene2_prompt
+
+    # ...and the record itself survives untouched in the per-scene file, which
+    # is the whole point: assembly strips it, `/voice-critic` reviews it there.
+    scene1 = (paths["out_dir"] / "session_doc_scene_01_scene_one.md").read_text(
+        encoding="utf-8")
+    assert SCENE1_HATCH in scene1
+
+
+def test_prose_handoff_skips_apparatus_and_survives_a_hatch_only_scene():
+    h = sd_narrate._prose_handoff
+    assert h("She left.") == "She left."
+    assert h(f"She left.\n{SCENE1_HATCH}") == "She left."
+    assert h(f"She left.\n{SCENE1_HATCH}\n\n") == "She left."
+    # Multi-line hatch — `AUDIT_COMMENT_RE` is DOTALL for exactly this.
+    assert h('She left.\n<!-- table-speech reclassified: "a"\n | "b" -->') == "She left."
+    # All four markers, not just the hatch.
+    assert h("She left.\n<!-- hand-fixed: typo -->") == "She left."
+    # A GM's own comment is not apparatus and is left where it is.
+    assert h("She left.\n<!-- GM: check this -->") == "<!-- GM: check this -->"
+    # Nothing but a hatch: empty, not the comment.
+    assert h(SCENE1_HATCH) == ""
+
+
 # ── Default (non-batch) path: byte-identical, unaffected by --batch wiring ──
 
 def test_default_path_uses_stream_api_not_run_single_batch(monkeypatch, tmp_path):
@@ -457,6 +506,42 @@ def test_default_path_uses_stream_api_not_run_single_batch(monkeypatch, tmp_path
         "session_doc_scene_02_scene_two.md",
     ]
 
+
+def test_sequential_single_scene_rerun_replaces_only_that_scene(monkeypatch, tmp_path):
+    paths = _write_fixtures(tmp_path)
+    paths["out_dir"].mkdir()
+    untouched = paths["out_dir"] / "session_doc_scene_02_scene_two.md"
+    untouched.write_text("reviewed scene two\n", encoding="utf-8")
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sd_narrate, "run_single_batch", FakeRunSingleBatch([]))
+    monkeypatch.setattr(sys, "argv", _base_argv(paths, "--scene", "1"))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 1
+    assert untouched.read_text(encoding="utf-8") == "reviewed scene two\n"
+    rerun = paths["out_dir"] / "session_doc_scene_01_scene_one.md"
+    text = rerun.read_text(encoding="utf-8")
+    assert "scene: 01\nslug: scene_one\nnarrator: Alice\n" in text
+    assert SCENE1_NARRATION in text
+
+
+def test_explicit_no_batch_scenes_keeps_sequential_calls_and_ignores_bundle_ceiling(
+    monkeypatch, tmp_path, capsys,
+):
+    paths = _write_fixtures(tmp_path)
+    fake_stream = FakeStreamAPI([SCENE1_NARRATION, SCENE2_NARRATION])
+    monkeypatch.setattr(sd_narrate, "stream_api", fake_stream)
+    monkeypatch.setattr(sd_narrate, "run_single_batch", FakeRunSingleBatch([]))
+    monkeypatch.setattr(sys, "argv", _base_argv(
+        paths, "--no-batch-scenes", "--batch-max-tokens", "900",
+    ))
+
+    sd_narrate.main()
+
+    assert len(fake_stream.calls) == 2
+    assert "--batch-max-tokens is ignored without --batch-scenes" in capsys.readouterr().err
 
 # ── Global examples reach scene mode ────────────────────────────────────────
 
@@ -615,7 +700,11 @@ def test_known_npc_roster_reaches_the_prompt_even_when_party_is_given(
     prompt = fake_stream.calls[0]["user"]
     assert "## Character Classes" in prompt          # party roster still there
     assert "## Known NPCs" in prompt                 # and so is the NPC roster
-    assert "Never apply them inside quotation marks" in prompt
+    # #411 — the anti-normalization rule became unconditional (carried by
+    # base.md's own {name_fidelity} placeholder), so it no longer rides along
+    # with the NPC roster in the user prompt; it now lives in the system
+    # prompt regardless of whether a roster was supplied.
+    assert "NAMES INSIDE QUOTED SPEECH" in fake_stream.calls[0]["system"]
 
 
 def test_alias_registry_flag_overrides_autodiscovery(monkeypatch, tmp_path):

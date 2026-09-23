@@ -1,0 +1,31 @@
+{
+  "prepared_at": "2026-09-07T16:58:45.212722+00:00",
+  "question": "Told not to reassign GM narration, and given a gap marker to use instead, does fable leave those passages for the human author?",
+  "base_prompt": "20260907-phandalin-scene-composition/control/system_prompt.md (the preferred brief)",
+  "campaign_commit": "bbf4e3c064b4e13b47ed523606a62936638a0cc6",
+  "generator_commit": "d9c5de87a0ec4831c1cdc999b26491851b1f7c01",
+  "backend": "claude-code",
+  "model": "claude-fable-5-1",
+  "claude_code_effort": "low",
+  "claude_code_effort_source": "explicit",
+  "effort_note": "low, not the medium of the earlier arms — a deliberate second change, so this run is not a clean isolate of the prompt edit.",
+  "max_tokens_argument": 32000,
+  "scene_heading": "Soma — Harpers Behind the Wall",
+  "marker": "GM NARRATION — TO BE WRITTEN:",
+  "gm_turns_in_source": {
+    "describing": 9,
+    "explaining": 3,
+    "confirming": 9,
+    "agreeing": 1
+  },
+  "treatment": "One sentence of paragraph 5 replaced. Adds the third option the base contract lacked: neither stage the GM as a character nor silently reassign their narration, but mark a gap for the human to write.",
+  "design": "Single call. User message byte-identical to every earlier run of this scene; system prompt differs from the preferred brief by one sentence.",
+  "limits": "One sample, stochastic, no seed. Two variables move at once (the prompt sentence AND effort medium->low), so a difference from the earlier fable drafts cannot be attributed to either alone. Whether the marked gaps are the RIGHT gaps is a judgement for the GM against the source, not something the marker count establishes.",
+  "input_sha256": {
+    "prompts/base_system.md": "2da015c540e5f31c7044c23ef6452e371407b7d9d0a17cd6924aa4c61db46db7",
+    "prompts/user.md": "f658f98a9342639e8b260f1d40e0c7a6440c51d09b2ec4023b1f878553dbb560",
+    "prompts/treated_system.md": "b39c4917f9950ef702fd9bed4a6be475b2fe62399d795039fcbe38b8e17145ed",
+    "prompt.diff": "21faafaf05f148629b6356bd6872f5c3b6fc416efa7cea5a5a0a446087564baa",
+    "run.py": "b3ad47ccb38197f58bf47555d01d622fd3b0fcb081a68715b6b8880454082517"
+  }
+}

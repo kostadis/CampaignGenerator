@@ -2,9 +2,23 @@
  * SSE helper — connects to a streaming endpoint and calls back with text chunks.
  */
 
+export interface SSECompletion {
+  returncode: number
+  error?: string
+  status?: string
+  run_id?: string
+  message?: string
+  audit_error?: string
+  written_count?: number
+  requested_count?: number
+  missing?: unknown[]
+  rejected?: unknown[]
+  [key: string]: unknown
+}
+
 export interface SSECallbacks {
   onData: (text: string) => void
-  onDone: (returncode: number, error?: string) => void
+  onDone: (returncode: number, error?: string, completion?: SSECompletion) => void
   /** Called with the secret-free, copyable invocation from the `command` event (US1). */
   onCommand?: (cmd: string) => void
   /**
@@ -58,8 +72,8 @@ export async function streamPostSSE(
       if (event === 'command') {
         callbacks.onCommand?.(JSON.parse(payload) as string)
       } else if (event === 'done') {
-        const done = JSON.parse(payload) as { returncode: number; error?: string }
-        callbacks.onDone(done.returncode, done.error)
+        const done = JSON.parse(payload) as SSECompletion
+        callbacks.onDone(done.returncode, done.error, done)
       } else {
         callbacks.onData(JSON.parse(payload) as string)
       }
@@ -99,8 +113,8 @@ export function connectSSE(url: string, callbacks: SSECallbacks): EventSource {
 
   es.addEventListener('done', (e) => {
     es.close()
-    const data = JSON.parse((e as MessageEvent).data)
-    callbacks.onDone(data.returncode, data.error)
+    const data = JSON.parse((e as MessageEvent).data) as SSECompletion
+    callbacks.onDone(data.returncode, data.error, data)
   })
 
   es.onerror = (e) => {

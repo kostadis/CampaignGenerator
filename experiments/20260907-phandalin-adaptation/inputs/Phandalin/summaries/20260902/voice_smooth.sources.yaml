@@ -1,0 +1,262 @@
+schema: voice_smooth_manifest/v1
+voice_smooth:
+  timestamp: "2026-09-06T04:21:16Z"
+  status: ready
+  campaign: Phandalin
+  chapter: 51
+  session_date: "2026-09-01"
+  session_dir: summaries/20260902
+  source_layer: scene_extractions/
+  output_layer: scene_extractions_smoothed/
+  scenes_rendered: 5
+  quote_blocks_in: 895
+  quote_blocks_out: 844
+  quote_delta: -51
+  quote_delta_explanation: >-
+    Forty-eight blocks were collapsed into adjacent cues or stage directions, or removed
+    as unrecoverable false starts, under the approved smoothing policy. Three retrospective
+    spider-job blocks were removed from scene 03 under the approved cross-scene duplicate
+    ruling and remain in scene 05.
+
+  precondition:
+    consistency_pass_run: true
+    manifest: consistency_stage2_scenes.sources.yaml
+    review_status: COMPLETE
+    note: >-
+      The stage-2 pass verified 896 extracted spans and settled the proper-noun,
+      attribution, and rules-note issues carried into this derived layer. The current
+      source Markdown contains 895 quote blocks because one verified span contains the
+      extraction structure represented by those blocks.
+
+  voice_specs:
+    resolution_rule: "Exact full-name declarations resolved through CampaignGenerator."
+    genre: voice/_genre.md
+    resolved:
+      Brewbarry: voice/brewbarry_new_pipeline.md
+      Soma: voice/soma_new_pipeline.md
+      Valphine Sotorra: voice/valphine_new_pipeline.md
+      Vukradin: voice/vukradin_new_pipeline.md
+    unknown_narrators:
+      - GM
+    npc_characterization:
+      common_chord_audience:
+        source: notes/npcs/common-chord-audience.md
+        npcs: [Wick, Sabbatha, Old Hesp, Ondrelle Kass]
+      Rsolk:
+        sources:
+          - notes/session_prep/20260901_the_ninth_crate.md
+          - notes/session_prep/20260901_the_ninth_crate_v2.md
+          - summaries/20260902/gm-assist.md
+      Uncle_Tom:
+        source: summaries/20260902/gm-assist.md
+      fallback: "Neutral readable rendering for NPCs without a stronger documented voice."
+
+  transcripts_consulted:
+    files:
+      - path: GMT20260902-040118_Recording.transcript.vtt
+        sha256: 62d9889df3d1b3c9469891c1fdc01308242be8dd6b25163b1ff3d17f4dd6dc7c
+        role: "Raw speaker-labelled Zoom-family export."
+      - path: GMT20260902-040118_Recording.transcript.cleaned.vtt
+        sha256: 428323f3aa574bcd983c89e2fcd14d3a62510fbc75c3f5ba32f8873d62cb4941
+        role: "Cleaned derivative of the same speaker-labelled Zoom-family export."
+      - path: session_2026_09_05_session_2026_09_05_transcript.vtt
+        sha256: e10a93a089b4e5e222680bdd724f32ef2a283a695de849e0a699174630fd0711
+        role: "Independent unlabelled transcription used for sentence completion and garble adjudication."
+    independent_reading_groups:
+      - id: zoom_family
+        files:
+          - GMT20260902-040118_Recording.transcript.vtt
+          - GMT20260902-040118_Recording.transcript.cleaned.vtt
+        independent: false
+        note: "Different hashes, but raw and cleaned derivatives of one recording/transcription family."
+      - id: independent_retranscription
+        files:
+          - session_2026_09_05_session_2026_09_05_transcript.vtt
+        independent: true
+        note: >-
+          Independence was confirmed with distinctive mid-session phrases before this
+          reading was used to settle rumor, chit, stone dwelling, tavern, Common Chord,
+          and other sentence-completion repairs.
+    byte_identical_duplicate_files: []
+
+  calibration:
+    representative_scene: 04_the_stakeout_of_denvar.md
+    approved: true
+    approved_by: GM
+    approved_on: "2026-09-06"
+    policy:
+      filler_removal: "Remove filler and false starts without flattening intentional rhythm."
+      grammar_repair: "Repair grammar only where meaning is certain."
+      cue_merging: "Merge broken cues from the same speaker when attribution and order are unambiguous."
+      stage_directions: "Lift clear NPC actions and speech tags outside quotation marks."
+      truncations: "Complete only when every reading and context make the completion unambiguous; otherwise annotate."
+
+  verdicts:
+    calibration_classes_approved: 4
+    scope_rulings_approved: 2
+    substantive_repair_items_approved: 21
+    reverted_during_delta_audit: 2
+    discuss_items_remaining: 0
+    undecided_items_remaining: 0
+    reasked_items_remaining: 0
+    note: >-
+      The two audit reverts restored “DM” and an unresolved payment-object fragment before
+      the final review. The latter was subsequently approved as “chit” from the independent
+      transcript; “DM” remains the spoken term.
+
+  per_scene:
+    "01":
+      source_quotes: 218
+      output_quotes: 212
+      stage_direction_blocks: 2
+      tooling_cuts: 0
+      approved_garble_rulings: 4
+      unresolved_truncations: 3
+    "02":
+      source_quotes: 152
+      output_quotes: 146
+      stage_direction_blocks: 0
+      tooling_cuts: 0
+      approved_garble_rulings: 1
+      unresolved_truncations: 0
+    "03":
+      source_quotes: 142
+      output_quotes: 130
+      stage_direction_blocks: 8
+      tooling_cuts: 0
+      approved_garble_rulings: 3
+      unresolved_truncations: 2
+    "04":
+      source_quotes: 177
+      output_quotes: 167
+      stage_direction_blocks: 5
+      tooling_cuts: 0
+      approved_garble_rulings: 7
+      unresolved_truncations: 1
+    "05":
+      source_quotes: 206
+      output_quotes: 189
+      stage_direction_blocks: 0
+      tooling_cuts: 0
+      approved_garble_rulings: 6
+      unresolved_truncations: 1
+
+  scope_rulings:
+    - id: scene-03-scene-05-spider-job-duplicate
+      status: DONE
+      ruling: >-
+        Remove the three retrospective spider-job quotes from the end of scene 03 and keep
+        their chronological session-ending occurrence in scene 05.
+      audit_note: scene_extractions_smoothed/03_encounter_in_the_sewers.md
+    - id: player-real-names
+      status: DONE
+      ruling: "Real player names do not enter this smoothed layer; OOC addresses use character names."
+      applied: "Wade/Dave were normalized to Soma/Vukradin in four OOC addresses."
+    - id: tooling-and-logistics
+      status: DONE
+      ruling: >-
+        No pure-tooling span required deletion. Rules, roll, chat, timer, setting-reference,
+        and scheduling material with table context was retained and marked OOC for the
+        downstream no-mech pass.
+      cuts: 0
+    - id: attribution-and-stage-repairs
+      status: DONE
+      ruling: >-
+        Clear NPC actions and speech tags were lifted into stage directions. Uncle Tom uses
+        the GM's later he/him correction. The independent transcript showed that “he was
+        warm” was a diarization fragment belonging to Vukradin's Common Chord comparison.
+    - id: knowledge-boundaries
+      status: DONE
+      ruling: "No new durable player-versus-character knowledge boundary was found."
+
+  garble_rulings:
+    total: 21
+    by_scene: {"01": 4, "02": 1, "03": 3, "04": 7, "05": 6}
+    notable:
+      - '“It’s a rum / room” -> “Oh, it’s a rumor.”'
+      - '“meters” -> “meteors” in the Tears of Selûne astronomical discussion.'
+      - '“I find familiar” -> “I cast Find Familiar.”'
+      - '“long turn” -> “Wrong turn” before the Albuquerque joke.'
+      - 'The split phrase was restored as “keep the place shipshape.”'
+      - '“ADAP” -> “eight up” in the repeated crate instruction.'
+      - 'The payment object was restored as “chit.”'
+      - '“stone indwelling” -> “stone dwelling.”'
+      - '“born in the town” -> “born in the tavern.”'
+      - 'The fragmented fame explanation was reassembled around Soma’s “manipulated” interjection.'
+    deliberately_kept:
+      - scene: "01"
+        text: '“new drow advisor that we will.”'
+        rationale: "Both transcripts end the fragment there; no continuation is recoverable."
+      - scene: "01"
+        text: '“Securing money for the.”'
+        rationale: "Both transcripts truncate the object; only the following correction is established."
+      - scene: "01"
+        text: '“10 little pieces to a.”'
+        rationale: "The independent reading confirms another ten gold but does not recover the sentence."
+      - scene: "03"
+        text: "The remaining members of Rsolk's group are generically described."
+        rationale: "Both transcripts truncate their descriptors."
+      - scene: "03"
+        text: "The interval at which the affected tunnel floods."
+        rationale: "Recurring flooding is clear, but both transcripts truncate the interval."
+      - scene: "04"
+        text: '“I’m gonna go collect payment? Is that…”'
+        rationale: "The subject remains unclear, so the fragment was not reassigned to Denvar."
+      - scene: "05"
+        text: "The opening words of the basement-office desk description."
+        rationale: "Both transcripts remain garbled; only desk, papers, and supplies are established."
+
+  glossary_updates:
+    rows_written: 0
+    registry_conflicts: []
+    note: "No new proper-noun identity was decided during voice smoothing."
+
+  defects_found_upstream:
+    - >-
+      Scene 03 repeats three retrospective spider-job quotes that belong chronologically at
+      the end of scene 05. The source extraction remains untouched.
+    - >-
+      The source layer retains four real-player-name OOC addresses and the common-word ASR
+      garbles adjudicated in this pass.
+    - >-
+      The Zoom family contains several diarization fragments; the Brewbarry/Common Chord
+      comparison is the material instance repaired here from the independent transcript.
+
+  unresolved_findings:
+    count: 7
+    status: ANNOTATED
+    note: "All are listed under garble_rulings.deliberately_kept; none is treated as meaningful canon."
+
+  verification:
+    structural_audit: PASS
+    delta_audit: PASS
+    source_summaries_byte_preserved: true
+    source_scene_files_modified: false
+    matching_scene_files: "5 of 5"
+    voiced_heading_files: "5 of 5"
+    verbatim_heading_files_in_output: 0
+    source_marker_files: "5 of 5"
+    from_targets_resolved: "5 of 5"
+    invalid_speaker_labels: 0
+    fused_speaker_headers: 0
+    orphaned_quote_blocks: 0
+    real_player_names_in_output: 0
+    substantive_changes_without_verdict: 0
+
+  carry_forward:
+    - item: >-
+        Re-running scene extraction will restore the scene-03 duplicate, raw diarization,
+        player-name addresses, and unsmoothed garbles.
+      status: OPEN
+      note: "Keep this smoothed layer authoritative for narration unless it is deliberately regenerated."
+    - item: "Seven unrecoverable fragments remain annotated in the derived layer."
+      status: OPEN
+      note: "Do not narrate them as meaningful; revisit only if a better audio reading becomes available."
+    - item: >-
+        OOC annotations for rolls, rules, chat, timer, setting checks, and scheduling are
+        intentionally retained for the requested downstream no-mech pass.
+      status: OPEN
+
+  handoff:
+    next: "session_doc and no-mech should read from scene_extractions_smoothed/, not scene_extractions/."
+    record: "The VTT files and scene_extractions/ remain the immutable verbatim record."

@@ -1,0 +1,29 @@
+{
+  "status": "rendered",
+  "arm": "composition",
+  "started_at": "2026-09-07T16:01:09.307256+00:00",
+  "case_sha256": "f0ecb2dcf3ebca103e4d71fdcbf5d3cec4608621d116606bed7612e5c43ddcaf",
+  "system_sha256": "1cc78e6c852088f1beea798b4e0f669c0face5ebe47c6e68fe5f352e939414c5",
+  "user_sha256": "f658f98a9342639e8b260f1d40e0c7a6440c51d09b2ec4023b1f878553dbb560",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "requested_effort_source": "explicit",
+  "response_sha256": "57980dcddfe28b52fcfafd6d81a982e6475577a5effaab12ff4b3aa3aac0409e",
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true
+  },
+  "all_headings": [
+    "## Soma — Harpers Behind the Wall"
+  ],
+  "headings": [
+    "Soma — Harpers Behind the Wall"
+  ],
+  "words": 2675,
+  "finished_at": "2026-09-07T16:02:43.776861+00:00"
+}

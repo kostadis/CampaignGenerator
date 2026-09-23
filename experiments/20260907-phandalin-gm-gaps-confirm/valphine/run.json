@@ -1,0 +1,37 @@
+{
+  "status": "rendered",
+  "arm": "valphine",
+  "narrator": "valphine",
+  "session": "20260811",
+  "title": "Bullying Through the Loan",
+  "started_at": "2026-09-07T18:03:04.655689+00:00",
+  "case_sha256": "35c6d04b91ae35f051dc28dd89449729ca0261c83e6f5b4b3d2d9324ec188b3e",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "response_sha256": "91afa356b91d8def37633b12c76696bdddf89f7900e9a5692079a09f0ff9e2be",
+  "words": 2866,
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true
+  },
+  "headings_verbatim": [
+    "## Valphine — Bullying Through the Loan"
+  ],
+  "headings_match_after_normalization": true,
+  "markers": [
+    "[GM NARRATION — TO BE WRITTEN: Aurelan produces a sheet of calculations the party cannot read.]",
+    "[GM NARRATION — TO BE WRITTEN: A small crowd has gathered around the desk to watch, and Aurelan signs the loan paperwork, which is for a significant sum, and hands it over.]",
+    "[GM NARRATION — TO BE WRITTEN: A wealthy client of the Counting House pushes forward from the crowd, dressed in silk imitations of Uthgardt barbarian hides; the effect is worse than cheap costume, but he is entirely sincere.]",
+    "[GM NARRATION — TO BE WRITTEN: The man attempts to imitate Brewbarry's stance and bearing, and the result is awkward for everyone watching.]"
+  ],
+  "marker_count": 4,
+  "gm_turns_in_source": 16,
+  "joint_gm_player_turns": 10,
+  "finished_at": "2026-09-07T18:04:41.731435+00:00",
+  "wall_clock_seconds": 97.1
+}

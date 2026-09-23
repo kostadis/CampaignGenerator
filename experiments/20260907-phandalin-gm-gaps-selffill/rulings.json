@@ -1,0 +1,88 @@
+{
+  "markers": 11,
+  "likely_narrated": 10,
+  "likely_discarded": 1,
+  "unresolved_markers_left_in_output": 0,
+  "words_before": 2223,
+  "words_after": 2804,
+  "reading": "A lexical presence test, not a classification. It orders the 11 markers for reading against the source; whether a discard was right is the GM's call and nothing here establishes it.",
+  "rulings": [
+    {
+      "marker": "A few hours later Denvar wakes, and the party follows him to a stone wall that backs into a building, where he looks around with careful discretion, pulls a stone free, takes out a bag, and closes the hiding place again.",
+      "distinctive_words": 22,
+      "words_present_in_scene": 13,
+      "share_present": 0.59,
+      "likely": "narrated"
+    },
+    {
+      "marker": "Denvar looks at the chit in his hand and smiles before walking off.",
+      "distinctive_words": 7,
+      "words_present_in_scene": 6,
+      "share_present": 0.86,
+      "likely": "narrated"
+    },
+    {
+      "marker": "The stone is a two-way compartment; nothing about it shows whether the payment was placed from the street or from inside the building, so learning that would mean going in.",
+      "distinctive_words": 14,
+      "words_present_in_scene": 10,
+      "share_present": 0.71,
+      "likely": "narrated"
+    },
+    {
+      "marker": "The building is a stone dwelling, built of stone throughout.",
+      "distinctive_words": 5,
+      "words_present_in_scene": 4,
+      "share_present": 0.8,
+      "likely": "narrated"
+    },
+    {
+      "marker": "Walking the perimeter, the party finds the building is a tavern, the House of a Thousand Faces, and though it is early morning the place is open.",
+      "distinctive_words": 14,
+      "words_present_in_scene": 10,
+      "share_present": 0.71,
+      "likely": "narrated"
+    },
+    {
+      "marker": "Brewbarry has already gone into the tavern; he had heard of the House of a Thousand Faces when he first came to Neverwinter and could not afford it then.",
+      "distinctive_words": 14,
+      "words_present_in_scene": 11,
+      "share_present": 0.79,
+      "likely": "narrated"
+    },
+    {
+      "marker": "The rat slips into a windowless back office on the basement level, with a desk, papers, and supplies, and among them the unmistakable symbol of the Harpers.",
+      "distinctive_words": 14,
+      "words_present_in_scene": 8,
+      "share_present": 0.57,
+      "likely": "narrated"
+    },
+    {
+      "marker": "The office is the local headquarters of the Harpers.",
+      "distinctive_words": 4,
+      "words_present_in_scene": 3,
+      "share_present": 0.75,
+      "likely": "narrated"
+    },
+    {
+      "marker": "It remains open whether the Harpers are smuggling or arranging the ninth crate; and the Harpers, as the group is reminded, are not good people in this city.",
+      "distinctive_words": 13,
+      "words_present_in_scene": 10,
+      "share_present": 0.77,
+      "likely": "narrated"
+    },
+    {
+      "marker": "The reminder extends to the claim that the only good people in this are the Order of the Gauntlet, who were misled by their political masters, have since rejected them, and now stand for the little guy.",
+      "distinctive_words": 15,
+      "words_present_in_scene": 7,
+      "share_present": 0.47,
+      "likely": "discarded"
+    },
+    {
+      "marker": "The House of a Thousand Faces is a comfortable tavern of mirrors, mannequins in antiquated fashions, lush couches, and a fire that actually draws — a high-end place in the low-end Bluelake District, with something subtly off about it.",
+      "distinctive_words": 21,
+      "words_present_in_scene": 15,
+      "share_present": 0.71,
+      "likely": "narrated"
+    }
+  ]
+}

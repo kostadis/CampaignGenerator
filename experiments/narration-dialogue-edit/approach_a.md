@@ -1,0 +1,3 @@
+Approach A — light dialogue copyedit.
+
+Change only text inside existing dialogue quotation marks. Preserve all narration, inner thoughts, attribution, paragraph boundaries, and the narrator heading exactly as supplied. Inside dialogue, improve punctuation, collapse accidental stutters or abandoned duplicate starts, and remove filler only where it has no expressive purpose. Preserve wording and sentence structure otherwise: do not paraphrase, replace vocabulary, resolve references through new words, merge separate quoted turns, or remove a complete quoted turn. This is a conservative readability edit, not a rewrite. If a problem cannot be fixed within a quoted span, leave it unchanged.

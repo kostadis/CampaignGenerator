@@ -6,9 +6,10 @@ the token-budget estimator used by the per-scene loop.
 """
 
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
-from campaignlib import load_agent_prompt
+from campaignlib import load_agent_prompt, split_batched_response
 
 _PLACEHOLDER_RE = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
@@ -43,6 +44,36 @@ def _fill(template: str, **values: str) -> str:
         pos = m.end()
     out.append(template[pos:])
     return "".join(out)
+
+
+def _voice_contrast_applies(
+    narrator: str, prev_narrator: str | None, prev_voice_sample: str | None
+) -> bool:
+    """Whether the previous-narrator contrast block belongs in this prompt.
+
+    ONE home for the rule, because it had two and they disagreed (#417). The
+    block tells the model that "{narrator}'s voice should sound clearly
+    different from {prev_narrator}'s", under a heading reading "for contrast —
+    do NOT imitate". Emitting it when they are the same person instructs a
+    narrator to sound unlike themselves.
+
+    `build_narrate_prompt` treated that as the builder's invariant; the bundle
+    builder checked only that a previous narrator and sample existed, and left
+    the identity half to its single caller in `sd_narrate`. The CLI is correct
+    today, so this was never a live defect — but anything else that builds a
+    `NarrationScene` (the server, a batch route, a fixture) got the
+    self-contradicting prompt with nothing raising, and a reader of one builder
+    saw a weaker condition than its sibling with no comment saying why.
+
+    `sd_narrate`'s own check stays: it also decides whether to *fetch* the
+    sample, which is separate work, and a caller that skips the fetch is not
+    the same thing as a builder that refuses the block.
+    """
+    return bool(
+        prev_narrator
+        and prev_voice_sample
+        and prev_narrator.lower() != narrator.lower()
+    )
 
 
 def _template_candidates(name: str) -> list[str]:
@@ -145,10 +176,41 @@ def _require_templates() -> None:
         raise _TEMPLATE_ERROR
 
 
+# ── The GM-attribution rule, stated ONCE and selected by mode (#454) ────────
+# `writing_brief.md` and `prose_mode.md` each carried a sentence telling the
+# model that "GM descriptions become experienced facts" — precisely the
+# absorption the gap-marking contract forbids. The contract was tested against
+# a standalone experiment prompt that carried neither, so appending it here
+# would have produced two rules arguing, with which one wins a property of the
+# model rather than of the prompt. #435 already paid that bill once.
+#
+# So the sentence became a placeholder in situ, and the mode picks its value.
+# The `_absorb` variants are the original sentences character-for-character,
+# which is what makes "gap marking off changes nothing" a byte-identical claim
+# provable against a frozen golden rather than a hope.
+#
+# TWO slots, not one shared fragment: the two sentences agree on their first
+# clause and differ on the second, and only the first conflicts with the
+# contract. The prose variant keeps its second clause — that NPC speech stays
+# with its character is a rule the contract does not replace, and the tested
+# model got it right unprompted.
+GM_ATTRIBUTION_ABSORB = _load_template_deferred(
+    "session_doc/narrate/gm_attribution_absorb")
+GM_ATTRIBUTION_GAP = _load_template_deferred(
+    "session_doc/narrate/gm_attribution_gap")
+GM_ATTRIBUTION_PROSE_ABSORB = _load_template_deferred(
+    "session_doc/narrate/gm_attribution_prose_absorb")
+GM_ATTRIBUTION_PROSE_GAP = _load_template_deferred(
+    "session_doc/narrate/gm_attribution_prose_gap")
+
+NARRATION_WRITING_BRIEF = _load_template_deferred(
+    "session_doc/narrate/writing_brief", "gm_attribution")
 NARRATE_SYSTEM_BASE        = _load_template_deferred(
     "session_doc/narrate/base",
+    "writing_brief", "audit_hatch",
     "genre_directive", "examples_block", "scene_scope_line", "scene_events_line",
-    "rendering_instruction", "length_instruction", "dialogue_instruction",
+    "rendering_instruction", "dialogue_instruction",
+    "name_fidelity", "real_names",
 )
 EXAMPLES_BLOCK             = _load_template_deferred(
     "session_doc/narrate/examples_block", "examples")
@@ -163,9 +225,52 @@ DIALOGUE_INSTRUCTION_FULL        = _load_template_deferred(
     "session_doc/narrate/dialogue_full")
 DIALOGUE_INSTRUCTION_CONDITIONAL = _load_template_deferred(
     "session_doc/narrate/dialogue_conditional")
-PROSE_MODE_INSTRUCTION     = _load_template_deferred("session_doc/narrate/prose_mode")
+PROSE_MODE_INSTRUCTION     = _load_template_deferred(
+    "session_doc/narrate/prose_mode", "gm_attribution_prose")
+AUDIT_HATCH_INSTRUCTION    = _load_template_deferred("session_doc/narrate/audit_hatch")
+# The canonical-name channel that CANNOT corrupt a quote. Aliases used to be
+# applied to the source text as a find-and-replace before Pass 5, which rewrote
+# names inside quoted dialogue (#223); they arrive as knowledge now, so the rule
+# has to be explicit or the model does the substitution itself. It reaches both
+# render paths through the two base templates, so it survives an empty alias map
+# (#411) — the canonical-spellings LIST is what depends on a roster, not the rule.
+NAME_FIDELITY_INSTRUCTION = _load_template_deferred("session_doc/narrate/name_fidelity")
+# Deleted wholesale by 26ec5b0 with no replacement (#398): the real-person-name
+# ban that forbade naming anyone at the table in narration prose. Restored as a
+# placeholder rather than a Python-side append — per b4a1f2d, "the placeholder
+# is the point" — so deleting it again fails at load time instead of silently
+# regenerating a golden with the rule missing.
+REAL_NAMES_INSTRUCTION = _load_template_deferred("session_doc/narrate/real_names")
+# ONE statement of the speech-selection rule, interpolated into both per-scene
+# blocks (#435). `scene_anchored.md` and `bundle_scene.md` each restated three
+# rules the brief owns — attribution, conversational purpose, discovery order —
+# and the two restatements had already drifted: "retain their attribution" vs
+# "preserving attribution", "Select exchanges" vs "Select and shape speech".
+# Neither matched the brief either: "discovery order" compressed "the order of
+# events and the timing of discoveries" and dropped the event-order half, which
+# the shared text restores.
+#
+# Kept rather than deleted, deliberately. Both blocks exist to re-scope a
+# general rule onto THIS narrator, and the repeat may be earning its tokens on
+# small local models — the same recency argument the genre tail reminder makes
+# below. One string means that reinforcement cannot become two rules again.
+SPEECH_SELECTION_RULE      = _load_template_deferred(
+    "session_doc/narrate/speech_selection")
 SCENE_ANCHORED_DIRECTIVE   = _load_template_deferred(
-    "session_doc/narrate/scene_anchored", "narrator")
+    "session_doc/narrate/scene_anchored", "narrator", "speech_selection")
+BUNDLE_SYSTEM_BASE         = _load_template_deferred(
+    "session_doc/narrate/bundle_base",
+    "writing_brief", "audit_hatch",
+    "genre_directive", "shared_examples_block", "prose_mode_block",
+    "shared_context", "scene_count", "dialogue_instruction",
+    "name_fidelity", "real_names",
+)
+BUNDLE_SCENE_TEMPLATE      = _load_template_deferred(
+    "session_doc/narrate/bundle_scene",
+    "index", "scene_name", "narrator", "focus", "scene_events",
+    "moments", "voice_block", "examples_block", "contrast_block",
+    "speech_selection",
+)
 
 # Longest genre value still delivered as an inline ``GENRE: ...`` label.
 # Anything above this is a document and gets its own delimited block.
@@ -179,6 +284,37 @@ SCENE_ANCHORED_DIRECTIVE   = _load_template_deferred(
 GENRE_INLINE_MAX_CHARS = 200
 
 
+def _gm_attribution_brief(gap_marking: bool) -> str:
+    """The writing brief with its GM-attribution slot filled.
+
+    **Order matters and is the whole trap.** ``_fill`` emits each value verbatim
+    and does not re-scan the joined result — deliberately, so a rulebook
+    containing ``{narrator}`` passes through untouched. That means a
+    ``{gm_attribution}`` sitting inside the value handed to the outer ``_fill``
+    is never substituted: it reaches the model as literal text. Resolve the
+    inner placeholder first, here, and hand the finished string outward.
+
+    That is #302's failure with the direction reversed, and it is silent — the
+    two-way load check passes, because both templates declare the placeholders
+    they contain.
+    """
+    variant = GM_ATTRIBUTION_GAP if gap_marking else GM_ATTRIBUTION_ABSORB
+    return _fill(NARRATION_WRITING_BRIEF, gm_attribution=variant.strip())
+
+
+def _gm_attribution_prose(gap_marking: bool) -> str:
+    """The prose-mode block with its own GM-attribution slot filled.
+
+    A second slot rather than a second use of the first: the two sentences
+    agree on their opening clause and differ after it, and only the opening one
+    conflicts with the contract. Sharing one fragment would make them identical
+    and move the gap-off prompt, which FR-005 forbids.
+    """
+    variant = (GM_ATTRIBUTION_PROSE_GAP if gap_marking
+               else GM_ATTRIBUTION_PROSE_ABSORB)
+    return _fill(PROSE_MODE_INSTRUCTION, gm_attribution_prose=variant.strip())
+
+
 def build_narrate_system(examples_text: str | None, scene: str | None = None,
                          prose_mode: bool = False,
                          has_scene_events: bool = False,
@@ -186,10 +322,18 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                          narrator: str = "",
                          char_examples: str | None = None,
                          voice_note: str | None = None,
-                         genre: str | None = None) -> str:
+                         genre: str | None = None,
+                         gap_marking: bool = False) -> str:
     _require_templates()
     if examples_text:
-        block = "\n" + EXAMPLES_BLOCK.replace("{examples}", examples_text.strip()) + "\n"
+        # `_fill`, not `.replace()` (#416). This was the module's last raw
+        # substitution, and the bundle path already used `_fill` for the same
+        # block — so a rename in examples_block.md would have raised on one
+        # render path and silently shipped a literal `{examples}` on the other.
+        # The two-way load check does not cover it: rename the template AND the
+        # declared placeholder in one edit and the check passes while the
+        # `.replace()` quietly stops substituting.
+        block = "\n" + _fill(EXAMPLES_BLOCK, examples=examples_text.strip()) + "\n"
     else:
         block = ""
     if genre and genre.strip():
@@ -213,47 +357,42 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                  f"  STOP when this scene ends. Do not continue into what happened next.\n"
                  f"  Do not summarise what came before. Do not foreshadow what comes after.\n"
                  f"  This scene only.\n")
-        length = ("Write as many paragraphs as needed to give every extracted moment its due — "
-                  "do not compress multiple distinct beats into a single paragraph. "
-                  "Target 600-900 words for a typical scene; expand each extracted moment into "
-                  "2-3 sentences of observation, voice, or aside. Do NOT summarize the moments — "
-                  "render each one with concrete sensory detail and the narrator's reaction. "
-                  "EXPANSION MEANS NEW CONCRETE DETAIL drawn from the extracted moments. A beat "
-                  "you have already rendered may not be restated, re-realised, or re-described "
-                  "in different words to reach a length — that is padding, not narration. "
-                  "If your draft is under 500 words AND extracted moments remain compressed or "
-                  "unrendered, go back and expand those. If every moment has been given its due, "
-                  "stop: a short complete scene beats a padded one. "
-                  "Stop as soon as the scene is complete. "
-                  "If you find yourself describing a new location or the next event, you have gone too far — stop.")
         dialogue = DIALOGUE_INSTRUCTION_CONDITIONAL
     else:
         scope = ""
-        length = "Write as many paragraphs as needed to cover all the extracted moments — typically 4–8, but do not stop early."
         dialogue = DIALOGUE_INSTRUCTION_FULL
     if has_scene_events:
         scene_events_line = ("- Scene Events (authoritative) — the ordered account of what "
                              "happened; render from this faithfully\n"
                              "- Campaign Context — character backstory, NPC states, world detail\n")
-        rendering = ("The Scene Events list is the authoritative account of what occurred. "
+        # Carries its own blank lines, like {examples_block}: base.md used to
+        # wrap this slot in them, which only worked because {length_instruction}
+        # sat beside it and was never empty (#401). With that gone the empty
+        # branch would leave the wrapping behind as stray blank lines.
+        rendering = ("\nThe Scene Events list is the authoritative account of what occurred. "
                      "Render it in this character's voice. Do not add events that are not listed. "
-                     "The extracted moments below are your primary source for verbatim quotes — "
-                     "weave those lines in exactly as written.\n\n")
+                     "The extracted moments below are your primary source for the characters' "
+                     "speech — select and shape exchanges using the writing brief.\n")
     else:
         scene_events_line = ""
         rendering = ""
     result = _fill(NARRATE_SYSTEM_BASE,
+                   writing_brief=_gm_attribution_brief(gap_marking),
+                   audit_hatch=AUDIT_HATCH_INSTRUCTION,
                    genre_directive=genre_block,
                    examples_block=block,
                    scene_scope_line=scope,
                    scene_events_line=scene_events_line,
                    rendering_instruction=rendering,
-                   length_instruction=length,
-                   dialogue_instruction=dialogue)
+                   dialogue_instruction=dialogue,
+                   name_fidelity=NAME_FIDELITY_INSTRUCTION,
+                   real_names=REAL_NAMES_INSTRUCTION)
     if scene_anchored and narrator:
-        result += "\n\n" + _fill(SCENE_ANCHORED_DIRECTIVE, narrator=narrator)
+        result += "\n\n" + _fill(
+            SCENE_ANCHORED_DIRECTIVE, narrator=narrator,
+            speech_selection=SPEECH_SELECTION_RULE.strip())
     if prose_mode:
-        result += "\n\n" + PROSE_MODE_INSTRUCTION
+        result += "\n\n" + _gm_attribution_prose(gap_marking)
     if char_examples and narrator:
         result += "\n\n" + _fill(PER_CHAR_EXAMPLES_BLOCK,
                                  narrator=narrator,
@@ -264,12 +403,16 @@ def build_narrate_system(examples_text: str | None, scene: str | None = None,
                                  voice_note=voice_note.strip())
     if genre and genre.strip():
         # Repeat the genre directive at the tail of the prompt. The opening copy
-        # is buried under ~150 lines of prose-mode/voice rules by the time
-        # generation starts; smaller models lose the genre signal to recency.
-        # Claude is unaffected by the duplicate — same instruction, same prompt.
+        # can be buried under long voice references. Scope this repeat to style
+        # so legacy genre instructions cannot undo the shared writing brief --
+        # except TENSE, which is the campaign's call and not the brief's (#395).
+        # Two of three campaigns' rulebooks mandate first-person PAST against a
+        # whole bible written that way; a shared brief that outranks them flips
+        # the campaign on the next run and calls it house style.
         result += (
-            "\n\nGENRE — FINAL REMINDER (this overrides any generic register the "
-            "above rules suggest):\n" + genre.strip()
+            "\n\nGENRE — FINAL REMINDER (diction, register, and tense; the writing "
+            "brief governs point of view, quotation selection, scene construction, "
+            "knowledge boundaries, and prose mode):\n" + genre.strip()
         )
     return result
 
@@ -287,6 +430,212 @@ def estimate_narration_tokens(text: str) -> int:
     return max(500, ((estimated + 249) // 250) * 250)
 
 
+@dataclass(frozen=True)
+class NarrationScene:
+    """One full-plan narration scene prepared before a bundle call."""
+
+    index: int
+    scene_name: str
+    narrator: str
+    focus: str
+    source_path: Path
+    source_kind: str
+    scene_events: str
+    moments: str
+    voice_note: str | None
+    character_examples: str | None
+    previous_narrator: str | None
+    previous_voice_sample: str | None
+    estimated_output_tokens: int
+    output_path: Path
+    output_existed: bool
+
+    def __post_init__(self) -> None:
+        if self.index < 1:
+            raise ValueError("narration scene index must be positive")
+        if self.source_kind not in {"base", "override"}:
+            raise ValueError("narration scene source_kind must be base or override")
+
+    def split_entry(self) -> dict:
+        return {"i": self.index, "name": self.scene_name}
+
+
+@dataclass(frozen=True)
+class BundleSelection:
+    """Validated, ordered scope for exactly one bundled exchange."""
+
+    scenes: tuple[NarrationScene, ...]
+    bundle_ceiling: int
+    provider_batch: bool = False
+
+    def __post_init__(self) -> None:
+        if not self.scenes:
+            raise ValueError("bundled narration requires at least one selected scene")
+        indices = [scene.index for scene in self.scenes]
+        if any(i < 1 for i in indices) or len(set(indices)) != len(indices):
+            raise ValueError("bundled narration scene indices must be unique and positive")
+        if indices != sorted(indices):
+            raise ValueError("bundled narration scenes must be in full-plan order")
+        if self.bundle_ceiling < 1:
+            raise ValueError("--batch-max-tokens must be a positive integer")
+
+    @property
+    def projected_output_tokens(self) -> int:
+        # Covers both sentinel lines and whitespace around each section. It is
+        # deliberately small and fixed; narration prose dominates the estimate.
+        return sum(s.estimated_output_tokens + 32 for s in self.scenes)
+
+
+def _genre_block(genre: str | None) -> str:
+    if not genre or not genre.strip():
+        return ""
+    value = genre.strip()
+    if "\n" in value or len(value) > GENRE_INLINE_MAX_CHARS:
+        return ("GENRE & REGISTER (campaign-specific) — BEGIN\n"
+                f"{value}\nGENRE & REGISTER — END")
+    return f"GENRE: {value}"
+
+
+def _shared_narration_context(*, party: str | None, roster: str,
+                              npc_roster: str,
+                              context_docs: list[str] | None) -> str:
+    parts: list[str] = []
+    if roster:
+        parts.append("## Character Classes (definitive — never contradict these)\n\n" + roster)
+    if npc_roster:
+        parts.append(
+            "## Known NPCs — canonical spellings for NARRATION ONLY\n\n"
+            + npc_roster
+        )
+    if party:
+        parts.append(
+            "## Party Document (authoritative source for character classes, abilities, and roles)\n\n"
+            + party.strip()
+        )
+    if context_docs:
+        parts.append(
+            "## Campaign History\n\nUse this only for brief, relevant memories; do not summarize it.\n\n"
+            + "\n\n---\n\n".join(context_docs)
+        )
+    return "\n\n---\n\n".join(parts)
+
+
+def build_bundled_narrate_prompts(
+    scenes: list[NarrationScene] | tuple[NarrationScene, ...],
+    *,
+    shared_examples: str | None = None,
+    party: str | None = None,
+    roster: str = "",
+    npc_roster: str = "",
+    context_docs: list[str] | None = None,
+    prose_mode: bool = False,
+    genre: str | None = None,
+    gap_marking: bool = False,
+) -> tuple[str, str]:
+    """Build one shared system prompt and ordered scene-packet user prompt."""
+    _require_templates()
+    if not scenes:
+        raise ValueError("cannot build a narration bundle with no scenes")
+    shared_style = (
+        _fill(EXAMPLES_BLOCK, examples=shared_examples.strip())
+        if shared_examples else ""
+    )
+    system = _fill(
+        BUNDLE_SYSTEM_BASE,
+        writing_brief=_gm_attribution_brief(gap_marking),
+        audit_hatch=AUDIT_HATCH_INSTRUCTION,
+        genre_directive=_genre_block(genre),
+        shared_examples_block=shared_style,
+        # One contract text, two render paths (#454 Q2). A bundle-specific
+        # variant is how two statements of one rule start.
+        prose_mode_block=(_gm_attribution_prose(gap_marking) if prose_mode
+                          else ""),
+        dialogue_instruction=DIALOGUE_INSTRUCTION_CONDITIONAL,
+        shared_context=_shared_narration_context(
+            party=party, roster=roster, npc_roster=npc_roster,
+            context_docs=context_docs,
+        ),
+        scene_count=str(len(scenes)),
+        name_fidelity=NAME_FIDELITY_INSTRUCTION,
+        real_names=REAL_NAMES_INSTRUCTION,
+    )
+    packets: list[str] = []
+    for scene in scenes:
+        voice_block = (
+            _fill(VOICE_SPEC_BLOCK, narrator=scene.narrator,
+                  voice_note=scene.voice_note.strip())
+            if scene.voice_note else ""
+        )
+        examples_block = (
+            _fill(PER_CHAR_EXAMPLES_BLOCK, narrator=scene.narrator,
+                  examples=scene.character_examples.strip())
+            if scene.character_examples else ""
+        )
+        contrast_block = (
+            _fill(PREV_VOICE_CONTRAST_BLOCK,
+                  prev_narrator=scene.previous_narrator,
+                  prev_voice_sample=scene.previous_voice_sample.strip(),
+                  narrator=scene.narrator)
+            if _voice_contrast_applies(
+                scene.narrator, scene.previous_narrator,
+                scene.previous_voice_sample) else ""
+        )
+        packets.append(_fill(
+            BUNDLE_SCENE_TEMPLATE,
+            speech_selection=SPEECH_SELECTION_RULE.strip(),
+            index=f"{scene.index:02d}", scene_name=scene.scene_name,
+            narrator=scene.narrator, focus=scene.focus,
+            scene_events=scene.scene_events.strip(), moments=scene.moments.strip(),
+            voice_block=voice_block, examples_block=examples_block,
+            contrast_block=contrast_block,
+        ))
+    return system.strip(), "\n\n".join(packets).strip()
+
+
+_BUNDLE_MARKER_RE = re.compile(
+    r"^<<<CG-SCENE (\d+) (?:(BEGIN): (.*)|(END))>>>[ \t\r]*$", re.MULTILINE
+)
+
+
+def split_bundled_narration(text: str, scenes: list[NarrationScene] | tuple[NarrationScene, ...]) -> dict:
+    """Validate bundle order/end pairing, then use the shared scene splitter."""
+    expected = [scene.index for scene in scenes]
+    seen_begins: list[int] = []
+    open_index: int | None = None
+    for marker in _BUNDLE_MARKER_RE.finditer(text):
+        index = int(marker.group(1))
+        if marker.group(2) == "BEGIN":
+            seen_begins.append(index)
+            if open_index is not None:
+                return {
+                    "failed": True, "failure_reason": "NESTED_SECTION",
+                    "failure_detail": (
+                        f"scene {index:02d} BEGIN appears before scene "
+                        f"{open_index:02d}'s END"
+                    ),
+                    "sections": [],
+                }
+            open_index = index
+        else:
+            if open_index is None or index != open_index:
+                return {
+                    "failed": True, "failure_reason": "MISMATCHED_END",
+                    "failure_detail": f"END {index:02d} does not close the open scene",
+                    "sections": [],
+                }
+            open_index = None
+    expected_positions = {index: pos for pos, index in enumerate(expected)}
+    known_begins = [i for i in seen_begins if i in expected_positions]
+    if any(expected_positions[a] > expected_positions[b]
+           for a, b in zip(known_begins, known_begins[1:])):
+        return {
+            "failed": True, "failure_reason": "OUT_OF_ORDER",
+            "failure_detail": "response scene sections are not in requested plan order",
+            "sections": [],
+        }
+    return split_batched_response(text, [scene.split_entry() for scene in scenes])
+
+
 def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
                           party: str | None, handoff: str, roster: str = "",
                           scene_text: str | None = None,
@@ -299,19 +648,8 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
     if roster:
         parts.append(f"## Character Classes (definitive — never contradict these)\n\n{roster}")
     if npc_roster:
-        # The canonical-name channel that CANNOT corrupt a quote. Aliases used to
-        # be applied to the source text as a find-and-replace before Pass 5, which
-        # rewrote names inside verbatim dialogue (#223); they arrive as knowledge
-        # now, so the caveat below has to be explicit or the model does the
-        # substitution itself.
         parts.append(
             "## Known NPCs — canonical spellings for NARRATION ONLY\n\n"
-            "Use these spellings in the prose you write. Never apply them inside "
-            "quotation marks. A quoted line is a verbatim record of what somebody "
-            "actually said, and the name they chose — a nickname, a title, a partial "
-            "name, the wrong name — is part of what they said and part of what it "
-            "reveals about them. Reproduce the speaker's own wording, then use the "
-            "canonical spelling in your own sentences around it.\n\n"
             f"{npc_roster}"
         )
     if party:
@@ -322,15 +660,10 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
         parts.append(
             f"## Campaign History\n\n"
             f"This is the accumulated campaign context — past events, faction relationships, "
-            f"NPC histories, world conditions. When the current scene creates a natural "
-            f"opening, draw on this for a brief memory, reflection, or flashback:\n"
-            f"- A past decision that echoes in the current one\n"
-            f"- An NPC the narrator has history with\n"
-            f"- A cost or consequence that has been accumulating\n"
-            f"- A pattern the narrator has noticed repeating\n\n"
-            f"Keep it brief: one or two sentences of interior thought, then return to the "
-            f"present. Do not summarize the history. Let it surface as the narrator's "
-            f"inner life.\n\n"
+            f"NPC histories, world conditions. Use only context the narrator can know "
+            f"and that bears on this scene. Keep interior observations proportionate "
+            f"to the scene's evidence; do not insert backstory as a checklist, reveal "
+            f"GM-only knowledge, or invent a memory or motive.\n\n"
             f"{combined}"
         )
     if scene_text:
@@ -339,20 +672,20 @@ def build_narrate_prompt(narrator: str, focus: str, char_moments: str,
             f"This is the GM's authoritative account of what occurred in this scene. "
             f"Use it as the structural skeleton — the events, decisions, and NPC reactions "
             f"that the narration must cover. The character's Roleplay Moments (below) "
-            f"provide verbatim quotes and character-specific beats to weave in.\n\n"
+            f"provide the speech and character-specific beats to weave in.\n\n"
             f"{scene_text.strip()}"
         )
-    if (prev_narrator and prev_voice_sample
-            and prev_narrator.lower() != narrator.lower()):
+    if _voice_contrast_applies(narrator, prev_narrator, prev_voice_sample):
         parts.append(_fill(PREV_VOICE_CONTRAST_BLOCK,
                            prev_narrator=prev_narrator,
                            prev_voice_sample=prev_voice_sample.strip(),
                            narrator=narrator))
     if handoff:
-        parts.append(f"## Handoff from previous narrator\n\"{handoff}\"")
+        parts.append(f"## Handoff from previous narrator\n"
+                     f"Continuity reference only; do not repeat it as dialogue.\n\n{handoff}")
     if scene_text:
-        parts.append(f"## Verbatim Quotes — {narrator}\n"
-                     f"(weave these into the narrative exactly as written)\n\n"
+        parts.append(f"## Quoted Moments — {narrator}\n"
+                     f"(select and shape exchanges using the writing brief)\n\n"
                      f"{char_moments.strip()}")
     else:
         parts.append(

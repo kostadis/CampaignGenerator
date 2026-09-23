@@ -23,14 +23,54 @@ import session_doc.sd_plan as sd_plan  # noqa: E402
 def _make_scene_extractions(sx_dir: Path) -> None:
     sx_dir.mkdir(parents=True, exist_ok=True)
     (sx_dir / "01_stone_giants.md").write_text(
-        "---\nscene: The Stone Giants\n---\n\nVukradin stared down the giants.\n",
+        "---\nscene: The Stone Giants\n---\n\n"
+        "**Vukradin** — *holding the line*\n"
+        "> \"You will not pass.\"\n",
         encoding="utf-8",
     )
+
+
+#: sd_plan derives attendance from the tape (#385), so a run needs one. These
+#: are the smallest tape and roster that let the batch routing be exercised.
+_VTT = """WEBVTT
+
+1
+00:00:01.000 --> 00:00:04.000
+David Mendenhall: I hold the line.
+
+2
+00:00:04.000 --> 00:00:07.000
+Wade Brown: I scout ahead.
+"""
+
+_PLAYERS = """players:
+- id: david
+  name: David Mendenhall
+  display_names:
+  - David Mendenhall
+  plays:
+  - Vukradin
+- id: wade
+  name: Wade Brown
+  display_names:
+  - Wade Brown
+  plays:
+  - Soma
+"""
+
+
+def _make_session(tmp_path: Path) -> tuple[Path, Path]:
+    vtt = tmp_path / "session.vtt"
+    vtt.write_text(_VTT, encoding="utf-8")
+    players = tmp_path / "players.yaml"
+    players.write_text(_PLAYERS, encoding="utf-8")
+    return vtt, players
 
 
 def test_sd_plan_batch_routes_through_run_single_batch(tmp_path, monkeypatch):
     sx_dir = tmp_path / "scene_extractions"
     _make_scene_extractions(sx_dir)
+    vtt, players = _make_session(tmp_path)
     out_path = tmp_path / "plan.md"
     fake_plan = (
         "## Section 1\n"
@@ -61,6 +101,8 @@ def test_sd_plan_batch_routes_through_run_single_batch(tmp_path, monkeypatch):
             "sd_plan.py",
             "--scene-extractions", str(sx_dir),
             "--characters", "Vukradin",
+            "--vtt", str(vtt),
+            "--players-config", str(players),
             "--out", str(out_path),
             "--batch",
         ],
@@ -78,6 +120,7 @@ def test_sd_plan_batch_routes_through_run_single_batch(tmp_path, monkeypatch):
 def test_sd_plan_batch_item_failure_exits_nonzero(tmp_path, monkeypatch, capsys):
     sx_dir = tmp_path / "scene_extractions"
     _make_scene_extractions(sx_dir)
+    vtt, players = _make_session(tmp_path)
     out_path = tmp_path / "plan.md"
 
     def fake_run_single_batch(client, **kw):
@@ -94,6 +137,8 @@ def test_sd_plan_batch_item_failure_exits_nonzero(tmp_path, monkeypatch, capsys)
             "sd_plan.py",
             "--scene-extractions", str(sx_dir),
             "--characters", "Vukradin",
+            "--vtt", str(vtt),
+            "--players-config", str(players),
             "--out", str(out_path),
             "--batch",
         ],

@@ -186,10 +186,21 @@ of the 22 token-spending endpoints calls and none re-derives.
   none. The *model* deliberately does not fall back to wiring's `dgx_model` — that would be a
   substitution of the operator's pick.
 
-`server/config.py::MODELS` (the selectable-model list `GET /api/config/models` serves) is a
+`server/config.py::MODELS` (the model list `GET /api/config/models` serves) is a
 hardcoded Python list, not a `runtime` value — relocating its *source* into `wiring.yaml` is
 Phase 5b, deferred pending a cross-repo change (tracked as
 [issue #177](https://github.com/kostadis/CampaignGenerator/issues/177)).
+
+**It is a suggestion list, not an allow-list** (feature 024). Nothing gates on membership: the
+sidebar's MODEL control is a text input on every backend, offering these ids as `<datalist>`
+suggestions, and the ensemble synthesis warning judges capability with
+`server/routers/ensemble.py::synthesis_capable` — an id-shape predicate keeping one human
+judgment (the Haiku tier is below the synthesis bar) and dropping the inference that an unknown
+id is a weak one. Both used to gate on the list, which is the same defect the compatibility
+bullet above already refuses to commit: a snapshot rejects a legitimate new Claude id the day it
+ships. After 024, a stale `MODELS` costs the GM some typing and nothing else. Do not add a
+validator that checks `default_model` against it — that would look like input hygiene and would
+reinstate the defect, one release behind, forever.
 
 ## session_doc.yaml (Session Doc Editor's own document)
 

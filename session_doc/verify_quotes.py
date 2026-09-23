@@ -51,6 +51,7 @@ from difflib import SequenceMatcher
 from enum import Enum
 from pathlib import Path
 
+from campaignlib.citations import _QUOTE_TRANSLATION
 from campaignlib.textproc import locate_quote
 
 from .io import CLAIM_VERBATIM, CLAIM_VOICED, parse_vtt, split_scene_sections, _split_scene_body
@@ -105,7 +106,26 @@ _SPEAKER_PREFIX_RE = re.compile(r"^([^:]{1,40}):\s*")
 
 
 def _normalize(text: str) -> str:
-    return " ".join(text.split()).lower()
+    """Collapse whitespace, case, and quote-style drift before comparison.
+
+    The typography fold is `campaignlib.citations`' table, imported rather than
+    re-declared: two normalizers that disagree about whether `’` and `'` are the
+    same character is what #421 reports, and a second table here would be the
+    same bug waiting to happen again.
+
+    Renderers do not agree on apostrophe style and neither do this pipeline's own
+    artifacts: measured over five frozen prompts, `gpt-6-astra` emitted 164 `’`
+    and zero ASCII, `claude-fable-5-1` and `DeepSeek-V4-Flash-0731` the reverse,
+    and the shipped Phandalin ch51 both. Extractions and plans use `’`. So
+    narration and transcript routinely differ in a character neither the author
+    nor the reviewer can see, and `UNVERIFIED` is the one verdict this module's
+    own enum calls an accusation.
+
+    Quote marks and apostrophes only. Dashes and ellipses are left alone
+    deliberately — those can carry real editorial difference, and there is no
+    evidence yet that folding them is right.
+    """
+    return " ".join(text.translate(_QUOTE_TRANSLATION).split()).lower()
 
 
 # ── Transcript ───────────────────────────────────────────────────────────────

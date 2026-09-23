@@ -107,6 +107,22 @@ def test_api_key_still_stripped(monkeypatch):
     assert "ANTHROPIC_API_KEY" not in captured["env"]
 
 
+def test_blocks_to_text_flattens_user_blocks_and_drops_cache_metadata():
+    blocks = [
+        {
+            "type": "text",
+            "text": "stable context",
+            "cache_control": {"type": "ephemeral"},
+        },
+        {"type": "text", "text": "changing targets"},
+    ]
+
+    text = backends._blocks_to_text(blocks)
+
+    assert text == "stable context\nchanging targets"
+    assert "cache_control" not in text
+
+
 def test_messages_facade_threads_max_tokens(monkeypatch):
     captured = {}
     monkeypatch.setattr(subprocess, "run", _fake_run_factory(captured))

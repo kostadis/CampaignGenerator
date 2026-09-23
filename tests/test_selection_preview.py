@@ -62,15 +62,33 @@ def platform(monkeypatch, tmp_path):
 BATCH_VISIBLE_SERVICES = [s for s in ALL_SERVICES if s != "connections"]
 
 
+#: The batch pair, named so the connections case can be stated as "the same
+#: preview minus these" rather than as a second hand-copied literal that has to
+#: be kept in step with the first.
+BATCH_KEYS = {"batch", "batch_origin"}
+
+#: Every field a resolved preview carries. Written out rather than derived from
+#: the response so a field DISAPPEARING still fails — but written out ONCE, in
+#: one place, because it grows: the codex and claude-code effort work added
+#: eight fields here and the two hand-copied literals this replaced were never
+#: updated, which is 8 of the 23 failures #424 counted.
+PREVIEW_KEYS = {
+    "model", "backend", "model_origin", "backend_origin",
+    "compatible", "refusal",
+    "codex_reasoning_effort", "codex_reasoning_effort_origin",
+    "codex_reasoning_override",
+    "claude_code_effort", "claude_code_effort_origin",
+    "claude_code_effort_override",
+    "claude_code_thinking", "claude_code_thinking_origin",
+} | BATCH_KEYS
+
+
 @pytest.mark.parametrize("service", BATCH_VISIBLE_SERVICES)
 def test_every_service_exposes_a_preview(platform, service):
     r = client.get(f"/api/{service}/selection/resolved")
     assert r.status_code == 200, f"{service}: {r.text}"
     body = r.json()
-    assert set(body) == {
-        "model", "backend", "model_origin", "backend_origin",
-        "batch", "batch_origin", "compatible", "refusal",
-    }, f"{service} returned {sorted(body)}"
+    assert set(body) == PREVIEW_KEYS, f"{service} returned {sorted(body)}"
 
 
 def test_connections_preview_omits_batch_fields(platform):
@@ -82,9 +100,8 @@ def test_connections_preview_omits_batch_fields(platform):
     r = client.get("/api/connections/selection/resolved")
     assert r.status_code == 200, r.text
     body = r.json()
-    assert set(body) == {
-        "model", "backend", "model_origin", "backend_origin", "compatible", "refusal",
-    }, f"connections returned {sorted(body)}"
+    assert set(body) == PREVIEW_KEYS - BATCH_KEYS, (
+        f"connections returned {sorted(body)}")
 
 
 @pytest.mark.parametrize("service", ALL_SERVICES)

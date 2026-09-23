@@ -1,0 +1,42 @@
+{
+  "prepared_at": "2026-09-07T05:32:43.628191+00:00",
+  "parent_experiment": "/home/kostadis/CG-find-bug/experiments/20260907-phandalin-adaptation",
+  "campaign_commit": "bbf4e3c064b4e13b47ed523606a62936638a0cc6",
+  "campaign_repository": "https://github.com/kostadis/campaigns",
+  "campaign_repository_visibility": "public (confirmed during parent experiment)",
+  "generator_commit": "d9c5de87a0ec4831c1cdc999b26491851b1f7c01",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "medium",
+  "backend": "codex-cli",
+  "max_tokens_argument": 32000,
+  "token_limit_note": "Codex subscription adapter does not enforce this API-style argument.",
+  "arms": [
+    "control",
+    "composition"
+  ],
+  "scene_heading": "Soma — Harpers Behind the Wall",
+  "input_sha256": {
+    "inputs/source.md": "1d932b1dead3d414b877252e14976256d9119033c52e32cf34cf5a2e95c733b4",
+    "inputs/campaign_style.md": "33b857865207d60c78ba79dbe471246494daa93df548bffc5a7bc80952d5a257",
+    "inputs/character_references.md": "e3ca5b05fcadb8f59dccae7492b6162c9640fe06fe3bb3e91690103b37324bb7",
+    "inputs/examples/soma.md": "adc71f8ca88acc3b453926036864b83cd3d49f9e9e71522f1430d2ade8b9df9b",
+    "inputs/examples/vukradin.md": "1d10b874779646614f4a1d28c47dbdd986fa6ee958ed6f2e23d8778d826f8315",
+    "inputs/original_plan.md": "c52ce3d0c450708ff114bb97b5cbb56ae329b547d87cf7fa8a904dcefc9781c6",
+    "inputs/original_system.md": "21d93cbf733cdaad1c0274b2960f46e4468c8ebc7b00a30e67925dddd39d8a72",
+    "inputs/parent_case.json": "6c462e333aea056a9b5f27d6fabbb90b73af6d0fb1c1dd93dcec98f44555c1fa",
+    "inputs/scene_plan.md": "0491b087cdfb6990bc4622861c02a9fcb24798fb60aa007d018559e679b55f29",
+    "run.py": "94ee24e195ecfba86d0ba2928cb7b1b381c5559846e62ac2909169c0043511bf",
+    "build_reader.py": "05c515d8a1865098afc0ae7118a638618646ed6f6c3b7491d1fc8751d36d9e42",
+    "composition_block.md": "9ab790882c53bacf833cb6f2b67cedbe457f291f19932a2747bb58f5aeb66fe9",
+    "evaluation_criteria.md": "c92b26a7684400cb2be344c427313fe5f440b77f0407a010e8b057702898bd35",
+    "user_prompt.md": "f658f98a9342639e8b260f1d40e0c7a6440c51d09b2ec4023b1f878553dbb560",
+    "control/system_prompt.md": "2da015c540e5f31c7044c23ef6452e371407b7d9d0a17cd6924aa4c61db46db7",
+    "composition/system_prompt.md": "1cc78e6c852088f1beea798b4e0f669c0face5ebe47c6e68fe5f352e939414c5",
+    "prompt.diff": "23ea2c81e9871a132ed677db375716ea0998c63322e9b46f937fd78eac75a2f2"
+  },
+  "assignment_sha256": "6c0afebfd4c98eb2c03be6d1931915a9573502aada9eb7a42a4dc99746fbb860",
+  "design": "One independent single-scene generation per arm. Identical user message, model, effort, examples, and factual constraints. Only the composition block differs.",
+  "common_scope_change": "Both arms adapt the parent chapter brief to a single scene and receive only the unchanged scene 5 extraction and scene 5 POV plan; character references and both prose examples are unchanged.",
+  "treatment": "Replaces generic composition paragraph with planning plus specific editorial direction about scene 5; these components are not separately isolated.",
+  "limits": "One pair; stochastic outputs; no exposed random seed; no repeated trials. Source selection is identical between arms, not identical to the preceding whole-chapter run. A/B labels randomly assigned before outputs. No raw response editing or automatic retries."
+}

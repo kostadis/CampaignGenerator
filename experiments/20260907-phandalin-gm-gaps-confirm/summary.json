@@ -1,0 +1,70 @@
+{
+  "tested_on": {
+    "scene": "Phandalin 20260902 scene 5, Soma narrating — 11 markers at this effort.",
+    "markers": 11
+  },
+  "confirmation": [
+    {
+      "arm": "brewbarry",
+      "narrator": "brewbarry",
+      "session": "20260825",
+      "title": "A Banker's Revelation",
+      "status": "rendered",
+      "words": 1174,
+      "markers": 6,
+      "gm_turns_in_source": 41,
+      "joint_gm_player_turns": 0,
+      "seconds": 49.8,
+      "heading_ok": true,
+      "dialogue_lines": 49,
+      "narration_lines": 11
+    },
+    {
+      "arm": "soma",
+      "narrator": "soma",
+      "session": "20260818",
+      "title": "Arrival at the Spire",
+      "status": "rendered",
+      "words": 1857,
+      "markers": 12,
+      "gm_turns_in_source": 47,
+      "joint_gm_player_turns": 0,
+      "seconds": 80.6,
+      "heading_ok": true,
+      "dialogue_lines": 44,
+      "narration_lines": 20
+    },
+    {
+      "arm": "valphine",
+      "narrator": "valphine",
+      "session": "20260811",
+      "title": "Bullying Through the Loan",
+      "status": "rendered",
+      "words": 2866,
+      "markers": 4,
+      "gm_turns_in_source": 16,
+      "joint_gm_player_turns": 10,
+      "seconds": 97.1,
+      "heading_ok": true,
+      "dialogue_lines": 52,
+      "narration_lines": 25
+    },
+    {
+      "arm": "vukradin",
+      "narrator": "vukradin",
+      "session": "20260623",
+      "title": "The Universal Basic Treasure Proclamation",
+      "status": "rendered",
+      "words": 3101,
+      "markers": 9,
+      "gm_turns_in_source": 40,
+      "joint_gm_player_turns": 0,
+      "seconds": 113.8,
+      "heading_ok": true,
+      "dialogue_lines": 90,
+      "narration_lines": 34
+    }
+  ],
+  "not_run": [],
+  "reading": "Marker counts SHOULD vary — scenes contain different amounts of GM narration. Read each against gm_turns_in_source. The contract holding means: markers emitted, the supplied heading used, the players' dialogue still written. Whether the marked passages are the right ones is a judgement against each source that no number here makes."
+}

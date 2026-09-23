@@ -192,6 +192,43 @@ def test_batch_tokens_and_tokens_are_independent(tmp_path):
     assert cfg.extract.batch_tokens == 50000
 
 
+# ── narration bundle ceiling (022-bundle-narration) ─────────────────────
+
+
+def test_narrate_batch_tokens_defaults_to_bundle_cli_default(tmp_path):
+    svc = _service(tmp_path)
+    assert svc.get_config().narrate.batch_tokens == 32000
+
+
+def test_update_config_round_trips_narrate_batch_tokens(tmp_path):
+    svc = _service(tmp_path)
+
+    updated = svc.update_config({"narrate": {"batch_tokens": 48000}})
+
+    assert updated.narrate.tokens == 16000
+    assert updated.narrate.batch_tokens == 48000
+    on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
+    assert on_disk["narrate"]["batch_tokens"] == 48000
+    assert svc.get_config().narrate.batch_tokens == 48000
+
+
+def test_legacy_narrate_config_without_batch_tokens_gets_default(tmp_path):
+    path = tmp_path / "session_doc.yaml"
+    path.write_text("narrate:\n  tokens: 9000\n", encoding="utf-8")
+
+    loaded = load_session_editor_config(path)
+
+    assert loaded.narrate.tokens == 9000
+    assert loaded.narrate.batch_tokens == 32000
+
+
+def test_narrate_batch_tokens_must_be_positive(tmp_path):
+    svc = _service(tmp_path)
+    with pytest.raises(HTTPException) as exc:
+        svc.update_config({"narrate": {"batch_tokens": 0}})
+    assert exc.value.status_code == 400
+
+
 def test_batch_scenes_tri_state_round_trips_all_three_values(tmp_path):
     # A persisted False must read back as False, not collapse to None —
     # that distinction is the entire reason batch_scenes is bool | None
@@ -340,13 +377,17 @@ def test_codex_model_memory_is_isolated_from_existing_backends(tmp_path):
 
 def test_create_list_get_profile(tmp_path):
     svc = _service(tmp_path)
-    entry = ProfileEntry(name="Fast Draft", knobs={"narrate_tokens": 8000})
+    entry = ProfileEntry(
+        name="Fast Draft",
+        knobs={"narrate_tokens": 8000, "narrate_batch_tokens": 36000},
+    )
     created = svc.create_profile(entry)
     assert created.name == "Fast Draft"
 
     assert [p.name for p in svc.list_profiles()] == ["Fast Draft"]
     got = svc.get_profile("Fast Draft")
     assert got.knobs["narrate_tokens"] == 8000
+    assert got.knobs["narrate_batch_tokens"] == 36000
 
     # Persisted to session_doc.yaml.
     on_disk = yaml.safe_load(svc.session_doc_path.read_text(encoding="utf-8"))
@@ -426,6 +467,7 @@ def test_activate_profile_copies_knobs_into_narrate_and_backends(tmp_path):
             name="Fast",
             knobs={
                 "narrate_tokens": 4000,
+                "narrate_batch_tokens": 48000,
                 "prose_mode": True,
                 "reflections": True,
                 "narration_genre_file": "voice/_genre.md",
@@ -436,6 +478,7 @@ def test_activate_profile_copies_knobs_into_narrate_and_backends(tmp_path):
 
     cfg = svc.activate_profile("Fast")
     assert cfg.narrate.tokens == 4000
+    assert cfg.narrate.batch_tokens == 48000
     assert cfg.narrate.prose_mode is True
     assert cfg.narrate.reflections is True
     assert cfg.paths.genre_file == "voice/_genre.md"
@@ -446,6 +489,7 @@ def test_activate_profile_copies_knobs_into_narrate_and_backends(tmp_path):
     # Persisted — a fresh read agrees.
     reread = svc.get_config()
     assert reread.narrate.tokens == 4000
+    assert reread.narrate.batch_tokens == 48000
     assert reread.active_profile == "Fast"
 
 

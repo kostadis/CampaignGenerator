@@ -1,0 +1,25 @@
+{
+  "status": "rendered",
+  "started_at": "2026-09-07T17:36:05.939557+00:00",
+  "case_sha256": "b92630cc180bc14cf0410331ecf2137838c0d2814760ec5a43cc7d6617f9ebde",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "response_sha256": "f5808410b81e56c38117e2175bfe4a5c29e087b369431983499c45da858dd6fb",
+  "words": 2804,
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true
+  },
+  "headings_verbatim": [
+    "## Soma — Harpers Behind the Wall"
+  ],
+  "headings_match_after_normalization": true,
+  "markers_left_unresolved": [],
+  "finished_at": "2026-09-07T17:37:30.439179+00:00",
+  "wall_clock_seconds": 84.5
+}

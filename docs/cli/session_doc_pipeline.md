@@ -308,7 +308,7 @@ Inside the three `session_doc/sd_*.py` tools:
 | 2 | skipped (`--enhanced-sections` supplies it) | — | Memorable Moments / NPCs / Scenes block (built upstream, e.g. by the Editor) |
 | 3 | always runs (unless `--plan-file`) | `PLAN_SYSTEM` | Assign one narrator per scene from the `scene_extractions/` checklist |
 | 4 | skipped (scene-extraction file supplies it) | — | Character moments — `## Scene summary` + `## Verbatim moments` already in each `NN_*.md` |
-| 5 | runs per scene | `NARRATE_SYSTEM_BASE` | First-person memoir rendered against the scene's summary + moments |
+| 5 | sequential by default; bundled on request | `NARRATE_SYSTEM_BASE` or bundle templates | First-person memoir rendered against each scene's summary + moments |
 
 Pass 5 user-prompt assembly order (in `build_narrate_prompt()`): narrator + focus → character roster → party document → scene scope ("what happened") → voice notes → handoff sentence → narrator's extracted moments.
 
@@ -316,9 +316,10 @@ Pass 5 user-prompt assembly order (in `build_narrate_prompt()`): narrator + focu
 
 All three CLIs accept the shared `--batch` flag (Message Batches, 50% cost —
 see `docs/cli/cli_tools.md` § Shared flag). `sd_consistency`/`sd_plan` submit
-their single call as a one-item batch; `sd_narrate` degrades to sequential
-one-item batches because each scene's narration hands off into the next
-scene's prompt — grouping would break the chain.
+their single call as a one-item batch. `sd_narrate` remains sequential by
+default; `--batch-scenes` explicitly sends all selected narration scenes in
+one exchange. Provider `--batch` is independent: with bundled content it
+submits one bundled item, while sequential content remains one item per scene.
 
 
 ```bash
@@ -349,6 +350,22 @@ sd_narrate "$SESS/session-summary.md" \
     --examples          examples/ \
     --per-scene-output  "$SESS/narration/"
 # REVIEW & EDIT narration/session_doc_scene_NN_*.md (one narrator per file).
+
+# Generate every reviewed plan scene in one exchange. The CLI prints the
+# exact replacement scope and refuses rather than splitting the bundle.
+sd_narrate "$SESS/session-summary.md" \
+    --plan              "$SESS/narration/plan.md" \
+    --scene-extractions "$SESS/scene_extractions/" \
+    --party             docs/party.md \
+    --party-config      config/party.yaml \
+    --characters        "Vukradin, Valphine, Soma, Brewbarry" \
+    --voice-dir         voice/ \
+    --examples          examples/ \
+    --per-scene-output  "$SESS/narration/" \
+    --batch-scenes --batch-max-tokens 32000
+
+# Bundle an explicit full-plan subset instead.
+sd_narrate ... --batch-scenes --scene 2 5
 
 # Re-narrate a single scene after editing its quote file
 sd_narrate "$SESS/session-summary.md" \
@@ -388,9 +405,170 @@ assemble "$SESS/narration/" \
     --title  "Chapter 37 — A Gem of a Problem"
 ```
 
-## Exact single-scene source override — `--scene-extraction-file`
+## Answering a gap — the block model and the reviewer
 
-`sd_narrate` has one exact-file override:
+`--gap-marking` leaves the GM's descriptions unwritten. This is what consumes
+them. **Start here for the task**: `docs/cli/gap_review_howto.md`.
+
+### Three files per scene
+
+```
+session_doc_scene_NN_<slug>.md             generated — the draft, with markers
+session_doc_scene_NN_<slug>.authored.yaml  hand-authored — rulings and prose
+session_doc_scene_NN_<slug>.composed.md    generated — the two merged
+```
+
+The tape's `transcript_corrections.yaml` pattern: **the record is the source of
+truth and the composed document is output.** Generated files are never
+hand-edited; only the record is.
+
+`sd_compose` merges them, deterministically, and **refuses** when the record's
+`generated_sha256` no longer matches the narration — the same self-invalidating
+property `was`-checking gives the tape.
+
+### The reviewer is a static file, not a page you regenerate
+
+`session_doc/review/reviewer.html` is versioned here and copied to a device
+**once**. `sd_review export` writes the per-scene JSON that gets pasted into it.
+The page makes no network request of any kind, so it works at work, on a phone,
+in airplane mode.
+
+That inverts the workflow it replaces, where every review meant publishing a new
+page — and it makes the export an interface, so both sides carry a version and a
+test asserts they agree.
+
+### Ruling and writing are two different completions
+
+The reviewer shows **two** figures. *Ruled* is what a mobile session drives to
+completion; *written* is what the assembly gate reads. A scene where every gap
+is ruled and eight are unwritten is a finished triage, and the disposition
+`mine` exists to say exactly that — distinct from a gap nobody has looked at.
+
+Dispositions are `mine`, `authored`, `cut` and `edited`; a block nobody touched
+has **no entry at all**. Alongside them, an optional critique — `wrong-scope`,
+`model-should-have-written` — says the *marking* was wrong rather than that the
+chapter needs something, and never changes the composed document.
+
+### The gate
+
+`assemble --require-composed` refuses any scene still holding a marker, naming
+every one responsible. It reads the **documents**, not the records, so it holds
+for a scene composed by hand too.
+
+A scene with both a `.scrubbed.md` and a `.composed.md` is refused rather than
+guessed — `--use` records the choice, the same flag `#429`'s collision uses.
+
+### What this layer may not do
+
+Call a model. Ever. `tests/test_block_model_no_llm.py` walks the AST, because
+asked to resolve its own eleven markers the model discarded nothing and handed
+both of the GM's Order-of-the-Gauntlet lines to a player character
+(`experiments/20260907-phandalin-gm-gaps-selffill`). Copying a gap out to a chat
+is a human act, one gap at a time; nothing is handed the gaps unasked.
+
+## Gap marking — `sd_narrate --gap-marking`
+
+Off by default. With the mode on, a passage the source attributes to the **GM**
+is not written into the prose at all: the model emits a marker where it belongs
+and carries the scene on around it.
+
+```
+[GM NARRATION — TO BE WRITTEN: Aurelan arrives huffing and excited, pats himself
+down and straightens his clothing before he speaks.]
+```
+
+### The defect it removes
+
+`sd_narrate` asks one call to do two jobs — reshape the players' recorded
+dialogue, and author the scene description around it. The contract forbids "the
+GM as a character" and offers no third option, so **silent reassignment is the
+compliant move**. Six drafts of one scene by three renderers, on a single GM
+line explaining a two-way drop: one gave it to a PC as dialogue, one dissolved
+it into another PC's own observation, one dropped it. The finished prose does
+not say which. That is an attribution error, the class this repo reserves for a
+human checkpoint (#418).
+
+### What is gapped, and what is not
+
+| The GM's turn | Result |
+|---|---|
+| Describes or explains something — a place, an event, a world fact, how something works | **Gapped.** Yours to write. |
+| Only confirms or adjudicates a player's question (`"Yep."`) | **Dropped**, as table operation, exactly as today. |
+| Voices a named NPC (`**[GM, as the banker]**`) | **Written as that NPC's dialogue.** Not a gap. |
+
+Everything the players said and did is written normally. The markers are
+required output, not commentary — a scene with no markers means no GM
+description in it, not a model that declined.
+
+### One rule, selected by the mode
+
+The rule about GM attribution has exactly one home. `writing_brief.md` and
+`prose_mode.md` each carry a `{gm_attribution}` slot, and the mode chooses its
+value: today's "GM descriptions become experienced facts" when off, the contract
+when on. Turning the mode off produces a **byte-identical** prompt to the one
+that shipped before the feature — asserted, in
+`tests/test_prompt_golden_pre_feature.py`, against a golden frozen before the
+first edit.
+
+The contract is a repo prompt fragment
+(`config/agents/session_doc/narrate/gm_attribution_gap.md`), not a per-campaign
+file. The genre rulebook is per-campaign because register varies; this does not.
+A missing fragment refuses at import, naming the paths searched, rather than
+rendering without it.
+
+### Reaching it
+
+`--gap-marking` on the CLI, `narrate.gap_marking` in `session_doc.yaml`, a
+profile knob, and a toggle in the Session Doc Editor's Stage-④ knobs. It applies
+to per-scene and bundled renders alike.
+
+### What it does not do
+
+Answering a gap is not part of this. The marker survives assembly as content —
+it is deliberately *not* an apparatus comment, so nothing strips it — and it is
+also deliberately visible to the unknown-name scan, because a proper noun that
+appears only inside a marker is exactly the invention that check exists to
+catch. The authored/composed document model that answers a gap is #455; the
+block editor is #456.
+
+## The table-speech audit hatch
+
+Upstream extraction sometimes attributes the GM's table narration to a
+character, so a quoted span can carry a speaker who could not have said it.
+`sd_narrate` renders that beat as narration rather than quoting it, and records
+what it did on the scene's final line:
+
+```
+<!-- table-speech reclassified: "Alice, roll me a perception check." -->
+```
+
+**Where it lives.** In the per-scene file, and only there. `assemble` strips it
+(`session_doc/apparatus.py`) because the assembled document feeds the release
+append and the chapter split, so anything left in it travels into the bible.
+The per-scene file is the audit trail; `/voice-critic`'s *Reclassified table
+speech* section is where the GM reviews it, and `/scrub` masks it so its
+contents cannot generate residue candidates.
+
+**What it does and does not cover.** Mislabelled attribution and
+table-instruction/mechanical/editorial spans only. The writing brief separately
+licenses omitting incidental acknowledgments and abandoned procedural
+fragments — that is ordinary editorial work and is deliberately never logged
+here (#386). A hatch listing filler means the prompt needs tightening.
+
+**It is a review queue, not a detector.** The model self-reports, and both
+arms of the #245 benchmark missed the same span in opposite directions
+(`docs/design/ExtractionContract_proposal.md`, "Why the model is not the
+flagger"). An empty hatch means *no call was recorded*, never *the scene is
+clean*. On a scene that is entirely table operation it may produce nothing at
+all — which is what `/no-mech` exists to prevent, upstream.
+
+**Never hand-write one.** That fabricates a record of a decision the pipeline
+never made. Cut the lines by explicit decision instead, and say the hatch is
+absent.
+
+## Exact source overrides — `--scene-extraction-file`
+
+`sd_narrate` accepts an exact-file override:
 
 ```bash
 sd_narrate "$SESS/session-summary.md" \
@@ -402,16 +580,19 @@ sd_narrate "$SESS/session-summary.md" \
 ```
 
 The spelling is deliberately singular: `--scene-extraction-file FILE`.
-It is for one selected scene only. `--scene-extractions DIR` remains
-required because the normal directory load still supplies the rest of the
-session context and keeps the command shape compatible with ordinary
-single-scene reruns.
+Sequential mode retains the one-file/one-scene contract. In bundled mode the
+option may repeat, once for each selected scene whose exact reviewed source
+does not come from the base `--scene-extractions DIR`. This is how a UI run
+reproduces a mixed raw/smoothed selection without staging copies. Output order
+always follows the reviewed plan, not option order.
 
 Validation happens before any model call. The command refuses instead of
 falling back when:
 
-- `--scene-extraction-file` is supplied without `--scene`;
-- the exact-file option is supplied with zero or more than one scene number;
+- `--scene-extraction-file` is supplied without `--scene` in sequential mode;
+- sequential mode receives more than one exact file or more than one scene;
+- a bundled exact file does not match exactly one selected full-plan scene, or
+  two exact files claim the same scene;
 - `FILE` does not exist, is not a regular file, or is not readable UTF-8;
 - `FILE` is not an eligible `NN_*.md` extraction under the shared
   `session_doc.io` rules, including scaffold shadowing and ignored sibling
@@ -421,6 +602,23 @@ falling back when:
 
 Every refusal names the option/path/rule. It never silently uses a different
 file from the directory.
+
+## Bundled narration outcomes and recovery
+
+`--batch-max-tokens` is a total output ceiling for the one narration exchange;
+`--narrate-tokens` remains the per-scene sequential ceiling. A projection over
+the bundle ceiling exits `1` before client creation and suggests raising the
+ceiling, narrowing `--scene`, or using sequential mode. Bundling never creates
+automatic groups or silently falls back. `--narrator` also remains a sequential
+filter; combine bundled mode with explicit full-plan `--scene` indices instead.
+
+The response uses indexed scene markers. Fully closed, exactly attributed
+sections are written as the usual per-scene files. A structurally valid short
+response exits `3`, keeps every complete section, names the missing scenes, and
+leaves their existing files untouched. An identity, marker-pairing, duplicate,
+or order violation exits `4` and writes nothing from that exchange. Every run
+writes an atomic JSON report under `narration/logs/` by default; `--run-report`
+selects an exact path for callers such as the editor.
 
 The override is read-only. It does not copy, move, rename, rewrite, or
 normalize the source file. Output naming still comes from the selected plan
@@ -496,7 +694,7 @@ Practical implication for the human review step:
 | `--party-config FILE` | — | `config/party.yaml` — the roster, read from each character's sheet frontmatter. Required whenever `--party` is given |
 | `--characters NAMES` | — | Comma-separated narrator roster (`"Vukradin, Valphine, Soma, Brewbarry"`) |
 | `--voice-dir DIR` | — | Directory of per-character voice specs written by players. Filenames need not be `{name}_voice.md` — `{name}.md` and `{name}_<anything>.md` resolve too, and an ambiguous prefix is refused rather than guessed (#247). `_`-prefixed files (`_genre.md`) are shared campaign material, not specs. **A declared directory must deliver (#300):** a path that is not a directory is fatal, and once the directory holds *any* spec, every narrator in the render must resolve to one — checked before the first API call, so a miss stops the run instead of surfacing as one narrator who quietly lost their voice. A directory that exists but holds no specs yet is not an error; it renders without them, as does omitting the flag. |
-| `--examples DIR` | — | Directory of style-reference `.md` files. Files whose stem matches a character's first name route to that character only; others are global. |
+| `--examples DIR` | — | The campaign's example directory. Read **only** to report files nothing declares — it routes nothing. A character's examples come from its `examples:` entry in `party.yaml`, and the campaign-wide ones from `shared_examples:`. Filename-stem matching was removed (#247); see §4. |
 | `--enhanced-sections FILE` | — | Pre-built Memorable Moments / NPCs / Scenes block to inject as scene context |
 | `--narrator NAME` | — | Filter the plan to one character's scenes only |
 | `--plan-file FILE` | — | Supply a pre-written plan; skip Pass 3 |
@@ -519,6 +717,95 @@ Practical implication for the human review step:
 | `--dgx-endpoint URL` | — | Route LLM calls to an OpenAI-compatible server (e.g. vLLM on a DGX Spark). Falls back to `DGX_ENDPOINT` env var. |
 | `--dgx-model NAME` | — | Model name for the DGX endpoint (falls back to `DGX_MODEL` env var) |
 | `--verbose` | off | Print full system and user prompts before each API call |
+
+## Who may narrate — the two eligibility filters
+
+Pass 3 no longer chooses a narrator from the whole campaign roster. Two
+deterministic filters run before the model is called, and neither costs a token.
+
+**Filter A — session attendance.** `sd_plan --vtt` reads the tape's speaker
+labels and matches them against each player's `display_names` in
+`players.yaml`. A player with no label was not at the table, and a character
+played only by absent players leaves the narrator pool for the whole session.
+
+**Filter B — scene presence.** Within that pool, a character with no speaker
+label in a scene's extraction cannot narrate that scene. The plan prompt now
+carries an `eligible narrators` line per scene instead of a bare title, and a
+plan naming somebody outside it is refused.
+
+A speaker label is read verbatim and resolved against the roster, never judged
+by its shape. Extractions differ on the form — `**Brewbarry**` and
+`**[Brewbarry]**` are one convention apart, `**[GM, as the banker]**` qualifies
+the game master, and `**[GM / Brewbarry]**` names two parties on one turn — while
+the identical bold-bracket shape also carries scene apparatus
+(`**[Reroll With Advantage]**`). A bracketed label is split on `/` into
+speaker slots and each slot on `,` into pieces, and each piece must fold
+*exactly* onto a roster name or the GM label; a piece that merely contains one
+resolves to nobody. A later piece that resolves to nobody is a qualifier, not a
+missing speaker — so `**[GM, as the banker]**` is fully understood while
+`**[Vukradin, Brewbarry]**` still credits both. A label naming two roster
+characters places both, by GM ruling. Anything resolving to nobody creates no
+presence, and every slot that resolves to nobody is reported — including when
+another slot of the same label resolved. Full grammar:
+`specs/027-bracketed-speaker-labels/contracts/label-grammar.md` (#453).
+
+The two read different label spaces, which is why they are two mechanisms and
+not one applied twice: the VTT carries **player display names**
+(`David Mendenhall`), while `scene_extract` normalises to **character names**
+(`Vukradin`).
+
+Eligibility is presence, not volume. One labelled turn is full eligibility —
+in the session this came from, Soma has two lines in a scene against Vukradin's
+sixty-six and both are legitimate narrators of it. Turn counts appear in the
+prompt and the record as context for choosing, never as a threshold.
+
+### Both inputs are required
+
+`sd_plan` refuses without `--vtt` or `--players-config`, and refuses when no
+roster player has a label at all (which is the wrong tape, not a session nobody
+attended). It never falls back to the unnarrowed roster — that fallback *is*
+the defect this exists to prevent (#385).
+
+### What it prints, and what it leaves behind
+
+Every exclusion is reported before the API call, naming the character, the
+cause, and the artifact it was read from. `plan.eligibility.json` is written
+beside `plan.md` with the attendance, the per-scene candidates and turn counts,
+and every exclusion — so "which pool was this plan drawn from" is answerable
+from disk months later.
+
+Speaker labels matching no roster character are reported rather than dropped. A
+label arriving as `Vukradin (David)` instead of `Vukradin` costs that character
+their eligibility for the scene, and that must not happen quietly.
+
+### A scene nobody can narrate
+
+When a scene has no eligible narrator — pure GM narration, or a stretch the
+party sat out — there is no honest first-person answer, so `sd_plan` does not
+invent one. It writes `plan.a.md`, `plan.b.md`, `plan.c.md` and **no
+`plan.md`**, differing in how that scene is treated: folded into the adjacent
+scene, narrated in an ensemble register, or reported second-hand. Every other
+scene is identical across the three, so the choice is one decision rather than
+a diff.
+
+The missing `plan.md` is the gate — Pass 5 already refuses without one. Resolve
+it with:
+
+```bash
+sd_plan --choose b --out <narration-dir>/plan.md
+```
+
+which is exactly `cp plan.b.md plan.md`. The Session Doc Editor shows the three
+and posts the choice; both write the same file.
+
+### Pass 5 knows who was unvoiced
+
+`sd_narrate --vtt` marks a character nobody voiced in the roster block. The
+marker is about **voicing**, never about presence in the fiction — a GM may
+place an unvoiced character in a scene, and the roster block must not
+contradict the extraction. The character keeps full grounding so that placement
+can still be narrated; what is added is "invent no dialogue for them". Without
+`--vtt` the block renders exactly as it did before.
 
 ## Voice files
 
@@ -568,24 +855,30 @@ The model kept misidentifying classes — calling the bard a paladin, for exampl
 
 ### 4. Style transfer
 
-The handcrafted summaries have a distinctive voice: non-linear structure, narrator intrusion, verbatim dialogue exchanges (both sides), humour, short punchy paragraphs. Getting the model to match this from a system-prompt description alone wasn't reliable.
+The handcrafted summaries have a distinctive voice: narrator intrusion, verbatim dialogue exchanges (both sides), humour, short punchy paragraphs, and a non-linear structure **in the narrator's inner life** — associative memory and interior digression, not a shuffled sequence of events. That last bound matters: the writing brief requires "the order of events and the timing of discoveries" to be preserved, so an unqualified "non-linear structure" would be a rule the model cannot obey alongside it (#400). This paragraph describes what the source material looks like; the render path's copy is bounded the same way in `config/agents/session_doc/narrate/examples_block.md`, and `test_non_linear_allowance_is_scoped_to_the_narrators_inner_life` fails the build if that bound is removed.
 
-**Solution**: few-shot examples via `--examples`. The directory can hold both:
+Getting the model to match this from a system-prompt description alone wasn't reliable.
 
-- Global examples (any `.md` whose stem does not match a character's first name) — shown to every narrator under a `STYLE REFERENCE` block.
-- Per-character examples (e.g. `vukradin_examples.md` or `vukradin.md` when "Vukradin" is in `--characters`) — shown only to that character's narration, under a stronger `STYLE REFERENCE — {narrator}'s VOICE SPECIFICALLY` block that overrides the global examples.
+**Solution**: few-shot examples, **declared per character in `party.yaml`** — never matched by filename:
 
-The `voice-examples` and `style-examples` skills can generate these from existing campaign narration.
+- **Shared examples** — `shared_examples:` at the top level of `party.yaml` names the campaign-wide files, shown to every narrator under a `STYLE REFERENCE` block.
+- **Per-character examples** — a character's own `examples:` field names theirs, shown only to that character's narration under a stronger `STYLE REFERENCE — {narrator}'s VOICE SPECIFICALLY` block. Its `voice:` field names the voice spec the same way.
+
+**There is no fall-through.** A file nothing declares reaches nobody, and `players check` reports it. The rule this replaced matched a filename stem against a character's first name — a similarity-based identity assertion, which `provenance/identity.py` forbids everywhere else — and it produced five defects (#247, #300, #301, #315, campaigns#175). Its return fails the build: see `tests/test_no_prefix_identity.py`, and CLAUDE.md's "A player is an entity; every other copy of them is rendered".
+
+Start from `docs/cli/player_identity_howto.md` for the task-oriented version (a file nothing declares, a renamed character, a narrator that sounds wrong), and `docs/config/players-isolation.md` for the schema behind it.
+
+The `voice-examples` and `style-examples` skills can generate these from existing campaign narration; the generated file still has to be declared in `party.yaml` before it reaches anyone.
 
 ### 5. Handoff continuity
 
-Between scenes, the last sentence of the previous narration is passed as a "handoff" to the next narrator's prompt, so each voice picks up naturally from where the previous one left off — without knowing the full text of the previous section.
+Between scenes, the last line of the previous narration's *prose* is passed as a "handoff" to the next narrator's prompt, so each voice picks up naturally from where the previous one left off — without knowing the full text of the previous section. A trailing apparatus comment is skipped (`session_doc.apparatus.strip_audit_comments`), so an audit record never becomes a continuity anchor — see `specs/022-bundle-narration/contracts/wire-protocol.md` §1 and #396.
 
 For single-scene re-runs (`--scene N`), the handoff is empty; the contrast signal instead comes from sampling the previous narrator's per-character examples (see `extract_contrast_sample` and `PREV_VOICE_CONTRAST_BLOCK`).
 
 ### 6. VTT roleplay quote tracking
 
-The VTT contains verbatim roleplay quotes that are higher fidelity than what the LLM summary alone produces. These need to be matched to scenes so the narration can use the actual words, not a paraphrase.
+The VTT contains verbatim roleplay quotes that are higher fidelity than what the LLM summary alone produces. These need to be matched to scenes so the narration is built from the tape's actual speech, not a summary's gloss of it — narration may then adapt that wording per the writing brief's dialogue contract (#410); the match supplies grounded source material for Pass 5, not a verbatim guarantee at render time.
 
 **Solution**: scene-anchored extraction happens at Stage 2 (`scene_extract`), not inside the `sd_narrate` loop. Each `NN_*.md` already pairs `## Scene summary` with `## Verbatim moments`.
 
@@ -593,4 +886,4 @@ The VTT contains verbatim roleplay quotes that are higher fidelity than what the
 
 VTT speaker labels often include player names in parentheses: `Thorin (Joe)`, `GM (Kostadis)`. These need normalising before they bleed into narration prose.
 
-Normalisation is now Stage 2's responsibility (in `scene_extract`). `sd_narrate` treats `## Verbatim moments` as authoritative — it does not re-normalise.
+Normalisation is now Stage 2's responsibility (in `scene_extract`). `scene_extractions/` claims verbatim (`## Verbatim moments`); `scene_extractions_smoothed/` claims voiced (`## Voiced moments`), not exact (#250-R5). `sd_narrate` consumes whichever layer it is pointed at without re-normalising speaker labels either way.

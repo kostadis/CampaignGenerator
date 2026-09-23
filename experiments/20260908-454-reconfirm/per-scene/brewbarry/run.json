@@ -1,0 +1,40 @@
+{
+  "status": "rendered",
+  "arm": "brewbarry",
+  "mode": "per-scene",
+  "started_at": "2026-09-08T14:48:22.274405+00:00",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "system_prompt_source": "session_doc.narrate.build_narrate_system(gap_marking=True)",
+  "system_prompt_sha256": "c05a68e452861457f7d298c7d51ff3be1f7778d609a495840c4d078c03d47fe3",
+  "user_prompt_sha256": "2a14b55014637cbb1e42fc59694256e8592fcb63cfbf2c38b803dfdc1df5c43d",
+  "user_prompt_from": "experiments/20260907-phandalin-gm-gaps-confirm/prompts/brewbarry_user.md",
+  "generator_commit": "ae0017d296dc121bc092706eed3e9a325ab72841",
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true,
+    "max_tokens_requested": 32000,
+    "max_tokens_effect": "enforced",
+    "max_tokens_channel": "CLAUDE_CODE_MAX_OUTPUT_TOKENS"
+  },
+  "seconds": 45.1,
+  "response_sha256": "68a5073604688fad022e0ee4ebc5249bba61181508bd08c0145b2739b2310501",
+  "words": 922,
+  "marker_count": 5,
+  "markers": [
+    "[GM NARRATION — TO BE WRITTEN: The party has just come out of the Spire of the Morninglord, having given Lady Alagondar's heirloom, the Necklace of Fireballs, to Perrin Alagondar.]",
+    "[GM NARRATION — TO BE WRITTEN: Cullen Sharpe and House Margaster continue to grate on the party's nerves in an epic way.]",
+    "[GM NARRATION — TO BE WRITTEN: Aurelan Vance arrives out of breath, having gone to the counting house and rushed back; he is very excited, pats himself down, and gussies himself into proper clothing before he speaks.]",
+    "[GM NARRATION — TO BE WRITTEN: The banker pulls out a piece of paper and shows the party the correct spelling, B-I-M-B-L-E.]",
+    "[GM NARRATION — TO BE WRITTEN: Soma remembers where she used to get the best turtle soup in the whole area, the Board Laid Bare, a place of good prices, good food, and good atmosphere whose proprietor, Lim, runs a small business and might know how a hidden man could be fed.]"
+  ],
+  "dialogue_lines": 49,
+  "narration_lines": 9,
+  "accepted_marker_count": 6,
+  "marker_delta": -1
+}

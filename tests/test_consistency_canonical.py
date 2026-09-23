@@ -25,7 +25,15 @@ entities:
     note: Gatewarden; archmage
 distinct:
   - [Ilvara, Sylvira]
+rejected_aliases:
+  - [Brother Eldin, Constable Eldrin Malavar]
 """
+
+
+def _content_text(content) -> str:
+    if isinstance(content, str):
+        return content
+    return "".join(block["text"] for block in content)
 
 
 def _make_campaign(tmp_path: Path) -> Path:
@@ -57,10 +65,15 @@ def test_check_consistency_auto_loads_registry_as_canon(tmp_path, monkeypatch):
     check_consistency.main()
 
     assert len(calls) == 1
-    user_prompt = calls[0]["user"]
+    user_prompt = _content_text(calls[0]["user"])
     assert "AUTHORITATIVE CANON" in user_prompt
     assert "Kalan Strongbranch" in user_prompt
     assert "Ilvara" in user_prompt and "Sylvira" in user_prompt  # distinct pair rendered
+    assert "## Rejected aliases (settled negatives; do not re-propose)" in user_prompt
+    assert (
+        "**Brother Eldin** is NOT an alias of **Constable Eldrin Malavar**"
+        in user_prompt
+    )
 
     system_prompt = calls[0]["system"]
     assert "canon wins" in system_prompt.lower()
@@ -91,8 +104,41 @@ def test_check_consistency_context_accumulates_across_repeats(tmp_path, monkeypa
 
     check_consistency.main()
 
-    assert "Context A content." in calls[0]
-    assert "Context B content." in calls[0]
+    prompt = _content_text(calls[0])
+    assert "Context A content." in prompt
+    assert "Context B content." in prompt
+
+
+def test_check_consistency_skips_auto_loaded_registry_context(
+    tmp_path, monkeypatch, capsys
+):
+    campaign_dir = _make_campaign(tmp_path)
+    registry = campaign_dir / "docs" / "entity_registry.yaml"
+    registry_link = tmp_path / "registry-link.yaml"
+    registry_link.symlink_to(registry)
+    doc_path = campaign_dir / "session-doc.md"
+    doc_path.write_text("Narration.", encoding="utf-8")
+
+    calls = []
+    monkeypatch.setattr(check_consistency, "client_from_args", lambda *a, **kw: object())
+    monkeypatch.setattr(
+        check_consistency, "stream_api",
+        lambda client, system, user, model, **kw: calls.append(user) or "No issues found.",
+    )
+    monkeypatch.setattr(sys, "argv", [
+        "check_consistency", str(doc_path),
+        "--config", str(campaign_dir / "config.yaml"),
+        "--context", str(registry_link),
+    ])
+
+    check_consistency.main()
+
+    prompt = _content_text(calls[0])
+    assert prompt.count("AUTHORITATIVE CANON") == 1
+    assert "version: 1" not in prompt
+    stderr = capsys.readouterr().err
+    assert str(registry_link) in stderr
+    assert "already included as authoritative canon" in stderr
 
 
 def test_check_consistency_no_registry_omits_canon_section(tmp_path, monkeypatch):
@@ -118,7 +164,39 @@ def test_check_consistency_no_registry_omits_canon_section(tmp_path, monkeypatch
 
     check_consistency.main()
 
-    assert "AUTHORITATIVE CANON" not in calls[0]
+    prompt = _content_text(calls[0])
+    assert "AUTHORITATIVE CANON" not in prompt
+    assert "Party roster." in prompt
+
+
+def test_check_consistency_explicit_registry_remains_when_not_auto_loaded(
+    tmp_path, monkeypatch
+):
+    campaign_dir = tmp_path / "campaign_no_registry"
+    campaign_dir.mkdir()
+    (campaign_dir / "config.yaml").write_text("documents: []\n", encoding="utf-8")
+    doc_path = campaign_dir / "session-doc.md"
+    doc_path.write_text("Narration.", encoding="utf-8")
+    explicit_registry = tmp_path / "entity_registry.yaml"
+    explicit_registry.write_text(_REGISTRY_YAML, encoding="utf-8")
+
+    calls = []
+    monkeypatch.setattr(check_consistency, "client_from_args", lambda *a, **kw: object())
+    monkeypatch.setattr(
+        check_consistency, "stream_api",
+        lambda client, system, user, model, **kw: calls.append(user) or "No issues found.",
+    )
+    monkeypatch.setattr(sys, "argv", [
+        "check_consistency", str(doc_path),
+        "--config", str(campaign_dir / "config.yaml"),
+        "--context", str(explicit_registry),
+    ])
+
+    check_consistency.main()
+
+    prompt = _content_text(calls[0])
+    assert "AUTHORITATIVE CANON" not in prompt
+    assert "version: 1" in prompt
 
 
 def test_sd_consistency_auto_loads_registry_as_canon(tmp_path, monkeypatch):
@@ -145,5 +223,71 @@ def test_sd_consistency_auto_loads_registry_as_canon(tmp_path, monkeypatch):
     sd_consistency.main()
 
     assert len(calls) == 1
-    assert "AUTHORITATIVE CANON" in calls[0]
-    assert "Kalan Strongbranch" in calls[0]
+    prompt = _content_text(calls[0])
+    assert "AUTHORITATIVE CANON" in prompt
+    assert "Kalan Strongbranch" in prompt
+
+
+def test_sd_consistency_skips_auto_loaded_registry_context(
+    tmp_path, monkeypatch, capsys
+):
+    campaign_dir = _make_campaign(tmp_path)
+    registry = campaign_dir / "docs" / "entity_registry.yaml"
+    registry_link = tmp_path / "registry-link.yaml"
+    registry_link.symlink_to(registry)
+    recap_path = campaign_dir / "session-summary.md"
+    recap_path.write_text("Narration.", encoding="utf-8")
+    out_path = campaign_dir / "consistency_report.md"
+
+    calls = []
+    monkeypatch.setattr(sd_consistency, "client_from_args", lambda *a, **kw: object())
+    monkeypatch.setattr(
+        sd_consistency, "stream_api",
+        lambda client, system, user, model, **kw: calls.append(user) or "No issues found.",
+    )
+    monkeypatch.chdir(campaign_dir)
+    monkeypatch.setattr(sys, "argv", [
+        "sd_consistency", str(recap_path),
+        "--context", str(registry_link),
+        "--out", str(out_path),
+    ])
+
+    sd_consistency.main()
+
+    prompt = _content_text(calls[0])
+    assert prompt.count("AUTHORITATIVE CANON") == 1
+    assert "version: 1" not in prompt
+    stderr = capsys.readouterr().err
+    assert str(registry_link) in stderr
+    assert "already included as authoritative canon" in stderr
+
+
+def test_sd_consistency_explicit_registry_remains_when_not_auto_loaded(
+    tmp_path, monkeypatch
+):
+    campaign_dir = tmp_path / "campaign_no_registry"
+    campaign_dir.mkdir()
+    recap_path = campaign_dir / "session-summary.md"
+    recap_path.write_text("Narration.", encoding="utf-8")
+    explicit_registry = tmp_path / "entity_registry.yaml"
+    explicit_registry.write_text(_REGISTRY_YAML, encoding="utf-8")
+    out_path = campaign_dir / "consistency_report.md"
+
+    calls = []
+    monkeypatch.setattr(sd_consistency, "client_from_args", lambda *a, **kw: object())
+    monkeypatch.setattr(
+        sd_consistency, "stream_api",
+        lambda client, system, user, model, **kw: calls.append(user) or "No issues found.",
+    )
+    monkeypatch.chdir(campaign_dir)
+    monkeypatch.setattr(sys, "argv", [
+        "sd_consistency", str(recap_path),
+        "--context", str(explicit_registry),
+        "--out", str(out_path),
+    ])
+
+    sd_consistency.main()
+
+    prompt = _content_text(calls[0])
+    assert "AUTHORITATIVE CANON" not in prompt
+    assert "version: 1" in prompt

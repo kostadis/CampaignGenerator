@@ -720,7 +720,7 @@ def call_api_with_tools(client, *, system: str, messages: list, tools: list,
             raise
 
 
-def stream_api(client, system, user: str, model: str, max_tokens: int = 8096,
+def stream_api(client, system, user: str | list, model: str, max_tokens: int = 8096,
                silent: bool = False, verbose: bool = False,
                cache_system: bool = False, thinking: bool | None = None) -> str:
     """Stream a Claude API call, printing each token as it arrives. Returns full response.
@@ -732,6 +732,8 @@ def stream_api(client, system, user: str, model: str, max_tokens: int = 8096,
 
     system — string, or a pre-built list of content blocks (for callers that want to
              control caching breakpoints precisely).
+    user — string, or a pre-built list of content blocks. Lists are forwarded
+             unchanged so callers can place cache breakpoints in user content.
     cache_system — when True and `system` is a string, wrap it in a single
              cache_control: ephemeral block so subsequent calls with the same prefix
              get the prompt-cache discount. Useful when a large fixed context (e.g.
@@ -744,7 +746,7 @@ def stream_api(client, system, user: str, model: str, max_tokens: int = 8096,
         print(system if isinstance(system, str) else _render_system_blocks_for_log(system))
         print("─" * 60)
         print("USER PROMPT:")
-        print(user)
+        print(user if isinstance(user, str) else _render_system_blocks_for_log(user))
         print("▲" * 60 + "\n")
     import time
 

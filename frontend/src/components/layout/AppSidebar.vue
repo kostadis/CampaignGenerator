@@ -54,22 +54,67 @@ async function setBackend(b: Backend) {
   await config.updateRuntime(update)
 }
 
-// The MODELS registry is Anthropic-only — DGX and OpenRouter ids are
-// free-form and not enumerable from the repo. So the dropdown can only
-// express a valid pair for anthropic/claude-code; on the other two the
-// operator must be able to type an id. Without this the platform pair is
-// permanently incompatible on a local backend (every listed model is a
-// claude-* id) and the 003 refusal would block every run.
-const modelIsFreeText = computed(() =>
-  currentBackend.value === 'dgx'
-  || currentBackend.value === 'openrouter'
-  || currentBackend.value === 'codex-cli',
+// The MODEL control is ONE input on every backend (024). It used to fork — a
+// <select> over the MODELS registry on anthropic/claude-code, a free-text
+// <input> on the other three — which made a hand-maintained snapshot
+// authoritative on exactly the two backends where it goes stale: a Claude
+// model released after the last CampaignGenerator release was unreachable
+// from the UI at any price. The engine never agreed; selection.py's
+// compatible() gates on id *shape* and says so at length:
+//
+//   testing against it would silently reject a legitimate Claude id that
+//   simply hadn't been added yet
+//
+// So the fork was removed rather than widened. One element cannot drift from
+// itself, and Principle XI's Orphaned Capability — a choice the engine offers
+// that no human can reach — is closed by construction.
+//
+// MODELS is the Anthropic registry, so it is offered as suggestions only where
+// it means something. A claude-* id suggested against a DGX endpoint would be
+// an actively wrong hint, not merely a useless one.
+const suggestedModels = computed(() =>
+  currentBackend.value === 'anthropic' || currentBackend.value === 'claude-code'
+    ? config.models
+    : [],
 )
+const modelPlaceholder = computed(() => {
+  switch (currentBackend.value) {
+    case 'codex-cli': return 'optional — Codex default'
+    case 'dgx': return 'e.g. Qwen3-Next-80B'
+    case 'openrouter': return 'e.g. qwen/qwen3-next-80b'
+    // anthropic and claude-code. Naming one id as an example, not as a limit.
+    default: return 'e.g. claude-opus-5 — or type any id'
+  }
+})
+// A <select> commits the instant an option is picked; a text input commits on
+// blur or Enter. That gap did not exist on anthropic/claude-code before 024,
+// and it has a real edge: a GM who types an id and triggers a run WITHOUT ever
+// leaving the field (a keyboard shortcut, a control that does not steal focus)
+// would have had `change` never fire — so `config.model`, which every run view
+// forwards explicitly and which BEATS runtime.default_model at the server,
+// still held the previous id. The field showed one model and the run used
+// another.
+//
+// So the two halves are split. `stageModel` is synchronous and local: it keeps
+// `config.model` honest on every keystroke, which is what a run reads. Nothing
+// is written to disk from here — a PUT per keystroke would be absurd, and
+// platform.yaml is not a scratchpad.
+function stageModel(value: string) {
+  const model = value.trim()
+  modelMemory.value[currentBackend.value] = model
+  config.model = model
+}
 async function setModel(value: string) {
-  modelMemory.value[currentBackend.value] = value.trim()
-  config.model = value
+  // Persist on commit (blur or Enter). Trim once and write that single value
+  // everywhere: this used to trim into the memory map and persist the raw
+  // string as default_model, so one pasted id wrote two different strings for
+  // one choice, from one function, in one request (024 R5). Trimming is the
+  // ONLY normalisation permitted here — no case folding, no substitution, and
+  // above all no rejection: an id absent from `config.models` is a model the
+  // GM is entitled to run.
+  stageModel(value)
   await config.updateRuntime({
-    default_model: value,
+    default_model: config.model,
     default_models: { ...modelMemory.value },
   })
 }
@@ -322,16 +367,17 @@ function navigate(path: string) {
       <div class="model-selector">
         <label class="model-label">MODEL</label>
         <input
-          v-if="modelIsFreeText"
           :value="displayedModel"
           class="model-select"
-          :placeholder="currentBackend === 'codex-cli' ? 'optional — Codex default' : currentBackend === 'dgx' ? 'e.g. Qwen3-Next-80B' : 'e.g. qwen/qwen3-next-80b'"
-          title="This backend's model ids are free-form — type the id your endpoint serves"
+          list="cg-model-ids"
+          :placeholder="modelPlaceholder"
+          title="Type any model id this backend serves — the suggestions are a shortlist, not a limit"
+          @input="stageModel(($event.target as HTMLInputElement).value)"
           @change="setModel(($event.target as HTMLInputElement).value)"
         />
-        <select v-else :value="displayedModel" class="model-select" @change="setModel(($event.target as HTMLSelectElement).value)">
-          <option v-for="m in config.models" :key="m" :value="m">{{ m }}</option>
-        </select>
+        <datalist id="cg-model-ids">
+          <option v-for="m in suggestedModels" :key="m" :value="m" />
+        </datalist>
       </div>
     </div>
   </aside>

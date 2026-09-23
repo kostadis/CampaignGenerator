@@ -1,0 +1,129 @@
+
+2026-09-11T02:52:50.095020 [info     ] Deleted old log file: /home/kostadis/.cognee/logs/2026-09-10_22-47-31.log [cognee.shared.logging_utils]
+
+2026-09-11T02:52:50.095296 [info     ] Log file created at: /home/kostadis/.cognee/logs/2026-09-11_02-52-49.log [cognee.shared.logging_utils] log_file=/home/kostadis/.cognee/logs/2026-09-11_02-52-49.log
+
+2026-09-11T02:52:50.095429 [warning  ] Cognee 1.0 changes: New API — remember/recall/forget/improve (V1 add/cognify/search still work). Session memory enabled by default (CACHING=false to disable). Multi-user access control on by default (ENABLE_BACKEND_ACCESS_CONTROL=false to disable). Agents (@cognee.agent) auto-verified on registration. See https://docs.cognee.ai/ [cognee.shared.logging_utils]
+
+2026-09-11T02:52:50.095534 [info     ] Logging initialized            [cognee.shared.logging_utils] cognee_version=1.5.3-local database_path=/home/kostadis/cognee-local/.cognee_system/databases os_info='Linux 7.0.0-30-generic (#30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026)' python_version=3.12.13 structlog_version=25.5.0
+
+2026-09-11T02:52:50.095679 [info     ] Database storage: /home/kostadis/cognee-local/.cognee_system/databases [cognee.shared.logging_utils]
+
+2026-09-11T02:52:50.526206 [info     ] auth posture: authentication=required, multi_tenant=enabled (default (no env vars set)) [get_authenticated_user]
+
+2026-09-11T02:52:54.071765 [info     ] Log file created at: /home/kostadis/.cognee/logs/2026-09-11_02-52-49.log [cognee.shared.logging_utils] log_file=/home/kostadis/.cognee/logs/2026-09-11_02-52-49.log
+
+2026-09-11T02:52:54.072078 [warning  ] Cognee 1.0 changes: New API — remember/recall/forget/improve (V1 add/cognify/search still work). Session memory enabled by default (CACHING=false to disable). Multi-user access control on by default (ENABLE_BACKEND_ACCESS_CONTROL=false to disable). Agents (@cognee.agent) auto-verified on registration. See https://docs.cognee.ai/ [cognee.shared.logging_utils]
+
+2026-09-11T02:52:54.072411 [info     ] Logging initialized            [cognee.shared.logging_utils] cognee_version=1.5.3-local database_path=/home/kostadis/cognee-local/.cognee_system/databases os_info='Linux 7.0.0-30-generic (#30-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 18:22:54 UTC 2026)' python_version=3.12.13 structlog_version=25.5.0
+
+2026-09-11T02:52:54.072667 [info     ] Database storage: /home/kostadis/cognee-local/.cognee_system/databases [cognee.shared.logging_utils]
+
+2026-09-11T02:52:54.073885 [warning  ] Could not load a matching tokenizer for embedding model 'qwen3-embedding:0.6b' (No module named 'transformers'). Falling back to TikToken, so token counts are approximate. Token counts drive chunk sizing and the --dry-run estimate, so a tokenizer that does not match the embedding model will mis-size chunks. Set HUGGINGFACE_TOKENIZER to a tokenizer matching your embedding model to fix this. [tokenizer_resolver]
+
+2026-09-11T02:52:57.717852 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=339d32c0-48be-590a-8857-f747d4a88687 [HybridRetriever]
+
+2026-09-11T02:52:57.718521 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=29cf1fff-b85c-5766-b2c0-d108183983a6 [HybridRetriever]
+
+2026-09-11T02:52:57.718677 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=b0389b78-ef0f-5ca2-95eb-7c2af97a499d [HybridRetriever]
+
+2026-09-11T02:52:57.718779 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a19a9fbe-45af-5f6e-be4c-bfc3bd7b1a8b [HybridRetriever]
+
+2026-09-11T02:52:57.718865 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=18dd8c51-9cbe-5b45-a98a-add74528c777 [HybridRetriever]
+
+2026-09-11T02:52:57.718949 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=ddd23866-45aa-5b57-8ffe-fdb76677e1ff [HybridRetriever]
+
+2026-09-11T02:52:57.719031 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=9e9f6f95-46e7-514e-b984-bdd9a55a01a9 [HybridRetriever]
+
+2026-09-11T02:52:57.719108 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8fb70ec8-a01f-56e9-b33c-140faf7493ee [HybridRetriever]
+
+2026-09-11T02:52:57.719225 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=fcb9d4ca-abe0-553e-ba9d-e807f4a7ab8f [HybridRetriever]
+
+2026-09-11T02:52:57.719509 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=18dd8c51-9cbe-5b45-a98a-add74528c777 [HybridRetriever]
+
+2026-09-11T02:52:57.719606 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=29cf1fff-b85c-5766-b2c0-d108183983a6 [HybridRetriever]
+
+2026-09-11T02:52:57.719724 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=cbd3673d-af3d-52ca-829d-96b5c72bfedf [HybridRetriever]
+
+2026-09-11T02:52:57.719821 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a0c8a95f-3dfb-5c8d-ab86-67868b2cbc3c [HybridRetriever]
+
+2026-09-11T02:52:57.719921 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8890aaf6-d705-5a4b-b137-2acaf6a7376f [HybridRetriever]
+
+2026-09-11T02:52:57.720027 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=d17f5f31-2a29-5a20-b780-a2fe088e84e3 [HybridRetriever]
+
+2026-09-11T02:52:57.720111 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=37d318bc-d866-5a78-bb5f-511c0fcfc512 [HybridRetriever]
+
+2026-09-11T02:52:57.720229 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=1e25ee9b-407e-58e0-b096-90298ba14955 [HybridRetriever]
+
+2026-09-11T02:52:57.823179 [info     ] Neighborhood retrieval (1-hop): 166 nodes and 1709 edges in 0.12s [cognee.shared.logging_utils]
+
+2026-09-11T02:52:57.867910 [info     ] Neighborhood retrieval (1-hop): 233 nodes and 2677 edges in 0.15s [cognee.shared.logging_utils]
+
+==========================================================================
+BASELINE  (cognee default prompt)
+--------------------------------------------------------------------------
+**What has happened to Gundren Rockseeker, in order:**
+1.  **Hired the Party:** He hired Zenvon to deliver provisions to Phandalin and rode ahead with his escort, Sildar Hallwinter.
+2.  **Ambushed:** While on the Triboar Trail, they were ambushed by goblins; their belongings were ransacked, and they were dragged away alive.
+3.  **Separated:** During captivity at Cragmaw Hideout, Gundren was taken away separately from Sildar, who remained to be rescued by the party.
+4.  **Interrogated/Moved:** He was held by the goblins (under orders from the Black Spider) for interrogation regarding the map to Wave Echo Cave, after which he was transferred away from the Hideout.
+
+**Current Status of his Thread:**
+Gundren is currently held prisoner at **Cragmaw Castle**. The party cleared the Cragmaw Hideout but did not find him there; locating and rescuing him from Castle remains the primary unresolved objective.
+
+  >> unsupported-term check: LEAKED ['cragmaw castle']
+  >> says 'not recorded': no
+
+2026-09-11T02:53:18.007453 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=18dd8c51-9cbe-5b45-a98a-add74528c777 [HybridRetriever]
+
+2026-09-11T02:53:18.007944 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=29cf1fff-b85c-5766-b2c0-d108183983a6 [HybridRetriever]
+
+2026-09-11T02:53:18.008079 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=cbd3673d-af3d-52ca-829d-96b5c72bfedf [HybridRetriever]
+
+2026-09-11T02:53:18.008179 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a0c8a95f-3dfb-5c8d-ab86-67868b2cbc3c [HybridRetriever]
+
+2026-09-11T02:53:18.008262 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8890aaf6-d705-5a4b-b137-2acaf6a7376f [HybridRetriever]
+
+2026-09-11T02:53:18.008349 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=d17f5f31-2a29-5a20-b780-a2fe088e84e3 [HybridRetriever]
+
+2026-09-11T02:53:18.008434 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=37d318bc-d866-5a78-bb5f-511c0fcfc512 [HybridRetriever]
+
+2026-09-11T02:53:18.008519 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=1e25ee9b-407e-58e0-b096-90298ba14955 [HybridRetriever]
+
+2026-09-11T02:53:18.366285 [info     ] Neighborhood retrieval (1-hop): 166 nodes and 1709 edges in 0.36s [cognee.shared.logging_utils]
+
+2026-09-11T02:53:18.449319 [info     ] Neighborhood retrieval (1-hop): 160 nodes and 1738 edges in 0.07s [cognee.shared.logging_utils]
+
+2026-09-11T02:53:18.456772 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=339d32c0-48be-590a-8857-f747d4a88687 [HybridRetriever]
+
+2026-09-11T02:53:18.456979 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=29cf1fff-b85c-5766-b2c0-d108183983a6 [HybridRetriever]
+
+2026-09-11T02:53:18.457079 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=a19a9fbe-45af-5f6e-be4c-bfc3bd7b1a8b [HybridRetriever]
+
+2026-09-11T02:53:18.457164 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=b0389b78-ef0f-5ca2-95eb-7c2af97a499d [HybridRetriever]
+
+2026-09-11T02:53:18.457246 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=18dd8c51-9cbe-5b45-a98a-add74528c777 [HybridRetriever]
+
+2026-09-11T02:53:18.457335 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=9e9f6f95-46e7-514e-b984-bdd9a55a01a9 [HybridRetriever]
+
+2026-09-11T02:53:18.457431 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=cbd3673d-af3d-52ca-829d-96b5c72bfedf [HybridRetriever]
+
+2026-09-11T02:53:18.457539 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=ddd23866-45aa-5b57-8ffe-fdb76677e1ff [HybridRetriever]
+
+2026-09-11T02:53:18.457628 [warning  ] DocumentChunk_text row has no paired TextSummary_text row: chunk_id=8fb70ec8-a01f-56e9-b33c-140faf7493ee [HybridRetriever]
+
+==========================================================================
+STRICT    (no-outside-knowledge prompt)
+--------------------------------------------------------------------------
+**What has happened to Gundren Rockseeker, in order:**
+
+1.  **Hired the Party:** Gundren hired Zenvon Forepot to deliver provisions from Neverwinter to Barthen’s Provisions in Phandalin and rode ahead with his escort, Sildar Hallwinter.
+2.  **Captured:** While traveling on the Triboar Trail, Gundren and Sildar were ambushed by goblins. They were dragged away alive; Gundren’s belongings were ransacked, and his empty map case was left behind.
+3.  **Separated:** According to Sildar Hallwinter’s recollection, Gundren was taken away separately from Sildar, who was held in the Cragmaw Hideout. Sildar overheard the name "Black Spider" associated with the capture.
+4.  **Status Confirmed Missing:** The party cleared the Cragmaw Hideout and defeated its leader, Klarg. Gundren was not found in the hideout.
+
+**Current Status of his Thread:**
+Gundren is **missing and captive**. The record confirms he was taken separately from the Cragmaw Hideout and is not among the prisoners found there. His specific location is currently **unknown** to the party. The identity of the "Black Spider" and the whereabouts of the map to Wave Echo Cave remain unresolved, leaving Gundren’s rescue an open and urgent objective.
+
+  >> unsupported-term check: CLEAN (none present)
+  >> says 'not recorded': no

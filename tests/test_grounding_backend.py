@@ -169,9 +169,23 @@ def test_all_routes_omit_inherited_claude_model_for_codex(monkeypatch, tmp_path,
 
 
 def test_codex_explicit_claude_model_refuses_before_grounding_child(monkeypatch, tmp_path):
+    """The refusal is for an EXPLICIT incompatible pick, not an inherited one.
+
+    Seeding the model into `runtime` puts it in the PLATFORM tier, which
+    `resolve_selection` deliberately treats as an inherited default and omits
+    rather than refuses — "A platform/literal model is an inherited default,
+    not an operator's Codex choice." A sibling test asserts exactly that
+    omission from the same helper, so the two were making opposite claims about
+    identical input and this one could never pass (#424).
+
+    The model therefore goes in as a query parameter, which is the REQUEST tier
+    and the one the code calls explicit. That is also how the operator supplies
+    it, so the test now exercises the path it is named for.
+    """
     captured = _capture_cmd(monkeypatch)
-    _set_selection(monkeypatch, tmp_path, {"backend": "codex-cli", "model": "claude-sonnet-4-6"})
-    r = client.get("/api/grounding/run/campaign-state", params={"input": "docs/x.md"})
+    _set_selection(monkeypatch, tmp_path, {"backend": "codex-cli"})
+    r = client.get("/api/grounding/run/campaign-state",
+                   params={"input": "docs/x.md", "model": "claude-sonnet-4-6"})
     assert r.status_code == 409, r.text
     assert r.json()["detail"]["error"] == "incompatible_selection"
     assert "cmd" not in captured

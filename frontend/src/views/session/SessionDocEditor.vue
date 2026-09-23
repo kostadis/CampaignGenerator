@@ -4,11 +4,12 @@ import { useRouter } from 'vue-router'
 import { useConfigStore, type Backend } from '../../stores/config'
 import { resolvePath, resolvePathList } from '../../utils/paths'
 import { apiFetch, apiPut, apiPost } from '../../api/client'
-import { connectSSE } from '../../api/sse'
+import { connectSSE, type SSECompletion } from '../../api/sse'
 import SceneList from '../../components/scene-editor/SceneList.vue'
 import type { Scene } from '../../components/scene-editor/SceneList.vue'
 import ExtractionEditor from '../../components/scene-editor/ExtractionEditor.vue'
 import NarrationOutput from '../../components/scene-editor/NarrationOutput.vue'
+import NarrationBundleDialog from '../../components/scene-editor/NarrationBundleDialog.vue'
 import KnobDrawer from '../../components/scene-editor/KnobDrawer.vue'
 
 const config = useConfigStore()
@@ -30,7 +31,9 @@ const extractTokens = ref(8192)
 // which stays the per-scene cap. Default matches ExtractKnobs.batch_tokens.
 const batchTokens = ref(32000)
 const narrateTokens = ref(16000)
+const narrateBatchTokens = ref(32000)
 const proseMode = ref(false)
+const gapMarking = ref(false)
 const reflections = ref(false)
 const genreFile = ref('')
 const backend = ref<Backend>('anthropic')
@@ -100,7 +103,9 @@ function loadConfigFields() {
   extractTokens.value = extract.tokens || 8192
   batchTokens.value = extract.batch_tokens || 32000
   narrateTokens.value = narrate.tokens || 16000
+  narrateBatchTokens.value = narrate.batch_tokens || 32000
   proseMode.value = !!narrate.prose_mode
+  gapMarking.value = !!narrate.gap_marking
   reflections.value = !!narrate.reflections
   genreFile.value = paths.genre_file || ''
   backend.value = normalizeBackend(backends.active)
@@ -164,7 +169,9 @@ function buildEditorConfigPayload() {
     narrate: {
       context: contextFiles.value.length ? contextFiles.value : [],
       tokens: narrateTokens.value || undefined,
+      batch_tokens: narrateBatchTokens.value || undefined,
       prose_mode: proseMode.value || undefined,
+      gap_marking: gapMarking.value || undefined,
       reflections: reflections.value || undefined,
     },
   }
@@ -241,7 +248,7 @@ watch(() => config.editorConfig?.session_dir, (next, prev) => {
 watch(
   [session, outputDir, sessionSummary, sceneExtractionsDir, narrationDir,
    party, voiceDir, examplesDir, context, extractTokens, batchTokens,
-   narrateTokens, proseMode, reflections, genreFile],
+   narrateTokens, narrateBatchTokens, proseMode, gapMarking, reflections, genreFile],
   scheduleApply,
 )
 
@@ -352,6 +359,7 @@ const estimatedTokens = ref<number | null>(null)
 const hasExtraction = ref(false)
 const rawExtractionDirty = ref(false)
 const narrating = ref(false)
+const narrationBundleDialogOpen = ref(false)
 const extracting = ref(false)
 const forceReextract = ref(false)
 // Batched-scene-extraction per-run choice (013-batched-scene-extraction
@@ -385,6 +393,15 @@ const voicePlayer = ref('')
 const voiceFile = ref('')
 const voiceUpdate = ref(false)
 const narrationOutput = ref('')
+
+// A scene with no eligible narrator (#385) makes Pass 3 write three plans
+// instead of one, differing in how that scene is treated. The pending state is
+// discoverable from disk — alternates present, plan.md absent — so it is read
+// back rather than tracked in the browser (Constitution VIII/IX).
+interface PlanAlternate { key: string; name: string; text: string }
+const planAlternates = ref<PlanAlternate[]>([])
+const planChoicePending = ref(false)
+const choosingPlan = ref(false)
 const statusMsg = ref('')
 const assembledExists = ref(false)
 
@@ -494,7 +511,9 @@ interface ProfileEntry {
   name: string
   knobs: {
     narrate_tokens?: number
+    narrate_batch_tokens?: number
     prose_mode?: boolean
+    gap_marking?: boolean
     reflections?: boolean
     narration_genre_file?: string
     backend?: Backend
@@ -511,7 +530,9 @@ function loadProfilesFromStore() {
 
 const currentKnobs = computed(() => ({
   narrate_tokens: narrateTokens.value,
+  narrate_batch_tokens: narrateBatchTokens.value,
   prose_mode: proseMode.value,
+  gap_marking: gapMarking.value,
   reflections: reflections.value,
   narration_genre_file: genreFile.value,
   backend: backend.value,
@@ -527,7 +548,9 @@ const profileDirty = computed(() => {
   const c = currentKnobs.value
   const k = ap.knobs
   return (k.narrate_tokens ?? 16000) !== c.narrate_tokens
+    || (k.narrate_batch_tokens ?? 32000) !== c.narrate_batch_tokens
     || !!k.prose_mode !== c.prose_mode
+    || !!k.gap_marking !== c.gap_marking
     || !!k.reflections !== c.reflections
     || (k.narration_genre_file ?? '') !== c.narration_genre_file
     || (k.backend ?? 'anthropic') !== c.backend
@@ -546,7 +569,9 @@ function hydrateKnobsFromEditorConfig(ec: any) {
   const narrate = ec?.narrate ?? {}
   const backends = ec?.backends ?? {}
   narrateTokens.value = narrate.tokens ?? 16000
+  narrateBatchTokens.value = narrate.batch_tokens ?? 32000
   proseMode.value = !!narrate.prose_mode
+  gapMarking.value = !!narrate.gap_marking
   reflections.value = !!narrate.reflections
   genreFile.value = ec?.paths?.genre_file || ''
   backend.value = normalizeBackend(backends.active)
@@ -759,6 +784,124 @@ async function narrate() {
   })
 }
 
+const editorActionRunning = computed(() =>
+  narrating.value || extracting.value || enhancing.value || planning.value ||
+  verifying.value || auditing.value || comparingVoice.value,
+)
+
+const orderedBundleScenes = computed(() =>
+  [...scenes.value].sort((left, right) => left.index - right.index),
+)
+
+function openNarrationBundleDialog() {
+  if (editorActionRunning.value) return
+  if (orderedBundleScenes.value.length === 0) {
+    setStatus('No plan scenes are available to narrate.')
+    return
+  }
+  narrationBundleDialogOpen.value = true
+}
+
+function closeNarrationBundleDialog() {
+  if (!narrating.value) narrationBundleDialogOpen.value = false
+}
+
+function bundleSceneLabel(value: unknown): string {
+  if (typeof value === 'string') return value
+  if (!value || typeof value !== 'object') return String(value)
+  const item = value as Record<string, unknown>
+  const index = typeof item.index === 'number'
+    ? `Scene ${item.index}`
+    : typeof item.scene === 'number' ? `Scene ${item.scene}` : ''
+  const name = typeof item.scene_name === 'string'
+    ? item.scene_name
+    : typeof item.name === 'string' ? item.name : ''
+  return [index, name].filter(Boolean).join(' — ') || 'unknown scene'
+}
+
+function narrationBundleStatus(
+  rc: number,
+  error: string | undefined,
+  completion: SSECompletion | undefined,
+): string {
+  const requested = completion?.requested_count ?? orderedBundleScenes.value.length
+  const written = completion?.written_count ?? (rc === 0 ? requested : 0)
+  const missing = (completion?.missing ?? []).map(bundleSceneLabel)
+  if (rc === 0) {
+    return `Bundled narration complete — ${written}/${requested} scenes written.`
+  }
+  if (rc === 3) {
+    const detail = missing.length ? ` Missing: ${missing.join(', ')}.` : ''
+    return `Bundled narration partial — ${written}/${requested} written.${detail} ` +
+      'Use Narrate on an affected scene to recover it.'
+  }
+  if (rc === 4) {
+    return 'Bundled response could not be reconciled — no bundle output was written. ' +
+      'Use Narrate on an affected scene to recover it.'
+  }
+  const reason = error || completion?.audit_error || completion?.message
+  return `Bundled narration failed${reason ? ': ' + reason : ''}.`
+}
+
+async function refreshAfterNarrationBundle() {
+  // Both disk-backed summaries must refresh for every terminal outcome. A
+  // failure in either request must not prevent the other refresh.
+  await Promise.allSettled([loadScenes(), refreshPipeline()])
+  if (
+    currentScene.value !== null &&
+    scenes.value.some(scene => scene.index === currentScene.value)
+  ) {
+    await refreshEditorSceneDetail(currentScene.value, { preserveDirtyRaw: true })
+      .catch(() => { narrateSource.value = null })
+  }
+}
+
+async function narrateBundle() {
+  if (editorActionRunning.value || orderedBundleScenes.value.length === 0) return
+
+  try {
+    // A bundle reads every selected source from disk. Commit the current raw
+    // editor first so the explicit all-scenes action cannot start against a
+    // stale copy of the one scene the operator was editing.
+    if (currentScene.value !== null && rawExtractionDirty.value) {
+      await saveExtraction(extractionContent.value)
+    }
+  } catch (e: any) {
+    setStatus(`Bundled narration preflight failed: ${e?.message ?? 'could not save the current extraction'}`)
+    return
+  }
+
+  const params = new URLSearchParams()
+  for (const scene of orderedBundleScenes.value) {
+    params.append('scene', String(scene.index))
+  }
+
+  narrationBundleDialogOpen.value = false
+  narrating.value = true
+  narrationOutput.value = ''
+  setStatus(`Running bundled narration for ${orderedBundleScenes.value.length} scenes...`)
+
+  activeSSE.value = connectSSE(`/api/editor/narrate-bundle?${params.toString()}`, {
+    onCommand(command) {
+      narrationOutput.value += `$ ${command}\n`
+    },
+    onData(text) { narrationOutput.value += text },
+    onDone(rc, error, completion) {
+      activeSSE.value = null
+      narrating.value = false
+      setStatus(narrationBundleStatus(rc, error, completion))
+      void refreshAfterNarrationBundle()
+    },
+    onError() {
+      activeSSE.value?.close()
+      activeSSE.value = null
+      narrating.value = false
+      setStatus('Bundled narration stream error — check terminal.')
+      void refreshAfterNarrationBundle()
+    },
+  })
+}
+
 // 013-batched-scene-extraction (T040): exit 3/4 from a batched --batch-scenes
 // run are RESUMABLE, not refusals — some scenes are already written to disk
 // and a re-run without Force requests only what's still missing
@@ -828,8 +971,47 @@ async function runExtract() {
   })
 }
 
+async function refreshPlanAlternates() {
+  try {
+    const res = await fetch('/api/editor/plan/alternates')
+    if (!res.ok) return
+    const data = await res.json()
+    planAlternates.value = data.alternates || []
+    planChoicePending.value = !!data.pending
+  } catch {
+    // A campaign with no narration dir simply has nothing pending.
+  }
+}
+
+function choosePlan(key: string) {
+  if (choosingPlan.value || planning.value || enhancing.value
+      || extracting.value || narrating.value) return
+  choosingPlan.value = true
+  narrationOutput.value = ''
+  setStatus(`Choosing plan ${key.toUpperCase()}...`)
+  activeSSE.value = connectSSE(`/api/editor/plan/choose?key=${encodeURIComponent(key)}`, {
+    onData(text) { narrationOutput.value += text },
+    onDone(rc, error) {
+      activeSSE.value = null
+      choosingPlan.value = false
+      setStatus(rc === 0
+        ? `Plan ${key.toUpperCase()} chosen — plan.md written.`
+        : `Choosing plan failed${error ? ': ' + error : ''}.`)
+      refreshPlanAlternates()
+      loadScenes()
+      refreshPipeline()
+    },
+    onError() {
+      activeSSE.value = null
+      choosingPlan.value = false
+      setStatus('Stream error — check terminal.')
+    },
+  })
+}
+
 async function runPlan() {
-  if (planning.value || enhancing.value || extracting.value || narrating.value) return
+  if (planning.value || enhancing.value || extracting.value
+      || narrating.value || choosingPlan.value) return
   planning.value = true
   narrationOutput.value = ''
   setStatus('Planning & consistency check (Stage 3)...')
@@ -844,6 +1026,7 @@ async function runPlan() {
         : `Plan & check failed${error ? ': ' + error : ''}.`)
       loadScenes()
       refreshPipeline()
+      refreshPlanAlternates()
     },
     onError() {
       activeSSE.value = null
@@ -1001,6 +1184,9 @@ onMounted(async () => {
     await loadScenes()
     await checkAssembled()
     await refreshPipeline()
+    // A choice left pending by an earlier session is state on disk, so it has
+    // to be picked up on load rather than only after a plan run.
+    await refreshPlanAlternates()
   } else {
     // Cold start — pop the drawer so the user can fill in required fields.
     drawerOpen.value = true
@@ -1201,17 +1387,46 @@ onMounted(async () => {
           :narrating="narrating"
           :extracting="extracting"
           :prose-mode="proseMode"
+          :gap-marking="gapMarking"
           :reflections="reflections"
           :reviewed="currentSceneReviewed"
           @save-extraction="saveExtraction"
           @reload="reload"
           @narrate="narrate"
+          @narrate-bundle="openNarrationBundleDialog"
           @open-typora="openTypora"
           @update:extraction-content="updateExtractionContent"
           @update:prose-mode="proseMode = $event"
+          @update:gap-marking="gapMarking = $event"
           @update:reflections="reflections = $event"
           @update:reviewed="setReviewed"
         />
+        <section v-if="planChoicePending" class="plan-choice">
+          <h3>A scene has no narrator — choose a plan</h3>
+          <p>
+            No player character speaks in one of this session's scenes, so there
+            is no honest first-person narrator for it. The planner wrote three
+            plans that are identical except for that scene. Pick the treatment
+            you want; narration is blocked until you do.
+          </p>
+          <ul class="plan-choice-list">
+            <li v-for="alt in planAlternates" :key="alt.key">
+              <div class="plan-choice-head">
+                <strong>{{ alt.name }}</strong>
+                <button
+                  class="btn-primary"
+                  :disabled="choosingPlan"
+                  @click="choosePlan(alt.key)"
+                >Use this plan</button>
+              </div>
+              <pre class="plan-choice-body">{{ alt.text }}</pre>
+            </li>
+          </ul>
+          <p class="plan-choice-note">
+            Equivalent at the CLI: <code>sd_plan --choose &lt;a|b|c&gt;</code>,
+            or <code>cp plan.b.md plan.md</code>.
+          </p>
+        </section>
         <NarrationOutput
           :output="narrationOutput"
           :current-scene="currentScene"
@@ -1229,6 +1444,15 @@ onMounted(async () => {
         <button class="btn-primary" @click="drawerOpen = true">Open Config</button>
       </div>
     </div>
+
+    <NarrationBundleDialog
+      :open="narrationBundleDialogOpen"
+      :scenes="orderedBundleScenes"
+      :batch-tokens="narrateBatchTokens"
+      :busy="editorActionRunning"
+      @cancel="closeNarrationBundleDialog"
+      @run="narrateBundle"
+    />
 
     <KnobDrawer
       v-model:open="drawerOpen"
@@ -1252,7 +1476,9 @@ onMounted(async () => {
       v-model:extract-tokens="extractTokens"
       v-model:batch-tokens="batchTokens"
       v-model:narrate-tokens="narrateTokens"
+      v-model:narrate-batch-tokens="narrateBatchTokens"
       v-model:prose-mode="proseMode"
+      v-model:gap-marking="gapMarking"
       v-model:reflections="reflections"
       v-model:genre-file="genreFile"
       :genre-info="genreInfo"
@@ -1448,4 +1674,30 @@ onMounted(async () => {
   margin-bottom: 14px;
 }
 .empty-card strong { color: var(--mauve); }
+
+/* Pending three-plan choice (#385) — a scene with no eligible narrator. */
+.plan-choice {
+  border: 1px solid var(--warn-border, #b8860b);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--warn-bg, rgba(184, 134, 11, 0.08));
+}
+.plan-choice h3 { margin: 0 0 0.5rem; }
+.plan-choice-list { list-style: none; padding: 0; margin: 0; }
+.plan-choice-list > li { margin-bottom: 1rem; }
+.plan-choice-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.plan-choice-body {
+  max-height: 16rem;
+  overflow: auto;
+  font-size: 0.85em;
+  white-space: pre-wrap;
+  margin: 0.35rem 0 0;
+}
+.plan-choice-note { font-size: 0.85em; opacity: 0.8; margin-bottom: 0; }
 </style>

@@ -1,0 +1,62 @@
+{
+  "captured": "2026-09-08",
+  "ruling": "All 31 accepted by the GM, 2026-09-08. Every marker below is a gap the GM ruled correct — right gap, theirs to write. No marker in this corpus was ruled wrong scope.",
+  "source": "experiments/20260907-phandalin-gm-gaps-confirm/<arm>/response.md",
+  "prompt": "the standalone experiment contract, NOT this repo's assembled prompt — which is why a re-run is required and a transfer is not. See spec.md.",
+  "model": "claude-fable-5-1",
+  "effort": "medium",
+  "arms": {
+    "brewbarry": {
+      "count": 6,
+      "markers": [
+        "[GM NARRATION — TO BE WRITTEN: the party has just come out of the Spire of the Morninglord after giving the Necklace of Fireballs, Lady Alagondar's heirloom, to Perrin Alagondar, and Cullen Sharpe and House Margaster continue to grate on their nerves.]",
+        "[GM NARRATION — TO BE WRITTEN: as the party is leaving, Aurelan Vance comes hurrying back from the counting house, out of breath.]",
+        "[GM NARRATION — TO BE WRITTEN: Aurelan arrives huffing and excited, pats himself down and straightens his clothing into proper order before he speaks.]",
+        "[GM NARRATION — TO BE WRITTEN: Aurelan pulls out a piece of paper and shows them the correct spelling, B-I-M-B-L-E.]",
+        "[GM NARRATION — TO BE WRITTEN: Soma remembers the Board Laid Bare, where she used to get the best turtle soup in the whole area — good prices, good food, good atmosphere — and that its proprietor Lim, who runs the small business, might know how a hidden man could be fed.]",
+        "[GM NARRATION — TO BE WRITTEN: Lim never stopped making the soup; Soma stopped going, having left on a two-day guiding trip about a month and a half ago.]"
+      ]
+    },
+    "soma": {
+      "count": 12,
+      "markers": [
+        "[GM NARRATION — TO BE WRITTEN: It is dawn, and the party arrives at the doors of the Spire of the Morninglord to find clerics at the threshold and a whole crowd of factions already gathered around.]",
+        "[GM NARRATION — TO BE WRITTEN: Among the crowd are skeptical Lathanderite clerics at the doors, watching Valphine with visible doubt.]",
+        "[GM NARRATION — TO BE WRITTEN: There are also several Loviatarite agents in the shadows; the followers of the goddess of pain regard Valphine's searing sacrament as stolen from them, and heretical.]",
+        "[GM NARRATION — TO BE WRITTEN: To the party's surprise, Lord Neverember himself is among the crowd, along with a mass of the faithful and the merely curious, all of whom have arrived very early in the morning.]",
+        "[GM NARRATION — TO BE WRITTEN: There are factions within factions here; these are only the ones the party recognizes, and there are more.]",
+        "[GM NARRATION — TO BE WRITTEN: Just before the party arrives, the dragonscale armorer turns up at the Spire, having spent all night assembling Valphine's white dragon scale armor; he is one of the devout and wants Lathander's blessing on it, and he sets about fitting it on her there at the door, very excited.]",
+        "[GM NARRATION — TO BE WRITTEN: The armor causes an even bigger stir; whispers and commentary run through the crowd as Valphine puts on the dragon-scale, and the armorer is very proud of himself.]",
+        "[GM NARRATION — TO BE WRITTEN: The crowd is quite pleased and in awe of the spellcasting — it is not often anyone sees a Daylight spell inside the Church of Lathander in daytime — and as the whole chamber lights up, some people squint.]",
+        "[GM NARRATION — TO BE WRITTEN: Brother Aldric receives them in a private chamber; he ponders all the liturgical and ceremonial elements Valphine has skipped, but he is in a good mood.]",
+        "[GM NARRATION — TO BE WRITTEN: Brother Aldric is not impressed, and seems a little disappointed.]",
+        "[GM NARRATION — TO BE WRITTEN: Before Aldric can answer, another sun priest among those seated around the chamber — a scarred one — interrupts.]",
+        "[GM NARRATION — TO BE WRITTEN: Aldric smiles; it is plain now that the other cleric was there to trap her and that she has threaded the trap, and he makes the sign of the Morninglord, very pleased.]"
+      ]
+    },
+    "valphine": {
+      "count": 4,
+      "markers": [
+        "[GM NARRATION — TO BE WRITTEN: Aurelan produces a sheet of calculations the party cannot read.]",
+        "[GM NARRATION — TO BE WRITTEN: A small crowd has gathered around the desk to watch, and Aurelan signs the loan paperwork, which is for a significant sum, and hands it over.]",
+        "[GM NARRATION — TO BE WRITTEN: A wealthy client of the Counting House pushes forward from the crowd, dressed in silk imitations of Uthgardt barbarian hides; the effect is worse than cheap costume, but he is entirely sincere.]",
+        "[GM NARRATION — TO BE WRITTEN: The man attempts to imitate Brewbarry's stance and bearing, and the result is awkward for everyone watching.]"
+      ]
+    },
+    "vukradin": {
+      "count": 9,
+      "markers": [
+        "[GM NARRATION — TO BE WRITTEN: the townsfolk and the council gather on the green, including Harbin, Petunia, Big Al, Qelline Alderleaf, Linene Graywind, Ser Kaelen, Toblen and his bar team, Elsa, Barthen, and the woodworker.]",
+        "[GM NARRATION — TO BE WRITTEN: the crowd is dancing and relaxed, everybody feeling cool.]",
+        "[GM NARRATION — TO BE WRITTEN: Brin and Giles are in the crowd, engaged, and sunburnt again.]",
+        "[GM NARRATION — TO BE WRITTEN: everybody stares.]",
+        "[GM NARRATION — TO BE WRITTEN: the crowd cheers enthusiastically, and Jenna looks appalled.]",
+        "[GM NARRATION — TO BE WRITTEN: the town thanks the adventurers but cannot use the gold, because it is fused inside a magical containment that must first be extracted.]",
+        "[GM NARRATION — TO BE WRITTEN: the crowd cheers the honorary citizenship.]",
+        "[GM NARRATION — TO BE WRITTEN: Jenna, looking very concerned, mounts up and rides out of town toward Neverwinter; the members of the Lord's Alliance are very particular.]",
+        "[GM NARRATION — TO BE WRITTEN: the fusion is not conventional magic, and freeing the gold will require finding an expert who knows about it.]"
+      ]
+    }
+  },
+  "total": 31
+}

@@ -1,0 +1,31 @@
+{
+  "prepared_at": "2026-09-07T17:32:45.988184+00:00",
+  "question": "Told not to lean on what it left in a gap, does fable seal the gaps — and does the narration stay readable when it does?",
+  "isolates": "/home/kostadis/CG-find-bug/experiments/20260907-phandalin-gm-gaps-medium",
+  "isolated_variable": "One sentence added to the contract. Model, effort, and user message identical to the medium run.",
+  "campaign_commit": "bbf4e3c064b4e13b47ed523606a62936638a0cc6",
+  "generator_commit": "d9c5de87a0ec4831c1cdc999b26491851b1f7c01",
+  "backend": "claude-code",
+  "model": "claude-fable-5-1",
+  "claude_code_effort": "medium",
+  "claude_code_effort_source": "explicit",
+  "max_tokens_argument": 32000,
+  "scene_heading": "Soma — Harpers Behind the Wall",
+  "marker": "GM NARRATION — TO BE WRITTEN:",
+  "observed_leak": "Both prior runs gapped Brewbarry's history and then wrote Soma referring to it: 'in the place he couldn't afford once' (medium), 'a barbarian who could not afford a drink here a year ago' (low).",
+  "compared_against": {
+    "effort": "medium",
+    "words": 2223,
+    "marker_count": 11,
+    "response_sha256": "42cc9ee7a504fc2e3a767157443e33d21e05cc65fed6eea0528dbcd0c32a8a24"
+  },
+  "design": "One call. Contract differs from the medium run by one inserted sentence.",
+  "limits": "One sample. The leak check is a keyword probe over a crude narration/dialogue split — it finds passages to read, and cannot certify that a gap is sealed or that a surviving mention is a real leak. Whether the prose went evasive to obey the rule is a reading judgement the probe cannot make at all.",
+  "input_sha256": {
+    "prompts/base_system.md": "b39c4917f9950ef702fd9bed4a6be475b2fe62399d795039fcbe38b8e17145ed",
+    "prompts/user.md": "f658f98a9342639e8b260f1d40e0c7a6440c51d09b2ec4023b1f878553dbb560",
+    "prompts/treated_system.md": "cb58c73a84bbc393547419d5c08eccb24ed78aad1b13134ca9ad72b3f17d92a3",
+    "prompt.diff": "0f46285bc6d741f31b353604a549d8c584b37b032e56d5c0003d63e1eb478b3c",
+    "run.py": "ab8857a395a6375680b5b0312eac6eea4734e54d2a47945e799bdf4e7c370962"
+  }
+}

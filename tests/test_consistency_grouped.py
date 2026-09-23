@@ -12,6 +12,7 @@ from campaignlib.consistency import (
     GroupedConsistencyProtocolError,
     normalize_grouped_response,
     render_grouped_prompt,
+    render_grouped_prompt_blocks,
 )
 from session_doc import check_consistency
 
@@ -52,6 +53,49 @@ def test_render_grouped_prompt_contains_each_target_once_and_context_once():
     assert prompt.count("Party exact.") == 1
     assert "D01" in prompt and "scenes/01_arrival.md" in prompt
     assert "peer targets" in prompt
+
+
+def test_render_grouped_prompt_golden_context_precedes_targets():
+    prompt = render_grouped_prompt(_documents(), ["Canon exact."])
+
+    assert prompt == """\
+## Campaign Context
+
+Canon exact.
+
+---
+
+## Documents to Check
+
+The following files are peer targets under review. They are not campaign evidence for one another.
+
+### D01 — scenes/01_arrival.md
+
+Audit this target completely: prose/summary first, then every speaker header and every blockquote line. Do not declare it CLEAN after checking only its summary.
+
+<<<CG-TARGET D01 BEGIN>>>
+Arrival text.
+<<<CG-TARGET D01 END>>>
+
+### D02 — scenes/02_departure.md
+
+Audit this target completely: prose/summary first, then every speaker header and every blockquote line. Do not declare it CLEAN after checking only its summary.
+
+<<<CG-TARGET D02 BEGIN>>>
+Departure text.
+<<<CG-TARGET D02 END>>>"""
+
+
+def test_render_grouped_prompt_blocks_marks_only_context_as_cacheable():
+    blocks = render_grouped_prompt_blocks(_documents(), ["Canon exact."])
+
+    assert "".join(block["text"] for block in blocks) == render_grouped_prompt(
+        _documents(), ["Canon exact."]
+    )
+    assert blocks[0]["cache_control"] == {"type": "ephemeral"}
+    assert "## Campaign Context" in blocks[0]["text"]
+    assert "## Documents to Check" in blocks[1]["text"]
+    assert "cache_control" not in blocks[1]
 
 
 def test_render_grouped_prompt_adds_only_matching_glossary_anchors():
@@ -190,14 +234,19 @@ def test_grouped_cli_uses_one_call_and_writes_one_normalized_report(
     assert len(calls) == 1
     system, user, _model, _kwargs = calls[0]
     assert "several peer" in system and "session documents" in system
-    assert user.count("Shared prep evidence.") == 1
-    assert user.count("Arrival target.") == 1
-    assert user.count("Departure target.") == 1
+    assert isinstance(user, list)
+    user_text = "".join(block["text"] for block in user)
+    assert user_text.count("Shared prep evidence.") == 1
+    assert user_text.count("Arrival target.") == 1
+    assert user_text.count("Departure target.") == 1
+    assert user[0]["cache_control"] == {"type": "ephemeral"}
+    assert "cache_control" not in user[1]
     assert output.read_text(encoding="utf-8").startswith("# Grouped Consistency Report")
     stdout = capsys.readouterr().out
     assert "Documents : 2" in stdout
     assert "Model calls: 1" in stdout
     assert "model_calls=1 shared_context_chars=" in stdout
+    assert "repeated_context_chars_avoided=" in stdout
     assert "Found 1 potential issue" in stdout
 
 

@@ -28,6 +28,17 @@ client = TestClient(app)
 PLATFORM_MODEL = "claude-opus-5"
 
 
+#: A service selection with nothing overridden. The three effort/thinking
+#: fields are part of the payload and default to None; they were added by the
+#: codex and claude-code effort work and the exact-dict assertions here were
+#: never updated, which is 12 of the 23 failures #424 counted. Defined once so
+#: the next field is one edit rather than six.
+EMPTY_SELECTION = {
+    "backend": None, "model": None, "batch": None,
+    "claude_code_effort": None, "claude_code_thinking": None,
+    "codex_reasoning_effort": None,
+}
+
 @pytest.fixture
 def platform(monkeypatch, tmp_path):
     config_subdir = tmp_path / "config"
@@ -76,9 +87,12 @@ def test_selection_roundtrips(platform, service):
                    json={"backend": "dgx", "model": "Qwen3-Next-80B"})
     assert r.status_code == 200, r.text
     # `batch` (005-ui-batch-selection) rides along on every ModelSelection
-    # response now — None here since this PUT didn't set it.
-    assert client.get(f"/api/{service}/selection").json() == {
-        "backend": "dgx", "model": "Qwen3-Next-80B", "batch": None,
+    # response now — None here since this PUT didn't set it. So do the three
+    # effort/thinking fields, added after this comment was written and not
+    # added to it; hence EMPTY_SELECTION, which is the one place that list
+    # lives now (#424).
+    assert client.get(f"/api/{service}/selection").json() == EMPTY_SELECTION | {
+        "backend": "dgx", "model": "Qwen3-Next-80B",
     }
 
 
@@ -91,9 +105,7 @@ def test_clearing_restores_platform_inheritance(platform, service):
     assert r.status_code == 200, r.text
     # `batch` (005-ui-batch-selection) rides along too — DELETE clears it
     # back to None ("defer"), same as backend/model.
-    assert client.get(f"/api/{service}/selection").json() == {
-        "backend": None, "model": None, "batch": None,
-    }
+    assert client.get(f"/api/{service}/selection").json() == EMPTY_SELECTION
 
     resolved = client.get(f"/api/{service}/selection/resolved").json()
     assert resolved["model"] == PLATFORM_MODEL

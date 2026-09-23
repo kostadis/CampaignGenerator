@@ -36,7 +36,7 @@ plugins/MCP, web search, subagents, executable tools, and writes disabled.
 
 Model precedence is explicit `--model`, then `CG_CODEX_MODEL`, then the Codex
 subscription default. `CG_CODEX_TIMEOUT` is a positive finite number of seconds
-and defaults to `600`. A missing CLI/login, incompatible `claude-*` model,
+and defaults to `1800` (30 minutes). A missing CLI/login, incompatible `claude-*` model,
 timeout, failed process, or empty result exits nonzero without retrying another
 provider or saving a successful report. `max_tokens` remains accepted by the
 shared facade but Codex exposes no matching CLI output-limit flag.
@@ -157,7 +157,7 @@ Model precedence for Codex is explicit `--model`, then `CG_CODEX_MODEL`, then
 the subscription's own default. An omitted model is intentionally omitted from
 argv; an explicit compatible model is forwarded unchanged, while an explicit
 `claude-*` model fails clearly. `CG_CODEX_TIMEOUT` sets the positive finite
-child deadline (default `600` seconds). The brokered `polish` loop replays typed
+child deadline (default `1800` seconds / 30 minutes). The brokered `polish` loop replays typed
 history to Codex, but only the parent process executes declared document tools
 and applies mutations.
 
@@ -556,7 +556,26 @@ sd_narrate session-summary.md \
 
 # Re-narrate a single scene after editing its quote file
 sd_narrate ... --scene 3
+
+# Generate all reviewed plan scenes in one model exchange
+sd_narrate ... --batch-scenes --batch-max-tokens 32000
+
+# Generate an explicit full-plan subset in one exchange
+sd_narrate ... --batch-scenes --scene 2 5
 ```
+
+`sd_narrate --batch-scenes` is opt-in. Without it, the existing sequential
+loop remains the default. The bundled response is reconciled by stable plan
+index and written to the same individual narration files; a valid partial
+response exits `3`, while an untrustworthy marker/identity response exits `4`
+without writing any section. The run never auto-splits or invokes assembly.
+
+`--batch-max-tokens` is the total bundled output ceiling and is separate from
+the sequential per-scene `--narrate-tokens`. Provider `--batch` is also
+separate and composes with bundled narration as one Message Batches item.
+`--scene-extraction-file` may repeat in bundle mode for exact mixed-source
+selection. Bundled `--narrator` is refused; use stable full-plan `--scene`
+indices, while sequential narrator filtering remains unchanged.
 
 Model: omitted by default; the selected backend supplies its default. `--fast` switches to Haiku where supported.
 

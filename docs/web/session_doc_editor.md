@@ -13,7 +13,7 @@ The flow that runs from the **Session Doc Editor** page in the web UI.
 5. **Open `session-summary.md` in Typora and review/edit it** — this is the human checkpoint.
 6. Header → **`STAGE 2 — Re-Extract Quotes`** → produces `scene_extractions_new/NN_<slug>.md`.
 7. Header → **`STAGE 3 — Plan & Check`** → produces `narration/plan.md` + `consistency_report.md`. **Review the consistency report.**
-8. For each scene: select it on the left, edit the extraction, click **`Narrate`**, mark **Reviewed** when the order looks right. The four lifecycle dots on the scene card fill in (E · R · N · S) — the **S** dot lights up if a `.scrubbed.md` sibling exists, which now comes from running the `/scrub` Claude Code skill outside the web UI (see [Mechanical scrubbing](#mechanical-scrubbing-outside-the-web-ui) below), not from a button here.
+8. Narrate with either path: select a scene and click **`Narrate`**, or open **`Narrate all in one call…`**, review the complete new/replacement scope, and run one bundled exchange. Mark each finished scene **Reviewed** when the order looks right. The four lifecycle dots on the scene card fill in (E · R · N · S) — the **S** dot lights up if a `.scrubbed.md` sibling exists, which now comes from running the `/scrub` Claude Code skill outside the web UI (see [Mechanical scrubbing](#mechanical-scrubbing-outside-the-web-ui) below), not from a button here.
 9. Header → **`Assemble →`** → opens the **Review** screen.
 10. On the Review screen: confirm every scene is narrated (any scene that isn't blocks Assemble). Click **`Assemble Doc`** → optionally **`Open in Typora`**.
 
@@ -57,7 +57,7 @@ Sections, top to bottom:
 | **① Enhance** | Batch (Anthropic Message Batches API) · Backend (anthropic / dgx) |
 | **② Extract** | (no separate knobs — uses Batch + Backend; the Re-Extract button always forwards `--force`) |
 | **③ Plan & Check** | Reuse enhanced sections for downstream Narrate |
-| **④ Narrate** | Token limit · Prose mode · Reflections · Narration genre |
+| **④ Narrate** | Per-scene token limit · Batched token limit · Prose mode · Reflections · Narration genre |
 | **⑤ Assemble** | (placeholder for a polish toggle once `polish` is wired) |
 
 Backend uses the existing `_TYPED_TO_CONFIG_KEY` mapping in `scene_editor.py`: typed `ui.session_doc.*` ↔ legacy `CONFIG[*]`. The path fields formerly under "Show overrides" (`extract_dir`, `roleplay_extract_dir`, `summary_extract_dir`) are gone from the UI — they're populated server-side by `derive_campaign_paths` and not part of the editor's PUT payload.
@@ -135,6 +135,27 @@ For each scene:
 
 The four lifecycle dots are green when complete, grey when cold. (Amber-when-the-input-is-newer-than-the-output rendering is not yet wired into the per-scene dots; the header pipeline strip conveys it globally.) The **S** dot is status only — see below.
 
+### Narrate all in one call
+
+The separate **Narrate all in one call…** action opens a review dialog listing
+every plan index, scene name, narrator, and whether its existing narration will
+be replaced. Cancel starts nothing. Run materializes those exact indices in the
+copyable `sd_narrate --batch-scenes --scene ...` command; an absent or empty
+selection never means all.
+
+The editor saves a dirty current extraction first, keeps each scene's preferred
+smoothed source with raw fallback, and uses the configured **Batched token
+limit** as the total ceiling for the single exchange. It never silently splits
+an oversized set. Provider Batch remains a separate backend choice and, when
+enabled, submits this one bundled prompt as one batch item.
+
+Completion reports `N/N` on success or `K/N` plus the missing scene names for a
+valid partial response. Every outcome reloads the scene list and pipeline
+status. Existing output for a missing scene is left untouched, and the ordinary
+current-scene **Narrate** action remains available for recovery. A unique JSON
+run report under `<session>/.cg/narrate-bundle/` keeps the result discoverable
+and prevents simultaneous editor runs from confusing their outcomes.
+
 ### Mechanical scrubbing (outside the web UI)
 
 There is no Scrub / Scrub All button in this app any more. The autonomous
@@ -171,7 +192,7 @@ The same four-stage strip the editor header shows, with verbose labels and times
 
 ### Activity timeline (left)
 
-Tails `<session_dir>/.cg/activity.jsonl`. Every Enhance / Extract / Plan / Narrate run appends one JSON line with timestamp, stage, scene (if applicable), returncode, the knobs in effect, and the output path(s). Newest first; failed rows highlight red. (A scrub pass run via the `/scrub` skill happens outside this app, so it does not append a line here — the **S** lifecycle dot / Review badge are how the app surfaces that a scrubbed variant exists.)
+Tails `<session_dir>/.cg/activity.jsonl`. Every Enhance / Extract / Plan / Narrate run appends one JSON line with timestamp, stage, scene or explicit scene set, returncode, the knobs in effect, and the report-derived output path(s). Bundled rows also carry their run ID, content/provider modes, exchange count, and result counts. Newest first; failed rows highlight red. (A scrub pass run via the `/scrub` skill happens outside this app, so it does not append a line here — the **S** lifecycle dot / Review badge are how the app surfaces that a scrubbed variant exists.)
 
 The file survives server restarts — the timeline is a real audit log, not in-memory state.
 
@@ -199,6 +220,8 @@ On success the button is replaced by an **Open in Typora** affordance.
 | `GET /api/editor/pipeline-status` | `{enhance, extract, plan, narrate}` stage status (ok / warn / cold) with ago + counts |
 | `GET /api/editor/scene-roster` | `{scenes: [{index, narrator, scene, tokens, lifecycle, applied_knobs, preview}]}` |
 | `GET /api/editor/activity?limit=N` | `{entries: [...]}` from `activity.jsonl`, newest entries last |
+| `GET /api/editor/narrate/{n}` | Existing one-scene SSE narration route |
+| `GET /api/editor/narrate-bundle?scene=1&scene=2...` | Explicit bundled SSE route with a report-derived terminal result |
 | `POST /api/editor/assemble` | Unchanged. Called from the Review footer, not from the editor header |
 
 ---
@@ -266,6 +289,7 @@ All five scripts below live in `session_doc/`:
 - `scene_extract.py` — Stage 2
 - `sd_consistency.py` + `sd_plan.py` — Stage 3 plan & check (chained when `--context` is configured)
 - `sd_narrate.py --scene N` — per-scene narration (reads cached `plan.md`)
+- `sd_narrate.py --batch-scenes --scene ...` — one-exchange narration for the explicit plan set
 - `assemble.py` — Final assembly
 
 (Mechanical scrubbing is no longer one of this app's pipeline scripts — see

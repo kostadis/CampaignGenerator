@@ -1,0 +1,28 @@
+{
+  "prepared_at": "2026-09-07T17:20:29.564797+00:00",
+  "question": "Same gap-marking contract at medium effort: is the dialogue prose between the gaps better, and do the gaps land in the same places?",
+  "isolates": "/home/kostadis/CG-find-bug/experiments/20260907-phandalin-fable-gm-gaps",
+  "isolated_variable": "claude_code_effort: low -> medium. Prompts byte-identical.",
+  "campaign_commit": "bbf4e3c064b4e13b47ed523606a62936638a0cc6",
+  "generator_commit": "d9c5de87a0ec4831c1cdc999b26491851b1f7c01",
+  "backend": "claude-code",
+  "model": "claude-fable-5-1",
+  "claude_code_effort": "medium",
+  "claude_code_effort_source": "explicit",
+  "max_tokens_argument": 32000,
+  "scene_heading": "Soma — Harpers Behind the Wall",
+  "marker": "GM NARRATION — TO BE WRITTEN:",
+  "compared_against": {
+    "effort": "low",
+    "words": 2192,
+    "marker_count": 17,
+    "response_sha256": "866e5c612854200db9246147d8d80497340c6a2cae5952c4ea835fba7192544d"
+  },
+  "design": "One call. Both prompts byte-identical to the low run; only the effort differs.",
+  "limits": "One sample per effort level. Two stochastic single samples cannot separate an effort difference from run-to-run variance — a difference here is a reason to repeat, not a result. Marker agreement is a set comparison for the GM to read, never a correctness score: the source, not the other run, is the authority on whether a passage is GM-narrated.",
+  "input_sha256": {
+    "prompts/treated_system.md": "b39c4917f9950ef702fd9bed4a6be475b2fe62399d795039fcbe38b8e17145ed",
+    "prompts/user.md": "f658f98a9342639e8b260f1d40e0c7a6440c51d09b2ec4023b1f878553dbb560",
+    "run.py": "21cf05b5f01a3c455404d5644f946023523fc962f7af17bf2a98ac6027612bde"
+  }
+}

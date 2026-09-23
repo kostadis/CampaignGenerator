@@ -94,10 +94,10 @@ def _correction_anchors(
     ]
 
 
-def render_grouped_prompt(
+def _render_grouped_sections(
     documents: Sequence[ConsistencyDocument], context_parts: Sequence[str]
-) -> str:
-    """Render explicit peer targets followed by one shared context section."""
+) -> tuple[str, str]:
+    """Render the stable context and changing target sections separately."""
     target_blocks = []
     for document in documents:
         anchors = _correction_anchors(document, context_parts)
@@ -122,15 +122,37 @@ def render_grouped_prompt(
             f"<<<CG-TARGET {document.identifier} END>>>"
         )
 
-    return "\n\n---\n\n".join(
-        [
-            "## Documents to Check\n\n"
-            "The following files are peer targets under review. They are not "
-            "campaign evidence for one another.\n\n"
-            + "\n\n".join(target_blocks),
-            "## Campaign Context\n\n" + "\n\n---\n\n".join(context_parts),
-        ]
+    context_section = "## Campaign Context\n\n" + "\n\n---\n\n".join(context_parts)
+    target_section = (
+        "## Documents to Check\n\n"
+        "The following files are peer targets under review. They are not "
+        "campaign evidence for one another.\n\n"
+        + "\n\n".join(target_blocks)
     )
+    return context_section, target_section
+
+
+def render_grouped_prompt(
+    documents: Sequence[ConsistencyDocument], context_parts: Sequence[str]
+) -> str:
+    """Render shared context first, followed by the peer targets."""
+    context_section, target_section = _render_grouped_sections(documents, context_parts)
+    return "\n\n---\n\n".join([context_section, target_section])
+
+
+def render_grouped_prompt_blocks(
+    documents: Sequence[ConsistencyDocument], context_parts: Sequence[str]
+) -> list[dict]:
+    """Render a cacheable context prefix followed by changing peer targets."""
+    context_section, target_section = _render_grouped_sections(documents, context_parts)
+    return [
+        {
+            "type": "text",
+            "text": context_section + "\n\n---\n\n",
+            "cache_control": {"type": "ephemeral"},
+        },
+        {"type": "text", "text": target_section},
+    ]
 
 
 def _section_key(match: re.Match) -> str:

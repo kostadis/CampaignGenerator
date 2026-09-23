@@ -1,0 +1,42 @@
+{
+  "status": "rendered",
+  "arm": "vukradin",
+  "narrator": "vukradin",
+  "session": "20260623",
+  "title": "The Universal Basic Treasure Proclamation",
+  "started_at": "2026-09-07T18:04:41.808978+00:00",
+  "case_sha256": "35c6d04b91ae35f051dc28dd89449729ca0261c83e6f5b4b3d2d9324ec188b3e",
+  "backend": "claude-code",
+  "requested_model": "claude-fable-5-1",
+  "requested_claude_code_effort": "medium",
+  "response_sha256": "ed46cd540aa5b3d4031fd6b25a948c8131a9ac1ae1ce67180c63ed3a4fdd555b",
+  "words": 3101,
+  "actual_identity": {
+    "backend": "claude-code",
+    "model": "claude-fable-5-1",
+    "claude_code_effort": "medium",
+    "claude_code_effort_source": "explicit",
+    "claude_code_effort_override": true,
+    "thinking": true
+  },
+  "headings_verbatim": [
+    "## Vukradin — The Universal Basic Treasure Proclamation"
+  ],
+  "headings_match_after_normalization": true,
+  "markers": [
+    "[GM NARRATION — TO BE WRITTEN: the townsfolk and the council gather on the green, including Harbin, Petunia, Big Al, Qelline Alderleaf, Linene Graywind, Ser Kaelen, Toblen and his bar team, Elsa, Barthen, and the woodworker.]",
+    "[GM NARRATION — TO BE WRITTEN: the crowd is dancing and relaxed, everybody feeling cool.]",
+    "[GM NARRATION — TO BE WRITTEN: Brin and Giles are in the crowd, engaged, and sunburnt again.]",
+    "[GM NARRATION — TO BE WRITTEN: everybody stares.]",
+    "[GM NARRATION — TO BE WRITTEN: the crowd cheers enthusiastically, and Jenna looks appalled.]",
+    "[GM NARRATION — TO BE WRITTEN: the town thanks the adventurers but cannot use the gold, because it is fused inside a magical containment that must first be extracted.]",
+    "[GM NARRATION — TO BE WRITTEN: the crowd cheers the honorary citizenship.]",
+    "[GM NARRATION — TO BE WRITTEN: Jenna, looking very concerned, mounts up and rides out of town toward Neverwinter; the members of the Lord's Alliance are very particular.]",
+    "[GM NARRATION — TO BE WRITTEN: the fusion is not conventional magic, and freeing the gold will require finding an expert who knows about it.]"
+  ],
+  "marker_count": 9,
+  "gm_turns_in_source": 40,
+  "joint_gm_player_turns": 0,
+  "finished_at": "2026-09-07T18:06:35.561061+00:00",
+  "wall_clock_seconds": 113.8
+}

@@ -1,0 +1,12 @@
+{
+  "scene": {
+    "W": "astra:control",
+    "X": "fable:control",
+    "Y": "fable:composition",
+    "Z": "astra:composition"
+  },
+  "chapter": {
+    "P": "fable:chapter",
+    "Q": "astra:chapter"
+  }
+}

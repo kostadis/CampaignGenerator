@@ -55,6 +55,7 @@ from server.session_editor_config_shared import (  # noqa: E402
     save_session_editor_config,
 )
 from session_doc import sd_narrate  # noqa: E402
+from session_doc.narrate import NarrationScene, build_bundled_narrate_prompts  # noqa: E402
 
 GENRE_TEXT = """# Register
 
@@ -259,10 +260,76 @@ def test_configured_inputs_all_reach_the_system_prompt(monkeypatch, tmp_path):
 
     prompt = _system_prompt(monkeypatch, tmp_path, campaign, scene=1)
 
+    # Verify the actual UI argv -> CLI -> model boundary adopts v1 as well as
+    # preserving the campaign's reference material, even with legacy style text.
+    assert "close first-person voice" in prompt
+    assert "without a fixed expansion formula or a dialogue quota" in prompt
+    # #408/#410 — Version B licenses adaptation instead of requiring "actual
+    # wording"; pin the new paragraph's own language.
+    assert "Dialogue is editable dramatic material, not a verbatim transcription requirement" in prompt
+    # #402 moved this clause to the head of its own sentence when point of view
+    # left the supply-list, so match case-insensitively: the assertion is that
+    # the references-cannot-outrank-the-brief rule arrives, not where the
+    # sentence happens to break.
+    assert "cannot override those rules" in prompt.lower()
+    # ...and the rule it now carries: person is the brief's, not a reference's.
+    assert "governs point of view" in prompt
+    assert "not the grammatical person, which the brief owns" in " ".join(prompt.split())
+    assert "Target 600-900 words" not in prompt
     assert "First person, past tense" in prompt          # genre rulebook
     assert '"the shape of X"' in prompt                  # ...including its tail
     assert "fair-trade, conflict-free gold" in prompt    # voice spec
     assert "I set the halberd down" in prompt            # per-character examples
+
+
+def test_the_campaign_rulebook_keeps_its_tense_against_the_shared_brief(
+        monkeypatch, tmp_path):
+    """#395 — the shared brief must not outrank a campaign's tense.
+
+    The v1 brief opened by mandating present tense and `base.md` declared the
+    brief to beat the genre reference on exactly that. Two of the three live
+    campaigns' rulebooks say first-person PAST, against a bible already written
+    that way, so the next `sd_narrate` run would have flipped them — silently,
+    and with the genre file explicitly told to lose.
+
+    Asserted at the same real argv -> CLI -> model boundary as the test above,
+    because the failure was never in a single stage: the rulebook DID arrive
+    (that is #295's fix, still asserted here) and the prompt around it told the
+    model to ignore its tense.
+    """
+    campaign, session = _campaign(tmp_path)
+    _write_config(campaign, session, genre_file="voice/_genre.md")
+
+    prompt = _system_prompt(monkeypatch, tmp_path, campaign, scene=1)
+
+    # The rulebook's rule arrives, and nothing in the prompt outranks it.
+    assert "First person, past tense" in prompt
+    assert "present-tense voice" not in prompt
+    assert "knowledge boundaries, tense" not in prompt
+    assert "diction and register only" not in prompt
+
+    # ...and the genre reference is named as the authority, in both the
+    # precedence block and the tail reminder that carries recency.
+    assert "the authority on tense" in prompt
+    assert "diction, register, and tense" in prompt
+
+
+def test_a_campaign_with_no_rulebook_still_gets_a_defined_tense(
+        monkeypatch, tmp_path):
+    """Deferring tense must not mean leaving it unstated.
+
+    A missing genre file already means no register rules at all (#295 / the
+    genre-rulebook howto). If it also meant no tense, dropping the mandate
+    would trade one silent flip for a per-run coin toss, so the brief keeps
+    present tense as the stated default for that case only.
+    """
+    campaign, session = _campaign(tmp_path)
+    _write_config(campaign, session, genre_file=None)
+
+    prompt = _system_prompt(monkeypatch, tmp_path, campaign, scene=1)
+
+    assert "GENRE" not in prompt
+    assert "Where no genre reference is supplied, use present tense." in prompt
 
 
 def test_per_character_examples_do_not_leak_across_narrators(monkeypatch, tmp_path):
@@ -341,3 +408,44 @@ def test_unset_genre_file_costs_the_prompt_its_whole_rulebook(monkeypatch, tmp_p
     # so nothing downstream looks wrong.
     assert "fair-trade, conflict-free gold" in prompt
     assert "I set the halberd down" in prompt
+
+
+def _bundle_scene(index: int, narrator: str, *, previous: str | None = None):
+    return NarrationScene(
+        index=index, scene_name=f"Scene {index}", narrator=narrator,
+        focus=f"FOCUS_{index}", source_path=Path(f"{index:02d}.md"),
+        source_kind="base", scene_events=f"EVENTS_{index}",
+        moments=f"MOMENTS_{index}", voice_note=f"VOICE_{index}",
+        character_examples=f"EXAMPLES_{index}", previous_narrator=previous,
+        previous_voice_sample=(f"PREVIOUS_{index}" if previous else None),
+        estimated_output_tokens=500, output_path=Path(f"out-{index}.md"),
+        output_existed=False,
+    )
+
+
+def test_bundle_shared_inputs_are_delivered_once_and_private_inputs_stay_scoped():
+    system, user = build_bundled_narrate_prompts(
+        [_bundle_scene(1, "Alice"), _bundle_scene(2, "Bob", previous="Alice")],
+        shared_examples="SHARED_STYLE", party="PARTY_DOCUMENT",
+        roster="CLASS_ROSTER", npc_roster="NPC_ROSTER",
+        context_docs=["HISTORY_ONE", "HISTORY_TWO"],
+        genre="GENRE_RULE", prose_mode=True,
+    )
+    combined = system + "\n" + user
+
+    for shared in (
+        "SHARED_STYLE", "PARTY_DOCUMENT", "CLASS_ROSTER", "NPC_ROSTER",
+        "HISTORY_ONE", "HISTORY_TWO", "GENRE_RULE",
+    ):
+        assert combined.count(shared) == 1, shared
+    for private in (
+        "EVENTS_1", "MOMENTS_1", "VOICE_1", "EXAMPLES_1",
+        "EVENTS_2", "MOMENTS_2", "VOICE_2", "EXAMPLES_2", "PREVIOUS_2",
+    ):
+        assert combined.count(private) == 1, private
+
+    first, second = user.split("## Scene packet 02", 1)
+    assert "VOICE_1" in first and "VOICE_2" not in first
+    assert "EXAMPLES_1" in first and "EXAMPLES_2" not in first
+    assert "VOICE_2" in second and "VOICE_1" not in second
+    assert "EXAMPLES_2" in second and "EXAMPLES_1" not in second

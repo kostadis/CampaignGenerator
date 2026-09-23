@@ -378,6 +378,49 @@ def parse_plan(plan_text: str, total_chunks: int) -> list[dict]:
     return sections
 
 
+#: A speaker label opens a line: ``**Vukradin** — *context*``. Everything
+#: between the asterisks is captured verbatim, brackets and separators
+#: included; deciding who a label names is not this module's job.
+_SCENE_SPEAKER_RE = re.compile(r"(?m)^\*\*([^*]+?)\*\*")
+
+
+def scene_speaker_labels(moments: str) -> list[str]:
+    """Every speaker label in ``moments``, verbatim, in the order written.
+
+    A *reader*, not a filter. It returns the game master, bracketed labels,
+    beat markers and unknown names alike — because who a label names is decided
+    against the campaign's roster, and this module cannot see one.
+
+    That separation is the fix for #453. This function used to drop every label
+    beginning with ``[`` and every label equal to ``GM``, which is an identity
+    rule living in the one place that cannot check it. Sessions differ on
+    whether a speaker label is bracketed: ``**[Vukradin]**`` is a person and
+    ``**[Reroll With Advantage]**`` is scene apparatus, and no property of the
+    text tells them apart. Discarding both cost one session 39 labelled turns
+    for a single character and left the narrator pool empty, which
+    ``sd_plan`` refuses. :mod:`session_doc.plan_eligibility` now classifies
+    them, holding the roster that makes the distinction possible.
+
+    **Hand this the moments section, never the whole scene file.** Two things
+    in a real extraction defeat a looser reading, and both are in scene 05 of
+    the session this feature comes from:
+
+    - The GM *narrates about* an absent character without ever labelling him
+      ("Brewbarry's already in the tavern"), so a substring search reports him
+      present in the one scene the planner must not give him.
+    - The gm-assist summary above the moments carries its own **bold** headers,
+      so a label scan over the whole document picks up prose as people.
+
+    A label is a label only at the start of a line. The anchored regex is
+    deliberate: an earlier draft counted turns with a
+    ``line.strip().startswith("**")`` scan, which accepts an indented label the
+    anchor rejects, so a smoothed extraction could report a dozen turns for a
+    character the eligibility set had already excluded. One reading feeds both
+    presence and counts, so the two can never disagree (FR-009).
+    """
+    return [raw.strip() for raw in _SCENE_SPEAKER_RE.findall(moments)]
+
+
 def extract_scene_text(recap: str, scene_name: str) -> str:
     """Return the text of a single named scene from the recap's ## Scenes section.
 

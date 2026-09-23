@@ -656,11 +656,32 @@ def test_sd_plan_writes_plan_md(tmp_path, monkeypatch):
     sx_dir = tmp_path / "scene_extractions"
     sx_dir.mkdir()
     (sx_dir / "01_stone_giants.md").write_text(
-        "---\nscene: The Stone Giants\n---\n\nVukradin stared down the giants.\n",
+        "---\nscene: The Stone Giants\n---\n\n"
+        "**Vukradin** — *holding the line*\n> \"You will not pass.\"\n",
         encoding="utf-8",
     )
     (sx_dir / "02_glacier.md").write_text(
-        "---\nscene: The Whispering Glacier\n---\n\nSoma scouted as an eagle.\n",
+        "---\nscene: The Whispering Glacier\n---\n\n"
+        "**Soma** — *scouting as an eagle*\n> \"The pass is clear.\"\n",
+        encoding="utf-8",
+    )
+
+    # sd_plan reads attendance from the tape (#385) and refuses without it.
+    vtt = tmp_path / "session.vtt"
+    vtt.write_text(
+        "WEBVTT\n\n1\n00:00:01.000 --> 00:00:04.000\n"
+        "David Mendenhall: I hold the line.\n\n"
+        "2\n00:00:04.000 --> 00:00:07.000\n"
+        "Wade Brown: I scout ahead.\n",
+        encoding="utf-8",
+    )
+    players = tmp_path / "players.yaml"
+    players.write_text(
+        "players:\n"
+        "- id: david\n  name: David Mendenhall\n"
+        "  display_names:\n  - David Mendenhall\n  plays:\n  - Vukradin\n"
+        "- id: wade\n  name: Wade Brown\n"
+        "  display_names:\n  - Wade Brown\n  plays:\n  - Soma\n",
         encoding="utf-8",
     )
 
@@ -688,6 +709,8 @@ def test_sd_plan_writes_plan_md(tmp_path, monkeypatch):
             "sd_plan.py",
             "--scene-extractions", str(sx_dir),
             "--characters", "Vukradin, Soma",
+            "--vtt", str(vtt),
+            "--players-config", str(players),
             "--out", str(out_path),
         ],
     )
@@ -769,11 +792,12 @@ def test_parse_plan_skips_blocks_with_no_narrator():
 
 # ── session_doc.build_narrate_system — dialogue handling ─────────────────────
 
-def test_chunk_mode_mandates_dialogue():
-    """Chunk mode: strong dialogue mandate (full sessions usually have dialogue)."""
+def test_chunk_mode_selects_source_dialogue():
+    """Chunk mode uses the same source-grounded selection as scene mode."""
     system = session_doc.build_narrate_system(None, scene=None)
-    assert "THE DIALOGUE IS THE STORY" in system
-    assert "DO NOT invent" not in system
+    assert "DIALOGUE SELECTION" in system
+    assert "THE DIALOGUE IS THE STORY" not in system
+    assert "DO NOT invent" in system
 
 
 def test_scene_mode_dialogue_is_conditional():
@@ -787,8 +811,12 @@ def test_scene_mode_dialogue_is_conditional():
 def test_scene_mode_no_dialogue_instruction_allows_action_only():
     """Scene mode prompt must explicitly allow action-beat-only narration."""
     system = session_doc.build_narrate_system(None, scene="The Glacier Crossing")
-    assert "action beats" in system.lower() or "action beat" in system.lower()
-    assert "no dialogue" in system.lower() or "no verbatim" in system.lower() or "no dialogue" in system.lower()
+    # #410 rewrapped dialogue_conditional.md's prose, so "action beats" now
+    # spans a line break ("...render its action\nbeats and observations...");
+    # join whitespace before the substring check rather than assert on raw text.
+    flat = " ".join(system.lower().split())
+    assert "action beats" in flat or "action beat" in flat
+    assert "no dialogue" in flat or "no verbatim" in flat or "no dialogue" in flat
 
 
 # ── scene index filtering (the --scene flag logic) ───────────────────────────

@@ -978,3 +978,121 @@ def test_cli_reports_voiced_files_and_exits_clean(tmp_path):
     assert r.returncode == 0, r.stdout + r.stderr
     assert "voiced" in r.stdout
     assert "Voiced moments" in (tmp_path / "r.md").read_text()
+
+
+# =========================================================================
+# #421 — typography is folded before comparison
+#
+# Two normalizers in this codebase disagreed about whether `'` and `’` are the
+# same character, and the one used to accuse a quote of being fabricated was
+# the one that said no:
+#
+#   campaignlib/citations.py  _QUOTE_TRANSLATION            folds
+#   session_doc/verify_quotes _normalize                    did not
+#
+# Renderers do not agree on apostrophe style and neither do this pipeline's own
+# artifacts — `gpt-6-astra` emits `’` and no ASCII, `claude-fable-5-1` and
+# `DeepSeek-V4-Flash-0731` the reverse, extractions and plans use `’`. So
+# narration and transcript routinely differ in a character neither the author
+# nor the reviewer can see, and `UNVERIFIED` is the one verdict this module's
+# own enum calls an accusation.
+#
+# Measured over the whole live corpus before and after — 19 sessions, 12,785
+# findings — the fold moves exactly one, `near -> verified`, and no
+# `unverified` at all. So this is a latent fix, not a re-scoring: the risk it
+# removes is real but had not yet fired on this corpus.
+# =========================================================================
+
+_TYPOGRAPHY_VTT = """WEBVTT
+
+1
+00:00:01.000 --> 00:00:04.000
+Wade Brown: It's Rsolk's, isn't it, Soma's?
+"""
+
+
+@pytest.fixture
+def typography_transcript(tmp_path):
+    p = tmp_path / "typo.vtt"
+    p.write_text(_TYPOGRAPHY_VTT, encoding="utf-8")
+    return SourceTranscript.load(p)
+
+
+def _one_verdict(transcript, quoted: str, tmp_path) -> Verdict:
+    p = tmp_path / "session-summary.md"
+    p.write_text(
+        "# Session\n\n## Memorable Moments\n\n"
+        f'> "{quoted}"\n> — Wade\n', encoding="utf-8")
+    findings = verify_artifact(p, transcript, kind="summary")
+    assert len(findings) == 1, findings
+    return findings[0].verdict
+
+
+def test_a_curly_apostrophe_transcription_is_verified(
+        typography_transcript, tmp_path):
+    """The contract half of #421, made explicit.
+
+    An exact transcription is exact whatever the apostrophe. Before the fold
+    this could never be better than NEAR — capped by a character the typist
+    never chose and the reviewer cannot see.
+    """
+    assert _one_verdict(
+        typography_transcript, "It’s Rsolk’s, isn’t it, Soma’s?", tmp_path
+    ) is Verdict.VERIFIED
+
+
+def test_the_ascii_original_is_still_verified(typography_transcript, tmp_path):
+    """Folding must not cost the case that already worked."""
+    assert _one_verdict(
+        typography_transcript, "It's Rsolk's, isn't it, Soma's?", tmp_path
+    ) is Verdict.VERIFIED
+
+
+def test_a_disfluency_edit_plus_typography_is_no_longer_an_accusation(
+        typography_transcript, tmp_path):
+    """The case the fix exists for: a correct quote, edited exactly as the
+    contract permits, called a fabrication over invisible characters.
+
+    Two dropped commas — the kind of edit NEAR exists to tolerate — plus
+    typography scores 0.8333 against the 0.85 threshold and comes back
+    UNVERIFIED, the one verdict this module's enum calls an accusation. Folded
+    it is 0.9667, and NEAR.
+
+    Deliberately five tokens. Three of the four zero-margin examples in the
+    issue are under `DEFAULT_MIN_TOKENS = 4` and so are UNSCORED — never
+    accused at all — which narrows the real exposure to short-but-not-too-short
+    apostrophe-dense quotes. This is one.
+    """
+    assert _one_verdict(
+        typography_transcript, "It’s Rsolk’s isn’t it Soma’s?", tmp_path
+    ) is Verdict.NEAR
+
+
+def test_real_wording_differences_still_fail(typography_transcript, tmp_path):
+    """The fold must not buy its verdicts by making everything match."""
+    assert _one_verdict(
+        typography_transcript,
+        "I have always hated the sea and everything in it.", tmp_path
+    ) is Verdict.UNVERIFIED
+
+
+def test_the_two_normalizers_agree_on_typography():
+    """The actual invariant. #421 is a drift bug, so the assertion is that the
+    two cannot drift again — not that either one has some particular table."""
+    from campaignlib import citations
+    from session_doc import verify_quotes as vq
+
+    for pair in (("don't", "don’t"), ('say "hi"', "say “hi”"),
+                 ("it`s", "it's"), ("‘quoted’", "'quoted'")):
+        a, b = pair
+        assert citations._normalize(a) == citations._normalize(b), pair
+        assert vq._normalize(a) == vq._normalize(b), pair
+
+
+def test_dashes_and_ellipses_are_deliberately_not_folded():
+    """Scope limit, asserted so a later "while we're here" cannot widen it
+    silently: those can carry real editorial difference, and there is no
+    evidence yet that folding them is right."""
+    from session_doc import verify_quotes as vq
+    assert vq._normalize("a - b") != vq._normalize("a — b")
+    assert vq._normalize("wait...") != vq._normalize("wait…")

@@ -1,0 +1,16 @@
+{
+  "A": {
+    "words": 1699,
+    "paragraphs": 117,
+    "median_paragraph_words": 10,
+    "quote_led_paragraphs": 62,
+    "quote_led_at_most_5_words": 20
+  },
+  "B": {
+    "words": 1781,
+    "paragraphs": 115,
+    "median_paragraph_words": 11,
+    "quote_led_paragraphs": 58,
+    "quote_led_at_most_5_words": 18
+  }
+}

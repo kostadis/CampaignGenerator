@@ -225,6 +225,15 @@ def canonical_context_section(campaign_dir) -> "str | None":
             f"- **{a}** is NOT the same entity as **{b}**" for a, b in reg.distinct
         )
         body += "\n## Confirmed distinct entities (do not merge)\n\n" + pairs + "\n"
+    if reg.rejected_aliases:
+        pairs = "\n".join(
+            f"- **{a}** is NOT an alias of **{b}**" for a, b in reg.rejected_aliases
+        )
+        body += (
+            "\n## Rejected aliases (settled negatives; do not re-propose)\n\n"
+            + pairs
+            + "\n"
+        )
     return (
         "## AUTHORITATIVE CANON — entity registry (highest trust; wins all conflicts)\n\n"
         + body

@@ -315,3 +315,106 @@ def test_isolation_guarantees_survive_an_explicit_effort(fake):
     assert "--output-format" in inv.argv and "stream-json" in inv.argv
     assert inv.env["MAX_THINKING_TOKENS"] == "0"
     assert inv.argv.count("--effort") == 1                 # never doubled
+
+
+# =========================================================================
+# #413 — the banner and `override_sent` must never contradict each other
+#
+# `banner()` branched on three known `source` values and let everything else
+# fall through to the "CampaignGenerator sent no override" wording. But
+# `source` is a caller-supplied string, so any fourth label produced a banner
+# asserting the exact opposite of what happened: `override_sent` True,
+# `--effort <level>` on the command line, and the banner reporting an
+# inherited level. It cost a correct narration experiment, killed mid-run by
+# an operator who read the banner and believed it.
+#
+# Fixed in two places on purpose. The factory refuses an unknown label, which
+# puts the error next to the typo; and the banner branches on `override_sent`
+# before `source`, which is what holds for an identity built by hand — the
+# dataclass is public and frozen, and validation in the factory cannot reach a
+# direct construction.
+# =========================================================================
+
+def _identity(source: str, *, override_sent: bool) -> be.ClaudeCodeRunIdentity:
+    """Build one directly, bypassing the factory's validation on purpose."""
+    return be.ClaudeCodeRunIdentity(
+        effective_model=ALWAYS_THINKING_MODEL,
+        effort_sent="medium" if override_sent else None,
+        source=source, override_sent=override_sent, thinking_on=True,
+    )
+
+
+_NO_OVERRIDE_WORDING = "sent no override"
+
+#: Labels nothing in the tree produces, which is the point — the invariant has
+#: to hold for a string this file never anticipated. `"cli"` is not invented:
+#: it is what the archived narration experiments passed, mirroring
+#: `reasoning_effort_source='cli'` on the Codex side, and it is the value in
+#: the issue's reproduction.
+_UNKNOWN_SOURCES = ("cli", "", "ui", "EXPLICIT", "explicit ", "clamp2",
+                    "inherited-ish", "None")
+
+
+@pytest.mark.parametrize("source", _UNKNOWN_SOURCES + be.CLAUDE_CODE_EFFORT_SOURCES)
+@pytest.mark.parametrize("override_sent", (True, False))
+def test_the_banner_never_contradicts_override_sent(source, override_sent):
+    """The invariant, over every label — defined, unknown, and malformed.
+
+    Stated as "the no-override sentence appears if and only if nothing was
+    sent" rather than as a check on the four known branches, because the bug
+    was precisely a label outside those branches.
+    """
+    identity = _identity(source, override_sent=override_sent)
+    claims_none = _NO_OVERRIDE_WORDING in identity.banner()
+    assert claims_none is (not override_sent), (
+        f"source={source!r} override_sent={override_sent}: {identity.banner()}"
+    )
+
+
+@pytest.mark.parametrize("source", _UNKNOWN_SOURCES)
+def test_an_unknown_source_still_states_the_level_that_was_sent(source):
+    """Truthful, not merely non-contradictory: a banner that hid the level to
+    avoid the false claim would trade one unusable record for another."""
+    banner = _identity(source, override_sent=True).banner()
+    assert "effort=medium" in banner
+    assert f"(source: {source})" in banner
+
+
+def test_the_factory_refuses_a_source_it_has_no_sentence_for():
+    with pytest.raises(ValueError) as excinfo:
+        be.claude_code_run_identity(
+            model=ALWAYS_THINKING_MODEL, thinking_on=True,
+            effort="medium", source="cli")
+    message = str(excinfo.value)
+    assert "'cli'" in message
+    # The accepted set, so the caller can fix it without reading the source.
+    for known in be.CLAUDE_CODE_EFFORT_SOURCES:
+        assert known in message
+
+
+@pytest.mark.parametrize("source", be.CLAUDE_CODE_EFFORT_SOURCES)
+def test_the_factory_accepts_every_documented_source(source):
+    """The other half: refusing unknown labels must not refuse known ones."""
+    be.claude_code_run_identity(
+        model=ALWAYS_THINKING_MODEL, thinking_on=True,
+        effort="medium", source=source)
+
+
+def test_each_defined_source_still_renders_its_own_sentence():
+    """Reordering the branches must not collapse two of them together."""
+    rendered = {
+        source: be.claude_code_run_identity(
+            model=CLAMP_MODEL, thinking_on=True, effort="high", source=source
+        ).banner()
+        for source in ("explicit", "environment")
+    }
+    rendered["clamp"] = be.claude_code_run_identity(
+        model=CLAMP_MODEL, thinking_on=False).banner()
+    rendered["inherited"] = be.claude_code_run_identity(
+        model=CLAMP_MODEL, thinking_on=True).banner()
+
+    assert "(explicit)" in rendered["explicit"]
+    assert "CG_CLAUDE_CODE_EFFORT" in rendered["environment"]
+    assert "compatibility clamp" in rendered["clamp"]
+    assert _NO_OVERRIDE_WORDING in rendered["inherited"]
+    assert len(set(rendered.values())) == 4, rendered

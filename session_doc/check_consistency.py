@@ -23,6 +23,7 @@ from campaignlib import (
     assemble_docs,
     canonical_context_section,
     client_from_args,
+    find_registry,
     find_default_config,
     load_agent_prompt,
     load_config,
@@ -34,7 +35,7 @@ from campaignlib.consistency import (
     ConsistencyDocument,
     GroupedConsistencyProtocolError,
     normalize_grouped_response,
-    render_grouped_prompt,
+    render_grouped_prompt_blocks,
 )
 
 # This file lives at session_doc/check_consistency.py; find_default_config()'s
@@ -126,7 +127,9 @@ def main() -> None:
 
     context_parts: list[str] = []
 
+    registry_path = find_registry(base_dir)
     canon = canonical_context_section(base_dir)
+    canonical_registry_path = registry_path.resolve() if canon and registry_path else None
     if canon:
         context_parts.append(canon)
     else:
@@ -145,6 +148,13 @@ def main() -> None:
         for ctx in args.context:
             p = Path(ctx).expanduser()
             if p.exists():
+                if canonical_registry_path is not None and p.resolve() == canonical_registry_path:
+                    print(
+                        f"  Note: skipping --context {p}; already included as "
+                        "authoritative canon.",
+                        file=sys.stderr,
+                    )
+                    continue
                 context_parts.append(f"## {p.name}\n\n{p.read_text(encoding='utf-8').strip()}")
             else:
                 print(f"  Warning: context file not found: {p}", file=sys.stderr)
@@ -175,7 +185,16 @@ def main() -> None:
     else:
         document = documents[0]
         print(f"Document : {document.path.name} ({len(document.text):,} chars)")
-        print(f"Context  : {len(context_parts)} document(s)")
+        print(
+            f"Context  : {len(context_parts)} document(s), "
+            f"{common_context_chars:,} shared chars"
+        )
+        print(
+            "Telemetry : "
+            f"model_calls=1 shared_context_chars={common_context_chars} "
+            f"target_chars={len(document.text)} "
+            "repeated_context_chars_avoided=0"
+        )
     model_display = (
         args.model
         if args.model is not None
@@ -185,12 +204,19 @@ def main() -> None:
     print("=" * 60)
 
     if grouped:
-        prompt = render_grouped_prompt(documents, context_parts)
+        prompt = render_grouped_prompt_blocks(documents, context_parts)
     else:
-        prompt = "\n\n---\n\n".join([
-            f"## Document to Check\n\n{documents[0].text}",
-            context_text,
-        ])
+        prompt = [
+            {
+                "type": "text",
+                "text": context_text + "\n\n---\n\n",
+                "cache_control": {"type": "ephemeral"},
+            },
+            {
+                "type": "text",
+                "text": f"## Document to Check\n\n{documents[0].text}",
+            },
+        ]
 
     try:
         client = client_from_args(args)

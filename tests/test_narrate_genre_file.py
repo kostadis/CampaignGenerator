@@ -180,8 +180,8 @@ def _cfg_stub(genre_file, genre=None):
 
     return SimpleNamespace(
         paths=SimpleNamespace(genre_file=genre_file),
-        narrate=SimpleNamespace(tokens=0, prose_mode=False, reflections=False,
-                                context=[]),
+        narrate=SimpleNamespace(tokens=0, prose_mode=False, gap_marking=False,
+                                reflections=False, context=[]),
         backends=SimpleNamespace(active="anthropic"),
         genre=genre,
     )

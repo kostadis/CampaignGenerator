@@ -1,0 +1,31 @@
+players:
+- id: stphane
+  name: Stéphane Bourdeaud
+  display_names:
+  - Stéphane Bourdeaud
+  plays:
+  - Brewbarry
+- id: gary
+  name: Gary Young
+  display_names:
+  - Gary Young
+  plays:
+  - Valphine Sotorra
+- id: wade
+  name: Wade Brown
+  display_names:
+  - Wade Brown
+  plays:
+  - Soma
+- id: david
+  name: David Mendenhall
+  display_names:
+  - David Mendenhall
+  plays:
+  - Vukradin
+- id: kostadis
+  name: Kostadis Roussos
+  display_names:
+  - Kostadis Roussos
+  plays: []
+  gm: true

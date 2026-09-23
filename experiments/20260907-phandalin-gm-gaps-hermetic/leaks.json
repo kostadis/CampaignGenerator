@@ -1,0 +1,53 @@
+{
+  "medium": {
+    "gaps": 11,
+    "words": 2223,
+    "narration_words": 447,
+    "dialogue_words": 1413,
+    "probes": {
+      "brewbarry_afford": {
+        "in_narration": [
+          "Brewbarry is in there somewhere, happy, in the place he couldn't afford once. The rest of my bale drifts in around me and pretends to look at the mannequins. It's a good place. I need to leave it."
+        ],
+        "in_dialogue_count": 0,
+        "in_a_gap": 1
+      },
+      "basement": {
+        "in_narration": [],
+        "in_dialogue_count": 1,
+        "in_a_gap": 1
+      },
+      "harper_symbol": {
+        "in_narration": [
+          "I know that harp. Everybody on the coast knows that harp; it's carved into more doorframes than the shipwrights would like to admit. My eyes open in Bluelake with a rat's memory of it still hanging in front of them."
+        ],
+        "in_dialogue_count": 4,
+        "in_a_gap": 3
+      }
+    }
+  },
+  "sealed": {
+    "gaps": 15,
+    "words": 2391,
+    "narration_words": 398,
+    "dialogue_words": 1589,
+    "probes": {
+      "brewbarry_afford": {
+        "in_narration": [],
+        "in_dialogue_count": 0,
+        "in_a_gap": 1
+      },
+      "basement": {
+        "in_narration": [],
+        "in_dialogue_count": 0,
+        "in_a_gap": 1
+      },
+      "harper_symbol": {
+        "in_narration": [],
+        "in_dialogue_count": 3,
+        "in_a_gap": 4
+      }
+    }
+  },
+  "reading": "in_narration is the list that matters: the narrator asserting something a gap holds. Dialogue hits are the players' own lines and are expected. A keyword can match innocently, so every hit is a passage to read, not a confirmed leak."
+}
