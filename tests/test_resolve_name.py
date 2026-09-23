@@ -476,3 +476,21 @@ def test_missing_sheet_file_degrades_silently(tmp_path):
         "characters:\n- name: Gyrgum\n  sheet: docs/nope.md\n", encoding="utf-8")
     resolve.clear_cache()
     assert resolve.resolve_name(c, "Gyrgum")["tier"] == 1
+
+
+def test_registry_declared_alias_is_not_a_conflict(tmp_path):
+    """Found on the live corpus: the glossary rules `**Fembris**` while the
+    registry holds `Fembris Lancer` with `Fembris` as a registered alias. Same
+    entity at two lengths, declared as such -- not a disagreement to bring the
+    GM. Prefix matching would also "fix" this, but it overmatches badly enough
+    to stay confined to the PC tiers, so the registry is asked instead."""
+    c = _campaign(tmp_path, glossary="## NPCs\n\n| Wrong | Right |\n|---|---|\n"
+                                     "| Fembrus | **Fembris** |\n",
+                  known=None, registry_entities=False)
+    assert registry.main(["init", str(c)]) == 0
+    assert registry.main(["add", str(c), "--name", "Fembris Lancer", "--type", "npc",
+                          "--aliases", "Fembris", "Lancer", "--yes"]) == 0
+    resolve.clear_cache()
+    r = resolve.resolve_name(c, "Fembris")
+    assert r["status"] == "resolved", "the registry says these are one entity"
+    assert r["conflicts"] == []

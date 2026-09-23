@@ -423,6 +423,31 @@ def compatible(a: str, b: str, allow_prefix: bool = False) -> bool:
 # depending on which form you happened to type.
 
 
+def _same_registry_entity(campaign_dir: Path, a: str, b: str) -> bool:
+    """True when the registry DECLARES a and b the same entity.
+
+    The registry stores full names ("Fembris Lancer", "Kazryn Nyantani",
+    "Ilvara Mizzrym") while the glossary rules on the short form the table
+    actually says. That length difference is not a disagreement, but it is also
+    not something to infer from string shape -- prefix matching overmatched
+    badly enough to be confined to the PC tiers. So ask the registry instead:
+    it records which alternates belong to which entity, and an alias there is
+    by construction an approved canonical alternate, never a misspelling.
+
+    Declared identity, not resemblance -- the same principle as the sheet /
+    roster pairing in _t1_party.
+    """
+    reg = _load_registry(campaign_dir)
+    if reg is None:
+        return False
+    ka, kb = norm_subject(a), norm_subject(b)
+    for e in reg.entities:
+        forms = {norm_subject(n) for n in [e.name, *e.aliases]}
+        if ka in forms and kb in forms:
+            return True
+    return False
+
+
 def _t0_sheet(campaign_dir: Path, key: str, surface: str) -> "dict | None":
     for fname, name, _roster in _sheets(campaign_dir):
         if compatible(surface, name, allow_prefix=True):
@@ -604,6 +629,8 @@ def higher_authority_drift(campaign_dir: Path, ruling: dict,
         if compatible(form, ruling["value"],
                       allow_prefix=bool({tier, ruling["tier"]} & PC_TIERS)):
             continue
+        if _same_registry_entity(campaign_dir, form, ruling["value"]):
+            continue
         if SequenceMatcher(None, ruled_key, norm_subject(form)).ratio() >= threshold:
             out.append({"value": form, "tier": tier, "source": source,
                         "evidence": f"{source} → {form}"})
@@ -677,6 +704,7 @@ def resolve_name(campaign_dir: "Path | str", surface: str,
         for h in lower
         if not compatible(h["value"], ruling["value"],
                           allow_prefix=bool({h["tier"], ruling["tier"]} & PC_TIERS))
+        and not _same_registry_entity(campaign_dir, h["value"], ruling["value"])
     ]
     # A roster entry NAMES the sheet it belongs to, so a disagreement between
     # the two is a flat contradiction and needs no similarity test. That matters:
