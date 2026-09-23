@@ -199,7 +199,10 @@ def test_registry_alias_resolves_to_canonical(tmp_path):
     assert r["status"] == "resolved"
     assert r["canonical"] == "Ilvara Mizzrym"
     assert r["tier"] == 3
-    assert r["is_change"] is True
+    # A registered alias is an approved alternate, not a misspelling: the
+    # canonical is reported, but writing the alias is not a name change.
+    assert r["is_change"] is False
+    assert r["approved_alias"] == "Olvara"
     assert "alias: Olvara" in r["evidence"]
 
 
@@ -306,6 +309,12 @@ def test_empty_surface_form(tmp_path):
 
 
 # ── read-only ───────────────────────────────────────────────────────────────
+
+def test_glossary_wrong_form_is_still_a_change_even_if_similar_to_an_alias(tmp_path):
+    c = _campaign(tmp_path)
+    r = resolve.resolve_name(c, "Gurrigam")
+    assert r["is_change"] is True and r.get("approved_alias") is None
+
 
 def test_resolve_writes_nothing(tmp_path):
     """The guarantee that lets every skill call this freely."""

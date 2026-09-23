@@ -522,6 +522,12 @@ def _t3_registry(campaign_dir: Path, key: str, surface: str) -> "dict | None":
                         + (f" (alias: {candidate})" if candidate != e.name else "")
                     ),
                     "entity_type": e.type,
+                    # An alias is by construction an APPROVED canonical
+                    # alternate, never a misspelling, so writing it is not a
+                    # name change. (A garbling recorded as an alias is
+                    # registry pollution -- /registry-cleanup's job, not this
+                    # function's to second-guess.)
+                    "approved_alias": candidate if candidate != e.name else None,
                 }
     return None
 
@@ -754,8 +760,10 @@ def resolve_name(campaign_dir: "Path | str", surface: str,
         "evidence": ruling["evidence"],
         # Tiers 0 and 1 are the PC sources, and both store full names:
         # "Thorin" resolving to "Thorin Giantfriend" is not a change to show.
-        "is_change": not compatible(surface, ruling["value"],
-                                    allow_prefix=ruling["tier"] in PC_TIERS),
+        "is_change": not ruling.get("approved_alias")
+                     and not compatible(surface, ruling["value"],
+                                        allow_prefix=ruling["tier"] in PC_TIERS),
+        "approved_alias": ruling.get("approved_alias"),
         "entity_type": ruling.get("entity_type"),
         "parenthetical": ruling.get("parenthetical"),
         "also_found_in": [
