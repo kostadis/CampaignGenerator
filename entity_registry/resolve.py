@@ -689,7 +689,7 @@ def resolve_name(campaign_dir: "Path | str", surface: str,
     conflicts += higher_authority_drift(campaign_dir, ruling, threshold)
     seen_conflicts = set()
     conflicts = [c for c in conflicts
-                 if not (k := (c["tier"], norm_subject(c["value"]))) in seen_conflicts
+                 if (k := (c["tier"], norm_subject(c["value"]))) not in seen_conflicts
                  and not seen_conflicts.add(k)]
     conflicts.sort(key=lambda c: c["tier"])
 

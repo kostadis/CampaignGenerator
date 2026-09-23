@@ -179,6 +179,7 @@ def test_build_server_registers_every_subcommand_as_a_tool(tmp_path):
         "registry_project_tool", "registry_check_tool", "registry_triage_candidates_tool",
         "registry_import_inventory_tool", "registry_import_dedup_tool",
         "registry_import_frontmatter_tool", "registry_import_alias_decisions_tool",
+        "registry_resolve_name_tool",
     }
     assert names == expected
 
