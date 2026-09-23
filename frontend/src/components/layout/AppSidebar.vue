@@ -196,20 +196,49 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
+    // Feature 006's three rendering paths, shown as siblings so it is visible
+    // that they are alternative routes to the same documents. Order is 006's
+    // own numbering (paths 1, 2, 3), not a recommendation.
     title: 'GROUNDING DOCS',
-    items: [
-      { label: 'Campaign State', path: '/grounding/campaign-state' },
-      { label: 'World State', path: '/grounding/distill' },
-      { label: 'Party Document', path: '/grounding/party' },
-      { label: 'Planning Document', path: '/grounding/planning' },
-      { label: 'State Projection', path: '/grounding/projections' },
-      { label: 'Threads', path: '/grounding/threads' },
-    ],
-  },
-  {
-    title: 'ENSEMBLE WORKFLOW',
-    items: [
-      { label: 'Ensemble Grounding Docs', path: '/ensemble/setup' },
+    paths: [
+      {
+        id: 'per-tool',
+        label: 'Per-tool',
+        description: 'One tool per document, each with its own extraction.',
+        usesSharedExtraction: false,
+        // /grounding/world-state is not listed: the router redirects it to
+        // /grounding/distill before the sidebar ever sees the address.
+        matchPrefixes: ['/grounding/campaign-state', '/grounding/distill', '/grounding/party', '/grounding/planning'],
+        items: [
+          { label: 'Campaign State', path: '/grounding/campaign-state' },
+          { label: 'World State', path: '/grounding/distill' },
+          { label: 'Party Document', path: '/grounding/party' },
+          { label: 'Planning Document', path: '/grounding/planning' },
+        ],
+      },
+      {
+        id: 'dossier-synthesis',
+        label: 'Dossier synthesis',
+        description: 'Facts → per-entity dossiers → grounding docs. Reads the shared ensemble extraction.',
+        usesSharedExtraction: true,
+        matchPrefixes: ['/ensemble'],
+        items: [
+          // One entry: the Setup → Extract → Bundle → Synthesize stages live in
+          // EnsembleWorkflow.vue's own wizard (research R4).
+          { label: 'Ensemble', path: '/ensemble/setup', matchPrefix: '/ensemble' },
+        ],
+      },
+      {
+        id: 'state-projection',
+        label: 'State projection',
+        description: 'Rebuilds only the sections that went stale. Reads the shared ensemble extraction.',
+        usesSharedExtraction: true,
+        matchPrefixes: ['/grounding/projections', '/grounding/threads'],
+        items: [
+          { label: 'State Projection', path: '/grounding/projections' },
+          { label: 'Threads', path: '/grounding/threads' },
+        ],
+      },
     ],
   },
   {
@@ -245,6 +274,12 @@ function isItemActive(item: NavItem): boolean {
   return isActive(item.path) || (item.matchPrefix !== undefined && isActive(item.matchPrefix))
 }
 
+// Same segment boundary as items, so '/grounding/party' never matches
+// '/grounding/party-x'.
+function isPathActive(p: RenderingPath): boolean {
+  return p.matchPrefixes.some(prefix => isActive(prefix))
+}
+
 function navigate(path: string) {
   router.push(path)
 }
@@ -269,6 +304,28 @@ function navigate(path: string) {
         >
           {{ item.label }}
         </div>
+
+        <!-- Rendering paths (022): a heading and a description, then the path's
+             pages. The heading is a label, not a link (research R3). -->
+        <section
+          v-for="p in group.paths ?? []"
+          :key="p.id"
+          class="nav-path"
+          :data-path-id="p.id"
+        >
+          <h3 class="nav-path-title" :class="{ active: isPathActive(p) }">{{ p.label }}</h3>
+          <p class="nav-path-desc">{{ p.description }}</p>
+          <div
+            v-for="item in p.items"
+            :key="item.path"
+            class="nav-item nav-item-nested"
+            :class="{ active: isItemActive(item) }"
+            :data-nav-path="item.path"
+            @click="navigate(item.path)"
+          >
+            {{ item.label }}
+          </div>
+        </section>
       </div>
 
       <!-- Settings (standalone) -->
@@ -462,6 +519,31 @@ function navigate(path: string) {
   color: var(--text);
   font-weight: 600;
 }
+
+/* Rendering paths (022): one level between the group title and its pages.
+   The heading sits below the group title in weight and above the items; the
+   description is muted and wraps within the 210px sidebar. */
+.nav-path { margin: 2px 0 8px; }
+.nav-path-title {
+  margin: 0;
+  padding: 6px 14px 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-sub);
+  border-left: 3px solid transparent;
+}
+.nav-path-title.active {
+  color: var(--text);
+  border-left-color: var(--mauve);
+}
+.nav-path-desc {
+  margin: 1px 0 3px;
+  padding: 0 14px 0 17px;
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+.nav-item-nested { padding-left: 24px; }
 
 .sidebar-footer {
   padding: 12px 14px;
