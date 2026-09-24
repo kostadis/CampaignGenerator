@@ -20,9 +20,18 @@ from session_doc import check_consistency  # noqa: E402
 
 def _make_config(tmp_path: Path) -> Path:
     """Config with no documents — forces reliance on --context only, so the
-    test doesn't depend on the real repo's docs/ tree existing."""
-    config_path = tmp_path / "config.yaml"
-    config_path.write_text("documents: []\n", encoding="utf-8")
+    test doesn't depend on the real repo's docs/ tree existing. Lives at the
+    one valid location, <campaign>/config/config.yaml, with the registry that
+    check_consistency now requires under <campaign>/docs/."""
+    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "docs" / "entity_registry.yaml").write_text(
+        "version: 1\ncampaign: fixture\nentities: []\n", encoding="utf-8"
+    )
+    (tmp_path / "config").mkdir(exist_ok=True)
+    config_path = tmp_path / "config" / "config.yaml"
+    for _label in ("campaign_state", "world_state"):
+        (tmp_path / "docs" / f"{_label}.md").write_text(f"{_label} fixture.\n", encoding="utf-8")
+    config_path.write_text("documents:\n  - {label: campaign_state, path: ../docs/campaign_state.md}\n  - {label: world_state, path: ../docs/world_state.md}\n", encoding="utf-8")
     return config_path
 
 

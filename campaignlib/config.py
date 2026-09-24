@@ -4,13 +4,64 @@ import os
 import sys
 from pathlib import Path
 
+from .constants import CONFIG_DIR_NAME, config_path
 
-def find_default_config(script_file: str) -> str:
-    """Return CWD/config.yaml if it exists, else <script_dir>/config/config.yaml."""
-    cwd_config = Path.cwd() / "config.yaml"
-    if cwd_config.exists():
-        return str(cwd_config)
-    return str(Path(script_file).resolve().parent / "config" / "config.yaml")
+
+class ConfigLocationError(RuntimeError):
+    """A campaign's config.yaml is missing or outside ``<campaign>/<config dir>/``."""
+
+
+def _reject_stray_root_config(campaign_dir: Path) -> None:
+    stray = campaign_dir / "config.yaml"
+    if stray.is_file() and stray.resolve() != config_path(campaign_dir, "config.yaml").resolve():
+        raise ConfigLocationError(
+            f"misplaced config {stray}: the only valid location is "
+            f"{config_path(campaign_dir, 'config.yaml')} "
+            f"(./migrate_config.sh <campaign> moves it)"
+        )
+
+
+def find_default_config(optional: bool = False) -> str | None:
+    """Return ``<cwd>/<config dir>/config.yaml`` — the one declared location.
+
+    No fallback. This used to fall back to CampaignGenerator's *own*
+    ``config/config.yaml`` when CWD had none, so a run from the wrong directory
+    silently checked a campaign against the toolkit's config instead of failing.
+
+    Raises ConfigLocationError when a stray ``<cwd>/config.yaml`` exists, and
+    when the declared config is missing unless ``optional`` (then returns None).
+    """
+    cwd = Path.cwd()
+    _reject_stray_root_config(cwd)
+    declared = config_path(cwd, "config.yaml")
+    if declared.is_file():
+        return str(declared)
+    if optional:
+        return None
+    raise ConfigLocationError(
+        f"no config at {declared}: run from the campaign root or pass --config "
+        f"<campaign>/{CONFIG_DIR_NAME}/config.yaml"
+    )
+
+
+def campaign_root_for_config(config_file: str | Path) -> Path:
+    """Return the campaign root that owns ``<campaign>/<config dir>/config.yaml``.
+
+    Campaign data (``docs/entity_registry.yaml`` above all) lives under the
+    root, not beside the config file, so callers must not use the config's own
+    directory as the campaign directory. Raises ConfigLocationError when the
+    file is not inside a ``<config dir>/`` folder, or when a stray root
+    ``config.yaml`` sits beside that folder.
+    """
+    p = Path(config_file).expanduser().resolve()
+    if p.parent.name != CONFIG_DIR_NAME:
+        raise ConfigLocationError(
+            f"misplaced config {p}: the only valid location is "
+            f"<campaign>/{CONFIG_DIR_NAME}/config.yaml"
+        )
+    root = p.parent.parent
+    _reject_stray_root_config(root)
+    return root
 
 
 def _expand_env(value):

@@ -104,7 +104,8 @@ All file I/O, API calls, clipboard, and logging live in `campaignlib.py`. Every 
 
 | Function | Purpose |
 |---|---|
-| `find_default_config(script_file)` | Returns CWD `config.yaml` if present, else `<script_dir>/config/config.yaml` |
+| `find_default_config(optional=False)` | Returns `<cwd>/config/config.yaml`; raises `ConfigLocationError` if it is missing (unless `optional`) or a stray `<cwd>/config.yaml` exists. No fallback |
+| `campaign_root_for_config(path)` | Returns the campaign root owning `<campaign>/config/config.yaml`; raises `ConfigLocationError` for a config outside `config/` |
 | `load_config(path)` | Loads YAML, returns `(dict, config_dir_path)` |
 | `load_file(path, base_dir)` | Reads a file; resolves relative paths against `base_dir` |
 | `assemble_docs(config, labels, base_dir)` | Loads named docs from config, joins with separators |
@@ -117,7 +118,10 @@ All file I/O, API calls, clipboard, and logging live in `campaignlib.py`. Every 
 ```python
 from campaignlib import find_default_config, load_config, assemble_docs, make_client, stream_api, call_api, save_log
 
-parser.add_argument("--config", default=find_default_config(__file__))
+parser.add_argument("--config", default=None)
+args = parser.parse_args()
+if args.config is None:
+    args.config = find_default_config()   # resolve after parsing: it raises
 config, base_dir = load_config(args.config)
 docs = assemble_docs(config, ["world_state"], base_dir)
 client = make_client()
@@ -128,7 +132,7 @@ response = stream_api(client, SYSTEM_PROMPT, docs, args.model)
 
 ### Config auto-detection
 
-All scripts look for `config.yaml` in the CWD first, then fall back to `config/config.yaml` in the script directory. Run any script from a campaign workspace directory without passing `--config`.
+The only valid config is `<campaign>/config/config.yaml` (see `campaignlib/constants.py` `CONFIG_DIR_NAME`). Without `--config`, scripts use `<cwd>/config/config.yaml`, so run them from the campaign root. There is **no fallback**: a missing config, or a stray root `config.yaml`, is an error. The old fallback to CampaignGenerator's own `config/config.yaml` silently ran campaigns against the toolkit's config. Resolve the default after `parse_args()`, never as an argparse `default=`, because it raises. Paths inside the config resolve against `config/` (`../docs/...`); campaign data such as `docs/entity_registry.yaml` resolves against the campaign root (`campaign_root_for_config`).
 
 ### Per-service config files (don't reach for `ui_state.yaml`)
 

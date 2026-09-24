@@ -28,7 +28,7 @@ On-disk contract::
         note: senior drow priestess
     distinct:                        # anti-merge guards: ruled DIFFERENT entities
       - [Topsy, Turvy]
-    rejected_aliases:                # settled negatives; never re-propose
+    rejected_aliases:                # settled negatives; never re-propose (pairs or larger groups)
       - [Shoor, Stool]
 """
 
@@ -226,18 +226,25 @@ def canonical_context_section(campaign_dir) -> "str | None":
         )
         body += "\n## Confirmed distinct entities (do not merge)\n\n" + pairs + "\n"
     if reg.rejected_aliases:
-        pairs = "\n".join(
-            f"- **{a}** is NOT an alias of **{b}**" for a, b in reg.rejected_aliases
-        )
+        # A group may hold more than two names (``import-dedup`` writes a
+        # rejected cluster as one group); no two of its members are aliases.
+        lines = "\n".join(_render_rejected_group(group) for group in reg.rejected_aliases)
         body += (
             "\n## Rejected aliases (settled negatives; do not re-propose)\n\n"
-            + pairs
+            + lines
             + "\n"
         )
     return (
         "## AUTHORITATIVE CANON — entity registry (highest trust; wins all conflicts)\n\n"
         + body
     )
+
+
+def _render_rejected_group(group: "list[str]") -> str:
+    if len(group) == 2:
+        return f"- **{group[0]}** is NOT an alias of **{group[1]}**"
+    names = ", ".join(f"**{m}**" for m in group)
+    return f"- None of {names} is an alias of another"
 
 
 def _valid_scope(scope: str) -> bool:
@@ -289,6 +296,12 @@ def validate(reg: Registry) -> None:
                 f"distinct pair {pair!r} both resolve to entity "
                 f"{reg.entities[idx_a].name!r} — cannot be declared both DIFFERENT "
                 f"(distinct) and the SAME entity (aliased together)"
+            )
+
+    for group in reg.rejected_aliases:
+        if len(group) < 2:
+            raise ValueError(
+                f"rejected_aliases group must have at least 2 members: {group!r}"
             )
 
 

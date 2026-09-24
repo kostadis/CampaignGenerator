@@ -54,13 +54,6 @@ from pipelines.content_ingest.fivetools_ingest import (
     parse_filter_spec,
 )
 
-# This file lives at pipelines/rlm/apply_ingest_manifest.py; find_default_config()'s
-# script-dir fallback expects to sit next to config/ (the repo root), which
-# is no longer this file's own directory since the move — anchor it at
-# REPO_ROOT explicitly instead (same fix as pipelines/grounding/npc_table.py
-# and pipelines/session_prep/prep.py).
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-
 
 MANIFEST_FILENAME = "ingest_manifest.yaml"
 
@@ -365,7 +358,8 @@ def main(argv: list[str] | None = None) -> int:
     manifest = load_manifest(manifest_path)
 
     config = None
-    config_path = args.config or find_default_config(str(REPO_ROOT / "apply_ingest_manifest.py"))
+    # Optional: a missing config is fine, a misplaced one raises.
+    config_path = args.config or find_default_config(optional=True)
     if config_path and Path(config_path).is_file():
         try:
             config, _ = load_config(str(config_path))

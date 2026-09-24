@@ -19,6 +19,7 @@ from campaignlib import (
     assemble_docs,
     client_from_args,
     copy_to_clipboard,
+    ConfigLocationError,
     find_default_config,
     load_config,
     run_single_batch,
@@ -26,12 +27,6 @@ from campaignlib import (
     stream_api,
 )
 from campaignlib.api.client import resolve_cli_model
-
-# This file lives at pipelines/grounding/npc_table.py; find_default_config()'s
-# script-dir fallback expects to sit next to config/ (the repo root), which
-# is no longer this file's own directory since the move — anchor it at
-# REPO_ROOT explicitly instead (same fix as pipelines/session_prep/prep.py).
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 SYSTEM_PROMPT = """\
 You are a campaign document analyst for a D&D game. Your only job is to extract \
@@ -64,13 +59,18 @@ def main() -> None:
                         help="Save the table to this file")
     parser.add_argument("--clipboard", "-c", action="store_true",
                         help="Copy the table to clipboard")
-    parser.add_argument("--config", default=find_default_config(str(REPO_ROOT / "npc_table.py")),
-                        help="Path to config YAML")
+    parser.add_argument("--config", default=None,
+                        help="Path to config YAML (default: <cwd>/config/config.yaml)")
     parser.add_argument("--model", default=None,
                         help="Claude model to use")
     add_backend_args(parser)
     parser.add_argument("--no-log", action="store_true", help="Skip saving a log file")
     args = parser.parse_args()
+    if args.config is None:
+        try:
+            args.config = find_default_config()
+        except ConfigLocationError as e:
+            parser.error(str(e))
     args.model = resolve_cli_model(
         args, legacy_default=DEFAULT_MODEL
     ).effective_model

@@ -147,6 +147,34 @@ distinct:
         load_registry(path)
 
 
+@pytest.mark.parametrize("group", ["[]", "[Solo]"])
+def test_rejected_aliases_group_under_two_members_raises(tmp_path, group):
+    yaml_text = f"""
+version: 1
+entities:
+  - name: Solo
+    type: npc
+rejected_aliases:
+  - {group}
+"""
+    path = _write(tmp_path, yaml_text)
+    with pytest.raises(ValueError, match="at least 2 members"):
+        load_registry(path)
+
+
+def test_rejected_aliases_group_of_three_loads(tmp_path):
+    yaml_text = """
+version: 1
+entities:
+  - name: Cult of Talos
+    type: faction
+rejected_aliases:
+  - [Cult of Talos, Talosians, Talos]
+"""
+    reg = load_registry(_write(tmp_path, yaml_text))
+    assert reg.rejected_aliases == [["Cult of Talos", "Talosians", "Talos"]]
+
+
 def test_bad_type_raises(tmp_path):
     yaml_text = """
 version: 1
