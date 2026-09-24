@@ -187,8 +187,11 @@ def _campaign(tmp_path: Path) -> tuple[list[Path], Path, Path, Path]:
         "version: 1\ncampaign: fixture\nentities:\n  - name: Exact Canon\n    type: npc\n",
         encoding="utf-8",
     )
-    config = campaign / "config.yaml"
-    config.write_text("documents: []\n", encoding="utf-8")
+    for _label in ("campaign_state", "world_state"):
+        (campaign / "docs" / f"{_label}.md").write_text(f"{_label} fixture.\n", encoding="utf-8")
+    (campaign / "config").mkdir()
+    config = campaign / "config" / "config.yaml"
+    config.write_text("documents:\n  - {label: campaign_state, path: ../docs/campaign_state.md}\n  - {label: world_state, path: ../docs/world_state.md}\n", encoding="utf-8")
     scene_a = campaign / "01_arrival.md"
     scene_b = campaign / "02_departure.md"
     scene_a.write_text("Arrival target.", encoding="utf-8")

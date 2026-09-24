@@ -23,6 +23,8 @@ from .textproc import (
     split_frontmatter,
 )
 from .config import (
+    ConfigLocationError,
+    campaign_root_for_config,
     find_default_config,
     load_config,
     load_file,
@@ -151,6 +153,8 @@ __all__ = [
     "norm_subject",
     "split_frontmatter",
     # config / file I/O / agent prompts
+    "ConfigLocationError",
+    "campaign_root_for_config",
     "find_default_config",
     "load_config",
     "load_file",

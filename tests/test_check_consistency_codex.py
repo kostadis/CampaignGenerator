@@ -19,8 +19,11 @@ def _campaign(tmp_path: Path):
         "version: 1\ncampaign: fixture\nentities:\n  - name: Exact Canon\n    type: npc\n",
         encoding="utf-8",
     )
-    config = campaign / "config.yaml"
-    config.write_text("documents: []\n", encoding="utf-8")
+    for _label in ("campaign_state", "world_state"):
+        (campaign / "docs" / f"{_label}.md").write_text(f"{_label} fixture.\n", encoding="utf-8")
+    (campaign / "config").mkdir()
+    config = campaign / "config" / "config.yaml"
+    config.write_text("documents:\n  - {label: campaign_state, path: ../docs/campaign_state.md}\n  - {label: world_state, path: ../docs/world_state.md}\n", encoding="utf-8")
     document = campaign / "session.md"
     document.write_text("Document α bytes.\n", encoding="utf-8")
     ctx_a = tmp_path / "a.md"
@@ -82,7 +85,7 @@ def test_codex_cli_preserves_prompt_and_report_workflow(tmp_path, monkeypatch, c
     context_text = user[0]["text"].removesuffix("\n\n---\n\n")
     expected_shared_chars = len(system) + len(context_text)
     assert (
-        f"Context  : 3 document(s), {expected_shared_chars:,} shared chars"
+        f"Context  : 5 document(s), {expected_shared_chars:,} shared chars"
         in stdout
     )
     assert (

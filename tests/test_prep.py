@@ -148,18 +148,45 @@ def test_assemble_docs_relative_paths(tmp_workspace_relative):
 
 # ── campaignlib.find_default_config ──────────────────────────────────────────
 
-def test_find_default_config_prefers_cwd(tmp_path, monkeypatch):
-    (tmp_path / "config.yaml").write_text("", encoding="utf-8")
+def test_find_default_config_returns_config_dir(tmp_path, monkeypatch):
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "config.yaml").write_text("", encoding="utf-8")
     monkeypatch.chdir(tmp_path)
-    result = campaignlib.find_default_config("/some/script.py")
-    assert result == str(tmp_path / "config.yaml")
+    assert campaignlib.find_default_config() == str(tmp_path / "config" / "config.yaml")
 
 
-def test_find_default_config_falls_back_to_script_dir(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)  # no config.yaml here
-    script = "/home/user/CampaignGenerator/npc_table.py"
-    result = campaignlib.find_default_config(script)
-    assert result == "/home/user/CampaignGenerator/config/config.yaml"
+def test_find_default_config_has_no_toolkit_fallback(tmp_path, monkeypatch):
+    """The old fallback to CampaignGenerator's own config/config.yaml silently
+    ran a campaign against the toolkit's config. Missing now means an error."""
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(campaignlib.ConfigLocationError, match="no config at"):
+        campaignlib.find_default_config()
+    assert campaignlib.find_default_config(optional=True) is None
+
+
+@pytest.mark.parametrize("with_config_dir", [False, True])
+def test_find_default_config_rejects_root_config(tmp_path, monkeypatch, with_config_dir):
+    (tmp_path / "config.yaml").write_text("", encoding="utf-8")
+    if with_config_dir:
+        (tmp_path / "config").mkdir()
+        (tmp_path / "config" / "config.yaml").write_text("", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(campaignlib.ConfigLocationError, match="misplaced config"):
+        campaignlib.find_default_config(optional=True)
+
+
+def test_campaign_root_for_config(tmp_path):
+    (tmp_path / "config").mkdir()
+    cfg = tmp_path / "config" / "config.yaml"
+    cfg.write_text("", encoding="utf-8")
+    assert campaignlib.campaign_root_for_config(cfg) == tmp_path.resolve()
+
+
+def test_campaign_root_for_config_rejects_config_outside_config_dir(tmp_path):
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text("", encoding="utf-8")
+    with pytest.raises(campaignlib.ConfigLocationError, match="misplaced config"):
+        campaignlib.campaign_root_for_config(cfg)
 
 
 # ── prep.assemble_user_prompt ─────────────────────────────────────────────────

@@ -27,6 +27,7 @@ from campaignlib import (
     add_backend_args,
     call_api_with_tools,
     client_from_args,
+    ConfigLocationError,
     find_default_config,
     load_agent_prompt,
     load_config,
@@ -818,7 +819,8 @@ def main() -> None:
                         help="Directory for the JSONL trace file (default: <output_dir>/logs/)")
     parser.add_argument("--max-iterations", type=int, default=DEFAULT_MAX_ITERATIONS,
                         help=f"Hard cap on agent loop turns (default {DEFAULT_MAX_ITERATIONS})")
-    parser.add_argument("--config", default=find_default_config(__file__))
+    parser.add_argument("--config", default=None,
+                        help="Path to config YAML (default: <cwd>/config/config.yaml, optional)")
     parser.add_argument("--model", default=None)
     add_backend_args(parser)
     parser.add_argument("--no-log", action="store_true",
@@ -835,11 +837,15 @@ def main() -> None:
     claude_effort = resolve_cli_claude_effort(args)
     claude_thinking = resolve_cli_claude_thinking(args)
 
-    # Load config (not strictly needed but matches every other CLI's UX)
-    try:
+    # Load config (not strictly needed but matches every other CLI's UX).
+    # Optional: a missing config is fine, a misplaced one is still an error.
+    if args.config is None:
+        try:
+            args.config = find_default_config(optional=True)
+        except ConfigLocationError as e:
+            parser.error(str(e))
+    if args.config is not None:
         load_config(args.config)
-    except FileNotFoundError:
-        pass  # OK — polish.py doesn't require config.yaml content
 
     doc_path = Path(args.doc).expanduser().resolve()
     recap_path = Path(args.recap).expanduser().resolve()

@@ -22,6 +22,8 @@ from campaignlib import (
     add_backend_args,
     assemble_docs,
     canonical_context_section,
+    ConfigLocationError,
+    campaign_root_for_config,
     client_from_args,
     find_registry,
     find_default_config,
@@ -37,13 +39,6 @@ from campaignlib.consistency import (
     normalize_grouped_response,
     render_grouped_prompt_blocks,
 )
-
-# This file lives at session_doc/check_consistency.py; find_default_config()'s
-# script-dir fallback expects to sit next to config/ (the repo root), which
-# is no longer this file's own directory since the move — anchor it at
-# REPO_ROOT explicitly instead (same fix as pipelines/session_prep/prep.py,
-# one .parent shorter since session_doc/ is only one level below repo root).
-REPO_ROOT = Path(__file__).resolve().parent.parent
 
 _DEFAULT_CONFIG_DOCS = ["campaign_state", "world_state"]
 
@@ -63,8 +58,8 @@ def main() -> None:
     )
     parser.add_argument(
         "--config",
-        default=find_default_config(str(REPO_ROOT / "check_consistency.py")),
-        help="Path to config.yaml (default: CWD or script-dir config/config.yaml)",
+        default=None,
+        help="Path to <campaign>/config/config.yaml (default: <cwd>/config/config.yaml)",
     )
     parser.add_argument(
         "--context",
@@ -88,6 +83,12 @@ def main() -> None:
     )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
+    try:
+        if args.config is None:
+            args.config = find_default_config()
+        campaign_root = campaign_root_for_config(args.config)
+    except ConfigLocationError as e:
+        parser.error(str(e))
 
     try:
         model_intent = resolve_cli_model(args, legacy_default=DEFAULT_MODEL)
@@ -123,45 +124,55 @@ def main() -> None:
     grouped = len(documents) > 1
 
     config, base_dir = load_config(args.config)
-    available_labels = {d["label"] for d in config.get("documents", []) if d.get("path")}
+
+    # Every input the check is meant to read must exist before the model call:
+    # a skipped grounding doc or context file produces a report that looks
+    # complete and is not. Collect every problem, then fail once.
+    configured = {d["label"]: d.get("path") for d in config.get("documents", [])}
+    problems: list[str] = []
+    for label in _DEFAULT_CONFIG_DOCS:
+        if label not in configured:
+            problems.append(f"'{label}' is not in {args.config}")
+        elif not configured[label]:
+            problems.append(f"'{label}' has no path in {args.config}")
+    for ctx in args.context or []:
+        if not Path(ctx).expanduser().exists():
+            problems.append(f"context file not found: {ctx}")
+    if problems:
+        for problem in problems:
+            print(f"Error: {problem}", file=sys.stderr)
+        sys.exit(1)
 
     context_parts: list[str] = []
 
-    registry_path = find_registry(base_dir)
-    canon = canonical_context_section(base_dir)
-    canonical_registry_path = registry_path.resolve() if canon and registry_path else None
-    if canon:
-        context_parts.append(canon)
-    else:
-        print(f"  Note: no entity_registry.yaml found under {base_dir}, "
-              f"skipping canon section.", file=sys.stderr)
+    # The registry is campaign data under the campaign root, not beside the
+    # config file (base_dir is <campaign>/config/). A check without canon looks
+    # complete and is not, so a missing registry is an error, not a note.
+    registry_path = find_registry(campaign_root)
+    canon = canonical_context_section(campaign_root)
+    if not canon or registry_path is None:
+        print(f"Error: no entity registry at {campaign_root}/docs/entity_registry.yaml; "
+              f"refusing to check without canon.", file=sys.stderr)
+        sys.exit(1)
+    canonical_registry_path = registry_path.resolve()
+    context_parts.append(canon)
 
     for label in _DEFAULT_CONFIG_DOCS:
-        if label in available_labels:
-            text = assemble_docs(config, [label], base_dir)
-            if text.strip():
-                context_parts.append(text)
-        else:
-            print(f"  Note: '{label}' not in config, skipping.", file=sys.stderr)
+        text = assemble_docs(config, [label], base_dir)
+        if text.strip():
+            context_parts.append(text)
 
     if args.context:
         for ctx in args.context:
             p = Path(ctx).expanduser()
-            if p.exists():
-                if canonical_registry_path is not None and p.resolve() == canonical_registry_path:
-                    print(
-                        f"  Note: skipping --context {p}; already included as "
-                        "authoritative canon.",
-                        file=sys.stderr,
-                    )
-                    continue
-                context_parts.append(f"## {p.name}\n\n{p.read_text(encoding='utf-8').strip()}")
-            else:
-                print(f"  Warning: context file not found: {p}", file=sys.stderr)
-
-    if not context_parts:
-        print("Error: no context documents found. Check config or pass --context files.", file=sys.stderr)
-        sys.exit(1)
+            if p.resolve() == canonical_registry_path:
+                print(
+                    f"  Note: skipping --context {p}; already included as "
+                    "authoritative canon.",
+                    file=sys.stderr,
+                )
+                continue
+            context_parts.append(f"## {p.name}\n\n{p.read_text(encoding='utf-8').strip()}")
 
     system = load_agent_prompt(
         "session_doc/consistency_grouped" if grouped else "session_doc/consistency"
