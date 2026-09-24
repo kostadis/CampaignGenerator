@@ -5,7 +5,7 @@ Sets up the standard campaign layout expected by both the CLI tools and the
 FastAPI + Vue web UI:
 
     <workspace>/
-        config.yaml         ← shared config (portable: relative paths)
+        config/config.yaml  ← shared config (portable: paths relative to config/)
         docs/               ← campaign_state.md, world_state.md, party.md, ...
         voice/              ← per-character voice files
         examples/           ← handcrafted style references
@@ -26,8 +26,11 @@ Usage:
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
+
+from campaignlib.constants import CONFIG_DIR_NAME
 
 # This file lives at pipelines/workspace/new_workspace.py; the "next steps"
 # commands printed below reference sibling scripts and `startup` that still
@@ -144,15 +147,30 @@ def placeholder(docs_dir: Path, filename: str, content: str) -> Path:
 def rel_to_workspace(path: Path, workspace: Path) -> str:
     """Express ``path`` relative to ``workspace`` when it lives inside it.
 
-    Keeps generated configs portable: campaign-local docs/logs become
-    ``docs/world_state.md`` / ``logs`` (resolved against the config's own
-    directory at load time), so the checked-in config survives a different
-    username or clone location. Paths outside the workspace stay absolute.
+    For ``log_dir``, which is not resolved against the config's directory.
+    Paths outside the workspace stay absolute.
     """
     try:
         return str(path.relative_to(workspace))
     except ValueError:
         return str(path)
+
+
+def rel_to_config(path: Path, workspace: Path, config_dir: Path) -> str:
+    """Express a document ``path`` relative to ``config_dir`` when it lives
+    inside the workspace.
+
+    ``load_config`` resolves ``documents[].path`` against the config file's
+    own directory, which is ``<workspace>/config/``, so a campaign-local doc
+    becomes ``../docs/world_state.md``. Keeps the checked-in config portable
+    across usernames and clone locations. Paths outside the workspace stay
+    absolute.
+    """
+    try:
+        path.relative_to(workspace)
+    except ValueError:
+        return str(path)
+    return os.path.relpath(path, config_dir)
 
 
 def main() -> None:
@@ -202,12 +220,13 @@ def main() -> None:
         print(f"Error: '{workspace}' already exists and is not empty.", file=sys.stderr)
         sys.exit(1)
 
+    config_dir = workspace / CONFIG_DIR_NAME
     docs_dir = workspace / "docs"
     logs_dir = workspace / "logs"
     voice_dir = workspace / "voice"
     examples_dir = workspace / "examples"
     summaries_dir = workspace / "summaries"
-    for d in (docs_dir, logs_dir, voice_dir, examples_dir, summaries_dir):
+    for d in (config_dir, docs_dir, logs_dir, voice_dir, examples_dir, summaries_dir):
         d.mkdir(parents=True, exist_ok=True)
 
     # Resolve each doc: use supplied path or create a placeholder
@@ -261,19 +280,19 @@ def main() -> None:
         encounter_architect="config/agents/encounter_architect.md",
         voice_keeper="config/agents/voice_keeper.md",
         # Campaign docs: relative to the workspace so the config stays portable.
-        campaign_state=rel_to_workspace(campaign_state_path, workspace),
-        world_state=rel_to_workspace(world_state_path, workspace),
-        mechanics=rel_to_workspace(mechanics_path, workspace),
-        planning=rel_to_workspace(planning_path, workspace),
-        party=rel_to_workspace(party_path, workspace),
+        campaign_state=rel_to_config(campaign_state_path, workspace, config_dir),
+        world_state=rel_to_config(world_state_path, workspace, config_dir),
+        mechanics=rel_to_config(mechanics_path, workspace, config_dir),
+        planning=rel_to_config(planning_path, workspace, config_dir),
+        party=rel_to_config(party_path, workspace, config_dir),
     )
-    config_path = workspace / "config.yaml"
+    config_path = config_dir / "config.yaml"
     config_path.write_text(config_content, encoding="utf-8")
 
     # Summary
     print(f"\nWorkspace created: {workspace}")
     print(f"\n  {workspace}/")
-    print(f"  ├── config.yaml          ← CLI + Web UI config")
+    print(f"  ├── {CONFIG_DIR_NAME}/config.yaml   ← CLI + Web UI config")
     print(f"  ├── docs/")
     doc_items = [
         (args.campaign_state, "campaign_state.md", campaign_state_path, campaign_state_note),

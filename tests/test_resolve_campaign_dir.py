@@ -2,10 +2,10 @@
 
 The resolver decides which directory the unified config service anchors to,
 given CLI args (``--campaign-dir``, ``--session-dir``, ``--config-dir``) and
-the process CWD. It must detect both the current ``<campaign>/<config-dir>/
-config.yaml`` layout and the legacy top-level ``<campaign>/config.yaml``
-layout, and return ``None`` (never a synthetic default) when nothing can be
-determined — callers are responsible for failing loudly on ``None``.
+the process CWD. ``<campaign>/<config-dir>/config.yaml`` is the only valid
+layout: a legacy top-level ``<campaign>/config.yaml`` raises
+ConfigLocationError, and nothing found returns ``None`` (never a synthetic
+default) — callers are responsible for failing loudly on ``None``.
 """
 
 from __future__ import annotations
@@ -14,9 +14,12 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from server.main import _resolve_campaign_dir_for_service
+from campaignlib import ConfigLocationError  # noqa: E402
+from server.main import _resolve_campaign_dir_for_service  # noqa: E402
 
 
 def _args(**over):
@@ -50,23 +53,34 @@ def test_session_dir_walks_parents_to_campaign_root_with_config_subdir(tmp_path)
     assert result == campaign.resolve()
 
 
-def test_cwd_top_level_config_yaml_backcompat(tmp_path, monkeypatch):
+@pytest.mark.parametrize("with_config_dir", [False, True])
+def test_cwd_legacy_root_config_raises(tmp_path, monkeypatch, with_config_dir):
     (tmp_path / "config.yaml").write_text("")
+    if with_config_dir:
+        (tmp_path / "config").mkdir()
+        (tmp_path / "config" / "config.yaml").write_text("")
     monkeypatch.chdir(tmp_path)
 
-    result = _resolve_campaign_dir_for_service(_args())
-    assert result == tmp_path.resolve()
+    with pytest.raises(ConfigLocationError, match="misplaced config"):
+        _resolve_campaign_dir_for_service(_args())
 
 
-def test_session_dir_walks_parents_to_campaign_root_top_level_config_backcompat(tmp_path):
+def test_session_dir_stops_at_legacy_root_config_and_raises(tmp_path):
     campaign = tmp_path / "campaign"
     campaign.mkdir()
     (campaign / "config.yaml").write_text("")
     session_dir = campaign / "summaries" / "20260101"
     session_dir.mkdir(parents=True)
 
-    result = _resolve_campaign_dir_for_service(_args(session_dir=str(session_dir)))
-    assert result == campaign.resolve()
+    with pytest.raises(ConfigLocationError, match="misplaced config"):
+        _resolve_campaign_dir_for_service(_args(session_dir=str(session_dir)))
+
+
+def test_explicit_campaign_dir_with_legacy_root_config_raises(tmp_path):
+    (tmp_path / "config.yaml").write_text("")
+
+    with pytest.raises(ConfigLocationError, match="misplaced config"):
+        _resolve_campaign_dir_for_service(_args(campaign_dir=str(tmp_path)))
 
 
 def test_no_config_anywhere_returns_none(tmp_path, monkeypatch):
