@@ -34,3 +34,4 @@
 - Iteration 1: removed two implementation details (a script name in Assumptions, "the router" in an edge case).
 - Iteration 2: FR-012 resolved by the GM (option B: all three paths, every grounding document). No markers remain; all items pass.
 - The sidebar group names, page titles and the `world-state` address are kept deliberately: they are what the user sees and types, not implementation.
+- T025 (2026-09-23): the GM ran `quickstart.md` §3 on the rebased branch (`e35a85e`) and passed it: "just finished quick-start. Looks good." That covers SC-001, SC-005, the `/ensemble/extract` and `/grounding/world-state` spot checks, sidebar height at 1280×720, the State Projection → Threads signpost, and an unbuilt path not looking disabled.

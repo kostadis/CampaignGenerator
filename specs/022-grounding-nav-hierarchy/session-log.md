@@ -220,10 +220,26 @@ commit, and caught one more unpathed task (T023). Commit **`0d4c062`**
 | `d8952d6` | Truthful-description test (US3) |
 | `b4e6898` | Polish checks (T022–T024) |
 
+## 9. Pull request, rebase, and the GM's check
+
+> **GM:** branch commit pr push
+
+**Claude:** Committed this log (`5f9f08d`), pushed, and opened
+[PR #482](https://github.com/kostadis/CampaignGenerator/pull/482).
+
+The branch was later rebased onto `main` (74 commits, including #480 and 024's
+model-selector rewrite of the same `AppSidebar.vue`, in a different region). The
+rebase was clean. Build clean; Playwright 29/30. The one failure,
+`model-selector.spec.ts` › "each backend remembers its own model across a switch",
+also fails on plain `main`, which fails 2 of that spec's tests on its own. It is
+unrelated. Force-pushed as `e35a85e`.
+
+> **GM:** just finished quick-start. Looks good.
+
+**Claude:** Recorded T025 as passed in `checklists/requirements.md` and ticked it in
+`tasks.md`. **25/25 tasks done.**
+
 ## Open items
 
-- **T025**: the GM's manual check (`quickstart.md` §3): all three paths findable
-  without clicking; the shared extraction visible from the descriptions; highlighting on
-  `/ensemble/extract` and `/grounding/world-state`; sidebar height at 1280×720; the
-  State Projection → Threads link; an unbuilt path not looking disabled.
-- **Pull request**: not opened yet.
+- None for the feature. `main` carries a separate model-selector test failure (see §9).
+- `specs/` has three `022-` directories; renumbering is the GM's call.
