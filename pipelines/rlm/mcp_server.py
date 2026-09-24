@@ -32,12 +32,18 @@ logger = logging.getLogger(__name__)
 # ── Bootstrap ──────────────────────────────────────────────────────────────────
 
 # This file lives at pipelines/rlm/mcp_server.py; REPO_ROOT is the actual repo
-# root (three .parents up), not this file's own directory — needed below for
-# the packaged-default config.yaml fallback (same REPO_ROOT pattern every
-# other migrated cluster has used, e.g. pipelines/grounding/npc_table.py).
+# root (three .parents up), not this file's own directory — needed below to
+# run scripts that still live at the repo root.
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
-from campaignlib import load_config, load_file, wiring_get
+from campaignlib import (
+    ConfigLocationError,
+    campaign_root_for_config,
+    load_config,
+    load_file,
+    wiring_get,
+)
+from campaignlib.constants import config_path as campaign_config_path
 
 # Resolve campaign directory: env var → CLI arg → CWD
 _campaign_dir_arg = ""
@@ -70,13 +76,18 @@ def _resolve_campaign_scope(campaign_dir: Path) -> "rr.ResolvedScope | None":
 
 _campaign_scope = _resolve_campaign_scope(campaign_dir)  # resolved once at import, like campaign_dir/config
 
-# Load config: flat campaign_dir/config.yaml (legacy layout) → migrated
-# campaign_dir/config/config.yaml → packaged default as a last resort.
-_config_path = campaign_dir / "config.yaml"
-if not _config_path.exists():
-    _config_path = campaign_dir / "config" / "config.yaml"
-if not _config_path.exists():
-    _config_path = REPO_ROOT / "config" / "config.yaml"
+# Load config from the one declared location, <campaign>/config/config.yaml.
+# No fallback: this used to prefer a legacy root config.yaml and, failing
+# both, load CampaignGenerator's OWN config, so a misconfigured campaign
+# served the toolkit's grounding documents instead of failing. A stray root
+# config.yaml is an error too (campaign_root_for_config rejects it).
+_config_path = campaign_config_path(campaign_dir, "config.yaml")
+try:
+    campaign_root_for_config(_config_path)  # rejects a stray root config.yaml first
+    if not _config_path.is_file():
+        raise ConfigLocationError(f"no config at {_config_path}")
+except ConfigLocationError as _exc:
+    sys.exit(f"mcp_server: {_exc}")
 
 config, base_dir = load_config(str(_config_path))
 

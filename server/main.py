@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from campaignlib import ConfigLocationError
 from server.platform_config_service import ConfigError, PlatformConfigService
 from server.routers import (
     config_routes, connections, ensemble, grounding, prep,
@@ -80,27 +81,45 @@ def _resolve_campaign_dir_for_service(args) -> Path | None:
     """Decide which directory the unified config service should anchor to.
 
     Order: ``--campaign-dir``, then the parents of ``--session-dir``
-    (looking for the nearest one with a ``config.yaml`` or
-    ``<config-dir>/config.yaml``), then CWD if it has one. Returns ``None``
-    when no campaign directory can be determined — callers must fail loudly
-    rather than fall back to a synthetic default.
+    (the nearest one with a ``<config-dir>/config.yaml``), then CWD if it has
+    one. Returns ``None`` when no campaign directory can be determined —
+    callers must fail loudly rather than fall back to a synthetic default.
+
+    ``<config-dir>/config.yaml`` is the only valid config location. A legacy
+    top-level ``<campaign>/config.yaml`` no longer marks a campaign, and one
+    sitting in the chosen (or nearest) campaign directory raises
+    ConfigLocationError rather than being quietly ignored.
     """
     config_dir = getattr(args, "config_dir", "config") or "config"
 
+    def has_legacy_root_config(d: Path) -> bool:
+        return (d / "config.yaml").is_file() and (d / config_dir).resolve() != d.resolve()
+
+    def checked(d: Path) -> Path:
+        if has_legacy_root_config(d):
+            raise ConfigLocationError(
+                f"misplaced config {d / 'config.yaml'}: the only valid location is "
+                f"{d / config_dir / 'config.yaml'} (./migrate_config.sh <campaign> moves it)"
+            )
+        return d
+
     # Check explicit --campaign-dir
     if getattr(args, "campaign_dir", None):
-        return Path(args.campaign_dir).expanduser().resolve()
+        return checked(Path(args.campaign_dir).expanduser().resolve())
 
-    # Check --session-dir parents for config.yaml (top-level or <config_dir>/)
+    # Check --session-dir parents; stop at the nearest one that looks like a
+    # campaign (either layout) so a legacy root config fails here instead of
+    # the walk silently continuing upward.
     if getattr(args, "session_dir", None):
         sd = Path(args.session_dir).expanduser().resolve()
         for parent in (sd, *sd.parents):
-            if (parent / "config.yaml").exists() or (parent / config_dir / "config.yaml").exists():
-                return parent
+            if (parent / config_dir / "config.yaml").is_file() or has_legacy_root_config(parent):
+                return checked(parent)
 
-    # Check CWD for config.yaml (top-level or <config_dir>/)
-    if (Path.cwd() / "config.yaml").exists() or (Path.cwd() / config_dir / "config.yaml").exists():
-        return Path.cwd().resolve()
+    # Check CWD
+    cwd = Path.cwd().resolve()
+    if (cwd / config_dir / "config.yaml").is_file() or has_legacy_root_config(cwd):
+        return checked(cwd)
 
     # No campaign directory could be determined.
     return None
@@ -170,7 +189,11 @@ def main() -> None:
     # it, the residual UIStateService) via app.state.platform; if no
     # campaign directory can be determined, fail loudly rather than fall
     # back to a synthetic default.
-    campaign_dir_for_service = _resolve_campaign_dir_for_service(args)
+    try:
+        campaign_dir_for_service = _resolve_campaign_dir_for_service(args)
+    except ConfigLocationError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
     if campaign_dir_for_service is None:
         print(
             "Could not determine the campaign directory. Pass --campaign-dir "
