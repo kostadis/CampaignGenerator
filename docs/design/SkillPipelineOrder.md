@@ -37,8 +37,11 @@ recording (.m4a) + transcripts (Zoom VTT, gmassist VTT, Descript export)
         (no audio at all: /speaker-attribution-text instead)
   → /vtt-spell-pass            ← on the UNLABELLED tape; re-apply the approved
                                  speaker mapping to the .cleaned.vtt afterwards
-  → enhance_summary (/enhance-summary) → gm-assist.md + session-summary.md
-  → /staged-consistency  phase 0, phase 1
+  → /staged-consistency  phase 0   ← on gm-assist.md (the gmassist export),
+                                    BEFORE enhancing: it is the spec the
+                                    enhancement renders from
+  → enhance_summary (/enhance-summary) → session-summary.md
+  → /staged-consistency  phase 1   ← on session-summary.md
   → [ /remove-recap ]      ← scene list + summary prose, before extraction
   → /scene-extract
   → /session-summary-consistency   ← quote-level garbles in the extractions
@@ -104,9 +107,10 @@ means an LLM consumed unreviewed input in the meantime.
 | `/audio-to-vtt` | Only when Zoom's per-speaker labels and cue timing are reliable (separate microphones) but its words are not. Re-transcribes each cue group on the Spark with campaign vocabulary, keeping Zoom's boundaries. Must come before the spell pass, which then reads the better text. |
 | `/transcript-rebuild` | Only for the split-brain case: one file has real timings, another has real speakers, neither has both. Rebuilds one transcript before anything is attributed or spelled. If the names are reliable and only the timeline is wrong, this is the step — not `/speaker-attribution`. |
 | `/speaker-attribution` | Must precede `/scene-extract`. Attribution is inherited by every quote, extraction and narration downstream, and nothing further along re-checks speaker identity. Running it after means re-extracting. Its labels are **short player names**; display-name mapping is `/session-doc-run`'s job. With no audio, `/speaker-attribution-text` produces inferred labels instead, each marked as an inference. |
-| `/vtt-spell-pass` | After attribution, before `enhance_summary`, so every LLM stage reads corrected names. Run it on the **unlabelled** tape, never the `.speakers.vtt`: the glossary's player→PC rows would rewrite the speaker labels themselves (626 `Kostadis:` → `GM:` on OOTA ch02), which breaks the display-name mapping downstream. It writes `transcript_corrections.yaml` and generates the `.cleaned.vtt`; then re-apply the approved speaker mapping to the cleaned text (same turns, same approved names) to get the labelled cleaned tape. |
-| `enhance_summary` | Produces `gm-assist.md` and `session-summary.md`, including the `## Scenes` list that drives extraction. `/enhance-summary` is the skill that runs the CLI and verifies its quotes. |
-| `/staged-consistency` phase 0, 1 | Verifies the gm-assist and the summary **while the artifacts are still cheap**, and before the scene structure is used. Phase 1 is where the scene list gets its human sign-off. Supersedes `/gmassist-precheck`. |
+| `/vtt-spell-pass` | After attribution, before `/staged-consistency` phase 0 and `enhance_summary`, so every LLM stage reads corrected names. Run it on the **unlabelled** tape, never the `.speakers.vtt`: the glossary's player→PC rows would rewrite the speaker labels themselves (626 `Kostadis:` → `GM:` on OOTA ch02), which breaks the display-name mapping downstream. It writes `transcript_corrections.yaml` and generates the `.cleaned.vtt`; then re-apply the approved speaker mapping to the cleaned text (same turns, same approved names) to get the labelled cleaned tape. |
+| `/staged-consistency` phase 0 | Checks `gm-assist.md` (the gmassist export, whatever its filename) **before** it is enhanced. It is the structural spec `enhance_summary` renders from, so a fix made here is carried into the enhanced summary instead of being re-derived after it. OOTA ch48: phase 0 found 12 issues, then phase 1 found 6 on a document three times longer. Supersedes `/gmassist-precheck`. |
+| `enhance_summary` | Produces `session-summary.md` from the phase-0-reviewed gm-assist plus the cleaned VTT, including the `## Scenes` list that drives extraction. `/enhance-summary` is the skill that runs the CLI and verifies its quotes. |
+| `/staged-consistency` phase 1 | Checks the enhanced summary **while it is still cheap**, before the scene structure is used; phase 1 is where the scene list gets its human sign-off. It must also confirm that phase 0's rulings survived the enhancement: on OOTA ch02 the enhancement re-introduced two overruled readings (a flattery credited from diarization labels, and Gracklstugh as a derro city). |
 | **`/remove-recap`** | After the scene list is verified (Stage 0/1 can still move boundaries) and **before `/scene-extract`**, so no extraction, consistency, or smoothing budget is spent on the previous chapter. |
 | `/scene-extract` | Needs a verified scene structure and a resolved speaker map. |
 | `/session-summary-consistency` | Straight after extraction: fixes transcription garbles and unclear phrasing inside the verbatim quote blocks, with GM approval per correction. It runs before phase 2 so the canon check reads corrected quotes, not garbles it would misreport. |
