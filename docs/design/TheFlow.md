@@ -98,7 +98,7 @@ The boundary between session and post-session work. Two artifacts come out of Zo
 | C1 | Submit Zoom recording to gm-assist | External: gm-assist | Zoom audio | `gm-assist.md` — structured scene-by-scene summary |
 | C2 | Manually verify the gm-assist summary | Manual | gm-assist output | Cleaned `gm-assist.md` |
 | C3 | Clean up the Zoom VTT transcript | Skill: `/vtt-spell-pass` | Raw VTT | Spell-corrected VTT with unknown proper nouns resolved by interactive prompt |
-| C4 | Pre-extraction consistency check on the human-authored structure | Skill: `/staged-consistency` phase 0/1 (supersedes `/gmassist-precheck`; order in [SkillPipelineOrder.md](SkillPipelineOrder.md)) | gm-assist + cleaned VTT | An enhanced session summary + a consistency report — catches canon contradictions before per-scene extraction spends tokens |
+| C4 | Pre-extraction consistency check on the human-authored structure | Skill: `/staged-consistency` phase 0 on the gm-assist, before D1 (supersedes `/gmassist-precheck`; order in [SkillPipelineOrder.md](SkillPipelineOrder.md)) | gm-assist + cleaned VTT | A reviewed gm-assist + a consistency report — catches canon contradictions before per-scene extraction spends tokens |
 
 **Why two paths:** gm-assist is good at "what happened in what order"; the VTT is the only verbatim record of "what was said." We need both, and we need to clean both before they meet.
 
@@ -107,7 +107,7 @@ The boundary between session and post-session work. Two artifacts come out of Zo
 | # | Step | Actor | Notes |
 |---|---|---|---|
 | D1 | Generate enhanced summary from cleaned gm-assist + cleaned VTT | CG-CLI: `session_doc/enhance_summary.py` (or via the precheck skill in C4) | `session-summary.md` |
-| D2 | Consistency check the enhanced summary | Skill: `/consistency-check session-summary.md` or `/staged-consistency` | Catches contradictions with grounding docs |
+| D2 | Consistency check the enhanced summary | Skill: `/staged-consistency` phase 1 (or `/consistency-check session-summary.md` ad hoc) | Catches contradictions with grounding docs |
 | D3 | Review & edit | Manual | Hard checkpoint — this artifact is the spine of everything downstream |
 
 ### Phase E — Per-scene quotes
