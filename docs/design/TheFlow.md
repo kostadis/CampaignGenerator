@@ -44,7 +44,7 @@ The flow is run by these distinct actors. Each step below names which actor is d
 |---|---|---|---|
 | `campaign-prep` | `/campaign-prep` | Loads the 4 grounding docs (campaign_state, world_state, planning, party) so Claude has authoritative context before any prep | Pre-session prep |
 | `vtt-spell-pass` | `/vtt-spell-pass [vtt]` | Glossary replacements on the Zoom/Otter transcript + interactive prompts for unrecognised proper nouns | Transcript cleanup |
-| `gmassist-precheck` | `/gmassist-precheck [session-dir]` | Runs `session_doc/enhance_summary.py` then `session_doc/check_consistency.py` on the gm-assist + VTT *before* per-scene extraction, to catch canon problems while the artifact is still cheap | Right after gm-assist |
+| `gmassist-precheck` | `/gmassist-precheck [session-dir]` | Runs `session_doc/enhance_summary.py` then `session_doc/check_consistency.py` on the gm-assist + VTT *before* per-scene extraction, to catch canon problems while the artifact is still cheap | **Superseded** by `/staged-consistency` phase 0/1 — see [SkillPipelineOrder.md](SkillPipelineOrder.md) |
 | `consistency-check` | `/consistency-check [doc]` | One-shot `session_doc/check_consistency.py` on any document vs the grounding docs | After any LLM extraction or narration pass |
 | `staged-consistency` | `/staged-consistency [session-dir]` | The multi-stage version: a `consistency-check` gated by a human-review/fix cycle at *every* LLM boundary (gm-assist → summary → scenes → narration). Prevents per-scene quotes silently re-injecting errors into the narrator | Across the whole session_doc pipeline |
 | `voice-file` | `/voice-file <char>` | Builds `{character}_voice.md` for `session_doc.py` Pass 5 by deeply reading source material | One-time per character |
@@ -98,7 +98,7 @@ The boundary between session and post-session work. Two artifacts come out of Zo
 | C1 | Submit Zoom recording to gm-assist | External: gm-assist | Zoom audio | `gm-assist.md` — structured scene-by-scene summary |
 | C2 | Manually verify the gm-assist summary | Manual | gm-assist output | Cleaned `gm-assist.md` |
 | C3 | Clean up the Zoom VTT transcript | Skill: `/vtt-spell-pass` | Raw VTT | Spell-corrected VTT with unknown proper nouns resolved by interactive prompt |
-| C4 | (Optional) Pre-extraction consistency check on the human-authored structure | Skill: `/gmassist-precheck` | gm-assist + cleaned VTT | An enhanced session summary + a consistency report — catches canon contradictions before per-scene extraction spends tokens |
+| C4 | Pre-extraction consistency check on the human-authored structure | Skill: `/staged-consistency` phase 0/1 (supersedes `/gmassist-precheck`; order in [SkillPipelineOrder.md](SkillPipelineOrder.md)) | gm-assist + cleaned VTT | An enhanced session summary + a consistency report — catches canon contradictions before per-scene extraction spends tokens |
 
 **Why two paths:** gm-assist is good at "what happened in what order"; the VTT is the only verbatim record of "what was said." We need both, and we need to clean both before they meet.
 
