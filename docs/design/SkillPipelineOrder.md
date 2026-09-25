@@ -12,6 +12,14 @@ current split-CLI pipeline (`sd_plan` / `sd_narrate`), with upstream cleanup,
 reviewed dialogue editing, and final voice/consistency checks. Where the two
 disagree on post-recording ordering, this document is authoritative.
 
+**This is the single statement of the order.** A skill names its immediate
+neighbours and links here; it does not keep its own copy of the chain. Copies
+drift: before 2026-09-25, `speaker-attribution` and `transcript-rebuild` each
+carried a diagram that went straight from the spell pass to extraction with no
+`/staged-consistency` at all, and a run that followed one of them skipped phase
+0. When the order changes, change it here, then check the neighbour lines in
+the skills that moved.
+
 Skills live **outside this repo**. Codex sources are in
 `~/src/mytools/dotfiles/codex/skills/`, linked through `~/.codex/skills/`;
 Claude sources are in the sibling `dotfiles/claude/skills/` collection.
@@ -21,13 +29,20 @@ execution; every editing pass retains its own human checkpoint.
 ## The order
 
 ```
-VTT
-  → /speaker-attribution
-  → enhance_summary → gm-assist.md + session-summary.md
+recording (.m4a) + transcripts (Zoom VTT, gmassist VTT, Descript export)
+  → transcript front end — pick what the transcripts need (see below):
+      [ /audio-to-vtt ]         ← Zoom speakers/timing right, words wrong
+      [ /transcript-rebuild ]   ← timings right OR speakers right, not both
+      /speaker-attribution      ← shared mic, or voice-profile names known wrong
+        (no audio at all: /speaker-attribution-text instead)
+  → /vtt-spell-pass            ← on the UNLABELLED tape; re-apply the approved
+                                 speaker mapping to the .cleaned.vtt afterwards
+  → enhance_summary (/enhance-summary) → gm-assist.md + session-summary.md
   → /staged-consistency  phase 0, phase 1
   → [ /remove-recap ]      ← scene list + summary prose, before extraction
   → /scene-extract
-  → /staged-consistency  phase 2
+  → /session-summary-consistency   ← quote-level garbles in the extractions
+  → /staged-consistency  phase 2   ← canon, on the corrected extractions
   → /voice-smooth
   → [ /no-mech ]           ← mechanics, before narration
   → sd_plan
@@ -40,6 +55,20 @@ VTT
   → GM selects/promotes final scene versions
   → assemble
 ```
+
+**Drivers and one-shots are not steps.** `/session-doc-run` is a *driver*: it
+walks this chain (it builds the display-name VTT and any session-local
+`players.yaml` override that `/scene-extract` needs) and must stop at every
+`/staged-consistency` phase and every optional skill above rather than skipping
+between CLIs. `/consistency-check` is the one-shot checker that
+`/staged-consistency` runs at each boundary; use it alone only for an ad-hoc
+document. `/gmassist-precheck` (enhance_summary + one consistency check) is
+**superseded by `/staged-consistency` phase 0/1** and is not part of the order.
+
+**No recording at all** is a separate branch, not a shortened version of this
+one. `/chapter-summarise` (compress) or `/chapter-enhance` (expand into the
+full gmassist schema) builds `session-summary.md` from the chapter prose. There
+is no tape, so nothing from `/audio-to-vtt` through `/scene-extract` applies.
 
 ## The organising principle
 
@@ -72,11 +101,15 @@ means an LLM consumed unreviewed input in the meantime.
 
 | Step | Why here |
 |---|---|
-| `/speaker-attribution` | Must precede `/scene-extract`. Attribution is inherited by every quote, extraction and narration downstream, and nothing further along re-checks speaker identity. Running it after means re-extracting. |
-| `enhance_summary` | Produces `gm-assist.md` and `session-summary.md`, including the `## Scenes` list that drives extraction. |
-| `/staged-consistency` phase 0, 1 | Verifies the gm-assist and the summary **while the artifacts are still cheap**, and before the scene structure is used. Phase 1 is where the scene list gets its human sign-off. |
+| `/audio-to-vtt` | Only when Zoom's per-speaker labels and cue timing are reliable (separate microphones) but its words are not. Re-transcribes each cue group on the Spark with campaign vocabulary, keeping Zoom's boundaries. Must come before the spell pass, which then reads the better text. |
+| `/transcript-rebuild` | Only for the split-brain case: one file has real timings, another has real speakers, neither has both. Rebuilds one transcript before anything is attributed or spelled. If the names are reliable and only the timeline is wrong, this is the step — not `/speaker-attribution`. |
+| `/speaker-attribution` | Must precede `/scene-extract`. Attribution is inherited by every quote, extraction and narration downstream, and nothing further along re-checks speaker identity. Running it after means re-extracting. Its labels are **short player names**; display-name mapping is `/session-doc-run`'s job. With no audio, `/speaker-attribution-text` produces inferred labels instead, each marked as an inference. |
+| `/vtt-spell-pass` | After attribution, before `enhance_summary`, so every LLM stage reads corrected names. Run it on the **unlabelled** tape, never the `.speakers.vtt`: the glossary's player→PC rows would rewrite the speaker labels themselves (626 `Kostadis:` → `GM:` on OOTA ch02), which breaks the display-name mapping downstream. It writes `transcript_corrections.yaml` and generates the `.cleaned.vtt`; then re-apply the approved speaker mapping to the cleaned text (same turns, same approved names) to get the labelled cleaned tape. |
+| `enhance_summary` | Produces `gm-assist.md` and `session-summary.md`, including the `## Scenes` list that drives extraction. `/enhance-summary` is the skill that runs the CLI and verifies its quotes. |
+| `/staged-consistency` phase 0, 1 | Verifies the gm-assist and the summary **while the artifacts are still cheap**, and before the scene structure is used. Phase 1 is where the scene list gets its human sign-off. Supersedes `/gmassist-precheck`. |
 | **`/remove-recap`** | After the scene list is verified (Stage 0/1 can still move boundaries) and **before `/scene-extract`**, so no extraction, consistency, or smoothing budget is spent on the previous chapter. |
 | `/scene-extract` | Needs a verified scene structure and a resolved speaker map. |
+| `/session-summary-consistency` | Straight after extraction: fixes transcription garbles and unclear phrasing inside the verbatim quote blocks, with GM approval per correction. It runs before phase 2 so the canon check reads corrected quotes, not garbles it would misreport. |
 | `/staged-consistency` phase 2 | The per-scene quote layer is the one that silently re-injects errors into the narrator. This is the highest-leverage check in the chain. |
 | `/voice-smooth` | Renders verbatim quotes readable and in-voice, into a derived `scene_extractions_smoothed/`. Must run *after* the consistency pass — smoothing a garbled quote produces a fluent mistake, which is much harder to catch than a garbled one. |
 | **`/no-mech`** | After smoothing (so it operates on the layer narration actually reads) and **before `sd_narrate`**, so the narrator never has to convert a die roll into prose. |
