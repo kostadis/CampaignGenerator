@@ -578,8 +578,15 @@ def scan_section_conflicts(
 # ── Parsers ──────────────────────────────────────────────────────────────────
 
 # `> "quote"` — the blockquote form both stages emit. The closing quote may be
-# followed by a trailing attribution, e.g. `> "..." (GM)`.
-_BLOCKQUOTE_QUOTE_RE = re.compile(r'^\s*>\s*[""“](?P<q>.+?)[""”]\s*(?P<attr>\([^)]*\))?\s*$')
+# followed by a trailing attribution, e.g. `> "..." (GM)`. The enhancement can
+# also lead with a bold speaker label, `> **Zalthir:** “…”` — OOTA ch003
+# (2026-09-25) wrote all 26 of its blockquote lines that way, and without the
+# optional `label` group the verifier checked none of them and said
+# "No quotes found".
+_BLOCKQUOTE_QUOTE_RE = re.compile(
+    r'^\s*>\s*(?:\*\*(?P<label>[^*]+?):\*\*\s*)?'
+    r'[""“](?P<q>.+?)[""”]\s*(?P<attr>\([^)]*\))?\s*$'
+)
 # `> — Name` attribution line under a Stage 1 blockquote.
 _ATTRIBUTION_RE = re.compile(r"^\s*>\s*[—–-]\s*(?P<who>.+?)\s*$")
 # `**[Speaker]** — context` block header in Stage 2 verbatim moments.
@@ -622,7 +629,7 @@ def _parse_blockquote_quotes(
                 speaker_block = speaker_block if speaker_from_blocks else None
             continue
 
-        speaker = speaker_block
+        speaker = m.group("label").strip() if m.group("label") else speaker_block
         attr = m.group("attr")
         if attr:
             speaker = attr.strip("() ") or speaker
@@ -694,7 +701,7 @@ def parse_scene_quotes(text: str, artifact: Path) -> list[Quote]:
 NOT_CHECKED = [
     'Inline `"…"` spans in prose — not reliably dialogue (a plaque honouring '
     'the "liberators of the Ordning" is a label, not speech). Only `> "…"` '
-    "blockquotes are verified.",
+    'blockquotes are verified, with or without a leading `**Speaker:**` label.',
     "Speaker attribution. This report answers *were these words said*, not "
     "*did this person say them*.",
 ]
@@ -1171,7 +1178,7 @@ def verify_artifact_contract(
 # parser only handles that shape — but a multi-line quote would then be
 # silently skipped, and silent non-coverage reads exactly like a pass. Counting
 # them lets the report say so instead (Principle VIII).
-_UNCLOSED_QUOTE_RE = re.compile(r'^\s*>\s*[""“][^""”]*$')
+_UNCLOSED_QUOTE_RE = re.compile(r'^\s*>\s*(?:\*\*[^*]+?:\*\*\s*)?[""“][^""”]*$')
 
 
 def count_unparsed_quote_lines(text: str) -> int:

@@ -245,6 +245,29 @@ def test_attribution_line_becomes_speaker_hint_not_a_quote(summary):
     assert by_text["I do cross promotions."].speaker_hint == "David"
 
 
+def test_bold_speaker_label_blockquotes_are_parsed(tmp_path):
+    """OOTA ch003: every blockquote was `> **Speaker:** “…”`, and none was checked."""
+    doc = tmp_path / "session-summary.md"
+    doc.write_text(
+        "## Memorable Moments\n\n"
+        "> **Zalthir:** “I rolled a one, Daz.”  \n"
+        "> **DM:** “Die rolls are not in your favor.”\n"
+        '> **Thorin:** "My best bet is to try and sucker punch the elite warrior."\n'
+        "Prose with **Bold:** “inline” is still not a blockquote.\n"
+    )
+    quotes = parse_summary_quotes(doc.read_text(), doc)
+    assert [(q.text, q.speaker_hint) for q in quotes] == [
+        ("I rolled a one, Daz.", "Zalthir"),
+        ("Die rolls are not in your favor.", "DM"),
+        ("My best bet is to try and sucker punch the elite warrior.", "Thorin"),
+    ]
+
+
+def test_bold_label_unclosed_quote_is_counted_as_unparsed():
+    from session_doc.verify_quotes import count_unparsed_quote_lines
+    assert count_unparsed_quote_lines("> **Gyrgum:** “I cast cure wounds\n") == 1
+
+
 def test_section_is_tracked(summary):
     quotes = parse_summary_quotes(summary.read_text(), summary)
     assert all(q.section == "Memorable Moments" for q in quotes)

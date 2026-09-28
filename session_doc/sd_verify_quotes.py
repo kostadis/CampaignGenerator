@@ -80,7 +80,8 @@ def build_parser() -> argparse.ArgumentParser:
                         "reports edits that were never made.")
     p.add_argument("--summary", metavar="FILE",
                    help="Stage 1 session-summary.md. Only `> \"…\"` blockquotes "
-                        "are checked; inline quotes in prose are not reliably "
+                        "(optionally led by a `**Speaker:**` label) are "
+                        "checked; inline quotes in prose are not reliably "
                         "dialogue.")
     p.add_argument("--scene-extractions", metavar="DIR",
                    help="Stage 2 directory of NN_*.md. Only the "
