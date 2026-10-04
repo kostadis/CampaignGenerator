@@ -1,85 +1,28 @@
-# Config Files
+# Config files and shipped prompts
 
-## config.yaml
+Campaign configuration belongs at `<campaign>/config/config.yaml`. The `new_workspace` command creates that file, and `prep --config <campaign>/config/config.yaml --beat "..."` selects it. Documents and logs belong to the campaign workspace, never beside installed application files.
 
-The central config. Points every component at its file.
+The config may keep logical prompt names such as `config/system_prompt.md` and `config/agents/lore_oracle.md`. Shipped defaults for those names live under `campaignlib/resources/` in the wheel. A same-name file under `<campaign>/config/agents/` wins over a shipped agent prompt. Place a campaign-specific `config/system_prompt.md` in the workspace to override the shipped system prompt. An explicit absolute prompt path must exist; it is not replaced by a similarly named shipped file.
 
 ```yaml
-system_prompt: config/system_prompt.md   # used by --mode single
-
-log_dir: logs/                           # where session logs are saved
-
+system_prompt: config/system_prompt.md
+log_dir: ../logs
 agents:
   lore_oracle: config/agents/lore_oracle.md
   encounter_architect: config/agents/encounter_architect.md
   voice_keeper: config/agents/voice_keeper.md
-
 documents:
   - label: world_state
-    path: docs/world_state.md
-  - label: mechanics
-    path: docs/mechanics.md
-  - label: planning
-    path: docs/planning.md
+    path: ../docs/world_state.md
 ```
 
-Paths can be absolute or relative to wherever you run `prep.py`.
-On WSL, absolute paths like `/mnt/c/Users/you/OneDrive/campaign/world_state.md` work fine.
+The external host settings file is separate: mneme renders `~/.config/campaigngenerator/wiring.yaml` by default. See the [installable package guide](../docs/cli/installable_package.md) and [wiring migration](../docs/config/wiring-migration.md) when moving from an old checkout.
 
-## Separate work directories
-
-To keep campaign data (docs, logs) outside the code repo, create a campaign-specific config file anywhere on your filesystem:
-
-```yaml
-# /home/you/campaigns/icespire/config.yaml
-
-system_prompt: config/system_prompt.md          # code-side prompt (relative path ok)
-
-log_dir: /home/you/campaigns/icespire/logs/
-
-agents:
-  lore_oracle: config/agents/lore_oracle.md
-  encounter_architect: config/agents/encounter_architect.md
-  voice_keeper: config/agents/voice_keeper.md
-
-documents:
-  - label: world_state
-    path: /home/you/campaigns/icespire/docs/world_state.md
-  - label: mechanics
-    path: /home/you/campaigns/icespire/docs/mechanics.md
-  - label: planning
-    path: /home/you/campaigns/icespire/docs/planning.md
-```
-
-Then pass it with `--config`:
-
-```bash
-python prep.py --config /home/you/campaigns/icespire/config.yaml --beat "..."
-```
-
-Agent prompts and system prompt can stay code-side (relative paths resolve from where you run `prep.py`), or be copied per-campaign if you want to customise them independently.
-
----
-
-**Adding a document:** append an entry under `documents`. The `label` becomes the heading in the assembled prompt (`## label`). Order matters — documents are injected in the order listed.
-
-**Removing a document:** delete its entry. The tool will not error on missing optional documents; it only errors if a listed path doesn't exist.
-
----
+**Adding a document:** append a `documents` entry. Its `label` becomes a heading in the assembled prompt; order matters. A listed missing document path is an error.
 
 ## system_prompt.md
 
-The system prompt used in `--mode single` (one API call).
-
-This is the full **Campaign Architect** persona: identity, universe rules, party profiles, encounter design templates, consistency rules, and output formats. It is the primary prompt for single-beat and session-arc prep.
-
-Edit this file to:
-- Update party state after a session (Section IIb current party state)
-- Update hidden arc scores (Section IX)
-- Add confirmed canon events (Section IX)
-- Adjust faction states or NPC locations
-
-This file is never sent as a user message — only as the `system` parameter.
+The shipped `campaignlib/resources/system_prompt.md` is the read-only default for `--mode single`. Put an override in the campaign's `config/system_prompt.md` when its party state, arc scores, canon, or faction details need to differ. The selected prompt is sent as the `system` parameter.
 
 ---
 

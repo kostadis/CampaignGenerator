@@ -401,7 +401,8 @@ def make_client(endpoint: str | None = None, model_override: str | None = None,
         if not endpoint:
             raise SystemExit(
                 "--backend dgx: no endpoint. Pass --endpoint, set DGX_ENDPOINT, "
-                "or render `dgx_endpoint` into config/wiring.yaml. Refusing to "
+                "or render `dgx_endpoint` into ~/.config/campaigngenerator/wiring.yaml "
+                "or the selected MNEME_WIRING file. Refusing to "
                 "fall back to the Anthropic API — you asked for the local box."
             )
         return _OpenAICompatClient(endpoint, model_override=model_override)

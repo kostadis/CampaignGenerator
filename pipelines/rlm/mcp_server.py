@@ -29,13 +29,6 @@ if TYPE_CHECKING:  # annotation-only — the runtime import stays lazy (see _res
 
 logger = logging.getLogger(__name__)
 
-# ── Bootstrap ──────────────────────────────────────────────────────────────────
-
-# This file lives at pipelines/rlm/mcp_server.py; REPO_ROOT is the actual repo
-# root (three .parents up), not this file's own directory — needed below to
-# run scripts that still live at the repo root.
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-
 from campaignlib import (
     ConfigLocationError,
     campaign_root_for_config,
@@ -160,22 +153,11 @@ def _safe_notes_path(filename: str) -> Path:
 async def _run_script(script_name: str, args: list[str]) -> str:
     """Run a CLI tool as a subprocess, return combined stdout+stderr.
 
-    `script_name` is either a `<name>.py` filename (resolved against
-    REPO_ROOT) for scripts that still live there, or a bare console-script
-    name (no `.py`) for scripts that have migrated into `pipelines/` and
-    gained a `[project.scripts]` entry point — resolved against the current
-    interpreter's own venv `bin/` directory rather than `$PATH`, so it works
-    whether or not the venv is "activated". As of the `rlm` cluster (which
-    includes this file), every script this server dispatches to has migrated
-    and gained a console-script entry, so the `.py` branch below has no
-    remaining caller — left in place as (harmless) dead code rather than
-    removed, since the dispatch mechanism itself may matter again for a
-    future not-yet-migrated tool.
+    `script_name` is a declared console-script name, resolved against the
+    current interpreter's own venv `bin/` directory rather than `$PATH`, so
+    it works whether or not the venv is activated.
     """
-    if script_name.endswith(".py"):
-        cmd = [sys.executable, str(REPO_ROOT / script_name), *args]
-    else:
-        cmd = [str(Path(sys.executable).parent / script_name), *args]
+    cmd = [str(Path(sys.executable).parent / script_name), *args]
     proc = await asyncio.create_subprocess_exec(
         *cmd,
         stdout=asyncio.subprocess.PIPE,

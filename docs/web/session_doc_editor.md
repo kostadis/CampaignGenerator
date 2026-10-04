@@ -262,7 +262,7 @@ summaries/YYYYMMDD/
   `claude -p` bills the metered API when it finds a key in its environment.
 - Python deps installed in the active venv:
   ```bash
-  uv pip install -r ~/src/CampaignGenerator/requirements.txt --python ~/.venv/bin/python3
+  uv pip install --python ~/.venv/bin/python3 /absolute/path/to/CampaignGenerator
   ```
 
 ---

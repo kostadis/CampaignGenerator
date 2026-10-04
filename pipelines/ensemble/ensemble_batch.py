@@ -22,11 +22,6 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-_CG_DIR = Path(__file__).parent.resolve()
-_REPO_ROOT = _CG_DIR.parent.parent
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
-
 import yaml  # noqa: E402
 
 from campaignlib import (  # noqa: E402
@@ -45,9 +40,6 @@ from campaignlib.api.client import (  # noqa: E402
     resolve_cli_claude_thinking,
 )
 from campaignlib.selection import BACKENDS  # noqa: E402
-
-ENSEMBLE = _CG_DIR / "ensemble.py"
-
 
 def _build_parser():
     p = argparse.ArgumentParser(
@@ -159,7 +151,7 @@ def _resolve(chapter: Path, args):
 
 def _build_ensemble_cmd(chapter: Path, workdir: Path, args,
                         plan_override: Path | None = None) -> list[str]:
-    cmd = [sys.executable, str(ENSEMBLE), str(chapter), "--workdir", str(workdir)]
+    cmd = [sys.executable, "-m", "pipelines.ensemble.ensemble", str(chapter), "--workdir", str(workdir)]
 
     plan = str(plan_override) if plan_override else args.plan
     if plan is None:

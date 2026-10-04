@@ -25,7 +25,7 @@ sys.path.insert(0, str(ROOT))
 
 from session_doc.blocks import GAP_MARKER  # noqa: E402
 
-CONTRACT = ROOT / "config/agents/session_doc/narrate/gm_attribution_gap.md"
+CONTRACT = ROOT / "campaignlib/resources/agents/session_doc/narrate/gm_attribution_gap.md"
 
 
 def test_the_contract_fragment_exists():

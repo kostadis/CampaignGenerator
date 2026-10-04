@@ -7,7 +7,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from campaignlib import ConfigLocationError
@@ -19,6 +19,20 @@ from server.routers import (
 )
 
 app = FastAPI(title="CampaignGenerator")
+app.state.migration_only = False
+
+
+@app.middleware("http")
+async def limit_migration_mode(request: Request, call_next):
+    """Expose only wiring migration APIs when normal checkout boot is refused."""
+    if app.state.migration_only and request.url.path.startswith("/api/"):
+        allowed = {
+            ("GET", "/api/config/wiring/default"),
+            ("POST", "/api/config/wiring/migrate"),
+        }
+        if (request.method, request.url.path) not in allowed:
+            return JSONResponse({"detail": "migration-only mode"}, status_code=503)
+    return await call_next(request)
 
 # CORS for Vite dev server
 app.add_middleware(
@@ -173,7 +187,16 @@ def main() -> None:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--config-dir", metavar="DIR", default="config",
                         help="Configuration subdirectory within campaign (default: 'config')")
+    parser.add_argument("--migration-only", action="store_true",
+                        help="Serve the Settings wiring migration form without starting a campaign")
     args = parser.parse_args()
+
+    if args.migration_only:
+        app.state.migration_only = True
+        print(f"  Wiring migration UI: http://{args.host}:{args.port}/settings")
+        import uvicorn
+        uvicorn.run(app, host=args.host, port=args.port, log_level="warning")
+        return
 
     # Boot overrides are computed once, up front, from the parsed CLI args —
     # see _boot_overrides_from_args for which flags qualify (--session-dir

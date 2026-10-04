@@ -13,11 +13,6 @@ from pydantic import BaseModel
 
 from server.platform_config_service import resolve_selection
 
-# Make campaignlib importable regardless of CWD.
-_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
-
 from campaignlib import (  # noqa: E402
     find_registry,
     build_alias_normalizer,

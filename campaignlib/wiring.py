@@ -1,53 +1,78 @@
-"""Read mneme-rendered EXTERNAL wiring (``config/wiring.yaml``).
-
-External config — endpoints, service URLs, the DGX model, shared data roots — names
-or reaches things *outside* CampaignGenerator, so it is owned by mneme and rendered
-into ``config/wiring.yaml`` (do-not-edit, stamped with a source hash). Internal config
-(prompts, agents, documents, log_dir) stays hand-edited in ``config.yaml``.
-
-This module is the single accessor for external values. Scripts that previously
-hardcoded an endpoint/URL/data-root read it from here instead.
-"""
+"""Read mneme-rendered host wiring from one selected external location."""
 
 from __future__ import annotations
 
-import functools
+import argparse
 import os
 from pathlib import Path
 
 
-def _candidate_paths(explicit: str | os.PathLike | None) -> list[Path]:
-    """Where wiring.yaml might be, most-specific first."""
-    paths: list[Path] = []
+def default_wiring_path() -> Path:
+    return Path.home() / ".config" / "campaigngenerator" / "wiring.yaml"
+
+
+def selected_wiring_path(explicit: str | os.PathLike | None = None) -> tuple[Path, bool]:
+    """Return (path, selected_by_operator) with no checkout/CWD fallback."""
     if explicit:
-        paths.append(Path(explicit))
+        return Path(explicit).expanduser(), True
     env = os.environ.get("MNEME_WIRING")
     if env:
-        paths.append(Path(env))
-    # rendered into the repo's config/ (CampaignGenerator runs from its source tree)
-    paths.append(Path(__file__).resolve().parents[1] / "config" / "wiring.yaml")
-    paths.append(Path.cwd() / "config" / "wiring.yaml")
-    return paths
+        return Path(env).expanduser(), True
+    return default_wiring_path(), False
 
 
-@functools.lru_cache(maxsize=8)
 def load_wiring(path: str | os.PathLike | None = None) -> dict:
-    """Return the external wiring dict, or {} if no rendered wiring.yaml is found."""
+    """Read the selected YAML mapping; only a missing default is optional."""
     import yaml
 
-    for p in _candidate_paths(path):
-        if p.exists():
-            data = yaml.safe_load(p.read_text()) or {}
-            return data if isinstance(data, dict) else {}
-    return {}
+    selected, required = selected_wiring_path(path)
+    if not selected.is_file():
+        if required:
+            raise FileNotFoundError(f"selected external wiring file not found: {selected}")
+        return {}
+    try:
+        data = yaml.safe_load(selected.read_text(encoding="utf-8"))
+    except yaml.YAMLError as exc:
+        raise ValueError(f"malformed external wiring at {selected}: {exc}") from exc
+    if not isinstance(data, dict):
+        raise ValueError(f"external wiring at {selected} must be a YAML mapping")
+    return data
+
+
+def assert_no_retired_wiring(source_checkout: str | os.PathLike) -> None:
+    """Refuse a known checkout's retired file before normal startup."""
+    checkout = Path(source_checkout).expanduser().resolve()
+    retired = checkout / "config" / "wiring.yaml"
+    if retired.exists():
+        raise RuntimeError(
+            f"retired wiring remains at {retired}; run "
+            f"migrate_wiring --source-checkout {checkout} and update mneme's "
+            "CampaignGenerator config_target before starting"
+        )
 
 
 def wiring_get(key: str, default=None):
-    """Return one external wiring value (or ``default`` if wiring/key is absent)."""
+    """Return one external wiring value (or ``default`` if absent)."""
     return load_wiring().get(key, default)
 
 
 def wiring_path(key: str) -> Path | None:
-    """Return an external wiring value as an expanded ``Path``, or None if absent."""
+    """Return an external wiring value as an expanded path, or None."""
     val = load_wiring().get(key)
     return Path(val).expanduser() if isinstance(val, str) and val else None
+
+
+def main() -> int:
+    """Internal checkout preflight used by ``startup``."""
+    parser = argparse.ArgumentParser(description="Check for retired checkout wiring")
+    parser.add_argument("--check-retired", required=True, metavar="CHECKOUT")
+    args = parser.parse_args()
+    try:
+        assert_no_retired_wiring(args.check_retired)
+    except RuntimeError as exc:
+        parser.exit(1, f"Error: {exc}\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

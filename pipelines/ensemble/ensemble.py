@@ -35,11 +35,6 @@ from campaignlib.api.client import (
 )
 from campaignlib.selection import BACKENDS
 
-HERE = Path(__file__).resolve().parent
-EXTRACT = HERE / "ensemble_extract.py"
-MERGE = HERE / "ensemble_merge.py"
-
-
 def _check_provider_batch(args: argparse.Namespace) -> None:
     """Reject Anthropic Message Batches for non-Anthropic dispatches.
 
@@ -150,9 +145,9 @@ def main() -> None:
     _check_provider_batch(args)
 
     # ── Phase 1: generation ──────────────────────────────────────────────────
-    extract_cmd = [sys.executable, str(EXTRACT), "--workdir", args.workdir]
+    extract_cmd = [sys.executable, "-m", "pipelines.ensemble.ensemble_extract", "--workdir", args.workdir]
     if args.input:
-        extract_cmd.insert(2, args.input)          # positional after script path
+        extract_cmd.insert(3, args.input)          # positional after module name
     if args.plan:
         extract_cmd += ["--plan", args.plan]
     if args.dry_run:
@@ -202,7 +197,7 @@ def main() -> None:
         return  # nothing generated; nothing to merge
 
     # ── Phase 2: merge ───────────────────────────────────────────────────────
-    merge_cmd = [sys.executable, str(MERGE), "--workdir", args.workdir]
+    merge_cmd = [sys.executable, "-m", "pipelines.ensemble.ensemble_merge", "--workdir", args.workdir]
     if args.merge_config:
         merge_cmd += ["--config", args.merge_config]
     if args.method:

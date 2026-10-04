@@ -1,0 +1,23 @@
+name: Installable wheel
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  wheel-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.14']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - name: Install Python and test runner
+        run: |
+          uv python install ${{ matrix.python }}
+          uv venv --python ${{ matrix.python }} .ci-venv
+          uv pip install --python .ci-venv/bin/python -e . pytest
+      - name: Build, install, and exercise the wheel away from the checkout
+        run: .ci-venv/bin/python -m pytest -q tests/test_installable_wheel.py tests/test_reviewer_selfcontained.py::test_reviewer_page_is_readable_from_installed_package

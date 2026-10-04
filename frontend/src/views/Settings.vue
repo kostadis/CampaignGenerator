@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useConfigStore } from '../stores/config'
+import { apiFetch, apiPost } from '../api/client'
 
 const config = useConfigStore()
 
@@ -18,6 +19,31 @@ const localJson = computed(() =>
 
 const configPath = computed(() => (config.values as any).config_path || '')
 const localPath = computed(() => (config.values as any).local_config_path || '')
+const sourceCheckout = ref('')
+const wiringTarget = ref('')
+const overwriteWiring = ref(false)
+const migrationRunning = ref(false)
+const migrationResult = ref('')
+
+async function migrateWiring() {
+  migrationResult.value = ''
+  migrationRunning.value = true
+  try {
+    const result = await apiPost<{ returncode: number; output: string }>(
+      '/api/config/wiring/migrate',
+      {
+        source_checkout: sourceCheckout.value,
+        target: wiringTarget.value,
+        force: overwriteWiring.value,
+      },
+    )
+    migrationResult.value = `Exit ${result.returncode}\n${result.output}`
+  } catch (error) {
+    migrationResult.value = String(error)
+  } finally {
+    migrationRunning.value = false
+  }
+}
 
 const lineCount = computed(() => {
   const lines = resolvedJson.value.split('\n').length
@@ -25,7 +51,12 @@ const lineCount = computed(() => {
 })
 
 onMounted(async () => {
-  if (!config.loaded) await config.load()
+  // Migration-only startup intentionally serves no campaign configuration.
+  if (!config.loaded) {
+    try { await config.load() } catch { /* the migration form remains usable */ }
+  }
+  const wiring = await apiFetch<{ path: string }>('/api/config/wiring/default')
+  wiringTarget.value = wiring.path
 })
 </script>
 
@@ -57,6 +88,24 @@ onMounted(async () => {
         <code>{{ localPath }}</code>
       </div>
     </div>
+
+    <section class="migration-panel">
+      <h3>Move external wiring from an old checkout</h3>
+      <p>Run this once before using an installed copy. The old file is removed only after the destination is written successfully. Update mneme's CampaignGenerator render target afterward.</p>
+      <form @submit.prevent="migrateWiring">
+        <label>Source checkout
+          <input v-model="sourceCheckout" type="text" required placeholder="/absolute/path/to/CampaignGenerator" />
+        </label>
+        <label>Destination wiring file
+          <input v-model="wiringTarget" type="text" required />
+        </label>
+        <label class="check"><input v-model="overwriteWiring" type="checkbox" /> Replace an existing destination</label>
+        <button type="submit" :disabled="migrationRunning || !sourceCheckout.trim()">
+          {{ migrationRunning ? 'Moving…' : 'Move wiring' }}
+        </button>
+      </form>
+      <pre v-if="migrationResult" class="yaml-view" role="status">{{ migrationResult }}</pre>
+    </section>
 
     <div class="editor-section">
       <div class="editor-toolbar">
@@ -109,6 +158,14 @@ onMounted(async () => {
 }
 
 .editor-section { display: flex; flex-direction: column; gap: 10px; }
+.migration-panel { margin-bottom: 18px; padding: 12px; border: 1px solid var(--bg-surface1); border-radius: 4px; }
+.migration-panel h3 { margin: 0 0 6px; font-size: 13px; }
+.migration-panel p { color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.migration-panel form { display: flex; flex-direction: column; gap: 8px; }
+.migration-panel label { display: flex; flex-direction: column; gap: 3px; font-size: 11px; }
+.migration-panel label.check { flex-direction: row; align-items: center; }
+.migration-panel input[type="text"] { padding: 5px; background: var(--bg-base); color: var(--text); border: 1px solid var(--bg-surface1); }
+.migration-panel button { align-self: flex-start; padding: 5px 9px; }
 
 .editor-toolbar {
   display: flex; align-items: center; justify-content: space-between;

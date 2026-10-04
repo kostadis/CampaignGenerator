@@ -77,9 +77,6 @@ def _sse_error(message: str):
 # (server/session_editor_config_service.py) injected via Depends — no
 # process-global mutable state. See docs/config/session-editor-isolation.md.
 
-SCRIPT_DIR = Path(__file__).resolve().parent.parent.parent  # CampaignGenerator/
-
-
 def get_editor_service(request: Request) -> SessionEditorConfigService:
     """Build the session-editor config service for this request.
 
@@ -758,7 +755,6 @@ def _load_scenes(cfg: ResolvedEditorConfig) -> list[dict]:
     (NN_<slug>.md) and their `scene:` frontmatter — no narrator until first
     Narrate run generates plan.md via Pass 3.
     """
-    sys.path.insert(0, str(SCRIPT_DIR))
     from session_doc import parse_plan
 
     nd = _narration_dir(cfg)
@@ -1924,7 +1920,6 @@ def api_scenes(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
 
 @router.get("/extraction/{n}")
 def api_get_extraction(n: int, cfg: ResolvedEditorConfig = Depends(get_editor_config)):
-    sys.path.insert(0, str(SCRIPT_DIR))
     from session_doc import estimate_narration_tokens
 
     scenes = _load_scenes(cfg)
@@ -2823,7 +2818,6 @@ def api_scene_roster(cfg: ResolvedEditorConfig = Depends(get_editor_config)):
       - preview: first ~120 chars of narration prose, frontmatter stripped
       - tokens: estimated narration tokens (extraction-based)
     """
-    sys.path.insert(0, str(SCRIPT_DIR))
     try:
         from session_doc import estimate_narration_tokens  # type: ignore
     except Exception:

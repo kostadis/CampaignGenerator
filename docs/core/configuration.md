@@ -30,14 +30,18 @@ workflow.
 | Platform | `config.yaml` (tracked, **human-only** — no writer exists) | read-only via `PlatformConfigService` |
 | Platform | `platform.yaml` — `runtime.default_model`, `runtime.session_dir` | `PlatformConfigService` |
 | Platform | `.campaigngenerator.local.yaml` — host/port, nav (gitignored) | `PlatformConfigService` |
-| Platform | `config/wiring.yaml` — external endpoints + data roots | mneme (rendered; do not edit) |
+| Platform | `~/.config/campaigngenerator/wiring.yaml` — external endpoints + data roots | mneme (rendered; do not edit) |
 | Service | `session_doc.yaml` | `SessionEditorConfigService` |
 | Service | `ensemble.yaml` | `EnsembleConfigService` |
 | Service | `grounding.yaml` | `GroundingConfigService` |
 | Service | `party.yaml` | `PartyConfigService` |
 | Service | `planning.yaml` | `PlanningConfigService` |
 
-Everything lives in `<campaign>/config/`. One location, no probes — a config file found anywhere
+Campaign-owned platform and service files live in `<campaign>/config/`. External wiring is the
+mneme-owned user-config exception; an explicit `MNEME_WIRING` path can select a shared target.
+There is no checkout/CWD fallback for retired wiring. See the [one-shot migration](../config/wiring-migration.md)
+and [installed package guide](../cli/installable_package.md). One location per campaign file,
+no probes — a campaign config file found anywhere
 else is a migration input, not a supported alternative
 ([grounding-isolation.md](../config/grounding-isolation.md) Track 0, guarded by
 `tests/test_config_location.py`).

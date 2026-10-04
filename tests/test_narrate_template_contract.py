@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from session_doc import narrate  # noqa: E402
 
-TEMPLATE_DIR = Path(__file__).resolve().parent.parent / "config" / "agents" / "session_doc" / "narrate"
+TEMPLATE_DIR = Path(__file__).resolve().parent.parent / "campaignlib" / "resources" / "agents" / "session_doc" / "narrate"
 
 
 def test_every_shipped_template_satisfies_its_declared_contract():
@@ -223,6 +223,7 @@ def test_the_drift_error_names_both_candidate_paths(tmp_path, monkeypatch):
 
     msg = str(exc.value)
     assert str(tmp_path / "config" / "agents") in msg      # the override, first
+    assert "campaignlib.resources/agents/session_doc/narrate/voice_spec.md" in msg
     assert "loaded from the first of" in msg
 
 

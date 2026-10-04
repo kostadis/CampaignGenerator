@@ -85,8 +85,7 @@ def _template_candidates(name: str) -> list[str]:
     FileNotFoundError, which lists both).
     """
     rel = Path("config/agents") / f"{name}.md"
-    repo_root = Path(__file__).resolve().parents[1]
-    return [str(Path.cwd() / rel), str(repo_root / rel)]
+    return [str(Path.cwd() / rel), f"campaignlib.resources/agents/{name}.md"]
 
 
 def _load_template(name: str, *placeholders: str) -> str:

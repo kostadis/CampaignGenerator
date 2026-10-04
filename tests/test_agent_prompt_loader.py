@@ -32,43 +32,33 @@ def test_loads_from_base_dir(tmp_path):
         "Hello from the override."
 
 
-def test_base_dir_override_wins_over_repo_default(tmp_path, monkeypatch):
-    # campaignlib lives in repo root; the repo's config/agents/ exists for
-    # the real loader. Stub a fake repo by repointing __file__ and asserting
-    # the base_dir copy is preferred when both exist.
-    fake_repo = tmp_path / "repo"
-    fake_repo.mkdir()
-    _write(fake_repo, "plan", "REPO copy")
-    monkeypatch.setattr(campaignlib.config, "__file__", str(fake_repo / "campaignlib" / "config.py"))
-
+def test_base_dir_override_wins_over_shipped_default(tmp_path):
     override = tmp_path / "campaign"
     _write(override, "plan", "OVERRIDE copy")
-
     assert load_agent_prompt("plan", base_dir=override) == "OVERRIDE copy"
 
 
-def test_falls_back_to_repo_default(tmp_path, monkeypatch):
-    fake_repo = tmp_path / "repo"
-    fake_repo.mkdir()
-    _write(fake_repo, "narrate", "from the repo default")
-    monkeypatch.setattr(campaignlib.config, "__file__", str(fake_repo / "campaignlib" / "config.py"))
-
+def test_falls_back_to_packaged_default(tmp_path):
     empty_override = tmp_path / "campaign"
     empty_override.mkdir()
-    assert load_agent_prompt("narrate", base_dir=empty_override) == \
-        "from the repo default"
+    assert load_agent_prompt("session_doc/narrate/base", base_dir=empty_override).strip()
 
 
-def test_missing_file_raises_clear_error(tmp_path, monkeypatch):
-    fake_repo = tmp_path / "repo"
-    fake_repo.mkdir()
-    monkeypatch.setattr(campaignlib.config, "__file__", str(fake_repo / "campaignlib" / "config.py"))
-
+def test_missing_file_raises_clear_error(tmp_path):
     with pytest.raises(FileNotFoundError) as exc:
         load_agent_prompt("nope", base_dir=tmp_path / "campaign")
     msg = str(exc.value)
     assert "nope" in msg
     assert "Looked in:" in msg
+    assert "campaignlib.resources/agents/nope.md" in msg
+
+
+def test_cache_separates_campaign_override_from_packaged_default(tmp_path):
+    name = "session_doc/narrate/base"
+    shipped = load_agent_prompt(name, base_dir=tmp_path)
+    _write(tmp_path, name, "OVERRIDE")
+    assert load_agent_prompt(name, base_dir=tmp_path) == "OVERRIDE"
+    assert shipped != "OVERRIDE"
 
 
 def test_no_placeholders_returns_template_verbatim(tmp_path):
@@ -129,10 +119,6 @@ def test_nested_name_resolves_to_subdir(tmp_path):
 
 
 def test_cwd_used_when_base_dir_unset(tmp_path, monkeypatch):
-    fake_repo = tmp_path / "repo"
-    fake_repo.mkdir()
-    monkeypatch.setattr(campaignlib.config, "__file__", str(fake_repo / "campaignlib" / "config.py"))
-
     cwd_root = tmp_path / "cwd"
     _write(cwd_root, "cwd_only", "loaded from CWD")
     monkeypatch.chdir(cwd_root)

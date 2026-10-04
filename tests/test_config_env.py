@@ -7,6 +7,8 @@ across a different username or clone location:
 """
 
 import textwrap
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -65,11 +67,45 @@ def test_load_repo_file_relative_with_bogus_base_dir():
     assert txt.strip()
 
 
-def test_load_repo_file_recovers_stale_absolute_by_basename():
-    # An old config holding another machine's absolute path recovers by basename.
+def test_load_repo_file_rejects_stale_absolute_by_basename(capsys):
+    # An explicitly selected file must not become a different shipped file.
     stale = "/home/someone-else/CampaignGenerator/config/system_prompt.md"
-    real = load_repo_file("config/system_prompt.md")
-    assert load_repo_file(stale) == real
+    with pytest.raises(SystemExit):
+        load_repo_file(stale)
+    assert stale in capsys.readouterr().err
+
+
+def test_load_repo_file_prefers_campaign_logical_path(tmp_path):
+    config = tmp_path / "config"
+    config.mkdir()
+    (config / "system_prompt.md").write_text("campaign text", encoding="utf-8")
+    assert load_repo_file("config/system_prompt.md", base_dir=config) == "campaign text"
+    (config / "system_prompt.md").unlink()
+    assert load_repo_file("config/system_prompt.md", base_dir=config).strip()
+
+
+def test_load_repo_file_does_not_map_unrelated_basename(tmp_path, capsys):
+    with pytest.raises(SystemExit):
+        load_repo_file("other/system_prompt.md", base_dir=tmp_path)
+    assert "other/system_prompt.md" in capsys.readouterr().err
+
+
+def test_load_repo_file_rejects_traversal(tmp_path):
+    with pytest.raises(ValueError, match="traverse"):
+        load_repo_file("config/../system_prompt.md", base_dir=tmp_path)
+
+
+def test_new_workspace_logical_prompt_names_remain_readable(tmp_path):
+    workspace = tmp_path / "campaign"
+    subprocess.run(
+        [sys.executable, "-m", "pipelines.workspace.new_workspace", str(workspace)],
+        check=True, capture_output=True, text=True,
+    )
+    config = (workspace / "config" / "config.yaml").read_text(encoding="utf-8")
+    assert "config/system_prompt.md" in config
+    assert "config/agents/lore_oracle.md" in config
+    assert load_repo_file("config/system_prompt.md", base_dir=workspace / "config").strip()
+    assert load_repo_file("config/agents/lore_oracle.md", base_dir=workspace / "config").strip()
 
 
 def test_load_repo_file_missing_exits():

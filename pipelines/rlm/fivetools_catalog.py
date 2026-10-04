@@ -423,7 +423,7 @@ def load_or_build(
     if data_root is None:
         raise SystemExit(
             "fivetools_catalog: 5etools data root not configured. Pass it "
-            "explicitly, or set FIVETOOLS_DATA_ROOT / render config/wiring.yaml "
+            "explicitly, or set FIVETOOLS_DATA_ROOT / render ~/.config/campaigngenerator/wiring.yaml "
             "(fivetools_data_root — mneme-owned external config)."
         )
     data_root = Path(data_root).expanduser().resolve()

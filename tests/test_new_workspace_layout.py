@@ -15,7 +15,7 @@ from pipelines.workspace import new_workspace
 _LABELS = ["campaign_state", "world_state", "mechanics", "planning", "party"]
 
 
-def test_new_workspace_writes_config_dir_config(tmp_path, monkeypatch):
+def test_new_workspace_writes_config_dir_config(tmp_path, monkeypatch, capsys):
     workspace = tmp_path / "ws"
     external = tmp_path / "lore.md"
     external.write_text("External lore.", encoding="utf-8")
@@ -35,3 +35,10 @@ def test_new_workspace_writes_config_dir_config(tmp_path, monkeypatch):
     assert paths["campaign_state"] == "../docs/campaign_state.md"
     assert paths["world_state"] == str(external.resolve())
     assert "External lore." in assemble_docs(config, _LABELS, base_dir)
+    assert config["system_prompt"] == "config/system_prompt.md"
+    assert config["agents"]["lore_oracle"] == "config/agents/lore_oracle.md"
+    output = capsys.readouterr().out
+    assert "campaign_state" in output
+    assert "prep --config" in output
+    assert "./start" in output and "checkout" in output
+    assert "campaign_state.py" not in output

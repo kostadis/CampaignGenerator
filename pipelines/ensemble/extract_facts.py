@@ -63,7 +63,7 @@ from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text as _atomic_write_text
 
 # DGX endpoint + model are EXTERNAL config (they name the DGX) — owned by mneme and
-# rendered into config/wiring.yaml. Read them from there; an env var still overrides.
+# rendered into the selected external wiring file. An env var still overrides.
 
 ALLOWED_TYPES = {"npc", "faction", "event", "location", "object", "monster", "thread", "date"}
 
@@ -537,8 +537,8 @@ def main() -> None:
     # Built on first use, not here (#424). Every chunk can be cached — that is
     # what --extract-dir is for, and resuming a partial run is the normal case —
     # and constructing the client eagerly made such a run depend on a backend it
-    # never calls. On a checkout with no `config/wiring.yaml` (it is generated
-    # and gitignored) the dgx default model resolves to None, so a fully cached
+    # never calls. With no external wiring the dgx default model resolves to
+    # None, so a fully cached
     # run died inside dgxlib's registry on a model id nobody needed.
     #
     # Same principle as #342: nothing gates a run on a credential up front —

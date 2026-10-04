@@ -410,6 +410,16 @@ async def sse_error_stream(message: str, returncode: int = 1) -> AsyncGenerator[
     yield f"event: done\ndata: {json.dumps({'returncode': returncode, 'error': message})}\n\n"
 
 
+async def run_command_capture(cmd: list[str]) -> dict[str, int | str]:
+    """Run a short CLI command and return its exit status and combined output."""
+    proc = await asyncio.create_subprocess_exec(
+        *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT,
+        start_new_session=True,
+    )
+    output, _ = await proc.communicate()
+    return {"returncode": proc.returncode, "output": output.decode("utf-8", errors="replace")}
+
+
 def python_exe() -> str:
     """Return the current Python interpreter path."""
     return sys.executable
