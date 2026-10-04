@@ -3,20 +3,24 @@ name = "campaigngenerator"
 version = "0.1.0"
 description = "D&D session-prep and post-session toolkit backed by the Claude API."
 requires-python = ">=3.10"
+# Bounded, not open: floors are the versions verified working together; ceilings
+# stop the next breaking major from arriving unannounced on a reinstall
+# (hypostasis installs this tree at a pinned sha — mneme#50 / FR-004). Raise a
+# ceiling deliberately, in its own commit, after testing against it.
 dependencies = [
-    "anthropic",
-    "pyyaml",
-    "pyperclip",
-    "pyvis",
-    "fastapi",
-    "uvicorn",
-    "requests",
-    "mcp>=2,<3",
-    "aiofiles",
+    "anthropic>=0.120,<2",  # suite results identical on 0.125 and 1.11
+    "pyyaml>=6.0,<7",
+    "pyperclip>=1.11,<2",
+    "pyvis>=0.3.2,<0.4",
+    "fastapi>=0.140,<1",
+    "uvicorn>=0.54,<1",
+    "requests>=2.34,<3",
+    "mcp>=2,<3",  # servers on the SDK v2 API since #497
+    "aiofiles>=25.1",  # calendar-versioned: a year bump is not a breaking-change signal
     # Declared directly, not left to arrive transitively via fastapi: the
     # `provenance` package's strict (extra="forbid") config models are a CLI
     # concern and must load on a host that never installs the web server.
-    "pydantic>=2",
+    "pydantic>=2.13,<3",
 ]
 
 [project.urls]
