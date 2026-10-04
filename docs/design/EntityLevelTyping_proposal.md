@@ -123,10 +123,16 @@ the interaction in §5.
 None of these is settled by this proposal; each needs an explicit GM ruling before
 tier 3 or tier 1 can be written.
 
-1. **Two existing GM rulings conflict.** The registry types Zuggtmoy, Juiblex,
-   Demogorgon and Yestabrod as `npc`; the type-merge primaries filed them `monster`.
-   Ogrémoch is `deity` in the registry, `monster` as a primary. Yeenoghu is `npc` in
-   both. Which one is the filing rule for demon lords?
+1. **Two existing GM rulings conflict.** Three separate questions:
+   - *Demon lords.* The registry types Zuggtmoy, Juiblex and Demogorgon as `npc`;
+     the type-merge primaries filed them `monster`. Yeenoghu is `npc` in both.
+     Which one is the filing rule for demon lords?
+   - *Yestabrod* (registry: Zuggtmoy's larval servant, leader of the Circle of
+     Masters — not a demon lord) is `npc` in the registry, `monster` as a primary.
+     Does it follow the demon-lord rule, or rule on its own?
+   - *Ogrémoch* (registry: Prince of Evil Earth — an elemental prince, not a demon
+     lord) is `deity` in the registry, `monster` as a primary. This one is really
+     part of the `deity` mapping question in item 2.
 2. **The registry's type list is not the dossier type list.** Registry:
    `npc, location, faction, item, deity, event, concept`. Dossiers:
    `npc, monster, faction, location, object`. Proposed mapping, for approval:
