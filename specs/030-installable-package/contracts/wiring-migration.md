@@ -31,7 +31,7 @@ migrate_wiring --source-checkout DIR [--target PATH] [--force]
 
 ## Checkout UI invocation
 
-The source-checkout Settings page shows the retired source and selected target, lets the operator supply both paths and choose overwrite deliberately, and displays the command result. It calls `POST /api/config/wiring/migrate` with a JSON body:
+The source-checkout Settings page shows the retired source and selected target, lets the operator supply both paths and choose overwrite deliberately, and displays the command result. When the retired file blocks normal checkout startup, `./startup --migration-only` serves this form and only its wiring migration APIs. The target shown is the process-selected path (`MNEME_WIRING` when set, otherwise the user default). It calls `POST /api/config/wiring/migrate` with a JSON body:
 
 ```json
 {

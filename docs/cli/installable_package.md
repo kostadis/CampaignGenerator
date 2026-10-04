@@ -26,4 +26,4 @@ Mneme renders host settings to `~/.config/campaigngenerator/wiring.yaml` by defa
 
 ## Web UI from a checkout
 
-Build the frontend in the source checkout if needed, then run `./start --campaign-dir /path/to/campaign` there. The installed distribution is CLI-only; `./start` serves the existing checkout web UI and its Settings page exposes the same deliberate wiring migration command.
+Build the frontend in the source checkout if needed, then run `./start --campaign-dir /path/to/campaign` there. The installed distribution is CLI-only; `./start` serves the existing checkout web UI and its Settings page exposes the same deliberate wiring migration command. If retired checkout wiring blocks normal startup, run `./startup --migration-only` and open `/settings` to move it first.

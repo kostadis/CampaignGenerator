@@ -51,7 +51,10 @@ const lineCount = computed(() => {
 })
 
 onMounted(async () => {
-  if (!config.loaded) await config.load()
+  // Migration-only startup intentionally serves no campaign configuration.
+  if (!config.loaded) {
+    try { await config.load() } catch { /* the migration form remains usable */ }
+  }
   const wiring = await apiFetch<{ path: string }>('/api/config/wiring/default')
   wiringTarget.value = wiring.path
 })

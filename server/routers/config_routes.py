@@ -17,7 +17,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
-from campaignlib.wiring import default_wiring_path
+from campaignlib.wiring import selected_wiring_path
 from server.config import DEFAULT_MODEL, MODELS, path_exists
 from server.platform_config_shared import (
     BACKENDS, CLAUDE_CODE_EFFORTS, CODEX_REASONING_EFFORTS,
@@ -43,8 +43,8 @@ class WiringMigrationRequest(BaseModel):
 
 @router.get("/wiring/default")
 def get_wiring_default():
-    """Publish the single runtime default for the checkout Settings form."""
-    return {"path": str(default_wiring_path())}
+    """Publish the path this process will read after migration."""
+    return {"path": str(selected_wiring_path()[0])}
 
 
 @router.post("/wiring/migrate")

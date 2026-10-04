@@ -80,3 +80,29 @@ def test_checkout_startup_refuses_retired_file_before_build(tmp_path):
     assert result.returncode != 0
     assert f"migrate_wiring --source-checkout {tmp_path}" in result.stderr
     assert retired.is_file()
+
+
+def test_checkout_migration_mode_reaches_server_with_retired_file(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    shutil.copy2(root / "startup", tmp_path / "startup")
+    (tmp_path / "config").mkdir()
+    retired = tmp_path / "config" / "wiring.yaml"
+    retired.write_text("dgx_model: retired\n")
+    (tmp_path / "frontend" / "dist").mkdir(parents=True)
+    (tmp_path / "frontend" / "dist" / "index.html").write_text("ready")
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    fake_python = bin_dir / "python"
+    fake_python.write_text('#!/bin/sh\nprintf "%s\\n" "$@" > "$TRACE_FILE"\n')
+    fake_python.chmod(0o755)
+    trace = tmp_path / "args.txt"
+    env = os.environ.copy()
+    env["PATH"] = f"{bin_dir}:{env['PATH']}"
+    env["TRACE_FILE"] = str(trace)
+    result = subprocess.run(
+        ["bash", str(tmp_path / "startup"), "--migration-only"],
+        cwd=tmp_path, env=env, capture_output=True, text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    assert trace.read_text().splitlines() == ["-m", "server.main", "--migration-only"]
+    assert retired.is_file()

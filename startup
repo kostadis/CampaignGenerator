@@ -8,9 +8,16 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# A known checkout refuses retired host wiring before normal startup.
-PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}" \
-  python -m campaignlib.wiring --check-retired "$SCRIPT_DIR"
+# A known checkout refuses retired host wiring before normal startup. The
+# explicit migration mode serves Settings so the operator can move that file.
+MIGRATION_ONLY=false
+for ARG in "$@"; do
+  if [ "$ARG" = "--migration-only" ]; then MIGRATION_ONLY=true; fi
+done
+if [ "$MIGRATION_ONLY" = false ]; then
+  PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}" \
+    python -m campaignlib.wiring --check-retired "$SCRIPT_DIR"
+fi
 
 # Build frontend if dist is missing or ANY source/config file is newer than the
 # built bundle. NOTE: do not test `frontend/src -nt dist/index.html` — that
@@ -39,6 +46,10 @@ done
 # PYTHONPATH lets `python -m server.main` find the server package
 # while keeping CWD as the campaign directory (the server falls back to
 # CWD/config.yaml when no --campaign-dir is passed)
-echo "Starting Campaign Generator on http://localhost:$PORT"
+if [ "$MIGRATION_ONLY" = true ]; then
+  echo "Starting wiring migration UI at http://localhost:$PORT/settings"
+else
+  echo "Starting Campaign Generator on http://localhost:$PORT"
+fi
 export PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 exec python -m server.main "$@"
