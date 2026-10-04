@@ -30,6 +30,7 @@ import json
 import re
 from functools import partial
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from importlib.resources import files
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
@@ -37,7 +38,7 @@ from session_doc.authored import AuthoredError, load_record_for, record_path
 from session_doc.review.export import build_export
 from session_doc.review.records import SaveRefused, review_to_record, save_record, summarise
 
-PAGE = Path(__file__).parent / "reviewer.html"
+PAGE = files("session_doc.review").joinpath("reviewer.html")
 
 #: Narrations, excluding the two generated variants beside them.
 _SCENE_GLOB = "session_doc_scene_*.md"

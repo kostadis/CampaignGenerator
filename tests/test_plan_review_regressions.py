@@ -145,7 +145,7 @@ def test_a_plan_missing_a_scene_is_refused(tmp_path, monkeypatch, capsys):
 
 def test_the_prompt_asks_for_narrator_none_not_an_omitted_field():
     """The prompt used to invite exactly the unparseable block above."""
-    text = (ROOT / "config/agents/session_doc/plan.md").read_text(encoding="utf-8")
+    text = (ROOT / "campaignlib/resources/agents/session_doc/plan.md").read_text(encoding="utf-8")
     assert "`narrator: NONE`" in text
     assert "is dropped when the plan is parsed" in text
 

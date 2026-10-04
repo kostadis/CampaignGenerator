@@ -12,14 +12,18 @@ service that once wrote through it owns its own document now
 ``planning.yaml``, ``platform.yaml``), each with its own typed route.
 """
 
+from __future__ import annotations
+
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
+from campaignlib.wiring import default_wiring_path
 from server.config import DEFAULT_MODEL, MODELS, path_exists
 from server.platform_config_shared import (
     BACKENDS, CLAUDE_CODE_EFFORTS, CODEX_REASONING_EFFORTS,
 )
 from server.platform_config_service import PlatformConfigService, require_platform
+from server.subprocess_runner import python_exe, run_command_capture
 
 router = APIRouter()
 
@@ -29,6 +33,32 @@ router = APIRouter()
 # in-file call sites below don't need touching; new routers should import
 # require_platform directly instead of adding a fifth copy of this alias.
 _require_service = require_platform
+
+
+class WiringMigrationRequest(BaseModel):
+    source_checkout: str
+    target: str | None = None
+    force: bool = False
+
+
+@router.get("/wiring/default")
+def get_wiring_default():
+    """Publish the single runtime default for the checkout Settings form."""
+    return {"path": str(default_wiring_path())}
+
+
+@router.post("/wiring/migrate")
+async def migrate_wiring_route(update: WiringMigrationRequest):
+    """Invoke the same deliberate CLI exposed to installed operators."""
+    source = update.source_checkout.strip()
+    if not source:
+        raise HTTPException(status_code=400, detail="source checkout is required")
+    cmd = [python_exe(), "-m", "server.migrate_wiring", "--source-checkout", source]
+    if update.target and update.target.strip():
+        cmd.extend(["--target", update.target.strip()])
+    if update.force:
+        cmd.append("--force")
+    return await run_command_capture(cmd)
 
 
 # ── GET / — typed/resolved view + metadata ─────────────────────────────────

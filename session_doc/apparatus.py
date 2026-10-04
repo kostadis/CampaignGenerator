@@ -50,7 +50,7 @@ APPARATUS_MARKERS: tuple[ApparatusMarker, ...] = (
     ApparatusMarker(
         r"table-speech\s+reclassified:",
         "narrate-prompt",
-        "config/agents/session_doc/narrate/audit_hatch.md",
+        "campaignlib/resources/agents/session_doc/narrate/audit_hatch.md",
     ),
     ApparatusMarker(
         r"hand-fixed",

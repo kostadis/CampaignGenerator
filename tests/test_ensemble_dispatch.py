@@ -120,8 +120,8 @@ def test_build_extract_cmd_forwards_chunk_parallel(tmp_path):
                                tmp_path / "small.json", tmp_path / "cache",
                                endpoint="http://spark:8001/v1",
                                model="m", backend="dgx", chunk_parallel=4)
-    assert cmd[:2] == [sys.executable, str(ee.EXTRACT_SCRIPT)]
-    assert cmd[2] == str(tmp_path / "doc.txt")
+    assert cmd[:3] == [sys.executable, "-m", "pipelines.ensemble.extract_facts"]
+    assert cmd[3] == str(tmp_path / "doc.txt")
     i = cmd.index("--parallel")
     assert cmd[i + 1] == "4"
     assert cmd[cmd.index("--backend") + 1] == "dgx"

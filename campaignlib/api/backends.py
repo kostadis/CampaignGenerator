@@ -180,14 +180,15 @@ class _OpenAICompatClient:
         self.model_override = model_override or os.environ.get("DGX_MODEL") or DGX_DEFAULT_MODEL
         if not self.model_override:
             # `DGX_DEFAULT_MODEL` is `wiring_get("dgx_model")`, and
-            # `config/wiring.yaml` is generated and gitignored — so on a fresh
-            # checkout it is None, and passing that to the registry raised
+            # External wiring may be absent on a fresh installation, leaving
+            # this unset; passing it to the registry raised
             # `AttributeError: 'NoneType' object has no attribute 'startswith'`
             # from inside dgxlib: a third-party stack trace for a local
             # configuration gap (#424). Refuse in a sentence naming every way to
             # supply one, like the dgxlib-not-installed branch just above.
             print("Error: no dgx model. Pass --model, or set DGX_MODEL, or "
-                  "add `dgx_model` to config/wiring.yaml.", file=sys.stderr)
+                  "render `dgx_model` to ~/.config/campaigngenerator/wiring.yaml "
+                  "or the selected MNEME_WIRING file.", file=sys.stderr)
             sys.exit(1)
         # Per-model request behavior comes from the dgxlib registry (one source of
         # truth, edited next to the Spark spin-up scripts) — not inline here.

@@ -7,6 +7,8 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [**Cross-system wiki**](system/index.md) — the *whole* toolchain map: how CampaignGenerator, MemPalace, turbovecdb, mytools rpg-lib, and the campaign/5etools data layer fit together. **Read this when the overall shape (not just CG) is what you've lost.**
 - [System architecture](core/architecture.md) — layered system map of CampaignGenerator *internally*, both pipeline data flows, recurring concepts, and a "common task → start here" navigation table. **Read this first for CG itself.**
 - [Configuration](core/configuration.md) — `config.yaml`, `platform.yaml`, `.campaigngenerator.local.yaml` and the per-service documents: who owns what, how the server resolves paths, how the CLI auto-detects.
+- [Installable package](cli/installable_package.md) — non-editable wheel, shipped prompts, CLI-only installed mode, and checkout web UI.
+- [External wiring migration](config/wiring-migration.md) — deliberate one-shot move from a source checkout to the mneme-rendered user config target.
 
 ## CLI tools and workflows
 

@@ -69,10 +69,6 @@ import yaml
 
 from campaignlib.util import atomic_write_text
 
-_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
-
 from campaignlib.constants import config_path
 from campaignlib.projection_config import (
     PROJECTION_CONFIG_FILENAME,

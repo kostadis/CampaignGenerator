@@ -20,6 +20,7 @@ from repo_sources import repo_python_files  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+AGENTS = ROOT / "campaignlib" / "resources" / "agents"
 
 CASES = [
     ("session_doc.enhance_summary",  "ENHANCE_SYSTEM_PREFIX",            "enhance_summary"),
@@ -51,12 +52,12 @@ CASES = [
 def test_constant_matches_markdown_file(module_name, const_name, prompt_path):
     mod = importlib.import_module(module_name)
     value = getattr(mod, const_name)
-    on_disk = (ROOT / "config" / "agents" / f"{prompt_path}.md").read_text(
+    on_disk = (AGENTS / f"{prompt_path}.md").read_text(
         encoding="utf-8"
     )
     assert value == on_disk, (
         f"{module_name}.{const_name} diverges from "
-        f"config/agents/{prompt_path}.md"
+        f"campaignlib/resources/agents/{prompt_path}.md"
     )
 
 
@@ -69,8 +70,8 @@ def test_all_externalised_prompts_listed():
         case[2] + ".md" for case in CASES
     }
     actual = {
-        str(p.relative_to(ROOT / "config" / "agents")).replace("\\", "/")
-        for p in (ROOT / "config" / "agents").rglob("*.md")
+        str(p.relative_to(AGENTS)).replace("\\", "/")
+        for p in AGENTS.rglob("*.md")
     }
     # Exclude prompts that scripts load dynamically by name (via
     # load_agent_prompt / load_file) instead of binding to a module-level
@@ -99,7 +100,7 @@ def test_all_externalised_prompts_listed():
     relevant = (actual - session_doc_files - prep_files - ensemble_files
                 - narrate_files - projection_files)
     assert expected == relevant, (
-        f"Phase-3 CASES table out of sync with config/agents/.\n"
+        f"Phase-3 CASES table out of sync with campaignlib/resources/agents/.\n"
         f"  in CASES but not on disk: {sorted(expected - relevant)}\n"
         f"  on disk but not in CASES: {sorted(relevant - expected)}"
     )
@@ -121,7 +122,7 @@ def test_every_load_by_name_prompt_resolves_to_a_file():
     """
     import ast
 
-    agents_dir = ROOT / "config" / "agents"
+    agents_dir = AGENTS
     missing, checked = [], 0
     for py in repo_python_files(ROOT):
         rel = py.relative_to(ROOT).as_posix()
@@ -143,7 +144,7 @@ def test_every_load_by_name_prompt_resolves_to_a_file():
                 continue  # dynamic --agent dispatch; nothing static to verify
             checked += 1
             if not (agents_dir / f"{first.value}.md").is_file():
-                missing.append(f"{rel}:{node.lineno} -> config/agents/{first.value}.md")
+                missing.append(f"{rel}:{node.lineno} -> campaignlib/resources/agents/{first.value}.md")
 
     assert checked, "found no literal load_agent_prompt(...) calls — scan is broken"
     assert not missing, "load_agent_prompt names with no file on disk:\n  " + "\n  ".join(missing)

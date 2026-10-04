@@ -36,6 +36,20 @@ if not PAGE.is_file():
 HTML = PAGE.read_text(encoding="utf-8")
 
 
+def test_reviewer_page_is_readable_from_installed_package(tmp_path):
+    """The served page must survive a non-editable wheel install."""
+    from helpers.installed_distribution import build_installed_distribution
+
+    installed = build_installed_distribution(tmp_path / "installed")
+    assert "session_doc/review/reviewer.html" in installed.members()
+    result = installed.run(
+        str(installed.python), "-c",
+        "from importlib.resources import files; "
+        "print(len(files('session_doc.review').joinpath('reviewer.html').read_bytes()))",
+    )
+    assert int(result.stdout.strip()) == len(PAGE.read_bytes())
+
+
 # ── W1: no network, of any kind ─────────────────────────────────────────────
 
 @pytest.mark.parametrize("pattern,what", [

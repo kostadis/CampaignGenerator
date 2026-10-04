@@ -58,7 +58,8 @@ def default_fivetools_data_root() -> Path | None:
     """The canonical 5etools data root to assume outside a campaign context.
 
     Precedence: ``FIVETOOLS_DATA_ROOT`` env var → mneme wiring
-    (``fivetools_data_root`` in config/wiring.yaml) → ``None``. Standalone
+    (``fivetools_data_root`` in external wiring at
+    ``~/.config/campaigngenerator/wiring.yaml``) → ``None``. Standalone
     tools that walk the canonical tree without a campaign's refs.local.yaml
     (``fivetools_ingest``, ``fivetools_catalog``) share this so "where is
     5etools installed" has one resolution path instead of a hardcoded copy
@@ -199,7 +200,7 @@ def resolve_roots(local: dict, required: set[str]) -> dict[str, ResolvedRoot]:
             if env:
                 base += f" or {env}"
             if n in _DEFAULT_ROOTS:
-                base += " or render config/wiring.yaml (mneme-owned)"
+                base += " or render ~/.config/campaigngenerator/wiring.yaml (mneme-owned)"
             return base
 
         hint = ", ".join(_hint(n) for n in missing)

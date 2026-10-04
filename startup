@@ -8,6 +8,10 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# A known checkout refuses retired host wiring before normal startup.
+PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}" \
+  python -m campaignlib.wiring --check-retired "$SCRIPT_DIR"
+
 # Build frontend if dist is missing or ANY source/config file is newer than the
 # built bundle. NOTE: do not test `frontend/src -nt dist/index.html` — that
 # compares the src *directory* mtime, which Linux does not bump when you edit an

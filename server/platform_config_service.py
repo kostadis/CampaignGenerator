@@ -859,7 +859,7 @@ class PlatformConfigService:
 
     @property
     def wiring(self) -> dict:
-        """External, mneme-rendered wiring (``config/wiring.yaml``) — see
+        """External, mneme-rendered wiring (``~/.config/campaigngenerator/wiring.yaml``) — see
         ``campaignlib.wiring``. Returns ``{}`` when no rendered file is
         found (e.g. this machine, per the design doc's "Risks" section);
         callers must treat that as "nothing configured", not an error."""

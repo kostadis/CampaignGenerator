@@ -71,9 +71,6 @@ from campaignlib.api.client import (
 )
 from campaignlib.selection import BACKENDS
 
-EXTRACT_SCRIPT = Path(__file__).resolve().parent / "extract_facts.py"
-
-
 def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
                       extract_dir: Path, endpoint: str | None,
                       model: str | None, backend: str,
@@ -85,7 +82,7 @@ def build_extract_cmd(input_path: Path, pass_spec: dict, output_path: Path,
     all the subprocess/bookkeeping mutation lives in run_unit."""
     cmd = [
         sys.executable,
-        str(EXTRACT_SCRIPT),
+        "-m", "pipelines.ensemble.extract_facts",
         str(input_path),
         "--output", str(output_path),
         "--extract-dir", str(extract_dir),

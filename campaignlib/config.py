@@ -1,7 +1,10 @@
 """Config loading, file I/O, document assembly, and agent-prompt templating."""
 
+from __future__ import annotations
+
 import os
 import sys
+from importlib.resources import files
 from pathlib import Path
 
 from .constants import CONFIG_DIR_NAME, config_path
@@ -121,42 +124,34 @@ def load_file_optional(path: str | Path, label: str = "file") -> str | None:
 
 
 def load_repo_file(path: str | Path, base_dir: Path | None = None) -> str:
-    """Read a file that ships with the code repo (system prompt, agent prompt).
-
-    Unlike :func:`load_file` (for campaign-local files that live next to the
-    config), code-repo files live wherever CampaignGenerator is checked out —
-    independent of where the campaign workspace is. So a campaign ``config.yaml``
-    can name them relatively (``system_prompt: config/system_prompt.md``) and
-    this loader finds the repo copy regardless of user identity or clone path.
-
-    Resolution order: ``base_dir``-relative → repo root → CWD → the same
-    basename under the repo's ``config/`` and ``config/agents/`` trees. The
-    final basename fallback lets a config that still holds a stale absolute
-    path from another machine recover instead of hard-failing.
-    """
+    """Read a campaign override or an exact logical packaged resource."""
     raw = os.path.expandvars(str(path))
     p = Path(raw).expanduser()
-    repo_root = Path(__file__).resolve().parents[1]
-
-    candidates: list[Path] = []
     if p.is_absolute():
-        candidates.append(p)
-    else:
-        if base_dir:
-            candidates.append(Path(base_dir) / p)
-        candidates.append(repo_root / p)
-        candidates.append(Path.cwd() / p)
-    # Last resort: recover by basename under the repo's prompt trees.
-    candidates.append(repo_root / "config" / p.name)
-    candidates.append(repo_root / "config" / "agents" / p.name)
+        if not p.is_file():
+            print(f"Error: explicitly selected file not found: {p}", file=sys.stderr)
+            sys.exit(1)
+        return p.read_text(encoding="utf-8")
 
-    for cand in candidates:
-        if cand.is_file():
-            return cand.read_text(encoding="utf-8")
+    if ".." in p.parts:
+        raise ValueError(f"resource path may not traverse directories: {raw}")
+    root = Path(base_dir) if base_dir is not None else Path.cwd()
+    if p.parts and p.parts[0] == CONFIG_DIR_NAME and root.name == CONFIG_DIR_NAME:
+        root = root.parent
+    candidate = root / p
+    if candidate.is_file():
+        return candidate.read_text(encoding="utf-8")
 
-    tried = "\n  ".join(str(c) for c in candidates)
+    if p.parts and p.parts[0] == CONFIG_DIR_NAME:
+        logical = p.parts[1:]
+        if logical and (logical[0] == "agents" or logical == ("system_prompt.md",)):
+            shipped = files("campaignlib.resources").joinpath(*logical)
+            if shipped.is_file():
+                return shipped.read_text(encoding="utf-8")
+
     print(
-        f"Error: repo file not found: {raw}\nLooked in:\n  {tried}",
+        f"Error: resource not found: {raw}\nLooked in:\n  {candidate}"
+        "\n  campaignlib.resources (exact logical name)",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -164,7 +159,7 @@ def load_repo_file(path: str | Path, base_dir: Path | None = None) -> str:
 
 # ── Agent prompt loader ───────────────────────────────────────────────────────
 
-_PROMPT_CACHE: dict[Path, str] = {}
+_PROMPT_CACHE: dict[str, str] = {}
 
 
 def _clear_prompt_cache() -> None:
@@ -177,11 +172,7 @@ def load_agent_prompt(
     base_dir: Path | None = None,
     placeholders: dict[str, str] | None = None,
 ) -> str:
-    """Load a prompt template from ``config/agents/<name>.md``.
-
-    Resolution order: ``base_dir`` (or CWD if unset) → repo's ``config/agents/``.
-    A campaign that wants to override a prompt drops its own file in either
-    location and the loader picks it up without forking the repo.
+    """Load a campaign override, or its shipped package default.
 
     Placeholder substitution is opt-in (``placeholders=None`` returns the
     template verbatim) and strict on both sides: every ``{key}`` in the
@@ -190,29 +181,30 @@ def load_agent_prompt(
     ``ValueError`` so prompt drift surfaces loudly instead of silently
     producing a malformed prompt.
 
-    File contents are cached per absolute path for the life of the process.
+    File contents are cached by selected origin for the life of the process.
     """
+    logical = Path(name)
+    if logical.is_absolute() or ".." in logical.parts or not logical.parts:
+        raise ValueError(f"invalid agent prompt name: {name}")
     rel = Path("config/agents") / f"{name}.md"
     override_root = Path(base_dir) if base_dir is not None else Path.cwd()
-    # This module lives at campaignlib/config.py, so the repo root (which holds
-    # config/agents/) is two levels up, not one.
-    repo_root = Path(__file__).resolve().parents[1]
-    candidates = [override_root / rel, repo_root / rel]
-
-    chosen: Path | None = None
-    for cand in candidates:
-        if cand.is_file():
-            chosen = cand.resolve()
-            break
-    if chosen is None:
-        tried = "\n  ".join(str(c) for c in candidates)
+    override = override_root / rel
+    shipped = files("campaignlib.resources").joinpath("agents", *logical.parts[:-1], f"{logical.name}.md")
+    if override.is_file():
+        key = f"campaign:{override.resolve()}"
+        read = lambda: override.read_text(encoding="utf-8")
+    elif shipped.is_file():
+        key = f"shipped:{name}"
+        read = lambda: shipped.read_text(encoding="utf-8")
+    else:
         raise FileNotFoundError(
-            f"Agent prompt '{name}' not found. Looked in:\n  {tried}"
+            f"Agent prompt '{name}' not found. Looked in:\n  {override}"
+            f"\n  campaignlib.resources/agents/{name}.md"
         )
 
-    if chosen not in _PROMPT_CACHE:
-        _PROMPT_CACHE[chosen] = chosen.read_text(encoding="utf-8")
-    template = _PROMPT_CACHE[chosen]
+    if key not in _PROMPT_CACHE:
+        _PROMPT_CACHE[key] = read()
+    template = _PROMPT_CACHE[key]
 
     if placeholders is None:
         return template

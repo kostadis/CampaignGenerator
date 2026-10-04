@@ -51,10 +51,6 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
-
 from campaignlib.constants import config_path
 from campaignlib.projection_config import (
     PROJECTION_CONFIG_FILENAME,
@@ -439,8 +435,7 @@ def render_tracking(sec: Section, args, inputs: list[Path]) -> str:
 
 def render_synthesis(sec: Section, args, inputs: list[Path], out_file: Path) -> None:
     """Type-scoped synthesise_world_state run — one narrow section per call."""
-    cmd = [sys.executable,
-           str(_REPO_ROOT / "pipelines/ensemble/synthesise_world_state.py"),
+    cmd = [sys.executable, "-m", "pipelines.ensemble.synthesise_world_state",
            "--dossiers", *(str(p) for p in inputs),
            "--output", str(out_file)]
     if args.registry:

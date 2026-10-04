@@ -4,6 +4,7 @@ xalvosh
 __pycache__/
 venv/
 .venv/
+.ci-venv/
 dist/
 *.egg-info/
 .env
