@@ -3,6 +3,9 @@
 > **Status:** proposal, not built. Written 2026-10-03 from measurements against the
 > Out-of-the-Abyss ensemble corpus (`docs/ensemble/per_chapter*/`) and the GM's
 > type-merge rulings (`docs/ensemble/.type_merge_decisions.json`), at `511752c`.
+> **Replayed** 2026-10-04 on the `monster` slice (§6.1); the replay found two fixes,
+> now folded in: kept-separate is per file (§3, §5) and the queue holds named
+> subjects only (§2).
 > **Scope:** `pipelines/ensemble/facts_to_state.py` bundling only. Extraction
 > (`extract_facts.py`, `ensemble_extract.py`) and `ensemble_merge.py` are unchanged.
 > **Evidence and scripts:** `~/src/dgx-fun/vtt-spell-pass-local-design.md`
@@ -52,7 +55,12 @@ drained 21 % of facts out of the dossiers in the Clef test.
 | 2 | `.type_merge_decisions.json` → `primary` of a `merged` resolution | prior GM ruling |
 | 3 | `entity_registry.yaml` `type`, through a GM-approved mapping (§4) | GM-curated canon |
 | 4 | majority of the subject's own entity-typed facts, if the top type holds **≥ 60 %** | deterministic |
-| 5 | none of the above → **review queue**, subject keeps per-fact types for now | GM |
+| 5 | none of the above → subject keeps per-fact types for now; **review queue** if it is a named subject | GM |
+
+The queue holds **named subjects only** — those in `known_names` (registry names and
+aliases plus party names). A generic creature that misses tier 4 ("galeb duhr",
+"drow guards") is location-scoped anyway and would only bury the real questions:
+in the replay, 20 of the 20 tier-5 subjects left after tier 2 were generic.
 
 No model call in the chain. Tier 4's threshold is the one point the OOTA replay
 tuned (vote-if-≥60 %-else-tiebreak scored 87/92 against GM primaries, versus 82/92
@@ -108,11 +116,17 @@ and in the bundling loop, one change before the key is built:
 
 ```python
 t = f.get("type", "")
-if t in ENTITY_TYPES:
+if t in ENTITY_TYPES and (t, slugify(display)) not in kept_separate_files:
     r = resolved.get(norm)
     if r is not None and r.type is not None:
         t = r.type
 ```
+
+`kept_separate_files` is the set of `(type, slug)` **files** named in `kept_separate`
+resolutions — not their subjects. A group can carry both statuses: Myconid Sovereigns
+is ruled "merge `npc` + `monster` under `npc`, keep `faction` separate". Exempting the
+whole subject would undo the merge half; exempting the file reproduces the ruling
+exactly.
 
 Everything downstream — `gkey`, `Bundle(t, norm)`, the dossier filename — then sees
 one type per subject. The `is_known` / `monster_vocab` logic is unchanged, but note
@@ -155,9 +169,20 @@ the 16 disagreements are exactly the four questions above.
   problems but *mis-subjected facts* — `faction_daz.md` holds a fact about Daz's
   unknown Menzoberranzan patron, filed under Daz's name. Entity-level typing would
   re-type that fact `npc` and fold it into Daz's dossier, reversing a GM ruling
-  (2026-07-26). Honour `kept_separate` groups by leaving their facts on their
-  original types, and list them in `type_resolution.md` as "needs re-subjecting
-  upstream". The real fix is in extraction, out of scope here.
+  (2026-07-26). Honour `kept_separate` rulings **per file**: facts whose original
+  `(type, subject)` is a kept-separate member keep that type, while the subject's
+  other facts resolve normally (§3). List them in `type_resolution.md` as "needs
+  re-subjecting upstream". The real fix is in extraction, out of scope here.
+- **Subject identity comes only from registry aliases.** Typing can only merge
+  facts that already share a canonical subject, and `load_bundles` canonicalises
+  through `entity_registry.yaml` alone — not the spell-pass glossary. A misspelling
+  the glossary knows but the registry does not becomes its own subject. The replay
+  found 18 such subjects across both corpora (e.g. `Zuggtomy`, `Grey Ghosts`,
+  `Hightower Library`). Some come from extractions that predate a bible fix — ch31's
+  `per_chapter` extraction (2026-07-13) still says "Zuggtomy", though the bible was
+  corrected on 2026-07-18 — others from misspellings still in the bible. Either way
+  this is a prerequisite, not part of this change: fix the source and re-extract, or
+  add the variant as a registry alias (a GM-approved name change).
 - **Generic creatures.** `monster_vocab` decides known-vs-anonymous by whether a
   subject ever appears as `monster`. If tier 1–4 resolves "the ghoul" to `npc`,
   anonymous location-scoping must still apply. Keep `monster_vocab` computed from
@@ -183,6 +208,45 @@ Replay on OOTA's existing corpus, no new extraction:
 4. No fact typed `event`, `thread` or `date` changes type.
 5. Count the tier-5 queue. If it is long, revisit the 60 % threshold before adding
    any model tie-breaker.
+
+### 6.1 Replay result: the `monster` slice (2026-10-04)
+
+Script: `~/src/dgx-fun/clef/ensemble-typing-eval/replay_489.py`. It reimplements the
+chain beside the real bundling rules (`_norm_subject`, registry aliases,
+`known_names`, `monster_vocab`) on the `per_chapter` corpus, for the 438 subjects with
+at least one `monster` fact (50 of them named). 41 of the 64 GM rulings that involve a
+`monster` file have their members in this corpus; the rest come from
+`per_chapter_rerun`. Nothing is written.
+
+| | Today | Tier 4 only (no GM data) | Tiers 2 + 4 | Tiers 2 + 3 + 4 (mapping not yet approved) |
+|---|---|---|---|---|
+| Named subjects split across types (of 50) | 43 | 9 | 1 | 1 |
+| GM groups landing in one dossier type = GM primary (of 41) | 0 | 32 | 40 | 40 |
+| GM groups landing in one *wrong* type | 1 | 1 | 0 | 0 |
+| Named subjects queued (tier 5) | — | 9 | 0 | 0 |
+| Dossiers | 667 | 592 | 577 | 577 |
+
+- **Tier 4 alone is the honest test** — it is what new, unreviewed chapters get. When
+  the vote decides, it matches the GM 32 times in 33. The one miss is `poison`, which
+  the GM had already flagged as mis-subjected.
+- **What tier 4 cannot decide is the right queue.** The 9 queued named subjects are
+  Lolth, Zuggtmoy, Zuggtmoy's Spores, Faerzress, Zurkhwood, Malfire, Whistler, the
+  Pudding King and Myconid Sovereigns — mostly the cases §4 asks about.
+- **The one split left at tiers 2 + 4 is intended:** Myconid Sovereigns' kept-separate
+  `faction` file (§3).
+- **Tiers 2 + 4 are partly circular** — scored against the rulings tier 2 uses — so
+  they show the chain honours rulings, not that it predicts them.
+- **Tier 3 changes nothing on this slice** (it decides 5 subjects, same outcome).
+- **The 60 % threshold holds.** Tier 4 only, swept:
+
+  | Threshold | One type, correct | One type, wrong | Named subjects queued |
+  |---|---|---|---|
+  | 50 % | 34 | 4 | 4 |
+  | 55–60 % | 32 | 1 | 9 |
+  | 67 % | 22 | 1 | 21 |
+  | 75 % | 21 | 1 | 22 |
+
+Not yet replayed: the other entity types, and `per_chapter_rerun`.
 
 ## 7. Why not Clef (or any per-fact classifier)
 
