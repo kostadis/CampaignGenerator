@@ -5,7 +5,8 @@
 > type-merge rulings (`docs/ensemble/.type_merge_decisions.json`), at `511752c`.
 > **Replayed** 2026-10-04 on the `monster` slice (§6.1); the replay found two fixes,
 > now folded in: kept-separate is per file (§3, §5) and the queue holds named
-> subjects only (§2).
+> subjects only (§2). §8 names the general flaw this is one instance of: the
+> pipeline asks the LLM for precision decisions and never reads the GM's rulings back.
 > **Scope:** `pipelines/ensemble/facts_to_state.py` bundling only. Extraction
 > (`extract_facts.py`, `ensemble_extract.py`) and `ensemble_merge.py` are unchanged.
 > **Evidence and scripts:** `~/src/dgx-fun/vtt-spell-pass-local-design.md`
@@ -257,3 +258,72 @@ fine. Its determinism does not help: it guarantees the same answer for the same
 input, and every fact is a different input. The fix is to stop asking the question
 per fact. The one role that measured well — an entity-level second opinion that
 routes disagreements to the GM (§2) — is not specific to Clef.
+
+## 8. The underlying flaw: rulings are recorded, not fed back
+
+Split dossiers are a symptom. The ensemble pipeline has two compounding defects, and
+entity-level typing fixes them for one field only.
+
+**1. Extraction makes precision decisions with no checkpoint.** A fact's `type` is a
+scope decision (which dossier it belongs in) and its `subject` is an identity
+decision (who it is about). Extraction is a good drafter of both, but its per-fact
+labels go straight into the bundle key, `(type, canonical subject)`, and from there
+into the dossiers. That is the *LLM extracts → LLM structures* pattern: the draft is
+treated as the decision.
+
+**2. The GM's rulings are stored but not read.** Every correction the GM makes is
+written somewhere the pipeline never consults:
+
+| GM ruling | Lives in | Should feed | Feeds today |
+|---|---|---|---|
+| Type merges and the primary type | `.type_merge_decisions.json` | `facts_to_state` bundling | nothing — only `/ensemble-type-merge` reads it, to avoid re-asking |
+| Kept-separate and re-subject notes (e.g. `faction_daz.md` is the patron thread) | the same file, as free-text `note` | subject resolution | nothing |
+| Spellings | spell-pass glossary (`notes/vtt_transcription_corrections.md`) | subject canonicalisation | nothing — bundling reads registry aliases only (§5) |
+| Bible corrections | `docs/TheUnderdark.md`, `docs/chapters/` | extractions | only on re-extraction — ch31's 2026-07-13 extraction still says "Zuggtomy" after the 2026-07-18 fix |
+
+So every `facts_to_state` run rebuilds the splits the GM already merged (109 in
+OOTA), and the rulings are applied again as cleanup instead of once as input. A
+ruling made once should never have to be made twice.
+
+### The principle
+
+**Rulings are inputs, and the LLM proposes.** Resolve every precision field —
+`type`, `subject` — against a ruling table *before* anything is built on it. A
+proposal the table covers takes the ruling. One the table does not cover goes to a
+queue, and the GM's answer becomes a new row. §2's chain is this principle applied to
+`type`: tier 1–3 are ruling tables, tier 4 is a deterministic default, tier 5 is the
+queue. The §6.1 replay shows the payoff: with the GM's merge rulings fed in (tier 2),
+all 40 merged groups found are reproduced and no named subject is queued.
+
+### Constraints
+
+- **One authority per field, with a stated precedence.** Ruling stores already
+  disagree — registry type vs. merge primary on 16 subjects (§4). Feeding both
+  without an order is split-brain under another name. Each field gets one resolution
+  chain, and every cross-store conflict is reported in `type_resolution.md`, not
+  silently settled.
+- **Rulings must be machine-readable.** Re-subject rulings exist today only as prose
+  in `note`. To feed back they need a structured form (`resubject: {from, to}`).
+- **Re-subjecting is per fact, and facts have no stable id.** Moving one fact to
+  another subject is an identity ruling about a single fact, not an entity. Merged
+  facts carry `type, subject, fact, source_quote, passes` — no id — so an override
+  must key on something stable across re-extraction, such as chapter + normalised
+  `source_quote`, and must report when its key stops matching.
+- **Spelling has to reach bundling.** Either `load_bundles` canonicalises through the
+  glossary as well as the registry, or glossary variants are promoted into registry
+  aliases (a GM-approved name change). Which one is a GM decision; this proposal does
+  not make it.
+- **Stale extractions must be detectable.** A source fix only reaches the dossiers
+  through re-extraction. Recording the source file's hash in each chapter's
+  `manifest.json`, and warning when it no longer matches, makes stale extractions
+  visible instead of silent.
+
+### Order of work
+
+1. **Type** — this proposal (tiers 1–5). Feeds `.type_merge_decisions.json` back.
+2. **Spelling** — glossary or promoted aliases into subject canonicalisation, plus the
+   stale-extraction check.
+3. **Subject** — structured re-subject rulings, keyed per fact.
+
+Each step removes one class of cleanup the GM currently repeats after every run.
+
