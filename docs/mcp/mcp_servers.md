@@ -1,5 +1,9 @@
 # MCP servers
 
+The four Python servers (`campaign`, `registry`, `kanka`, and `provenance`) use
+the MCP Python SDK 2.x (`mcp>=2,<3`). The `5etools` entry launches a separate
+Node-based MCP server; its SDK version is managed in that project's checkout.
+
 CampaignGenerator ships five MCP servers a campaign workspace can register in its
 `.mcp.json`. They're independent — a campaign wires in whichever it needs — but
 easy to forget exist, since nothing lists them in one place. This page does.

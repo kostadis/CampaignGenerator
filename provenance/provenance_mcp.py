@@ -159,16 +159,16 @@ def provenance_check(campaigns: list[str] | None = None) -> str:
 
 
 def build_server():
-    """Construct the FastMCP server. Bound to no campaign — that is the point.
+    """Construct the MCP server. Bound to no campaign — that is the point.
 
     Imports ``mcp`` lazily so every core function above imports and unit-tests
     without the package installed — the same guard ``registry_mcp`` and
     ``kanka_mcp`` use.
     """
-    from mcp.server.fastmcp import FastMCP
+    from mcp.server import MCPServer
 
     workspace = resolve_workspace_root(None)
-    mcp = FastMCP("provenance", instructions=INSTRUCTIONS.format(root=workspace.path))
+    mcp = MCPServer("provenance", instructions=INSTRUCTIONS.format(root=workspace.path))
 
     @mcp.tool()
     def provenance_search_tool(

@@ -8,7 +8,7 @@ instead of re-reading ``registry.py``'s module docstring or ``--help`` output
 each session.
 
 Design notes:
-  - The FastMCP import is guarded (lazy, inside build_server) so the core
+  - The MCPServer import is guarded (lazy, inside build_server) so the core
     functions below import and unit-test without the `mcp` package installed
     — same shape as kanka_mcp.py.
   - Every tool is a thin wrapper that calls ``entity_registry.registry.main()``
@@ -268,19 +268,19 @@ def registry_import_alias_decisions(campaign_dir: Path, json_path: str) -> str:
     return _format(*_run_main(["import-alias-decisions", str(campaign_dir), json_path]))
 
 
-# ── MCP server (FastMCP imported lazily so core stays dependency-free) ──────
+# ── MCP server (MCPServer imported lazily so core stays dependency-free) ──────
 
 
 def build_server(campaign_dir: Path):
-    """Construct the FastMCP server bound to one fixed campaign directory.
+    """Construct the MCP server bound to one fixed campaign directory.
 
     Imports `mcp` lazily — call only when actually serving (or testing
-    against a live FastMCP instance); every core function above works
+    against a live MCPServer instance); every core function above works
     without it.
     """
-    from mcp.server.fastmcp import FastMCP
+    from mcp.server import MCPServer
 
-    mcp = FastMCP(
+    mcp = MCPServer(
         "registry",
         instructions=(
             f"Entity registry for the campaign at {campaign_dir} "

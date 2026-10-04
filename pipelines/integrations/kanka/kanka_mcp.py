@@ -18,7 +18,7 @@ changes without dropping to a shell:
       user request.
 
 Design notes:
-  - The FastMCP import is guarded (lazy, inside build_server) so the core
+  - The MCPServer import is guarded (lazy, inside build_server) so the core
     functions below import and unit-test without the `mcp` package installed.
   - The core functions take a KankaClient so they are testable with a fake;
     the tool wrappers construct the real client and surface clean errors
@@ -94,13 +94,13 @@ def push_apply(client, campaign: int, markdown: str) -> str:
             f"skip={counts['skip']} failed={counts['failed']}")
 
 
-# ── MCP server (FastMCP imported lazily so core stays dependency-free) ──────────
+# ── MCP server (MCPServer imported lazily so core stays dependency-free) ──────────
 
 def build_server():
-    """Construct the FastMCP server. Imports `mcp` lazily — call only when serving."""
-    from mcp.server.fastmcp import FastMCP
+    """Construct the MCP server. Imports `mcp` lazily — call only when serving."""
+    from mcp.server import MCPServer
 
-    mcp = FastMCP(
+    mcp = MCPServer(
         "kanka",
         instructions=(
             "Sync a self-hosted Kanka CE campaign with a CampaignGenerator "

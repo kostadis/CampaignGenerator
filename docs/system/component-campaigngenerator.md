@@ -109,7 +109,7 @@ per-service server-owned YAML documents (`platform.yaml`, `session_doc.yaml`, `e
 
 ### Boundary — `pipelines/rlm/mcp_server.py`
 
-A FastMCP stdio server registered per-campaign via `.mcp.json`. Read/write
+A MCPServer stdio server registered per-campaign via `.mcp.json`. Read/write
 **asymmetric**: it can read any campaign doc and run retrieval/prep tools, but
 writes only into `notes/`. MemPalace I/O from here still goes through
 `pipelines/rlm/mempalace_client.py`.

@@ -294,7 +294,7 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 | [`mempalace_client.py`](../../pipelines/rlm/mempalace_client.py) | HTTP client for MemPalace search |
 | [`dossier_proposer.py`](../../pipelines/rlm/dossier_proposer.py) | Retrieval → `docs/dossier_proposal.md` (human checkpoint) |
 | [`proposal_loader.py`](../../pipelines/rlm/proposal_loader.py) | Render pipelines load approved proposals from here |
-| [`mcp_server.py`](../../pipelines/rlm/mcp_server.py) | FastMCP stdio server: read campaign docs, write to `notes/` only, semantic search via mempalace |
+| [`mcp_server.py`](../../pipelines/rlm/mcp_server.py) | MCPServer stdio server: read campaign docs, write to `notes/` only, semantic search via mempalace |
 
 Deep dives: [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md), [`docs/rlm/rlm_architecture.md`](../rlm/rlm_architecture.md).
 
@@ -356,7 +356,7 @@ Typical session lifecycle:
 
 ## MCP integration
 
-[`mcp_server.py`](../../pipelines/rlm/mcp_server.py) is a FastMCP stdio server registered per campaign via `.mcp.json` ([template](../../.mcp.json.template)). Reads `CAMPAIGN_DIR` from env. Tools:
+[`mcp_server.py`](../../pipelines/rlm/mcp_server.py) is a MCPServer stdio server registered per campaign via `.mcp.json` ([template](../../.mcp.json.template)). Reads `CAMPAIGN_DIR` from env. Tools:
 
 - Read-only document access: `read_document`, `search_document`, `list_sessions`, `list_files`, `list_notes`
 - Write (into `<campaign_dir>/notes/` only): `write_note`, `append_note`

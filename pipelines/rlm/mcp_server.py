@@ -108,9 +108,9 @@ _mp_canon_wing = _mp_config.get("canon_wing", "narrative")
 
 # ── MCP server ────────────────────────────────────────────────────────────────
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server import MCPServer
 
-mcp = FastMCP(
+mcp = MCPServer(
     "campaign",
     instructions=(
         f"Campaign data for the D&D campaign at {campaign_dir}. "
