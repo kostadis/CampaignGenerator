@@ -22,7 +22,7 @@ Strategy:
     the plan worries about. If the import raised, collecting this file
     would have failed and no test below would have run at all.
 
-  * ``@mcp.tool()``-decorated functions are plain callables (FastMCP does
+  * ``@mcp.tool()``-decorated functions are plain callables (MCPServer does
     not wrap them at definition time) — tools are called directly here.
     Both ``rpg_search`` and ``propose_dossier`` do their real imports
     lazily, inside the function body, which is the monkeypatch seam: patch

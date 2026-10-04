@@ -1,10 +1,10 @@
 """Tests for kanka_mcp.py core functions.
 
-The FastMCP tool wrappers need the `mcp` package; the core functions
+The MCPServer tool wrappers need the `mcp` package; the core functions
 (pull_world_state / push_preview / push_apply) are pure wrappers over the
 already-tested kanka_sync + kanka_push engines and are exercised here with a
 FakeClient — no `mcp` dependency required. The module must import even when
-`mcp` is not installed (the FastMCP import is guarded).
+`mcp` is not installed (the MCPServer import is guarded).
 """
 
 import sys
@@ -83,7 +83,7 @@ def test_push_apply_surfaces_failures():
 
 def test_module_imports_and_exposes_core_without_mcp():
     # Reaching this line means `import kanka_mcp` succeeded despite `mcp` being
-    # absent in this env — i.e. the FastMCP import is properly guarded.
+    # absent in this env — i.e. the MCPServer import is properly guarded.
     assert hasattr(kanka_mcp, "pull_world_state")
     assert hasattr(kanka_mcp, "push_preview")
     assert hasattr(kanka_mcp, "push_apply")

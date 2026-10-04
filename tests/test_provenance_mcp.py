@@ -58,7 +58,7 @@ def test_no_write_tool_is_exposed() -> None:
 
 
 def test_the_module_imports_without_the_mcp_package() -> None:
-    """The FastMCP import must be lazy, inside build_server."""
+    """The MCPServer import must be lazy, inside build_server."""
     tree = ast.parse(MODULE.read_text(encoding="utf-8"), filename=str(MODULE))
     for node in ast.walk(tree):
         if isinstance(node, ast.ImportFrom) and (node.module or "").startswith("mcp"):
@@ -218,6 +218,6 @@ def test_cross_campaign_requires_naming_both() -> None:
 
 
 def test_the_server_builds_when_mcp_is_installed() -> None:
-    pytest.importorskip("mcp.server.fastmcp")
+    pytest.importorskip("mcp.server.mcpserver")
     server = mod.build_server()
     assert server.name == "provenance"

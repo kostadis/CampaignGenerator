@@ -11,7 +11,7 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "requests",
-    "mcp",
+    "mcp>=2,<3",
     "aiofiles",
     # Declared directly, not left to arrive transitively via fastapi: the
     # `provenance` package's strict (extra="forbid") config models are a CLI
