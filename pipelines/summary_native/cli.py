@@ -14,7 +14,7 @@ from pathlib import Path
 import yaml
 
 from campaignlib.config import ConfigLocationError, campaign_root_for_config, find_default_config
-from campaignlib.registry import load_registry, resolve_registry_arg
+from campaignlib.registry import find_registry, load_registry
 from campaignlib.util import atomic_write_text
 from campaignlib import DEFAULT_MODEL, add_backend_args
 from campaignlib.api.client import resolve_cli_model
@@ -118,14 +118,27 @@ def main(argv: list[str] | None = None) -> int:
         else float(cfg.get("dup_threshold", schema.DEFAULT_DUP_THRESHOLD))
     )
 
-    try:
-        registry, _, _ = resolve_registry_arg(args.registry, False, parser)
-    except SystemExit:
-        return 2
-    registry_path = _under(root, registry) if registry else None
+    uses_registry = args.command in ("validate", "build")
+    registry_path = None
+    if uses_registry:
+        if args.registry:
+            given = _under(root, args.registry)
+            if given.is_dir():
+                registry_path = find_registry(given)
+                if registry_path is None:
+                    return _err(f"--registry {given}: no entity_registry.yaml found under {given}/docs/")
+            else:
+                registry_path = given
+        else:
+            registry_path = find_registry(root)  # the campaign root, not the cwd
     canon_path = _under(root, args.canon) if args.canon else out_root / "canon.yaml"
+    reg_obj = None
+    if registry_path is not None:
+        try:
+            reg_obj = load_registry(registry_path)
+        except Exception as e:  # yaml.YAMLError, KeyError, AttributeError, TypeError, ValueError, OSError
+            return _err(f"invalid entity registry {registry_path}: {type(e).__name__}: {e}")
     try:
-        reg_obj = load_registry(registry_path) if registry_path else None
         rulings = duplicates.load_rulings(canon_path)
     except (duplicates.RulingsError, ValueError, OSError) as e:
         return _err(str(e))

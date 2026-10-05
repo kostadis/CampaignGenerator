@@ -447,7 +447,11 @@ def scan(
     )
     rulings = rulings if rulings is not None else duplicates.Rulings()
     findings += duplicates.find_possible_duplicates(obs, registry, rulings, dup_threshold)
-    findings += duplicates.stale_rulings(rulings, duplicates.headings_by_category(obs))
+    # canon.yaml is shared across ranges: a ruling is stale only when its
+    # heading occurs in NO readable summary, in range or not.
+    findings += duplicates.stale_rulings(
+        rulings, duplicates.headings_of_files(parsed, duplicates.make_grouper(registry))
+    )
 
     findings.sort(key=_sort_key)
     return ValidationReport(

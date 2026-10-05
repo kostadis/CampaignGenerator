@@ -280,3 +280,35 @@ def test_synth_incompatible_backend_model_exits_2_without_traceback(camp, capsys
                "--backend", "codex-cli", "--model", "claude-opus-5-5"])
     err = capsys.readouterr().err
     assert rc == 2 and "incompatible with backend 'codex-cli'" in err and "Traceback" not in err
+
+
+@pytest.mark.parametrize(
+    "body", ["entities: [unclosed\n", "entities:\n  - type: npc\n", "entities:\n  - just a string\n"]
+)
+@pytest.mark.parametrize("cmd", ["validate", "build"])
+def test_malformed_registry_exits_2_cleanly(camp, capsys, cmd, body):
+    _corpus(camp)
+    (camp / "docs").mkdir()
+    reg = camp / "docs" / "entity_registry.yaml"
+    reg.write_text(body)
+    assert main([cmd, "--summaries-dir", "summaries"]) == 2
+    err = capsys.readouterr().err
+    assert f"invalid entity registry {reg}" in err and "Traceback" not in err
+
+
+def test_default_registry_resolved_from_config_root_not_cwd(camp, tmp_path, monkeypatch):
+    import hashlib
+
+    _corpus(camp)
+    (camp / "docs").mkdir()
+    reg = camp / "docs" / "entity_registry.yaml"
+    reg.write_text("version: 1\nentities: []\n# campaign B\n")
+    other = tmp_path / "elsewhere"
+    other.mkdir()
+    (other / "docs").mkdir()
+    (other / "docs" / "entity_registry.yaml").write_text("version: 1\nentities: []\n# A\n")
+    monkeypatch.chdir(other)
+    cfg = str(camp / "config" / "config.yaml")
+    assert main(["build", "--config", cfg, "--summaries-dir", str(camp / "summaries")]) == 0
+    m = json.loads((camp / "docs/summary_native/ch002-005/manifest.json").read_text())
+    assert m["canon"]["registry_sha256"] == hashlib.sha256(reg.read_bytes()).hexdigest()

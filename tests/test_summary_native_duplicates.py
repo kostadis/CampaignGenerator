@@ -268,3 +268,21 @@ def test_build_records_grouped_by_in_frontmatter(camp):
     texts = [p.read_text() for p in (camp / "docs/summary_native/ch001-003/dossiers").rglob("*.md")]
     assert any("grouped_by" in t and "registry" in t for t in texts)
     assert sum("grouped_by" in t for t in texts) == 1
+
+
+def test_narrow_range_does_not_report_out_of_range_ruling_stale(tiny):
+    _write_summary(tiny, "001-a.md", 1, npcs="### Alpha\n\nx\n")
+    _write_summary(tiny, "002-b.md", 2, npcs="### Beta\n\nx\n")
+    _write_summary(tiny, "005-c.md", 5, npcs="### Zed One\n\nx\n### Zed Two\n\ny\n")
+    canon = tiny / "docs/summary_native/canon.yaml"
+    canon.parent.mkdir(parents=True, exist_ok=True)
+    canon.write_text('not_duplicates:\n  - {category: npc, a: "Zed One", b: "Zed Two"}\n')
+
+    def stale():
+        main(["validate", "--summaries-dir", "summaries", "--until", "2"])
+        rep = json.loads((tiny / "docs/summary_native/ch001-002/validation_report.json").read_text())
+        return [f for f in rep["findings"] if f["code"] == "stale-ruling"]
+
+    assert stale() == []
+    (tiny / "summaries" / "005-c.md").unlink()
+    assert len(stale()) == 1

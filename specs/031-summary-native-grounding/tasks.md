@@ -217,7 +217,7 @@ description: "Task list for 031 summary-native grounding docs"
   - Re-run T010 (byte-stability still holds).
 - [X] T036 [US3] Green the suite.
 - [X] T037 [US3] COMMIT "summary_native: fix-at-source duplicate detection"
-- [ ] T038 [US3] REVIEW `/code-review` on T037's commit. Fix and commit.
+- [X] T038 [US3] REVIEW `/code-review` on T037's commit. Fix and commit.
 
 ---
 

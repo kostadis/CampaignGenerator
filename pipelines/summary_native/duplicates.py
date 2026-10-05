@@ -239,8 +239,18 @@ def headings_by_category(observations) -> dict[str, set[str]]:
     return out
 
 
+def headings_of_files(files, grouper) -> dict[str, set[str]]:
+    """Like ``headings_by_category`` but over every parsed file, in range or not."""
+    out: dict[str, set[str]] = {c: set() for c in CATEGORIES}
+    for pf in files:
+        for e in pf.entities:
+            canonical, _ = grouper(e.category, e.heading)
+            out[e.category].update({e.heading.strip().casefold(), canonical.casefold()})
+    return out
+
+
 def stale_rulings(rulings: Rulings, headings: dict[str, set[str]]) -> list[Finding]:
-    """A ruling whose heading no longer occurs in the range is stale (non-blocking)."""
+    """A ruling whose heading occurs in no readable summary (any range) is stale (non-blocking)."""
     out: list[Finding] = []
     for category, a, b in rulings.entries:
         present = headings.get(category, set())
@@ -254,7 +264,7 @@ def stale_rulings(rulings: Rulings, headings: dict[str, set[str]]) -> list[Findi
                 code=schema.STALE_RULING,
                 message=(
                     f"{category}: ruling '{a}' / '{b}' is stale; "
-                    f"{', '.join(repr(g) for g in gone)} no longer occurs in the range"
+                    f"{', '.join(repr(g) for g in gone)} no longer occurs in any summary"
                 ),
                 expected=None,
                 found=None,
