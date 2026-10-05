@@ -27,8 +27,8 @@ description: "Task list for 031 summary-native grounding docs"
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 Create the package skeleton `pipelines/summary_native/__init__.py` (docstring: a fourth rendering path that parses reviewed summaries and imports nothing from `pipelines/ensemble/`), an empty `pipelines/summary_native/prompts/` dir, and an empty `tests/fixtures/summary_native/`
-- [ ] T002 Add `summary_native = "pipelines.summary_native.cli:main"` to `[project.scripts]` in `pyproject.toml`, create a stub `pipelines/summary_native/cli.py` whose `main()` builds an argparse parser with the subcommands `validate|build|canon|synth|compare`, then reinstall with `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"` and confirm `summary_native --help` runs
+- [X] T001 Create the package skeleton `pipelines/summary_native/__init__.py` (docstring: a fourth rendering path that parses reviewed summaries and imports nothing from `pipelines/ensemble/`), an empty `pipelines/summary_native/prompts/` dir, and an empty `tests/fixtures/summary_native/`
+- [X] T002 Add `summary_native = "pipelines.summary_native.cli:main"` to `[project.scripts]` in `pyproject.toml`, create a stub `pipelines/summary_native/cli.py` whose `main()` builds an argparse parser with the subcommands `validate|build|synth|compare`, then reinstall with `uv pip install -e . --python "$VIRTUAL_ENV/bin/python"` and confirm `summary_native --help` runs
 
 ---
 
@@ -36,23 +36,23 @@ description: "Task list for 031 summary-native grounding docs"
 
 **⚠️ No user story starts until this phase is done.**
 
-- [ ] T003 Write `pipelines/summary_native/schema.py` with:
+- [X] T003 Write `pipelines/summary_native/schema.py` with:
   - recognised H2 names: `Scenes`, `NPCs`, `Locations`, `Items`, `Spells`, `Abilities`, `Memorable Moments`, `Session-End State`;
   - `ENTITY_CATEGORIES = {"NPCs": "npc", "Locations": "location", "Items": "item", "Spells": "spell", "Abilities": "ability"}`;
   - `CATEGORY_REGISTRY_TYPE = {"npc": "npc", "location": "location", "item": "item"}` (spell and ability have no registry type);
   - the finding-code constants from research.md R2 (`no-numeric-prefix`, `duplicate-chapter`, `missing-title`, `title-chapter-mismatch`, `missing-scenes`, `empty-scenes`, `bad-scene-id`, `scene-chapter-mismatch`, `duplicate-scene-id`, `unknown-section`, `range-gap`), each marked blocking or non-blocking;
   - the regexes: prefix `^(\d+)[-_.]`, title `^#\s+Chapter\s+(\d+)\b`, H2/H3/H4 anchored without a deeper `#`, scene id `^(\d{3})\.(\d{2})\s+(.+)$`.
-- [ ] T004 [P] Write `pipelines/summary_native/parse.py` with frozen dataclasses `Entry(heading, body, line)`, `Section(name, body, entries)`, `Scene(source_scene_id, title, synopsis, body, line)` and `SummaryFile(path, chapter, title_chapter, date, sections)`.
+- [X] T004 [P] Write `pipelines/summary_native/parse.py` with frozen dataclasses `Entry(heading, body, line)`, `Section(name, body, entries)`, `Scene(source_scene_id, title, synopsis, body, line)` and `SummaryFile(path, chapter, title_chapter, date, sections)`.
   - `parse_file(path, campaign_root) -> ParsedFile` never raises on content. It returns the parsed structure plus the raw facts validation needs: the prefix match, the title match, and the scene-heading matches with line numbers.
   - Synopsis is the `####` lines joined with " / ". If there are none, use the first non-heading paragraph, verbatim.
   - Paths are relative to the campaign root.
-- [ ] T005 [P] Create fixture corpora under `tests/fixtures/summary_native/`, each file 30–60 lines in the OOTA format (`# Chapter N`, `Date:`, `## Scenes`, `### NNN.SS Title` + `####` synopsis, `## Memorable Moments`, `## NPCs`/`## Locations`/`## Items`/`## Spells`):
+- [X] T005 [P] Create fixture corpora under `tests/fixtures/summary_native/`, each file 30–60 lines in the OOTA format (`# Chapter N`, `Date:`, `## Scenes`, `### NNN.SS Title` + `####` synopsis, `## Memorable Moments`, `## NPCs`/`## Locations`/`## Items`/`## Spells`):
   - `clean/`: chapters 002, 003, 005 (gap at 004). 7 scenes total. "Manshoon" appears in 002 and 005.
   - `multi_error/`: 5 files, one instance of each blocking code, including one file with two different errors.
   - `out_of_range/`: `clean` plus an `008-…md` whose title says Chapter 6.
   - `aliases/`: "Manshoon" / "Manshoon (Simulacrum)" / "Manshon" in NPCs across several files, "Staff of Power" in both Items and Spells, plus a tiny `entity_registry.yaml` with one npc alias.
   - `dup_chapter/`: two files with prefix 003.
-- [ ] T006 Write `tests/test_summary_native_parse.py`: scene ids are kept verbatim, synopsis is verbatim, section bodies are exact, line numbers are 1-based, and an entity H3 outside any scene gets `source_scene_id=None`.
+- [X] T006 Write `tests/test_summary_native_parse.py`: scene ids are kept verbatim, synopsis is verbatim, section bodies are exact, line numbers are 1-based, and an entity H3 outside any scene gets `source_scene_id=None`.
 
 **Checkpoint**: parsing works on all fixtures.
 

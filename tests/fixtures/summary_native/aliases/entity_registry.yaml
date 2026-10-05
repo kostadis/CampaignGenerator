@@ -1,0 +1,8 @@
+version: 1
+campaign: fixture
+entities:
+  - name: Manshoon
+    type: npc
+    aliases: [Lord Manshoon]
+  - name: Kazryn Nyantani
+    type: npc
