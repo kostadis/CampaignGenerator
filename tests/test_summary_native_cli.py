@@ -151,3 +151,82 @@ def test_unreadable_file_reported_with_other_findings_exit_1(camp, capsys):
     assert main(["validate", "--summaries-dir", "summaries"]) == 1
     md = (camp / "docs/summary_native/ch002-003/validation_report.md").read_text()
     assert "unreadable-file" in md and "title-chapter-mismatch" in md
+
+
+# ── review-finding regressions ──────────────────────────────────────────────
+
+
+def _rd(camp):
+    return camp / "docs/summary_native/ch002-005"
+
+
+def test_build_ignores_out_of_range_unreadable_and_dir_named_md(camp):
+    d = _corpus(camp)
+    (d / "001-x.md").write_bytes(b"\xff\xfe\x00bad")
+    (d / "zzz.md").mkdir()
+    assert main(["build", "--summaries-dir", "summaries", "--since", "2"]) == 0
+    m = json.loads((_rd(camp) / "manifest.json").read_text())
+    assert all("001-x" not in f["path"] for f in m["files"])
+    assert m["complete"] is True
+
+
+def test_interrupted_build_recovers_with_force(camp, monkeypatch, capsys):
+    from pipelines.summary_native import corpus
+
+    _corpus(camp)
+    base = ["build", "--summaries-dir", "summaries"]
+    real = corpus.render_memorable_moments
+
+    def boom(files):
+        raise RuntimeError("interrupted")
+
+    monkeypatch.setattr(corpus, "render_memorable_moments", boom)
+    with pytest.raises(RuntimeError):
+        main(base)
+    monkeypatch.setattr(corpus, "render_memorable_moments", real)
+    assert json.loads((_rd(camp) / "manifest.json").read_text())["complete"] is False
+    assert main(["validate", "--summaries-dir", "summaries"]) == 1 - 1
+    capsys.readouterr()
+    assert main(base) == 2
+    assert "did not finish" in capsys.readouterr().err
+    assert main([*base, "--force"]) == 0
+    assert json.loads((_rd(camp) / "manifest.json").read_text())["complete"] is True
+
+
+def test_load_manifest_requires_complete(camp):
+    from pipelines.summary_native import corpus
+
+    _corpus(camp)
+    main(["build", "--summaries-dir", "summaries"])
+    assert corpus.load_manifest(_rd(camp))["complete"] is True
+    (_rd(camp) / "manifest.json").write_text('{"kind": "summary_native", "complete": false}')
+    with pytest.raises(corpus.CorpusError):
+        corpus.load_manifest(_rd(camp))
+    assert corpus.load_manifest(_rd(camp), require_complete=False)
+
+
+def test_force_with_stray_file_keeps_it(camp):
+    _corpus(camp)
+    base = ["build", "--summaries-dir", "summaries"]
+    assert main(base) == 0
+    notes = _rd(camp) / "notes.md"
+    notes.write_text("mine")
+    assert main([*base, "--force"]) == 0
+    assert notes.read_text() == "mine"
+    assert (_rd(camp) / "manifest.json").is_file()
+
+
+def test_report_notes_existing_corpus_state(camp):
+    d = _corpus(camp)
+    assert main(["build", "--summaries-dir", "summaries"]) == 0
+    assert main(["validate", "--summaries-dir", "summaries"]) == 0
+    md = (_rd(camp) / "validation_report.md").read_text()
+    assert "Existing corpus: matches current input" in md
+    assert json.loads((_rd(camp) / "validation_report.json").read_text())["existing_corpus"]["state"] == "matches"
+    f = sorted(d.glob("00[2-5]*.md"))[0]
+    f.write_text(f.read_text() + "\nextra\n")
+    assert main(["validate", "--summaries-dir", "summaries"]) == 0
+    md = (_rd(camp) / "validation_report.md").read_text()
+    assert "differ from current input" in md and "build --force" in md and f.name in md
+    ec = json.loads((_rd(camp) / "validation_report.json").read_text())["existing_corpus"]
+    assert ec["differ"] == 1 and ec["changed"]

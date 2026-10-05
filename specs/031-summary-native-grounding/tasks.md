@@ -115,7 +115,7 @@ description: "Task list for 031 summary-native grounding docs"
   - `build` runs `scan` first and refuses on blocking findings.
 - [X] T016 [US1] Run T009–T012 and the full suite until green. Then run quickstart Q2 against the real OOTA directory (read-only; the 070 file is still unfixed) and record the report summary in the commit message.
 - [X] T017 [US1] COMMIT "summary_native: whole-directory validation, chapter range, deterministic corpus build"
-- [ ] T018 [US1] REVIEW `/code-review` on T017's commit. Fix and commit.
+- [X] T018 [US1] REVIEW `/code-review` on T017's commit. Fix and commit.
 
 **Checkpoint**: MVP. The GM can validate and build a corpus from the CLI with no tokens spent.
 

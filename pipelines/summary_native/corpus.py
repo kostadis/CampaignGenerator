@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import shutil
 from dataclasses import dataclass
@@ -93,20 +94,75 @@ def check_not_foreign(range_dir: Path) -> dict | None:
     return None
 
 
-def guard_out_dir(range_dir: Path, force: bool) -> None:
-    """Refuse an unsafe range directory; with ``force`` clear our own old output."""
+def check_build_allowed(range_dir: Path, force: bool) -> dict | None:
+    """The single guard decision for a build. Pure: deletes nothing."""
     range_dir = Path(range_dir)
     manifest = check_not_foreign(range_dir)
-    if manifest is None:
-        return
-    if not force:
+    if manifest is not None and not force:
+        if manifest.get("complete") is False:
+            raise CorpusError(
+                f"{range_dir}: the previous build did not finish; rerun with --force"
+            )
         raise CorpusError(
             f"{range_dir}: a summary-native corpus already exists; pass --force to rewrite it"
         )
+    return manifest
+
+
+def guard_out_dir(range_dir: Path, force: bool) -> None:
+    """Refuse an unsafe range directory; with ``force`` clear our own old output.
+
+    Deletion happens only after the guard has passed, and only of generated
+    names; any other file (a stray ``notes.md``) is tolerated and left alone.
+    """
+    range_dir = Path(range_dir)
+    if check_build_allowed(range_dir, force) is None:
+        return
     for name in GENERATED_FILES:
         (range_dir / name).unlink(missing_ok=True)
     for name in GENERATED_DIRS:
         shutil.rmtree(range_dir / name, ignore_errors=True)
+
+
+def load_manifest(range_dir: Path, require_complete: bool = True) -> dict:
+    """Read a range dir's manifest; later stages (synth) require a finished build."""
+    m = _read_manifest(Path(range_dir))
+    if m is None:
+        raise CorpusError(f"{range_dir}: no manifest.json; run build first")
+    if m.get("kind") != "summary_native":
+        raise CorpusError(f"{range_dir}: manifest.json is not a summary_native manifest")
+    if require_complete and m.get("complete") is not True:
+        raise CorpusError(
+            f"{range_dir}: the previous build did not finish; rerun build --force"
+        )
+    return m
+
+
+def describe_existing(range_dir: Path, report: ValidationReport, campaign_root: Path) -> dict | None:
+    """Compare an existing corpus's manifest to the report's current in-range files."""
+    m = _read_manifest(Path(range_dir))
+    if m is None or m.get("kind") != "summary_native":
+        return None
+    if m.get("complete") is False or "files" not in m:
+        return {"state": "incomplete"}
+    old = {f["path"]: f["sha256"] for f in m["files"]}
+    root = Path(campaign_root).resolve()
+    new = {
+        Path(os.path.relpath(Path(p).resolve(), root)).as_posix(): sha256_file(p)
+        for p in report.input_files
+    }
+    added = sorted(set(new) - set(old))
+    removed = sorted(set(old) - set(new))
+    changed = sorted(k for k in set(old) & set(new) if old[k] != new[k])
+    differ = len(added) + len(removed) + len(changed)
+    return {
+        "state": "differs" if differ else "matches",
+        "built_from": len(old),
+        "differ": differ,
+        "added": added[:20],
+        "removed": removed[:20],
+        "changed": changed[:20],
+    }
 
 
 # ── Observations & dossiers ─────────────────────────────────────────────────
@@ -350,7 +406,7 @@ def build_corpus(
     """Write the corpus for ``report``'s range into ``range_dir``; return the manifest.
 
     The caller has already run ``validate.scan`` and found no blocking problem.
-    Only in-range files are parsed here, so nothing outside the range can reach
+    Only ``report.input_files`` (readable, in range) are parsed here, so nothing outside the range can reach
     any artifact.
     """
     if report.blocking_count:
@@ -358,14 +414,21 @@ def build_corpus(
     range_dir = Path(range_dir)
     guard_out_dir(range_dir, force)
     files = []
-    for p in sorted(Path(summaries_dir).glob("*.md")):
-        pf = parse.parse_file(p, campaign_root)
-        if pf.prefix_chapter is not None and report.range.contains(pf.prefix_chapter):
-            files.append(pf)
+    for p in sorted(report.input_files):
+        try:
+            files.append(parse.parse_file(p, campaign_root))
+        except (OSError, UnicodeDecodeError) as e:
+            raise CorpusError(f"{p}: cannot read file ({e})") from e
     files = _ordered(files)
     obs = build_observations(files, grouper)
 
     range_dir.mkdir(parents=True, exist_ok=True)
+    # Written first so an interrupted build still identifies the directory as ours.
+    atomic_write_text(
+        range_dir / "manifest.json",
+        json.dumps({"kind": "summary_native", "schema": 1, "complete": False}, indent=2, sort_keys=True)
+        + "\n",
+    )
     atomic_write_text(range_dir / "chronology.md", render_chronology(files))
     atomic_write_text(range_dir / "memorable_moments.md", render_memorable_moments(files))
     other = render_other_sections(files)
@@ -375,5 +438,6 @@ def build_corpus(
     manifest = build_manifest(
         files, campaign_root, report, obs, n_dossiers, registry_sha256, canon_sha256
     )
+    manifest["complete"] = True
     atomic_write_text(range_dir / "manifest.json", json.dumps(manifest, indent=2, sort_keys=True) + "\n")
     return manifest

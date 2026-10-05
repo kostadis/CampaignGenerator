@@ -92,6 +92,10 @@ class ValidationReport:
     files_scanned: int
     files_in_range: int
     findings: list[Finding] = field(default_factory=list)
+    # Exact readable, in-range files scan examined; build parses these and nothing else.
+    input_files: list[Path] = field(default_factory=list, repr=False)
+    # Set by the CLI: how an existing corpus in the range dir relates to this input.
+    existing_corpus: dict | None = None
 
     @property
     def blocking_count(self) -> int:
@@ -120,10 +124,32 @@ class ValidationReport:
             "files_failing": self.files_failing,
             "non_blocking_count": self.non_blocking_count,
             "findings": [asdict(f) for f in self.findings],
+            **({"existing_corpus": self.existing_corpus} if self.existing_corpus else {}),
         }
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=2, sort_keys=True) + "\n"
+
+    def _existing_lines(self) -> list[str]:
+        ec = self.existing_corpus
+        if not ec:
+            return []
+        if ec["state"] == "incomplete":
+            return [
+                "- Existing corpus: incomplete (the previous build did not finish); "
+                "rebuild with build --force"
+            ]
+        if ec["state"] == "matches":
+            return ["- Existing corpus: matches current input"]
+        line = (
+            f"- Existing corpus: built from {ec['built_from']} files; "
+            f"{ec['differ']} differ from current input; rebuild with build --force"
+        )
+        out = [line]
+        for key in ("added", "removed", "changed"):
+            if ec[key]:
+                out.append(f"  - {key}: {', '.join(ec[key])}")
+        return out
 
     def to_markdown(self) -> str:
         r = self.range
@@ -136,6 +162,7 @@ class ValidationReport:
             f"- Files scanned: {self.files_scanned}",
             f"- Files in range: {self.files_in_range}",
             f"- Gaps: {gaps}",
+            *self._existing_lines(),
             "",
             "## In range",
             "",
@@ -302,10 +329,12 @@ def scan(
     """Validate every summary in ``summaries_dir``. See the module docstring."""
     files = _check_input_dir(Path(summaries_dir))
     parsed: list[parse.ParsedFile] = []
+    parsed_paths: list[Path] = []
     unreadable: list[tuple[str, int | None, str]] = []
     for p in files:
         try:
             parsed.append(parse.parse_file(p, campaign_root))
+            parsed_paths.append(p)
         except (OSError, UnicodeDecodeError) as e:
             rel = _rel(p, campaign_root)
             unreadable.append((rel, _chapter_of(rel), f"cannot read file: {e}"))
@@ -382,4 +411,9 @@ def scan(
         files_scanned=len(parsed) + len(unreadable),
         files_in_range=sum(1 for pf in parsed if in_range(pf)) + n_unreadable_in_range,
         findings=findings,
+        input_files=[
+            p
+            for p, pf in zip(parsed_paths, parsed)
+            if pf.prefix_chapter is not None and rng.contains(pf.prefix_chapter)
+        ],
     )

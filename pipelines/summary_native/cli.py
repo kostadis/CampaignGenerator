@@ -111,7 +111,9 @@ def main(argv: list[str] | None = None) -> int:
         range_dir = out_root / f"ch{rng.since:03d}-{rng.until:03d}"
         corpus.check_not_foreign(range_dir)
         if args.command == "build" and not report.blocking_count:
-            corpus.guard_out_dir(range_dir, args.force)
+            corpus.check_build_allowed(range_dir, args.force)  # pure; build_corpus guards once
+        if args.command == "validate" or report.blocking_count:
+            report.existing_corpus = corpus.describe_existing(range_dir, report, root)
     except (ValidationRefusal, corpus.CorpusError) as e:
         return _err(str(e))
 
